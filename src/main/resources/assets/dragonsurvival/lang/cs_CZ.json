@@ -1,14 +1,2 @@
-{
-  "entity.dragonsurvival.magical_predator_entity": "Magický Predátor",
-  "entity.dragonsurvival.shooter": "Lovec",
-  "entity.dragonsurvival.knight": "Obrněný Rytíř",
-  "entity.dragonsurvival.princess_entity": "Princezna",
-  "entity.dragonsurvival.princess": "Princezna na koni",
-  "entity.dragonsurvival.prince": "Princ",
-  "item.dragonsurvival.magical_predator_entity_spawn_egg": "Magický Predátor Spawn Vejce",
-  "item.dragonsurvival.shooter_spawn_egg": "Lovec Spawn Vejce",
-  "item.dragonsurvival.knight_spawn_egg": "Obrněný Rytíř Spawn Vejce",
-  "effect.dragonsurvival.hunter": "Lovec",
-  "ds.skill.hunter": "Lovec"
-}
+{}
 
