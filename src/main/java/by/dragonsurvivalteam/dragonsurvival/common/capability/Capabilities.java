@@ -1,7 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.capability;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvivalMod;
-import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayer;
 import by.dragonsurvivalteam.dragonsurvival.common.DragonEffects;
 import by.dragonsurvivalteam.dragonsurvival.common.EffectInstance2;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.provider.DragonStateProvider;
@@ -22,6 +21,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -48,7 +48,7 @@ public class Capabilities{
 		event.addCapability(new ResourceLocation("dragonsurvival", "generic_capability_data"), genericCapabilityProvider);
 		event.addListener(genericCapabilityProvider::invalidate);
 
-		if(event.getObject() instanceof Player && !(event.getObject() instanceof FakeClientPlayer)){
+		if(event.getObject() instanceof Player && !(event.getObject() instanceof FakePlayer)){
 			DragonStateProvider provider = new DragonStateProvider();
 			event.addCapability(new ResourceLocation("dragonsurvival", "playerstatehandler"), provider);
 			event.addListener(provider::invalidate);
