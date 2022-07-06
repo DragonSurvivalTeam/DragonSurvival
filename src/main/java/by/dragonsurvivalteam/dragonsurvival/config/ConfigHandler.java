@@ -3,7 +3,6 @@ package by.dragonsurvivalteam.dragonsurvival.config;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvivalMod;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
-import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import com.electronwill.nightconfig.core.EnumGetMethod;
 import com.google.gson.reflect.TypeToken;
 import net.minecraft.Util;
@@ -20,6 +19,7 @@ import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
 import net.minecraftforge.common.ForgeConfigSpec.EnumValue;
@@ -32,6 +32,8 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.loading.moddiscovery.ModAnnotation.EnumHolder;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -42,7 +44,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.Type;
 
-import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -61,23 +62,28 @@ public class ConfigHandler{
 	public static HashMap<String, Object> defaultConfigValues = new HashMap<>();
 	public static HashMap<String, ConfigOption> configObjects = new HashMap<>();
 	public static HashMap<String, Field> configFields = new HashMap<>();
-	public static HashMap<ConfigSide, List<String>> configs = new HashMap<>();
+	public static HashMap<Dist, List<String>> configs = new HashMap<>();
 	public static HashMap<String, ForgeConfigSpec.ConfigValue> configValues = new HashMap<>();
 
-	private static List<Field> getFields(Class<? extends Annotation> annotationClass) {
+	private static List<Field> getFields() {
 		List<Field> instances = new ArrayList<>();
 
-		Type annotationType = Type.getType(annotationClass);
+		Type annotationType = Type.getType(ConfigOption.class);
 		ModList.get().getAllScanData().forEach(s -> {
 			List<ModFileScanData.AnnotationData> ebsTargets = s.getAnnotations().stream().filter(s1 -> s1.targetType() == ElementType.FIELD).filter(annotationData -> annotationType.equals(annotationData.annotationType())).toList();
 
 			ebsTargets.forEach(ad ->  {
-				try{
-					Class<?> c = Class.forName(ad.clazz().getClassName());
-					Field fe = c.getDeclaredField(ad.memberName());
-					instances.add(fe);
-				}catch(ClassNotFoundException | NoSuchFieldException e){
-					e.printStackTrace();
+				EnumHolder sidesValue = (EnumHolder)ad.annotationData().get("side");
+				Dist side = Dist.valueOf(sidesValue.getValue());
+
+				if(side == FMLEnvironment.dist){
+					try{
+						Class<?> c = Class.forName(ad.clazz().getClassName());
+						Field fe = c.getDeclaredField(ad.memberName());
+						instances.add(fe);
+					}catch(Exception e){
+						e.printStackTrace();
+					}
 				}
 			});
 		});
@@ -85,13 +91,15 @@ public class ConfigHandler{
 	}
 
 	public static void initConfig(){
-		List<Field> set = getFields(ConfigOption.class);
+		List<Field> set = getFields();
 
 		set.forEach(s -> {
 			if(!Modifier.isStatic(s.getModifiers()))
 				return;
 
 			ConfigOption option = s.getAnnotation(ConfigOption.class);
+
+			if(option.side() == Dist.CLIENT && FMLEnvironment.dist != Dist.CLIENT) return;
 
 			try{
 				defaultConfigValues.put(option.key(), s.get(null));
@@ -118,7 +126,7 @@ public class ConfigHandler{
 
 	}
 
-	public static void addConfigs(ForgeConfigSpec.Builder builder, ConfigSide side){
+	public static void addConfigs(ForgeConfigSpec.Builder builder, Dist side){
 		for(String key : configs.getOrDefault(side, Collections.emptyList())){
 			ConfigOption option = configObjects.get(key);
 			Field fe = configFields.get(key);
@@ -276,7 +284,7 @@ public class ConfigHandler{
 	}
 
 	public static void onModConfig(ModConfig.Type type){
-		for(String s : configs.getOrDefault(type == ModConfig.Type.SERVER ? ConfigSide.SERVER : ConfigSide.CLIENT, Collections.emptyList())){
+		for(String s : configs.getOrDefault(type == ModConfig.Type.SERVER ? Dist.DEDICATED_SERVER : Dist.CLIENT, Collections.emptyList())){
 			try{
 				if(configValues.containsKey(s) && configFields.containsKey(s)){
 					Field fe = ConfigHandler.configFields.get(s);

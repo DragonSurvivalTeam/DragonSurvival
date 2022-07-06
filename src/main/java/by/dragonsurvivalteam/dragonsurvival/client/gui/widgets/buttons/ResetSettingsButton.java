@@ -7,7 +7,6 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.settings.
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.lists.OptionsList;
 import by.dragonsurvivalteam.dragonsurvival.config.ConfigHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
-import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.network.NetworkHandler;
 import by.dragonsurvivalteam.dragonsurvival.network.config.SyncBooleanConfig;
 import by.dragonsurvivalteam.dragonsurvival.network.config.SyncEnumConfig;
@@ -23,6 +22,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 
 import java.lang.reflect.Field;
@@ -56,7 +56,7 @@ public class ResetSettingsButton extends Button{
 							if(widget != null){
 								((CycleButton)widget).setValue(ob);
 							}
-							if(opt.side() == ConfigSide.SERVER){
+							if(opt.side() == Dist.DEDICATED_SERVER){
 								NetworkHandler.CHANNEL.sendToServer(new SyncBooleanConfig(configKey, (Boolean)ob));
 							}
 						}else if(ob instanceof Integer){
@@ -68,7 +68,7 @@ public class ResetSettingsButton extends Button{
 									((TextField)widget).setValue(ob.toString());
 								}
 							}
-							if(opt.side() == ConfigSide.SERVER){
+							if(opt.side() == Dist.DEDICATED_SERVER){
 								NetworkHandler.CHANNEL.sendToServer(new SyncNumberConfig(configKey, (Integer)ob));
 							}
 						}else if(ob instanceof Double){
@@ -80,7 +80,7 @@ public class ResetSettingsButton extends Button{
 									((TextField)widget).setValue(ob.toString());
 								}
 							}
-							if(opt.side() == ConfigSide.SERVER){
+							if(opt.side() == Dist.DEDICATED_SERVER){
 								NetworkHandler.CHANNEL.sendToServer(new SyncNumberConfig(configKey, (Double)ob));
 							}
 						}else if(ob instanceof Long){
@@ -92,18 +92,18 @@ public class ResetSettingsButton extends Button{
 									((TextField)widget).setValue(ob.toString());
 								}
 							}
-							if(opt.side() == ConfigSide.SERVER){
+							if(opt.side() == Dist.DEDICATED_SERVER){
 								NetworkHandler.CHANNEL.sendToServer(new SyncNumberConfig(configKey, (Long)ob));
 							}
 						}else if(ob instanceof Enum){
 							((DSDropDownOption)option).btn.current = ((Enum<?>)ob).name();
 							((DSDropDownOption)option).btn.updateMessage();
 
-							if(opt.side() == ConfigSide.SERVER){
+							if(opt.side() == Dist.DEDICATED_SERVER){
 								NetworkHandler.CHANNEL.sendToServer(new SyncEnumConfig(configKey, (Enum)ob));
 							}
 						}else if(ob instanceof List){
-							if(opt.side() == ConfigSide.SERVER){
+							if(opt.side() == Dist.DEDICATED_SERVER){
 								NetworkHandler.CHANNEL.sendToServer(new SyncListConfig(configKey, (List<String>)ob));
 							}
 						}

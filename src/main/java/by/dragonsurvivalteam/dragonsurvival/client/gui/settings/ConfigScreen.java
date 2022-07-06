@@ -10,7 +10,6 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.lists.OptionsList
 import by.dragonsurvivalteam.dragonsurvival.config.ConfigHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
-import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.network.NetworkHandler;
 import by.dragonsurvivalteam.dragonsurvival.network.config.SyncBooleanConfig;
 import by.dragonsurvivalteam.dragonsurvival.network.config.SyncEnumConfig;
@@ -28,6 +27,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.*;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 
 import javax.annotation.Nullable;
@@ -55,7 +55,7 @@ public abstract class ConfigScreen extends OptionsSubScreen{
 		this.title = p_i225930_3_;
 	}
 
-	public abstract ConfigSide screenSide();
+	public abstract Dist screenSide();
 
 	protected void init(){
 		if(list != null){
@@ -170,7 +170,7 @@ public abstract class ConfigScreen extends OptionsSubScreen{
 				CycleOption<Boolean> option = new CycleOption<>(name, (val) -> ((ConfigValue<Boolean>)value).get(), (settings, optionO, settingValue) -> {
 					ConfigHandler.updateConfigValue(value, settingValue);
 
-					if(screenSide() == ConfigSide.SERVER){
+					if(screenSide() == Dist.DEDICATED_SERVER){
 						NetworkHandler.CHANNEL.sendToServer(new SyncBooleanConfig(key, settingValue));
 					}
 				}, () -> CycleButton.booleanBuilder(((BaseComponent)CommonComponents.OPTION_ON).withStyle(ChatFormatting.GREEN), ((BaseComponent)CommonComponents.OPTION_OFF).withStyle(ChatFormatting.RED)).displayOnlyValue()){
@@ -200,7 +200,7 @@ public abstract class ConfigScreen extends OptionsSubScreen{
 					option = new ProgressOption(name, min, max, sliderPerc, (settings) -> Double.valueOf(((ConfigValue<Integer>)value).get()), (settings, settingValue) -> {
 						ConfigHandler.updateConfigValue(value, settingValue.intValue());
 
-						if(screenSide() == ConfigSide.SERVER){
+						if(screenSide() == Dist.DEDICATED_SERVER){
 							NetworkHandler.CHANNEL.sendToServer(new SyncNumberConfig(key, settingValue));
 						}
 					}, (settings, slider) -> {
@@ -217,7 +217,7 @@ public abstract class ConfigScreen extends OptionsSubScreen{
 					option = new DSNumberFieldOption(name, min, max, (settings) -> ((ConfigValue<Integer>)value).get(), (settings, settingValue) -> {
 						ConfigHandler.updateConfigValue(value, settingValue.intValue());
 
-						if(screenSide() == ConfigSide.SERVER){
+						if(screenSide() == Dist.DEDICATED_SERVER){
 							NetworkHandler.CHANNEL.sendToServer(new SyncNumberConfig(key, settingValue.intValue()));
 						}
 					}, (m) -> Minecraft.getInstance().font.split(tooltip, 200));
@@ -243,7 +243,7 @@ public abstract class ConfigScreen extends OptionsSubScreen{
 					option = new ProgressOption(name, min.doubleValue(), max.doubleValue(), sliderPerc, (settings) -> ((ConfigValue<Double>)value).get(), (settings, settingValue) -> {
 						ConfigHandler.updateConfigValue(value, Math.round(settingValue * 100.0) / 100.0);
 
-						if(screenSide() == ConfigSide.SERVER){
+						if(screenSide() == Dist.DEDICATED_SERVER){
 							NetworkHandler.CHANNEL.sendToServer(new SyncNumberConfig(key, settingValue));
 						}
 					}, (settings, slider) -> {
@@ -260,7 +260,7 @@ public abstract class ConfigScreen extends OptionsSubScreen{
 					option = new DSNumberFieldOption(name, min, max, (settings) -> ((ConfigValue<Double>)value).get(), (settings, settingValue) -> {
 						ConfigHandler.updateConfigValue(value, Math.round(settingValue.doubleValue() * 100.0) / 100.0);
 
-						if(screenSide() == ConfigSide.SERVER){
+						if(screenSide() == Dist.DEDICATED_SERVER){
 							NetworkHandler.CHANNEL.sendToServer(new SyncNumberConfig(key, settingValue.doubleValue()));
 						}
 					}, (m) -> Minecraft.getInstance().font.split(tooltip, 200));
@@ -283,7 +283,7 @@ public abstract class ConfigScreen extends OptionsSubScreen{
 					option = new ProgressOption(name, min, max, sliderPerc, settings -> Double.valueOf(((ConfigValue<Long>)value).get()), (settings, settingValue) -> {
 						ConfigHandler.updateConfigValue(value, settingValue.longValue());
 
-						if(screenSide() == ConfigSide.SERVER){
+						if(screenSide() == Dist.DEDICATED_SERVER){
 							NetworkHandler.CHANNEL.sendToServer(new SyncNumberConfig(key, settingValue));
 						}
 					}, (settings, slider) -> {
@@ -300,7 +300,7 @@ public abstract class ConfigScreen extends OptionsSubScreen{
 					option = new DSNumberFieldOption(name, min, max, settings -> ((ConfigValue<Long>)value).get(), (settings, settingValue) -> {
 						ConfigHandler.updateConfigValue(value, settingValue.longValue());
 
-						if(screenSide() == ConfigSide.SERVER){
+						if(screenSide() == Dist.DEDICATED_SERVER){
 							NetworkHandler.CHANNEL.sendToServer(new SyncNumberConfig(key, settingValue.longValue()));
 						}
 					}, m -> Minecraft.getInstance().font.split(tooltip, 200));
@@ -314,7 +314,7 @@ public abstract class ConfigScreen extends OptionsSubScreen{
 				Option option = new DSDropDownOption(name, vale, val -> {
 					ConfigHandler.updateConfigValue(value, val);
 
-					if(screenSide() == ConfigSide.SERVER)
+					if(screenSide() == Dist.DEDICATED_SERVER)
 						NetworkHandler.CHANNEL.sendToServer(new SyncEnumConfig(key, val));
 				}, m -> Minecraft.getInstance().font.split(tooltip, 200));
 

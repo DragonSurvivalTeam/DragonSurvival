@@ -8,7 +8,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.subcapabilities.Em
 import by.dragonsurvivalteam.dragonsurvival.common.util.DragonUtils;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
-import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.network.NetworkHandler;
 import by.dragonsurvivalteam.dragonsurvival.network.emotes.SyncEmote;
 import com.mojang.blaze3d.platform.InputConstants.Key;
@@ -37,6 +36,7 @@ import java.awt.Color;
 import java.util.*;
 import java.util.stream.Stream;
 
+@OnlyIn( Dist.CLIENT)
 @Mod.EventBusSubscriber( Dist.CLIENT )
 public class EmoteMenuHandler{
 	private static final int PER_PAGE = 10;
@@ -52,11 +52,11 @@ public class EmoteMenuHandler{
 	public static final ResourceLocation resetTexture = new ResourceLocation(DragonSurvivalMod.MODID, "textures/gui/reset_icon.png");
 
 	@ConfigRange( min = -1000, max = 1000 )
-	@ConfigOption( side = ConfigSide.CLIENT, category = {"ui", "emotes"}, key = "emoteXOffset", comment = "Offset the x position of the emote button in relation to its normal position" )
+	@ConfigOption( side = Dist.CLIENT, category = {"ui", "emotes"}, key = "emoteXOffset", comment = "Offset the x position of the emote button in relation to its normal position" )
 	public static Integer emoteXOffset = 0;
 
 	@ConfigRange( min = -1000, max = 1000 )
-	@ConfigOption( side = ConfigSide.CLIENT, category = {"ui", "emotes"}, key = "emoteYOffset", comment = "Offset the y position of the emote button in relation to its normal position" )
+	@ConfigOption( side = Dist.CLIENT, category = {"ui", "emotes"}, key = "emoteYOffset", comment = "Offset the y position of the emote button in relation to its normal position" )
 	public static Integer emoteYOffset = 0;
 
 	private static int emotePage = 0;

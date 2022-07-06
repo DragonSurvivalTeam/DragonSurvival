@@ -9,7 +9,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.util.DragonUtils;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
-import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
+
 import by.dragonsurvivalteam.dragonsurvival.mixins.AccessorGameRenderer;
 import by.dragonsurvivalteam.dragonsurvival.network.NetworkHandler;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.RequestSpinResync;
@@ -64,33 +64,33 @@ public class ClientFlightHandler{
 	public static boolean wasGliding = false;
 	public static boolean wasFlying = false;
 
-	@ConfigOption( side = ConfigSide.CLIENT, category = "flight", key = "notifyWingStatus", comment = "Notifies of wing status in chat message" )
+	@ConfigOption( side = Dist.CLIENT, category = "flight", key = "notifyWingStatus", comment = "Notifies of wing status in chat message" )
 	public static Boolean notifyWingStatus = false;
 
-	@ConfigOption( side = ConfigSide.CLIENT, category = "flight", key = "jumpToFly", comment = "Should flight be activated when jumping in the air" )
+	@ConfigOption( side = Dist.CLIENT, category = "flight", key = "jumpToFly", comment = "Should flight be activated when jumping in the air" )
 	public static Boolean jumpToFly = false;
 
-	@ConfigOption( side = ConfigSide.CLIENT, category = "flight", key = "lookAtSkyForFlight", comment = "Is it required to look up to start flying while jumping, requires that jumpToFly is on" )
+	@ConfigOption( side = Dist.CLIENT, category = "flight", key = "lookAtSkyForFlight", comment = "Is it required to look up to start flying while jumping, requires that jumpToFly is on" )
 	public static Boolean lookAtSkyForFlight = false;
 
-	@ConfigOption( side = ConfigSide.CLIENT, category = "flight", key = "flightZoomEffect", comment = "Should the zoom effect while gliding as a dragon be enabled" )
+	@ConfigOption( side = Dist.CLIENT, category = "flight", key = "flightZoomEffect", comment = "Should the zoom effect while gliding as a dragon be enabled" )
 	public static Boolean flightZoomEffect = true;
 
-	@ConfigOption( side = ConfigSide.CLIENT, category = "flight", key = "flightCameraMovement", comment = "Should the camera movement while gliding as a dragon be enabled" )
+	@ConfigOption( side = Dist.CLIENT, category = "flight", key = "flightCameraMovement", comment = "Should the camera movement while gliding as a dragon be enabled" )
 	public static Boolean flightCameraMovement = true;
 
-	@ConfigOption( side = ConfigSide.CLIENT, category = "flight", key = "ownSpinParticles", comment = "Should particles from your own spin attack be displayed for you?" )
+	@ConfigOption( side = Dist.CLIENT, category = "flight", key = "ownSpinParticles", comment = "Should particles from your own spin attack be displayed for you?" )
 	public static Boolean ownSpinParticles = true;
 
-	@ConfigOption( side = ConfigSide.CLIENT, category = "flight", key = "othersSpinParticles", comment = "Should other players particles from spin attack be shown for you?" )
+	@ConfigOption( side = Dist.CLIENT, category = "flight", key = "othersSpinParticles", comment = "Should other players particles from spin attack be shown for you?" )
 	public static Boolean othersSpinParticles = true;
 
 	@ConfigRange( min = -1000, max = 1000 )
-	@ConfigOption( side = ConfigSide.CLIENT, category = {"ui", "spin"}, key = "spinCooldownXOffset", comment = "Offset the x position of the spin cooldown indicator in relation to its normal position" )
+	@ConfigOption( side = Dist.CLIENT, category = {"ui", "spin"}, key = "spinCooldownXOffset", comment = "Offset the x position of the spin cooldown indicator in relation to its normal position" )
 	public static Integer spinCooldownXOffset = 0;
 
 	@ConfigRange( min = -1000, max = 1000 )
-	@ConfigOption( side = ConfigSide.CLIENT, category = {"ui", "spin"}, key = "spinCooldownYOffset", comment = "Offset the y position of the spin cooldown indicator in relation to its normal position" )
+	@ConfigOption( side = Dist.CLIENT, category = {"ui", "spin"}, key = "spinCooldownYOffset", comment = "Offset the y position of the spin cooldown indicator in relation to its normal position" )
 	public static Integer spinCooldownYOffset = 0;
 	/**
 	 * Acceleration
