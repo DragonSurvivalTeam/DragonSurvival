@@ -64,8 +64,9 @@ public class ServerFlightHandler{
 	@ConfigOption( side = ConfigSide.SERVER, category = "wings", key = "flightHungerThreshold", comment = "If the player's hunger is less then or equal to this parameter, the wings will be folded even during flight." )
 	public static Integer foldWingsThreshold = 0;
 
-	@ConfigOption( side = ConfigSide.SERVER, category = "wings", key = "flyingUsesHunger", comment = "Whether you use up hunger while flying." )
-	public static Boolean flyingUsesHunger = true;
+	@ConfigRange( min = 0d, max = 10d )
+	@ConfigOption( side = ConfigSide.SERVER, category = "wings", key = "flyingHungerMultiplier", comment = "Scale for hunger amount spent while flying (0 = ignore hunger)" )
+	public static Double flyingHungerMultiplier = 1d;
 
 	@ConfigOption( side = ConfigSide.SERVER, category = "wings", key = "enableFlightFallDamage", comment = "Whether fall damage in flight is included. If true dragon will take damage from the fall." )
 	public static Boolean enableFlightFallDamage = true;
@@ -296,7 +297,7 @@ public class ServerFlightHandler{
 				}
 
 				if(wingsSpread){
-					if(flyingUsesHunger){
+					if(flyingHungerMultiplier > 0){
 						if(isFlying(player)){
 							if(!player.level.isClientSide){
 								if(player.getFoodData().getFoodLevel() <= foldWingsThreshold && !allowFlyingWithoutHunger && !player.isCreative()){
@@ -311,7 +312,7 @@ public class ServerFlightHandler{
 							float l = 4f / flightHungerTicks;
 							float moveSpeedReq = 1.0F;
 							float minFoodReq = l / 10f;
-							float drain = Math.max(minFoodReq, (float)(Math.min(1.0, Math.max(0, Math.max(moveSpeedReq - moveSpeed, 0) / moveSpeedReq)) * l));
+							float drain = Math.max(minFoodReq, (float)(Math.min(1.0, Math.max(0, Math.max(moveSpeedReq - moveSpeed, 0) / moveSpeedReq)) * l)) * flyingHungerMultiplier.floatValue();
 
 							player.causeFoodExhaustion(drain);
 						}
