@@ -120,13 +120,22 @@ repositories {
     	name = "Gecholib maven"
     	url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
     }
+
+    // JEI
     maven {
-        name = "Progwml6 maven"
-        url = "https://dvs1.progwml6.com/files/maven/"
+        name 'Blamejared Maven'
+        url 'https://maven.blamejared.com'
     }
+
     maven {
         url = "https://maven.theillusivec4.top/"
     }
+
+    // AppleSkin
+    maven { url "https://maven.ryanliptak.com/" }
+
+    // Curseforge
+    maven { url "https://cursemaven.com" }
 }
 dependencies {
     minecraft "net.minecraftforge:forge:$mc_version-$forge_version"
@@ -138,6 +147,8 @@ dependencies {
 
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${property('mc_version')}-${curios_version}:api")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${property('mc_version')}-${curios_version}")
+
+    compileOnly fg.deobf("squeek.appleskin:appleskin-forge:${appleskin_version}:api")
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }

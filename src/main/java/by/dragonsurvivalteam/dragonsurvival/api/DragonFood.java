@@ -11,15 +11,17 @@ import javax.annotation.Nullable;
 
 public class DragonFood{
 	public static boolean isEdible(Item item, Entity entity){
-		if(entity != null && DragonUtils.isDragon(entity))
+		if(DragonUtils.isDragon(entity))
 			return DragonFoodHandler.isDragonEdible(item, DragonUtils.getHandler(entity).getType());
+
 		return item.isEdible();
 	}
 
 	@Nullable
 	public static FoodProperties getEffectiveFoodProperties(Item item, Entity entity){
-		if(entity != null && DragonUtils.isDragon(entity))
+		if(DragonUtils.isDragon(entity))
 			return DragonFoodHandler.getDragonFoodProperties(item, DragonUtils.getHandler(entity).getType());
+
 		return item.getFoodProperties();
 	}
 
