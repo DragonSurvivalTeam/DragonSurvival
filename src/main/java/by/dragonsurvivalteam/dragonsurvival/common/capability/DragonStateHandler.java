@@ -158,20 +158,20 @@ public class DragonStateHandler implements NBTInterface{
 			tag.putBoolean("dig", movementData.dig);
 			tag.putBoolean("isHiding", isHiding());
 
-			//Spin attack
-			tag.putInt("spinCooldown", movementData.spinCooldown);
-			tag.putInt("spinAttack", movementData.spinAttack);
-			tag.putBoolean("spinLearned", movementData.spinLearned);
-
-			tag.putDouble("size", getSize());
-			tag.putBoolean("growing", growing);
-
-			tag.putBoolean("hasWings", hasWings());
-			tag.putBoolean("isFlying", isWingsSpread());
-
 			tag.putBoolean("resting", treasureResting);
 			tag.putInt("restingTimer", treasureRestTimer);
 		}
+		//Spin attack
+		tag.putInt("spinCooldown", movementData.spinCooldown);
+		tag.putInt("spinAttack", movementData.spinAttack);
+		tag.putBoolean("spinLearned", movementData.spinLearned);
+
+		tag.putDouble("size", getSize());
+		tag.putBoolean("growing", growing);
+
+		tag.putBoolean("hasWings", hasWings());
+		tag.putBoolean("isFlying", isWingsSpread());
+
 		for(int i = 0; i < caps.length; i++){
 			tag.put("cap_" + i, caps[i].get().writeNBT());
 		}
@@ -207,23 +207,22 @@ public class DragonStateHandler implements NBTInterface{
 			setIsHiding(tag.getBoolean("isHiding"));
 			getMovementData().dig = tag.getBoolean("dig");
 
-			setHasWings(tag.getBoolean("hasWings"));
-			setWingsSpread(tag.getBoolean("isFlying"));
-
-			getMovementData().spinCooldown = tag.getInt("spinCooldown");
-			getMovementData().spinAttack = tag.getInt("spinAttack");
-			getMovementData().spinLearned = tag.getBoolean("spinLearned");
-
-			setSize(tag.getDouble("size"));
-			growing = !tag.contains("growing") || tag.getBoolean("growing");
-
 			treasureResting = tag.getBoolean("resting");
 			treasureRestTimer = tag.getInt("restingTimer");
 
-			if(getSize() == 0){
-				setSize(DragonLevel.NEWBORN.size);
-			}
 		}
+		getMovementData().spinCooldown = tag.getInt("spinCooldown");
+		getMovementData().spinAttack = tag.getInt("spinAttack");
+		getMovementData().spinLearned = tag.getBoolean("spinLearned");
+
+		setHasWings(tag.getBoolean("hasWings"));
+		setWingsSpread(tag.getBoolean("isFlying"));
+
+		setSize(tag.getDouble("size"));
+		if(getSize() == 0){
+			setSize(DragonLevel.NEWBORN.size);
+		}
+		growing = !tag.contains("growing") || tag.getBoolean("growing");
 
 		for(int i = 0; i < caps.length; i++){
 			if(tag.contains("cap_" + i)){

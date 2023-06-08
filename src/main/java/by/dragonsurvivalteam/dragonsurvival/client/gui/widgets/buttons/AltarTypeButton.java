@@ -100,9 +100,11 @@ public class AltarTypeButton extends Button implements TooltipRender{
 			DragonStateProvider.getCap(player).ifPresent(cap -> {
 				player.level.playSound(player, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 1, 0.7f);
 				cap.setType(null);
-				cap.setSize(20F);
-				cap.setHasWings(false);
-				cap.setIsHiding(false);
+				if (!ServerConfig.saveGrowthStage) {
+					cap.setSize(20F);
+					cap.setHasWings(false);
+					cap.setIsHiding(false);
+				}
 				cap.getMovementData().spinLearned = false;
 
 				NetworkHandler.CHANNEL.sendToServer(new SyncAltarCooldown(Minecraft.getInstance().player.getId(), Functions.secondsToTicks(ServerConfig.altarUsageCooldown)));
