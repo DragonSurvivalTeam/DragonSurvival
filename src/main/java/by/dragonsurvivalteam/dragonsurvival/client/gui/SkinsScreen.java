@@ -326,12 +326,12 @@ public class SkinsScreen extends Screen{
 			ArrayList<String> users = new ArrayList<>();
 			Random random = new Random();
 
-			for (Map.Entry<DragonLevel, HashMap<String, DragonSkins.SkinObject>> ent : DragonSkins.SKIN_USERS.entrySet()){
-				for (Map.Entry<String,DragonSkins.SkinObject> user : ent.getValue().entrySet()){
-					skins.add(Pair.of(ent.getKey(), user.getKey()));
+			for(Map.Entry<DragonLevel, ArrayList<String>> ent : DragonSkins.SKIN_USERS.entrySet()){
+				for(String user : ent.getValue()){
+					skins.add(Pair.of(ent.getKey(), user));
 
-					if(!users.contains(user.getKey())){
-						users.add(user.getKey());
+					if(!users.contains(user)){
+						users.add(user);
 					}
 				}
 			}
@@ -403,7 +403,7 @@ public class SkinsScreen extends Screen{
 	public void setTextures(){
 		loading = true;
 
-		ResourceLocation skinTexture = DragonSkins.getPlayerSkin(playerName, level);
+		ResourceLocation skinTexture = DragonSkins.getPlayerSkin(playerName + "_" + level.name);
 		ResourceLocation glowTexture = null;
 		boolean defaultSkin = false;
 
@@ -413,7 +413,7 @@ public class SkinsScreen extends Screen{
 		}
 
 		if(skinTexture != null){
-			glowTexture = DragonSkins.getPlayerGlow(playerName, level);
+			glowTexture = DragonSkins.getPlayerGlow(playerName + "_" + level.name);
 		}
 
 		SkinsScreen.glowTexture = glowTexture;
