@@ -353,7 +353,7 @@ public class DragonEntity extends LivingEntity implements IAnimatable, CommonTra
 			if(isMovingHorizontal && player.animationSpeed != 0f){
 				builder.addAnimation("sneak_walk", EDefaultLoopTypes.LOOP);
 			}else if(playerStateHandler.getMovementData().dig){
-				builder.addAnimation("dig_sneak", EDefaultLoopTypes.LOOP);
+				builder.addAnimation(player.getMainArm() == HumanoidArm.LEFT ? "dig_sneak_left" : "dig_sneak_right", EDefaultLoopTypes.LOOP);
 			}else{
 				builder.addAnimation("sneak", EDefaultLoopTypes.LOOP);
 			}
@@ -364,7 +364,7 @@ public class DragonEntity extends LivingEntity implements IAnimatable, CommonTra
 			dragonAnimationController.speed = 1 + deltaMovement.horizontalDistance() / 10;
 			builder.addAnimation("walk", EDefaultLoopTypes.LOOP);
 		}else if(playerStateHandler.getMovementData().dig){
-			builder.addAnimation("dig", EDefaultLoopTypes.LOOP);
+			builder.addAnimation(player.getMainArm() == HumanoidArm.LEFT ? "dig_left" : "dig_right", EDefaultLoopTypes.LOOP);
 		}
 
 		builder.addAnimation("idle", EDefaultLoopTypes.LOOP);

@@ -322,13 +322,13 @@
 	  },
 	  {
 		  "name": "ds.emote.pet",
-		  "animation": "dig",
+		  "animation": "dig_right",
 		  "loops": true,
 		  "locksHead": false
 	  },
 	  {
 		  "name": "ds.emote.pet_crouch",
-		  "animation": "dig_sneak",
+		  "animation": "dig_sneak_right",
 		  "loops": true,
 		  "locksHead": false
 	  },
