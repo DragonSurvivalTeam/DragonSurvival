@@ -15,7 +15,9 @@ import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.ModList;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.core.util.Color;
@@ -108,26 +110,35 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity>{
 			RenderType renderType = getRenderType(currentEntityBeingRendered, currentPartialTicks, stack, bufferSource, buffer, packedLight, currentTexture);
 			buffer = bufferSource.getBuffer(renderType);
 
+			ItemStack leftItem, rightItem;
+			if(player.getMainArm() == HumanoidArm.RIGHT) {
+				leftItem = player.getOffhandItem();
+				rightItem = player.getMainHandItem();
+			} else {
+				leftItem = player.getMainHandItem();
+				rightItem = player.getOffhandItem();
+			}
+
 			if (getCurrentModelRenderCycle() == EModelRenderCycle.INITIAL){
 				if(renderHeldItem){
 					if(player != Minecraft.getInstance().player || ClientDragonRender.alternateHeldItem || !Minecraft.getInstance().options.getCameraType().isFirstPerson()){
-						if(bone.getName().equals(ClientDragonRender.renderItemsInMouth ? "LeftItem_jaw" : "LeftItem") && !player.getInventory().offhand.get(0).isEmpty()){
+						if(bone.getName().equals(ClientDragonRender.renderItemsInMouth ? "LeftItem_jaw" : "LeftItem") && !leftItem.isEmpty()){
 							stack.pushPose();
 
 							RenderUtils.prepMatrixForBone(stack, bone);
 							RenderUtils.translateAndRotateMatrixForBone(stack, bone);
 
-							Minecraft.getInstance().getItemRenderer().renderStatic(player.getInventory().offhand.get(0), ClientDragonRender.thirdPersonItemRender ? TransformType.FIRST_PERSON_LEFT_HAND : TransformType.GROUND, packedLight, pOverlay, stack, getCurrentRTB(), 0);
+							Minecraft.getInstance().getItemRenderer().renderStatic(leftItem, ClientDragonRender.thirdPersonItemRender ? TransformType.FIRST_PERSON_LEFT_HAND : TransformType.GROUND, packedLight, pOverlay, stack, getCurrentRTB(), 0);
 							buffer = bufferSource.getBuffer(RenderType.entityTranslucent(currentTexture));
 							stack.popPose();
 						}
 
-						if(bone.getName().equals(ClientDragonRender.renderItemsInMouth ? "RightItem_jaw" : "RightItem") && !player.getInventory().getSelected().isEmpty()){
+						if(bone.getName().equals(ClientDragonRender.renderItemsInMouth ? "RightItem_jaw" : "RightItem") && !rightItem.isEmpty()){
 							stack.pushPose();
 							RenderUtils.prepMatrixForBone(stack, bone);
 							RenderUtils.translateAndRotateMatrixForBone(stack, bone);
 
-							Minecraft.getInstance().getItemRenderer().renderStatic(player.getInventory().getSelected(), ClientDragonRender.thirdPersonItemRender ? TransformType.THIRD_PERSON_RIGHT_HAND : TransformType.GROUND, packedLight, pOverlay, stack, getCurrentRTB(), 0);
+							Minecraft.getInstance().getItemRenderer().renderStatic(rightItem, ClientDragonRender.thirdPersonItemRender ? TransformType.THIRD_PERSON_RIGHT_HAND : TransformType.GROUND, packedLight, pOverlay, stack, getCurrentRTB(), 0);
 							buffer = bufferSource.getBuffer(RenderType.entityTranslucent(currentTexture));
 							stack.popPose();
 						}
