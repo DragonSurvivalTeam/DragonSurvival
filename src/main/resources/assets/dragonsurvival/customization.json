@@ -575,6 +575,14 @@
 		{
           "key": "extra_horns_20",
           "texture": "dragonsurvival:textures/dragon/custom/extra_horns_20.png"
+        },
+		{
+          "key": "new_year_1",
+          "texture": "dragonsurvival:textures/dragon/custom/new_year_1.png"
+        },
+		{
+          "key": "new_year_2",
+          "texture": "dragonsurvival:textures/dragon/custom/new_year_2.png"
         }
       ],
       "EYES": [
@@ -1503,6 +1511,14 @@
 		{
           "key": "extra_horns_18",
           "texture": "dragonsurvival:textures/dragon/custom/extra_horns_18.png"
+        },
+		{
+          "key": "new_year_1",
+          "texture": "dragonsurvival:textures/dragon/custom/new_year_1.png"
+        },
+		{
+          "key": "new_year_2",
+          "texture": "dragonsurvival:textures/dragon/custom/new_year_2.png"
         }
       ],
       "EYES": [
@@ -2474,6 +2490,14 @@
 		{
           "key": "extra_horns_18",
           "texture": "dragonsurvival:textures/dragon/custom/extra_horns_18.png"
+        },
+		{
+          "key": "new_year_1",
+          "texture": "dragonsurvival:textures/dragon/custom/new_year_1.png"
+        },
+		{
+          "key": "new_year_2",
+          "texture": "dragonsurvival:textures/dragon/custom/new_year_2.png"
         }
       ],
       "SPIKES": [
