@@ -314,7 +314,7 @@ public class DragonEditorScreen extends Screen implements TooltipRender{
 		handler.getSkinData().skinPreset = preset;
 		handler.getSkinData().compileSkin();
 
-		dragonRender.zoom = (float) (level.size * preset.sizeMul);
+		dragonRender.zoom = level.size;
 
 		handler.setHasFlight(true);
 		handler.setType(dragonType);
@@ -491,36 +491,6 @@ public class DragonEditorScreen extends Screen implements TooltipRender{
 		for(int num = 1; num <= 9; num++){
 			addRenderableWidget(new DragonEditorSlotButton(width / 2 + 200 + 15, guiTop + (num - 1) * 12 + 5 + 30, num, this));
 		}
-
-		addRenderableWidget(new ForgeSlider(width / 2 - 100 - 100, height - 25, 100, 20, Component.translatable("ds.gui.dragon_editor.size"), Component.empty().append("%"), ServerConfig.minSizeVari, ServerConfig.maxSizeVari, Math.round((preset.sizeMul - 1.0) * 100), true){
-			@Override
-			protected void applyValue(){
-				super.applyValue();
-				double val = 1.0 + getValueInt() / 100.0;
-				if(preset.sizeMul != val){
-					preset.sizeMul = val;
-					dragonRender.zoom = (float)(level.size * preset.sizeMul);
-				}
-
-				double val1 = Math.round((preset.sizeMul - 1.0) * 100);
-
-				if(val1 > 0){
-					setMessage(Component.translatable("ds.gui.dragon_editor.size").append("+").append(val1 + "%"));
-				}else{
-					setMessage(Component.translatable("ds.gui.dragon_editor.size").append(val1 + "%"));
-				}
-			}
-
-			@Override
-			public void render(PoseStack pMatrixStack, int pMouseX, int pMouseY, float pPartialTicks){
-				super.render(pMatrixStack, pMouseX, pMouseY, pPartialTicks);
-			}
-
-			@Override
-			public void renderToolTip(PoseStack pPoseStack, int pMouseX, int pMouseY){
-				TooltipRendering.drawHoveringText(pPoseStack, Component.translatable("ds.gui.dragon_editor.size_info"), pMouseX, pMouseY);
-			}
-		});
 
 		addRenderableWidget(new ExtendedCheckbox(width / 2 + 100, height - 19, 120, 17, 17, Component.translatable("ds.gui.dragon_editor.wings"), preset.skinAges.get(level).get().wings, p -> preset.skinAges.get(level).get().wings = p.selected()){
 			@Override
