@@ -39,8 +39,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
 	 - tips for body types like for magic abilities
 
 	 Extras:
-     - customization.json - Ability to disallow some details in the editor for some Body Types (for example, wing details are not required for wingless).
-	 - emotes.json - Ability to disallow some emotions for certain Body Types.
+		 - emotes.json - Ability to disallow some emotions for certain Body Types.
 	*/
 
 	@Override

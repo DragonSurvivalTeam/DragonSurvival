@@ -39,7 +39,7 @@ public class SyncDragonClawsMenu implements IMessage<SyncDragonClawsMenu> {
 		int playerId = buffer.readInt();
 		boolean state = buffer.readBoolean();
 		CompoundTag tag = buffer.readNbt();
-		SimpleContainer inventory = ClawInventory.readClawInventory(tag.getList("inv", 10)); // TODO :: What type is 10?
+		SimpleContainer inventory = ClawInventory.readClawInventory(tag.getList("inv", CompoundTag.TAG_COMPOUND));
 		return new SyncDragonClawsMenu(playerId, state, inventory);
 	}
 
