@@ -30,7 +30,7 @@ public class ColorSelectorButton extends ExtendedButton {
 	private Renderable renderButton;
 
 	public ColorSelectorButton(DragonEditorScreen screen, EnumSkinLayer layer, int x, int y, int xSize, int ySize, Consumer<Double> setter){
-		super(x, y, xSize, ySize, null, null);
+		super(x, y, xSize, ySize, Component.empty(), pButton -> {});
 		this.xSize = xSize;
 		this.ySize = ySize;
 		this.setter = setter;
@@ -70,7 +70,7 @@ public class ColorSelectorButton extends ExtendedButton {
 	public void onPress(){
 		Texture text = DragonEditorHandler.getSkin(FakeClientPlayerUtils.getFakePlayer(0, screen.handler), layer, screen.preset.skinAges.get(screen.level).get().layerSettings.get(layer).get().selectedSkin, screen.handler.getType());
 		if(!toggled){
-			renderButton = new ExtendedButton(0, 0, 0, 0, Component.empty(), null){
+			renderButton = new ExtendedButton(0, 0, 0, 0, Component.empty(), pButton -> {}){
 				@Override
 				public void renderWidget(@NotNull final GuiGraphics guiGraphics, int p_230430_2_, int p_230430_3_, float p_230430_4_){
 					active = visible = false;

@@ -42,7 +42,7 @@ public class DropdownValueEntry extends DropdownEntry{
 	@Override
 	public void render(@NotNull GuiGraphics guiGraphics, int pIndex, int pTop, int pLeft, int pWidth, int pHeight, int pMouseX, int pMouseY, boolean pIsMouseOver, float pPartialTicks) {
 		if(button == null){
-			button = new ExtendedButton(pLeft + 3, 0, pWidth - 12, pHeight + 1, null, null){
+			button = new ExtendedButton(pLeft + 3, 0, pWidth - 12, pHeight + 1, Component.empty(), pButton -> {}){
 				@Override
 				public Component getMessage(){
 					return message;

@@ -104,7 +104,7 @@ public class DragonEditorDropdownButton extends DropDownButton{
 			}
 
 			boolean finalHasBorder = hasBorder;
-			renderButton = new ExtendedButton(0, 0, 0, 0, Component.empty(), null){
+			renderButton = new ExtendedButton(0, 0, 0, 0, Component.empty(), pButton -> {}){
 				@Override
 				public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick){
 					active = visible = false;

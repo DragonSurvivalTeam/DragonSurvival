@@ -42,7 +42,7 @@ public class CopyEditorSettingsComponent extends AbstractContainerEventHandler i
 		this.ySize = ySize;
 		this.btn = btn;
 
-		confirm = new ExtendedButton(x + xSize / 2 - 18, y + ySize - 15, 15, 15, Component.empty(), null){
+		confirm = new ExtendedButton(x + xSize / 2 - 18, y + ySize - 15, 15, 15, Component.empty(), pButton -> {}){
 			@Override
 			public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partial){
 				super.renderWidget(guiGraphics, mouseX, mouseY, partial);
@@ -83,7 +83,7 @@ public class CopyEditorSettingsComponent extends AbstractContainerEventHandler i
 		};
 		confirm.setTooltip(Tooltip.create(Component.translatable("ds.gui.dragon_editor.tooltip.done")));
 
-		cancel = new ExtendedButton(x + xSize / 2 + 3, y + ySize - 15, 15, 15, Component.empty(), null){
+		cancel = new ExtendedButton(x + xSize / 2 + 3, y + ySize - 15, 15, 15, Component.empty(), pButton -> {}){
 			@Override
 			public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partial){
 //				guiGraphics.pose().pushPose();

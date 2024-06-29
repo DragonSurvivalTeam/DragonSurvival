@@ -436,7 +436,7 @@ public class DragonEditorScreen extends Screen {
 		defaultSkinCheckbox.setTooltip(Tooltip.create(Component.translatable("ds.gui.dragon_editor.default_skin.tooltip")));
 		addRenderableWidget(defaultSkinCheckbox);
 
-		ExtendedButton saveButton = new ExtendedButton(width / 2 - 75 - 10, height - 25, 75, 20, Component.translatable("ds.gui.dragon_editor.save"), null){
+		ExtendedButton saveButton = new ExtendedButton(width / 2 - 75 - 10, height - 25, 75, 20, Component.translatable("ds.gui.dragon_editor.save"), pButton -> {}){
 			Renderable renderButton;
 			boolean toggled;
 

@@ -39,7 +39,7 @@ public class DragonDropdownValueEntry extends DropdownValueEntry
 	public void render(GuiGraphics guiGraphics, int pIndex, int pTop, int pLeft, int pWidth, int pHeight, int pMouseX, int pMouseY, boolean pIsMouseOver, float pPartialTicks){
 		if(button == null){
 			Component displayString = Component.literal(localeString);
-			button = new ExtendedButton(pLeft + 3, 0, pWidth - 12, pHeight + 1, displayString, null){
+			button = new ExtendedButton(pLeft + 3, 0, pWidth - 12, pHeight + 1, displayString, pButton -> {}){
 					@Override
 					public Component getMessage(){
 						return message;

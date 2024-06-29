@@ -25,7 +25,7 @@ public class SkillProgressButton extends Button{
 	private ActiveDragonAbility ability;
 
 	public SkillProgressButton(int x, int y, int slot, AbilityScreen screen){
-		super(x, y, 16, 16, null, button -> {}, DEFAULT_NARRATION);
+		super(x, y, 16, 16, Component.empty(), button -> {}, DEFAULT_NARRATION);
 		this.slot = slot;
 		this.screen = screen;
 	}

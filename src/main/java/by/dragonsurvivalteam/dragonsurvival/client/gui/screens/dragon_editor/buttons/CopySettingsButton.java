@@ -47,7 +47,7 @@ public class CopySettingsButton extends ExtendedButton {
 	@Override
 	public void onPress(){
 		if(!toggled){
-			renderButton = new ExtendedButton(0, 0, 0, 0, Component.empty(), null){
+			renderButton = new ExtendedButton(0, 0, 0, 0, Component.empty(), pButton -> {}){
 				@Override
 				public void renderWidget(@NotNull final GuiGraphics guiGraphics, int p_230430_2_, int p_230430_3_, float p_230430_4_){
 					active = visible = false;

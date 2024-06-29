@@ -33,7 +33,7 @@ public class DropDownButton extends ExtendedButton {
 	public Component message;
 
 	public DropDownButton(int x, int y, int xSize, int ySize, String current, String[] values, Consumer<String> setter){
-		super(x, y, xSize, ySize, null, null);
+		super(x, y, xSize, ySize, Component.empty(), pButton -> {});
 		this.values = values;
 		this.setter = setter;
 		this.current = current;
@@ -134,7 +134,7 @@ public class DropDownButton extends ExtendedButton {
 			}
 
 			boolean finalHasBorder = hasBorder;
-			renderButton = new ExtendedButton(0, 0, 0, 0, Component.empty(), null){
+			renderButton = new ExtendedButton(0, 0, 0, 0, Component.empty(), pButton -> {}){
 				@Override
 				public void renderWidget(@NotNull final GuiGraphics guiGraphics, int p_230430_2_, int p_230430_3_, float p_230430_4_){
 					active = visible = false;
