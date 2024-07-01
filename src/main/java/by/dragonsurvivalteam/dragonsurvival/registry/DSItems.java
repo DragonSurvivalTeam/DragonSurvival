@@ -58,9 +58,6 @@ public class DSItems {
 	public static final Holder<Item> ELDER_DRAGON_DUST = DS_ITEMS.register("elder_dragon_dust", () -> new CustomHoverTextItem(new Item.Properties(), "ds.description.elderDragonDust"));
 	public static final Holder<Item> ELDER_DRAGON_BONE = DS_ITEMS.register("elder_dragon_bone", () -> new CustomHoverTextItem(new Item.Properties(), "ds.description.elderDragonBone"));
 
-	public static final Holder<Item> PRINCE_SUMMON = DS_ITEMS.register("prince_summon", () -> new RoyalSummonItem(DSEntities.castToMob(DSEntities.PRINCE_ON_HORSE), defaultProperties));
-	public static final Holder<Item> PRINCESS_SUMMON = DS_ITEMS.register("princess_summon", () -> new RoyalSummonItem(DSEntities.castToMob(DSEntities.PRINCESS_ON_HORSE), defaultProperties));
-
 	public static final Holder<Item> DRAGON_HEART_SHARD = DS_ITEMS.register("heart_element", () -> new CustomHoverTextItem(new Item.Properties(), "ds.description.heartElement"));
 	public static final Holder<Item> WEAK_DRAGON_HEART = DS_ITEMS.register("weak_dragon_heart", () -> new CustomHoverTextItem(new Item.Properties(), "ds.description.weakDragonHeart"));
 	public static final Holder<Item> ELDER_DRAGON_HEART = DS_ITEMS.register("elder_dragon_heart", () -> new CustomHoverTextItem(new Item.Properties(), "ds.description.elderDragonHeart"));

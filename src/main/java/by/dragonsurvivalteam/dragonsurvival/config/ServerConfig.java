@@ -729,9 +729,6 @@ public class ServerConfig{
 	@ConfigOption( side = ConfigSide.SERVER, category = "dragon_hunters", key = "allowHoundSpawning", comment = "Dragon Knight hound spawning enabled?" )
 	public static Boolean spawnHound = true;
 
-	@ConfigOption( side = ConfigSide.SERVER, category = "dragon_hunters", key = "allowPrinceAndPrincessSpawning", comment = "Princess and prince spawning enabled?" )
-	public static Boolean spawnPrinceAndPrincess = true;
-
 	@ConfigRange( min = 10, max = 1000 )
 	@ConfigOption( side = ConfigSide.SERVER, category = "dragon_hunters", key = "villagerKillxp", comment = "How many experience points are gained for killing a villager" )
 	public static Integer xpGain = 10;
@@ -828,34 +825,6 @@ public class ServerConfig{
 	@ConfigRange( min = 0d, max = 20d )
 	@ConfigOption( side = ConfigSide.SERVER, category = {"dragon_hunters", "squire"}, key = "squireArmor", comment = "Dragon Squire armor" )
 	public static Double squireArmor = 2d;
-
-	@ConfigRange( min = 1d, max = 20d )
-	@ConfigOption( side = ConfigSide.SERVER, category = {"dragon_hunters", "prince"}, key = "princeDamage", comment = "Prince base damage" )
-	public static Double princeDamage = 1d;
-
-	@ConfigRange( min = 10d, max = 60d )
-	@ConfigOption( side = ConfigSide.SERVER, category = {"dragon_hunters", "prince"}, key = "princeHealth", comment = "Prince health" )
-	public static Double princeHealth = 40d;
-
-	@ConfigRange( min = 0.2d, max = 0.6d )
-	@ConfigOption( side = ConfigSide.SERVER, category = {"dragon_hunters", "prince"}, key = "princeSpeed", comment = "Prince speed" )
-	public static Double princeSpeed = 0.3d;
-
-	@ConfigRange( min = 0d, max = 20d )
-	@ConfigOption( side = ConfigSide.SERVER, category = {"dragon_hunters", "prince"}, key = "princeArmor", comment = "Prince armor" )
-	public static Double princeArmor = 6d;
-
-	@ConfigRange( min = 10d, max = 60d )
-	@ConfigOption( side = ConfigSide.SERVER, category = {"dragon_hunters", "prince"}, key = "princeHealth", comment = "Prince health" )
-	public static Double princessHealth = 10d;
-
-	@ConfigRange( min = 0.2d, max = 0.6d )
-	@ConfigOption( side = ConfigSide.SERVER, category = {"dragon_hunters", "prince"}, key = "princeSpeed", comment = "Prince speed" )
-	public static Double princessSpeed = 0.3d;
-
-	@ConfigRange( min = 0d, max = 20d )
-	@ConfigOption( side = ConfigSide.SERVER, category = {"dragon_hunters", "prince"}, key = "princeArmor", comment = "Prince armor" )
-	public static Double princessArmor = 0d;
 
 	@ConfigRange( min = 1, max = 60 * 60 )
 	@ConfigOption( side = ConfigSide.SERVER, category = "dragon_beacons", key = "constantEffect", comment = "Duration of effect given by beacon constantly in seconds" )

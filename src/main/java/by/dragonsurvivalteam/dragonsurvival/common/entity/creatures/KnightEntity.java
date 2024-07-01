@@ -149,8 +149,6 @@ public class KnightEntity extends PathfinderMob implements GeoEntity, DragonHunt
 		});
 		this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 2.0, false));
 		this.targetSelector.addGoal(6, new HurtByTargetGoal(this));
-		this.goalSelector.addGoal(7, new FollowMobGoal<>(PrinceHorseEntity.class, this, 15));
-		this.goalSelector.addGoal(8, new FollowMobGoal<>(PrincessHorseEntity.class, this, 15));
 		this.goalSelector.addGoal(9, new RandomStrollGoal(this, 0.1d));
 		this.goalSelector.addGoal(10, new RandomLookAroundGoal(this));
 	}

@@ -4,8 +4,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.common.capability.subcapabilities.VillageRelationShips;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.creatures.DragonHunter;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.creatures.KnightEntity;
-import by.dragonsurvivalteam.dragonsurvival.common.entity.creatures.PrinceHorseEntity;
-import by.dragonsurvivalteam.dragonsurvival.common.entity.creatures.PrincessHorseEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.goals.FollowMobGoal;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
@@ -42,7 +40,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
@@ -56,6 +53,7 @@ public class VillagerRelationsHandler{
 
 	private static int timeLeft = Functions.minutesToTicks(ServerConfig.royalSpawnDelay) + Functions.minutesToTicks(ThreadLocalRandom.current().nextInt(30));
 
+	/// FIXME: It looks like we are modifying the drops of certain entities here. We shouldn't be doing this in an event like this! Use global loot modifiers or a custom loot table!
 	@SubscribeEvent
 	public static void onDeath(LivingDeathEvent deathEvent){
 		LivingEntity livingEntity = deathEvent.getEntity();
@@ -63,8 +61,6 @@ public class VillagerRelationsHandler{
 		if(killer instanceof Player playerEntity){
 			if(livingEntity instanceof AbstractVillager){
 				Level world = killer.level();
-				if(!(livingEntity instanceof PrincessHorseEntity)){
-
 					if(DragonStateProvider.isDragon(killer)){
 						AbstractVillager villagerEntity = (AbstractVillager)livingEntity;
 
@@ -94,9 +90,10 @@ public class VillagerRelationsHandler{
 							}
 						}
 					}
-				}
 			}
+
 			String typeName = ResourceHelper.getKey(livingEntity).toString();
+			// FIXME: royalChaseStatusGivers should get parsed in DragonConfigHandler and turned into a HashSet<Entity> or something similar
 			if(DragonStateProvider.isDragon(playerEntity) && ServerConfig.royalChaseStatusGivers.contains(typeName)){
 				applyEvilMarker(playerEntity);
 			}
@@ -175,7 +172,7 @@ public class VillagerRelationsHandler{
 			golemEntity.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(golemEntity, Player.class, 0, true, false, livingEntity -> livingEntity.hasEffect(DSEffects.ROYAL_CHASE)));
 		}
 
-		if(entity instanceof AbstractVillager abstractVillager && !(entity instanceof PrinceHorseEntity)){
+		if(entity instanceof AbstractVillager abstractVillager){
 			abstractVillager.goalSelector.addGoal(10, new AvoidEntityGoal<>(abstractVillager, Player.class, livingEntity -> livingEntity.hasEffect(DSEffects.ROYAL_CHASE), 16.0F, 1.0D, 1.0D, pMob -> true));
 		}
 	}
@@ -311,46 +308,6 @@ public class VillagerRelationsHandler{
 			}
 		}
 		return 0;
-	}
-
-	@SubscribeEvent
-	public static void spawnPrinceOrPrincess(LevelTickEvent.Post serverTickEvent){
-		if(ServerConfig.spawnPrinceAndPrincess){
-			Level world = serverTickEvent.getLevel();
-			if(world instanceof ServerLevel serverWorld){
-				if(!serverWorld.players().isEmpty() && serverWorld.dimension() == Level.OVERWORLD){
-					if(timeLeft == 0){
-						ServerPlayer player = serverWorld.getRandomPlayer();
-						if(player != null && player.isAlive() && !player.isCreative() && !player.isSpectator()){
-							BlockPos blockPos = SpawningUtils.findRandomSpawnPosition(player, 1, 2, 20.0F);
-							if(blockPos != null && blockPos.getY() >= ServerConfig.riderSpawnLowerBound && blockPos.getY() <= ServerConfig.riderSpawnUpperBound && serverWorld.isVillage(blockPos)){
-								if (serverWorld.getBiome(blockPos).is(Tags.Biomes.IS_AQUATIC)) {
-									return;
-								}
-								EntityType<? extends PrincessHorseEntity> entityType = world.random.nextBoolean() ? DSEntities.PRINCESS_ON_HORSE.get() : DSEntities.PRINCE_ON_HORSE.get();
-								PrincessHorseEntity princessEntity = entityType.create(world);
-								princessEntity.setPos(blockPos.getX(), blockPos.getY(), blockPos.getZ());
-								princessEntity.finalizeSpawn(serverWorld, serverWorld.getCurrentDifficultyAt(player.blockPosition()), MobSpawnType.NATURAL, null);
-								serverWorld.addFreshEntity(princessEntity);
-
-								int knights = world.random.nextInt(3) + 3;
-								for(int i = 0; i < knights; i++){
-									KnightEntity knightHunter = DSEntities.KNIGHT.get().create(serverWorld);
-									knightHunter.setPos(blockPos.getX(), blockPos.getY(), blockPos.getZ());
-									knightHunter.goalSelector.addGoal(5, new FollowMobGoal(PrincessHorseEntity.class, knightHunter, 8));
-									knightHunter.finalizeSpawn(serverWorld, serverWorld.getCurrentDifficultyAt(player.blockPosition()), MobSpawnType.NATURAL, null);
-									serverWorld.addFreshEntity(knightHunter);
-								}
-
-								timeLeft = Functions.minutesToTicks(ServerConfig.royalSpawnDelay) + Functions.minutesToTicks(world.random.nextInt(ServerConfig.royalSpawnDelay / 2));
-							}
-						}
-					}else{
-						timeLeft--;
-					}
-				}
-			}
-		}
 	}
 
 	/**
