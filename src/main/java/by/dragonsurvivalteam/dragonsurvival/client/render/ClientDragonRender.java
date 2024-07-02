@@ -420,6 +420,7 @@ public class ClientDragonRender{
 				((AccessorEntityRenderer) renderPlayerEvent.getRenderer()).setShadowRadius(0.5F);
 			}
 		}
+		dragonModel.setCurrentTexture(null);
 	}
 
 	private static void renderArmorPiece(ItemStack stack, PoseStack matrixStackIn, MultiBufferSource bufferIn, float yaw, int packedLightIn, DragonEntity entitylivingbaseIn, float partialTicks, ResourceLocation helmetTexture){

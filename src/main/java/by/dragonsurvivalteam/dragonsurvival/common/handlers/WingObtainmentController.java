@@ -28,7 +28,6 @@ import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.network.PacketDistributor;
 
 import java.io.BufferedReader;
@@ -50,10 +49,8 @@ public class WingObtainmentController{
 
 	private static final UUID enderDragonUUID = UUID.fromString("426642b9-2e88-4350-afa8-f99f75af5479");
 
+	@OnlyIn( Dist.CLIENT )
 	public static void loadDragonPhrases(){
-		if(FMLLoader.getDist() != Dist.CLIENT){
-			return;
-		}
 
 		try{
 			List<String> langs = new ArrayList<>();
