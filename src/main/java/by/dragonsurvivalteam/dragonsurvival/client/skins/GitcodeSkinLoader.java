@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+import java.net.HttpURLonnection
 
 public class GitcodeSkinLoader extends NetSkinLoader {
     private static final String SKINS_LIST_LINK = "https://web-api.gitcode.com/api/v1/projects/mirrors%2FDragonSurvivalTeam%2FDragonSurvival/repository/tree?ref=master&path=src/test/resources&per_page=100&page=";
@@ -31,23 +32,28 @@ public class GitcodeSkinLoader extends NetSkinLoader {
     public Collection<SkinObject> querySkinList() {
         ArrayList<SkinObject> result = new ArrayList<>();
         int page = 1;
+        int status = 0;
         try{
             while(true){
                 Gson gson = GsonFactory.getDefault();
                 URL url = new URL(SKINS_LIST_LINK + page);
-
+                HttpURLConnection TestResponse = (HttpURLConnection) url.openConnection();
+                    TestResponse.setRequestMethod("GET");
+                TestResponse.connect();
+                status = TestResponse.getResponseCode();
+                if(status != 200)
+                    break;
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(internetGetStream(url, GITCODE_HEADER, 2*1000)))) {
                     SkinListApiResponse skinListResponse = gson.fromJson(reader, SkinListApiResponse.class);
                     if (skinListResponse.content.length == 0)
                         break;
                     result.addAll(Arrays.asList(skinListResponse.content));
                     ++page;
-                    return result;
                 } catch (IOException exception) {
                     DragonSurvivalMod.LOGGER.warn("Reader could not be closed", exception);
-                    return null;
                 }
             }
+            return result;
         }catch(IOException e){
             DragonSurvivalMod.LOGGER.log(Level.WARN, "Failed to get skin information in Gitcode.");
             return null;
