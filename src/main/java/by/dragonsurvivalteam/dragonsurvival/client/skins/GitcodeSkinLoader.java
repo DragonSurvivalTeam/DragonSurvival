@@ -42,11 +42,12 @@ public class GitcodeSkinLoader extends NetSkinLoader {
                         break;
                     result.addAll(Arrays.asList(skinListResponse.content));
                     ++page;
+                    return result;
                 } catch (IOException exception) {
                     DragonSurvivalMod.LOGGER.warn("Reader could not be closed", exception);
+                    return null;
                 }
             }
-            return result;
         }catch(IOException e){
             DragonSurvivalMod.LOGGER.log(Level.WARN, "Failed to get skin information in Gitcode.");
             return null;
