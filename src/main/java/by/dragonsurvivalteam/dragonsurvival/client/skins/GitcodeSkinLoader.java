@@ -17,7 +17,7 @@ import java.net.HttpURLConnection;
 public class GitcodeSkinLoader extends NetSkinLoader {
     private static final String SKINS_LIST_LINK = "https://web-api.gitcode.com/api/v1/projects/mirrors%2FDragonSurvivalTeam%2FDragonSurvival/repository/tree?ref=master&path=src/test/resources&per_page=100&page=";
     private static final String SKINS_DOWNLOAD_LINK = "https://web-api.gitcode.com/api/v1/projects/mirrors%%2FDragonSurvivalTeam%%2FDragonSurvival/repository/blobs/%s/raw?ref=master&file_name=%s";
-    private static final String SKINS_PING = "https://web-api.gitcode.com/";
+    private static final String SKINS_PING = "https://web-api.gitcode.com/api/v1/projects/mirrors%2FDragonSurvivalTeam%2FDragonSurvival/repository/tree?ref=master&path=src/test&per_page=100&page=1";
     private static final HashMap<String, String> GITCODE_HEADER = new HashMap<>(){{
         put("referer", "https://gitcode.com/");
     }};
@@ -32,17 +32,11 @@ public class GitcodeSkinLoader extends NetSkinLoader {
     public Collection<SkinObject> querySkinList() {
         ArrayList<SkinObject> result = new ArrayList<>();
         int page = 1;
-        int status = 0;
         try{
             while(true){
                 Gson gson = GsonFactory.getDefault();
                 URL url = new URL(SKINS_LIST_LINK + page);
-                HttpURLConnection TestResponse = (HttpURLConnection) url.openConnection();
-                    TestResponse.setRequestMethod("GET");
-                TestResponse.connect();
-                status = TestResponse.getResponseCode();
-                if(status != 200)
-                    break;
+                
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(internetGetStream(url, GITCODE_HEADER, 2*1000)))) {
                     SkinListApiResponse skinListResponse = gson.fromJson(reader, SkinListApiResponse.class);
                     if (skinListResponse.content.length == 0)
@@ -66,6 +60,14 @@ public class GitcodeSkinLoader extends NetSkinLoader {
 
     @Override
     public boolean ping() {
+       int status = 0;
+       URL testURL = new URL(SKINS_LIST_LINK + 1);
+       HttpURLConnection TestResponse = (HttpURLConnection) testURL.openConnection();
+       TestResponse.setRequestMethod("GET");
+       TestResponse.connect();
+       status = TestResponse.getResponseCode();
+                if(status != 200)
+                    return false;
         try(InputStream ignore = internetGetStream(new URL(SKINS_PING), GITCODE_HEADER, 3 * 1000))
         {
             return true;

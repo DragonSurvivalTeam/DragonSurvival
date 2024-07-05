@@ -25,6 +25,7 @@ import java.util.Locale;
 import static by.dragonsurvivalteam.dragonsurvival.config.ClientConfig.skinTimeoutInSeconds;
 
 public class DragonSkins{
+	protected static boolean initialized = false;
 	public static NetSkinLoader skinLoader = new GithubSkinLoaderAPI();
 	private static final ArrayList<String> hasFailedFetch = new ArrayList<>();
 	public static HashMap<DragonLevel, HashMap<String, SkinObject>> SKIN_USERS = new HashMap<>();
@@ -201,6 +202,12 @@ public class DragonSkins{
 	}
 
 	public static void init() {
+		init(false);
+	}
+	public static void init(boolean force) {
+		if (initialized && !force)
+			return;
+		initialized = true;
 		Collection<SkinObject> skins;
 		invalidateSkins();
 		String currentLanguage = Minecraft.getInstance().getLanguageManager().getSelected().getCode();
