@@ -60,14 +60,19 @@ public class GitcodeSkinLoader extends NetSkinLoader {
 
     @Override
     public boolean ping() {
-       int status = 0;
-       URL testURL = new URL(SKINS_LIST_LINK + 1);
-       HttpURLConnection TestResponse = (HttpURLConnection) testURL.openConnection();
-       TestResponse.setRequestMethod("GET");
-       TestResponse.connect();
-       status = TestResponse.getResponseCode();
-                if(status != 200)
-                    return false;
+         try {
+            int status = 0;
+            URL testURL = new URL(SKINS_LIST_LINK + 1);
+            HttpURLConnection TestResponse = (HttpURLConnection) testURL.openConnection();
+            TestResponse.setRequestMethod("GET");
+            TestResponse.connect();
+            status = TestResponse.getResponseCode();
+            if (status != 200)
+                return false;
+        }catch(IOException e){
+            DragonSurvivalMod.LOGGER.warn("Bad hostname or without availible network.", e);
+            return false;
+        }
         try(InputStream ignore = internetGetStream(new URL(SKINS_PING), GITCODE_HEADER, 3 * 1000))
         {
             return true;
