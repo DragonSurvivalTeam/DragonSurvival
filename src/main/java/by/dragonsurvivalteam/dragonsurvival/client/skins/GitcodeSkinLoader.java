@@ -16,7 +16,7 @@ import java.util.*;
 public class GitcodeSkinLoader extends NetSkinLoader {
     private static final String SKINS_LIST_LINK = "https://web-api.gitcode.com/api/v1/projects/mirrors%2FDragonSurvivalTeam%2FDragonSurvival/repository/tree?ref=master&path=src/test/resources&per_page=100&page=";
     private static final String SKINS_DOWNLOAD_LINK = "https://web-api.gitcode.com/api/v1/projects/mirrors%%2FDragonSurvivalTeam%%2FDragonSurvival/repository/blobs/%s/raw?ref=master&file_name=%s";
-    private static final String SKINS_PING = "https://web-api.gitcode.com/";
+    private static final String SKINS_PING = "https://web-api.gitcode.com/api/v1/projects/mirrors%2FDragonSurvivalTeam%2FDragonSurvival/repository/tree?ref=master&path=src/test&per_page=100&page=1";
     private static final HashMap<String, String> GITCODE_HEADER = new HashMap<>(){{
         put("referer", "https://gitcode.com/");
     }};
@@ -36,15 +36,13 @@ public class GitcodeSkinLoader extends NetSkinLoader {
                 Gson gson = GsonFactory.getDefault();
                 URL url = new URL(SKINS_LIST_LINK + page);
 
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(internetGetStream(url, GITCODE_HEADER, 2*1000)))) {
-                    SkinListApiResponse skinListResponse = gson.fromJson(reader, SkinListApiResponse.class);
-                    if (skinListResponse.content.length == 0)
-                        break;
-                    result.addAll(Arrays.asList(skinListResponse.content));
-                    ++page;
-                } catch (IOException exception) {
-                    DragonSurvivalMod.LOGGER.warn("Reader could not be closed", exception);
-                }
+                BufferedReader reader = new BufferedReader(new InputStreamReader(internetGetStream(url, GITCODE_HEADER, 2*1000)));
+                SkinListApiResponse skinListResponse = gson.fromJson(reader, SkinListApiResponse.class);
+                reader.close();
+                if (skinListResponse.content.length == 0)
+                    break;
+                result.addAll(Arrays.asList(skinListResponse.content));
+                ++page;
             }
             return result;
         }catch(IOException e){
