@@ -9,6 +9,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -65,7 +66,7 @@ public class DragonStateProvider implements ICapabilitySerializable<CompoundTag>
 				}
 			}
 
-			if (!(entity instanceof Player)) {
+			if (!(entity instanceof Player) || /* e.g. Create Deployer */ entity instanceof FakePlayer) {
 				return LazyOptional.empty();
 			}
 
