@@ -54,7 +54,7 @@ public class DragonOreLootModifier extends LootModifier {
                             int silkTouchLevel = 0;
                             if (tool != null) {
                                 fortuneLevel = tool.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE);
-                                silkTouchLevel = tool.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE);
+                                silkTouchLevel = tool.getEnchantmentLevel(Enchantments.SILK_TOUCH);
                             }
                             BlockPos blockPos =  new BlockPos((int) breakPos.x, (int) breakPos.y, (int) breakPos.z);
                             int expDrop = blockState.getExpDrop(context.getLevel(), context.getRandom(), blockPos, fortuneLevel, silkTouchLevel);
