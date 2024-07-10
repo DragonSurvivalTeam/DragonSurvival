@@ -88,7 +88,7 @@ public class ToolTipHandler{
 
 	private static MutableComponent createFoodTooltip(final Item item, final AbstractDragonType type, final ChatFormatting color, final String nutritionIcon, final String saturationIcon) {
 		MutableComponent component = Component.translatable("ds." + type.getTypeName() + ".dragon.food");
-		FoodProperties properties = DragonFoodHandler.getDragonFoodProperties(item, type);
+		FoodProperties properties = DragonFoodHandler.getFoodProperties(item.getDefaultInstance(), type);
 
 		String nutrition = "0";
 		String saturation = "0";

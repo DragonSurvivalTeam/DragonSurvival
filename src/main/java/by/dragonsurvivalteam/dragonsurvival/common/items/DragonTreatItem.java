@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.common.items;
 
-import by.dragonsurvivalteam.dragonsurvival.api.DragonFood;
 import by.dragonsurvivalteam.dragonsurvival.common.dragon_types.AbstractDragonType;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonFoodHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.DragonEffects;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
@@ -31,15 +31,27 @@ public class DragonTreatItem extends Item {
 	}
 
 	@Override
-	public @NotNull ItemStack finishUsingItem(@NotNull final ItemStack itemStack, @NotNull final Level level, @NotNull final LivingEntity livingEntity) {
+	public @NotNull ItemStack finishUsingItem(@NotNull final ItemStack stack, @NotNull final Level level, @NotNull final LivingEntity livingEntity) {
+		boolean isEdible;
+
 		if (livingEntity instanceof Player player) {
-			if (DragonUtils.isDragonType(player, type)) {
+			AbstractDragonType playerType = DragonUtils.getDragonType(player);
+
+			if (DragonUtils.isDragonType(playerType, type)) {
 				ManaHandler.replenishMana(player, ManaHandler.getMaxMana(player));
 				player.addEffect(new MobEffectInstance(DragonEffects.SOURCE_OF_MAGIC, Functions.minutesToTicks(1)));
 			}
+
+			isEdible = DragonFoodHandler.isEdible(stack, playerType);
+		} else {
+			isEdible = stack.isEdible();
 		}
 
-		return DragonFood.isEdible(this, livingEntity) ? livingEntity.eat(level, itemStack) : itemStack;
+		if (isEdible) {
+			return livingEntity.eat(level, stack);
+		}
+
+		return stack;
 	}
 
 	@Override
