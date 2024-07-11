@@ -45,9 +45,6 @@ public class SeaEyesAbility extends ChargeCastAbility{
 	@ConfigOption( side = ConfigSide.SERVER, category = {"magic", "abilities", "sea_dragon", "actives", "sea_vision"}, key = "seaVisionManaCost", comment = "The mana cost for using the sea vision ability" )
 	public static Integer seaEyesManaCost = 1;
 
-	@ConfigOption(side = ConfigSide.SERVER, category = {"magic", "abilities", "sea_dragon", "actives", "sea_vision"}, key = "seaVisionoutOfWater", comment = "Should the night vision effect of sea vision stay when outside of water?")
-	public static boolean seaEyesOutOfWater = false;
-
 	@Override
 	public int getSkillCastingTime(){
 		return Functions.secondsToTicks(seaEyesCasttime);

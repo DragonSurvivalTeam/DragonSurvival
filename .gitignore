@@ -26,6 +26,7 @@ run
 # Files from Forge MDK
 forge*changelog.txt
 run2
+runs
 logs
 gradle/crowdin.properties
 *.sh

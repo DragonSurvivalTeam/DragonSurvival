@@ -27,8 +27,8 @@ public class AnimationUtils {
         }
 
         if(controller.getCurrentAnimation() != null) {
-            double distance = currentAnimationTick - ((AccessorAnimationController)controller).getTickOffset();
-            ((AccessorAnimationController) controller).setTickOffset(currentAnimationTick - distance * (controller.getAnimationSpeed() / speed));
+            double distance = currentAnimationTick - ((AccessorAnimationController)controller).dragonSurvival$getTickOffset();
+            ((AccessorAnimationController) controller).dragonSurvival$setTickOffset(currentAnimationTick - distance * (controller.getAnimationSpeed() / speed));
             controller.setAnimationSpeed(speed);
         }
     }

@@ -299,7 +299,7 @@ public class DragonStateHandler extends EntityStateHandler {
 		}
 	}
 
-	public AbstractDragonType getType(){
+	public @Nullable AbstractDragonType getType(){
 		return dragonType;
 	}
 	

@@ -1,17 +1,14 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins;
 
-import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import software.bernie.geckolib.core.animation.AnimationController;
 
-@Mixin(AnimationController.class)
+@Mixin(value = AnimationController.class, remap = false)
 public interface AccessorAnimationController {
-    @Dynamic
-    @Accessor("tickOffset")
-    void setTickOffset(double tickOffset);
+    @Accessor(value = "tickOffset")
+    void dragonSurvival$setTickOffset(double tickOffset);
 
-    @Dynamic
-    @Accessor
-    double getTickOffset();
+    @Accessor(value = "tickOffset")
+    double dragonSurvival$getTickOffset();
 }
