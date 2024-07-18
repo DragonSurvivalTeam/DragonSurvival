@@ -48,7 +48,7 @@ public class DecreaseLevelButton extends ArrowButton{
 
 				if (ability != null) {
 					if (ability.getLevel() > ability.getMinLevel()) {
-						guiGraphics.renderTooltip(Minecraft.getInstance().font, Component.translatable("ds.skill.level.down", (int) Math.max(1, ability.getLevelCost() * 0.8F)), pMouseX, pMouseY);
+						guiGraphics.renderTooltip(Minecraft.getInstance().font, Component.translatable("ds.skill.level.down", (int) Math.max(0, ability.getLevelCost() * 0.0F)), pMouseX, pMouseY);
 					}
 				}
 			});
