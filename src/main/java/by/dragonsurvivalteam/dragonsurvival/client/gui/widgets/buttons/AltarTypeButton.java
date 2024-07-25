@@ -88,7 +88,7 @@ public class AltarTypeButton extends Button {
 		boolean atTheTopOrBottom = mouseY > getY() + 6 && mouseY < getY() + 26 || mouseY > getY() + 133 && mouseY < getY() + 153;
 
 		if (isHovered() && atTheTopOrBottom) {
-			guiGraphics.renderComponentTooltip(Minecraft.getInstance().font, altarDragonInfoLocalized(type == null ? "human" : type.getTypeName().toLowerCase() + "_dragon", type == null ? Collections.emptyList() : DragonFoodHandler.getEdibleFoods(type)), mouseX, mouseY);
+			guiGraphics.renderComponentTooltip(Minecraft.getInstance().font, altarDragonInfoLocalized(type == null ? "human" : type.getTypeNameLowerCase() + "_dragon", type == null ? Collections.emptyList() : DragonFoodHandler.getEdibleFoods(type)), mouseX, mouseY);
 		}
 
 		RenderSystem.setShaderTexture(0, BACKGROUND_TEXTURE);

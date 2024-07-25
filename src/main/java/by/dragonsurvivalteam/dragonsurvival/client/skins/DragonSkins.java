@@ -88,7 +88,7 @@ public class DragonSkins{
 		String[] text = ArrayUtils.addAll(new String[]{playerKey}, extra);
 
 		String resourceName = StringUtils.join(text, "_");
-		ResourceLocation resourceLocation = new ResourceLocation(DragonSurvivalMod.MODID, resourceName.toLowerCase(Locale.ROOT));
+		ResourceLocation resourceLocation = new ResourceLocation(DragonSurvivalMod.MODID, resourceName.toLowerCase(Locale.ENGLISH));
 
 		try (SimpleTexture simpleTexture = new SimpleTexture(resourceLocation)) {
 			if (Minecraft.getInstance().getTextureManager().getTexture(resourceLocation, simpleTexture) != simpleTexture) {

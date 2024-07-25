@@ -12,7 +12,6 @@ import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayerUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.subcapabilities.SkinCap;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -34,12 +33,12 @@ public class DragonEditorDropdownButton extends DropDownButton{
 	public DragonEditorDropdownButton(DragonEditorScreen dragonEditorScreen, int x, int y, int xSize, int ySize, String current, String[] values, EnumSkinLayer layers){
 		super(x, y, xSize, ySize, current, values, selected -> {
 			dragonEditorScreen.preset.skinAges.get(dragonEditorScreen.level).get().layerSettings.get(layers).get().selectedSkin = DragonEditorScreen.partToTechnical(selected);
-			dragonEditorScreen.handler.getSkinData().compileSkin();
+			DragonEditorScreen.handler.getSkinData().compileSkin();
 			dragonEditorScreen.update();
 		});
 		this.dragonEditorScreen = dragonEditorScreen;
 		this.layers = layers;
-		this.dragonType = dragonEditorScreen.handler.getTypeName().toLowerCase();
+		this.dragonType = DragonEditorScreen.handler.getTypeNameLowerCase();
 	}
 
 	@Override

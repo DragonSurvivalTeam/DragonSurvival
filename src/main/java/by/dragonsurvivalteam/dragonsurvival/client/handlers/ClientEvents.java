@@ -109,8 +109,8 @@ public class ClientEvents{
 
 			DragonStateProvider.getCap(player).ifPresent(cap -> {
 				if(cap.isDragon() && DragonEditorRegistry.getSavedCustomizations() != null){
-					int currentSelected = DragonEditorRegistry.getSavedCustomizations().current.getOrDefault(message.type.getTypeName().toUpperCase(), new HashMap<>()).getOrDefault(message.level, 0);
-					SkinPreset preset = DragonEditorRegistry.getSavedCustomizations().skinPresets.getOrDefault(message.type.getTypeName().toUpperCase(), new HashMap<>()).getOrDefault(currentSelected, new SkinPreset());
+					int currentSelected = DragonEditorRegistry.getSavedCustomizations().current.getOrDefault(message.type.getTypeNameUpperCase(), new HashMap<>()).getOrDefault(message.level, 0);
+					SkinPreset preset = DragonEditorRegistry.getSavedCustomizations().skinPresets.getOrDefault(message.type.getTypeNameUpperCase(), new HashMap<>()).getOrDefault(currentSelected, new SkinPreset());
 					NetworkHandler.CHANNEL.sendToServer(new SyncPlayerSkinPreset(player.getId(), preset));
 				}
 			});

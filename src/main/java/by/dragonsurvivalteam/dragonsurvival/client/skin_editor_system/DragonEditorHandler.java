@@ -21,7 +21,6 @@ import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -35,10 +34,10 @@ public class DragonEditorHandler{
 
 		if(layer == EnumSkinLayer.BASE && (key.equalsIgnoreCase("Skin") || key.equalsIgnoreCase(SkinCap.defaultSkinValue))){
 			DragonStateHandler handler = DragonUtils.getHandler(player);
-			return getSkinTexture(player, layer, type.getTypeName().toLowerCase() + "_base_" + handler.getLevel().ordinal(), type);
+			return getSkinTexture(player, layer, type.getTypeNameLowerCase() + "_base_" + handler.getLevel().ordinal(), type);
 		}
 
-		Texture[] texts = DragonEditorRegistry.CUSTOMIZATIONS.getOrDefault(type.getTypeName().toUpperCase(), new HashMap<>()).getOrDefault(layer, new Texture[0]);
+		Texture[] texts = DragonEditorRegistry.CUSTOMIZATIONS.getOrDefault(type.getTypeNameUpperCase(), new HashMap<>()).getOrDefault(layer, new Texture[0]);
 
 		for(Texture texture : texts){
 			if(Objects.equals(texture.key, key)){
@@ -55,10 +54,10 @@ public class DragonEditorHandler{
 		}
 
 		if(layer == EnumSkinLayer.BASE && (key.equalsIgnoreCase("Skin") || key.equalsIgnoreCase(SkinCap.defaultSkinValue))){
-			return getSkin(player, layer, type.getTypeName().toLowerCase() + "_base_" + DragonUtils.getDragonLevel(player).ordinal(), type);
+			return getSkin(player, layer, type.getTypeNameLowerCase() + "_base_" + DragonUtils.getDragonLevel(player).ordinal(), type);
 		}
 
-		Texture[] texts = DragonEditorRegistry.CUSTOMIZATIONS.getOrDefault(type.getTypeName().toUpperCase(), new HashMap<>()).getOrDefault(layer, new Texture[0]);
+		Texture[] texts = DragonEditorRegistry.CUSTOMIZATIONS.getOrDefault(type.getTypeNameUpperCase(), new HashMap<>()).getOrDefault(layer, new Texture[0]);
 
 		for(Texture texture : texts){
 			if(Objects.equals(texture.key, key)){
@@ -76,7 +75,7 @@ public class DragonEditorHandler{
 
 		ArrayList<String> list = new ArrayList<>();
 
-		Texture[] texts = DragonEditorRegistry.CUSTOMIZATIONS.getOrDefault(type.getTypeName().toUpperCase(), new HashMap<>()).getOrDefault(layers, new Texture[0]);
+		Texture[] texts = DragonEditorRegistry.CUSTOMIZATIONS.getOrDefault(type.getTypeNameUpperCase(), new HashMap<>()).getOrDefault(layers, new Texture[0]);
 		for(Texture texture : texts){
 			list.add(texture.key);
 		}

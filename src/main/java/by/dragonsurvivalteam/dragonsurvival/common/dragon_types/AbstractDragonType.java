@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 public abstract class AbstractDragonType implements NBTInterface, Comparable<AbstractDragonType> {
@@ -43,5 +44,13 @@ public abstract class AbstractDragonType implements NBTInterface, Comparable<Abs
 
 	public String getSubtypeName() {
 		return getTypeName();
+	}
+
+	public String getTypeNameUpperCase() {
+		return getTypeName().toUpperCase(Locale.ENGLISH);
+	}
+
+	public String getTypeNameLowerCase() {
+		return getTypeName().toLowerCase(Locale.ENGLISH);
 	}
 }
