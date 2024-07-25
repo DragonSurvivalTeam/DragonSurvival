@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(targets = "net.minecraftforge.common.ForgeMod$2$1", remap = false)
 public abstract class ForgeModWaterMixin implements IClientFluidTypeExtensions {
     @ModifyReturnValue(method = "getTintColor(Lnet/minecraft/world/level/material/FluidState;Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/core/BlockPos;)I", at = @At("RETURN"))
-    private int modifyColor(int color) {
+    private int dragonSurvival$modifyAlpha(int color) {
         if (VisionHandler.hasWaterVision()) {
             // 0x5A is 90 which is roughly the result of 255 * 0.35
             return (color /* Remove alpha */ & 0x00FFFFFF) /* Add custom alpha */ | 0x5A000000;
