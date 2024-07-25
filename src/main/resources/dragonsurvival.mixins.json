@@ -34,6 +34,8 @@
     "MixinInventoryScreen",
     "MixinItemInHandRenderer",
     "MixinWorldRenderer",
+    "embeddium.ForgeModLavaMixin",
+    "embeddium.ForgeModWaterMixin",
     "client.ItemBlockRenderTypesMixin",
     "client.LightTextureMixin",
     "client.LiquidBlockRendererMixin",

@@ -86,7 +86,7 @@ dependencies {
     compileOnly fg.deobf("squeek.appleskin:appleskin-forge:${appleskin_version}:api")
 
     // Test
-    implementation fg.deobf("curse.maven:embeddium-908741:5521846")
+//    implementation fg.deobf("curse.maven:embeddium-908741:5556138") // 0.3.27
 
     // Mixin
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
