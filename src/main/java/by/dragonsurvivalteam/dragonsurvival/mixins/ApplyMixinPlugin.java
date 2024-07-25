@@ -22,7 +22,10 @@ public class ApplyMixinPlugin implements IMixinConfigPlugin {
     @Override
     public boolean shouldApplyMixin(final String targetClassName, final String mixinClassName) {
         String modid = mixinClassName.replace(PREFIX, "");
+        // Remove directories which are not related to mods
         modid = modid.replace("client.", "");
+        modid = modid.replace("tool_swap.", "");
+        // If a directory is still present it will run through the check below
         String[] elements = modid.split("\\.");
 
         if (elements.length == 2) {
