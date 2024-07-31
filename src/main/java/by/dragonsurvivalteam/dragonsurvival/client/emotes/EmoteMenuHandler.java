@@ -412,19 +412,6 @@ public class EmoteMenuHandler {
 
 					return !hasAge;
 				}
-
-				//TODO Add this when alternate models are added
-				//				if(em.requirements.model != null){
-				//					boolean hasModel = false;
-				//					for(String t : em.requirements.model){
-				//						if(t.toLowerCase().equals(handler.getModel().name.toLowerCase())){
-				//							hasModel = true;
-				//							break;
-				//						}
-				//					}
-				//
-				//					if(!hasModel) return true;
-				//				}
 			}
 
 			return false;

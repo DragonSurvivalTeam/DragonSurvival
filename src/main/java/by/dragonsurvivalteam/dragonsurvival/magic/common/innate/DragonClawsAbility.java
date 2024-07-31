@@ -16,6 +16,7 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import static by.dragonsurvivalteam.dragonsurvival.common.dragon_types.DragonTypes.*;
 
@@ -41,7 +42,7 @@ public abstract class DragonClawsAbility extends InnateDragonAbility {
 		Pair<Tiers, Integer> harvestInfo = getHarvestInfo();
 
 		if (harvestInfo != null) {
-			components.add(Component.translatable("ds.skill.harvest_level", I18n.get("ds.skill.harvest_level." + harvestInfo.getFirst().name().toLowerCase())));
+			components.add(Component.translatable("ds.skill.harvest_level", I18n.get("ds.skill.harvest_level." + harvestInfo.getFirst().name().toLowerCase(Locale.ENGLISH))));
 		}
 
 		double damageBonus = handler.isDragon() ? handler.getLevel() == DragonLevel.ADULT ? ServerConfig.adultBonusDamage : handler.getLevel() == DragonLevel.YOUNG ? ServerConfig.youngBonusDamage : ServerConfig.babyBonusDamage : 0;

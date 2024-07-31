@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.dragon_types.types.SeaDragonT
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Supplier;
 
 public class DragonTypes {
@@ -27,7 +28,7 @@ public class DragonTypes {
 
 	public static <T extends AbstractDragonType> T registerType(Supplier<T> constructor){
 		T type = constructor.get();
-		String lcName = type.getTypeName().toLowerCase();
+		String lcName = type.getTypeNameLowerCase();
 		classMappings.put(lcName, (Supplier<AbstractDragonType>)constructor);
 		staticTypes.put(lcName, type);
 		staticSubtypes.put(lcName, type);
@@ -38,22 +39,22 @@ public class DragonTypes {
 	
 	public static <T extends AbstractDragonType> T registerSubtype(Supplier<T> constructor) {
 		T subtype = constructor.get();
-		String lcSubName = subtype.getSubtypeName().toLowerCase();
-		String lcTypeName = subtype.getTypeName().toLowerCase();
+		String lcSubName = subtype.getSubtypeName().toLowerCase(Locale.ENGLISH);
+		String lcTypeName = subtype.getTypeNameLowerCase();
 		classMappings.put(lcSubName, (Supplier<AbstractDragonType>) constructor);
 		
 		staticSubtypes.put(lcSubName, subtype);
-		subtypeMap.computeIfAbsent(lcTypeName, s -> new ArrayList<AbstractDragonType>());
+		subtypeMap.computeIfAbsent(lcTypeName, s -> new ArrayList<>());
 		subtypeMap.get(lcTypeName).add(subtype);
 		return subtype;
 	}
 
 	public static AbstractDragonType getStatic(String name){
-		return staticTypes.get(name.toLowerCase());
+		return staticTypes.get(name.toLowerCase(Locale.ENGLISH));
 	}
 	
 	public static AbstractDragonType getStaticSubtype(String name) {
-		return staticSubtypes.get(name.toLowerCase());
+		return staticSubtypes.get(name.toLowerCase(Locale.ENGLISH));
 	}
 
 	public static List<String> getTypes(){

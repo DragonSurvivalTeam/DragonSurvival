@@ -57,6 +57,6 @@ public class DragonTreatItem extends Item {
 	@Override
 	public void appendHoverText(@NotNull final ItemStack itemStack, @Nullable final Level level, @NotNull final List<Component> components, @NotNull final TooltipFlag tooltipFlag) {
 		super.appendHoverText(itemStack, level, components, tooltipFlag);
-		components.add(Component.translatable("ds.description." + type.getTypeName().toLowerCase() + "DragonTreat"));
+		components.add(Component.translatable("ds.description." + type.getTypeNameLowerCase() + "DragonTreat"));
 	}
 }

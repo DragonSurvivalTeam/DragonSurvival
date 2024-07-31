@@ -35,6 +35,7 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -315,6 +316,14 @@ public class DragonStateHandler extends EntityStateHandler {
 		return dragonType.getTypeName();
 	}
 
+	public String getTypeNameLowerCase() {
+		if (dragonType == null) {
+			return "human";
+		}
+
+		return dragonType.getTypeNameLowerCase();
+	}
+
 	public String getSubtypeName() {
 		if (dragonType == null) {
 			return "human";
@@ -486,7 +495,7 @@ public class DragonStateHandler extends EntityStateHandler {
 			return ItemStack.EMPTY;
 		}
 
-		String tierPath = tiers.name().toLowerCase() + "_";
+		String tierPath = tiers.name().toLowerCase(Locale.ENGLISH) + "_";
 		tierPath = tierPath.replace("wood", "wooden");
 
 		Item item = switch (toolSlot) {

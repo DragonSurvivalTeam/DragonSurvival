@@ -100,13 +100,13 @@ public class ClientGrowthHudHandler {
 				RenderSystem.setShaderTexture(0, getOrCreate("textures/gui/growth/circle_" + num + ".png"));
 				RenderingUtils.drawTexturedCircle(guiGraphics, circleX + radius, circleY + radius, radius, 0.5, 0.5, 0.5, 6, nextProgess, -0.5);
 
-				RenderSystem.setShaderTexture(0, getOrCreate("textures/gui/growth/circle_" + handler.getTypeName().toLowerCase() + ".png"));
+				RenderSystem.setShaderTexture(0, getOrCreate("textures/gui/growth/circle_" + handler.getTypeNameLowerCase() + ".png"));
 				RenderingUtils.drawTexturedCircle(guiGraphics, circleX + radius, circleY + radius, radius, 0.5, 0.5, 0.5, 6, progress, -0.5);
 			} else if (increment < 0) {
 				RenderSystem.setShaderTexture(0, getOrCreate("textures/gui/growth/circle_3.png"));
 				RenderingUtils.drawTexturedCircle(guiGraphics, circleX + radius, circleY + radius, radius, 0.5, 0.5, 0.5, 6, progress, -0.5);
 
-				RenderSystem.setShaderTexture(0, getOrCreate("textures/gui/growth/circle_" + handler.getTypeName().toLowerCase() + ".png"));
+				RenderSystem.setShaderTexture(0, getOrCreate("textures/gui/growth/circle_" + handler.getTypeNameLowerCase() + ".png"));
 				RenderingUtils.drawTexturedCircle(guiGraphics, circleX + radius, circleY + radius, radius, 0.5, 0.5, 0.5, 6, nextProgess, -0.5);
 			}
 
@@ -115,7 +115,7 @@ public class ClientGrowthHudHandler {
 			RenderSystem.setShader(GameRenderer::getPositionTexShader);
 			RenderSystem.setShaderColor(1F, 1F, 1F, 1.0f);
 
-			guiGraphics.blit(getOrCreate("textures/gui/growth/growth_" + handler.getTypeName().toLowerCase() + "_" + (handler.getLevel().ordinal() + 1) + ".png"), circleX + 6, circleY + 6, 0, 0, 20, 20, 20, 20);
+			guiGraphics.blit(getOrCreate("textures/gui/growth/growth_" + handler.getTypeNameLowerCase() + "_" + (handler.getLevel().ordinal() + 1) + ".png"), circleX + 6, circleY + 6, 0, 0, 20, 20, 20, 20);
 		}
 	}
 
