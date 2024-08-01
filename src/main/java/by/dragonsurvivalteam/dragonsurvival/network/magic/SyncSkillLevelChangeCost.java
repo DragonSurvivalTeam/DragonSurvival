@@ -51,8 +51,7 @@ public class SyncSkillLevelChangeCost implements IMessage<SyncSkillLevelChangeCo
 
 				if (staticAbility instanceof PassiveDragonAbility ability) {
 					PassiveDragonAbility playerAbility = DragonAbilities.getSelfAbility(sender, ability.getClass());
-					int levelCost = message.levelChange > 0 ? -playerAbility.getLevelCost(message.levelChange) : Math.max((int) (playerAbility.getLevelCost() * 0.8F), 1);
-
+					int levelCost = message.levelChange > 0 ? -playerAbility.getLevelCost(message.levelChange) : 0;
 					if (levelCost != 0 && !sender.isCreative()) {
 						sender.giveExperienceLevels(levelCost);
 					}

@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Locale;
 
 public class DragonSkins{
+	protected static boolean initialized = false;
 	public static NetSkinLoader skinLoader = new GithubSkinLoaderAPI();
 	private static final ArrayList<String> hasFailedFetch = new ArrayList<>();
 	public static HashMap<DragonLevel, HashMap<String, SkinObject>> SKIN_USERS = new HashMap<>();
@@ -87,7 +88,7 @@ public class DragonSkins{
 		String[] text = ArrayUtils.addAll(new String[]{playerKey}, extra);
 
 		String resourceName = StringUtils.join(text, "_");
-		ResourceLocation resourceLocation = new ResourceLocation(DragonSurvivalMod.MODID, resourceName.toLowerCase(Locale.ROOT));
+		ResourceLocation resourceLocation = new ResourceLocation(DragonSurvivalMod.MODID, resourceName.toLowerCase(Locale.ENGLISH));
 
 		try (SimpleTexture simpleTexture = new SimpleTexture(resourceLocation)) {
 			if (Minecraft.getInstance().getTextureManager().getTexture(resourceLocation, simpleTexture) != simpleTexture) {
@@ -194,8 +195,13 @@ public class DragonSkins{
 
 		return texture;
 	}
-
 	public static void init() {
+		init(false);
+	}
+	public static void init(boolean force) {
+		if (initialized && !force)
+			return;
+		initialized = true;
 		Collection<SkinObject> skins;
 		invalidateSkins();
 		String currentLanguage = Minecraft.getInstance().getLanguageManager().getSelected();

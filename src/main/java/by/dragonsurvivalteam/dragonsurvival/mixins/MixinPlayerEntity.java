@@ -25,6 +25,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -33,6 +34,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -45,8 +47,8 @@ import java.util.UUID;
 
 @Mixin(Player.class)
 public abstract class MixinPlayerEntity extends LivingEntity{
-	private static final UUID SLOW_FALLING_ID = UUID.fromString("A5B6CF2A-2F7C-31EF-9022-7C3E7D5E6ABA");
-	private static final AttributeModifier SLOW_FALLING = new AttributeModifier(SLOW_FALLING_ID, "Slow falling acceleration reduction", -0.07, AttributeModifier.Operation.ADDITION); // Add -0.07 to 0.08 so we get the vanilla default of 0.01
+	@Unique private static final UUID SLOW_FALLING_ID = UUID.fromString("A5B6CF2A-2F7C-31EF-9022-7C3E7D5E6ABA");
+	@Unique private static final AttributeModifier SLOW_FALLING = new AttributeModifier(SLOW_FALLING_ID, "Slow falling acceleration reduction", -0.07, AttributeModifier.Operation.ADDITION); // Add -0.07 to 0.08 so we get the vanilla default of 0.01
 
 	protected MixinPlayerEntity(EntityType<? extends LivingEntity> p_20966_, Level p_20967_){
 		super(p_20966_, p_20967_);
@@ -94,16 +96,24 @@ public abstract class MixinPlayerEntity extends LivingEntity{
 	}
 
 	@Inject(at = @At("HEAD"), method = "eat", cancellable = true)
-	public void dragonEat(final Level level, final ItemStack itemStack, final CallbackInfoReturnable<ItemStack> callback) {
-		DragonStateProvider.getCap(this).ifPresent(handler -> {
+	public void dragonEat(final Level level, final ItemStack stack, final CallbackInfoReturnable<ItemStack> callback) {
+		Player player = (Player) (Object) this;
+
+		DragonStateProvider.getCap(player).ifPresent(handler -> {
 			if (handler.isDragon()) {
-				DragonFoodHandler.dragonEat(getFoodData(), itemStack.getItem(), handler.getType());
-				awardStat(Stats.ITEM_USED.get(itemStack.getItem()));
-				level.playSound(null, getX(), getY(), getZ(), SoundEvents.PLAYER_BURP, SoundSource.PLAYERS, 0.5F, random.nextFloat() * 0.1F + 0.9F);
-				if ((Player)(Object)this instanceof ServerPlayer) {
-					CriteriaTriggers.CONSUME_ITEM.trigger((ServerPlayer)(Object)this, itemStack);
+				FoodProperties properties = DragonFoodHandler.getFoodProperties(stack, handler.getType(), player);
+
+				if (properties != null) {
+					getFoodData().eat(properties.getNutrition(), properties.getSaturationModifier());
+					awardStat(Stats.ITEM_USED.get(stack.getItem()));
+					level.playSound(null, getX(), getY(), getZ(), SoundEvents.PLAYER_BURP, SoundSource.PLAYERS, 0.5F, random.nextFloat() * 0.1F + 0.9F);
+
+					if (player instanceof ServerPlayer serverPlayer) {
+						CriteriaTriggers.CONSUME_ITEM.trigger(serverPlayer, stack);
+					}
+
+					callback.setReturnValue(super.eat(level, stack));
 				}
-				callback.setReturnValue(super.eat(level, itemStack));
 			}
 		});
 	}

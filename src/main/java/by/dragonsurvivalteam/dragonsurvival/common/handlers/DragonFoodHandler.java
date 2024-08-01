@@ -16,7 +16,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -28,6 +27,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 import net.minecraft.world.food.FoodProperties;
@@ -37,7 +37,6 @@ import net.minecraft.world.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
-import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -46,6 +45,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -135,11 +135,11 @@ public class DragonFoodHandler {
 
 		String[] foodConfiguration = new String[0];
 
-		if (Objects.equals(type, DragonTypes.CAVE)) {
+		if (DragonUtils.isDragonType(type, DragonTypes.CAVE)) {
 			foodConfiguration = caveDragonFoods.toArray(new String[0]);
-		} else if (Objects.equals(type, DragonTypes.FOREST)) {
+		} else if (DragonUtils.isDragonType(type, DragonTypes.FOREST)) {
 			foodConfiguration = forestDragonFoods.toArray(new String[0]);
-		} else if (Objects.equals(type, DragonTypes.SEA)) {
+		} else if (DragonUtils.isDragonType(type, DragonTypes.SEA)) {
 			foodConfiguration = seaDragonFoods.toArray(new String[0]);
 		}
 
@@ -162,7 +162,7 @@ public class DragonFoodHandler {
 			// Add all food items from the tag
 			if (ForgeRegistries.ITEMS.tags().isKnownTagName(tagKey)) {
 				ForgeRegistries.ITEMS.tags().getTag(tagKey).forEach(item -> {
-					FoodProperties foodProperties = getFoodProperties(configuration, item, type);
+					FoodProperties foodProperties = calculateFoodProperties(configuration, item, type);
 
 					if (foodProperties != null) {
 						map.put(item, foodProperties);
@@ -175,7 +175,7 @@ public class DragonFoodHandler {
 				Item item = ForgeRegistries.ITEMS.getValue(resourceLocation);
 
 				if (item != null && item != Items.AIR) {
-					FoodProperties foodProperties = getFoodProperties(configuration, item, type);
+					FoodProperties foodProperties = calculateFoodProperties(configuration, item, type);
 
 					if (foodProperties != null) {
 						map.put(item, foodProperties);
@@ -184,84 +184,64 @@ public class DragonFoodHandler {
 			}
 		}
 
-		/*
-		Go through all food items and if they're not part of the configured list remove benefits (nutrition / saturation)
-		If the config 'foodHungerEffect' is enabled they will also cause a hunger debuff
-		*/
-		for (Item item : ForgeRegistries.ITEMS.getValues()) {
-			if (!map.containsKey(item) && item.isEdible()) {
-				FoodProperties FoodProperties = calculateDragonFoodProperties(item, type, 0, 0, false);
-
-				if (FoodProperties != null) {
-					map.put(item, FoodProperties);
-				}
-			}
-		}
-
 		return new ConcurrentHashMap<>(map);
 	}
 
-	private static FoodProperties getFoodProperties(final String[] configuration, final Item item, final AbstractDragonType type) {
+	private static FoodProperties calculateFoodProperties(final String[] configuration, final Item item, final AbstractDragonType type) {
 		// Use configured food properties (if present), otherwise use the properties of the item (if present) otherwise use a default value of 1
-		try {
-			int nutrition = configuration.length == 4 ? Integer.parseInt(configuration[2].strip()) : item.getFoodProperties() != null ? item.getFoodProperties().getNutrition() : 1;
-			float saturation = configuration.length == 4 ? Float.parseFloat(configuration[3].strip()) : item.getFoodProperties() != null ? (item.getFoodProperties().getNutrition() * item.getFoodProperties().getSaturationModifier() * 2) : 0;
+		FoodProperties properties = item.getFoodProperties(item.getDefaultInstance(), null);
 
-			return calculateDragonFoodProperties(item, type, nutrition, saturation, true);
+		try {
+			int nutrition = configuration.length == 4 ? Integer.parseInt(configuration[2].strip()) : properties != null ? properties.getNutrition() : 1;
+			float saturation = configuration.length == 4 ? Float.parseFloat(configuration[3].strip()) : properties != null ? (properties.getNutrition() * properties.getSaturationModifier() * 2) : 0;
+
+			return calculateDragonFoodProperties(item, type, nutrition, saturation, true, properties);
 		} catch (NumberFormatException nfe) {
 			DragonSurvivalMod.LOGGER.error(String.format("Invalid food configuration for %s, using default values.", item));
-			return calculateDragonFoodProperties(item, type, 1, 0, true);
+			return calculateDragonFoodProperties(item, type, 1, 0, true, properties);
 		}
 	}
 
-	@Nullable
-	private static FoodProperties calculateDragonFoodProperties(final Item item, final AbstractDragonType type, int nutrition, float saturation, boolean isDragonFood) {
+	private static @Nullable FoodProperties calculateDragonFoodProperties(final Item item, final AbstractDragonType type, int nutrition, float saturation, boolean isDragonFood, final FoodProperties original) {
 		if (item == null) {
 			return new FoodProperties.Builder().nutrition(nutrition).saturationMod(saturation / (float) nutrition / 2.0F).build();
 		}
 
 		if (!customDragonFoods || type == null) {
-			return item.getFoodProperties();
+			return original;
 		}
 
 		FoodProperties.Builder builder = new FoodProperties.Builder();
-		FoodProperties humanFoodProperties = item.getFoodProperties();
-
 		boolean shouldKeepEffects = keepEffects.contains(ResourceHelper.getKey(item).toString());
 
 		// Copy the configurations and effects from the initial food properties
-		if (humanFoodProperties != null) {
-			if (humanFoodProperties.isMeat()) {
+		if (original != null) {
+			if (original.isMeat()) {
 				builder.meat();
 			}
 
-			if (humanFoodProperties.canAlwaysEat()) {
+			if (original.canAlwaysEat()) {
 				builder.alwaysEat();
 			}
 
-			if (humanFoodProperties.isFastFood()) {
+			if (original.isFastFood()) {
 				builder.fast();
 			}
 
-			for (Pair<MobEffectInstance, Float> effect : humanFoodProperties.getEffects()) {
+			for (Pair<MobEffectInstance, Float> effect : original.getEffects()) {
 				if (effect == null || effect.getFirst() == null) {
 					continue;
 				}
 
 				// Hunger and Poison effects will be skipped
-				if ((shouldKeepEffects || isDragonFood) && effect.getFirst().getEffect() != MobEffects.HUNGER && effect.getFirst().getEffect() != MobEffects.POISON) {
+				if ((shouldKeepEffects || isDragonFood) && effect.getFirst().getEffect().isBeneficial()) {
 					builder.effect(effect::getFirst, effect.getSecond());
 				}
 			}
 		}
 
-		if (!shouldKeepEffects && !isDragonFood && foodHungerEffect) {
-			builder.effect(() -> new MobEffectInstance(MobEffects.HUNGER, 20 * 60, 0), 1.0F);
-			builder.effect(() -> new MobEffectInstance(MobEffects.POISON, 20 * 60, 0), 0.5F);
-		}
-
 		if (saturation == 0 || nutrition == 0) {
-			builder.nutrition(nutrition).saturationMod(0.0F);
+			builder.nutrition(nutrition).saturationMod(0);
 		} else {
 			builder.nutrition(nutrition).saturationMod(saturation / (float) nutrition / 2.0F);
 		}
@@ -274,11 +254,11 @@ public class DragonFoodHandler {
 			return new CopyOnWriteArrayList<>();
 		}
 
-        if (Objects.equals(type, DragonTypes.FOREST) && FOREST_DRAGON_FOOD != null && !FOREST_DRAGON_FOOD.isEmpty()) {
+        if (DragonUtils.isDragonType(type, DragonTypes.FOREST) && FOREST_DRAGON_FOOD != null && !FOREST_DRAGON_FOOD.isEmpty()) {
             return FOREST_DRAGON_FOOD;
-        } else if (Objects.equals(type, DragonTypes.SEA) && SEA_DRAGON_FOOD != null && !SEA_DRAGON_FOOD.isEmpty()) {
+        } else if (DragonUtils.isDragonType(type, DragonTypes.SEA) && SEA_DRAGON_FOOD != null && !SEA_DRAGON_FOOD.isEmpty()) {
             return SEA_DRAGON_FOOD;
-        } else if (Objects.equals(type, DragonTypes.CAVE) && CAVE_DRAGON_FOOD != null && !CAVE_DRAGON_FOOD.isEmpty()) {
+        } else if (DragonUtils.isDragonType(type, DragonTypes.CAVE) && CAVE_DRAGON_FOOD != null && !CAVE_DRAGON_FOOD.isEmpty()) {
             return CAVE_DRAGON_FOOD;
         }
 
@@ -321,36 +301,6 @@ public class DragonFoodHandler {
 		}
 
 		return foods;
-	}
-
-	public static void dragonEat(final FoodData foodData, final Item item, final AbstractDragonType type) {
-		if (isDragonEdible(item, type)) {
-			FoodProperties foodProperties = getDragonFoodProperties(item, type);
-			if(foodProperties != null) {
-				foodData.eat(foodProperties.getNutrition(), foodProperties.getSaturationModifier());
-			}
-		}
-	}
-
-	@Nullable
-	public static FoodProperties getDragonFoodProperties(final Item item, final AbstractDragonType type) {
-		if (DRAGON_FOODS == null || !customDragonFoods || type == null) {
-			return item.getFoodProperties();
-		}
-
-		if (DRAGON_FOODS.get(type.getTypeName()).containsKey(item)) {
-			return DRAGON_FOODS.get(type.getTypeName()).get(item);
-		}
-
-		return null;
-	}
-
-	public static boolean isDragonEdible(final Item item, final AbstractDragonType type) {
-		if (customDragonFoods && type != null) {
-			return DRAGON_FOODS != null && DRAGON_FOODS.containsKey(type.getTypeName()) && item != null && DRAGON_FOODS.get(type.getTypeName()).containsKey(item);
-		}
-
-		return item.getFoodProperties() != null;
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -413,14 +363,6 @@ public class DragonFoodHandler {
 		});
 	}
 
-	public static int getUseDuration(final ItemStack item, final AbstractDragonType type) {
-		if (isDragonEdible(item.getItem(), type)) {
-			return item.getItem().getFoodProperties() != null && item.getItem().getFoodProperties().isFastFood() ? 16 : 32;
-		} else {
-			return item.getUseDuration();
-		}
-	}
-
 	@SubscribeEvent
 	public void onItemRightClick(final PlayerInteractEvent.RightClickItem event) {
 		DragonStateProvider.getCap(event.getEntity()).ifPresent(handler -> {
@@ -431,7 +373,7 @@ public class DragonFoodHandler {
 					InteractionHand hand = event.getHand();
 					ItemStack itemStackInHand = player.getItemInHand(event.getHand());
 
-					if (isDragonEdible(itemStackInHand.getItem(), handler.getType())) {
+					if (isEdible(itemStackInHand, handler.getType())) {
 						int stackCount = itemStackInHand.getCount();
 						int damageValue = itemStackInHand.getDamageValue();
 
@@ -467,5 +409,64 @@ public class DragonFoodHandler {
 				}
 			}
 		});
+	}
+
+	public static int getUseDuration(final ItemStack stack, final AbstractDragonType type) {
+		if (isEdible(stack.getItem(), type)) {
+			FoodProperties properties = getFoodProperties(stack, type);
+			return properties != null && properties.isFastFood() ? 16 : 32;
+		} else {
+			return stack.getUseDuration();
+		}
+	}
+
+	public static boolean isEdible(@NotNull final Item item, final AbstractDragonType type) {
+		if (customDragonFoods && type != null && DRAGON_FOODS != null && DRAGON_FOODS.get(type.getTypeName()).containsKey(item)) {
+			return true;
+		}
+
+		return item.getDefaultInstance().isEdible();
+	}
+
+	public static boolean isEdible(@NotNull final ItemStack stack, final AbstractDragonType type) {
+		if (customDragonFoods && type != null && DRAGON_FOODS != null && DRAGON_FOODS.get(type.getTypeName()).containsKey(stack.getItem())) {
+			return true;
+		}
+
+		return stack.isEdible();
+	}
+
+	public static @Nullable FoodProperties getFoodProperties(@NotNull final ItemStack stack, @Nullable final AbstractDragonType type) {
+		return getFoodProperties(stack, type, null);
+	}
+
+	public static @Nullable FoodProperties getFoodProperties(@NotNull final ItemStack stack, @Nullable final AbstractDragonType type, @Nullable final LivingEntity entity) {
+		if (!customDragonFoods || type == null) {
+			return stack.getFoodProperties(entity);
+		}
+
+		if (DRAGON_FOODS == null) {
+			rebuildFoodMap();
+		}
+
+		FoodProperties properties = DRAGON_FOODS.get(type.getTypeName()).get(stack.getItem());
+
+		if (properties != null) {
+			return properties;
+		}
+
+		return stack.getFoodProperties(entity) != null ? getBadFoodProperties() : null;
+	}
+
+	private static FoodProperties getBadFoodProperties() {
+		FoodProperties.Builder builder = new FoodProperties.Builder();
+
+		if (foodHungerEffect) {
+			builder.effect(() -> new MobEffectInstance(MobEffects.HUNGER, 600, 0), 1.0F);
+			builder.effect(() -> new MobEffectInstance(MobEffects.POISON, 600, 0), 0.5F);
+		}
+
+		builder.nutrition(1);
+		return builder.build();
 	}
 }

@@ -245,7 +245,6 @@ public class EventHandler{
 			Vec3 deltaMovement = living.getDeltaMovement();
 			living.setDeltaMovement(deltaMovement.x, deltaMovement.y < 0 ? deltaMovement.y : 0, deltaMovement.z);
 			living.setJumping(false);
-			jumpEvent.setCanceled(true);
 			return;
 		}
 

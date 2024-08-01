@@ -34,6 +34,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.PacketDistributor;
 
 import java.util.List;
+import java.util.Locale;
 
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
@@ -50,7 +51,7 @@ public class DragonCommand{
 		ArgumentCommandNode<CommandSourceStack, String> dragonType = argument("dragon_type", StringArgumentType.string()).suggests((context, builder) -> {
 			SuggestionsBuilder builder1 = null;
 			for(String value : DragonTypes.getAllSubtypes()){
-				String val = value.toLowerCase();
+				String val = value.toLowerCase(Locale.ENGLISH);
 				builder1 = builder1 == null ? builder.suggest(val) : builder1.suggest(val);
 			}
 			builder1 = builder1 == null ? builder.suggest("human") : builder1.suggest("human");
@@ -66,7 +67,7 @@ public class DragonCommand{
 		ArgumentCommandNode<CommandSourceStack, String> dragonBody = argument("dragon_body", StringArgumentType.string()).suggests((context, builder) -> {
 			SuggestionsBuilder sgBuilder = null;
 			for (String val : DragonBodies.getBodies()) {
-				sgBuilder = sgBuilder == null ? builder.suggest(val) : sgBuilder.suggest(val.toLowerCase());
+				sgBuilder = sgBuilder == null ? builder.suggest(val) : sgBuilder.suggest(val.toLowerCase(Locale.ENGLISH));
 			}
 
 			return sgBuilder.buildFuture();

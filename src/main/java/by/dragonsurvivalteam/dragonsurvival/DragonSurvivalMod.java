@@ -97,7 +97,6 @@ public class DragonSurvivalMod{
 	}
 
 	private void commonSetup(final FMLCommonSetupEvent event){
-		WingObtainmentController.loadDragonPhrases();
 		NetworkHandler.setup();
 		LOGGER.info("Successfully registered packets!");
 	}
@@ -106,6 +105,7 @@ public class DragonSurvivalMod{
 		if (ModList.get().isLoaded("appleskin")) {
 			MinecraftForge.EVENT_BUS.register(new AppleSkinEventHandler());
 		}
+		WingObtainmentController.loadDragonPhrases();
 	}
 
 	@SubscribeEvent

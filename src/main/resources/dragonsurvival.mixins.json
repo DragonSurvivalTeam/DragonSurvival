@@ -2,13 +2,14 @@
   "required": true,
   "package": "by.dragonsurvivalteam.dragonsurvival.mixins",
   "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8",
   "plugin": "by.dragonsurvivalteam.dragonsurvival.mixins.ApplyMixinPlugin",
   "refmap": "dragonsurvival.refmap.json",
   "mixins": [
     "AccessorAnimationController",
+    "MixinBlock",
     "MixinEnchantmentHelper",
     "MixinEntity",
-    "MixinBlock",
     "MixinInventory",
     "MixinItem",
     "MixinLivingEntity",
@@ -31,12 +32,15 @@
     "MixinGameRenderer",
     "MixinGeoModel",
     "MixinInventoryScreen",
-    "MixinItemBlockRenderTypes",
     "MixinItemInHandRenderer",
-    "MixinLiquidBlockRenderer",
     "MixinWorldRenderer",
+    "embeddium.ForgeModLavaMixin",
+    "embeddium.ForgeModWaterMixin",
+    "client.ItemBlockRenderTypesMixin",
+    "client.LightTextureMixin",
+    "client.LiquidBlockRendererMixin",
+    "client.LocalPlayerMixin",
     "tool_swap.MixinMultiPlayerGameModeEnd",
     "tool_swap.MixinMultiPlayerGameModeStart"
-  ],
-  "minVersion": "0.8"
+  ]
 }

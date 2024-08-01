@@ -9,18 +9,33 @@ import java.util.List;
 import java.util.Set;
 
 public class ApplyMixinPlugin implements IMixinConfigPlugin {
+    private final static String PREFIX = ApplyMixinPlugin.class.getPackageName() + ".";
+
     @Override
     public void onLoad(final String mixinPackage) { /* Nothing to do */ }
 
     @Override
     public String getRefMapperConfig() {
-        /* Nothing to do */
         return null;
     }
 
     @Override
     public boolean shouldApplyMixin(final String targetClassName, final String mixinClassName) {
-        // `ModList.get()` is not available at this point in time
+        String modid = mixinClassName.replace(PREFIX, "");
+        // Remove directories which are not related to mods
+        modid = modid.replace("client.", "");
+        modid = modid.replace("tool_swap.", "");
+        // If a directory is still present it will run through the check below
+        String[] elements = modid.split("\\.");
+
+        if (elements.length == 2) {
+            return LoadingModList.get().getModFileById(elements[0]) != null;
+        }
+
+        if (mixinClassName.equals("by.dragonsurvivalteam.dragonsurvival.mixins.client.LiquidBlockRendererMixin")) {
+            return LoadingModList.get().getModFileById("embeddium") == null;
+        }
+
         return true;
     }
 
@@ -29,7 +44,6 @@ public class ApplyMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public List<String> getMixins() {
-        /* Nothing to do */
         return null;
     }
 

@@ -1,9 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects;
 
-import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.DragonEditorHandler;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.DragonEditorRegistry;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.EnumSkinLayer;
-import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayerUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.NBTInterface;
 import by.dragonsurvivalteam.dragonsurvival.common.dragon_types.AbstractDragonType;
@@ -68,8 +66,8 @@ public class SkinPreset implements NBTInterface{
 			this(level);
 			for(EnumSkinLayer layer : EnumSkinLayer.values()){
 				String part = DragonEditorRegistry.getDefaultPart(type, level, layer);
-				EnumSkinLayer trueLayer = EnumSkinLayer.valueOf(layer.name.toUpperCase());
-				HashMap<EnumSkinLayer, DragonEditorObject.Texture[]> hm = DragonEditorRegistry.CUSTOMIZATIONS.get(type.getTypeName().toUpperCase());
+				EnumSkinLayer trueLayer = EnumSkinLayer.valueOf(layer.getNameUpperCase());
+				HashMap<EnumSkinLayer, DragonEditorObject.Texture[]> hm = DragonEditorRegistry.CUSTOMIZATIONS.get(type.getTypeNameUpperCase());
 				if (hm != null) {
 					DragonEditorObject.Texture[] texts = hm.get(trueLayer);
 					if (texts != null) {

@@ -11,6 +11,6 @@ import net.minecraftforge.fml.common.Mod;
 public class DragonSkinReloadHandle {
     @SubscribeEvent
     public static void onReloadEvent(AddReloadListenerEvent reloadEvent) {
-        DragonSkins.init();
+        DragonSkins.init(true);
     }
 }

@@ -42,8 +42,6 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.LiquidBlockRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -51,14 +49,11 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
-import net.minecraft.world.level.block.state.StateHolder;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.material.FogType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.*;
-import net.minecraftforge.client.event.RenderLevelStageEvent.Stage;
+import net.minecraftforge.client.event.RenderBlockScreenEffectEvent;
+import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.level.LevelEvent;
@@ -92,8 +87,6 @@ public class ClientEvents{
 	@ConfigOption( side = ConfigSide.CLIENT, category = "inventory", key = "inventoryToggle", comment = "Should the buttons for toggeling between dragon and normaly inventory be added?" )
 	public static Boolean inventoryToggle = true;
 	private static ItemStack BOLAS;
-	private static boolean hasUpdatedSinceChangingLavaVision = false;
-	private static boolean hasLavaVisionPrev = false;
 
 	@SubscribeEvent
 	public static void decreaseJumpDuration(TickEvent.PlayerTickEvent playerTickEvent){
@@ -116,8 +109,8 @@ public class ClientEvents{
 
 			DragonStateProvider.getCap(player).ifPresent(cap -> {
 				if(cap.isDragon() && DragonEditorRegistry.getSavedCustomizations() != null){
-					int currentSelected = DragonEditorRegistry.getSavedCustomizations().current.getOrDefault(message.type.getTypeName().toUpperCase(), new HashMap<>()).getOrDefault(message.level, 0);
-					SkinPreset preset = DragonEditorRegistry.getSavedCustomizations().skinPresets.getOrDefault(message.type.getTypeName().toUpperCase(), new HashMap<>()).getOrDefault(currentSelected, new SkinPreset());
+					int currentSelected = DragonEditorRegistry.getSavedCustomizations().current.getOrDefault(message.type.getTypeNameUpperCase(), new HashMap<>()).getOrDefault(message.level, 0);
+					SkinPreset preset = DragonEditorRegistry.getSavedCustomizations().skinPresets.getOrDefault(message.type.getTypeNameUpperCase(), new HashMap<>()).getOrDefault(currentSelected, new SkinPreset());
 					NetworkHandler.CHANNEL.sendToServer(new SyncPlayerSkinPreset(player.getId(), preset));
 				}
 			});
@@ -274,67 +267,6 @@ public class ClientEvents{
 		}
 
 		return texture + "moded_";
-	}
-
-	public static RenderType onRenderFluidLayer(FluidState fluidState)
-	{
-		LocalPlayer player = Minecraft.getInstance().player;
-		if (player == null){
-			return null;
-		}
-
-		if ((fluidState.is(Fluids.LAVA) || fluidState.is(Fluids.FLOWING_LAVA)) && player.hasEffect(DragonEffects.LAVA_VISION))
-			return RenderType.translucent();
-		return null;
-	}
-
-	@SubscribeEvent
-	@OnlyIn( Dist.CLIENT )
-	public static void onRenderFog(ViewportEvent.RenderFog event) {
-		Minecraft minecraft = Minecraft.getInstance();
-		LocalPlayer player = minecraft.player;
-
-		if(player.hasEffect(DragonEffects.LAVA_VISION) && event.getCamera().getFluidInCamera() == FogType.LAVA) {
-			event.setFarPlaneDistance(1000);
-		}
-	}
-
-	@SubscribeEvent
-	@OnlyIn( Dist.CLIENT )
-	public static void onRenderWorldLastEvent(RenderLevelStageEvent event){
-		if(event.getStage() != Stage.AFTER_PARTICLES){
-			return;
-		}
-
-		Minecraft minecraft = Minecraft.getInstance();
-		LocalPlayer player = minecraft.player;
-
-		if(player == null){
-			return;
-		}
-
-		if(player.hasEffect(DragonEffects.LAVA_VISION)) {
-			if(!hasLavaVisionPrev) {
-				hasUpdatedSinceChangingLavaVision = false;
-			}
-
-			hasLavaVisionPrev = true;
-			if(!hasUpdatedSinceChangingLavaVision) {
-				hasUpdatedSinceChangingLavaVision = true;
-				event.getLevelRenderer().allChanged();
-			}
-		}
-		else {
-			if(hasLavaVisionPrev) {
-				hasUpdatedSinceChangingLavaVision = false;
-			}
-
-			hasLavaVisionPrev = false;
-			if(!hasUpdatedSinceChangingLavaVision) {
-				hasUpdatedSinceChangingLavaVision = true;
-				event.getLevelRenderer().allChanged();
-			}
-		}
 	}
 
 	public static void renderOverlay(final DragonStateHandler handler, final ForgeGui forgeGUI, final GuiGraphics guiGraphics) {

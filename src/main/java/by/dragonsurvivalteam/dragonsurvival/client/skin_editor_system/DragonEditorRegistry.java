@@ -26,6 +26,7 @@ import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Optional;
 
 @Mod.EventBusSubscriber( bus = Mod.EventBusSubscriber.Bus.MOD )
@@ -40,7 +41,7 @@ public class DragonEditorRegistry{
 	public static File savedFile;
 
 	public static String getDefaultPart(AbstractDragonType type, DragonLevel level, EnumSkinLayer layer){
-		return defaultSkinValues.getOrDefault(type.getTypeName().toUpperCase(), new HashMap<>()).getOrDefault(level, new HashMap<>()).getOrDefault(layer, SkinCap.defaultSkinValue);
+		return defaultSkinValues.getOrDefault(type.getTypeNameUpperCase(), new HashMap<>()).getOrDefault(level, new HashMap<>()).getOrDefault(layer, SkinCap.defaultSkinValue);
 	}
 
 	public static SavedSkinPresets getSavedCustomizations(){
@@ -88,7 +89,7 @@ public class DragonEditorRegistry{
 				savedCustomizations = new SavedSkinPresets();
 
 				for(String t : DragonTypes.getTypes()){
-					String type = t.toUpperCase();
+					String type = t.toUpperCase(Locale.ENGLISH);
 					savedCustomizations.skinPresets.computeIfAbsent(type, b -> new HashMap<>());
 					savedCustomizations.current.computeIfAbsent(type, b -> new HashMap<>());
 
@@ -140,9 +141,9 @@ public class DragonEditorRegistry{
 
 			try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
 				DragonEditorObject je = gson.fromJson(reader, DragonEditorObject.class);
-				CUSTOMIZATIONS.computeIfAbsent(DragonTypes.SEA.getTypeName().toUpperCase(), type -> new HashMap<>());
-				CUSTOMIZATIONS.computeIfAbsent(DragonTypes.CAVE.getTypeName().toUpperCase(), type -> new HashMap<>());
-				CUSTOMIZATIONS.computeIfAbsent(DragonTypes.FOREST.getTypeName().toUpperCase(), type -> new HashMap<>());
+				CUSTOMIZATIONS.computeIfAbsent(DragonTypes.SEA.getTypeNameUpperCase(), type -> new HashMap<>());
+				CUSTOMIZATIONS.computeIfAbsent(DragonTypes.CAVE.getTypeNameUpperCase(), type -> new HashMap<>());
+				CUSTOMIZATIONS.computeIfAbsent(DragonTypes.FOREST.getTypeNameUpperCase(), type -> new HashMap<>());
 
 				dragonType(DragonTypes.SEA, je.sea_dragon);
 				dragonType(DragonTypes.CAVE, je.cave_dragon);
@@ -167,7 +168,7 @@ public class DragonEditorRegistry{
 							key.key = key.key.substring(0, key.key.lastIndexOf("."));
 						}
 					}
-					CUSTOMIZATIONS.get(type.getTypeName().toUpperCase()).put(layer, keys);
+					CUSTOMIZATIONS.get(type.getTypeNameUpperCase()).put(layer, keys);
 				});
 			}
 		}

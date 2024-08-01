@@ -9,6 +9,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.DragonLevel;
 import net.minecraftforge.common.util.Lazy;
 
 import java.util.HashMap;
+import java.util.Locale;
 
 public class SkinPortingSystem {
     public static SavedSkinPresets upgrade(SavedSkinPresets presets) {
@@ -27,8 +28,8 @@ public class SkinPortingSystem {
                         LayerSettings settings = sag.layerSettings.get(layer).get();
 
                         String part = DragonEditorRegistry.getDefaultPart(DragonTypes.getStatic(type), level, layer);
-                        EnumSkinLayer trueLayer = EnumSkinLayer.valueOf(layer.name.toUpperCase());
-                        HashMap<EnumSkinLayer, DragonEditorObject.Texture[]> hm = DragonEditorRegistry.CUSTOMIZATIONS.get(type.toUpperCase());
+                        EnumSkinLayer trueLayer = EnumSkinLayer.valueOf(layer.getNameUpperCase());
+                        HashMap<EnumSkinLayer, DragonEditorObject.Texture[]> hm = DragonEditorRegistry.CUSTOMIZATIONS.get(type.toUpperCase(Locale.ENGLISH));
                         if (hm != null) {
                             DragonEditorObject.Texture[] texts = hm.get(trueLayer);
                             if (texts != null) {

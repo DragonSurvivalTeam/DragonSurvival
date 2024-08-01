@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.common.entity;
 
-import by.dragonsurvivalteam.dragonsurvival.api.DragonFood;
 import by.dragonsurvivalteam.dragonsurvival.client.emotes.Emote;
 import by.dragonsurvivalteam.dragonsurvival.client.handlers.ClientEvents;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRender;
@@ -18,7 +17,6 @@ import by.dragonsurvivalteam.dragonsurvival.magic.common.active.ActiveDragonAbil
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -39,7 +37,6 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 public class DragonEntity extends LivingEntity implements GeoEntity, CommonTraits {
@@ -122,7 +119,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity, CommonTrait
 			// When the player is using an item
 			handler.getMovementData().bite = false;
 			return state.setAndContinue(AnimationUtils.createAnimation(builder, USE_ITEM));
-		} else if (!ClientDragonRender.renderItemsInMouth && doesAnimationExist("eat_item_right") && player.isUsingItem() && DragonFood.isEdible(player.getMainHandItem().getItem(), player) || animationTimer.getDuration("eat_item_right") > 0) {
+		} else if (!ClientDragonRender.renderItemsInMouth && doesAnimationExist("eat_item_right") && player.isUsingItem() && DragonFoodHandler.isEdible(player.getMainHandItem(), handler.getType()) || animationTimer.getDuration("eat_item_right") > 0) {
 			// When the player is eating the main hand item
 			if (animationTimer.getDuration("eat_item_right") <= 0) {
 				handler.getMovementData().bite = false;
@@ -130,7 +127,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity, CommonTrait
 			}
 
 			return state.setAndContinue(AnimationUtils.createAnimation(builder, EAT_ITEM_RIGHT));
-		} else if (!ClientDragonRender.renderItemsInMouth && doesAnimationExist("eat_item_left") && player.isUsingItem() && DragonFood.isEdible(player.getMainHandItem().getItem(), player) || animationTimer.getDuration("eat_item_right") > 0) {
+		} else if (!ClientDragonRender.renderItemsInMouth && doesAnimationExist("eat_item_left") && player.isUsingItem() && DragonFoodHandler.isEdible(player.getMainHandItem(), handler.getType()) || animationTimer.getDuration("eat_item_right") > 0) {
 			// When the player is eating the offhand item
 			if (animationTimer.getDuration("eat_item_left") <= 0) {
 				handler.getMovementData().bite = false;

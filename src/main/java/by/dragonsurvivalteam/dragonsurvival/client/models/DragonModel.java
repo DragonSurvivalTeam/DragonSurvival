@@ -19,15 +19,10 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
 import software.bernie.geckolib.core.molang.MolangParser;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.model.GeoModel;
 
 import java.util.Locale;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class DragonModel extends GeoModel<DragonEntity> {
 	private final ResourceLocation defaultTexture = new ResourceLocation(DragonSurvivalMod.MODID, "textures/dragon/cave_newborn.png");
@@ -39,8 +34,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
 	 - tips for body types like for magic abilities
 
 	 Extras:
-     - customization.json - Ability to disallow some details in the editor for some Body Types (for example, wing details are not required for wingless).
-	 - emotes.json - Ability to disallow some emotions for certain Body Types.
+		 - emotes.json - Ability to disallow some emotions for certain Body Types.
 	*/
 
 	@Override
@@ -151,7 +145,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
 			}
 
 			if (handler.getSkinData().blankSkin) {
-				return new ResourceLocation(DragonSurvivalMod.MODID, "textures/dragon/blank_skin_" + handler.getTypeName().toLowerCase(Locale.ROOT) + ".png");
+				return new ResourceLocation(DragonSurvivalMod.MODID, "textures/dragon/blank_skin_" + handler.getTypeNameLowerCase() + ".png");
 			}
 
 			if (ageGroup.defaultSkin) {
@@ -159,7 +153,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
 					return currentTexture;
 				}
 
-				return new ResourceLocation(DragonSurvivalMod.MODID, "textures/dragon/" + handler.getTypeName().toLowerCase(Locale.ROOT) + "_" + handler.getLevel().name.toLowerCase(Locale.ROOT) + ".png");
+				return new ResourceLocation(DragonSurvivalMod.MODID, "textures/dragon/" + handler.getTypeNameLowerCase() + "_" + handler.getLevel().name.toLowerCase(Locale.ENGLISH) + ".png");
 			}
 
 			if (handler.getSkinData().isCompiled && currentTexture == null) {
@@ -188,7 +182,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
 			DragonStateHandler handler = DragonUtils.getHandler(dragon.getPlayer());
 			AbstractDragonBody body = handler.getBody();
 			if (body != null) {
-				return new ResourceLocation(DragonSurvivalMod.MODID, String.format("animations/dragon_%s.json", body.getBodyName().toLowerCase()));
+				return new ResourceLocation(DragonSurvivalMod.MODID, String.format("animations/dragon_%s.json", body.getBodyName().toLowerCase(Locale.ENGLISH)));
 			}
 		}
 		return new ResourceLocation(DragonSurvivalMod.MODID, "animations/dragon.animations.json");
