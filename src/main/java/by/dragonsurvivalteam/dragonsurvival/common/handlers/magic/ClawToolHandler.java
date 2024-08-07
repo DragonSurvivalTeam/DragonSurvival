@@ -12,6 +12,8 @@ import by.dragonsurvivalteam.dragonsurvival.util.DragonLevel;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.ToolUtils;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.SimpleContainer;
@@ -235,24 +237,10 @@ public class ClawToolHandler{
 					DragonStateHandler handler = DragonUtils.getHandler(player);
 
 					if (handler.switchedTool || handler.switchedWeapon) {
+						player.level().playSound(null, player.blockPosition(), SoundEvents.ITEM_BREAK, SoundSource.PLAYERS, 1.0F, 1.0F);
 						player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
                         NetworkHandler.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player), new SyncBrokenTool(player.getId(), handler.switchedTool ? handler.switchedToolSlot : ClawInventory.Slot.SWORD.ordinal()));
-						return;
 					}
-
-					SimpleContainer clawsInventory = handler.getClawToolData().getClawsInventory();
-
-					// When a tool breaks its data (the item with its tags etc.) stay there, only the stack gets set to air (and reduced by 1)
-					for (int i = 0; i < ClawInventory.Slot.size(); i++) {
-						ItemStack dragonTool = clawsInventory.getItem(i);
-
-						if (event.getOriginal().getItem() == dragonTool.getItem()) {
-							clawsInventory.setItem(i, ItemStack.EMPTY);
-							break;
-						}
-					}
-
-					NetworkHandler.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player), new SyncDragonClawsMenu(player.getId(), handler.getClawToolData().isMenuOpen(), clawsInventory));
 				}
 			}
 		}
