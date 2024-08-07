@@ -218,7 +218,7 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
 				progress = (float)((curSize - DragonLevel.YOUNG.size) / (DragonLevel.ADULT.size - DragonLevel.YOUNG.size));
 			}else if(handler.getLevel() == DragonLevel.ADULT && handler.getSize() < 40){
 				progress = (float)((curSize - DragonLevel.ADULT.size) / (40 - DragonLevel.ADULT.size));
-			}else if(handler.getLevel() == DragonLevel.ADULT && handler.getSize() >= 40){
+			}else if(handler.getLevel() == DragonLevel.ADULT){
 				progress = (float)((curSize - 40) / (ServerConfig.maxGrowthSize - 40));
 			}
 
@@ -312,13 +312,13 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
 				age += 40 - handler.getLevel().size;
 
 				double missing = 40 - handler.getSize();
-				double increment = (40 - DragonLevel.ADULT.size) / (DragonGrowthHandler.adultToMax * 20.0) * ServerConfig.adultGrowthModifier;
+				double increment = (40 - DragonLevel.ADULT.size) / (DragonGrowthHandler.adultToAncient * 20.0) * ServerConfig.adultGrowthModifier;
 				seconds = missing / increment / 20;
-			}else if(handler.getLevel() == DragonLevel.ADULT && handler.getSize() >= 40){
+			}else if(handler.getLevel() == DragonLevel.ADULT){
 				age += (int)(ServerConfig.maxGrowthSize - handler.getLevel().size);
 
 				double missing = ServerConfig.maxGrowthSize - handler.getSize();
-				double increment = (ServerConfig.maxGrowthSize - 40) / (DragonGrowthHandler.beyond * 20.0) * ServerConfig.maxGrowthModifier;
+				double increment = (ServerConfig.maxGrowthSize - 40) / (DragonGrowthHandler.ancient * 20.0) * ServerConfig.maxGrowthModifier;
 				seconds = missing / increment / 20;
 			}
 

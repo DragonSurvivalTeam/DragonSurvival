@@ -16,8 +16,9 @@ import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
+@SuppressWarnings("unused")
 @EventBusSubscriber(modid = DragonSurvivalMod.MODID, bus = EventBusSubscriber.Bus.MOD)
-public class ForgeDataGen {
+public class NeoForgedDataGen {
 	@SubscribeEvent
 	public static void dataGen(final GatherDataEvent event) {
 		final DataGenerator generator = event.getGenerator();

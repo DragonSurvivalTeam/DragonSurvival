@@ -8,16 +8,17 @@ import java.util.Locale;
 
 public enum DragonLevel{
 	@SerializedName(value = "NEWBORN", alternate = "BABY")
-	NEWBORN(14, 1.1f, "newborn"),
-	YOUNG(20, 1.6f, "young"),
-	ADULT(30, 2.1f, "adult");
+	NEWBORN(14, 20, 1.1f, "newborn"),
+	YOUNG(20, 30, 1.6f, "young"),
+	ADULT(30, 40, 2.1f, "adult");
 
-	public final int size;
+	public final int size, maxSize;
 	public final float jumpHeight;
 	public final String name;
 
-	DragonLevel(int size, float jumpHeight, String name_){
+	DragonLevel(int size, int maxSize, float jumpHeight, String name_){
 		this.size = size;
+		this.maxSize = maxSize;
 		this.jumpHeight = jumpHeight;
 		name = name_;
 	}

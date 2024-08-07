@@ -172,7 +172,7 @@ public class DragonSkins{
 			case NEWBORN -> handler.getSkinData().renderNewborn;
 			case YOUNG -> handler.getSkinData().renderYoung;
 			case ADULT -> handler.getSkinData().renderAdult;
-		};
+        };
 	}
 
 	public static ResourceLocation getGlowTexture(Player player, AbstractDragonType type, DragonLevel dragonStage){

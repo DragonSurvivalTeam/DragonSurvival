@@ -109,7 +109,7 @@
                     "effects": [
                         {
                             "type": "minecraft:damage_entity",
-                            "damage_type": "dragonsurvival:crushed",
+                            "damage_type": "dragonsurvival:anti_dragon",
                             "min_damage": 0.5,
                             "max_damage": 0.5
                         },

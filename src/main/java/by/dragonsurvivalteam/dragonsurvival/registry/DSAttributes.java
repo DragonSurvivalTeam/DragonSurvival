@@ -10,5 +10,5 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class DSAttributes {
     public static final DeferredRegister<Attribute> DS_ATTRIBUTES = DeferredRegister.create(Registries.ATTRIBUTE, MODID);
-    public static final Holder<Attribute> FLIGHT_STAMINA = DS_ATTRIBUTES.register("flight_stamina", () -> new RangedAttribute("attribute.mod.flight_stamina", 1.0D, 0.0D, 5.0D).setSyncable(true));
+    public static final Holder<Attribute> FLIGHT_STAMINA_COST = DS_ATTRIBUTES.register("flight_stamina_cost", () -> new RangedAttribute("ds.attribute.flight_stamina", 1.0D, 0.0D, 5.0D).setSyncable(true));
 }

@@ -12,6 +12,8 @@ public class DSEnchantments {
         return ResourceKey.create(Registries.ENCHANTMENT, ResourceLocation.fromNamespaceAndPath(MODID, key));
     }
 
+    public static ResourceKey<Enchantment> BOLAS = register("bolas");
+
     public static ResourceKey<Enchantment> DRAGONSBANE = register("dragonsbane");
     public static ResourceKey<Enchantment> DRAGONSBOON = register("dragonsboon");
     public static ResourceKey<Enchantment> DRAGONSBONK = register("dragonsbonk");

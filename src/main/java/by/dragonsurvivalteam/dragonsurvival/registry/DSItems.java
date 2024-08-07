@@ -1,12 +1,13 @@
 package by.dragonsurvivalteam.dragonsurvival.registry;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvivalMod.MODID;
+import static by.dragonsurvivalteam.dragonsurvival.DragonSurvivalMod.res;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.dragon_types.DragonTypes;
 import by.dragonsurvivalteam.dragonsurvival.common.dragon_types.types.SeaDragonType;
 import by.dragonsurvivalteam.dragonsurvival.common.items.*;
-import by.dragonsurvivalteam.dragonsurvival.common.items.armor.DragonHunterSword;
+import by.dragonsurvivalteam.dragonsurvival.common.items.armor.DragonHunterWeapon;
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.EvilDragonArmorItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.GoodDragonArmorItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.food.ChargedSoupItem;
@@ -18,16 +19,22 @@ import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import java.util.List;
 import java.util.function.Supplier;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 @SuppressWarnings("unused")
@@ -144,14 +151,35 @@ public class DSItems {
 			ArmorItem.Type.BOOTS, new Item.Properties().durability(ArmorItem.Type.BOOTS.getDurability(100)).rarity(Rarity.EPIC).fireResistant())
 	);
 
-	public static final Holder<Item> DRAGON_HUNTER_SWORD = DS_ITEMS.register("dragon_hunter_sword", () -> new DragonHunterSword(
-			new Item.Properties().rarity(Rarity.EPIC).fireResistant().attributes(SwordItem.createAttributes(Tiers.NETHERITE, 4, -2.4F)))
+	public static final Holder<Item> DRAGON_HUNTER_SWORD = DS_ITEMS.register("dragon_hunter_sword", () -> new DragonHunterWeapon(
+			DSEquipment.DRAGON_HUNTER, new Item.Properties().rarity(Rarity.EPIC).fireResistant().attributes(SwordItem.createAttributes(Tiers.NETHERITE, 4, -2.4F)))
+	);
+	public static final Holder<Item> PARTISAN = DS_ITEMS.register("hunter_partisan", () -> new SwordItem(
+			Tiers.IRON, new Item.Properties().component(
+					DataComponents.ATTRIBUTE_MODIFIERS,
+					ItemAttributeModifiers.builder()
+							.add(Attributes.ATTACK_SPEED, new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, -2.8f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+							.add(Attributes.BLOCK_INTERACTION_RANGE, new AttributeModifier(res("dragonsurvival.partisan_block_reach"), 1f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+							.add(Attributes.ENTITY_INTERACTION_RANGE, new AttributeModifier(res("dragonsurvival.partisan_attack_reach"), 1f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+							.build()
+			))
 	);
 
-	public static final Holder<Item> GOOD_DRAGON_KEY = DS_ITEMS.register("good_key", () -> new Item(
+	public static final Holder<Item> DRAGON_HUNTER_PARTISAN = DS_ITEMS.register("dragon_hunter_partisan", () -> new DragonHunterWeapon(
+			Tiers.DIAMOND, new Item.Properties().component(
+				DataComponents.ATTRIBUTE_MODIFIERS,
+				ItemAttributeModifiers.builder()
+						.add(Attributes.ATTACK_SPEED, new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, -2.8f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+						.add(Attributes.BLOCK_INTERACTION_RANGE, new AttributeModifier(res("dragonsurvival.partisan_block_reach"), 1f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+						.add(Attributes.ENTITY_INTERACTION_RANGE, new AttributeModifier(res("dragonsurvival.partisan_attack_reach"), 1f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+						.build()
+			))
+	);
+
+	public static final Holder<Item> GOOD_DRAGON_KEY = DS_ITEMS.register("good_dragon_key", () -> new Item(
 			new Item.Properties().rarity(Rarity.UNCOMMON))
 	);
-	public static final Holder<Item> EVIL_DRAGON_KEY = DS_ITEMS.register("evil_key", () -> new Item(
+	public static final Holder<Item> EVIL_DRAGON_KEY = DS_ITEMS.register("evil_dragon_key", () -> new Item(
 			new Item.Properties().rarity(Rarity.UNCOMMON))
 	);
 	public static final Holder<Item> HUNTER_DRAGON_KEY = DS_ITEMS.register("hunter_key", () -> new Item(
@@ -159,6 +187,7 @@ public class DSItems {
 	);
 
 	// Items that shouldn't show up in the creative tab
+	public static final Holder<Item> BOLAS = DS_ITEMS.register("bolas", () -> new BolasArrowItem(new Item.Properties()));
 	public static final Holder<Item> HUNTING_NET = DS_ITEMS.register("dragon_hunting_mesh", () -> new Item(new Item.Properties()));
 	public static final Holder<Item> LIGHTNING_TEXTURE_ITEM = DS_ITEMS.register("lightning", () -> new Item(new Item.Properties()));
 

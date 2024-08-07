@@ -5,7 +5,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "value": "minecraft:raw_copper"
+          "name": "minecraft:raw_copper"
         }
       ]
     }

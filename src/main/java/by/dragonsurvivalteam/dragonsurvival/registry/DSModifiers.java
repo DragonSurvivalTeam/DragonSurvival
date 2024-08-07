@@ -107,7 +107,6 @@ public class DSModifiers {
 			new ModifierBuilder(DRAGON_BODY_ARMOR, Attributes.ARMOR, Operation.ADD_VALUE, handler -> handler.getBody().getArmorBonus()),
 			new ModifierBuilder(DRAGON_BODY_STRENGTH, Attributes.ATTACK_DAMAGE, Operation.ADD_VALUE, handler -> handler.getBody().getDamageBonus()),
 			new ModifierBuilder(DRAGON_BODY_STRENGTH_MULT, Attributes.ATTACK_DAMAGE, Operation.ADD_MULTIPLIED_TOTAL, handler -> handler.getBody().getDamageMult() - 1),
-			/* FIXME :: getHealthBonus not defined in 'AbstractDragonBody' and unused here? */
 			new ModifierBuilder(DRAGON_BODY_KNOCKBACK_BONUS, Attributes.ATTACK_KNOCKBACK, Operation.ADD_VALUE, handler -> handler.getBody().getKnockbackBonus()),
 			new ModifierBuilder(DRAGON_BODY_SWIM_SPEED_BONUS, NeoForgeMod.SWIM_SPEED, Operation.ADD_VALUE, handler -> handler.getBody().getSwimSpeedBonus()),
 			new ModifierBuilder(DRAGON_BODY_STEP_HEIGHT_BONUS, Attributes.STEP_HEIGHT, Operation.ADD_VALUE, handler -> handler.getBody().getStepBonus()),
@@ -116,7 +115,7 @@ public class DSModifiers {
 			new ModifierBuilder(DRAGON_BODY_HEALTH_MULT, Attributes.MAX_HEALTH, Operation.ADD_MULTIPLIED_TOTAL, handler -> handler.getBody().getHealthMult() - 1),
 			new ModifierBuilder(DRAGON_BODY_JUMP_BONUS, Attributes.JUMP_STRENGTH, Operation.ADD_VALUE, handler -> handler.getBody().getJumpBonus()),
 			new ModifierBuilder(DRAGON_BODY_SAFE_FALL_DISTANCE, Attributes.SAFE_FALL_DISTANCE, Operation.ADD_VALUE, handler -> handler.getBody().getJumpBonus()),
-			new ModifierBuilder(DRAGON_BODY_FLIGHT_STAMINA, DSAttributes.FLIGHT_STAMINA, Operation.ADD_MULTIPLIED_TOTAL, handler -> handler.getBody().getFlightStaminaMult())
+			new ModifierBuilder(DRAGON_BODY_FLIGHT_STAMINA, DSAttributes.FLIGHT_STAMINA_COST, Operation.ADD_MULTIPLIED_TOTAL, handler -> handler.getBody().getFlightStaminaMult())
 	);
 
 	public static double buildHealthMod(DragonStateHandler handler){

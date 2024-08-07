@@ -8,6 +8,7 @@
   "mixins": [
     "AccessorAnimationController",
     "EntityMixin",
+    "FireworkRocketItemMixin",
     "IItemExtensionMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
@@ -17,7 +18,6 @@
     "MixinServerPlayerGameMode",
     "MixinSleepStatus",
     "PlayerMixin",
-    "VaultBlockEntityServerMixin",
     "VillagerHostilesSensorMixin",
     "VillagerMixin",
     "tool_swap.MixinServerPlayerGameModeEnd",

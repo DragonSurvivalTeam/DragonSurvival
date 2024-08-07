@@ -64,7 +64,7 @@ public class GrowthHUD {
 			} else if (handler.getLevel() == DragonLevel.ADULT && handler.getSize() < 40) {
 				progress = (curSize - DragonLevel.ADULT.size) / (40 - DragonLevel.ADULT.size);
 				nextProgess = (nextSize - DragonLevel.ADULT.size) / (40 - DragonLevel.ADULT.size);
-			} else if (handler.getLevel() == DragonLevel.ADULT && handler.getSize() >= 40) {
+			} else if (handler.getLevel() == DragonLevel.ADULT) {
 				progress = (float) ((curSize - 40) / (ServerConfig.maxGrowthSize - 40));
 				nextProgess = (float) ((nextSize - 40) / (ServerConfig.maxGrowthSize - 40));
 			}

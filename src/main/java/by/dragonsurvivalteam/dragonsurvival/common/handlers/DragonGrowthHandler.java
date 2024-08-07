@@ -23,12 +23,13 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+@SuppressWarnings("unused")
 @EventBusSubscriber( modid = DragonSurvivalMod.MODID )
 public class DragonGrowthHandler{
 	public static long newbornToYoung = TimeUnit.SECONDS.convert(3, TimeUnit.HOURS);
 	public static long youngToAdult = TimeUnit.SECONDS.convert(15, TimeUnit.HOURS);
-	public static long adultToMax = TimeUnit.SECONDS.convert(24, TimeUnit.HOURS);
-	public static long beyond = TimeUnit.SECONDS.convert(30, TimeUnit.DAYS);
+	public static long adultToAncient = TimeUnit.SECONDS.convert(24, TimeUnit.HOURS);
+	public static long ancient = TimeUnit.SECONDS.convert(30, TimeUnit.DAYS);
 
 	@SubscribeEvent
 	public static void onItemUse(PlayerInteractEvent.RightClickItem event){
@@ -187,17 +188,17 @@ public class DragonGrowthHandler{
                     4. After maximum growth. = 30 days for max growth
                  */
 
-				double d = 0;
+				double d;
 				double timeIncrement = 60 * 20;
 
 				if(handler.getSize() < YOUNG.size){
 					d = (YOUNG.size - NEWBORN.size) / (newbornToYoung * 20.0) * timeIncrement * ServerConfig.newbornGrowthModifier;
 				}else if(handler.getSize() < ADULT.size){
 					d = (ADULT.size - YOUNG.size) / (youngToAdult * 20.0) * timeIncrement * ServerConfig.youngGrowthModifier;
-				}else if(handler.getSize() < 40){
-					d = (40 - ADULT.size) / (adultToMax * 20.0) * timeIncrement * ServerConfig.adultGrowthModifier;
+				}else if(handler.getSize() < ADULT.maxSize){
+					d = (40 - ADULT.size) / (adultToAncient * 20.0) * timeIncrement * ServerConfig.adultGrowthModifier;
 				}else{
-					d = (60 - 40) / (beyond * 20.0) * timeIncrement * ServerConfig.maxGrowthModifier;
+					d = (60 - 40) / (ancient * 20.0) * timeIncrement * ServerConfig.maxGrowthModifier;
 				}
 
 				double size = handler.getSize() + d;

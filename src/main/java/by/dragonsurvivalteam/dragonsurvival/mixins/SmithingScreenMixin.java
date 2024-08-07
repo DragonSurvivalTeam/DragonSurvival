@@ -20,26 +20,27 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(SmithingScreen.class)
 public class SmithingScreenMixin {
     @Unique private static DragonEntity dragonSurvival$dragon;
-    private Player player;
+    @Unique
+    private Player dragonSurvival$player;
 
     @Inject(method="subInit", at=@At("HEAD"))
     private void addDragonToInit(CallbackInfo ci){
         DragonStateHandler handler = new DragonStateHandler();
-        player = ((SmithingScreen)(Object)this).getMinecraft().player;
-        if (DragonStateProvider.isDragon(player)) {
-            handler.setBody(DragonStateProvider.getOrGenerateHandler(player).getBody());
+        dragonSurvival$player = ((SmithingScreen)(Object)this).getMinecraft().player;
+        if (DragonStateProvider.isDragon(dragonSurvival$player)) {
+            handler.setBody(DragonStateProvider.getOrGenerateHandler(dragonSurvival$player).getBody());
         }
         dragonSurvival$dragon = FakeClientPlayerUtils.getFakeDragon(1, handler);
         dragonSurvival$dragon.yBodyRot = 210.0F;
         dragonSurvival$dragon.setXRot(25.0F);
-        FakeClientPlayerUtils.getFakePlayer(1, handler).animationSupplier = () -> "idle";
+        FakeClientPlayerUtils.getFakePlayer(1, handler).animationSupplier = () -> "sit_head_locked";
     }
 
     @Inject(method="updateArmorStandPreview", at=@At("HEAD"))
     private void dragonSurvival$updateFakeDragon(ItemStack pStack, CallbackInfo ci){
         if (dragonSurvival$dragon != null) {
             for (EquipmentSlot equipmentslot : EquipmentSlot.values()) {
-                dragonSurvival$dragon.setItemSlot(equipmentslot, player.getItemBySlot(equipmentslot));
+                dragonSurvival$dragon.setItemSlot(equipmentslot, dragonSurvival$player.getItemBySlot(equipmentslot));
             }
 
             if (!pStack.isEmpty()) {

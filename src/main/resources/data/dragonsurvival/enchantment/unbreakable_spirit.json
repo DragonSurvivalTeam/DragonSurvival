@@ -4,7 +4,6 @@
     "translate": "ds.enchantment.unbreakable_spirit"
   },
   "effects": {},
-
   "exclusive_set": "#dragonsurvival:exclusive_set/evil_dragon",
   "max_cost": {
     "base": 21,
@@ -16,8 +15,8 @@
     "per_level_above_first": 11
   },
   "slots": [
-    "chest"
+    "legs"
   ],
-  "supported_items": "#minecraft:enchantable/chest_armor",
+  "supported_items": "#minecraft:enchantable/leg_armor",
   "weight": 10
 }

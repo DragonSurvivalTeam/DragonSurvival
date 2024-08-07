@@ -3,32 +3,30 @@
   "description": {
     "translate": "ds.enchantment.aerodynamic_mastery"
   },
+  "comment": [
+    {
+      "amount": {
+        "type": "minecraft:linear",
+        "base": 0.5,
+        "per_level_above_first": 0.2
+      },
+      "attribute": "minecraft:generic.flying_speed",
+      "id": "dragonsurvival:enchantment.aerodynamic_mastery",
+      "operation": "add_multiplied_base"
+    }
+  ],
   "effects": {
     "minecraft:attributes":
     [
       {
         "amount": {
-          "type": "minecraft:fraction",
-          "numerator": 1.0,
-          "denominator": {
             "type": "minecraft:linear",
-            "base": 2,
-            "per_level_above_first": 0.5
-          }
+            "base": 0.5,
+            "per_level_above_first": 0.25
         },
-        "attribute": "dragonsurvival:flight_stamina",
+        "attribute": "dragonsurvival:flight_stamina_cost",
         "id": "dragonsurvival:enchantment.aerodynamic_mastery",
-        "operation": "add_multiplied_total"
-      },
-      {
-        "amount": {
-          "type": "minecraft:linear",
-          "base": 0.5,
-          "per_level_above_first": 0.2
-        },
-        "attribute": "minecraft:generic.flying_speed",
-        "id": "dragonsurvival:enchantment.aerodynamic_mastery",
-        "operation": "add_multiplied_base"
+        "operation": "add_value"
       }
     ]
   },
@@ -44,8 +42,8 @@
     "per_level_above_first": 11
   },
   "slots": [
-    "legs"
+    "chest"
   ],
-  "supported_items": "#minecraft:enchantable/leg_armor",
+  "supported_items": "#dragonsurvival:enchantable/elytra_and_chest_armor",
   "weight": 10
 }
