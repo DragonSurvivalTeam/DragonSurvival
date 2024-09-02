@@ -41,6 +41,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
 
 import java.util.ArrayList;
 
@@ -77,7 +79,8 @@ public class ClawToolHandler{
 		});
 	}
 
-	@SubscribeEvent
+	// This needs to happen as early as possible to make sure drops are added before other mods interact with them
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static void playerDieEvent(LivingDropsEvent event){
 		Entity ent = event.getEntity();
 
