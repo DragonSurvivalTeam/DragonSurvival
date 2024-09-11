@@ -273,7 +273,7 @@ public class ClientFlightHandler {
 			return;
 		}
 
-		if (player != null && !player.isPassenger()) {
+		if (player != null && !player.isPassenger() && !Minecraft.getInstance().isPaused()) {
 			if (player.hasEffect(MobEffects.LEVITATION)) {
 				/* TODO
 				To make fall damage work you'd have to:

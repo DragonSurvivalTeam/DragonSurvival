@@ -485,9 +485,9 @@ public class DragonEditorScreen extends Screen {
 			addRenderableWidget(new DragonEditorSlotButton(width / 2 + 200 + 15, guiTop + (num - 1) * 12 + 5 + 30, num, this));
 		}
 
-		addRenderableWidget(new ExtendedCheckbox(width / 2 - 220, height - 25, 120, 17, 17, Component.translatable("ds.gui.dragon_editor.wings"), preset.skinAges.get(level).get().wings, p -> preset.skinAges.get(level).get().wings = p.selected()){
+		ExtendedCheckbox wingsCheckBox = new ExtendedCheckbox(width / 2 - 220, height - 25, 120, 17, 17, Component.translatable("ds.gui.dragon_editor.wings"), preset.skinAges.get(level).get().wings, p -> preset.skinAges.get(level).get().wings = p.selected()) {
 			@Override
-			public void renderWidget(@NotNull final GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTicks){
+			public void renderWidget(@NotNull final GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTicks) {
 				selected = preset.skinAges.get(level).get().wings;
 				super.renderWidget(guiGraphics, pMouseX, pMouseY, pPartialTicks);
 			}
@@ -500,7 +500,9 @@ public class DragonEditorScreen extends Screen {
 					guiGraphics.renderTooltip(Minecraft.getInstance().font, Component.translatable("ds.gui.dragon_editor.wings.tooltip"), pMouseX, pMouseY);
 				}
 			}
-		});
+		};
+
+		addRenderableWidget(wingsCheckBox);
 		addRenderableWidget(new ExtendedCheckbox(width / 2 + 100, height - 25, 120, 17, 17, Component.translatable("ds.gui.dragon_editor.default_skin"), preset.skinAges.get(level).get().defaultSkin, p -> preset.skinAges.get(level).get().defaultSkin = p.selected()){
 			@Override
 			public void renderWidget(@NotNull final GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTicks){
@@ -606,6 +608,7 @@ public class DragonEditorScreen extends Screen {
 		addRenderableWidget(new ExtendedButton(guiLeft + 290, 11, 18, 18, Component.empty(), btn -> {
 			doAction();
 			preset.skinAges.put(level, Lazy.of(()->new SkinAgeGroup(level, dragonType)));
+			wingsCheckBox.selected = true;
 			handler.getSkinData().compileSkin();
 			update();
 		}){

@@ -10,7 +10,6 @@ import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
-import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -44,7 +43,7 @@ public class RenderHudEvents {
         int screenHeight = event.getWindow().getGuiScaledHeight();
         ResourceLocation id = event.getOverlay().id();
 
-        if (DragonFoodHandler.customDragonFoods && !vanillaFoodLevel && id == VanillaGuiOverlay.FOOD_LEVEL.id()) {
+        if (DragonFoodHandler.requireDragonFood && !vanillaFoodLevel && id == VanillaGuiOverlay.FOOD_LEVEL.id()) {
             boolean wasRendered = DragonFoodHandler.renderFoodBar(getForgeGUI(), event.getGuiGraphics(), screenWidth, screenHeight);
 
             if (wasRendered) {

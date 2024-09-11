@@ -48,6 +48,7 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.ParrotOnShoulderLayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeableArmorItem;
@@ -131,6 +132,15 @@ public class ClientDragonRender{
 	public static Boolean rotateCameraWithDragon = true;
 
 	private static boolean wasFreeLook = false;
+
+	@SubscribeEvent
+	public static void cancelNameplatesFromDummyEntities(final RenderNameTagEvent event) {
+		Entity entity = event.getEntity();
+
+		if (entity.getType() == DSEntities.DRAGON.get() || entity.getType() == DSEntities.DRAGON_ARMOR.get()) {
+			event.setResult(Event.Result.DENY);
+		}
+	}
 
 	@SubscribeEvent
 	public static void renderFirstPerson(RenderHandEvent renderHandEvent){

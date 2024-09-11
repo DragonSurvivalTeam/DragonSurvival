@@ -56,8 +56,8 @@ import java.util.stream.Stream;
 @Mod.EventBusSubscriber(modid = DragonSurvivalMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class DragonFoodHandler {
 	// Food general
-	@ConfigOption(side = ConfigSide.SERVER, category = "food", key = "dragonFoods", comment = "Force dragons to eat a unique diet for their type.")
-	public static Boolean customDragonFoods = true;
+	@ConfigOption(side = ConfigSide.SERVER, category = "food", key = "requireDragonFood", comment = "Force dragons to eat a unique diet for their type.")
+	public static Boolean requireDragonFood = true;
 
 	// Dragon Food List
 	@ConfigType(Item.class)
@@ -71,9 +71,6 @@ public class DragonFoodHandler {
 	@ConfigType(Item.class)
 	@ConfigOption(side = ConfigSide.SERVER, category = {"food", "sea_dragon"}, key = "seaDragon", comment = {"Dragon food formatting: mod_id:item_id:nutrition:saturation", "Nutrition / saturation values are optional as the human values will be used if missing.", "Saturation can be defined with decimals (e.g. 0.3)"})
 	public static List<String> seaDragonFoods = Arrays.asList("forge:raw_fishes:6:4", "minecraft:kelp:1:1", "minecraft:pufferfish:8:8", "dragonsurvival:sea_dragon_treat:4:8", "dragonsurvival:seasoned_fish:12:10", "dragonsurvival:golden_coral_pufferfish:12:14", "dragonsurvival:frozen_raw_fish:2:1", "dragonsurvival:golden_turtle_egg:15:12", "additionaldragons:slippery_sushi:10:8", "aoa3:raw_candlefish:9:9", "aoa3:raw_crimson_skipper:8:8", "aoa3:raw_fingerfish:4:4", "aoa3:raw_pearl_stripefish:5:4", "aoa3:raw_limefish:5:5", "aoa3:raw_sailback:6:5", "netherdepthsupgrade:soulsucker:6:7", "netherdepthsupgrade:obsidianfish:6:7", "netherdepthsupgrade:lava_pufferfish:8:7", "netherdepthsupgrade:searing_cod:6:7", "netherdepthsupgrade:glowdine:6:7", "netherdepthsupgrade:warped_kelp:2:2", "netherdepthsupgrade:lava_pufferfish_slice:2:2", "netherdepthsupgrade:glowdine_slice:2:2", "netherdepthsupgrade:soulsucker_slice:2:2", "netherdepthsupgrade:obsidianfish_slice:2:2", "netherdepthsupgrade:searing_cod_slice:2:2", "crittersandcompanions:clam:10:3", "aoa3:raw_golden_gullfish:10:2", "aoa3:raw_turquoise_stripefish:7:6", "aoa3:raw_violet_skipper:7:7", "aoa3:raw_rocketfish:4:10", "aoa3:raw_crimson_stripefish:8:7", "aoa3:raw_sapphire_strider:9:8", "aoa3:raw_dark_hatchetfish:9:9", "aoa3:raw_ironback:10:9", "aoa3:raw_rainbowfish:11:11", "aoa3:raw_razorfish:12:14", "alexsmobs:lobster_tail:4:5", "alexsmobs:blobfish:8:9", "oddwatermobs:raw_ghost_shark:8:8", "oddwatermobs:raw_isopod:4:2", "oddwatermobs:raw_mudskipper:6:7", "oddwatermobs:raw_coelacanth:9:10", "oddwatermobs:raw_anglerfish:6:6", "oddwatermobs:deep_sea_fish:4:2", "oddwatermobs:crab_leg:5:6", "simplefarming:raw_calamari:5:6", "unnamedanimalmod:elephantnose_fish:5:6", "unnamedanimalmod:flashlight_fish:5:6", "born_in_chaos_v1:sea_terror_eye:10:4", "born_in_chaos_v1:rotten_fish:4:2", "unnamedanimalmod:rocket_killifish:5:6", "unnamedanimalmod:leafy_seadragon:5:6", "unnamedanimalmod:elephantnose_fish:5:6", "betteranimalsplus:eel_meat_raw:5:6", "betteranimalsplus:calamari_raw:4:5", "betteranimalsplus:crab_meat_raw:4:4", "aquaculture:fish_fillet_raw:2:2", "aquaculture:goldfish:8:4", "aquaculture:algae:3:2", "betterendforge:end_fish_raw:6:7", "betterendforge:hydralux_petal:3:3", "betterendforge:charnia_green:2:2", "shroomed:raw_shroomfin:5:6", "undergarden:raw_gwibling:5:6", "bettas:betta_fish:4:5", "quark:crab_leg:4:4", "pamhc2foodextended:rawtofishitem", "fins:banded_redback_shrimp:6:1", "fins:night_light_squid:6:2", "fins:night_light_squid_tentacle:6:2", "fins:emerald_spindly_gem_crab:7:2", "fins:amber_spindly_gem_crab:7:2", "fins:rubby_spindly_gem_crab:7:2", "fins:sapphire_spindly_gem_crab:7:2", "fins:pearl_spindly_gem_crab:7:2", "fins:papa_wee:6:2", "fins:bugmeat:4:2", "fins:raw_golden_river_ray_wing:6:2", "fins:red_bull_crab_claw:4:4", "fins:white_bull_crab_claw:4:4", "fins:wherble_fin:1:1", "forbidden_arcanus:tentacle:5:2", "pneumaticcraft:raw_salmon_tempura:6:10", "rats:ratfish:4:2", "upgrade_aquatic:purple_pickerelweed:2:2", "upgrade_aquatic:blue_pickerelweed:2:2", "upgrade_aquatic:polar_kelp:2:2", "upgrade_aquatic:tongue_kelp:2:2", "upgrade_aquatic:thorny_kelp:2:2", "upgrade_aquatic:ochre_kelp:2:2", "upgrade_aquatic:lionfish:8:9", "aquaculture:sushi:6:5", "freshwarriors:fresh_soup:15:10", "freshwarriors:beluga_caviar:10:3", "freshwarriors:piranha:4:1", "freshwarriors:tilapia:4:1", "freshwarriors:stuffed_piranha:4:1", "freshwarriors:tigerfish:5:5", "freshwarriors:toe_biter_leg:3:3", "untamedwilds:egg_arowana:4:4", "untamedwilds:egg_trevally_jack:4:4", "untamedwilds:egg_trevally:4:4", "untamedwilds:egg_giant_salamander:6:4", "untamedwilds:egg_giant_salamander_hellbender:6:4", "untamedwilds:egg_giant_salamander_japanese:6:4", "untamedwilds:giant_clam:4:4", "untamedwilds:giant_clam_derasa:4:4", "untamedwilds:giant_clam_maxima:4:4", "untamedwilds:giant_clam_squamosa:4:4", "untamedwilds:egg_trevally_giant:6:4", "untamedwilds:egg_trevally:6:4", "untamedwilds:egg_trevally_bigeye:6:4", "untamedwilds:egg_sunfish:6:4", "untamedwilds:egg_sunfish_sunfish:6:4", "untamedwilds:egg_giant_clam_squamosa:6:4", "untamedwilds:egg_giant_clam_gigas:6:4", "untamedwilds:egg_giant_clam_derasa:6:4", "untamedwilds:egg_giant_clam:6:4", "untamedwilds:egg_football_fish:6:4", "untamedwilds:egg_arowana:6:4", "untamedwilds:egg_arowana_jardini:6:4", "untamedwilds:egg_arowana_green:6:4", "mysticalworld:raw_squid:6:5", "aquafina:fresh_soup:10:10", "aquafina:beluga_caviar:10:3", "aquafina:raw_piranha:4:1", "aquafina:raw_tilapia:4:1", "aquafina:stuffed_piranha:4:1", "aquafina:tigerfish:5:5", "aquafina:toe_biter_leg:3:3", "aquafina:raw_angelfish:4:1", "aquafina:raw_football_fish:4:1", "aquafina:raw_foxface_fish:4:1", "aquafina:raw_royal_gramma:4:1", "aquafina:raw_starfish:4:1", "aquafina:spider_crab_leg:4:1", "aquafina:raw_stingray_slice:4:1", "prehistoricfauna:raw_ceratodus:5:5", "prehistoricfauna:raw_cyclurus:4:4", "prehistoricfauna:raw_potamoceratodus:5:5", "prehistoricfauna:raw_myledaphus:4:4", "prehistoricfauna:raw_gar:4:4", "prehistoricfauna:raw_oyster:4:3", "prehistoric_delight:prehistoric_fillet:3:3", "seadwellers:rainbow_trout:10:10", "crittersandcompanions:koi_fish:5:5", "aquamirae:elodea:3:3", "croptopia:clam:3:3", "croptopia:calamari:2:3", "croptopia:anchovy:3:2", "croptopia:crab:6:8", "croptopia:glowing_calamari:4:5", "croptopia:oyster:2:4", "croptopia:roe:1:2", "croptopia:shrimp:2:2", "croptopia:tuna:6:4", "aquamirae:spinefish:4:4", "alexsmobs:flying_fish:6:4", "untamedwilds:egg_triggerfish:2:4", "untamedwilds:egg_catfish:2:4", "netherdepthsupgrade:eyeball:3:3", "netherdepthsupgrade:eyeball_fish:3:3", "oceansdelight:guardian:4:3", "oceansdelight:guardian_tail:1:3", "oceansdelight:cut_tentacles:3:1", "oceansdelight:tentacles:3:4", "oceansdelight:tentacle_on_a_stick:3:4", "oceansdelight:fugu_slice:5:4", "oceansdelight:elder_guardian_slice:8:6", "oceansdelight:elder_guardian_slab:15:15", "upgrade_aquatic:elder_eye:15:15", "unusualprehistory:golden_scau:15:15", "unusualprehistory:raw_scau:4:3", "unusualprehistory:raw_stetha:4:3", "unusualprehistory:stetha_eggs:4:3", "unusualprehistory:beelze_eggs:4:3", "unusualprehistory:scau_eggs:4:3", "unusualprehistory:ammon_eggs:4:3", "unusualprehistory:dunk_eggs:4:3", "netherdepthsupgrade:crimson_seagrass:2:2", "netherdepthsupgrade:crimson_kelp:2:2", "netherdepthsupgrade:warped_seagrass:2:2", "undergarden:glitterkelp:2:2", "enlightened_end:raw_stalker:10:4");
-
-	@ConfigOption(side = ConfigSide.SERVER, key = "foodHungerEffect", category = "food", comment = "Should eating wrong food items give hunger effect?")
-	public static boolean foodHungerEffect = true;
 
 	@ConfigType(Item.class)
 	@ConfigOption(side = ConfigSide.SERVER, key = "keepEffects", category = "food", comment = "Food items which should keep their effects even if they're not a valid food for the dragon (foodHungerEffect will be disabled for these items as well)")
@@ -128,11 +125,6 @@ public class DragonFoodHandler {
 
 	private static ConcurrentHashMap<Item, FoodProperties> buildDragonFoodMap(final AbstractDragonType type) {
 		ConcurrentHashMap<Item, FoodProperties> map = new ConcurrentHashMap<>();
-
-		if (!customDragonFoods) {
-			return map;
-		}
-
 		String[] foodConfiguration = new String[0];
 
 		if (DragonUtils.isDragonType(type, DragonTypes.CAVE)) {
@@ -207,7 +199,7 @@ public class DragonFoodHandler {
 			return new FoodProperties.Builder().nutrition(nutrition).saturationMod(saturation / (float) nutrition / 2.0F).build();
 		}
 
-		if (!customDragonFoods || type == null) {
+		if (type == null) {
 			return original;
 		}
 
@@ -421,7 +413,7 @@ public class DragonFoodHandler {
 	}
 
 	public static boolean isEdible(@NotNull final Item item, final AbstractDragonType type) {
-		if (customDragonFoods && type != null && DRAGON_FOODS != null && DRAGON_FOODS.get(type.getTypeName()).containsKey(item)) {
+		if (requireDragonFood && type != null && DRAGON_FOODS != null && DRAGON_FOODS.get(type.getTypeName()).containsKey(item)) {
 			return true;
 		}
 
@@ -429,7 +421,7 @@ public class DragonFoodHandler {
 	}
 
 	public static boolean isEdible(@NotNull final ItemStack stack, final AbstractDragonType type) {
-		if (customDragonFoods && type != null && DRAGON_FOODS != null && DRAGON_FOODS.get(type.getTypeName()).containsKey(stack.getItem())) {
+		if (requireDragonFood && type != null && DRAGON_FOODS != null && DRAGON_FOODS.get(type.getTypeName()).containsKey(stack.getItem())) {
 			return true;
 		}
 
@@ -441,31 +433,27 @@ public class DragonFoodHandler {
 	}
 
 	public static @Nullable FoodProperties getFoodProperties(@NotNull final ItemStack stack, @Nullable final AbstractDragonType type, @Nullable final LivingEntity entity) {
-		if (!customDragonFoods || type == null) {
-			return stack.getFoodProperties(entity);
+		if (type != null) {
+			FoodProperties dragonProperties = DRAGON_FOODS.get(type.getTypeName()).get(stack.getItem());
+
+			if (dragonProperties != null) {
+				return dragonProperties;
+			}
 		}
 
-		if (DRAGON_FOODS == null) {
-			rebuildFoodMap();
+		FoodProperties properties = stack.getFoodProperties(entity);
+
+		if (requireDragonFood && type != null && properties != null) {
+			return getBadFoodProperties();
 		}
 
-		FoodProperties properties = DRAGON_FOODS.get(type.getTypeName()).get(stack.getItem());
-
-		if (properties != null) {
-			return properties;
-		}
-
-		return stack.getFoodProperties(entity) != null ? getBadFoodProperties() : null;
+		return properties;
 	}
 
 	private static FoodProperties getBadFoodProperties() {
 		FoodProperties.Builder builder = new FoodProperties.Builder();
-
-		if (foodHungerEffect) {
-			builder.effect(() -> new MobEffectInstance(MobEffects.HUNGER, 600, 0), 1.0F);
-			builder.effect(() -> new MobEffectInstance(MobEffects.POISON, 600, 0), 0.5F);
-		}
-
+		builder.effect(() -> new MobEffectInstance(MobEffects.HUNGER, 600, 0), 1.0F);
+		builder.effect(() -> new MobEffectInstance(MobEffects.POISON, 600, 0), 0.5F);
 		builder.nutrition(1);
 		return builder.build();
 	}
