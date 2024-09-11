@@ -262,7 +262,7 @@ public class ClientDragonRender{
 				int eventLight = renderPlayerEvent.getPackedLight();
 				final MultiBufferSource renderTypeBuffer = renderPlayerEvent.getMultiBufferSource();
 
-				if (dragonNameTags) {
+				if (dragonNameTags && player != ClientProxy.getLocalPlayer()) {
 					RenderNameTagEvent renderNameplateEvent = new RenderNameTagEvent(player, player.getDisplayName(), playerRenderer, poseStack, renderTypeBuffer, eventLight, partialRenderTick);
 					MinecraftForge.EVENT_BUS.post(renderNameplateEvent);
 
