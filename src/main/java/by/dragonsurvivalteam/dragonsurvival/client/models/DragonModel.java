@@ -70,9 +70,9 @@ public class DragonModel extends GeoModel<DragonEntity> {
 		double headPitchAvg;
 		double yAccelAvg;
 		if(!ClientDragonRenderer.isOverridingMovementData) {
-			double bodyYawChange = Functions.angleDifference(md.bodyYawLastFrame, md.bodyYaw) * md.getTickFactor();
-			double headYawChange = Functions.angleDifference(md.headYawLastFrame, md.headYaw) * md.getTickFactor();
-			double headPitchChange = Functions.angleDifference(md.headPitchLastFrame, md.headPitch) * md.getTickFactor();
+			double bodyYawChange = Functions.angleDifference(md.bodyYaw, md.bodyYawLastFrame) * md.getTickFactor();
+			double headYawChange = Functions.angleDifference(md.headYaw, md.headYawLastFrame) * md.getTickFactor();
+			double headPitchChange = Functions.angleDifference(md.headPitch, md.headPitchLastFrame) * md.getTickFactor();
 
 			dragon.bodyYawHistory.add(bodyYawChange);
 			while (dragon.bodyYawHistory.size() > 10 * md.getTickFactor()) {

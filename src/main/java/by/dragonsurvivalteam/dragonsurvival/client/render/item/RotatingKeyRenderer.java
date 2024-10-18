@@ -10,8 +10,6 @@ import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.loading.math.MathParser;
 import software.bernie.geckolib.renderer.GeoItemRenderer;
 
-import java.lang.Math;
-
 public class RotatingKeyRenderer extends GeoItemRenderer<RotatingKeyItem> {
     public RotatingKeyRenderer() {
         super(new RotatingKeyModel());
@@ -33,7 +31,7 @@ public class RotatingKeyRenderer extends GeoItemRenderer<RotatingKeyItem> {
         Vector3f eulerAngles = new Vector3f();
         lookAtRot.getEulerAnglesZXY(eulerAngles);
 
-        eulerAngles.mul(180 / (float) Math.PI);
+        eulerAngles.mul(180 / (float) java.lang.Math.PI);
 
         MathParser.setVariable("query.x_rotation", () -> eulerAngles.x + 180);
         MathParser.setVariable("query.y_rotation", () -> eulerAngles.y - animatable.playerHoldingItem.getYRot() - 90);
