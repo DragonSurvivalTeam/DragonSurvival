@@ -38,6 +38,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec2;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -307,6 +308,7 @@ public class ClientProxy {
                     handler.setBite(message.bite());
                     handler.setFirstPerson(message.isFirstPerson());
                     handler.setFreeLook(message.isFreeLook());
+                    handler.setDesiredMoveVec(new Vec2(message.desiredMoveVecX(), message.desiredMoveVecY()));
                 });
             }
         }

@@ -35,6 +35,7 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.loading.FMLEnvironment;
@@ -115,11 +116,15 @@ public class DragonStateHandler extends EntityStateHandler {
 		movementData.bite = bite;
 	}
 
-	public void setMovementData(double bodyYaw, double headYaw, double headPitch, Vec3 deltaMovement, double realTimeDeltaTick) {
-		movementData.headYawLastFrame = movementData.headYaw;
-		movementData.bodyYawLastFrame = movementData.bodyYaw;
-		movementData.headPitchLastFrame = movementData.headPitch;
-		movementData.deltaMovementLastFrame = movementData.deltaMovement;
+    public void setDesiredMoveVec(Vec2 desiredMoveVec) {
+        movementData.desiredMoveVec = desiredMoveVec;
+    }
+
+    public void setMovementData(double bodyYaw, double headYaw, double headPitch, Vec3 deltaMovement, double realTimeDeltaTick) {
+        movementData.headYawLastFrame = movementData.headYaw;
+        movementData.bodyYawLastFrame = movementData.bodyYaw;
+        movementData.headPitchLastFrame = movementData.headPitch;
+        movementData.deltaMovementLastFrame = movementData.deltaMovement;
 
 		movementData.bodyYaw = bodyYaw;
 		movementData.headYaw = headYaw;

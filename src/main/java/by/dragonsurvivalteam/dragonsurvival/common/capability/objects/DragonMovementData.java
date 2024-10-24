@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.capability.objects;
 
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
 public class DragonMovementData{
@@ -19,6 +20,8 @@ public class DragonMovementData{
 	
 	public float prevXRot = 0;
 	public float prevZRot = 0;
+
+	public Vec2 desiredMoveVec = Vec2.ZERO;
 
 	public boolean isFirstPerson = false;
 	public boolean isFreeLook = false;
