@@ -20,7 +20,7 @@ public class VisionHandler {
     public static void removeLavaAndWaterFog(ViewportEvent.RenderFog event){
         if (hasLavaVision() && event.getCamera().getFluidInCamera() == FogType.LAVA) {
             event.setNearPlaneDistance(0);
-            event.setFarPlaneDistance(event.getRenderer().getRenderDistance() * 0.2f);
+            event.setFarPlaneDistance(event.getRenderer().getRenderDistance() * 0.5f);
             event.setCanceled(true);
         }
     }
