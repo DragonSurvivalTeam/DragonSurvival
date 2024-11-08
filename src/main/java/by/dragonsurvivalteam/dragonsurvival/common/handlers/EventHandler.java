@@ -69,7 +69,7 @@ public class EventHandler{
 				handler.altarCooldown--;
 			}
 
-			if (!ServerConfig.startWithDragonChoice || handler.hasUsedAltar || serverPlayer.tickCount > Functions.secondsToTicks(5)) {
+			if (!ServerConfig.startWithDragonChoice || handler.hasUsedAltar || serverPlayer.tickCount < Functions.secondsToTicks(5)) {
 				return;
 			}
 
