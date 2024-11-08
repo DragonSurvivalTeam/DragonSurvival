@@ -71,11 +71,11 @@ public class DragonAltarBlock extends Block{
 
 		DragonStateHandler handler = DragonUtils.getHandler(player);
 
-		if (handler.altarCooldown > 0) {
+		if (ServerConfig.altarUsageCooldown > 0 && handler.altarCooldown > 0) {
 			//Show the current cooldown in minutes and seconds in cases where the cooldown is set high in the config
-			int mins = (int) (Functions.ticksToMinutes(handler.altarCooldown));
-			int secs = (int) (Functions.ticksToSeconds(handler.altarCooldown - Functions.minutesToTicks(mins)));
-			player.sendSystemMessage(Component.translatable("ds.cooldown.active", (mins > 0 ? mins + "m" : "") + secs + (mins > 0 ? "s" : "")));
+			int minutes = (int) (Functions.ticksToMinutes(handler.altarCooldown));
+			int seconds = (int) (Functions.ticksToSeconds(handler.altarCooldown - Functions.minutesToTicks(minutes)));
+			player.sendSystemMessage(Component.translatable("ds.cooldown.active", (minutes > 0 ? minutes + "m " : "") + seconds + "s"));
 			return InteractionResult.FAIL;
 		} else {
 			NetworkHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new OpenDragonAltar());
