@@ -57,6 +57,7 @@ public class CompleteDataSync extends ISidedMessage<CompleteDataSync> {
 
 				AbstractDragonType oldType = handler.getType();
 				AbstractDragonBody oldBody = handler.getBody();
+				double oldSize = handler.getSize();
 
 				handler.readNBT(message.nbt);
 
@@ -66,6 +67,10 @@ public class CompleteDataSync extends ISidedMessage<CompleteDataSync> {
 
 				if (oldBody != handler.getBody()) {
 					DragonModifiers.updateBodyModifiers(player);
+				}
+
+				if (oldSize != handler.getSize()) {
+					DragonModifiers.updateSizeModifiers(player);
 				}
 
 				handler.getClawToolData().setClawsInventory(container); // TODO :: Why is the old state restored?
