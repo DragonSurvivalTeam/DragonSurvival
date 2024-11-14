@@ -91,12 +91,11 @@ public class DragonStateHandler extends EntityStateHandler {
 
 	/** Sets the size, health and base damage */
 	public void setSize(double size, final Player player) {
-		double oldSize = this.size;
 		setSize(size);
-		updateModifiers(size, player);
+		updateModifiers(player);
 	}
 
-	private void updateModifiers(double size, final Player player) {
+	private void updateModifiers(final Player player) {
 		if (isDragon()) {
 			// Grant the dragon attribute modifiers
 			DragonModifiers.updateSizeModifiers(player);
@@ -335,7 +334,8 @@ public class DragonStateHandler extends EntityStateHandler {
 	public void setType(final AbstractDragonType type, Player player) {
 		AbstractDragonType oldType = dragonType;
 		setType(type);
-		if (oldType != dragonType) {
+
+		if (!player.level().isClientSide() && oldType != dragonType) {
 			DragonModifiers.updateTypeModifiers(player);
 		}
 	}
@@ -361,7 +361,8 @@ public class DragonStateHandler extends EntityStateHandler {
 	public void setBody(final AbstractDragonBody body, Player player) {
 		AbstractDragonBody oldBody = dragonBody;
 		setBody(body);
-		if (oldBody != dragonBody) {
+
+		if (!player.level().isClientSide() && oldBody != dragonBody) {
 			DragonModifiers.updateBodyModifiers(player);
 		}
 	}
