@@ -85,19 +85,20 @@ public class DragonDoor extends Block implements SimpleWaterloggedBlock{
 	}
 
 	@Override
-	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos){
-		Part part = stateIn.getValue(PART);
-		//TODO
+	public @NotNull BlockState updateShape(BlockState stateIn, @NotNull Direction facing, @NotNull BlockState facingState, @NotNull LevelAccessor level, @NotNull BlockPos currentPos, @NotNull BlockPos facingPos) {
+        if (stateIn.getValue(WATERLOGGED)) {
+            level.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+        }
 
-		if(stateIn.getValue(WATERLOGGED)){
-			worldIn.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(worldIn));
-		}
+        if (facing.getAxis() == Direction.Axis.Y && stateIn.is(facingState.getBlock())) {
+            // Update the other door parts to match the changed door part
+            return stateIn.setValue(FACING, facingState.getValue(FACING))
+                    .setValue(OPEN, facingState.getValue(OPEN))
+                    .setValue(HINGE, facingState.getValue(HINGE))
+                    .setValue(POWERED, facingState.getValue(POWERED));
+        }
 
-		if(facing.getAxis() == Direction.Axis.Y && (part == Part.BOTTOM == (facing == Direction.UP) || part == Part.MIDDLE == (facing == Direction.UP))){
-			return facingState.getBlock() == this && facingState.getValue(PART) != part ? stateIn.setValue(FACING, facingState.getValue(FACING)).setValue(OPEN, facingState.getValue(OPEN)).setValue(HINGE, facingState.getValue(HINGE)).setValue(POWERED, facingState.getValue(POWERED)) : Blocks.AIR.defaultBlockState();
-		}else{
-			return part == Part.BOTTOM && facing == Direction.DOWN && !stateIn.canSurvive(worldIn, currentPos) ? Blocks.AIR.defaultBlockState() : super.updateShape(stateIn, facing, facingState, worldIn, currentPos, facingPos);
-		}
+        return canSurvive(stateIn, level, currentPos) ? super.updateShape(stateIn, facing, facingState, level, currentPos, facingPos) : Blocks.AIR.defaultBlockState();
 	}
 
 	@Override
