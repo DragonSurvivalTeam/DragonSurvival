@@ -51,9 +51,23 @@ public class HelpButton extends ExtendedButton {
 		float xSize = (float)(width + (variation == 0 ? 0 : 2)) / size;
 		float ySize = (float)(height + (variation == 0 ? 0 : 2)) / size;
 
-		int i = 0;
+		int offset = 0;
+
 		if (isHoveredOrFocused()) {
-			i += (int) (type == null ? 4 : (Objects.equals(type, DragonTypes.CAVE) ? 1 : Objects.equals(type, DragonTypes.FOREST) ? 2 : Objects.equals(type, DragonTypes.SEA) ? 3 : 4) * size);
+			int id;
+
+			if (type == null) {
+				id = 4;
+			} else {
+				id = switch (type.getTypeName()) {
+					case "cave" -> 1;
+					case "forest" -> 2;
+					case "sea" -> 3;
+					default -> 0;
+				};
+			}
+
+			offset += (int) (id * size);
 		}
 
 		guiGraphics.pose().pushPose();
@@ -61,9 +75,9 @@ public class HelpButton extends ExtendedButton {
 		guiGraphics.pose().scale(xSize, ySize, 0);
 
 		if (variation == 0) {
-			guiGraphics.blit(texture, getX(), getY(), 0, (float) i, 18, 18, 256, 256);
+			guiGraphics.blit(texture, getX(), getY(), 0, (float) offset, 18, 18, 256, 256);
 		} else {
-			guiGraphics.blit(texture, getX() - 1, getY() - 1, 18, (float) i, 22, 22, 256, 256);
+			guiGraphics.blit(texture, getX() - 1, getY() - 1, 18, (float) offset, 22, 22, 256, 256);
 		}
 
 		guiGraphics.pose().popPose();
