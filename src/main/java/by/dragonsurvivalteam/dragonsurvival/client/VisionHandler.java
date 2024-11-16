@@ -16,7 +16,7 @@ public class VisionHandler {
     private static boolean hadLavaVision;
     private static boolean hadWaterVision;
 
-    @SubscribeEvent
+    @SubscribeEvent(receiveCanceled = true)
     public static void removeLavaAndWaterFog(ViewportEvent.RenderFog event){
         if (hasLavaVision() && event.getCamera().getFluidInCamera() == FogType.LAVA) {
             event.setNearPlaneDistance(0);
