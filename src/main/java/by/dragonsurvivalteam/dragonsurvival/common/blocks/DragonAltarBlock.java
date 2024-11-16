@@ -1,14 +1,16 @@
 package by.dragonsurvivalteam.dragonsurvival.common.blocks;
 
 
-import by.dragonsurvivalteam.dragonsurvival.client.gui.DragonAltarGUI;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
+import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
+import by.dragonsurvivalteam.dragonsurvival.network.NetworkHandler;
+import by.dragonsurvivalteam.dragonsurvival.network.container.OpenDragonAltar;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -26,8 +28,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.network.PacketDistributor;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -62,28 +64,25 @@ public class DragonAltarBlock extends Block{
 	}
 
 	@Override
-	public InteractionResult use(BlockState blockState, Level worldIn, BlockPos blockPos, Player player, InteractionHand handIn, BlockHitResult p_225533_6_){
+	public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos position, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult result) {
+		if (!(player instanceof ServerPlayer serverPlayer)) {
+			return InteractionResult.SUCCESS;
+		}
+
 		DragonStateHandler handler = DragonUtils.getHandler(player);
 
-		if(handler.altarCooldown > 0){
-			if(worldIn.isClientSide){
-				//Show the current cooldown in minutes and seconds in cases where the cooldown is set high in the config
-				int mins = (int) (Functions.ticksToMinutes(handler.altarCooldown));
-				int secs = (int) (Functions.ticksToSeconds(handler.altarCooldown - Functions.minutesToTicks(mins)));
-				player.sendSystemMessage(Component.translatable("ds.cooldown.active", (mins > 0 ? mins + "m" : "") + secs + (mins > 0 ? "s" : "")));
-			}
+		if (ServerConfig.altarUsageCooldown > 0 && handler.altarCooldown > 0) {
+			//Show the current cooldown in minutes and seconds in cases where the cooldown is set high in the config
+			int minutes = (int) (Functions.ticksToMinutes(handler.altarCooldown));
+			int seconds = (int) (Functions.ticksToSeconds(handler.altarCooldown - Functions.minutesToTicks(minutes)));
+			player.sendSystemMessage(Component.translatable("ds.cooldown.active", (minutes > 0 ? minutes + "m " : "") + seconds + "s"));
+			return InteractionResult.FAIL;
+		} else {
+			NetworkHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new OpenDragonAltar());
+			handler.altarCooldown = Functions.secondsToTicks(ServerConfig.altarUsageCooldown);
+			handler.hasUsedAltar = true;
 			return InteractionResult.CONSUME;
-		}else{
-			if(worldIn.isClientSide){
-				openGUi();
-			}
 		}
-		return InteractionResult.SUCCESS;
-	}
-
-	@OnlyIn( Dist.CLIENT )
-	private void openGUi(){
-		Minecraft.getInstance().setScreen(new DragonAltarGUI());
 	}
 
 	@Override

@@ -55,7 +55,6 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Widget;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -506,9 +505,9 @@ public class DragonEditorScreen extends Screen {
 			addRenderableWidget(new DragonEditorSlotButton(width / 2 + 200 + 15, guiTop + (num - 1) * 12 + 5 + 30, num, this));
 		}
 
-		addRenderableWidget(new ExtendedCheckbox(width / 2 - 220, height - 25, 120, 17, 17, Component.translatable("ds.gui.dragon_editor.wings"), preset.skinAges.get(level).get().wings, p -> preset.skinAges.get(level).get().wings = p.selected()){
+		ExtendedCheckbox wingsCheckBox = new ExtendedCheckbox(width / 2 - 220, height - 25, 120, 17, 17, Component.translatable("ds.gui.dragon_editor.wings"), preset.skinAges.get(level).get().wings, p -> preset.skinAges.get(level).get().wings = p.selected()) {
 			@Override
-			public void renderButton(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTicks){
+			public void renderButton(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTicks) {
 				selected = preset.skinAges.get(level).get().wings;
 				super.renderButton(pPoseStack, pMouseX, pMouseY, pPartialTicks);
 			}
@@ -517,7 +516,10 @@ public class DragonEditorScreen extends Screen {
 			public List<Component> getTooltip() {
 				return List.of(Component.translatable("ds.gui.dragon_editor.wings.tooltip"));
 			}
-		});
+		};
+
+		addRenderableWidget(wingsCheckBox);
+
 		addRenderableWidget(new ExtendedCheckbox(width / 2 + 100, height - 25, 120, 17, 17, Component.translatable("ds.gui.dragon_editor.default_skin"), preset.skinAges.get(level).get().defaultSkin, p -> preset.skinAges.get(level).get().defaultSkin = p.selected()){
 			@Override
 			public void renderButton(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTicks){
@@ -612,6 +614,7 @@ public class DragonEditorScreen extends Screen {
 			doAction();
 			preset.skinAges.put(level, Lazy.of(()->new SkinAgeGroup(level, dragonType)));
 			handler.getSkinData().compileSkin();
+			wingsCheckBox.selected = true;
 			update();
 		}){
 			@Override

@@ -1,7 +1,11 @@
 package by.dragonsurvivalteam.dragonsurvival.network.syncing;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.dragon_types.AbstractDragonBody;
+import by.dragonsurvivalteam.dragonsurvival.common.dragon_types.AbstractDragonType;
 import by.dragonsurvivalteam.dragonsurvival.network.ISidedMessage;
+import by.dragonsurvivalteam.dragonsurvival.registry.DragonModifiers;
+import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -50,7 +54,25 @@ public class CompleteDataSync extends ISidedMessage<CompleteDataSync> {
 		context.enqueueWork(() -> {
 			DragonStateProvider.getCap(player).ifPresent(handler -> {
 				SimpleContainer container = handler.getClawToolData().getClawsInventory();
+
+				AbstractDragonType oldType = handler.getType();
+				AbstractDragonBody oldBody = handler.getBody();
+				double oldSize = handler.getSize();
+
 				handler.readNBT(message.nbt);
+
+				if (!DragonUtils.isDragonType(oldType, handler.getType())) {
+					DragonModifiers.updateTypeModifiers(player);
+				}
+
+				if (oldBody != handler.getBody()) {
+					DragonModifiers.updateBodyModifiers(player);
+				}
+
+				if (oldSize != handler.getSize()) {
+					DragonModifiers.updateSizeModifiers(player);
+				}
+
 				handler.getClawToolData().setClawsInventory(container); // TODO :: Why is the old state restored?
 			});
 
@@ -61,5 +83,6 @@ public class CompleteDataSync extends ISidedMessage<CompleteDataSync> {
 	@Override
 	public void runClient(final CompleteDataSync message, final NetworkEvent.Context context, final Player player) {
 		DragonStateProvider.getCap(player).ifPresent(handler -> handler.readNBT(message.nbt));
+		player.refreshDimensions();
 	}
 }

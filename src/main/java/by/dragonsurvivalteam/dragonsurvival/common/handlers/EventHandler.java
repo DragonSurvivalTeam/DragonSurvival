@@ -10,6 +10,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import by.dragonsurvivalteam.dragonsurvival.registry.DragonEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.DragonModifiers;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -60,25 +61,24 @@ public class EventHandler{
 
 	@SubscribeEvent
 	public static void playerTick(PlayerTickEvent event){
-		if(event.phase == Phase.START || !ServerConfig.startWithDragonChoice) return;
-		if(event.side == LogicalSide.CLIENT) return;
-
-		if(event.player instanceof ServerPlayer player){
-			if(player.isDeadOrDying()) return;
-
-			if(player.tickCount > 5 * 20){
-				DragonStateProvider.getCap(player).ifPresent(cap -> {
-					if(!cap.hasUsedAltar && !DragonUtils.isDragon(player)){
-						NetworkHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new OpenDragonAltar());
-						cap.hasUsedAltar = true;
-					}
-
-					if(cap.altarCooldown > 0){
-						cap.altarCooldown--;
-					}
-				});
-			}
+		if (event.phase == Phase.START || !(event.player instanceof ServerPlayer serverPlayer) || serverPlayer.isDeadOrDying()) {
+			return;
 		}
+
+		DragonStateProvider.getCap(serverPlayer).ifPresent(handler -> {
+			if (handler.altarCooldown > 0) {
+				handler.altarCooldown--;
+			}
+
+			if (!ServerConfig.startWithDragonChoice || handler.hasUsedAltar || serverPlayer.tickCount < Functions.secondsToTicks(5)) {
+				return;
+			}
+
+			if (!handler.isDragon()) {
+				NetworkHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new OpenDragonAltar());
+				handler.hasUsedAltar = true;
+			}
+		});
 	}
 
 	static int cycle = 0;
