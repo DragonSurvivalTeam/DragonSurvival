@@ -86,6 +86,13 @@ public class ServerFlightHandler{
 	@ConfigOption(side = ConfigSide.SERVER, category = "wings", key = "stableHover", comment = "Should hovering be completely stable similar to creative flight?")
 	public static boolean stableHover = false;
 
+	@ConfigOption(side = ConfigSide.SERVER, category = "wings", key = "unlimitedFlightAcceleration", comment = "Old flight physics with infinite acceleration (bug). Can cause server lags and feel too fast.")
+	public static Boolean unlimitedFlightAcceleration = false;
+
+	@ConfigRange(min = 0, max = 60)
+	@ConfigOption(side = ConfigSide.SERVER, category = "wings", key = "levitationAfterEffect", comment = "For how many seconds wings are disabled after the levitation effect has ended")
+	public static Integer levitationAfterEffect = 3;
+
 	/**
 	 * Sets the fall damage based on flight speed and dragon's size
 	 */

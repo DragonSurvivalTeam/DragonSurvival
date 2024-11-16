@@ -24,7 +24,6 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.Input;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -57,13 +56,6 @@ import java.util.concurrent.TimeUnit;
 @Mod.EventBusSubscriber(Dist.CLIENT)
 @SuppressWarnings("unused")
 public class ClientFlightHandler {
-	@ConfigOption(side = ConfigSide.SERVER, category = "wings", key = "unlimitedFlightAcceleration", comment = "Old flight physics with infinite acceleration (bug). Can cause server lags and feel too fast.")
-	public static Boolean unlimitedFlightAcceleration = false;
-
-	@ConfigRange(min = 0, max = 60)
-	@ConfigOption(side = ConfigSide.SERVER, category = "wings", key = "levitationAfterEffect", comment = "For how many seconds wings are disabled after the levitation effect has ended")
-	public static Integer levitationAfterEffect = 3;
-
 	@ConfigOption(side = ConfigSide.CLIENT, category = "flight", key = "notifyWingStatus", comment = "Notifies of wing status in chat message")
 	public static Boolean notifyWingStatus = false;
 
@@ -280,7 +272,7 @@ public class ClientFlightHandler {
 					- call `player.resetFallDistance()` when the levitation effect is applied (MobEffectEvent.Added)
 					- add a check in ServerFlightHandler#changeFallDistance
 				*/
-				levitationLeft = Functions.secondsToTicks(levitationAfterEffect);
+				levitationLeft = Functions.secondsToTicks(ServerFlightHandler.levitationAfterEffect);
 			} else if (levitationLeft > 0) {
 				// TODO :: Set to 0 once ground is reached?
 				if (event.phase == Phase.END) {
@@ -399,7 +391,7 @@ public class ClientFlightHandler {
 									if (ServerFlightHandler.isGliding(player)) {
 										if (viewVector.y < 0) {
 											deltaMovement = deltaMovement.add(ax, 0, az);
-										} else if (Math.abs(horizontalMovement) > 0.4 || unlimitedFlightAcceleration) {
+										} else if (Math.abs(horizontalMovement) > 0.4 || ServerFlightHandler.unlimitedFlightAcceleration) {
 											deltaMovement = deltaMovement.add(ax, ay, az);
 										} else {
 											deltaMovement = deltaMovement.add(ax, ay * horizontalMovement, az);
