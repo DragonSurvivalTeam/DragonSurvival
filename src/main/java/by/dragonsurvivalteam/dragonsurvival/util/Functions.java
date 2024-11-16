@@ -50,6 +50,148 @@ public class Functions{
 	}
 
 	/**
+	 * Returns a signed angle delta between a and b within the range [-180..180), returning the shorter distance.
+	 * <br/>
+	 * a + return value = b
+	 *
+	 * @param a First angle
+	 * @param b Second angle
+	 * @return Delta between angles
+	 */
+	public static double angleDifference(double a, double b) {
+		return Mth.wrapDegrees(b - a);
+	}
+
+	/**
+	 * Clamps value (as degrees) to be within +-halfRange of center.
+	 * <br/>
+	 * Returns a wrapped value in the range -180..180, snapping towards the closer of the bounds.
+	 * Prefers snapping towards the positive direction (CW for Minecraft yaw).
+	 *
+	 * @param value     Input angle
+	 * @param center    Center angle of the range arc
+	 * @param halfRange Half of the range arc. <= 0 always returns center, >= 180 always returns value (wrapped).
+	 * @return Value, limited to be within +-halfRange of center.
+	 */
+	public static double limitAngleDelta(double value, double center, double halfRange) {
+		if (halfRange <= 0) return Mth.wrapDegrees(center);
+		if (halfRange >= 180) return Mth.wrapDegrees(value);
+
+		var delta = angleDifference(center, value);
+		delta = Mth.clamp(delta, -halfRange, halfRange);
+
+		return center + delta;
+	}
+
+	/** From 1.21 GeckoLib */
+	public static double lerpYaw(double delta, double start, double end) {
+		start = Mth.wrapDegrees(start);
+		end = Mth.wrapDegrees(end);
+		double diff = start - end;
+		end = diff > 180 || diff < -180 ? start + Math.copySign(360 - Math.abs(diff), diff) : end;
+
+		return Mth.lerp(delta, start, end);
+	}
+
+
+	/**
+	 * Instead of strictly limiting the angle, this enforces a soft spring-like limit.
+	 *
+	 * @param value     Input angle
+	 * @param center    Center angle of the range arc
+	 * @param halfRange Half of the range arc. <= 0 always returns center, >= 180 always returns value (wrapped).
+	 * @param pullCoeff Pull coefficient. Clamped to 0..1 (no limit..hard limit)
+	 * @return Value, limited to be within +-halfRange of center.
+	 * @see Functions#limitAngleDelta(double, double, double)
+	 */
+	public static double limitAngleDeltaSoft(double value, double center, double halfRange, double pullCoeff) {
+		pullCoeff = Mth.clamp(pullCoeff, 0, 1);
+		var targetAngle = limitAngleDelta(value, center, halfRange);
+		return lerpYaw(pullCoeff, value, targetAngle);
+	}
+
+	/**
+	 * Lerps from start to end, but making sure to avoid a particular angle, potentially taking a longer path.
+	 *
+	 * @param t          Lerp factor
+	 * @param start      Start angle
+	 * @param end        End angle
+	 * @param avoidAngle Angle to be avoided - the lerp will pass through the other arc.
+	 * @return Linearly interpolated angle
+	 */
+	public static double lerpAngleAwayFrom(double t, double start, double end, double avoidAngle) {
+		if (Math.abs(Mth.wrapDegrees(avoidAngle - end)) < 0.0001) {
+			// You're trying to go to the same angle that you're trying to avoid - too bad!
+			return lerpYaw(t, start, end);
+		}
+
+		start = Mth.wrapDegrees(start);
+		end = Mth.wrapDegrees(end);
+		double diff = Mth.wrapDegrees(end - start);
+		double avoidDiff = Mth.wrapDegrees(avoidAngle - start);
+		var flipDir = Math.signum(diff) == Math.signum(avoidDiff) && Math.abs(diff) > Math.abs(avoidDiff);
+
+		if (flipDir) {
+			diff = Math.copySign(360 - Math.abs(diff), -diff);
+		}
+
+		return Mth.wrapDegrees(start + diff * t);
+	}
+
+	/**
+	 * Inverse of lerp - the `t` from lerp(t, start, end). Not clamped.
+	 * @param value Input value
+	 * @param start Range start
+	 * @param end Range end
+	 * @return Normalized position of value between start and end, not clamped (extrapolated). 0 at start, 1 at end.
+	 * Divides by zero when start == end - will return an infinity or NaN.
+	 */
+	public static double inverseLerp(double value, double start, double end) {
+		return (value - start) / (end - start);
+	}
+	/**
+	 * Inverse of lerp - the `t` from lerp(t, start, end). Clamped to 0..1.
+	 * @param value Input value
+	 * @param start Range start
+	 * @param end Range end
+	 * @return Normalized position of value between start and end, clamped to 0..1.
+	 * Divides by zero when start == end - will return an infinity or NaN.
+	 */
+	public static double inverseLerpClamped(double value, double start, double end) {
+		return Mth.clamp(inverseLerp(value, start, end), 0, 1);
+	}
+
+	/**
+	 * Inverse of lerp - the `t` from lerp(t, start, end). Clamped to 0..1. Returns 0 if start == end.
+	 * @param value Input value
+	 * @param start Range start
+	 * @param end Range end
+	 * @return Normalized position of value between start and end, clamped to 0..1.
+	 * Does NOT divide by zero when start == end, and falls back to 0.
+	 */
+	public static double inverseLerpClampedSafe(double value, double start, double end) {
+		// We specifically care about the difference being 0, as that's relevant for the division here
+		// Floats are weird, this might not be the same as start == end; hopefully this works
+		return start - end == 0 ? 0 : inverseLerpClamped(value, start, end);
+	}
+
+	/**
+	 * Adds a deadzone to value, normalizing it within ranges -maxRange..-deadzone and deadzone..maxRange.
+	 * <br/>
+	 * When value is between -deadzone..deadzone, the output is 0.
+	 * When within the negative or positive range from deadzone to maxRange, the output is an inverse lerp
+	 * between -1..0 and 0..1 respectively.
+	 * The result is clamped to -1..1
+	 * @param value Input value
+	 * @param deadzone Minimum in both directions - deadzone
+	 * @param maxRange Maximum in both directions
+	 * @return Clamped inverse lerp of value between -maxRange..maxRange, with 0 offset by deadzone.
+	 */
+	public static double deadzoneNormalized(double value, double deadzone, double maxRange) {
+		return Math.copySign(inverseLerpClamped(Math.abs(value), deadzone, maxRange), value);
+	}
+
+	/**
 	 * Returns a new NBTTagList filled with the specified floats
 	 */
 	public static ListTag newFloatList(float... pNumbers) {

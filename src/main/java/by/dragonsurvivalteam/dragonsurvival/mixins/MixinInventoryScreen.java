@@ -35,17 +35,17 @@ public abstract class MixinInventoryScreen extends EffectRenderingInventoryScree
 			double headYaw = handler.getMovementData().headYaw;
 			double headPitch = handler.getMovementData().headPitch;
 
-			double lastBodyYaw = handler.getMovementData().bodyYawLastTick;
-			double lastHeadYaw = handler.getMovementData().headYawLastTick;
-			double lastHeadPitch = handler.getMovementData().headPitchLastTick;
+			double lastBodyYaw = handler.getMovementData().bodyYawLastFrame;
+			double lastHeadYaw = handler.getMovementData().headYawLastFrame;
+			double lastHeadPitch = handler.getMovementData().headPitchLastFrame;
 
 			handler.getMovementData().bodyYaw = player.yBodyRot;
 			handler.getMovementData().headYaw = 0;
 			handler.getMovementData().headPitch = 0;
 
-			handler.getMovementData().bodyYawLastTick = player.yBodyRot;
-			handler.getMovementData().headYawLastTick = player.yHeadRot;
-			handler.getMovementData().headPitchLastTick = player.xRot;
+			handler.getMovementData().bodyYawLastFrame = player.yBodyRot;
+			handler.getMovementData().headYawLastFrame = player.yHeadRot;
+			handler.getMovementData().headPitchLastFrame = player.xRot;
 
 			RenderSystem.runAsFancy(runnable);
 
@@ -53,9 +53,9 @@ public abstract class MixinInventoryScreen extends EffectRenderingInventoryScree
 			handler.getMovementData().headYaw = headYaw;
 			handler.getMovementData().headPitch = headPitch;
 
-			handler.getMovementData().bodyYawLastTick = lastBodyYaw;
-			handler.getMovementData().headYawLastTick = lastHeadYaw;
-			handler.getMovementData().headPitchLastTick = lastHeadPitch;
+			handler.getMovementData().bodyYawLastFrame = lastBodyYaw;
+			handler.getMovementData().headYawLastFrame = lastHeadYaw;
+			handler.getMovementData().headPitchLastFrame = lastHeadPitch;
 		} else {
 			RenderSystem.runAsFancy(runnable);
 		}

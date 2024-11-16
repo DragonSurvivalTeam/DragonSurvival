@@ -13,10 +13,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.container.*;
 import by.dragonsurvivalteam.dragonsurvival.network.dragon_editor.SyncDragonSkinSettings;
 import by.dragonsurvivalteam.dragonsurvival.network.dragon_editor.SyncPlayerSkinPreset;
 import by.dragonsurvivalteam.dragonsurvival.network.emotes.SyncEmote;
-import by.dragonsurvivalteam.dragonsurvival.network.flight.RequestSpinResync;
-import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncFlightSpeed;
-import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncFlyingStatus;
-import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncSpinStatus;
+import by.dragonsurvivalteam.dragonsurvival.network.flight.*;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.*;
 import by.dragonsurvivalteam.dragonsurvival.network.player.*;
 import by.dragonsurvivalteam.dragonsurvival.network.status.*;
@@ -37,7 +34,8 @@ public class NetworkHandler{
 
 		//Generic packets
 		register(SynchronizeDragonCap.class, new SynchronizeDragonCap());
-		register(PacketSyncCapabilityMovement.class, new PacketSyncCapabilityMovement());
+		register(SyncDragonMovement.class, new SyncDragonMovement());
+		register(SyncDeltaMovement.class, new SyncDeltaMovement());
 		register(SyncDragonTypeData.class, new SyncDragonTypeData());
 		register(SyncChatEvent.class, new SyncChatEvent());
 		register(PlayerJumpSync.class, new PlayerJumpSync());
