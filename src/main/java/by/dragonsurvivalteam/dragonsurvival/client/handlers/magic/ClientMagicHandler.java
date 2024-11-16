@@ -111,7 +111,7 @@ public class ClientMagicHandler{
 		}
 	}
 
-	@SubscribeEvent
+	@SubscribeEvent(receiveCanceled = true)
 	public static void removeLavaAndWaterFog(ViewportEvent.RenderFog event){
 		LocalPlayer player = Minecraft.getInstance().player;
 		DragonStateProvider.getCap(player).ifPresent(cap -> {
