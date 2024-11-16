@@ -20,7 +20,6 @@ public class ArrowButton extends Button {
 		RenderSystem.setShaderTexture(0, texture);
 
 		stack.pushPose();
-		stack.translate(0, 0, 0);
 		float xSize = (float)width / 34F;
 		float ySize = (float)height / 34F;
 

@@ -2,8 +2,8 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.dragon_editor.buttons;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvivalMod;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.dragon_editor.DragonEditorScreen;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.utils.TooltipProvider;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.CopyEditorSettingsComponent;
-import by.dragonsurvivalteam.dragonsurvival.client.util.TooltipRendering;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -13,7 +13,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.gui.widget.ExtendedButton;
 
-public class CopySettingsButton extends ExtendedButton{
+import java.util.List;
+
+public class CopySettingsButton extends ExtendedButton implements TooltipProvider {
+	private static final Component tooltip = Component.translatable("ds.gui.dragon_editor.copy");
 
 	private final DragonEditorScreen screen;
 	public boolean toggled;
@@ -48,11 +51,6 @@ public class CopySettingsButton extends ExtendedButton{
 	}
 
 	@Override
-	public void renderToolTip(PoseStack p_230443_1_, int p_230443_2_, int p_230443_3_){
-		TooltipRendering.drawHoveringText(p_230443_1_, Component.translatable("ds.gui.dragon_editor.copy"), p_230443_2_, p_230443_3_);
-	}
-
-	@Override
 	public void renderButton(PoseStack mStack, int mouseX, int mouseY, float partial){}
 
 	@Override
@@ -83,5 +81,10 @@ public class CopySettingsButton extends ExtendedButton{
 		}
 
 		toggled = !toggled;
+	}
+
+	@Override
+	public List<Component> getTooltip() {
+		return List.of(tooltip);
 	}
 }

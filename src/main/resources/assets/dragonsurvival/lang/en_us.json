@@ -148,6 +148,7 @@
   "effect.dragonsurvival.wings_sea.description": "Wings of the sea dragon. You can assign the flight activation to another key.",
   "effect.dragonsurvival.source_of_magic.description": "Gives the dragon inexhaustible mana to use magic.",
   "effect.dragonsurvival.royal_departure.description": "Despawns creatures with the royal_departure_affected tag when the effect ends. By default these are princes and princesses.",
+  "command.dragonsurvival.failure.open_editor_as_non_dragon": "The dragon editor can only be opened as a dragon.",
   "death.attack.starDrain": "%1$s had their life and energy drained by magic.",
   "death.attack.starDrain.player": "%1$s had their life and energy drained by magic while trying to escape %2$s.",
   "death.attack.waterBurn": "%1$s tried to swim in water.",

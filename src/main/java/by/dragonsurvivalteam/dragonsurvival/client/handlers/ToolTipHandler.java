@@ -252,10 +252,6 @@ public class ToolTipHandler{
 		int texWidth = 128;
 		int texHeight = 128;
 
-		matrix.pushPose();
-		//RenderSystem.enableBlend();
-		matrix.translate(0, 0, 710.0);
-
 		Gui.blit(matrix, x - 8 - 6, y - 8 - 6, 1, 1 % texHeight, 16, 16, texWidth, texHeight);
 		Gui.blit(matrix, x + width - 8 + 6, y - 8 - 6, texWidth - 16 - 1, 1 % texHeight, 16, 16, texWidth, texHeight);
 
@@ -264,9 +260,6 @@ public class ToolTipHandler{
 
 		Gui.blit(matrix, x + width / 2 - 47, y - 16, 16 + 2 * texWidth + 1, 1 % texHeight, 94, 16, texWidth, texHeight);
 		Gui.blit(matrix, x + width / 2 - 47, y + height, 16 + 2 * texWidth + 1, 1 % texHeight + 16, 94, 16, texWidth, texHeight);
-
-		//RenderSystem.disableBlend();
-		matrix.popPose();
 	}
 
 	private static boolean isHelpText(){

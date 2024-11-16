@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvivalMod;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.utils.TooltipProvider;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
@@ -12,9 +13,10 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.gui.ScreenUtils;
 
+import java.util.List;
 import java.util.function.Consumer;
 
-public class ExtendedCheckbox extends Checkbox{
+public class ExtendedCheckbox extends Checkbox implements TooltipProvider {
 	public static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation(DragonSurvivalMod.MODID, "textures/gui/textbox.png");
 	final ResourceLocation TEXTURE = new ResourceLocation(DragonSurvivalMod.MODID, "textures/gui/checkbox.png");
 	private final int renderWidth;
@@ -83,5 +85,10 @@ public class ExtendedCheckbox extends Checkbox{
 			pMatrixStack.popPose();
 		}
 		pMatrixStack.popPose();
+	}
+
+	@Override
+	public List<Component> getTooltip() {
+		return List.of();
 	}
 }

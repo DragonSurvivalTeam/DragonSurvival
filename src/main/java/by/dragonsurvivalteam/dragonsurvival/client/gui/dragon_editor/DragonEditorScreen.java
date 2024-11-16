@@ -4,7 +4,9 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvivalMod;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.DragonAltarGUI;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.SkinsScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.dragon_editor.buttons.*;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.utils.TooltipProvider;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.ColorSelectorButton;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.TooltipButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.UndoRedoButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.ArrowButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.DropDownButton;
@@ -22,7 +24,6 @@ import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.Sk
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.SkinPreset.SkinAgeGroup;
 import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayerUtils;
 import by.dragonsurvivalteam.dragonsurvival.client.util.TextRenderUtil;
-import by.dragonsurvivalteam.dragonsurvival.client.util.TooltipRendering;
 import by.dragonsurvivalteam.dragonsurvival.commands.DragonCommand;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
@@ -51,6 +52,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -176,7 +178,7 @@ public class DragonEditorScreen extends Screen {
 	}
 
 	@Override
-	public void render(PoseStack stack, int pMouseX, int pMouseY, float pPartialTicks){
+	public void render(PoseStack stack, int mouseX, int mouseY, float pPartialTicks){
 		if (dragonRender == null) {
 			// TODO :: Can happen with the dragon-editor command before using the altar first
 			init();
@@ -200,16 +202,13 @@ public class DragonEditorScreen extends Screen {
 
 		FakeClientPlayerUtils.getFakePlayer(0, handler).animationSupplier = () -> animations[curAnimation];
 
-		stack.pushPose();
-		stack.translate(0, 0, -600);
 		renderBackground(stack);
-		children().stream().filter(DragonUIRenderComponent.class::isInstance).toList().forEach(s -> ((DragonUIRenderComponent)s).render(stack, pMouseX, pMouseY, pPartialTicks));
-		stack.popPose();
+		children().stream().filter(DragonUIRenderComponent.class::isInstance).toList().forEach(s -> ((DragonUIRenderComponent)s).render(stack, mouseX, mouseY, pPartialTicks));
 
 		DragonAltarGUI.renderBorders(stack, backgroundTexture, 0, width, 32, height - 32, width, height);
 
 		stack.pushPose();
-		stack.translate(0, 0, 300);
+		stack.translate(0, 0, 100);
 
 		TextRenderUtil.drawCenteredScaledText(stack, width / 2, 10, 2f, title.getString(), DyeColor.WHITE.getTextColor());
 
@@ -226,18 +225,25 @@ public class DragonEditorScreen extends Screen {
 			SkinsScreen.drawNonShadowLineBreak(stack, font, Component.empty().append(WordUtils.capitalize(animations[curAnimation].replace("_", " "))), width / 2, height / 2 + 72 - 20, DyeColor.GRAY.getTextColor());
 		}
 
-		for(Widget widget : new CopyOnWriteArrayList<>(renderables)){
-			widget.render(stack, pMouseX, pMouseY, pPartialTicks);
-		}
+		stack.popPose();
 
-		for(int x = 0; x < children.size(); ++x){
-			GuiEventListener ch = children.get(x);
-			if(!(ch instanceof DragonUIRenderComponent)){
-				((Widget)ch).render(stack, pMouseX, pMouseY, pPartialTicks);
+		List<Component> tooltip = null;
+
+		for (Widget widget : new CopyOnWriteArrayList<>(renderables)) {
+			widget.render(stack, mouseX, mouseY, pPartialTicks);
+
+			if (widget instanceof AbstractWidget abstractWidget && widget instanceof TooltipProvider provider && abstractWidget.isMouseOver(mouseX, mouseY)) {
+				List<Component> elementTooltip = provider.getTooltip();
+
+				if (!elementTooltip.isEmpty()) {
+					tooltip = elementTooltip;
+				}
 			}
 		}
 
-		stack.popPose();
+		if (tooltip != null) {
+			renderTooltip(stack, tooltip, Optional.empty(), mouseX, mouseY);
+		}
 	}
 
 	public SkinPreset save(){
@@ -506,9 +512,10 @@ public class DragonEditorScreen extends Screen {
 				selected = preset.skinAges.get(level).get().wings;
 				super.renderButton(pPoseStack, pMouseX, pMouseY, pPartialTicks);
 			}
+
 			@Override
-			public void renderToolTip(PoseStack p_230443_1_, int p_230443_2_, int p_230443_3_){
-				TooltipRendering.drawHoveringText(p_230443_1_, Component.translatable("ds.gui.dragon_editor.wings.tooltip"), p_230443_2_, p_230443_3_);
+			public List<Component> getTooltip() {
+				return List.of(Component.translatable("ds.gui.dragon_editor.wings.tooltip"));
 			}
 		});
 		addRenderableWidget(new ExtendedCheckbox(width / 2 + 100, height - 25, 120, 17, 17, Component.translatable("ds.gui.dragon_editor.default_skin"), preset.skinAges.get(level).get().defaultSkin, p -> preset.skinAges.get(level).get().defaultSkin = p.selected()){
@@ -519,12 +526,12 @@ public class DragonEditorScreen extends Screen {
 			}
 
 			@Override
-			public void renderToolTip(PoseStack p_230443_1_, int p_230443_2_, int p_230443_3_){
-				TooltipRendering.drawHoveringText(p_230443_1_, Component.translatable("ds.gui.dragon_editor.default_skin.tooltip"), p_230443_2_, p_230443_3_);
+			public List<Component> getTooltip() {
+				return List.of(Component.translatable("ds.gui.dragon_editor.default_skin.tooltip"));
 			}
 		});
 
-		addRenderableWidget(new ExtendedButton(width / 2 - 75 - 10, height - 25, 75, 20, Component.translatable("ds.gui.dragon_editor.save"), null){
+		addRenderableWidget(new TooltipButton(width / 2 - 75 - 10, height - 25, 75, 20, Component.translatable("ds.gui.dragon_editor.save"), null){
 			Widget renderButton;
 			boolean toggled;
 
@@ -579,12 +586,12 @@ public class DragonEditorScreen extends Screen {
 			}
 
 			@Override
-			public void renderToolTip(PoseStack pPoseStack, int pMouseX, int pMouseY){
-				TooltipRendering.drawHoveringText(pPoseStack, Component.translatable("ds.gui.dragon_editor.tooltip.done"), pMouseX, pMouseY);
+			public List<Component> getTooltip() {
+				return List.of(Component.translatable("ds.gui.dragon_editor.tooltip.done"));
 			}
 		});
 
-		addRenderableWidget(new ExtendedButton(width / 2 + 10, height - 25, 75, 20, Component.translatable("ds.gui.dragon_editor.back"), null){
+		addRenderableWidget(new TooltipButton(width / 2 + 10, height - 25, 75, 20, Component.translatable("ds.gui.dragon_editor.back"), null){
 			@Override
 			public void renderButton(PoseStack mStack, int mouseX, int mouseY, float partial){
 				super.renderButton(mStack, mouseX, mouseY, partial);
@@ -596,31 +603,31 @@ public class DragonEditorScreen extends Screen {
 			}
 
 			@Override
-			public void renderToolTip(PoseStack pPoseStack, int pMouseX, int pMouseY){
-				TooltipRendering.drawHoveringText(pPoseStack, Component.translatable("ds.gui.dragon_editor.tooltip.back"), pMouseX, pMouseY);
+			public List<Component> getTooltip() {
+				return List.of(Component.translatable("ds.gui.dragon_editor.tooltip.back"));
 			}
 		});
 
-		addRenderableWidget(new ExtendedButton(guiLeft + 290, 11, 18, 18, Component.empty(), btn -> {
+		addRenderableWidget(new TooltipButton(guiLeft + 290, 11, 18, 18, Component.empty(), btn -> {
 			doAction();
 			preset.skinAges.put(level, Lazy.of(()->new SkinAgeGroup(level, dragonType)));
 			handler.getSkinData().compileSkin();
 			update();
 		}){
 			@Override
-			public void renderToolTip(PoseStack p_230443_1_, int p_230443_2_, int p_230443_3_){
-				TooltipRendering.drawHoveringText(p_230443_1_, Component.translatable("ds.gui.dragon_editor.reset"), p_230443_2_, p_230443_3_);
-			}
-
-			@Override
 			public void renderButton(PoseStack stack, int p_230431_2_, int p_230431_3_, float p_230431_4_){
 				RenderSystem.setShaderTexture(0, new ResourceLocation(DragonSurvivalMod.MODID, "textures/gui/reset_button.png"));
 				blit(stack, x, y, 0, 0, width, height, width, height);
 			}
+
+			@Override
+			public List<Component> getTooltip() {
+				return List.of(Component.translatable("ds.gui.dragon_editor.reset"));
+			}
 		});
 
 
-		addRenderableWidget(new ExtendedButton(guiLeft + 260, 11, 18, 18, Component.empty(), btn -> {
+		addRenderableWidget(new TooltipButton(guiLeft + 260, 11, 18, 18, Component.empty(), btn -> {
 			doAction();
 
 			ArrayList<String> extraKeys = DragonEditorHandler.getKeys(FakeClientPlayerUtils.getFakePlayer(0, handler), EnumSkinLayer.EXTRA);
@@ -680,48 +687,45 @@ public class DragonEditorScreen extends Screen {
 			update();
 		}){
 			@Override
-			public void renderToolTip(PoseStack p_230443_1_, int p_230443_2_, int p_230443_3_){
-				TooltipRendering.drawHoveringText(p_230443_1_, Component.translatable("ds.gui.dragon_editor.random"), p_230443_2_, p_230443_3_);
-			}
-
-			@Override
 			public void renderButton(PoseStack stack, int p_230431_2_, int p_230431_3_, float p_230431_4_){
 				RenderSystem.setShaderTexture(0, new ResourceLocation(DragonSurvivalMod.MODID, "textures/gui/random_icon.png"));
 				blit(stack, x, y, 0, 0, width, height, width, height);
 			}
+
+			@Override
+			public List<Component> getTooltip() {
+				return List.of(Component.translatable("ds.gui.dragon_editor.random"));
+			}
 		});
 
-		addRenderableWidget(new UndoRedoButton(guiLeft + 318, 11, 18, 18, false, s -> {
-			undoAction();
-		}){
-			@Override
-			public void renderToolTip(PoseStack p_230443_1_, int p_230443_2_, int p_230443_3_){
-				TooltipRendering.drawHoveringText(p_230443_1_, Component.translatable("ds.gui.dragon_editor.undo"), p_230443_2_, p_230443_3_);
-			}
-
+		// TODO :: render them with a different texture (brighter?) if if they're active
+		addRenderableWidget(new UndoRedoButton(guiLeft + 318, 11, 18, 18, false, s -> undoAction()){
 			@Override
 			public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTicks){
 				active = UNDO_QUEUES.containsKey(currentSelected) && UNDO_QUEUES.get(currentSelected).size() > 0;
 				super.render(pPoseStack, pMouseX, pMouseY, pPartialTicks);
 			}
+
+			@Override
+			public List<Component> getTooltip() {
+				return List.of(Component.translatable("ds.gui.dragon_editor.undo"));
+			}
 		});
 
-		addRenderableWidget(new UndoRedoButton(guiLeft + 340, 11, 18, 18, true, s -> {
-			redoAction();
-		}){
-			@Override
-			public void renderToolTip(PoseStack p_230443_1_, int p_230443_2_, int p_230443_3_){
-				TooltipRendering.drawHoveringText(p_230443_1_, Component.translatable("ds.gui.dragon_editor.redo"), p_230443_2_, p_230443_3_);
-			}
-
+		addRenderableWidget(new UndoRedoButton(guiLeft + 340, 11, 18, 18, true, s -> redoAction()){
 			@Override
 			public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTicks){
 				active = REDO_QUEUES.containsKey(currentSelected) && REDO_QUEUES.get(currentSelected).size() > 0;
 				super.render(pPoseStack, pMouseX, pMouseY, pPartialTicks);
 			}
+
+			@Override
+			public List<Component> getTooltip() {
+				return List.of(Component.translatable("ds.gui.dragon_editor.redo"));
+			}
 		});
 
-		addRenderableWidget(new ExtendedButton(width / 2 + 213, guiTop + 10, 18, 18, Component.empty(), p -> {}){
+		addRenderableWidget(new TooltipButton(width / 2 + 213, guiTop + 10, 18, 18, Component.empty(), p -> {}){
 			@Override
 			public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTicks){
 				active = visible = showUi;
@@ -734,41 +738,15 @@ public class DragonEditorScreen extends Screen {
 			}
 
 			@Override
-			public void renderToolTip(PoseStack p_230443_1_, int p_230443_2_, int p_230443_3_){
-				TooltipRendering.drawHoveringText(p_230443_1_, Component.translatable("ds.gui.dragon_editor.save_slot"), p_230443_2_, p_230443_3_);
-			}
+			public void renderButton(PoseStack mStack, int mouseX, int mouseY, float partial){}
 
 			@Override
-			public void renderButton(PoseStack mStack, int mouseX, int mouseY, float partial){}
+			public List<Component> getTooltip() {
+				return List.of(Component.translatable("ds.gui.dragon_editor.save_slot"));
+			}
 		});
 
 		addRenderableWidget(new CopySettingsButton(this, guiLeft + 230, 11, 18, 18, Component.empty(), p -> {}));
-
-		/*addRenderableWidget(new ExtendedButton(dragonRender.x + dragonRender.width - 17, dragonRender.y + dragonRender.height + 3, 15, 15, Component.empty(), btn -> {
-			dragonRender.yRot = -3;
-			dragonRender.xRot = -5;
-			dragonRender.xOffset = 0;
-			dragonRender.yOffset = 0;
-			dragonRender.zoom = (float)(level.size * preset.sizeMul);
-		}){
-			@Override
-			public void renderToolTip(PoseStack p_230443_1_, int p_230443_2_, int p_230443_3_){
-				TooltipRendering.drawHoveringText(p_230443_1_, Component.translatable("ds.gui.dragon_editor.reset"), p_230443_2_, p_230443_3_);
-			}
-
-			@Override
-			public void renderButton(PoseStack stack, int p_230431_2_, int p_230431_3_, float p_230431_4_){
-				RenderSystem.setShaderTexture(0, new ResourceLocation(DragonSurvivalMod.MODID, "textures/gui/reset_position_button.png"));
-				blit(stack, x, y, 0, 0, width, height, width, height);
-			}
-
-			@Override
-			public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTicks){
-				active = visible = showUi;
-				super.render(pPoseStack, pMouseX, pMouseY, pPartialTicks);
-			}
-		});*/
-
 		addRenderableWidget(new ExtendedCheckbox(guiLeft - 15, 11, 40, 18, 18, Component.translatable("ds.gui.dragon_editor.show_ui"), showUi, p -> showUi = p.selected()));
 		addRenderableWidget(new BackgroundColorButton(guiLeft - 45, 11, 18, 18, Component.empty(), s -> {}, this));
 		addRenderableWidget(new HelpButton(dragonType, guiLeft - 75, 11, 15, 15, "ds.help.customization", 1));

@@ -72,14 +72,6 @@ public class ColorSelectorButton extends ExtendedButton{
 	}
 
 	@Override
-	public void renderButton(PoseStack mStack, int mouseX, int mouseY, float partial){
-		mStack.pushPose();
-		mStack.translate(0, 0, 100);
-		super.renderButton(mStack, mouseX, mouseY, partial);
-		mStack.popPose();
-	}
-
-	@Override
 	public void onPress(){
 		Texture text = DragonEditorHandler.getSkin(FakeClientPlayerUtils.getFakePlayer(0, screen.handler), layer, screen.preset.skinAges.get(screen.level).get().layerSettings.get(layer).get().selectedSkin, screen.handler.getType());
 

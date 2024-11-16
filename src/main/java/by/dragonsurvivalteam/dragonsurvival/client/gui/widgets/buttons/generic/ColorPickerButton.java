@@ -30,11 +30,8 @@ public class ColorPickerButton extends ExtendedButton{
 	@Override
 	public void renderButton(PoseStack mStack, int mouseX, int mouseY, float partial){
 		RenderingUtils.renderColorSquare(mStack, x, y, width, height);
-		mStack.pushPose();
-		mStack.translate(0, 0, 200);
 		RenderingUtils.fill(mStack, x + selectorX - 2, y + selectorY - 2, x + selectorX + 2, y + selectorY + 2, Color.black.getRGB());
 		RenderingUtils.fill(mStack, x + selectorX - 1, y + selectorY - 1, x + selectorX + 1, y + selectorY + 1, getColor().getRGB());
-		mStack.popPose();
 	}
 
 	public Color getColor(){

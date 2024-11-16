@@ -8,6 +8,7 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.client.ForgeHooksClient;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +28,7 @@ public class TooltipRendering{
 		}
 
 		Optional<TooltipComponent> tooltipImage = itemStack.getTooltipImage();
-		List<ClientTooltipComponent> list = net.minecraftforge.client.ForgeHooksClient.gatherTooltipComponents(itemStack, textLines, tooltipImage, x, Math.min(x + 200, screen.width), screen.height, null, font);
+		List<ClientTooltipComponent> list = ForgeHooksClient.gatherTooltipComponents(itemStack, textLines, tooltipImage, x, Math.min(x + 200, screen.width), screen.height, null, font);
 		screen.renderTooltipInternal(poseStack, list, x, y);
 	}
 

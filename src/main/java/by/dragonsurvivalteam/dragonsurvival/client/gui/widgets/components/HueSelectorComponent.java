@@ -198,14 +198,11 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
 					isHovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
 					float value1 = (hueSlider.getValueInt() + 180) / 360f;
 
-					mStack.pushPose();
 					int col1 = Color.getHSBColor(value1, 1f, 0f).getRGB();
 					int col2 = Color.getHSBColor(value1, 1f, 1f).getRGB();
 
 					RenderingUtils.drawGradientRect(mStack.last().pose(), 200, x, y, x + width, y + height, new int[]{col2, col1, col1, col2});
-					mStack.translate(0, 0, 200);
 					renderBg(mStack, Minecraft.getInstance(), mouseX, mouseY);
-					mStack.popPose();
 				}
 			}
 		};

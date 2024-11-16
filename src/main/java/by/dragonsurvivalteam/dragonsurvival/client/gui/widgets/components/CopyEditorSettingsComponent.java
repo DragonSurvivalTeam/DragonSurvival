@@ -49,13 +49,10 @@ public class CopyEditorSettingsComponent extends AbstractContainerEventHandler i
 		confirm = new ExtendedButton(x + xSize / 2 - 18, y + ySize - 15, 15, 15, Component.empty(), null){
 			@Override
 			public void renderButton(PoseStack mStack, int mouseX, int mouseY, float partial){
-				mStack.pushPose();
-				mStack.translate(0, 0, 100);
 				setMessage(Component.empty());
 				super.renderButton(mStack, mouseX, mouseY, partial);
 				RenderSystem.setShaderTexture(0, DragonAltarGUI.CONFIRM_BUTTON);
 				blit(mStack, x + 1, y, 0, 0, 15, 15, 15, 15);
-				mStack.popPose();
 
 				if(isHovered){
 					TooltipRendering.drawHoveringText(mStack, Component.translatable("ds.gui.dragon_editor.tooltip.done"), mouseX, mouseY);
@@ -100,13 +97,10 @@ public class CopyEditorSettingsComponent extends AbstractContainerEventHandler i
 		cancel = new ExtendedButton(x + xSize / 2 + 3, y + ySize - 15, 15, 15, Component.empty(), null){
 			@Override
 			public void renderButton(PoseStack mStack, int mouseX, int mouseY, float partial){
-				mStack.pushPose();
-				mStack.translate(0, 0, 100);
 				setMessage(Component.empty());
 				super.renderButton(mStack, mouseX, mouseY, partial);
 				RenderSystem.setShaderTexture(0, DragonAltarGUI.CANCEL_BUTTON);
 				blit(mStack, x, y, 0, 0, 15, 15, 15, 15);
-				mStack.popPose();
 
 				if(isHovered){
 					TooltipRendering.drawHoveringText(mStack, Component.translatable("ds.gui.dragon_editor.tooltip.cancel"), mouseX, mouseY);
