@@ -17,6 +17,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawRender;
 import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawsMenu;
 import by.dragonsurvivalteam.dragonsurvival.network.dragon_editor.SyncDragonSkinSettings;
 import by.dragonsurvivalteam.dragonsurvival.network.dragon_editor.SyncPlayerSkinPreset;
+import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncDeltaMovement;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncFlightSpeed;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncFlyingStatus;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncSpinStatus;
@@ -33,6 +34,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.network.NetworkEvent;
@@ -133,6 +135,19 @@ public class ClientProxy {
                     handler.getSkinData().skinPreset = message.preset;
                     handler.getSkinData().compileSkin();
                 });
+            }
+        }
+    }
+
+    public static void handleSyncDeltaMovement(final SyncDeltaMovement message) {
+        Player localPlayer = Minecraft.getInstance().player;
+
+        if (localPlayer != null) {
+            Entity entity = localPlayer.level.getEntity(message.playerId);
+
+            // Local player already has the correct values of themselves
+            if (entity instanceof Player player && player != localPlayer) {
+                player.setDeltaMovement(message.speedX, message.speedY, message.speedZ);
             }
         }
     }
@@ -273,14 +288,19 @@ public class ClientProxy {
         }
     }
 
-    public static void handlePacketSyncCapabilityMovement(final PacketSyncCapabilityMovement message) {
+    public static void handlePacketSyncCapabilityMovement(final SyncDragonMovement message) {
         Player localPlayer = Minecraft.getInstance().player;
 
         if (localPlayer != null) {
             Entity entity = localPlayer.level.getEntity(message.playerId);
 
             if (entity instanceof Player player) {
-                DragonStateProvider.getCap(player).ifPresent(handler -> handler.setMovementData(message.bodyYaw, message.headYaw, message.headPitch, message.bite));
+                DragonStateProvider.getCap(player).ifPresent(handler -> {
+                    handler.setBite(message.bite);
+                    handler.setFirstPerson(message.isFirstPerson);
+                    handler.setFreeLook(message.isFreeLook);
+                    handler.setDesiredMoveVec(new Vec2(message.desiredMoveVecX, message.desiredMoveVecY));
+                });
             }
         }
     }

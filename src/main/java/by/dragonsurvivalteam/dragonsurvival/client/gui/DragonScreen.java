@@ -7,7 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.D
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.DSImageButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HelpButton;
 import by.dragonsurvivalteam.dragonsurvival.client.handlers.ClientEvents;
-import by.dragonsurvivalteam.dragonsurvival.client.handlers.KeyInputHandler;
+import by.dragonsurvivalteam.dragonsurvival.client.handlers.Keybind;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
@@ -353,7 +353,7 @@ public class DragonScreen extends EffectRenderingInventoryScreen<DragonContainer
 	public boolean keyPressed(int p_231046_1_, int p_231046_2_, int p_231046_3_){
 		InputConstants.Key mouseKey = InputConstants.getKey(p_231046_1_, p_231046_2_);
 
-		if(KeyInputHandler.DRAGON_INVENTORY.isActiveAndMatches(mouseKey)){
+		if(Keybind.DRAGON_INVENTORY.isActiveAndMatches(mouseKey)){
 			onClose();
 			return true;
 		}

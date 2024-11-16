@@ -2,7 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.magic.abilities.ForestDragon.active
 
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvivalMod;
-import by.dragonsurvivalteam.dragonsurvival.client.handlers.KeyInputHandler;
+import by.dragonsurvivalteam.dragonsurvival.client.handlers.Keybind;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.dragon_types.AbstractDragonType;
 import by.dragonsurvivalteam.dragonsurvival.common.dragon_types.DragonTypes;
@@ -127,12 +127,12 @@ public class SpikeAbility extends InstantCastAbility{
 		ArrayList<Component> components = super.getInfo();
 		components.add(Component.translatable("ds.skill.damage", getDamage()));
 
-		if(!KeyInputHandler.ABILITY2.isUnbound()){
+		if(!Keybind.ABILITY2.isUnbound()){
 
-			String key = KeyInputHandler.ABILITY2.getKey().getDisplayName().getString().toUpperCase(Locale.ROOT);
+			String key = Keybind.ABILITY2.getKey().getDisplayName().getString().toUpperCase(Locale.ROOT);
 
 			if(key.isEmpty()){
-				key = KeyInputHandler.ABILITY2.getKey().getDisplayName().getString();
+				key = Keybind.ABILITY2.getKey().getDisplayName().getString();
 			}
 			components.add(Component.translatable("ds.skill.keybind", key));
 		}

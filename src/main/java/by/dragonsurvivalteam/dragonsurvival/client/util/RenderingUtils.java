@@ -9,10 +9,6 @@ import com.mojang.math.Matrix4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import org.lwjgl.opengl.GL11;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.builder.ILoopType;
-import software.bernie.geckolib3.core.controller.AnimationController;
 
 import java.awt.Color;
 
@@ -315,23 +311,5 @@ public class RenderingUtils{
 		tesselator.end();
 		GL11.glDisable(GL11.GL_LINE_SMOOTH);
 		RenderSystem.disableBlend();
-	}
-
-	public static <E extends IAnimatable> void addAnimation(AnimationBuilder builder, String animationName, ILoopType loopType, float transitionLength, AnimationController<E> controller){
-		builder.addAnimation(animationName, loopType);
-		controller.transitionLengthTicks = transitionLength;
-	}
-
-	public static <E extends IAnimatable> void setAnimationSpeed(double speed, double currentAnimationTick, AnimationController<E> controller) {
-
-		if(speed == controller.animationSpeed) {
-			return;
-		}
-
-		if(controller.getCurrentAnimation() != null) {
-			double distance = currentAnimationTick - controller.tickOffset;
-			controller.tickOffset = currentAnimationTick - distance * (controller.animationSpeed / speed);
-			controller.animationSpeed = speed;
-		}
 	}
 }

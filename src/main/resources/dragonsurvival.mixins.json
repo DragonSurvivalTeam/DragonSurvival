@@ -5,20 +5,20 @@
   "plugin": "by.dragonsurvivalteam.dragonsurvival.mixins.ApplyMixinPlugin",
   "refmap": "dragonsurvival.refmap.json",
   "mixins": [
+    "AccessorMolangParser",
     "MixinBlock",
     "MixinEnchantmentHelper",
     "MixinEntity",
-    "MixinBlock",
     "MixinInventory",
     "MixinItem",
     "MixinLivingEntity",
+    "MixinPlayerEnd",
     "MixinPlayerEntity",
     "MixinPlayerStart",
-    "MixinPlayerEnd",
     "MixinServerPlayerGameMode",
     "MixinSleepStatus",
-    "tool_swap.MixinServerPlayerGameModeStart",
-    "tool_swap.MixinServerPlayerGameModeEnd"
+    "tool_swap.MixinServerPlayerGameModeEnd",
+    "tool_swap.MixinServerPlayerGameModeStart"
   ],
   "client": [
     "AccessorEntityRenderer",
@@ -33,8 +33,8 @@
     "MixinItemInHandRenderer",
     "MixinLiquidBlockRenderer",
     "MixinWorldRenderer",
-    "tool_swap.MixinMultiPlayerGameModeStart",
-    "tool_swap.MixinMultiPlayerGameModeEnd"
+    "tool_swap.MixinMultiPlayerGameModeEnd",
+    "tool_swap.MixinMultiPlayerGameModeStart"
   ],
   "minVersion": "0.8"
 }
