@@ -508,7 +508,7 @@ public class ClientFlightHandler {
 			return;
 		}
 
-		if(KeyInputHandler.SPIN_ABILITY.getKey().getValue() == keyInputEvent.getButton()){
+		if(Keybind.SPIN_ABILITY.getKey().getValue() == keyInputEvent.getButton()){
 			spinKeybind(player, handler);
 		}
 	}
@@ -539,7 +539,7 @@ public class ClientFlightHandler {
 		boolean currentState = handler.isWingsSpread();
 		Vec3 lookVec = player.getLookAngle();
 
-		if(KeyInputHandler.SPIN_ABILITY.getKey().getValue() == keyInputEvent.getKey()){
+		if(Keybind.SPIN_ABILITY.getKey().getValue() == keyInputEvent.getKey()){
 			spinKeybind(player, handler);
 		}
 
@@ -562,7 +562,7 @@ public class ClientFlightHandler {
 			}
 		}
 
-		if(KeyInputHandler.TOGGLE_WINGS.consumeClick()){
+		if(Keybind.TOGGLE_WINGS.consumeClick()){
 			if(handler.hasFlight()){
 				//Allows toggling the wings if food level is above 0, player is creative, wings are already enabled (allows disabling even when hungry) or if config options is turned on
 				if(!player.hasEffect(DragonEffects.TRAPPED) && (player.getFoodData().getFoodLevel() > ServerFlightHandler.flightHungerThreshold || player.isCreative() || currentState || ServerFlightHandler.allowFlyingWithoutHunger)){

@@ -1,9 +1,8 @@
 package by.dragonsurvivalteam.dragonsurvival.magic.common.active;
 
-import by.dragonsurvivalteam.dragonsurvival.client.handlers.KeyInputHandler;
+import by.dragonsurvivalteam.dragonsurvival.client.handlers.Keybind;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonConfigHandler;
-import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
@@ -19,10 +18,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.TargetingFunctions;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -32,7 +28,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -241,11 +236,11 @@ public abstract class BreathAbility extends ChannelingCastAbility implements ISe
 		components.add(Component.translatable("ds.skill.damage", getDamage()));
 		components.add(Component.translatable("ds.skill.range.blocks", range));
 
-		if (!KeyInputHandler.ABILITY1.isUnbound()) {
-			String key = KeyInputHandler.ABILITY1.getKey().getDisplayName().getString().toUpperCase(Locale.ROOT);
+		if (!Keybind.ABILITY1.isUnbound()) {
+			String key = Keybind.ABILITY1.getKey().getDisplayName().getString().toUpperCase(Locale.ROOT);
 
 			if (key.isEmpty()) {
-				key = KeyInputHandler.ABILITY1.getKey().getDisplayName().getString();
+				key = Keybind.ABILITY1.getKey().getDisplayName().getString();
 			}
 
 			components.add(Component.translatable("ds.skill.keybind", key));
