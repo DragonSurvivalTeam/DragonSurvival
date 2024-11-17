@@ -10,11 +10,8 @@ import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.RawAnimation;
 
 public class AnimationUtils {
-    /** Arbitrary scaling to match the frametime minecraft reports (roughly) at 60FPS */
-    private static final float FRAMETIME_FOR_60FPS = 0.3f;
-
-    /** Time in MS for the default tickrate */
-    public static final float DEFAULT_TICKRATE = 0.05f;
+    private static final float MS_FOR_60FPS = 1.f / 60.f * 1000.f;
+    private static final float MS_PER_TICK = 1000f / 20f;
 
     public static RawAnimation createAnimation(@Nullable final RawAnimation builder, @NotNull final RawAnimation staticAnimation) {
         if (builder == null) {
@@ -52,7 +49,8 @@ public class AnimationUtils {
     }
 
     public static float getDeltaTickFor60FPS() {
-        return Minecraft.getInstance().getDeltaFrameTime() / FRAMETIME_FOR_60FPS;
+        float deltaTick = Minecraft.getInstance().getDeltaFrameTime();
+        return deltaTick / (MS_FOR_60FPS / MS_PER_TICK);
     }
 
     public static float getRealtimeDeltaTicks() {
