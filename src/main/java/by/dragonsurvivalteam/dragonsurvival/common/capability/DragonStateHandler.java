@@ -38,6 +38,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 public class DragonStateHandler extends EntityStateHandler {
+	public static final int NO_ENTITY = -1;
+
 	public final Supplier<SubCap>[] caps = new Supplier[]{this::getSkinData, this::getMagicData, this::getEmoteData, this::getClawToolData, this::getVillageRelationShips};
 
     /** Used in {@link by.dragonsurvivalteam.dragonsurvival.mixins.MixinPlayerStart} and {@link by.dragonsurvivalteam.dragonsurvival.mixins.MixinPlayerEnd} */
@@ -51,7 +53,7 @@ public class DragonStateHandler extends EntityStateHandler {
 	 * Since {@link Player#hasCorrectToolForDrops(BlockState)} has its own swap<br>
 	 * Which would close the swap of {@link net.minecraft.server.level.ServerPlayerGameMode#destroyBlock(BlockPos)}
 	 */
-	public int toolSwapLayer = 0;
+	public int toolSwapLayer;
 
 	public boolean hasFlown;
 	public boolean growing = true;
@@ -64,7 +66,7 @@ public class DragonStateHandler extends EntityStateHandler {
 	public boolean hasUsedAltar;
 
     /** Last timestamp the server synchronized the player */
-    public int lastSync = 0;
+    public int lastSync;
 
 
 	private final DragonMovementData movementData = new DragonMovementData(0, 0, 0, false);
@@ -78,7 +80,7 @@ public class DragonStateHandler extends EntityStateHandler {
 	private AbstractDragonType dragonType;
 	private AbstractDragonBody dragonBody;
 
-	private int passengerId;
+	private int passengerId = NO_ENTITY;
 	private boolean isHiding;
 	private boolean hasFlight;
 	private boolean areWingsSpread;
