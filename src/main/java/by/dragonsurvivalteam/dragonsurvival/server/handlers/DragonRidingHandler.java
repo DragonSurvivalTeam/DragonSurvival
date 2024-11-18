@@ -55,47 +55,49 @@ public class DragonRidingHandler{
 	}
 
 	@SubscribeEvent
-	public static void onServerPlayerTick(TickEvent.PlayerTickEvent event){ // TODO: Find a better way of doing this.
-		if(!(event.player instanceof ServerPlayer player)){
+	public static void onServerPlayerTick(TickEvent.PlayerTickEvent event) {
+		if (!(event.player instanceof ServerPlayer player)) {
 			return;
 		}
-		DragonStateProvider.getCap(player).ifPresent(dragonStateHandler -> {
-			int passengerId = dragonStateHandler.getPassengerId();
-			Entity passenger = player.level().getEntity(passengerId);
+
+		DragonStateProvider.getCap(player).ifPresent(handler -> {
+			Entity passenger = player.level().getEntity(handler.getPassengerId());
 			boolean stopRiding = false;
-			if(!dragonStateHandler.isDragon() && player.isVehicle() && player.getPassengers().get(0) instanceof ServerPlayer){
-				stopRiding = true;
-				player.getPassengers().get(0).stopRiding();
-				player.connection.send(new ClientboundSetPassengersPacket(player));
-			}else if(player.isSpectator() && passenger != null && player.getPassengers().get(0) instanceof ServerPlayer){
-				stopRiding = true;
-				player.getPassengers().get(0).stopRiding();
-				player.connection.send(new ClientboundSetPassengersPacket(player));
-			}else if(dragonStateHandler.isDragon() && dragonStateHandler.getSize() < 40 && player.isVehicle() && player.getPassengers().get(0) instanceof ServerPlayer){
-				stopRiding = true;
-				player.getPassengers().get(0).stopRiding();
-				player.connection.send(new ClientboundSetPassengersPacket(player));
-			}else if(player.isSleeping() && player.isVehicle() && player.getPassengers().get(0) instanceof ServerPlayer){
-				stopRiding = true;
-				player.getPassengers().get(0).stopRiding();
-				player.connection.send(new ClientboundSetPassengersPacket(player));
+
+			if (!(passenger instanceof ServerPlayer)) {
+				return;
 			}
-			if(passenger instanceof ServerPlayer){
-				DragonStateHandler passengerCap = DragonUtils.getHandler(passenger);
-				if(passengerCap.isDragon() && passengerCap.getLevel() != DragonLevel.NEWBORN){
+
+			if (!handler.isDragon()) {
+				stopRiding = true;
+			} else if (player.isSpectator()) {
+				stopRiding = true;
+			} else if (handler.isDragon() && handler.getSize() < 40) {
+				stopRiding = true;
+			} else if (player.isSleeping()) {
+				stopRiding = true;
+			}
+
+			if (!stopRiding) {
+				DragonStateHandler passengerHandler = DragonUtils.getHandler(passenger);
+
+				if (passengerHandler.isDragon() && passengerHandler.getLevel() != DragonLevel.NEWBORN) {
 					stopRiding = true;
-					passenger.stopRiding();
-					player.connection.send(new ClientboundSetPassengersPacket(player));
-				}else if(passenger.getRootVehicle() != player.getRootVehicle()){
+				} else if (passenger.getRootVehicle() != player.getRootVehicle()) {
 					stopRiding = true;
-					passenger.stopRiding();
-					player.connection.send(new ClientboundSetPassengersPacket(player));
+				} else if (passenger.isSpectator()) {
+					stopRiding = true;
 				}
 			}
 
-			if (stopRiding || passenger != null && (!player.hasPassenger(passenger) || player.isSpectator() || passenger.isSpectator())) {
-				dragonStateHandler.setPassengerId(0);
-				NetworkHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new SynchronizeDragonCap(player.getId(), dragonStateHandler.isHiding(), dragonStateHandler.getType(), dragonStateHandler.getBody(), dragonStateHandler.getSize(), dragonStateHandler.hasFlight(), 0));
+			if (stopRiding) {
+				passenger.stopRiding();
+				player.connection.send(new ClientboundSetPassengersPacket(player));
+			}
+
+			if (stopRiding || !player.hasPassenger(passenger)) {
+				handler.setPassengerId(0);
+				NetworkHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new SynchronizeDragonCap(player.getId(), handler.isHiding(), handler.getType(), handler.getBody(), handler.getSize(), handler.hasFlight(), 0));
 			}
 		});
 	}
