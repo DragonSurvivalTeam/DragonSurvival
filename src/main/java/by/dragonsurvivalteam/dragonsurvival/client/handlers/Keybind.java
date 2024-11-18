@@ -6,7 +6,6 @@ import by.dragonsurvivalteam.dragonsurvival.network.NetworkHandler;
 import by.dragonsurvivalteam.dragonsurvival.network.container.OpenDragonInventory;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncDragonAbilitySlot;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
-import com.mojang.blaze3d.platform.InputConstants.Type;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -19,7 +18,7 @@ import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
 
 @Mod.EventBusSubscriber( Dist.CLIENT )
-public class KeyInputHandler{
+public class Keybind {
 
 	public static KeyMapping TOGGLE_WINGS;
 	public static KeyMapping DRAGON_INVENTORY;

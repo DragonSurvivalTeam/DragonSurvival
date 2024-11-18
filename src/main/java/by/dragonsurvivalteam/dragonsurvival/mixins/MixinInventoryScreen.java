@@ -27,38 +27,41 @@ public abstract class MixinInventoryScreen extends EffectRenderingInventoryScree
 	}
 
 	@Redirect( method = "renderEntityInInventoryRaw(IIIFFLnet/minecraft/world/entity/LivingEntity;)V", at = @At( value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;runAsFancy(Ljava/lang/Runnable;)V" ) )
-	private static void dragonScreenEntityRender(Runnable p_runAsFancy_0_){
+	private static void dragonScreenEntityRender(Runnable runnable){
 		LocalPlayer player = Minecraft.getInstance().player;
 		if(DragonStateProvider.getCap(player).isPresent() && DragonUtils.getHandler(player).isDragon()){
-			DragonStateProvider.getCap(player).ifPresent(dragonStateHandler -> {
-				double bodyYaw = dragonStateHandler.getMovementData().bodyYaw;
-				double headYaw = dragonStateHandler.getMovementData().headYaw;
-				double headPitch = dragonStateHandler.getMovementData().headPitch;
+			DragonStateProvider.getCap(player).ifPresent(handler -> {
+				if (handler.isDragon()) {
+					double bodyYaw = handler.getMovementData().bodyYaw;
+					double headYaw = handler.getMovementData().headYaw;
+					double headPitch = handler.getMovementData().headPitch;
 
-				double lastBodyYaw = dragonStateHandler.getMovementData().bodyYawLastTick;
-				double lastHeadYaw = dragonStateHandler.getMovementData().headYawLastTick;
-				double lastHeadPitch = dragonStateHandler.getMovementData().headPitchLastTick;
 
-				dragonStateHandler.getMovementData().bodyYaw = player.yBodyRot;
-				dragonStateHandler.getMovementData().headYaw = 0;
-				dragonStateHandler.getMovementData().headPitch = 0;
+					double lastBodyYaw = handler.getMovementData().bodyYawLastFrame;
+					double lastHeadYaw = handler.getMovementData().headYawLastFrame;
+					double lastHeadPitch = handler.getMovementData().headPitchLastFrame;
 
-				dragonStateHandler.getMovementData().bodyYawLastTick = player.yBodyRot;
-				dragonStateHandler.getMovementData().headYawLastTick = player.yHeadRot;
-				dragonStateHandler.getMovementData().headPitchLastTick = player.xRot;
+					handler.getMovementData().bodyYawLastFrame = player.yBodyRot;
+					handler.getMovementData().headYawLastFrame = player.yHeadRot;
+					handler.getMovementData().headPitchLastFrame = player.xRot;
 
-				RenderSystem.runAsFancy(p_runAsFancy_0_);
+					handler.getMovementData().bodyYaw = bodyYaw;
+					handler.getMovementData().headYaw = headYaw;
+					handler.getMovementData().headPitch = headPitch;
 
-				dragonStateHandler.getMovementData().bodyYaw = bodyYaw;
-				dragonStateHandler.getMovementData().headYaw = headYaw;
-				dragonStateHandler.getMovementData().headPitch = headPitch;
+					handler.getMovementData().bodyYaw = bodyYaw;
+					handler.getMovementData().headYaw = headYaw;
+					handler.getMovementData().headPitch = headPitch;
 
-				dragonStateHandler.getMovementData().bodyYawLastTick = lastBodyYaw;
-				dragonStateHandler.getMovementData().headYawLastTick = lastHeadYaw;
-				dragonStateHandler.getMovementData().headPitchLastTick = lastHeadPitch;
+					handler.getMovementData().bodyYawLastFrame = lastBodyYaw;
+					handler.getMovementData().headYawLastFrame = lastHeadYaw;
+					handler.getMovementData().headPitchLastFrame = lastHeadPitch;
+				} else {
+					RenderSystem.runAsFancy(runnable);
+				}
 			});
-		}else{
-			RenderSystem.runAsFancy(p_runAsFancy_0_);
+		} else {
+			RenderSystem.runAsFancy(runnable);
 		}
 	}
 

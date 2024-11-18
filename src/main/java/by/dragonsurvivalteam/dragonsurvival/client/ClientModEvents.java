@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.client;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvivalMod;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.DragonScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.SourceOfMagicScreen;
-import by.dragonsurvivalteam.dragonsurvival.client.handlers.KeyInputHandler;
+import by.dragonsurvivalteam.dragonsurvival.client.handlers.Keybind;
 import by.dragonsurvivalteam.dragonsurvival.client.models.creatures.KnightModel;
 import by.dragonsurvivalteam.dragonsurvival.client.models.creatures.PrinceModel;
 import by.dragonsurvivalteam.dragonsurvival.client.models.creatures.PrincessHorseModel;
@@ -114,9 +114,8 @@ public class ClientModEvents{
 	}
 
 	@SubscribeEvent
-	public static void onKeyRegister(RegisterKeyMappingsEvent event)
-	{
-		KeyInputHandler.registerKeys(event);
+	public static void onKeyRegister(final RegisterKeyMappingsEvent event) {
+		Keybind.registerKeys(event);
 	}
 	@SubscribeEvent
 	public static void registerParticleFactories(RegisterParticleProvidersEvent event){

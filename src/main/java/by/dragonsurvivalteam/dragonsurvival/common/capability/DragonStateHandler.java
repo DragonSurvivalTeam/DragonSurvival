@@ -25,6 +25,7 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -92,6 +93,23 @@ public class DragonStateHandler extends EntityStateHandler {
 		}
 	}
 
+	public void setFreeLook(boolean isFreeLook) {
+		movementData.wasFreeLook = movementData.isFreeLook;
+		movementData.isFreeLook = isFreeLook;
+	}
+
+	public void setFirstPerson(boolean isFirstPerson) {
+		movementData.isFirstPerson = isFirstPerson;
+	}
+
+	public void setBite(boolean bite) {
+		movementData.bite = bite;
+	}
+
+	public void setDesiredMoveVec(Vec2 desiredMoveVec) {
+		movementData.desiredMoveVec = desiredMoveVec;
+	}
+
 	@Override
 	public CompoundTag writeNBT() {
 		CompoundTag tag = new CompoundTag();
@@ -107,10 +125,6 @@ public class DragonStateHandler extends EntityStateHandler {
 
 			//Rendering
 			DragonMovementData movementData = getMovementData();
-			tag.putDouble("bodyYaw", movementData.bodyYaw);
-			tag.putDouble("headYaw", movementData.headYaw);
-			tag.putDouble("headPitch", movementData.headPitch);
-
 			tag.putBoolean("bite", movementData.bite);
 			tag.putBoolean("dig", movementData.dig);
 			tag.putBoolean("isHiding", isHiding());
@@ -172,10 +186,10 @@ public class DragonStateHandler extends EntityStateHandler {
 		}
 
 		if (isDragon()) {
-			setMovementData(tag.getDouble("bodyYaw"), tag.getDouble("headYaw"), tag.getDouble("headPitch"), tag.getBoolean("bite"));
-			getMovementData().headYawLastTick = getMovementData().headYaw;
-			getMovementData().bodyYawLastTick = getMovementData().bodyYaw;
-			getMovementData().headPitchLastTick = getMovementData().headPitch;
+			setBite(tag.getBoolean("bite"));
+			getMovementData().headYawLastFrame = getMovementData().headYaw;
+			getMovementData().bodyYawLastFrame = getMovementData().bodyYaw;
+			getMovementData().headPitchLastFrame = getMovementData().headPitch;
 			setIsHiding(tag.getBoolean("isHiding"));
 			getMovementData().dig = tag.getBoolean("dig");
 
@@ -223,15 +237,16 @@ public class DragonStateHandler extends EntityStateHandler {
 		getSkinData().compileSkin();
 	}
 
-	public void setMovementData(double bodyYaw, double headYaw, double headPitch, boolean bite) {
-		movementData.headYawLastTick = movementData.headYaw;
-		movementData.bodyYawLastTick = movementData.bodyYaw;
-		movementData.headPitchLastTick = movementData.headPitch;
+	public void setMovementData(double bodyYaw, double headYaw, double headPitch, Vec3 deltaMovement) {
+		movementData.headYawLastFrame = movementData.headYaw;
+		movementData.bodyYawLastFrame = movementData.bodyYaw;
+		movementData.headPitchLastFrame = movementData.headPitch;
+		movementData.deltaMovementLastFrame = movementData.deltaMovement;
 
 		movementData.bodyYaw = bodyYaw;
 		movementData.headYaw = headYaw;
 		movementData.headPitch = headPitch;
-		movementData.bite = bite;
+		movementData.deltaMovement = deltaMovement;
 	}
 
 	// Only call this version of setSize if we are doing something purely for rendering. Otherwise, call the setSize that accepts a Player object so that the player's attributes are updated.

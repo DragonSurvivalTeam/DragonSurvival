@@ -1,20 +1,30 @@
 package by.dragonsurvivalteam.dragonsurvival.common.capability.objects;
 
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
+
 public class DragonMovementData{
-	public double bodyYaw;
-	public double headYaw;
-	public double headPitch;
+	public double bodyYaw = 0;
+	public double headYaw = 0;
+	public double headPitch = 0;
+	public Vec3 deltaMovement = Vec3.ZERO;
 
-	public double headYawLastTick;
-	public double headPitchLastTick;
-	public double bodyYawLastTick;
+	public double headYawLastFrame = 0;
+	public double headPitchLastFrame = 0;
+	public double bodyYawLastFrame = 0;
+	public Vec3 deltaMovementLastFrame = Vec3.ZERO;
 	
-	public float prevXRot;
-	public float prevZRot;
-	public float rotLastTick;
+	public float prevXRot = 0;
+	public float prevZRot = 0;
 
-	public boolean bite;
-	public boolean dig;
+	public Vec2 desiredMoveVec = Vec2.ZERO;
+
+	public boolean isFirstPerson = false;
+	public boolean isFreeLook = false;
+	public boolean wasFreeLook = false;
+
+	public boolean bite = false;
+	public boolean dig = false;
 
 	public boolean spinLearned;
 	public int spinCooldown;
