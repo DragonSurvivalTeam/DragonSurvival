@@ -18,6 +18,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraftforge.client.gui.widget.ExtendedButton;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -85,17 +86,21 @@ public class DragonEditorConfirmComponent extends AbstractContainerEventHandler 
 	}
 
 	@Override
-	public void render(PoseStack pMatrixStack, int pMouseX, int pMouseY, float pPartialTicks){
-		fillGradient(pMatrixStack, 0, 0, Minecraft.getInstance().getWindow().getWidth(), Minecraft.getInstance().getWindow().getHeight(), -1072689136, -804253680);
+	public void render(@NotNull PoseStack pose, int pMouseX, int pMouseY, float pPartialTicks){
+		pose.pushPose();
+		pose.translate(0, 0, 100);
 
+		fillGradient(pose, 0, 0, Minecraft.getInstance().getWindow().getWidth(), Minecraft.getInstance().getWindow().getHeight(), -1072689136, -804253680);
 		RenderSystem.setShaderTexture(0, BACKGROUND_TEXTURE);
+
 		String key = "ds.gui.dragon_editor.confirm." + (!ServerConfig.saveAllAbilities && !ServerConfig.saveGrowthStage ? "all" : ServerConfig.saveAllAbilities && !ServerConfig.saveGrowthStage ? "ability" : !ServerConfig.saveAllAbilities && ServerConfig.saveGrowthStage ? "growth" : "");
 		String text = Component.translatable(key).getString();
-		blit(pMatrixStack, x, y, 0, 0, xSize, ySize);
-		TextRenderUtil.drawCenteredScaledTextSplit(pMatrixStack, x + xSize / 2, y + 42, 1f, text, DyeColor.WHITE.getTextColor(), xSize - 10, 0);
+		blit(pose, x, y, 0, 0, xSize, ySize);
+		TextRenderUtil.drawCenteredScaledTextSplit(pose, x + xSize / 2, y + 42, 1f, text, DyeColor.WHITE.getTextColor(), xSize - 10, 0);
 
+		btn1.render(pose, pMouseX, pMouseY, pPartialTicks);
+		btn2.render(pose, pMouseX, pMouseY, pPartialTicks);
 
-		btn1.render(pMatrixStack, pMouseX, pMouseY, pPartialTicks);
-		btn2.render(pMatrixStack, pMouseX, pMouseY, pPartialTicks);
+		pose.popPose();
 	}
 }
