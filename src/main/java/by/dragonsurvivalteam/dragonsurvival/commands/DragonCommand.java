@@ -131,7 +131,7 @@ public class DragonCommand{
 		DragonLevel dragonLevel = DragonLevel.values()[Mth.clamp(stage - 1, 0, DragonLevel.values().length-1)];
 		float size = stage == 4 ? 40f : dragonLevel.size;
 		cap.setSize(size, player);
-		cap.setPassengerId(0);
+		cap.setPassengerId(DragonStateHandler.NO_ENTITY);
 		cap.growing = true;
 
 		NetworkHandler.CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player),new SyncAltarCooldown(player.getId(), Functions.secondsToTicks(ServerConfig.altarUsageCooldown)));

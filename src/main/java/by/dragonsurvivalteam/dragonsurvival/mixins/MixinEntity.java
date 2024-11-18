@@ -9,14 +9,12 @@ import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
-import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -152,15 +150,6 @@ public abstract class MixinEntity extends net.minecraftforge.common.capabilities
 	public void isDragonVisuallyCrawling(CallbackInfoReturnable<Boolean> ci){
 		if(DragonUtils.isDragon((Entity)(Object)this)){
 			ci.setReturnValue(false);
-		}
-	}
-
-	@Inject( at = @At( value = "RETURN" ), method = "canRide", cancellable = true )
-	public void canRide(Entity entity, CallbackInfoReturnable<Boolean> ci){
-		if(ci.getReturnValue() && DragonUtils.isDragon((Entity)(Object)this) && !DragonUtils.isDragon(entity)){
-			if(ServerConfig.ridingBlacklist){
-				ci.setReturnValue(ServerConfig.allowedVehicles.contains(ResourceHelper.getKey(entity).toString()));
-			}
 		}
 	}
 
