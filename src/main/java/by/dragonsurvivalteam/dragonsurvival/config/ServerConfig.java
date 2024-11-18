@@ -423,7 +423,7 @@ public class ServerConfig{
 
 	@ConfigType(EntityType.class)
 	@ConfigOption( side = ConfigSide.SERVER, category = "penalties", key = "allowedVehicles", comment = "List of rideable entities. Format: modid:id" )
-	public static List<String> allowedVehicles = List.of("minecraft:boat", "littlelogistics:seater_barge", "minecraft:minecart", "create:seat", "create:contraption", "create:gantry_contraption", "create:stationary_contraption", "hexerei:broom", "botania:player_mover", "quark:quark_boat");
+	public static List<String> allowedVehicles = List.of("minecraft:player", "minecraft:boat", "littlelogistics:seater_barge", "minecraft:minecart", "create:seat", "create:contraption", "create:gantry_contraption", "create:stationary_contraption", "hexerei:broom", "botania:player_mover", "quark:quark_boat");
 
 	@ConfigOption( side = ConfigSide.SERVER, category = "penalties", key = "limitedRiding", comment = "Should dragons be limited by which entities they can ride" )
 	public static Boolean ridingBlacklist = true;
