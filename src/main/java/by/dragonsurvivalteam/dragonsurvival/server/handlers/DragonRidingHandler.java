@@ -2,11 +2,13 @@ package by.dragonsurvivalteam.dragonsurvival.server.handlers;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.network.NetworkHandler;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SynchronizeDragonCap;
 import by.dragonsurvivalteam.dragonsurvival.network.status.RefreshDragons;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonLevel;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
+import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -15,11 +17,13 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteractSpecific;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.network.PacketDistributor;
+
 @EventBusSubscriber
 public class DragonRidingHandler{
 	/**
@@ -51,6 +55,23 @@ public class DragonRidingHandler{
 					});
 				}
 			});
+		}
+	}
+
+	@SubscribeEvent
+	public static void handleMounts(final EntityMountEvent event) {
+		if (!event.isMounting()) {
+			return;
+		}
+
+		if (ServerConfig.ridingBlacklist && DragonUtils.isDragon(event.getEntityMounting())) {
+			if (DragonUtils.isDragon(event.getEntityBeingMounted())) {
+				return;
+			}
+
+			if (!ServerConfig.allowedVehicles.contains(ResourceHelper.getKey(event.getEntityBeingMounted()).toString())) {
+				event.setCanceled(true);
+			}
 		}
 	}
 
@@ -96,7 +117,7 @@ public class DragonRidingHandler{
 			}
 
 			if (stopRiding || !player.hasPassenger(passenger)) {
-				handler.setPassengerId(0);
+				handler.setPassengerId(DragonStateHandler.NO_ENTITY);
 				NetworkHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new SynchronizeDragonCap(player.getId(), handler.isHiding(), handler.getType(), handler.getBody(), handler.getSize(), handler.hasFlight(), 0));
 			}
 		});
@@ -112,7 +133,7 @@ public class DragonRidingHandler{
 			DragonStateProvider.getCap(vehicle).ifPresent(vehicleCap -> {
 				player.stopRiding();
 				vehicle.connection.send(new ClientboundSetPassengersPacket(vehicle));
-				vehicleCap.setPassengerId(0);
+				vehicleCap.setPassengerId(DragonStateHandler.NO_ENTITY);
 				NetworkHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> vehicle), new SynchronizeDragonCap(player.getId(), vehicleCap.isHiding(), vehicleCap.getType(), vehicleCap.getBody(), vehicleCap.getSize(), vehicleCap.hasFlight(), 0));
 			});
 		});
