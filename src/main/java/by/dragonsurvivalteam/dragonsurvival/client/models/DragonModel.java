@@ -229,7 +229,7 @@ public class DragonModel extends AnimatedGeoModel<DragonEntity> {
 			dragon.currentTailMotionUp = 0;
 			dragon.clearVerticalVelocity = false;
 		} else {
-			dragon.currentTailMotionUp = Mth.lerp(lerpRate, dragon.currentTailMotionUp, verticalVelocityAvg);
+			dragon.currentTailMotionUp = Mth.lerp(lerpRate, dragon.currentTailMotionUp, -verticalVelocityAvg);
 		}
 
 		parser.setValue("query.body_yaw_change", () -> Mth.lerp(lerpRate, dragon.currentBodyYawChange, bodyYawAvg));
