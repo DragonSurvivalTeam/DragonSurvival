@@ -118,24 +118,21 @@ public class DragonModel extends GeoModel<DragonEntity> {
 		headPitchAvg = dragon.headPitchHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
 		verticalVelocityAvg = dragon.verticalVelocityHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
 
-		double currentBodyYawChange = parser.getVariable("query.body_yaw_change").get();
-		double currentHeadPitchChange = parser.getVariable("query.head_pitch_change").get();
-		double currentHeadYawChange = parser.getVariable("query.head_yaw_change").get();
-
-		// Handle the clear case (see DragonEntity.java)
-		double currentTailMotionUp;
+		double lerpRate = Math.min(1., deltaTick);
+		dragon.currentBodyYawChange = Mth.lerp(lerpRate, dragon.currentBodyYawChange, bodyYawAvg);
+		dragon.currentHeadYawChange = Mth.lerp(lerpRate, dragon.currentHeadYawChange, headYawAvg);
+		dragon.currentHeadPitchChange = Mth.lerp(lerpRate, dragon.currentHeadPitchChange, headPitchAvg);
 		if(dragon.clearVerticalVelocity) {
-			currentTailMotionUp = 0;
+			dragon.currentTailMotionUp = 0;
 			dragon.clearVerticalVelocity = false;
 		} else {
-			currentTailMotionUp = parser.getVariable("query.tail_motion_up").get();
+			dragon.currentTailMotionUp = Mth.lerp(lerpRate, dragon.currentTailMotionUp, verticalVelocityAvg);
 		}
 
-		double lerpRate = Math.min(1., deltaTick);
-		parser.setValue("query.body_yaw_change", () -> Mth.lerp(lerpRate, currentBodyYawChange, bodyYawAvg));
-		parser.setValue("query.head_yaw_change", () -> Mth.lerp(lerpRate, currentHeadPitchChange, headYawAvg));
-		parser.setValue("query.head_pitch_change", () -> Mth.lerp(lerpRate, currentHeadYawChange, headPitchAvg));
-		parser.setValue("query.tail_motion_up", () -> Mth.lerp(lerpRate, currentTailMotionUp, -verticalVelocityAvg));
+		parser.setValue("query.body_yaw_change", () -> Mth.lerp(lerpRate, dragon.currentBodyYawChange, bodyYawAvg));
+		parser.setValue("query.head_yaw_change", () -> Mth.lerp(lerpRate, dragon.currentHeadPitchChange, headYawAvg));
+		parser.setValue("query.head_pitch_change", () -> Mth.lerp(lerpRate, dragon.currentHeadYawChange, headPitchAvg));
+		parser.setValue("query.tail_motion_up", () -> Mth.lerp(lerpRate, dragon.currentTailMotionUp, -verticalVelocityAvg));
 	}
 	
 	@Override
