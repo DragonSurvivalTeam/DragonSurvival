@@ -25,7 +25,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -72,6 +71,9 @@ public class Capabilities{
 			});
 			// TODO: Investigate whether this call to syncCapability actually results in data loss under bad network conditions
 			syncCapability(serverPlayer);
+
+			// Due to them being transient modifiers
+			DragonModifiers.updateModifiers(serverPlayer);
 		}
 	}
 
