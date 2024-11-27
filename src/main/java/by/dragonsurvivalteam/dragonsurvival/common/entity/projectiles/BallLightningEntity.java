@@ -24,6 +24,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Fireball;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.*;
+import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
@@ -64,20 +65,13 @@ public class BallLightningEntity extends DragonBallEntity{
 		return DSDamageTypes.damageSource(pFireball.level(), DSDamageTypes.DRAGON_BALL_LIGHTNING);
 	}
 
-	protected void onHitCommon(){
-		if((getOwner() == null || !getOwner().isRemoved()) && this.level().hasChunkAt(this.blockPosition())) {
+	protected void onHitCommon() {
+		if ((getOwner() == null || !getOwner().isRemoved()) && this.level().hasChunkAt(this.blockPosition())) {
 			if (!this.level().isClientSide) {
 				level().playSound(null, getX(), getY(), getZ(), SoundEvents.LIGHTNING_BOLT_IMPACT, SoundSource.HOSTILE, 3.0F, 0.5f);
 			}
 
-			if(!isLingering) {
-				isLingering = true;
-				// These power variables drive the movement of the entity in the parent tick() function, so we need to zero them out as well.
-				xPower = 0;
-				zPower = 0;
-				yPower = 0;
-				setDeltaMovement(Vec3.ZERO);
-			}
+			isLingering = true;
 		}
 	}
 
@@ -104,6 +98,15 @@ public class BallLightningEntity extends DragonBallEntity{
 				this.discard();
 			}
 		}
+	}
+
+	@Override
+	public @NotNull Vec3 getDeltaMovement() {
+		if (isLingering) {
+			return Vec3.ZERO;
+		}
+
+		return super.getDeltaMovement();
 	}
 
 	public void attackMobs(){
