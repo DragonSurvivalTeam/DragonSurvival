@@ -79213,6 +79213,9 @@
 				}
 			}
 		},
+		"head_turn": {
+			"loop": true
+		},
 		"blend_sniffing": {
 			"animation_length": 4.7917,
 			"bones": {
