@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.dragon_types.DragonTypes;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -25,6 +26,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.StructureMode;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -82,22 +84,6 @@ public class EndPortalBlockMixin {
         return structureblockentity;
     }
 
-    @Unique private static void dragonSurvival$clearBlock(BlockPos pos, ServerLevel serverLevel) {
-        BlockState blockstate = Blocks.AIR.defaultBlockState();
-        BlockInput blockinput = new BlockInput(blockstate, Collections.emptySet(), null);
-        blockinput.place(serverLevel, pos, 2);
-        serverLevel.blockUpdated(pos, blockstate.getBlock());
-    }
-
-    @Unique private static void dragonSurvival$clearSpaceForStructure(BoundingBox boundingBox, ServerLevel level) {
-        BlockPos.betweenClosedStream(boundingBox).forEach(blockPos -> dragonSurvival$clearBlock(blockPos, level));
-        level.getBlockTicks().clearArea(boundingBox);
-        level.clearBlockEvents(boundingBox);
-        AABB aabb = AABB.of(boundingBox);
-        List<Entity> list = level.getEntitiesOfClass(Entity.class, aabb, entity -> !(entity instanceof Player));
-        list.forEach(Entity::discard);
-    }
-
     @WrapOperation(method = "getPortalDestination", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/levelgen/feature/EndPlatformFeature;createEndPlatform(Lnet/minecraft/world/level/ServerLevelAccessor;Lnet/minecraft/core/BlockPos;Z)V"))
     private void spawnDragonPlatform(ServerLevelAccessor serverLevelAccessor, BlockPos blockPos, boolean dropBlocks, Operation<Void> original, @Local(argsOnly = true) Entity entity) {
         if(entity instanceof Player player) {
@@ -108,12 +94,8 @@ public class EndPortalBlockMixin {
                 Vec3i structureSize = level.getStructureManager().get(dragonSurvival$getDragonSpawnPlatformStructure(serverLevelAccessor, entity)).get().getSize();
                 // Offset the blockPos to the bottom left corner of the structure
                 blockPos = blockPos.offset(-structureSize.getX() / 2, -structureSize.getY() / 2, -structureSize.getZ() / 2);
-                BoundingBox boundingbox = StructureUtils.getStructureBoundingBox(blockPos, structureSize, Rotation.NONE);
-                dragonSurvival$clearSpaceForStructure(boundingbox, level);
                 StructureBlockEntity structureblockentity = dragonSurvival$createStructureBlock(dragonSurvival$getDragonSpawnPlatformStructure(serverLevelAccessor, entity), blockPos, Rotation.NONE, level);
                 structureblockentity.placeStructure(level);
-                level.getBlockTicks().clearArea(boundingbox);
-                level.clearBlockEvents(boundingbox);
                 // Remove the structure block that was placed
                 level.setBlockAndUpdate(blockPos, Blocks.AIR.defaultBlockState());
                 return;
