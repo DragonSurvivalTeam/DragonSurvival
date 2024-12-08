@@ -70,6 +70,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import software.bernie.geckolib3.core.IAnimatable;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
@@ -78,6 +79,12 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ClientDragonRender{
 	public static DragonModel dragonModel = new DragonModel();
 	public static DragonArmorModel dragonArmorModel = new DragonArmorModel(dragonModel);
+
+	/**
+	 * Used for inventory rendering - when set to true changed movement data will not be tracked <br>
+	 * See {@link ClientDragonRender#setDragonMovementData(Player, float)} and {@link DragonModel#setMolangQueries(IAnimatable, double)}
+	 */
+	public static boolean isOverridingMovementData = false;
 
 	/**
 	 * First-person armor instance
