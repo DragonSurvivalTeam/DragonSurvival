@@ -77,6 +77,12 @@ public class ClientDragonRender{
 	public static DragonArmorModel dragonArmorModel = new DragonArmorModel(dragonModel);
 
 	/**
+	 * Used for inventory rendering - when set to true changed movement data will not be tracked <br>
+	 * See {@link ClientDragonRender#setDragonMovementData(Player, float)} and {@link DragonModel#applyMolangQueries(DragonEntity, double)}
+	 */
+	public static boolean isOverridingMovementData = false;
+
+	/**
 	 * First-person armor instance
 	 */
 	public static DragonEntity dragonArmor;

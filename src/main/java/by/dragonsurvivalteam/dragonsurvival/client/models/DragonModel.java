@@ -9,8 +9,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.objects.DragonMovementData;
 import by.dragonsurvivalteam.dragonsurvival.common.dragon_types.AbstractDragonBody;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
-import by.dragonsurvivalteam.dragonsurvival.config.ClientConfig;
-import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
@@ -19,9 +17,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
 import software.bernie.geckolib.core.molang.MolangParser;
 import software.bernie.geckolib.model.GeoModel;
@@ -73,50 +69,57 @@ public class DragonModel extends GeoModel<DragonEntity> {
 		double headYawAvg;
 		double headPitchAvg;
 		double verticalVelocityAvg;
-		double bodyYawChange = Functions.angleDifference(md.bodyYaw, md.bodyYawLastFrame) / deltaTick * DELTA_YAW_PITCH_FACTOR;
-		double headYawChange = Functions.angleDifference(md.headYaw, md.headYawLastFrame) / deltaTick * DELTA_YAW_PITCH_FACTOR;
-		double headPitchChange = Functions.angleDifference(md.headPitch, md.headPitchLastFrame) / deltaTick * DELTA_YAW_PITCH_FACTOR;
+		if (!ClientDragonRender.isOverridingMovementData) {
+			double bodyYawChange = Functions.angleDifference(md.bodyYaw, md.bodyYawLastFrame) / deltaTick * DELTA_YAW_PITCH_FACTOR;
+			double headYawChange = Functions.angleDifference(md.headYaw, md.headYawLastFrame) / deltaTick * DELTA_YAW_PITCH_FACTOR;
+			double headPitchChange = Functions.angleDifference(md.headPitch, md.headPitchLastFrame) / deltaTick * DELTA_YAW_PITCH_FACTOR;
 
-		double verticalVelocity = Mth.lerp(partialTick, md.deltaMovementLastFrame.y, md.deltaMovement.y) * DELTA_MOVEMENT_FACTOR;
-		// Factor in the vertical angle of the dragon so that the vertical velocity is scaled down when the dragon is looking up or down
-		// Ideally, we would just use more precise data (factor in the full rotation of the player in our animations)
-		// but this works pretty well in most situations the player will encounter
-		verticalVelocity *= 1 - Mth.abs(Mth.clampedMap(md.prevXRot, -90, 90, -1, 1));
+			double verticalVelocity = Mth.lerp(partialTick, md.deltaMovementLastFrame.y, md.deltaMovement.y) * DELTA_MOVEMENT_FACTOR;
+			// Factor in the vertical angle of the dragon so that the vertical velocity is scaled down when the dragon is looking up or down
+			// Ideally, we would just use more precise data (factor in the full rotation of the player in our animations)
+			// but this works pretty well in most situations the player will encounter
+			verticalVelocity *= 1 - Mth.abs(Mth.clampedMap(md.prevXRot, -90, 90, -1, 1));
 
-		float deltaTickFor60FPS = AnimationUtils.getDeltaTickFor60FPS();
-		// Accumulate them in the history
-		while(dragon.bodyYawHistory.size() > 10 / deltaTickFor60FPS ) {
-			dragon.bodyYawHistory.remove(0);
-		}
-		dragon.bodyYawHistory.add(bodyYawChange);
-
-		while(dragon.headYawHistory.size() > 10 / deltaTickFor60FPS ) {
-			dragon.headYawHistory.remove(0);
-		}
-		dragon.headYawHistory.add(headYawChange);
-
-		while(dragon.headPitchHistory.size() > 10 / deltaTickFor60FPS ) {
-			dragon.headPitchHistory.remove(0);
-		}
-		dragon.headPitchHistory.add(headPitchChange);
-
-		// Handle the clear case (see DragonEntity.java)
-		if(dragon.clearVerticalVelocity) {
-			dragon.verticalVelocityHistory.clear();
-			while(dragon.verticalVelocityHistory.size() < 10 / deltaTickFor60FPS) {
-				dragon.verticalVelocityHistory.add(0.);
+			float deltaTickFor60FPS = AnimationUtils.getDeltaTickFor60FPS();
+			// Accumulate them in the history
+			while (dragon.bodyYawHistory.size() > 10 / deltaTickFor60FPS) {
+				dragon.bodyYawHistory.remove(0);
 			}
-		}
+			dragon.bodyYawHistory.add(bodyYawChange);
 
-		while(dragon.verticalVelocityHistory.size() > 10 / deltaTickFor60FPS ) {
-			dragon.verticalVelocityHistory.remove(0);
-		}
-		dragon.verticalVelocityHistory.add(verticalVelocity);
+			while (dragon.headYawHistory.size() > 10 / deltaTickFor60FPS) {
+				dragon.headYawHistory.remove(0);
+			}
+			dragon.headYawHistory.add(headYawChange);
 
-		bodyYawAvg = dragon.bodyYawHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
-		headYawAvg = dragon.headYawHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
-		headPitchAvg = dragon.headPitchHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
-		verticalVelocityAvg = dragon.verticalVelocityHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
+			while (dragon.headPitchHistory.size() > 10 / deltaTickFor60FPS) {
+				dragon.headPitchHistory.remove(0);
+			}
+			dragon.headPitchHistory.add(headPitchChange);
+
+			// Handle the clear case (see DragonEntity.java)
+			if (dragon.clearVerticalVelocity) {
+				dragon.verticalVelocityHistory.clear();
+				while (dragon.verticalVelocityHistory.size() < 10 / deltaTickFor60FPS) {
+					dragon.verticalVelocityHistory.add(0.);
+				}
+			}
+
+			while (dragon.verticalVelocityHistory.size() > 10 / deltaTickFor60FPS) {
+				dragon.verticalVelocityHistory.remove(0);
+			}
+			dragon.verticalVelocityHistory.add(verticalVelocity);
+
+			bodyYawAvg = dragon.bodyYawHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
+			headYawAvg = dragon.headYawHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
+			headPitchAvg = dragon.headPitchHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
+			verticalVelocityAvg = dragon.verticalVelocityHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
+		} else {
+			bodyYawAvg = 0;
+			headYawAvg = 0;
+			headPitchAvg = 0;
+			verticalVelocityAvg = 0;
+		}
 
 		double lerpRate = Math.min(1., deltaTick);
 		dragon.currentBodyYawChange = Mth.lerp(lerpRate, dragon.currentBodyYawChange, bodyYawAvg);
