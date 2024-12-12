@@ -425,6 +425,9 @@ public class ServerConfig{
 	@ConfigOption( side = ConfigSide.SERVER, category = "penalties", key = "blacklistedSlots", comment = "List of slots to handle blacklistedItems option" )
 	public static List<Integer> blacklistedSlots = Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 40, 45, 38);
 
+	@ConfigOption(side = ConfigSide.SERVER, category = "penalties", key = "dragons_are_scary", comment = "If enabled animals will try run away from dragons")
+	public static Boolean dragonsAreScary = true;
+
 	// Cave Dragon Penalties
 	@ConfigRange( min = 0.0, max = 100.0 )
 	@ConfigOption( side = ConfigSide.SERVER, category = {"penalties", "cave"}, key = "waterDamage", comment = "The amount of damage taken per water damage tick (once every 10 ticks). Set to 0.0 to disable water damage." )
