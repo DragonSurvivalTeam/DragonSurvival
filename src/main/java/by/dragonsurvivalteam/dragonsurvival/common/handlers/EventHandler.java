@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
+import by.dragonsurvivalteam.dragonsurvival.data.DSEntityTypeTags;
 import by.dragonsurvivalteam.dragonsurvival.network.NetworkHandler;
 import by.dragonsurvivalteam.dragonsurvival.network.container.OpenDragonAltar;
 import by.dragonsurvivalteam.dragonsurvival.network.status.PlayerJumpSync;
@@ -20,12 +21,10 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.Wolf;
-import net.minecraft.world.entity.monster.hoglin.Hoglin;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ElytraItem;
 import net.minecraft.world.item.Item;
@@ -106,14 +105,17 @@ public class EventHandler{
 		}
 	}
 
-	/**
-	 * Adds dragon avoidance goal
-	 */
+	/** Adds dragon avoidance goal */
 	@SubscribeEvent
-	public static void onJoin(EntityJoinLevelEvent joinWorldEvent){
-		Entity entity = joinWorldEvent.getEntity();
-		if(entity instanceof Animal && !(entity instanceof Wolf || entity instanceof Hoglin)){
-			((Animal)entity).goalSelector.addGoal(5, new AvoidEntityGoal((Animal)entity, Player.class, living -> DragonUtils.isDragon((Player)living) && !((Player)living).hasEffect(DragonEffects.ANIMAL_PEACE), 20.0F, 1.3F, 1.5F, s -> true));
+	public static void attachAvoidDragonGoal(final EntityJoinLevelEvent event) {
+		if (event.getEntity() instanceof Animal animal && !animal.getType().is(DSEntityTypeTags.ANIMAL_AVOID_BLACKLIST)) {
+			animal.goalSelector.addGoal(5, new AvoidEntityGoal<>(animal, Player.class, entity -> {
+				if (!ServerConfig.dragonsAreScary || entity.hasEffect(DragonEffects.ANIMAL_PEACE)) {
+					return false;
+				}
+
+				return DragonUtils.isDragon(entity);
+			}, 20, 1.3F, 1.5F, EntitySelector.NO_CREATIVE_OR_SPECTATOR::test));
 		}
 	}
 

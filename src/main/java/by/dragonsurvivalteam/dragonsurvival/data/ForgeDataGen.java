@@ -12,7 +12,6 @@ import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraftforge.common.data.BlockTagsProvider;
-import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -21,14 +20,14 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Mod.EventBusSubscriber(modid = DragonSurvivalMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ForgeDataGen {
 	private static final RegistryObject<Codec<DragonOreLootModifier>> DRAGON_ORE = DragonSurvivalMod.GLM.register("dragon_ore", DragonOreLootModifier.CODEC);
 	private static final RegistryObject<Codec<DragonHeartLootModifier>> DRAGON_HEART = DragonSurvivalMod.GLM.register("dragon_heart", DragonHeartLootModifier.CODEC);
-	@SubscribeEvent
+
+	@SubscribeEvent // Currently not runnable in 1.20.1
 	public static void configureDataGen(final GatherDataEvent event) {
 		DataGenerator generator = event.getGenerator();
 		ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
@@ -49,7 +48,8 @@ public class ForgeDataGen {
 
 		generator.addProvider(event.includeServer(), new DataItemTagProvider(generator.getPackOutput(), event.getLookupProvider(), blockTagsProvider.contentsGetter(), DragonSurvivalMod.MODID, existingFileHelper));
 		generator.addProvider(event.includeServer(), new DataDamageTypeTagsProvider(generator.getPackOutput(), event.getLookupProvider(), DragonSurvivalMod.MODID, existingFileHelper));
-		event.getGenerator().addProvider(event.includeServer(), new DragonOreLootModifierSerializer(event.getGenerator().getPackOutput(), DragonSurvivalMod.MODID));
-		event.getGenerator().addProvider(event.includeServer(), new DragonHeartLootModifierSerializer(event.getGenerator().getPackOutput(), DragonSurvivalMod.MODID));
+		generator.addProvider(event.includeServer(), new DragonOreLootModifierSerializer(generator.getPackOutput(), DragonSurvivalMod.MODID));
+        generator.addProvider(event.includeServer(), new DragonHeartLootModifierSerializer(generator.getPackOutput(), DragonSurvivalMod.MODID));
+        generator.addProvider(event.includeServer(), new DSEntityTypeTags(generator.getPackOutput(), event.getLookupProvider(), existingFileHelper));
 	}
 }
