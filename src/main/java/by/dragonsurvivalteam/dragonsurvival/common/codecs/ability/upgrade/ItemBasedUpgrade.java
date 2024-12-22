@@ -32,12 +32,17 @@ public class ItemBasedUpgrade extends UpgradeType<Item> {
     }
 
     @Override
+    @SuppressWarnings("deprecation") // ignore
     public boolean upgrade(final DragonAbilityInstance ability, final Item input) {
+        if (ability.level() > DragonAbilityInstance.MIN_LEVEL && downgradeItems.contains(input.builtInRegistryHolder())) {
+            ability.setLevel(ability.level() - 1);
+            return true;
+        }
+
         if (ability.level() >= itemsPerLevel.size()) {
             return false;
         }
 
-        //noinspection deprecation -> ignore
         if (itemsPerLevel.get(ability.level()).contains(input.builtInRegistryHolder())) {
             ability.setLevel(ability.level() + 1);
             return true;
