@@ -9,9 +9,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-/**
- * Make the lava / water layer (more) see-through
- */
+/** Make the lava / water layer (more) see-through */
 @Mixin(LiquidBlockRenderer.class)
 public abstract class LiquidBlockRendererMixin {
     @ModifyVariable(method = "tesselate", at = @At(value = "STORE"), ordinal = 0)

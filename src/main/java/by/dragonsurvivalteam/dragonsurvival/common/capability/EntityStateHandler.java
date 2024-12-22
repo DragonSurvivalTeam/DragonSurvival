@@ -10,14 +10,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
 public class EntityStateHandler implements INBTSerializable<CompoundTag> {
-    public static final String LAST_AFFLICTED = "last_afflicted";
     public static final String CHAIN_COUNT = "chain_count";
     public static final String LAST_POSITION = "last_position";
 
     // To handle the burn effect damage
     public Vec3 lastPos;
-    // Last entity this entity received a debuff from
-    public int lastAfflicted = -1;
     // Amount of times the last chain attack has chained
     public int chainCount;
     // Currently only used for item entities
@@ -26,7 +23,6 @@ public class EntityStateHandler implements INBTSerializable<CompoundTag> {
     @Override
     public @UnknownNullability CompoundTag serializeNBT(@NotNull HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
-        tag.putInt(LAST_AFFLICTED, lastAfflicted);
         tag.putInt(CHAIN_COUNT, chainCount);
 
         if (lastPos != null) {
@@ -38,7 +34,6 @@ public class EntityStateHandler implements INBTSerializable<CompoundTag> {
 
     @Override
     public void deserializeNBT(@NotNull HolderLookup.Provider provider, CompoundTag tag) {
-        lastAfflicted = tag.getInt(LAST_AFFLICTED);
         chainCount = tag.getInt(CHAIN_COUNT);
 
         if (tag.contains(LAST_POSITION)) {

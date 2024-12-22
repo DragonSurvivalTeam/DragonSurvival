@@ -14,21 +14,24 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
+import by.dragonsurvivalteam.dragonsurvival.util.AdditionalEffectData;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
 
 public class ChargedEffect extends ModifiableMobEffect {
+    public static final int INFINITE_CHAINS = -1;
+
     @ConfigRange(max = 100)
     @Translation(key = "charged_effect_max_chain", type = Translation.Type.CONFIGURATION, comments = "Determines the max. amount of times the charged effect can chain. Set to -1 for infinite chaining")
     @ConfigOption(side = ConfigSide.SERVER, category = {"effects", "charged"}, key = "charged_effect_max_chain")
@@ -101,26 +104,28 @@ public class ChargedEffect extends ModifiableMobEffect {
         }
 
         for (LivingEntity target : secondaryTargets) {
-            EntityStateHandler data = target.getData(DSDataAttachments.ENTITY_HANDLER);
-            Player player = target.level().getEntity(data.lastAfflicted) instanceof Player ? (Player) target.level().getEntity(data.lastAfflicted) : null;
-            target.hurt(new DamageSource(DSDamageTypes.get(target.level(), DSDamageTypes.ELECTRIC), player), damage);
+            Entity effectApplier = null;
+
+            if (source.level() instanceof ServerLevel serverLevel) {
+                //noinspection DataFlowIssue -> effect cannot be null here
+                effectApplier = ((AdditionalEffectData) source.getEffect(DSEffects.CHARGED)).dragonSurvival$getApplier(serverLevel);
+            }
+
+            target.hurt(new DamageSource(DSDamageTypes.get(target.level(), DSDamageTypes.ELECTRIC), effectApplier), damage);
             drawParticleLine(source, target);
 
-            if (!target.getType().is(DSEntityTypeTags.CHARGED_SPREAD_BLACKLIST)) {
-                if (target != source) {
-                    EntityStateHandler sourceData = source.getData(DSDataAttachments.ENTITY_HANDLER);
-                    EntityStateHandler targetData = target.getData(DSDataAttachments.ENTITY_HANDLER);
+            if (target.level().isClientSide()) {
+                return;
+            }
 
-                    targetData.chainCount = sourceData.chainCount + 1;
+            if (target != source && !target.getType().is(DSEntityTypeTags.CHARGED_SPREAD_BLACKLIST)) {
+                EntityStateHandler sourceData = source.getData(DSDataAttachments.ENTITY_HANDLER);
+                EntityStateHandler targetData = target.getData(DSDataAttachments.ENTITY_HANDLER);
 
-                    if (!target.level().isClientSide()) {
-                        if (target.getRandom().nextInt(100) < 40) {
-                            if (targetData.chainCount < maxChain || maxChain == -1) {
-                                targetData.lastAfflicted = player != null ? player.getId() : -1;
-                                target.addEffect(new MobEffectInstance(DSEffects.CHARGED, Functions.secondsToTicks(10), 0, false, true));
-                            }
-                        }
-                    }
+                targetData.chainCount = sourceData.chainCount + 1;
+
+                if ((targetData.chainCount < maxChain || maxChain == INFINITE_CHAINS) && Functions.chance(target.getRandom(), 40)) {
+                    target.addEffect(new MobEffectInstance(DSEffects.CHARGED, Functions.secondsToTicks(10), 0, false, true), effectApplier);
                 }
             }
         }

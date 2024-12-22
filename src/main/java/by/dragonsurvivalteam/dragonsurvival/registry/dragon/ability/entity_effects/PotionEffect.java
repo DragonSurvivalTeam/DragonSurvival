@@ -51,7 +51,7 @@ public record PotionEffect(HolderSet<MobEffect> effects, LevelBasedValue amplifi
                 }
 
                 if (livingEntity.getRandom().nextDouble() < probability.calculate(abilityLevel)) {
-                    livingEntity.addEffect(new MobEffectInstance(effect, duration, amplifier));
+                    livingEntity.addEffect(new MobEffectInstance(effect, duration, amplifier), dragon);
                 }
             });
         }

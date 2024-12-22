@@ -40,20 +40,24 @@ public class Bolas extends AbstractArrow {
     //}
 
     @Override
-    protected void onHit(HitResult result) {
+    protected void onHit(@NotNull final HitResult result) {
         super.onHit(result);
+
         if (!level().isClientSide()) {
             remove(RemovalReason.DISCARDED);
         }
     }
 
-    protected void onHitEntity(EntityHitResult entityHitResult) {
+    protected void onHitEntity(final EntityHitResult entityHitResult) {
         Entity entity = entityHitResult.getEntity();
-        if (!entity.level().isClientSide()) {
-            if (entity instanceof LivingEntity living) {
-                living.hurt(this.damageSources().arrow(this, this.getOwner()), 1.0f);
-                living.addEffect(new MobEffectInstance(DSEffects.TRAPPED, Functions.secondsToTicks(ServerConfig.hunterTrappedDebuffDuration), 0, false, false));
-            }
+
+        if (entity.level().isClientSide()) {
+            return;
+        }
+
+        if (entity instanceof LivingEntity living) {
+            living.hurt(this.damageSources().arrow(this, getOwner()), 1);
+            living.addEffect(new MobEffectInstance(DSEffects.TRAPPED, Functions.secondsToTicks(ServerConfig.hunterTrappedDebuffDuration), 0, false, false), getOwner());
         }
     }
 

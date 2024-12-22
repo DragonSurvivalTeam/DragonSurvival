@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Objects;
 
 @Mixin(SmithingScreen.class)
-public class SmithingScreenMixin {
+public abstract class SmithingScreenMixin {
     @Unique private @Nullable DragonEntity dragonSurvival$dragon;
 
     /** Prepare the fake dragon which is to be rendered */

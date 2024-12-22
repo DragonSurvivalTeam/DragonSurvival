@@ -5,14 +5,16 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.EntityStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.EffectHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.SmallFireParticleOption;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
+import by.dragonsurvivalteam.dragonsurvival.util.AdditionalEffectData;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.common.NeoForgeMod;
 
 public class BurnEffect extends ModifiableMobEffect {
@@ -51,10 +53,14 @@ public class BurnEffect extends ModifiableMobEffect {
                     entity.setRemainingFireTicks(1);
                 }
 
-                // TODO :: specifically store the entity which applied this instance of the effect (same for charged / drain)
-                //  probably needs additional data stored in the effect instance?
-                Entity player = entity.level().getEntity(data.lastAfflicted) instanceof Player ? entity : null;
-                entity.hurt(new DamageSource(DSDamageTypes.get(entity.level(), DSDamageTypes.CAVE_DRAGON_BURN), player), damage);
+                Entity effectApplier = null;
+
+                if (entity.level() instanceof ServerLevel serverLevel) {
+                    //noinspection DataFlowIssue -> effect cannot be null here
+                    effectApplier = ((AdditionalEffectData) entity.getEffect(DSEffects.BURN)).dragonSurvival$getApplier(serverLevel);
+                }
+
+                entity.hurt(new DamageSource(DSDamageTypes.get(entity.level(), DSDamageTypes.CAVE_DRAGON_BURN), effectApplier), damage);
             }
         }
 

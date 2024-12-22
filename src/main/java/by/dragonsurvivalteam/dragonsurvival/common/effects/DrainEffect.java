@@ -1,20 +1,21 @@
 package by.dragonsurvivalteam.dragonsurvival.common.effects;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.common.capability.EntityStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.EffectHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.SmallPoisonParticleOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.util.AdditionalEffectData;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class DrainEffect extends ModifiableMobEffect {
@@ -42,9 +43,14 @@ public class DrainEffect extends ModifiableMobEffect {
             }
         }
 
-        EntityStateHandler data = entity.getData(DSDataAttachments.ENTITY_HANDLER);
-        Player player = entity.level().getEntity(data.lastAfflicted) instanceof Player ? (Player) entity.level().getEntity(data.lastAfflicted) : null;
-        entity.hurt(new DamageSource(DSDamageTypes.get(entity.level(), DSDamageTypes.FOREST_DRAGON_DRAIN), player), damage);
+        Entity effectApplier = null;
+
+        if (entity.level() instanceof ServerLevel serverLevel) {
+            //noinspection DataFlowIssue -> effect cannot be null here
+            effectApplier = ((AdditionalEffectData) entity.getEffect(DSEffects.DRAIN)).dragonSurvival$getApplier(serverLevel);
+        }
+
+        entity.hurt(new DamageSource(DSDamageTypes.get(entity.level(), DSDamageTypes.FOREST_DRAGON_DRAIN), effectApplier), damage);
 
         return super.applyEffectTick(entity, amplifier);
     }

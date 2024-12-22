@@ -169,25 +169,22 @@ public class HunterOmenHandler {
     }
 
     @SubscribeEvent
-    public static void reapplyHunterOmenOnRespawn(PlayerEvent.PlayerRespawnEvent respawnEvent) {
-        Player playerEntity = respawnEvent.getEntity();
-        UUID playerUUID = playerEntity.getUUID();
-        MobEffectInstance effectInstance = playersToReapplyHunterOmen.remove(playerUUID);
+    public static void reapplyHunterOmenOnRespawn(final PlayerEvent.PlayerRespawnEvent event) {
+        Player player = event.getEntity();
+        UUID uuid = player.getUUID();
+        MobEffectInstance effectInstance = playersToReapplyHunterOmen.remove(uuid);
+
         if (effectInstance != null) {
-            playerEntity.addEffect(effectInstance);
+            player.addEffect(effectInstance);
         }
     }
 
-    private static void applyHunterOmenFromKilling(Player playerEntity) {
-        int duration = 0;
-
-        MobEffectInstance effectInstance = playerEntity.getEffect(DSEffects.HUNTER_OMEN);
-        if (effectInstance != null) {
-            duration = effectInstance.getDuration();
-        }
+    private static void applyHunterOmenFromKilling(final Player player) {
+        MobEffectInstance instance = player.getEffect(DSEffects.HUNTER_OMEN);
+        int duration = instance != null ? instance.getDuration() : 0;
 
         // Double the duration unless it would add more than 30 minutes to the timer, but add a minimum of 1 minute
-        playerEntity.addEffect(new MobEffectInstance(DSEffects.HUNTER_OMEN, Math.max(Functions.minutesToTicks(1), Math.min(duration * 2, Functions.minutesToTicks(30))), 0, false, false, true));
+        player.addEffect(new MobEffectInstance(DSEffects.HUNTER_OMEN, Math.max(Functions.minutesToTicks(1), Math.min(duration * 2, Functions.minutesToTicks(30))), 0, false, false, true));
     }
 
     @SubscribeEvent

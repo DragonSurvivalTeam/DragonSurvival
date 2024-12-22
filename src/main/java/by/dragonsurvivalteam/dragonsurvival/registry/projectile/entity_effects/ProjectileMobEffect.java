@@ -25,7 +25,7 @@ public record ProjectileMobEffect(HolderSet<MobEffect> effects, LevelBasedValue 
         if (target instanceof LivingEntity livingEntity) {
             effects().forEach(effect -> {
                 if (livingEntity.getRandom().nextDouble() < probability().calculate(projectileLevel)) {
-                    livingEntity.addEffect(new MobEffectInstance(effect, (int) duration().calculate(projectileLevel), (int) amplifier().calculate(projectileLevel)));
+                    livingEntity.addEffect(new MobEffectInstance(effect, (int) duration().calculate(projectileLevel), (int) amplifier().calculate(projectileLevel)), projectile.getOwner());
                 }
             });
         }

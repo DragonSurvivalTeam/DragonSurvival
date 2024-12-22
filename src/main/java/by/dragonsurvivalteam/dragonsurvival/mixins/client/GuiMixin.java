@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.List;
 
 @Mixin(Gui.class)
-public class GuiMixin {
+public abstract class GuiMixin {
     @Unique private List<ClientEffectProvider> dragonSurvival$providers = List.of();
 
     @Inject(method = "renderEffects", at = @At("HEAD"))

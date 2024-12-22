@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSEnchantments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDamageTypeTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEffectTags;
+import by.dragonsurvivalteam.dragonsurvival.util.AdditionalEffectData;
 import by.dragonsurvivalteam.dragonsurvival.util.EnchantmentUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -63,9 +64,8 @@ public class EffectHandler {
     }
 
     @SubscribeEvent
-    public static void markLastAfflictedOnApplyEffect(MobEffectEvent.Added event) {
-        EntityStateHandler data = event.getEntity().getData(DSDataAttachments.ENTITY_HANDLER);
-        data.lastAfflicted = event.getEffectSource() != null ? event.getEffectSource().getId() : -1;
+    public static void markLastAfflictedOnApplyEffect(final MobEffectEvent.Added event) {
+        ((AdditionalEffectData) event.getEffectInstance()).dragonSurvival$setApplier(event.getEffectSource());
     }
 
     public static MobEffectInstance modifyEffect(final Player affected, final MobEffectInstance instance, @Nullable final Entity applier) {

@@ -20,6 +20,7 @@
     "LightningBoltMixin",
     "LivingEntityMixin",
     "MaceItemMixin",
+    "MobEffectInstanceMixin",
     "PlayerEndMixin",
     "PlayerMixin",
     "PlayerStartMixin",
