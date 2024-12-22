@@ -65,7 +65,7 @@
     ]
   },
   "upgrade": {
-    "upgrade": {
+    "upgrade_data": {
       "type": "manual",
       "maximum_level": 5,
       "requirement_or_cost": {

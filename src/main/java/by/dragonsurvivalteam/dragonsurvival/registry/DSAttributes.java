@@ -33,6 +33,10 @@ public class DSAttributes {
     @Translation(type = Translation.Type.ATTRIBUTE_DESCRIPTION, comments = "Amount of mana for dragon abilities")
     public static final Holder<Attribute> MANA = DS_ATTRIBUTES.register("mana", () -> new RangedAttribute(Translation.Type.ATTRIBUTE.wrap("mana"), 1, 0, 1024).setSyncable(true));
 
+    @Translation(type = Translation.Type.ATTRIBUTE, comments = "Dragon Mana Regeneration")
+    @Translation(type = Translation.Type.ATTRIBUTE_DESCRIPTION, comments = "Amount of dragon mana regenerated per tick") // Default value equals to 1 mana every 10 seconds
+    public static final Holder<Attribute> MANA_REGENERATION = DS_ATTRIBUTES.register("mana_regeneration", () -> new RangedAttribute(Translation.Type.ATTRIBUTE.wrap("mana_regeneration"), 0.005, 0, 1024).setSyncable(true));
+
     @Translation(type = Translation.Type.ATTRIBUTE, comments = "Experience")
     @Translation(type = Translation.Type.ATTRIBUTE_DESCRIPTION, comments = "A multiplier to the dropped experience")
     public static final Holder<Attribute> EXPERIENCE = DS_ATTRIBUTES.register("experience", () -> new RangedAttribute(Translation.Type.ATTRIBUTE.wrap("experience"), 1, 0, 1024).setSyncable(true));
@@ -58,11 +62,13 @@ public class DSAttributes {
         event.add(EntityType.PLAYER, FLIGHT_STAMINA_COST);
         event.add(EntityType.PLAYER, FLIGHT_SPEED);
         event.add(EntityType.PLAYER, MANA);
+        event.add(EntityType.PLAYER, MANA_REGENERATION);
         event.add(EntityType.PLAYER, EXPERIENCE);
         event.add(EntityType.PLAYER, DRAGON_BREATH_RANGE);
         event.add(EntityType.PLAYER, BLOCK_BREAK_RADIUS);
         event.add(EntityType.PLAYER, PENALTY_RESISTANCE_TIME);
         event.add(EntityType.PLAYER, LAVA_OXYGEN_AMOUNT);
+
         event.getTypes().forEach(type -> event.add(type, LAVA_SWIM_SPEED));
     }
 }

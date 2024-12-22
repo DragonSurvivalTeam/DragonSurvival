@@ -10,7 +10,7 @@ import java.util.function.Function;
 
 public record Upgrade(Either<ValueBasedUpgrade, ItemBasedUpgrade> upgrade) {
     public static final Codec<Upgrade> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.either(ValueBasedUpgrade.CODEC, ItemBasedUpgrade.CODEC).fieldOf("upgrade").forGetter(Upgrade::upgrade)
+            Codec.either(ValueBasedUpgrade.CODEC, ItemBasedUpgrade.CODEC).fieldOf("upgrade_data").forGetter(Upgrade::upgrade)
     ).apply(instance, Upgrade::new));
 
     public MutableComponent getDescription(int level) {

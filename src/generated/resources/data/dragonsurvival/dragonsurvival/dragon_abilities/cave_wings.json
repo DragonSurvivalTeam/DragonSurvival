@@ -34,7 +34,7 @@
     ]
   },
   "upgrade": {
-    "upgrade": {
+    "upgrade_data": {
       "downgrade_items": [],
       "items_per_level": [
         "dragonsurvival:wing_grant",

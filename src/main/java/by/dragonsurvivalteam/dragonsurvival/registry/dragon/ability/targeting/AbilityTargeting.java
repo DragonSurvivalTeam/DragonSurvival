@@ -12,14 +12,17 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.advancements.critereon.BlockPredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
@@ -52,19 +55,43 @@ public interface AbilityTargeting {
         }
     }
 
-    record BlockTargeting(Optional<BlockPredicate> targetConditions, List<AbilityBlockEffect> effect) {
+    record BlockTargeting(Optional<List<BlockPredicate>> targetConditions, List<AbilityBlockEffect> effect) {
         public static final Codec<BlockTargeting> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                BlockPredicate.CODEC.optionalFieldOf("target_conditions").forGetter(BlockTargeting::targetConditions),
+                BlockPredicate.CODEC.listOf().optionalFieldOf("target_conditions").forGetter(BlockTargeting::targetConditions),
                 AbilityBlockEffect.CODEC.listOf().fieldOf("block_effect").forGetter(BlockTargeting::effect)
         ).apply(instance, BlockTargeting::new));
+
+        public boolean matches(final ServerLevel level, final BlockPos position) {
+            return targetConditions.map(conditions -> {
+                for (BlockPredicate condition : conditions) {
+                    if (condition.matches(level, position)) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }).orElse(true);
+        }
     }
 
-    record EntityTargeting(Optional<EntityPredicate> targetConditions, List<AbilityEntityEffect> effect, EntityTargetingMode targetingMode) {
+    record EntityTargeting(Optional<List<EntityPredicate>> targetConditions, List<AbilityEntityEffect> effect, EntityTargetingMode targetingMode) {
         public static final Codec<EntityTargeting> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                EntityPredicate.CODEC.optionalFieldOf("target_conditions").forGetter(EntityTargeting::targetConditions),
+                EntityPredicate.CODEC.listOf().optionalFieldOf("target_conditions").forGetter(EntityTargeting::targetConditions),
                 AbilityEntityEffect.CODEC.listOf().fieldOf("entity_effect").forGetter(EntityTargeting::effect),
                 Codec.STRING.xmap(EntityTargetingMode::valueOf, EntityTargetingMode::name).fieldOf("entity_targeting_mode").forGetter(EntityTargeting::targetingMode)
         ).apply(instance, EntityTargeting::new));
+
+        public boolean matches(final ServerLevel level, final Vec3 position, final Entity entity) {
+            return targetConditions.map(conditions -> {
+                for (EntityPredicate condition : conditions) {
+                    if (condition.matches(level, position, entity)) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }).orElse(true);
+        }
     }
 
     static <T extends AbilityTargeting> Products.P1<RecordCodecBuilder.Mu<T>, Either<BlockTargeting, EntityTargeting>> codecStart(final RecordCodecBuilder.Instance<T> instance) {

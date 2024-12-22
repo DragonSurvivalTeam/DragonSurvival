@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
@@ -25,6 +26,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 
 import java.awt.*;
+import java.util.Objects;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
@@ -168,6 +170,7 @@ public class MagicHUD {
         posY += skillbarYOffset;
 
         MagicData magicData = MagicData.getData(player);
+
         if (magicData.shouldRenderAbilities()) {
             graphics.blit(VANILLA_WIDGETS, posX, posY - 2, 0, 0, 0, 41, 22, 256, 256);
             graphics.blit(VANILLA_WIDGETS, posX + 41, posY - 2, 0, 141, 0, 41, 22, 256, 256);
@@ -218,7 +221,10 @@ public class MagicHUD {
                         if (currentMana <= manaSlot) {
                             // TODO :: have a partially-filled icon for 0.01..0.99 values?
                             //  would only apply to the last "filled" mana icon
-                            xPos = ManaHandler.isRegeneratingMana(player) ? 19 : 37;
+
+                            // TODO :: icons show as colored once the player regenerates at least 0.5 mana per second
+                            //  could be adjusted or have some other check
+                            xPos = player.getAttributeValue(DSAttributes.MANA_REGENERATION) > 0.025 ? 19 : 37;
                         } else {
                             xPos = 0;
                         }
@@ -231,9 +237,10 @@ public class MagicHUD {
         }
 
         if (magicData.isCasting()) {
-            DragonAbilityInstance ability = magicData.fromSlot(magicData.getSelectedAbilitySlot());
+            DragonAbilityInstance ability = Objects.requireNonNull(magicData.fromSlot(magicData.getSelectedAbilitySlot()));
             float currentCastTime = magicData.getClientCastTimer() - Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
             int skillCastTime = ability.getCastTime();
+
             if (skillCastTime > 0) {
                 graphics.pose().pushPose();
                 graphics.pose().scale(0.5F, 0.5F, 0);

@@ -15,6 +15,8 @@
   "attribute.dragonsurvival.lava_swim_speed.desc": "A multiplier to the lava swim speed",
   "attribute.dragonsurvival.mana": "Dragon Mana",
   "attribute.dragonsurvival.mana.desc": "Amount of mana for dragon abilities",
+  "attribute.dragonsurvival.mana_regeneration": "Dragon Mana Regeneration",
+  "attribute.dragonsurvival.mana_regeneration.desc": "Amount of dragon mana regenerated per tick",
   "attribute.dragonsurvival.penalty_resistance_time": "Penalty Resistance Time",
   "attribute.dragonsurvival.penalty_resistance_time.desc": "Increases the time before the dragon penalty effect is applied",
   "block.dragonsurvival.acacia_dragon_door": "Acacia Dragon Door",

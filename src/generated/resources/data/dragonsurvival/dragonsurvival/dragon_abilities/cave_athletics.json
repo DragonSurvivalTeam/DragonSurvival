@@ -8,7 +8,6 @@
               "effect_type": "dragonsurvival:modifier",
               "modifiers": [
                 {
-                  "icon": "dragonsurvival:textures/modifiers/strong_leather.png",
                   "id": "dragonsurvival:cave_athletics",
                   "modifiers": [
                     {
@@ -26,13 +25,15 @@
             }
           ],
           "entity_targeting_mode": "TARGET_ALLIES",
-          "target_conditions": {
-            "stepping_on": {
-              "block": {
-                "blocks": "#dragonsurvival:speeds_up_cave_dragon"
+          "target_conditions": [
+            {
+              "stepping_on": {
+                "block": {
+                  "blocks": "#dragonsurvival:speeds_up_cave_dragon"
+                }
               }
             }
-          }
+          ]
         },
         "remove_automatically": true,
         "target_type": "dragonsurvival:self"
@@ -72,7 +73,7 @@
     ]
   },
   "upgrade": {
-    "upgrade": {
+    "upgrade_data": {
       "type": "manual",
       "maximum_level": 5,
       "requirement_or_cost": {

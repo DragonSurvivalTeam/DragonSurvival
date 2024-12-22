@@ -61,6 +61,7 @@ public class DragonFoodHandler {
             return true;
         }
 
+        // The mixin in 'IItemExtensionMixin' would require player context so we check this separately here
         return type.value().getDiet(stack.getItem()) != null;
     }
 

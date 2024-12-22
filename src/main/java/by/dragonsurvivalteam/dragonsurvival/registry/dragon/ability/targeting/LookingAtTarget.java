@@ -36,13 +36,13 @@ public record LookingAtTarget(Either<BlockTargeting, EntityTargeting> target, Le
                 return;
             }
 
-            if (blockTarget.targetConditions().isPresent() && !blockTarget.targetConditions().get().matches(dragon.serverLevel(), result.getBlockPos()) || /* This is always checked by the predicate */ !dragon.serverLevel().isLoaded(result.getBlockPos())) {
+            if (!blockTarget.matches(dragon.serverLevel(), result.getBlockPos()) || /* This is always checked by the predicate */ !dragon.serverLevel().isLoaded(result.getBlockPos())) {
                 return;
             }
 
             blockTarget.effect().forEach(target -> target.apply(dragon, ability, result.getBlockPos(), result.getDirection()));
         }).ifRight(entityTarget -> {
-            Predicate<Entity> filter = entity -> isEntityRelevant(dragon, entityTarget, entity) && entityTarget.targetConditions().map(conditions -> conditions.matches(dragon.serverLevel(), dragon.position(), entity)).orElse(true);
+            Predicate<Entity> filter = entity -> isEntityRelevant(dragon, entityTarget, entity) && entityTarget.matches(dragon.serverLevel(), dragon.position(), entity);
             HitResult result = getEntityHitResult(dragon, filter, ability);
 
             if (result instanceof EntityHitResult entityHitResult) {

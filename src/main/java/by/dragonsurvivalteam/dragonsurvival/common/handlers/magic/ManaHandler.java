@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.common.handlers.magic;
 
-import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncMana;
@@ -8,7 +7,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.util.ExperienceUtils;
-import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -34,35 +32,22 @@ public class ManaHandler {
     private static final int MAX_MANA_FROM_LEVELS = 9;
 
     @SubscribeEvent
-    public static void playerTick(PlayerTickEvent.Post event) {
+    public static void playerTick(final PlayerTickEvent.Post event) {
         Player player = event.getEntity();
+
+        if (!DragonStateProvider.isDragon(player)) {
+            return;
+        }
+
         MagicData magic = MagicData.getData(player);
 
         if (magic.getCurrentlyCasting() != null) {
             return;
         }
 
-        int rate = ManaHandler.isRegeneratingMana(player) ? ServerConfig.favorableManaTicks : ServerConfig.normalManaTicks;
-
-        if (player.hasEffect(DSEffects.SOURCE_OF_MAGIC)) {
-            rate = 1;
+        if (magic.getCurrentMana() < getMaxMana(player)) {
+            replenishMana(player, (float) player.getAttributeValue(DSAttributes.MANA_REGENERATION));
         }
-
-        if (player.tickCount % Functions.secondsToTicks(rate) == 0) {
-            if (magic.getCurrentMana() < getMaxMana(player)) {
-                replenishMana(player, 1);
-            }
-        }
-    }
-
-    public static boolean isRegeneratingMana(final Player player) {
-        DragonStateHandler data = DragonStateProvider.getData(player);
-
-        if (!data.isDragon()) {
-            return false;
-        }
-
-        return player.hasEffect(DSEffects.SOURCE_OF_MAGIC) || player.hasEffect(DSEffects.MANA_REGENERATION);
     }
 
     public static boolean hasEnoughMana(final Player player, float manaCost) {

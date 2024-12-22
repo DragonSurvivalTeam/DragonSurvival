@@ -15,12 +15,14 @@
             }
           ],
           "entity_targeting_mode": "TARGET_ALL",
-          "target_conditions": {
-            "type_specific": {
-              "type": "dragonsurvival:entity_check_predicate",
-              "check_for": "living_entity"
+          "target_conditions": [
+            {
+              "type_specific": {
+                "type": "dragonsurvival:entity_check_predicate",
+                "check_for": "living_entity"
+              }
             }
-          }
+          ]
         },
         "target_type": "dragonsurvival:self"
       },
@@ -70,7 +72,7 @@
     ]
   },
   "upgrade": {
-    "upgrade": {
+    "upgrade_data": {
       "type": "passive_level",
       "maximum_level": 4,
       "requirement_or_cost": {

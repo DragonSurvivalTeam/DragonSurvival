@@ -29,12 +29,14 @@
             }
           ],
           "entity_targeting_mode": "TARGET_ENEMIES",
-          "target_conditions": {
-            "type_specific": {
-              "type": "dragonsurvival:entity_check_predicate",
-              "check_for": "living_entity"
+          "target_conditions": [
+            {
+              "type_specific": {
+                "type": "dragonsurvival:entity_check_predicate",
+                "check_for": "living_entity"
+              }
             }
-          }
+          ]
         },
         "range_multiplier": 1.0,
         "target_type": "dragonsurvival:dragon_breath"
@@ -131,7 +133,7 @@
     ]
   },
   "upgrade": {
-    "upgrade": {
+    "upgrade_data": {
       "type": "passive_level",
       "maximum_level": 4,
       "requirement_or_cost": {

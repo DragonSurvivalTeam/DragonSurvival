@@ -46,7 +46,7 @@ public class SeaDragonAbilities {
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(Either.right(
                         new AbilityTargeting.EntityTargeting(
-                                Optional.of(Condition.living()),
+                                Optional.of(List.of(Condition.living())),
                                 List.of(new ProjectileEffect(
                                         context.lookup(ProjectileData.REGISTRY).getOrThrow(Projectiles.BALL_LIGHTNING),
                                         TargetDirection.lookingAt(),

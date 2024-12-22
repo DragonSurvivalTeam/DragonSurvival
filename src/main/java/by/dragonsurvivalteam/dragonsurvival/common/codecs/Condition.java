@@ -38,6 +38,10 @@ public class Condition {
         return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(BlockPredicate.Builder.block().of(tag))).build();
     }
 
+    public static EntityPredicate inBlock(final TagKey<Block> tag) {
+        return EntityPredicate.Builder.entity().located(LocationPredicate.Builder.location().setBlock(BlockPredicate.Builder.block().of(tag))).build();
+    }
+
     // --- Builder --- //
 
     public static EntityPredicate.Builder dragonType(final Holder<DragonType> type) {

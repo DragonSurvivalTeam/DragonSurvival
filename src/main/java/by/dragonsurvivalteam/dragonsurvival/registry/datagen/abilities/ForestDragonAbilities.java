@@ -46,7 +46,7 @@ public class ForestDragonAbilities {
                 Optional.empty(),
                 List.of(new ActionContainer(new AreaTarget(Either.right(
                         new AbilityTargeting.EntityTargeting(
-                                Optional.of(Condition.living()),
+                                Optional.of(List.of(Condition.living())),
                                 List.of(new ProjectileEffect(
                                         context.lookup(ProjectileData.REGISTRY).getOrThrow(Projectiles.SPIKE),
                                         TargetDirection.towardsEntity(),

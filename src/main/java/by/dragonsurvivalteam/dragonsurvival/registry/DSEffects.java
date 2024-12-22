@@ -61,7 +61,8 @@ public class DSEffects { // TODO :: add descriptions for the missing N/A marked 
 
     @Translation(type = Translation.Type.EFFECT, comments = "Source of Magic")
     @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "Gives the dragon infinite mana to use magic.")
-    public static Holder<MobEffect> SOURCE_OF_MAGIC = DS_MOB_EFFECTS.register("source_of_magic", () -> new ModifiableMobEffect(MobEffectCategory.BENEFICIAL, 0x0, false));
+    public static Holder<MobEffect> SOURCE_OF_MAGIC = DS_MOB_EFFECTS.register("source_of_magic", () -> new ModifiableMobEffect(MobEffectCategory.BENEFICIAL, 0x0, false)
+            .addAttributeModifier(DSAttributes.MANA_REGENERATION, DragonSurvival.res("source_of_magic"), 10, Operation.ADD_MULTIPLIED_BASE));
 
     @Translation(type = Translation.Type.EFFECT, comments = "Mana Regeneration")
     @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "Regenerates dragon mana over time.")

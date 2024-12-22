@@ -36,7 +36,7 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
@@ -53,11 +53,6 @@ public class CaveDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Fireball")
     public static final ResourceKey<DragonAbility> FIRE_BALL = DragonAbilities.key("fire_ball");
 
-    // TODO: How to actually do this in the new system?
-    //  have one generic translation part which applies to all abilities (name, cooldown, duration, level)
-    //  people can move them around using the string.format syntax, e.g. -> '%2$' etc. (example for using the second parameter)
-    //  the ability description itself needs to be generic since there is no reasonable way to supply what each effect does etc.
-    //  (at most you might be able to give the range / radius of each target)
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
             "■ Elemental breath: a stream of fire that ignites enemies and blocks. Range depends on age of the dragon.",
             "■ Is able to destroy some blocks. Cannot be used under water, and during rain."
@@ -156,7 +151,7 @@ public class CaveDragonAbilities {
                 Optional.of(EntityPredicate.Builder.entity().located(LocationPredicate.Builder.location().setFluid(FluidPredicate.Builder.fluid().of(Fluids.WATER))).build()),
                 List.of(new ActionContainer(new SelfTarget(Either.right(
                         new AbilityTargeting.EntityTargeting(
-                                Optional.of(Condition.living()),
+                                Optional.of(List.of(Condition.living())),
                                 List.of(new ProjectileEffect(
                                         context.lookup(ProjectileData.REGISTRY).getOrThrow(Projectiles.FIREBALL),
                                         TargetDirection.lookingAt(),
@@ -199,7 +194,7 @@ public class CaveDragonAbilities {
                 Optional.of(EntityPredicate.Builder.entity().located(LocationPredicate.Builder.location().setFluid(FluidPredicate.Builder.fluid().of(Fluids.WATER))).build()),
                 List.of(new ActionContainer(new DragonBreathTarget(Either.right(
                                 new AbilityTargeting.EntityTargeting(
-                                        Optional.of(Condition.living()),
+                                        Optional.of(List.of(Condition.living())),
                                         List.of(
                                                 new DamageEffect(
                                                         context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.CAVE_DRAGON_BREATH),
@@ -339,10 +334,10 @@ public class CaveDragonAbilities {
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(Either.right(
                         new AbilityTargeting.EntityTargeting(
-                                Optional.of(Condition.onBlock(DSBlockTags.SPEEDS_UP_CAVE_DRAGON)),
+                                Optional.of(List.of(Condition.onBlock(DSBlockTags.SPEEDS_UP_CAVE_DRAGON))),
                                 ModifierEffect.single(new ModifierWithDuration(
                                         CAVE_ATHLETICS_MODIFIER,
-                                        /* FIXME */ DragonSurvival.res("textures/modifiers/strong_leather.png"),
+                                        ModifierWithDuration.DEFAULT_MODIFIER_ICON,
                                         // FIXME :: not the final value
                                         List.of(new Modifier(Attributes.MOVEMENT_SPEED, LevelBasedValue.perLevel(0.02f), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
                                         LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
@@ -387,8 +382,8 @@ public class CaveDragonAbilities {
                 Activation.passive(),
                 Optional.of(new Upgrade(Either.left(new ValueBasedUpgrade(ValueBasedUpgrade.Type.MANUAL, 10, LevelBasedValue.perLevel(15))))),
                 Optional.empty(),
-                List.of(new ActionContainer(new SelfTarget(Either.right(
-                        new AbilityTargeting.EntityTargeting(
+                List.of(
+                        new ActionContainer(new SelfTarget(Either.right(new AbilityTargeting.EntityTargeting(
                                 Optional.empty(),
                                 List.of(new ModifierEffect(
                                         List.of(
@@ -403,8 +398,24 @@ public class CaveDragonAbilities {
                                         false
                                 )),
                                 AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
-                        )
-                ), false), LevelBasedValue.constant(1))),
+                        )), false), LevelBasedValue.constant(1)),
+                        new ActionContainer(new SelfTarget(Either.right(new AbilityTargeting.EntityTargeting(
+                                Optional.of(List.of(Condition.onBlock(DSBlockTags.REGENERATES_CAVE_DRAGON_MANA), Condition.inBlock(DSBlockTags.REGENERATES_CAVE_DRAGON_MANA))),
+                                List.of(new ModifierEffect(
+                                        List.of(
+                                                new ModifierWithDuration(
+                                                        DragonSurvival.res("good_mana_condition"),
+                                                        ModifierWithDuration.DEFAULT_MODIFIER_ICON,
+                                                        List.of(new Modifier(DSAttributes.MANA_REGENERATION, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_MULTIPLIED_BASE, Optional.empty())),
+                                                        LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                                        true
+                                                )
+                                        ),
+                                        false
+                                )),
+                                AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                        )), false), LevelBasedValue.constant(1))
+                ),
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_magic_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_magic_1"), 1),
@@ -527,7 +538,7 @@ public class CaveDragonAbilities {
                                                         List.of(
                                                                 new DamageModification(
                                                                         DragonSurvival.res("fire_immunity"),
-                                                                        HolderSet.direct(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.LAVA), context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.IN_FIRE), context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.ON_FIRE)),
+                                                                        context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypeTags.IS_FIRE),
                                                                         LevelBasedValue.constant(0),
                                                                         LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)
                                                                 )

@@ -79,7 +79,7 @@
     ]
   },
   "upgrade": {
-    "upgrade": {
+    "upgrade_data": {
       "type": "passive_level",
       "maximum_level": 3,
       "requirement_or_cost": {

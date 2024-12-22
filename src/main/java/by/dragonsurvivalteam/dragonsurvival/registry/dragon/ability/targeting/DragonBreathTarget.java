@@ -34,7 +34,7 @@ public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target,
             AABB breathArea = calculateBreathArea(dragon, ability);
 
             BlockPos.betweenClosedStream(breathArea).forEach(position -> {
-                if (blockTarget.targetConditions().isEmpty() || blockTarget.targetConditions().get().matches(dragon.serverLevel(), position)) {
+                if (blockTarget.matches(dragon.serverLevel(), position)) {
                     // TODO :: Is this too expensive to calculate for each block?
                     BlockHitResult blockHitResult = getBlockHitResult(dragon, ability);
                     blockTarget.effect().forEach(target -> target.apply(dragon, ability, position, blockHitResult.getDirection()));
@@ -44,7 +44,7 @@ public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target,
             AABB breathArea = calculateBreathArea(dragon, ability);
 
             dragon.serverLevel().getEntities(EntityTypeTest.forClass(Entity.class), breathArea,
-                    entity -> isEntityRelevant(dragon, entityTarget, entity) && entityTarget.targetConditions().map(conditions -> conditions.matches(dragon.serverLevel(), dragon.position(), entity)).orElse(true)
+                    entity -> isEntityRelevant(dragon, entityTarget, entity) && entityTarget.matches(dragon.serverLevel(), dragon.position(), entity)
             ).forEach(entity -> entityTarget.effect().forEach(target -> target.apply(dragon, ability, entity)));
         });
     }

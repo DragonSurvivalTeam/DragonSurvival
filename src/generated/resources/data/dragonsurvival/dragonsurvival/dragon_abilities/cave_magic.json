@@ -30,6 +30,53 @@
         "target_type": "dragonsurvival:self"
       },
       "trigger_rate": 1.0
+    },
+    {
+      "target_selection": {
+        "applied_effects": {
+          "entity_effect": [
+            {
+              "effect_type": "dragonsurvival:modifier",
+              "modifiers": [
+                {
+                  "id": "dragonsurvival:good_mana_condition",
+                  "is_hidden": true,
+                  "modifiers": [
+                    {
+                      "amount": {
+                        "type": "minecraft:linear",
+                        "base": 1.0,
+                        "per_level_above_first": 1.0
+                      },
+                      "attribute": "dragonsurvival:mana_regeneration",
+                      "operation": "add_multiplied_base"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "entity_targeting_mode": "TARGET_ALLIES",
+          "target_conditions": [
+            {
+              "stepping_on": {
+                "block": {
+                  "blocks": "#dragonsurvival:regenerates_cave_dragon_mana"
+                }
+              }
+            },
+            {
+              "location": {
+                "block": {
+                  "blocks": "#dragonsurvival:regenerates_cave_dragon_mana"
+                }
+              }
+            }
+          ]
+        },
+        "target_type": "dragonsurvival:self"
+      },
+      "trigger_rate": 1.0
     }
   ],
   "activation": {
@@ -84,7 +131,7 @@
     ]
   },
   "upgrade": {
-    "upgrade": {
+    "upgrade_data": {
       "type": "manual",
       "maximum_level": 10,
       "requirement_or_cost": {

@@ -10,11 +10,7 @@
                 {
                   "id": "dragonsurvival:fire_immunity",
                   "multiplier": 0.0,
-                  "types": [
-                    "minecraft:lava",
-                    "minecraft:in_fire",
-                    "minecraft:on_fire"
-                  ]
+                  "types": "#minecraft:is_fire"
                 }
               ]
             }
