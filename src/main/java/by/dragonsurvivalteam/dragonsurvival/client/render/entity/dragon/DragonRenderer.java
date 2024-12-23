@@ -88,25 +88,14 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         DragonStateHandler handler = DragonStateProvider.getData(player);
         boolean hasWings = !handler.getBody().value().canHideWings() || handler.getSkinData().get(handler.getStage().getKey()).get().wings;
 
-        GeoBone leftWing = ClientDragonRenderer.dragonModel.getAnimationProcessor().getBone("WingLeft");
-        GeoBone rightWing = ClientDragonRenderer.dragonModel.getAnimationProcessor().getBone("WingRight");
-        GeoBone smallLeftWing = ClientDragonRenderer.dragonModel.getAnimationProcessor().getBone("SmallWingLeft");
-        GeoBone smallRightWing = ClientDragonRenderer.dragonModel.getAnimationProcessor().getBone("SmallWingRight");
+        if(handler.getBody() != null) {
+            for(String boneName : handler.getBody().value().bonesToHideForToggle()) {
+                GeoBone bone = ClientDragonRenderer.dragonModel.getAnimationProcessor().getBone(boneName);
 
-        if (leftWing != null) {
-            leftWing.setHidden(!hasWings);
-        }
-
-        if (rightWing != null) {
-            rightWing.setHidden(!hasWings);
-        }
-
-        if (smallLeftWing != null) {
-            smallLeftWing.setHidden(!hasWings);
-        }
-
-        if (smallRightWing != null) {
-            smallRightWing.setHidden(!hasWings);
+                if (bone != null) {
+                    bone.setHidden(!hasWings);
+                }
+            }
         }
 
         // Hide the magic bones if we aren't using an animation that requires it - prevents issues during animation transitions

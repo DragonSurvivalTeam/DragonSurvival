@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.body;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierType;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.AttributeModifierSupplier;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -26,7 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
-public record DragonBody(List<Modifier> modifiers, double heightMultiplier, boolean hasExtendedCrouch, boolean canHideWings, ResourceLocation customModel) implements AttributeModifierSupplier {
+public record DragonBody(List<Modifier> modifiers, double heightMultiplier, boolean hasExtendedCrouch, boolean canHideWings, ResourceLocation customModel, List<String> bonesToHideForToggle) implements AttributeModifierSupplier {
     public static final ResourceKey<Registry<DragonBody>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_bodies"));
 
     public static final ResourceLocation DEFAULT_MODEL = DragonSurvival.res("geo/dragon_model.geo.json");
@@ -36,7 +37,8 @@ public record DragonBody(List<Modifier> modifiers, double heightMultiplier, bool
             Codec.DOUBLE.optionalFieldOf("height_multiplier", 1.0).forGetter(DragonBody::heightMultiplier),
             Codec.BOOL.optionalFieldOf("has_extended_crouch", false).forGetter(DragonBody::hasExtendedCrouch),
             Codec.BOOL.optionalFieldOf("can_hide_wings", true).forGetter(DragonBody::canHideWings),
-            ResourceLocation.CODEC.optionalFieldOf("custom_model", DEFAULT_MODEL).forGetter(DragonBody::customModel)
+            ResourceLocation.CODEC.optionalFieldOf("custom_model", DEFAULT_MODEL).forGetter(DragonBody::customModel),
+            Codec.STRING.listOf().optionalFieldOf("bones_to_hide_for_toggle", List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight")).forGetter(DragonBody::bonesToHideForToggle)
     ).apply(instance, instance.stable(DragonBody::new)));
 
     public static final Codec<Holder<DragonBody>> CODEC = RegistryFixedCodec.create(REGISTRY);
@@ -72,5 +74,13 @@ public record DragonBody(List<Modifier> modifiers, double heightMultiplier, bool
     @Override
     public ModifierType getModifierType() {
         return ModifierType.DRAGON_BODY;
+    }
+
+    public static String getWingButtonName(Holder<DragonBody> holder) {
+        return Translation.Type.BODY_WINGS.wrap(holder.getKey().location().getNamespace(), holder.getKey().location().getPath());
+    }
+
+    public static String getWingButtonDescription(Holder<DragonBody> holder) {
+        return Translation.Type.BODY_WINGS_DESCRIPTION.wrap(holder.getKey().location().getNamespace(), holder.getKey().location().getPath());
     }
 }

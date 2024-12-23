@@ -100,12 +100,6 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     @Translation(type = Translation.Type.MISC, comments = "Reset to default")
     private static final String RESET = Translation.Type.GUI.wrap("dragon_editor.reset");
 
-    @Translation(type = Translation.Type.MISC, comments = "Show wings")
-    private static final String WINGS = Translation.Type.GUI.wrap("dragon_editor.wings");
-
-    @Translation(type = Translation.Type.MISC, comments = "Visual only. Not available for Western and Central body types.")
-    private static final String WINGS_INFO = Translation.Type.GUI.wrap("dragon_editor.wings_info");
-
     @Translation(type = Translation.Type.MISC, comments = "Old texture")
     private static final String DEFAULT_SKIN = Translation.Type.GUI.wrap("dragon_editor.default_skin");
 
@@ -375,7 +369,17 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
 
         for (Renderable renderable : new CopyOnWriteArrayList<>(renderables)) {
             if (renderable instanceof AbstractWidget widget && widget != showUiCheckbox) {
-                widget.visible = showUi;
+                if(widget == wingsCheckbox) {
+                    if(dragonBody != null && dragonBody.value().canHideWings() && widget == wingsCheckbox) {
+                        wingsCheckbox.visible = showUi;
+                        wingsCheckbox.setTooltip(Tooltip.create(Component.translatable(DragonBody.getWingButtonDescription(dragonBody))));
+                        wingsCheckbox.setMessage(Component.translatable(DragonBody.getWingButtonName(dragonBody)));
+                    } else {
+                        wingsCheckbox.visible = false;
+                    }
+                } else {
+                    widget.visible = showUi;
+                }
             }
 
             renderable.render(graphics, mouseX, mouseY, partialTick);
@@ -387,6 +391,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
                 colorSelectorButton.visible = (text != null && text.isColorable()) && !defaultSkinCheckbox.selected;
             }
         }
+
 
         defaultSkinCheckbox.selected = preset.get(Objects.requireNonNull(dragonStage.getKey())).get().defaultSkin;
         showUiCheckbox.visible = true;
@@ -610,8 +615,8 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
             addRenderableWidget(new DragonEditorSlotButton(width / 2 + 200 + 15, guiTop + (num - 1) * 12 + 5 + 30, num, this));
         }
 
-        wingsCheckbox = new ExtendedCheckbox(width / 2 - 220, height - 25, 120, 17, 17, Component.translatable(WINGS), preset.get(dragonStage.getKey()).get().wings, p -> actionHistory.add(new EditorAction<>(checkWingsButtonAction, p.selected())));
-        wingsCheckbox.setTooltip(Tooltip.create(Component.translatable(WINGS_INFO)));
+        wingsCheckbox = new ExtendedCheckbox(width / 2 - 220, height - 25, 120, 17, 17, Component.translatable(DragonBody.getWingButtonName(dragonBody)), preset.get(dragonStage.getKey()).get().wings, p -> actionHistory.add(new EditorAction<>(checkWingsButtonAction, p.selected())));
+        wingsCheckbox.setTooltip(Tooltip.create(Component.translatable(DragonBody.getWingButtonDescription(dragonBody))));
         wingsCheckbox.selected = preset.get(dragonStage.getKey()).get().wings;
         addRenderableWidget(wingsCheckbox);
 

@@ -22,6 +22,8 @@ public class DragonBodies {
             "§7■ You may change your body type at any time, but you will lose your growth progress."
     })
     @Translation(type = Translation.Type.BODY, comments = "Center")
+    @Translation(type = Translation.Type.BODY_WINGS, comments = "Show wings")
+    @Translation(type = Translation.Type.BODY_WINGS_DESCRIPTION, comments = "Visual only")
     public static ResourceKey<DragonBody> center = key("center");
 
     @Translation(type = Translation.Type.BODY_DESCRIPTION, comments = {
@@ -30,6 +32,8 @@ public class DragonBodies {
             "§7■ You may change your body type at any time, but you will lose your growth progress."
     })
     @Translation(type = Translation.Type.BODY, comments = "East")
+    @Translation(type = Translation.Type.BODY_WINGS, comments = "Show wings")
+    @Translation(type = Translation.Type.BODY_WINGS_DESCRIPTION, comments = "Visual only")
     public static ResourceKey<DragonBody> east = key("east");
 
     @Translation(type = Translation.Type.BODY_DESCRIPTION, comments = {
@@ -38,6 +42,8 @@ public class DragonBodies {
             "§7■ You may change your body type at any time, but you will lose your growth progress. Each type has their own strengths and weaknesses, but the change is mostly cosmetic."
     })
     @Translation(type = Translation.Type.BODY, comments = "North")
+    @Translation(type = Translation.Type.BODY_WINGS, comments = "Show wings")
+    @Translation(type = Translation.Type.BODY_WINGS_DESCRIPTION, comments = "Visual only")
     public static ResourceKey<DragonBody> north = key("north");
 
     @Translation(type = Translation.Type.BODY_DESCRIPTION, comments = {
@@ -46,6 +52,8 @@ public class DragonBodies {
             "§7■ You may change your body type at any time, but you will lose your growth progress. Each type has their own strengths and weaknesses, but the change is mostly cosmetic."
     })
     @Translation(type = Translation.Type.BODY, comments = "South")
+    @Translation(type = Translation.Type.BODY_WINGS, comments = "Show wings")
+    @Translation(type = Translation.Type.BODY_WINGS_DESCRIPTION, comments = "Visual only")
     public static ResourceKey<DragonBody> south = key("south");
 
     @Translation(type = Translation.Type.BODY_DESCRIPTION, comments = {
@@ -54,12 +62,14 @@ public class DragonBodies {
             "§7■ You may change your body type at any time, but you will lose your growth progress."
     })
     @Translation(type = Translation.Type.BODY, comments = "West")
+    @Translation(type = Translation.Type.BODY_WINGS, comments = "Show wings")
+    @Translation(type = Translation.Type.BODY_WINGS_DESCRIPTION, comments = "Visual only")
     public static ResourceKey<DragonBody> west = key("west");
 
     public static void registerBodies(final BootstrapContext<DragonBody> context) {
         context.register(center, new DragonBody(List.of(
                 Modifier.constant(DSAttributes.FLIGHT_SPEED, 0.2f, AttributeModifier.Operation.ADD_VALUE)
-        ), 1, false, false, DragonBody.DEFAULT_MODEL));
+        ), 1, false, false, DragonBody.DEFAULT_MODEL, List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight")));
 
         context.register(east, new DragonBody(List.of(
                 Modifier.constant(Attributes.ARMOR, 2, AttributeModifier.Operation.ADD_VALUE),
@@ -72,7 +82,7 @@ public class DragonBodies {
                 Modifier.constant(DSAttributes.MANA, 2, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_SPEED, 0.2f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, -0.2f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
-        ), 1, false, true, DragonBody.DEFAULT_MODEL));
+        ), 1, false, true, DragonBody.DEFAULT_MODEL, List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight")));
 
         context.register(north, new DragonBody(List.of(
                 Modifier.constant(Attributes.ATTACK_DAMAGE, -0.2f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
@@ -81,7 +91,7 @@ public class DragonBodies {
                 Modifier.constant(NeoForgeMod.SWIM_SPEED, 0.5f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.MANA, 2, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, -0.1f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
-        ), 0.55, true, true, DragonBody.DEFAULT_MODEL));
+        ), 0.55, true, true, DragonBody.DEFAULT_MODEL, List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight")));
 
         context.register(south, new DragonBody(List.of(
                 Modifier.constant(Attributes.ATTACK_DAMAGE, 0.5f, AttributeModifier.Operation.ADD_VALUE),
@@ -91,7 +101,7 @@ public class DragonBodies {
                 Modifier.constant(NeoForgeMod.SWIM_SPEED, -0.2f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_SPEED, -0.2f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, -0.5f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
-        ), 1, false, true, DragonBody.DEFAULT_MODEL));
+        ), 1, false, true, DragonBody.DEFAULT_MODEL, List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight")));
 
         context.register(west, new DragonBody(List.of(
                 Modifier.constant(Attributes.ATTACK_KNOCKBACK, 0.5f, AttributeModifier.Operation.ADD_VALUE),
@@ -100,7 +110,7 @@ public class DragonBodies {
                 Modifier.constant(NeoForgeMod.SWIM_SPEED, -0.3f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_SPEED, 0.2f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, 1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
-        ), 1, false, false, DragonBody.DEFAULT_MODEL));
+        ), 1, false, false, DragonBody.DEFAULT_MODEL, List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight")));
     }
 
     public static ResourceKey<DragonBody> key(final ResourceLocation location) {

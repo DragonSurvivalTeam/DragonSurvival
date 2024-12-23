@@ -82,6 +82,8 @@ public @interface Translation {
 
         BODY(DragonSurvival.MODID + ".body.", ""),
         BODY_DESCRIPTION(DragonSurvival.MODID + ".body.", ".desc"),
+        BODY_WINGS(DragonSurvival.MODID + ".body.", ".wings"),
+        BODY_WINGS_DESCRIPTION(DragonSurvival.MODID + ".body.", ".wings.desc"),
 
         STAGE(DragonSurvival.MODID + ".stage.", ""),
         STAGE_DESCRIPTION(DragonSurvival.MODID + ".stage.", ".desc"),
