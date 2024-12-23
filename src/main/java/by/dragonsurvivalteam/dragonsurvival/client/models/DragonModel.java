@@ -35,7 +35,6 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class DragonModel extends GeoModel<DragonEntity> {
     private final ResourceLocation defaultTexture = ResourceLocation.fromNamespaceAndPath(MODID, "textures/dragon/cave_newborn.png");
-    private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(MODID, "geo/dragon_model.geo.json");
     private ResourceLocation overrideTexture;
     private CompletableFuture<Void> textureRegisterFuture = CompletableFuture.completedFuture(null);
 
@@ -150,7 +149,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
 
     @Override
     public ResourceLocation getModelResource(final DragonEntity dragon) {
-        return model;
+        return DragonStateProvider.getData(dragon.getPlayer()).getBody().value().customModel();
     }
 
     @Override

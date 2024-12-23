@@ -12,6 +12,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.neoforged.neoforge.common.NeoForgeMod;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public class DragonBodies {
@@ -58,7 +59,7 @@ public class DragonBodies {
     public static void registerBodies(final BootstrapContext<DragonBody> context) {
         context.register(center, new DragonBody(List.of(
                 Modifier.constant(DSAttributes.FLIGHT_SPEED, 0.2f, AttributeModifier.Operation.ADD_VALUE)
-        ), 1, false, false, true));
+        ), 1, false, false, DragonBody.DEFAULT_MODEL));
 
         context.register(east, new DragonBody(List.of(
                 Modifier.constant(Attributes.ARMOR, 2, AttributeModifier.Operation.ADD_VALUE),
@@ -71,7 +72,7 @@ public class DragonBodies {
                 Modifier.constant(DSAttributes.MANA, 2, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_SPEED, 0.2f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, -0.2f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
-        ), 1, false, true, true));
+        ), 1, false, true, DragonBody.DEFAULT_MODEL));
 
         context.register(north, new DragonBody(List.of(
                 Modifier.constant(Attributes.ATTACK_DAMAGE, -0.2f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
@@ -80,7 +81,7 @@ public class DragonBodies {
                 Modifier.constant(NeoForgeMod.SWIM_SPEED, 0.5f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.MANA, 2, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, -0.1f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
-        ), 0.55, true, true, true));
+        ), 0.55, true, true, DragonBody.DEFAULT_MODEL));
 
         context.register(south, new DragonBody(List.of(
                 Modifier.constant(Attributes.ATTACK_DAMAGE, 0.5f, AttributeModifier.Operation.ADD_VALUE),
@@ -90,7 +91,7 @@ public class DragonBodies {
                 Modifier.constant(NeoForgeMod.SWIM_SPEED, -0.2f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_SPEED, -0.2f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, -0.5f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
-        ), 1, false, true, true));
+        ), 1, false, true, DragonBody.DEFAULT_MODEL));
 
         context.register(west, new DragonBody(List.of(
                 Modifier.constant(Attributes.ATTACK_KNOCKBACK, 0.5f, AttributeModifier.Operation.ADD_VALUE),
@@ -99,7 +100,7 @@ public class DragonBodies {
                 Modifier.constant(NeoForgeMod.SWIM_SPEED, -0.3f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_SPEED, 0.2f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, 1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
-        ), 1, false, false, true));
+        ), 1, false, false, DragonBody.DEFAULT_MODEL));
     }
 
     public static ResourceKey<DragonBody> key(final ResourceLocation location) {
