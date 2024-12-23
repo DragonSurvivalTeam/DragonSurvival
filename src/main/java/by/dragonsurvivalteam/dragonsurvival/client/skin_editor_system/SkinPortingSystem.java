@@ -15,6 +15,7 @@ import net.neoforged.neoforge.common.util.Lazy;
 import java.util.List;
 import java.util.Map;
 
+// FIXME :: Deprecate? The new skin storage is so different I'm not sure it is worth trying to version
 public class SkinPortingSystem {
     public static void upgrade(SavedSkinPresets presets) {
         if (presets.version == 0) {

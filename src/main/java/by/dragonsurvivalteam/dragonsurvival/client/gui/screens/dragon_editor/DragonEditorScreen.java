@@ -144,7 +144,6 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     private int guiLeft;
 
     private final String[] animations = {"sit_dentist", "sit_animation", "idle_animation", "fly_animation", "swim_animation", "run_animation", "spinning_on_back"};
-    private final HashMap<Holder<DragonStage>, Integer> presetSelections = new HashMap<>();
     private final Map<EnumSkinLayer, DropDownButton> dropdownButtons = new HashMap<>();
     private final Map<EnumSkinLayer, ColorSelectorButton> colorSelectorButtons = new HashMap<>();
 
@@ -217,6 +216,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     // setHueAction, setSaturationAction, setBrightnessAction in HueSelectorComponent.Java
     // setDragonSlotAction in DragonEditorSlotButton.Java
 
+    // FIXME :: Known issue: if I switch to a body type that invalidates my preset, my preset data will be lost even if I undo
     public final Function<CompoundTag, CompoundTag> setSkinPresetAction = tag -> {
         CompoundTag prevTag = HANDLER.getSkinData().skinPreset.serializeNBT(Objects.requireNonNull(Minecraft.getInstance().player).registryAccess());
         HANDLER.getSkinData().skinPreset.deserializeNBT(Minecraft.getInstance().player.registryAccess(), tag);
@@ -271,6 +271,14 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         HANDLER.getSkinData().compileSkin(dragonStage);
         update();
         return prevSelected;
+    };
+
+    public final Function<SkinPreset, SkinPreset> loadPresetAction = newPreset -> {
+        SkinPreset previousPreset = preset;
+        preset = newPreset;
+        HANDLER.getSkinData().compileSkin(dragonStage);
+        update();
+        return previousPreset;
     };
 
     public static class UndoRedoList {
@@ -335,7 +343,6 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
 
         tick += partialTick;
         if (tick >= 60 * 20) {
-            save();
             tick = 0;
         }
 
@@ -397,25 +404,6 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         showUiCheckbox.visible = true;
     }
 
-    public SkinPreset save() {
-        RegistryAccess access = Objects.requireNonNull(Minecraft.getInstance().player).registryAccess();
-
-        SkinPreset newPreset = new SkinPreset();
-        newPreset.deserializeNBT(access, preset.serializeNBT(access));
-
-        SavedSkinPresets savedCustomizations = DragonEditorRegistry.getSavedCustomizations(access);
-
-        savedCustomizations.skinPresets.computeIfAbsent(dragonType.getKey(), key -> new HashMap<>());
-        savedCustomizations.skinPresets.get(dragonType.getKey()).put(selectedSaveSlot, newPreset);
-
-        for (Holder<DragonStage> dragonStage : presetSelections.keySet()) {
-            savedCustomizations.current.get(dragonType.getKey()).put(Objects.requireNonNull(dragonStage.getKey()).location().toString(), presetSelections.get(dragonStage));
-        }
-
-        DragonEditorRegistry.save(savedCustomizations);
-        return newPreset;
-    }
-
     @Override
     public void renderBackground(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         pGuiGraphics.fill(0, 0, width, height, -350, backgroundColor);
@@ -438,31 +426,12 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
             return;
         }
 
-        SavedSkinPresets savedCustomizations = DragonEditorRegistry.getSavedCustomizations(null);
-        String stageLocation = Objects.requireNonNull(dragonStage.getKey()).location().toString();
-
-        savedCustomizations.current.computeIfAbsent(dragonType.getKey(), key -> new HashMap<>());
-        savedCustomizations.current.get(dragonType.getKey()).putIfAbsent(stageLocation, 0);
-
-        selectedSaveSlot = savedCustomizations.current.get(dragonType.getKey()).get(stageLocation);
-
-        savedCustomizations.skinPresets.computeIfAbsent(dragonType.getKey(), key -> new HashMap<>());
-        savedCustomizations.skinPresets.get(dragonType.getKey()).computeIfAbsent(selectedSaveSlot, key -> {
-            SkinPreset newPreset = new SkinPreset();
-            newPreset.initDefaults(dragonType.getKey());
-            return newPreset;
-        });
-
-        // TODO :: there could be a desync between what the player actually has? noticed it with base being no-part here but player having one
-        //  (maybe only related to base because it forcefully gets set to a non no-part value)
-        SkinPreset currentPreset = savedCustomizations.skinPresets.get(dragonType.getKey()).get(selectedSaveSlot);
-        preset = new SkinPreset();
-        preset.deserializeNBT(Objects.requireNonNull(Minecraft.getInstance().player).registryAccess(), currentPreset.serializeNBT(Minecraft.getInstance().player.registryAccess()));
-
         HANDLER.setType(dragonType);
         HANDLER.setSize(null, dragonStage.value().sizeRange().min());
         HANDLER.setBody(dragonBody);
 
+        preset = new SkinPreset();
+        preset.initDefaults(dragonType.getKey(), dragonBody.value().customModel());
         HANDLER.getSkinData().skinPreset = preset;
         HANDLER.getSkinData().compileSkin(dragonStage);
 
@@ -775,13 +744,35 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         redoButton.setTooltip(Tooltip.create(Component.translatable(REDO)));
         addRenderableWidget(redoButton);
 
-        ExtendedButton saveSlotButton = new ExtendedButton(width / 2 + 213, guiTop + 10, 18, 18, Component.empty(), button -> { /* Nothing to do */ }) {
+        // FIXME :: This is WIP
+        ExtendedButton loadSlotButton = new ExtendedButton(width / 2 + 213, guiTop - 8, 18, 18, Component.empty(), button -> {
+            SkinPreset selectedPreset = DragonEditorRegistry.load(selectedSaveSlot);
+            if(selectedPreset == null) {
+                return;
+            }
+
+            actionHistory.add(new EditorAction<>(loadPresetAction, selectedPreset));
+        }) {
             @Override
             public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 guiGraphics.blit(SAVE_ICON, getX(), getY(), 0, 0, 16, 16, 16, 16);
             }
         };
-        saveSlotButton.setTooltip(Tooltip.create(Component.translatable(SAVE_SLOT)));
+        loadSlotButton.setTooltip(Tooltip.create(Component.literal("load")));
+        addRenderableWidget(loadSlotButton);
+
+        // FIXME :: This is WIP
+        ExtendedButton saveSlotButton = new ExtendedButton(width / 2 + 213, guiTop + 10, 18, 18, Component.empty(), button -> {
+            SkinPreset preset = new SkinPreset();
+            preset.deserializeNBT(access, this.preset.serializeNBT(access));
+            DragonEditorRegistry.save(preset, selectedSaveSlot);
+        }) {
+            @Override
+            public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+                guiGraphics.blit(SAVE_ICON, getX(), getY(), 0, 0, 16, 16, 16, 16);
+            }
+        };
+        saveSlotButton.setTooltip(Tooltip.create(Component.literal("save")));
         addRenderableWidget(saveSlotButton);
 
         addRenderableWidget(new CopySettingsButton(this, guiLeft + 230, 11, 18, 18, Component.translatable(COPY), button -> { /* Nothing to do */ }));
@@ -835,20 +826,6 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         HANDLER.getSkinData().skinPreset = preset;
         HANDLER.setSize(null, dragonStage.value().sizeRange().min());
 
-        if (selectedSaveSlot != lastSelected) {
-            RegistryAccess access = Objects.requireNonNull(Minecraft.getInstance().player).registryAccess();
-
-            preset = new SkinPreset();
-            SavedSkinPresets savedCustomizations = DragonEditorRegistry.getSavedCustomizations(access);
-
-            if (savedCustomizations.skinPresets.containsKey(dragonType.getKey())) {
-                preset.deserializeNBT(access, savedCustomizations.skinPresets.get(dragonType.getKey()).get(selectedSaveSlot).serializeNBT(access));
-            }
-
-            HANDLER.getSkinData().skinPreset = preset;
-        }
-
-        presetSelections.put(dragonStage, selectedSaveSlot);
         lastSelected = selectedSaveSlot;
     }
 
@@ -908,7 +885,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
 
             FlightData.getData(minecraft.player).hasSpin = ServerConfig.saveGrowthStage && FlightData.getData(minecraft.player).hasSpin;
 
-            HANDLER.getSkinData().skinPreset = save();
+            data.getSkinData().skinPreset = preset;
             data.getSkinData().renderCustomSkin = ClientDragonRenderer.renderCustomSkin;
 
             AltarData altarData = AltarData.getData(minecraft.player);
@@ -919,7 +896,8 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
             PacketDistributor.sendToServer(new SyncAltarCooldown.Data(minecraft.player.getId(), altarData.altarCooldown));
             PacketDistributor.sendToServer(new SyncComplete.Data(minecraft.player.getId(), data.serializeNBT(minecraft.player.registryAccess())));
         } else {
-            PacketDistributor.sendToServer(new SyncPlayerSkinPreset.Data(minecraft.player.getId(), save().serializeNBT(minecraft.player.registryAccess())));
+            data.getSkinData().skinPreset = preset;
+            PacketDistributor.sendToServer(new SyncPlayerSkinPreset.Data(minecraft.player.getId(), HANDLER.getSkinData().skinPreset.serializeNBT(minecraft.player.registryAccess())));
         }
 
         minecraft.player.closeContainer();

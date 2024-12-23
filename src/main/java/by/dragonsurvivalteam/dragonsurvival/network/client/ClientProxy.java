@@ -4,8 +4,6 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAltarScreen
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.DragonEditorScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.handlers.ClientFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
-import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.DragonEditorRegistry;
-import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.SavedSkinPresets;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.SkinPreset;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
@@ -24,7 +22,6 @@ import by.dragonsurvivalteam.dragonsurvival.network.player.*;
 import by.dragonsurvivalteam.dragonsurvival.network.status.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.*;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -90,18 +87,7 @@ public class ClientProxy {
 
         PacketDistributor.sendToServer(new SyncDragonClawRender.Data(localPlayer.getId(), ClientDragonRenderer.renderDragonClaws));
         PacketDistributor.sendToServer(new SyncDragonSkinSettings(localPlayer.getId(), ClientDragonRenderer.renderCustomSkin));
-        SavedSkinPresets savedCustomizations = DragonEditorRegistry.getSavedCustomizations(localPlayer.registryAccess());
-
-        if (savedCustomizations != null) {
-            Holder<DragonType> type = data.getType();
-
-            //noinspection DataFlowIssue -> level and key are present
-            int selectedSaveSlot = savedCustomizations.current.getOrDefault(type.getKey(), new HashMap<>()).getOrDefault(data.getStage().getKey().location().toString(), 0);
-            SkinPreset preset = savedCustomizations.skinPresets.getOrDefault(type.getKey(), new HashMap<>()).getOrDefault(selectedSaveSlot, new SkinPreset());
-            PacketDistributor.sendToServer(new SyncPlayerSkinPreset.Data(localPlayer.getId(), preset.serializeNBT(localPlayer.registryAccess())));
-        } else {
-            PacketDistributor.sendToServer(new SyncPlayerSkinPreset.Data(localPlayer.getId(), new SkinPreset().serializeNBT(localPlayer.registryAccess())));
-        }
+        PacketDistributor.sendToServer(new SyncPlayerSkinPreset.Data(localPlayer.getId(), data.getSkinData().skinPreset.serializeNBT(localPlayer.registryAccess())));
     }
 
     // For replying during the configuration stage
@@ -110,22 +96,6 @@ public class ClientProxy {
 
         context.reply(new SyncDragonClawRender.Data(sender.getId(), ClientDragonRenderer.renderDragonClaws));
         context.reply(new SyncDragonSkinSettings(sender.getId(), ClientDragonRenderer.renderCustomSkin));
-
-        DragonStateHandler data = DragonStateProvider.getData(sender);
-        SavedSkinPresets savedCustomizations = DragonEditorRegistry.getSavedCustomizations(sender.registryAccess());
-
-        if (savedCustomizations != null) {
-            Holder<DragonType> type = data.getType();
-
-            if (type != null) {
-                //noinspection DataFlowIssue -> level and key are present
-                int selectedSaveSlot = savedCustomizations.current.getOrDefault(type.getKey(), new HashMap<>()).getOrDefault(data.getStage().getKey().location().toString(), 0);
-                SkinPreset preset = savedCustomizations.skinPresets.getOrDefault(type.getKey(), new HashMap<>()).getOrDefault(selectedSaveSlot, new SkinPreset());
-                context.reply(new SyncPlayerSkinPreset.Data(sender.getId(), preset.serializeNBT(sender.registryAccess())));
-            }
-        } else {
-            context.reply(new SyncPlayerSkinPreset.Data(sender.getId(), new SkinPreset().serializeNBT(sender.registryAccess())));
-        }
     }
 
     public static void handleSyncPlayerSkinPreset(final SyncPlayerSkinPreset.Data message, HolderLookup.Provider provider) {
