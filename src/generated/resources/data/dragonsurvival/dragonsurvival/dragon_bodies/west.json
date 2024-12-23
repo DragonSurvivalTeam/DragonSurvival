@@ -1,5 +1,6 @@
 {
   "can_hide_wings": false,
+  "is_default": true,
   "modifiers": [
     {
       "amount": 0.5,

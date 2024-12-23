@@ -1,6 +1,7 @@
 {
   "has_extended_crouch": true,
   "height_multiplier": 0.55,
+  "is_default": true,
   "modifiers": [
     {
       "amount": -0.2,

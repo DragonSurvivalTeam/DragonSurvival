@@ -24,14 +24,15 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
-public record DragonBody(List<Modifier> modifiers, double heightMultiplier, boolean hasExtendedCrouch, boolean canHideWings) implements AttributeModifierSupplier {
+public record DragonBody(List<Modifier> modifiers, double heightMultiplier, boolean hasExtendedCrouch, boolean canHideWings, boolean isDefault) implements AttributeModifierSupplier {
     public static final ResourceKey<Registry<DragonBody>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_bodies"));
 
     public static final Codec<DragonBody> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Modifier.CODEC.listOf().fieldOf("modifiers").forGetter(DragonBody::modifiers),
             Codec.DOUBLE.optionalFieldOf("height_multiplier", 1.0).forGetter(DragonBody::heightMultiplier),
             Codec.BOOL.optionalFieldOf("has_extended_crouch", false).forGetter(DragonBody::hasExtendedCrouch),
-            Codec.BOOL.optionalFieldOf("can_hide_wings", true).forGetter(DragonBody::canHideWings)
+            Codec.BOOL.optionalFieldOf("can_hide_wings", true).forGetter(DragonBody::canHideWings),
+            Codec.BOOL.optionalFieldOf("is_default", false).forGetter(DragonBody::isDefault)
     ).apply(instance, instance.stable(DragonBody::new)));
 
     public static final Codec<Holder<DragonBody>> CODEC = RegistryFixedCodec.create(REGISTRY);
