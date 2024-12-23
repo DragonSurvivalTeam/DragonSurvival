@@ -95,7 +95,7 @@ public class DragonSurvival {
     }
 
     private static void registerBuiltInDataPack(AddPackFindersEvent event, MutableComponent name, String folder) {
-        event.addPackFinders(location(MODID, folder), PackType.SERVER_DATA, name, PackSource.FEATURE, false, Pack.Position.TOP);
+        event.addPackFinders(location(MODID, folder), PackType.SERVER_DATA, name, PackSource.FEATURE, true, Pack.Position.TOP);
     }
 
     // TODO :: move into a utils class?
