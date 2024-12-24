@@ -13,11 +13,11 @@ public class DSPotions {
     public static final DeferredRegister<Potion> DS_POTIONS = DeferredRegister.create(BuiltInRegistries.POTION, DragonSurvival.MODID);
 
     /* Effect duration is normally divided by 4 */
-    public static final Holder<Potion> STORM_BREATH = DS_POTIONS.register("storm_breath", () -> new Potion(new MobEffectInstance(DSEffects.CHARGED, Functions.secondsToTicks(10) * 4)));
+    //public static final Holder<Potion> STORM_BREATH = DS_POTIONS.register("storm_breath", () -> new Potion(new MobEffectInstance(DSEffects.CHARGED, Functions.secondsToTicks(10) * 4)));
 
     /* Effect duration is normally divided by 4 */
-    public static final Holder<Potion> FOREST_BREATH = DS_POTIONS.register("forest_breath", () -> new Potion(new MobEffectInstance(DSEffects.DRAIN, Functions.secondsToTicks(10) * 4)));
+   // public static final Holder<Potion> FOREST_BREATH = DS_POTIONS.register("forest_breath", () -> new Potion(new MobEffectInstance(DSEffects.DRAIN, Functions.secondsToTicks(10) * 4)));
 
     /* Effect duration is normally divided by 4 */
-    public static final Holder<Potion> CAVE_BREATH = DS_POTIONS.register("cave_breath", () -> new Potion(new MobEffectInstance(DSEffects.BURN, Functions.secondsToTicks(10) * 4)));
+   // public static final Holder<Potion> CAVE_BREATH = DS_POTIONS.register("cave_breath", () -> new Potion(new MobEffectInstance(DSEffects.BURN, Functions.secondsToTicks(10) * 4)));
 }

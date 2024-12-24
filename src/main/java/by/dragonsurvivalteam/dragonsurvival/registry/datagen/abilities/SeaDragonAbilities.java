@@ -20,6 +20,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSSounds;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.AreaCloudEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AbilityTargeting;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.DragonBreathTarget;
@@ -33,6 +34,7 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 
+import javax.swing.*;
 import java.util.List;
 import java.util.Optional;
 
@@ -127,6 +129,21 @@ public class SeaDragonAbilities {
                                         ))
                                 ),
                                 AbilityTargeting.EntityTargetingMode.TARGET_ENEMIES
+                        ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
+                        new ActionContainer(new DragonBreathTarget(AbilityTargeting.block(
+                                List.of(
+                                        new AreaCloudEffect(
+                                                new PotionData(
+                                                        HolderSet.direct(DSEffects.CHARGED),
+                                                        LevelBasedValue.constant(0),
+                                                        LevelBasedValue.constant(Functions.secondsToTicks(30)),
+                                                        LevelBasedValue.constant(1.0f)
+                                                ),
+                                                LevelBasedValue.constant(Functions.secondsToTicks(2)),
+                                                0.3,
+                                                new LargeLightningParticleOption(37, false)
+                                        )
+                                )
                         ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 List.of(new BreathParticlesEffect(

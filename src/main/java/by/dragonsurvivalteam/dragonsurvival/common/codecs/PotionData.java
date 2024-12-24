@@ -18,11 +18,13 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.Nullable;
 
 public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier, LevelBasedValue duration, LevelBasedValue probability) {
@@ -89,5 +91,20 @@ public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier
         }
 
         return components;
+    }
+
+    public PotionContents toPotionContents(final ServerPlayer player, final int level) {
+        List<MobEffectInstance> mobEffectInstances = new ArrayList<>();
+        for (Holder<MobEffect> effect : effects) {
+            if(player.getRandom().nextDouble() >= probability().calculate(level)) {
+                continue;
+            }
+
+            int duration = (int) duration().calculate(level);
+            int amplifier = (int) amplifier().calculate(level);
+            mobEffectInstances.add(new MobEffectInstance(effect, duration, amplifier));
+        }
+
+        return new PotionContents(Optional.empty(), Optional.empty(), mobEffectInstances);
     }
 }

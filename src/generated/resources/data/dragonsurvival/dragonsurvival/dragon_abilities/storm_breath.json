@@ -41,6 +41,32 @@
     {
       "target_selection": {
         "applied_effects": {
+          "block_effect": [
+            {
+              "duration": 40.0,
+              "effect_type": "dragonsurvival:area_cloud",
+              "particle": {
+                "type": "dragonsurvival:large_lightning",
+                "duration": 37.0,
+                "swirls": false
+              },
+              "potion": {
+                "amplifier": 0.0,
+                "duration": 600.0,
+                "effects": "dragonsurvival:charged"
+              },
+              "probability": 0.3
+            }
+          ]
+        },
+        "range_multiplier": 1.0,
+        "target_type": "dragonsurvival:dragon_breath"
+      },
+      "trigger_rate": 10.0
+    },
+    {
+      "target_selection": {
+        "applied_effects": {
           "entity_effect": [
             {
               "effect_type": "dragonsurvival:breath_particles",
