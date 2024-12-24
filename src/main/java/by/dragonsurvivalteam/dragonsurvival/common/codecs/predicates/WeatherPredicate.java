@@ -14,7 +14,16 @@ public record WeatherPredicate(Optional<Boolean> isRaining, Optional<Boolean> is
             Codec.BOOL.optionalFieldOf("is_thundering").forGetter(WeatherPredicate::isThundering)
     ).apply(instance, WeatherPredicate::new));
 
-    public boolean matches(ServerLevel level, Vec3 position) {
-        return (this.isRaining.isEmpty() || this.isRaining.get() == level.isRainingAt(new BlockPos((int) position.x, (int) position.y, (int) position.z))) && (this.isThundering.isEmpty() || this.isThundering.get() == level.isThundering());
+    @SuppressWarnings("RedundantIfStatement") // ignore for clarity
+    public boolean matches(final ServerLevel level, final Vec3 position) {
+        if (isRaining.isPresent() && isRaining.get() != level.isRainingAt(BlockPos.containing(position))) {
+            return false;
+        }
+
+        if (isThundering.isPresent() && isThundering.get() != level.isThundering()) {
+            return false;
+        }
+
+        return true;
     }
 }

@@ -1,25 +1,24 @@
 {
   "conditions": [
     {
-      "entity_conditions": {
-        "location": {
-          "can_see_sky": true
-        }
+      "location": {
+        "can_see_sky": true
       },
-      "weather_conditions": {
-        "is_raining": true
+      "type_specific": {
+        "type": "dragonsurvival:custom_predicates",
+        "weather_predicate": {
+          "is_raining": true
+        }
       }
     },
     {
-      "entity_conditions": {
-        "stepping_on": {
-          "block": {
-            "blocks": [
-              "minecraft:snow",
-              "minecraft:powder_snow",
-              "minecraft:snow_block"
-            ]
-          }
+      "stepping_on": {
+        "block": {
+          "blocks": [
+            "minecraft:snow",
+            "minecraft:powder_snow",
+            "minecraft:snow_block"
+          ]
         }
       }
     }

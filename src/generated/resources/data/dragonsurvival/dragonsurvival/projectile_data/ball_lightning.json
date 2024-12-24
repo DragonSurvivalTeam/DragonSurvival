@@ -92,12 +92,15 @@
         "target_conditions": {
           "location": {
             "can_see_sky": true
+          },
+          "type_specific": {
+            "type": "dragonsurvival:custom_predicates",
+            "weather_predicate": {
+              "is_raining": true
+            }
           }
         },
-        "tick_rate": 5,
-        "weather_conditions": {
-          "is_thundering": true
-        }
+        "tick_rate": 5
       }
     }
   ]

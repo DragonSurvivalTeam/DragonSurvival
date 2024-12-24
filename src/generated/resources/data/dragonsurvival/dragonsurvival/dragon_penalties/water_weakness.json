@@ -1,14 +1,9 @@
 {
   "conditions": [
     {
-      "entity_conditions": {
-        "location": {
-          "fluid": {
-            "fluids": [
-              "minecraft:water",
-              "minecraft:flowing_water"
-            ]
-          }
+      "location": {
+        "fluid": {
+          "fluids": "#minecraft:water"
         }
       }
     }

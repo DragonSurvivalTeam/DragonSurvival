@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.CustomPredicates;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.DragonPredicate;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.DragonStagePredicate;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.EntityCheckPredicate;
@@ -7,15 +8,15 @@ import by.dragonsurvivalteam.dragonsurvival.common.items.growth.StarHeartItem;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
-import net.minecraft.advancements.critereon.BlockPredicate;
-import net.minecraft.advancements.critereon.ContextAwarePredicate;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.LocationPredicate;
+import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.fluids.FluidType;
 
-public class Condition {
+public class Condition { // TODO :: make advancements use conditions from here
     public static ContextAwarePredicate none() {
         return EntityPredicate.wrap(EntityPredicate.Builder.entity().build());
     }
@@ -38,8 +39,26 @@ public class Condition {
         return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(BlockPredicate.Builder.block().of(tag))).build();
     }
 
+    public static EntityPredicate onBlock(final Block... blocks) {
+        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(BlockPredicate.Builder.block().of(blocks))).build();
+    }
+
     public static EntityPredicate inBlock(final TagKey<Block> tag) {
         return EntityPredicate.Builder.entity().located(LocationPredicate.Builder.location().setBlock(BlockPredicate.Builder.block().of(tag))).build();
+    }
+
+    public static EntityPredicate inFluid(final HolderSet<Fluid> fluids) {
+        return EntityPredicate.Builder.entity().located(LocationPredicate.Builder.location().setFluid(FluidPredicate.Builder.fluid().of(fluids))).build();
+    }
+
+    public static EntityPredicate eyeInFluid(final Holder<FluidType> fluid) {
+        return EntityPredicate.Builder.entity().subPredicate(CustomPredicates.Builder.start().eyeInFluid(fluid).build()).build();
+    }
+
+    public static EntityPredicate inRain() {
+        return EntityPredicate.Builder.entity()
+                .located(LocationPredicate.Builder.location().setCanSeeSky(true))
+                .subPredicate(CustomPredicates.Builder.start().raining(true).build()).build();
     }
 
     public static BlockPredicate blocks(final Block... blocks) {

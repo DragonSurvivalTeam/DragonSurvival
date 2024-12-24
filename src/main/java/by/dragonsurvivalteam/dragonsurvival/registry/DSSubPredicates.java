@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.CustomPredicates;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.DragonPredicate;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.EntityCheckPredicate;
 import com.mojang.serialization.MapCodec;
@@ -14,5 +15,6 @@ public class DSSubPredicates {
     static {
         REGISTRY.register("dragon_predicate", () -> DragonPredicate.CODEC);
         REGISTRY.register("entity_check_predicate", () -> EntityCheckPredicate.CODEC);
+        REGISTRY.register("custom_predicates", () -> CustomPredicates.CODEC);
     }
 }

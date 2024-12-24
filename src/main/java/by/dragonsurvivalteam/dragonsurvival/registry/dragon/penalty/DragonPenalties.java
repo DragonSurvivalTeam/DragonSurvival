@@ -1,27 +1,21 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.EyeInFluidPredicate;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.WeatherPredicate;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
-import net.minecraft.advancements.critereon.BlockPredicate;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.FluidPredicate;
-import net.minecraft.advancements.critereon.LocationPredicate;
-import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.common.NeoForgeMod;
 
 import java.util.List;
-import java.util.Optional;
 
 public class DragonPenalties {
     @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
@@ -48,16 +42,8 @@ public class DragonPenalties {
         context.register(SNOW_AND_RAIN_WEAKNESS, new DragonPenalty(
                 DragonSurvival.res("abilities/cave/hot_blood_0"),
                 List.of(
-                        new DragonPenalty.Condition(
-                                Optional.empty(),
-                                Optional.of(EntityPredicate.Builder.entity().located(LocationPredicate.Builder.location().setCanSeeSky(true)).build()),
-                                Optional.of(new WeatherPredicate(Optional.of(true), Optional.empty()))
-                        ),
-                        new DragonPenalty.Condition(
-                                Optional.empty(),
-                                Optional.of(EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(BlockPredicate.Builder.block().of(Blocks.SNOW, Blocks.POWDER_SNOW, Blocks.SNOW_BLOCK))).build()),
-                                Optional.empty()
-                        )
+                        Condition.inRain(),
+                        Condition.onBlock(Blocks.SNOW, Blocks.POWDER_SNOW, Blocks.SNOW_BLOCK)
                 ),
                 new DamagePenalty(
                         context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.RAIN_BURN),
@@ -74,13 +60,7 @@ public class DragonPenalties {
 
         context.register(WATER_WEAKNESS, new DragonPenalty(
                 DragonSurvival.res("abilities/cave/hot_blood_0"),
-                List.of(
-                        new DragonPenalty.Condition(
-                                Optional.empty(),
-                                Optional.of(EntityPredicate.Builder.entity().located(LocationPredicate.Builder.location().setFluid(FluidPredicate.Builder.fluid().of(HolderSet.direct(Fluids.WATER.builtInRegistryHolder(), Fluids.FLOWING_WATER.builtInRegistryHolder())))).build()),
-                                Optional.empty()
-                        )
-                ),
+                List.of(Condition.inFluid(context.lookup(BuiltInRegistries.FLUID.key()).getOrThrow(FluidTags.WATER))),
                 new DamagePenalty(
                         context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.WATER_BURN),
                         1.0f
@@ -93,13 +73,7 @@ public class DragonPenalties {
 
         context.register(LAVA_SWIMMING, new DragonPenalty(
                 DragonSurvival.res("abilities/cave/hot_blood_0"),
-                List.of(
-                        new DragonPenalty.Condition(
-                                Optional.of(new EyeInFluidPredicate(NeoForgeMod.LAVA_TYPE)),
-                                Optional.empty(),
-                                Optional.empty()
-                        )
-                ),
+                List.of(Condition.eyeInFluid(NeoForgeMod.LAVA_TYPE)),
                 new DamagePenalty(
                         context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.DROWN),
                         2.0f

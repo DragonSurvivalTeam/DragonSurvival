@@ -67,7 +67,6 @@ public record ProjectileAreaTarget(Either<Either<ProjectileTargeting.BlockTarget
                             // TODO :: use Entity.class (would affect items etc.)?
                             level.getEntities(EntityTypeTest.forClass(LivingEntity.class), AABB.ofSize(position, radius * 2, radius * 2, radius * 2),
                                     entity -> entityTarget.targetConditions().isEmpty() || entityTarget.targetConditions().get().matches(level, position, entity)
-                                            && entityTarget.weatherConditions().isEmpty() || entityTarget.weatherConditions().get().matches(level, position)
                                             && entityTarget.randomCondition().isEmpty() || entityTarget.randomCondition().get().matches(level, projectileLevel)
                             ).forEach(entity -> {
                                 entityTarget.effects().forEach(effect -> effect.apply(projectile, entity, projectileLevel));

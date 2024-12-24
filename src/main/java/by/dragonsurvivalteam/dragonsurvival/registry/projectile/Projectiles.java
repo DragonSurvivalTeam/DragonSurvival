@@ -1,9 +1,9 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.projectile;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.RandomPredicate;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.WeatherPredicate;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.LargeLightningParticleOption;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
@@ -17,8 +17,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.projectile.targeting.Projec
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.world_effects.ProjectileExplosionEffect;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.LightningHandler;
 import com.mojang.datafixers.util.Either;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.LocationPredicate;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
@@ -134,14 +132,13 @@ public class Projectiles {
                                 new ProjectileTargeting.EntityTargeting(
                                     Optional.empty(),
                                     Optional.empty(),
-                                    Optional.empty(),
                                     List.of(
                                             new ProjectileDamageEffect(
                                                     context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.DRAGON_BALL_LIGHTNING),
                                                     LevelBasedValue.perLevel(4)
                                             ),
                                             new ProjectileMobEffect(
-                                                    HolderSet.direct(context.lookup(Registries.MOB_EFFECT).getOrThrow(DSEffects.CHARGED.getKey())),
+                                                    HolderSet.direct(DSEffects.CHARGED),
                                                     LevelBasedValue.constant(0),
                                                     LevelBasedValue.constant(5),
                                                     LevelBasedValue.constant(0.5f)
@@ -156,14 +153,9 @@ public class Projectiles {
                         new ProjectileAreaTarget(
                                 Either.left(Either.right(
                                         new ProjectileTargeting.EntityTargeting(
-                                                Optional.of(EntityPredicate.Builder.entity().located(LocationPredicate.Builder.location().setCanSeeSky(true)).build()),
-                                                Optional.of(new WeatherPredicate(
-                                                        Optional.empty(),
-                                                        Optional.of(true)
-                                                )),
-                                                Optional.of(new RandomPredicate(
-                                                        LevelBasedValue.constant(0.3f)
-                                                )),
+                                                Optional.of(Condition.inRain()),
+                                                // TODO :: this feels like it should just be a chance field not a predicate
+                                                Optional.of(new RandomPredicate(LevelBasedValue.constant(0.3f))),
                                                 List.of(
                                                         new ProjectileLightningEntityEffect(
                                                                 new LightningHandler.Data(

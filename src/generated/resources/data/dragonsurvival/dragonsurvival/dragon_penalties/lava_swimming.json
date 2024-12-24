@@ -1,8 +1,10 @@
 {
   "conditions": [
     {
-      "eye_in_fluid_conditions": {
-        "fluid": "minecraft:lava"
+      "type_specific": {
+        "type": "dragonsurvival:custom_predicates",
+        "eye_in_fluid": "minecraft:lava",
+        "weather_predicate": {}
       }
     }
   ],
