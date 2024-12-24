@@ -20,6 +20,8 @@ public class AbilityColumnsComponent {
     private final ArrayList<ArrayList<AbilityButton>> columns = new ArrayList<>();
     private int currentColumn = 0;
     private int nextColumn = 0;
+    // How long until we just fully hide the button in position 3 (behind the front icon) so that it doesn't show itself when there is no icon in the center
+    private final float TRANSITION_BACK_VISUAL_CUTOFF = 0.7f;
 
     // 0 = left side, 1 = middle, 2 = right side, 3 = behind (values to lerp to as the column fades behind)
     private final Vec3[][] buttonPositions = new Vec3[NUM_COLUMN_PHASES][ELEMENTS_PER_COLUMN];
@@ -175,6 +177,11 @@ public class AbilityColumnsComponent {
                 );
                 button.setOffset(newOffset);
 
+                int currentColumnPhase = convertIndexToColumnPhase(i, currentColumn);
+                float lerpProgress = (float) (1 - Math.abs((nextOffset.x() - currentOffset.x()) / (nextOffset.x() - buttonPositions[currentColumnPhase][j].x())));
+                if(lerpProgress > 0.7 && nextColumnPhase == 3) {
+                    button.setVisible(false);
+                }
 
                 ButtonTemplateState nextButtonTemplateState = buttonTemplateStates[nextColumnPhase];
                 float currentScale = button.getScale();
