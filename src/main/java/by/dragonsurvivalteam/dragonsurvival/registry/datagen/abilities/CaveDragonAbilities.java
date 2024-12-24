@@ -205,12 +205,12 @@ public class CaveDragonAbilities {
                                         new IgniteEffect(
                                                 LevelBasedValue.perLevel(Functions.secondsToTicks(5))
                                         ),
-                                        new PotionEffect(
+                                        new PotionEffect(new PotionData(
                                                 HolderSet.direct(DSEffects.BURN),
                                                 LevelBasedValue.constant(0),
                                                 LevelBasedValue.constant(Functions.secondsToTicks(10)),
                                                 LevelBasedValue.constant(0.3f)
-                                        )
+                                        ))
                                 ),
                                 AbilityTargeting.EntityTargetingMode.TARGET_ENEMIES
                         ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
@@ -255,12 +255,12 @@ public class CaveDragonAbilities {
                 Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 4, LevelBasedValue.lookup(List.of(0f, 25f, 45f, 60f), LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(new PotionEffect(
+                        List.of(new PotionEffect(new PotionData(
                                 HolderSet.direct(DSEffects.LAVA_VISION),
                                 LevelBasedValue.constant(0),
                                 LevelBasedValue.perLevel(Functions.secondsToTicks(30)),
                                 LevelBasedValue.constant(1)
-                        )),
+                        ))),
                         AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
                 ), true), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(

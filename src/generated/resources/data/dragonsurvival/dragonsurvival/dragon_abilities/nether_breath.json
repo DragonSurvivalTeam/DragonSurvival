@@ -22,11 +22,13 @@
               }
             },
             {
-              "amplifier": 0.0,
-              "duration": 200.0,
               "effect_type": "dragonsurvival:potion",
-              "effects": "dragonsurvival:burn",
-              "probability": 0.3
+              "potion": {
+                "amplifier": 0.0,
+                "duration": 200.0,
+                "effects": "dragonsurvival:burn",
+                "probability": 0.3
+              }
             }
           ],
           "entity_targeting_mode": "TARGET_ENEMIES",

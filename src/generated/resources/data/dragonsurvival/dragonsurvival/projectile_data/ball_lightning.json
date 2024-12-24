@@ -69,10 +69,12 @@
           },
           {
             "type": "dragonsurvival:mob_effect",
-            "amplifier": 0.0,
-            "duration": 100.0,
-            "effects": "dragonsurvival:charged",
-            "probability": 0.5
+            "potion": {
+              "amplifier": 0.0,
+              "duration": 100.0,
+              "effects": "dragonsurvival:charged",
+              "probability": 0.5
+            }
           }
         ],
         "target_conditions": {

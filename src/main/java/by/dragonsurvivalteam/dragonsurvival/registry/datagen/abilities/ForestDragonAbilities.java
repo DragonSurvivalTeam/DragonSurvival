@@ -179,12 +179,12 @@ public class ForestDragonAbilities {
                                                 context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.POISON_BREATH),
                                                 LevelBasedValue.perLevel(2)
                                         ),
-                                        new PotionEffect(
+                                        new PotionEffect(new PotionData(
                                                 HolderSet.direct(DSEffects.DRAIN),
                                                 LevelBasedValue.constant(0),
                                                 LevelBasedValue.constant(Functions.secondsToTicks(10)),
                                                 LevelBasedValue.constant(0.3f)
-                                        )
+                                        ))
                                 ),
                                 AbilityTargeting.EntityTargetingMode.TARGET_ENEMIES
                         ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
@@ -253,7 +253,7 @@ public class ForestDragonAbilities {
                 Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 4, LevelBasedValue.lookup(List.of(0f, 25f, 35f, 55f), LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(List.of(
-                        new PotionEffect(HolderSet.direct(DSEffects.HUNTER), LevelBasedValue.perLevel(1), LevelBasedValue.perLevel(Functions.secondsToTicks(30)), LevelBasedValue.constant(1))
+                        new PotionEffect(new PotionData(HolderSet.direct(DSEffects.HUNTER), LevelBasedValue.perLevel(1), LevelBasedValue.perLevel(Functions.secondsToTicks(30)), LevelBasedValue.constant(1)))
                 ), AbilityTargeting.EntityTargetingMode.TARGET_ALLIES), true), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/hunter_0"), 0),

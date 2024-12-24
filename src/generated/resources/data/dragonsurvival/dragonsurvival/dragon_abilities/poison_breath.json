@@ -14,11 +14,13 @@
               "effect_type": "dragonsurvival:damage"
             },
             {
-              "amplifier": 0.0,
-              "duration": 200.0,
               "effect_type": "dragonsurvival:potion",
-              "effects": "dragonsurvival:drain",
-              "probability": 0.3
+              "potion": {
+                "amplifier": 0.0,
+                "duration": 200.0,
+                "effects": "dragonsurvival:drain",
+                "probability": 0.3
+              }
             }
           ],
           "entity_targeting_mode": "TARGET_ENEMIES",

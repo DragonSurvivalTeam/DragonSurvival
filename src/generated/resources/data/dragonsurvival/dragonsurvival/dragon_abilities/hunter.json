@@ -5,18 +5,20 @@
         "applied_effects": {
           "entity_effect": [
             {
-              "amplifier": {
-                "type": "minecraft:linear",
-                "base": 1.0,
-                "per_level_above_first": 1.0
-              },
-              "duration": {
-                "type": "minecraft:linear",
-                "base": 600.0,
-                "per_level_above_first": 600.0
-              },
               "effect_type": "dragonsurvival:potion",
-              "effects": "dragonsurvival:hunter"
+              "potion": {
+                "amplifier": {
+                  "type": "minecraft:linear",
+                  "base": 1.0,
+                  "per_level_above_first": 1.0
+                },
+                "duration": {
+                  "type": "minecraft:linear",
+                  "base": 600.0,
+                  "per_level_above_first": 600.0
+                },
+                "effects": "dragonsurvival:hunter"
+              }
             }
           ],
           "entity_targeting_mode": "TARGET_ALLIES"

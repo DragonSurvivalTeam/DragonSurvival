@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.projectile;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.PotionData;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.CustomPredicates;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.EntityCheckPredicate;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.LargeLightningParticleOption;
@@ -11,7 +12,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.entity_effects.ProjectileDamageEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.entity_effects.ProjectileLightningEntityEffect;
-import by.dragonsurvivalteam.dragonsurvival.registry.projectile.entity_effects.ProjectileMobEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.projectile.entity_effects.ProjectilePotionEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.targeting.ProjectileAreaTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.targeting.ProjectilePointTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.targeting.ProjectileTargeting;
@@ -140,12 +141,12 @@ public class Projectiles {
                                                     context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.BALL_LIGHTNING),
                                                     LevelBasedValue.perLevel(4)
                                             ),
-                                            new ProjectileMobEffect(
+                                            new ProjectilePotionEffect(new PotionData(
                                                     HolderSet.direct(DSEffects.CHARGED),
                                                     LevelBasedValue.constant(0),
                                                     LevelBasedValue.constant(Functions.secondsToTicks(5)),
                                                     LevelBasedValue.constant(0.5f)
-                                            )
+                                            ))
                                     ),
                                     5,
                                         1.0

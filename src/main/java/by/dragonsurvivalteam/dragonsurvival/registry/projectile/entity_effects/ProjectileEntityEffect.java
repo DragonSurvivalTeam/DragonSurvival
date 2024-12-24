@@ -38,7 +38,7 @@ public interface ProjectileEntityEffect {
     static void registerEntries(final RegisterEvent event) {
         if (event.getRegistry() == REGISTRY) {
             event.register(REGISTRY_KEY, DragonSurvival.res("damage"), () -> ProjectileDamageEffect.CODEC);
-            event.register(REGISTRY_KEY, DragonSurvival.res("mob_effect"), () -> ProjectileMobEffect.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("mob_effect"), () -> ProjectilePotionEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("lightning"), () -> ProjectileLightningEntityEffect.CODEC);
         }
     }

@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.PotionData;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.TargetDirection;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
@@ -11,9 +12,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.Anim
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.SimpleAbilityAnimation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.Upgrade;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.ValueBasedUpgrade;
-import by.dragonsurvivalteam.dragonsurvival.common.particles.LargeFireParticleOption;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.LargeLightningParticleOption;
-import by.dragonsurvivalteam.dragonsurvival.common.particles.SmallFireParticleOption;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.SmallLightningParticleOption;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
@@ -21,7 +20,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSSounds;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.FireEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AbilityTargeting;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.DragonBreathTarget;
@@ -29,15 +27,11 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.Se
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.ProjectileData;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.Projectiles;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.FluidPredicate;
-import net.minecraft.advancements.critereon.LocationPredicate;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
-import net.minecraft.world.level.material.Fluids;
 
 import java.util.List;
 import java.util.Optional;
@@ -125,12 +119,12 @@ public class SeaDragonAbilities {
                                                 context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.LIGHTNING_BREATH),
                                                 LevelBasedValue.perLevel(1)
                                         ),
-                                        new PotionEffect(
+                                        new PotionEffect(new PotionData(
                                                 HolderSet.direct(DSEffects.CHARGED),
                                                 LevelBasedValue.constant(0),
                                                 LevelBasedValue.constant(Functions.secondsToTicks(30)),
                                                 LevelBasedValue.constant(0.5f)
-                                        )
+                                        ))
                                 ),
                                 AbilityTargeting.EntityTargetingMode.TARGET_ENEMIES
                         ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),

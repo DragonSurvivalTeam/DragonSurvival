@@ -5,14 +5,16 @@
         "applied_effects": {
           "entity_effect": [
             {
-              "amplifier": 0.0,
-              "duration": {
-                "type": "minecraft:linear",
-                "base": 600.0,
-                "per_level_above_first": 600.0
-              },
               "effect_type": "dragonsurvival:potion",
-              "effects": "dragonsurvival:lava_vision"
+              "potion": {
+                "amplifier": 0.0,
+                "duration": {
+                  "type": "minecraft:linear",
+                  "base": 600.0,
+                  "per_level_above_first": 600.0
+                },
+                "effects": "dragonsurvival:lava_vision"
+              }
             }
           ],
           "entity_targeting_mode": "TARGET_ALLIES"
