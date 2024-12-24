@@ -30,7 +30,7 @@ public interface AbilityEntityEffect {
     void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity);
     MapCodec<? extends AbilityEntityEffect> entityCodec();
 
-    default boolean shouldAppendSelfTargetingToDescription() { return true; }
+    default boolean shouldAppendSelfTargetingToDescription() { return true; } // TODO :: in which case do we append this?
     default List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) { return List.of(); }
     default void remove(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity) { /* Nothing to do */ }
 

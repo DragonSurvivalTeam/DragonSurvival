@@ -3,7 +3,10 @@
     "dragonsurvival:spike",
     "dragonsurvival:poison_breath",
     "dragonsurvival:forest_immunity",
-    "dragonsurvival:forest_magic"
+    "dragonsurvival:forest_magic",
+    "dragonsurvival:forest_claws_and_teeth",
+    "dragonsurvival:forest_wings",
+    "dragonsurvival:forest_athletics"
   ],
   "misc_resources": {
     "ability_bar": "dragonsurvival:textures/gui/casting_bars/cave_cast_bar.png",

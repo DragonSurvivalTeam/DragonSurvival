@@ -34,11 +34,6 @@ public record HarvestBonusEffect(List<HarvestBonus> bonuses) implements AbilityE
         }
     }
 
-    @Override
-    public MapCodec<? extends AbilityEntityEffect> entityCodec() {
-        return CODEC;
-    }
-
     public boolean shouldAppendSelfTargetingToDescription() {
         return false;
     }
@@ -52,5 +47,14 @@ public record HarvestBonusEffect(List<HarvestBonus> bonuses) implements AbilityE
         }
 
         return components;
+    }
+
+    public static List<AbilityEntityEffect> single(final HarvestBonus bonus) {
+        return List.of(new HarvestBonusEffect(List.of(bonus)));
+    }
+
+    @Override
+    public MapCodec<? extends AbilityEntityEffect> entityCodec() {
+        return CODEC;
     }
 }

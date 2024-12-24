@@ -1,0 +1,85 @@
+{
+  "actions": [
+    {
+      "target_selection": {
+        "applied_effects": {
+          "entity_effect": [
+            {
+              "effect_type": "dragonsurvival:modifier",
+              "modifiers": [
+                {
+                  "id": "dragonsurvival:forest_athletics",
+                  "modifiers": [
+                    {
+                      "amount": {
+                        "type": "minecraft:linear",
+                        "base": 0.02,
+                        "per_level_above_first": 0.02
+                      },
+                      "attribute": "minecraft:generic.movement_speed",
+                      "operation": "add_value"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "entity_targeting_mode": "TARGET_ALLIES",
+          "target_conditions": [
+            {
+              "stepping_on": {
+                "block": {
+                  "blocks": "#dragonsurvival:speeds_up_forest_dragon"
+                }
+              }
+            }
+          ]
+        },
+        "target_type": "dragonsurvival:self"
+      },
+      "trigger_rate": 1.0
+    }
+  ],
+  "activation": {
+    "type": "passive"
+  },
+  "icon": {
+    "texture_entries": [
+      {
+        "from_level": 0,
+        "texture_resource": "dragonsurvival:abilities/forest/forest_athletics_0"
+      },
+      {
+        "from_level": 1,
+        "texture_resource": "dragonsurvival:abilities/forest/forest_athletics_1"
+      },
+      {
+        "from_level": 2,
+        "texture_resource": "dragonsurvival:abilities/forest/forest_athletics_2"
+      },
+      {
+        "from_level": 3,
+        "texture_resource": "dragonsurvival:abilities/forest/forest_athletics_3"
+      },
+      {
+        "from_level": 4,
+        "texture_resource": "dragonsurvival:abilities/forest/forest_athletics_4"
+      },
+      {
+        "from_level": 5,
+        "texture_resource": "dragonsurvival:abilities/forest/forest_athletics_5"
+      }
+    ]
+  },
+  "upgrade": {
+    "upgrade_data": {
+      "type": "manual",
+      "maximum_level": 5,
+      "requirement_or_cost": {
+        "type": "minecraft:linear",
+        "base": 15.0,
+        "per_level_above_first": 15.0
+      }
+    }
+  }
+}

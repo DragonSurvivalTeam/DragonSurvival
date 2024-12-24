@@ -100,7 +100,6 @@ public class CaveDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Contrast Shower")
     public static final ResourceKey<DragonAbility> CONTRAST_SHOWER = DragonAbilities.key("contrast_shower");
 
-
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
             "■ Cave dragons can mine stone blocks and various ores without tools. This ability gets stronger as you grow.\n"
     })
@@ -434,15 +433,11 @@ public class CaveDragonAbilities {
                 Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_GROWTH, 4, LevelBasedValue.lookup(List.of(0f, 25f, 40f, 60f), LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(new HarvestBonusEffect(
-                                List.of(
-                                        new HarvestBonus(
-                                                DragonSurvival.res("cave_claws_and_teeth"),
-                                                context.lookup(Registries.BLOCK).getOrThrow(DSBlockTags.CAVE_DRAGON_HARVESTABLE),
-                                                LevelBasedValue.constant(1),
-                                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)
-                                        )
-                                )
+                        HarvestBonusEffect.single(new HarvestBonus(
+                                DragonSurvival.res("cave_claws_and_teeth"),
+                                context.lookup(Registries.BLOCK).getOrThrow(DSBlockTags.CAVE_DRAGON_HARVESTABLE),
+                                LevelBasedValue.constant(1),
+                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)
                         )),
                         AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
                 ), true), LevelBasedValue.constant(1))),

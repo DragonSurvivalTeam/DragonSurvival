@@ -11,10 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.Upgrad
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.ValueBasedUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.LargePoisonParticleOption;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.SmallPoisonParticleOption;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSSounds;
+import by.dragonsurvivalteam.dragonsurvival.registry.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBlockTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
@@ -34,14 +31,17 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.util.random.WeightedRandomList;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.block.Blocks;
+import net.neoforged.neoforge.common.NeoForgeMod;
 
 import java.util.List;
 import java.util.Optional;
@@ -74,6 +74,25 @@ public class ForestDragonAbilities {
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Forest Magic")
     public static final ResourceKey<DragonAbility> FOREST_MAGIC = DragonAbilities.key("forest_magic");
+
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
+            "■ Forest dragons can chop trees without tools. This ability gets stronger as you grow.\n"
+    })
+    @Translation(type = Translation.Type.ABILITY, comments = "Claws and Teeth")
+    public static final ResourceKey<DragonAbility> FOREST_CLAWS_AND_TEETH = DragonAbilities.key("forest_claws_and_teeth");
+
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
+            "■ Dragons use §2levitation§r to fly, but are rarely born with that ability. Only one dragon in this world can share their power of flight with you.\n",
+    })
+    @Translation(type = Translation.Type.ABILITY, comments = "Forest Wings")
+    public static final ResourceKey<DragonAbility> FOREST_WINGS = DragonAbilities.key("forest_wings");
+
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Standing on grassy or wooden surfaces will increase your movement speed.")
+    @Translation(type = Translation.Type.ABILITY, comments = "Forest Athletics")
+    public static final ResourceKey<DragonAbility> FOREST_ATHLETICS = DragonAbilities.key("forest_athletics");
+
+    @Translation(type = Translation.Type.MODIFIER, comments = "Forest Athletics")
+    public static final ResourceLocation FOREST_ATHLETICS_MODIFIER = DragonSurvival.res("forest_athletics");
 
     public static void registerAbilities(final BootstrapContext<DragonAbility> context) {
         registerActiveAbilities(context);
@@ -270,6 +289,68 @@ public class ForestDragonAbilities {
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_magic_8"), 8),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_magic_9"), 9),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_magic_10"), 10)
+                ))
+        ));
+
+        context.register(FOREST_CLAWS_AND_TEETH, new DragonAbility(
+                Activation.passive(),
+                Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_GROWTH, 4, LevelBasedValue.lookup(List.of(0f, 25f, 40f, 60f), LevelBasedValue.perLevel(15))),
+                Optional.empty(),
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        HarvestBonusEffect.single(new HarvestBonus(
+                                DragonSurvival.res("forest_claws_and_teeth"),
+                                context.lookup(Registries.BLOCK).getOrThrow(DSBlockTags.FOREST_DRAGON_HARVESTABLE),
+                                LevelBasedValue.constant(1),
+                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)
+                        )),
+                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                ), true), LevelBasedValue.constant(1))),
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_claws_and_teeth_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_claws_and_teeth_1"), 1),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_claws_and_teeth_2"), 2),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_claws_and_teeth_3"), 3),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_claws_and_teeth_4"), 4)
+                ))
+        ));
+
+        context.register(FOREST_WINGS, new DragonAbility(
+                Activation.passive(),
+                Upgrade.item(List.of(HolderSet.direct(DSItems.WING_GRANT_ITEM), HolderSet.direct(DSItems.SPIN_GRANT_ITEM)), HolderSet.empty()),
+                Optional.empty(),
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        List.of(new SpinOrFlightEffect(1, 2, NeoForgeMod.WATER_TYPE)),
+                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                ), true), LevelBasedValue.constant(1))),
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_wings_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_wings_1"), 1)
+                ))
+        ));
+
+        context.register(FOREST_ATHLETICS, new DragonAbility(
+                Activation.passive(),
+                Upgrade.value(ValueBasedUpgrade.Type.MANUAL, 5, LevelBasedValue.perLevel(15)), // FIXME :: not the actual values
+                Optional.empty(),
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        List.of(Condition.onBlock(DSBlockTags.SPEEDS_UP_FOREST_DRAGON)),
+                        ModifierEffect.single(new ModifierWithDuration(
+                                FOREST_ATHLETICS_MODIFIER,
+                                ModifierWithDuration.DEFAULT_MODIFIER_ICON,
+                                // FIXME :: not the final value
+                                List.of(new Modifier(Attributes.MOVEMENT_SPEED, LevelBasedValue.perLevel(0.02f), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
+                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                false
+                        ), false),
+                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                ), true), LevelBasedValue.constant(1))),
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_athletics_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_athletics_1"), 1),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_athletics_2"), 2),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_athletics_3"), 3),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_athletics_4"), 4),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_athletics_5"), 5)
                 ))
         ));
     }
