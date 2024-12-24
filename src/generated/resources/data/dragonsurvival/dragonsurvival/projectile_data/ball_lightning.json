@@ -1,5 +1,11 @@
 {
   "block_hit_effects": [],
+  "can_hit_predicate": {
+    "type_specific": {
+      "type": "dragonsurvival:entity_check_predicate",
+      "check_for": "living_entity"
+    }
+  },
   "common_hit_effects": [],
   "entity_hit_effects": [],
   "name": "dragonsurvival:ball_lightning",
@@ -26,7 +32,7 @@
               "type": "dragonsurvival:explosion",
               "break_blocks": true,
               "can_damage_self": false,
-              "damage_type": "dragonsurvival:dragon_ball_lightning",
+              "damage_type": "dragonsurvival:ball_lightning",
               "explosion_power": {
                 "type": "minecraft:linear",
                 "base": 2.0,
@@ -59,16 +65,22 @@
               "base": 4.0,
               "per_level_above_first": 4.0
             },
-            "damage_type": "dragonsurvival:dragon_ball_lightning"
+            "damage_type": "dragonsurvival:ball_lightning"
           },
           {
             "type": "dragonsurvival:mob_effect",
             "amplifier": 0.0,
-            "duration": 5.0,
+            "duration": 100.0,
             "effects": "dragonsurvival:charged",
             "probability": 0.5
           }
         ],
+        "target_conditions": {
+          "type_specific": {
+            "type": "dragonsurvival:entity_check_predicate",
+            "check_for": "living_entity"
+          }
+        },
         "tick_rate": 5
       }
     },
@@ -76,6 +88,7 @@
       "type": "dragonsurvival:area",
       "radius": 4.0,
       "target": {
+        "chance": 0.1,
         "entity_effects": [
           {
             "type": "dragonsurvival:lightning",
@@ -86,9 +99,6 @@
             }
           }
         ],
-        "random_conditions": {
-          "probability": 0.3
-        },
         "target_conditions": {
           "location": {
             "can_see_sky": true
@@ -100,7 +110,7 @@
             }
           }
         },
-        "tick_rate": 5
+        "tick_rate": 10
       }
     }
   ]

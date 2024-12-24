@@ -1,9 +1,9 @@
-// 1.21.1	2024-12-23T21:29:27.9246793	Tags for minecraft:damage_type mod id dragonsurvival
+// 1.21.1	2024-12-24T16:09:46.8686325	Tags for minecraft:damage_type mod id dragonsurvival
 d64a77e508c77c894e55cf2cce3d1adb8bc6533c data/dragonsurvival/tags/damage_type/anti_dragon.json
 a356111ea1c106266ab5016081ce5c405756e4a6 data/dragonsurvival/tags/damage_type/dragon_breath.json
-00b104a74fd8cc5ac661ea7c944f35b60f929291 data/dragonsurvival/tags/damage_type/dragon_magic.json
+e4b00d775fe36a6a75361ead2e8aa9b5fa5dc395 data/dragonsurvival/tags/damage_type/dragon_magic.json
 2be4d8b7bb61b3de783a289e1d479cc6fb85016b data/minecraft/tags/damage_type/bypasses_armor.json
 c8fa2164df0da7319f05ec6918edbe7ee6c4cd17 data/minecraft/tags/damage_type/bypasses_cooldown.json
 98cf0a10e1797683476d2f044412ddcd5dd4aea6 data/minecraft/tags/damage_type/is_fire.json
 602a1c6342c9a2d65f2d2fe4797bfc23ca35aa92 data/minecraft/tags/damage_type/is_lightning.json
-27818111b000a568ea5eae9cb5abddd9dc7f8342 data/minecraft/tags/damage_type/no_knockback.json
+da05e9cfbaabfa8abd12b2ac4c7c10707d7a27c6 data/minecraft/tags/damage_type/no_knockback.json

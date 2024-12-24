@@ -13,7 +13,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
@@ -42,11 +42,10 @@ public record ProjectileAreaTarget(Either<Either<ProjectileTargeting.BlockTarget
 
         target().ifLeft(blockOrEntityTarget -> {
             blockOrEntityTarget.ifLeft(blockTarget -> {
-                if (level.getGameTime() % blockTarget.tickRate() == 0) {
+                if (level.getGameTime() % blockTarget.tickRate() == 0 && blockTarget.chance() >= level.random.nextDouble()) {
                     BlockPos.betweenClosedStream(AABB.ofSize(position, radius * 2, radius * 2, radius * 2)).forEach(blockPos -> {
                         if (blockTarget.targetConditions().isEmpty() || blockTarget.targetConditions().get().matches(level, blockPos)
-                                && blockTarget.weatherConditions().isEmpty() || blockTarget.weatherConditions().get().matches(level, position)
-                                && blockTarget.randomCondition().isEmpty() || blockTarget.randomCondition().get().matches(level, projectileLevel)) {
+                                && blockTarget.weatherConditions().isEmpty() || blockTarget.weatherConditions().get().matches(level, position)) {
                             blockTarget.effects().forEach(effect -> effect.apply(projectile, blockPos, projectileLevel));
                             if (particleTrail().isPresent()) {
                                 Vec3 trailMidpoint = blockPos.getCenter().subtract(position).scale(0.5).add(position);
@@ -63,15 +62,13 @@ public record ProjectileAreaTarget(Either<Either<ProjectileTargeting.BlockTarget
                     });
                 }
             }).ifRight(entityTarget -> {
-                        if (level.getGameTime() % entityTarget.tickRate() == 0) {
-                            // TODO :: use Entity.class (would affect items etc.)?
-                            level.getEntities(EntityTypeTest.forClass(LivingEntity.class), AABB.ofSize(position, radius * 2, radius * 2, radius * 2),
-                                    entity -> entityTarget.targetConditions().isEmpty() || entityTarget.targetConditions().get().matches(level, position, entity)
-                                            && entityTarget.randomCondition().isEmpty() || entityTarget.randomCondition().get().matches(level, projectileLevel)
-                            ).forEach(entity -> {
+                        if (level.getGameTime() % entityTarget.tickRate() == 0 && entityTarget.chance() >= level.random.nextDouble()) {
+                            level.getEntities(EntityTypeTest.forClass(Entity.class), AABB.ofSize(position, radius * 2, radius * 2, radius * 2),
+                                    entity -> entityTarget.targetConditions().isEmpty() || entityTarget.targetConditions().get().matches(level, position, entity)).forEach(entity -> {
                                 entityTarget.effects().forEach(effect -> effect.apply(projectile, entity, projectileLevel));
                                 if (particleTrail().isPresent()) {
-                                    Vec3 trailMidpoint = entity.position().subtract(position).scale(0.5).add(position);
+                                    Vec3 entityMidpoint = entity.position().add(0, entity.getEyeHeight() / 2, 0);
+                                    Vec3 trailMidpoint = entityMidpoint.subtract(position).scale(0.5).add(position);
                                     PacketDistributor.sendToPlayersNear(
                                             level,
                                             null,
@@ -79,7 +76,7 @@ public record ProjectileAreaTarget(Either<Either<ProjectileTargeting.BlockTarget
                                             trailMidpoint.y,
                                             trailMidpoint.z,
                                             64,
-                                            new SyncParticleTrail(position.toVector3f(), entity.position().toVector3f(), particleTrail().get()));
+                                            new SyncParticleTrail(position.toVector3f(), entityMidpoint.toVector3f(), particleTrail().get()));
                                 }
                             });
                         }

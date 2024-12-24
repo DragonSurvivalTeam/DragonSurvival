@@ -32,8 +32,8 @@ public class DSDamageTypes {
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Dehydration")
     public static final ResourceKey<DamageType> DEHYDRATION = key("dehydration");
 
-    @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Dragon Ball Lightning")
-    public static final ResourceKey<DamageType> DRAGON_BALL_LIGHTNING = key("dragon_ball_lightning");
+    @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Ball Lightning")
+    public static final ResourceKey<DamageType> BALL_LIGHTNING = key("ball_lightning");
 
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Dragon Breath")
     public static final ResourceKey<DamageType> DRAGON_BREATH = key("dragon_breath");
@@ -72,7 +72,7 @@ public class DSDamageTypes {
         register(context, DSDamageTypes.BURN);
         register(context, DSDamageTypes.CRUSHED);
         register(context, DSDamageTypes.DEHYDRATION);
-        register(context, DSDamageTypes.DRAGON_BALL_LIGHTNING);
+        register(context, DSDamageTypes.BALL_LIGHTNING);
         register(context, DSDamageTypes.DRAGON_BREATH);
         register(context, DSDamageTypes.POISON_BREATH);
         register(context, DSDamageTypes.DRAIN);

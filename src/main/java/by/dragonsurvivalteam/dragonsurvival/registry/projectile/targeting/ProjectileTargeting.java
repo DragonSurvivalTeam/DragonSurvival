@@ -1,7 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.projectile.targeting;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.RandomPredicate;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.WeatherPredicate;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.block_effects.ProjectileBlockEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.entity_effects.ProjectileEntityEffect;
@@ -36,32 +35,32 @@ public interface ProjectileTargeting {
 
     Codec<ProjectileTargeting> CODEC = REGISTRY.byNameCodec().dispatch(ProjectileTargeting::codec, Function.identity());
 
-    record BlockTargeting(Optional<BlockPredicate> targetConditions, Optional<WeatherPredicate> weatherConditions, Optional<RandomPredicate> randomCondition, List<ProjectileBlockEffect> effects, int tickRate) {
+    record BlockTargeting(Optional<BlockPredicate> targetConditions, Optional<WeatherPredicate> weatherConditions, List<ProjectileBlockEffect> effects, int tickRate, double chance) {
         public static final Codec<ProjectileTargeting.BlockTargeting> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 BlockPredicate.CODEC.optionalFieldOf("target_conditions").forGetter(ProjectileTargeting.BlockTargeting::targetConditions),
                 WeatherPredicate.CODEC.optionalFieldOf("weather_conditions").forGetter(ProjectileTargeting.BlockTargeting::weatherConditions),
-                RandomPredicate.CODEC.optionalFieldOf("random_conditions").forGetter(ProjectileTargeting.BlockTargeting::randomCondition),
                 ProjectileBlockEffect.CODEC.listOf().fieldOf("block_effects").forGetter(ProjectileTargeting.BlockTargeting::effects),
-                Codec.INT.optionalFieldOf("tick_rate", 1).forGetter(ProjectileTargeting.BlockTargeting::tickRate)
+                Codec.INT.optionalFieldOf("tick_rate", 1).forGetter(ProjectileTargeting.BlockTargeting::tickRate),
+                Codec.DOUBLE.optionalFieldOf("chance", 1.0).forGetter(ProjectileTargeting.BlockTargeting::chance)
         ).apply(instance, ProjectileTargeting.BlockTargeting::new));
     }
 
-    record EntityTargeting(Optional<EntityPredicate> targetConditions, Optional<RandomPredicate> randomCondition, List<ProjectileEntityEffect> effects, int tickRate) {
+    record EntityTargeting(Optional<EntityPredicate> targetConditions, List<ProjectileEntityEffect> effects, int tickRate, double chance) {
         public static final Codec<ProjectileTargeting.EntityTargeting> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 EntityPredicate.CODEC.optionalFieldOf("target_conditions").forGetter(ProjectileTargeting.EntityTargeting::targetConditions),
-                RandomPredicate.CODEC.optionalFieldOf("random_conditions").forGetter(ProjectileTargeting.EntityTargeting::randomCondition),
                 ProjectileEntityEffect.CODEC.listOf().fieldOf("entity_effects").forGetter(ProjectileTargeting.EntityTargeting::effects),
-                Codec.INT.optionalFieldOf("tick_rate", 1).forGetter(ProjectileTargeting.EntityTargeting::tickRate)
+                Codec.INT.optionalFieldOf("tick_rate", 1).forGetter(ProjectileTargeting.EntityTargeting::tickRate),
+                Codec.DOUBLE.optionalFieldOf("chance", 1.0).forGetter(ProjectileTargeting.EntityTargeting::chance)
         ).apply(instance, ProjectileTargeting.EntityTargeting::new));
     }
 
-    record WorldTargeting(Optional<LocationPredicate> locationConditions, Optional<WeatherPredicate> weatherConditions, Optional<RandomPredicate> randomConditions, List<ProjectileWorldEffect> effects, int tickRate) {
+    record WorldTargeting(Optional<LocationPredicate> locationConditions, Optional<WeatherPredicate> weatherConditions, List<ProjectileWorldEffect> effects, int tickRate, double chance) {
         public static final Codec<ProjectileTargeting.WorldTargeting> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 LocationPredicate.CODEC.optionalFieldOf("location_conditions").forGetter(ProjectileTargeting.WorldTargeting::locationConditions),
                 WeatherPredicate.CODEC.optionalFieldOf("weather_conditions").forGetter(ProjectileTargeting.WorldTargeting::weatherConditions),
-                RandomPredicate.CODEC.optionalFieldOf("random_conditions").forGetter(ProjectileTargeting.WorldTargeting::randomConditions),
                 ProjectileWorldEffect.CODEC.listOf().fieldOf("world_effects").forGetter(ProjectileTargeting.WorldTargeting::effects),
-                Codec.INT.optionalFieldOf("tick_rate", 1).forGetter(ProjectileTargeting.WorldTargeting::tickRate)
+                Codec.INT.optionalFieldOf("tick_rate", 1).forGetter(ProjectileTargeting.WorldTargeting::tickRate),
+                Codec.DOUBLE.optionalFieldOf("chance", 1.0).forGetter(ProjectileTargeting.WorldTargeting::chance)
         ).apply(instance, ProjectileTargeting.WorldTargeting::new));
     }
 

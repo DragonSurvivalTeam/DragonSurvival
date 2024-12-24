@@ -32,7 +32,7 @@ public record ProjectilePointTarget(Either<Either<BlockTargeting, EntityTargetin
 
         if(target.locationConditions().isPresent() && !target.locationConditions().get().matches(level, position.x, position.y, position.z)
                 || target.weatherConditions().isPresent() && !target.weatherConditions().get().matches(level, position)
-                || target.randomConditions().isPresent() && !target.randomConditions().get().matches(level, projectileLevel)) {
+                || target.chance() < level.random.nextDouble()) {
             return;
         }
 

@@ -31,15 +31,52 @@
   ],
   "activation": {
     "type": "active_simple",
-    "cast_time": 20.0,
-    "cooldown": 40.0
+    "cast_time": 40.0,
+    "cooldown": 400.0,
+    "initial_mana_cost": 1.0
   },
   "icon": {
     "texture_entries": [
       {
         "from_level": 0,
-        "texture_resource": "dragonsurvival:textures/icons/body_type_central.png"
+        "texture_resource": "dragonsurvival:abilities/sea/ball_lightning_0"
+      },
+      {
+        "from_level": 1,
+        "texture_resource": "dragonsurvival:abilities/sea/ball_lightning_1"
+      },
+      {
+        "from_level": 2,
+        "texture_resource": "dragonsurvival:abilities/sea/ball_lightning_2"
+      },
+      {
+        "from_level": 3,
+        "texture_resource": "dragonsurvival:abilities/sea/ball_lightning_3"
+      },
+      {
+        "from_level": 4,
+        "texture_resource": "dragonsurvival:abilities/sea/ball_lightning_4"
       }
     ]
+  },
+  "upgrade": {
+    "upgrade_data": {
+      "type": "passive_level",
+      "maximum_level": 4,
+      "requirement_or_cost": {
+        "type": "minecraft:lookup",
+        "fallback": {
+          "type": "minecraft:linear",
+          "base": 15.0,
+          "per_level_above_first": 15.0
+        },
+        "values": [
+          0.0,
+          20.0,
+          45.0,
+          50.0
+        ]
+      }
+    }
   }
 }
