@@ -1,7 +1,8 @@
 {
   "abilities": [
     "dragonsurvival:spike",
-    "dragonsurvival:poison_breath"
+    "dragonsurvival:poison_breath",
+    "dragonsurvival:forest_immunity"
   ],
   "misc_resources": {
     "ability_bar": "dragonsurvival:textures/gui/casting_bars/cave_cast_bar.png",

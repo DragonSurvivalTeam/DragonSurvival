@@ -5,7 +5,6 @@ import by.dragonsurvivalteam.dragonsurvival.network.status.SyncPlayerJump;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -21,29 +20,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 public class DragonBonusHandler {
     @SubscribeEvent
     public static void dragonDamageImmunities(final LivingIncomingDamageEvent event) {
-        LivingEntity living = event.getEntity();
-        DamageSource damageSource = event.getSource();
-
-        // FIXME
-        /*DragonStateProvider.getOptional(living).ifPresent(handler -> {
-            if (handler.isDragon()) {
-                if (DragonBonusConfig.bonusesEnabled) {
-                    if (ForestDragonConfig.bushImmunity && DragonUtils.isType(handler, DragonTypes.FOREST) && damageSource == living.damageSources().sweetBerryBush()) {
-                        event.setCanceled(true);
-                    } else if (ForestDragonConfig.cactusImmunity && DragonUtils.isType(handler, DragonTypes.FOREST) && damageSource == living.damageSources().cactus()) {
-                        event.setCanceled(true);
-                    }
-                }
-
-                if (CaveDragonConfig.caveSplashDamage != 0) {
-                    if (DragonUtils.isType(handler, DragonTypes.CAVE) && !living.hasEffect(DSEffects.FIRE)) {
-                        if (damageSource.getDirectEntity() instanceof Snowball) {
-                            living.hurt(living.damageSources().generic(), CaveDragonConfig.caveSplashDamage.floatValue());
-                        }
-                    }
-                }
-            }
-        });*/
+        // TODO :: cave dragon took 'CaveDragonConfig.caveSplashDamage' damage from snowballs without the DSEffects.FIRE effect
+        //  how to replicate this in the new system? part of the config that damages the entity from thrown objects like water potions?
     }
 
     @SubscribeEvent

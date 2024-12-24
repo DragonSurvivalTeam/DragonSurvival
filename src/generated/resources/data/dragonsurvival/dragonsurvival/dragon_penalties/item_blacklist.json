@@ -5,11 +5,11 @@
       "#c:tools/bow",
       "#c:tools/crossbow",
       "minecraft:trident",
-      "quark:flamerang",
-      "quark:pickarang",
+      "born_in_chaos_v1:staffof_magic_arrows",
       "mowziesmobs:wrought_axe",
       "revised_phantoms:phantom_wings_chestplate",
-      "born_in_chaos_v1:staffof_magic_arrows",
+      "quark:flamerang",
+      "quark:pickarang",
       ".*:.*?elytra.*"
     ],
     "penalty_type": "dragonsurvival:item_blacklist"

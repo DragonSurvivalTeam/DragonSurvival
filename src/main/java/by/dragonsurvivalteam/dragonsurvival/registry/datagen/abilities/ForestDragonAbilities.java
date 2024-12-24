@@ -1,9 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.TargetDirection;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.*;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
@@ -37,6 +35,7 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.random.SimpleWeightedRandomList;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.block.Blocks;
@@ -45,6 +44,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class ForestDragonAbilities {
+    // --- Active --- //
+
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Shoot out sharp §cdarts§r, which fly a large distance to pierce your target. Less effective underwater.")
     @Translation(type = Translation.Type.ABILITY, comments = "Spike")
     public static final ResourceKey<DragonAbility> SPIKE = DragonAbilities.key("spike");
@@ -56,8 +57,18 @@ public class ForestDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Poison Breath")
     public static final ResourceKey<DragonAbility> POISON_BREATH = DragonAbilities.key("poison_breath");
 
+    // --- Passive --- //
+
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
+            "■ Forest dragons have a diamond skeleton, and are composed mostly of predatory plants. Their diet includes raw meat and sweet berries, and most animals fear them.\n",
+            "■ They have innate §2immunity to thorn bushes and cacti§r§7. They feel best on the surface of the Overworld.",
+    })
+    @Translation(type = Translation.Type.ABILITY, comments = "Forest Dragon")
+    public static final ResourceKey<DragonAbility> FOREST_IMMUNITY = DragonAbilities.key("forest_immunity");
+
     public static void registerAbilities(final BootstrapContext<DragonAbility> context) {
         registerActiveAbilities(context);
+        registerPassiveAbilities(context);
     }
 
     private static void registerActiveAbilities(final BootstrapContext<DragonAbility> context) {
@@ -204,6 +215,42 @@ public class ForestDragonAbilities {
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/poisonous_breath_2"), 2),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/poisonous_breath_3"), 3),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/poisonous_breath_4"), 4)
+                ))
+        ));
+    }
+
+    private static void registerPassiveAbilities(final BootstrapContext<DragonAbility> context) {
+        context.register(FOREST_IMMUNITY, new DragonAbility(
+                Activation.passive(),
+                Optional.empty(),
+                Optional.empty(),
+                List.of(
+                        new ActionContainer(new SelfTarget(
+                                Either.right(
+                                        new AbilityTargeting.EntityTargeting(
+                                                Optional.empty(),
+                                                List.of(new DamageModificationEffect(
+                                                        List.of(
+                                                                new DamageModification(
+                                                                        DragonSurvival.res("forest_immunity"),
+                                                                        HolderSet.direct(
+                                                                                context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.SWEET_BERRY_BUSH),
+                                                                                context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.CACTUS)
+                                                                        ),
+                                                                        LevelBasedValue.constant(0),
+                                                                        LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)
+                                                                )
+                                                        )
+                                                )),
+                                                AbilityTargeting.EntityTargetingMode.TARGET_ALL
+                                        )
+                                ),
+                                false
+                        ), LevelBasedValue.constant(1))
+                ),
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_dragon_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_dragon_1"), 1)
                 ))
         ));
     }

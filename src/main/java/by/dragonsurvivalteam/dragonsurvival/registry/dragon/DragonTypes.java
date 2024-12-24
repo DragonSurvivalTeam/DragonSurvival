@@ -171,7 +171,9 @@ public class DragonTypes {
                 HolderSet.direct(
                         // Active
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.SPIKE),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.POISON_BREATH)
+                        context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.POISON_BREATH),
+                        // Passive
+                        context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.FOREST_IMMUNITY)
                 ),
                 HolderSet.empty(),
                 List.of(),
