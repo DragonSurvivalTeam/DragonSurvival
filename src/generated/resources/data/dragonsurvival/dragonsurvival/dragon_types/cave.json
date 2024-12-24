@@ -10,7 +10,14 @@
     "dragonsurvival:contrast_shower",
     "dragonsurvival:fire_immunity",
     "dragonsurvival:cave_wings",
-    "dragonsurvival:cave_claws_and_teeth"
+    "dragonsurvival:cave_claws_and_teeth",
+    "dragonsurvival:empty_ability",
+    "dragonsurvival:empty_ability_2",
+    "dragonsurvival:empty_ability_3",
+    "dragonsurvival:empty_ability_4",
+    "dragonsurvival:empty_ability_5",
+    "dragonsurvival:empty_ability_6",
+    "dragonsurvival:empty_ability_7"
   ],
   "diet": [
     {

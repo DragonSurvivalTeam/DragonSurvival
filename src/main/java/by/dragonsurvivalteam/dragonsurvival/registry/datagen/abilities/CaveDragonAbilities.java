@@ -122,6 +122,14 @@ public class CaveDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Cave Dragon")
     public static final ResourceKey<DragonAbility> FIRE_IMMUNITY = DragonAbilities.key("fire_immunity");
 
+    public static final ResourceKey<DragonAbility> EMPTY_ABILITY = DragonAbilities.key("empty_ability");
+    public static final ResourceKey<DragonAbility> EMPTY_ABILITY_2 = DragonAbilities.key("empty_ability_2");
+    public static final ResourceKey<DragonAbility> EMPTY_ABILITY_3 = DragonAbilities.key("empty_ability_3");
+    public static final ResourceKey<DragonAbility> EMPTY_ABILITY_4 = DragonAbilities.key("empty_ability_4");
+    public static final ResourceKey<DragonAbility> EMPTY_ABILITY_5 = DragonAbilities.key("empty_ability_5");
+    public static final ResourceKey<DragonAbility> EMPTY_ABILITY_6 = DragonAbilities.key("empty_ability_6");
+    public static final ResourceKey<DragonAbility> EMPTY_ABILITY_7 = DragonAbilities.key("empty_ability_7");
+
     public static void registerAbilities(final BootstrapContext<DragonAbility> context) {
         registerActiveAbilities(context);
         registerPassiveAbilities(context);
@@ -555,5 +563,62 @@ public class CaveDragonAbilities {
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_dragon_1"), 1)
                 ))
         ));
+
+        context.register(EMPTY_ABILITY, new DragonAbility(
+                Activation.passive(),
+                Optional.empty(),
+                Optional.empty(),
+                List.of(),
+                new LevelBasedResource(List.of(new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_dragon_0"), 0))
+        )));
+
+        context.register(EMPTY_ABILITY_2, new DragonAbility(
+                Activation.passive(),
+                Optional.empty(),
+                Optional.empty(),
+                List.of(),
+                new LevelBasedResource(List.of(new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_dragon_0"), 0))
+        )));
+
+        context.register(EMPTY_ABILITY_3, new DragonAbility(
+                Activation.passive(),
+                Optional.empty(),
+                Optional.empty(),
+                List.of(),
+                new LevelBasedResource(List.of(new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_dragon_0"), 0))
+        )));
+
+        context.register(EMPTY_ABILITY_4, new DragonAbility(
+                Activation.passive(),
+                Optional.empty(),
+                Optional.empty(),
+                List.of(),
+                new LevelBasedResource(List.of(new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_dragon_0"), 0))
+        )));
+
+        context.register(EMPTY_ABILITY_5, new DragonAbility(
+                Activation.passive(),
+                Optional.empty(),
+                Optional.empty(),
+                List.of(),
+                new LevelBasedResource(List.of(new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_dragon_0"), 0))
+        )));
+
+        context.register(EMPTY_ABILITY_6, new DragonAbility(
+                Activation.passive(),
+                Optional.empty(),
+                Optional.empty(),
+                List.of(),
+                new LevelBasedResource(List.of(new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_dragon_0"), 0))
+        )));
+
+        context.register(EMPTY_ABILITY_7, new DragonAbility(
+                Activation.passive(),
+                Optional.empty(),
+                Optional.empty(),
+                List.of(),
+                new LevelBasedResource(List.of(new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_dragon_0"), 0))
+        )));
+
     }
 }
