@@ -9,7 +9,7 @@
         "base": 2.0,
         "per_level_above_first": 2.0
       },
-      "damage_type": "dragonsurvival:forest_dragon_spike"
+      "damage_type": "dragonsurvival:spike"
     }
   ],
   "name": "dragonsurvival:spike",

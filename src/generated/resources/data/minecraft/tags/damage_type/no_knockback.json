@@ -1,7 +1,7 @@
 {
   "values": [
-    "dragonsurvival:cave_dragon_burn",
-    "dragonsurvival:forest_dragon_drain",
+    "dragonsurvival:burn",
+    "dragonsurvival:drain",
     "dragonsurvival:crushed",
     "dragonsurvival:dehydration",
     "dragonsurvival:water_burn",

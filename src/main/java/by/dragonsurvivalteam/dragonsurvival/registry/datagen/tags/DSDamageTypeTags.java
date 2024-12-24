@@ -31,16 +31,16 @@ public class DSDamageTypeTags extends DamageTypeTagsProvider {
 
         tag(DRAGON_BREATH)
                 .add(DSDamageTypes.DRAGON_BREATH)
-                .add(DSDamageTypes.CAVE_DRAGON_BURN)
-                .add(DSDamageTypes.FOREST_DRAGON_DRAIN)
-                .add(DSDamageTypes.SEA_DRAGON_BREATH);
+                .add(DSDamageTypes.BURN)
+                .add(DSDamageTypes.DRAIN)
+                .add(DSDamageTypes.LIGHTNING_BREATH);
 
         tag(DRAGON_MAGIC)
-                .add(DSDamageTypes.CAVE_DRAGON_BREATH)
-                .add(DSDamageTypes.CAVE_DRAGON_BURN)
-                .add(DSDamageTypes.FOREST_DRAGON_BREATH)
-                .add(DSDamageTypes.FOREST_DRAGON_DRAIN)
-                .add(DSDamageTypes.SEA_DRAGON_BREATH)
+                .add(DSDamageTypes.FIRE_BREATH)
+                .add(DSDamageTypes.BURN)
+                .add(DSDamageTypes.POISON_BREATH)
+                .add(DSDamageTypes.DRAIN)
+                .add(DSDamageTypes.LIGHTNING_BREATH)
                 .add(DSDamageTypes.SPECTRAL_IMPACT)
                 .add(DSDamageTypes.DRAGON_BALL_LIGHTNING)
                 .add(DSDamageTypes.DRAGON_BREATH)
@@ -52,23 +52,23 @@ public class DSDamageTypeTags extends DamageTypeTagsProvider {
 
     private void addToVanillaTags() {
         tag(DamageTypeTags.BYPASSES_ARMOR)
-                .add(DSDamageTypes.FOREST_DRAGON_DRAIN)
-                .add(DSDamageTypes.CAVE_DRAGON_BURN)
+                .add(DSDamageTypes.DRAIN)
+                .add(DSDamageTypes.BURN)
                 .add(DSDamageTypes.SPECTRAL_IMPACT);
 
         tag(DamageTypeTags.BYPASSES_COOLDOWN)
-                .add(DSDamageTypes.FOREST_DRAGON_SPIKE);
+                .add(DSDamageTypes.SPIKE);
 
         tag(DamageTypeTags.IS_FIRE)
-                .add(DSDamageTypes.CAVE_DRAGON_BURN)
-                .add(DSDamageTypes.CAVE_DRAGON_BREATH);
+                .add(DSDamageTypes.BURN)
+                .add(DSDamageTypes.FIRE_BREATH);
 
         tag(DamageTypeTags.IS_LIGHTNING)
-                .add(DSDamageTypes.SEA_DRAGON_BREATH);
+                .add(DSDamageTypes.LIGHTNING_BREATH);
 
         tag(DamageTypeTags.NO_KNOCKBACK)
-                .add(DSDamageTypes.CAVE_DRAGON_BURN)
-                .add(DSDamageTypes.FOREST_DRAGON_DRAIN)
+                .add(DSDamageTypes.BURN)
+                .add(DSDamageTypes.DRAIN)
                 .add(DSDamageTypes.CRUSHED)
                 .add(DSDamageTypes.DEHYDRATION)
                 .add(DSDamageTypes.WATER_BURN)

@@ -60,7 +60,7 @@ public class BurnEffect extends ModifiableMobEffect {
                     effectApplier = ((AdditionalEffectData) entity.getEffect(DSEffects.BURN)).dragonSurvival$getApplier(serverLevel);
                 }
 
-                entity.hurt(new DamageSource(DSDamageTypes.get(entity.level(), DSDamageTypes.CAVE_DRAGON_BURN), effectApplier), damage);
+                entity.hurt(new DamageSource(DSDamageTypes.get(entity.level(), DSDamageTypes.BURN), effectApplier), damage);
             }
         }
 

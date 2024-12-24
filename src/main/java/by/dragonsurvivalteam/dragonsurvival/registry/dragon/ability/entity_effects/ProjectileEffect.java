@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effe
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.TargetDirection;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.projectiles.GenericArrowEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.projectiles.GenericBallEntity;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.ProjectileData;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.block_effects.ProjectileBlockEffect;
@@ -13,6 +14,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -179,6 +181,16 @@ public record ProjectileEffect(
                 components.addAll(effectComponents);
             }
         }
+
+        if(numberOfProjectiles.calculate(ability.level()) > 1) {
+            components.add(Component.translatable(LangKey.ABILITY_PROJECTILE_COUNT, numberOfProjectiles.calculate(ability.level())));
+        }
+
+        if(projectileSpread.calculate(ability.level()) > 0) {
+            components.add(Component.translatable(LangKey.ABILITY_PROJECTILE_SPREAD, projectileSpread.calculate(ability.level())));
+        }
+
+        components.add(Component.translatable(LangKey.ABILITY_PROJECTILE_SPEED, speed.calculate(ability.level())));
 
         return components;
     }

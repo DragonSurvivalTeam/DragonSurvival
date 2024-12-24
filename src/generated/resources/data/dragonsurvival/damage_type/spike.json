@@ -1,5 +1,5 @@
 {
   "exhaustion": 0.1,
-  "message_id": "dragonsurvival.forest_dragon_spike",
+  "message_id": "dragonsurvival.spike",
   "scaling": "when_caused_by_living_non_player"
 }

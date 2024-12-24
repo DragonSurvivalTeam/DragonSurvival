@@ -50,7 +50,7 @@ public class DrainEffect extends ModifiableMobEffect {
             effectApplier = ((AdditionalEffectData) entity.getEffect(DSEffects.DRAIN)).dragonSurvival$getApplier(serverLevel);
         }
 
-        entity.hurt(new DamageSource(DSDamageTypes.get(entity.level(), DSDamageTypes.FOREST_DRAGON_DRAIN), effectApplier), damage);
+        entity.hurt(new DamageSource(DSDamageTypes.get(entity.level(), DSDamageTypes.DRAIN), effectApplier), damage);
 
         return super.applyEffectTick(entity, amplifier);
     }

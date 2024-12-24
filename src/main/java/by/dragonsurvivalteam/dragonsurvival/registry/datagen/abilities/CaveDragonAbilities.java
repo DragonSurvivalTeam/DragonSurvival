@@ -205,7 +205,7 @@ public class CaveDragonAbilities {
                                         Optional.of(List.of(Condition.living())),
                                         List.of(
                                                 new DamageEffect(
-                                                        context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.CAVE_DRAGON_BREATH),
+                                                        context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FIRE_BREATH),
                                                         LevelBasedValue.perLevel(3)
                                                 ),
                                                 new IgniteEffect(

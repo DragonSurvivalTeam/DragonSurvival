@@ -20,11 +20,11 @@ public class DSDamageTypes {
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Anti-Dragon")
     public static final ResourceKey<DamageType> ANTI_DRAGON = key("anti_dragon");
 
-    @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Cave Dragon Breath")
-    public static final ResourceKey<DamageType> CAVE_DRAGON_BREATH = key("cave_dragon_breath");
+    @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Fire Breath")
+    public static final ResourceKey<DamageType> FIRE_BREATH = key("fire_breath");
 
-    @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Cave Dragon Burn")
-    public static final ResourceKey<DamageType> CAVE_DRAGON_BURN = key("cave_dragon_burn");
+    @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Burn")
+    public static final ResourceKey<DamageType> BURN = key("burn");
 
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Crushed")
     public static final ResourceKey<DamageType> CRUSHED = key("crushed");
@@ -38,17 +38,17 @@ public class DSDamageTypes {
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Dragon Breath")
     public static final ResourceKey<DamageType> DRAGON_BREATH = key("dragon_breath");
 
-    @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Forest Dragon Breath")
-    public static final ResourceKey<DamageType> FOREST_DRAGON_BREATH = key("forest_dragon_breath");
+    @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Poison Breath")
+    public static final ResourceKey<DamageType> POISON_BREATH = key("poison_breath");
 
-    @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Forest Dragon Drain")
-    public static final ResourceKey<DamageType> FOREST_DRAGON_DRAIN = key("forest_dragon_drain");
+    @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Drain")
+    public static final ResourceKey<DamageType> DRAIN = key("drain");
 
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Rain Burn")
     public static final ResourceKey<DamageType> RAIN_BURN = key("rain_burn");
 
-    @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Sea Dragon Breath")
-    public static final ResourceKey<DamageType> SEA_DRAGON_BREATH = key("sea_dragon_breath");
+    @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Lightning Breath")
+    public static final ResourceKey<DamageType> LIGHTNING_BREATH = key("lightning_breath");
 
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Spectral Impact")
     public static final ResourceKey<DamageType> SPECTRAL_IMPACT = key("spectral_impact");
@@ -56,8 +56,8 @@ public class DSDamageTypes {
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Water Burn")
     public static final ResourceKey<DamageType> WATER_BURN = key("water_burn");
 
-    @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Forest Dragon Spike")
-    public static final ResourceKey<DamageType> FOREST_DRAGON_SPIKE = key("forest_dragon_spike");
+    @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Spike")
+    public static final ResourceKey<DamageType> SPIKE = key("spike");
 
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Electric")
     public static final ResourceKey<DamageType> ELECTRIC = key("electric");
@@ -68,19 +68,19 @@ public class DSDamageTypes {
 
     public static void registerDamageTypes(final BootstrapContext<DamageType> context) {
         register(context, DSDamageTypes.ANTI_DRAGON);
-        register(context, DSDamageTypes.CAVE_DRAGON_BREATH);
-        register(context, DSDamageTypes.CAVE_DRAGON_BURN);
+        register(context, DSDamageTypes.FIRE_BREATH);
+        register(context, DSDamageTypes.BURN);
         register(context, DSDamageTypes.CRUSHED);
         register(context, DSDamageTypes.DEHYDRATION);
         register(context, DSDamageTypes.DRAGON_BALL_LIGHTNING);
         register(context, DSDamageTypes.DRAGON_BREATH);
-        register(context, DSDamageTypes.FOREST_DRAGON_BREATH);
-        register(context, DSDamageTypes.FOREST_DRAGON_DRAIN);
+        register(context, DSDamageTypes.POISON_BREATH);
+        register(context, DSDamageTypes.DRAIN);
         register(context, DSDamageTypes.RAIN_BURN);
-        register(context, DSDamageTypes.SEA_DRAGON_BREATH);
+        register(context, DSDamageTypes.LIGHTNING_BREATH);
         register(context, DSDamageTypes.SPECTRAL_IMPACT);
         register(context, DSDamageTypes.WATER_BURN);
-        register(context, DSDamageTypes.FOREST_DRAGON_SPIKE);
+        register(context, DSDamageTypes.SPIKE);
         register(context, DSDamageTypes.ELECTRIC);
     }
 

@@ -1,6 +1,6 @@
 {
   "values": [
-    "dragonsurvival:cave_dragon_burn",
-    "dragonsurvival:cave_dragon_breath"
+    "dragonsurvival:burn",
+    "dragonsurvival:fire_breath"
   ]
 }

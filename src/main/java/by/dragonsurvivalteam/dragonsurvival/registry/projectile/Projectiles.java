@@ -94,7 +94,7 @@ public class Projectiles {
                 List.of(),
                 List.of(),
                 List.of(new ProjectileDamageEffect(
-                        context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FOREST_DRAGON_SPIKE),
+                        context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.SPIKE),
                         LevelBasedValue.perLevel(2)
                 )),
                 List.of()

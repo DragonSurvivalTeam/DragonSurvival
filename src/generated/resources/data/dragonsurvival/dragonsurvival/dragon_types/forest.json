@@ -1,5 +1,5 @@
 {
-  "abilities": "dragonsurvival:forest_spike",
+  "abilities": "dragonsurvival:spike",
   "misc_resources": {
     "ability_bar": "dragonsurvival:textures/gui/casting_bars/cave_cast_bar.png",
     "altar_banner": "dragonsurvival:textures/gui/dragon_altar/forest_altar_icon.png",

@@ -5,7 +5,7 @@
         "applied_effects": {
           "entity_effect": [
             {
-              "type": "dragonsurvival:cave_dragon_breath",
+              "type": "dragonsurvival:fire_breath",
               "amount": {
                 "type": "minecraft:linear",
                 "base": 3.0,

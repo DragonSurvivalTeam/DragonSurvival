@@ -1,5 +1,5 @@
 {
   "exhaustion": 0.1,
-  "message_id": "dragonsurvival.cave_dragon_burn",
+  "message_id": "dragonsurvival.lightning_breath",
   "scaling": "when_caused_by_living_non_player"
 }

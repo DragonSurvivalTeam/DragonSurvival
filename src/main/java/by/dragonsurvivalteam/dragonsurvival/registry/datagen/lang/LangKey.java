@@ -124,6 +124,15 @@ public class LangKey {
     @Translation(type = Translation.Type.MISC, comments = "§6■ %s §6Projectile Damage:§r %s")
     public static final String ABILITY_PROJECTILE_DAMAGE = Translation.Type.ABILITY.wrap("general.projectile_damage");
 
+    @Translation(type = Translation.Type.MISC, comments = "§6■ Number of projectiles:§r %s")
+    public static final String ABILITY_PROJECTILE_COUNT = Translation.Type.ABILITY.wrap("general.projectile_count");
+
+    @Translation(type = Translation.Type.MISC, comments = "§6■ Projectile Speed:§r %s")
+    public static final String ABILITY_PROJECTILE_SPEED = Translation.Type.ABILITY.wrap("general.projectile_speed");
+
+    @Translation(type = Translation.Type.MISC, comments = "§6■ Projectile Spread:§r %s")
+    public static final String ABILITY_PROJECTILE_SPREAD = Translation.Type.ABILITY.wrap("general.projectile_spread");
+
     // --- Misc --- //
 
     @Translation(type = Translation.Type.MISC, comments = "Kingdom Explorer Map")

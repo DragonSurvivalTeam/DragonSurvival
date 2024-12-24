@@ -1,0 +1,89 @@
+{
+  "actions": [
+    {
+      "target_selection": {
+        "applied_effects": {
+          "entity_effect": [
+            {
+              "effect_type": "dragonsurvival:projectile",
+              "number_of_projectiles": {
+                "type": "minecraft:linear",
+                "base": 1.0,
+                "per_level_above_first": 1.0
+              },
+              "projectile_data": "dragonsurvival:spike",
+              "projectile_spread": 1.5,
+              "speed": 1.0,
+              "target_direction": {
+                "direction": "looking_at"
+              }
+            }
+          ],
+          "entity_targeting_mode": "TARGET_ALL",
+          "target_conditions": [
+            {
+              "type_specific": {
+                "type": "dragonsurvival:entity_check_predicate",
+                "check_for": "living_entity"
+              }
+            }
+          ]
+        },
+        "target_type": "dragonsurvival:self"
+      },
+      "trigger_rate": 1.0
+    }
+  ],
+  "activation": {
+    "type": "active_simple",
+    "cooldown": 60.0,
+    "initial_mana_cost": 1.0,
+    "sound": {
+      "end": "minecraft:entity.arrow.shoot"
+    }
+  },
+  "icon": {
+    "texture_entries": [
+      {
+        "from_level": 0,
+        "texture_resource": "dragonsurvival:abilities/forest/spike_0"
+      },
+      {
+        "from_level": 1,
+        "texture_resource": "dragonsurvival:abilities/forest/spike_1"
+      },
+      {
+        "from_level": 2,
+        "texture_resource": "dragonsurvival:abilities/forest/spike_2"
+      },
+      {
+        "from_level": 3,
+        "texture_resource": "dragonsurvival:abilities/forest/spike_3"
+      },
+      {
+        "from_level": 4,
+        "texture_resource": "dragonsurvival:abilities/forest/spike_4"
+      }
+    ]
+  },
+  "upgrade": {
+    "upgrade_data": {
+      "type": "passive_level",
+      "maximum_level": 4,
+      "requirement_or_cost": {
+        "type": "minecraft:lookup",
+        "fallback": {
+          "type": "minecraft:linear",
+          "base": 15.0,
+          "per_level_above_first": 15.0
+        },
+        "values": [
+          0.0,
+          20.0,
+          30.0,
+          40.0
+        ]
+      }
+    }
+  }
+}
