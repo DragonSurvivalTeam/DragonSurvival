@@ -22,10 +22,13 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -59,6 +62,16 @@ public class ChargedEffect extends ModifiableMobEffect {
     @Override
     public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
         return duration % 20 == 0;
+    }
+
+    @Override
+    public void onEffectStarted(@NotNull LivingEntity livingEntity, int amplifier) {
+        // Make creepers become charged
+        if (livingEntity instanceof Creeper creeper) {
+            if (!creeper.isPowered()) {
+                creeper.getEntityData().set(Creeper.DATA_IS_POWERED, true);
+            }
+        }
     }
 
     @Override
