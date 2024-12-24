@@ -173,17 +173,18 @@ public class DragonTypes {
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.SPIKE),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.POISON_BREATH),
                         // Passive
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.FOREST_IMMUNITY)
+                        context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.FOREST_IMMUNITY),
+                        context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.FOREST_MAGIC)
                 ),
                 HolderSet.empty(),
                 List.of(),
                 List.of(),
                 new MiscDragonTextures(
-                        DragonSurvival.res("textures/gui/food_icons/cave_food_icons.png"),
-                        DragonSurvival.res("textures/gui/mana_icons/cave_mana_icons.png"),
+                        DragonSurvival.res("textures/gui/food_icons/forest_food_icons.png"),
+                        DragonSurvival.res("textures/gui/mana_icons/forest_mana_icons.png"),
                         DragonSurvival.res("textures/gui/dragon_altar/forest_altar_icon.png"),
-                        DragonSurvival.res("textures/gui/source_of_magic/cave_source_of_magic_0.png"),
-                        DragonSurvival.res("textures/gui/source_of_magic/cave_source_of_magic_1.png"),
+                        DragonSurvival.res("textures/gui/source_of_magic/forest_source_of_magic_0.png"),
+                        DragonSurvival.res("textures/gui/source_of_magic/forest_source_of_magic_1.png"),
                         DragonSurvival.res("textures/gui/casting_bars/cave_cast_bar.png"),
                         DragonSurvival.res("textures/gui/help_button/cave_help_button.png"),
                         DragonSurvival.res("textures/gui/growth/circle_cave.png"),

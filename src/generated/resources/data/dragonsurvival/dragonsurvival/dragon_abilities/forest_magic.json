@@ -1,0 +1,156 @@
+{
+  "actions": [
+    {
+      "target_selection": {
+        "applied_effects": {
+          "entity_effect": [
+            {
+              "effect_type": "dragonsurvival:modifier",
+              "modifiers": [
+                {
+                  "id": "dragonsurvival:forest_magic",
+                  "is_hidden": true,
+                  "modifiers": [
+                    {
+                      "amount": {
+                        "type": "minecraft:linear",
+                        "base": 1.0,
+                        "per_level_above_first": 1.0
+                      },
+                      "attribute": "dragonsurvival:mana",
+                      "operation": "add_value"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "entity_targeting_mode": "TARGET_ALLIES"
+        },
+        "target_type": "dragonsurvival:self"
+      },
+      "trigger_rate": 1.0
+    },
+    {
+      "target_selection": {
+        "applied_effects": {
+          "entity_effect": [
+            {
+              "effect_type": "dragonsurvival:modifier",
+              "modifiers": [
+                {
+                  "id": "dragonsurvival:good_mana_condition",
+                  "is_hidden": true,
+                  "modifiers": [
+                    {
+                      "amount": {
+                        "type": "minecraft:linear",
+                        "base": 1.0,
+                        "per_level_above_first": 1.0
+                      },
+                      "attribute": "dragonsurvival:mana_regeneration",
+                      "operation": "add_multiplied_base"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "entity_targeting_mode": "TARGET_ALLIES",
+          "target_conditions": [
+            {
+              "stepping_on": {
+                "block": {
+                  "blocks": "#dragonsurvival:regenerates_forest_dragon_mana"
+                }
+              }
+            },
+            {
+              "location": {
+                "block": {
+                  "blocks": "#dragonsurvival:regenerates_forest_dragon_mana"
+                }
+              }
+            },
+            {
+              "location": {
+                "can_see_sky": true
+              },
+              "type_specific": {
+                "type": "dragonsurvival:custom_predicates",
+                "sun_light_level": {
+                  "min": 10
+                },
+                "weather_predicate": {}
+              }
+            }
+          ]
+        },
+        "target_type": "dragonsurvival:self"
+      },
+      "trigger_rate": 1.0
+    }
+  ],
+  "activation": {
+    "type": "passive"
+  },
+  "icon": {
+    "texture_entries": [
+      {
+        "from_level": 0,
+        "texture_resource": "dragonsurvival:abilities/forest/forest_magic_0"
+      },
+      {
+        "from_level": 1,
+        "texture_resource": "dragonsurvival:abilities/forest/forest_magic_1"
+      },
+      {
+        "from_level": 2,
+        "texture_resource": "dragonsurvival:abilities/forest/forest_magic_2"
+      },
+      {
+        "from_level": 3,
+        "texture_resource": "dragonsurvival:abilities/forest/forest_magic_3"
+      },
+      {
+        "from_level": 4,
+        "texture_resource": "dragonsurvival:abilities/forest/forest_magic_4"
+      },
+      {
+        "from_level": 5,
+        "texture_resource": "dragonsurvival:abilities/forest/forest_magic_5"
+      },
+      {
+        "from_level": 6,
+        "texture_resource": "dragonsurvival:abilities/forest/forest_magic_6"
+      },
+      {
+        "from_level": 7,
+        "texture_resource": "dragonsurvival:abilities/forest/forest_magic_7"
+      },
+      {
+        "from_level": 8,
+        "texture_resource": "dragonsurvival:abilities/forest/forest_magic_8"
+      },
+      {
+        "from_level": 9,
+        "texture_resource": "dragonsurvival:abilities/forest/forest_magic_9"
+      },
+      {
+        "from_level": 10,
+        "texture_resource": "dragonsurvival:abilities/forest/forest_magic_10"
+      }
+    ]
+  },
+  "upgrade": {
+    "upgrade_data": {
+      "type": "manual",
+      "maximum_level": 10,
+      "requirement_or_cost": {
+        "type": "minecraft:linear",
+        "base": 15.0,
+        "per_level_above_first": 15.0
+      }
+    }
+  }
+}

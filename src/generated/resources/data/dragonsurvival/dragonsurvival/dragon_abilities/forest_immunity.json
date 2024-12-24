@@ -12,7 +12,9 @@
                   "multiplier": 0.0,
                   "types": [
                     "minecraft:sweet_berry_bush",
-                    "minecraft:cactus"
+                    "minecraft:cactus",
+                    "dragonsurvival:drain",
+                    "dragonsurvival:poison_breath"
                   ]
                 }
               ]

@@ -13,7 +13,7 @@ import net.minecraft.world.entity.player.Player;
 
 public record SelfTarget(Either<BlockTargeting, EntityTargeting> target, boolean removeAutomatically) implements AbilityTargeting {
     public static final MapCodec<SelfTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> AbilityTargeting.codecStart(instance)
-            .and(Codec.BOOL.optionalFieldOf("remove_automatically", false).forGetter(SelfTarget::removeAutomatically)).apply(instance, SelfTarget::new)
+            .and(Codec.BOOL.optionalFieldOf("remove_automatically", true).forGetter(SelfTarget::removeAutomatically)).apply(instance, SelfTarget::new)
     );
 
     @Override

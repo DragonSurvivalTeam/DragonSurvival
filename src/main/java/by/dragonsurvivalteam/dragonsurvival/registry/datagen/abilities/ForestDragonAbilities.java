@@ -11,10 +11,12 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.Upgrad
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.ValueBasedUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.LargePoisonParticleOption;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.SmallPoisonParticleOption;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSSounds;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBlockTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.BlockConversionEffect;
@@ -36,6 +38,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.util.random.WeightedRandomList;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.block.Blocks;
@@ -65,6 +68,12 @@ public class ForestDragonAbilities {
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Forest Dragon")
     public static final ResourceKey<DragonAbility> FOREST_IMMUNITY = DragonAbilities.key("forest_immunity");
+
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
+            "■ Upgrading this ability increases your maximum mana pool. Forest dragon mana is restored under direct sunlight and on grass.\n",
+    })
+    @Translation(type = Translation.Type.ABILITY, comments = "Forest Magic")
+    public static final ResourceKey<DragonAbility> FOREST_MAGIC = DragonAbilities.key("forest_magic");
 
     public static void registerAbilities(final BootstrapContext<DragonAbility> context) {
         registerActiveAbilities(context);
@@ -99,7 +108,7 @@ public class ForestDragonAbilities {
                                 LevelBasedValue.constant(1)
                         )),
                         AbilityTargeting.EntityTargetingMode.TARGET_ALL
-                ), false), LevelBasedValue.constant(1))),
+                ), true), LevelBasedValue.constant(1))),
                 new LevelBasedResource(
                         List.of(
                                 new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/spike_0"), 0),
@@ -182,7 +191,7 @@ public class ForestDragonAbilities {
                                         new LargePoisonParticleOption(37, false)
                                 )),
                                 AbilityTargeting.EntityTargetingMode.TARGET_ALL
-                        ), false), LevelBasedValue.constant(1))),
+                        ), true), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/poisonous_breath_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/poisonous_breath_1"), 1),
@@ -198,23 +207,69 @@ public class ForestDragonAbilities {
                 Activation.passive(),
                 Optional.empty(),
                 Optional.empty(),
-                List.of(new ActionContainer(new SelfTarget(
-                        AbilityTargeting.entity(
-                                DamageModificationEffect.single(new DamageModification(
-                                        DragonSurvival.res("forest_immunity"),
-                                        HolderSet.direct(
-                                                context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.SWEET_BERRY_BUSH),
-                                                context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.CACTUS)
-                                        ),
-                                        LevelBasedValue.constant(0),
-                                        LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)
-                                )),
-                                AbilityTargeting.EntityTargetingMode.TARGET_ALL
-                        ), false), LevelBasedValue.constant(1))
-                ),
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        DamageModificationEffect.single(new DamageModification(
+                                DragonSurvival.res("forest_immunity"),
+                                HolderSet.direct(
+                                        context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.SWEET_BERRY_BUSH),
+                                        context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.CACTUS),
+                                        context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.DRAIN),
+                                        context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.POISON_BREATH)
+                                ),
+                                LevelBasedValue.constant(0),
+                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)
+                        )),
+                        AbilityTargeting.EntityTargetingMode.TARGET_ALL
+                ), true), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_dragon_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_dragon_1"), 1)
+                ))
+        ));
+
+        context.register(FOREST_MAGIC, new DragonAbility(
+                Activation.passive(),
+                Upgrade.value(ValueBasedUpgrade.Type.MANUAL, 10, LevelBasedValue.perLevel(15)),
+                Optional.empty(),
+                List.of(
+                        new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                                ModifierEffect.single(new ModifierWithDuration(
+                                        DragonSurvival.res("forest_magic"),
+                                        ModifierWithDuration.DEFAULT_MODIFIER_ICON,
+                                        List.of(new Modifier(DSAttributes.MANA, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
+                                        LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                        true
+                                ), false),
+                                AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                        ), true), LevelBasedValue.constant(1)),
+                        new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                                List.of(
+                                        Condition.onBlock(DSBlockTags.REGENERATES_FOREST_DRAGON_MANA),
+                                        Condition.inBlock(DSBlockTags.REGENERATES_FOREST_DRAGON_MANA),
+                                        Condition.inSunlight(10)
+                                ),
+                                ModifierEffect.single(new ModifierWithDuration(
+                                        DragonSurvival.res("good_mana_condition"),
+                                        ModifierWithDuration.DEFAULT_MODIFIER_ICON,
+                                        List.of(new Modifier(DSAttributes.MANA_REGENERATION, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_MULTIPLIED_BASE, Optional.empty())),
+                                        LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                        true
+                                ), false),
+                                AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                        ), true), LevelBasedValue.constant(1))
+                ),
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_magic_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_magic_1"), 1),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_magic_2"), 2),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_magic_3"), 3),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_magic_4"), 4),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_magic_5"), 5),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_magic_6"), 6),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_magic_7"), 7),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_magic_8"), 8),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_magic_9"), 9),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_magic_10"), 10)
                 ))
         ));
     }

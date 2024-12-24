@@ -276,4 +276,12 @@ public class Functions {
         // The formula is generated based on input / output pairs of various sizes which looked correct
         return (float) ((0.017 * Math.pow(size, 1.06) + 0.135) * player.getAttributeValue(Attributes.SCALE));
     }
+
+    public static double getSunPosition(final Entity entity) {
+        float sunAngle = entity.level().getSunAngle(1);
+        float angleTarget = sunAngle < (float) Math.PI ? 0 : (float) Math.PI * 2f;
+        sunAngle = sunAngle + (angleTarget - sunAngle) * 0.2f;
+        // 1 means it's a time of 6000 (sun is at the highest point)
+        return Mth.cos(sunAngle);
+    }
 }

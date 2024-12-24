@@ -66,6 +66,13 @@ public class Condition { // TODO :: make advancements use conditions from here /
                 .subPredicate(CustomPredicates.Builder.start().raining(true).build()).build();
     }
 
+    public static EntityPredicate inSunlight(int sunLightLevel) {
+        return EntityPredicate.Builder.entity()
+                // TODO :: this means it won't work under trees I think?
+                .located(LocationPredicate.Builder.location().setCanSeeSky(true))
+                .subPredicate(CustomPredicates.Builder.start().sunLightLevel(sunLightLevel).build()).build();
+    }
+
     public static BlockPredicate blocks(final Block... blocks) {
         return BlockPredicate.Builder.block().of(blocks).build();
     }

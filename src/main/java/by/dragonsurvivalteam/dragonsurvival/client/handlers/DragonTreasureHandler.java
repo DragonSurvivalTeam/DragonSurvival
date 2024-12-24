@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.network.status.SyncTreasureRestStatus;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.TreasureRestData;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
@@ -54,16 +55,12 @@ public class DragonTreasureHandler {
         TreasureRestData data = TreasureRestData.getData(player);
         Window window = Minecraft.getInstance().getWindow();
 
-        float sunAngle = player.level().getSunAngle(1);
-        float angleTarget = sunAngle < (float) Math.PI ? 0 : (float) Math.PI * 2f;
-        sunAngle = sunAngle + (angleTarget - sunAngle) * 0.2f;
-        double sunPosition = Mth.cos(sunAngle);
-
-        if (data.isResting && /* moon is at a higher position than the sun */ sunPosition < 0.25 && sleepTimer < 100) {
+        if (data.isResting && sleepTimer < 100 && Functions.getSunPosition(player) < 0.25) {
             sleepTimer++;
         } else if (sleepTimer > 0) {
             sleepTimer--;
         }
+
         if (sleepTimer > 0) {
             Color darkening = Color.ofRGBA(0.05f, 0.05f, 0.05f, Mth.lerp(Math.min(sleepTimer, 100) / 100f, 0, 0.5F));
             event.getGuiGraphics().fill(0, 0, window.getGuiScaledWidth(), window.getGuiScaledHeight(), darkening.getColor());

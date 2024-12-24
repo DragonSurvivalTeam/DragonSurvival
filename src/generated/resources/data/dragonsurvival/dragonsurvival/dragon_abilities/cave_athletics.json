@@ -35,7 +35,6 @@
             }
           ]
         },
-        "remove_automatically": true,
         "target_type": "dragonsurvival:self"
       },
       "trigger_rate": 1.0

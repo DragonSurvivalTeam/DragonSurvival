@@ -2,12 +2,13 @@
   "abilities": [
     "dragonsurvival:spike",
     "dragonsurvival:poison_breath",
-    "dragonsurvival:forest_immunity"
+    "dragonsurvival:forest_immunity",
+    "dragonsurvival:forest_magic"
   ],
   "misc_resources": {
     "ability_bar": "dragonsurvival:textures/gui/casting_bars/cave_cast_bar.png",
     "altar_banner": "dragonsurvival:textures/gui/dragon_altar/forest_altar_icon.png",
-    "food_sprites": "dragonsurvival:textures/gui/food_icons/cave_food_icons.png",
+    "food_sprites": "dragonsurvival:textures/gui/food_icons/forest_food_icons.png",
     "growth_bar_fill": "dragonsurvival:textures/gui/growth/circle_cave.png",
     "growth_icons": [
       {
@@ -32,10 +33,10 @@
       }
     ],
     "help_button": "dragonsurvival:textures/gui/help_button/cave_help_button.png",
-    "mana_sprites": "dragonsurvival:textures/gui/mana_icons/cave_mana_icons.png",
+    "mana_sprites": "dragonsurvival:textures/gui/mana_icons/forest_mana_icons.png",
     "primary_color": "#00FF0000",
     "secondary_color": "#00FF0000",
-    "source_of_magic_background_active": "dragonsurvival:textures/gui/source_of_magic/cave_source_of_magic_0.png",
-    "source_of_magic_background_passive": "dragonsurvival:textures/gui/source_of_magic/cave_source_of_magic_0.png"
+    "source_of_magic_background_active": "dragonsurvival:textures/gui/source_of_magic/forest_source_of_magic_0.png",
+    "source_of_magic_background_passive": "dragonsurvival:textures/gui/source_of_magic/forest_source_of_magic_0.png"
   }
 }
