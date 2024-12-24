@@ -67,28 +67,30 @@
             {
               "conversion_data": [
                 {
-                  "blocks_from": [
-                    "minecraft:dirt",
-                    "minecraft:coarse_dirt"
-                  ],
                   "blocks_to": [
                     {
                       "block": "minecraft:grass_block",
-                      "chance": 25.0
+                      "weight": 25
                     },
                     {
                       "block": "minecraft:podzol",
-                      "chance": 5.0
+                      "weight": 5
                     },
                     {
                       "block": "minecraft:mycelium",
-                      "chance": 1.0
+                      "weight": 1
                     },
                     {
                       "block": "minecraft:coarse_dirt",
-                      "chance": 3.0
+                      "weight": 3
                     }
-                  ]
+                  ],
+                  "from_predicate": {
+                    "blocks": [
+                      "minecraft:dirt",
+                      "minecraft:coarse_dirt"
+                    ]
+                  }
                 }
               ],
               "effect_type": "dragonsurvival:conversion",

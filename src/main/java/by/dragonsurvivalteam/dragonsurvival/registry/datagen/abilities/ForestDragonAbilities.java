@@ -36,6 +36,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.block.Blocks;
@@ -174,26 +175,23 @@ public class ForestDragonAbilities {
                                                 new BlockConversionEffect(
                                                         List.of(
                                                                 new BlockConversionEffect.BlockConversionData(
-                                                                        HolderSet.direct(
-                                                                                context.lookup(Registries.BLOCK).getOrThrow(Blocks.DIRT.builtInRegistryHolder().key()),
-                                                                                context.lookup(Registries.BLOCK).getOrThrow(Blocks.COARSE_DIRT.builtInRegistryHolder().key())
-                                                                        ),
-                                                                        List.of(
+                                                                        Condition.blocks(Blocks.DIRT, Blocks.COARSE_DIRT),
+                                                                        SimpleWeightedRandomList.create(
                                                                                 new BlockConversionEffect.BlockTo(
                                                                                         context.lookup(Registries.BLOCK).getOrThrow(Blocks.GRASS_BLOCK.builtInRegistryHolder().key()),
-                                                                                        25f
+                                                                                        25
                                                                                 ),
                                                                                 new BlockConversionEffect.BlockTo(
                                                                                         context.lookup(Registries.BLOCK).getOrThrow(Blocks.PODZOL.builtInRegistryHolder().key()),
-                                                                                        5f
+                                                                                        5
                                                                                 ),
                                                                                 new BlockConversionEffect.BlockTo(
                                                                                         context.lookup(Registries.BLOCK).getOrThrow(Blocks.MYCELIUM.builtInRegistryHolder().key()),
-                                                                                        1f
+                                                                                        1
                                                                                 ),
                                                                                 new BlockConversionEffect.BlockTo(
                                                                                         context.lookup(Registries.BLOCK).getOrThrow(Blocks.COARSE_DIRT.builtInRegistryHolder().key()),
-                                                                                        3f
+                                                                                        3
                                                                                 )
                                                                         ))
                                                                 ), LevelBasedValue.constant(0.2f))

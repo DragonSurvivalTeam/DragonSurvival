@@ -42,6 +42,10 @@ public class Condition {
         return EntityPredicate.Builder.entity().located(LocationPredicate.Builder.location().setBlock(BlockPredicate.Builder.block().of(tag))).build();
     }
 
+    public static BlockPredicate blocks(final Block... blocks) {
+        return BlockPredicate.Builder.block().of(blocks).build();
+    }
+
     // --- Builder --- //
 
     public static EntityPredicate.Builder dragonType(final Holder<DragonType> type) {

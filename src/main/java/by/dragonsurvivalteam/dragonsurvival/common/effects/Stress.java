@@ -12,14 +12,17 @@ import net.minecraft.world.food.FoodData;
 import org.jetbrains.annotations.NotNull;
 
 public class Stress extends MobEffect {
-    public Stress(int color) {
-        super(MobEffectCategory.HARMFUL, color);
-    }
+    /** See initial value of {@link FoodData#foodLevel} */
+    public static final int FULL_FOOD_LEVEL = 20;
 
     @ConfigRange(min = 0, max = 100)
     @Translation(key = "stress_exhaustion", type = Translation.Type.CONFIGURATION, comments = "The amount of exhaustion applied every 20 ticks while stressed. Each amplifier level cuts the delay in half.")
     @ConfigOption(side = ConfigSide.SERVER, category = {"effects", "stress"}, key = "stress_exhaustion")
-    public static Float stressExhaustion =  1.0f;
+    public static Float stressExhaustion =  1f;
+
+    public Stress(int color) {
+        super(MobEffectCategory.HARMFUL, color);
+    }
 
     @Override
     public boolean applyEffectTick(@NotNull final LivingEntity living, int amplifier) {
@@ -30,7 +33,7 @@ public class Stress extends MobEffect {
                 int oldFood = food.getFoodLevel();
                 food.eat(1, (-0.5f * food.getSaturationLevel()) * stressExhaustion);
 
-                if (oldFood != 20) {
+                if (oldFood < FULL_FOOD_LEVEL) {
                     food.setFoodLevel((int) (food.getFoodLevel() - 1 * stressExhaustion));
                 }
             }

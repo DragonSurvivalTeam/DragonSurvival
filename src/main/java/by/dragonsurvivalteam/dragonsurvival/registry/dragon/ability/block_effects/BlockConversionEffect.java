@@ -4,12 +4,20 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilit
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.*;
+import net.minecraft.advancements.critereon.BlockPredicate;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.random.SimpleWeightedRandomList;
+import net.minecraft.util.random.Weight;
+import net.minecraft.util.random.WeightedEntry;
+import net.minecraft.util.random.WeightedRandomList;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.pattern.BlockInWorld;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -19,51 +27,38 @@ public record BlockConversionEffect(List<BlockConversionData> blockConversions, 
             LevelBasedValue.CODEC.fieldOf("probability").forGetter(BlockConversionEffect::probability)
     ).apply(instance, BlockConversionEffect::new));
 
-    public record BlockConversionData(HolderSet<Block> blocksFrom, List<BlockTo> blocksTo) {
+    public record BlockConversionData(BlockPredicate fromPredicate, WeightedRandomList<BlockTo> blocksTo) {
         public static final Codec<BlockConversionData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                RegistryCodecs.homogeneousList(Registries.BLOCK).fieldOf("blocks_from").forGetter(BlockConversionData::blocksFrom),
-                BlockTo.CODEC.listOf().fieldOf("blocks_to").forGetter(BlockConversionData::blocksTo)
+                BlockPredicate.CODEC.fieldOf("from_predicate").forGetter(BlockConversionData::fromPredicate),
+                SimpleWeightedRandomList.codec(BlockTo.CODEC).fieldOf("blocks_to").forGetter(BlockConversionData::blocksTo)
         ).apply(instance, BlockConversionData::new));
     }
 
-    public record BlockTo(Holder<Block> blockTo, double chance) {
+    // TODO :: make custom block record which includes the ability to provide properties
+    public record BlockTo(Holder<Block> blockTo, int weight) implements WeightedEntry{
         public static final Codec<BlockTo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 BuiltInRegistries.BLOCK.holderByNameCodec().fieldOf("block").forGetter(BlockTo::blockTo),
-                Codec.DOUBLE.fieldOf("chance").forGetter(BlockTo::chance)
+                Codec.INT.fieldOf("weight").forGetter(BlockTo::weight)
         ).apply(instance, BlockTo::new));
+
+        @Override
+        public @NotNull Weight getWeight() {
+            return Weight.of(weight);
+        }
     }
 
     @Override
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final BlockPos position, final Direction direction) {
-        if (dragon.getRandom().nextDouble() < probability().calculate(ability.level())) {
+        if (dragon.getRandom().nextDouble() < probability.calculate(ability.level())) {
             return;
         }
 
-        if (blockConversions().isEmpty()) {
-            return;
-        }
+        // This allows the state to be cached and not retrieved for every check
+        BlockInWorld block = new BlockInWorld(dragon.serverLevel(), position, false);
 
-
-        for(BlockConversionData data : blockConversions) {
-            if (data.blocksFrom().size() == 0) {
-                continue;
-            }
-
-            if (data.blocksFrom().contains(dragon.serverLevel().getBlockState(position).getBlockHolder())) {
-                double chance = dragon.getRandom().nextDouble();
-                double sumOfOdds = 0;
-                for (BlockTo blockTo : data.blocksTo) {
-                    sumOfOdds += blockTo.chance();
-                }
-
-                chance *= sumOfOdds;
-                for (BlockTo blockTo : data.blocksTo) {
-                    chance -= blockTo.chance();
-                    if (chance <= 0) {
-                        dragon.serverLevel().setBlock(position, blockTo.blockTo().value().defaultBlockState(), Block.UPDATE_ALL);
-                        return;
-                    }
-                }
+        for (BlockConversionData data : blockConversions) {
+            if (data.fromPredicate().matches(block)) {
+                data.blocksTo().getRandom(dragon.getRandom()).ifPresent(conversion -> dragon.serverLevel().setBlock(position, conversion.blockTo().value().defaultBlockState(), Block.UPDATE_ALL));
             }
         }
     }
