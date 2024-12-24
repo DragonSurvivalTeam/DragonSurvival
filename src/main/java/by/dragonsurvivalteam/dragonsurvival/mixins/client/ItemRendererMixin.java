@@ -1,8 +1,8 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
-import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -26,12 +26,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class ItemRendererMixin { // FIXME :: doesn't work with sodium since they replace item rendering
     @Inject(method = "renderStatic(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemDisplayContext;ZLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;Lnet/minecraft/world/level/Level;III)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/ItemRenderer;render(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemDisplayContext;ZLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;IILnet/minecraft/client/resources/model/BakedModel;)V", shift = At.Shift.BEFORE))
     private void dragonSurvival$storeAlpha(final LivingEntity entity, final ItemStack stack, final ItemDisplayContext context, boolean leftHand, final PoseStack poseStack, final MultiBufferSource bufferSource, final Level level, int combinedLight, int combinedOverlay, int seed, final CallbackInfo callback) {
-        // FIXME
-        if (dragonSurvival$isThirdPerson(context) /*HunterAbility.translucentItemsFirstPerson*/ && dragonSurvival$isFirstPerson(context)) {
-            Player player = dragonSurvival$getPlayerWithHunterStacks(entity);
+        if (dragonSurvival$isThirdPerson(context) || HunterHandler.TRANSLUCENT_ITEMS_IN_FIRST_PERSON && dragonSurvival$isFirstPerson(context)) {
+            LivingEntity relevantEntity = dragonSurvival$getRelevantEntity(entity);
 
-            if (player != null) {
-                HunterHandler.itemTranslucency = HunterHandler.calculateAlphaAsFloat(player);
+            if (relevantEntity != null) {
+                HunterHandler.itemTranslucency = HunterHandler.calculateAlphaAsFloat(relevantEntity);
                 return;
             }
         }
@@ -61,19 +60,15 @@ public abstract class ItemRendererMixin { // FIXME :: doesn't work with sodium s
         return context == ItemDisplayContext.FIRST_PERSON_LEFT_HAND || context == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND;
     }
 
-    @Unique private static @Nullable Player dragonSurvival$getPlayerWithHunterStacks(final LivingEntity entity) {
-        if (entity instanceof Player player && DragonStateProvider.getData(player).hasHunterStacks()) {
-            return player;
-        }
-
+    @Unique private static @Nullable LivingEntity dragonSurvival$getRelevantEntity(final LivingEntity entity) {
         if (entity instanceof DragonEntity dragon) {
             Player player = dragon.getPlayer();
 
-            if (player != null && DragonStateProvider.getData(player).hasHunterStacks()) {
+            if (player != null && player.getData(DSDataAttachments.HUNTER).hasHunterStacks()) {
                 return player;
             }
         }
 
-        return null;
+        return entity.getData(DSDataAttachments.HUNTER).hasHunterStacks() ? entity : null;
     }
 }

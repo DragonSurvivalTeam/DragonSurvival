@@ -50,12 +50,6 @@ public class DragonStateHandler extends EntityStateHandler {
 
     // --- Other --- //
 
-    /** Translucent rendering in the inventory screen leads to issues (invisible model) */
-    public boolean isBeingRenderedInInventory;
-
-    /** Only needs to be updated on effect removal (server -> client) */
-    private int hunterStacks;
-
     public boolean isGrowing = true;
     public StarHeartItem.State starHeartState = StarHeartItem.State.INACTIVE;
 
@@ -442,31 +436,6 @@ public class DragonStateHandler extends EntityStateHandler {
 
     public double getSavedDragonSize(ResourceKey<DragonType> type) {
         return savedSizes.getOrDefault(type, -1D);
-    }
-
-    // --- Hunter handler --- //
-
-    public void modifyHunterStacks(int modification) {
-        // FIXME
-        //hunterStacks = Math.clamp(hunterStacks + modification, 0, HunterHandler.MAX_HUNTER_STACKS);
-    }
-
-    public boolean hasMaxHunterStacks() {
-        // FIXME
-        return false;
-        //return hunterStacks == HunterHandler.MAX_HUNTER_STACKS;
-    }
-
-    public boolean hasHunterStacks() {
-        return hunterStacks > 0;
-    }
-
-    public void clearHunterStacks() {
-        hunterStacks = 0;
-    }
-
-    public int getHunterStacks() {
-        return hunterStacks;
     }
 
     public String getTypeNameLowerCase() {

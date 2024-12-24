@@ -1,17 +1,20 @@
 package by.dragonsurvivalteam.dragonsurvival.common.handlers.magic;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
-import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncHunterStacksRemoval;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBlockTags;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -28,13 +31,27 @@ import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.util.Color;
 
 /**
- * Handles things related to the hunter ability (or the effect to be more precise)
+ * Handles things related to the hunter ability (or the effect to be more precise) <br>
  * There is no check whether the player is a dragon to make this effect re-usable for other scenarios
  */
 @EventBusSubscriber
 public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatcher#render
-    // FIXME
-    public static final int MAX_HUNTER_STACKS = Functions.secondsToTicks(2) /* HunterAbility.maxLevel()*/;
+    @Translation(key = "hunter_max_level", type = Translation.Type.CONFIGURATION, comments = "The current level compared to the maximum level determines how quickly stacks are gained or lost")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"effects", "hunter"}, key = "hunter_max_level")
+    public static int MAX_LEVEL = 4;
+
+    @Translation(key = "hunter_fully_invisible", type = Translation.Type.CONFIGURATION, comments = "If enabled other players will be fully invisible at maximum hunter stacks")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"effects", "hunter"}, key = "hunter_full_invisibility")
+    public static boolean FULLY_INVISIBLE;
+
+    @Translation(key = "hunter_translucent_items_in_first_person", type = Translation.Type.CONFIGURATION, comments = "If enabled items held in first person will also appear translucent")
+    @ConfigOption(side = ConfigSide.CLIENT, category = {"effects", "hunter"}, key = "hunter_translucent_items_in_first_person")
+    public static boolean TRANSLUCENT_ITEMS_IN_FIRST_PERSON = true;
+
+    @Translation(key = "hunter_fix_translucency", type = Translation.Type.CONFIGURATION, comments = "This enables the shader features of fabulous mode which are needed for translucency to work correctly")
+    @ConfigOption(side = ConfigSide.CLIENT, category = {"effects", "hunter"}, key = "hunter_fix_translucency", /* Otherwise the game might crash */ requiresRestart = true)
+    public static boolean FIX_TRANSLUCENCY = true;
+
     // Lower values starts to just be invisible (vanilla uses ~0.15)
     public static final float MIN_ALPHA = 0.2f;
 
@@ -43,22 +60,18 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
 
     @SubscribeEvent
     public static void modifyHunterStacks(final PlayerTickEvent.Post event) {
-        Player player = event.getEntity();
-        DragonStateHandler data = DragonStateProvider.getData(player);
-        MobEffectInstance hunterEffect = player.getEffect(DSEffects.HUNTER);
+        MobEffectInstance hunterEffect = event.getEntity().getEffect(DSEffects.HUNTER);
 
         if (hunterEffect != null) {
+            HunterData data = event.getEntity().getData(DSDataAttachments.HUNTER);
             int modification;
 
-            // FIXME
-            if (/* Below feet*/ isHunterRelevant(player.getBlockStateOn()) || /* Within block */ isHunterRelevant(player.getInBlockState())) {
+            if (/* Below feet*/ isHunterRelevant(event.getEntity().getBlockStateOn()) || /* Within block */ isHunterRelevant(event.getEntity().getInBlockState())) {
                 // Gain more stacks per tick per amplifier level (min. of 1 and max. of max. ability level)
-                //modification = Math.min(HunterAbility.maxLevel(), 1 + hunterEffect.getAmplifier());
-                modification = 1;
+                modification = Math.min(MAX_LEVEL, 1 + hunterEffect.getAmplifier());
             } else {
                 // Per amplifier level lose fewer stacks per tick (min. of 1 and max. of max. ability level)
-                //modification = Math.min(HunterAbility.maxLevel() - 1, hunterEffect.getAmplifier()) - HunterAbility.maxLevel();
-                modification = 1;
+                modification = Math.min(MAX_LEVEL - 1, hunterEffect.getAmplifier()) - MAX_LEVEL;
             }
 
             data.modifyHunterStacks(modification);
@@ -67,8 +80,11 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
 
     @SubscribeEvent
     public static void clearCurrentTarget(final EntityTickEvent.Post event) {
-        if (event.getEntity() instanceof Mob mob && mob.getTarget() instanceof Player player) {
-            if (DragonStateProvider.getData(player).hasMaxHunterStacks()) {
+        if (event.getEntity() instanceof Mob mob && mob.getTarget() != null) {
+            LivingEntity target = mob.getTarget();
+            boolean maxHunterStacks = target.getExistingData(DSDataAttachments.HUNTER).map(HunterData::hasMaxHunterStacks).orElse(false);
+
+            if (maxHunterStacks) {
                 mob.setTarget(null);
             }
         }
@@ -76,31 +92,27 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
 
     @SubscribeEvent
     public static void removeHunterEffect(final LivingDamageEvent.Post event) {
-        if (event.getEntity() instanceof Player player) {
-            MobEffectInstance hunterEffect = player.getEffect(DSEffects.HUNTER);
+        MobEffectInstance hunterEffect = event.getEntity().getEffect(DSEffects.HUNTER);
 
-            if (hunterEffect != null && event.getNewDamage() > hunterEffect.getAmplifier()) {
-                player.removeEffect(DSEffects.HUNTER);
-            }
+        if (hunterEffect != null && event.getNewDamage() > hunterEffect.getAmplifier()) {
+            event.getEntity().removeEffect(DSEffects.HUNTER);
         }
     }
 
     @SubscribeEvent
     public static void modifyVisibility(final LivingEvent.LivingVisibilityEvent event) {
-        if (event.getEntity() instanceof Player player) {
-            DragonStateHandler data = DragonStateProvider.getData(player);
-
+        event.getEntity().getExistingData(DSDataAttachments.HUNTER).ifPresent(data -> {
             if (data.hasHunterStacks()) {
                 // Even if this is set to 0, the min. radius will be set to 4 (2x2) in TargetingConditions#test
-                event.modifyVisibility(1 - (double) data.getHunterStacks() / MAX_HUNTER_STACKS);
+                event.modifyVisibility(1 - (double) data.getHunterStacks() / getMaxStacks());
             }
-        }
+        });
     }
 
     @SubscribeEvent
     public static void clearHunterStacks(final MobEffectEvent.Remove event) {
-        if (event.getEffect().is(DSEffects.HUNTER) && event.getEntity() instanceof ServerPlayer serverPlayer) {
-            clearHunterStacks(serverPlayer);
+        if (event.getEffect().is(DSEffects.HUNTER)) {
+            clearHunterStacks(event.getEntity());
         }
     }
 
@@ -108,18 +120,18 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
     public static void clearHunterStacks(final MobEffectEvent.Expired event) {
         MobEffectInstance instance = event.getEffectInstance();
 
-        if (instance != null && instance.getEffect().is(DSEffects.HUNTER) && event.getEntity() instanceof ServerPlayer serverPlayer) {
-            clearHunterStacks(serverPlayer);
+        if (instance != null && instance.getEffect().is(DSEffects.HUNTER)) {
+            clearHunterStacks(event.getEntity());
         }
     }
 
     @SubscribeEvent
     public static void avoidTarget(final LivingChangeTargetEvent event) {
-        if (event.getNewAboutToBeSetTarget() instanceof Player player) {
-            if (DragonStateProvider.getData(player).hasMaxHunterStacks()) {
+        event.getEntity().getExistingData(DSDataAttachments.HUNTER).ifPresent(data -> {
+            if (data.hasMaxHunterStacks()) {
                 event.setNewAboutToBeSetTarget(null);
             }
-        }
+        });
     }
 
     @SubscribeEvent
@@ -130,9 +142,8 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
             return;
         }
 
-        DragonStateHandler data = DragonStateProvider.getData(event.getEntity());
-        // FIXME
-        float multiplier = 0; //DragonAbilities.getAbility(event.getEntity(), HunterAbility.class, data.getType()).map(HunterAbility::getDamage).orElse(1f + hunterEffect.getAmplifier());
+        HunterData data = event.getEntity().getData(DSDataAttachments.HUNTER);
+        float multiplier = 1 + hunterEffect.getAmplifier();
 
         if (data.hasMaxHunterStacks()) {
             multiplier += 2f;
@@ -141,6 +152,10 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
         event.setCriticalHit(true);
         event.setDamageMultiplier(event.getDamageMultiplier() + multiplier);
         event.getEntity().removeEffect(DSEffects.HUNTER);
+    }
+
+    public static int getMaxStacks() {
+        return MAX_LEVEL * Functions.secondsToTicks(2);
     }
 
     /** Replaces (and returns) the alpha value of the packed color with the supplied alpha */
@@ -154,62 +169,61 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
     }
 
     /** Returns the packed color in the {@link FastColor.ARGB32#color(int, int, int, int)} format */
-    public static int modifyAlpha(@Nullable final Player player, int packedColor) {
-        if (player == null) {
+    public static int modifyAlpha(@Nullable final Entity entity, int packedColor) {
+        if (entity == null) {
             return packedColor;
         }
 
-        DragonStateHandler data = DragonStateProvider.getData(player);
+        HunterData data = entity.getData(DSDataAttachments.HUNTER);
 
         if (!data.hasHunterStacks()) {
             return packedColor;
         }
 
-        float alpha = calculateAlpha(data, player == DragonSurvival.PROXY.getLocalPlayer());
+        float alpha = calculateAlpha(data, entity == DragonSurvival.PROXY.getLocalPlayer());
         return applyAlpha(alpha, packedColor);
     }
 
     /** Returns the packed color in the {@link Color#ofARGB(int, int, int, int)} format */
-    public static Color modifyAlpha(@Nullable final Player player, Color color) {
-        if (player == null) {
+    public static Color modifyAlpha(@Nullable final Entity entity, Color color) {
+        if (entity == null) {
             return color;
         }
 
-        DragonStateHandler data = DragonStateProvider.getData(player);
+        HunterData data = entity.getData(DSDataAttachments.HUNTER);
 
         if (!data.hasHunterStacks()) {
             return color;
         }
 
         int packedColor = color.getColor();
-        float alpha = calculateAlpha(data, player == DragonSurvival.PROXY.getLocalPlayer());
+        float alpha = calculateAlpha(data, entity == DragonSurvival.PROXY.getLocalPlayer());
         return Color.ofARGB((int) (alpha * 255), FastColor.ARGB32.red(packedColor), FastColor.ARGB32.green(packedColor), FastColor.ARGB32.blue(packedColor));
     }
 
-    public static int calculateAlpha(@NotNull final Player player) {
-        return (int) (calculateAlphaAsFloat(player) * 255);
+    public static int calculateAlpha(final Entity entity) {
+        return (int) (calculateAlphaAsFloat(entity) * 255);
     }
 
-    public static float calculateAlphaAsFloat(@NotNull final Player player) {
-        return calculateAlpha(DragonStateProvider.getData(player), player == DragonSurvival.PROXY.getLocalPlayer());
+    public static float calculateAlphaAsFloat(final Entity entity) {
+        return calculateAlpha(entity.getData(DSDataAttachments.HUNTER), entity == DragonSurvival.PROXY.getLocalPlayer());
     }
 
-    private static float calculateAlpha(@NotNull final DragonStateHandler data, boolean isLocalPlayer) {
+    private static float calculateAlpha(@NotNull final HunterData data, boolean isLocalPlayer) {
         if (!data.hasHunterStacks() || data.isBeingRenderedInInventory) {
             return 1;
         }
 
-        // FIXME
-        float min = 0;//isLocalPlayer || !HunterAbility.fullyInvisible ? MIN_ALPHA : 0;
-        return Math.max(min, 1f - (float) data.getHunterStacks() / HunterHandler.MAX_HUNTER_STACKS);
+        float min = isLocalPlayer || FULLY_INVISIBLE ? MIN_ALPHA : 0;
+        return Math.max(min, 1f - (float) data.getHunterStacks() / getMaxStacks());
     }
 
     private static boolean isHunterRelevant(final BlockState blockState) {
         return blockState.is(DSBlockTags.ENABLES_HUNTER_EFFECT);
     }
 
-    private static void clearHunterStacks(final ServerPlayer player) {
-        DragonStateProvider.getData(player).clearHunterStacks();
-        PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncHunterStacksRemoval(player.getId()));
+    private static void clearHunterStacks(final Entity entity) {
+        entity.getData(DSDataAttachments.HUNTER).clearHunterStacks();
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new SyncHunterStacksRemoval(entity.getId()));
     }
 }

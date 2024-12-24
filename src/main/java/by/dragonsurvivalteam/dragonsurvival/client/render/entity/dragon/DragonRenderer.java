@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
@@ -32,8 +33,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
     public boolean isRenderLayers = false;
 
     private static final Color RENDER_COLOR = Color.ofRGB(255, 255, 255);
-    // FIXME
-    //private static final Color TRANSPARENT_RENDER_COLOR = Color.ofRGBA(1, 1, 1, HunterHandler.MIN_ALPHA);
+    private static final Color TRANSPARENT_RENDER_COLOR = Color.ofRGBA(1, 1, 1, HunterHandler.MIN_ALPHA);
 
     private static final HashSet<String> magicAnimations = new HashSet<>();
 
@@ -143,16 +143,14 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
     public Color getRenderColor(final DragonEntity animatable, float partialTick, int packedLight) {
         boolean isInvisible = animatable.isInvisible();
         Color color;
-        return RENDER_COLOR;
 
-        // FIXME
-        /*if (isInvisible && !animatable.isInvisibleTo(Objects.requireNonNull(Minecraft.getInstance().player))) {
+        //noinspection DataFlowIssue -> player is not null
+        if (isInvisible && !animatable.isInvisibleTo(Minecraft.getInstance().player)) {
             color = TRANSPARENT_RENDER_COLOR;
         } else {
             color = RENDER_COLOR;
         }
-        return RENDER_COLOR;
 
-        return HunterHandler.modifyAlpha(animatable.getPlayer(), color);*/
+        return HunterHandler.modifyAlpha(animatable.getPlayer(), color);
     }
 }

@@ -8,6 +8,8 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.config.ClientConfig;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
@@ -218,7 +220,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
         Player player = animatable.getPlayer();
 
         if (player != null) {
-            DragonStateHandler data = DragonStateProvider.getData(player);
+            HunterData data = player.getData(DSDataAttachments.HUNTER);
 
             if (!data.isBeingRenderedInInventory && data.hasHunterStacks()) {
                 // Transparent rendering in inventory causes the entity to be invisible

@@ -1,9 +1,9 @@
 package by.dragonsurvivalteam.dragonsurvival.server.handlers;
 
-import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
@@ -23,8 +23,7 @@ public class EntityHandler {
                     return false;
                 }
 
-                DragonStateHandler data = DragonStateProvider.getData((Player) entity);
-                return data.isDragon() && !data.hasMaxHunterStacks();
+                return DragonStateProvider.isDragon(entity) && !entity.getData(DSDataAttachments.HUNTER).hasMaxHunterStacks();
             }, 20, 1.3F, 1.5F, EntitySelector.NO_CREATIVE_OR_SPECTATOR::test));
         }
     }

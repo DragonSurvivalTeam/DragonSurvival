@@ -1,9 +1,11 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DamageModifications;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
@@ -108,18 +110,18 @@ public abstract class EntityMixin {
     }
 
     /** To just skip rendering entirely instead of rendering with a 0 alpha value */
-    @SuppressWarnings("ConstantValue") // the if statement checks are valid
     @ModifyReturnValue(method = "isInvisible", at = @At("RETURN"))
     private boolean dragonSurvival$enableHunterStacksInvisibility(boolean isInvisible) {
         if (isInvisible) {
             return true;
         }
 
-        if ((Object) this instanceof Player player && DragonStateProvider.getData(player).hasMaxHunterStacks()) {
-            // FIXME
+        Entity self = (Entity) (Object) this;
+        HunterData data = self.getData(DSDataAttachments.HUNTER);
+
+        if (data.hasMaxHunterStacks()) {
             // With max. stacks the visibility value is set to 0 anyway so this shouldn't affect actual gameplay features
-           // return HunterHandler.calculateAlpha(player) == 0;
-            return false;
+            return HunterHandler.calculateAlpha(self) == 0;
         }
 
         return false;

@@ -25,6 +25,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.Se
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.ProjectileData;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.Projectiles;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
+import com.mojang.datafixers.util.Either;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.MobEffectsPredicate;
 import net.minecraft.core.HolderSet;
@@ -59,6 +60,16 @@ public class ForestDragonAbilities {
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Poison Breath")
     public static final ResourceKey<DragonAbility> POISON_BREATH = DragonAbilities.key("poison_breath");
+
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
+            "■ Personal buff: Activates the §2Hunter§r effect, which allows you to become invisible in tall grass and increases your movement speed. Your first melee strike will remove this effect and cause a critical hit with a §c%s§r damage bonus.\n",
+            "■ Effect does not stack. Cannot be used in flight. Will be removed early if you take damage, or attack a target.",
+    })
+    @Translation(type = Translation.Type.ABILITY, comments = "Hunter")
+    public static final ResourceKey<DragonAbility> HUNTER = DragonAbilities.key("hunter");
+
+    @Translation(type = Translation.Type.MODIFIER, comments = "Hunter")
+    public static final ResourceLocation HUNTER_MODIFIER = DragonSurvival.res("hunter");
 
     // --- Passive --- //
 
@@ -217,6 +228,39 @@ public class ForestDragonAbilities {
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/poisonous_breath_2"), 2),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/poisonous_breath_3"), 3),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/poisonous_breath_4"), 4)
+                ))
+        ));
+
+        context.register(HUNTER, new DragonAbility(
+                new Activation(
+                        Activation.Type.ACTIVE_SIMPLE,
+                        Optional.of(LevelBasedValue.constant(1)),
+                        Optional.empty(),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(2))),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
+                        Optional.of(new Activation.Sound(
+                                Optional.empty(),
+                                Optional.empty(),
+                                Optional.empty(),
+                                Optional.of(SoundEvents.UI_TOAST_IN)
+                        )),
+                        Optional.of(new Activation.Animations(
+                                Optional.of(Either.right(new SimpleAbilityAnimation("cast_mass_buff", AnimationLayer.BASE, 2, true, true))),
+                                Optional.empty(),
+                                Optional.of(new SimpleAbilityAnimation("mass_buff", AnimationLayer.BASE, 0, true, true))
+                        ))
+                ),
+                Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 4, LevelBasedValue.lookup(List.of(0f, 25f, 35f, 55f), LevelBasedValue.perLevel(15))),
+                Optional.empty(),
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(List.of(
+                        new PotionEffect(HolderSet.direct(DSEffects.HUNTER), LevelBasedValue.perLevel(1), LevelBasedValue.perLevel(Functions.secondsToTicks(30)), LevelBasedValue.constant(1))
+                ), AbilityTargeting.EntityTargetingMode.TARGET_ALLIES), true), LevelBasedValue.constant(1))),
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/hunter_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/hunter_1"), 1),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/hunter_2"), 2),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/hunter_3"), 3),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/hunter_4"), 4)
                 ))
         ));
     }

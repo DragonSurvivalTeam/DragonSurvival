@@ -26,27 +26,27 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
 
     @SubscribeEvent
     public static void applyPenalties(final PlayerTickEvent.Post event) {
-        if(event.getEntity().level().isClientSide()) {
+        if (!(event.getEntity() instanceof ServerPlayer serverPlayer)) {
             return;
         }
 
-        Player player = event.getEntity();
-        DragonStateHandler handler = DragonStateProvider.getData(player);
+        DragonStateHandler handler = DragonStateProvider.getData(serverPlayer);
+        PenaltySupply data = getData(serverPlayer);
 
-        PenaltySupply data = getData(player);
-        if(handler.isDragon()) {
-            for(Holder<DragonPenalty> penalty : handler.getDragonType().value().penalties()) {
-                penalty.value().apply((ServerPlayer) player);
-            }
-
-            // Remove any penalties the player no longer has
-            for(String id : data.getSupplyTypes()) {
-                if(handler.getDragonType().value().penalties().stream().noneMatch(penalty -> penalty.value().trigger().id().equals(id))) {
-                    data.remove(id);
-                }
-            }
-        } else {
+        if (!handler.isDragon()) {
             data.clear();
+            return;
+        }
+
+        for (Holder<DragonPenalty> penalty : handler.getDragonType().value().penalties()) {
+            penalty.value().apply(serverPlayer);
+        }
+
+        // Remove any penalties the player no longer has
+        for (String id : data.getSupplyTypes()) {
+            if (handler.getDragonType().value().penalties().stream().noneMatch(penalty -> penalty.value().trigger().id().equals(id))) {
+                data.remove(id);
+            }
         }
     }
 
@@ -148,7 +148,6 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
     }
 
     private static class Data {
-
         private static final String MAXIMUM_SUPPLY = "maximum_supply";
         private static final String CURRENT_SUPPLY = "current_supply";
         private static final String REDUCTION_RATE_MULTIPLIER = "reduction_rate_multiplier";

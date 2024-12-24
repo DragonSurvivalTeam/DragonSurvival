@@ -1,5 +1,8 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -28,15 +31,18 @@ import java.util.function.Function;
 public abstract class HumanoidArmorLayerMixin {
     @Unique private static final Function<ResourceLocation, RenderType> dragonSurvival$TRANSLUCENT_ARMOR_CUTOUT_NO_CULL = Util.memoize(texture -> dragonSurvival$createTranslucentArmorCutoutNoCull("translucent_armor_cutout_no_cull", texture, false));
     @Unique private static final Function<ResourceLocation, RenderType> dragonSurvival$TRANSLUCENT_ARMOR_DECAL_CUTOUT_NO_CULL = Util.memoize(texture -> dragonSurvival$createTranslucentArmorCutoutNoCull("translucent_armor_decal_cutout_no_cull", texture, true));
+
+    /** Needed because there is no entity context at certain points - not an issue since the game is not multithreaded */
     @Unique private static int dragonSurvival$alpha = -1;
 
     @ModifyArg(method = "renderArmorPiece(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/entity/EquipmentSlot;ILnet/minecraft/client/model/HumanoidModel;FFFFFF)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/layers/HumanoidArmorLayer;renderModel(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/client/model/Model;ILnet/minecraft/resources/ResourceLocation;)V"), index = 4)
     private int dragonSurvival$modifyAlpha(int color, @Local(argsOnly = true) final LivingEntity entity) {
-        // FIXME
-        //if (entity instanceof Player player && DragonStateProvider.getData(player).hasHunterStacks()) {
-            //dragonSurvival$alpha = HunterHandler.calculateAlpha(player);
-            //return HunterHandler.applyAlpha(dragonSurvival$alpha, color);
-        //}
+        HunterData data = entity.getData(DSDataAttachments.HUNTER);
+
+        if (data.hasHunterStacks()) {
+            dragonSurvival$alpha = HunterHandler.calculateAlpha(entity);
+            return HunterHandler.applyAlpha(dragonSurvival$alpha, color);
+        }
 
         dragonSurvival$alpha = -1;
         return color;
@@ -68,12 +74,12 @@ public abstract class HumanoidArmorLayerMixin {
 
     @WrapOperation(method = "renderTrim(Lnet/minecraft/core/Holder;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/world/item/armortrim/ArmorTrim;Lnet/minecraft/client/model/Model;Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/Model;renderToBuffer(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;II)V"))
     private void dragonSurvival$renderWithModifiedAlpha(final Model instance, final PoseStack poseStack, final VertexConsumer vertexConsumer, int packedLight, int packedOverlay, final Operation<Void> original) {
-        // FIXME
-        /*if (dragonSurvival$alpha != -1 && dragonSurvival$alpha != 1) {
+        if (dragonSurvival$alpha != -1 && dragonSurvival$alpha != 1) {
             instance.renderToBuffer(poseStack, vertexConsumer, packedLight, packedOverlay, HunterHandler.applyAlpha(dragonSurvival$alpha, -1));
         } else {
             original.call(instance, poseStack, vertexConsumer, packedLight, packedOverlay);
-        }*/
+        }
+
         original.call(instance, poseStack, vertexConsumer, packedLight, packedOverlay);
     }
 

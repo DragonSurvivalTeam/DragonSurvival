@@ -1,9 +1,8 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins;
 
-import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.SwellGoal;
-import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -19,7 +18,11 @@ public abstract class SwellGoalMixin {
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void dragonSurvival$clearCurrentTarget(final CallbackInfo callback) {
-        if (target instanceof Player player && DragonStateProvider.getData(player).hasMaxHunterStacks()) {
+        if (target == null) {
+            return;
+        }
+
+        if (target.getData(DSDataAttachments.HUNTER).hasMaxHunterStacks()) {
             target = null;
         }
     }

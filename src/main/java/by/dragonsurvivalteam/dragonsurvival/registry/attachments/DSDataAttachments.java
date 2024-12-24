@@ -23,6 +23,7 @@ public class DSDataAttachments {
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<TreasureRestData>> TREASURE_REST = DS_ATTACHMENT_TYPES.register("treasure_rest_data", () -> AttachmentType.serializable(TreasureRestData::new).build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<AltarData>> ALTAR = DS_ATTACHMENT_TYPES.register("altar_data", () -> AttachmentType.serializable(AltarData::new).copyOnDeath().build());
 
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<HunterData>> HUNTER = DS_ATTACHMENT_TYPES.register("hunter_data", () -> AttachmentType.serializable(HunterData::new).build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<PenaltySupply>> PENALTY_SUPPLY = DS_ATTACHMENT_TYPES.register("penalty_supply", () -> AttachmentType.serializable(PenaltySupply::new).build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<ModifiersWithDuration>> MODIFIERS_WITH_DURATION = DS_ATTACHMENT_TYPES.register("modifiers_with_duration", () -> AttachmentType.serializable(ModifiersWithDuration::new).build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<DamageModifications>> DAMAGE_MODIFICATIONS = DS_ATTACHMENT_TYPES.register("damage_modifications", () -> AttachmentType.serializable(DamageModifications::new).build());

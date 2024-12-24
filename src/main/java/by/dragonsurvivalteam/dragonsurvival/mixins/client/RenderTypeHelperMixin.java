@@ -13,11 +13,6 @@ import org.spongepowered.asm.mixin.injection.At;
 /** Certain items do not support translucent rendering by default */
 @Mixin(RenderTypeHelper.class)
 public abstract class RenderTypeHelperMixin {
-    @Shadow
-    public static RenderType getEntityRenderType(final RenderType renderType, boolean cull) {
-        throw new AssertionError();
-    }
-
     @ModifyReturnValue(method = "getFallbackItemRenderType", at = @At("RETURN"))
     private static RenderType dragonSurvival$getTranslucentRenderType(final RenderType renderType, @Local(argsOnly = true) boolean cull) {
         if (HunterHandler.itemTranslucency != -1  && HunterHandler.itemTranslucency != 1 && renderType == Sheets.cutoutBlockSheet()) {
@@ -25,5 +20,10 @@ public abstract class RenderTypeHelperMixin {
         }
 
         return renderType;
+    }
+
+    @Shadow
+    public static RenderType getEntityRenderType(final RenderType renderType, boolean cull) {
+        throw new AssertionError();
     }
 }

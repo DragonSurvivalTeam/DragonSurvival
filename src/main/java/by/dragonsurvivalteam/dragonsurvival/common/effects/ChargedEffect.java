@@ -66,10 +66,8 @@ public class ChargedEffect extends ModifiableMobEffect {
     @Override
     public void onEffectStarted(@NotNull LivingEntity livingEntity, int amplifier) {
         // Make creepers become charged
-        if (livingEntity instanceof Creeper creeper) {
-            if (!creeper.isPowered()) {
-                creeper.getEntityData().set(Creeper.DATA_IS_POWERED, true);
-            }
+        if (livingEntity instanceof Creeper creeper && !creeper.isPowered()) {
+            creeper.getEntityData().set(Creeper.DATA_IS_POWERED, true);
         }
     }
 
