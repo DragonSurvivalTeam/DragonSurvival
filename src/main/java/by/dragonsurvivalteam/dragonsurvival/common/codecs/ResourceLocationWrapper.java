@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 
@@ -47,6 +48,20 @@ public class ResourceLocationWrapper {
                 return locations;
             }
         }
+    }
+
+    public static <T> Set<ResourceKey<T>> map(final String location, final Registry<T> registry) {
+        return map(getEntries(location, registry), registry);
+    }
+
+    public static <T> Set<ResourceKey<T>> map(final Set<ResourceLocation> locations, final Registry<T> registry) {
+        Set<ResourceKey<T>> keys = new HashSet<>();
+
+        for (ResourceLocation location : locations) {
+            keys.add(ResourceKey.create(registry.key(), location));
+        }
+
+        return keys;
     }
 
     public static Codec<String> validatedCodec() {

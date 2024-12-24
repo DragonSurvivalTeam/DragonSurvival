@@ -63,7 +63,7 @@ public class DragonType implements AttributeModifierSupplier {
     private final List<DietEntry> dietEntries;
     private final MiscDragonTextures miscResources;
 
-    private Map<ResourceLocation, FoodProperties> diet;
+    private Map<ResourceKey<Item>, FoodProperties> diet;
     private long lastDietUpdate;
 
     public DragonType(final Optional<Double> startingSize, final Optional<HolderSet<DragonStage>> stages, final HolderSet<DragonBody> bodies, final HolderSet<DragonAbility> abilities, final HolderSet<DragonPenalty> penalties, List<Modifier> modifiers, final List<DietEntry> dietEntries, final MiscDragonTextures miscResources) {
@@ -113,8 +113,8 @@ public class DragonType implements AttributeModifierSupplier {
 
     public @Nullable FoodProperties getDiet(final Item item) {
         updateDietMap();
-        //noinspection deprecation,DataFlowIssue -> ignore deprecated / key is present
-        return diet.get(item.builtInRegistryHolder().getKey().location());
+        //noinspection deprecation -> ignore
+        return diet.get(item.builtInRegistryHolder().getKey());
     }
 
     private void updateDietMap() {

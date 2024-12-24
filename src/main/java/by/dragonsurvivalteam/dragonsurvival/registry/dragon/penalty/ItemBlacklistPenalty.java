@@ -6,7 +6,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -22,7 +22,7 @@ public class ItemBlacklistPenalty implements PenaltyEffect {
 
     private final List<String> items;
 
-    private Set<ResourceLocation> blacklisted;
+    private Set<ResourceKey<Item>> blacklisted;
     private long lastUpdate;
 
     public ItemBlacklistPenalty(final List<String> items) {
@@ -48,8 +48,8 @@ public class ItemBlacklistPenalty implements PenaltyEffect {
             blacklisted = map(items);
         }
 
-        //noinspection deprecation,DataFlowIssue -> ignore deprecated / key is present
-        return blacklisted.contains(item.builtInRegistryHolder().getKey().location());
+        //noinspection deprecation -> ignore
+        return blacklisted.contains(item.builtInRegistryHolder().getKey());
     }
 
     private void dropAllItemsInList(final Player player, final NonNullList<ItemStack> items) {
@@ -61,9 +61,9 @@ public class ItemBlacklistPenalty implements PenaltyEffect {
         });
     }
 
-    private Set<ResourceLocation> map(final List<String> entries) {
-        Set<ResourceLocation> blacklisted = new HashSet<>();
-        entries.forEach(entry -> blacklisted.addAll(ResourceLocationWrapper.getEntries(entry, BuiltInRegistries.ITEM)));
+    private Set<ResourceKey<Item>> map(final List<String> entries) {
+        Set<ResourceKey<Item>> blacklisted = new HashSet<>();
+        entries.forEach(entry -> blacklisted.addAll(ResourceLocationWrapper.map(entry, BuiltInRegistries.ITEM)));
         return blacklisted;
     }
 
