@@ -7,8 +7,10 @@ import net.minecraft.advancements.critereon.EntitySubPredicate;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -24,7 +26,9 @@ public record EntityCheckPredicate(Optional<Type> checkFor) implements EntitySub
     public enum Type implements StringRepresentable {
         LIVING_ENTITY("living_entity"),
         ENEMY("enemy"),
-        TAMED("tamed");
+        TAMED("tamed"),
+        ITEM("item"),
+        EXPERIENCE_ORB("experience_orb");
 
         public static final Codec<Type> CODEC = StringRepresentable.fromEnum(Type::values);
 
@@ -48,6 +52,8 @@ public record EntityCheckPredicate(Optional<Type> checkFor) implements EntitySub
                 case LIVING_ENTITY -> entity instanceof LivingEntity;
                 case ENEMY -> entity instanceof Enemy;
                 case TAMED -> entity instanceof TamableAnimal tamable && tamable.isTame();
+                case ITEM -> entity instanceof ItemEntity;
+                case EXPERIENCE_ORB -> entity instanceof ExperienceOrb;
             };
 
             if (!isValid) {
@@ -88,6 +94,16 @@ public record EntityCheckPredicate(Optional<Type> checkFor) implements EntitySub
 
         public EntityCheckPredicate.Builder tamed() {
             this.type = Optional.of(Type.TAMED);
+            return this;
+        }
+
+        public EntityCheckPredicate.Builder item() {
+            this.type = Optional.of(Type.ITEM);
+            return this;
+        }
+
+        public EntityCheckPredicate.Builder experienceOrb() {
+            this.type = Optional.of(Type.EXPERIENCE_ORB);
             return this;
         }
 

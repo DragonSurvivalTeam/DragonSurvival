@@ -19,21 +19,6 @@
               "effect_type": "dragonsurvival:potion",
               "effects": "dragonsurvival:drain",
               "probability": 0.3
-            },
-            {
-              "effect_type": "dragonsurvival:item_conversion",
-              "item_conversions": [
-                {
-                  "items_from": "minecraft:potato",
-                  "items_to": [
-                    {
-                      "block": "minecraft:poisonous_potato",
-                      "chance": 1.0
-                    }
-                  ]
-                }
-              ],
-              "probability": 0.5
             }
           ],
           "entity_targeting_mode": "TARGET_ENEMIES",
@@ -42,6 +27,43 @@
               "type_specific": {
                 "type": "dragonsurvival:entity_check_predicate",
                 "check_for": "living_entity"
+              }
+            }
+          ]
+        },
+        "range_multiplier": 1.0,
+        "target_type": "dragonsurvival:dragon_breath"
+      },
+      "trigger_rate": 10.0
+    },
+    {
+      "target_selection": {
+        "applied_effects": {
+          "entity_effect": [
+            {
+              "effect_type": "dragonsurvival:item_conversion",
+              "item_conversions": [
+                {
+                  "item_predicate": {
+                    "items": "minecraft:potato"
+                  },
+                  "items_to": [
+                    {
+                      "item": "minecraft:poisonous_potato",
+                      "weight": 1
+                    }
+                  ]
+                }
+              ],
+              "probability": 0.5
+            }
+          ],
+          "entity_targeting_mode": "TARGET_ALL",
+          "target_conditions": [
+            {
+              "type_specific": {
+                "type": "dragonsurvival:entity_check_predicate",
+                "check_for": "item"
               }
             }
           ]

@@ -35,6 +35,7 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.random.SimpleWeightedRandomList;
+import net.minecraft.util.random.WeightedRandomList;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
@@ -144,7 +145,8 @@ public class ForestDragonAbilities {
                 ),
                 Optional.of(new Upgrade(Either.left(new ValueBasedUpgrade(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 4, LevelBasedValue.lookup(List.of(0f, 10f, 30f, 50f), LevelBasedValue.perLevel(15)))))),
                 Optional.of(EntityPredicate.Builder.entity().effects(MobEffectsPredicate.Builder.effects().and(DSEffects.STRESS)).build()),
-                List.of(new ActionContainer(new DragonBreathTarget(Either.right(
+                List.of(
+                        new ActionContainer(new DragonBreathTarget(Either.right(
                                 new AbilityTargeting.EntityTargeting(
                                         Optional.of(List.of(Condition.living())),
                                         List.of(
@@ -157,32 +159,29 @@ public class ForestDragonAbilities {
                                                         LevelBasedValue.constant(0),
                                                         LevelBasedValue.constant(Functions.secondsToTicks(10)),
                                                         LevelBasedValue.constant(0.3f)
-                                                ),
-                                                new ItemConversionEffect(
-                                                        List.of(
-                                                                new ItemConversionEffect.ItemConversionData(
-                                                                        HolderSet.direct(context.lookup(Registries.ITEM).getOrThrow(Items.POTATO.builtInRegistryHolder().key())),
-                                                                        List.of(
-                                                                                new ItemConversionEffect.ItemTo(
-                                                                                        context.lookup(Registries.ITEM).getOrThrow(Items.POISONOUS_POTATO.builtInRegistryHolder().key()),
-                                                                                        1f
-                                                                                )
-                                                                        )
-                                                                )
-                                                        ),
-                                                        LevelBasedValue.constant(0.5f)
                                                 )
                                         ),
                                         AbilityTargeting.EntityTargetingMode.TARGET_ENEMIES
                                 )
                         ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
+                        new ActionContainer(new DragonBreathTarget(Either.right(
+                                new AbilityTargeting.EntityTargeting(
+                                        Optional.of(List.of(Condition.item())),
+                                        List.of(new ItemConversionEffect(
+                                                List.of(new ItemConversionEffect.ItemConversionData(
+                                                        Condition.item(Items.POTATO),
+                                                        WeightedRandomList.create(ItemConversionEffect.ItemTo.of(Items.POISONOUS_POTATO))
+                                                )),
+                                                LevelBasedValue.constant(0.5f)
+                                        )),
+                                        AbilityTargeting.EntityTargetingMode.TARGET_ALL
+                                )
+                        ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
                         new ActionContainer(new DragonBreathTarget(Either.left(
                                 new AbilityTargeting.BlockTargeting(
                                         Optional.empty(),
-                                        List.of(new BonemealEffect(
-                                                LevelBasedValue.constant(2),
-                                                LevelBasedValue.perLevel(0.01f)
-                                                ),
+                                        List.of(
+                                                new BonemealEffect(LevelBasedValue.constant(2), LevelBasedValue.perLevel(0.01f)),
                                                 new BlockConversionEffect(
                                                         List.of(
                                                                 new BlockConversionEffect.BlockConversionData(

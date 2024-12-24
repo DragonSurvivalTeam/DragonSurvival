@@ -1,4 +1,4 @@
-// 1.21.1	2024-12-24T17:54:17.4321357	Registries
+// 1.21.1	2024-12-24T18:22:04.63163	Registries
 011b2ee382ec961722c100bbf059b4aa460f44b0 data/dragonsurvival/damage_type/anti_dragon.json
 1deb2bbcd4ed46724235ab398f66ed7559c01fab data/dragonsurvival/damage_type/burn.json
 bf0b9404ee90533adc52c7ca2412df66f17e0143 data/dragonsurvival/damage_type/crushed.json
@@ -33,7 +33,7 @@ a5a9b22ec6cde3e27835800191156b2f154c582c data/dragonsurvival/dragonsurvival/drag
 aae45438f2acccee9843efd58eaa451d08b59025 data/dragonsurvival/dragonsurvival/dragon_abilities/forest_immunity.json
 5a5a34bd23db9e92e668c5ee950f4ed62ec67389 data/dragonsurvival/dragonsurvival/dragon_abilities/lava_vision.json
 d94dbdb540cf9a34403d563869836fdf8caa8b71 data/dragonsurvival/dragonsurvival/dragon_abilities/nether_breath.json
-79f5b3fe8361fc8cc7f655257bf06baecd31c3e5 data/dragonsurvival/dragonsurvival/dragon_abilities/poison_breath.json
+fe547f69632c3f534b8c79fbb3eb2d86ebca2e47 data/dragonsurvival/dragonsurvival/dragon_abilities/poison_breath.json
 ddd89dbc00df877e03b6a3c0fbec790a11577ae1 data/dragonsurvival/dragonsurvival/dragon_abilities/spike.json
 0fc75a0962f0e44291dc08531b2051eed857b846 data/dragonsurvival/dragonsurvival/dragon_abilities/tough_skin.json
 7514bfcebb62aae4191c75b29495acd9d59d450f data/dragonsurvival/dragonsurvival/dragon_bodies/center.json

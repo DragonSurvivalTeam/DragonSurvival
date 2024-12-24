@@ -12,11 +12,12 @@ import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidType;
 
-public class Condition { // TODO :: make advancements use conditions from here
+public class Condition { // TODO :: make advancements use conditions from here / split into separate classes that return BlockPredicate, ItemPredicate etc.
     public static ContextAwarePredicate none() {
         return EntityPredicate.wrap(EntityPredicate.Builder.entity().build());
     }
@@ -33,6 +34,10 @@ public class Condition { // TODO :: make advancements use conditions from here
 
     public static EntityPredicate living() {
         return EntityPredicate.Builder.entity().subPredicate(EntityCheckPredicate.Builder.start().living().build()).build();
+    }
+
+    public static EntityPredicate item() {
+        return EntityPredicate.Builder.entity().subPredicate(EntityCheckPredicate.Builder.start().item().build()).build();
     }
 
     public static EntityPredicate onBlock(final TagKey<Block> tag) {
@@ -63,6 +68,10 @@ public class Condition { // TODO :: make advancements use conditions from here
 
     public static BlockPredicate blocks(final Block... blocks) {
         return BlockPredicate.Builder.block().of(blocks).build();
+    }
+
+    public static ItemPredicate item(final ItemLike... items) {
+        return ItemPredicate.Builder.item().of(items).build();
     }
 
     // --- Builder --- //
