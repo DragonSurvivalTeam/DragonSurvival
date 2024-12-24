@@ -55,6 +55,22 @@ public interface AbilityTargeting {
         }
     }
 
+    static Either<BlockTargeting, EntityTargeting> block(final List<AbilityBlockEffect> effects) {
+        return block(null, effects);
+    }
+
+    static Either<BlockTargeting, EntityTargeting> block(final List<BlockPredicate> targetConditions, final List<AbilityBlockEffect> effects) {
+        return Either.left(new BlockTargeting(Optional.ofNullable(targetConditions), effects));
+    }
+
+    static Either<BlockTargeting, EntityTargeting> entity(final List<AbilityEntityEffect> effects, final EntityTargetingMode targetingMode) {
+        return entity(null, effects, targetingMode);
+    }
+
+    static Either<BlockTargeting, EntityTargeting> entity(final List<EntityPredicate> targetConditions, final List<AbilityEntityEffect> effects, final EntityTargetingMode targetingMode) {
+        return Either.right(new EntityTargeting(Optional.ofNullable(targetConditions), effects, targetingMode));
+    }
+
     record BlockTargeting(Optional<List<BlockPredicate>> targetConditions, List<AbilityBlockEffect> effect) {
         public static final Codec<BlockTargeting> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 BlockPredicate.CODEC.listOf().optionalFieldOf("target_conditions").forGetter(BlockTargeting::targetConditions),
@@ -74,10 +90,10 @@ public interface AbilityTargeting {
         }
     }
 
-    record EntityTargeting(Optional<List<EntityPredicate>> targetConditions, List<AbilityEntityEffect> effect, EntityTargetingMode targetingMode) {
+    record EntityTargeting(Optional<List<EntityPredicate>> targetConditions, List<AbilityEntityEffect> effects, EntityTargetingMode targetingMode) {
         public static final Codec<EntityTargeting> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 EntityPredicate.CODEC.listOf().optionalFieldOf("target_conditions").forGetter(EntityTargeting::targetConditions),
-                AbilityEntityEffect.CODEC.listOf().fieldOf("entity_effect").forGetter(EntityTargeting::effect),
+                AbilityEntityEffect.CODEC.listOf().fieldOf("entity_effect").forGetter(EntityTargeting::effects),
                 Codec.STRING.xmap(EntityTargetingMode::valueOf, EntityTargetingMode::name).fieldOf("entity_targeting_mode").forGetter(EntityTargeting::targetingMode)
         ).apply(instance, EntityTargeting::new));
 
@@ -161,7 +177,7 @@ public interface AbilityTargeting {
             if (!effect.getDescription(dragon, abilityInstance).isEmpty()) {
                 descriptions.addAll(abilityEffectDescriptions.stream().map(description -> description.append(targetDescription)).toList());
             }
-        })).ifRight(entityTargeting -> entityTargeting.effect().forEach(effect -> {
+        })).ifRight(entityTargeting -> entityTargeting.effects().forEach(effect -> {
             List<MutableComponent> abilityEffectDescriptions = effect.getDescription(dragon, abilityInstance);
 
             if (!effect.getDescription(dragon, abilityInstance).isEmpty()) {

@@ -26,7 +26,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.Se
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.ProjectileData;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.Projectiles;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
-import com.mojang.datafixers.util.Either;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.MobEffectsPredicate;
 import net.minecraft.core.HolderSet;
@@ -88,30 +87,18 @@ public class ForestDragonAbilities {
                         )),
                         Optional.empty()
                 ),
-                Optional.of(
-                        new Upgrade(
-                                Either.left(
-                                        new ValueBasedUpgrade(
-                                                ValueBasedUpgrade.Type.PASSIVE_LEVEL,
-                                                4,
-                                                LevelBasedValue.lookup(List.of(0f, 20f, 30f, 40f), LevelBasedValue.perLevel(15))
-                                        )
-                                )
-                        )
-                ),
+                Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 4, LevelBasedValue.lookup(List.of(0f, 20f, 30f, 40f), LevelBasedValue.perLevel(15))),
                 Optional.empty(),
-                List.of(new ActionContainer(new SelfTarget(Either.right(
-                        new AbilityTargeting.EntityTargeting(
-                                Optional.of(List.of(Condition.living())),
-                                List.of(new ProjectileEffect(
-                                        context.lookup(ProjectileData.REGISTRY).getOrThrow(Projectiles.SPIKE),
-                                        TargetDirection.lookingAt(),
-                                        LevelBasedValue.perLevel(1),
-                                        LevelBasedValue.constant(1.5f),
-                                        LevelBasedValue.constant(1)
-                                )),
-                                AbilityTargeting.EntityTargetingMode.TARGET_ALL
-                        )
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        List.of(Condition.living()),
+                        List.of(new ProjectileEffect(
+                                context.lookup(ProjectileData.REGISTRY).getOrThrow(Projectiles.SPIKE),
+                                TargetDirection.lookingAt(),
+                                LevelBasedValue.perLevel(1),
+                                LevelBasedValue.constant(1.5f),
+                                LevelBasedValue.constant(1)
+                        )),
+                        AbilityTargeting.EntityTargetingMode.TARGET_ALL
                 ), false), LevelBasedValue.constant(1))),
                 new LevelBasedResource(
                         List.of(
@@ -143,70 +130,58 @@ public class ForestDragonAbilities {
                                 Optional.empty()
                         ))
                 ),
-                Optional.of(new Upgrade(Either.left(new ValueBasedUpgrade(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 4, LevelBasedValue.lookup(List.of(0f, 10f, 30f, 50f), LevelBasedValue.perLevel(15)))))),
+                Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 4, LevelBasedValue.lookup(List.of(0f, 10f, 30f, 50f), LevelBasedValue.perLevel(15))),
                 Optional.of(EntityPredicate.Builder.entity().effects(MobEffectsPredicate.Builder.effects().and(DSEffects.STRESS)).build()),
                 List.of(
-                        new ActionContainer(new DragonBreathTarget(Either.right(
-                                new AbilityTargeting.EntityTargeting(
-                                        Optional.of(List.of(Condition.living())),
-                                        List.of(
-                                                new DamageEffect(
-                                                        context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.POISON_BREATH),
-                                                        LevelBasedValue.perLevel(2)
-                                                ),
-                                                new PotionEffect(
-                                                        HolderSet.direct(DSEffects.DRAIN),
-                                                        LevelBasedValue.constant(0),
-                                                        LevelBasedValue.constant(Functions.secondsToTicks(10)),
-                                                        LevelBasedValue.constant(0.3f)
-                                                )
+                        new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
+                                List.of(Condition.living()),
+                                List.of(
+                                        new DamageEffect(
+                                                context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.POISON_BREATH),
+                                                LevelBasedValue.perLevel(2)
                                         ),
-                                        AbilityTargeting.EntityTargetingMode.TARGET_ENEMIES
+                                        new PotionEffect(
+                                                HolderSet.direct(DSEffects.DRAIN),
+                                                LevelBasedValue.constant(0),
+                                                LevelBasedValue.constant(Functions.secondsToTicks(10)),
+                                                LevelBasedValue.constant(0.3f)
+                                        )
+                                ),
+                                AbilityTargeting.EntityTargetingMode.TARGET_ENEMIES
+                        ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
+                        new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
+                                List.of(Condition.item()),
+                                List.of(new ItemConversionEffect(
+                                        List.of(new ItemConversionEffect.ItemConversionData(
+                                                Condition.item(Items.POTATO),
+                                                WeightedRandomList.create(ItemConversionEffect.ItemTo.of(Items.POISONOUS_POTATO))
+                                        )),
+                                        LevelBasedValue.constant(0.5f)
+                                )),
+                                AbilityTargeting.EntityTargetingMode.TARGET_ALL
+                        ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
+                        new ActionContainer(new DragonBreathTarget(AbilityTargeting.block(
+                                List.of(
+                                        new BonemealEffect(LevelBasedValue.constant(2), LevelBasedValue.perLevel(0.01f)),
+                                        new BlockConversionEffect(List.of(new BlockConversionEffect.BlockConversionData(
+                                                Condition.blocks(Blocks.DIRT, Blocks.COARSE_DIRT),
+                                                SimpleWeightedRandomList.create(
+                                                        new BlockConversionEffect.BlockTo(Blocks.GRASS_BLOCK.defaultBlockState(), 25),
+                                                        new BlockConversionEffect.BlockTo(Blocks.PODZOL.defaultBlockState(), 5),
+                                                        new BlockConversionEffect.BlockTo(Blocks.MYCELIUM.defaultBlockState(), 1),
+                                                        new BlockConversionEffect.BlockTo(Blocks.COARSE_DIRT.defaultBlockState(), 3)
+                                                ))
+                                        ), LevelBasedValue.constant(0.2f))
                                 )
                         ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
-                        new ActionContainer(new DragonBreathTarget(Either.right(
-                                new AbilityTargeting.EntityTargeting(
-                                        Optional.of(List.of(Condition.item())),
-                                        List.of(new ItemConversionEffect(
-                                                List.of(new ItemConversionEffect.ItemConversionData(
-                                                        Condition.item(Items.POTATO),
-                                                        WeightedRandomList.create(ItemConversionEffect.ItemTo.of(Items.POISONOUS_POTATO))
-                                                )),
-                                                LevelBasedValue.constant(0.5f)
-                                        )),
-                                        AbilityTargeting.EntityTargetingMode.TARGET_ALL
-                                )
-                        ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
-                        new ActionContainer(new DragonBreathTarget(Either.left(
-                                new AbilityTargeting.BlockTargeting(
-                                        Optional.empty(),
-                                        List.of(
-                                                new BonemealEffect(LevelBasedValue.constant(2), LevelBasedValue.perLevel(0.01f)),
-                                                new BlockConversionEffect(
-                                                        List.of(
-                                                                new BlockConversionEffect.BlockConversionData(
-                                                                        Condition.blocks(Blocks.DIRT, Blocks.COARSE_DIRT),
-                                                                        SimpleWeightedRandomList.create(
-                                                                                new BlockConversionEffect.BlockTo(Blocks.GRASS_BLOCK.defaultBlockState(), 25),
-                                                                                new BlockConversionEffect.BlockTo(Blocks.PODZOL.defaultBlockState(), 5),
-                                                                                new BlockConversionEffect.BlockTo(Blocks.MYCELIUM.defaultBlockState(), 1),
-                                                                                new BlockConversionEffect.BlockTo(Blocks.COARSE_DIRT.defaultBlockState(), 3)
-                                                                        ))
-                                                                ), LevelBasedValue.constant(0.2f))
-                                                        )
-                                                )
-                                        ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
-                        new ActionContainer(new SelfTarget(Either.right(
-                                new AbilityTargeting.EntityTargeting(
-                                        Optional.empty(),
-                                        List.of(new BreathParticlesEffect(
-                                                0.4f,
-                                                0.02f,
-                                                new SmallPoisonParticleOption(37, true),
-                                                new LargePoisonParticleOption(37, false)
-                                        )),
-                                        AbilityTargeting.EntityTargetingMode.TARGET_ALL
-                                )
+                        new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                                List.of(new BreathParticlesEffect(
+                                        0.4f,
+                                        0.02f,
+                                        new SmallPoisonParticleOption(37, true),
+                                        new LargePoisonParticleOption(37, false)
+                                )),
+                                AbilityTargeting.EntityTargetingMode.TARGET_ALL
                         ), false), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/poisonous_breath_0"), 0),
@@ -223,29 +198,19 @@ public class ForestDragonAbilities {
                 Activation.passive(),
                 Optional.empty(),
                 Optional.empty(),
-                List.of(
-                        new ActionContainer(new SelfTarget(
-                                Either.right(
-                                        new AbilityTargeting.EntityTargeting(
-                                                Optional.empty(),
-                                                List.of(new DamageModificationEffect(
-                                                        List.of(
-                                                                new DamageModification(
-                                                                        DragonSurvival.res("forest_immunity"),
-                                                                        HolderSet.direct(
-                                                                                context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.SWEET_BERRY_BUSH),
-                                                                                context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.CACTUS)
-                                                                        ),
-                                                                        LevelBasedValue.constant(0),
-                                                                        LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)
-                                                                )
-                                                        )
-                                                )),
-                                                AbilityTargeting.EntityTargetingMode.TARGET_ALL
-                                        )
-                                ),
-                                false
-                        ), LevelBasedValue.constant(1))
+                List.of(new ActionContainer(new SelfTarget(
+                        AbilityTargeting.entity(
+                                DamageModificationEffect.single(new DamageModification(
+                                        DragonSurvival.res("forest_immunity"),
+                                        HolderSet.direct(
+                                                context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.SWEET_BERRY_BUSH),
+                                                context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.CACTUS)
+                                        ),
+                                        LevelBasedValue.constant(0),
+                                        LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)
+                                )),
+                                AbilityTargeting.EntityTargetingMode.TARGET_ALL
+                        ), false), LevelBasedValue.constant(1))
                 ),
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_dragon_0"), 0),

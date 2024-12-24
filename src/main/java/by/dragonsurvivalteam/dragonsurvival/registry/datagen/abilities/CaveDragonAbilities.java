@@ -7,7 +7,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationLayer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.SimpleAbilityAnimation;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.ItemBasedUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.Upgrade;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.ValueBasedUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.LargeFireParticleOption;
@@ -155,20 +154,18 @@ public class CaveDragonAbilities {
                                 Optional.empty()
                         ))
                 ),
-                Optional.of(new Upgrade(Either.left(new ValueBasedUpgrade(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 4, LevelBasedValue.lookup(List.of(0f, 20f, 40f, 45f), LevelBasedValue.perLevel(15)))))),
+                Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 4, LevelBasedValue.lookup(List.of(0f, 20f, 40f, 45f), LevelBasedValue.perLevel(15))),
                 Optional.of(EntityPredicate.Builder.entity().located(LocationPredicate.Builder.location().setFluid(FluidPredicate.Builder.fluid().of(Fluids.WATER))).build()),
-                List.of(new ActionContainer(new SelfTarget(Either.right(
-                        new AbilityTargeting.EntityTargeting(
-                                Optional.of(List.of(Condition.living())),
-                                List.of(new ProjectileEffect(
-                                        context.lookup(ProjectileData.REGISTRY).getOrThrow(Projectiles.FIREBALL),
-                                        TargetDirection.lookingAt(),
-                                        LevelBasedValue.constant(1),
-                                        LevelBasedValue.constant(0),
-                                        LevelBasedValue.constant(1)
-                                )),
-                                AbilityTargeting.EntityTargetingMode.TARGET_ALL
-                        )
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        List.of(Condition.living()),
+                        List.of(new ProjectileEffect(
+                                context.lookup(ProjectileData.REGISTRY).getOrThrow(Projectiles.FIREBALL),
+                                TargetDirection.lookingAt(),
+                                LevelBasedValue.constant(1),
+                                LevelBasedValue.constant(0),
+                                LevelBasedValue.constant(1)
+                        )),
+                        AbilityTargeting.EntityTargetingMode.TARGET_ALL
                 ), false), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/fireball_0"), 0),
@@ -198,47 +195,36 @@ public class CaveDragonAbilities {
                                 Optional.empty()
                         ))
                 ),
-                Optional.of(new Upgrade(Either.left(new ValueBasedUpgrade(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 4, LevelBasedValue.lookup(List.of(0f, 10f, 30f, 50f), LevelBasedValue.perLevel(15)))))),
+                Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 4, LevelBasedValue.lookup(List.of(0f, 10f, 30f, 50f), LevelBasedValue.perLevel(15))),
                 Optional.of(EntityPredicate.Builder.entity().located(LocationPredicate.Builder.location().setFluid(FluidPredicate.Builder.fluid().of(Fluids.WATER))).build()),
-                List.of(new ActionContainer(new DragonBreathTarget(Either.right(
-                                new AbilityTargeting.EntityTargeting(
-                                        Optional.of(List.of(Condition.living())),
-                                        List.of(
-                                                new DamageEffect(
-                                                        context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FIRE_BREATH),
-                                                        LevelBasedValue.perLevel(3)
-                                                ),
-                                                new IgniteEffect(
-                                                        LevelBasedValue.perLevel(Functions.secondsToTicks(5))
-                                                ),
-                                                new PotionEffect(
-                                                        HolderSet.direct(DSEffects.BURN),
-                                                        LevelBasedValue.constant(0),
-                                                        LevelBasedValue.constant(Functions.secondsToTicks(10)),
-                                                        LevelBasedValue.constant(0.3f)
-                                                )
+                List.of(new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
+                                List.of(Condition.living()),
+                                List.of(
+                                        new DamageEffect(
+                                                context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FIRE_BREATH),
+                                                LevelBasedValue.perLevel(3)
                                         ),
-                                        AbilityTargeting.EntityTargetingMode.TARGET_ENEMIES
-                                )
+                                        new IgniteEffect(
+                                                LevelBasedValue.perLevel(Functions.secondsToTicks(5))
+                                        ),
+                                        new PotionEffect(
+                                                HolderSet.direct(DSEffects.BURN),
+                                                LevelBasedValue.constant(0),
+                                                LevelBasedValue.constant(Functions.secondsToTicks(10)),
+                                                LevelBasedValue.constant(0.3f)
+                                        )
+                                ),
+                                AbilityTargeting.EntityTargetingMode.TARGET_ENEMIES
                         ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
-                        new ActionContainer(new DragonBreathTarget(Either.left(
-                                new AbilityTargeting.BlockTargeting(
-                                        Optional.empty(),
-                                        List.of(new FireEffect(
-                                                LevelBasedValue.constant(0.05f)
-                                        )))
-                        ), LevelBasedValue.constant(1)), LevelBasedValue.constant(1)),
-                        new ActionContainer(new SelfTarget(Either.right(
-                                new AbilityTargeting.EntityTargeting(
-                                        Optional.empty(),
-                                        List.of(new BreathParticlesEffect(
-                                                0.4f,
-                                                0.02f,
-                                                new SmallFireParticleOption(37, true),
-                                                new LargeFireParticleOption(37, false)
-                                        )),
-                                        AbilityTargeting.EntityTargetingMode.TARGET_ALL
-                                )
+                        new ActionContainer(new DragonBreathTarget(AbilityTargeting.block(List.of(new FireEffect(LevelBasedValue.constant(0.05f)))), LevelBasedValue.constant(1)), LevelBasedValue.constant(1)),
+                        new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                                List.of(new BreathParticlesEffect(
+                                        0.4f,
+                                        0.02f,
+                                        new SmallFireParticleOption(37, true),
+                                        new LargeFireParticleOption(37, false)
+                                )),
+                                AbilityTargeting.EntityTargetingMode.TARGET_ALL
                         ), false), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/nether_breath_0"), 0),
@@ -268,19 +254,16 @@ public class CaveDragonAbilities {
                                 Optional.of(new SimpleAbilityAnimation("self_buff", AnimationLayer.BASE, 0, true, false))
                         ))
                 ),
-                Optional.of(new Upgrade(Either.left(new ValueBasedUpgrade(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 4, LevelBasedValue.lookup(List.of(0f, 25f, 45f, 60f), LevelBasedValue.perLevel(15)))))),
+                Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 4, LevelBasedValue.lookup(List.of(0f, 25f, 45f, 60f), LevelBasedValue.perLevel(15))),
                 Optional.empty(),
-                List.of(new ActionContainer(new SelfTarget(Either.right(
-                        new AbilityTargeting.EntityTargeting(
-                                Optional.empty(),
-                                List.of(new PotionEffect(
-                                        HolderSet.direct(DSEffects.LAVA_VISION),
-                                        LevelBasedValue.constant(0),
-                                        LevelBasedValue.perLevel(Functions.secondsToTicks(30)),
-                                        LevelBasedValue.constant(1)
-                                )),
-                                AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
-                        )
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        List.of(new PotionEffect(
+                                HolderSet.direct(DSEffects.LAVA_VISION),
+                                LevelBasedValue.constant(0),
+                                LevelBasedValue.perLevel(Functions.secondsToTicks(30)),
+                                LevelBasedValue.constant(1)
+                        )),
+                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
                 ), false), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/lava_vision_0"), 0),
@@ -310,22 +293,18 @@ public class CaveDragonAbilities {
                                 Optional.of(new SimpleAbilityAnimation("mass_buff", AnimationLayer.BASE, 0, true, true))
                         ))
                 ),
-                Optional.of(new Upgrade(Either.left(new ValueBasedUpgrade(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 3, LevelBasedValue.lookup(List.of(0f, 15f, 35f), LevelBasedValue.perLevel(15)))))),
+                Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 3, LevelBasedValue.lookup(List.of(0f, 15f, 35f), LevelBasedValue.perLevel(15))),
                 Optional.empty(),
-                List.of(new ActionContainer(new AreaTarget(Either.right(
-                        new AbilityTargeting.EntityTargeting(
-                                Optional.empty(),
-                                ModifierEffect.single(new ModifierWithDuration(
-                                        STURDY_SKIN_MODIFIER,
-                                        DragonSurvival.res("textures/modifiers/strong_leather.png"),
-                                        List.of(new Modifier(Attributes.ARMOR, LevelBasedValue.constant(3), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
-                                        LevelBasedValue.perLevel(Functions.secondsToTicks(60)),
-                                        false
-                                ), false),
-                                AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
-                        )),
-                        LevelBasedValue.constant(5)
-                ), LevelBasedValue.constant(1))),
+                List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(
+                        ModifierEffect.single(new ModifierWithDuration(
+                                STURDY_SKIN_MODIFIER,
+                                DragonSurvival.res("textures/modifiers/strong_leather.png"),
+                                List.of(new Modifier(Attributes.ARMOR, LevelBasedValue.constant(3), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
+                                LevelBasedValue.perLevel(Functions.secondsToTicks(60)),
+                                false
+                        ), false),
+                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/strong_leather_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/strong_leather_1"), 1),
@@ -338,19 +317,20 @@ public class CaveDragonAbilities {
     private static void registerPassiveAbilities(final BootstrapContext<DragonAbility> context) {
         context.register(CAVE_ATHLETICS, new DragonAbility(
                 Activation.passive(),
-                Optional.of(new Upgrade(Either.left(new ValueBasedUpgrade(ValueBasedUpgrade.Type.MANUAL, 5, LevelBasedValue.perLevel(15))))), // FIXME :: not the actual values
+                Upgrade.value(ValueBasedUpgrade.Type.MANUAL, 5, LevelBasedValue.perLevel(15)), // FIXME :: not the actual values
                 Optional.empty(),
-                List.of(new ActionContainer(new SelfTarget(Either.right(
-                        new AbilityTargeting.EntityTargeting(
-                                Optional.of(List.of(Condition.onBlock(DSBlockTags.SPEEDS_UP_CAVE_DRAGON))),
-                                ModifierEffect.single(new ModifierWithDuration(
-                                        CAVE_ATHLETICS_MODIFIER,
-                                        ModifierWithDuration.DEFAULT_MODIFIER_ICON,
-                                        // FIXME :: not the final value
-                                        List.of(new Modifier(Attributes.MOVEMENT_SPEED, LevelBasedValue.perLevel(0.02f), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
-                                        LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
-                                        false
-                                ), false), AbilityTargeting.EntityTargetingMode.TARGET_ALLIES)), true), LevelBasedValue.constant(1))),
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        List.of(Condition.onBlock(DSBlockTags.SPEEDS_UP_CAVE_DRAGON)),
+                        ModifierEffect.single(new ModifierWithDuration(
+                                CAVE_ATHLETICS_MODIFIER,
+                                ModifierWithDuration.DEFAULT_MODIFIER_ICON,
+                                // FIXME :: not the final value
+                                List.of(new Modifier(Attributes.MOVEMENT_SPEED, LevelBasedValue.perLevel(0.02f), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
+                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                false
+                        ), false),
+                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                ), true), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_athletics_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_athletics_1"), 1),
@@ -363,19 +343,16 @@ public class CaveDragonAbilities {
 
         context.register(BURN, new DragonAbility(
                 Activation.passive(),
-                Optional.of(new Upgrade(Either.left(new ValueBasedUpgrade(ValueBasedUpgrade.Type.MANUAL, 4, LevelBasedValue.perLevel(15))))),
+                Upgrade.value(ValueBasedUpgrade.Type.MANUAL, 4, LevelBasedValue.perLevel(15)),
                 Optional.empty(),
-                List.of(new ActionContainer(new SelfTarget(Either.right(
-                        new AbilityTargeting.EntityTargeting(
-                                Optional.empty(),
-                                List.of(new OnAttackEffect(
-                                        HolderSet.direct(DSEffects.BURN),
-                                        LevelBasedValue.constant(0),
-                                        LevelBasedValue.perLevel(Functions.secondsToTicks(5)),
-                                        LevelBasedValue.perLevel(0.15f)
-                                )),
-                                AbilityTargeting.EntityTargetingMode.TARGET_ALL
-                        )
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        List.of(new OnAttackEffect(
+                                HolderSet.direct(DSEffects.BURN),
+                                LevelBasedValue.constant(0),
+                                LevelBasedValue.perLevel(Functions.secondsToTicks(5)),
+                                LevelBasedValue.perLevel(0.15f)
+                        )),
+                        AbilityTargeting.EntityTargetingMode.TARGET_ALL
                 ), false), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/burn_0"), 0),
@@ -388,41 +365,30 @@ public class CaveDragonAbilities {
 
         context.register(CAVE_MAGIC, new DragonAbility(
                 Activation.passive(),
-                Optional.of(new Upgrade(Either.left(new ValueBasedUpgrade(ValueBasedUpgrade.Type.MANUAL, 10, LevelBasedValue.perLevel(15))))),
+                Upgrade.value(ValueBasedUpgrade.Type.MANUAL, 10, LevelBasedValue.perLevel(15)),
                 Optional.empty(),
                 List.of(
-                        new ActionContainer(new SelfTarget(Either.right(new AbilityTargeting.EntityTargeting(
-                                Optional.empty(),
-                                List.of(new ModifierEffect(
-                                        List.of(
-                                                new ModifierWithDuration(
-                                                        DragonSurvival.res("cave_magic"),
-                                                        ModifierWithDuration.DEFAULT_MODIFIER_ICON,
-                                                        List.of(new Modifier(DSAttributes.MANA, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
-                                                        LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
-                                                        true
-                                                )
-                                        ),
-                                        false
-                                )),
+                        new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                                ModifierEffect.single(new ModifierWithDuration(
+                                        DragonSurvival.res("cave_magic"),
+                                        ModifierWithDuration.DEFAULT_MODIFIER_ICON,
+                                        List.of(new Modifier(DSAttributes.MANA, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
+                                        LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                        true
+                                ), false),
                                 AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
-                        )), false), LevelBasedValue.constant(1)),
-                        new ActionContainer(new SelfTarget(Either.right(new AbilityTargeting.EntityTargeting(
-                                Optional.of(List.of(Condition.onBlock(DSBlockTags.REGENERATES_CAVE_DRAGON_MANA), Condition.inBlock(DSBlockTags.REGENERATES_CAVE_DRAGON_MANA))),
-                                List.of(new ModifierEffect(
-                                        List.of(
-                                                new ModifierWithDuration(
-                                                        DragonSurvival.res("good_mana_condition"),
-                                                        ModifierWithDuration.DEFAULT_MODIFIER_ICON,
-                                                        List.of(new Modifier(DSAttributes.MANA_REGENERATION, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_MULTIPLIED_BASE, Optional.empty())),
-                                                        LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
-                                                        true
-                                                )
-                                        ),
-                                        false
-                                )),
+                        ), false), LevelBasedValue.constant(1)),
+                        new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                                List.of(Condition.onBlock(DSBlockTags.REGENERATES_CAVE_DRAGON_MANA), Condition.inBlock(DSBlockTags.REGENERATES_CAVE_DRAGON_MANA)),
+                                ModifierEffect.single(new ModifierWithDuration(
+                                        DragonSurvival.res("good_mana_condition"),
+                                        ModifierWithDuration.DEFAULT_MODIFIER_ICON,
+                                        List.of(new Modifier(DSAttributes.MANA_REGENERATION, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_MULTIPLIED_BASE, Optional.empty())),
+                                        LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                        true
+                                ), false),
                                 AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
-                        )), false), LevelBasedValue.constant(1))
+                        ), false), LevelBasedValue.constant(1))
                 ),
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_magic_0"), 0),
@@ -441,25 +407,17 @@ public class CaveDragonAbilities {
 
         context.register(CONTRAST_SHOWER, new DragonAbility(
                 Activation.passive(),
-                Optional.of(new Upgrade(Either.left(new ValueBasedUpgrade(ValueBasedUpgrade.Type.MANUAL, 5, LevelBasedValue.perLevel(15))))),
+                Upgrade.value(ValueBasedUpgrade.Type.MANUAL, 5, LevelBasedValue.perLevel(15)),
                 Optional.empty(),
-                List.of(new ActionContainer(new SelfTarget(Either.right(
-                        new AbilityTargeting.EntityTargeting(
-                                Optional.empty(),
-                                List.of(new ModifierEffect(
-                                        List.of(
-                                                new ModifierWithDuration(
-                                                        DragonSurvival.res("contrast_shower"),
-                                                        ModifierWithDuration.DEFAULT_MODIFIER_ICON,
-                                                        List.of(new Modifier(DSAttributes.PENALTY_RESISTANCE_TIME, LevelBasedValue.perLevel(Functions.secondsToTicks(30)), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
-                                                        LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
-                                                        true
-                                                )
-                                        ),
-                                        true
-                                )),
-                                AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
-                        )
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        ModifierEffect.single(new ModifierWithDuration(
+                                DragonSurvival.res("contrast_shower"),
+                                ModifierWithDuration.DEFAULT_MODIFIER_ICON,
+                                List.of(new Modifier(DSAttributes.PENALTY_RESISTANCE_TIME, LevelBasedValue.perLevel(Functions.secondsToTicks(30)), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
+                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                true
+                        ), true),
+                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
                 ), false), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/contrast_shower_0"), 0),
@@ -473,33 +431,21 @@ public class CaveDragonAbilities {
 
         context.register(CAVE_CLAWS_AND_TEETH, new DragonAbility(
                 Activation.passive(),
-                Optional.of(new Upgrade(Either.left(new ValueBasedUpgrade(
-                        ValueBasedUpgrade.Type.PASSIVE_GROWTH,
-                        4,
-                        LevelBasedValue.lookup(
-                                // FIXME :: This lookup throws an error during datagen. Why? We generate the DragonStages before abilities...
-                                List.of(0f,
-                                        25f,//(float)context.lookup(DragonStage.REGISTRY).getOrThrow(DragonStages.young).value().sizeRange().min(),
-                                        40f,//(float)context.lookup(DragonStage.REGISTRY).getOrThrow(DragonStages.young).value().sizeRange().max(),
-                                        60f),//(float)context.lookup(DragonStage.REGISTRY).getOrThrow(DragonStages.adult).value().sizeRange().max()),
-                                LevelBasedValue.perLevel(15)
-                ))))),
+                // FIXME :: lookup for stages seems to throw an exception at the moment
+                Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_GROWTH, 4, LevelBasedValue.lookup(List.of(0f, 25f, 40f, 60f), LevelBasedValue.perLevel(15))),
                 Optional.empty(),
-                List.of(new ActionContainer(new SelfTarget(Either.right(
-                        new AbilityTargeting.EntityTargeting(
-                                Optional.empty(),
-                                List.of(new HarvestBonusEffect(
-                                        List.of(
-                                                new HarvestBonus(
-                                                        DragonSurvival.res("cave_claws_and_teeth"),
-                                                        context.lookup(Registries.BLOCK).getOrThrow(DSBlockTags.CAVE_DRAGON_HARVESTABLE),
-                                                        LevelBasedValue.constant(1),
-                                                        LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)
-                                                )
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        List.of(new HarvestBonusEffect(
+                                List.of(
+                                        new HarvestBonus(
+                                                DragonSurvival.res("cave_claws_and_teeth"),
+                                                context.lookup(Registries.BLOCK).getOrThrow(DSBlockTags.CAVE_DRAGON_HARVESTABLE),
+                                                LevelBasedValue.constant(1),
+                                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)
                                         )
-                                )),
-                                AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
-                        )
+                                )
+                        )),
+                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
                 ), false), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_claws_and_teeth_0"), 0),
@@ -512,20 +458,11 @@ public class CaveDragonAbilities {
 
         context.register(CAVE_WINGS, new DragonAbility(
                 Activation.passive(),
-                Optional.of(new Upgrade(Either.right(new ItemBasedUpgrade(
-                        List.of(
-                                HolderSet.direct(DSItems.WING_GRANT_ITEM),
-                                HolderSet.direct(DSItems.SPIN_GRANT_ITEM)
-                        ),
-                        HolderSet.empty()
-                )))),
+                Upgrade.item(List.of(HolderSet.direct(DSItems.WING_GRANT_ITEM), HolderSet.direct(DSItems.SPIN_GRANT_ITEM)), HolderSet.empty()),
                 Optional.empty(),
-                List.of(new ActionContainer(new SelfTarget(Either.right(
-                        new AbilityTargeting.EntityTargeting(
-                                Optional.empty(),
-                                List.of(new SpinOrFlightEffect(1, 2, NeoForgeMod.LAVA_TYPE)),
-                                AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
-                        )
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        List.of(new SpinOrFlightEffect(1, 2, NeoForgeMod.LAVA_TYPE)),
+                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
                 ), false), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_wings_0"), 0),
@@ -537,27 +474,15 @@ public class CaveDragonAbilities {
                 Activation.passive(),
                 Optional.empty(),
                 Optional.empty(),
-                List.of(
-                        new ActionContainer(new SelfTarget(
-                                Either.right(
-                                        new AbilityTargeting.EntityTargeting(
-                                                Optional.empty(),
-                                                List.of(new DamageModificationEffect(
-                                                        List.of(
-                                                                new DamageModification(
-                                                                        DragonSurvival.res("fire_immunity"),
-                                                                        context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypeTags.IS_FIRE),
-                                                                        LevelBasedValue.constant(0),
-                                                                        LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)
-                                                                )
-                                                        )
-                                                )),
-                                                AbilityTargeting.EntityTargetingMode.TARGET_ALL
-                                        )
-                                ),
-                                false
-                        ), LevelBasedValue.constant(1))
-                ),
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        DamageModificationEffect.single(new DamageModification(
+                                DragonSurvival.res("fire_immunity"),
+                                context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypeTags.IS_FIRE),
+                                LevelBasedValue.constant(0),
+                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)
+                        )),
+                        AbilityTargeting.EntityTargetingMode.TARGET_ALL
+                ), false), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_dragon_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_dragon_1"), 1)

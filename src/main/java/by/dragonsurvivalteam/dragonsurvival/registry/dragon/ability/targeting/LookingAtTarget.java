@@ -46,7 +46,7 @@ public record LookingAtTarget(Either<BlockTargeting, EntityTargeting> target, Le
             HitResult result = getEntityHitResult(dragon, filter, ability);
 
             if (result instanceof EntityHitResult entityHitResult) {
-                entityTarget.effect().forEach(target -> target.apply(dragon, ability, entityHitResult.getEntity()));
+                entityTarget.effects().forEach(target -> target.apply(dragon, ability, entityHitResult.getEntity()));
             }
         });
     }

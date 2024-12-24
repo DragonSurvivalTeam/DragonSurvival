@@ -4,8 +4,13 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilit
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.enchantment.LevelBasedValue;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 public record Upgrade(Either<ValueBasedUpgrade, ItemBasedUpgrade> upgrade) {
@@ -36,5 +41,13 @@ public record Upgrade(Either<ValueBasedUpgrade, ItemBasedUpgrade> upgrade) {
 
     public int maximumLevel() {
         return upgrade.map(ValueBasedUpgrade::maximumLevel, upgrade -> upgrade.itemsPerLevel().size());
+    }
+
+    public static Optional<Upgrade> value(final ValueBasedUpgrade.Type type, int maximumLevel, final LevelBasedValue requirementOrCost) {
+        return Optional.of(new Upgrade(Either.left(new ValueBasedUpgrade(type, maximumLevel, requirementOrCost))));
+    }
+
+    public static Optional<Upgrade> item(final List<HolderSet<Item>> itemsPerLevel, final HolderSet<Item> downgradeItems) {
+        return Optional.of(new Upgrade(Either.right(new ItemBasedUpgrade(itemsPerLevel, downgradeItems))));
     }
 }
