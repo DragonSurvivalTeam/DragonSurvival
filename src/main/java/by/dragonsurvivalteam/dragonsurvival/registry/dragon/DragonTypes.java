@@ -167,7 +167,11 @@ public class DragonTypes {
                 Optional.empty(),
                 Optional.empty(),
                 HolderSet.empty(),
-                HolderSet.direct(context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.SPIKE)),
+                HolderSet.direct(
+                        // Active
+                        context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.SPIKE),
+                        context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.POISON_BREATH)
+                ),
                 HolderSet.empty(),
                 List.of(),
                 List.of(),

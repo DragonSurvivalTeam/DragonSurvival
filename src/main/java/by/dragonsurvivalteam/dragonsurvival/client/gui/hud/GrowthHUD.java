@@ -20,8 +20,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.HashMap;
-import java.util.Objects;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /** HUD that is shown when the dragon is holding an item that can change its growth */

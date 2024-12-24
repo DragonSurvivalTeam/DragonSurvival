@@ -215,7 +215,7 @@ public class CaveDragonAbilities {
                                                         HolderSet.direct(DSEffects.BURN),
                                                         LevelBasedValue.constant(0),
                                                         LevelBasedValue.constant(Functions.secondsToTicks(10)),
-                                                        LevelBasedValue.constant(1)
+                                                        LevelBasedValue.constant(0.3f)
                                                 )
                                         ),
                                         AbilityTargeting.EntityTargetingMode.TARGET_ENEMIES
@@ -232,7 +232,7 @@ public class CaveDragonAbilities {
                                 new AbilityTargeting.EntityTargeting(
                                         Optional.empty(),
                                         List.of(new BreathParticlesEffect(
-                                                0.2f,
+                                                0.4f,
                                                 0.02f,
                                                 new SmallFireParticleOption(37, true),
                                                 new LargeFireParticleOption(37, false)

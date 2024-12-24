@@ -5,28 +5,35 @@
         "applied_effects": {
           "entity_effect": [
             {
-              "type": "dragonsurvival:fire_breath",
+              "type": "dragonsurvival:poison_breath",
               "amount": {
                 "type": "minecraft:linear",
-                "base": 3.0,
-                "per_level_above_first": 3.0
+                "base": 2.0,
+                "per_level_above_first": 2.0
               },
               "effect_type": "dragonsurvival:damage"
-            },
-            {
-              "effect_type": "dragonsurvival:ignite",
-              "ignite_ticks": {
-                "type": "minecraft:linear",
-                "base": 100.0,
-                "per_level_above_first": 100.0
-              }
             },
             {
               "amplifier": 0.0,
               "duration": 200.0,
               "effect_type": "dragonsurvival:potion",
-              "effects": "dragonsurvival:burn",
+              "effects": "dragonsurvival:drain",
               "probability": 0.3
+            },
+            {
+              "effect_type": "dragonsurvival:item_conversion",
+              "item_conversions": [
+                {
+                  "items_from": "minecraft:potato",
+                  "items_to": [
+                    {
+                      "block": "minecraft:poisonous_potato",
+                      "chance": 1.0
+                    }
+                  ]
+                }
+              ],
+              "probability": 0.5
             }
           ],
           "entity_targeting_mode": "TARGET_ENEMIES",
@@ -49,15 +56,50 @@
         "applied_effects": {
           "block_effect": [
             {
-              "effect_type": "dragonsurvival:fire",
-              "ignite_probability": 0.05
+              "attempts": 2.0,
+              "effect_type": "dragonsurvival:bonemeal",
+              "probability": {
+                "type": "minecraft:linear",
+                "base": 0.01,
+                "per_level_above_first": 0.01
+              }
+            },
+            {
+              "conversion_data": [
+                {
+                  "blocks_from": [
+                    "minecraft:dirt",
+                    "minecraft:coarse_dirt"
+                  ],
+                  "blocks_to": [
+                    {
+                      "block": "minecraft:grass_block",
+                      "chance": 25.0
+                    },
+                    {
+                      "block": "minecraft:podzol",
+                      "chance": 5.0
+                    },
+                    {
+                      "block": "minecraft:mycelium",
+                      "chance": 1.0
+                    },
+                    {
+                      "block": "minecraft:coarse_dirt",
+                      "chance": 3.0
+                    }
+                  ]
+                }
+              ],
+              "effect_type": "dragonsurvival:conversion",
+              "probability": 0.2
             }
           ]
         },
         "range_multiplier": 1.0,
         "target_type": "dragonsurvival:dragon_breath"
       },
-      "trigger_rate": 1.0
+      "trigger_rate": 10.0
     },
     {
       "target_selection": {
@@ -66,12 +108,12 @@
             {
               "effect_type": "dragonsurvival:breath_particles",
               "main_particle": {
-                "type": "dragonsurvival:fire",
+                "type": "dragonsurvival:poison",
                 "duration": 37.0,
                 "swirls": true
               },
               "secondary_particle": {
-                "type": "dragonsurvival:large_fire",
+                "type": "dragonsurvival:large_poison",
                 "duration": 37.0,
                 "swirls": false
               },
@@ -104,32 +146,32 @@
     },
     "cooldown": 40.0,
     "sound": {
-      "end": "dragonsurvival:fire_breath_end",
-      "looping": "dragonsurvival:fire_breath_loop",
-      "start": "dragonsurvival:fire_breath_start"
+      "end": "dragonsurvival:forest_breath_end",
+      "looping": "dragonsurvival:forest_breath_loop",
+      "start": "dragonsurvival:forest_breath_start"
     }
   },
   "icon": {
     "texture_entries": [
       {
         "from_level": 0,
-        "texture_resource": "dragonsurvival:abilities/cave/nether_breath_0"
+        "texture_resource": "dragonsurvival:abilities/forest/poisonous_breath_0"
       },
       {
         "from_level": 1,
-        "texture_resource": "dragonsurvival:abilities/cave/nether_breath_1"
+        "texture_resource": "dragonsurvival:abilities/forest/poisonous_breath_1"
       },
       {
         "from_level": 2,
-        "texture_resource": "dragonsurvival:abilities/cave/nether_breath_2"
+        "texture_resource": "dragonsurvival:abilities/forest/poisonous_breath_2"
       },
       {
         "from_level": 3,
-        "texture_resource": "dragonsurvival:abilities/cave/nether_breath_3"
+        "texture_resource": "dragonsurvival:abilities/forest/poisonous_breath_3"
       },
       {
         "from_level": 4,
-        "texture_resource": "dragonsurvival:abilities/cave/nether_breath_4"
+        "texture_resource": "dragonsurvival:abilities/forest/poisonous_breath_4"
       }
     ]
   },
@@ -154,10 +196,8 @@
     }
   },
   "usage_blocked": {
-    "location": {
-      "fluid": {
-        "fluids": "minecraft:water"
-      }
+    "effects": {
+      "dragonsurvival:stress": {}
     }
   }
 }

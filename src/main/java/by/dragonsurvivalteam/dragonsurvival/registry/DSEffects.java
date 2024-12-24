@@ -18,9 +18,9 @@ import static by.dragonsurvivalteam.dragonsurvival.registry.DSModifiers.SLOW_MOV
 public class DSEffects { // TODO :: add descriptions for the missing N/A marked effects
     public static final DeferredRegister<MobEffect> DS_MOB_EFFECTS = DeferredRegister.create(BuiltInRegistries.MOB_EFFECT, MODID);
 
-    /*@Translation(type = Translation.Type.EFFECT, comments = "Stress")
+    @Translation(type = Translation.Type.EFFECT, comments = "Stress")
     @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "Applied to forest dragons who remain too long in the dark. Instantly removes all saturation, and quickly depletes hunger.")
-    public static Holder<MobEffect> STRESS = DS_MOB_EFFECTS.register("stress", () -> new Stress(0xf4a2e8));*/
+    public static Holder<MobEffect> STRESS = DS_MOB_EFFECTS.register("stress", () -> new Stress(0xf4a2e8));
 
     /** Some effects are handled in {@link by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonBonusHandler} and {@link by.dragonsurvivalteam.dragonsurvival.client.handlers.ClientFlightHandler} */
     @Translation(type = Translation.Type.EFFECT, comments = "Trapped")

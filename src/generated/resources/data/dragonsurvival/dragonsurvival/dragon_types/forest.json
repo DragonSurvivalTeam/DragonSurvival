@@ -1,5 +1,8 @@
 {
-  "abilities": "dragonsurvival:spike",
+  "abilities": [
+    "dragonsurvival:spike",
+    "dragonsurvival:poison_breath"
+  ],
   "misc_resources": {
     "ability_bar": "dragonsurvival:textures/gui/casting_bars/cave_cast_bar.png",
     "altar_banner": "dragonsurvival:textures/gui/dragon_altar/forest_altar_icon.png",

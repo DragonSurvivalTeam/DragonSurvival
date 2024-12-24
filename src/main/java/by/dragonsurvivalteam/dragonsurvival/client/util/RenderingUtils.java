@@ -22,7 +22,6 @@ import net.neoforged.neoforge.client.GlStateBackup;
 import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
-import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.io.IOException;

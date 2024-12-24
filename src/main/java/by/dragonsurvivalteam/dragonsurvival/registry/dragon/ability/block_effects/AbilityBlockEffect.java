@@ -47,7 +47,7 @@ public interface AbilityBlockEffect {
     static void registerEntries(final RegisterEvent event) {
         if (event.getRegistry() == REGISTRY) {
             event.register(REGISTRY_KEY, DragonSurvival.res("bonemeal"), () -> BonemealEffect.CODEC);
-            event.register(REGISTRY_KEY, DragonSurvival.res("conversion"), () -> ConversionEffect.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("conversion"), () -> BlockConversionEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("summon_entity"), () -> SummonEntityEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("fire"), () -> FireEffect.CODEC);
         }

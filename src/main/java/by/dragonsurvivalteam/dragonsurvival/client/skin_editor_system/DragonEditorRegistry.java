@@ -5,7 +5,6 @@ import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.Sk
 import by.dragonsurvivalteam.dragonsurvival.util.json.GsonFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import net.minecraft.core.HolderLookup;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -15,7 +14,6 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Nullable;
 
 @EventBusSubscriber(value = Dist.CLIENT)
 public class DragonEditorRegistry {

@@ -24,7 +24,6 @@ import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Optional;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public record DragonBody(List<Modifier> modifiers, double heightMultiplier, boolean hasExtendedCrouch, boolean canHideWings, ResourceLocation customModel, List<String> bonesToHideForToggle) implements AttributeModifierSupplier {
