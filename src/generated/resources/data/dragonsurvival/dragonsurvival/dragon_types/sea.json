@@ -1,5 +1,8 @@
 {
-  "abilities": "dragonsurvival:ball_lightning",
+  "abilities": [
+    "dragonsurvival:ball_lightning",
+    "dragonsurvival:storm_breath"
+  ],
   "misc_resources": {
     "ability_bar": "dragonsurvival:textures/gui/casting_bars/cave_cast_bar.png",
     "altar_banner": "dragonsurvival:textures/gui/dragon_altar/sea_altar_icon.png",

@@ -1,0 +1,97 @@
+{
+  "actions": [
+    {
+      "target_selection": {
+        "applied_effects": {
+          "entity_effect": [
+            {
+              "amplifier": {
+                "type": "minecraft:linear",
+                "base": 1.0,
+                "per_level_above_first": 1.0
+              },
+              "duration": {
+                "type": "minecraft:linear",
+                "base": 600.0,
+                "per_level_above_first": 600.0
+              },
+              "effect_type": "dragonsurvival:potion",
+              "effects": "dragonsurvival:hunter"
+            }
+          ],
+          "entity_targeting_mode": "TARGET_ALLIES"
+        },
+        "target_type": "dragonsurvival:self"
+      },
+      "trigger_rate": 1.0
+    }
+  ],
+  "activation": {
+    "type": "active_simple",
+    "animations": {
+      "end": {
+        "animation_key": "mass_buff",
+        "layer": "BASE",
+        "locks_neck": true,
+        "locks_tail": true
+      },
+      "start_and_charging": {
+        "animation_key": "cast_mass_buff",
+        "layer": "BASE",
+        "locks_neck": true,
+        "locks_tail": true,
+        "transition_length": 2
+      }
+    },
+    "cast_time": 40.0,
+    "cooldown": 600.0,
+    "initial_mana_cost": 1.0,
+    "sound": {
+      "end": "minecraft:ui.toast.in"
+    }
+  },
+  "icon": {
+    "texture_entries": [
+      {
+        "from_level": 0,
+        "texture_resource": "dragonsurvival:abilities/forest/hunter_0"
+      },
+      {
+        "from_level": 1,
+        "texture_resource": "dragonsurvival:abilities/forest/hunter_1"
+      },
+      {
+        "from_level": 2,
+        "texture_resource": "dragonsurvival:abilities/forest/hunter_2"
+      },
+      {
+        "from_level": 3,
+        "texture_resource": "dragonsurvival:abilities/forest/hunter_3"
+      },
+      {
+        "from_level": 4,
+        "texture_resource": "dragonsurvival:abilities/forest/hunter_4"
+      }
+    ]
+  },
+  "upgrade": {
+    "upgrade_data": {
+      "type": "passive_level",
+      "maximum_level": 4,
+      "requirement_or_cost": {
+        "type": "minecraft:lookup",
+        "fallback": {
+          "type": "minecraft:linear",
+          "base": 15.0,
+          "per_level_above_first": 15.0
+        },
+        "values": [
+          0.0,
+          25.0,
+          35.0,
+          55.0
+        ]
+      }
+    }
+  }
+}

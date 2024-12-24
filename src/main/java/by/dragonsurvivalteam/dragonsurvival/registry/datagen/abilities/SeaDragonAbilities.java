@@ -6,20 +6,38 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.TargetDirection;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationLayer;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.SimpleAbilityAnimation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.Upgrade;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.ValueBasedUpgrade;
+import by.dragonsurvivalteam.dragonsurvival.common.particles.LargeFireParticleOption;
+import by.dragonsurvivalteam.dragonsurvival.common.particles.LargeLightningParticleOption;
+import by.dragonsurvivalteam.dragonsurvival.common.particles.SmallFireParticleOption;
+import by.dragonsurvivalteam.dragonsurvival.common.particles.SmallLightningParticleOption;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSSounds;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.ProjectileEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.FireEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AbilityTargeting;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.DragonBreathTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.SelfTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.ProjectileData;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.Projectiles;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.critereon.FluidPredicate;
+import net.minecraft.advancements.critereon.LocationPredicate;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
+import net.minecraft.world.level.material.Fluids;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +49,14 @@ public class SeaDragonAbilities {
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Ball Lightning")
     public static final ResourceKey<DragonAbility> BALL_LIGHTNING = DragonAbilities.key("ball_lightning");
+
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
+            "■ Breathe out a stream of sparks and electricity. Targets become §c«Electrified»§r and deal electric damage to everything nearby.\n",
+            "■ Charges creepers, and may summon thunderbolts during a storm.\n",
+            "■ Range depends on the age of the dragon."
+    })
+    @Translation(type = Translation.Type.ABILITY, comments = "Storm Breath")
+    public static final ResourceKey<DragonAbility> STORM_BREATH = DragonAbilities.key("storm_breath");
 
     public static void registerAbilities(final BootstrapContext<DragonAbility> context) {
         registerActiveAbilities(context);
@@ -69,6 +95,61 @@ public class SeaDragonAbilities {
                                 new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/ball_lightning_4"), 4)
                         )
                 )
+        ));
+
+        context.register(STORM_BREATH, new DragonAbility(
+                new Activation(
+                        Activation.Type.ACTIVE_CHANNELED,
+                        Optional.empty(),
+                        Optional.of(ManaCost.ticking(LevelBasedValue.constant(0.025f))),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(1))),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(2))),
+                        Optional.of(new Activation.Sound(
+                                Optional.of(DSSounds.STORM_BREATH_START.get()),
+                                Optional.empty(),
+                                Optional.of(DSSounds.STORM_BREATH_LOOP.get()),
+                                Optional.of(DSSounds.STORM_BREATH_END.get())
+                        )),
+                        Optional.of(new Activation.Animations(
+                                Optional.empty(),
+                                Optional.of(new SimpleAbilityAnimation("breath", AnimationLayer.BREATH, 5, false, false)),
+                                Optional.empty()
+                        ))
+                ),
+                Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 4, LevelBasedValue.lookup(List.of(0f, 10f, 30f, 50f), LevelBasedValue.perLevel(15))),
+                Optional.empty(),
+                List.of(new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
+                                List.of(Condition.living()),
+                                List.of(
+                                        new DamageEffect(
+                                                context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.LIGHTNING_BREATH),
+                                                LevelBasedValue.perLevel(1)
+                                        ),
+                                        new PotionEffect(
+                                                HolderSet.direct(DSEffects.CHARGED),
+                                                LevelBasedValue.constant(0),
+                                                LevelBasedValue.constant(Functions.secondsToTicks(30)),
+                                                LevelBasedValue.constant(0.5f)
+                                        )
+                                ),
+                                AbilityTargeting.EntityTargetingMode.TARGET_ENEMIES
+                        ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
+                        new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                                List.of(new BreathParticlesEffect(
+                                        0.4f,
+                                        0.02f,
+                                        new SmallLightningParticleOption(37, true),
+                                        new LargeLightningParticleOption(37, false)
+                                )),
+                                AbilityTargeting.EntityTargetingMode.TARGET_ALL
+                        ), true), LevelBasedValue.constant(1))),
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/storm_breath_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/storm_breath_1"), 1),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/storm_breath_2"), 2),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/storm_breath_3"), 3),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/storm_breath_4"), 4)
+                ))
         ));
     }
 }

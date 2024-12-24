@@ -125,7 +125,11 @@ public class DragonTypes {
                 Optional.empty(),
                 Optional.empty(),
                 HolderSet.empty(),
-                HolderSet.direct(context.lookup(DragonAbility.REGISTRY).getOrThrow(SeaDragonAbilities.BALL_LIGHTNING)),
+                HolderSet.direct(
+                        // Active
+                        context.lookup(DragonAbility.REGISTRY).getOrThrow(SeaDragonAbilities.BALL_LIGHTNING),
+                        context.lookup(DragonAbility.REGISTRY).getOrThrow(SeaDragonAbilities.STORM_BREATH)
+                ),
                 HolderSet.empty(),
                 List.of(),
                 List.of(),
