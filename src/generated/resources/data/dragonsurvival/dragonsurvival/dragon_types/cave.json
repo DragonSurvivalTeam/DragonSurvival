@@ -34,22 +34,22 @@
       {
         "dragon_stage": "dragonsurvival:newborn",
         "icon": "dragonsurvival:textures/gui/stage/cave/newborn_hover.png",
-        "icon_grayscale": "dragonsurvival:textures/gui/stage/cave/newborn_main.png"
+        "icon_hover": "dragonsurvival:textures/gui/stage/cave/newborn_main.png"
       },
       {
         "dragon_stage": "dragonsurvival:young",
         "icon": "dragonsurvival:textures/gui/stage/cave/young_hover.png",
-        "icon_grayscale": "dragonsurvival:textures/gui/stage/cave/young_main.png"
+        "icon_hover": "dragonsurvival:textures/gui/stage/cave/young_main.png"
       },
       {
         "dragon_stage": "dragonsurvival:adult",
         "icon": "dragonsurvival:textures/gui/stage/cave/adult_hover.png",
-        "icon_grayscale": "dragonsurvival:textures/gui/stage/cave/adult_main.png"
+        "icon_hover": "dragonsurvival:textures/gui/stage/cave/adult_main.png"
       },
       {
         "dragon_stage": "dragonsurvival:ancient",
         "icon": "dragonsurvival:textures/gui/stage/cave/ancient_hover.png",
-        "icon_grayscale": "dragonsurvival:textures/gui/stage/cave/ancient_main.png"
+        "icon_hover": "dragonsurvival:textures/gui/stage/cave/ancient_main.png"
       }
     ],
     "help_button": "dragonsurvival:textures/gui/help_button/cave_help_button.png",

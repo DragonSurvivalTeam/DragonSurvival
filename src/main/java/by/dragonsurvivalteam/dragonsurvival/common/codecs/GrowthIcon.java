@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 public record GrowthIcon(ResourceLocation icon, ResourceLocation iconGrayscale, ResourceKey<DragonStage> dragonStage) {
     public static final Codec<GrowthIcon> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ResourceLocation.CODEC.fieldOf("icon").forGetter(GrowthIcon::icon),
-            ResourceLocation.CODEC.fieldOf("icon_grayscale").forGetter(GrowthIcon::iconGrayscale),
+            ResourceLocation.CODEC.fieldOf("icon_hover").forGetter(GrowthIcon::iconGrayscale),
             ResourceKey.codec(DragonStage.REGISTRY).fieldOf("dragon_stage").forGetter(GrowthIcon::dragonStage)
     ).apply(instance, GrowthIcon::new));
 }
