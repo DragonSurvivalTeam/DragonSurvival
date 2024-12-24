@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
@@ -35,4 +36,6 @@ public record MiscDragonTextures(
             ColorRGBA.CODEC.fieldOf("primary_color").forGetter(MiscDragonTextures::primaryColor),
             ColorRGBA.CODEC.fieldOf("secondary_color").forGetter(MiscDragonTextures::secondaryColor)
     ).apply(instance, MiscDragonTextures::new));
+
+    public static final ResourceLocation DEFAULT_GROWTH_ICON = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/stage/cave/newborn_hover.png");
 }

@@ -27,8 +27,6 @@ import java.util.function.Function;
 /** HUD that is shown when the dragon is holding an item that can change its growth */
 public class GrowthHUD {
     public static final Function<String, String> CIRCLE_TEXTURE = dragonType -> "textures/gui/growth/circle_" + dragonType + ".png";
-    public static final BiFunction<String, ResourceLocation, String> ICON = (dragonType, dragonStage) -> "textures/gui/growth/" + dragonType + "/" + dragonStage.getPath() + ".png";
-
     private static final HashMap<String, ResourceLocation> CACHE = new HashMap<>();
     private static final Color CENTER_COLOR = new Color(125, 125, 125);
     private static final Color BORDER_COLOR = new Color(255, 204, 2);
@@ -93,8 +91,7 @@ public class GrowthHUD {
 
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0, 0, 300);
-        ResourceLocation levelLocation = Objects.requireNonNull(dragonStage.getKey()).location();
-        guiGraphics.blit(getOrCreate(levelLocation.getNamespace(), ICON.apply(handler.getTypeNameLowerCase(), levelLocation)), circleX + 7, circleY + 4, 0, 0, 20, 20, 20, 20);
+        guiGraphics.blit(handler.getType().value().getGrowthIcon(dragonStage), circleX + 7, circleY + 4, 0, 0, 20, 20, 20, 20);
         guiGraphics.pose().popPose();
     }
 

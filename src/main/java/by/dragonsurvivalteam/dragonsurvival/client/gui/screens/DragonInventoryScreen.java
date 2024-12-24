@@ -223,34 +223,9 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
         }
 
         guiGraphics.blit(CLAWS_TEXTURE, leftPos - 80, topPos, 0, 0, 77, 170);
-
-        Holder<DragonStage> level = handler.getStage();
-        float progress = (float) level.value().getProgress(handler.getSize());
-
-        int size = 34;
-        int thickness = 5;
         int circleX = leftPos - 58;
         int circleY = topPos - 35;
-        int sides = 6;
-
-        int radius = size / 2;
-        Color color = new Color(99, 99, 99);
-
-        RenderSystem.setShaderColor(color.brighter().getRed() / 255f, color.brighter().getBlue() / 255f, color.brighter().getGreen() / 255f, 1);
-        RenderingUtils.drawSmoothCircle(guiGraphics, circleX + radius, circleY + radius, radius, sides, 1, 0);
-
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1, 1, 1, 1);
-        RenderSystem.setShaderTexture(0, GrowthHUD.getOrCreate(GrowthHUD.CIRCLE_TEXTURE.apply(handler.getTypeNameLowerCase())));
-        RenderingUtils.drawGrowthCircle(guiGraphics, circleX + radius, circleY + radius, radius, 0.5, 0.5, 0.5, sides, progress, -0.5);
-
-        RenderSystem.setShaderColor(color.getRed() / 255f, color.getBlue() / 255f, color.getGreen() / 255f, 1);
-        RenderingUtils.drawSmoothCircle(guiGraphics, circleX + radius, circleY + radius, radius - thickness, sides, 1, 0);
-
-        RenderSystem.setShaderColor(1, 1, 1, 1);
-        // TODO level :: use adult as fallback texture?
-        ResourceLocation levelLocation = Objects.requireNonNull(level.getKey()).location();
-        guiGraphics.blit(GrowthHUD.getOrCreate(levelLocation.getNamespace(), GrowthHUD.ICON.apply(handler.getTypeNameLowerCase(), levelLocation)), circleX + 6, circleY + 6, 150, 0, 0, 20, 20, 20, 20);
+        guiGraphics.blit(handler.getType().value().getGrowthIcon(handler.getStage()), circleX + 6, circleY + 6, 150, 0, 0, 20, 20, 20, 20);
     }
 
     @Override

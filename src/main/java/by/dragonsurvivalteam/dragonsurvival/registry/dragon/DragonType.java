@@ -1,10 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.DietEntry;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscDragonTextures;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierType;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.*;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DataReloadHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
@@ -141,6 +138,15 @@ public class DragonType implements AttributeModifierSupplier {
 
     public HolderSet<DragonStage> getStages(@Nullable final HolderLookup.Provider provider) {
         return stages.orElseGet(() -> DragonStage.getDefaultStages(provider));
+    }
+
+    public ResourceLocation getGrowthIcon(Holder<DragonStage> stage) {
+        Optional<GrowthIcon> growthIcon =  miscResources.growthIcons().stream().filter(icon -> icon.dragonStage().equals(stage.getKey())).findFirst();
+        if(growthIcon.isPresent()) {
+            return growthIcon.get().icon();
+        } else {
+            return MiscDragonTextures.DEFAULT_GROWTH_ICON;
+        }
     }
 
     public Optional<Double> startingSize() {
