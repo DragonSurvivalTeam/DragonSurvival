@@ -179,7 +179,7 @@ public class AbilityColumnsComponent {
 
                 int currentColumnPhase = convertIndexToColumnPhase(i, currentColumn);
                 float lerpProgress = (float) (1 - Math.abs((nextOffset.x() - currentOffset.x()) / (nextOffset.x() - buttonPositions[currentColumnPhase][j].x())));
-                if(lerpProgress > 0.7 && nextColumnPhase == 3) {
+                if(lerpProgress > TRANSITION_BACK_VISUAL_CUTOFF && nextColumnPhase == 3) {
                     button.setVisible(false);
                 }
 
