@@ -140,13 +140,14 @@ public class DragonType implements AttributeModifierSupplier {
         return stages.orElseGet(() -> DragonStage.getDefaultStages(provider));
     }
 
-    public ResourceLocation getGrowthIcon(Holder<DragonStage> stage) {
-        Optional<GrowthIcon> growthIcon =  miscResources.growthIcons().stream().filter(icon -> icon.dragonStage().equals(stage.getKey())).findFirst();
-        if(growthIcon.isPresent()) {
-            return growthIcon.get().icon();
-        } else {
-            return MiscDragonTextures.DEFAULT_GROWTH_ICON;
+    public ResourceLocation getGrowthIcon(final Holder<DragonStage> stage) {
+        for (GrowthIcon growthIcon : miscResources.growthIcons()) {
+            if (growthIcon.dragonStage() == stage.getKey()) {
+                return growthIcon.hoverIcon();
+            }
         }
+
+        return MiscDragonTextures.DEFAULT_GROWTH_ICON;
     }
 
     public Optional<Double> startingSize() {
