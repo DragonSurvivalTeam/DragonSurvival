@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.config;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonConfigHandler;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ResourceLocationWrapper;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.*;
 import by.dragonsurvivalteam.dragonsurvival.config.types.CustomConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
@@ -45,7 +45,6 @@ import java.lang.reflect.ParameterizedType;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 /**
  * Parses the annotated classes to handle the config values <br>
@@ -333,9 +332,6 @@ public class ConfigHandler {
         };
     }
 
-    /** These are the regex meta characters that can start a valid regular expression */
-    private static final List<Character> VALID_REGEX_START = List.of('.', '^', '[', '(', '\\');
-
     /** More specific checks depending on the config type */
     private static boolean checkSpecific(final ConfigOption configOption, final Object configValue) {
         switch (configOption.validation()) {
@@ -343,33 +339,7 @@ public class ConfigHandler {
                 return ResourceLocation.tryParse((String) configValue) != null;
             }
             case RESOURCE_LOCATION_REGEX -> {
-                String[] data = ((String) configValue).split(":", 2);
-
-                if (data.length != 2) {
-                    return false;
-                }
-
-                if (!ResourceLocation.isValidNamespace(data[0])) {
-                    return false;
-                }
-
-                if (ResourceLocation.isValidPath(data[1])) {
-                    return true;
-                }
-
-                char firstCharacter = data[1].charAt(0);
-
-                if (!ResourceLocation.isAllowedInResourceLocation(firstCharacter) && !VALID_REGEX_START.contains(firstCharacter)) {
-                    // If the regex starts with an invalid resource location character it needs to be a valid regex start character
-                    return false;
-                }
-
-                try {
-                    Pattern.compile(data[1]);
-                    return true;
-                } catch (PatternSyntaxException ignored) {
-                    return false;
-                }
+                return ResourceLocationWrapper.validateRegexResourceLocation(configValue.toString());
             }
             case RESOURCE_LOCATION_NUMBER -> {
                 String[] split = ((String) configValue).split(":");
@@ -501,7 +471,7 @@ public class ConfigHandler {
             // Try parsing regex if it's not a valid resource location
             List<T> list = new ArrayList<>();
 
-            registry.registryKeySet().forEach((key) -> {
+            registry.registryKeySet().forEach(key -> {
                 ResourceLocation keyLocation = key.location();
 
                 if (keyLocation.getNamespace().equals(splitLocation[0])) {
@@ -640,11 +610,6 @@ public class ConfigHandler {
             } catch (IllegalAccessException | IllegalArgumentException exception) {
                 DragonSurvival.LOGGER.error("An error occurred while setting the config [{}]", configKey, exception);
             }
-        }
-
-        if (type == ModConfig.Type.SERVER) {
-            // Technically only relevant if the config spec belongs to us
-            DragonConfigHandler.rebuildBlacklistedItems();
         }
     }
 

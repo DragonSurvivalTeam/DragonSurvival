@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
@@ -13,7 +14,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.inventory.ArmorSlot;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
@@ -24,12 +24,9 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.ItemStackedOnOtherEvent;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
-import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 import java.util.List;
 import java.util.Optional;
-
-import static by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonConfigHandler.DRAGON_BLACKLISTED_ITEMS;
 
 @EventBusSubscriber
 public class DragonPenaltyHandler {
@@ -133,10 +130,6 @@ public class DragonPenaltyHandler {
         });*/
     }
 
-    public static boolean itemIsBlacklisted(Item item) {
-        return DRAGON_BLACKLISTED_ITEMS.contains(item);
-    }
-
     @SubscribeEvent // Prevent the player from equipping blacklisted armor (or from mixing light and dark dragon armor)
     public static void preventEquipment(final ItemStackedOnOtherEvent event) {
         ItemStack stack = event.getStackedOnItem(); // FIXME :: this is probably a neoforge bug, this should be carried item -> might be changed in the future
@@ -151,11 +144,11 @@ public class DragonPenaltyHandler {
             return;
         }
 
-        if (DragonStateProvider.isDragon(player)) {
-            if (DragonPenaltyHandler.itemIsBlacklisted(stack.getItem())) {
-                event.setCanceled(true);
-                return;
-            }
+        DragonStateHandler data = DragonStateProvider.getData(player);
+
+        if (data.isDragon() && data.getType().value().isItemBlacklisted(stack.getItem())) {
+            event.setCanceled(true);
+            return;
         }
 
         boolean isLightArmor = stack.is(DSItemTags.LIGHT_ARMOR);
@@ -185,30 +178,5 @@ public class DragonPenaltyHandler {
                 return;
             }
         }
-    }
-
-    @SubscribeEvent // Prevent the player from holding blacklisted items
-    public static void dropHeldItems(PlayerTickEvent.Pre event) {
-        if (!ServerConfig.penaltiesEnabled) {
-            return;
-        }
-
-        Player player = event.getEntity();
-        DragonStateProvider.getOptional(player).ifPresent(dragonStateHandler -> {
-            if (dragonStateHandler.isDragon()) {
-                ItemStack mainHandItem = player.getMainHandItem();
-                ItemStack offHandItem = player.getOffhandItem();
-
-                if (!mainHandItem.isEmpty() && itemIsBlacklisted(mainHandItem.getItem())) {
-                    player.getInventory().removeItem(mainHandItem);
-                    player.drop(mainHandItem, false);
-                }
-
-                if (!offHandItem.isEmpty() && itemIsBlacklisted(offHandItem.getItem())) {
-                    player.getInventory().removeItem(offHandItem);
-                    player.drop(offHandItem, false);
-                }
-            }
-        });
     }
 }

@@ -21,9 +21,10 @@ public interface PenaltyEffect {
     ResourceKey<Registry<MapCodec<? extends PenaltyEffect>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("penalty_effects"));
     Registry<MapCodec<? extends PenaltyEffect>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();
 
-    Codec<PenaltyEffect> CODEC = REGISTRY.byNameCodec().dispatch("effect_type", PenaltyEffect::codec, Function.identity());
+    Codec<PenaltyEffect> CODEC = REGISTRY.byNameCodec().dispatch("penalty_type", PenaltyEffect::codec, Function.identity());
 
     default MutableComponent getDescription() { return Component.empty(); }
+
     void apply(final Player player);
     MapCodec<? extends PenaltyEffect> codec();
 
@@ -35,8 +36,9 @@ public interface PenaltyEffect {
     @SubscribeEvent
     static void registerEntries(final RegisterEvent event) {
         if (event.getRegistry() == REGISTRY) {
-            event.register(REGISTRY_KEY, DragonSurvival.res("damage_penalty"), () -> DamagePenalty.CODEC);
-            event.register(REGISTRY_KEY, DragonSurvival.res("mob_effect_penalty"), () -> MobEffectPenalty.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("take_damage"), () -> DamagePenalty.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("mob_effect"), () -> MobEffectPenalty.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("item_blacklist"), () -> ItemBlacklistPenalty.CODEC);
         }
     }
 }

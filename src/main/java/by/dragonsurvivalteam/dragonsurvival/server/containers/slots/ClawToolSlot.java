@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.server.containers.slots;
 
-import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonPenaltyHandler;
 import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawsMenu;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import by.dragonsurvivalteam.dragonsurvival.server.containers.DragonContainer;
@@ -34,7 +33,8 @@ public class ClawToolSlot extends Slot {
 
     @Override
     public boolean mayPlace(@NotNull final ItemStack itemStack) {
-        if (DragonPenaltyHandler.itemIsBlacklisted(itemStack.getItem())) return false;
+        // FIXME -> handle through container event or sth. like that (ItemStackedOnOtherEvent?)
+//        if (DragonPenaltyHandler.itemIsBlacklisted(itemStack.getItem())) return false;
         return switch (ClawInventoryData.Slot.values()[clawSlot]) {
             case SWORD -> ToolUtils.isWeapon(itemStack);
             case PICKAXE -> ToolUtils.isPickaxe(itemStack);

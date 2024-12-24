@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.handlers.DataReloadHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.ItemBlacklistPenalty;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import com.mojang.serialization.Codec;
@@ -121,6 +122,16 @@ public class DragonType implements AttributeModifierSupplier {
             lastDietUpdate = System.currentTimeMillis();
             diet = DietEntry.map(dietEntries);
         }
+    }
+
+    public boolean isItemBlacklisted(final Item item) {
+        for (Holder<DragonPenalty> penalty : penalties) {
+            if (penalty.value().effect() instanceof ItemBlacklistPenalty blacklist && blacklist.isBlacklisted(item)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override

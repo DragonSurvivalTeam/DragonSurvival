@@ -12,7 +12,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.player.Player;
 
-
 public record DamagePenalty(Holder<DamageType> damageType, float damage) implements PenaltyEffect {
     public static final MapCodec<DamagePenalty> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             DamageType.CODEC.fieldOf("type").forGetter(DamagePenalty::damageType),
