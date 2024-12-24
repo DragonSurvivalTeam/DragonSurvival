@@ -69,19 +69,36 @@
                 {
                   "blocks_to": [
                     {
-                      "block": "minecraft:grass_block",
+                      "state": {
+                        "Name": "minecraft:grass_block",
+                        "Properties": {
+                          "snowy": "false"
+                        }
+                      },
                       "weight": 25
                     },
                     {
-                      "block": "minecraft:podzol",
+                      "state": {
+                        "Name": "minecraft:podzol",
+                        "Properties": {
+                          "snowy": "false"
+                        }
+                      },
                       "weight": 5
                     },
                     {
-                      "block": "minecraft:mycelium",
+                      "state": {
+                        "Name": "minecraft:mycelium",
+                        "Properties": {
+                          "snowy": "false"
+                        }
+                      },
                       "weight": 1
                     },
                     {
-                      "block": "minecraft:coarse_dirt",
+                      "state": {
+                        "Name": "minecraft:coarse_dirt"
+                      },
                       "weight": 3
                     }
                   ],

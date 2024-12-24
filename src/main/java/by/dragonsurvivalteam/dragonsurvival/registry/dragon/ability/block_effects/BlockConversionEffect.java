@@ -7,8 +7,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.advancements.critereon.BlockPredicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.util.random.Weight;
@@ -16,6 +14,7 @@ import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.util.random.WeightedRandomList;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,10 +33,9 @@ public record BlockConversionEffect(List<BlockConversionData> blockConversions, 
         ).apply(instance, BlockConversionData::new));
     }
 
-    // TODO :: make custom block record which includes the ability to provide properties
-    public record BlockTo(Holder<Block> blockTo, int weight) implements WeightedEntry{
+    public record BlockTo(BlockState state, int weight) implements WeightedEntry {
         public static final Codec<BlockTo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                BuiltInRegistries.BLOCK.holderByNameCodec().fieldOf("block").forGetter(BlockTo::blockTo),
+                BlockState.CODEC.fieldOf("state").forGetter(BlockTo::state),
                 Codec.INT.fieldOf("weight").forGetter(BlockTo::weight)
         ).apply(instance, BlockTo::new));
 
@@ -58,7 +56,7 @@ public record BlockConversionEffect(List<BlockConversionData> blockConversions, 
 
         for (BlockConversionData data : blockConversions) {
             if (data.fromPredicate().matches(block)) {
-                data.blocksTo().getRandom(dragon.getRandom()).ifPresent(conversion -> dragon.serverLevel().setBlock(position, conversion.blockTo().value().defaultBlockState(), Block.UPDATE_ALL));
+                data.blocksTo().getRandom(dragon.getRandom()).ifPresent(conversion -> dragon.serverLevel().setBlock(position, conversion.state(), Block.UPDATE_ALL));
             }
         }
     }

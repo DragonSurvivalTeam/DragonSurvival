@@ -177,22 +177,10 @@ public class ForestDragonAbilities {
                                                                 new BlockConversionEffect.BlockConversionData(
                                                                         Condition.blocks(Blocks.DIRT, Blocks.COARSE_DIRT),
                                                                         SimpleWeightedRandomList.create(
-                                                                                new BlockConversionEffect.BlockTo(
-                                                                                        context.lookup(Registries.BLOCK).getOrThrow(Blocks.GRASS_BLOCK.builtInRegistryHolder().key()),
-                                                                                        25
-                                                                                ),
-                                                                                new BlockConversionEffect.BlockTo(
-                                                                                        context.lookup(Registries.BLOCK).getOrThrow(Blocks.PODZOL.builtInRegistryHolder().key()),
-                                                                                        5
-                                                                                ),
-                                                                                new BlockConversionEffect.BlockTo(
-                                                                                        context.lookup(Registries.BLOCK).getOrThrow(Blocks.MYCELIUM.builtInRegistryHolder().key()),
-                                                                                        1
-                                                                                ),
-                                                                                new BlockConversionEffect.BlockTo(
-                                                                                        context.lookup(Registries.BLOCK).getOrThrow(Blocks.COARSE_DIRT.builtInRegistryHolder().key()),
-                                                                                        3
-                                                                                )
+                                                                                new BlockConversionEffect.BlockTo(Blocks.GRASS_BLOCK.defaultBlockState(), 25),
+                                                                                new BlockConversionEffect.BlockTo(Blocks.PODZOL.defaultBlockState(), 5),
+                                                                                new BlockConversionEffect.BlockTo(Blocks.MYCELIUM.defaultBlockState(), 1),
+                                                                                new BlockConversionEffect.BlockTo(Blocks.COARSE_DIRT.defaultBlockState(), 3)
                                                                         ))
                                                                 ), LevelBasedValue.constant(0.2f))
                                                         )
