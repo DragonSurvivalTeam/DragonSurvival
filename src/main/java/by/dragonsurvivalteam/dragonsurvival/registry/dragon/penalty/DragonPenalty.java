@@ -50,7 +50,7 @@ public record DragonPenalty(ResourceLocation icon, List<EntityPredicate> conditi
             }
         }
 
-        boolean conditionMet = false;
+        boolean conditionMet = conditions.isEmpty();
 
         for (EntityPredicate condition : conditions) {
             if (condition.matches((ServerLevel) dragon.level(), dragon.position(), dragon)) {

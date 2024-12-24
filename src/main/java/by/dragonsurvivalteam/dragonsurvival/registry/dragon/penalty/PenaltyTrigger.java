@@ -24,10 +24,15 @@ public interface PenaltyTrigger {
 
     Codec<PenaltyTrigger> CODEC = REGISTRY.byNameCodec().dispatch("effect_type", PenaltyTrigger::codec, Function.identity());
 
-    boolean matches(final ServerPlayer dragon, boolean conditionMatched);
-    MapCodec<? extends PenaltyTrigger> codec();
     default MutableComponent getDescription(Player player) { return Component.empty(); }
     default String id() { return ""; }
+
+    MapCodec<? extends PenaltyTrigger> codec();
+    boolean matches(final ServerPlayer dragon, boolean conditionMatched);
+
+    static PenaltyTrigger instant() {
+        return new InstantTrigger(1);
+    }
 
     @SubscribeEvent
     static void register(final NewRegistryEvent event) {

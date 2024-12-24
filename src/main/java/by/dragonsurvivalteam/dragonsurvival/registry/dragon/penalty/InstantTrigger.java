@@ -12,7 +12,8 @@ public record InstantTrigger(int triggerRate) implements PenaltyTrigger {
 
     @Override
     public boolean matches(final ServerPlayer dragon, boolean conditionMatched) {
-        if(dragon.level().getGameTime() % triggerRate == 0) {
+        // TODO :: should this check the tick count of the entity?
+        if (dragon.level().getGameTime() % triggerRate == 0) {
             return conditionMatched;
         } else {
             return false;

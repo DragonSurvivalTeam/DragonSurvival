@@ -12,10 +12,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
+/**
+ * Allows for: <br>
+ * - normal {@link ResourceLocation} <br>
+ * - tags by prefixing a {@link ResourceLocation} with '#' (e.g. '#minecraft:doors') <br>
+ * - Regex in namespace and / or path (e.g. '.*:.*_bow')
+ * */
 public class ResourceLocationWrapper {
     /** These are the regex meta characters that can start a valid regular expression */
     private static final List<Character> VALID_REGEX_START = List.of('.', '^', '[', '(', '\\');
@@ -35,12 +42,15 @@ public class ResourceLocationWrapper {
             } else {
                 String[] split = location.split(":");
                 String namespace = split[0];
-                Pattern path = Pattern.compile(split[1]);
+
+                Pattern namespacePattern = ResourceLocation.isValidNamespace(namespace) ? null : Pattern.compile(namespace);
+                Pattern pathPattern = Pattern.compile(split[1]);
 
                 Set<ResourceLocation> locations = new HashSet<>();
+                Predicate<String> namespaceValidation = toCheck -> namespacePattern == null ? toCheck.equals(namespace) : namespacePattern.matcher(toCheck).matches();
 
                 for (ResourceLocation key : registry.keySet()) {
-                    if (key.getNamespace().equals(namespace) && path.matcher(key.getPath()).matches()) {
+                    if (namespaceValidation.test(key.getNamespace()) && pathPattern.matcher(key.getPath()).matches()) {
                         locations.add(key);
                     }
                 }
@@ -89,15 +99,26 @@ public class ResourceLocationWrapper {
             return false;
         }
 
-        if (!ResourceLocation.isValidNamespace(data[0])) {
-            return false;
-        }
+        String namespace = data[0];
+        String path = data[1];
 
-        if (ResourceLocation.isValidPath(data[1])) {
+        if (ResourceLocation.tryParse(location) != null) {
             return true;
         }
 
-        char firstCharacter = data[1].charAt(0);
+        if (ResourceLocation.isValidNamespace(namespace) && isValidRegex(path)) {
+            return true;
+        }
+
+        if (ResourceLocation.isValidPath(path) && isValidRegex(namespace)) {
+            return true;
+        }
+
+        return isValidRegex(namespace) && isValidRegex(path);
+    }
+
+    private static boolean isValidRegex(final String string) {
+        char firstCharacter = string.charAt(0);
 
         if (!ResourceLocation.isAllowedInResourceLocation(firstCharacter) && !VALID_REGEX_START.contains(firstCharacter)) {
             // If the regex starts with an invalid resource location character it needs to be a valid regex start character
@@ -105,7 +126,7 @@ public class ResourceLocationWrapper {
         }
 
         try {
-            Pattern.compile(data[1]);
+            Pattern.compile(string);
             return true;
         } catch (PatternSyntaxException ignored) {
             return false;

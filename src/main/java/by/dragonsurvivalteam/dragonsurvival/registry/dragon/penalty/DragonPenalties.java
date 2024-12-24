@@ -14,6 +14,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.NeoForgeMod;
+import net.neoforged.neoforge.common.Tags;
 
 import java.util.List;
 
@@ -37,6 +38,12 @@ public class DragonPenalties {
     })
     @Translation(type = Translation.Type.PENALTY, comments = "Lava Swimming")
     public static final ResourceKey<DragonPenalty> LAVA_SWIMMING = DragonPenalties.key("lava_swimming");
+
+    @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
+            "■ Dragons are unable to wield or equip certain items.\n",
+    })
+    @Translation(type = Translation.Type.PENALTY, comments = "Item Blacklist")
+    public static final ResourceKey<DragonPenalty> ITEM_BLACKLIST = DragonPenalties.key("item_blacklist");
 
     public static void registerPenalties(final BootstrapContext<DragonPenalty> context) {
         context.register(SNOW_AND_RAIN_WEAKNESS, new DragonPenalty(
@@ -86,6 +93,13 @@ public class DragonPenalties {
                         0.013f
                 )
         ));
+
+        context.register(ITEM_BLACKLIST, new DragonPenalty(
+                DragonSurvival.res("abilities/cave/hot_blood_0"), // TODO
+                List.of(),
+                new ItemBlacklistPenalty(DEFAULT_COMMON_BLACKLIST),
+                PenaltyTrigger.instant()
+        ));
     }
 
     public static ResourceKey<DragonPenalty> key(final ResourceLocation location) {
@@ -95,4 +109,17 @@ public class DragonPenalties {
     public static ResourceKey<DragonPenalty> key(final String path) {
         return key(DragonSurvival.res(path));
     }
+
+    public static final List<String> DEFAULT_COMMON_BLACKLIST = List.of(
+            "#" + Tags.Items.TOOLS_SHIELD.location(),
+            "#" + Tags.Items.TOOLS_BOW.location(),
+            "#" + Tags.Items.TOOLS_CROSSBOW.location(),
+            "minecraft:trident",
+            "born_in_chaos_v1:staffof_magic_arrows",
+            "mowziesmobs:wrought_axe",
+            "revised_phantoms:phantom_wings_chestplate",
+            "quark:flamerang",
+            "quark:pickarang",
+            ".*:.*?elytra.*"
+    );
 }

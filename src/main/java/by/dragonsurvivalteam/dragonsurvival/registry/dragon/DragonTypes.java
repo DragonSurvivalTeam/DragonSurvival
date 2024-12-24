@@ -81,7 +81,8 @@ public class DragonTypes {
                 HolderSet.direct(
                         context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.SNOW_AND_RAIN_WEAKNESS),
                         context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.WATER_WEAKNESS),
-                        context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.LAVA_SWIMMING)
+                        context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.LAVA_SWIMMING),
+                        context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.ITEM_BLACKLIST)
                 ),
                 List.of(),
                 List.of(DietEntry.from("#minecraft:doors", new FoodProperties(2, 1, true, 1, Optional.empty(), List.of()))),

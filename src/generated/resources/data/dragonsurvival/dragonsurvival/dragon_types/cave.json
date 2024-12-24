@@ -69,6 +69,7 @@
   "penalties": [
     "dragonsurvival:snow_and_rain_weakness",
     "dragonsurvival:water_weakness",
-    "dragonsurvival:lava_swimming"
+    "dragonsurvival:lava_swimming",
+    "dragonsurvival:item_blacklist"
   ]
 }
