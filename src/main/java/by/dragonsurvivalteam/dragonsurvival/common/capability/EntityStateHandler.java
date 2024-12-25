@@ -4,9 +4,13 @@ import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -18,6 +22,14 @@ public class EntityStateHandler implements INBTSerializable<CompoundTag> {
     public int chainCount;
     // Currently only used for item entities
     public boolean isFireImmune;
+
+    public @Nullable Entity getSummonOwner(final Level level) {
+        if (summonOwner != null && level instanceof ServerLevel serverLevel) {
+            return serverLevel.getEntity(summonOwner);
+        }
+
+        return null;
+    }
 
     @Override
     public CompoundTag serializeNBT(@NotNull HolderLookup.Provider provider) {
