@@ -1,78 +1,60 @@
 package by.dragonsurvivalteam.dragonsurvival.common.entity.goals;
 
 import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.phys.AABB;
 
-import java.util.Iterator;
-import java.util.List;
 import javax.annotation.Nullable;
 
 public class HurtByTargetGoalExtended extends HurtByTargetGoal {
     @Nullable private Class<? extends Mob>[] toHeedAlert;
 
-    public HurtByTargetGoalExtended(PathfinderMob pMob, Class<?>... pToIgnoreDamage) {
-        super(pMob, pToIgnoreDamage);
+    public HurtByTargetGoalExtended(final PathfinderMob mob, final Class<?>... ignoreDamagedFrom) {
+        super(mob, ignoreDamagedFrom);
     }
 
     @SafeVarargs
-    public final HurtByTargetGoal setHeeders(Class<? extends Mob>... pReinforcementTypes) {
-        this.toHeedAlert = pReinforcementTypes;
+    public final HurtByTargetGoal setHeeders(final Class<? extends Mob>... reinforcementTypes) {
+        this.toHeedAlert = reinforcementTypes;
         return this;
     }
 
     @Override
     protected void alertOthers() {
         if (this.toHeedAlert != null) {
-            for (Class<? extends Mob> oclass : this.toHeedAlert) {
-                this.alertOthers(oclass);
+            for (Class<? extends Mob> heedType : this.toHeedAlert) {
+                alertOthers(heedType);
             }
         }
     }
 
-    // Copied from the original class
-    protected void alertOthers(Class<? extends Mob> pType) {
-        double d0 = this.getFollowDistance();
-        AABB aabb = AABB.unitCubeFromLowerCorner(this.mob.position()).inflate(d0, 10.0, d0);
-        // We now read pType to get the list of mobs instead of using this.mob.getClass()
-        List<? extends Mob> list = this.mob.level().getEntitiesOfClass(pType, aabb, EntitySelector.NO_SPECTATORS);
-        Iterator iterator = list.iterator();
+    protected void alertOthers(final Class<? extends Mob> type) {
+        double distance = getFollowDistance();
+        AABB aabb = AABB.unitCubeFromLowerCorner(this.mob.position()).inflate(distance, 10, distance);
 
-        while (true) {
-            Mob mob;
-            while (true) {
-                if (!iterator.hasNext()) {
-                    return;
-                }
+        mob.level().getEntitiesOfClass(type, aabb, EntitySelector.NO_SPECTATORS).forEach(otherMob -> {
+            if (otherMob == mob || otherMob.getTarget() != null) {
+                return;
+            }
 
-                mob = (Mob) iterator.next();
-                if (this.mob != mob
-                        && mob.getTarget() == null
-                        && (!(this.mob instanceof TamableAnimal) || ((TamableAnimal) this.mob).getOwner() == ((TamableAnimal) mob).getOwner())
-                        && !mob.isAlliedTo(this.mob.getLastHurtByMob())) {
-                    if (this.toIgnoreAlert == null) {
-                        break;
-                    }
+            LivingEntity lastHurtBy = mob.getLastHurtByMob();
 
-                    boolean flag = false;
+            if (lastHurtBy == null || otherMob.isAlliedTo(lastHurtBy)) {
+                return;
+            }
 
-                    for (Class<?> oclass : this.toIgnoreAlert) {
-                        if (mob.getClass() == oclass) {
-                            flag = true;
-                            break;
-                        }
-                    }
-
-                    if (!flag) {
-                        break;
+            if (toIgnoreAlert != null) {
+                for (Class<?> toIgnore : toIgnoreAlert) {
+                    if (otherMob.getClass() == toIgnore) {
+                        return;
                     }
                 }
             }
 
-            this.alertOther(mob, this.mob.getLastHurtByMob());
-        }
+            alertOther(otherMob, lastHurtBy);
+        });
     }
 }

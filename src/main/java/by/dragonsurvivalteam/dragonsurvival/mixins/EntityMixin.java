@@ -30,7 +30,7 @@ public abstract class EntityMixin {
             return;
         }
 
-        if(DragonStateProvider.isDragon(player)) {
+        if (DragonStateProvider.isDragon(player)) {
             MovementData movement = MovementData.getData(player);
             Vec3 originalPassPos = player.getPassengerRidingPosition(player);
             double size = DragonStateProvider.getData(passenger).getSize();
@@ -133,8 +133,23 @@ public abstract class EntityMixin {
             return true;
         }
 
-        return ((Entity) (Object) this).getExistingData(DSDataAttachments.DAMAGE_MODIFICATIONS)
-                .map(DamageModifications::isFireImmune).orElse(false);
+        Entity self = (Entity) (Object) this;
+        return self.getExistingData(DSDataAttachments.DAMAGE_MODIFICATIONS)
+                .map(DamageModifications::isFireImmune)
+                .orElse(false);
+    }
+
+    // TODO :: why is ordinal needed here? there is only 1 parameter
+    @ModifyReturnValue(method = "isAlliedTo(Lnet/minecraft/world/entity/Entity;)Z", at = @At("RETURN"))
+    private boolean dragonSurvival$checkOwnerForAlliedTo(boolean isAlliedTo, @Local(argsOnly = true, ordinal = 0) final Entity entity) {
+        if (isAlliedTo) {
+            return true;
+        }
+
+        Entity self = (Entity) (Object) this;
+        return self.getExistingData(DSDataAttachments.ENTITY_HANDLER)
+                .map(data -> data.owner != null && data.owner.equals(entity.getUUID()))
+                .orElse(false);
     }
 
     @Shadow public abstract double getX();
