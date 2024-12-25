@@ -52,7 +52,7 @@ public class DSAttributes {
 
     @Translation(type = Translation.Type.ATTRIBUTE, comments = "Penalty Resistance Time")
     @Translation(type = Translation.Type.ATTRIBUTE_DESCRIPTION, comments = "Increases the time before the dragon penalty effect is applied")
-    public static final Holder<Attribute> PENALTY_RESISTANCE_TIME = DS_ATTRIBUTES.register("penalty_resistance_time", () -> new RangedAttribute(Translation.Type.ATTRIBUTE.wrap("penalty_resistance_time"), 0, 0, 1024).setSyncable(true));
+    public static final Holder<Attribute> PENALTY_RESISTANCE_TIME = DS_ATTRIBUTES.register("penalty_resistance_time", () -> new RangedAttribute(Translation.Type.ATTRIBUTE.wrap("penalty_resistance_time"), 0, 0, 16384).setSyncable(true));
 
     @Translation(type = Translation.Type.ATTRIBUTE, comments = "Lava Oxygen Amount")
     @Translation(type = Translation.Type.ATTRIBUTE_DESCRIPTION, comments = "The amount of oxygen the dragon gets when swimming in lava")
