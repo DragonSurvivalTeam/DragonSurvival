@@ -9,6 +9,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.PercentageAttribute;
 import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -39,7 +40,7 @@ public class DSAttributes {
 
     @Translation(type = Translation.Type.ATTRIBUTE, comments = "Experience")
     @Translation(type = Translation.Type.ATTRIBUTE_DESCRIPTION, comments = "A multiplier to the dropped experience")
-    public static final Holder<Attribute> EXPERIENCE = DS_ATTRIBUTES.register("experience", () -> new RangedAttribute(Translation.Type.ATTRIBUTE.wrap("experience"), 1, 0, 1024).setSyncable(true));
+    public static final Holder<Attribute> EXPERIENCE = DS_ATTRIBUTES.register("experience", () -> new PercentageAttribute(Translation.Type.ATTRIBUTE.wrap("experience"), 1, 0, 1024).setSyncable(true));
 
     @Translation(type = Translation.Type.ATTRIBUTE, comments = "Dragon Breath Range")
     @Translation(type = Translation.Type.ATTRIBUTE_DESCRIPTION, comments = "Determines the range of the dragon breath ability (the range acts in terms of blocks)")

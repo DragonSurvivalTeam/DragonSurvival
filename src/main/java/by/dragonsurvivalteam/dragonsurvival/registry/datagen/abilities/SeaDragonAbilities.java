@@ -1,10 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.PotionData;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.TargetDirection;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.*;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
@@ -14,6 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.Upgrad
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.ValueBasedUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.LargeLightningParticleOption;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.SmallLightningParticleOption;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSSounds;
@@ -23,6 +21,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilit
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.AreaCloudEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AbilityTargeting;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AreaTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.DragonBreathTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.SelfTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.ProjectileData;
@@ -33,7 +32,10 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 
 import java.util.List;
@@ -60,6 +62,16 @@ public class SeaDragonAbilities {
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Sea Vision")
     public static final ResourceKey<DragonAbility> SEA_EYES = DragonAbilities.key("sea_eyes");
+
+
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
+            "■ AOE Buff: multiplies the amount of §2experience§r gained from monsters.\n"
+    })
+    @Translation(type = Translation.Type.ABILITY, comments = "Soul Revelation")
+    public static final ResourceKey<DragonAbility> SOUL_REVELATION = DragonAbilities.key("soul_revelation");
+
+    @Translation(type = Translation.Type.MODIFIER, comments = "Revealing the Soul")
+    public static final ResourceLocation REVEALING_THE_SOUL = DragonSurvival.res("revealing_the_soul");
 
     public static void registerAbilities(final BootstrapContext<DragonAbility> context) {
         registerActiveAbilities(context);
@@ -206,6 +218,45 @@ public class SeaDragonAbilities {
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_eyes_2"), 2),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_eyes_3"), 3),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_eyes_4"), 4)
+                ))
+        ));
+
+        context.register(SOUL_REVELATION, new DragonAbility(
+                new Activation(
+                        Activation.Type.ACTIVE_SIMPLE,
+                        Optional.of(LevelBasedValue.constant(1)),
+                        Optional.empty(),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(1))),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
+                        Optional.of(new Activation.Sound(
+                                Optional.empty(),
+                                Optional.empty(),
+                                Optional.empty(),
+                                Optional.of(SoundEvents.UI_TOAST_IN)
+                        )),
+                        Optional.of(new Activation.Animations(
+                                Optional.of(Either.right(new SimpleAbilityAnimation("cast_mass_buff", AnimationLayer.BASE, 2, true, true))),
+                                Optional.empty(),
+                                Optional.of(new SimpleAbilityAnimation("mass_buff", AnimationLayer.BASE, 0, true, true))
+                        ))
+                ),
+                Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 3, LevelBasedValue.lookup(List.of(0f, 15f, 35f), LevelBasedValue.perLevel(15))),
+                Optional.empty(),
+                List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(
+                        ModifierEffect.single(new ModifierWithDuration(
+                                REVEALING_THE_SOUL,
+                                DragonSurvival.res("textures/modifiers/revealing_the_soul.png"),
+                                List.of(new Modifier(DSAttributes.EXPERIENCE, LevelBasedValue.perLevel(0.5f), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
+                                LevelBasedValue.perLevel(Functions.secondsToTicks(60)),
+                                false
+                        ), false),
+                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/revealing_the_soul_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/revealing_the_soul_1"), 1),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/revealing_the_soul_2"), 2),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/revealing_the_soul_3"), 3)
                 ))
         ));
     }

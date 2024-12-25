@@ -2,7 +2,8 @@
   "abilities": [
     "dragonsurvival:ball_lightning",
     "dragonsurvival:storm_breath",
-    "dragonsurvival:sea_eyes"
+    "dragonsurvival:sea_eyes",
+    "dragonsurvival:soul_revelation"
   ],
   "misc_resources": {
     "ability_bar": "dragonsurvival:textures/gui/casting_bars/cave_cast_bar.png",

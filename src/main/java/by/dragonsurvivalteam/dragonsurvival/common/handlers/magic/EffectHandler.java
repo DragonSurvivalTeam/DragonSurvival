@@ -131,12 +131,6 @@ public class EffectHandler {
 
         if (player != null) {
             int droppedExperience = event.getDroppedExperience();
-
-            if (player.hasEffect(DSEffects.REVEALING_THE_SOUL)) {
-                // FIXME
-                //droppedExperience += (int) Math.min(RevealingTheSoulAbility.revealingTheSoulMaxEXP, event.getDroppedExperience() * RevealingTheSoulAbility.revealingTheSoulMultiplier);
-            }
-
             event.setDroppedExperience((int) (droppedExperience * player.getAttributeValue(DSAttributes.EXPERIENCE)));
         }
     }
