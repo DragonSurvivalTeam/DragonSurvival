@@ -12,6 +12,7 @@
     "dragonsurvival:fire_immunity",
     "dragonsurvival:cave_wings",
     "dragonsurvival:cave_claws_and_teeth",
+    "dragonsurvival:lava_swimming",
     "dragonsurvival:empty_ability",
     "dragonsurvival:empty_ability_2",
     "dragonsurvival:empty_ability_3",
@@ -70,7 +71,6 @@
   "penalties": [
     "dragonsurvival:snow_and_rain_weakness",
     "dragonsurvival:water_weakness",
-    "dragonsurvival:lava_swimming",
     "dragonsurvival:item_blacklist"
   ]
 }

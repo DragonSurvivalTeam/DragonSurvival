@@ -31,4 +31,5 @@ public class DSDataAttachments {
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<MagicData>> MAGIC = DS_ATTACHMENT_TYPES.register("magic_data", () -> AttachmentType.serializable(MagicData::new).copyOnDeath().build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<OnAttackEffects>> ON_ATTACK_EFFECTS = DS_ATTACHMENT_TYPES.register("on_attack_effects", () -> AttachmentType.builder(OnAttackEffects::new).build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<SummonedEntities>> SUMMONED_ENTITIES = DS_ATTACHMENT_TYPES.register("summoned_entities", () -> AttachmentType.serializable(SummonedEntities::new).build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<SwimData>> SWIM = DS_ATTACHMENT_TYPES.register("swim_data", () -> AttachmentType.builder(SwimData::new).build());
 }

@@ -77,6 +77,7 @@ public class DragonTypes {
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.FIRE_IMMUNITY),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.CAVE_WINGS),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.CAVE_CLAWS_AND_TEETH),
+                        context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.LAVA_SWIMMING),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.EMPTY_ABILITY),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.EMPTY_ABILITY_2),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.EMPTY_ABILITY_3),
@@ -88,7 +89,6 @@ public class DragonTypes {
                 HolderSet.direct(
                         context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.SNOW_AND_RAIN_WEAKNESS),
                         context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.WATER_WEAKNESS),
-                        context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.LAVA_SWIMMING),
                         context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.ITEM_BLACKLIST)
                 ),
                 List.of(),

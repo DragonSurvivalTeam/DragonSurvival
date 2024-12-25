@@ -12,11 +12,9 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.Tags;
 
 import java.util.List;
@@ -35,12 +33,6 @@ public class DragonPenalties {
     })
     @Translation(type = Translation.Type.PENALTY, comments = "Water Weakness")
     public static final ResourceKey<DragonPenalty> WATER_WEAKNESS = DragonPenalties.key("water_weakness");
-
-    @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
-            "■ Cave dragons can swim in lava, but still need to hold their breath when swimming in it.\n",
-    })
-    @Translation(type = Translation.Type.PENALTY, comments = "Lava Swimming")
-    public static final ResourceKey<DragonPenalty> LAVA_SWIMMING = DragonPenalties.key("lava_swimming");
 
     @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
             "■ Dragons are unable to wield or equip certain items.\n",
@@ -89,25 +81,6 @@ public class DragonPenalties {
 
                 new InstantTrigger(
                         10
-                )
-        ));
-
-        context.register(LAVA_SWIMMING, new DragonPenalty(
-                DragonSurvival.res("abilities/cave/hot_blood_0"),
-                false,
-                List.of(Condition.eyeInFluid(NeoForgeMod.LAVA_TYPE)),
-                new DamagePenalty(
-                        context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.DROWN),
-                        2.0f
-                ),
-                new SupplyTrigger(
-                        "lava_supply",
-                        DSAttributes.LAVA_OXYGEN_AMOUNT,
-                        40,
-                        1.0f,
-                        0.013f,
-                        List.of(),
-                        false
                 )
         ));
 

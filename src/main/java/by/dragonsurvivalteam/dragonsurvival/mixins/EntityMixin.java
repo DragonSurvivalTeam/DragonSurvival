@@ -12,9 +12,11 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.fluids.FluidType;
 import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -170,6 +172,27 @@ public abstract class EntityMixin {
         if (summonData.getInstance(entity) != null) {
             callback.setReturnValue(true);
         }
+    }
+
+    @Unique public FluidType dragonSurvival$previousEyeInFluidType = null;
+
+    @Unique public FluidType dragonSurvival$eyeInFluidTypeLastTick = null;
+
+    @ModifyReturnValue(method = "getMaxAirSupply", at = @At("RETURN"))
+    private int dragonSurvival$modifyMaxAirSupply(int maxAirSupply) {
+        Entity self = (Entity) (Object) this;
+        if(self instanceof Player player) {
+            SwimData swimData = SwimData.getData(player);
+            int newMaxAirSupply = swimData.getMaxOxygen(self.getEyeInFluidType());
+            // If air supply is 0, we don't want to modify vanilla behavior. If air supply is -1, that means infinite air supply (which is handled in LivingBreatheEvent, not here)
+            if(newMaxAirSupply < 0) {
+                return maxAirSupply;
+            }
+
+            return newMaxAirSupply;
+        }
+
+        return maxAirSupply;
     }
 
     @Shadow public abstract double getX();

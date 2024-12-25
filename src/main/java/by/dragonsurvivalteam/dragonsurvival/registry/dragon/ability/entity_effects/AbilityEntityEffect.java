@@ -54,6 +54,7 @@ public interface AbilityEntityEffect {
             event.register(REGISTRY_KEY, DragonSurvival.res("on_attack"), () -> OnAttackEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("spin_or_flight"), () -> SpinOrFlightEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("item_conversion"), () -> ItemConversionEffect.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("swim"), () -> SwimEffect.CODEC);
         }
     }
 }

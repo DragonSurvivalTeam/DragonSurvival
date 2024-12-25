@@ -125,6 +125,12 @@ public class CaveDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Summon Test")
     public static final ResourceKey<DragonAbility> SUMMON_TEST = DragonAbilities.key("summon_test");
 
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
+            "■ Cave dragons can swim in lava, but still need to hold their breath when swimming in it.\n",
+    })
+    @Translation(type = Translation.Type.ABILITY, comments = "Lava Swimming")
+    public static final ResourceKey<DragonAbility> LAVA_SWIMMING = DragonAbilities.key("lava_swimming");
+
     public static final ResourceKey<DragonAbility> EMPTY_ABILITY = DragonAbilities.key("empty_ability");
     public static final ResourceKey<DragonAbility> EMPTY_ABILITY_2 = DragonAbilities.key("empty_ability_2");
     public static final ResourceKey<DragonAbility> EMPTY_ABILITY_3 = DragonAbilities.key("empty_ability_3");
@@ -484,6 +490,25 @@ public class CaveDragonAbilities {
                         AbilityTargeting.EntityTargetingMode.TARGET_ALL
                 ), true), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_dragon_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_dragon_1"), 1)
+                ))
+        ));
+
+        context.register(LAVA_SWIMMING, new DragonAbility(
+                Activation.passive(),
+                Optional.empty(), // TODO :: Should this be upgradable?
+                Optional.empty(),
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                                List.of(new SwimEffect(
+                                            LevelBasedValue.perLevel(Functions.secondsToTicks(180), Functions.secondsToTicks(60)),
+                                            NeoForgeMod.LAVA_TYPE
+                                        )
+                                ),
+                                AbilityTargeting.EntityTargetingMode.TARGET_ALL
+                        ), true), LevelBasedValue.constant(1))),
+                new LevelBasedResource(List.of(
+                        // TODO:: Needs textures
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_dragon_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_dragon_1"), 1)
                 ))

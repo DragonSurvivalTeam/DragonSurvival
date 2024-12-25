@@ -10,6 +10,7 @@
     "AttributesMixin",
     "BlockMixin",
     "EndPortalBlockMixin",
+    "EntityAccessor",
     "EntityMixin",
     "FireworkRocketItemMixin",
     "Holder$ReferenceAccess",
@@ -33,6 +34,9 @@
     "VaultBlockEntityServerMixin",
     "VillagerHostilesSensorMixin",
     "VillagerMixin",
+    "client.TextureAtlasAccess",
+    "client.TextureAtlasAccess",
+    "client.TextureAtlasHolderAccess",
     "tool_swap.ServerPlayerGameModeEndMixin",
     "tool_swap.ServerPlayerGameModeStartMixin"
   ],
