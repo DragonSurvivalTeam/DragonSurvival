@@ -42,9 +42,11 @@ public class DragonPenaltyHUD {
             boolean shouldRender = penaltySupply.hasSupply(supplyType);
             if(supplyTrigger != null) {
                 shouldRender = shouldRender || supplyTrigger.displayLikeHungerBar();
+            } else {
+                shouldRender = shouldRender && supplyPercentage < 1;
             }
 
-            if(shouldRender && supplyPercentage < 1) {
+            if(shouldRender) {
                 RenderSystem.enableBlend();
 
                 rightHeight = gui.rightHeight;

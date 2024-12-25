@@ -112,8 +112,14 @@ public class SeaDragonAbilities {
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
             "■ Sea dragons have an innate immunity to lightning."
     })
-    @Translation(type = Translation.Type.ABILITY, comments = "Sea Dragon")
-    public static final ResourceKey<DragonAbility> ELECTRICITY_IMMUNITY = DragonAbilities.key("electricity_immunity");
+    @Translation(type = Translation.Type.ABILITY, comments = "Electric Immunity")
+    public static final ResourceKey<DragonAbility> ELECTRIC_IMMUNITY = DragonAbilities.key("electric_immunity");
+
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
+            "■ Sea dragons are amphibious, and do not need to hold their breath underwater. In addition, they can swim much faster than other dragons."
+    })
+    @Translation(type = Translation.Type.ABILITY, comments = "Amphibious")
+    public static final ResourceKey<DragonAbility> AMPHIBIOUS = DragonAbilities.key("amphibious");
 
     public static void registerAbilities(final BootstrapContext<DragonAbility> context) {
         registerActiveAbilities(context);
@@ -458,7 +464,7 @@ public class SeaDragonAbilities {
                 ))
         ));
 
-        context.register(ELECTRICITY_IMMUNITY, new DragonAbility(
+        context.register(ELECTRIC_IMMUNITY, new DragonAbility(
                 Activation.passive(),
                 Optional.empty(),
                 Optional.empty(),
@@ -472,8 +478,37 @@ public class SeaDragonAbilities {
                         AbilityTargeting.EntityTargetingMode.TARGET_ALL
                 ), true), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_dragon_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_dragon_1"), 1)
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_dragon_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_dragon_1"), 1)
+                ))
+        ));
+
+        context.register(AMPHIBIOUS, new DragonAbility(
+                Activation.passive(),
+                Optional.empty(),
+                Optional.empty(),
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        List.of(new SwimEffect(
+                                LevelBasedValue.constant(-1),
+                                NeoForgeMod.WATER_TYPE)
+                        ),
+                        AbilityTargeting.EntityTargetingMode.TARGET_ALL), true), LevelBasedValue.constant(1)),
+                        new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                                List.of(new ModifierEffect(
+                                        List.of(
+                                                new ModifierWithDuration(
+                                                        DragonSurvival.res("amphibious"),
+                                                        ModifierWithDuration.DEFAULT_MODIFIER_ICON,
+                                                        List.of(new Modifier(NeoForgeMod.SWIM_SPEED, LevelBasedValue.constant(1.0f), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
+                                                        LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                                        true
+                                                )
+                                        ))
+                                ),
+                        AbilityTargeting.EntityTargetingMode.TARGET_ALL), true), LevelBasedValue.constant(1))),
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_dragon_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_dragon_1"), 1)
                 ))
         ));
     }

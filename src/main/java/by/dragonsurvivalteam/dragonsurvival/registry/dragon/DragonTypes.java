@@ -145,7 +145,8 @@ public class DragonTypes {
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(SeaDragonAbilities.HYDRATION),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(SeaDragonAbilities.SEA_CLAWS_AND_TEETH),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(SeaDragonAbilities.SEA_WINGS),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(SeaDragonAbilities.ELECTRICITY_IMMUNITY)
+                        context.lookup(DragonAbility.REGISTRY).getOrThrow(SeaDragonAbilities.ELECTRIC_IMMUNITY),
+                        context.lookup(DragonAbility.REGISTRY).getOrThrow(SeaDragonAbilities.AMPHIBIOUS)
                 ),
                 HolderSet.direct(
                         context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.THIN_SKIN)

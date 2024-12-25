@@ -29,11 +29,11 @@
     "texture_entries": [
       {
         "from_level": 0,
-        "texture_resource": "dragonsurvival:abilities/cave/cave_dragon_0"
+        "texture_resource": "dragonsurvival:abilities/sea/sea_dragon_0"
       },
       {
         "from_level": 1,
-        "texture_resource": "dragonsurvival:abilities/cave/cave_dragon_1"
+        "texture_resource": "dragonsurvival:abilities/sea/sea_dragon_1"
       }
     ]
   }

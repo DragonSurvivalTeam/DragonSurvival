@@ -10,7 +10,8 @@
     "dragonsurvival:hydration",
     "dragonsurvival:sea_claws_and_teeth",
     "dragonsurvival:sea_wings",
-    "dragonsurvival:electricity_immunity"
+    "dragonsurvival:electric_immunity",
+    "dragonsurvival:amphibious"
   ],
   "misc_resources": {
     "ability_bar": "dragonsurvival:textures/gui/casting_bars/cave_cast_bar.png",
