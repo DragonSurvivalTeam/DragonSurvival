@@ -1,14 +1,17 @@
 package by.dragonsurvivalteam.dragonsurvival.common.handlers.magic;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.EntityStateHandler;
+import by.dragonsurvivalteam.dragonsurvival.common.particles.SeaSweepParticleOption;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEnchantments;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSParticles;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDamageTypeTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEffectTags;
 import by.dragonsurvivalteam.dragonsurvival.util.AdditionalEffectData;
 import by.dragonsurvivalteam.dragonsurvival.util.EnchantmentUtils;
+import net.minecraft.client.particle.CritParticle;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleOptions;
@@ -18,11 +21,13 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import net.neoforged.neoforge.event.entity.EntityStruckByLightningEvent;
 import net.neoforged.neoforge.event.entity.living.LivingExperienceDropEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
@@ -102,23 +107,31 @@ public class EffectHandler {
 
     @SubscribeEvent
     public static void livingHurt(final LivingIncomingDamageEvent event) {
-        if (event.getEntity() instanceof LivingEntity entity) {
-            if (event.getSource().getEntity() instanceof LivingEntity source) {
-                if (entity.hasEffect(DSEffects.BLOOD_SIPHON)) {
-                    source.heal(event.getAmount() * 0.1f);
+        if (event.getEntity() instanceof LivingEntity target) {
+            if (event.getSource().getEntity() instanceof LivingEntity attacker) {
+                if (target.hasEffect(DSEffects.BLOOD_SIPHON)) {
+                    attacker.heal(event.getAmount() * 0.1f);
                 }
+
                 if (event.getEntity().level().registryAccess().registry(Registries.ENCHANTMENT).isPresent()) {
                     Registry<Enchantment> enchantments = event.getEntity().level().registryAccess().registry(Registries.ENCHANTMENT).get();
                     if (event.getSource().is(DSDamageTypeTags.DRAGON_MAGIC)) {
                         Optional<Holder.Reference<Enchantment>> draconicSuperiority = enchantments.getHolder(DSEnchantments.DRACONIC_SUPERIORITY);
                         if (draconicSuperiority.isPresent()) {
-                            EnchantmentHelper.getEnchantmentLevel(draconicSuperiority.get(), source);
-                            event.setAmount(event.getAmount() * 1.2f + (0.08f * EnchantmentHelper.getEnchantmentLevel(draconicSuperiority.get(), source)));
+                            EnchantmentHelper.getEnchantmentLevel(draconicSuperiority.get(), attacker);
+                            event.setAmount(event.getAmount() * 1.2f + (0.08f * EnchantmentHelper.getEnchantmentLevel(draconicSuperiority.get(), attacker)));
                         }
                     }
                     if (event.getEntity().getHealth() == event.getEntity().getMaxHealth()) {
                         Optional<Holder.Reference<Enchantment>> murderersCunning = enchantments.getHolder(DSEnchantments.MURDERERS_CUNNING);
-                        murderersCunning.ifPresent(enchantmentReference -> event.setAmount(event.getAmount() * 1.4f + (0.2f * EnchantmentHelper.getEnchantmentLevel(enchantmentReference, source))));
+                        murderersCunning.ifPresent(enchantmentReference -> event.setAmount(event.getAmount() * 1.4f + (0.2f * EnchantmentHelper.getEnchantmentLevel(enchantmentReference, attacker))));
+                    }
+                }
+
+                AttributeInstance armorIgnoreChance = attacker.getAttribute(DSAttributes.ARMOR_IGNORE_CHANCE);
+                if (armorIgnoreChance != null && armorIgnoreChance.getValue() > 0) {
+                    if(armorIgnoreChance.getValue() < target.level().random.nextDouble()) {
+                        event.addReductionModifier(DamageContainer.Reduction.ARMOR, (container, reductionIn) -> 0);
                     }
                 }
             }

@@ -3,7 +3,10 @@
     "dragonsurvival:ball_lightning",
     "dragonsurvival:storm_breath",
     "dragonsurvival:sea_eyes",
-    "dragonsurvival:soul_revelation"
+    "dragonsurvival:soul_revelation",
+    "dragonsurvival:sea_athletics",
+    "dragonsurvival:sea_magic",
+    "dragonsurvival:spectral_impact"
   ],
   "misc_resources": {
     "ability_bar": "dragonsurvival:textures/gui/casting_bars/cave_cast_bar.png",

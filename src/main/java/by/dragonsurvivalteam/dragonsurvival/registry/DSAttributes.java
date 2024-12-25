@@ -58,6 +58,10 @@ public class DSAttributes {
     @Translation(type = Translation.Type.ATTRIBUTE_DESCRIPTION, comments = "The amount of oxygen the dragon gets when swimming in lava")
     public static final Holder<Attribute> LAVA_OXYGEN_AMOUNT = DS_ATTRIBUTES.register("lava_oxygen_amount", () -> new RangedAttribute(Translation.Type.ATTRIBUTE.wrap("lava_oxygen_bonus"), 3600, 0, 16384).setSyncable(true));
 
+    @Translation(type = Translation.Type.ATTRIBUTE, comments = "Armor Ignore Chance")
+    @Translation(type = Translation.Type.ATTRIBUTE_DESCRIPTION, comments = "The chance to ignore armor when attacking")
+    public static final Holder<Attribute> ARMOR_IGNORE_CHANCE = DS_ATTRIBUTES.register("armor_ignore_chance", () -> new PercentageAttribute(Translation.Type.ATTRIBUTE.wrap("armor_ignore_chance"), 0, 0, 1).setSyncable(true));
+
     @SubscribeEvent
     public static void attachAttributes(final EntityAttributeModificationEvent event) {
         event.add(EntityType.PLAYER, FLIGHT_STAMINA_COST);
@@ -69,6 +73,7 @@ public class DSAttributes {
         event.add(EntityType.PLAYER, BLOCK_BREAK_RADIUS);
         event.add(EntityType.PLAYER, PENALTY_RESISTANCE_TIME);
         event.add(EntityType.PLAYER, LAVA_OXYGEN_AMOUNT);
+        event.add(EntityType.PLAYER, ARMOR_IGNORE_CHANCE);
 
         event.getTypes().forEach(type -> event.add(type, LAVA_SWIM_SPEED));
     }

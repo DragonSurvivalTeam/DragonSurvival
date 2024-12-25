@@ -88,6 +88,10 @@ public class SeaDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Sea Magic")
     public static final ResourceKey<DragonAbility> SEA_MAGIC = DragonAbilities.key("sea_magic");
 
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Gives a chance to make your attack ignore enemy armor.")
+    @Translation(type = Translation.Type.ABILITY, comments = "Spectral Impact")
+    public static final ResourceKey<DragonAbility> SPECTRAL_IMPACT = DragonAbilities.key("spectral_impact");
+
     public static void registerAbilities(final BootstrapContext<DragonAbility> context) {
         registerActiveAbilities(context);
         registerPassiveAbilities(context);
@@ -343,6 +347,28 @@ public class SeaDragonAbilities {
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_magic_8"), 8),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_magic_9"), 9),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_magic_10"), 10)
+                ))
+        ));
+
+        context.register(SPECTRAL_IMPACT, new DragonAbility(
+                Activation.passive(),
+                Upgrade.value(ValueBasedUpgrade.Type.MANUAL, 3, LevelBasedValue.perLevel(15)),
+                Optional.empty(),
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        ModifierEffect.single(new ModifierWithDuration(
+                                DragonSurvival.res("spectral_impact"),
+                                ModifierWithDuration.DEFAULT_MODIFIER_ICON,
+                                List.of(new Modifier(DSAttributes.ARMOR_IGNORE_CHANCE, LevelBasedValue.perLevel(0.15f), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
+                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                true
+                        ), false),
+                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                ), true), LevelBasedValue.constant(1))),
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/spectral_impact_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/spectral_impact_1"), 1),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/spectral_impact_2"), 2),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/spectral_impact_3"), 3)
                 ))
         ));
     }

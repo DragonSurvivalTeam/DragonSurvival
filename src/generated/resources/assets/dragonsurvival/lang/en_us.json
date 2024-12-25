@@ -1,4 +1,6 @@
 {
+  "attribute.dragonsurvival.armor_ignore_chance": "Armor Ignore Chance",
+  "attribute.dragonsurvival.armor_ignore_chance.desc": "The chance to ignore armor when attacking",
   "attribute.dragonsurvival.block_break_radius": "Block Break Radius",
   "attribute.dragonsurvival.block_break_radius.desc": "Determines the radius that you can break blocks when mining",
   "attribute.dragonsurvival.dragon_breath_range": "Dragon Breath Range",
@@ -168,6 +170,8 @@
   "dragon_ability.dragonsurvival.sea_magic.desc": "■ Upgrading this ability increases your maximum mana pool. Cave dragon mana is restored by standing on wet blocks.\n",
   "dragon_ability.dragonsurvival.soul_revelation": "Soul Revelation",
   "dragon_ability.dragonsurvival.soul_revelation.desc": "■ AOE Buff: multiplies the amount of §2experience§r gained from monsters.\n",
+  "dragon_ability.dragonsurvival.spectral_impact": "Spectral Impact",
+  "dragon_ability.dragonsurvival.spectral_impact.desc": "■ Gives a chance to make your attack ignore enemy armor.",
   "dragon_ability.dragonsurvival.spike": "Spike",
   "dragon_ability.dragonsurvival.spike.desc": "■ Shoot out sharp §cdarts§r, which fly a large distance to pierce your target. Less effective underwater.",
   "dragon_ability.dragonsurvival.storm_breath": "Storm Breath",
