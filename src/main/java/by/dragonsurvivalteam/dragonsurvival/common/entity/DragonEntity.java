@@ -19,6 +19,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilit
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
@@ -52,6 +53,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
      */
     public static ConcurrentHashMap<Integer, Integer> dragonsJumpingTicks = new ConcurrentHashMap<>(20);
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+    public PoseStack.Pose currentlyRenderedPose;
 
     public final ArrayList<Double> bodyYawHistory = new ArrayList<>();
     public double currentBodyYawChange = 0;

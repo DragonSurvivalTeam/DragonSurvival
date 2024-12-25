@@ -229,7 +229,7 @@ public class CaveDragonAbilities {
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.block(List.of(new FireEffect(LevelBasedValue.constant(0.05f)))), LevelBasedValue.constant(1)), LevelBasedValue.constant(1)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 List.of(new BreathParticlesEffect(
-                                        0.4f,
+                                        0.04f,
                                         0.02f,
                                         new SmallFireParticleOption(37, true),
                                         new LargeFireParticleOption(37, false)

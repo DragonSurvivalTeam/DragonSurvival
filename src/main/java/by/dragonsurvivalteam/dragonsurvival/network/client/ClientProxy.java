@@ -36,6 +36,10 @@ import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.joml.Vector3d;
+import software.bernie.geckolib.animation.state.BoneSnapshot;
+import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.loading.json.raw.Bone;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -377,22 +381,52 @@ public class ClientProxy {
             }
     }
 
+    private static Vec3 calculateParticleVelocity(float yaw, float pitch, float speed) {
+        float xVel = (float) (Math.sin(yaw) * Math.cos(pitch) * speed);
+        float yVel = (float) Math.sin(pitch) * speed;
+        float zVel = (float) (Math.cos(yaw) * Math.cos(pitch) * speed);
+        return new Vec3(xVel, yVel, zVel);
+    }
+
     public static void handleSyncBreathParticles(SyncBreathParticles message) {
-        Vec3 normalizedVelocity = new Vec3(message.velocity().x, message.velocity().y, message.velocity().z).normalize();
+        if(!(Minecraft.getInstance().level.getEntity(message.playerId()) instanceof Player player)) {
+            return;
+        }
+
+        DragonStateHandler handler = DragonStateProvider.getData(player);
+
+        // TODO :: Figure out how to render particles from the mouth bone
+        /*DragonEntity dragonEntity = ClientDragonRenderer.playerDragonHashMap.get(player.getId()).get();
+        BoneSnapshot breathSourceBoneSnapshot = dragonEntity.getAnimatableInstanceCache().getManagerForId(message.playerId()).getBoneSnapshotCollection().get("BreathSource");
+        GeoBone breathSourceBone = breathSourceBoneSnapshot.getBone();
+        Vector3d boneWorldPos = breathSourceBone.getWorldPosition();*/
+
+        float yaw = (float) Math.toRadians(-player.getYRot());
+        float pitch = (float) Math.toRadians(-player.getXRot());
+        float speed = (float) (handler.getSize() * message.speedPerSize());
+
+        Vec3 eyePos = player.getEyePosition();
+        Vec3 lookAngle = player.getLookAngle();
+        Vec3 position;
+        if (player.getAbilities().flying) {
+            Vec3 forward = lookAngle.scale(2.0F);
+            position = eyePos.add(forward).add(0F, -0.1 - 0.5F * (handler.getSize() / 30F), 0F);
+        } else {
+            Vec3 forward = lookAngle.scale(1.0F);
+            position = eyePos.add(forward).add(0F, -0.1F - 0.2F * (handler.getSize() / 30F), 0F);
+        }
+
+        RandomSource rand = Minecraft.getInstance().level.getRandom();
+
         for (int i = 0; i < message.numParticles(); i++) {
-            RandomSource rand = Minecraft.getInstance().level.getRandom();
-            double xSpeed = message.velocity().x + message.spread() / 2 * (rand.nextFloat() * 2 - 1) * Math.sqrt(normalizedVelocity.x * normalizedVelocity.x);
-            double ySpeed = message.velocity().y + message.spread() / 2 * (rand.nextFloat() * 2 - 1) * Math.sqrt(normalizedVelocity.y * normalizedVelocity.y);
-            double zSpeed = message.velocity().z + message.spread() / 2 * (rand.nextFloat() * 2 - 1) * Math.sqrt(normalizedVelocity.z * normalizedVelocity.z);
-            Minecraft.getInstance().level.addParticle(message.secondaryParticle(), message.position().x, message.position().y, message.position().z, xSpeed, ySpeed, zSpeed);
+            Vec3 velocity = calculateParticleVelocity((float) (yaw + message.spread() * 2 * (rand.nextDouble() * 2 - 1) * 2.f * Math.PI), (float) (pitch + message.spread() * (rand.nextDouble() * 2 - 1) * 2.f * Math.PI), speed);
+            // Get the dragon model and place the particles at the mouth of the dragon
+            Minecraft.getInstance().level.addParticle(message.secondaryParticle(), position.x, position.y, position.z, velocity.x, velocity.y, velocity.z);
         }
 
         for (int i = 0; i <  message.numParticles() / 2; i++) {
-            RandomSource rand = Minecraft.getInstance().level.getRandom();
-            double xSpeed = message.velocity().x + message.spread() * (rand.nextFloat() * 2 - 1) * Math.sqrt(normalizedVelocity.x * normalizedVelocity.x);
-            double ySpeed = message.velocity().y + message.spread() * (rand.nextFloat() * 2 - 1) * Math.sqrt(normalizedVelocity.y * normalizedVelocity.y);
-            double zSpeed = message.velocity().z + message.spread() * (rand.nextFloat() * 2 - 1) * Math.sqrt(normalizedVelocity.z * normalizedVelocity.z);
-            Minecraft.getInstance().level.addParticle(message.mainParticle(), message.position().x, message.position().y, message.position().z, xSpeed, ySpeed, zSpeed);
+            Vec3 velocity = calculateParticleVelocity((float) (yaw + message.spread() * 2 * (rand.nextDouble() * 2 - 1) * 2.f * Math.PI), (float) (pitch + message.spread() * (rand.nextDouble() * 2 - 1) * 2.f * Math.PI), speed);
+            Minecraft.getInstance().level.addParticle(message.mainParticle(), position.x, position.y, position.z, velocity.x, velocity.y, velocity.z);
         }
     }
 }

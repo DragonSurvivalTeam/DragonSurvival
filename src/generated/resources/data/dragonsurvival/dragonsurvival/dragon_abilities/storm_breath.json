@@ -81,7 +81,7 @@
                 "swirls": false
               },
               "speed_per_size": 0.02,
-              "spread": 0.4
+              "spread": 0.04
             }
           ],
           "entity_targeting_mode": "TARGET_ALL"

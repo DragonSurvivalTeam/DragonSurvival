@@ -231,7 +231,7 @@ public class ForestDragonAbilities {
                         ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 List.of(new BreathParticlesEffect(
-                                        0.4f,
+                                        0.04f,
                                         0.02f,
                                         new SmallPoisonParticleOption(37, true),
                                         new LargePoisonParticleOption(37, false)

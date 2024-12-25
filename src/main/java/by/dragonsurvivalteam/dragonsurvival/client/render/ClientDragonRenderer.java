@@ -364,6 +364,7 @@ public class ClientDragonRenderer {
                     movement.prevXRot = 0;
                 }
                 if (player != minecraft.player || !Minecraft.getInstance().options.getCameraType().isFirstPerson() || !isPlayerGliding || renderFirstPersonFlight) {
+                    playerAsDragon.currentlyRenderedPose = poseStack.last();
                     dragonRenderer.render(playerAsDragon, yaw, partialRenderTick, poseStack, renderTypeBuffer, eventLight);
                 }
 

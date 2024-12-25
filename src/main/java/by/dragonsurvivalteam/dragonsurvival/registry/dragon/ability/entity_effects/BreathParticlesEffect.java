@@ -59,7 +59,7 @@ public record BreathParticlesEffect(float spread, float speedPerSize, ParticleOp
         // Copied from BreathAbility.calculateNumberOfParticles (Wanted to avoid using the ability class as we will eventually delete it)
         int numParticles = (int) Math.max(Math.min(100, handler.getSize() * 0.6), 12);
 
-        PacketDistributor.sendToPlayersTrackingEntityAndSelf(dragon, new SyncBreathParticles(numParticles, spread, position.toVector3f(), velocity.toVector3f(), mainParticle, secondaryParticle));
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(dragon, new SyncBreathParticles(dragon.getId(), spread, speedPerSize, numParticles, mainParticle, secondaryParticle));
     }
 
     @Override

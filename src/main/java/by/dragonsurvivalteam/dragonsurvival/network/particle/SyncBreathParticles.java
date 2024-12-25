@@ -12,14 +12,14 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
-public record SyncBreathParticles(int numParticles, float spread, Vector3f position, Vector3f velocity, ParticleOptions mainParticle, ParticleOptions secondaryParticle) implements CustomPacketPayload {
+public record SyncBreathParticles(int playerId, float spread, float speedPerSize, int numParticles, ParticleOptions mainParticle, ParticleOptions secondaryParticle) implements CustomPacketPayload {
     public static final Type<SyncBreathParticles> TYPE = new Type<>(DragonSurvival.res("sync_breath_particles"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncBreathParticles> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.INT, SyncBreathParticles::numParticles,
+            ByteBufCodecs.INT, SyncBreathParticles::playerId,
             ByteBufCodecs.FLOAT, SyncBreathParticles::spread,
-            ByteBufCodecs.VECTOR3F, SyncBreathParticles::position,
-            ByteBufCodecs.VECTOR3F, SyncBreathParticles::velocity,
+            ByteBufCodecs.FLOAT, SyncBreathParticles::speedPerSize,
+            ByteBufCodecs.INT, SyncBreathParticles::numParticles,
             ParticleTypes.STREAM_CODEC, SyncBreathParticles::mainParticle,
             ParticleTypes.STREAM_CODEC, SyncBreathParticles::secondaryParticle,
             SyncBreathParticles::new

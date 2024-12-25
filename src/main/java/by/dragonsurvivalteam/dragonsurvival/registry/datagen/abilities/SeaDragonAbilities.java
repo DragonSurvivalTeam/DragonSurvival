@@ -215,7 +215,7 @@ public class SeaDragonAbilities {
                         ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 List.of(new BreathParticlesEffect(
-                                        0.4f,
+                                        0.04f,
                                         0.02f,
                                         new SmallLightningParticleOption(37, true),
                                         new LargeLightningParticleOption(37, false)
