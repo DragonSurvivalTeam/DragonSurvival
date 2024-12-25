@@ -1,4 +1,4 @@
-// 1.21.1	2024-12-24T19:28:20.178459	Registries
+// 1.21.1	2024-12-24T19:40:04.0395728	Registries
 011b2ee382ec961722c100bbf059b4aa460f44b0 data/dragonsurvival/damage_type/anti_dragon.json
 d8c3135ecd1879e98a21e83ec1bcfd68c5fc3296 data/dragonsurvival/damage_type/ball_lightning.json
 1deb2bbcd4ed46724235ab398f66ed7559c01fab data/dragonsurvival/damage_type/burn.json
@@ -39,7 +39,9 @@ b9f84897b1bb8a0929a51d72be655325829c1713 data/dragonsurvival/dragonsurvival/drag
 723803e2a887fe9e4f13e62166c2c183617b9181 data/dragonsurvival/dragonsurvival/dragon_abilities/lava_vision.json
 89860fab535cda56bb99a807dc088d9160e012c8 data/dragonsurvival/dragonsurvival/dragon_abilities/nether_breath.json
 9af86e776896b5b40eee082edefbb60fd6663819 data/dragonsurvival/dragonsurvival/dragon_abilities/poison_breath.json
+298e52e83f2fef715ca9c7204d3af29bef425bcc data/dragonsurvival/dragonsurvival/dragon_abilities/sea_athletics.json
 7a5d576480ba4f6f3a4fde81f9fe384fcedab3a3 data/dragonsurvival/dragonsurvival/dragon_abilities/sea_eyes.json
+f2d96c1b617bbd9dcd28010da959e1005094e9fe data/dragonsurvival/dragonsurvival/dragon_abilities/sea_magic.json
 276629f578660e1d3ea0cb8afe447573dbad050f data/dragonsurvival/dragonsurvival/dragon_abilities/soul_revelation.json
 ddd89dbc00df877e03b6a3c0fbec790a11577ae1 data/dragonsurvival/dragonsurvival/dragon_abilities/spike.json
 92251bd1b57dce246365b0a6ff15404424927070 data/dragonsurvival/dragonsurvival/dragon_abilities/storm_breath.json

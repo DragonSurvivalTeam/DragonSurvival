@@ -9,6 +9,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
 public class DragonAbilities {
+    public static final ResourceLocation GOOD_MANA_CONDITION = DragonSurvival.res("good_mana_condition");
+
     public static void registerAbilities(final BootstrapContext<DragonAbility> context) {
         CaveDragonAbilities.registerAbilities(context);
         ForestDragonAbilities.registerAbilities(context);

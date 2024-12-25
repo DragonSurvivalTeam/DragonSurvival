@@ -312,7 +312,7 @@ public class ForestDragonAbilities {
                                         Condition.inSunlight(10)
                                 ),
                                 ModifierEffect.single(new ModifierWithDuration(
-                                        DragonSurvival.res("good_mana_condition"),
+                                        DragonAbilities.GOOD_MANA_CONDITION,
                                         ModifierWithDuration.DEFAULT_MODIFIER_ICON,
                                         List.of(new Modifier(DSAttributes.MANA_REGENERATION, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_MULTIPLIED_BASE, Optional.empty())),
                                         LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),

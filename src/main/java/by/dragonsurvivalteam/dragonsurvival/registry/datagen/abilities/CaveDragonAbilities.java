@@ -379,7 +379,7 @@ public class CaveDragonAbilities {
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 List.of(Condition.onBlock(DSBlockTags.REGENERATES_CAVE_DRAGON_MANA), Condition.inBlock(DSBlockTags.REGENERATES_CAVE_DRAGON_MANA)),
                                 ModifierEffect.single(new ModifierWithDuration(
-                                        DragonSurvival.res("good_mana_condition"),
+                                        DragonAbilities.GOOD_MANA_CONDITION,
                                         ModifierWithDuration.DEFAULT_MODIFIER_ICON,
                                         List.of(new Modifier(DSAttributes.MANA_REGENERATION, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_MULTIPLIED_BASE, Optional.empty())),
                                         LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),

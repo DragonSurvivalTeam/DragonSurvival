@@ -16,6 +16,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSSounds;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBlockTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.AreaCloudEffect;
@@ -73,8 +74,23 @@ public class SeaDragonAbilities {
     @Translation(type = Translation.Type.MODIFIER, comments = "Revealing the Soul")
     public static final ResourceLocation REVEALING_THE_SOUL = DragonSurvival.res("revealing_the_soul");
 
+    // --- Passive --- //
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Standing on wet surfaces will increase your movement speed.")
+    @Translation(type = Translation.Type.ABILITY, comments = "Sea Athletics")
+    public static final ResourceKey<DragonAbility> SEA_ATHLETICS = DragonAbilities.key("sea_athletics");
+
+    @Translation(type = Translation.Type.MODIFIER, comments = "Sea Athletics")
+    public static final ResourceLocation SEA_ATHLETICS_MODIFIER = DragonSurvival.res("sea_athletics");
+
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
+            "■ Upgrading this ability increases your maximum mana pool. Cave dragon mana is restored by standing on wet blocks.\n",
+    })
+    @Translation(type = Translation.Type.ABILITY, comments = "Sea Magic")
+    public static final ResourceKey<DragonAbility> SEA_MAGIC = DragonAbilities.key("sea_magic");
+
     public static void registerAbilities(final BootstrapContext<DragonAbility> context) {
         registerActiveAbilities(context);
+        registerPassiveAbilities(context);
     }
 
     private static void registerActiveAbilities(final BootstrapContext<DragonAbility> context) {
@@ -257,6 +273,76 @@ public class SeaDragonAbilities {
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/revealing_the_soul_1"), 1),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/revealing_the_soul_2"), 2),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/revealing_the_soul_3"), 3)
+                ))
+        ));
+    }
+
+    private static void registerPassiveAbilities(final BootstrapContext<DragonAbility> context) {
+        context.register(SEA_ATHLETICS, new DragonAbility(
+                Activation.passive(),
+                Upgrade.value(ValueBasedUpgrade.Type.MANUAL, 5, LevelBasedValue.perLevel(15)), // FIXME :: not the actual values
+                Optional.empty(),
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        List.of(Condition.onBlock(DSBlockTags.SPEEDS_UP_SEA_DRAGON)),
+                        ModifierEffect.single(new ModifierWithDuration(
+                                SEA_ATHLETICS_MODIFIER,
+                                ModifierWithDuration.DEFAULT_MODIFIER_ICON,
+                                // FIXME :: not the final value
+                                List.of(new Modifier(Attributes.MOVEMENT_SPEED, LevelBasedValue.perLevel(0.02f), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
+                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                false
+                        ), false),
+                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                ), true), LevelBasedValue.constant(1))),
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_athletics_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_athletics_1"), 1),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_athletics_2"), 2),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_athletics_3"), 3),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_athletics_4"), 4),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_athletics_5"), 5)
+                ))
+        ));
+
+        context.register(SEA_MAGIC, new DragonAbility(
+                Activation.passive(),
+                Upgrade.value(ValueBasedUpgrade.Type.MANUAL, 10, LevelBasedValue.perLevel(15)),
+                Optional.empty(),
+                List.of(
+                        new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                                ModifierEffect.single(new ModifierWithDuration(
+                                        DragonSurvival.res("sea_magic"),
+                                        ModifierWithDuration.DEFAULT_MODIFIER_ICON,
+                                        List.of(new Modifier(DSAttributes.MANA, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
+                                        LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                        true
+                                ), false),
+                                AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                        ), true), LevelBasedValue.constant(1)),
+                        new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                                List.of(Condition.onBlock(DSBlockTags.REGENERATES_SEA_DRAGON_MANA), Condition.inBlock(DSBlockTags.REGENERATES_SEA_DRAGON_MANA)),
+                                ModifierEffect.single(new ModifierWithDuration(
+                                        DragonAbilities.GOOD_MANA_CONDITION,
+                                        ModifierWithDuration.DEFAULT_MODIFIER_ICON,
+                                        List.of(new Modifier(DSAttributes.MANA_REGENERATION, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_MULTIPLIED_BASE, Optional.empty())),
+                                        LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                        true
+                                ), false),
+                                AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                        ), true), LevelBasedValue.constant(1))
+                ),
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_magic_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_magic_1"), 1),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_magic_2"), 2),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_magic_3"), 3),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_magic_4"), 4),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_magic_5"), 5),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_magic_6"), 6),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_magic_7"), 7),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_magic_8"), 8),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_magic_9"), 9),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_magic_10"), 10)
                 ))
         ));
     }
