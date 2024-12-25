@@ -160,6 +160,8 @@
   "dragon_ability.dragonsurvival.nether_breath.desc": "■ Elemental breath: a stream of fire that ignites enemies and blocks. Range depends on age of the dragon.\n■ Is able to destroy some blocks. Cannot be used under water, and during rain.",
   "dragon_ability.dragonsurvival.poison_breath": "Poison Breath",
   "dragon_ability.dragonsurvival.poison_breath.desc": "■ Elemental breath: a toxic gas that creates a §c«Drain»§r area of effect, which is deadly for creatures, but helps plants grow faster.\n\n■ Range depends on the age of the dragon. Cannot be used while affected by §c«Stress»§r.",
+  "dragon_ability.dragonsurvival.sea_eyes": "Sea Vision",
+  "dragon_ability.dragonsurvival.sea_eyes.desc": "■ Personal Buff: provides §2Sea Vision§r for a short time.\n",
   "dragon_ability.dragonsurvival.spike": "Spike",
   "dragon_ability.dragonsurvival.spike.desc": "■ Shoot out sharp §cdarts§r, which fly a large distance to pierce your target. Less effective underwater.",
   "dragon_ability.dragonsurvival.storm_breath": "Storm Breath",
