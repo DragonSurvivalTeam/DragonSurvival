@@ -1,0 +1,81 @@
+{
+  "actions": [
+    {
+      "target_selection": {
+        "applied_effects": {
+          "entity_effect": [
+            {
+              "effect_type": "dragonsurvival:modifier",
+              "modifiers": [
+                {
+                  "id": "dragonsurvival:cliffhanger",
+                  "is_hidden": true,
+                  "modifiers": [
+                    {
+                      "amount": {
+                        "type": "minecraft:linear",
+                        "base": 5.0,
+                        "per_level_above_first": 1.0
+                      },
+                      "attribute": "minecraft:generic.safe_fall_distance",
+                      "operation": "add_value"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "entity_targeting_mode": "TARGET_ALLIES"
+        },
+        "target_type": "dragonsurvival:self"
+      },
+      "trigger_rate": 1.0
+    }
+  ],
+  "activation": {
+    "type": "passive"
+  },
+  "icon": {
+    "texture_entries": [
+      {
+        "from_level": 0,
+        "texture_resource": "dragonsurvival:abilities/forest/cliffhanger_0"
+      },
+      {
+        "from_level": 1,
+        "texture_resource": "dragonsurvival:abilities/forest/cliffhanger_1"
+      },
+      {
+        "from_level": 2,
+        "texture_resource": "dragonsurvival:abilities/forest/cliffhanger_2"
+      },
+      {
+        "from_level": 3,
+        "texture_resource": "dragonsurvival:abilities/forest/cliffhanger_3"
+      },
+      {
+        "from_level": 4,
+        "texture_resource": "dragonsurvival:abilities/forest/cliffhanger_4"
+      },
+      {
+        "from_level": 5,
+        "texture_resource": "dragonsurvival:abilities/forest/cliffhanger_5"
+      },
+      {
+        "from_level": 6,
+        "texture_resource": "dragonsurvival:abilities/forest/cliffhanger_6"
+      }
+    ]
+  },
+  "upgrade": {
+    "upgrade_data": {
+      "type": "manual",
+      "maximum_level": 6,
+      "requirement_or_cost": {
+        "type": "minecraft:linear",
+        "base": 15.0,
+        "per_level_above_first": 15.0
+      }
+    }
+  }
+}

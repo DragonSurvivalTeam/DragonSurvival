@@ -113,6 +113,14 @@ public class ForestDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Inspiration")
     public static final ResourceKey<DragonAbility> INSPIRATION = DragonAbilities.key("inspiration");
 
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Allows you to stay longer in dark areas.")
+    @Translation(type = Translation.Type.ABILITY, comments = "Light the Dark")
+    public static final ResourceKey<DragonAbility> LIGHT_IN_DARKNESS = DragonAbilities.key("light_in_darkness");
+
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "Your landing becomes much softer.")
+    @Translation(type = Translation.Type.ABILITY, comments = "Cliffhanger")
+    public static final ResourceKey<DragonAbility> CLIFFHANGER = DragonAbilities.key("cliffhanger");
+
     public static void registerAbilities(final BootstrapContext<DragonAbility> context) {
         registerActiveAbilities(context);
         registerPassiveAbilities(context);
@@ -441,6 +449,58 @@ public class ForestDragonAbilities {
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_athletics_3"), 3),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_athletics_4"), 4),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_athletics_5"), 5)
+                ))
+        ));
+
+        context.register(LIGHT_IN_DARKNESS, new DragonAbility(
+                Activation.passive(),
+                Upgrade.value(ValueBasedUpgrade.Type.MANUAL, 8, LevelBasedValue.perLevel(15)),
+                Optional.empty(),
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        ModifierEffect.single(new ModifierWithDuration(
+                                DragonSurvival.res("light_in_darkness"),
+                                ModifierWithDuration.DEFAULT_MODIFIER_ICON,
+                                List.of(new Modifier(DSAttributes.PENALTY_RESISTANCE_TIME, LevelBasedValue.perLevel(Functions.secondsToTicks(10)), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
+                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                true
+                        )),
+                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                ), true), LevelBasedValue.constant(1))),
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/light_in_darkness_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/light_in_darkness_1"), 1),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/light_in_darkness_2"), 2),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/light_in_darkness_3"), 3),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/light_in_darkness_4"), 4),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/light_in_darkness_5"), 5),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/light_in_darkness_6"), 6),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/light_in_darkness_7"), 7),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/light_in_darkness_8"), 8)
+                ))
+        ));
+
+        context.register(CLIFFHANGER, new DragonAbility(
+                Activation.passive(),
+                Upgrade.value(ValueBasedUpgrade.Type.MANUAL, 6, LevelBasedValue.perLevel(15)),
+                Optional.empty(),
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        ModifierEffect.single(new ModifierWithDuration(
+                                DragonSurvival.res("cliffhanger"),
+                                ModifierWithDuration.DEFAULT_MODIFIER_ICON,
+                                List.of(new Modifier(Attributes.SAFE_FALL_DISTANCE, LevelBasedValue.perLevel(5, 1), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
+                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                true
+                        )),
+                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                ), true), LevelBasedValue.constant(1))),
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/cliffhanger_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/cliffhanger_1"), 1),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/cliffhanger_2"), 2),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/cliffhanger_3"), 3),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/cliffhanger_4"), 4),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/cliffhanger_5"), 5),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/cliffhanger_6"), 6)
                 ))
         ));
     }

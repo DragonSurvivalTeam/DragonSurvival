@@ -47,6 +47,13 @@ public class DragonPenalties {
     @Translation(type = Translation.Type.ABILITY, comments = "Thin Skin")
     public static final ResourceKey<DragonPenalty> THIN_SKIN = DragonPenalties.key("thin_skin");
 
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
+            "■ The predatory plants in your body dislike §dDarkness§r. If the light level around you is lower than 4, you may receive the §c«Stress»§r effect, rapidly draining your food gauge.\n",
+            "■ The skill «Light the Dark» and effect «Forest Magic» §7could make your life easier.",
+    })
+    @Translation(type = Translation.Type.ABILITY, comments = "Fear of Darkness")
+    public static final ResourceKey<DragonPenalty> FEAR_OF_DARKNESS = DragonPenalties.key("fear_of_darkness");
+
     public static void registerPenalties(final BootstrapContext<DragonPenalty> context) {
         context.register(SNOW_AND_RAIN_WEAKNESS, new DragonPenalty(
                 DragonSurvival.res("abilities/cave/hot_blood_0"),

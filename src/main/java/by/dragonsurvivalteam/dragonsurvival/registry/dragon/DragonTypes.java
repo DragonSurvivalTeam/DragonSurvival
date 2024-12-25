@@ -210,7 +210,9 @@ public class DragonTypes {
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.FOREST_MAGIC),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.FOREST_CLAWS_AND_TEETH),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.FOREST_WINGS),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.FOREST_ATHLETICS)
+                        context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.FOREST_ATHLETICS),
+                        context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.CLIFFHANGER),
+                        context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.LIGHT_IN_DARKNESS)
                 ),
                 HolderSet.empty(),
                 List.of(),

@@ -7,7 +7,9 @@
     "dragonsurvival:forest_magic",
     "dragonsurvival:forest_claws_and_teeth",
     "dragonsurvival:forest_wings",
-    "dragonsurvival:forest_athletics"
+    "dragonsurvival:forest_athletics",
+    "dragonsurvival:cliffhanger",
+    "dragonsurvival:light_in_darkness"
   ],
   "misc_resources": {
     "ability_bar": "dragonsurvival:textures/gui/casting_bars/cave_cast_bar.png",
