@@ -6,7 +6,8 @@
     "dragonsurvival:soul_revelation",
     "dragonsurvival:sea_athletics",
     "dragonsurvival:sea_magic",
-    "dragonsurvival:spectral_impact"
+    "dragonsurvival:spectral_impact",
+    "dragonsurvival:hydration_capacity"
   ],
   "misc_resources": {
     "ability_bar": "dragonsurvival:textures/gui/casting_bars/cave_cast_bar.png",
@@ -41,5 +42,13 @@
     "secondary_color": "#00FF0000",
     "source_of_magic_background_active": "dragonsurvival:textures/gui/source_of_magic/cave_source_of_magic_0.png",
     "source_of_magic_background_passive": "dragonsurvival:textures/gui/source_of_magic/cave_source_of_magic_0.png"
-  }
+  },
+  "modifiers": [
+    {
+      "amount": 1200.0,
+      "attribute": "dragonsurvival:penalty_resistance_time",
+      "operation": "add_value"
+    }
+  ],
+  "penalties": "dragonsurvival:thin_skin"
 }

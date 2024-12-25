@@ -92,6 +92,12 @@ public class SeaDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Spectral Impact")
     public static final ResourceKey<DragonAbility> SPECTRAL_IMPACT = DragonAbilities.key("spectral_impact");
 
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
+            "■ Increases your capacity for hydration while outside of water. Will help you to survive while venturing onto land, or even in the Nether.\n",
+    })
+    @Translation(type = Translation.Type.ABILITY, comments = "Hydration Capacity")
+    public static final ResourceKey<DragonAbility> HYDRATION_CAPACITY = DragonAbilities.key("hydration_capacity");
+
     public static void registerAbilities(final BootstrapContext<DragonAbility> context) {
         registerActiveAbilities(context);
         registerPassiveAbilities(context);
@@ -371,5 +377,32 @@ public class SeaDragonAbilities {
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/spectral_impact_3"), 3)
                 ))
         ));
+
+        context.register(HYDRATION_CAPACITY, new DragonAbility(
+                Activation.passive(),
+                Upgrade.value(ValueBasedUpgrade.Type.MANUAL, 7, LevelBasedValue.perLevel(15)),
+                Optional.empty(),
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        ModifierEffect.single(new ModifierWithDuration(
+                                DragonSurvival.res("dry_resilience"),
+                                ModifierWithDuration.DEFAULT_MODIFIER_ICON,
+                                List.of(new Modifier(DSAttributes.PENALTY_RESISTANCE_TIME, LevelBasedValue.perLevel(Functions.secondsToTicks(60)), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
+                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                true
+                        ), true),
+                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                ), true), LevelBasedValue.constant(1))),
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/water_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/water_1"), 1),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/water_2"), 2),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/water_3"), 3),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/water_4"), 4),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/water_5"), 5),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/water_6"), 6),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/water_7"), 7)
+                ))
+        ));
+
     }
 }

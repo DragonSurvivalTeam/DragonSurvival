@@ -1,0 +1,86 @@
+{
+  "actions": [
+    {
+      "target_selection": {
+        "applied_effects": {
+          "entity_effect": [
+            {
+              "display_tooltip_as_seconds": true,
+              "effect_type": "dragonsurvival:modifier",
+              "modifiers": [
+                {
+                  "id": "dragonsurvival:dry_resilience",
+                  "is_hidden": true,
+                  "modifiers": [
+                    {
+                      "amount": {
+                        "type": "minecraft:linear",
+                        "base": 1200.0,
+                        "per_level_above_first": 1200.0
+                      },
+                      "attribute": "dragonsurvival:penalty_resistance_time",
+                      "operation": "add_value"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "entity_targeting_mode": "TARGET_ALLIES"
+        },
+        "target_type": "dragonsurvival:self"
+      },
+      "trigger_rate": 1.0
+    }
+  ],
+  "activation": {
+    "type": "passive"
+  },
+  "icon": {
+    "texture_entries": [
+      {
+        "from_level": 0,
+        "texture_resource": "dragonsurvival:abilities/sea/water_0"
+      },
+      {
+        "from_level": 1,
+        "texture_resource": "dragonsurvival:abilities/sea/water_1"
+      },
+      {
+        "from_level": 2,
+        "texture_resource": "dragonsurvival:abilities/sea/water_2"
+      },
+      {
+        "from_level": 3,
+        "texture_resource": "dragonsurvival:abilities/sea/water_3"
+      },
+      {
+        "from_level": 4,
+        "texture_resource": "dragonsurvival:abilities/sea/water_4"
+      },
+      {
+        "from_level": 5,
+        "texture_resource": "dragonsurvival:abilities/sea/water_5"
+      },
+      {
+        "from_level": 6,
+        "texture_resource": "dragonsurvival:abilities/sea/water_6"
+      },
+      {
+        "from_level": 7,
+        "texture_resource": "dragonsurvival:abilities/sea/water_7"
+      }
+    ]
+  },
+  "upgrade": {
+    "upgrade_data": {
+      "type": "manual",
+      "maximum_level": 7,
+      "requirement_or_cost": {
+        "type": "minecraft:linear",
+        "base": 15.0,
+        "per_level_above_first": 15.0
+      }
+    }
+  }
+}

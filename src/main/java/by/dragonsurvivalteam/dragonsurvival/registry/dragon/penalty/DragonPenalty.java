@@ -26,9 +26,10 @@ import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import java.util.List;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
-public record DragonPenalty(ResourceLocation icon, List<EntityPredicate> conditions, PenaltyEffect effect, PenaltyTrigger trigger) {
+public record DragonPenalty(ResourceLocation icon, boolean inverseConditions, List<EntityPredicate> conditions, PenaltyEffect effect, PenaltyTrigger trigger) {
     public static final Codec<DragonPenalty> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ResourceLocation.CODEC.fieldOf("icon").forGetter(DragonPenalty::icon),
+            Codec.BOOL.optionalFieldOf("inverse_conditions", false).forGetter(DragonPenalty::inverseConditions),
             EntityPredicate.CODEC.listOf().optionalFieldOf("conditions", List.of()).forGetter(DragonPenalty::conditions),
             PenaltyEffect.CODEC.fieldOf("effect").forGetter(DragonPenalty::effect),
             PenaltyTrigger.CODEC.fieldOf("trigger").forGetter(DragonPenalty::trigger)
@@ -52,10 +53,20 @@ public record DragonPenalty(ResourceLocation icon, List<EntityPredicate> conditi
 
         boolean conditionMet = conditions.isEmpty();
 
-        for (EntityPredicate condition : conditions) {
-            if (condition.matches((ServerLevel) dragon.level(), dragon.position(), dragon)) {
-                conditionMet = true;
-                break;
+        if(inverseConditions) {
+            conditionMet = true;
+            for (EntityPredicate condition : conditions) {
+                if (condition.matches((ServerLevel) dragon.level(), dragon.position(), dragon)) {
+                    conditionMet = false;
+                    break;
+                }
+            }
+        } else {
+            for (EntityPredicate condition : conditions) {
+                if (condition.matches((ServerLevel) dragon.level(), dragon.position(), dragon)) {
+                    conditionMet = true;
+                    break;
+                }
             }
         }
 

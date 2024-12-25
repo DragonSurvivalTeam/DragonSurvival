@@ -18,6 +18,7 @@
     "attribute": "dragonsurvival:lava_oxygen_amount",
     "effect_type": "dragonsurvival:supply_trigger",
     "id": "lava_supply",
+    "recovery_items": [],
     "reduction_rate": 1.0,
     "regeneration_rate": 0.013,
     "trigger_rate": 40

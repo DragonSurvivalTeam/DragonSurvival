@@ -4,6 +4,8 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DietEntry;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.GrowthIcon;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscDragonTextures;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.CaveDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.ForestDragonAbilities;
@@ -13,12 +15,15 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.datapacks.AncientDat
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalties;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.HolderSet;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ColorRGBA;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.enchantment.LevelBasedValue;
 
 import java.util.List;
 import java.util.Optional;
@@ -134,10 +139,21 @@ public class DragonTypes {
                         // Passive
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(SeaDragonAbilities.SEA_ATHLETICS),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(SeaDragonAbilities.SEA_MAGIC),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(SeaDragonAbilities.SPECTRAL_IMPACT)
+                        context.lookup(DragonAbility.REGISTRY).getOrThrow(SeaDragonAbilities.SPECTRAL_IMPACT),
+                        context.lookup(DragonAbility.REGISTRY).getOrThrow(SeaDragonAbilities.HYDRATION_CAPACITY)
                 ),
-                HolderSet.empty(),
-                List.of(),
+                HolderSet.direct(
+                        context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.THIN_SKIN)
+                ),
+                List.of(
+                        // We need to give the sea dragon some starting resistance time so they don't immediately dehydrate
+                        new Modifier(
+                                DSAttributes.PENALTY_RESISTANCE_TIME,
+                                LevelBasedValue.constant(Functions.secondsToTicks(60)),
+                                AttributeModifier.Operation.ADD_VALUE,
+                                Optional.empty()
+                        )
+                ),
                 List.of(),
                 new MiscDragonTextures(
                         DragonSurvival.res("textures/gui/food_icons/cave_food_icons.png"),

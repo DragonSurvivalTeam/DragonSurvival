@@ -5,20 +5,28 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncPenaltySupply;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncPenaltySupplyAmount;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.PenaltyTrigger;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.SupplyTrigger;
+import by.dragonsurvivalteam.dragonsurvival.util.PotionUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.PotionItem;
+import net.minecraft.world.item.alchemy.Potion;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 @EventBusSubscriber
 public class PenaltySupply implements INBTSerializable<CompoundTag> {
@@ -48,6 +56,15 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
                 data.remove(id);
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void onRegenerationItemConsumed(LivingEntityUseItemEvent.Finish destroyItemEvent) {
+        if (!(destroyItemEvent.getEntity() instanceof ServerPlayer player)) {
+            return;
+        }
+
+        getData(player).replenishSupplyFromItemStack(player, destroyItemEvent.getItem());
     }
 
     public static PenaltySupply getData(final Player player) {
@@ -139,6 +156,58 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
         PacketDistributor.sendToPlayer(player, new SyncPenaltySupplyAmount(supplyType, data.getSupply()));
     }
 
+    public Optional<Holder<DragonPenalty>> getMatchingPenalty(final String supplyType, final DragonStateHandler handler) {
+        return handler.getDragonType().value().penalties().stream().filter(penalty -> penalty.value().trigger().id().equals(supplyType)).findFirst();
+    }
+
+    public void replenishSupplyFromItemStack(final ServerPlayer player, final ItemStack itemStack) {
+        if(itemStack.isEmpty()) {
+            return;
+        }
+
+        DragonStateHandler handler = DragonStateProvider.getData(player);
+        supplyData.forEach((supplyType, data) -> {
+                    // Get the matching penalty trigger
+                    Optional<Holder<DragonPenalty>> matchingPenalty = getMatchingPenalty(supplyType, handler);
+                    if (matchingPenalty.isPresent()) {
+                        // Check if the item stack is in the recovery items list
+                        if (matchingPenalty.get().value().trigger() instanceof SupplyTrigger supplyTrigger) {
+                            Optional<Potion> potion = PotionUtils.getPotion(itemStack);
+                            List<SupplyTrigger.RecoveryItems> recoveryItemsList = supplyTrigger.recoveryItems();
+                            if(potion.isPresent()) {
+                                for(SupplyTrigger.RecoveryItems recoveryItems : recoveryItemsList) {
+                                    for(Holder<Potion> potionHolder : recoveryItems.potions()) {
+                                        if(potionHolder.value().equals(potion.get())) {
+                                            regenerateManual(player, supplyType, recoveryItems.percentRestored());
+                                            break;
+                                        }
+                                    }
+                                }
+                            } else {
+                                for(SupplyTrigger.RecoveryItems recoveryItems : recoveryItemsList) {
+                                    if(recoveryItems.items().contains(itemStack.getItemHolder())) {
+                                        regenerateManual(player, supplyType, recoveryItems.percentRestored());
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+        );
+    }
+
+    private void regenerateManual(final ServerPlayer player, final String supplyType, final float amount) {
+        Data data = supplyData.get(supplyType);
+
+        if (data == null) {
+            return;
+        }
+
+        data.regeneratePercentage(amount);
+        PacketDistributor.sendToPlayer(player, new SyncPenaltySupplyAmount(supplyType, data.getSupply()));
+    }
+
     public void initialize(final String supplyType, float maximumSupply, float reductionRate, float regenerationRate) {
         supplyData.put(supplyType, new Data(maximumSupply, maximumSupply, reductionRate, regenerationRate));
     }
@@ -180,6 +249,10 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
 
         public void regenerate() {
             currentSupply = Math.min(maximumSupply, currentSupply + maximumSupply * regenerationRate);
+        }
+
+        public void regeneratePercentage(final float amount) {
+            currentSupply = Math.min(maximumSupply, currentSupply + maximumSupply * amount);
         }
 
         public CompoundTag serializeNBT() {

@@ -2,6 +2,13 @@
   "conditions": [
     {
       "location": {
+        "fluid": {
+          "fluids": "#minecraft:water"
+        }
+      }
+    },
+    {
+      "location": {
         "can_see_sky": true
       },
       "type_specific": {
@@ -24,15 +31,23 @@
     }
   ],
   "effect": {
-    "type": "dragonsurvival:rain_burn",
+    "type": "dragonsurvival:dehydration",
     "amount": 1.0,
     "penalty_type": "dragonsurvival:take_damage"
   },
   "icon": "dragonsurvival:abilities/cave/hot_blood_0",
+  "inverse_conditions": true,
   "trigger": {
+    "display_like_hunger_bar": true,
     "effect_type": "dragonsurvival:supply_trigger",
-    "id": "rain_supply",
-    "recovery_items": [],
+    "id": "water_supply",
+    "recovery_items": [
+      {
+        "items": "minecraft:milk_bucket",
+        "percent_restored": 0.5,
+        "potions": "minecraft:water"
+      }
+    ],
     "reduction_rate": 1.0,
     "regeneration_rate": 0.013,
     "trigger_rate": 40
