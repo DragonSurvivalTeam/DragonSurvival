@@ -7,10 +7,12 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierType;
 import by.dragonsurvivalteam.dragonsurvival.mixins.PrimedTntAccess;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonedEntities;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.AbilityBlockEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.AbilityEntityEffect;
+import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -20,11 +22,13 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.random.SimpleWeightedRandomList;
+import net.minecraft.util.random.WeightedRandom;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -35,6 +39,7 @@ import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -43,12 +48,10 @@ import javax.annotation.Nullable;
 // TODO :: add optional mana cost for keeping the entity?
 // TODO :: add option to add some goals to make sure entities can act as proper summons?
 //  e.g. a target entity goal with switchable modes (on entity right click or sth.) between stuff like aggressive, stay in place, etc.
-//  add max. count (would need resource location id as well then)
 public record SummonEntityEffect(
         SimpleWeightedRandomList<Holder<EntityType<?>>> entities,
         ResourceLocation id,
         LevelBasedValue maxSummons,
-        // TODO :: should probably be per entity?
         LevelBasedValue duration,
         List<AttributeScale> attributeScales,
         boolean shouldSetAllied
@@ -85,8 +88,17 @@ public record SummonEntityEffect(
 
     @Override
     public List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
-        // TODO :: have information like x out of y (max) entities (of type z) summoned?
-        return List.of();
+        MutableComponent component = Component.translatable(LangKey.ABILITY_SUMMON, DSColors.blue(maxSummons.calculate(ability.level())));
+        int totalWeight = WeightedRandom.getTotalWeight(entities.unwrap());
+
+        entities.unwrap().forEach(wrapper -> {
+            //noinspection DataFlowIssue -> key is present
+            Component entityName = DSColors.blue(Component.translatable(wrapper.data().getKey().location().toLanguageKey()));
+            double chance = (double) wrapper.getWeight().asInt() / totalWeight;
+            component.append(Component.translatable(LangKey.ABILITY_SUMMON_CHANCE, DSColors.blue(entityName), DSColors.blue(NumberFormat.getPercentInstance().format(chance))));
+        });
+
+        return List.of(component);
     }
 
     @Override
@@ -100,22 +112,18 @@ public record SummonEntityEffect(
     }
 
     private void spawn(final ServerLevel level, final ServerPlayer dragon, final DragonAbilityInstance ability, final BlockPos spawnPosition) {
+        int newDuration = (int) duration.calculate(ability.level());
+
         SummonedEntities data = dragon.getData(DSDataAttachments.SUMMONED_ENTITIES);
         Instance instance = data.get(id);
 
         if (instance != null) {
-            if (instance.appliedAbilityLevel() != ability.level()) {
-                // TODO :: either update here or add general method to ability instance
-                //  which would update all effects when the level of said ability changes
-                //  is probaly needed to update effects with infinite duration etc.
-            }
-
-            // TODO :: make summon over max. replace the first (oldest) summon?
-            float maxSummons = this.maxSummons.calculate(ability.level());
-
-            if (instance.summonedAmount() >= maxSummons) {
+            if (instance.appliedAbilityLevel() != ability.level() || instance.currentDuration() != newDuration) {
+                // When the effect is applied to an area the entities are summoned in one tick (= duration has not decreased)
+                // Meaning this will only be reached if the ability is being cast again
+                data.remove(dragon, instance);
+            } else if (instance.summonedAmount() == maxSummons.calculate(ability.level())) {
                 // Technically could send a warning or error message, but it'd likely just end in spam
-                instance.discard(level, (int) maxSummons - instance.summonedAmount);
                 return;
             }
         }
@@ -159,7 +167,8 @@ public record SummonEntityEffect(
         entity.moveTo(spawnPosition.getX(), spawnPosition.getY(), spawnPosition.getZ(), entity.getYRot(), entity.getXRot());
 
         if (instance == null) {
-            data.add(dragon, Instance.from(this, ability.level(), (int) duration.calculate(ability.level()), entity.getUUID()));
+            instance = Instance.from(this, ability.level(), newDuration, entity.getUUID());
+            data.add(dragon, instance);
         } else {
             instance.increment(entity.getUUID());
         }

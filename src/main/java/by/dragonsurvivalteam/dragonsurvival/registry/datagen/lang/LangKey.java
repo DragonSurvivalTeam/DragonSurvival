@@ -29,91 +29,97 @@ public class LangKey {
     // --- Ability effects --- //
 
     @Translation(type = Translation.Type.MISC, comments = "Next level requires %s experience points (roughly level %s)")
-    public static final String ABILITY_LEVEL_MANUAL_UPGRADE = Translation.Type.ABILITY.wrap("general.ability_level_manual_upgrade");
+    public static final String ABILITY_LEVEL_MANUAL_UPGRADE = Translation.Type.ABILITY.wrap("general.ability.level_manual_upgrade");
 
     @Translation(type = Translation.Type.MISC, comments = "Next level will be unlocked at experience level %s")
-    public static final String ABILITY_LEVEL_AUTO_UPGRADE = Translation.Type.ABILITY.wrap("general.ability_level_auto_upgrade");
+    public static final String ABILITY_LEVEL_AUTO_UPGRADE = Translation.Type.ABILITY.wrap("general.ability.level_auto_upgrade");
 
     @Translation(type = Translation.Type.MISC, comments = "Next level will be unlocked at size %s")
-    public static final String ABILITY_GROWTH_AUTO_UPGRADE = Translation.Type.ABILITY.wrap("general.ability_growth_auto_upgrade");
+    public static final String ABILITY_GROWTH_AUTO_UPGRADE = Translation.Type.ABILITY.wrap("general.ability.growth_auto_upgrade");
 
     @Translation(type = Translation.Type.MISC, comments = "self")
-    public static final String ABILITY_TARGET_SELF = Translation.Type.ABILITY.wrap("general.ability_target_self");
+    public static final String ABILITY_TARGET_SELF = Translation.Type.ABILITY.wrap("general.ability.target_self");
 
     @Translation(type = Translation.Type.MISC, comments = " to %s")
-    public static final String ABILITY_TO_TARGET = Translation.Type.ABILITY.wrap("general.ability_to_target");
+    public static final String ABILITY_TO_TARGET = Translation.Type.ABILITY.wrap("general.ability.to_target");
 
     @Translation(type = Translation.Type.MISC, comments = " in a %s block radius")
-    public static final String ABILITY_AREA = Translation.Type.ABILITY.wrap("general.ability_area");
+    public static final String ABILITY_AREA = Translation.Type.ABILITY.wrap("general.ability.area");
 
     @Translation(type = Translation.Type.MISC, comments = " to %s in a %s block radius")
-    public static final String ABILITY_TO_TARGET_AREA = Translation.Type.ABILITY.wrap("general.ability_to_target_area");
+    public static final String ABILITY_TO_TARGET_AREA = Translation.Type.ABILITY.wrap("general.ability.to_target_area");
 
     @Translation(type = Translation.Type.MISC, comments = " in a %s block cone")
-    public static final String ABILITY_CONE = Translation.Type.ABILITY.wrap("general.ability_cone");
+    public static final String ABILITY_CONE = Translation.Type.ABILITY.wrap("general.ability.cone");
 
     @Translation(type = Translation.Type.MISC, comments = " to %s in a %s block cone")
-    public static final String ABILITY_TO_TARGET_CONE = Translation.Type.ABILITY.wrap("general.ability_to_target_cone");
+    public static final String ABILITY_TO_TARGET_CONE = Translation.Type.ABILITY.wrap("general.ability.to_target_cone");
 
     @Translation(type = Translation.Type.MISC, comments = " to %s being looked at ")
-    public static final String ABILITY_LOOKAT = Translation.Type.ABILITY.wrap("general.ability_lookat");
+    public static final String ABILITY_LOOKAT = Translation.Type.ABILITY.wrap("general.ability.lookat");
 
     @Translation(type = Translation.Type.MISC, comments = " to %s within %s blocks being looked at")
-    public static final String ABILITY_TO_TARGET_LOOKAT = Translation.Type.ABILITY.wrap("general.ability_to_target_lookat");
+    public static final String ABILITY_TO_TARGET_LOOKAT = Translation.Type.ABILITY.wrap("general.ability.to_target_lookat");
 
     @Translation(type = Translation.Type.MISC, comments = " every %s seconds")
-    public static final String ABILITY_X_SECONDS = Translation.Type.ABILITY.wrap("general.ability_x_seconds");
+    public static final String ABILITY_X_SECONDS = Translation.Type.ABILITY.wrap("general.ability.x_seconds");
 
     @Translation(type = Translation.Type.MISC, comments = " on hit")
-    public static final String ABILITY_ON_HIT = Translation.Type.ABILITY.wrap("general.on_hit");
+    public static final String ABILITY_ON_HIT = Translation.Type.ABILITY.wrap("general.ability.on_hit");
 
     @Translation(type = Translation.Type.MISC, comments = "Applies ")
-    public static final String ABILITY_APPLIES = Translation.Type.ABILITY.wrap("general.applies");
+    public static final String ABILITY_APPLIES = Translation.Type.ABILITY.wrap("general.ability.applies");
 
     @Translation(type = Translation.Type.MISC, comments = "§6■ %s §6Damage:§r %s")
-    public static final String ABILITY_DAMAGE = Translation.Type.ABILITY.wrap("general.damage");
+    public static final String ABILITY_DAMAGE = Translation.Type.ABILITY.wrap("general.ability.damage");
 
     @Translation(type = Translation.Type.MISC, comments = "§6■%s§6Explosion Power:§r %s")
-    public static final String ABILITY_EXPLOSION_POWER = Translation.Type.ABILITY.wrap("general.explosion_power");
+    public static final String ABILITY_EXPLOSION_POWER = Translation.Type.ABILITY.wrap("general.ability.explosion_power");
 
     @Translation(type = Translation.Type.MISC, comments = "§6■ Cooldown:§r %ss")
-    public static final String ABILITY_COOLDOWN = Translation.Type.ABILITY.wrap("general.cooldown");
+    public static final String ABILITY_COOLDOWN = Translation.Type.ABILITY.wrap("general.ability.cooldown");
 
     @Translation(type = Translation.Type.MISC, comments = "§6■ Initial mana cost:§r %s")
-    public static final String ABILITY_INITIAL_MANA_COST = Translation.Type.ABILITY.wrap("general.initial_mana_cost");
+    public static final String ABILITY_INITIAL_MANA_COST = Translation.Type.ABILITY.wrap("general.ability.initial_mana_cost");
 
     @Translation(type = Translation.Type.MISC, comments = "§6■ Continuous mana cost:§r %s")
-    public static final String ABILITY_CONTINUOUS_MANA_COST = Translation.Type.ABILITY.wrap("general.continuous_mana_cost");
+    public static final String ABILITY_CONTINUOUS_MANA_COST = Translation.Type.ABILITY.wrap("general.ability.continuous_mana_cost");
 
     @Translation(type = Translation.Type.MISC, comments = "§6■ Cast time:§r %ss")
-    public static final String ABILITY_CAST_TIME = Translation.Type.ABILITY.wrap("general.cast_time");
+    public static final String ABILITY_CAST_TIME = Translation.Type.ABILITY.wrap("general.ability.cast_time");
 
     @Translation(type = Translation.Type.MISC, comments = " for %s seconds")
-    public static final String ABILITY_EFFECT_DURATION = Translation.Type.ABILITY.wrap("general.effect_duration");
+    public static final String ABILITY_EFFECT_DURATION = Translation.Type.ABILITY.wrap("general.ability.effect_duration");
 
     @Translation(type = Translation.Type.MISC, comments = " with a %s chance")
-    public static final String ABILITY_EFFECT_CHANCE = Translation.Type.ABILITY.wrap("general.effect_chance");
+    public static final String ABILITY_EFFECT_CHANCE = Translation.Type.ABILITY.wrap("general.ability.effect_chance");
 
     @Translation(type = Translation.Type.MISC, comments = "§6■ Harvest Level Bonus:§r %s")
-    public static final String ABILITY_HARVEST_LEVEL_BONUS = Translation.Type.ABILITY.wrap("general.harvest_level_bonus");
+    public static final String ABILITY_HARVEST_LEVEL_BONUS = Translation.Type.ABILITY.wrap("general.ability.harvest_level_bonus");
 
     @Translation(type = Translation.Type.MISC, comments = "§6■ Immune§r to ")
-    public static final String ABILITY_IMMUNITY = Translation.Type.ABILITY.wrap("general.immunity");
+    public static final String ABILITY_IMMUNITY = Translation.Type.ABILITY.wrap("general.ability.immunity");
 
     @Translation(type = Translation.Type.MISC, comments = "§6■ %s% §r reduced damage taken from ")
-    public static final String ABILITY_DAMAGE_REDUCTION = Translation.Type.ABILITY.wrap("general.damage_reduction");
+    public static final String ABILITY_DAMAGE_REDUCTION = Translation.Type.ABILITY.wrap("general.ability.damage_reduction");
 
     @Translation(type = Translation.Type.MISC, comments = "§6■ %s% §r increased damage taken from ")
-    public static final String ABILITY_DAMAGE_INCREASE = Translation.Type.ABILITY.wrap("general.damage_increase");
+    public static final String ABILITY_DAMAGE_INCREASE = Translation.Type.ABILITY.wrap("general.ability.damage_increase");
 
     @Translation(type = Translation.Type.MISC, comments = "§6■ Can use flight")
-    public static final String ABILITY_FLIGHT = Translation.Type.ABILITY.wrap("general.flight");
+    public static final String ABILITY_FLIGHT = Translation.Type.ABILITY.wrap("general.ability.flight");
 
     @Translation(type = Translation.Type.MISC, comments = "§6■ Can use spin")
-    public static final String ABILITY_SPIN = Translation.Type.ABILITY.wrap("general.spin");
+    public static final String ABILITY_SPIN = Translation.Type.ABILITY.wrap("general.ability.spin");
+
+    @Translation(type = Translation.Type.MISC, comments = "§6■ Can summon up to %s entities:§r")
+    public static final String ABILITY_SUMMON = Translation.Type.ABILITY.wrap("general.ability.summon");
+
+    @Translation(type = Translation.Type.MISC, comments = "- %s with a chance of %s")
+    public static final String ABILITY_SUMMON_CHANCE = Translation.Type.ABILITY.wrap("general.ability.summon_chance");
 
     @Translation(type = Translation.Type.MISC, comments = " after %s seconds")
-    public static final String PENALTY_SUPPLY_TRIGGER = Translation.Type.PENALTY.wrap("general.supply_trigger");
+    public static final String PENALTY_SUPPLY_TRIGGER = Translation.Type.PENALTY.wrap("general.penalty.supply_trigger");
 
     // --- Projectile effects --- //
 

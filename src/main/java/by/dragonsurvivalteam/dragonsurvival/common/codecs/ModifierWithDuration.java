@@ -44,13 +44,12 @@ public record ModifierWithDuration(ResourceLocation id, ResourceLocation icon, L
     ).apply(instance, ModifierWithDuration::new));
 
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final LivingEntity target) {
-        int abilityLevel = ability.level();
-        int newDuration = (int) duration.calculate(abilityLevel);
+        int newDuration = (int) duration.calculate(ability.level());
 
         ModifiersWithDuration data = target.getData(DSDataAttachments.MODIFIERS_WITH_DURATION);
         Instance instance = data.get(id);
 
-        if (instance != null && instance.currentDuration() == newDuration && instance.appliedAbilityLevel() == abilityLevel) {
+        if (instance != null && instance.appliedAbilityLevel() == ability.level() && instance.currentDuration() == newDuration) {
             return;
         }
 
@@ -59,7 +58,7 @@ public record ModifierWithDuration(ResourceLocation id, ResourceLocation icon, L
         }
 
         ClientEffectProvider.ClientData clientData = new ClientEffectProvider.ClientData(icon, /* TODO */ Component.empty(), Optional.of(dragon.getUUID()));
-        instance = new ModifierWithDuration.Instance(this, clientData, abilityLevel, newDuration, new HashMap<>());
+        instance = new ModifierWithDuration.Instance(this, clientData, ability.level(), newDuration, new HashMap<>());
         data.add(target, instance);
 
         if (target instanceof ServerPlayer serverPlayer) {
