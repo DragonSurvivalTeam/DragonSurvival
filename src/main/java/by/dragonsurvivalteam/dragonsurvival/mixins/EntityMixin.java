@@ -1,12 +1,10 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.EntityStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DamageModifications;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -14,6 +12,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,6 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Entity.class)
+@Debug(export = true)
 public abstract class EntityMixin {
     /** Correctly position the passenger when riding a player dragon */
     @Inject(method = "positionRider(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/entity/Entity$MoveFunction;)V", at = @At(value = "HEAD"), cancellable = true)
@@ -139,17 +139,37 @@ public abstract class EntityMixin {
                 .orElse(false);
     }
 
-    // TODO :: why is ordinal needed here? there is only 1 parameter
-    @ModifyReturnValue(method = "isAlliedTo(Lnet/minecraft/world/entity/Entity;)Z", at = @At("RETURN"))
-    private boolean dragonSurvival$checkOwnerForAlliedTo(boolean isAlliedTo, @Local(argsOnly = true, ordinal = 0) final Entity entity) {
-        if (isAlliedTo) {
-            return true;
+    // Using 'ModifyReturnValue' seems to not work - the mixin cannot find the method
+    @Inject(method = "isAlliedTo(Lnet/minecraft/world/entity/Entity;)Z", at = @At("RETURN"), cancellable = true)
+    private void dragonSurvival$checkOwnerForAlliedTo(final Entity entity, final CallbackInfoReturnable<Boolean> callback) {
+        if (callback.getReturnValue()) {
+            return;
         }
 
         Entity self = (Entity) (Object) this;
-        return self.getExistingData(DSDataAttachments.ENTITY_HANDLER)
-                .map(data -> data.summonOwner != null && data.summonOwner.equals(entity.getUUID()))
-                .orElse(false);
+        EntityStateHandler data = self.getData(DSDataAttachments.ENTITY_HANDLER);
+
+        if (data.summonOwner == null) {
+            return;
+        }
+
+        if (entity.getUUID().equals(data.summonOwner)) {
+            callback.setReturnValue(true);
+            return;
+        }
+
+        Entity owner = data.getSummonOwner(self.level());
+
+        if (owner == null) {
+            return;
+        }
+
+        // The entity shares the same summon owner
+        SummonedEntities summonData = owner.getData(DSDataAttachments.SUMMONED_ENTITIES);
+
+        if (summonData.getInstance(entity) != null) {
+            callback.setReturnValue(true);
+        }
     }
 
     @Shadow public abstract double getX();

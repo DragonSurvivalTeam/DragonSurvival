@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.EntityStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DurationInstance;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierType;
+import by.dragonsurvivalteam.dragonsurvival.common.entity.goals.FollowSummonerGoal;
 import by.dragonsurvivalteam.dragonsurvival.mixins.PrimedTntAccess;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonedEntities;
@@ -194,6 +195,12 @@ public record SummonEntityEffect(
         if (dragon.getTeam() != null) {
             dragon.level().getScoreboard().addPlayerToTeam(entity.getScoreboardName(), dragon.getTeam());
         }
+
+        if (entity instanceof Mob mob) {
+            try {
+                mob.goalSelector.addGoal(3, new FollowSummonerGoal(mob, 1, 10, 2));
+            } catch (IllegalArgumentException ignored) { /* Ignore due to custom path navigation */ }
+        }
     }
 
     @Override
@@ -300,6 +307,16 @@ public record SummonEntityEffect(
 
             this.summonedAmount = summonedAmount;
             return false;
+        }
+
+        public void setTarget(final LivingEntity target) {
+            if (target.level() instanceof ServerLevel serverLevel) {
+                entityUUIDs.forEach(uuid -> {
+                    if (serverLevel.getEntity(uuid) instanceof Mob mob && mob.getTarget() == null) {
+                        mob.setTarget(target);
+                    }
+                });
+            }
         }
 
         @Override

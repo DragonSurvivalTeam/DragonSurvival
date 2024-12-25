@@ -40,7 +40,7 @@ public class ModifiersWithDuration extends Storage<ModifierWithDuration.Instance
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent // TODO :: would living death event also work? depends when the player attributes etc. are copied to the new player entity
     public static void removeModifiers(final PlayerEvent.Clone event) {
         // Since the modifiers are applied as permanent they need to be removed on death
         // Otherwise we lose the ability to track them and cannot remove them at all

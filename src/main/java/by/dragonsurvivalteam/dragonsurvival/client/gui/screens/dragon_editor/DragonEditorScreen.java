@@ -872,8 +872,8 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
                 DragonCommand.reInsertClawTools(minecraft.player);
             }
 
-            data.setType(dragonType, minecraft.player);
             data.setBody(dragonBody, minecraft.player);
+            data.setType(dragonType, minecraft.player);
 
             double savedSize = data.getSavedDragonSize(data.getType().getKey());
             if (!ServerConfig.saveGrowthStage || savedSize == DragonStateHandler.NO_SIZE) {
