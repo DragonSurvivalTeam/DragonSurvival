@@ -164,6 +164,8 @@
   "dragon_ability.dragonsurvival.hunter.desc": "■ Personal buff: Activates the §2Hunter§r effect, which allows you to become invisible in tall grass and increases your movement speed. Your first melee strike will remove this effect and cause a critical hit with a §c%s§r damage bonus.\n\n■ Effect does not stack. Cannot be used in flight. Will be removed early if you take damage, or attack a target.",
   "dragon_ability.dragonsurvival.hydration": "Hydration",
   "dragon_ability.dragonsurvival.hydration.desc": "■ Increases your capacity for hydration while outside of water. Will help you to survive while venturing onto land, or even in the Nether.\n",
+  "dragon_ability.dragonsurvival.inspiration": "Inspiration",
+  "dragon_ability.dragonsurvival.inspiration.desc": "■ AOE buff: provides §2Haste III§r to all nearby creatures, increasing your block harvesting speed.\n",
   "dragon_ability.dragonsurvival.lava_swimming": "Lava Swimming",
   "dragon_ability.dragonsurvival.lava_swimming.desc": "■ Cave dragons can swim in lava, but still need to hold their breath when swimming in it.\n",
   "dragon_ability.dragonsurvival.lava_vision": "Lava Vision",
