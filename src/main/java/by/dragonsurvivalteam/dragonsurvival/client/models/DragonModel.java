@@ -151,7 +151,12 @@ public class DragonModel extends GeoModel<DragonEntity> {
 
     @Override
     public ResourceLocation getModelResource(final DragonEntity dragon) {
-        return DragonStateProvider.getData(dragon.getPlayer()).getBody().value().customModel();
+        // TODO :: What would be a good fallback here?
+        if(dragon.getPlayer() == null) {
+            return DragonBody.DEFAULT_MODEL;
+        } else {
+            return DragonStateProvider.getData(dragon.getPlayer()).getBody().value().customModel();
+        }
     }
 
     @Override
