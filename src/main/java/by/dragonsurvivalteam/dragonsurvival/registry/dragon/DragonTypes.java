@@ -165,23 +165,23 @@ public class DragonTypes {
                         DragonSurvival.res("textures/gui/help_button/cave_help_button.png"),
                         DragonSurvival.res("textures/gui/growth/circle_cave.png"),
                         List.of(new GrowthIcon(
-                                        DragonSurvival.res("textures/gui/growth/sea/newborn_hover.png"),
-                                        DragonSurvival.res("textures/gui/growth/sea/newborn_main.png"),
+                                        DragonSurvival.res("textures/gui/stage/sea/newborn_hover.png"),
+                                        DragonSurvival.res("textures/gui/stage/sea/newborn_main.png"),
                                         DragonStages.newborn
                                 ),
                                 new GrowthIcon(
-                                        DragonSurvival.res("textures/gui/growth/sea/young_hover.png"),
-                                        DragonSurvival.res("textures/gui/growth/sea/young_main.png"),
+                                        DragonSurvival.res("textures/gui/stage/sea/young_hover.png"),
+                                        DragonSurvival.res("textures/gui/stage/sea/young_main.png"),
                                         DragonStages.young
                                 ),
                                 new GrowthIcon(
-                                        DragonSurvival.res("textures/gui/growth/sea/adult_hover.png"),
-                                        DragonSurvival.res("textures/gui/growth/sea/adult_main.png"),
+                                        DragonSurvival.res("textures/gui/stage/sea/adult_hover.png"),
+                                        DragonSurvival.res("textures/gui/stage/sea/adult_main.png"),
                                         DragonStages.adult
                                 ),
                                 new GrowthIcon(
-                                        DragonSurvival.res("textures/gui/growth/sea/ancient_hover.png"),
-                                        DragonSurvival.res("textures/gui/growth/sea/ancient_main.png"),
+                                        DragonSurvival.res("textures/gui/stage/sea/ancient_hover.png"),
+                                        DragonSurvival.res("textures/gui/stage/sea/ancient_main.png"),
                                         AncientDatapack.ancient
                                 )
                         ),
@@ -218,23 +218,23 @@ public class DragonTypes {
                         DragonSurvival.res("textures/gui/help_button/cave_help_button.png"),
                         DragonSurvival.res("textures/gui/growth/circle_cave.png"),
                         List.of(new GrowthIcon(
-                                        DragonSurvival.res("textures/gui/growth/forest/newborn_hover.png"),
-                                        DragonSurvival.res("textures/gui/growth/forest/newborn_main.png"),
+                                        DragonSurvival.res("textures/gui/stage/forest/newborn_hover.png"),
+                                        DragonSurvival.res("textures/gui/stage/forest/newborn_main.png"),
                                         DragonStages.newborn
                                 ),
                                 new GrowthIcon(
-                                        DragonSurvival.res("textures/gui/growth/forest/young_hover.png"),
-                                        DragonSurvival.res("textures/gui/growth/forest/young_main.png"),
+                                        DragonSurvival.res("textures/gui/stage/forest/young_hover.png"),
+                                        DragonSurvival.res("textures/gui/stage/forest/young_main.png"),
                                         DragonStages.young
                                 ),
                                 new GrowthIcon(
-                                        DragonSurvival.res("textures/gui/growth/forest/adult_hover.png"),
-                                        DragonSurvival.res("textures/gui/growth/forest/adult_main.png"),
+                                        DragonSurvival.res("textures/gui/stage/forest/adult_hover.png"),
+                                        DragonSurvival.res("textures/gui/stage/forest/adult_main.png"),
                                         DragonStages.adult
                                 ),
                                 new GrowthIcon(
-                                        DragonSurvival.res("textures/gui/growth/forest/ancient_hover.png"),
-                                        DragonSurvival.res("textures/gui/growth/forest/ancient_main.png"),
+                                        DragonSurvival.res("textures/gui/stage/forest/ancient_hover.png"),
+                                        DragonSurvival.res("textures/gui/stage/forest/ancient_main.png"),
                                         AncientDatapack.ancient
                                 )
                         ),

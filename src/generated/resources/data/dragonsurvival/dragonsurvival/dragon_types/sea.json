@@ -17,23 +17,23 @@
     "growth_icons": [
       {
         "dragon_stage": "dragonsurvival:newborn",
-        "hover_icon": "dragonsurvival:textures/gui/growth/sea/newborn_hover.png",
-        "icon": "dragonsurvival:textures/gui/growth/sea/newborn_main.png"
+        "hover_icon": "dragonsurvival:textures/gui/stage/sea/newborn_hover.png",
+        "icon": "dragonsurvival:textures/gui/stage/sea/newborn_main.png"
       },
       {
         "dragon_stage": "dragonsurvival:young",
-        "hover_icon": "dragonsurvival:textures/gui/growth/sea/young_hover.png",
-        "icon": "dragonsurvival:textures/gui/growth/sea/young_main.png"
+        "hover_icon": "dragonsurvival:textures/gui/stage/sea/young_hover.png",
+        "icon": "dragonsurvival:textures/gui/stage/sea/young_main.png"
       },
       {
         "dragon_stage": "dragonsurvival:adult",
-        "hover_icon": "dragonsurvival:textures/gui/growth/sea/adult_hover.png",
-        "icon": "dragonsurvival:textures/gui/growth/sea/adult_main.png"
+        "hover_icon": "dragonsurvival:textures/gui/stage/sea/adult_hover.png",
+        "icon": "dragonsurvival:textures/gui/stage/sea/adult_main.png"
       },
       {
         "dragon_stage": "dragonsurvival:ancient",
-        "hover_icon": "dragonsurvival:textures/gui/growth/sea/ancient_hover.png",
-        "icon": "dragonsurvival:textures/gui/growth/sea/ancient_main.png"
+        "hover_icon": "dragonsurvival:textures/gui/stage/sea/ancient_hover.png",
+        "icon": "dragonsurvival:textures/gui/stage/sea/ancient_main.png"
       }
     ],
     "help_button": "dragonsurvival:textures/gui/help_button/cave_help_button.png",

@@ -24,8 +24,6 @@ import java.util.function.Function;
 
 /** HUD that is shown when the dragon is holding an item that can change its growth */
 public class GrowthHUD {
-    public static final Function<String, String> CIRCLE_TEXTURE = dragonType -> "textures/gui/growth/circle_" + dragonType + ".png";
-    private static final HashMap<String, ResourceLocation> CACHE = new HashMap<>();
     private static final Color CENTER_COLOR = new Color(125, 125, 125);
     private static final Color BORDER_COLOR = new Color(255, 204, 2);
     private static final Color OUTLINE_COLOR = new Color(125, 125, 125);
@@ -91,13 +89,5 @@ public class GrowthHUD {
         guiGraphics.pose().translate(0, 0, 300);
         guiGraphics.blit(handler.getType().value().getGrowthIcon(dragonStage), circleX + 7, circleY + 4, 0, 0, 20, 20, 20, 20);
         guiGraphics.pose().popPose();
-    }
-
-    public static ResourceLocation getOrCreate(final String path) {
-        return getOrCreate(DragonSurvival.MODID, path);
-    }
-
-    public static ResourceLocation getOrCreate(final String namespace, final String path) {
-        return CACHE.computeIfAbsent(path, key -> ResourceLocation.fromNamespaceAndPath(namespace, path));
     }
 }
