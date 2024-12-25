@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
-import by.dragonsurvivalteam.dragonsurvival.mixins.EntityAccessor;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
@@ -10,12 +9,13 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,6 +24,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
+import javax.annotation.Nullable;
 
 @Mixin(Gui.class)
 public abstract class GuiMixin {
@@ -72,38 +73,46 @@ public abstract class GuiMixin {
         }
     }
 
-    @Unique private static ResourceLocation dragonSurvival$getSpriteForAirBubble(boolean burst) {
+    @Unique private static @Nullable ResourceLocation dragonSurvival$getSpriteForAirBubble(boolean burst) {
         Player player = Minecraft.getInstance().player;
-        FluidType previousFluidType = ((EntityAccessor)player).getPreviousEyeInFluidType();
+
+        //noinspection DataFlowIssue -> player is present
+        FluidType previousFluidType = SwimData.getData(player).previousEyeInFluidType;
         FluidType currentFluidType = player.getEyeInFluidType();
+
         ResourceLocation replacementSprite;
-        if(NeoForgeMod.EMPTY_TYPE.getKey().location() == NeoForgeRegistries.FLUID_TYPES.getKey(currentFluidType)) {
-            if(burst) {
-                replacementSprite = SwimData.getAirBurstSprite(previousFluidType);
-            } else {
-                replacementSprite = SwimData.getAirSprite(previousFluidType);
-            }
+        FluidType relevantFluid;
+
+        if (NeoForgeMod.EMPTY_TYPE.getKey() == SwimData.key(currentFluidType)) {
+            relevantFluid = previousFluidType;
         } else {
-            if(burst) {
-                replacementSprite = SwimData.getAirBurstSprite(currentFluidType);
-            } else {
-                replacementSprite = SwimData.getAirSprite(currentFluidType);
-            }
+            relevantFluid = currentFluidType;
         }
 
-        TextureAtlasHolderAccess textureAtlasHolder = (TextureAtlasHolderAccess) Minecraft.getInstance().getGuiSprites();
-        TextureAtlasAccess textureAtlas = (TextureAtlasAccess) textureAtlasHolder.getTextureAtlas();
-        if(textureAtlas.getTexturesByName().containsKey(replacementSprite)) {
-            return replacementSprite;
+        if (burst) {
+            replacementSprite = SwimData.getAirBurstSprite(relevantFluid);
         } else {
+            replacementSprite = SwimData.getAirSprite(relevantFluid);
+        }
+
+        if (replacementSprite == null) {
             return null;
         }
+
+        TextureAtlasSprite sprite = Minecraft.getInstance().getGuiSprites().getSprite(replacementSprite);
+
+        if (sprite.contents().name() != MissingTextureAtlasSprite.getLocation()) {
+            return replacementSprite;
+        }
+
+        return null;
     }
 
     @ModifyArg(method = "renderAirLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lnet/minecraft/resources/ResourceLocation;IIII)V", ordinal = 0))
     private ResourceLocation dragonSurvival$modifyAirSprite(ResourceLocation sprite) {
         ResourceLocation replacementSprite = dragonSurvival$getSpriteForAirBubble(false);
-        if(replacementSprite != null) {
+
+        if (replacementSprite != null) {
             return replacementSprite;
         } else {
             return sprite;
@@ -113,7 +122,8 @@ public abstract class GuiMixin {
     @ModifyArg(method = "renderAirLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lnet/minecraft/resources/ResourceLocation;IIII)V", ordinal = 1))
     private ResourceLocation dragonSurvival$modifyAirBurstSprite(ResourceLocation sprite) {
         ResourceLocation replacementSprite = dragonSurvival$getSpriteForAirBubble(true);
-        if(replacementSprite != null) {
+
+        if (replacementSprite != null) {
             return replacementSprite;
         } else {
             return sprite;

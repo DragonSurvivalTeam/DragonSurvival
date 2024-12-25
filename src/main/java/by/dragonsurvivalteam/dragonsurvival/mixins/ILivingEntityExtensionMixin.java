@@ -16,8 +16,7 @@ public interface ILivingEntityExtensionMixin {
     @Inject(method = "canSwimInFluidType", at = @At("HEAD"), cancellable = true)
     private void dragonSurvival$enableSwimming(final CallbackInfoReturnable<Boolean> callback, @Local(argsOnly = true) final FluidType fluid) {
         if ((Object) this instanceof Player player) {
-            SwimData data = SwimData.getData(player);
-            if(data.canSwimIn(fluid)) {
+            if (SwimData.getData(player).canSwimIn(fluid)) {
                 callback.setReturnValue(true);
             }
         }
