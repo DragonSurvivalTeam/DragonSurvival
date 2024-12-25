@@ -4,14 +4,18 @@ import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
 public class EntityStateHandler implements INBTSerializable<CompoundTag> {
-    public UUID owner;
+    public UUID summonOwner;
     // To handle the burn effect damage
     public Vec3 lastPos;
     // Amount of times the last chain attack has chained
@@ -19,14 +23,22 @@ public class EntityStateHandler implements INBTSerializable<CompoundTag> {
     // Currently only used for item entities
     public boolean isFireImmune;
 
+    public @Nullable Entity getSummonOwner(final Level level) {
+        if (summonOwner != null && level instanceof ServerLevel serverLevel) {
+            return serverLevel.getEntity(summonOwner);
+        }
+
+        return null;
+    }
+
     @Override
     public CompoundTag serializeNBT(@NotNull HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
         tag.putInt(CHAIN_COUNT, chainCount);
         tag.putBoolean(IS_FIRE_IMMUNE, isFireImmune);
 
-        if (owner != null) {
-            tag.putUUID(OWNER, owner);
+        if (summonOwner != null) {
+            tag.putUUID(SUMMON_OWNER, summonOwner);
         }
 
         if (lastPos != null) {
@@ -41,8 +53,8 @@ public class EntityStateHandler implements INBTSerializable<CompoundTag> {
         chainCount = tag.getInt(CHAIN_COUNT);
         isFireImmune = tag.getBoolean(IS_FIRE_IMMUNE);
 
-        if (tag.contains(OWNER)) {
-            owner = tag.getUUID(OWNER);
+        if (tag.contains(SUMMON_OWNER)) {
+            summonOwner = tag.getUUID(SUMMON_OWNER);
         }
 
         if (tag.contains(LAST_POSITION)) {
@@ -51,7 +63,7 @@ public class EntityStateHandler implements INBTSerializable<CompoundTag> {
         }
     }
 
-    public static final String OWNER = "owner";
+    public static final String SUMMON_OWNER = "summon_owner";
     public static final String LAST_POSITION = "last_position";
     public static final String CHAIN_COUNT = "chain_count";
     public static final String IS_FIRE_IMMUNE = "is_fire_immune";

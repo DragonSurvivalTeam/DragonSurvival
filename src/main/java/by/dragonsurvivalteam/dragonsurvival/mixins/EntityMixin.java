@@ -148,7 +148,7 @@ public abstract class EntityMixin {
 
         Entity self = (Entity) (Object) this;
         return self.getExistingData(DSDataAttachments.ENTITY_HANDLER)
-                .map(data -> data.owner != null && data.owner.equals(entity.getUUID()))
+                .map(data -> data.summonOwner != null && data.summonOwner.equals(entity.getUUID()))
                 .orElse(false);
     }
 

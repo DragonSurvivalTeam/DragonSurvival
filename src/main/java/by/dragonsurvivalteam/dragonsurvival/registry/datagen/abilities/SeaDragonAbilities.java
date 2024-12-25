@@ -33,7 +33,6 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
@@ -293,7 +292,7 @@ public class SeaDragonAbilities {
                                 List.of(new Modifier(DSAttributes.EXPERIENCE, LevelBasedValue.perLevel(0.5f), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
                                 LevelBasedValue.perLevel(Functions.secondsToTicks(60)),
                                 false
-                        ), false),
+                        )),
                         AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
                 ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(
@@ -319,7 +318,7 @@ public class SeaDragonAbilities {
                                 List.of(new Modifier(Attributes.MOVEMENT_SPEED, LevelBasedValue.perLevel(0.02f), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
                                 false
-                        ), false),
+                        )),
                         AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
                 ), true), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(
@@ -344,7 +343,7 @@ public class SeaDragonAbilities {
                                         List.of(new Modifier(DSAttributes.MANA, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
                                         LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
                                         true
-                                ), false),
+                                )),
                                 AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
                         ), true), LevelBasedValue.constant(1)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -355,7 +354,7 @@ public class SeaDragonAbilities {
                                         List.of(new Modifier(DSAttributes.MANA_REGENERATION, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_MULTIPLIED_BASE, Optional.empty())),
                                         LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
                                         true
-                                ), false),
+                                )),
                                 AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
                         ), true), LevelBasedValue.constant(1))
                 ),
@@ -385,7 +384,7 @@ public class SeaDragonAbilities {
                                 List.of(new Modifier(DSAttributes.ARMOR_IGNORE_CHANCE, LevelBasedValue.perLevel(0.15f), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
                                 true
-                        ), false),
+                        )),
                         AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
                 ), true), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(
@@ -407,7 +406,7 @@ public class SeaDragonAbilities {
                                 List.of(new Modifier(DSAttributes.PENALTY_RESISTANCE_TIME, LevelBasedValue.perLevel(Functions.secondsToTicks(60)), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
                                 true
-                        ), true),
+                        )),
                         AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
                 ), true), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(

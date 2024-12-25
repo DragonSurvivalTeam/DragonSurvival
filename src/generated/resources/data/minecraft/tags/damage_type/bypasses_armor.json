@@ -1,7 +1,6 @@
 {
   "values": [
     "dragonsurvival:drain",
-    "dragonsurvival:burn",
-    "dragonsurvival:spectral_impact"
+    "dragonsurvival:burn"
   ]
 }

@@ -31,22 +31,22 @@ public abstract class Storage<T extends StorageEntry> implements INBTSerializabl
         }
     }
 
-    public void add(final Entity entity, final T entry) {
+    public void add(final Entity storageHolder, final T entry) {
         if (storage == null) {
             storage = new HashMap<>();
         }
 
         storage.put(entry.id(), entry);
-        entry.onAddedToStorage(entity);
+        entry.onAddedToStorage(storageHolder);
     }
 
-    public void remove(final Entity entity, final T entry) {
+    public void remove(final Entity storageHolder, final T entry) {
         if (storage == null || entry == null) {
             return;
         }
 
         storage.remove(entry.id());
-        entry.onRemovalFromStorage(entity);
+        entry.onRemovalFromStorage(storageHolder);
     }
 
     public @Nullable T get(final ResourceLocation id) {

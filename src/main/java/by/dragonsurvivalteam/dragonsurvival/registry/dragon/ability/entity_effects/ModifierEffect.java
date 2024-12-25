@@ -5,7 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierWithDuration;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
-import com.mojang.serialization.Codec;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.Component;
@@ -20,12 +20,9 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public record ModifierEffect(List<ModifierWithDuration> modifiers, boolean displayTooltipAsSeconds) implements AbilityEntityEffect {
+public record ModifierEffect(List<ModifierWithDuration> modifiers) implements AbilityEntityEffect {
     public static final MapCodec<ModifierEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            ModifierWithDuration.CODEC.listOf().fieldOf("modifiers").forGetter(ModifierEffect::modifiers),
-            // TODO :: it seems kind of weird to have this as a field in the modifier itself
-            //  which then can vary per effect, sth. the user may not know and get confused about - the tooltip time should be consistent across effects
-            Codec.BOOL.optionalFieldOf("display_tooltip_as_seconds", false).forGetter(ModifierEffect::displayTooltipAsSeconds)
+            ModifierWithDuration.CODEC.listOf().fieldOf("modifiers").forGetter(ModifierEffect::modifiers)
     ).apply(instance, ModifierEffect::new));
 
     @Override
@@ -52,7 +49,7 @@ public record ModifierEffect(List<ModifierWithDuration> modifiers, boolean displ
         List<MutableComponent> components = new ArrayList<>();
 
         for (ModifierWithDuration modifierWithDuration : modifiers) {
-            float duration = modifierWithDuration.duration().calculate(ability.level()) / 20.f;
+            double duration = Functions.ticksToSeconds((int) modifierWithDuration.duration().calculate(ability.level()));
 
             for (Modifier modifier : modifierWithDuration.modifiers()) {
                 MutableComponent name = Component.literal("§6■ ").append(Component.translatable(modifier.attribute().value().getDescriptionId()).withColor(DSColors.ORANGE));
@@ -62,11 +59,7 @@ public record ModifierEffect(List<ModifierWithDuration> modifiers, boolean displ
                 if (modifier.attribute().value() instanceof PercentageAttribute) {
                     number += NumberFormat.getPercentInstance().format(amount);
                 } else {
-                    if(displayTooltipAsSeconds) {
-                        number += String.format("%.0f", amount / 20.f) + "s";
-                    } else {
-                        number += String.format("%.2f", amount);
-                    }
+                    number += String.format("%.2f", amount);
                 }
 
                 Component value = Component.literal("§6: ").append(Component.literal(number).withStyle(modifier.attribute().value().getStyle(amount > 0)));
@@ -83,8 +76,8 @@ public record ModifierEffect(List<ModifierWithDuration> modifiers, boolean displ
         return components;
     }
 
-    public static List<AbilityEntityEffect> single(final ModifierWithDuration modifier, final boolean displayTooltipAsSeconds) {
-        return List.of(new ModifierEffect(List.of(modifier), displayTooltipAsSeconds));
+    public static List<AbilityEntityEffect> single(final ModifierWithDuration modifier) {
+        return List.of(new ModifierEffect(List.of(modifier)));
     }
 
     @Override

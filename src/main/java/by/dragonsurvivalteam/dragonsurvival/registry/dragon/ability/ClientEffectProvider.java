@@ -22,9 +22,6 @@ public interface ClientEffectProvider {
     record ClientData(ResourceLocation texture, Component tooltip, Optional<UUID> effectSource) {
         public static final Codec<ClientData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 ResourceLocation.CODEC.fieldOf("texture").forGetter(ClientData::texture),
-                // TODO :: since the arguments are handled by string.format we can just supply them
-                //  and define the order in some wiki
-                //  people can then specify which argument they want to use by using '%2$' etc. (example for using the second parameter)
                 ComponentSerialization.CODEC.optionalFieldOf("tooltip", Component.empty()).forGetter(ClientData::tooltip),
                 UUIDUtil.CODEC.optionalFieldOf("effect_source").forGetter(ClientData::effectSource)
         ).apply(instance, ClientData::new));

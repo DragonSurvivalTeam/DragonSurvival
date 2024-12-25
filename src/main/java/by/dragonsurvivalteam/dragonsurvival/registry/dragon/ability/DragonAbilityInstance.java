@@ -256,6 +256,9 @@ public class DragonAbilityInstance {
 
     public void setLevel(int level) {
         this.level = Mth.clamp(level, MIN_LEVEL, getMaxLevel());
+        // TODO :: 'onLevelChanged' needed which goes through all abilities forces them to update their effect instances?
+        //  might only be relevant for active abilities - user could level up a skill, cast the buff, then de-level
+        //  might also be fixable by applying an xp penalty for de-leveling the ability (e.g. you lose 25% or some other global configurable amount)
     }
 
     public int getMaxLevel() {

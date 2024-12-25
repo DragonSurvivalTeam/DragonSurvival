@@ -7,7 +7,10 @@
     "dragonsurvival:sea_athletics",
     "dragonsurvival:sea_magic",
     "dragonsurvival:spectral_impact",
-    "dragonsurvival:hydration_capacity"
+    "dragonsurvival:hydration",
+    "dragonsurvival:sea_claws_and_teeth",
+    "dragonsurvival:sea_wings",
+    "dragonsurvival:electricity_immunity"
   ],
   "misc_resources": {
     "ability_bar": "dragonsurvival:textures/gui/casting_bars/cave_cast_bar.png",

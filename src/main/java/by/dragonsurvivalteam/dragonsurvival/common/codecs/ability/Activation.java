@@ -83,6 +83,10 @@ public record Activation(
         });
     }
 
+    public static Activation simple(final LevelBasedValue initialManaCost, final LevelBasedValue castTime, final LevelBasedValue cooldown, final Sound sound, final Animations animations) {
+        return new Activation(Type.ACTIVE_SIMPLE, Optional.ofNullable(initialManaCost), Optional.empty(), Optional.ofNullable(castTime), Optional.ofNullable(cooldown), Optional.ofNullable(sound), Optional.ofNullable(animations));
+    }
+
     public static Activation passive() {
         return new Activation(Type.PASSIVE, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
     }

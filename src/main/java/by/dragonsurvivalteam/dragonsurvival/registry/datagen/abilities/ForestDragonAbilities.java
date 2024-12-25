@@ -302,7 +302,7 @@ public class ForestDragonAbilities {
                                         List.of(new Modifier(DSAttributes.MANA, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
                                         LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
                                         true
-                                ), false),
+                                )),
                                 AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
                         ), true), LevelBasedValue.constant(1)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -317,7 +317,7 @@ public class ForestDragonAbilities {
                                         List.of(new Modifier(DSAttributes.MANA_REGENERATION, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_MULTIPLIED_BASE, Optional.empty())),
                                         LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
                                         true
-                                ), false),
+                                )),
                                 AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
                         ), true), LevelBasedValue.constant(1))
                 ),
@@ -385,7 +385,7 @@ public class ForestDragonAbilities {
                                 List.of(new Modifier(Attributes.MOVEMENT_SPEED, LevelBasedValue.perLevel(0.02f), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
                                 false
-                        ), false),
+                        )),
                         AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
                 ), true), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(

@@ -9,6 +9,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +27,8 @@ public class ModifiersWithDuration extends Storage<ModifierWithDuration.Instance
     }
 
     @SubscribeEvent
-    public static void tickModifiers(final EntityTickEvent.Post event) {
+    public static void tickData(final EntityTickEvent.Post event) {
+        // Attribute modifiers are only relevant for living entities
         if (event.getEntity() instanceof LivingEntity livingEntity) {
             livingEntity.getExistingData(DSDataAttachments.MODIFIERS_WITH_DURATION).ifPresent(data -> {
                 data.tick();
@@ -38,14 +40,14 @@ public class ModifiersWithDuration extends Storage<ModifierWithDuration.Instance
         }
     }
 
-    /* FIXME :: why was this removed? the modifiers are permanent and need to be removed on death
     @SubscribeEvent
     public static void removeModifiers(final PlayerEvent.Clone event) {
+        // Since the modifiers are applied as permanent they need to be removed on death
+        // Otherwise we lose the ability to track them and cannot remove them at all
         if (event.isWasDeath()) {
-            event.getOriginal().getExistingData(DSDataAttachments.MODIFIERS_WITH_DURATION).ifPresent(data -> data.removeAll(event.getEntity()));
+            event.getOriginal().getExistingData(DSDataAttachments.MODIFIERS_WITH_DURATION).ifPresent(data -> data.all().forEach(entry -> entry.onRemovalFromStorage(event.getEntity())));
         }
     }
-    */
 
     @Override
     protected Tag save(@NotNull final HolderLookup.Provider provider, final ModifierWithDuration.Instance entry) {

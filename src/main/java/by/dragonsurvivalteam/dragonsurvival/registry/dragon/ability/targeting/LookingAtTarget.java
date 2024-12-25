@@ -13,12 +13,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.CollisionContext;
 
 import java.util.function.Predicate;
 
@@ -30,24 +27,26 @@ public record LookingAtTarget(Either<BlockTargeting, EntityTargeting> target, Le
     @Override
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability) {
         target().ifLeft(blockTarget -> {
-            BlockHitResult result = getBlockHitResult(dragon, ability);
+            HitResult result = getBlockHitResult(dragon, ability);
 
-            if (result.getType() == HitResult.Type.MISS) {
+            if (result.getType() == HitResult.Type.MISS || !(result instanceof BlockHitResult blockHitResult)) {
                 return;
             }
 
-            if (!blockTarget.matches(dragon.serverLevel(), result.getBlockPos()) || /* This is always checked by the predicate */ !dragon.serverLevel().isLoaded(result.getBlockPos())) {
+            if (!blockTarget.matches(dragon.serverLevel(), blockHitResult.getBlockPos()) || /* This is always checked by the predicate */ !dragon.serverLevel().isLoaded(blockHitResult.getBlockPos())) {
                 return;
             }
 
-            blockTarget.effect().forEach(target -> target.apply(dragon, ability, result.getBlockPos(), result.getDirection()));
+            blockTarget.effect().forEach(target -> target.apply(dragon, ability, blockHitResult.getBlockPos(), blockHitResult.getDirection()));
         }).ifRight(entityTarget -> {
             Predicate<Entity> filter = entity -> isEntityRelevant(dragon, entityTarget, entity) && entityTarget.matches(dragon.serverLevel(), dragon.position(), entity);
             HitResult result = getEntityHitResult(dragon, filter, ability);
 
-            if (result instanceof EntityHitResult entityHitResult) {
-                entityTarget.effects().forEach(target -> target.apply(dragon, ability, entityHitResult.getEntity()));
+            if (result.getType() == HitResult.Type.MISS || !(result instanceof EntityHitResult entityHitResult)) {
+                return;
             }
+
+            entityTarget.effects().forEach(target -> target.apply(dragon, ability, entityHitResult.getEntity()));
         });
     }
 
@@ -56,23 +55,18 @@ public record LookingAtTarget(Either<BlockTargeting, EntityTargeting> target, Le
         Component targetingComponent = target.map(block -> null, entity -> entity.targetingMode().translation());
 
         if (targetingComponent == null) {
-            return Component.translatable(LangKey.ABILITY_LOOKAT, DSColors.blue(getRange(ability)));
+            return Component.translatable(LangKey.ABILITY_LOOK_AT, DSColors.blue(range.calculate(ability.level())));
         } else {
-            return Component.translatable(LangKey.ABILITY_TO_TARGET_LOOKAT, DSColors.blue(targetingComponent), DSColors.blue(getRange(ability)));
+            return Component.translatable(LangKey.ABILITY_LOOK_AT_TARGET, DSColors.blue(targetingComponent), DSColors.blue(range.calculate(ability.level())));
         }
     }
 
-    public BlockHitResult getBlockHitResult(Player dragon, final DragonAbilityInstance ability) {
-        Vec3 viewVector = dragon.getViewVector(0);
-        return dragon.level().clip(new ClipContext(viewVector, viewVector.scale(range().calculate(ability.level())), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty()));
+    public HitResult getBlockHitResult(Player dragon, final DragonAbilityInstance ability) {
+        return dragon.pick(range.calculate(ability.level()), 0, false);
     }
 
     public HitResult getEntityHitResult(Player dragon, Predicate<Entity> filter, final DragonAbilityInstance ability) {
-        return ProjectileUtil.getHitResultOnViewVector(dragon, filter, range().calculate(ability.level()));
-    }
-
-    private float getRange(final DragonAbilityInstance ability) {
-        return range().calculate(ability.level());
+        return ProjectileUtil.getHitResultOnViewVector(dragon, filter, range.calculate(ability.level()));
     }
 
     @Override

@@ -47,7 +47,7 @@ public class DamageModifications extends Storage<DamageModification.Instance> {
     }
 
     @SubscribeEvent
-    public static void tickModifications(final EntityTickEvent.Post event) {
+    public static void tickData(final EntityTickEvent.Post event) {
         if (event.getEntity().level().isClientSide()) {
             return;
         }
