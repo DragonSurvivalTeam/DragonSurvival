@@ -109,14 +109,14 @@ public record ModifierWithDuration(ResourceLocation id, ResourceLocation icon, L
         }
 
         @Override
-        public void onAddedToStorage(final Entity entity) {
-            if (!(entity instanceof LivingEntity livingEntity)) {
+        public void onAddedToStorage(final Entity storageHolder) {
+            if (!(storageHolder instanceof LivingEntity livingEntity)) {
                 return;
             }
 
             Holder<DragonType> type = null;
 
-            if (entity instanceof Player player) {
+            if (storageHolder instanceof Player player) {
                 type = DragonUtils.getType(player);
             }
 
@@ -124,8 +124,8 @@ public record ModifierWithDuration(ResourceLocation id, ResourceLocation icon, L
         }
 
         @Override
-        public void onRemovalFromStorage(final Entity entity) {
-            if (!(entity instanceof LivingEntity livingEntity)) {
+        public void onRemovalFromStorage(final Entity storageHolder) {
+            if (!(storageHolder instanceof LivingEntity livingEntity)) {
                 return;
             }
 

@@ -31,11 +31,8 @@ public class HarvestBonuses extends Storage<HarvestBonus.Instance> {
     }
 
     @SubscribeEvent
-    public static void tickBonuses(final EntityTickEvent.Post event) {
-        if (event.getEntity().level().isClientSide()) {
-            return;
-        }
-
+    public static void tickData(final EntityTickEvent.Post event) {
+        // TODO :: could these be relevant for non-living entities?
         if (event.getEntity() instanceof LivingEntity livingEntity) {
             livingEntity.getExistingData(DSDataAttachments.HARVEST_BONUSES).ifPresent(storage -> {
                 storage.tick();

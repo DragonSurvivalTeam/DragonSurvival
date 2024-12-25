@@ -55,11 +55,12 @@ public class LangKey {
     @Translation(type = Translation.Type.MISC, comments = " to %s in a %s block cone")
     public static final String ABILITY_TO_TARGET_CONE = Translation.Type.ABILITY.wrap("general.ability.to_target_cone");
 
-    @Translation(type = Translation.Type.MISC, comments = " to %s being looked at ")
-    public static final String ABILITY_LOOKAT = Translation.Type.ABILITY.wrap("general.ability.lookat");
+    @Translation(type = Translation.Type.MISC, comments = " to a block that you are looking at within a range of %s blocks")
+    public static final String ABILITY_LOOK_AT = Translation.Type.ABILITY.wrap("general.ability.look_at");
 
-    @Translation(type = Translation.Type.MISC, comments = " to %s within %s blocks being looked at")
-    public static final String ABILITY_TO_TARGET_LOOKAT = Translation.Type.ABILITY.wrap("general.ability.to_target_lookat");
+    // TODO :: 'to enemies that you are looking at (...)' -> it's to a singular enemy not all, unsure how to properly specify
+    @Translation(type = Translation.Type.MISC, comments = " to %s that you are looking at within a range of %s blocks")
+    public static final String ABILITY_LOOK_AT_TARGET = Translation.Type.ABILITY.wrap("general.ability.look_at_target");
 
     @Translation(type = Translation.Type.MISC, comments = " every %s seconds")
     public static final String ABILITY_X_SECONDS = Translation.Type.ABILITY.wrap("general.ability.x_seconds");
@@ -112,10 +113,10 @@ public class LangKey {
     @Translation(type = Translation.Type.MISC, comments = "§6■ Can use spin")
     public static final String ABILITY_SPIN = Translation.Type.ABILITY.wrap("general.ability.spin");
 
-    @Translation(type = Translation.Type.MISC, comments = "§6■ Can summon up to %s entities:§r")
+    @Translation(type = Translation.Type.MISC, comments = "§6■ Can summon up to§r %s §6entities:§r")
     public static final String ABILITY_SUMMON = Translation.Type.ABILITY.wrap("general.ability.summon");
 
-    @Translation(type = Translation.Type.MISC, comments = "- %s with a chance of %s")
+    @Translation(type = Translation.Type.MISC, comments = "\n- %s (%s chance)")
     public static final String ABILITY_SUMMON_CHANCE = Translation.Type.ABILITY.wrap("general.ability.summon_chance");
 
     @Translation(type = Translation.Type.MISC, comments = " after %s seconds")

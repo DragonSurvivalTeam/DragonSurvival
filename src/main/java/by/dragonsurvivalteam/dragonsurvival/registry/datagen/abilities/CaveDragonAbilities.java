@@ -17,11 +17,9 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBlockTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.FireEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.SummonEntityEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.*;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AbilityTargeting;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AreaTarget;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.DragonBreathTarget;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.SelfTarget;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.ProjectileData;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.Projectiles;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
@@ -29,6 +27,7 @@ import com.mojang.datafixers.util.Either;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.FluidPredicate;
 import net.minecraft.advancements.critereon.LocationPredicate;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -36,6 +35,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.random.SimpleWeightedRandomList;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
@@ -118,6 +119,11 @@ public class CaveDragonAbilities {
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Cave Dragon")
     public static final ResourceKey<DragonAbility> FIRE_IMMUNITY = DragonAbilities.key("fire_immunity");
+
+    // FIXME :: remove (owner only works properly with static uuid - i.e. 'runClient_static')
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Test for summon entity effect\n")
+    @Translation(type = Translation.Type.ABILITY, comments = "Summon Test")
+    public static final ResourceKey<DragonAbility> SUMMON_TEST = DragonAbilities.key("summon_test");
 
     public static final ResourceKey<DragonAbility> EMPTY_ABILITY = DragonAbilities.key("empty_ability");
     public static final ResourceKey<DragonAbility> EMPTY_ABILITY_2 = DragonAbilities.key("empty_ability_2");
@@ -539,5 +545,46 @@ public class CaveDragonAbilities {
                 new LevelBasedResource(List.of(new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_dragon_0"), 0))
         )));
 
+        context.register(SUMMON_TEST, new DragonAbility(
+                Activation.simple(
+                        LevelBasedValue.constant(1),
+                        LevelBasedValue.constant(Functions.secondsToTicks(1)),
+                        LevelBasedValue.constant(Functions.secondsToTicks(30)),
+                        new Activation.Sound(
+                                Optional.empty(),
+                                Optional.empty(),
+                                Optional.empty(),
+                                Optional.of(SoundEvents.UI_TOAST_IN)
+                        ),
+                        new Activation.Animations(
+                                Optional.of(Either.right(new SimpleAbilityAnimation("cast_mass_buff", AnimationLayer.BASE, 2, true, true))),
+                                Optional.empty(),
+                                Optional.of(new SimpleAbilityAnimation("mass_buff", AnimationLayer.BASE, 0, true, true))
+                        )
+                ),
+                Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 3, LevelBasedValue.lookup(List.of(0f, 15f, 35f), LevelBasedValue.perLevel(15))),
+                Optional.empty(),
+                List.of(new ActionContainer(new LookingAtTarget(AbilityTargeting.block(
+                        List.of(new SummonEntityEffect(
+                                new SimpleWeightedRandomList.Builder<Holder<EntityType<?>>>()
+                                        .add(DSEntities.HUNTER_SPEARMAN, 30)
+                                        .add(DSEntities.HUNTER_KNIGHT, 15)
+                                        .add(DSEntities.HUNTER_AMBUSHER, 10)
+                                        .add(DSEntities.HUNTER_LEADER, 2)
+                                        .build(),
+                                DragonSurvival.res("test"),
+                                LevelBasedValue.constant(4),
+                                LevelBasedValue.constant(Functions.secondsToTicks(30)),
+                                List.of(),
+                                true
+                        ))
+                ), LevelBasedValue.constant(10)), LevelBasedValue.constant(1))),
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/strong_leather_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/strong_leather_1"), 1),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/strong_leather_2"), 2),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/strong_leather_3"), 3)
+                ))
+        ));
     }
 }
