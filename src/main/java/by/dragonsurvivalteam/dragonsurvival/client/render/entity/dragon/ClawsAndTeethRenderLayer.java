@@ -56,6 +56,7 @@ public class ClawsAndTeethRenderLayer extends GeoRenderLayer<DragonEntity> {
             return;
         }
 
+        // TODO :: should this check if the entity is on the same team / is visible to the player (= not full invisibility)?
         if (animatable.hasEffect(MobEffects.INVISIBILITY)) {
             return;
         }

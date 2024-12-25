@@ -24,7 +24,7 @@ public abstract class DurationInstance<B> implements ClientEffectProvider, Stora
         this.currentDuration = currentDuration;
     }
 
-    static <T extends DurationInstance<B>, B> Products.P4<RecordCodecBuilder.Mu<T>, B, ClientData, Integer, Integer> codecStart(final RecordCodecBuilder.Instance<T> instance, final Supplier<Codec<B>> baseDataCodec) {
+    public static <T extends DurationInstance<B>, B> Products.P4<RecordCodecBuilder.Mu<T>, B, ClientData, Integer, Integer> codecStart(final RecordCodecBuilder.Instance<T> instance, final Supplier<Codec<B>> baseDataCodec) {
         return instance.group(
                 baseDataCodec.get().fieldOf("base_data").forGetter(T::baseData),
                 ClientData.CODEC.fieldOf("client_data").forGetter(T::clientData),

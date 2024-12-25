@@ -45,7 +45,7 @@ public record ModifierWithDuration(ResourceLocation id, ResourceLocation icon, L
 
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final LivingEntity target) {
         int abilityLevel = ability.level();
-        int newDuration = (int) duration().calculate(abilityLevel);
+        int newDuration = (int) duration.calculate(abilityLevel);
 
         ModifiersWithDuration data = target.getData(DSDataAttachments.MODIFIERS_WITH_DURATION);
         Instance instance = data.get(id);

@@ -1,10 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.util.Functions;
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.alchemy.Potion;
 import net.neoforged.neoforge.registries.DeferredRegister;
 

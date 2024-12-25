@@ -34,7 +34,6 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 
-import javax.swing.*;
 import java.util.List;
 import java.util.Optional;
 

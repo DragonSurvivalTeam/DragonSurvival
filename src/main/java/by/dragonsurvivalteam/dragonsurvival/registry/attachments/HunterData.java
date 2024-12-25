@@ -35,11 +35,9 @@ public class HunterData implements INBTSerializable<CompoundTag> {
 
     @Override
     public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
-        CompoundTag tag = new CompoundTag();
-        return tag;
+        return new CompoundTag();
     }
 
     @Override
-    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag tag) {
-    }
+    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag tag) { /* Nothing to do */ }
 }
