@@ -1,9 +1,10 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.mixins.EntityAccessor;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -12,79 +13,93 @@ import net.neoforged.neoforge.event.entity.living.LivingBreatheEvent;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
+import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.Map;
 
 @EventBusSubscriber
 public class SwimData {
-    private final Map<FluidType, Integer> swimData = new java.util.HashMap<>();
+    public static final int UNLIMITED_OXYGEN = -1;
+    public static final int NO_MODIFICATION = 0;
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void allowForInfiniteOxygen(LivingBreatheEvent event) {
-        if (event.getEntity() instanceof Player player) {
-            SwimData data = getData(player);
-            if (data.getMaxOxygen(event.getEntity().getEyeInFluidType()) == -1) {
-                event.setConsumeAirAmount(0);
-            }
+    public FluidType previousEyeInFluidType;
+    public FluidType eyeInFluidTypeLastTick;
 
-            if (data.canSwimIn(event.getEntity().getEyeInFluidType())) {
-                event.setCanBreathe(false);
-            }
+    private final Map<ResourceKey<FluidType>, Integer> swimData = new HashMap<>();
 
-            FluidType previousFluidType = ((EntityAccessor)player).getEyeInFluidTypeLastTick();
-            FluidType currentFluidType = player.getEyeInFluidType();
-            if(previousFluidType != currentFluidType) {
-                int maxAirSupply = data.getMaxOxygen(previousFluidType);
-                int newMaxAirSupply = data.getMaxOxygen(player.getEyeInFluidType());
-                float airSupplyRatio = (float) newMaxAirSupply / (float) maxAirSupply;
-                player.setAirSupply((int) Math.min(newMaxAirSupply, Math.ceil(player.getAirSupply() * airSupplyRatio)));
-                ((EntityAccessor)player).setPreviousEyeInFluidType(previousFluidType);
-                ((EntityAccessor)player).setEyeInFluidTypeLastTick(player.getEyeInFluidType());
-            }
-        }
+    public void add(int maxOxygen, final Holder<FluidType> fluid) {
+        swimData.put(fluid.getKey(), maxOxygen);
     }
 
-    public static ResourceLocation getAirSprite(FluidType fluidType) {
-        ResourceLocation fluidResourceLocation = NeoForgeRegistries.FLUID_TYPES.getKey(fluidType);
-        if(fluidResourceLocation == null) {
-            return null;
-        }
-
-        return ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "air_meters/" + fluidResourceLocation.getPath());
+    public void remove(final Holder<FluidType> fluid) {
+        swimData.remove(fluid.getKey());
     }
 
-    public static ResourceLocation getAirBurstSprite(FluidType fluidType) {
-        ResourceLocation fluidResourceLocation = NeoForgeRegistries.FLUID_TYPES.getKey(fluidType);
-        if(fluidResourceLocation == null) {
-            return null;
-        }
+    public int getMaxOxygen(final FluidType fluid) {
+        return swimData.getOrDefault(key(fluid), Entity.TOTAL_AIR_SUPPLY);
+    }
 
-        return ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "air_meters/" + fluidResourceLocation.getPath() + "_burst");
+    public boolean canSwimIn(final FluidType fluid) {
+        return swimData.containsKey(key(fluid));
     }
 
     public static SwimData getData(final Player player) {
         return player.getData(DSDataAttachments.SWIM);
     }
 
-    public void addEntry(int maxOxygen, Holder<FluidType> fluidType) {
-        swimData.put(fluidType.value(), maxOxygen);
-    }
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void allowForInfiniteOxygen(final LivingBreatheEvent event) {
+        if (event.getEntity() instanceof Player player) {
+            SwimData data = getData(player);
+            boolean canBreathe = data.getMaxOxygen(event.getEntity().getEyeInFluidType()) == UNLIMITED_OXYGEN;
 
-    public void removeEntry(Holder<FluidType> fluidType) {
-        swimData.remove(fluidType.value());
-    }
+            if (canBreathe) {
+                event.setConsumeAirAmount(0);
+                event.setRefillAirAmount(data.getMaxOxygen(event.getEntity().getEyeInFluidType()));
+            }
 
-    public int getMaxOxygen(FluidType fluidType) {
-        for (Map.Entry<FluidType, Integer> entry : swimData.entrySet()) {
-            if (entry.getKey().equals(fluidType)) {
-                return entry.getValue();
+            if (data.canSwimIn(event.getEntity().getEyeInFluidType())) {
+                event.setCanBreathe(canBreathe);
+            }
+
+            FluidType currentFluidType = player.getEyeInFluidType();
+
+            if (data.previousEyeInFluidType != currentFluidType) {
+                int maxAirSupply = data.getMaxOxygen(data.previousEyeInFluidType);
+                int newMaxAirSupply = data.getMaxOxygen(player.getEyeInFluidType());
+
+                float airSupplyRatio = (float) newMaxAirSupply / (float) maxAirSupply;
+
+                player.setAirSupply((int) Math.min(newMaxAirSupply, Math.ceil(player.getAirSupply() * airSupplyRatio)));
+                data.previousEyeInFluidType = currentFluidType;
+                data.eyeInFluidTypeLastTick = player.getEyeInFluidType();
             }
         }
-
-        // Vanilla max oxygen value
-        return 300;
     }
 
-    public boolean canSwimIn(FluidType fluidType) {
-        return swimData.containsKey(fluidType);
+    public static @Nullable ResourceLocation getAirSprite(final FluidType fluid) {
+        ResourceLocation resource = NeoForgeRegistries.FLUID_TYPES.getKey(fluid);
+
+        if (resource == null) {
+            return null;
+        }
+
+        // TODO :: should this always use the ds namespace?
+        return DragonSurvival.res("air_meters/" + resource.getPath());
+    }
+
+    public static ResourceLocation getAirBurstSprite(final FluidType fluid) {
+        ResourceLocation resource = NeoForgeRegistries.FLUID_TYPES.getKey(fluid);
+
+        if (resource == null) {
+            return null;
+        }
+
+        // TODO :: should this always use the ds namespace?
+        return DragonSurvival.res("air_meters/" + resource.getPath() + "_burst");
+    }
+
+    public static @Nullable ResourceKey<FluidType> key(final FluidType fluid) {
+        return NeoForgeRegistries.FLUID_TYPES.getResourceKey(fluid).orElse(null);
     }
 }

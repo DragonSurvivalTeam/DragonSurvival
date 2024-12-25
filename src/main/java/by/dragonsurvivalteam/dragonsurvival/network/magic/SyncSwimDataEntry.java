@@ -24,12 +24,12 @@ public record SyncSwimDataEntry(int maxOxygen, Holder<FluidType> fluidType, bool
 
     public static void handleClient(final SyncSwimDataEntry packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
-            SwimData data = SwimData.getData(DragonSurvival.PROXY.getLocalPlayer());
+            SwimData data = SwimData.getData(context.player());
 
             if (packet.remove()) {
-                data.removeEntry(packet.fluidType());
+                data.remove(packet.fluidType());
             } else {
-                data.addEntry(packet.maxOxygen(), packet.fluidType());
+                data.add(packet.maxOxygen(), packet.fluidType());
             }
         });
     }

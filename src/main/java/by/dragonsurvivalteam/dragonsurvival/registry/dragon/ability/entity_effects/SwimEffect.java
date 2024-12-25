@@ -15,21 +15,23 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 public record SwimEffect(LevelBasedValue maxOxygen, Holder<FluidType> fluidType) implements AbilityEntityEffect {
     public static final MapCodec<SwimEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            // TODO :: also handle the movement speed bonus here?
+            //  so that a different speed can be applied to different fluids
             LevelBasedValue.CODEC.fieldOf("max_oxygen").forGetter(SwimEffect::maxOxygen),
             NeoForgeRegistries.FLUID_TYPES.holderByNameCodec().fieldOf("fluid_type").forGetter(SwimEffect::fluidType)
     ).apply(instance, SwimEffect::new));
 
     @Override
-    public void apply(ServerPlayer dragon, DragonAbilityInstance ability, Entity entity) {
+    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity) {
         SwimData data = SwimData.getData(dragon);
-        data.addEntry((int) maxOxygen.calculate(ability.level()), fluidType);
+        data.add((int) maxOxygen.calculate(ability.level()), fluidType);
         PacketDistributor.sendToPlayer(dragon, new SyncSwimDataEntry((int) maxOxygen.calculate(ability.level()), fluidType, false));
     }
 
     @Override
     public void remove(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity) {
         SwimData data = SwimData.getData(dragon);
-        data.removeEntry(fluidType);
+        data.remove(fluidType);
         PacketDistributor.sendToPlayer(dragon, new SyncSwimDataEntry(0, fluidType, true));
     }
 

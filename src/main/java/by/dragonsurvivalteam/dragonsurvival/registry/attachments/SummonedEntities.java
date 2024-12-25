@@ -75,8 +75,9 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
                 SummonEntityEffect.Instance instance = summonData.getInstance(event.getEntity());
 
                 if (instance == null) {
-                    // TODO :: do sth. here? remove the owner?
-                    //  this case would mean some wrong data
+                    // The entity shouldn't exist
+                    // It has a summoner owner but said summoner doesn't know this entity
+                    mob.discard();
                     return;
                 }
 
@@ -104,8 +105,7 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
                     SummonEntityEffect.Instance instance = summonData.getInstance(event.getEntity());
 
                     if (instance == null) {
-                        // TODO :: do sth. here? remove the owner?
-                        //  this case would mean some wrong data
+                        // Faulty entity or summoner data already removed the entry
                         return;
                     }
 
