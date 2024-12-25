@@ -20,6 +20,7 @@ import java.util.concurrent.CompletableFuture;
 public class DSDamageTypeTags extends DamageTypeTagsProvider {
     public static TagKey<DamageType> DRAGON_BREATH = key("dragon_breath");
     public static TagKey<DamageType> DRAGON_MAGIC = key("dragon_magic");
+    public static TagKey<DamageType> IS_ELECTRIC = key("is_electric");
 
     public DSDamageTypeTags(PackOutput pOutput, CompletableFuture<HolderLookup.Provider> pLookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
         super(pOutput, pLookupProvider, DragonSurvival.MODID, existingFileHelper);
@@ -41,10 +42,15 @@ public class DSDamageTypeTags extends DamageTypeTagsProvider {
                 .add(DSDamageTypes.POISON_BREATH)
                 .add(DSDamageTypes.DRAIN)
                 .add(DSDamageTypes.LIGHTNING_BREATH)
-                .add(DSDamageTypes.SPECTRAL_IMPACT)
                 .add(DSDamageTypes.BALL_LIGHTNING)
                 .add(DSDamageTypes.DRAGON_BREATH)
                 .add(DamageTypes.FIREBALL);
+
+        tag(IS_ELECTRIC)
+                .add(DSDamageTypes.LIGHTNING_BREATH)
+                .add(DSDamageTypes.BALL_LIGHTNING)
+                .add(DSDamageTypes.ELECTRIC)
+                .add(DamageTypes.LIGHTNING_BOLT);
 
         // Used in enchantments
         tag(key("anti_dragon")).add(DSDamageTypes.ANTI_DRAGON);
@@ -53,8 +59,7 @@ public class DSDamageTypeTags extends DamageTypeTagsProvider {
     private void addToVanillaTags() {
         tag(DamageTypeTags.BYPASSES_ARMOR)
                 .add(DSDamageTypes.DRAIN)
-                .add(DSDamageTypes.BURN)
-                .add(DSDamageTypes.SPECTRAL_IMPACT);
+                .add(DSDamageTypes.BURN);
 
         tag(DamageTypeTags.BYPASSES_COOLDOWN)
                 .add(DSDamageTypes.SPIKE);

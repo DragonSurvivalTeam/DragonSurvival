@@ -50,9 +50,6 @@ public class DSDamageTypes {
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Lightning Breath")
     public static final ResourceKey<DamageType> LIGHTNING_BREATH = key("lightning_breath");
 
-    @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Spectral Impact")
-    public static final ResourceKey<DamageType> SPECTRAL_IMPACT = key("spectral_impact");
-
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Water Burn")
     public static final ResourceKey<DamageType> WATER_BURN = key("water_burn");
 

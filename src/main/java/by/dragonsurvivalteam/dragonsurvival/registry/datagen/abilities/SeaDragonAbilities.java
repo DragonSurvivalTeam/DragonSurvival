@@ -11,12 +11,10 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.Upgrad
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.ValueBasedUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.LargeLightningParticleOption;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.SmallLightningParticleOption;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSSounds;
+import by.dragonsurvivalteam.dragonsurvival.registry.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBlockTags;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDamageTypeTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.AreaCloudEffect;
@@ -35,9 +33,11 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
+import net.neoforged.neoforge.common.NeoForgeMod;
 
 import java.util.List;
 import java.util.Optional;
@@ -95,8 +95,26 @@ public class SeaDragonAbilities {
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
             "■ Increases your capacity for hydration while outside of water. Will help you to survive while venturing onto land, or even in the Nether.\n",
     })
-    @Translation(type = Translation.Type.ABILITY, comments = "Hydration Capacity")
-    public static final ResourceKey<DragonAbility> HYDRATION_CAPACITY = DragonAbilities.key("hydration_capacity");
+    @Translation(type = Translation.Type.ABILITY, comments = "Hydration")
+    public static final ResourceKey<DragonAbility> HYDRATION = DragonAbilities.key("hydration");
+
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
+            "■ Sea dragons can dig blocks that require shovels without tools. This ability gets stronger as you grow.\n",
+    })
+    @Translation(type = Translation.Type.ABILITY, comments = "Claws and Teeth")
+    public static final ResourceKey<DragonAbility> SEA_CLAWS_AND_TEETH = DragonAbilities.key("sea_claws_and_teeth");
+
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
+            "■ Dragons use §2levitation§r to fly, but are rarely born with that ability. Only one dragon in this world can share their power of flight with you.\n",
+    })
+    @Translation(type = Translation.Type.ABILITY, comments = "Sea Wings")
+    public static final ResourceKey<DragonAbility> SEA_WINGS = DragonAbilities.key("sea_wings");
+
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
+            "■ Sea dragons have an innate immunity to lightning."
+    })
+    @Translation(type = Translation.Type.ABILITY, comments = "Sea Dragon")
+    public static final ResourceKey<DragonAbility> ELECTRICITY_IMMUNITY = DragonAbilities.key("electricity_immunity");
 
     public static void registerAbilities(final BootstrapContext<DragonAbility> context) {
         registerActiveAbilities(context);
@@ -378,7 +396,7 @@ public class SeaDragonAbilities {
                 ))
         ));
 
-        context.register(HYDRATION_CAPACITY, new DragonAbility(
+        context.register(HYDRATION, new DragonAbility(
                 Activation.passive(),
                 Upgrade.value(ValueBasedUpgrade.Type.MANUAL, 7, LevelBasedValue.perLevel(15)),
                 Optional.empty(),
@@ -404,5 +422,60 @@ public class SeaDragonAbilities {
                 ))
         ));
 
+        context.register(SEA_CLAWS_AND_TEETH, new DragonAbility(
+                Activation.passive(),
+                // FIXME :: lookup for stages seems to throw an exception at the moment
+                Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_GROWTH, 4, LevelBasedValue.lookup(List.of(0f, 25f, 40f, 60f), LevelBasedValue.perLevel(15))),
+                Optional.empty(),
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        HarvestBonusEffect.single(new HarvestBonus(
+                                DragonSurvival.res("sea_claws_and_teeth"),
+                                context.lookup(Registries.BLOCK).getOrThrow(DSBlockTags.SEA_DRAGON_HARVESTABLE),
+                                LevelBasedValue.constant(1),
+                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)
+                        )),
+                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                ), true), LevelBasedValue.constant(1))),
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_claws_and_teeth_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_claws_and_teeth_1"), 1),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_claws_and_teeth_2"), 2),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_claws_and_teeth_3"), 3),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_claws_and_teeth_4"), 4)
+                ))
+        ));
+
+        context.register(SEA_WINGS, new DragonAbility(
+                Activation.passive(),
+                Upgrade.item(List.of(HolderSet.direct(DSItems.WING_GRANT_ITEM), HolderSet.direct(DSItems.SPIN_GRANT_ITEM)), HolderSet.empty()),
+                Optional.empty(),
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        List.of(new SpinOrFlightEffect(1, 2, NeoForgeMod.LAVA_TYPE)),
+                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                ), true), LevelBasedValue.constant(1))),
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_wings_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_wings_1"), 1)
+                ))
+        ));
+
+        context.register(ELECTRICITY_IMMUNITY, new DragonAbility(
+                Activation.passive(),
+                Optional.empty(),
+                Optional.empty(),
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        DamageModificationEffect.single(new DamageModification(
+                                DragonSurvival.res("electricity_immunity"),
+                                context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypeTags.IS_ELECTRIC),
+                                LevelBasedValue.constant(0),
+                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)
+                        )),
+                        AbilityTargeting.EntityTargetingMode.TARGET_ALL
+                ), true), LevelBasedValue.constant(1))),
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_dragon_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_dragon_1"), 1)
+                ))
+        ));
     }
 }
