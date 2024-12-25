@@ -75,7 +75,6 @@ public class DSDamageTypes {
         register(context, DSDamageTypes.DRAIN);
         register(context, DSDamageTypes.RAIN_BURN);
         register(context, DSDamageTypes.LIGHTNING_BREATH);
-        register(context, DSDamageTypes.SPECTRAL_IMPACT);
         register(context, DSDamageTypes.WATER_BURN);
         register(context, DSDamageTypes.SPIKE);
         register(context, DSDamageTypes.ELECTRIC);
