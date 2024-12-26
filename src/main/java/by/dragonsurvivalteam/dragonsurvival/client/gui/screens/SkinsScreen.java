@@ -183,7 +183,7 @@ public class SkinsScreen extends Screen implements DragonBodyScreen {
         if (!loading) {
             DragonStateHandler playerData = DragonStateProvider.getData(minecraft.player);
 
-            if (!DragonUtils.isType(handler, playerData.getType())) {
+            if (!DragonUtils.isType(handler.getType(), playerData.getType())) {
                 handler.setType(playerData.getType());
             }
 

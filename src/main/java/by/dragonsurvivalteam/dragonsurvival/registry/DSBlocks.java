@@ -2,8 +2,8 @@ package by.dragonsurvivalteam.dragonsurvival.registry;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.*;
-import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonPressurePlates.PressurePlateType;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonTypeTags;
 import by.dragonsurvivalteam.dragonsurvival.util.CompoundTagBuilder;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.component.DataComponents;
@@ -47,7 +47,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASS)
                     .strength(3.0F)
                     .sound(SoundType.WOOD)
-                    .noOcclusion(), DragonDoor.DragonDoorOpenRequirement.NONE)
+                    .noOcclusion())
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Acacia Dragon Door")
@@ -59,7 +59,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASS)
                     .strength(3.0F)
                     .sound(SoundType.WOOD)
-                    .noOcclusion(), DragonDoor.DragonDoorOpenRequirement.NONE)
+                    .noOcclusion())
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Birch Dragon Door")
@@ -71,7 +71,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASS)
                     .strength(3.0F)
                     .sound(SoundType.WOOD)
-                    .noOcclusion(), DragonDoor.DragonDoorOpenRequirement.NONE)
+                    .noOcclusion())
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Jungle Dragon Door")
@@ -83,7 +83,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASS)
                     .strength(3.0F)
                     .sound(SoundType.WOOD)
-                    .noOcclusion(), DragonDoor.DragonDoorOpenRequirement.NONE)
+                    .noOcclusion())
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Oak Dragon Door")
@@ -95,7 +95,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASS)
                     .strength(3.0F)
                     .sound(SoundType.WOOD)
-                    .noOcclusion(), DragonDoor.DragonDoorOpenRequirement.NONE)
+                    .noOcclusion())
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Dark Oak Dragon Door")
@@ -107,7 +107,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASS)
                     .strength(3.0F)
                     .sound(SoundType.WOOD)
-                    .noOcclusion(), DragonDoor.DragonDoorOpenRequirement.NONE)
+                    .noOcclusion())
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Crimson Dragon Door")
@@ -119,7 +119,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASS)
                     .strength(3.0F)
                     .sound(SoundType.WOOD)
-                    .noOcclusion(), DragonDoor.DragonDoorOpenRequirement.NONE)
+                    .noOcclusion())
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Warped Dragon Door")
@@ -131,7 +131,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASS)
                     .strength(3.0F)
                     .sound(SoundType.WOOD)
-                    .noOcclusion(), DragonDoor.DragonDoorOpenRequirement.NONE)
+                    .noOcclusion())
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Legacy Dragon Door")
@@ -144,7 +144,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASS)
                     .strength(3.0F)
                     .sound(SoundType.WOOD)
-                    .noOcclusion(), DragonDoor.DragonDoorOpenRequirement.NONE)
+                    .noOcclusion())
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Iron Dragon Door")
@@ -155,26 +155,17 @@ public class DSBlocks {
                     .requiresCorrectToolForDrops()
                     .strength(5.0F)
                     .sound(SoundType.METAL)
-                    .noOcclusion(), DragonDoor.DragonDoorOpenRequirement.POWER)
+                    .noOcclusion(), true)
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Gothic Dragon Door")
-    public static final DeferredHolder<Block, DragonDoor> GOTHIC_DRAGON_DOOR = register(
-            "gothic_dragon_door",
-            () -> new DragonDoor(OAK_DRAGON_DOOR.get().properties(), DragonDoor.DragonDoorOpenRequirement.NONE)
-    );
+    public static final DeferredHolder<Block, DragonDoor> GOTHIC_DRAGON_DOOR = register("gothic_dragon_door", () -> new DragonDoor(OAK_DRAGON_DOOR.get().properties()));
 
     @Translation(type = Translation.Type.BLOCK, comments = "Skyrim Dragon Door")
-    public static final DeferredHolder<Block, DragonDoor> SKYRIM_DRAGON_DOOR = register(
-            "skyrim_dragon_door",
-            () -> new DragonDoor(OAK_DRAGON_DOOR.get().properties(), DragonDoor.DragonDoorOpenRequirement.NONE)
-    );
+    public static final DeferredHolder<Block, DragonDoor> SKYRIM_DRAGON_DOOR = register("skyrim_dragon_door", () -> new DragonDoor(OAK_DRAGON_DOOR.get().properties()));
 
     @Translation(type = Translation.Type.BLOCK, comments = "Stone Dragon Door")
-    public static final DeferredHolder<Block, DragonDoor> STONE_DRAGON_DOOR = register(
-            "stone_dragon_door",
-            () -> new DragonDoor(OAK_DRAGON_DOOR.get().properties(), DragonDoor.DragonDoorOpenRequirement.NONE)
-    );
+    public static final DeferredHolder<Block, DragonDoor> STONE_DRAGON_DOOR = register("stone_dragon_door", () -> new DragonDoor(OAK_DRAGON_DOOR.get().properties()));
 
     @Translation(type = Translation.Type.BLOCK, comments = "Cave Dragon Door")
     @Translation(type = Translation.Type.DESCRIPTION_ADDITION, comments = "■§7 A large door that only a cave dragon may open.")
@@ -186,7 +177,7 @@ public class DSBlocks {
                     .requiresCorrectToolForDrops()
                     .strength(7.0F)
                     .sound(SoundType.GILDED_BLACKSTONE)
-                    .noOcclusion(), DragonDoor.DragonDoorOpenRequirement.CAVE)
+                    .noOcclusion(), DSDragonTypeTags.CAVE)
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Forest Dragon Door")
@@ -199,7 +190,7 @@ public class DSBlocks {
                     .requiresCorrectToolForDrops()
                     .strength(7.0F)
                     .sound(SoundType.WOOD)
-                    .noOcclusion(), DragonDoor.DragonDoorOpenRequirement.FOREST)
+                    .noOcclusion(), DSDragonTypeTags.FOREST)
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Sea Dragon Door")
@@ -212,7 +203,7 @@ public class DSBlocks {
                     .requiresCorrectToolForDrops()
                     .strength(7.0F)
                     .sound(SoundType.STONE)
-                    .noOcclusion(), DragonDoor.DragonDoorOpenRequirement.SEA)
+                    .noOcclusion(), DSDragonTypeTags.SEA)
     );
 
     // --- Small Dragon Doors --- //
@@ -226,7 +217,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASS)
                     .strength(3.0F)
                     .sound(SoundType.WOOD)
-                    .noOcclusion(), DragonDoor.DragonDoorOpenRequirement.NONE)
+                    .noOcclusion())
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Small Spruce Dragon Door")
@@ -238,7 +229,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASS)
                     .strength(3.0F)
                     .sound(SoundType.WOOD)
-                    .noOcclusion(), DragonDoor.DragonDoorOpenRequirement.NONE)
+                    .noOcclusion())
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Small Acacia Dragon Door")
@@ -250,7 +241,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASS)
                     .strength(3.0F)
                     .sound(SoundType.WOOD)
-                    .noOcclusion(), DragonDoor.DragonDoorOpenRequirement.NONE)
+                    .noOcclusion())
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Small Birch Dragon Door")
@@ -262,7 +253,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASS)
                     .strength(3.0F)
                     .sound(SoundType.WOOD)
-                    .noOcclusion(), DragonDoor.DragonDoorOpenRequirement.NONE)
+                    .noOcclusion())
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Small Jungle Dragon Door")
@@ -274,7 +265,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASS)
                     .strength(3.0F)
                     .sound(SoundType.WOOD)
-                    .noOcclusion(), DragonDoor.DragonDoorOpenRequirement.NONE)
+                    .noOcclusion())
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Small Dark Oak Dragon Door")
@@ -286,7 +277,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASS)
                     .strength(3.0F)
                     .sound(SoundType.WOOD)
-                    .noOcclusion(), DragonDoor.DragonDoorOpenRequirement.NONE)
+                    .noOcclusion())
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Small Crimson Dragon Door")
@@ -298,7 +289,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASS)
                     .strength(3.0F)
                     .sound(SoundType.WOOD)
-                    .noOcclusion(), DragonDoor.DragonDoorOpenRequirement.NONE)
+                    .noOcclusion())
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Small Warped Dragon Door")
@@ -310,7 +301,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASS)
                     .strength(3.0F)
                     .sound(SoundType.WOOD)
-                    .noOcclusion(), DragonDoor.DragonDoorOpenRequirement.NONE)
+                    .noOcclusion())
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Small Stone Dragon Door")
@@ -321,7 +312,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASEDRUM)
                     .strength(3.0F)
                     .sound(SoundType.STONE)
-                    .noOcclusion(), DragonDoor.DragonDoorOpenRequirement.NONE)
+                    .noOcclusion())
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Small Gothic Dragon Door")
@@ -332,7 +323,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASEDRUM)
                     .strength(3.0F)
                     .sound(SoundType.STONE)
-                    .noOcclusion(), DragonDoor.DragonDoorOpenRequirement.NONE)
+                    .noOcclusion())
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Small Cave Dragon Door")
@@ -344,7 +335,7 @@ public class DSBlocks {
                     .requiresCorrectToolForDrops()
                     .strength(7.0F)
                     .sound(SoundType.GILDED_BLACKSTONE)
-                    .noOcclusion(), DragonDoor.DragonDoorOpenRequirement.CAVE)
+                    .noOcclusion(), DSDragonTypeTags.CAVE)
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Small Forest Dragon Door")
@@ -356,7 +347,7 @@ public class DSBlocks {
                     .requiresCorrectToolForDrops()
                     .strength(7.0F)
                     .sound(SoundType.WOOD)
-                    .noOcclusion(), DragonDoor.DragonDoorOpenRequirement.FOREST)
+                    .noOcclusion(), DSDragonTypeTags.FOREST)
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Small Sea Dragon Door")
@@ -368,7 +359,7 @@ public class DSBlocks {
                     .requiresCorrectToolForDrops()
                     .strength(7.0F)
                     .sound(SoundType.STONE)
-                    .noOcclusion(), DragonDoor.DragonDoorOpenRequirement.SEA)
+                    .noOcclusion(), DSDragonTypeTags.SEA)
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Small Iron Dragon Door")
@@ -379,7 +370,7 @@ public class DSBlocks {
                     .requiresCorrectToolForDrops()
                     .strength(5.0F)
                     .sound(SoundType.METAL)
-                    .noOcclusion(), DragonDoor.DragonDoorOpenRequirement.POWER)
+                    .noOcclusion(), true)
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Small Skyrim Dragon Door")
@@ -390,7 +381,7 @@ public class DSBlocks {
                     .requiresCorrectToolForDrops()
                     .strength(5.0F)
                     .sound(SoundType.METAL)
-                    .noOcclusion(), DragonDoor.DragonDoorOpenRequirement.POWER)
+                    .noOcclusion(), true) // TODO :: shouldn't the large skyrim dragon door also be powered if this one is?
     );
 
     // --- Source of Magic --- //
@@ -661,7 +652,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASEDRUM)
                     .strength(1.5f)
                     .sound(SoundType.STONE)
-                    .requiresCorrectToolForDrops(), PressurePlateType.DRAGON)
+                    .requiresCorrectToolForDrops(), DSDragonTypeTags.ALL, false)
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Human Pressure Plate")
@@ -673,19 +664,19 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASEDRUM)
                     .strength(1.5f)
                     .sound(SoundType.STONE)
-                    .requiresCorrectToolForDrops(), PressurePlateType.HUMAN)
+                    .requiresCorrectToolForDrops(), null, true)
     );
 
-    @Translation(type = Translation.Type.BLOCK, comments = "Sea Dragon Pressure Plate")
-    @Translation(type = Translation.Type.DESCRIPTION_ADDITION, comments = "■§7 Produces a redstone signal while a sea dragon stands on it. Can open a sea dragon door, if adjacent to it.")
-    public static final DeferredHolder<Block, DragonPressurePlates> SEA_DRAGON_PRESSURE_PLATE = register(
-            "sea_dragon_pressure_plate",
+    @Translation(type = Translation.Type.BLOCK, comments = "Cave Dragon Pressure Plate")
+    @Translation(type = Translation.Type.DESCRIPTION_ADDITION, comments = "■§7 Produces a redstone signal while a cave dragon stands on it. Can open a cave dragon door, if adjacent to it.")
+    public static final DeferredHolder<Block, DragonPressurePlates> CAVE_DRAGON_PRESSURE_PLATE = register(
+            "cave_dragon_pressure_plate",
             () -> new DragonPressurePlates(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.STONE)
                     .instrument(NoteBlockInstrument.BASEDRUM)
                     .strength(1.5f)
                     .sound(SoundType.STONE)
-                    .requiresCorrectToolForDrops(), PressurePlateType.SEA)
+                    .requiresCorrectToolForDrops(), DSDragonTypeTags.CAVE, false)
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Forest Dragon Pressure Plate")
@@ -698,19 +689,19 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASS)
                     .strength(2.0F)
                     .sound(SoundType.WOOD)
-                    .requiresCorrectToolForDrops(), PressurePlateType.FOREST)
+                    .requiresCorrectToolForDrops(), DSDragonTypeTags.FOREST, false)
     );
 
-    @Translation(type = Translation.Type.BLOCK, comments = "Cave Dragon Pressure Plate")
-    @Translation(type = Translation.Type.DESCRIPTION_ADDITION, comments = "■§7 Produces a redstone signal while a cave dragon stands on it. Can open a cave dragon door, if adjacent to it.")
-    public static final DeferredHolder<Block, DragonPressurePlates> CAVE_DRAGON_PRESSURE_PLATE = register(
-            "cave_dragon_pressure_plate",
+    @Translation(type = Translation.Type.BLOCK, comments = "Sea Dragon Pressure Plate")
+    @Translation(type = Translation.Type.DESCRIPTION_ADDITION, comments = "■§7 Produces a redstone signal while a sea dragon stands on it. Can open a sea dragon door, if adjacent to it.")
+    public static final DeferredHolder<Block, DragonPressurePlates> SEA_DRAGON_PRESSURE_PLATE = register(
+            "sea_dragon_pressure_plate",
             () -> new DragonPressurePlates(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.STONE)
                     .instrument(NoteBlockInstrument.BASEDRUM)
                     .strength(1.5f)
                     .sound(SoundType.STONE)
-                    .requiresCorrectToolForDrops(), PressurePlateType.CAVE)
+                    .requiresCorrectToolForDrops(), DSDragonTypeTags.SEA, false)
     );
 
     // --- Helmets --- //

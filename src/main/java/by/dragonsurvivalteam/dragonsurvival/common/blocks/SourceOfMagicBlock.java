@@ -368,6 +368,9 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
         DragonStateHandler handler = DragonStateProvider.getData(player);
         Block block = state.getBlock();
 
+        // FIXME :: add dragon type tag which specifies which dragon type can interact with it
+        //  no or empty tag = all types are valid
+
         if (block == DSBlocks.CAVE_SOURCE_OF_MAGIC.get() && !DragonUtils.isType(handler, DragonTypes.CAVE)) {
             return true;
         }

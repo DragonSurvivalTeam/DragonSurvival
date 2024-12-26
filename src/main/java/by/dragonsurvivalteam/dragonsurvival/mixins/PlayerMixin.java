@@ -4,9 +4,8 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.TreasureRestData;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonTypes;
-import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -27,7 +26,7 @@ import java.util.Objects;
 
 @Mixin(Player.class)
 public abstract class PlayerMixin extends LivingEntity {
-    protected PlayerMixin(EntityType<? extends LivingEntity> type, Level level) {
+    protected PlayerMixin(final EntityType<? extends LivingEntity> type, final Level level) {
         super(type, level);
     }
 
@@ -38,14 +37,10 @@ public abstract class PlayerMixin extends LivingEntity {
         }
     }
 
-    /** Disables the mining speed penalty for not being on the ground (for sea dragons that are in the water) */
+    /** Disables the mining speed penalty for not being on the ground (if the dragon can swim in the fluid) */
     @WrapOperation(method = "getDigSpeed", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;onGround()Z"))
     private boolean dragonSurvival$disablePenalty(final Player instance, final Operation<Boolean> original) {
-        if (instance.isInWater() && DragonUtils.isType(instance, DragonTypes.SEA)) {
-            return true;
-        }
-
-        if (instance.isInLava() && DragonUtils.isType(instance, DragonTypes.CAVE)) {
+        if (SwimData.getData(instance).canSwimIn(instance.getMaxHeightFluidType())) {
             return true;
         }
 

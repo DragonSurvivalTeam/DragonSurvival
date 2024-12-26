@@ -67,40 +67,16 @@ public class DragonUtils {
         return isType(playerType.getKey(), typeToCheck);
     }
 
-    public static boolean isType(final Entity entity, final Holder<DragonType> typeToCheck) {
-        if (!(entity instanceof Player player)) {
-            return false;
-        }
-
-        return isType(DragonStateProvider.getData(player), typeToCheck);
-    }
-
-    public static boolean isType(final DragonStateHandler data, final Holder<DragonType> typeToCheck) {
-        if (data == null) {
-            return false;
-        }
-
-        return isType(data.getType(), typeToCheck);
-    }
-
-    public static boolean isType(final Holder<DragonType> playerType, final Holder<DragonType> typeToCheck) {
-        if (playerType == typeToCheck) {
+    public static boolean isType(final Holder<DragonType> first, final Holder<DragonType> second) {
+        if (first == second) {
             return true;
         }
 
-        if (playerType == null || typeToCheck == null) {
+        if (first == null || second == null) {
             return false;
         }
 
-        return playerType.is(typeToCheck);
-    }
-
-    public static boolean isType(final Holder<DragonType> playerType, final ResourceKey<DragonType> typeToCheck) {
-        if (playerType == null) {
-            return false;
-        }
-
-        return playerType.getKey().equals(typeToCheck);
+        return first.getKey() == second.getKey();
     }
 
     public static boolean isType(final ResourceKey<DragonType> playerType, final ResourceKey<DragonType> typeToCheck) {

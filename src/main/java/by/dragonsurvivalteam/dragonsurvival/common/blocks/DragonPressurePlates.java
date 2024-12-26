@@ -1,11 +1,13 @@
 package by.dragonsurvivalteam.dragonsurvival.common.blocks;
 
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonTypes;
-import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -30,62 +32,65 @@ public class DragonPressurePlates extends PressurePlateBlock implements SimpleWa
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
-    public PressurePlateType type;
+    private final TagKey<DragonType> types;
+    private final boolean allowHumans;
 
-    public enum PressurePlateType {
-        DRAGON,
-        HUMAN,
-        SEA,
-        CAVE,
-        FOREST
-    }
-
-    public DragonPressurePlates(Properties properties, PressurePlateType type) {
+    public DragonPressurePlates(final Properties properties, final TagKey<DragonType> types, boolean allowHumans) {
         super(BlockSetType.WARPED, properties);
         registerDefaultState(stateDefinition.any().setValue(POWERED, false).setValue(WATERLOGGED, false));
 
-        this.type = type;
+        this.types = types;
+        this.allowHumans = allowHumans;
+    }
+
+    public @Nullable TagKey<DragonType> getTypes() {
+        return types;
     }
 
     @Override
-    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+    public @NotNull VoxelShape getShape(@NotNull final BlockState state, @NotNull final BlockGetter level, @NotNull final BlockPos position, @NotNull final CollisionContext context) {
         return PRESSED_AABB;
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction dir, BlockState state2, LevelAccessor level, BlockPos pos, BlockPos pos2) {
+    public @NotNull BlockState updateShape(final BlockState state, @NotNull final Direction facing, @NotNull final BlockState facingState, @NotNull final LevelAccessor level, @NotNull final BlockPos position, @NotNull final BlockPos facingPosition) {
         if (state.getValue(WATERLOGGED)) {
-            level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+            level.scheduleTick(position, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
-        return super.updateShape(state, dir, state2, level, pos, pos2);
+
+        return super.updateShape(state, facing, facingState, level, position, facingPosition);
     }
 
     @Override
-    protected int getSignalStrength(Level pLevel, BlockPos pPos) {
-        net.minecraft.world.phys.AABB axisalignedbb = TOUCH_AABB.move(pPos);
-        List<? extends Entity> list = pLevel.getEntities(null, axisalignedbb);
+    protected int getSignalStrength(final Level level, @NotNull final BlockPos position) {
+        List<? extends Entity> entities = level.getEntities(null, TOUCH_AABB.move(position));
 
-        if (!list.isEmpty()) {
-            for (Entity entity : list) {
-                if (!entity.isIgnoringBlockTriggers()) {
-                    return switch (type) {
-                        case DRAGON -> DragonStateProvider.isDragon(entity) ? 15 : 0;
-                        case HUMAN -> !DragonStateProvider.isDragon(entity) ? 15 : 0;
-                        case SEA -> DragonUtils.isType(entity, DragonTypes.SEA) ? 15 : 0;
-                        case FOREST -> DragonUtils.isType(entity, DragonTypes.FOREST) ? 15 : 0;
-                        case CAVE -> DragonUtils.isType(entity, DragonTypes.CAVE) ? 15 : 0;
-                    };
-                }
-            }
+        if (entities.isEmpty()) {
+            return 0;
         }
+
+        for (Entity entity : entities) {
+            if (!(entity instanceof Player player) || entity.isIgnoringBlockTriggers()) {
+                continue;
+            }
+
+            DragonStateHandler data = DragonStateProvider.getData(player);
+
+            if (!data.isDragon()) {
+                return allowHumans ? 15 : 0;
+            }
+
+            return types != null && data.getType().is(types) ? 15 : 0;
+        }
+
         return 0;
     }
 
     @Override
-    protected void createBlockStateDefinition(Builder<Block, BlockState> pBuilder) {
-        super.createBlockStateDefinition(pBuilder);
-        pBuilder.add(FACING);
-        pBuilder.add(WATERLOGGED);
+    protected void createBlockStateDefinition(@NotNull final Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(FACING);
+        builder.add(WATERLOGGED);
     }
 
     @Override
@@ -104,7 +109,7 @@ public class DragonPressurePlates extends PressurePlateBlock implements SimpleWa
     }
 
     @Override
-    public FluidState getFluidState(BlockState state) {
+    public @NotNull FluidState getFluidState(BlockState state) {
         return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 

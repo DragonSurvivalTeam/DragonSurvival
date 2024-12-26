@@ -25,7 +25,6 @@ import org.jetbrains.annotations.NotNull;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
-// We getOrGenerateHandler here since we might not have created the handler when doing a SyncComplete (this happens when the player selects a dragon for the first time)
 public class SyncComplete implements IMessage<SyncComplete.Data> {
     public static void handleClient(final Data message, final IPayloadContext context) {
         Entity entity = context.player().level().getEntity(message.playerId);

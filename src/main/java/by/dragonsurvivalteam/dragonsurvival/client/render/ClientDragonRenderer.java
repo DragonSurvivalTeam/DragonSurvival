@@ -17,18 +17,17 @@ import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncDeltaMovement;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDragonMovement;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DamageModifications;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AreaTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.DragonBreathTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.LookingAtTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
-import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -469,24 +468,22 @@ public class ClientDragonRenderer {
         }
     }
 
-    /**
-     * Don't render fire overlay for cave dragons
-     */
-    @SubscribeEvent
-    public static void removeFireOverlay(RenderBlockScreenEffectEvent event) {
+    @SubscribeEvent // Don't render the fire overlay when fire immune
+    public static void removeFireOverlay(final RenderBlockScreenEffectEvent event) {
         if (event.getOverlayType() != RenderBlockScreenEffectEvent.OverlayType.FIRE) {
             return;
         }
 
-        DragonStateProvider.getOptional(Minecraft.getInstance().player).ifPresent(handler -> {
-            if (DragonUtils.isType(handler, DragonTypes.CAVE)) {
-                event.setCanceled(true);
-            }
-        });
+        //noinspection DataFlowIssue -> player is present
+        DamageModifications modifications = DamageModifications.getData(Minecraft.getInstance().player);
+
+        if (modifications.isFireImmune()) {
+            event.setCanceled(true);
+        }
     }
 
     @SubscribeEvent
-    public static void unloadWorld(LevelEvent.Unload worldEvent) {
+    public static void clearDragonReferences(final LevelEvent.Unload worldEvent) {
         playerDragonHashMap.clear();
     }
 
@@ -494,7 +491,7 @@ public class ClientDragonRenderer {
 
         /// Minimum magnitude for player input to consider the player to be moving
         /// This is used for deliberate movement, i.e. player input
-        /// Forced movement (mid-air momentum etc.) relies on MOVE_DELTA_EPSILON for the world-space move delta vector
+        /// Forced movement (midair momentum etc.) relies on MOVE_DELTA_EPSILON for the world-space move delta vector
         static final double INPUT_EPSILON = 0.0000001D;
 
         /// Minimum magnitude to consider the player to be moving (horizontally)

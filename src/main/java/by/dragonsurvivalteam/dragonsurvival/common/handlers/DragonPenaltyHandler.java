@@ -31,13 +31,14 @@ import java.util.Optional;
 
 @EventBusSubscriber
 public class DragonPenaltyHandler {
-    @SubscribeEvent
-    public static void hitByWaterPotion(ProjectileImpactEvent potionEvent) {
+    @SubscribeEvent // TODO :: remove this logic entirely? have some sort of config or penalty?
+    public static void hitByWaterPotion(final ProjectileImpactEvent event) {
+        // TODO :: add snowball logic here as well if this stays
         if (!ServerConfig.penaltiesEnabled /*|| CaveDragonConfig.caveSplashDamage == 0.0*/) {
             return;
         }
 
-        if (potionEvent.getProjectile() instanceof ThrownPotion potion) {
+        if (event.getProjectile() instanceof ThrownPotion potion) {
             if (potion.getItem().getItem() != Items.SPLASH_POTION) {
                 return;
             }
@@ -48,7 +49,7 @@ public class DragonPenaltyHandler {
                 return;
             }
 
-            Vec3 pos = potionEvent.getRayTraceResult().getLocation();
+            Vec3 pos = event.getRayTraceResult().getLocation();
             List<Player> entities = potion.level().getEntities(EntityType.PLAYER, new AABB(pos.x - 5, pos.y - 1, pos.z - 5, pos.x + 5, pos.y + 1, pos.z + 5), entity -> entity.position().distanceTo(pos) <= 4);
 
             for (Player player : entities) {
