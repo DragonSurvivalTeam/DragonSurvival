@@ -44,7 +44,6 @@ public class DragonSurvival {
 
     public DragonSurvival(IEventBus bus, ModContainer container) {
         PROXY = FMLLoader.getDist().isClient() ? new ClientProxy() : new ServerProxy();
-
         ConfigHandler.initConfig();
 
         bus.addListener(this::addPackFinders);

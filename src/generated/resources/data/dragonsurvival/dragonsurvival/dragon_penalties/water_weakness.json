@@ -1,13 +1,15 @@
 {
-  "conditions": [
-    {
+  "condition": {
+    "condition": "minecraft:entity_properties",
+    "entity": "this",
+    "predicate": {
       "location": {
         "fluid": {
           "fluids": "#minecraft:water"
         }
       }
     }
-  ],
+  },
   "effect": {
     "type": "dragonsurvival:water_burn",
     "amount": 1.0,

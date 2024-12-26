@@ -15,9 +15,20 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
 import net.neoforged.neoforge.fluids.FluidType;
 
 public class Condition { // TODO :: make advancements use conditions from here / split into separate classes that return BlockPredicate, ItemPredicate etc.
+    // Loot Item Condition
+
+    public static LootItemCondition.Builder thisEntity(final EntityPredicate predicate) {
+        return LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS, predicate);
+    }
+
+    // Misc.
+
     public static ContextAwarePredicate none() {
         return EntityPredicate.wrap(EntityPredicate.Builder.entity().build());
     }

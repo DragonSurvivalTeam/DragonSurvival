@@ -14,23 +14,22 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 
-import java.util.List;
+import java.util.Optional;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
-public record DragonPenalty(ResourceLocation icon, boolean inverseConditions, List<EntityPredicate> conditions, PenaltyEffect effect, PenaltyTrigger trigger) {
+public record DragonPenalty(ResourceLocation icon, Optional<LootItemCondition> condition, PenaltyEffect effect, PenaltyTrigger trigger) {
     public static final Codec<DragonPenalty> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ResourceLocation.CODEC.fieldOf("icon").forGetter(DragonPenalty::icon),
-            Codec.BOOL.optionalFieldOf("inverse_conditions", false).forGetter(DragonPenalty::inverseConditions),
-            EntityPredicate.CODEC.listOf().optionalFieldOf("conditions", List.of()).forGetter(DragonPenalty::conditions),
+            LootItemCondition.DIRECT_CODEC.optionalFieldOf("condition").forGetter(DragonPenalty::condition),
             PenaltyEffect.CODEC.fieldOf("effect").forGetter(DragonPenalty::effect),
             PenaltyTrigger.CODEC.fieldOf("trigger").forGetter(DragonPenalty::trigger)
     ).apply(instance, DragonPenalty::new));
@@ -51,26 +50,7 @@ public record DragonPenalty(ResourceLocation icon, boolean inverseConditions, Li
             }
         }
 
-        boolean conditionMet = conditions.isEmpty();
-
-        if(inverseConditions) {
-            conditionMet = true;
-            for (EntityPredicate condition : conditions) {
-                if (condition.matches((ServerLevel) dragon.level(), dragon.position(), dragon)) {
-                    conditionMet = false;
-                    break;
-                }
-            }
-        } else {
-            for (EntityPredicate condition : conditions) {
-                if (condition.matches((ServerLevel) dragon.level(), dragon.position(), dragon)) {
-                    conditionMet = true;
-                    break;
-                }
-            }
-        }
-
-        if (trigger.matches(dragon, conditionMet)) {
+        if (trigger.matches(dragon, condition.map(condition -> condition.test(EntityPredicate.createContext(dragon, dragon))).orElse(true))) {
             effect.apply(dragon);
         }
     }

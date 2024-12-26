@@ -39,6 +39,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Locale;
 import javax.annotation.Nullable;
 
+// FIXME :: some doors were not usable by dragons, use NONE dragon type tag
 public class DragonDoor extends Block implements SimpleWaterloggedBlock {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty OPEN = BlockStateProperties.OPEN;

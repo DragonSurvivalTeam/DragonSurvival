@@ -61,9 +61,7 @@ public class DataGeneration {
         generator.addProvider(event.includeClient(), new DSLanguageProvider(output, lookup, "en_us"));
 
         // Server
-        LootTableProvider.SubProviderEntry blockLootTableSubProvider = new LootTableProvider.SubProviderEntry(
-                BlockLootTableSubProvider::new,
-                LootContextParamSets.BLOCK);
+        LootTableProvider.SubProviderEntry blockLootTableSubProvider = new LootTableProvider.SubProviderEntry(BlockLootTableSubProvider::new, LootContextParamSets.BLOCK);
         generator.addProvider(event.includeServer(), (DataProvider.Factory<LootTableProvider>) lootTableOutput -> new LootTableProvider(lootTableOutput, Collections.emptySet(), List.of(blockLootTableSubProvider), event.getLookupProvider()));
 
         // built-in registries

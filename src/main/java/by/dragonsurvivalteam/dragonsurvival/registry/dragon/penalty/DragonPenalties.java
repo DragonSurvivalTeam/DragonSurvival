@@ -15,9 +15,11 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.storage.loot.predicates.AnyOfCondition;
 import net.neoforged.neoforge.common.Tags;
 
 import java.util.List;
+import java.util.Optional;
 
 public class DragonPenalties {
     @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
@@ -34,18 +36,18 @@ public class DragonPenalties {
     @Translation(type = Translation.Type.PENALTY, comments = "Water Weakness")
     public static final ResourceKey<DragonPenalty> WATER_WEAKNESS = DragonPenalties.key("water_weakness");
 
-    @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
-            "■ Dragons are unable to wield or equip certain items.\n",
-    })
-    @Translation(type = Translation.Type.PENALTY, comments = "Item Blacklist")
-    public static final ResourceKey<DragonPenalty> ITEM_BLACKLIST = DragonPenalties.key("item_blacklist");
-
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
             "■ Drying out under the harsh sun is a major concern for sea dragons. If they are outside of the water for too long, they will dehydrate and suffer damage.\n",
             "■ The skill «Hydration Capacity», rain, ice, snow and water bottles §7could make your life easier.§r\n",
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Thin Skin")
     public static final ResourceKey<DragonPenalty> THIN_SKIN = DragonPenalties.key("thin_skin");
+
+    @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
+            "■ Dragons are unable to wield or equip certain items.\n",
+    })
+    @Translation(type = Translation.Type.PENALTY, comments = "Item Blacklist")
+    public static final ResourceKey<DragonPenalty> ITEM_BLACKLIST = DragonPenalties.key("item_blacklist");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
             "■ The predatory plants in your body dislike §dDarkness§r. If the light level around you is lower than 4, you may receive the §c«Stress»§r effect, rapidly draining your food gauge.\n",
@@ -57,66 +59,39 @@ public class DragonPenalties {
     public static void registerPenalties(final BootstrapContext<DragonPenalty> context) {
         context.register(SNOW_AND_RAIN_WEAKNESS, new DragonPenalty(
                 DragonSurvival.res("abilities/cave/hot_blood_0"),
-                false,
-                List.of(
-                        Condition.inRain(),
-                        Condition.onBlock(Blocks.SNOW, Blocks.POWDER_SNOW, Blocks.SNOW_BLOCK)
-                ),
-                new DamagePenalty(
-                        context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.RAIN_BURN),
-                        1.0f
-                ),
-                new SupplyTrigger(
-                        "rain_supply",
-                        DSAttributes.PENALTY_RESISTANCE_TIME,
-                        40,
-                        1.0f,
-                        0.013f,
-                        List.of(),
-                        false
-                ))
+                Optional.of(AnyOfCondition.anyOf(
+                        Condition.thisEntity(Condition.inRain()),
+                        Condition.thisEntity(Condition.onBlock(Blocks.SNOW, Blocks.POWDER_SNOW, Blocks.SNOW_BLOCK))
+                ).build()),
+                new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.RAIN_BURN), 1),
+                new SupplyTrigger("rain_supply", DSAttributes.PENALTY_RESISTANCE_TIME, 40, 1, 0.013f, List.of(), false))
         );
 
         context.register(WATER_WEAKNESS, new DragonPenalty(
-                DragonSurvival.res("abilities/cave/hot_blood_0"),
-                false,
-                List.of(Condition.inFluid(context.lookup(BuiltInRegistries.FLUID.key()).getOrThrow(FluidTags.WATER))),
-                new DamagePenalty(
-                        context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.WATER_BURN),
-                        1.0f
-                ),
-
-                new InstantTrigger(
-                        10
-                )
+                DragonSurvival.res("abilities/cave/hot_blood_0"), // TODO
+                Optional.of(Condition.thisEntity(Condition.inFluid(context.lookup(BuiltInRegistries.FLUID.key()).getOrThrow(FluidTags.WATER))).build()),
+                new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.WATER_BURN), 1),
+                new InstantTrigger(10)
         ));
 
         context.register(THIN_SKIN, new DragonPenalty(
-                DragonSurvival.res("abilities/cave/hot_blood_0"),
-                true,
-                List.of(
-                        Condition.inFluid(context.lookup(BuiltInRegistries.FLUID.key()).getOrThrow(FluidTags.WATER)),
-                        Condition.inRain(),
-                        Condition.onBlock(Blocks.SNOW, Blocks.POWDER_SNOW, Blocks.SNOW_BLOCK)
-                ),
-                new DamagePenalty(
-                        context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.DEHYDRATION),
-                        1.0f
-                ),
+                DragonSurvival.res("abilities/cave/hot_blood_0"), // TODO
+                Optional.of(AnyOfCondition.anyOf(
+                        Condition.thisEntity(Condition.inFluid(context.lookup(BuiltInRegistries.FLUID.key()).getOrThrow(FluidTags.WATER))),
+                        Condition.thisEntity(Condition.inRain()),
+                        Condition.thisEntity(Condition.onBlock(Blocks.SNOW, Blocks.POWDER_SNOW, Blocks.SNOW_BLOCK))
+                ).invert().build()),
+                new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.DEHYDRATION), 1),
                 new SupplyTrigger(
                         "water_supply",
                         DSAttributes.PENALTY_RESISTANCE_TIME,
                         40,
-                        1.0f,
+                        1,
                         0.013f,
                         List.of(
                                 new SupplyTrigger.RecoveryItems(
-                                        HolderSet.direct(
-                                                Items.MILK_BUCKET.builtInRegistryHolder()
-                                        ),
-                                        HolderSet.direct(
-                                                Potions.WATER
-                                        ),
+                                        HolderSet.direct(Items.MILK_BUCKET.builtInRegistryHolder()),
+                                        HolderSet.direct(Potions.WATER),
                                         0.5f
                                 )
                         ),
@@ -126,11 +101,16 @@ public class DragonPenalties {
 
         context.register(ITEM_BLACKLIST, new DragonPenalty(
                 DragonSurvival.res("abilities/cave/hot_blood_0"), // TODO
-                false,
-                List.of(),
+                Optional.empty(),
                 new ItemBlacklistPenalty(DEFAULT_COMMON_BLACKLIST),
                 PenaltyTrigger.instant()
         ));
+
+//        context.register(FEAR_OF_DARKNESS, new DragonPenalty(
+//                DragonSurvival.res("abilities/cave/hot_blood_0"), // TODO
+//                false,
+//
+//        ));
     }
 
     public static ResourceKey<DragonPenalty> key(final ResourceLocation location) {
