@@ -52,7 +52,7 @@ public class InventoryScreenHandler {
     @ConfigOption(side = ConfigSide.CLIENT, category = "inventory", key = "inventory_toggle")
     public static Boolean inventoryToggle = true;
 
-    private static final ResourceLocation DS_LOGO = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ds_logo.png");
+    private static final ResourceLocation DS_LOGO = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui_new/ds_logo.png");
 
     private static ExtendedButton altarOpenButton;
     private static ExtendedButton creativeModeDragonInventoryButton;
@@ -104,12 +104,12 @@ public class InventoryScreenHandler {
 
         if (sc instanceof InventoryScreen screen) {
             if (ServerConfig.allowDragonChoiceFromInventory) {
-                altarOpenButton = new ExtendedButton(screen.getGuiLeft() + 150, screen.height / 2 - 22, 20, 18, Component.empty(), p_onPress_1_ -> {
+                altarOpenButton = new ExtendedButton(screen.getGuiLeft() + 138, screen.height / 2 - 32, 32, 32, Component.empty(), p_onPress_1_ -> {
                     ClientProxy.handleOpenDragonAltar();
                 }) {
                     @Override
                     public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-                        guiGraphics.blit(DS_LOGO, getX(), getY(), 0, 0, 20, 20, 20, 20);
+                        guiGraphics.blit(DS_LOGO, getX(), getY(), 0, 0, 32, 32, 32, 32);
                     }
                 };
                 altarOpenButton.setTooltip(Tooltip.create(Component.translatable(TOGGLE_DRAGON_ALTAR)));
