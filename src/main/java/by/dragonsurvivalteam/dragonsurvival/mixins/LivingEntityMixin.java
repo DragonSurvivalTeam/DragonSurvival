@@ -151,12 +151,12 @@ public abstract class LivingEntityMixin extends Entity {
     }
 
     @ModifyReturnValue(method = "canAttack(Lnet/minecraft/world/entity/LivingEntity;)Z", at = @At("RETURN"))
-    private boolean dragonSurvival$isTargetAllied(boolean canAttack, @Local(argsOnly = true, ordinal = 0) final LivingEntity target) {
+    private boolean dragonSurvival$checkSummonRelationship(boolean canAttack, @Local(argsOnly = true, ordinal = 0) final LivingEntity target) {
         if (!canAttack) {
             return false;
         }
 
-        return !SummonedEntities.isAlly(this, target);
+        return !SummonedEntities.hasSummonRelationship(this, target);
     }
 
     /** Enable cave dragons to properly swim in lava and also enables properly swimming up or down (for water and lava) */

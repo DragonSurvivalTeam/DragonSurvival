@@ -1,11 +1,11 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
-import by.dragonsurvivalteam.dragonsurvival.common.capability.EntityStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.goals.FollowSummonerGoal;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.SummonEntityEffect;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -13,10 +13,15 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.EntityInvulnerabilityCheckEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
-import net.neoforged.neoforge.event.entity.living.*;
+import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
+import net.neoforged.neoforge.event.entity.living.LivingExperienceDropEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -44,7 +49,11 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
         return movementBehaviour;
     }
 
-    public static boolean isAlly(final Entity entity, final Entity target) {
+    public static boolean hasSummonRelationship(final Entity entity, final Entity target) {
+        if (entity == null || target == null) {
+            return false;
+        }
+
         return entity.getExistingData(DSDataAttachments.ENTITY_HANDLER).map(data -> {
             if (data.summonOwner == null) {
                 return false;
@@ -81,6 +90,21 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
     public static void removeSummons(final LivingDeathEvent event) {
         event.getEntity().getExistingData(DSDataAttachments.SUMMONED_ENTITIES).ifPresent(data -> {
             data.all().forEach(instance -> instance.onRemovalFromStorage(event.getEntity()));
+        });
+    }
+
+    @SubscribeEvent // Discard the summon if right-clicked with no item
+    public static void discardSummon(final PlayerInteractEvent.EntityInteract event) {
+        if (event.getHand() != InteractionHand.OFF_HAND && !event.getItemStack().isEmpty()) {
+            return;
+        }
+
+        event.getEntity().getExistingData(DSDataAttachments.SUMMONED_ENTITIES).ifPresent(data -> {
+            SummonEntityEffect.Instance instance = data.getInstance(event.getTarget());
+
+            if (instance != null && instance.removeSummon(event.getTarget())) {
+                data.remove(event.getEntity(), instance);
+            }
         });
     }
 
@@ -150,44 +174,27 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
      * (If their behaviour is set to the appropriate type)
      */
     @SubscribeEvent
-    public static void handleTargeting(final LivingChangeTargetEvent event) {
+    public static void targetAttackedEnemy(final LivingChangeTargetEvent event) {
         if (event.getNewAboutToBeSetTarget() == null) {
             return;
         }
 
-        EntityStateHandler data = event.getEntity().getData(DSDataAttachments.ENTITY_HANDLER);
-        Entity owner = data.getSummonOwner(event.getEntity().level());
-
-        if (owner == null) {
-            event.getNewAboutToBeSetTarget().getExistingData(DSDataAttachments.SUMMONED_ENTITIES).ifPresent(summonData -> {
-                if (summonData.attackBehaviour != AttackBehaviour.DEFAULT) {
-                    summonData.setTarget(event.getEntity());
+        if (hasSummonRelationship(event.getEntity(), event.getNewAboutToBeSetTarget())) {
+            // Fallback - should technically already be handled through the 'EntityMixin'
+            event.setNewAboutToBeSetTarget(null);
+        } else {
+            event.getNewAboutToBeSetTarget().getExistingData(DSDataAttachments.SUMMONED_ENTITIES).ifPresent(data -> {
+                if (data.attackBehaviour != AttackBehaviour.DEFAULT) {
+                    data.setTarget(event.getEntity());
                 }
             });
-        } else if (event.getNewAboutToBeSetTarget() == owner) {
-            // Technically 'isAlliedTo' should handle this
-            // But at certain points the team is directly or other weird checks are done instead
-            event.setNewAboutToBeSetTarget(null);
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void avoidDamagingOwner(final LivingIncomingDamageEvent event) {
-        Entity source = event.getSource().getEntity();
-
-        if (source == null) {
-            return;
-        }
-
-        EntityStateHandler data = source.getData(DSDataAttachments.ENTITY_HANDLER);
-        Entity owner = data.getSummonOwner(event.getEntity().level());
-
-        if (owner == null) {
-            return;
-        }
-
-        if (event.getEntity() == owner) {
-            event.setCanceled(true);
+    @SubscribeEvent
+    public static void avoidDamagingAlly(final EntityInvulnerabilityCheckEvent event) {
+        if (hasSummonRelationship(event.getEntity(), event.getSource().getEntity())) {
+            event.setInvulnerable(true);
         }
     }
 

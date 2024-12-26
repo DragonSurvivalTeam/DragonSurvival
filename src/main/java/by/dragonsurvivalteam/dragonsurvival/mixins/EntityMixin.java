@@ -138,14 +138,14 @@ public abstract class EntityMixin {
 
     // Using 'ModifyReturnValue' seems to not work - the mixin cannot find the method
     @Inject(method = "isAlliedTo(Lnet/minecraft/world/entity/Entity;)Z", at = @At("RETURN"), cancellable = true)
-    private void dragonSurvival$checkOwnerForAlliedTo(final Entity target, final CallbackInfoReturnable<Boolean> callback) {
+    private void dragonSurvival$checkSummonRelationship(final Entity target, final CallbackInfoReturnable<Boolean> callback) {
         if (callback.getReturnValue()) {
             return;
         }
 
         Entity self = (Entity) (Object) this;
 
-        if (SummonedEntities.isAlly(self, target)) {
+        if (SummonedEntities.hasSummonRelationship(self, target)) {
             callback.setReturnValue(true);
         }
     }
