@@ -13,14 +13,13 @@ import net.neoforged.neoforge.event.entity.living.LivingBreatheEvent;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 @EventBusSubscriber
 public class SwimData {
     public static final int UNLIMITED_OXYGEN = -1;
-    public static final int NO_MODIFICATION = 0;
 
     public FluidType previousEyeInFluidType;
     public FluidType eyeInFluidTypeLastTick;

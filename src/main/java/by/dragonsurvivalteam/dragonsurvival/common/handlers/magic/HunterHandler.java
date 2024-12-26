@@ -40,6 +40,13 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
     @ConfigOption(side = ConfigSide.SERVER, category = {"effects", "hunter"}, key = "hunter_max_level")
     public static int MAX_LEVEL = 4;
 
+    @Translation(key = "hunter_damage_per_level", type = Translation.Type.CONFIGURATION, comments = {
+            "Determines the damage bonus (0.5 -> 50%) per level of the effect",
+            "The damage bonus scales with the current stacks, max. amount being reached at max. stacks"
+    })
+    @ConfigOption(side = ConfigSide.SERVER, category = {"effects", "hunter"}, key = "hunter_damage_per_level")
+    public static double DAMAGE_PER_LEVEL = 0.75;
+
     @Translation(key = "hunter_fully_invisible", type = Translation.Type.CONFIGURATION, comments = "If enabled other players will be fully invisible at maximum hunter stacks")
     @ConfigOption(side = ConfigSide.SERVER, category = {"effects", "hunter"}, key = "hunter_full_invisibility")
     public static boolean FULLY_INVISIBLE;
@@ -143,11 +150,8 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
         }
 
         HunterData data = event.getEntity().getData(DSDataAttachments.HUNTER);
-        float multiplier = 1 + hunterEffect.getAmplifier();
-
-        if (data.hasMaxHunterStacks()) {
-            multiplier += 2f;
-        }
+        float multiplier = (float) (1 + hunterEffect.getAmplifier() * DAMAGE_PER_LEVEL);
+        multiplier = multiplier * ((float) data.getHunterStacks() / getMaxStacks());
 
         event.setCriticalHit(true);
         event.setDamageMultiplier(event.getDamageMultiplier() + multiplier);

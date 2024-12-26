@@ -36,10 +36,6 @@ import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import org.joml.Vector3d;
-import software.bernie.geckolib.animation.state.BoneSnapshot;
-import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.loading.json.raw.Bone;
 
 import java.util.Objects;
 import java.util.Optional;

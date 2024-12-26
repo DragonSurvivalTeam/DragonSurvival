@@ -10,7 +10,6 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Vector3f;
 
 public record SyncBreathParticles(int playerId, float spread, float speedPerSize, int numParticles, ParticleOptions mainParticle, ParticleOptions secondaryParticle) implements CustomPacketPayload {
     public static final Type<SyncBreathParticles> TYPE = new Type<>(DragonSurvival.res("sync_breath_particles"));
