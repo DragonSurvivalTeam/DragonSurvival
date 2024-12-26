@@ -12,6 +12,8 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilit
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBodies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEmoteSet;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEmoteSets;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.datapacks.AncientDatapack;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalties;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
@@ -68,6 +70,7 @@ public class DataGeneration {
         RegistrySetBuilder builder = new RegistrySetBuilder();
         builder.add(Registries.DAMAGE_TYPE, DSDamageTypes::registerDamageTypes);
         builder.add(Registries.ENCHANTMENT, DSEnchantments::registerEnchantments);
+        builder.add(DragonEmoteSet.REGISTRY, DragonEmoteSets::registerEmoteSets);
         builder.add(DragonBody.REGISTRY, DragonBodies::registerBodies);
         builder.add(DragonStage.REGISTRY, DragonStages::registerStages);
         builder.add(DragonAbility.REGISTRY, DragonAbilities::registerAbilities);

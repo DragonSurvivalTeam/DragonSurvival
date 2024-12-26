@@ -1,0 +1,12 @@
+{
+  "emotes": [
+    {
+      "animation_key": "blend_angry",
+      "is_blend": true,
+      "locks_head": true,
+      "locks_tail": true,
+      "loops": true,
+      "third_person": false
+    }
+  ]
+}

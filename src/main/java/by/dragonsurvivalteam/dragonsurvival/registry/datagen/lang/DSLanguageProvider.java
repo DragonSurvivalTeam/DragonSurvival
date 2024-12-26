@@ -110,6 +110,13 @@ public class DSLanguageProvider extends LanguageProvider {
                         continue;
                     }
 
+                    if (type == Translation.Type.EMOTE && String.class.isAssignableFrom(field.getType())) {
+                        String translationKey = (String) field.get(null);
+                        add(type.wrap(translationKey), format(comments));
+
+                        continue;
+                    }
+
                     // For advancement translations the field will only contain the path which will also be used for the advancement itself
                     if ((type == Translation.Type.ADVANCEMENT || type == Translation.Type.ADVANCEMENT_DESCRIPTION) && String.class.isAssignableFrom(field.getType())) {
                         String path = (String) field.get(null);
