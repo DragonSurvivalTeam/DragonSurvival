@@ -145,25 +145,24 @@ public class DragonStateHandler extends EntityStateHandler {
         return dragonBody;
     }
 
+    public void refreshDataOnTypeChange(final Player player) {
+        PenaltySupply.getData(player).clear();
+        MagicData.getData(player).refresh(getType(), player);
+        skinData.skinPreset.initDefaults(this);
+    }
+
     public void setType(final Holder<DragonType> type, final Player player) {
         Holder<DragonType> oldType = dragonType;
         setType(type);
-
-        MagicData magicData = MagicData.getData(player);
-        PenaltySupply penaltySupply = PenaltySupply.getData(player);
-        penaltySupply.clear(); // FIXME :: why is this being called 3 times here
 
         if (type != null) {
             // TODO :: save abilities per type
             if (oldType == null || !oldType.is(type)) {
                 DSModifiers.updateTypeModifiers(player, this);
-                penaltySupply.clear();
-                skinData.skinPreset.initDefaults(type.getKey(), getBody().value().customModel());
-                magicData.refresh(type, player);
+                refreshDataOnTypeChange(player);
             }
         } else {
             DSModifiers.clearModifiers(player);
-            penaltySupply.clear();
         }
     }
 

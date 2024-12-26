@@ -39,7 +39,7 @@ public class SyncComplete implements IMessage<SyncComplete.Data> {
                 handler.deserializeNBT(player.registryAccess(), message.nbt);
 
                 if (!DragonUtils.isType(oldType, handler.getType())) {
-                    MagicData.getData(player).refresh(handler.getType(), player);
+                    handler.refreshDataOnTypeChange(player);
                 }
 
                 DSModifiers.updateAllModifiers(player);
@@ -70,10 +70,7 @@ public class SyncComplete implements IMessage<SyncComplete.Data> {
 
                     // TODO: This doesn't fully work with saveAllAbilities config. We'd need to make a mapping of dragon types to magicData instances.
                     if (previousType == null || (!ServerConfig.saveAllAbilities && !previousType.is(handler.getType()))) {
-                        PenaltySupply penaltySupply = PenaltySupply.getData(player);
-                        penaltySupply.clear();
-                        MagicData magicData = MagicData.getData(player);
-                        magicData.refresh(handler.getType(), player);
+                        handler.refreshDataOnTypeChange(player);
                     }
                     handleDragonSync(player);
                 })
