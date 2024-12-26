@@ -32,4 +32,8 @@ public record DragonEmoteSet(List<DragonEmote> emotes) {
     public static void register(final DataPackRegistryEvent.NewRegistry event) {
         event.dataPackRegistry(REGISTRY, DIRECT_CODEC, DIRECT_CODEC);
     }
+
+    public DragonEmote getEmote(String animationKey) {
+        return emotes.stream().filter(emote -> emote.animationKey().equals(animationKey)).findFirst().orElse(null);
+    }
 }

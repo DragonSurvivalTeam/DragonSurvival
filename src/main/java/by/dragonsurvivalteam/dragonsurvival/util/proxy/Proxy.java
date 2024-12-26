@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.util.proxy;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AbilityAnimation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationType;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEmote;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -27,4 +28,10 @@ public interface Proxy {
     default void stopTickingSound(final ResourceLocation id) { /* Nothing to do */ }
 
     default void setCurrentAbilityAnimation(int playerId, Pair<AbilityAnimation, AnimationType> animation) { /* Nothing to do */ }
+
+    default void stopEmote(int playerId, DragonEmote emote) { /* Nothing to do */ }
+
+    default void beginPlayingEmote(int playerId, DragonEmote emote) { /* Nothing to do */ }
+
+    default void stopAllEmotes(int playerId) { /* Nothing to do */ }
 }

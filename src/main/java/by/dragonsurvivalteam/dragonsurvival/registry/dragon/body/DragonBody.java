@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierType;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.AttributeModifierSupplier;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEmoteSet;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
@@ -26,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
-public record DragonBody(List<Modifier> modifiers, double heightMultiplier, boolean hasExtendedCrouch, boolean canHideWings, ResourceLocation customModel, List<String> bonesToHideForToggle) implements AttributeModifierSupplier {
+public record DragonBody(List<Modifier> modifiers, double heightMultiplier, boolean hasExtendedCrouch, boolean canHideWings, ResourceLocation customModel, List<String> bonesToHideForToggle, Holder<DragonEmoteSet> emotes) implements AttributeModifierSupplier {
     public static final ResourceKey<Registry<DragonBody>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_bodies"));
 
     public static final ResourceLocation DEFAULT_MODEL = DragonSurvival.res("geo/dragon_model.geo.json");
@@ -37,7 +38,8 @@ public record DragonBody(List<Modifier> modifiers, double heightMultiplier, bool
             Codec.BOOL.optionalFieldOf("has_extended_crouch", false).forGetter(DragonBody::hasExtendedCrouch),
             Codec.BOOL.optionalFieldOf("can_hide_wings", true).forGetter(DragonBody::canHideWings),
             ResourceLocation.CODEC.optionalFieldOf("custom_model", DEFAULT_MODEL).forGetter(DragonBody::customModel),
-            Codec.STRING.listOf().optionalFieldOf("bones_to_hide_for_toggle", List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight")).forGetter(DragonBody::bonesToHideForToggle)
+            Codec.STRING.listOf().optionalFieldOf("bones_to_hide_for_toggle", List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight")).forGetter(DragonBody::bonesToHideForToggle),
+            DragonEmoteSet.CODEC.fieldOf("emotes").forGetter(DragonBody::emotes)
     ).apply(instance, instance.stable(DragonBody::new)));
 
     public static final Codec<Holder<DragonBody>> CODEC = RegistryFixedCodec.create(REGISTRY);

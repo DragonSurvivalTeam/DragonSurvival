@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import com.mojang.datafixers.util.Either;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -15,19 +16,15 @@ public class DragonEmoteSets {
     @Translation(type = Translation.Type.EMOTE, comments = "Angry")
     public static final String BLEND_ANGRY = "blend_angry";
 
+    @Translation(type = Translation.Type.EMOTE, comments = "Sitting Curled")
+    public static final String SITTING_CURLED = "sitting_curled_tail_left";
+
     public static void registerEmoteSets(final BootstrapContext<DragonEmoteSet> context) {
         context.register(DEFAULT_EMOTES,
                 new DragonEmoteSet(
                         List.of(
-                                new DragonEmote(
-                                        BLEND_ANGRY,
-                                        true,
-                                        true,
-                                        true,
-                                        true,
-                                        false,
-                                        Optional.empty()
-                                )
+                                new DragonEmote(BLEND_ANGRY, 1.0, -1, true, true, true, false, false, true, Optional.empty()),
+                                new DragonEmote(SITTING_CURLED, 1.0, -1, true, true, true, true, false, false, Optional.empty())
                         )
                 )
         );

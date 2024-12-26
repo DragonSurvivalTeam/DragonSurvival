@@ -35,19 +35,23 @@ public class DragonStageCustomization implements INBTSerializable<CompoundTag> {
             EnumSkinLayer actualLayer = EnumSkinLayer.valueOf(layer.getNameUpperCase());
 
             Map<EnumSkinLayer, List<DragonPart>> partMap = DragonPartLoader.DRAGON_PARTS.get(type);
-            List<DragonPart> parts = partMap.get(actualLayer);
+            if(partMap != null) {
+                List<DragonPart> parts = partMap.get(actualLayer);
 
-            String partKey = DefaultPartLoader.getDefaultPartKey(type, dragonStage, layer);
+                String partKey = DefaultPartLoader.getDefaultPartKey(type, dragonStage, layer);
 
-            if (parts != null) {
-                for (DragonPart part : parts) {
-                    if (part.key().equals(partKey)) {
-                        layerSettings.put(layer, Lazy.of(() -> new LayerSettings(partKey, part.averageHue())));
-                        break;
+                if (parts != null) {
+                    for (DragonPart part : parts) {
+                        if (part.key().equals(partKey)) {
+                            layerSettings.put(layer, Lazy.of(() -> new LayerSettings(partKey, part.averageHue())));
+                            break;
+                        }
                     }
+                } else {
+                    layerSettings.put(layer, Lazy.of(() -> new LayerSettings(partKey, 0.5f)));
                 }
             } else {
-                layerSettings.put(layer, Lazy.of(() -> new LayerSettings(partKey, 0.5f)));
+                layerSettings.put(layer, Lazy.of(LayerSettings::new));
             }
         }
     }

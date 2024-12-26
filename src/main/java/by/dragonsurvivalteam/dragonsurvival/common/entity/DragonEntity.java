@@ -1,12 +1,10 @@
 package by.dragonsurvivalteam.dragonsurvival.common.entity;
 
-import by.dragonsurvivalteam.dragonsurvival.client.emotes.Emote;
 import by.dragonsurvivalteam.dragonsurvival.client.models.DragonModel;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.util.AnimationTickTimer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.common.capability.subcapabilities.EmoteCap;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AbilityAnimation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationLayer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationType;
@@ -15,7 +13,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.ClientConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.TreasureRestData;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEmote;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
@@ -42,7 +40,9 @@ import software.bernie.geckolib.cache.GeckoLibCache;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
@@ -77,8 +77,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     public boolean overrideUUIDWithLocalPlayerForTextureFetch = false;
 
     public boolean clearVerticalVelocity = false;
-    DragonAbilityInstance lastCast = null;
-    public boolean started, ended;
     AnimationTickTimer animationTickTimer = new AnimationTickTimer();
 
     // Default player values
@@ -90,6 +88,8 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
 
     public AnimationController<DragonEntity> mainAnimationController;
     private Pair<AbilityAnimation, AnimationType> currentAbilityAnimation;
+    private static final int MAX_EMOTES = 4;
+    private final DragonEmote[] currentlyPlayingEmotes = new DragonEmote[MAX_EMOTES];
     private boolean begunPlayingAbilityAnimation = false;
 
     private static double globalTickCount = 0;
@@ -106,7 +106,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
 
     @Override
     public void registerControllers(final AnimatableManager.ControllerRegistrar registrar) {
-        for (int slot = 0; slot < EmoteCap.MAX_EMOTES; slot++) {
+        for (int slot = 0; slot < MAX_EMOTES; slot++) {
             int finalSlot = slot;
             registrar.add(new AnimationController<>(this, "emote_" + slot, 0, state -> emotePredicate(state, finalSlot)));
         }
@@ -117,6 +117,88 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         registrar.add(new AnimationController<>(this, "tail", this::tailPredicate));
         registrar.add(new AnimationController<>(this, "head", this::headPredicate));
         registrar.add(new AnimationController<>(this, "breath", this::breathPredicate));
+    }
+
+    public void stopAllEmotes() {
+        Arrays.fill(currentlyPlayingEmotes, null);
+    }
+
+    public int getTicksForEmote(int slot) {
+        return (int) animationTickTimer.getDuration("emote_" + slot);
+    }
+
+    public void stopEmote(int slot) {
+        if (currentlyPlayingEmotes[slot] != null) {
+            animationTickTimer.putAnimation("emote_" + slot, 0.0);
+            currentlyPlayingEmotes[slot] = null;
+        }
+    }
+
+    public void stopEmote(DragonEmote emote) {
+        for (int i = 0; i < MAX_EMOTES; i++) {
+            if (currentlyPlayingEmotes[i] == emote) {
+                currentlyPlayingEmotes[i] = null;
+                animationTickTimer.putAnimation("emote_" + i, 0.0);
+                return;
+            }
+        }
+    }
+
+    public void beginPlayingEmote(DragonEmote emote) {
+        for (int i = 0; i < MAX_EMOTES; i++) {
+            if (currentlyPlayingEmotes[i] == emote) {
+                currentlyPlayingEmotes[i] = null;
+                animationTickTimer.putAnimation("emote_" + i, 0.0);
+                continue;
+            }
+
+            if(currentlyPlayingEmotes[i] == null) {
+                continue;
+            }
+
+            // Remove any emotes from conflicting layers (blend removes other blends, non-blend removes other non-blends)
+            if(currentlyPlayingEmotes[i].blend() && emote.blend()) {
+                currentlyPlayingEmotes[i] = null;
+                animationTickTimer.putAnimation("emote_" + i, 0.0);
+                continue;
+            }
+
+            if(!currentlyPlayingEmotes[i].blend() && !emote.blend()) {
+                currentlyPlayingEmotes[i] = null;
+                animationTickTimer.putAnimation("emote_" + i, 0.0);
+            }
+        }
+
+        for (int i = 0; i < MAX_EMOTES; i++) {
+            if (currentlyPlayingEmotes[i] == null) {
+                currentlyPlayingEmotes[i] = emote;
+
+                if(emote.duration() != -1) {
+                    animationTickTimer.putAnimation("emote_" + i, (double)emote.duration());
+                } else {
+                    animationTickTimer.putAnimation("emote_" + i, animationDuration(getPlayer(), emote.animationKey()));
+                }
+                return;
+            }
+        }
+    }
+
+    public DragonEmote[] getCurrentlyPlayingEmotes() {
+        return currentlyPlayingEmotes;
+    }
+
+    private boolean isPlayingNonBlendEmote() {
+        for(DragonEmote emote : currentlyPlayingEmotes) {
+            if(emote != null && !emote.blend()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean isPlayingAnyEmote() {
+        return Stream.of(currentlyPlayingEmotes).anyMatch(Objects::nonNull);
     }
 
     public void setCurrentAbilityAnimation(Pair<AbilityAnimation, AnimationType> currentAbilityAnimation) {
@@ -263,22 +345,23 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             return PlayState.STOP;
         }
 
-        DragonStateHandler handler = DragonStateProvider.getData(player);
+        if (currentlyPlayingEmotes[slot] != null) {
+            DragonEmote emote = currentlyPlayingEmotes[slot];
 
-        if (handler.getEmoteData().currentEmotes[slot] != null) {
-            Emote emote = handler.getEmoteData().currentEmotes[slot];
+            if(animationTickTimer.getDuration("emote_" + slot) > 0 || emote.loops()) {
+                neckLocked = emote.locksHead();
+                tailLocked = emote.locksTail();
 
-            neckLocked = emote.locksHead;
-            tailLocked = emote.locksTail;
+                state.getController().setAnimationSpeed(emote.speed());
 
-            state.getController().setAnimationSpeed(emote.speed);
-
-            if (emote.animation != null && !emote.animation.isEmpty()) {
-                if (!emote.loops) {
-                    return state.setAndContinue(RawAnimation.begin().thenPlay(emote.animation));
+                if (!emote.loops()) {
+                    return state.setAndContinue(RawAnimation.begin().thenPlay(emote.animationKey()));
                 } else {
-                    return state.setAndContinue(RawAnimation.begin().thenLoop(emote.animation));
+                    return state.setAndContinue(RawAnimation.begin().thenLoop(emote.animationKey()));
                 }
+            } else {
+                currentlyPlayingEmotes[slot] = null;
+                return PlayState.STOP;
             }
         }
 
@@ -364,7 +447,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         double baseSize = DragonStage.MAX_HANDLED_SIZE;
         double distanceFromGround = ServerFlightHandler.distanceFromGround(player);
 
-        if (Stream.of(handler.getEmoteData().currentEmotes).anyMatch(emote -> emote != null && !emote.blend && emote.animation != null && !emote.animation.isBlank())) {
+        if (isPlayingNonBlendEmote()) {
             state.getController().stop();
             return PlayState.STOP;
         }
@@ -534,74 +617,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     public double getTick(Object obj) { // using 'getPlayer' breaks animations even though it returns the same entity...?
         // Prevent being on a negative tick (will cause t-posing!) by adding 200 here
         return (playerId != null ? level().getEntity(playerId).tickCount : globalTickCount) + 200;
-    }
-
-    private RawAnimation renderAbility(final AnimationState<DragonEntity> state, final DragonAbilityInstance currentCast) {
-        RawAnimation rawAnimation = null;
-
-        // FIXME
-        /*if (currentCast != null && lastCast == null) {
-            // Need to animate cast and there was no previous animation
-            if (currentCast.getStartingAnimation() != null) {
-                AbilityAnimation animation = currentCast.getStartingAnimation();
-                neckLocked = animation.locksNeck;
-                tailLocked = animation.locksTail;
-
-                if (!started) {
-                    animationTimer.putAnimation(animation.animationKey, animation.duration);
-                    started = true;
-                }
-
-                rawAnimation = RawAnimation.begin().thenLoop(animation.animationKey);
-
-                if (animationTimer.getDuration(animation.animationKey) <= 0) {
-                    lastCast = currentCast;
-                    started = false;
-                }
-            } else if (currentCast.getLoopingAnimation() != null) {
-                AbilityAnimation animation = currentCast.getLoopingAnimation();
-                neckLocked = animation.locksNeck;
-                tailLocked = animation.locksTail;
-
-                lastCast = currentCast;
-
-                rawAnimation = RawAnimation.begin().thenLoop(animation.animationKey);
-            }
-        } else if (currentCast != null) {
-            // Save the current cast as the previous cast
-            lastCast = currentCast;
-
-            if (currentCast.getLoopingAnimation() != null) {
-                AbilityAnimation animation = currentCast.getLoopingAnimation();
-                neckLocked = animation.locksNeck;
-                tailLocked = animation.locksTail;
-
-                rawAnimation = RawAnimation.begin().thenLoop(animation.animationKey);
-            }
-        } else if (lastCast != null) {
-            // Play the stopping animation
-            if (lastCast.getStoppingAnimation() != null) {
-                AbilityAnimation stopAnimation = lastCast.getStoppingAnimation();
-                neckLocked = stopAnimation.locksNeck;
-                tailLocked = stopAnimation.locksTail;
-
-                if (!ended) {
-                    animationTimer.putAnimation(stopAnimation.animationKey, stopAnimation.duration);
-                    ended = true;
-                }
-
-                rawAnimation = RawAnimation.begin().thenPlay(stopAnimation.animationKey);
-
-                if (animationTimer.getDuration(stopAnimation.animationKey) <= 0) {
-                    lastCast = null;
-                    ended = false;
-                }
-            } else {
-                lastCast = null;
-            }
-        }*/
-
-        return rawAnimation;
     }
 
     @Override

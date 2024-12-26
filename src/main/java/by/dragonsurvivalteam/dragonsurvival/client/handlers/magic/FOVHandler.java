@@ -1,7 +1,9 @@
 package by.dragonsurvivalteam.dragonsurvival.client.handlers.magic;
 
+import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import net.minecraft.util.Mth;
@@ -13,6 +15,7 @@ import net.neoforged.neoforge.client.event.ComputeFovModifierEvent;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class FOVHandler {
@@ -20,10 +23,13 @@ public class FOVHandler {
     public static void onFovEvent(ComputeFovModifierEvent event) {
         Player player = event.getPlayer();
 
-        DragonStateHandler handler = DragonStateProvider.getData(player);
-        if (Arrays.stream(handler.getEmoteData().currentEmotes).anyMatch(Objects::nonNull) && DragonStateProvider.isDragon(player)) {
-            event.setNewFovModifier(1f);
-            return;
+        AtomicReference<DragonEntity> atomicDragon = ClientDragonRenderer.playerDragonHashMap.get(player.getId());
+        if (atomicDragon != null) {
+            DragonEntity dragon = atomicDragon.get();
+            if (dragon.isPlayingAnyEmote()) {
+                event.setNewFovModifier(1f);
+                return;
+            }
         }
 
         DragonAbilityInstance ability = MagicData.getData(player).getCurrentlyCasting();

@@ -62,9 +62,12 @@ public abstract class PlayerMixin extends LivingEntity {
                 }*/
             }
 
-            if (!ServerConfig.canMoveInEmote && Arrays.stream(data.getEmoteData().currentEmotes).noneMatch(Objects::nonNull)) {
+
+
+            // FIXME ?
+            /*if (!ServerConfig.canMoveInEmote && Arrays.stream(data.getEmoteData().currentEmotes).noneMatch(Objects::nonNull)) {
                 callback.setReturnValue(true);
-            }
+            }*/
         }
     }
 

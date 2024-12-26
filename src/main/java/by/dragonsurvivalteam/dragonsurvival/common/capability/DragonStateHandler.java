@@ -2,7 +2,6 @@ package by.dragonsurvivalteam.dragonsurvival.common.capability;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.commands.DragonCommand;
-import by.dragonsurvivalteam.dragonsurvival.common.capability.subcapabilities.EmoteCap;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.subcapabilities.SkinCap;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.subcapabilities.SubCap;
 import by.dragonsurvivalteam.dragonsurvival.common.items.growth.StarHeartItem;
@@ -45,7 +44,7 @@ public class DragonStateHandler extends EntityStateHandler {
     public static final int NO_SIZE = -1;
 
     @SuppressWarnings("unchecked")
-    public final Supplier<SubCap>[] caps = new Supplier[]{this::getSkinData, this::getEmoteData};
+    public final Supplier<SubCap>[] caps = new Supplier[]{this::getSkinData};
     private final Map<ResourceKey<DragonType>, Double> savedSizes = new HashMap<>();
 
     // --- Other --- //
@@ -57,7 +56,6 @@ public class DragonStateHandler extends EntityStateHandler {
 
     /** Last timestamp the server synchronized the player */
     public int lastSync;
-    private final EmoteCap emoteData = new EmoteCap(this);
     private final SkinCap skinData = new SkinCap(this);
 
     private Holder<DragonType> dragonType;
@@ -255,10 +253,6 @@ public class DragonStateHandler extends EntityStateHandler {
         return passengerId;
     }
 
-    public EmoteCap getEmoteData() {
-        return emoteData;
-    }
-
     public SkinCap getSkinData() {
         return skinData;
     }
@@ -289,12 +283,6 @@ public class DragonStateHandler extends EntityStateHandler {
         }
 
         for (int i = 0; i < caps.length; i++) {
-            if (isSavingForSoul) {
-                if (/* Emote Data */ i == 1) {
-                    continue;
-                }
-            }
-
             tag.put("cap_" + i, caps[i].get().serializeNBT(provider));
         }
 
@@ -361,18 +349,6 @@ public class DragonStateHandler extends EntityStateHandler {
         }
 
         for (int i = 0; i < caps.length; i++) {
-            if (isLoadingForSoul) {
-                if (i == 2) {
-                    continue;
-                }
-            }
-
-            if (isLoadingForSoul) {
-                if (i == 3) {
-                    continue;
-                }
-            }
-
             if (tag.contains("cap_" + i)) {
                 caps[i].get().deserializeNBT(provider, (CompoundTag) tag.get("cap_" + i));
             }

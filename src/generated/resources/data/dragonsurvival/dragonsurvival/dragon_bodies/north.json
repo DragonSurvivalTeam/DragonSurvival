@@ -1,4 +1,5 @@
 {
+  "emotes": "dragonsurvival:default_emotes",
   "has_extended_crouch": true,
   "height_multiplier": 0.55,
   "modifiers": [

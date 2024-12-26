@@ -12,6 +12,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.container.RequestOpenDragonI
 import by.dragonsurvivalteam.dragonsurvival.network.container.RequestOpenInventory;
 import by.dragonsurvivalteam.dragonsurvival.network.dragon_editor.SyncDragonSkinSettings;
 import by.dragonsurvivalteam.dragonsurvival.network.dragon_editor.SyncPlayerSkinPreset;
+import by.dragonsurvivalteam.dragonsurvival.network.emotes.StopAllEmotes;
 import by.dragonsurvivalteam.dragonsurvival.network.emotes.SyncEmote;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.*;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.*;
@@ -98,7 +99,8 @@ public class NetworkHandler {
         registrar.playToClient(SyncVisualEffectAdded.Data.TYPE, SyncVisualEffectAdded.Data.STREAM_CODEC, SyncVisualEffectAdded::handleClient);
 
         // Emote packets
-        registrar.playBidirectional(SyncEmote.Data.TYPE, SyncEmote.Data.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncEmote::handleClient, SyncEmote::handleServer));
+        registrar.playBidirectional(SyncEmote.TYPE, SyncEmote.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncEmote::handleClient, SyncEmote::handleServer));
+        registrar.playBidirectional(StopAllEmotes.TYPE, StopAllEmotes.STREAM_CODEC, new DirectionalPayloadHandler<>(StopAllEmotes::handleClient, StopAllEmotes::handleServer));
 
         // Client data
         registrar.playToClient(RequestClientData.TYPE, RequestClientData.STREAM_CODEC, RequestClientData::handleClient);

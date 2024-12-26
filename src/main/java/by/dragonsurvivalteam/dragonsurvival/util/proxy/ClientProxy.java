@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.sounds.FollowEntitySound;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AbilityAnimation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationType;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEmote;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -73,5 +74,35 @@ public class ClientProxy implements Proxy {
         }
 
         dragonEntity.get().setCurrentAbilityAnimation(animation);
+    }
+
+    @Override
+    public void stopEmote(int playerId, DragonEmote emote) {
+        AtomicReference<DragonEntity> dragonEntity = ClientDragonRenderer.playerDragonHashMap.get(playerId);
+        if(dragonEntity == null) {
+            return;
+        }
+
+        dragonEntity.get().stopEmote(emote);
+    }
+
+    @Override
+    public void beginPlayingEmote(int playerId, DragonEmote emote) {
+        AtomicReference<DragonEntity> dragonEntity = ClientDragonRenderer.playerDragonHashMap.get(playerId);
+        if(dragonEntity == null) {
+            return;
+        }
+
+        dragonEntity.get().beginPlayingEmote(emote);
+    }
+
+    @Override
+    public void stopAllEmotes(int playerId) {
+        AtomicReference<DragonEntity> dragonEntity = ClientDragonRenderer.playerDragonHashMap.get(playerId);
+        if(dragonEntity == null) {
+            return;
+        }
+
+        dragonEntity.get().stopAllEmotes();
     }
 }
