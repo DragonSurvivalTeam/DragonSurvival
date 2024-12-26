@@ -52,7 +52,7 @@ public class DragonDoor extends Block implements SimpleWaterloggedBlock {
     protected static final VoxelShape WEST_AABB = Block.box(13.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
     protected static final VoxelShape EAST_AABB = Block.box(0.0D, 0.0D, 0.0D, 3.0D, 16.0D, 16.0D);
 
-    private final TagKey<DragonType> types;
+    private final @Nullable TagKey<DragonType> types;
     private final boolean allowHumans;
     private final boolean requiresPower;
 
@@ -77,7 +77,7 @@ public class DragonDoor extends Block implements SimpleWaterloggedBlock {
         this(properties, null, true, requiresPower);
     }
 
-    public DragonDoor(final Properties properties, final TagKey<DragonType> types, boolean allowHumans, boolean requiresPower) {
+    public DragonDoor(final Properties properties, @Nullable final TagKey<DragonType> types, boolean allowHumans, boolean requiresPower) {
         super(properties);
         registerDefaultState(getStateDefinition().any().setValue(FACING, Direction.NORTH).setValue(OPEN, false).setValue(HINGE, DoorHingeSide.LEFT).setValue(POWERED, false).setValue(PART, Part.BOTTOM).setValue(WATERLOGGED, false));
 

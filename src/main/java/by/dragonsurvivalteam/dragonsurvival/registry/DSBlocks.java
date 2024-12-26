@@ -395,7 +395,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASEDRUM)
                     .randomTicks()
                     .strength(3, 100)
-                    .noOcclusion().lightLevel(c1 -> 10))
+                    .noOcclusion().lightLevel(c1 -> 10), DSDragonTypeTags.FOREST)
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Cave Source of Magic")
@@ -406,7 +406,7 @@ public class DSBlocks {
                     .mapColor(MapColor.STONE)
                     .instrument(NoteBlockInstrument.BASEDRUM)
                     .strength(3, 100)
-                    .noOcclusion().lightLevel(c1 -> 10))
+                    .noOcclusion().lightLevel(c1 -> 10), DSDragonTypeTags.CAVE)
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Sea Source of Magic")
@@ -418,7 +418,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASEDRUM)
                     .strength(3, 100)
                     .noOcclusion()
-                    .lightLevel(c1 -> 10))
+                    .lightLevel(c1 -> 10), DSDragonTypeTags.SEA)
     );
 
     // --- Dragon Altars --- //

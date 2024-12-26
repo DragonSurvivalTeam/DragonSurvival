@@ -21,7 +21,7 @@ public class DSDragonTypeTags extends TagsProvider<DragonType> {
     public static final TagKey<DragonType> FOREST = key("forest");
     public static final TagKey<DragonType> SEA = key("sea");
 
-    protected DSDragonTypeTags(final PackOutput output, final CompletableFuture<HolderLookup.Provider> provider, @Nullable final ExistingFileHelper helper) {
+    public DSDragonTypeTags(final PackOutput output, final CompletableFuture<HolderLookup.Provider> provider, @Nullable final ExistingFileHelper helper) {
         super(output, DragonType.REGISTRY, provider, DragonSurvival.MODID, helper);
     }
 
