@@ -1,14 +1,16 @@
 #version 150
 
 uniform sampler2D Sampler0;
+uniform sampler2D Sampler1;
 uniform int Sides;
 uniform float Time;
 uniform float LineWidth;
-uniform vec4 BorderColor;
 uniform vec4 InnerColor;
 uniform vec4 OutlineColor;
-uniform vec4 TipColor;
+uniform vec4 AddColor;
+uniform vec4 SubtractColor;
 uniform float Percent;
+uniform float TargetPercent;
 
 in vec2 texCoord;
 
@@ -16,7 +18,6 @@ out vec4 fragColor;
 
 #define DISTORTION_STRENGTH 0.05
 #define DISTORTION_SPEED 0.5
-#define TIP_THRESHOLD 0.025
 #define OUTLINE_THRESHOLD 0.05
 #define PI 3.14159265359
 
@@ -46,34 +47,33 @@ vec2 pixelate(vec2 uv, float pixelSize) {
 
 void main() {
     float distortionSpeed = DISTORTION_SPEED;
-    float agitatedDistortionSpeed = DISTORTION_SPEED * 2.0;
-    float tipThreshold = Percent - TIP_THRESHOLD > 0 ? TIP_THRESHOLD : Percent;
     // Calculate the percentage of the circle that should be filled
     vec2 pixelatedTexCoord = pixelate(texCoord, 4);
     float angle = atan(pixelatedTexCoord.y - 0.5, pixelatedTexCoord.x - 0.5) - PI / 2.0;
     float clampedAngle = clampRadians(angle);
     float percent = (clampedAngle / (2.0 * PI));
     vec4 borderColor = vec4(0.25);
+    float targetPercentDiff = TargetPercent - percent;
     float percentDiff = Percent - percent;
+    float gradient = 1 - (Percent - percent) / Percent;
     float tipLerp = 1.0;
-    if (percentDiff + tipThreshold > 0.0) {
-        if (percentDiff <= 0.0 && percentDiff + tipThreshold < 1.0) {
-            tipLerp = min(1.0, 1.0 - (percentDiff + tipThreshold) / tipThreshold);
-            borderColor = mix(BorderColor, borderColor, tipLerp);
-        } else if (percentDiff > 0.0) {
+    if (percentDiff > 0.0) {
+        if(targetPercentDiff < 0) {
+            borderColor = SubtractColor;
+        } else {
             tipLerp = 0.0;
-            borderColor = BorderColor;
+            borderColor = texture(Sampler1, vec2(gradient, 0.5));
+            distortionSpeed *= 2.0;
         }
+    } else if (targetPercentDiff > 0.0) {
+        borderColor = AddColor;
     }
+
     // Apply a few waves of distortion to the texture
     vec2 distortedTexCoord = pixelatedTexCoord;
     distortedTexCoord.x += DISTORTION_STRENGTH * sin(Time * distortionSpeed + pixelatedTexCoord.y * 10.0) + DISTORTION_STRENGTH * cos(Time * distortionSpeed * 0.2 + pixelatedTexCoord.x * 10.0);
     distortedTexCoord.y += DISTORTION_STRENGTH * cos(Time * distortionSpeed + pixelatedTexCoord.x * 10.0) + DISTORTION_STRENGTH * sin(Time * distortionSpeed * 0.2 + pixelatedTexCoord.y * 10.0);
-    vec2 agitatedDistortedTexCoord = pixelatedTexCoord;
-    agitatedDistortedTexCoord.x += DISTORTION_STRENGTH * sin(Time * agitatedDistortionSpeed + pixelatedTexCoord.y * 10.0) + DISTORTION_STRENGTH * cos(Time * agitatedDistortionSpeed * 0.2 + pixelatedTexCoord.x * 10.0);
-    agitatedDistortedTexCoord.y += DISTORTION_STRENGTH * cos(Time * agitatedDistortionSpeed + pixelatedTexCoord.x * 10.0) + DISTORTION_STRENGTH * sin(Time * agitatedDistortionSpeed * 0.2 + pixelatedTexCoord.y * 10.0);
-    vec2 finalDistortedTexCoord = mix(agitatedDistortedTexCoord, distortedTexCoord, tipLerp);
-    vec4 texColor = texture(Sampler0, finalDistortedTexCoord) / 2 + 0.5; // Remap so that we don't end up with super dark spots
+    vec4 texColor = texture(Sampler0, distortedTexCoord) / 2 + 0.5; // Remap so that we don't end up with super dark spots
     texColor = texColor * borderColor;
 
     float innerRadius = 0.43 - LineWidth;

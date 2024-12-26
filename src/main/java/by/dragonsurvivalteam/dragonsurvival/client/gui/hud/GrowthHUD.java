@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.hud;
 
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonGrowthHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
@@ -21,8 +22,9 @@ import java.awt.*;
 /** HUD that is shown when the dragon is holding an item that can change its growth */
 public class GrowthHUD {
     private static final Color CENTER_COLOR = new Color(125, 125, 125);
-    private static final Color BORDER_COLOR = new Color(255, 204, 2);
     private static final Color OUTLINE_COLOR = new Color(125, 125, 125);
+    private static final Color ADD_COLOR = new Color(0, 200, 0);
+    private static final Color SUBTRACT_COLOR = new Color(200, 0, 0);
     private static float currentProgress = 0;
     private static ResourceKey<DragonStage> currentStage;
 
@@ -45,18 +47,15 @@ public class GrowthHUD {
 
         ItemStack stack = localPlayer.getMainHandItem();
 
-        if (stack.isEmpty()) {
-            return;
-        }
-
         Holder<DragonStage> dragonStage = handler.getStage();
         double nextSize = dragonStage.value().sizeRange().max();
 
-        if (handler.getSize() == nextSize || dragonStage.value().growthItems().stream().noneMatch(item -> item.items().contains(stack.getItemHolder()))) {
+        float progress = (float) dragonStage.value().getProgress(handler.getSize());
+        float progressDiff = Math.abs(currentProgress - progress);
+        boolean progressDiffIsSmall = progressDiff < 0.01;
+        if (progressDiffIsSmall && (handler.getSize() == nextSize || dragonStage.value().growthItems().stream().noneMatch(item -> item.items().contains(stack.getItemHolder())))) {
             return;
         }
-
-        float progress = (float) dragonStage.value().getProgress(handler.getSize());
 
         progress = Math.min(1, progress);
 
@@ -79,7 +78,13 @@ public class GrowthHUD {
             }
         }
         currentStage = dragonStage.getKey();
-        RenderingUtils.drawGrowthCircle(guiGraphics, circleX, circleY, radius, 6, 0.13f, currentProgress, BORDER_COLOR, CENTER_COLOR, OUTLINE_COLOR);
+        float targetPercent;
+        if(progressDiffIsSmall) {
+            targetPercent = (float) dragonStage.value().getProgress(handler.getSize() + DragonGrowthHandler.getGrowth(dragonStage, stack.getItem()));
+        } else {
+            targetPercent = progress;
+        }
+        RenderingUtils.drawGrowthCircle(guiGraphics, circleX, circleY, radius, 6, 0.13f, currentProgress, targetPercent, CENTER_COLOR, OUTLINE_COLOR, ADD_COLOR, SUBTRACT_COLOR);
 
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0, 0, 300);

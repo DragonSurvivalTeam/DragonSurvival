@@ -199,7 +199,7 @@ public class RenderingUtils {
         return image;
     }
 
-    public static void drawGrowthCircle(final GuiGraphics guiGraphics, float x, float y, float radius, int sides, float lineWidthPercent, float percent, Color borderColor, Color innerColor, Color outlineColor) {
+    public static void drawGrowthCircle(final GuiGraphics guiGraphics, float x, float y, float radius, int sides, float lineWidthPercent, float percent, float targetPercent, Color innerColor, Color outlineColor, Color addColor, Color subtractColor) {
         Matrix4f matrix4f = guiGraphics.pose().last().pose();
 
         float z = 100;
@@ -222,16 +222,20 @@ public class RenderingUtils {
         bufferbuilder.addVertex(matrix4f, trueX - radius, trueY + radius, z).setUv(0, 0);
 
         growthCircleShader.setSampler("Sampler0", Minecraft.getInstance().getTextureManager().getTexture(DragonSurvival.res("textures/shader/swirl_noise.png")));
+        growthCircleShader.setSampler("Sampler1", Minecraft.getInstance().getTextureManager().getTexture(DragonSurvival.res("textures/shader/growth_bar_gradient.png")));
         growthCircleShader.getUniform("Sides").set(sides);
         growthCircleShader.getUniform("LineWidth").set(lineWidthPercent);
         float[] colorComponents = new float[4];
-        borderColor.getColorComponents(colorComponents);
-        growthCircleShader.getUniform("BorderColor").set(colorComponents[0], colorComponents[1], colorComponents[2], 1.0f);
         innerColor.getColorComponents(colorComponents);
         growthCircleShader.getUniform("InnerColor").set(colorComponents[0], colorComponents[1], colorComponents[2], 1.0f);
         outlineColor.getColorComponents(colorComponents);
         growthCircleShader.getUniform("OutlineColor").set(colorComponents[0], colorComponents[1], colorComponents[2], 1.0f);
+        addColor.getColorComponents(colorComponents);
+        growthCircleShader.getUniform("AddColor").set(colorComponents[0], colorComponents[1], colorComponents[2], 1.0f);
+        subtractColor.getColorComponents(colorComponents);
+        growthCircleShader.getUniform("SubtractColor").set(colorComponents[0], colorComponents[1], colorComponents[2], 1.0f);
         growthCircleShader.getUniform("Percent").set(percent);
+        growthCircleShader.getUniform("TargetPercent").set(targetPercent);
         growthCircleShader.getUniform("ProjMat").set(RenderSystem.getProjectionMatrix());
         growthCircleShader.getUniform("ModelViewMat").set(RenderSystem.getModelViewMatrix());
         growthCircleShader.getUniform("Time").set((float) Blaze3D.getTime() % 1000.f);
