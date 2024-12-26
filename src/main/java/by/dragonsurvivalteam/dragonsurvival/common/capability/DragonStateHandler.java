@@ -335,15 +335,17 @@ public class DragonStateHandler extends EntityStateHandler {
             starHeartState = StarHeartItem.State.values()[tag.getInt(STAR_HEART_STATE)];
         }
 
-        if (isLoadingForSoul && dragonType != null) {
-            // Only load the size of the dragon the player is currently in if we are loading for the soul
-            //noinspection DataFlowIssue -> key is present
-            savedSizes.put(dragonType.getKey(), loadSavedStage(provider, dragonType.getKey(), tag));
-        } else if (!isLoadingForSoul) {
-            for (ResourceKey<DragonType> type : ResourceHelper.keys(provider, DragonType.REGISTRY)) {
-                CompoundTag compound = tag.getCompound(dragonType.toString() + SAVED_SIZE_SUFFIX);
-                if (!compound.isEmpty()) {
-                    savedSizes.put(type, loadSavedStage(provider, type, tag));
+        if(dragonType != null) {
+            if (isLoadingForSoul) {
+                // Only load the size of the dragon the player is currently in if we are loading for the soul
+                //noinspection DataFlowIssue -> key is present
+                savedSizes.put(dragonType.getKey(), loadSavedStage(provider, dragonType.getKey(), tag));
+            } else if (!isLoadingForSoul) {
+                for (ResourceKey<DragonType> type : ResourceHelper.keys(provider, DragonType.REGISTRY)) {
+                    CompoundTag compound = tag.getCompound(dragonType.toString() + SAVED_SIZE_SUFFIX);
+                    if (!compound.isEmpty()) {
+                        savedSizes.put(type, loadSavedStage(provider, type, tag));
+                    }
                 }
             }
         }
