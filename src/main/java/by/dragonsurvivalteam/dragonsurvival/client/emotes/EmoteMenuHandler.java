@@ -346,7 +346,14 @@ public class EmoteMenuHandler {
 
     public static void addEmote(String animationKey) {
         DragonStateHandler handler = DragonStateProvider.getData(Minecraft.getInstance().player);
+        AtomicReference<DragonEntity> atomicDragon = ClientDragonRenderer.playerDragonHashMap.get(Minecraft.getInstance().player.getId());
+        if(atomicDragon == null) {
+            return;
+        }
+
+        DragonEntity dragon = atomicDragon.get();
         DragonEmote emote = handler.getBody().value().emotes().value().getEmote(animationKey);
+        dragon.beginPlayingEmote(emote);
         PacketDistributor.sendToServer(new SyncEmote(Minecraft.getInstance().player.getId(), emote, false));
     }
 
