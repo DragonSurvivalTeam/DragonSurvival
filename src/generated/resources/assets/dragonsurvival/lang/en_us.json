@@ -559,6 +559,8 @@
   "dragonsurvival.configuration.human_ore_bone_chance.tooltip": "Determines the chance (in %) of bones dropping when a human harvests an ore block",
   "dragonsurvival.configuration.human_ore_dust_chance": "Human Ore Dust Chance",
   "dragonsurvival.configuration.human_ore_dust_chance.tooltip": "Determines the chance (in %) of dust dropping when a human harvests an ore block",
+  "dragonsurvival.configuration.hunter_damage_per_level": "Hunter Damage Per Level",
+  "dragonsurvival.configuration.hunter_damage_per_level.tooltip": "Determines the damage bonus (0.5 -> 50%) per level of the effect\nThe damage bonus scales with the current stacks, max. amount being reached at max. stacks",
   "dragonsurvival.configuration.hunter_fix_translucency": "Hunter Fix Translucency",
   "dragonsurvival.configuration.hunter_fix_translucency.tooltip": "This enables the shader features of fabulous mode which are needed for translucency to work correctly",
   "dragonsurvival.configuration.hunter_fully_invisible": "Hunter Fully Invisible",

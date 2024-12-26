@@ -77,7 +77,7 @@ public abstract class GuiMixin {
         Player player = Minecraft.getInstance().player;
 
         //noinspection DataFlowIssue -> player is present
-        FluidType previousFluidType = SwimData.getData(player).previousEyeInFluidType;
+        FluidType previousFluidType = SwimData.getData(player).previousFluid;
         FluidType currentFluidType = player.getEyeInFluidType();
 
         ResourceLocation replacementSprite;

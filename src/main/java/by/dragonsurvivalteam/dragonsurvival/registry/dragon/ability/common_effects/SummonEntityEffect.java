@@ -126,9 +126,9 @@ public record SummonEntityEffect(
                 data.remove(dragon, instance);
                 instance = null;
             } else if (instance.summonedAmount() == maxSummons.calculate(ability.level())) {
-                instance.discard(level, 1);
-                // TODO :: have behaviour types?
-                //  1. do nothing / 2. discard 1 / 3. teleport entities to position // discard all
+                // Keep the logic simple - players can kill their summons (they do not retaliate) if needed
+                // Otherwise, if cast over a large area it would spawn and discard a lot of entities
+                return;
             }
         }
 

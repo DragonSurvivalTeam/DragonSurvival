@@ -29,6 +29,7 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
     private MovementBehaviour movementBehaviour = MovementBehaviour.FOLLOW;
     private AttackBehaviour attackBehaviour = AttackBehaviour.DEFENSIVE;
 
+    /** Returns the instance the entity is part of */
     public @Nullable SummonEntityEffect.Instance getInstance(final Entity entity) {
         for (SummonEntityEffect.Instance instance : all()) {
             if (instance.entityUUIDs().contains(entity.getUUID())) {
@@ -41,6 +42,28 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
 
     public MovementBehaviour getMovementBehaviour() {
         return movementBehaviour;
+    }
+
+    public static boolean isAlly(final Entity entity, final Entity target) {
+        return entity.getExistingData(DSDataAttachments.ENTITY_HANDLER).map(data -> {
+            if (data.summonOwner == null) {
+                return false;
+            }
+
+            if (target.getUUID().equals(data.summonOwner)) {
+                return true;
+            }
+
+            Entity owner = data.getSummonOwner(entity.level());
+
+            if (owner == null) {
+                return false;
+            }
+
+            // The entity shares the same summon owner
+            SummonedEntities summonData = owner.getData(DSDataAttachments.SUMMONED_ENTITIES);
+            return summonData.getInstance(target) != null;
+        }).orElse(false);
     }
 
     @SubscribeEvent
@@ -109,9 +132,7 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
                         return;
                     }
 
-                    instance.removeSummon(event.getEntity());
-
-                    if (instance.entityUUIDs().isEmpty()) {
+                    if (instance.removeSummon(event.getEntity())) {
                         summonData.remove(owner, instance);
                     }
 
@@ -144,6 +165,8 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
                 }
             });
         } else if (event.getNewAboutToBeSetTarget() == owner) {
+            // Technically 'isAlliedTo' should handle this
+            // But at certain points the team is directly or other weird checks are done instead
             event.setNewAboutToBeSetTarget(null);
         }
     }

@@ -5,11 +5,10 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonFoodHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.EffectHandler;
-import by.dragonsurvivalteam.dragonsurvival.config.server.dragon.DragonBonusConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonTypes;
-import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonedEntities;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.util.ToolUtils;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
@@ -26,6 +25,7 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.NeoForgeMod;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -37,7 +37,7 @@ public abstract class LivingEntityMixin extends Entity {
     @Shadow protected boolean jumping;
     @Shadow protected ItemStack useItem;
 
-    public LivingEntityMixin(EntityType<?> type, Level level) {
+    public LivingEntityMixin(final EntityType<?> type, final Level level) {
         super(type, level);
     }
 
@@ -150,6 +150,15 @@ public abstract class LivingEntityMixin extends Entity {
         return instance;
     }
 
+    @ModifyReturnValue(method = "canAttack(Lnet/minecraft/world/entity/LivingEntity;)Z", at = @At("RETURN"))
+    private boolean dragonSurvival$isTargetAllied(boolean canAttack, @Local(argsOnly = true, ordinal = 0) final LivingEntity target) {
+        if (!canAttack) {
+            return false;
+        }
+
+        return !SummonedEntities.isAlly(this, target);
+    }
+
     /** Enable cave dragons to properly swim in lava and also enables properly swimming up or down (for water and lava) */
     @Inject(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;getFluidState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/material/FluidState;", shift = At.Shift.BY, by = 2), cancellable = true)
     private void dragonSurvival$handleDragonSwimming(final Vec3 travelVector, final CallbackInfo callback, @Local double gravity, @Local final FluidState fluidState) {
@@ -164,10 +173,10 @@ public abstract class LivingEntityMixin extends Entity {
             return;
         }
 
-        // FIXME
-        boolean isInLava = DragonBonusConfig.bonusesEnabled && /*CaveDragonConfig.caveLavaSwimming &&*/ DragonUtils.isType(data, DragonTypes.CAVE) && isInLava();
+        SwimData swimData = SwimData.getData(player);
+        boolean isLavaSwimming = swimData.canSwimIn(NeoForgeMod.LAVA_TYPE.getKey()) && isInLava();
 
-        if (!isInLava && !isInWater() || !player.isAffectedByFluids() || player.canStandOnFluid(fluidState)) {
+        if (!isLavaSwimming && !isInWater() || !player.isAffectedByFluids() || player.canStandOnFluid(fluidState)) {
             return;
         }
 
@@ -201,7 +210,7 @@ public abstract class LivingEntityMixin extends Entity {
             }
         }
 
-        if (isInLava) {
+        if (isLavaSwimming) {
             double oldY = getY();
             float speedModifier = isSprinting() ? 0.9f : getWaterSlowDown();
             float swimSpeed = 0.05f; // Vanilla swim speed for water is 0.02

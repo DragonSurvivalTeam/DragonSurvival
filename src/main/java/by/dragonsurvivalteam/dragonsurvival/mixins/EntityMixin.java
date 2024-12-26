@@ -138,36 +138,16 @@ public abstract class EntityMixin {
 
     // Using 'ModifyReturnValue' seems to not work - the mixin cannot find the method
     @Inject(method = "isAlliedTo(Lnet/minecraft/world/entity/Entity;)Z", at = @At("RETURN"), cancellable = true)
-    private void dragonSurvival$checkOwnerForAlliedTo(final Entity entity, final CallbackInfoReturnable<Boolean> callback) {
+    private void dragonSurvival$checkOwnerForAlliedTo(final Entity target, final CallbackInfoReturnable<Boolean> callback) {
         if (callback.getReturnValue()) {
             return;
         }
 
         Entity self = (Entity) (Object) this;
 
-        self.getExistingData(DSDataAttachments.ENTITY_HANDLER).ifPresent(data -> {
-            if (data.summonOwner == null) {
-                return;
-            }
-
-            if (entity.getUUID().equals(data.summonOwner)) {
-                callback.setReturnValue(true);
-                return;
-            }
-
-            Entity owner = data.getSummonOwner(self.level());
-
-            if (owner == null) {
-                return;
-            }
-
-            // The entity shares the same summon owner
-            SummonedEntities summonData = owner.getData(DSDataAttachments.SUMMONED_ENTITIES);
-
-            if (summonData.getInstance(entity) != null) {
-                callback.setReturnValue(true);
-            }
-        });
+        if (SummonedEntities.isAlly(self, target)) {
+            callback.setReturnValue(true);
+        }
     }
 
     @ModifyReturnValue(method = "getMaxAirSupply", at = @At("RETURN"))
@@ -179,7 +159,7 @@ public abstract class EntityMixin {
             int newMaxAirSupply = swimData.getMaxOxygen(self.getEyeInFluidType());
 
             if (newMaxAirSupply == SwimData.UNLIMITED_OXYGEN) {
-                // Unlimited oxygen is handled in the 'LivingBreatheEvent'
+                // Unlimited oxygen is handled in the 'ILivingEntityExtensionMixin'
                 return maxAirSupply;
             }
 

@@ -9,6 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.entity.living.LivingBreatheEvent;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -21,8 +22,7 @@ import javax.annotation.Nullable;
 public class SwimData {
     public static final int UNLIMITED_OXYGEN = -1;
 
-    public FluidType previousEyeInFluidType;
-    public FluidType eyeInFluidTypeLastTick;
+    public FluidType previousFluid;
 
     private final Map<ResourceKey<FluidType>, Integer> swimData = new HashMap<>();
 
@@ -35,11 +35,21 @@ public class SwimData {
     }
 
     public int getMaxOxygen(final FluidType fluid) {
-        return swimData.getOrDefault(key(fluid), Entity.TOTAL_AIR_SUPPLY);
+        ResourceKey<FluidType> key = key(fluid);
+
+        if (key == NeoForgeMod.EMPTY_TYPE.getKey()) {
+            return getMaxOxygen(previousFluid);
+        }
+
+        return swimData.getOrDefault(key, Entity.TOTAL_AIR_SUPPLY);
     }
 
     public boolean canSwimIn(final FluidType fluid) {
-        return swimData.containsKey(key(fluid));
+        return canSwimIn(key(fluid));
+    }
+
+    public boolean canSwimIn(final ResourceKey<FluidType> fluid) {
+        return swimData.containsKey(fluid);
     }
 
     public static SwimData getData(final Player player) {
@@ -47,31 +57,29 @@ public class SwimData {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void allowForInfiniteOxygen(final LivingBreatheEvent event) {
+    public static void handleOxygen(final LivingBreatheEvent event) {
         if (event.getEntity() instanceof Player player) {
+            FluidType currentFluid = player.getEyeInFluidType();
             SwimData data = getData(player);
-            boolean canBreathe = data.getMaxOxygen(event.getEntity().getEyeInFluidType()) == UNLIMITED_OXYGEN;
 
-            if (canBreathe) {
-                event.setConsumeAirAmount(0);
-                event.setRefillAirAmount(data.getMaxOxygen(event.getEntity().getEyeInFluidType()));
+            if (event.canBreathe()) {
+                if (data.canSwimIn(currentFluid)) {
+                    event.setRefillAirAmount(data.getMaxOxygen(currentFluid));
+                } else if (isAir(currentFluid) && data.previousFluid != null) {
+                    // Vanilla: max. of 300, refill 4 -> ~ 1.5%
+                    // TODO :: make the rate configurable?
+                    event.setRefillAirAmount((int) (data.getMaxOxygen(data.previousFluid) * 0.015));
+                }
             }
 
-            if (data.canSwimIn(event.getEntity().getEyeInFluidType())) {
-                event.setCanBreathe(canBreathe);
-            }
-
-            FluidType currentFluidType = player.getEyeInFluidType();
-
-            if (data.previousEyeInFluidType != currentFluidType) {
-                int maxAirSupply = data.getMaxOxygen(data.previousEyeInFluidType);
+            if (!isAir(currentFluid) && data.previousFluid != currentFluid) {
+                int maxAirSupply = data.getMaxOxygen(data.previousFluid);
                 int newMaxAirSupply = data.getMaxOxygen(player.getEyeInFluidType());
 
                 float airSupplyRatio = (float) newMaxAirSupply / (float) maxAirSupply;
-
                 player.setAirSupply((int) Math.min(newMaxAirSupply, Math.ceil(player.getAirSupply() * airSupplyRatio)));
-                data.previousEyeInFluidType = currentFluidType;
-                data.eyeInFluidTypeLastTick = player.getEyeInFluidType();
+
+                data.previousFluid = currentFluid;
             }
         }
     }
@@ -100,5 +108,9 @@ public class SwimData {
 
     public static @Nullable ResourceKey<FluidType> key(final FluidType fluid) {
         return NeoForgeRegistries.FLUID_TYPES.getResourceKey(fluid).orElse(null);
+    }
+
+    public static boolean isAir(final FluidType fluid) {
+        return key(fluid) == NeoForgeMod.EMPTY_TYPE.getKey();
     }
 }
