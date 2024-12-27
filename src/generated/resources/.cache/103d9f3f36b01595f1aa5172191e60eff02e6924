@@ -1,4 +1,4 @@
-// 1.21.1	2024-12-27T16:04:22.3392023	Registries
+// 1.21.1	2024-12-28T00:31:43.6630314	Registries
 011b2ee382ec961722c100bbf059b4aa460f44b0 data/dragonsurvival/damage_type/anti_dragon.json
 d8c3135ecd1879e98a21e83ec1bcfd68c5fc3296 data/dragonsurvival/damage_type/ball_lightning.json
 1deb2bbcd4ed46724235ab398f66ed7559c01fab data/dragonsurvival/damage_type/burn.json
@@ -61,7 +61,7 @@ fb50ca6622cc771418eaebd412481709fe3b6833 data/dragonsurvival/dragonsurvival/drag
 d6bcee640bca2005980c01880e9a8316559bcbb8 data/dragonsurvival/dragonsurvival/dragon_bodies/north.json
 ce02da885d4dfb9173a9de394e37b316cb4904fe data/dragonsurvival/dragonsurvival/dragon_bodies/south.json
 6c020740927f18946279b268daf62ce6c5708343 data/dragonsurvival/dragonsurvival/dragon_bodies/west.json
-ed9c2b20b404d0b9e6d76f18ddd37392af030e4f data/dragonsurvival/dragonsurvival/dragon_emote_set/default_emotes.json
+c7ecb8ffa80472d4c5c70df6d9288c59f0d5ec4d data/dragonsurvival/dragonsurvival/dragon_emote_set/default_emotes.json
 7e0625e96aaddfa9fb01d05436a85ee2447669d8 data/dragonsurvival/dragonsurvival/dragon_penalties/fear_of_darkness.json
 de46690540d5afa6efbc436063e1455763d469d4 data/dragonsurvival/dragonsurvival/dragon_penalties/item_blacklist.json
 c79580ff9f10ffd11822a3bc0d7c0f19f43339e0 data/dragonsurvival/dragonsurvival/dragon_penalties/snow_and_rain_weakness.json
