@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class AbilityColumnsComponent {
+public class AbilityColumnsComponent implements ScrollableComponent {
     private static final int ELEMENTS_PER_COLUMN = 4;
     private static final int NUM_COLUMN_PHASES = 4;
 
@@ -25,6 +25,19 @@ public class AbilityColumnsComponent {
     // 0 = left side, 1 = middle, 2 = right side, 3 = behind (values to lerp to as the column fades behind)
     private final Vec3[][] buttonPositions = new Vec3[NUM_COLUMN_PHASES][ELEMENTS_PER_COLUMN];
     private final ButtonTemplateState[] buttonTemplateStates = new ButtonTemplateState[NUM_COLUMN_PHASES];
+
+    @Override
+    public void scroll(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if(!isHoveringOverButton(mouseX, mouseY)) {
+            return;
+        }
+
+        if (scrollX > 0) {
+            rotateRight();
+        } else if (scrollX < 0) {
+            rotateLeft();
+        }
+    }
 
     private record ButtonTemplateState(float scale, float alpha, boolean interactable, boolean visible) {}
 
@@ -115,15 +128,7 @@ public class AbilityColumnsComponent {
         }
     }
 
-    public void scroll(boolean right) {
-        if (right) {
-            rotateRight();
-        } else {
-            rotateLeft();
-        }
-    }
-
-    public boolean isHoveringOverButton(double mouseX, double mouseY) {
+    private boolean isHoveringOverButton(double mouseX, double mouseY) {
         for (ArrayList<AbilityButton> column : columns) {
             for (AbilityButton abilityButton : column) {
                 if (abilityButton.isMouseOver(mouseX, mouseY)) {
@@ -153,6 +158,7 @@ public class AbilityColumnsComponent {
         }
     }
 
+    @Override
     public void update() {
         if(currentColumn == nextColumn) {
             return;

@@ -126,7 +126,7 @@ public class InventoryScreenHandler {
             if (dragonTabs) {
                 initGuiEvent.addListener(new TabButton(screen.getGuiLeft(), screen.getGuiTop() - 28, TabButton.Type.INVENTORY_TAB, screen));
                 initGuiEvent.addListener(new TabButton(screen.getGuiLeft() + 28, screen.getGuiTop() - 26, TabButton.Type.ABILITY_TAB, screen));
-                initGuiEvent.addListener(new TabButton(screen.getGuiLeft() + 57, screen.getGuiTop() - 26, TabButton.Type.GITHUB_REMINDER_TAB, screen));
+                initGuiEvent.addListener(new TabButton(screen.getGuiLeft() + 57, screen.getGuiTop() - 26, TabButton.Type.SPECIES_TAB, screen));
                 initGuiEvent.addListener(new TabButton(screen.getGuiLeft() + 86, screen.getGuiTop() - 26, TabButton.Type.SKINS_TAB, screen));
             }
 

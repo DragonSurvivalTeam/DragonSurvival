@@ -271,7 +271,7 @@ public class SkinsScreen extends Screen implements DragonBodyScreen {
 
         addRenderableWidget(new TabButton(startX + 128 + 4, startY - 26, TabButton.Type.INVENTORY_TAB, this));
         addRenderableWidget(new TabButton(startX + 128 + 33, startY - 26, TabButton.Type.ABILITY_TAB, this));
-        addRenderableWidget(new TabButton(startX + 128 + 62, startY - 26, TabButton.Type.GITHUB_REMINDER_TAB, this));
+        addRenderableWidget(new TabButton(startX + 128 + 62, startY - 26, TabButton.Type.SPECIES_TAB, this));
         addRenderableWidget(new TabButton(startX + 128 + 91, startY - 28, TabButton.Type.SKINS_TAB, this));
 
         addDragonBodyWidgets();

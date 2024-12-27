@@ -35,7 +35,6 @@ import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.*;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -117,7 +116,7 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
 
         addRenderableWidget(new TabButton(leftPos, topPos - 28, TabButton.Type.INVENTORY_TAB, this));
         addRenderableWidget(new TabButton(leftPos + 28, topPos - 26, TabButton.Type.ABILITY_TAB, this));
-        addRenderableWidget(new TabButton(leftPos + 57, topPos - 26, TabButton.Type.GITHUB_REMINDER_TAB, this));
+        addRenderableWidget(new TabButton(leftPos + 57, topPos - 26, TabButton.Type.SPECIES_TAB, this));
         addRenderableWidget(new TabButton(leftPos + 86, topPos - 26, TabButton.Type.SKINS_TAB, this));
 
         ExtendedButton clawToggle = new ExtendedButton(leftPos + 27, topPos + 10, 11, 11, Component.empty(), button -> {

@@ -1,10 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons;
 
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.MagicHUD;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAbilityScreen;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonInventoryScreen;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.InventoryScreenHandler;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.SkinsScreen;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.*;
 import by.dragonsurvivalteam.dragonsurvival.network.container.RequestOpenInventory;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import net.minecraft.client.Minecraft;
@@ -28,8 +25,8 @@ public class TabButton extends Button {
         INVENTORY_TAB,
         @Translation(type = Translation.Type.GUI, comments = "Abilities")
         ABILITY_TAB,
-        @Translation(type = Translation.Type.GUI, comments = "If you have any questions about Dragon Survival, visit the wiki on Github!")
-        GITHUB_REMINDER_TAB,
+        @Translation(type = Translation.Type.GUI, comments = "Species Info")
+        SPECIES_TAB,
         @Translation(type = Translation.Type.GUI, comments = "Skin customization")
         SKINS_TAB;
     }
@@ -85,6 +82,7 @@ public class TabButton extends Button {
                 }
                 case ABILITY_TAB -> Minecraft.getInstance().setScreen(new DragonAbilityScreen(parent));
                 case SKINS_TAB -> Minecraft.getInstance().setScreen(new SkinsScreen(parent));
+                case SPECIES_TAB -> Minecraft.getInstance().setScreen(new DragonSpeciesScreen(parent));
             }
     }
 
@@ -93,7 +91,7 @@ public class TabButton extends Button {
             case INVENTORY_TAB -> parent instanceof DragonInventoryScreen || parent instanceof InventoryScreen;
             case ABILITY_TAB -> parent instanceof DragonAbilityScreen;
             case SKINS_TAB -> parent instanceof SkinsScreen;
-            default -> false;
+            case SPECIES_TAB -> parent instanceof DragonSpeciesScreen;
         };
     }
 

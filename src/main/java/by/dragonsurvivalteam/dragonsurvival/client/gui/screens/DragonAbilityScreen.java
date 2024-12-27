@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.TabButton
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.ClickHoverButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HelpButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.AbilityColumnsComponent;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.ScrollableComponent;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
@@ -85,10 +86,7 @@ public class DragonAbilityScreen extends Screen {
 
     private boolean leftWindowOpen;
     private final List<AbstractWidget> leftWindowWidgets = new ArrayList<>();
-
-    private AbilityColumnsComponent activeAbilityColumns;
-    private AbilityColumnsComponent upgradablePassiveAbilityColumns;
-    private AbilityColumnsComponent nonUpgradablePassiveAbilityColumns;
+    private final List<ScrollableComponent> scrollableComponents = new ArrayList<>();
 
     public DragonAbilityScreen(Screen sourceScreen) {
         super(Component.empty());
@@ -101,12 +99,8 @@ public class DragonAbilityScreen extends Screen {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        if(activeAbilityColumns.isHoveringOverButton(mouseX, mouseY)) {
-            activeAbilityColumns.scroll(scrollY > 0);
-        } else if(upgradablePassiveAbilityColumns.isHoveringOverButton(mouseX, mouseY)) {
-            upgradablePassiveAbilityColumns.scroll(scrollY > 0);
-        } else if(nonUpgradablePassiveAbilityColumns.isHoveringOverButton(mouseX, mouseY)) {
-            nonUpgradablePassiveAbilityColumns.scroll(scrollY > 0);
+        for (ScrollableComponent component : scrollableComponents) {
+            component.scroll(mouseX, mouseY, scrollX, scrollY);
         }
 
         return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
@@ -118,9 +112,9 @@ public class DragonAbilityScreen extends Screen {
             return;
         }
 
-        activeAbilityColumns.update();
-        upgradablePassiveAbilityColumns.update();
-        nonUpgradablePassiveAbilityColumns.update();
+        for (ScrollableComponent component : scrollableComponents) {
+            component.update();
+        }
 
         this.renderBlurredBackground(partialTick);
 
@@ -214,7 +208,7 @@ public class DragonAbilityScreen extends Screen {
         //Inventory
         addRenderableWidget(new TabButton(startX + 5 + 10, startY - 26 - 30, TabButton.Type.INVENTORY_TAB, this));
         addRenderableWidget(new TabButton(startX + 34 + 10, startY - 28 - 30, TabButton.Type.ABILITY_TAB, this));
-        addRenderableWidget(new TabButton(startX + 62 + 10, startY - 26 - 30, TabButton.Type.GITHUB_REMINDER_TAB, this));
+        addRenderableWidget(new TabButton(startX + 62 + 10, startY - 26 - 30, TabButton.Type.SPECIES_TAB, this));
         addRenderableWidget(new TabButton(startX + 91 + 10, startY - 26 - 30, TabButton.Type.SKINS_TAB, this));
 
         //noinspection DataFlowIssue -> player is present
@@ -223,9 +217,9 @@ public class DragonAbilityScreen extends Screen {
         List<DragonAbilityInstance> passivesThatAreUpgradable = data.getUpgradablePassives();
         List<DragonAbilityInstance> passivesThatAreNotUpgradable = data.getNonUpgradablePassives();
 
-        activeAbilityColumns = new AbilityColumnsComponent(this, guiLeft + 35, guiTop, 40, 20, 0.8f, 0.5f, actives);
-        upgradablePassiveAbilityColumns = new AbilityColumnsComponent(this, guiLeft + 111, guiTop, 40, 20, 0.8f, 0.5f, passivesThatAreUpgradable);
-        nonUpgradablePassiveAbilityColumns = new AbilityColumnsComponent(this,guiLeft + 186, guiTop, 40, 20, 0.8f, 0.5f, passivesThatAreNotUpgradable);
+        scrollableComponents.add(new AbilityColumnsComponent(this, guiLeft + 35, guiTop, 40, 20, 0.8f, 0.5f, actives));
+        scrollableComponents.add(new AbilityColumnsComponent(this, guiLeft + 111, guiTop, 40, 20, 0.8f, 0.5f, passivesThatAreUpgradable));
+        scrollableComponents.add(new AbilityColumnsComponent(this,guiLeft + 186, guiTop, 40, 20, 0.8f, 0.5f, passivesThatAreNotUpgradable));
 
         // Left panel (hotbar)
         for(int i = 0; i < ABILITIES_ON_HOTBAR; i++) {
