@@ -21,6 +21,8 @@ import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import by.dragonsurvivalteam.dragonsurvival.util.ToolUtils;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -88,10 +90,6 @@ public class DragonStateHandler extends EntityStateHandler {
             return;
         }
 
-        MagicData magicData = MagicData.getData(player);
-        magicData.handleGrowthAbilityUpgrades(player, this.size);
-        player.refreshDimensions();
-
         if (dragonStage == null) {
             DSModifiers.updateSizeModifiers(player, this);
             return;
@@ -99,6 +97,22 @@ public class DragonStateHandler extends EntityStateHandler {
 
         if (oldSize == this.size && oldStage != null && dragonStage.is(oldStage)) {
             return;
+        }
+
+        MagicData magicData = MagicData.getData(player);
+        magicData.handleGrowthAbilityUpgrades(player, this.size);
+
+        player.refreshDimensions();
+        BlockPos relativePosition = player.blockPosition().relative(player.getDirection());
+
+        if (this.size > oldSize && player.isColliding(relativePosition, player.level().getBlockState(relativePosition))) {
+            // Push the player away from a block they might collide with due to the size change
+            // Without this they will get stuck on blocks they walk into while their size changes
+            // The limit of 0.1 is a random value - it's so that when using growth items the player won't be teleported by x blocks
+            double pushForce = Math.min(0.1, this.size - oldSize);
+            Direction opposite = player.getDirection().getOpposite();
+            Vec3 push = new Vec3(pushForce * opposite.getStepX(), 0, pushForce * opposite.getStepZ());
+            player.moveTo(player.position().add(push));
         }
 
         if (player instanceof ServerPlayer serverPlayer) {
