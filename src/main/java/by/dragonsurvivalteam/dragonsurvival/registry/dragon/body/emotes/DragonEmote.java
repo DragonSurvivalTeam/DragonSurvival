@@ -12,9 +12,10 @@ import net.minecraft.sounds.SoundEvent;
 
 import java.util.Optional;
 
-public record DragonEmote(String animationKey, double speed, int duration, boolean loops, boolean blend, boolean locksHead, boolean locksTail, boolean thirdPerson, boolean canMove, Optional<Sound> sound) {
+public record DragonEmote(String animationKey, Optional<String> id, double speed, int duration, boolean loops, boolean blend, boolean locksHead, boolean locksTail, boolean thirdPerson, boolean canMove, Optional<Sound> sound) {
     public static final Codec<DragonEmote> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("animation_key").forGetter(DragonEmote::animationKey),
+            Codec.STRING.optionalFieldOf("translation_override").forGetter(DragonEmote::id),
             Codec.DOUBLE.fieldOf("speed").forGetter(DragonEmote::speed),
             Codec.INT.optionalFieldOf("duration", -1).forGetter(DragonEmote::duration),
             Codec.BOOL.optionalFieldOf("loops", false).forGetter(DragonEmote::loops),
@@ -38,6 +39,14 @@ public record DragonEmote(String animationKey, double speed, int duration, boole
     }
 
     public Component name() {
-        return Component.translatable(Translation.Type.EMOTE.wrap(animationKey));
+        if(id.isPresent()) {
+            return Component.translatable(Translation.Type.EMOTE.wrap(id.get()));
+        } else {
+            return Component.translatable(Translation.Type.EMOTE.wrap(animationKey));
+        }
+    }
+
+    public String key() {
+        return id.orElse(animationKey);
     }
 }

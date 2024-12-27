@@ -22,8 +22,8 @@ public class DragonEmoteSets {
         context.register(DEFAULT_EMOTES,
                 new DragonEmoteSet(
                         List.of(
-                                new DragonEmote(BLEND_ANGRY, 1.0, -1, true, true, true, false, false, true, Optional.empty()),
-                                new DragonEmote(SITTING_CURLED, 1.0, -1, true, true, true, true, false, false, Optional.empty())
+                                new DragonEmote(BLEND_ANGRY, Optional.empty(), 1.0, -1, true, true, true, false, false, true, Optional.empty()),
+                                new DragonEmote(SITTING_CURLED, Optional.empty(), 1.0, -1, true, true, true, true, false, false, Optional.empty())
                         )
                 )
         );
