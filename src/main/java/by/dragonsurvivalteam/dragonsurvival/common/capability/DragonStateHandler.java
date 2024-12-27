@@ -17,10 +17,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBodies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
-import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
-import by.dragonsurvivalteam.dragonsurvival.util.Functions;
-import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
-import by.dragonsurvivalteam.dragonsurvival.util.ToolUtils;
+import by.dragonsurvivalteam.dragonsurvival.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -103,16 +100,39 @@ public class DragonStateHandler extends EntityStateHandler {
         magicData.handleGrowthAbilityUpgrades(player, this.size);
 
         player.refreshDimensions();
-        BlockPos relativePosition = player.blockPosition().relative(player.getDirection());
 
-        if (this.size > oldSize && player.isColliding(relativePosition, player.level().getBlockState(relativePosition))) {
+        if (this.size > oldSize) {
             // Push the player away from a block they might collide with due to the size change
             // Without this they will get stuck on blocks they walk into while their size changes
             // The limit of 0.1 is a random value - it's so that when using growth items the player won't be teleported by x blocks
-            double pushForce = Math.min(0.1, this.size - oldSize);
-            Direction opposite = player.getDirection().getOpposite();
-            Vec3 push = new Vec3(pushForce * opposite.getStepX(), 0, pushForce * opposite.getStepZ());
-            player.moveTo(player.position().add(push));
+            double pushForce = Math.min(0.05, (this.size - oldSize) + player.getDeltaMovement().horizontalDistance());
+
+            boolean hasCollided = false;
+            Vec3 push = Vec3.ZERO;
+
+            for (BlockPos position : BlockPosHelper.betweenClosed(player.getBoundingBox())) {
+                if (player.isColliding(position, player.level().getBlockState(position))) {
+                    hasCollided = true;
+
+                    Vec3 center = Vec3.atCenterOf(position);
+                    double directionX = Math.signum(player.getX() - center.x());
+                    double directionZ = Math.signum(player.getZ() - center.z());
+
+                    // Need to collect the pushes otherwise running into the corner of two blocks causes issues
+                    push = push.add(directionX, 0, directionZ);
+                }
+            }
+
+            if (push.length() > 0) {
+                player.moveTo(player.position().add(push.normalize().scale(pushForce)));
+            } else if (hasCollided) {
+                // TODO :: this happens when jumping into the corner between 2 block pillars
+                //  x / y of delta movement is 0 here, so not sure how to determine where to push the player
+                //  the directions doesn't always work because the player doesn't necessarily look into the direction they're going
+                //  and this also fails if they're looking in the corner
+                Direction opposite = player.getDirection().getOpposite();
+                player.moveTo(player.position().add(opposite.getStepX() * pushForce, 0, opposite.getStepZ() * pushForce));
+            }
         }
 
         if (player instanceof ServerPlayer serverPlayer) {

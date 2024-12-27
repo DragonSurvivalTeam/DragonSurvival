@@ -2,6 +2,8 @@ package by.dragonsurvivalteam.dragonsurvival.util;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 public class BlockPosHelper {
@@ -23,5 +25,9 @@ public class BlockPosHelper {
 
     public static BlockPos get(final Vec3 input) {
         return get(input.x(), input.y(), input.z());
+    }
+
+    public static Iterable<BlockPos> betweenClosed(final AABB aabb) {
+        return BlockPos.betweenClosed(Mth.floor(aabb.minX), Mth.floor(aabb.minY), Mth.floor(aabb.minZ), Mth.floor(aabb.maxX), Mth.floor(aabb.maxY), Mth.floor(aabb.maxZ));
     }
 }
