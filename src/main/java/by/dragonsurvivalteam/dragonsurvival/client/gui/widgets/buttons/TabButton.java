@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons;
 
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.MagicHUD;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.AbilityScreen;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAbilityScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonInventoryScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.InventoryScreenHandler;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.SkinsScreen;
@@ -64,9 +64,9 @@ public class TabButton extends Button {
             switch (type) {
                 case INVENTORY_TAB -> {
                     boolean setSuccessfully = false;
-                    if (parent instanceof AbilityScreen) {
-                        if (((AbilityScreen) parent).sourceScreen != null) {
-                            setSuccessfully = setInventoryScreen(((AbilityScreen) parent).sourceScreen);
+                    if (parent instanceof DragonAbilityScreen) {
+                        if (((DragonAbilityScreen) parent).sourceScreen != null) {
+                            setSuccessfully = setInventoryScreen(((DragonAbilityScreen) parent).sourceScreen);
                         }
                     } else if (parent instanceof SkinsScreen) {
                         if (((SkinsScreen) parent).sourceScreen != null) {
@@ -83,7 +83,7 @@ public class TabButton extends Button {
                         }
                     }
                 }
-                case ABILITY_TAB -> Minecraft.getInstance().setScreen(new AbilityScreen(parent));
+                case ABILITY_TAB -> Minecraft.getInstance().setScreen(new DragonAbilityScreen(parent));
                 case SKINS_TAB -> Minecraft.getInstance().setScreen(new SkinsScreen(parent));
             }
     }
@@ -91,7 +91,7 @@ public class TabButton extends Button {
     public boolean isCurrent() {
         return switch (type) {
             case INVENTORY_TAB -> parent instanceof DragonInventoryScreen || parent instanceof InventoryScreen;
-            case ABILITY_TAB -> parent instanceof AbilityScreen;
+            case ABILITY_TAB -> parent instanceof DragonAbilityScreen;
             case SKINS_TAB -> parent instanceof SkinsScreen;
             default -> false;
         };

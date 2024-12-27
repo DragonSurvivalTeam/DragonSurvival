@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.AbilityScreen;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAbilityScreen;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import net.minecraft.client.gui.GuiGraphics;
@@ -10,8 +10,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.*;
-
 public class SkillProgressButton extends Button {
     @Translation(type = Translation.Type.MISC, comments = "§6■ Requires level:§r %s")
     private static final String REQUIRED_LEVEL = Translation.Type.GUI.wrap("required_level");
@@ -19,10 +17,10 @@ public class SkillProgressButton extends Button {
     private static final ResourceLocation BLANK_TEXTURE = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/blank.png");
 
     private final int slot;
-    private final AbilityScreen screen;
+    private final DragonAbilityScreen screen;
     private DragonAbilityInstance buttonAbility;
 
-    public SkillProgressButton(int x, int y, int slot, AbilityScreen screen) {
+    public SkillProgressButton(int x, int y, int slot, DragonAbilityScreen screen) {
         super(x, y, 16, 16, Component.empty(), button -> {}, DEFAULT_NARRATION);
         this.slot = slot;
         this.screen = screen;

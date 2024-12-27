@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.AbilityScreen;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAbilityScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.ClickHoverButton;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.Upgrade;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncAbilityLevel;
@@ -124,7 +124,7 @@ public class LevelButton extends ClickHoverButton {
     @Override
     public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         super.renderWidget(graphics, mouseX, mouseY, partialTick);
-        if (Minecraft.getInstance().screen instanceof AbilityScreen abilityScreen && isHovered()) {
+        if (Minecraft.getInstance().screen instanceof DragonAbilityScreen abilityScreen && isHovered()) {
             abilityScreen.hoveredLevelButton = this;
         }
     }

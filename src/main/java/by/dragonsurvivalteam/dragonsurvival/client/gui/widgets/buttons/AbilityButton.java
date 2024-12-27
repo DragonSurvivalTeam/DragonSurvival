@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons;
 
-import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.AbilityScreen;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAbilityScreen;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.Upgrade;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.ValueBasedUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.magic.AbilityAndPenaltyTooltipRenderer;
@@ -31,7 +31,7 @@ public class AbilityButton extends Button {
     private static final int ORNAMENTATION_SIZE = 38;
 
     private DragonAbilityInstance ability;
-    private final AbilityScreen screen;
+    private final DragonAbilityScreen screen;
     private int slot = MagicData.NO_SLOT;
     private boolean isHotbar;
     private boolean isDragging;
@@ -41,7 +41,7 @@ public class AbilityButton extends Button {
     private @Nullable LevelButton leftLevelButton;
     private @Nullable LevelButton rightLevelButton;
 
-    public AbilityButton(int x, int y, @Nullable final DragonAbilityInstance ability, final AbilityScreen screen, float scale) {
+    public AbilityButton(int x, int y, @Nullable final DragonAbilityInstance ability, final DragonAbilityScreen screen, float scale) {
         // Don't actually change the scale of the button itself based on the scale value; this is because we only rescale the button when it is
         // on the sides of the column, in which case it can't be interacted with anyway. Minecraft's GUI doesn't offer a clean way to adjust
         // the button's bounds dynamically, so this is the best we can do.
@@ -61,7 +61,7 @@ public class AbilityButton extends Button {
         ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(rightLevelButton);
     }
 
-    public AbilityButton(int x, int y, @Nullable final DragonAbilityInstance ability, final AbilityScreen screen, boolean isHotbar, int slot) {
+    public AbilityButton(int x, int y, @Nullable final DragonAbilityInstance ability, final DragonAbilityScreen screen, boolean isHotbar, int slot) {
         this(x, y, ability, screen);
         this.isHotbar = isHotbar;
         this.slot = slot;
@@ -71,7 +71,7 @@ public class AbilityButton extends Button {
         this.ability = data.fromSlot(slot);
     }
 
-    public AbilityButton(int x, int y, @Nullable final DragonAbilityInstance ability, final AbilityScreen screen) {
+    public AbilityButton(int x, int y, @Nullable final DragonAbilityInstance ability, final DragonAbilityScreen screen) {
         this(x, y, ability, screen, 1.0f);
     }
 

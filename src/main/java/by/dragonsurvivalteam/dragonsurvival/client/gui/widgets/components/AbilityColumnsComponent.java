@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components;
 
-import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.AbilityScreen;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAbilityScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.AbilityButton;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
@@ -8,7 +8,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class AbilityColumnsComponent {
 
     private record ButtonTemplateState(float scale, float alpha, boolean interactable, boolean visible) {}
 
-    public AbilityColumnsComponent(AbilityScreen parentScreen, int xPos, int yPos, int verticalSpacing, int sideColumnSpacing, float sideColumnScale, float sideColumnOpacity, List<DragonAbilityInstance> abilities) {
+    public AbilityColumnsComponent(DragonAbilityScreen parentScreen, int xPos, int yPos, int verticalSpacing, int sideColumnSpacing, float sideColumnScale, float sideColumnOpacity, List<DragonAbilityInstance> abilities) {
         // Set all of the button positions to be what the center column would be; this is because the buttons are only interactable when they are in the center column
         for (int i = 0; i < abilities.size(); i++) {
             int column = i / ELEMENTS_PER_COLUMN;

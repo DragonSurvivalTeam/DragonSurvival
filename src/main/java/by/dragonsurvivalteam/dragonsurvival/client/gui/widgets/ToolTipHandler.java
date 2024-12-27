@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.AbilityScreen;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAbilityScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.SkillProgressButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HelpButton;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonFoodHandler;
@@ -290,7 +290,7 @@ public class ToolTipHandler {
             return;
         }
 
-        boolean isAbilityScreen = Minecraft.getInstance().screen instanceof AbilityScreen;
+        boolean isAbilityScreen = Minecraft.getInstance().screen instanceof DragonAbilityScreen;
         ItemStack stack = event.getItemStack();
 
         // FIXME
@@ -302,7 +302,7 @@ public class ToolTipHandler {
         boolean isSkillProgressButtonHovered = false;
 
         if (isAbilityScreen) {
-            for (GuiEventListener widget : ((AbilityScreen) Minecraft.getInstance().screen).widgetList()) {
+            for (GuiEventListener widget : ((DragonAbilityScreen) Minecraft.getInstance().screen).widgetList()) {
                 if (widget instanceof SkillProgressButton && ((SkillProgressButton) widget).isHoveredOrFocused()) {
                     isSkillProgressButtonHovered = true;
                     break;
