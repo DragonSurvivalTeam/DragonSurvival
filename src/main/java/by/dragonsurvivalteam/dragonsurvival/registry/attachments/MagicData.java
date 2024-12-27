@@ -42,8 +42,8 @@ import java.util.Optional;
 
 @EventBusSubscriber
 public class MagicData implements INBTSerializable<CompoundTag> {
+    public static final int HOTBAR_SLOTS = 4;
     public static final int NO_SLOT = -1;
-    public static final int MAX_ACTIVE = 4;
 
     private Map<ResourceKey<DragonAbility>, DragonAbilityInstance> abilities = new HashMap<>();
     private Map<Integer, ResourceKey<DragonAbility>> hotbar = new HashMap<>();
@@ -346,7 +346,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
                 instance = new DragonAbilityInstance(ability, DragonAbilityInstance.MIN_LEVEL);
             }
 
-            if (slot < MAX_ACTIVE && ability.value().activation().type() != Activation.Type.PASSIVE) {
+            if (slot < HOTBAR_SLOTS && ability.value().activation().type() != Activation.Type.PASSIVE) {
                 hotbar.put(slot, ability.getKey());
                 slot++;
             }

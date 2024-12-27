@@ -162,7 +162,7 @@ public class MagicHUD {
         int sizeX = 20;
         int sizeY = 20;
 
-        int i1 = width - sizeX * MagicData.MAX_ACTIVE - 20;
+        int i1 = width - sizeX * MagicData.HOTBAR_SLOTS - 20;
         int posX = i1;
         int posY = height - sizeY;
 
@@ -175,7 +175,7 @@ public class MagicHUD {
             graphics.blit(VANILLA_WIDGETS, posX, posY - 2, 0, 0, 0, 41, 22, 256, 256);
             graphics.blit(VANILLA_WIDGETS, posX + 41, posY - 2, 0, 141, 0, 41, 22, 256, 256);
 
-            for (int x = 0; x < MagicData.MAX_ACTIVE; x++) {
+            for (int x = 0; x < MagicData.HOTBAR_SLOTS; x++) {
                 DragonAbilityInstance ability = magicData.fromSlot(x);
 
                 if (ability != null) {

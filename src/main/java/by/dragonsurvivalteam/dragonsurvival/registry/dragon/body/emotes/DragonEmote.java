@@ -13,14 +13,14 @@ import net.minecraft.sounds.SoundEvent;
 import java.util.Optional;
 
 public record DragonEmote(String animationKey, Optional<String> translationOverride, double speed, int duration, boolean loops, boolean blend, boolean locksHead, boolean locksTail, boolean thirdPerson, boolean canMove, Optional<Sound> sound) {
+    public static double DEFAULT_SPEED = 1;
     public static int NO_DURATION = -1;
-    public static int DEFAULT_SPEED = 1;
 
     public static final Codec<DragonEmote> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("animation_key").forGetter(DragonEmote::animationKey),
             Codec.STRING.optionalFieldOf("translation_override").forGetter(DragonEmote::translationOverride),
-            Codec.DOUBLE.fieldOf("speed").forGetter(DragonEmote::speed),
-            Codec.INT.optionalFieldOf("duration", -1).forGetter(DragonEmote::duration),
+            Codec.DOUBLE.optionalFieldOf("speed", DEFAULT_SPEED).forGetter(DragonEmote::speed),
+            Codec.INT.optionalFieldOf("duration", NO_DURATION).forGetter(DragonEmote::duration),
             Codec.BOOL.optionalFieldOf("loops", false).forGetter(DragonEmote::loops),
             Codec.BOOL.fieldOf("blend").forGetter(DragonEmote::blend),
             Codec.BOOL.fieldOf("locks_head").forGetter(DragonEmote::locksHead),
@@ -33,10 +33,13 @@ public record DragonEmote(String animationKey, Optional<String> translationOverr
     public static final StreamCodec<ByteBuf, DragonEmote> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
 
     public record Sound(SoundEvent soundEvent, float volume, float pitch, int interval) {
+        public static final float DEFAULT_VOLUME = 1;
+        public static final float DEFAULT_PITCH = 1;
+
         public static final Codec<Sound> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 BuiltInRegistries.SOUND_EVENT.byNameCodec().fieldOf("sound_event").forGetter(Sound::soundEvent),
-                Codec.FLOAT.fieldOf("volume").forGetter(Sound::volume),
-                Codec.FLOAT.fieldOf("pitch").forGetter(Sound::pitch),
+                Codec.FLOAT.optionalFieldOf("volume", DEFAULT_VOLUME).forGetter(Sound::volume),
+                Codec.FLOAT.optionalFieldOf("pitch", DEFAULT_PITCH).forGetter(Sound::pitch),
                 Codec.INT.fieldOf("interval").forGetter(Sound::interval)
         ).apply(instance, Sound::new));
     }
@@ -84,8 +87,12 @@ public record DragonEmote(String animationKey, Optional<String> translationOverr
             return this;
         }
 
-        public Builder sound(Sound sound) {
-            this.sound = sound;
+        public Builder sound(final SoundEvent sound, int interval) {
+            return sound(sound, interval, Sound.DEFAULT_VOLUME, Sound.DEFAULT_PITCH);
+        }
+
+        public Builder sound(final SoundEvent sound, int interval, float volume, float pitch) {
+            this.sound = new Sound(sound, volume, pitch, interval);
             return this;
         }
 
