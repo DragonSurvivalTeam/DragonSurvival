@@ -20,12 +20,17 @@ public class DragonEmoteSets {
     @Translation(type = Translation.Type.EMOTE, comments = "Sitting Curled (Head Locked)")
     public static final String SITTING_CURLED_HEAD_LOCKED = "sitting_curled_tail_left_head_locked";
 
+    @Translation(type = Translation.Type.EMOTE, comments = "Sitting Curled No loop")
+    public static final String SITTING_CURLED_NO_LOOP = "sitting_curled_tail_left_no_loop";
+
     public static void registerEmoteSets(final BootstrapContext<DragonEmoteSet> context) {
         context.register(DEFAULT_EMOTES,
                 new DragonEmoteSet(
                         List.of(
-                                DragonEmote.Builder.of(BLEND_ANGRY).loops().blend().locksHead().canMove().build(),
-                                DragonEmote.Builder.of(SITTING_CURLED, SITTING_CURLED_HEAD_LOCKED).loops().blend().locksHead().locksTail().build()
+                                DragonEmote.Builder.of(BLEND_ANGRY).loops().blend().build(),
+                                DragonEmote.Builder.of(SITTING_CURLED).loops().locksHead().build(),
+                                DragonEmote.Builder.of(SITTING_CURLED, SITTING_CURLED_HEAD_LOCKED).loops().locksHead().locksTail().build(),
+                                DragonEmote.Builder.of(SITTING_CURLED, SITTING_CURLED_NO_LOOP).build()
                         )
                 )
         );
