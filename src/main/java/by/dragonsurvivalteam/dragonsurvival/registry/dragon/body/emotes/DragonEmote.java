@@ -42,8 +42,7 @@ public record DragonEmote(String animationKey, Optional<String> translationOverr
     }
 
     public Component name() {
-        return translationOverride.map(key -> Component.translatable(Translation.Type.EMOTE.wrap(key)))
-                .orElseGet(() -> Component.translatable(Translation.Type.EMOTE.wrap(animationKey)));
+        return Component.translatable(Translation.Type.EMOTE.wrap(translationOverride.orElse(animationKey)));
     }
 
     public String key() {
