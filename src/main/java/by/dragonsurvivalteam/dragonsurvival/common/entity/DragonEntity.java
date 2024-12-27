@@ -338,6 +338,26 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         return GeckoLibCache.getBakedAnimations().get(DragonModel.getAnimationResource(player)).getAnimation(animation).length();
     }
 
+    private boolean anyEmoteLocksHead() {
+        for (DragonEmote emote : currentlyPlayingEmotes) {
+            if (emote != null && emote.locksHead()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean anyEmoteLocksTail() {
+        for (DragonEmote emote : currentlyPlayingEmotes) {
+            if (emote != null && emote.locksTail()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private PlayState emotePredicate(final AnimationState<DragonEntity> state, int slot) {
         Player player = getPlayer();
 
@@ -349,9 +369,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             DragonEmote emote = currentlyPlayingEmotes[slot];
 
             if(animationTickTimer.getDuration("emote_" + slot) > 0 || emote.loops()) {
-                neckLocked = emote.locksHead();
-                tailLocked = emote.locksTail();
-
                 state.getController().setAnimationSpeed(emote.speed());
 
                 if (!emote.loops()) {
@@ -448,6 +465,9 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         double distanceFromGround = ServerFlightHandler.distanceFromGround(player);
 
         if (isPlayingNonBlendEmote()) {
+            // Set the head lock state once here so it is correct for all the emotes
+            neckLocked = anyEmoteLocksHead();
+            tailLocked = anyEmoteLocksTail();
             state.getController().stop();
             return PlayState.STOP;
         }
