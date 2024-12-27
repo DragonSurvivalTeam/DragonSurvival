@@ -9,6 +9,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.Anim
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.SimpleAbilityAnimation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.Upgrade;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.ValueBasedUpgrade;
+import by.dragonsurvivalteam.dragonsurvival.common.conditions.EntityCondition;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.LargeLightningParticleOption;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.SmallLightningParticleOption;
 import by.dragonsurvivalteam.dragonsurvival.registry.*;
@@ -140,7 +141,7 @@ public class SeaDragonAbilities {
                 Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 4, LevelBasedValue.lookup(List.of(0f, 20f, 45f, 50f), LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(Condition.living()),
+                        List.of(EntityCondition.isLiving()),
                         List.of(new ProjectileEffect(
                                 context.lookup(ProjectileData.REGISTRY).getOrThrow(Projectiles.BALL_LIGHTNING),
                                 TargetDirection.lookingAt(),
@@ -183,7 +184,7 @@ public class SeaDragonAbilities {
                 Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 4, LevelBasedValue.lookup(List.of(0f, 10f, 30f, 50f), LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
-                                List.of(Condition.living()),
+                                List.of(EntityCondition.isLiving()),
                                 List.of(
                                         new DamageEffect(
                                                 context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.LIGHTNING_BREATH),
@@ -316,7 +317,7 @@ public class SeaDragonAbilities {
                 Upgrade.value(ValueBasedUpgrade.Type.MANUAL, 5, LevelBasedValue.perLevel(15)), // FIXME :: not the actual values
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(Condition.onBlock(DSBlockTags.SPEEDS_UP_SEA_DRAGON)),
+                        List.of(EntityCondition.isOnBlock(DSBlockTags.SPEEDS_UP_SEA_DRAGON)),
                         ModifierEffect.single(new ModifierWithDuration(
                                 SEA_ATHLETICS_MODIFIER,
                                 ModifierWithDuration.DEFAULT_MODIFIER_ICON,
@@ -353,7 +354,7 @@ public class SeaDragonAbilities {
                                 AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
                         ), true), LevelBasedValue.constant(1)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                                List.of(Condition.onBlock(DSBlockTags.REGENERATES_SEA_DRAGON_MANA), Condition.inBlock(DSBlockTags.REGENERATES_SEA_DRAGON_MANA)),
+                                List.of(EntityCondition.isOnBlock(DSBlockTags.REGENERATES_SEA_DRAGON_MANA), EntityCondition.isInBlock(DSBlockTags.REGENERATES_SEA_DRAGON_MANA)),
                                 ModifierEffect.single(new ModifierWithDuration(
                                         DragonAbilities.GOOD_MANA_CONDITION,
                                         ModifierWithDuration.DEFAULT_MODIFIER_ICON,

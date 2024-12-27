@@ -1,9 +1,9 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
+import by.dragonsurvivalteam.dragonsurvival.common.conditions.EntityCondition;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
@@ -67,7 +67,7 @@ public class DragonStages {
                         MiscCodecs.GrowthItem.create(Functions.minutesToTicks(10), DSItems.DRAGON_HEART_SHARD.value()),
                         MiscCodecs.GrowthItem.create(Functions.hoursToTicks(-1), DSItems.STAR_BONE.value())
                 ),
-                Optional.of(Condition.defaultNaturalGrowthBlocker()),
+                Optional.of(EntityCondition.defaultNaturalGrowthBlocker()),
                 Optional.empty(),
                 Optional.empty()
         );
@@ -99,7 +99,7 @@ public class DragonStages {
                         MiscCodecs.GrowthItem.create(Functions.minutesToTicks(30), DSItems.WEAK_DRAGON_HEART.value()),
                         MiscCodecs.GrowthItem.create(Functions.hoursToTicks(-1), DSItems.STAR_BONE.value())
                 ),
-                Optional.of(Condition.defaultNaturalGrowthBlocker()),
+                Optional.of(EntityCondition.defaultNaturalGrowthBlocker()),
                 Optional.empty(),
                 Optional.empty()
         );
@@ -130,7 +130,7 @@ public class DragonStages {
                         MiscCodecs.GrowthItem.create(Functions.hoursToTicks(1), DSItems.ELDER_DRAGON_HEART.value()),
                         MiscCodecs.GrowthItem.create(Functions.hoursToTicks(-1), DSItems.STAR_BONE.value())
                 ),
-                Optional.of(Condition.defaultNaturalGrowthBlocker()),
+                Optional.of(EntityCondition.defaultNaturalGrowthBlocker()),
                 Optional.empty(),
                 Optional.empty()
         );

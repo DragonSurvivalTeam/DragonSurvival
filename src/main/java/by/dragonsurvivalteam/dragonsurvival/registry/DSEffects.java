@@ -44,15 +44,15 @@ public class DSEffects { // TODO :: add descriptions for the missing N/A marked 
     public static Holder<MobEffect> HUNTER_OMEN = DS_MOB_EFFECTS.register("hunter_omen", () -> new ModifiableMobEffect(MobEffectCategory.NEUTRAL, 0x0, true));
 
     @Translation(type = Translation.Type.EFFECT, comments = "Sea Peace")
-    @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "Protects sea dragons from dehydration.")
+    @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "Protects from dehydration.")
     public static Holder<MobEffect> PEACE = DS_MOB_EFFECTS.register("sea_peace", () -> new ModifiableMobEffect(MobEffectCategory.BENEFICIAL, 0x0, false));
 
     @Translation(type = Translation.Type.EFFECT, comments = "Forest Magic")
-    @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "Protects forest dragons from darkness.")
+    @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "Protects against the darkness.")
     public static Holder<MobEffect> MAGIC = DS_MOB_EFFECTS.register("forest_magic", () -> new ModifiableMobEffect(MobEffectCategory.BENEFICIAL, 0x0, false));
 
     @Translation(type = Translation.Type.EFFECT, comments = "Cave Fire")
-    @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "Protects cave dragons from the damaging effects of water.")
+    @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "Protects from the damaging effects of water.")
     public static Holder<MobEffect> FIRE = DS_MOB_EFFECTS.register("cave_fire", () -> new ModifiableMobEffect(MobEffectCategory.BENEFICIAL, 0x0, false));
 
     @Translation(type = Translation.Type.EFFECT, comments = "Animal Peace")

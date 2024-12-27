@@ -1,8 +1,8 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.datapacks;
 
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
+import by.dragonsurvivalteam.dragonsurvival.common.conditions.EntityCondition;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
@@ -57,7 +57,7 @@ public class AncientDatapack {
                         MiscCodecs.GrowthItem.create(Functions.hoursToTicks(1), DSItems.ELDER_DRAGON_HEART.value()),
                         MiscCodecs.GrowthItem.create(Functions.hoursToTicks(-1), DSItems.STAR_BONE.value())
                 ),
-                Optional.of(Condition.defaultNaturalGrowthBlocker()),
+                Optional.of(EntityCondition.defaultNaturalGrowthBlocker()),
                 Optional.empty(),
                 Optional.of(new MiscCodecs.DestructionData(120, 120, 0.05))
         );

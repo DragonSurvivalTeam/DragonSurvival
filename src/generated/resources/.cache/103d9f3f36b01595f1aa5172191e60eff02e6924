@@ -1,4 +1,4 @@
-// 1.21.1	2024-12-26T23:57:18.804799	Registries
+// 1.21.1	2024-12-27T01:44:08.4913395	Registries
 011b2ee382ec961722c100bbf059b4aa460f44b0 data/dragonsurvival/damage_type/anti_dragon.json
 d8c3135ecd1879e98a21e83ec1bcfd68c5fc3296 data/dragonsurvival/damage_type/ball_lightning.json
 1deb2bbcd4ed46724235ab398f66ed7559c01fab data/dragonsurvival/damage_type/burn.json
@@ -35,7 +35,7 @@ a5a9b22ec6cde3e27835800191156b2f154c582c data/dragonsurvival/dragonsurvival/drag
 c535760462cb1672f15676d22f2b9390b26c81e6 data/dragonsurvival/dragonsurvival/dragon_abilities/forest_athletics.json
 6600226703347672e2c589c4d5873d878347497b data/dragonsurvival/dragonsurvival/dragon_abilities/forest_claws_and_teeth.json
 c3eb11e1051996634f88e13cfb53ad8188a887f2 data/dragonsurvival/dragonsurvival/dragon_abilities/forest_immunity.json
-f7153ae8e7b94091a54a0777f7fd9a7d8e927ab9 data/dragonsurvival/dragonsurvival/dragon_abilities/forest_magic.json
+ddca311edc5897f58013b4e689ee29a1642c7280 data/dragonsurvival/dragonsurvival/dragon_abilities/forest_magic.json
 5901035dfc4cd71a4e2839a42274b9e95ef0e530 data/dragonsurvival/dragonsurvival/dragon_abilities/forest_wings.json
 b9f84897b1bb8a0929a51d72be655325829c1713 data/dragonsurvival/dragonsurvival/dragon_abilities/hunter.json
 9c7c2ec31bd2dcea7d85fa73dd701513b2214a07 data/dragonsurvival/dragonsurvival/dragon_abilities/hydration.json

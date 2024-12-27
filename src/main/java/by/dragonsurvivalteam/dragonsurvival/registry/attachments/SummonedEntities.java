@@ -60,7 +60,9 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
             }
 
             if (target.getUUID().equals(data.summonOwner)) {
-                return true;
+                SummonedEntities summonData = target.getData(DSDataAttachments.SUMMONED_ENTITIES);
+                SummonEntityEffect.Instance instance = summonData.getInstance(entity);
+                return instance != null && instance.baseData().shouldSetAllied();
             }
 
             Entity owner = data.getSummonOwner(entity.level());
@@ -71,7 +73,8 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
 
             // The entity shares the same summon owner
             SummonedEntities summonData = owner.getData(DSDataAttachments.SUMMONED_ENTITIES);
-            return summonData.getInstance(target) != null;
+            SummonEntityEffect.Instance instance = summonData.getInstance(target);
+            return instance != null && instance.baseData().shouldSetAllied();
         }).orElse(false);
     }
 

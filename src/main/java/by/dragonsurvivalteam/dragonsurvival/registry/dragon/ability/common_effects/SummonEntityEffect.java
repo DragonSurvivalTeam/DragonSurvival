@@ -1,7 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.capability.EntityStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DurationInstance;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierType;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.goals.FollowSummonerGoal;
@@ -116,14 +115,14 @@ public record SummonEntityEffect(
     private void spawn(final ServerLevel level, final ServerPlayer dragon, final DragonAbilityInstance ability, final BlockPos spawnPosition) {
         int newDuration = (int) duration.calculate(ability.level());
 
-        SummonedEntities data = dragon.getData(DSDataAttachments.SUMMONED_ENTITIES);
-        Instance instance = data.get(id);
+        SummonedEntities summonData = dragon.getData(DSDataAttachments.SUMMONED_ENTITIES);
+        Instance instance = summonData.get(id);
 
         if (instance != null) {
             if (instance.appliedAbilityLevel() != ability.level() || instance.currentDuration() != newDuration) {
                 // When the effect is applied to an area the entities are summoned in one tick (= duration has not decreased)
                 // Meaning this will only be reached if the ability is being cast again
-                data.remove(dragon, instance);
+                summonData.remove(dragon, instance);
                 instance = null;
             } else if (instance.summonedAmount() == maxSummons.calculate(ability.level())) {
                 // Keep the logic simple - players can kill their summons (they do not retaliate) if needed
@@ -166,11 +165,13 @@ public record SummonEntityEffect(
         }
 
         setAllied(dragon, entity);
+
+        entity.getData(DSDataAttachments.ENTITY_HANDLER).summonOwner = dragon.getUUID();
         entity.moveTo(spawnPosition.getX(), spawnPosition.getY() + 1, spawnPosition.getZ(), entity.getYRot(), entity.getXRot());
 
         if (instance == null) {
             instance = Instance.from(this, ability.level(), newDuration, entity.getUUID());
-            data.add(dragon, instance);
+            summonData.add(dragon, instance);
         } else {
             instance.increment(entity.getUUID());
         }
@@ -182,10 +183,6 @@ public record SummonEntityEffect(
         if (!shouldSetAllied) {
             return;
         }
-
-        EntityStateHandler data = entity.getData(DSDataAttachments.ENTITY_HANDLER);
-        data.summonOwner = dragon.getUUID();
-        // TODO :: might need to synchronize this to the client?
 
         if (entity instanceof TamableAnimal tamable) {
             tamable.setOwnerUUID(dragon.getUUID());

@@ -32,7 +32,7 @@ public class EntityStateHandler implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public CompoundTag serializeNBT(@NotNull HolderLookup.Provider provider) {
+    public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
         tag.putInt(CHAIN_COUNT, chainCount);
         tag.putBoolean(IS_FIRE_IMMUNE, isFireImmune);
@@ -49,7 +49,7 @@ public class EntityStateHandler implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public void deserializeNBT(@NotNull HolderLookup.Provider provider, CompoundTag tag) {
+    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, CompoundTag tag) {
         chainCount = tag.getInt(CHAIN_COUNT);
         isFireImmune = tag.getBoolean(IS_FIRE_IMMUNE);
 

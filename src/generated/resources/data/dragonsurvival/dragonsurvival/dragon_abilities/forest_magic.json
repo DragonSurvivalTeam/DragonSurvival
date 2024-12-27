@@ -73,9 +73,6 @@
               }
             },
             {
-              "location": {
-                "can_see_sky": true
-              },
               "type_specific": {
                 "type": "dragonsurvival:custom_predicates",
                 "sun_light_level": {

@@ -9,6 +9,9 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.Anim
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.SimpleAbilityAnimation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.Upgrade;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.ValueBasedUpgrade;
+import by.dragonsurvivalteam.dragonsurvival.common.conditions.BlockCondition;
+import by.dragonsurvivalteam.dragonsurvival.common.conditions.EntityCondition;
+import by.dragonsurvivalteam.dragonsurvival.common.conditions.ItemCondition;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.LargePoisonParticleOption;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.SmallPoisonParticleOption;
 import by.dragonsurvivalteam.dragonsurvival.registry.*;
@@ -145,7 +148,7 @@ public class ForestDragonAbilities {
                 Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 4, LevelBasedValue.lookup(List.of(0f, 20f, 30f, 40f), LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(Condition.living()),
+                        List.of(EntityCondition.isLiving()),
                         List.of(new ProjectileEffect(
                                 context.lookup(ProjectileData.REGISTRY).getOrThrow(Projectiles.SPIKE),
                                 TargetDirection.lookingAt(),
@@ -189,7 +192,7 @@ public class ForestDragonAbilities {
                 Optional.of(EntityPredicate.Builder.entity().effects(MobEffectsPredicate.Builder.effects().and(DSEffects.STRESS)).build()),
                 List.of(
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
-                                List.of(Condition.living()),
+                                List.of(EntityCondition.isLiving()),
                                 List.of(
                                         new DamageEffect(
                                                 context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.POISON_BREATH),
@@ -205,10 +208,10 @@ public class ForestDragonAbilities {
                                 AbilityTargeting.EntityTargetingMode.TARGET_ENEMIES
                         ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
-                                List.of(Condition.item()),
+                                List.of(EntityCondition.isItem()),
                                 List.of(new ItemConversionEffect(
                                         List.of(new ItemConversionEffect.ItemConversionData(
-                                                Condition.item(Items.POTATO),
+                                                ItemCondition.item(Items.POTATO),
                                                 WeightedRandomList.create(ItemConversionEffect.ItemTo.of(Items.POISONOUS_POTATO))
                                         )),
                                         LevelBasedValue.constant(0.5f)
@@ -219,7 +222,7 @@ public class ForestDragonAbilities {
                                 List.of(
                                         new BonemealEffect(LevelBasedValue.constant(2), LevelBasedValue.perLevel(0.01f)),
                                         new BlockConversionEffect(List.of(new BlockConversionEffect.BlockConversionData(
-                                                Condition.blocks(Blocks.DIRT, Blocks.COARSE_DIRT),
+                                                BlockCondition.blocks(Blocks.DIRT, Blocks.COARSE_DIRT),
                                                 SimpleWeightedRandomList.create(
                                                         new BlockConversionEffect.BlockTo(Blocks.GRASS_BLOCK.defaultBlockState(), 25),
                                                         new BlockConversionEffect.BlockTo(Blocks.PODZOL.defaultBlockState(), 5),
@@ -361,9 +364,9 @@ public class ForestDragonAbilities {
                         ), true), LevelBasedValue.constant(1)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 List.of(
-                                        Condition.onBlock(DSBlockTags.REGENERATES_FOREST_DRAGON_MANA),
-                                        Condition.inBlock(DSBlockTags.REGENERATES_FOREST_DRAGON_MANA),
-                                        Condition.inSunlight(10)
+                                        EntityCondition.isOnBlock(DSBlockTags.REGENERATES_FOREST_DRAGON_MANA),
+                                        EntityCondition.isInBlock(DSBlockTags.REGENERATES_FOREST_DRAGON_MANA),
+                                        EntityCondition.isInSunlight(10)
                                 ),
                                 ModifierEffect.single(new ModifierWithDuration(
                                         DragonAbilities.GOOD_MANA_CONDITION,
@@ -431,7 +434,7 @@ public class ForestDragonAbilities {
                 Upgrade.value(ValueBasedUpgrade.Type.MANUAL, 5, LevelBasedValue.perLevel(15)), // FIXME :: not the actual values
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(Condition.onBlock(DSBlockTags.SPEEDS_UP_FOREST_DRAGON)),
+                        List.of(EntityCondition.isOnBlock(DSBlockTags.SPEEDS_UP_FOREST_DRAGON)),
                         ModifierEffect.single(new ModifierWithDuration(
                                 FOREST_ATHLETICS_MODIFIER,
                                 ModifierWithDuration.DEFAULT_MODIFIER_ICON,

@@ -1,11 +1,11 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.projectile;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.PotionData;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.CustomPredicates;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.EntityCheckPredicate;
+import by.dragonsurvivalteam.dragonsurvival.common.conditions.EntityCondition;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.LargeLightningParticleOption;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
@@ -73,7 +73,7 @@ public class Projectiles {
                                 LevelBasedValue.constant(100)
                         )
                 ),
-                Optional.of(Condition.living()),
+                Optional.of(EntityCondition.isLiving()),
                 List.of(),
                 List.of(),
                 List.of(
@@ -93,7 +93,7 @@ public class Projectiles {
                                 LevelBasedValue.constant(3)
                         )
                 ),
-                Optional.of(Condition.living()),
+                Optional.of(EntityCondition.isLiving()),
                 List.of(),
                 List.of(),
                 List.of(new ProjectileDamageEffect(
@@ -131,11 +131,11 @@ public class Projectiles {
                                 LevelBasedValue.constant(100)
                         )
                 ),
-                Optional.of(Condition.living()),
+                Optional.of(EntityCondition.isLiving()),
                 List.of(new ProjectileAreaTarget(
                             Either.left(Either.right(
                                 new ProjectileTargeting.EntityTargeting(
-                                    Optional.of(Condition.living()),
+                                    Optional.of(EntityCondition.isLiving()),
                                     List.of(
                                             new ProjectileDamageEffect(
                                                     context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.BALL_LIGHTNING),
