@@ -97,7 +97,7 @@ public class DragonStateHandler extends EntityStateHandler {
             return;
         }
 
-        if (oldSize == this.size || oldStage != null && dragonStage.is(oldStage)) {
+        if (oldSize == this.size && oldStage != null && dragonStage.is(oldStage)) {
             return;
         }
 
