@@ -146,7 +146,7 @@ public class ForestDragonAbilities {
                 Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 4, LevelBasedValue.lookup(List.of(0f, 20f, 30f, 40f), LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(EntityCondition.isLiving()),
+                        Condition.thisEntity(EntityCondition.isLiving()).build(),
                         List.of(new ProjectileEffect(
                                 context.lookup(ProjectileData.REGISTRY).getOrThrow(Projectiles.SPIKE),
                                 TargetDirection.lookingAt(),
@@ -187,10 +187,10 @@ public class ForestDragonAbilities {
                         ))
                 ),
                 Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 4, LevelBasedValue.lookup(List.of(0f, 10f, 30f, 50f), LevelBasedValue.perLevel(15))),
-                Optional.of(EntityCondition.hasEffect(DSEffects.STRESS)),
+                Optional.of(Condition.thisEntity(EntityCondition.hasEffect(DSEffects.STRESS)).build()),
                 List.of(
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
-                                List.of(EntityCondition.isLiving()),
+                                Condition.thisEntity(EntityCondition.isLiving()).build(),
                                 List.of(
                                         new DamageEffect(
                                                 context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.POISON_BREATH),
@@ -206,7 +206,7 @@ public class ForestDragonAbilities {
                                 AbilityTargeting.EntityTargetingMode.TARGET_ENEMIES
                         ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
-                                List.of(EntityCondition.isItem()),
+                                Condition.thisEntity(EntityCondition.isItem()).build(),
                                 List.of(new ItemConversionEffect(
                                         List.of(new ItemConversionEffect.ItemConversionData(
                                                 ItemCondition.item(Items.POTATO),
@@ -361,11 +361,9 @@ public class ForestDragonAbilities {
                                 AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
                         ), true), LevelBasedValue.constant(1)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                                List.of(
-                                        EntityCondition.isOnBlock(DSBlockTags.REGENERATES_FOREST_DRAGON_MANA),
-                                        EntityCondition.isInBlock(DSBlockTags.REGENERATES_FOREST_DRAGON_MANA),
-                                        EntityCondition.isInSunlight(10)
-                                ),
+                                Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.REGENERATES_FOREST_DRAGON_MANA))
+                                        .or(Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.REGENERATES_FOREST_DRAGON_MANA)))
+                                        .or(Condition.thisEntity(EntityCondition.isInSunlight(10))).build(),
                                 ModifierEffect.single(new ModifierWithDuration(
                                         DragonAbilities.GOOD_MANA_CONDITION,
                                         ModifierWithDuration.DEFAULT_MODIFIER_ICON,
@@ -432,7 +430,7 @@ public class ForestDragonAbilities {
                 Upgrade.value(ValueBasedUpgrade.Type.MANUAL, 5, LevelBasedValue.perLevel(15)), // FIXME :: not the actual values
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(EntityCondition.isOnBlock(DSBlockTags.SPEEDS_UP_FOREST_DRAGON)),
+                        Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.SPEEDS_UP_FOREST_DRAGON)).build(),
                         ModifierEffect.single(new ModifierWithDuration(
                                 FOREST_ATHLETICS_MODIFIER,
                                 ModifierWithDuration.DEFAULT_MODIFIER_ICON,

@@ -25,15 +25,17 @@
             }
           ],
           "entity_targeting_mode": "TARGET_ALLIES",
-          "target_conditions": [
-            {
+          "target_conditions": {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
               "stepping_on": {
                 "block": {
                   "blocks": "#dragonsurvival:speeds_up_forest_dragon"
                 }
               }
             }
-          ]
+          }
         },
         "target_type": "dragonsurvival:self"
       },

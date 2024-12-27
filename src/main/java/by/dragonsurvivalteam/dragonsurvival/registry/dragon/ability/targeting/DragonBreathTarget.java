@@ -44,7 +44,7 @@ public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target,
             AABB breathArea = calculateBreathArea(dragon, ability);
 
             dragon.serverLevel().getEntities(EntityTypeTest.forClass(Entity.class), breathArea,
-                    entity -> isEntityRelevant(dragon, entityTarget, entity) && entityTarget.matches(dragon.serverLevel(), dragon.position(), entity)
+                    entity -> isEntityRelevant(dragon, entityTarget, entity) && entityTarget.matches(dragon.serverLevel(), entity, entity.position())
             ).forEach(entity -> entityTarget.effects().forEach(target -> target.apply(dragon, ability, entity)));
         });
     }

@@ -57,22 +57,33 @@
             }
           ],
           "entity_targeting_mode": "TARGET_ALLIES",
-          "target_conditions": [
-            {
-              "stepping_on": {
-                "block": {
-                  "blocks": "#dragonsurvival:regenerates_cave_dragon_mana"
+          "target_conditions": {
+            "condition": "minecraft:any_of",
+            "terms": [
+              {
+                "condition": "minecraft:entity_properties",
+                "entity": "this",
+                "predicate": {
+                  "stepping_on": {
+                    "block": {
+                      "blocks": "#dragonsurvival:regenerates_cave_dragon_mana"
+                    }
+                  }
+                }
+              },
+              {
+                "condition": "minecraft:entity_properties",
+                "entity": "this",
+                "predicate": {
+                  "location": {
+                    "block": {
+                      "blocks": "#dragonsurvival:regenerates_cave_dragon_mana"
+                    }
+                  }
                 }
               }
-            },
-            {
-              "location": {
-                "block": {
-                  "blocks": "#dragonsurvival:regenerates_cave_dragon_mana"
-                }
-              }
-            }
-          ]
+            ]
+          }
         },
         "target_type": "dragonsurvival:self"
       },

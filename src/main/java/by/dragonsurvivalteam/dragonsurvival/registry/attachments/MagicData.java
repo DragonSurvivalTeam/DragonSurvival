@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.MagicHUD;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.Upgrade;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.ValueBasedUpgrade;
@@ -303,9 +304,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         }
 
         if (dragon instanceof ServerPlayer serverPlayer) {
-            return instance.ability().value().usageBlocked().map(
-                    condition -> condition.matches(serverPlayer.serverLevel(), dragon.position(), dragon)
-            ).orElse(false);
+            return instance.ability().value().usageBlocked().map(condition -> condition.test(Condition.createContext(serverPlayer))).orElse(false);
         } else {
             return castWasDenied;
         }

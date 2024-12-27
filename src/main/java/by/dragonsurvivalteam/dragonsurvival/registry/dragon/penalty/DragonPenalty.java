@@ -1,13 +1,13 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncAddPenaltySupply;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncRemovePenaltySupply;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PenaltySupply;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.MutableComponent;
@@ -50,7 +50,7 @@ public record DragonPenalty(ResourceLocation icon, Optional<LootItemCondition> c
             }
         }
 
-        if (trigger.matches(dragon, condition.map(condition -> condition.test(EntityPredicate.createContext(dragon, dragon))).orElse(true))) {
+        if (trigger.matches(dragon, condition.map(condition -> condition.test(Condition.createContext(dragon))).orElse(true))) {
             effect.apply(dragon);
         }
     }
