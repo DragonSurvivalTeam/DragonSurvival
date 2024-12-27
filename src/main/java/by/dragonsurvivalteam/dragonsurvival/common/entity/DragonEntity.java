@@ -106,13 +106,13 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
 
     @Override
     public void registerControllers(final AnimatableManager.ControllerRegistrar registrar) {
+        mainAnimationController = new AnimationController<>(this, "main", 2, this::predicate);
+        registrar.add(mainAnimationController);
+
         for (int slot = 0; slot < MAX_EMOTES; slot++) {
             int finalSlot = slot;
             registrar.add(new AnimationController<>(this, "emote_" + slot, 0, state -> emotePredicate(state, finalSlot)));
         }
-
-        mainAnimationController = new AnimationController<>(this, "main", 2, this::predicate);
-        registrar.add(mainAnimationController);
         registrar.add(new AnimationController<>(this, "bite", this::bitePredicate));
         registrar.add(new AnimationController<>(this, "tail", this::tailPredicate));
         registrar.add(new AnimationController<>(this, "head", this::headPredicate));
