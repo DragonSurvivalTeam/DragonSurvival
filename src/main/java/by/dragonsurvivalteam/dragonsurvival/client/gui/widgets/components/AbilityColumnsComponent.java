@@ -32,9 +32,9 @@ public class AbilityColumnsComponent implements ScrollableComponent {
             return;
         }
 
-        if (scrollX > 0) {
+        if (scrollY > 0) {
             rotateRight();
-        } else if (scrollX < 0) {
+        } else if (scrollY < 0) {
             rotateLeft();
         }
     }
