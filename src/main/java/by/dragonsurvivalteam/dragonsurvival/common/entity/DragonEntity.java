@@ -173,7 +173,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             if (currentlyPlayingEmotes[i] == null) {
                 currentlyPlayingEmotes[i] = emote;
 
-                if(emote.duration() != -1) {
+                if(emote.duration() != DragonEmote.NO_DURATION) {
                     animationTickTimer.putAnimation("emote_" + i, (double)emote.duration());
                 } else {
                     animationTickTimer.putAnimation("emote_" + i, animationDuration(getPlayer(), emote.animationKey()));

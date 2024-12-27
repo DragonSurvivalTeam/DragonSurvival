@@ -7,7 +7,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
-import java.util.Optional;
 
 public class DragonEmoteSets {
     public static final ResourceKey<DragonEmoteSet> DEFAULT_EMOTES = key("default_emotes");
@@ -25,8 +24,8 @@ public class DragonEmoteSets {
         context.register(DEFAULT_EMOTES,
                 new DragonEmoteSet(
                         List.of(
-                                new DragonEmote(BLEND_ANGRY, Optional.empty(), 1.0, -1, true, true, true, false, false, true, Optional.empty()),
-                                new DragonEmote(SITTING_CURLED, Optional.of(SITTING_CURLED_HEAD_LOCKED), 1.0, -1, true, true, true, true, false, false, Optional.empty())
+                                DragonEmote.Builder.of(BLEND_ANGRY).loops().blend().locksHead().canMove().build(),
+                                DragonEmote.Builder.of(SITTING_CURLED, SITTING_CURLED_HEAD_LOCKED).loops().blend().locksHead().locksTail().build()
                         )
                 )
         );

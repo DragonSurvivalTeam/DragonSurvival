@@ -12,10 +12,13 @@ import net.minecraft.sounds.SoundEvent;
 
 import java.util.Optional;
 
-public record DragonEmote(String animationKey, Optional<String> id, double speed, int duration, boolean loops, boolean blend, boolean locksHead, boolean locksTail, boolean thirdPerson, boolean canMove, Optional<Sound> sound) {
+public record DragonEmote(String animationKey, Optional<String> translationOverride, double speed, int duration, boolean loops, boolean blend, boolean locksHead, boolean locksTail, boolean thirdPerson, boolean canMove, Optional<Sound> sound) {
+    public static int NO_DURATION = -1;
+    public static int DEFAULT_SPEED = -1;
+
     public static final Codec<DragonEmote> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("animation_key").forGetter(DragonEmote::animationKey),
-            Codec.STRING.optionalFieldOf("translation_override").forGetter(DragonEmote::id),
+            Codec.STRING.optionalFieldOf("translation_override").forGetter(DragonEmote::translationOverride),
             Codec.DOUBLE.fieldOf("speed").forGetter(DragonEmote::speed),
             Codec.INT.optionalFieldOf("duration", -1).forGetter(DragonEmote::duration),
             Codec.BOOL.optionalFieldOf("loops", false).forGetter(DragonEmote::loops),
@@ -39,14 +42,86 @@ public record DragonEmote(String animationKey, Optional<String> id, double speed
     }
 
     public Component name() {
-        if(id.isPresent()) {
-            return Component.translatable(Translation.Type.EMOTE.wrap(id.get()));
-        } else {
-            return Component.translatable(Translation.Type.EMOTE.wrap(animationKey));
-        }
+        return translationOverride.map(key -> Component.translatable(Translation.Type.EMOTE.wrap(key)))
+                .orElseGet(() -> Component.translatable(Translation.Type.EMOTE.wrap(animationKey)));
     }
 
     public String key() {
-        return id.orElse(animationKey);
+        return translationOverride.orElse(animationKey);
+    }
+
+    public static class Builder {
+        private String animationKey;
+        private String translationOverride;
+        private double speed = DEFAULT_SPEED;
+        private int duration = NO_DURATION;
+        private Sound sound;
+
+        private boolean loops;
+        private boolean blend;
+        private boolean locksHead;
+        private boolean locksTail;
+        private boolean thirdPerson;
+        private boolean canMove;
+
+        public static Builder of(final String animationKey) {
+            return of(animationKey, null);
+        }
+
+        public static Builder of(final String animationKey, final String translationOverride) {
+            Builder builder = new Builder();
+            builder.animationKey = animationKey;
+            builder.translationOverride = translationOverride;
+            return builder;
+        }
+
+        public Builder speed(double speed) {
+            this.speed = speed;
+            return this;
+        }
+
+        public Builder duration(int duration) {
+            this.duration = duration;
+            return this;
+        }
+
+        public Builder sound(Sound sound) {
+            this.sound = sound;
+            return this;
+        }
+
+        public Builder loops() {
+            this.loops = true;
+            return this;
+        }
+
+        public Builder blend() {
+            this.blend = true;
+            return this;
+        }
+
+        public Builder locksHead() {
+            this.locksHead = true;
+            return this;
+        }
+
+        public Builder locksTail() {
+            this.locksTail = true;
+            return this;
+        }
+
+        public Builder thirdPerson() {
+            this.thirdPerson = true;
+            return this;
+        }
+
+        public Builder canMove() {
+            this.canMove = true;
+            return this;
+        }
+
+        public DragonEmote build(){
+            return new DragonEmote(animationKey, Optional.ofNullable(translationOverride), speed, duration, loops, blend, locksHead, locksTail, thirdPerson, canMove, Optional.ofNullable(sound));
+        }
     }
 }
