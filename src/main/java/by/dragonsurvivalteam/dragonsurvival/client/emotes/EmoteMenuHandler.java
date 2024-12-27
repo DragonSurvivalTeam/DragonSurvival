@@ -236,7 +236,7 @@ public class EmoteMenuHandler {
                     DragonEmote emote = emotes.size() > finalIndex ? emotes.get(finalIndex) : null;
 
                     if (emote != null) {
-                        currentlyKeybinding = emote.animationKey();
+                        currentlyKeybinding = emote.key();
                     }
                 }, Supplier::get) {
                     @Override
@@ -247,11 +247,11 @@ public class EmoteMenuHandler {
 
                         DragonStateHandler handler = DragonStateProvider.getData(Minecraft.getInstance().player);
                         if (emote != null) {
-                            if (Objects.equals(currentlyKeybinding, emote.animationKey())) {
+                            if (Objects.equals(currentlyKeybinding, emote.key())) {
                                 RenderingUtils.drawRect(guiGraphics, getX(), getY(), getWidth() - 1, getHeight(), new Color(0.1F, 0.1F, 0.1F, 0.8F).getRGB());
                                 TextRenderUtil.drawCenteredScaledText(guiGraphics, getX() + width / 2, getY() + 1, 1f, "...", -1);
-                            } else if (DSEmoteKeybindings.EMOTE_KEYBINDS.contains(emote.animationKey())) {
-                                int id = DSEmoteKeybindings.EMOTE_KEYBINDS.getKey(emote.animationKey());
+                            } else if (DSEmoteKeybindings.EMOTE_KEYBINDS.contains(emote.key())) {
+                                int id = DSEmoteKeybindings.EMOTE_KEYBINDS.getKey(emote.key());
                                 if (id != 0) {
                                     Key input = Type.KEYSYM.getOrCreate(id);
                                     TextRenderUtil.drawCenteredScaledText(guiGraphics, getX() + getWidth() / 2, getY() + 1, 1f, input.getDisplayName().getString(), -1);
@@ -266,7 +266,7 @@ public class EmoteMenuHandler {
                             DragonEmote emote = emotes.size() > finalIndex ? emotes.get(finalIndex) : null;
 
                             if (emote != null) {
-                                DSEmoteKeybindings.EMOTE_KEYBINDS.remove(emote.animationKey());
+                                DSEmoteKeybindings.EMOTE_KEYBINDS.remove(emote.key());
                                 return true;
                             }
                         }
@@ -283,7 +283,7 @@ public class EmoteMenuHandler {
 
                     if (emote != null) {
                         currentlyKeybinding = null;
-                        DSEmoteKeybindings.EMOTE_KEYBINDS.remove(emote.animationKey());
+                        DSEmoteKeybindings.EMOTE_KEYBINDS.remove(emote.key());
                     }
                 }, Supplier::get) {
                     @Override
@@ -293,7 +293,7 @@ public class EmoteMenuHandler {
                             return;
                         }
 
-                        visible = DSEmoteKeybindings.EMOTE_KEYBINDS.contains(emote.animationKey());
+                        visible = DSEmoteKeybindings.EMOTE_KEYBINDS.contains(emote.key());
 
                         if (!emoteMenuOpen || !keybinding || !visible) {
                             return;
@@ -344,7 +344,7 @@ public class EmoteMenuHandler {
         }
     }
 
-    public static void addEmote(String animationKey) {
+    public static void addEmote(String key) {
         DragonStateHandler handler = DragonStateProvider.getData(Minecraft.getInstance().player);
         AtomicReference<DragonEntity> atomicDragon = ClientDragonRenderer.playerDragonHashMap.get(Minecraft.getInstance().player.getId());
         if(atomicDragon == null) {
@@ -352,7 +352,7 @@ public class EmoteMenuHandler {
         }
 
         DragonEntity dragon = atomicDragon.get();
-        DragonEmote emote = handler.getBody().value().emotes().value().getEmote(animationKey);
+        DragonEmote emote = handler.getBody().value().emotes().value().getEmote(key);
         dragon.beginPlayingEmote(emote);
         PacketDistributor.sendToServer(new SyncEmote(Minecraft.getInstance().player.getId(), emote, false));
     }

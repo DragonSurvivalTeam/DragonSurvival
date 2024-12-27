@@ -18,7 +18,8 @@
       "locks_tail": true,
       "loops": true,
       "speed": 1.0,
-      "third_person": false
+      "third_person": false,
+      "translation_override": "sitting_curled_tail_left_head_locked"
     }
   ]
 }
