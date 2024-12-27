@@ -34,7 +34,7 @@ public record AreaTarget(Either<BlockTargeting, EntityTargeting> target, LevelBa
             // TODO :: add field 'visible' and check using ProjectileUtil.getHitResultOnViewVector()
             //  maybe need to differentiate between behind blocks and below player (under blocks)?
             dragon.serverLevel().getEntities(EntityTypeTest.forClass(Entity.class), calculateAffectedArea(dragon, ability),
-                    entity -> isEntityRelevant(dragon, entityTarget, entity) && entityTarget.matches(dragon.serverLevel(), dragon.position(), entity)
+                    entity -> isEntityRelevant(dragon, entityTarget, entity) && entityTarget.matches(dragon.serverLevel(), entity, entity.position())
             ).forEach(entity -> entityTarget.effects().forEach(target -> target.apply(dragon, ability, entity)));
         });
     }

@@ -25,23 +25,21 @@ import by.dragonsurvivalteam.dragonsurvival.registry.projectile.ProjectileData;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.Projectiles;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.datafixers.util.Either;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.FluidPredicate;
-import net.minecraft.advancements.critereon.LocationPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
-import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.common.NeoForgeMod;
 
 import java.util.List;
@@ -166,9 +164,9 @@ public class CaveDragonAbilities {
                         ))
                 ),
                 Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 4, LevelBasedValue.lookup(List.of(0f, 20f, 40f, 45f), LevelBasedValue.perLevel(15))),
-                Optional.of(EntityPredicate.Builder.entity().located(LocationPredicate.Builder.location().setFluid(FluidPredicate.Builder.fluid().of(Fluids.WATER))).build()),
+                Optional.of(Condition.thisEntity(EntityCondition.isInFluid(context.lookup(BuiltInRegistries.FLUID.key()).getOrThrow(FluidTags.WATER))).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(EntityCondition.isLiving()),
+                        Condition.thisEntity(EntityCondition.isLiving()).build(),
                         List.of(new ProjectileEffect(
                                 context.lookup(ProjectileData.REGISTRY).getOrThrow(Projectiles.FIREBALL),
                                 TargetDirection.lookingAt(),
@@ -207,9 +205,9 @@ public class CaveDragonAbilities {
                         ))
                 ),
                 Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 4, LevelBasedValue.lookup(List.of(0f, 10f, 30f, 50f), LevelBasedValue.perLevel(15))),
-                Optional.of(EntityPredicate.Builder.entity().located(LocationPredicate.Builder.location().setFluid(FluidPredicate.Builder.fluid().of(Fluids.WATER))).build()),
+                Optional.of(Condition.thisEntity(EntityCondition.isInFluid(context.lookup(BuiltInRegistries.FLUID.key()).getOrThrow(FluidTags.WATER))).build()),
                 List.of(new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
-                                List.of(EntityCondition.isLiving()),
+                                Condition.thisEntity(EntityCondition.isLiving()).build(),
                                 List.of(
                                         new DamageEffect(
                                                 context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FIRE_BREATH),
@@ -331,7 +329,7 @@ public class CaveDragonAbilities {
                 Upgrade.value(ValueBasedUpgrade.Type.MANUAL, 5, LevelBasedValue.perLevel(15)), // FIXME :: not the actual values
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(EntityCondition.isOnBlock(DSBlockTags.SPEEDS_UP_CAVE_DRAGON)),
+                        Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.SPEEDS_UP_CAVE_DRAGON)).build(),
                         ModifierEffect.single(new ModifierWithDuration(
                                 CAVE_ATHLETICS_MODIFIER,
                                 ModifierWithDuration.DEFAULT_MODIFIER_ICON,
@@ -390,7 +388,8 @@ public class CaveDragonAbilities {
                                 AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
                         ), true), LevelBasedValue.constant(1)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                                List.of(EntityCondition.isOnBlock(DSBlockTags.REGENERATES_CAVE_DRAGON_MANA), EntityCondition.isInBlock(DSBlockTags.REGENERATES_CAVE_DRAGON_MANA)),
+                                Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.REGENERATES_CAVE_DRAGON_MANA))
+                                        .or(Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.REGENERATES_CAVE_DRAGON_MANA))).build(),
                                 ModifierEffect.single(new ModifierWithDuration(
                                         DragonAbilities.GOOD_MANA_CONDITION,
                                         ModifierWithDuration.DEFAULT_MODIFIER_ICON,

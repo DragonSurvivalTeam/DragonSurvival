@@ -24,14 +24,16 @@
             }
           ],
           "entity_targeting_mode": "TARGET_ENEMIES",
-          "target_conditions": [
-            {
+          "target_conditions": {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
               "type_specific": {
                 "type": "dragonsurvival:entity_check_predicate",
                 "check_for": "living_entity"
               }
             }
-          ]
+          }
         },
         "range_multiplier": 1.0,
         "target_type": "dragonsurvival:dragon_breath"

@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.AbilityBlockEffect;
@@ -10,8 +11,6 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.advancements.critereon.BlockPredicate;
-import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
@@ -22,6 +21,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -59,7 +59,7 @@ public interface AbilityTargeting {
         return block(null, effects);
     }
 
-    static Either<BlockTargeting, EntityTargeting> block(final List<BlockPredicate> targetConditions, final List<AbilityBlockEffect> effects) {
+    static Either<BlockTargeting, EntityTargeting> block(final LootItemCondition targetConditions, final List<AbilityBlockEffect> effects) {
         return Either.left(new BlockTargeting(Optional.ofNullable(targetConditions), effects));
     }
 
@@ -67,46 +67,30 @@ public interface AbilityTargeting {
         return entity(null, effects, targetingMode);
     }
 
-    static Either<BlockTargeting, EntityTargeting> entity(final List<EntityPredicate> targetConditions, final List<AbilityEntityEffect> effects, final EntityTargetingMode targetingMode) {
+    static Either<BlockTargeting, EntityTargeting> entity(final LootItemCondition targetConditions, final List<AbilityEntityEffect> effects, final EntityTargetingMode targetingMode) {
         return Either.right(new EntityTargeting(Optional.ofNullable(targetConditions), effects, targetingMode));
     }
 
-    record BlockTargeting(Optional<List<BlockPredicate>> targetConditions, List<AbilityBlockEffect> effect) {
+    record BlockTargeting(Optional<LootItemCondition> targetConditions, List<AbilityBlockEffect> effect) {
         public static final Codec<BlockTargeting> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                BlockPredicate.CODEC.listOf().optionalFieldOf("target_conditions").forGetter(BlockTargeting::targetConditions),
+                LootItemCondition.DIRECT_CODEC.optionalFieldOf("target_conditions").forGetter(BlockTargeting::targetConditions),
                 AbilityBlockEffect.CODEC.listOf().fieldOf("block_effect").forGetter(BlockTargeting::effect)
         ).apply(instance, BlockTargeting::new));
 
         public boolean matches(final ServerLevel level, final BlockPos position) {
-            return targetConditions.map(conditions -> {
-                for (BlockPredicate condition : conditions) {
-                    if (condition.matches(level, position)) {
-                        return true;
-                    }
-                }
-
-                return false;
-            }).orElse(true);
+            return targetConditions.map(condition -> condition.test(Condition.createContext(level, position))).orElse(true);
         }
     }
 
-    record EntityTargeting(Optional<List<EntityPredicate>> targetConditions, List<AbilityEntityEffect> effects, EntityTargetingMode targetingMode) {
+    record EntityTargeting(Optional<LootItemCondition> targetConditions, List<AbilityEntityEffect> effects, EntityTargetingMode targetingMode) {
         public static final Codec<EntityTargeting> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                EntityPredicate.CODEC.listOf().optionalFieldOf("target_conditions").forGetter(EntityTargeting::targetConditions),
+                LootItemCondition.DIRECT_CODEC.optionalFieldOf("target_conditions").forGetter(EntityTargeting::targetConditions),
                 AbilityEntityEffect.CODEC.listOf().fieldOf("entity_effect").forGetter(EntityTargeting::effects),
                 Codec.STRING.xmap(EntityTargetingMode::valueOf, EntityTargetingMode::name).fieldOf("entity_targeting_mode").forGetter(EntityTargeting::targetingMode)
         ).apply(instance, EntityTargeting::new));
 
-        public boolean matches(final ServerLevel level, final Vec3 position, final Entity entity) {
-            return targetConditions.map(conditions -> {
-                for (EntityPredicate condition : conditions) {
-                    if (condition.matches(level, position, entity)) {
-                        return true;
-                    }
-                }
-
-                return false;
-            }).orElse(true);
+        public boolean matches(final ServerLevel level, final Entity entity, final Vec3 position) {
+            return targetConditions.map(condition -> condition.test(Condition.createContext(level, entity, position))).orElse(true);
         }
     }
 

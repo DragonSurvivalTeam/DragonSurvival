@@ -23,7 +23,7 @@ public record SelfTarget(Either<BlockTargeting, EntityTargeting> target, boolean
                 blockTarget.effect().forEach(target -> target.apply(dragon, ability, dragon.blockPosition(), null));
             }
         }).ifRight(entityTarget -> {
-            if (entityTarget.matches(dragon.serverLevel(), dragon.position(), dragon)) {
+            if (entityTarget.matches(dragon.serverLevel(), dragon, dragon.position())) {
                 entityTarget.effects().forEach(target -> target.apply(dragon, ability, dragon));
             } else if (removeAutomatically) {
                 entityTarget.effects().forEach(target -> target.remove(dragon, ability, dragon));

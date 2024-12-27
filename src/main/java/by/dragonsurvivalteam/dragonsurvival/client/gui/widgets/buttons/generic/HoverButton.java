@@ -31,4 +31,3 @@ public class HoverButton extends ExtendedButton {
         graphics.blit(texture, getX(), getY(), uOffset, vOffset, width, height, textureWidth, textureHeight);
     }
 }
-

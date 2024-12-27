@@ -15,14 +15,16 @@
             }
           ],
           "entity_targeting_mode": "TARGET_ALL",
-          "target_conditions": [
-            {
+          "target_conditions": {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
               "type_specific": {
                 "type": "dragonsurvival:entity_check_predicate",
                 "check_for": "living_entity"
               }
             }
-          ]
+          }
         },
         "target_type": "dragonsurvival:self"
       },
@@ -92,9 +94,13 @@
     }
   },
   "usage_blocked": {
-    "location": {
-      "fluid": {
-        "fluids": "minecraft:water"
+    "condition": "minecraft:entity_properties",
+    "entity": "this",
+    "predicate": {
+      "location": {
+        "fluid": {
+          "fluids": "#minecraft:water"
+        }
       }
     }
   }

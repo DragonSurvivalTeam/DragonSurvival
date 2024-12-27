@@ -44,6 +44,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 @EventBusSubscriber
@@ -187,9 +188,13 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         return currentlyPlayingEmotes;
     }
 
-    private boolean isPlayingNonBlendEmote() {
-        for(DragonEmote emote : currentlyPlayingEmotes) {
-            if(emote != null && !emote.blend()) {
+    /**
+     * Checks all non-null (i.e. playing) emotes for the predicate
+     * @return 'true' if the predicate is 'true' for any emote
+     */
+    private boolean checkAllEmotes(final Predicate<DragonEmote> predicate) {
+        for (DragonEmote emote : currentlyPlayingEmotes) {
+            if (emote != null && predicate.test(emote)) {
                 return true;
             }
         }
@@ -349,9 +354,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             DragonEmote emote = currentlyPlayingEmotes[slot];
 
             if(animationTickTimer.getDuration("emote_" + slot) > 0 || emote.loops()) {
-                neckLocked = emote.locksHead();
-                tailLocked = emote.locksTail();
-
                 state.getController().setAnimationSpeed(emote.speed());
 
                 if (!emote.loops()) {
@@ -447,7 +449,10 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         double baseSize = DragonStage.MAX_HANDLED_SIZE;
         double distanceFromGround = ServerFlightHandler.distanceFromGround(player);
 
-        if (isPlayingNonBlendEmote()) {
+        if (checkAllEmotes(emote -> !emote.blend())) {
+            // Set the lock state once here so it is correct for all the emotes
+            neckLocked = checkAllEmotes(DragonEmote::locksHead);
+            tailLocked = checkAllEmotes(DragonEmote::locksTail);
             state.getController().stop();
             return PlayState.STOP;
         }
