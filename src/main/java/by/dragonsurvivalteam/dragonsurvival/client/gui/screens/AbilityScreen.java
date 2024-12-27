@@ -66,13 +66,13 @@ public class AbilityScreen extends Screen {
 
     private static final ResourceLocation BACKGROUND_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/background_main.png");
     private static final ResourceLocation BACKGROUND_SIDE = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/background_side.png");
-    private static final int INNER_BACKGROUND_WIDTH = 185;
-    private static final int BACKGROUND_BEZEL_WIDTH = 10;
     private static final ResourceLocation EXP_EMPTY = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/exp_empty.png");
     private static final ResourceLocation EXP_FULL = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/exp_full.png");
     private static final ResourceLocation LEFT_PANEL_ARROW_CLICK = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/addition_arrow_left_click.png");
     private static final ResourceLocation LEFT_PANEL_ARROW_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/addition_arrow_left_hover.png");
     private static final ResourceLocation LEFT_PANEL_ARROW_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/addition_arrow_left_main.png");
+    private static final ResourceLocation INFO_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/info_hover.png");
+    private static final ResourceLocation INFO_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/info_main.png");
 
     private static final int ABILITIES_ON_HOTBAR = 4;
 
@@ -87,7 +87,8 @@ public class AbilityScreen extends Screen {
     private final List<AbstractWidget> leftWindowWidgets = new ArrayList<>();
 
     private AbilityColumnsComponent activeAbilityColumns;
-    private AbilityColumnsComponent passiveAbilityColumns;
+    private AbilityColumnsComponent upgradablePassiveAbilityColumns;
+    private AbilityColumnsComponent nonUpgradablePassiveAbilityColumns;
 
     public AbilityScreen(Screen sourceScreen) {
         super(Component.empty());
@@ -102,8 +103,10 @@ public class AbilityScreen extends Screen {
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         if(activeAbilityColumns.isHoveringOverButton(mouseX, mouseY)) {
             activeAbilityColumns.scroll(scrollY > 0);
-        } else if(passiveAbilityColumns.isHoveringOverButton(mouseX, mouseY)) {
-            passiveAbilityColumns.scroll(scrollY > 0);
+        } else if(upgradablePassiveAbilityColumns.isHoveringOverButton(mouseX, mouseY)) {
+            upgradablePassiveAbilityColumns.scroll(scrollY > 0);
+        } else if(nonUpgradablePassiveAbilityColumns.isHoveringOverButton(mouseX, mouseY)) {
+            nonUpgradablePassiveAbilityColumns.scroll(scrollY > 0);
         }
 
         return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
@@ -116,11 +119,12 @@ public class AbilityScreen extends Screen {
         }
 
         activeAbilityColumns.update();
-        passiveAbilityColumns.update();
+        upgradablePassiveAbilityColumns.update();
+        nonUpgradablePassiveAbilityColumns.update();
 
         this.renderBlurredBackground(partialTick);
 
-        int startX = guiLeft + 25;
+        int startX = guiLeft + 8;
         int startY = guiTop - 28;
 
         if (leftWindowOpen) {
@@ -134,16 +138,16 @@ public class AbilityScreen extends Screen {
             float leftExpBarProgress = Math.min(1f, Math.min(0.5f, minecraft.player.experienceProgress) * 2);
 
             int barYPos = startY + 10;
-            int leftBarX = startX + 10;
-            int rightBarX = startX + 122;
+            int leftBarX = startX + 17;
+            int rightBarX = startX + 129;
 
-            guiGraphics.blit(EXP_EMPTY, leftBarX, barYPos, 0, 0, 73, 6, 73, 6);
-            guiGraphics.blit(EXP_EMPTY, rightBarX, barYPos, 0, 0, 73, 6, 73, 6);
-            guiGraphics.blit(EXP_FULL, leftBarX, barYPos, 0, 0, (int) (73 * leftExpBarProgress), 6, 73, 6);
+            guiGraphics.blit(EXP_EMPTY, leftBarX, barYPos, 0, 0, 93, 6, 93, 6);
+            guiGraphics.blit(EXP_EMPTY, rightBarX, barYPos, 0, 0, 93, 6, 93, 6);
+            guiGraphics.blit(EXP_FULL, leftBarX, barYPos, 0, 0, (int) (93 * leftExpBarProgress), 6, 93, 6);
 
             if (minecraft.player.experienceProgress > 0.5) {
                 float rightExpBarProgress = Math.min(1f, Math.min(0.5f, minecraft.player.experienceProgress - 0.5f) * 2);
-                guiGraphics.blit(EXP_FULL, rightBarX, barYPos, 0, 0, (int) (73 * rightExpBarProgress), 6, 73, 6);
+                guiGraphics.blit(EXP_FULL, rightBarX, barYPos, 0, 0, (int) (93 * rightExpBarProgress), 6, 93, 6);
             }
 
             int experienceModification = hoveredLevelButton != null ? hoveredLevelButton.getExperienceModification() : 0;
@@ -179,7 +183,7 @@ public class AbilityScreen extends Screen {
 
             Component expectedLevel = Component.literal(String.valueOf(newLevel)).withColor(color);
 
-            int expLevelXPos = ((rightBarX + leftBarX) / 2 + 38 - minecraft.font.width(expectedLevel) / 2) - 1;
+            int expLevelXPos = ((rightBarX + leftBarX) / 2 + 48 - minecraft.font.width(expectedLevel) / 2) - 1;
             int expLevelYPos = barYPos - 1;
             guiGraphics.drawString(minecraft.font, expectedLevel, expLevelXPos, expLevelYPos, 0, false);
         }
@@ -188,7 +192,7 @@ public class AbilityScreen extends Screen {
     }
 
     private void drawExperienceBar(final GuiGraphics guiGraphics, int y, int initialX, float hoverProgress) {
-        guiGraphics.blit(EXP_FULL, initialX, y, 0, 0, (int) (73 * hoverProgress), 6, 73, 6);
+        guiGraphics.blit(EXP_FULL, initialX, y, 0, 0, (int) (93 * hoverProgress), 6, 93, 6);
     }
 
     @Override
@@ -204,7 +208,7 @@ public class AbilityScreen extends Screen {
         guiLeft = (width - xSize) / 2;
         guiTop = (height - ySize / 2) / 2;
 
-        int startX = guiLeft + 15;
+        int startX = guiLeft - 2;
         int startY = guiTop + 2;
 
         //Inventory
@@ -213,36 +217,37 @@ public class AbilityScreen extends Screen {
         addRenderableWidget(new TabButton(startX + 62 + 10, startY - 26 - 30, TabButton.Type.GITHUB_REMINDER_TAB, this));
         addRenderableWidget(new TabButton(startX + 91 + 10, startY - 26 - 30, TabButton.Type.SKINS_TAB, this));
 
-        // FIXME
         //noinspection DataFlowIssue -> player is present
         MagicData data = MagicData.getData(minecraft.player);
         List<DragonAbilityInstance> actives = data.getActiveAbilities();
-        List<DragonAbilityInstance> passives = data.getPassiveAbilities();
+        List<DragonAbilityInstance> passivesThatAreUpgradable = data.getUpgradablePassives();
+        List<DragonAbilityInstance> passivesThatAreNotUpgradable = data.getNonUpgradablePassives();
 
-        activeAbilityColumns = new AbilityColumnsComponent(this, (int) (guiLeft + BACKGROUND_BEZEL_WIDTH + (INNER_BACKGROUND_WIDTH / 3.7f)), guiTop, 40, 20, 0.8f, 0.5f, actives);
-        passiveAbilityColumns = new AbilityColumnsComponent(this, (int) (guiLeft + BACKGROUND_BEZEL_WIDTH + (INNER_BACKGROUND_WIDTH / 1.23f)), guiTop, 40, 20, 0.8f, 0.5f, passives);
+        activeAbilityColumns = new AbilityColumnsComponent(this, guiLeft + 35, guiTop, 40, 20, 0.8f, 0.5f, actives);
+        upgradablePassiveAbilityColumns = new AbilityColumnsComponent(this, guiLeft + 111, guiTop, 40, 20, 0.8f, 0.5f, passivesThatAreUpgradable);
+        nonUpgradablePassiveAbilityColumns = new AbilityColumnsComponent(this,guiLeft + 186, guiTop, 40, 20, 0.8f, 0.5f, passivesThatAreNotUpgradable);
 
         // Left panel (hotbar)
         for(int i = 0; i < ABILITIES_ON_HOTBAR; i++) {
-            AbstractWidget widget = new AbilityButton(guiLeft - 18, guiTop + i * 40, data.fromSlot(i), this, true, i);
+            AbstractWidget widget = new AbilityButton(guiLeft - 35, guiTop + i * 40, data.fromSlot(i), this, true, i);
             addRenderableWidget(widget);
             leftWindowWidgets.add(widget);
             widget.visible = leftWindowOpen;
         }
 
-        AbstractWidget leftHelpButton = new HelpButton(guiLeft - 7, startY - 25, 13, 13, HELP_ABILITY_ASSIGNMENT);
+        AbstractWidget leftHelpButton = new HelpButton(guiLeft - 24, startY - 25, 13, 13, HELP_ABILITY_ASSIGNMENT, INFO_HOVER, INFO_MAIN, 13, 13, 16, 16);
         addRenderableWidget(leftHelpButton);
         leftWindowWidgets.add(leftHelpButton);
         leftHelpButton.visible = leftWindowOpen;
 
-        addRenderableWidget(new ClickHoverButton(guiLeft + 17, guiTop + 69, 10, 17, 0, 1, 18, 18, Component.empty(), button -> {
+        addRenderableWidget(new ClickHoverButton(guiLeft, guiTop + 69, 10, 17, 0, 1, 18, 18, Component.empty(), button -> {
             leftWindowOpen = !leftWindowOpen;
             for(AbstractWidget widget : leftWindowWidgets) {
                 widget.visible = leftWindowOpen;
             }
         }, LEFT_PANEL_ARROW_CLICK, LEFT_PANEL_ARROW_HOVER, LEFT_PANEL_ARROW_MAIN));
 
-        addRenderableWidget(new HelpButton(guiLeft + BACKGROUND_BEZEL_WIDTH + (INNER_BACKGROUND_WIDTH / 2) + 19, startY + 263 / 2 + 24, 13, 13, HELP_PASSIVE_ACTIVE));
+        addRenderableWidget(new HelpButton(guiLeft + 122, startY + 263 / 2 + 25, 12, 12, HELP_PASSIVE_ACTIVE));
     }
 
 

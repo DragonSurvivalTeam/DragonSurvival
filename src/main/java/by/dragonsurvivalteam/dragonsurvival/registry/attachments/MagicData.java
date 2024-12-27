@@ -369,6 +369,20 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         ).sorted((a, b) -> Boolean.compare(b.isManuallyUpgraded(), a.isManuallyUpgraded())).toList();
     }
 
+    public List<DragonAbilityInstance> getUpgradablePassives() {
+        return abilities.values().stream().filter(
+                instance ->
+                        instance.ability().value().activation().type() == Activation.Type.PASSIVE && instance.value().upgrade().isPresent() && instance.value().upgrade().get().type() == ValueBasedUpgrade.Type.MANUAL
+        ).toList();
+    }
+
+    public List<DragonAbilityInstance> getNonUpgradablePassives() {
+        return abilities.values().stream().filter(
+                instance ->
+                        instance.ability().value().activation().type() == Activation.Type.PASSIVE && (instance.value().upgrade().isEmpty() || instance.value().upgrade().isPresent() && instance.value().upgrade().get().type() != ValueBasedUpgrade.Type.MANUAL)
+        ).toList();
+    }
+
     /** Returns the amount of experience gained / lost when down- or upgrading the ability */
     public float getCost(final ResourceKey<DragonAbility> key, int delta) {
         DragonAbilityInstance instance = abilities.get(key);

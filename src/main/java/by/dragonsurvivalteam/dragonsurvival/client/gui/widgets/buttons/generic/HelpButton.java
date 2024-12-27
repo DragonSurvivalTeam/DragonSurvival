@@ -20,6 +20,13 @@ public class HelpButton extends ExtendedButton {
 
     private boolean usesVanillaTooltip;
 
+    private ResourceLocation infoHover = INFO_HOVER;
+    private ResourceLocation infoMain = INFO_MAIN;
+    private int uWidth = -1;
+    private int vHeight = -1;
+    private int textureWidth = -1;
+    private int textureHeight = -1;
+
     public HelpButton(int x, int y, int sizeX, int sizeY, String text) {
         super(x, y, sizeX, sizeY, Component.empty(), action -> { /* Nothing to do */ });
         this.text = text;
@@ -34,6 +41,17 @@ public class HelpButton extends ExtendedButton {
         this.usesVanillaTooltip = usesVanillaTooltip;
     }
 
+    public HelpButton(int x, int y, int sizeX, int sizeY, String text, ResourceLocation infoHover, ResourceLocation infoMain, int uWidth, int vHeight, int textureWidth, int textureHeight) {
+        super(x, y, sizeX, sizeY, Component.empty(), action -> { /* Nothing to do */ });
+        this.text = text;
+        this.infoHover = infoHover;
+        this.infoMain = infoMain;
+        this.uWidth = uWidth;
+        this.vHeight = vHeight;
+        this.textureWidth = textureWidth;
+        this.textureHeight = textureHeight;
+    }
+
     @Override
     public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         if (isHovered() && !usesVanillaTooltip) {
@@ -42,9 +60,9 @@ public class HelpButton extends ExtendedButton {
         }
 
         if(!isHovered()) {
-            guiGraphics.blit(INFO_MAIN, getX(), getY(), width, height, 0, 0, 13, 13, 16, 16);
+            guiGraphics.blit(infoMain, getX(), getY(), width, height, 0, 0, 13, 13, 16, 16);
         } else {
-            guiGraphics.blit(INFO_HOVER, getX(), getY(), width, height, 0, 0, 13, 13, 16, 16);
+            guiGraphics.blit(infoHover, getX(), getY(), width, height, 0, 0, 13, 13, 16, 16);
         }
     }
 
