@@ -149,7 +149,8 @@ public class DragonTypes {
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(SeaDragonAbilities.AMPHIBIOUS)
                 ),
                 HolderSet.direct(
-                        context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.THIN_SKIN)
+                        context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.THIN_SKIN),
+                        context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.ITEM_BLACKLIST)
                 ),
                 List.of(
                         // We need to give the sea dragon some starting resistance time so they don't immediately dehydrate
@@ -214,7 +215,10 @@ public class DragonTypes {
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.CLIFFHANGER),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.LIGHT_IN_DARKNESS)
                 ),
-                HolderSet.empty(),
+                HolderSet.direct(
+                        context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.FEAR_OF_DARKNESS),
+                        context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.ITEM_BLACKLIST)
+                ),
                 List.of(),
                 List.of(),
                 new MiscDragonTextures(

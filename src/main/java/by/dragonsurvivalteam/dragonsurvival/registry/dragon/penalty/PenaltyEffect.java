@@ -7,7 +7,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
@@ -25,7 +25,7 @@ public interface PenaltyEffect {
 
     default MutableComponent getDescription() { return Component.empty(); }
 
-    void apply(final Player player);
+    void apply(final ServerPlayer player);
     MapCodec<? extends PenaltyEffect> codec();
 
     @SubscribeEvent

@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import net.minecraft.client.Minecraft;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -12,6 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,6 +23,16 @@ public class DragonSizeHandler {
     // TODO :: Add timestamp and clear cache
     private static final ConcurrentHashMap<String, Boolean> WAS_DRAGON = new ConcurrentHashMap<>(20);
     private static final ConcurrentHashMap<String, Double> LAST_SIZE = new ConcurrentHashMap<>(20);
+
+    @SubscribeEvent
+    public static void initializeSizeOnJoin(final EntityJoinLevelEvent event) {
+        // There is no entity context when de-serializing the data
+        // Therefor we set the size again, causing a refresh of the dimension
+        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+            DragonStateHandler data = DragonStateProvider.getData(serverPlayer);
+            data.setSize(serverPlayer, data.getSize());
+        }
+    }
 
     @SubscribeEvent
     public static void getDragonSize(EntityEvent.Size event) {

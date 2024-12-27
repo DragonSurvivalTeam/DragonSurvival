@@ -30,70 +30,6 @@ import java.util.Optional;
 public class PenaltySupply implements INBTSerializable<CompoundTag> {
     private final HashMap<String, Data> supplyData = new HashMap<>();
 
-    @SubscribeEvent
-    public static void applyPenalties(final PlayerTickEvent.Post event) {
-        if (!(event.getEntity() instanceof ServerPlayer serverPlayer)) {
-            return;
-        }
-
-        DragonStateHandler handler = DragonStateProvider.getData(serverPlayer);
-        PenaltySupply data = getData(serverPlayer);
-
-        if (!handler.isDragon()) {
-            data.clear();
-            return;
-        }
-
-        for (Holder<DragonPenalty> penalty : handler.getDragonType().value().penalties()) {
-            penalty.value().apply(serverPlayer);
-        }
-
-        // Remove any penalties the player no longer has
-        for (String id : data.getSupplyTypes()) {
-            if (handler.getDragonType().value().penalties().stream().noneMatch(penalty -> penalty.value().trigger().id().equals(id))) {
-                data.remove(id);
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public static void onRegenerationItemConsumed(LivingEntityUseItemEvent.Finish destroyItemEvent) {
-        if (!(destroyItemEvent.getEntity() instanceof ServerPlayer player)) {
-            return;
-        }
-
-        getData(player).replenishSupplyFromItemStack(player, destroyItemEvent.getItem());
-    }
-
-    public static PenaltySupply getData(final Player player) {
-        return player.getData(DSDataAttachments.PENALTY_SUPPLY);
-    }
-
-    public List<String> getSupplyTypes() {
-        return List.copyOf(supplyData.keySet());
-    }
-
-    public void syncPenaltySupplyToPlayer(final ServerPlayer player) {
-        PacketDistributor.sendToPlayer(player, new SyncPenaltySupply(serializeNBT(player.registryAccess())));
-    }
-
-    public void clear() {
-        supplyData.clear();
-    }
-
-    @Override
-    public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
-        CompoundTag tag = new CompoundTag();
-        supplyData.forEach((key, value) -> tag.put(key, value.serializeNBT()));
-        return tag;
-    }
-
-    @Override
-    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag tag) {
-        supplyData.clear();
-        tag.getAllKeys().forEach(key -> supplyData.put(key, Data.deserializeNBT(tag.getCompound(key))));
-    }
-
     public boolean hasSupply(final String supplyType) {
         Data data = supplyData.get(supplyType);
 
@@ -158,41 +94,116 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
         return handler.getDragonType().value().penalties().stream().filter(penalty -> penalty.value().trigger().id().equals(supplyType)).findFirst();
     }
 
-    public void replenishSupplyFromItemStack(final ServerPlayer player, final ItemStack itemStack) {
-        if(itemStack.isEmpty()) {
+    public void initialize(final String supplyType, float maximumSupply, float reductionRate, float regenerationRate) {
+        supplyData.put(supplyType, new Data(maximumSupply, maximumSupply, reductionRate, regenerationRate));
+    }
+
+    public void syncPenaltySupplyToPlayer(final ServerPlayer player) {
+        PacketDistributor.sendToPlayer(player, new SyncPenaltySupply(serializeNBT(player.registryAccess())));
+    }
+
+    public List<String> getSupplyTypes() {
+        return List.copyOf(supplyData.keySet());
+    }
+
+    public void remove(final String supplyType) {
+        supplyData.remove(supplyType);
+    }
+
+    public void clear() {
+        supplyData.clear();
+    }
+
+    public static PenaltySupply getData(final Player player) {
+        return player.getData(DSDataAttachments.PENALTY_SUPPLY);
+    }
+
+    @SubscribeEvent
+    public static void applyPenalties(final PlayerTickEvent.Post event) {
+        if (!(event.getEntity() instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+
+        DragonStateHandler handler = DragonStateProvider.getData(serverPlayer);
+        PenaltySupply data = getData(serverPlayer);
+
+        if (!handler.isDragon()) {
+            data.clear();
+            return;
+        }
+
+        for (Holder<DragonPenalty> penalty : handler.getDragonType().value().penalties()) {
+            penalty.value().apply(serverPlayer);
+        }
+
+        // Remove any penalties the player no longer has
+        for (String id : data.getSupplyTypes()) {
+            if (handler.getDragonType().value().penalties().stream().noneMatch(penalty -> penalty.value().trigger().id().equals(id))) {
+                data.remove(id);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRegenerationItemConsumed(LivingEntityUseItemEvent.Finish destroyItemEvent) {
+        if (!(destroyItemEvent.getEntity() instanceof ServerPlayer player)) {
+            return;
+        }
+
+        getData(player).replenishSupplyFromItemStack(player, destroyItemEvent.getItem());
+    }
+
+    @Override
+    public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
+        CompoundTag tag = new CompoundTag();
+        supplyData.forEach((key, value) -> tag.put(key, value.serializeNBT()));
+        return tag;
+    }
+
+    @Override
+    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag tag) {
+        supplyData.clear();
+        tag.getAllKeys().forEach(key -> supplyData.put(key, Data.deserializeNBT(tag.getCompound(key))));
+    }
+
+    private void replenishSupplyFromItemStack(final ServerPlayer player, final ItemStack stack) {
+        if (stack.isEmpty()) {
             return;
         }
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
-        supplyData.forEach((supplyType, data) -> {
-                    // Get the matching penalty trigger
-                    Optional<Holder<DragonPenalty>> matchingPenalty = getMatchingPenalty(supplyType, handler);
-                    if (matchingPenalty.isPresent()) {
-                        // Check if the item stack is in the recovery items list
-                        if (matchingPenalty.get().value().trigger() instanceof SupplyTrigger supplyTrigger) {
-                            Optional<Potion> potion = PotionUtils.getPotion(itemStack);
-                            List<SupplyTrigger.RecoveryItems> recoveryItemsList = supplyTrigger.recoveryItems();
-                            if(potion.isPresent()) {
-                                for(SupplyTrigger.RecoveryItems recoveryItems : recoveryItemsList) {
-                                    for(Holder<Potion> potionHolder : recoveryItems.potions()) {
-                                        if(potionHolder.value().equals(potion.get())) {
-                                            regenerateManual(player, supplyType, recoveryItems.percentRestored());
-                                            break;
-                                        }
-                                    }
-                                }
-                            } else {
-                                for(SupplyTrigger.RecoveryItems recoveryItems : recoveryItemsList) {
-                                    if(recoveryItems.items().contains(itemStack.getItemHolder())) {
-                                        regenerateManual(player, supplyType, recoveryItems.percentRestored());
-                                        break;
-                                    }
-                                }
+
+        supplyData.forEach((type, data) -> {
+            // Get the matching penalty trigger
+            Optional<Holder<DragonPenalty>> penalty = getMatchingPenalty(type, handler);
+
+            if (penalty.isEmpty()) {
+                return;
+            }
+
+            // Check if the item stack is in the recovery items list
+            if (penalty.get().value().trigger() instanceof SupplyTrigger supplyTrigger) {
+                List<SupplyTrigger.RecoveryItems> recoveryList = supplyTrigger.recoveryItems();
+
+                PotionUtils.getPotion(stack).ifPresentOrElse(potion -> {
+                    for (SupplyTrigger.RecoveryItems recoveryItems : recoveryList) {
+                        for (Holder<Potion> potions : recoveryItems.potions()) {
+                            if (potions.value() == potion) {
+                                regenerateManual(player, type, recoveryItems.percentRestored());
+                                break;
                             }
                         }
                     }
-                }
-        );
+                }, () -> {
+                    for (SupplyTrigger.RecoveryItems recoveryItems : recoveryList) {
+                        if (recoveryItems.items().contains(stack.getItemHolder())) {
+                            regenerateManual(player, type, recoveryItems.percentRestored());
+                            break;
+                        }
+                    }
+                });
+            }
+        });
     }
 
     private void regenerateManual(final ServerPlayer player, final String supplyType, final float amount) {
@@ -204,14 +215,6 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
 
         data.regeneratePercentage(amount);
         PacketDistributor.sendToPlayer(player, new SyncPenaltySupplyAmount(supplyType, data.getSupply()));
-    }
-
-    public void initialize(final String supplyType, float maximumSupply, float reductionRate, float regenerationRate) {
-        supplyData.put(supplyType, new Data(maximumSupply, maximumSupply, reductionRate, regenerationRate));
-    }
-
-    public void remove(final String supplyType) {
-        supplyData.remove(supplyType);
     }
 
     private static class Data {

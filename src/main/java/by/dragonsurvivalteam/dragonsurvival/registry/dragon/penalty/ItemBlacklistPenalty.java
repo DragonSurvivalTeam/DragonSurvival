@@ -2,11 +2,14 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ResourceLocationWrapper;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DataReloadHandler;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -21,7 +24,6 @@ public class ItemBlacklistPenalty implements PenaltyEffect {
     ).apply(instance, ItemBlacklistPenalty::new));
 
     private final List<String> items;
-
     private Set<ResourceKey<Item>> blacklisted;
     private long lastUpdate;
 
@@ -30,9 +32,25 @@ public class ItemBlacklistPenalty implements PenaltyEffect {
     }
 
     @Override
-    public void apply(final Player player) {
+    public void apply(final ServerPlayer player) {
         dropAllItemsInList(player, player.getInventory().armor);
         dropAllItemsInList(player, player.getInventory().offhand);
+
+        ClawInventoryData clawData = ClawInventoryData.getData(player);
+        SimpleContainer clawContainer = clawData.getContainer();
+
+        for (int slot = 0; slot < clawContainer.getContainerSize(); slot++) {
+            ItemStack stack = clawContainer.getItem(slot);
+
+            if (stack.isEmpty()) {
+                continue;
+            }
+
+            if (isBlacklisted(stack.getItem())) {
+                ItemStack removed = clawContainer.removeItem(slot, stack.getCount());
+                player.drop(removed, false);
+            }
+        }
 
         ItemStack mainHandItem = player.getMainHandItem();
 

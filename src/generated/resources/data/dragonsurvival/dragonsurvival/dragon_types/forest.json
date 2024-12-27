@@ -44,5 +44,9 @@
     "secondary_color": "#00FF0000",
     "source_of_magic_background_active": "dragonsurvival:textures/gui/source_of_magic/forest_source_of_magic_0.png",
     "source_of_magic_background_passive": "dragonsurvival:textures/gui/source_of_magic/forest_source_of_magic_0.png"
-  }
+  },
+  "penalties": [
+    "dragonsurvival:fear_of_darkness",
+    "dragonsurvival:item_blacklist"
+  ]
 }

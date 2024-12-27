@@ -45,6 +45,7 @@ public record SupplyTrigger(String id, Holder<Attribute> attributeToUseAsBase, i
 
     public boolean matches(final ServerPlayer dragon, boolean conditionMatched) {
         PenaltySupply penaltySupply = dragon.getData(DSDataAttachments.PENALTY_SUPPLY);
+
         if (conditionMatched) {
             penaltySupply.reduce(dragon, id);
         } else {

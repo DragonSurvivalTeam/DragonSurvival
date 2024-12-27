@@ -1,0 +1,47 @@
+{
+  "condition": {
+    "condition": "minecraft:inverted",
+    "term": {
+      "condition": "minecraft:any_of",
+      "terms": [
+        {
+          "condition": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "location": {
+              "light": {
+                "light": {
+                  "min": 3
+                }
+              }
+            }
+          }
+        },
+        {
+          "condition": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "effects": {
+              "dragonsurvival:forest_magic": {}
+            }
+          }
+        }
+      ]
+    }
+  },
+  "effect": {
+    "amplifier": 0,
+    "duration": 200,
+    "effects": "dragonsurvival:stress",
+    "penalty_type": "dragonsurvival:mob_effect"
+  },
+  "icon": "dragonsurvival:abilities/cave/hot_blood_0",
+  "trigger": {
+    "effect_type": "dragonsurvival:supply_trigger",
+    "id": "stress_supply",
+    "recovery_items": [],
+    "reduction_rate": 1.0,
+    "regeneration_rate": 0.013,
+    "trigger_rate": 40
+  }
+}

@@ -12,7 +12,6 @@ import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -38,12 +37,12 @@ public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier
     public void apply(@Nullable final ServerPlayer dragon, final int level, final Entity entity) {
         if (entity instanceof LivingEntity livingEntity) {
             effects().forEach(effect -> {
-                MobEffectInstance currentInstance = livingEntity.getEffect(effect);
+                MobEffectInstance instance = livingEntity.getEffect(effect);
 
                 int duration = (int) duration().calculate(level);
                 int amplifier = (int) amplifier().calculate(level);
 
-                if (currentInstance != null && (currentInstance.getAmplifier() >= amplifier && currentInstance.getDuration() >= duration)) {
+                if (instance != null && (instance.getAmplifier() >= amplifier && instance.getDuration() >= duration)) {
                     // Don't do anything if the current effect is at least equally strong and has at least the same duration
                     // For all other cases this new effect will either override the current instance or be added as hidden effect
                     // (Whose duration etc. will be applied once the stronger (and shorter) effect runs out)
@@ -59,9 +58,14 @@ public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier
 
     public void remove(@Nullable final ServerPlayer dragon, final Entity entity) {
         if (entity instanceof LivingEntity livingEntity) {
-            effects().forEach(effect -> {
-                MobEffectInstance currentInstance = livingEntity.getEffect(effect);
-                if(dragon == null || ((AdditionalEffectData)currentInstance).dragonSurvival$getApplier((ServerLevel)dragon.level()).is(dragon)) {
+            effects.forEach(effect -> {
+                MobEffectInstance instance = livingEntity.getEffect(effect);
+
+                if (instance == null) {
+                    return;
+                }
+
+                if (dragon == null || ((AdditionalEffectData) instance).dragonSurvival$getApplier(dragon.serverLevel()) == dragon) {
                     livingEntity.removeEffect(effect);
                 }
             });
@@ -77,7 +81,7 @@ public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier
             int amplifier = (int) amplifier().calculate(level);
 
             if (amplifier > 0) {
-                name.append(Component.literal(Integer.toString(amplifier)).withColor(DSColors.ORANGE));
+                name.append(Component.literal(" [" + amplifier + "]").withColor(DSColors.ORANGE));
             }
 
             name.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.blue(duration)));
@@ -94,17 +98,18 @@ public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier
     }
 
     public PotionContents toPotionContents(final ServerPlayer player, final int level) {
-        List<MobEffectInstance> mobEffectInstances = new ArrayList<>();
+        List<MobEffectInstance> instances = new ArrayList<>();
+
         for (Holder<MobEffect> effect : effects) {
-            if(player.getRandom().nextDouble() >= probability().calculate(level)) {
+            if (player.getRandom().nextDouble() >= probability.calculate(level)) {
                 continue;
             }
 
-            int duration = (int) duration().calculate(level);
-            int amplifier = (int) amplifier().calculate(level);
-            mobEffectInstances.add(new MobEffectInstance(effect, duration, amplifier));
+            int duration = (int) this.duration.calculate(level);
+            int amplifier = (int) this.amplifier.calculate(level);
+            instances.add(new MobEffectInstance(effect, duration, amplifier));
         }
 
-        return new PotionContents(Optional.empty(), Optional.empty(), mobEffectInstances);
+        return new PotionContents(Optional.empty(), Optional.empty(), instances);
     }
 }

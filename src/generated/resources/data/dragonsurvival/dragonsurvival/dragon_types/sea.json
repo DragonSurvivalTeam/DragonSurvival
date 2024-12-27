@@ -54,5 +54,8 @@
       "operation": "add_value"
     }
   ],
-  "penalties": "dragonsurvival:thin_skin"
+  "penalties": [
+    "dragonsurvival:thin_skin",
+    "dragonsurvival:item_blacklist"
+  ]
 }

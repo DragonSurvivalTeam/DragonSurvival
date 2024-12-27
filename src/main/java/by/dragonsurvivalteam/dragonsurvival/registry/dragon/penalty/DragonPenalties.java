@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -66,7 +67,7 @@ public class DragonPenalties {
                         Condition.thisEntity(EntityCondition.isOnBlock(Blocks.SNOW, Blocks.POWDER_SNOW, Blocks.SNOW_BLOCK))
                 ).build()),
                 new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.RAIN_BURN), 1),
-                new SupplyTrigger("rain_supply", DSAttributes.PENALTY_RESISTANCE_TIME, 40, 1, 0.013f, List.of(), false)
+                new SupplyTrigger("rain_supply", DSAttributes.PENALTY_RESISTANCE_TIME, Functions.secondsToTicks(2), 1, 0.013f, List.of(), false)
         ));
 
         context.register(WATER_WEAKNESS, new DragonPenalty(
@@ -87,7 +88,7 @@ public class DragonPenalties {
                 new SupplyTrigger(
                         "water_supply",
                         DSAttributes.PENALTY_RESISTANCE_TIME,
-                        40,
+                        Functions.secondsToTicks(2),
                         1,
                         0.013f,
                         List.of(
@@ -108,15 +109,15 @@ public class DragonPenalties {
                 PenaltyTrigger.instant()
         ));
 
-//        context.register(FEAR_OF_DARKNESS, new DragonPenalty(
-//                DragonSurvival.res("abilities/cave/hot_blood_0"), // TODO
-//                Optional.of(AnyOfCondition.anyOf(
-//                        Condition.thisEntity(EntityCondition.isInLight(3)),
-//                        Condition.thisEntity(EntityCondition.hasEffect(DSEffects.MAGIC))
-//                ).invert().build()),
-//                null, // TODO :: just apply a stress effect or handle stress itself in the penalty (reduce hunger penalty)?
-//                new SupplyTrigger("stress_supply", DSAttributes.PENALTY_RESISTANCE_TIME, 40, 1, 0.013f, List.of(), false)
-//        ));
+        context.register(FEAR_OF_DARKNESS, new DragonPenalty(
+                DragonSurvival.res("abilities/cave/hot_blood_0"), // TODO
+                Optional.of(AnyOfCondition.anyOf(
+                        Condition.thisEntity(EntityCondition.isInLight(3)),
+                        Condition.thisEntity(EntityCondition.hasEffect(DSEffects.MAGIC))
+                ).invert().build()),
+                new MobEffectPenalty(HolderSet.direct(DSEffects.STRESS), 0, Functions.secondsToTicks(10)),
+                new SupplyTrigger("stress_supply", DSAttributes.PENALTY_RESISTANCE_TIME, Functions.secondsToTicks(2), 1, 0.013f, List.of(), false)
+        ));
     }
 
     public static ResourceKey<DragonPenalty> key(final ResourceLocation location) {

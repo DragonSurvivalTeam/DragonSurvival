@@ -8,9 +8,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
-import net.minecraft.world.entity.player.Player;
 
 public record DamagePenalty(Holder<DamageType> damageType, float damage) implements PenaltyEffect {
     public static final MapCodec<DamagePenalty> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -19,7 +19,7 @@ public record DamagePenalty(Holder<DamageType> damageType, float damage) impleme
     ).apply(instance, DamagePenalty::new));
 
     @Override
-    public void apply(final Player player) {
+    public void apply(final ServerPlayer player) {
         player.hurt(new DamageSource(damageType, player), damage);
     }
 

@@ -10,9 +10,9 @@ import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.player.Player;
 
 public record MobEffectPenalty(HolderSet<MobEffect> effects, int amplifier, int duration) implements PenaltyEffect {
     public static final MapCodec<MobEffectPenalty> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -21,7 +21,8 @@ public record MobEffectPenalty(HolderSet<MobEffect> effects, int amplifier, int 
             Codec.INT.fieldOf("duration").forGetter(MobEffectPenalty::duration)
     ).apply(instance, MobEffectPenalty::new));
 
-    public void apply(final Player player) {
+    @Override
+    public void apply(final ServerPlayer player) {
         effects.forEach(effect -> player.addEffect(new MobEffectInstance(effect, duration, amplifier)));
     }
 
