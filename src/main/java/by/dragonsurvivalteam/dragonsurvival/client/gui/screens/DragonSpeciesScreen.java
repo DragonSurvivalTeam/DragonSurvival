@@ -1,20 +1,13 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.screens;
 
-import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.AbilityButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.LevelButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.TabButton;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.ClickHoverButton;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HelpButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.*;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;

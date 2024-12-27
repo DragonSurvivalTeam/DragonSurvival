@@ -44,6 +44,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 @EventBusSubscriber
@@ -187,9 +188,13 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         return currentlyPlayingEmotes;
     }
 
-    private boolean isPlayingNonBlendEmote() {
-        for(DragonEmote emote : currentlyPlayingEmotes) {
-            if(emote != null && !emote.blend()) {
+    /**
+     * Checks all non-null (i.e. playing) emotes for the predicate
+     * @return 'true' if the predicate is 'true' for any emote
+     */
+    private boolean checkAllEmotes(final Predicate<DragonEmote> predicate) {
+        for (DragonEmote emote : currentlyPlayingEmotes) {
+            if (emote != null && predicate.test(emote)) {
                 return true;
             }
         }
@@ -338,26 +343,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         return GeckoLibCache.getBakedAnimations().get(DragonModel.getAnimationResource(player)).getAnimation(animation).length();
     }
 
-    private boolean anyEmoteLocksHead() {
-        for (DragonEmote emote : currentlyPlayingEmotes) {
-            if (emote != null && emote.locksHead()) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private boolean anyEmoteLocksTail() {
-        for (DragonEmote emote : currentlyPlayingEmotes) {
-            if (emote != null && emote.locksTail()) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     private PlayState emotePredicate(final AnimationState<DragonEntity> state, int slot) {
         Player player = getPlayer();
 
@@ -464,10 +449,10 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         double baseSize = DragonStage.MAX_HANDLED_SIZE;
         double distanceFromGround = ServerFlightHandler.distanceFromGround(player);
 
-        if (isPlayingNonBlendEmote()) {
-            // Set the head lock state once here so it is correct for all the emotes
-            neckLocked = anyEmoteLocksHead();
-            tailLocked = anyEmoteLocksTail();
+        if (checkAllEmotes(emote -> !emote.blend())) {
+            // Set the lock state once here so it is correct for all the emotes
+            neckLocked = checkAllEmotes(DragonEmote::locksHead);
+            tailLocked = checkAllEmotes(DragonEmote::locksTail);
             state.getController().stop();
             return PlayState.STOP;
         }
