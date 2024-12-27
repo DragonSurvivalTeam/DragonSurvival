@@ -41,6 +41,7 @@ public class Condition {
         return createContext(dragon.serverLevel(), dragon, dragon.position());
     }
 
+    // TODO :: add parameter for attacking_entity (dragon)
     public static LootContext createContext(final ServerLevel level, final Entity entity, final Vec3 origin) {
         LootParams parameters = new LootParams.Builder(level)
                 .withParameter(LootContextParams.THIS_ENTITY, entity)
