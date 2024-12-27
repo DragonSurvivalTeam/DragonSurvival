@@ -70,8 +70,13 @@ public class DragonModel extends GeoModel<DragonEntity> {
         float partialDeltaTick = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
         MovementData movement = MovementData.getData(player);
 
-        MathParser.setVariable("query.head_yaw", () -> movement.headYaw);
-        MathParser.setVariable("query.head_pitch", () -> movement.headPitch);
+        if(dragon.neckLocked) {
+            MathParser.setVariable("query.head_yaw", () -> 0);
+            MathParser.setVariable("query.head_pitch", () -> 0);
+        } else {
+            MathParser.setVariable("query.head_yaw", () -> movement.headYaw);
+            MathParser.setVariable("query.head_pitch", () -> movement.headPitch);
+        }
 
         double gravity = player.getAttributeValue(Attributes.GRAVITY);
         MathParser.setVariable("query.gravity", () -> gravity);
@@ -143,10 +148,17 @@ public class DragonModel extends GeoModel<DragonEntity> {
         } else {
             dragon.currentTailMotionUp = Mth.lerp(lerpRate, dragon.currentTailMotionUp, -verticalVelocityAvg);
         }
-        MathParser.setVariable("query.body_yaw_change", () -> dragon.currentBodyYawChange);
+
+        if(dragon.tailLocked) {
+            MathParser.setVariable("query.tail_motion_up", () -> 0);
+            MathParser.setVariable("query.body_yaw_change", () -> 0);
+        } else {
+            MathParser.setVariable("query.body_yaw_change", () -> dragon.currentBodyYawChange);
+            MathParser.setVariable("query.tail_motion_up", () -> dragon.currentTailMotionUp);
+        }
+
         MathParser.setVariable("query.head_yaw_change", () -> dragon.currentHeadYawChange);
         MathParser.setVariable("query.head_pitch_change", () -> dragon.currentHeadPitchChange);
-        MathParser.setVariable("query.tail_motion_up", () -> dragon.currentTailMotionUp);
     }
 
     @Override

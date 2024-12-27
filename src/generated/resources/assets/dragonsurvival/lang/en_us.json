@@ -774,6 +774,7 @@
   "dragonsurvival.emote.blend_angry": "Angry",
   "dragonsurvival.emote.sitting_curled_tail_left": "Sitting Curled",
   "dragonsurvival.emote.sitting_curled_tail_left_head_locked": "Sitting Curled (Head Locked)",
+  "dragonsurvival.emote.sitting_curled_tail_left_no_loop": "Sitting Curled No loop",
   "dragonsurvival.gui.ability.cooldown": "§fThis ability is §r§cnot ready§r§f yet!§r (%s)",
   "dragonsurvival.gui.ability.flying": "§fThis skill cannot be used §r§cwhile flying§r§f!§f",
   "dragonsurvival.gui.ability.no_mana": "§fNot enough§r §cmana or experience§r!",

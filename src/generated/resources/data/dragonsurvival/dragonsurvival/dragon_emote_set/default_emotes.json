@@ -3,23 +3,39 @@
     {
       "animation_key": "blend_angry",
       "blend": true,
-      "can_move": true,
-      "locks_head": true,
+      "can_move": false,
+      "locks_head": false,
       "locks_tail": false,
       "loops": true,
-      "speed": 1.0,
       "third_person": false
     },
     {
       "animation_key": "sitting_curled_tail_left",
-      "blend": true,
+      "blend": false,
+      "can_move": false,
+      "locks_head": false,
+      "locks_tail": false,
+      "loops": true,
+      "third_person": false
+    },
+    {
+      "animation_key": "sitting_curled_tail_left",
+      "blend": false,
       "can_move": false,
       "locks_head": true,
       "locks_tail": true,
       "loops": true,
-      "speed": 1.0,
       "third_person": false,
       "translation_override": "sitting_curled_tail_left_head_locked"
+    },
+    {
+      "animation_key": "sitting_curled_tail_left",
+      "blend": false,
+      "can_move": false,
+      "locks_head": false,
+      "locks_tail": false,
+      "third_person": false,
+      "translation_override": "sitting_curled_tail_left_no_loop"
     }
   ]
 }

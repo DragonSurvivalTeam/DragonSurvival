@@ -28,7 +28,7 @@ public class DragonEmoteSets {
                 new DragonEmoteSet(
                         List.of(
                                 DragonEmote.Builder.of(BLEND_ANGRY).loops().blend().build(),
-                                DragonEmote.Builder.of(SITTING_CURLED).loops().locksHead().build(),
+                                DragonEmote.Builder.of(SITTING_CURLED).loops().build(),
                                 DragonEmote.Builder.of(SITTING_CURLED, SITTING_CURLED_HEAD_LOCKED).loops().locksHead().locksTail().build(),
                                 DragonEmote.Builder.of(SITTING_CURLED, SITTING_CURLED_NO_LOOP).build()
                         )
