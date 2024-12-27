@@ -74,8 +74,6 @@ public class DragonAbilityScreen extends Screen {
     private static final ResourceLocation INFO_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/info_hover.png");
     private static final ResourceLocation INFO_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/info_main.png");
 
-    private static final int ABILITIES_ON_HOTBAR = 4;
-
     public Screen sourceScreen;
     public LevelButton hoveredLevelButton;
 
@@ -228,7 +226,7 @@ public class DragonAbilityScreen extends Screen {
         nonUpgradablePassiveAbilityColumns = new AbilityColumnsComponent(this,guiLeft + 186, guiTop, 40, 20, 0.8f, 0.5f, passivesThatAreNotUpgradable);
 
         // Left panel (hotbar)
-        for(int i = 0; i < ABILITIES_ON_HOTBAR; i++) {
+        for(int i = 0; i < MagicData.HOTBAR_SLOTS; i++) {
             AbstractWidget widget = new AbilityButton(guiLeft - 35, guiTop + i * 40, data.fromSlot(i), this, true, i);
             addRenderableWidget(widget);
             leftWindowWidgets.add(widget);

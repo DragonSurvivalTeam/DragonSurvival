@@ -13,8 +13,8 @@ import net.minecraft.sounds.SoundEvent;
 import java.util.Optional;
 
 public record DragonEmote(String animationKey, Optional<String> translationOverride, double speed, int duration, boolean loops, boolean blend, boolean locksHead, boolean locksTail, boolean thirdPerson, boolean canMove, Optional<Sound> sound) {
-    public static int NO_DURATION = -1;
     public static int DEFAULT_SPEED = 1;
+    public static int NO_DURATION = -1;
 
     public static final Codec<DragonEmote> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("animation_key").forGetter(DragonEmote::animationKey),
