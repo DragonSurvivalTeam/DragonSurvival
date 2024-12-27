@@ -33,10 +33,13 @@ public record DragonEmote(String animationKey, Optional<String> translationOverr
     public static final StreamCodec<ByteBuf, DragonEmote> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
 
     public record Sound(SoundEvent soundEvent, float volume, float pitch, int interval) {
+        public static final float DEFAULT_VOLUME = 1;
+        public static final float DEFAULT_PITCH = 1;
+
         public static final Codec<Sound> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 BuiltInRegistries.SOUND_EVENT.byNameCodec().fieldOf("sound_event").forGetter(Sound::soundEvent),
-                Codec.FLOAT.fieldOf("volume").forGetter(Sound::volume),
-                Codec.FLOAT.fieldOf("pitch").forGetter(Sound::pitch),
+                Codec.FLOAT.optionalFieldOf("volume", DEFAULT_VOLUME).forGetter(Sound::volume),
+                Codec.FLOAT.optionalFieldOf("pitch", DEFAULT_PITCH).forGetter(Sound::pitch),
                 Codec.INT.fieldOf("interval").forGetter(Sound::interval)
         ).apply(instance, Sound::new));
     }
@@ -84,8 +87,12 @@ public record DragonEmote(String animationKey, Optional<String> translationOverr
             return this;
         }
 
-        public Builder sound(Sound sound) {
-            this.sound = sound;
+        public Builder sound(final SoundEvent sound, int interval) {
+            return sound(sound, interval, Sound.DEFAULT_VOLUME, Sound.DEFAULT_PITCH);
+        }
+
+        public Builder sound(final SoundEvent sound, int interval, float volume, float pitch) {
+            this.sound = new Sound(sound, volume, pitch, interval);
             return this;
         }
 
