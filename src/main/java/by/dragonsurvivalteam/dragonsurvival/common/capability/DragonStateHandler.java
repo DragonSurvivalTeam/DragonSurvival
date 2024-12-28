@@ -109,35 +109,23 @@ public class DragonStateHandler extends EntityStateHandler {
         if (this.size > oldSize) {
             // Push the player away from a block they might collide with due to the size change
             // Without this they will get stuck on blocks they walk into while their size changes
-            // The limit of 0.05 is a random value - it's so that when using growth items the player won't be teleported by x blocks
-            double pushForce = Math.min(0.05, (this.size - oldSize) + player.getDeltaMovement().horizontalDistance());
-
-            boolean hasCollided = false;
+            // The limit of 0.001 is a random value - it's so that when using growth items the player won't be teleported by x blocks
+            double pushForce = Math.min(0.001, (this.size - oldSize) + player.getDeltaMovement().horizontalDistance());
             Vec3 push = Vec3.ZERO;
 
             for (BlockPos position : BlockPosHelper.betweenClosed(player.getBoundingBox())) {
                 if (player.isColliding(position, player.level().getBlockState(position))) {
-                    hasCollided = true;
 
                     Vec3 center = Vec3.atCenterOf(position);
-                    double directionX = Math.signum(player.getX() - center.x());
-                    double directionZ = Math.signum(player.getZ() - center.z());
+                    double directionX = player.getX() - center.x();
+                    double directionZ = player.getZ() - center.z();
 
                     // Need to collect the pushes otherwise running into the corner of two blocks causes issues
                     push = push.add(directionX, 0, directionZ);
                 }
             }
 
-            if (push.length() > 0) {
-                player.moveTo(player.position().add(push.normalize().scale(pushForce)));
-            } else if (hasCollided) {
-                // TODO :: this happens when jumping into the corner between 2 block pillars
-                //  x / y of delta movement is 0 here, so not sure how to determine where to push the player
-                //  the directions doesn't always work because the player doesn't necessarily look into the direction they're going
-                //  and this also fails if they're looking in the corner
-                Direction opposite = player.getDirection().getOpposite();
-                player.moveTo(player.position().add(opposite.getStepX() * pushForce, 0, opposite.getStepZ() * pushForce));
-            }
+            player.moveTo(player.position().add(push.normalize().scale(pushForce)));
         }
 
         if (player instanceof ServerPlayer serverPlayer) {
