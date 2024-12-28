@@ -92,7 +92,11 @@ public class DragonTypes {
                         context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.ITEM_BLACKLIST)
                 ),
                 List.of(),
-                List.of(DietEntry.from("#minecraft:doors", new FoodProperties(2, 1, true, 1, Optional.empty(), List.of()))),
+                List.of(
+                        DietEntry.from("#minecraft:doors", new FoodProperties(2, 1, true, 1, Optional.empty(), List.of())),
+                        DietEntry.from("#minecraft:wool", new FoodProperties(8, 3, true, 1, Optional.empty(), List.of())),
+                        DietEntry.from("#minecraft:logs", new FoodProperties(12, 5, false, 3, Optional.empty(), List.of()))
+                ),
                 new MiscDragonTextures(
                         DragonSurvival.res("textures/gui/food_icons/cave_food_icons.png"),
                         DragonSurvival.res("textures/gui/mana_icons/cave_mana_icons.png"),

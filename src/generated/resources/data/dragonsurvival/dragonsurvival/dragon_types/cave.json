@@ -32,6 +32,27 @@
         "nutrition": 2,
         "saturation": 1.0
       }
+    },
+    {
+      "items": [
+        "#minecraft:wool"
+      ],
+      "properties": {
+        "can_always_eat": true,
+        "eat_seconds": 1.0,
+        "nutrition": 8,
+        "saturation": 3.0
+      }
+    },
+    {
+      "items": [
+        "#minecraft:logs"
+      ],
+      "properties": {
+        "eat_seconds": 3.0,
+        "nutrition": 12,
+        "saturation": 5.0
+      }
     }
   ],
   "misc_resources": {

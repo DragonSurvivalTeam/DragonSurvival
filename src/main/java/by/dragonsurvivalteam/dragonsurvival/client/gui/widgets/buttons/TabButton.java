@@ -83,7 +83,7 @@ public class TabButton extends Button {
                 }
                 case ABILITY_TAB -> Minecraft.getInstance().setScreen(new DragonAbilityScreen(parent));
                 case SKINS_TAB -> Minecraft.getInstance().setScreen(new SkinsScreen(parent));
-                case SPECIES_TAB -> Minecraft.getInstance().setScreen(new DragonSpeciesScreen(parent));
+                case SPECIES_TAB -> Minecraft.getInstance().setScreen(new DragonSpeciesScreen());
             }
     }
 

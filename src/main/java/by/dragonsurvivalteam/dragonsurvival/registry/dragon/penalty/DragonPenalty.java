@@ -12,6 +12,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -65,12 +66,16 @@ public record DragonPenalty(ResourceLocation icon, Optional<LootItemCondition> c
         }
     }
 
-    public MutableComponent getDescription(Player dragon) {
-        if(trigger.getDescription(dragon).getString().isEmpty()) {
+    // TODO :: figure out why some part of the description doesn't reset its color after '§r' is used
+    //  (i.e. why isn't it gray but stays e.g. green)
+    public MutableComponent getDescription(final Player dragon) {
+        MutableComponent description = trigger.getDescription(dragon);
+
+        if (description.getContents() == PlainTextContents.EMPTY) {
             return Component.empty();
         }
 
-        return effect.getDescription().append(trigger.getDescription(dragon));
+        return effect.getDescription().append(description);
     }
 
     @SubscribeEvent

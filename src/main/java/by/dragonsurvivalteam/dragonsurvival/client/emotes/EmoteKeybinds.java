@@ -1,50 +1,37 @@
 package by.dragonsurvivalteam.dragonsurvival.client.emotes;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import javax.annotation.Nullable;
 
 public class EmoteKeybinds {
-    public List<EmoteKeybind> EMOTE_KEYBINDS = new ArrayList<>();
-    public EmoteKeybinds() {}
-    public record EmoteKeybind(Integer keyCode, String emote) {}
+    private final Map<Integer, String> emoteKeybinds = new HashMap<>();
 
-    public void remove(String emote) {
-        EMOTE_KEYBINDS.removeIf(emoteKeybind -> emoteKeybind.emote().equals(emote));
+    public @Nullable String get(int keyCode) {
+        return emoteKeybinds.get(keyCode);
     }
 
-    public void put(Integer keyCode, String emote) {
-        if(get(keyCode) != null) {
-            remove(get(keyCode));
-        }
-
-        EMOTE_KEYBINDS.add(new EmoteKeybind(keyCode, emote));
+    public void put(int keyCode, final String emote) {
+        emoteKeybinds.put(keyCode, emote);
     }
 
-    public String get(Integer keyCode) {
-        for (EmoteKeybind emoteKeybind : EMOTE_KEYBINDS) {
-            if (emoteKeybind.keyCode().equals(keyCode)) {
-                return emoteKeybind.emote();
-            }
-        }
-        return null;
+    public void remove(final String emote) {
+        emoteKeybinds.remove(getKey(emote));
     }
 
-    public int getKey(String emote) {
-        for (EmoteKeybind emoteKeybind : EMOTE_KEYBINDS) {
-            if (emoteKeybind.emote().equals(emote)) {
-                return emoteKeybind.keyCode();
+    public boolean contains(final String emote) {
+        return getKey(emote) != EmoteMenuHandler.NO_KEY;
+    }
+
+    public int getKey(final String emote) {
+        for (Map.Entry<Integer, String> entry : emoteKeybinds.entrySet()) {
+            String mappedEmote = entry.getValue();
+
+            if (mappedEmote.equals(emote)) {
+                return entry.getKey();
             }
         }
 
-        return 0;
-    }
-
-    public boolean contains(String emote) {
-        for (EmoteKeybind emoteKeybind : EMOTE_KEYBINDS) {
-            if (emoteKeybind.emote().equals(emote)) {
-                return true;
-            }
-        }
-        return false;
+        return EmoteMenuHandler.NO_KEY;
     }
 }

@@ -549,7 +549,7 @@ public class DSBlocks {
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Forest Dragon Beacon")
-    @Translation(type = Translation.Type.DESCRIPTION_ADDITION, comments = "■§7 Gives the effects «Forest Magic» and «Haste». Best for forest dragons. You can buy an effect by pressing the right button in exchange for experience.")
+    @Translation(type = Translation.Type.DESCRIPTION_ADDITION, comments = "■§7 Gives the effects §2«Forest Magic»§r and §2«Haste»§r. Best for forest dragons. You can buy an effect by pressing the right button in exchange for experience.")
     public static final DeferredHolder<Block, DragonBeacon> FOREST_DRAGON_BEACON = register(
             "forest_dragon_beacon",
             () -> new DragonBeacon(EMPTY_DRAGON_BEACON.get().properties()
@@ -557,7 +557,7 @@ public class DSBlocks {
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Sea Dragon Beacon")
-    @Translation(type = Translation.Type.DESCRIPTION_ADDITION, comments = "■§7 Gives the effects «Sea Peace» and «Animal Calm». Best for sea dragons. Peaceful animals stop running away from the dragon. You can buy an effect by pressing the right button in exchange for experience.")
+    @Translation(type = Translation.Type.DESCRIPTION_ADDITION, comments = "■§7 Gives the effects §2«Sea Peace»§r and §2«Animal Calm»§r. Best for sea dragons. Peaceful animals stop running away from the dragon. You can buy an effect by pressing the right button in exchange for experience.")
     public static final DeferredHolder<Block, DragonBeacon> SEA_DRAGON_BEACON = register(
             "sea_dragon_beacon",
             () -> new DragonBeacon(EMPTY_DRAGON_BEACON.get().properties()
@@ -565,7 +565,7 @@ public class DSBlocks {
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Cave Dragon Beacon")
-    @Translation(type = Translation.Type.DESCRIPTION_ADDITION, comments = "■§7 Gives the effects «Cave Fire» and «Sturdy Skin». Gives extra armor. Best for cave dragons. You can buy an effect by pressing the right button in exchange for experience.")
+    @Translation(type = Translation.Type.DESCRIPTION_ADDITION, comments = "■§7 Gives the effects §2«Cave Fire»§r and §2«Sturdy Skin»§r. Gives extra armor. Best for cave dragons. You can buy an effect by pressing the right button in exchange for experience.")
     public static final DeferredHolder<Block, DragonBeacon> CAVE_DRAGON_BEACON = register(
             "cave_dragon_beacon",
             () -> new DragonBeacon(EMPTY_DRAGON_BEACON.get().properties()

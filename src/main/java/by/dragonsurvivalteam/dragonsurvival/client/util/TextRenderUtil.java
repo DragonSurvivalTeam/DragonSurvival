@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.client.util;
 
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -10,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class TextRenderUtil {
-
     public static void drawScaledText(@NotNull final GuiGraphics guiGraphics, float x, float y, float scale, String text, int color) {
         drawScaledText(guiGraphics, x, y, scale, text, color, 0);
     }

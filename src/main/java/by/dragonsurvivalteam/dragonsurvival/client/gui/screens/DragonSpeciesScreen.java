@@ -5,7 +5,9 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.GrowthCry
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.PenaltyButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.TabButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverButton;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.*;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.BarComponent;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.DietMenuComponent;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.ScrollableComponent;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.GrowthIcon;
@@ -19,14 +21,17 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,35 +50,35 @@ public class DragonSpeciesScreen extends Screen {
     private static final ResourceLocation PENALTIES_RIGHT_ARROW_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_right_arrow_hover.png");
     private static final ResourceLocation PENALTIES_RIGHT_ARROW_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_right_arrow_main.png");
 
-    public Screen sourceScreen;
-
     public Holder<DragonType> dragonType;
+
+    private final List<ScrollableComponent> scrollableComponents = new ArrayList<>();
     private Holder<DragonStage> dragonStage;
-    private int guiLeft;
-    private int guiTop;
-    private int growthTooltipScroll;
     private HoverButton growthButton;
     private ScrollableComponent crystalBar;
 
-    private final List<ScrollableComponent> scrollableComponents = new ArrayList<>();
+    private int guiLeft;
+    private int guiTop;
+    private int growthTooltipScroll;
 
-    public DragonSpeciesScreen(Screen sourceScreen) {
+    public DragonSpeciesScreen() {
         super(Component.empty());
-        this.sourceScreen = sourceScreen;
     }
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         for (ScrollableComponent component : scrollableComponents) {
             // Ignore scrolling on the crystal bar; we need scrolling to be available for the tooltip to work
-            if(component == crystalBar) {
+            if (component == crystalBar) {
                 continue;
             }
+
             component.scroll(mouseX, mouseY, scrollX, scrollY);
         }
 
-        if(growthButton.isHovered()) {
-            growthTooltipScroll += (int) -scrollY; // invert the value so that scrolling down shows further entries
+        if (growthButton.isHovered()) {
+            // invert the value so that scrolling down shows further entries
+            growthTooltipScroll += (int) -scrollY;
         } else {
             growthTooltipScroll = 0;
         }
@@ -82,34 +87,45 @@ public class DragonSpeciesScreen extends Screen {
     }
 
     @Override
-    public void render(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void setFocused(@Nullable final GuiEventListener listener) {
+        if (listener instanceof DragonBodyButton) {
+            // Button can be clicked (and therefor focused) but there is no reason to do so in this screen
+            return;
+        }
+
+        super.setFocused(listener);
+    }
+
+    @Override
+    public void render(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         if (minecraft == null || minecraft.player == null) {
             return;
         }
 
-        for(ScrollableComponent component : scrollableComponents) {
-            component.update();
-        }
-
-        this.renderBlurredBackground(partialTick);
+        renderBlurredBackground(partialTick);
 
         int startX = guiLeft + 23;
         int startY = guiTop - 13;
 
         DragonStateHandler data = DragonStateProvider.getData(minecraft.player);
-        guiGraphics.blit(BACKGROUND_MAIN, startX, startY, 0, 0, 256, 256);
-        guiGraphics.blit(data.getType().value().miscResources().altarBanner(), startX + 7, startY + 8, 0, 0, 49, 147, 49, 294);
+        graphics.blit(BACKGROUND_MAIN, startX, startY, 0, 0, 256, 256);
+        graphics.blit(data.getType().value().miscResources().altarBanner(), startX + 7, startY + 8, 0, 0, 49, 147, 49, 294);
 
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
+        for (ScrollableComponent component : scrollableComponents) {
+            component.update();
+        }
+
+        super.render(graphics, mouseX, mouseY, partialTick);
     }
 
     @Override
-    public void renderBackground(@NotNull GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+    public void renderBackground(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         // Don't render the vanilla background, it darkens the UI in an undesirable way
     }
 
     @Override
     public void init() {
+        //noinspection DataFlowIssue -> player is present
         dragonType = DragonStateProvider.getData(minecraft.player).getType();
         dragonStage = DragonStateProvider.getData(minecraft.player).getStage();
 
@@ -124,31 +140,39 @@ public class DragonSpeciesScreen extends Screen {
 
         TabButton.addTabButtonsToScreen(this, startX + 17, startY - 56, TabButton.Type.SPECIES_TAB);
         DragonStateHandler data = DragonStateProvider.getData(minecraft.player);
-        scrollableComponents.add(new DietMenuComponent());
+
+        DietMenuComponent dietMenu = new DietMenuComponent(dragonType, startX + 78, startY + 10);
+        scrollableComponents.add(dietMenu);
+        renderables.add(dietMenu);
 
         // Wing button
-        HoverButton wingButton = new HoverButton(startX + 79, startY - 19, 20, 20, 0, 0, 20, 20, button -> {}, WINGS_HOVER, WINGS_MAIN);
+        HoverButton wingButton = new HoverButton(startX + 79, startY - 19, 20, WINGS_MAIN, WINGS_HOVER);
         addRenderableWidget(wingButton);
+
         FlightData flightData = FlightData.getData(minecraft.player);
         MutableComponent flightTooltip = Component.empty();
-        if(flightData.hasFlight) {
-            flightTooltip.append(Component.translatable(LangKey.FLIGHT_CAN_FLY));
+
+        if (flightData.hasFlight) {
+            flightTooltip = Component.translatable(LangKey.FLIGHT_CAN_FLY);
         }
-        if(flightData.hasSpin) {
-            if(flightData.hasFlight) {
+
+        if (flightData.hasSpin) {
+            if (flightTooltip.getContents() != PlainTextContents.EMPTY) {
                 flightTooltip.append("\n");
             }
+
             flightTooltip.append(Component.translatable(LangKey.FLIGHT_CAN_SPIN));
         }
 
-        if(!flightData.hasFlight && !flightData.hasSpin) {
-            flightTooltip.append(Component.translatable(LangKey.FLIGHT_CAN_FLY));
+        if (!flightData.hasFlight && !flightData.hasSpin) {
+            flightTooltip.append(Component.translatable(LangKey.FLIGHT_CANNOT_FLY));
         }
+
         wingButton.setTooltip(Tooltip.create(flightTooltip));
 
         // Growth stage button
         GrowthIcon growthIcon = data.getType().value().getGrowthIcon(data.getStage());
-        growthButton = new HoverButton(startX + 99, startY - 21, 20, 20, 0, 0, 20, 20,
+        growthButton = new HoverButton(startX + 99, startY - 21, 20, growthIcon.icon(), growthIcon.hoverIcon(),
                 () -> {
                         DragonStateHandler handler = DragonStateProvider.getData(minecraft.player);
                         Pair<List<Either<FormattedText, TooltipComponent>>, Integer> growthDescriptionResult = handler.getGrowthDescription(growthTooltipScroll);
@@ -156,8 +180,7 @@ public class DragonSpeciesScreen extends Screen {
                         growthTooltipScroll = growthDescriptionResult.getSecond();
 
                         return components;
-                },
-                button -> {}, growthIcon.hoverIcon(), growthIcon.icon());
+                });
         addRenderableWidget(growthButton);
 
         // Growth stage crystals
@@ -174,7 +197,7 @@ public class DragonSpeciesScreen extends Screen {
         }
 
         // Riding button
-        HoverButton ridingButton = new HoverButton(startX + 186, startY - 18, 16, 16, 0, 0, 16, 16, button -> {}, RIDING_HOVER, RIDING_MAIN);
+        HoverButton ridingButton = new HoverButton(startX + 186, startY - 18, 16, RIDING_MAIN, RIDING_HOVER);
         addRenderableWidget(ridingButton);
 
 
@@ -196,11 +219,12 @@ public class DragonSpeciesScreen extends Screen {
     public void tick() {
         //noinspection DataFlowIssue -> players should be present
         DragonStateHandler data = DragonStateProvider.getData(minecraft.player);
-        if(dragonType == null) {
+
+        if (dragonType == null) {
             onClose();
         }
 
-        if(dragonType != data.getType() || dragonStage != data.getStage()) {
+        if (dragonType != data.getType() || dragonStage != data.getStage()) {
             dragonType = data.getType();
             dragonStage = data.getStage();
             clearWidgets();

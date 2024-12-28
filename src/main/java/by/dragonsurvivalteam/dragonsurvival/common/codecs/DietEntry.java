@@ -22,6 +22,7 @@ public record DietEntry(List<String> items, FoodProperties properties) {
         return from(location.toString(), properties);
     }
 
+    // TODO :: add option to keep the properties empty? and if that is the case the items default values will be used?
     public static DietEntry from(final String location, final FoodProperties properties) {
         return new DietEntry(List.of(location), properties);
     }

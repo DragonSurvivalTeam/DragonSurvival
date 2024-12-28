@@ -105,25 +105,25 @@ public class DragonAbilityScreen extends Screen {
     }
 
     @Override
-    public void render(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void render(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         if (minecraft == null || minecraft.player == null) {
             return;
         }
 
-        for (ScrollableComponent component : scrollableComponents) {
-            component.update();
-        }
-
-        this.renderBlurredBackground(partialTick);
+        renderBlurredBackground(partialTick);
 
         int startX = guiLeft + 8;
         int startY = guiTop - 28;
 
         if (leftWindowOpen) {
-            guiGraphics.blit(BACKGROUND_SIDE, startX - 50, startY, 0, 0, 48, 203);
+            graphics.blit(BACKGROUND_SIDE, startX - 50, startY, 0, 0, 48, 203);
         }
 
-        guiGraphics.blit(BACKGROUND_MAIN, startX, startY, 0, 0, 256, 256);
+        graphics.blit(BACKGROUND_MAIN, startX, startY, 0, 0, 256, 256);
+
+        for (ScrollableComponent component : scrollableComponents) {
+            component.update();
+        }
 
         if (type != null) {
             // Draw XP bars
@@ -133,13 +133,13 @@ public class DragonAbilityScreen extends Screen {
             int leftBarX = startX + 17;
             int rightBarX = startX + 129;
 
-            guiGraphics.blit(EXP_EMPTY, leftBarX, barYPos, 0, 0, 93, 6, 93, 6);
-            guiGraphics.blit(EXP_EMPTY, rightBarX, barYPos, 0, 0, 93, 6, 93, 6);
-            guiGraphics.blit(EXP_FULL, leftBarX, barYPos, 0, 0, (int) (93 * leftExpBarProgress), 6, 93, 6);
+            graphics.blit(EXP_EMPTY, leftBarX, barYPos, 0, 0, 93, 6, 93, 6);
+            graphics.blit(EXP_EMPTY, rightBarX, barYPos, 0, 0, 93, 6, 93, 6);
+            graphics.blit(EXP_FULL, leftBarX, barYPos, 0, 0, (int) (93 * leftExpBarProgress), 6, 93, 6);
 
             if (minecraft.player.experienceProgress > 0.5) {
                 float rightExpBarProgress = Math.min(1f, Math.min(0.5f, minecraft.player.experienceProgress - 0.5f) * 2);
-                guiGraphics.blit(EXP_FULL, rightBarX, barYPos, 0, 0, (int) (93 * rightExpBarProgress), 6, 93, 6);
+                graphics.blit(EXP_FULL, rightBarX, barYPos, 0, 0, (int) (93 * rightExpBarProgress), 6, 93, 6);
             }
 
             int experienceModification = hoveredLevelButton != null ? hoveredLevelButton.getExperienceModification() : 0;
@@ -154,18 +154,18 @@ public class DragonAbilityScreen extends Screen {
                 float rightExpBarHoverProgress = Math.min(0.5f, hoverProgress - leftExpBarHoverProgress / 2) * 2;
 
                 if (experienceModification < 0) {
-                    guiGraphics.setColor(1, 0, 0, 1);
+                    graphics.setColor(1, 0, 0, 1);
                 } else {
-                    guiGraphics.setColor(0.6f, 0.2f, 0.85f, 1);
+                    graphics.setColor(0.6f, 0.2f, 0.85f, 1);
                 }
 
-                drawExperienceBar(guiGraphics, barYPos, leftBarX, leftExpBarHoverProgress);
+                drawExperienceBar(graphics, barYPos, leftBarX, leftExpBarHoverProgress);
 
                 if (rightExpBarHoverProgress > 0) {
-                    drawExperienceBar(guiGraphics, barYPos, rightBarX, rightExpBarHoverProgress);
+                    drawExperienceBar(graphics, barYPos, rightBarX, rightExpBarHoverProgress);
                 }
 
-                guiGraphics.setColor(1, 1, 1, 1);
+                graphics.setColor(1, 1, 1, 1);
             }
 
             int greenFontColor = 0x57882F;
@@ -177,10 +177,10 @@ public class DragonAbilityScreen extends Screen {
 
             int expLevelXPos = ((rightBarX + leftBarX) / 2 + 48 - minecraft.font.width(expectedLevel) / 2) - 1;
             int expLevelYPos = barYPos - 1;
-            guiGraphics.drawString(minecraft.font, expectedLevel, expLevelXPos, expLevelYPos, 0, false);
+            graphics.drawString(minecraft.font, expectedLevel, expLevelXPos, expLevelYPos, 0, false);
         }
 
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
+        super.render(graphics, mouseX, mouseY, partialTick);
     }
 
     private void drawExperienceBar(final GuiGraphics guiGraphics, int y, int initialX, float hoverProgress) {

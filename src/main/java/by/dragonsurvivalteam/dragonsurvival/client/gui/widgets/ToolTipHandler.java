@@ -4,7 +4,8 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAbilityScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.SkillProgressButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HelpButton;
-import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonFoodHandler;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
@@ -22,6 +23,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.food.FoodProperties;
@@ -38,7 +40,6 @@ import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import org.joml.Vector2ic;
 
 import java.awt.*;
-import java.util.List;
 import java.util.Objects;
 
 @EventBusSubscriber(Dist.CLIENT)
@@ -47,26 +48,9 @@ public class ToolTipHandler {
     private static final ResourceLocation TOOLTIP = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/magic_tips_0.png");
     private static final ResourceLocation ICONS = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "food_tooltip_icon_font");
 
-    @Translation(type = Translation.Type.MISC, comments = "§c■ Cave dragon food: §r")
-    private static final String CAVE_DRAGON_FOOD = Translation.Type.DESCRIPTION.wrap("cave_dragon_food");
-
-    @Translation(type = Translation.Type.MISC, comments = "§3■ Sea dragon food: §r")
-    private static final String SEA_DRAGON_FOOD = Translation.Type.DESCRIPTION.wrap("sea_dragon_food");
-
-    @Translation(type = Translation.Type.MISC, comments = "§a■ Forest dragon food: §r")
-    private static final String FOREST_DRAGON_FOOD = Translation.Type.DESCRIPTION.wrap("forest_dragon_food");
-
     @Translation(key = "tooltip_changes", type = Translation.Type.CONFIGURATION, comments = "If enabled certain modifications to some tooltips will be made (e.g. dragon food items)")
     @ConfigOption(side = ConfigSide.CLIENT, category = "tooltips", key = "tooltip_changes")
     public static Boolean tooltipChanges = true;
-
-    @Translation(key = "hide_unsafe_food", type = Translation.Type.CONFIGURATION, comments = "If enabled dragon food items with negative effects will not have the dragon food tooltips")
-    @ConfigOption(side = ConfigSide.CLIENT, category = "tooltips", key = "hide_unsafe_food")
-    public static Boolean hideUnsafeFood = true;
-
-    @Translation(key = "dragon_food_tooltips", type = Translation.Type.CONFIGURATION, comments = "If enabled the color of dragon food item tooltips will change to match the dragon")
-    @ConfigOption(side = ConfigSide.CLIENT, category = "tooltips", key = "dragon_food_tooltips")
-    public static Boolean dragonFoodTooltips = true;
 
     @Translation(key = "enchantment_descriptions", type = Translation.Type.CONFIGURATION, comments = "Adds enchantment descriptions to enchanted books which contain 1 enchantment (and said enchantment is from this mod)")
     @ConfigOption(side = ConfigSide.CLIENT, category = "tooltips", key = "enchantment_descriptions")
@@ -76,37 +60,20 @@ public class ToolTipHandler {
     private static int tick;
 
     @SubscribeEvent
-    public static void addDragonFoodTooltip(ItemTooltipEvent tooltipEvent) {
-        if (tooltipEvent.getEntity() != null) {
-            Item item = tooltipEvent.getItemStack().getItem();
-            List<Component> toolTip = tooltipEvent.getToolTip();
+    public static void addDragonFoodTooltip(final ItemTooltipEvent event) {
+        if (event.getEntity() != null) {
+            DragonStateHandler data = DragonStateProvider.getData(event.getEntity());
 
-            // FIXME
-           /* if (DragonFoodHandler.getEdibleFoods(DragonTypes.FOREST).contains(item)) {
-                toolTip.add(createFoodTooltip(item, DragonTypes.FOREST));
+            if (!data.isDragon()) {
+                return;
             }
 
-            if (DragonFoodHandler.getEdibleFoods(DragonTypes.CAVE).contains(item)) {
-                toolTip.add(createFoodTooltip(item, DragonTypes.CAVE));
-            }
+            MutableComponent foodData = getFoodTooltipData(event.getItemStack().getItem(), data.getType());
 
-            if (DragonFoodHandler.getEdibleFoods(DragonTypes.SEA).contains(item)) {
-                toolTip.add(createFoodTooltip(item, DragonTypes.SEA));
-            }*/
+            if (foodData.getContents() != PlainTextContents.EMPTY) {
+                event.getToolTip().add(foodData);
+            }
         }
-    }
-
-    private static MutableComponent createFoodTooltip(final Item item, final ResourceKey<DragonType> type) {
-        // FIXME
-        /*String translationKey = switch (type) {
-            case CaveDragonType ignored -> CAVE_DRAGON_FOOD;
-            case SeaDragonType ignored -> SEA_DRAGON_FOOD;
-            case ForestDragonType ignored -> FOREST_DRAGON_FOOD;
-            default -> throw new IllegalArgumentException("Invalid dragon type [" + type + "]");
-        };*/
-
-        return Component.literal("MISSING");
-        //return Component.translatable(translationKey).append(getFoodTooltipData(item, type));
     }
 
     /** Returns a tooltip component in the format of '1.0 nutrition_icon / 0.5 saturation_icon' (color and icon depend on the dragon type) */
@@ -120,6 +87,8 @@ public class ToolTipHandler {
         ChatFormatting color;
 
         // FIXME
+        // TODO :: need new entry in misc resources for the icon codes?
+        //  not sure if there is a way to retrieve it from the resource / sprite
         /*switch (type) {
             case ForestDragonType ignored -> {
                 nutritionIcon = "\uEA01";
@@ -143,19 +112,22 @@ public class ToolTipHandler {
         saturationIcon = "\uEA05";
         color = ChatFormatting.RED;
 
-        FoodProperties properties = DragonFoodHandler.getDragonFoodProperties(item, type);
+        FoodProperties properties = type.value().getDiet(item);
 
-        String nutrition = "0";
-        String saturation = "0";
-
-        if (properties != null) {
-            float nutritionValue = properties.nutrition();
-            float saturationValue = properties.saturation();
-
-            // 1 Icon = 2 points (e.g. 10 nutrition icons for a maximum food level of 20)
-            nutrition = String.format("%.1f", nutritionValue / 2);
-            saturation = String.format("%.1f", saturationValue / 2);
+        if (properties == null) {
+            // TODO :: only show custom diet in the tooltip?
+            return Component.empty();
         }
+
+        String nutrition;
+        String saturation;
+
+        float nutritionValue = properties.nutrition();
+        float saturationValue = properties.saturation();
+
+        // 1 Icon = 2 points (e.g. 10 nutrition icons for a maximum food level of 20)
+        nutrition = String.format("%.1f", nutritionValue / 2);
+        saturation = String.format("%.1f", saturationValue / 2);
 
         // Use white color to reset the color (i.e. don't color the icons)
         MutableComponent nutritionIconComponent = Component.literal(nutritionIcon).withStyle(Style.EMPTY.withColor(ChatFormatting.WHITE).withFont(ICONS));

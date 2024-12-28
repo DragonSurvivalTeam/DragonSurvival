@@ -4,7 +4,6 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.H
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
@@ -35,8 +34,8 @@ public class BarComponent implements ScrollableComponent {
         }
 
         if(widgets.size() > numberOfElementsToDisplay) {
-            leftArrow = new HoverButton(xPos + arrowLeftX, yPos + arrowY, arrowWidth, arrowHeight, 0, 0, arrowTextureWidth, arrowTextureHeight, (button) -> {rotate(false);}, leftArrowHover, leftArrowMain);
-            rightArrow = new HoverButton(xPos + arrowRightX, yPos + arrowY, arrowWidth, arrowHeight, 0, 0, arrowTextureWidth, arrowTextureHeight, (button) -> {rotate(true);}, rightArrowHover, rightArrowMain);
+            leftArrow = new HoverButton(xPos + arrowLeftX, yPos + arrowY, arrowWidth, arrowHeight, arrowTextureWidth, arrowTextureHeight, leftArrowMain, leftArrowHover, button -> rotate(false));
+            rightArrow = new HoverButton(xPos + arrowRightX, yPos + arrowY, arrowWidth, arrowHeight, arrowTextureWidth, arrowTextureHeight, rightArrowMain, rightArrowHover, button -> rotate(true));
             ((ScreenAccessor)parentScreen).dragonSurvival$addRenderableWidget(leftArrow);
             ((ScreenAccessor)parentScreen).dragonSurvival$addRenderableWidget(rightArrow);
 
@@ -74,18 +73,18 @@ public class BarComponent implements ScrollableComponent {
     }
 
     private void rotate(boolean right) {
-        if(widgets.size() <= numberOfElementsToDisplay) {
+        if (widgets.size() <= numberOfElementsToDisplay) {
             return;
         }
 
         if (!right) {
             if (centerIndex - getNumberOfElementsLeftOfCenter() > 0) {
                 centerIndex--;
-                if(rightArrow != null) {
+                if (rightArrow != null) {
                     rightArrow.visible = true;
                 }
-                if(centerIndex - getNumberOfElementsLeftOfCenter() <= 0) {
-                    if(leftArrow != null) {
+                if (centerIndex - getNumberOfElementsLeftOfCenter() <= 0) {
+                    if (leftArrow != null) {
                         leftArrow.visible = false;
                     }
                 }
@@ -93,11 +92,11 @@ public class BarComponent implements ScrollableComponent {
         } else {
             if (centerIndex + getNumberOfElementsRightOfCenter() < widgets.size() - 1) {
                 centerIndex++;
-                if(leftArrow != null) {
+                if (leftArrow != null) {
                     leftArrow.visible = true;
                 }
-                if(centerIndex + getNumberOfElementsRightOfCenter() >= widgets.size() - 1) {
-                    if(rightArrow != null) {
+                if (centerIndex + getNumberOfElementsRightOfCenter() >= widgets.size() - 1) {
+                    if (rightArrow != null) {
                         rightArrow.visible = false;
                     }
                 }
@@ -121,8 +120,8 @@ public class BarComponent implements ScrollableComponent {
     }
 
     private void forceSetButtonPositions() {
-        for(int i = 0; i < widgets.size(); i++) {
-            if(!isAnIndexBeingDisplayed(i)) {
+        for (int i = 0; i < widgets.size(); i++) {
+            if (!isAnIndexBeingDisplayed(i)) {
                 widgets.get(i).visible = false;
             } else {
                 int centerAlignment = i - centerIndex + 1;
@@ -132,7 +131,4 @@ public class BarComponent implements ScrollableComponent {
             }
         }
     }
-
-    @Override
-    public void update() { }
 }

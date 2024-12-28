@@ -26,22 +26,22 @@ import java.util.Optional;
 
 public class DragonPenalties {
     @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
-            "■ Cave dragons take §cdamage§r snow and rain slowly due to their fiery nature.\n",
-            "■ The skill «Contrast Shower» §7could make your life easier.\n",
+            "■ Cave dragons slowly take §cdamage§r while in snow or rain due to their fiery nature.\n",
+            "■ The skill §2«Contrast Shower»§r could make your life easier.\n",
     })
     @Translation(type = Translation.Type.PENALTY, comments = "Snow and Rain Weakness")
     public static final ResourceKey<DragonPenalty> SNOW_AND_RAIN_WEAKNESS = DragonPenalties.key("snow_and_rain_weakness");
 
     @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
-            "■ Cave dragons take §cdamage§r from water quickly due to their fiery nature.\n",
-            "■ The skill effect «Cave Fire» §7could make your life easier.\n",
+            "■ Cave dragons quickly take §cdamage§r from water due to their fiery nature.\n",
+            "■ The skill effect §2«Cave Fire»§r could make your life easier.\n",
     })
     @Translation(type = Translation.Type.PENALTY, comments = "Water Weakness")
     public static final ResourceKey<DragonPenalty> WATER_WEAKNESS = DragonPenalties.key("water_weakness");
 
     @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
             "■ Drying out under the harsh sun is a major concern for sea dragons. If they are outside of the water for too long, they will dehydrate and suffer damage.\n",
-            "■ The skill «Hydration Capacity», rain, ice, snow and water bottles §7could make your life easier.§r\n",
+            "■ The skill §2«Hydration Capacity»§r, being in rain, ice or snow and water bottles could make your life easier.\n",
     })
     @Translation(type = Translation.Type.PENALTY, comments = "Thin Skin")
     public static final ResourceKey<DragonPenalty> THIN_SKIN = DragonPenalties.key("thin_skin");
@@ -54,7 +54,7 @@ public class DragonPenalties {
 
     @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
             "■ The predatory plants in your body dislike §dDarkness§r. If the light level around you is lower than 4, you may receive the §c«Stress»§r effect, rapidly draining your food gauge.\n",
-            "■ The skill «Light the Dark» and effect «Forest Magic» §7could make your life easier.",
+            "■ The skill §2«Light the Dark»§r and effect §2«Forest Magic»§r could make your life easier.",
     })
     @Translation(type = Translation.Type.PENALTY, comments = "Fear of Darkness")
     public static final ResourceKey<DragonPenalty> FEAR_OF_DARKNESS = DragonPenalties.key("fear_of_darkness");

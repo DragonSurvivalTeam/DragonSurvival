@@ -12,7 +12,6 @@ import by.dragonsurvivalteam.dragonsurvival.network.player.SyncSize;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSModifiers;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.*;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonTypes;
@@ -29,6 +28,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -40,8 +40,6 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.*;
-import java.text.NumberFormat;
 import java.util.*;
 import java.util.List;
 import java.util.function.Supplier;
@@ -505,9 +503,9 @@ public class DragonStateHandler extends EntityStateHandler {
         int max = Math.min(growthItems.size(), scroll + MAX_SHOWN);
 
         List<Either<FormattedText, TooltipComponent>> components = new ArrayList<>();
-        components.add(Either.left(net.minecraft.network.chat.Component.translatable(LangKey.GROWTH_STAGE).append(DragonStage.translatableName(Objects.requireNonNull(getStage().getKey())))));
-        components.add(Either.left(net.minecraft.network.chat.Component.translatable(LangKey.GROWTH_AGE, ageInformation)));
-        components.add(Either.left(net.minecraft.network.chat.Component.translatable(LangKey.GROWTH_INFO).append(net.minecraft.network.chat.Component.literal(" [" + Math.min(growthItems.size(), scroll + MAX_SHOWN) + " / " + growthItems.size() + "]").withStyle(ChatFormatting.DARK_GRAY))));
+        components.add(Either.left(Component.translatable(LangKey.GROWTH_STAGE).append(DragonStage.translatableName(Objects.requireNonNull(getStage().getKey())))));
+        components.add(Either.left(Component.translatable(LangKey.GROWTH_AGE, ageInformation)));
+        components.add(Either.left(Component.translatable(LangKey.GROWTH_INFO).append(Component.literal(" [" + Math.min(growthItems.size(), scroll + MAX_SHOWN) + " / " + growthItems.size() + "]").withStyle(ChatFormatting.DARK_GRAY))));
 
         for (int i = scroll; i < max; i++) {
             components.add(Either.right(growthItems.get(i)));
