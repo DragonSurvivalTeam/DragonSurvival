@@ -40,10 +40,10 @@ public class DragonEmoteSets {
     public static final String BLEND_SNIFFING = "blend_sniffing";
 
     @Translation(type = Translation.Type.EMOTE, comments = "§6Blend - One Bite")
-    public static final String BLEND_SPELL_SHOT = "spell_shot";
+    public static final String BLEND_BITE= "spell_shot";
 
     @Translation(type = Translation.Type.EMOTE, comments = "§6Blend - Bites")
-    public static final String BLEND_BITE = "bite";
+    public static final String BLEND_ONE_BITE = "bite";
 
     @Translation(type = Translation.Type.EMOTE, comments = "§6Blend - Open Mouth")
     public static final String BLEND_BREATH= "breath";
@@ -54,28 +54,24 @@ public class DragonEmoteSets {
     @Translation(type = Translation.Type.EMOTE, comments = "Sitting Curled (Head Locked)")
     public static final String SITTING_CURLED_HEAD_LOCKED = "sitting_curled_tail_left_head_locked";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "Sitting Curled No loop")
-    public static final String SITTING_CURLED_NO_LOOP = "sitting_curled_tail_left_no_loop";
-
     public static void registerEmoteSets(final BootstrapContext<DragonEmoteSet> context) {
         context.register(DEFAULT_EMOTES,
                 new DragonEmoteSet(
                         List.of(
-                                DragonEmote.Builder.of(BLEND_HEAD_LOCKED).blend().locksHead().locksTail().build(),
-                                DragonEmote.Builder.of(BLEND_ANGRY).blend().build(),
-                                DragonEmote.Builder.of(BLEND_SPELL_CHARGE).blend().build(),
-                                DragonEmote.Builder.of(BLEND_SAD).blend().build(),
-                                DragonEmote.Builder.of(BLEND_BLEP).blend().build(),
-                                DragonEmote.Builder.of(BLEND_MAW).blend().build(),
-                                DragonEmote.Builder.of(BLEND_LICKING).loops().blend().build(),
-                                DragonEmote.Builder.of(BLEND_YAWNING).loops().blend().build(),
-                                DragonEmote.Builder.of(BLEND_SNIFFING).loops().blend().build(),
-                                DragonEmote.Builder.of(BLEND_SPELL_SHOT).blend().build(),
-                                DragonEmote.Builder.of(BLEND_BITE).loops().blend().build(),
-                                DragonEmote.Builder.of(BLEND_BREATH).blend().build(),
-                                DragonEmote.Builder.of(SITTING_CURLED).build(),
-                                DragonEmote.Builder.of(SITTING_CURLED, SITTING_CURLED_HEAD_LOCKED).locksHead().locksTail().build(),
-                                DragonEmote.Builder.of(SITTING_CURLED, SITTING_CURLED_NO_LOOP).build()
+                                DragonEmote.Builder.of(BLEND_HEAD_LOCKED).loops().blend().locksHead().locksTail().canMove().build(),
+                                DragonEmote.Builder.of(BLEND_ANGRY).loops().blend().canMove().build(),
+                                DragonEmote.Builder.of(BLEND_SPELL_CHARGE).loops().blend().canMove().build(),
+                                DragonEmote.Builder.of(BLEND_SAD).loops().blend().canMove().build(),
+                                DragonEmote.Builder.of(BLEND_BLEP).loops().blend().canMove().build(),
+                                DragonEmote.Builder.of(BLEND_MAW).loops().blend().canMove().build(),
+                                DragonEmote.Builder.of(BLEND_LICKING).blend().canMove().build(),
+                                DragonEmote.Builder.of(BLEND_YAWNING).blend().canMove().build(),
+                                DragonEmote.Builder.of(BLEND_SNIFFING).blend().canMove().build(),
+                                DragonEmote.Builder.of(BLEND_BITE).loops().canMove().blend().build(),
+                                DragonEmote.Builder.of(BLEND_ONE_BITE).blend().canMove().build(),
+                                DragonEmote.Builder.of(BLEND_BREATH).loops().blend().canMove().build(),
+                                DragonEmote.Builder.of(SITTING_CURLED).loops().build(),
+                                DragonEmote.Builder.of(SITTING_CURLED, SITTING_CURLED_HEAD_LOCKED).locksHead().locksTail().build()
                         )
                 )
         );

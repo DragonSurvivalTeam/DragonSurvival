@@ -21,7 +21,7 @@ public record DragonEmote(String animationKey, Optional<String> translationOverr
             Codec.STRING.optionalFieldOf("translation_override").forGetter(DragonEmote::translationOverride),
             Codec.DOUBLE.optionalFieldOf("speed", DEFAULT_SPEED).forGetter(DragonEmote::speed),
             Codec.INT.optionalFieldOf("duration", NO_DURATION).forGetter(DragonEmote::duration),
-            Codec.BOOL.optionalFieldOf("loops", true).forGetter(DragonEmote::loops),
+            Codec.BOOL.optionalFieldOf("loops", false).forGetter(DragonEmote::loops),
             Codec.BOOL.fieldOf("blend").forGetter(DragonEmote::blend),
             Codec.BOOL.fieldOf("locks_head").forGetter(DragonEmote::locksHead),
             Codec.BOOL.fieldOf("locks_tail").forGetter(DragonEmote::locksTail),
