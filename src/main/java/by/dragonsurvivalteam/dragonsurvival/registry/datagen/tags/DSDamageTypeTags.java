@@ -11,6 +11,7 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -79,6 +80,9 @@ public class DSDamageTypeTags extends DamageTypeTagsProvider {
                 .add(DSDamageTypes.WATER_BURN)
                 .add(DSDamageTypes.RAIN_BURN)
                 .add(DSDamageTypes.BALL_LIGHTNING);
+
+        tag(Tags.DamageTypes.NO_FLINCH)
+                .add(DSDamageTypes.NO_FLINCH);
     }
 
     private static TagKey<DamageType> key(@NotNull final String name) {

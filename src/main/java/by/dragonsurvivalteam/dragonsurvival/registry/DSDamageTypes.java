@@ -59,6 +59,9 @@ public class DSDamageTypes {
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Electric")
     public static final ResourceKey<DamageType> ELECTRIC = key("electric");
 
+    // Used to prevent flinching when taking damage from a size decrease (see GameRendererMixin)
+    public static final ResourceKey<DamageType> NO_FLINCH = key("no_flinch");
+
     public static Holder<DamageType> get(final Level level, final ResourceKey<DamageType> damageType) {
         return level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(damageType);
     }
@@ -78,6 +81,7 @@ public class DSDamageTypes {
         register(context, DSDamageTypes.WATER_BURN);
         register(context, DSDamageTypes.SPIKE);
         register(context, DSDamageTypes.ELECTRIC);
+        register(context, DSDamageTypes.NO_FLINCH);
     }
 
     private static void register(final BootstrapContext<DamageType> context, final ResourceKey<DamageType> damageType) {
