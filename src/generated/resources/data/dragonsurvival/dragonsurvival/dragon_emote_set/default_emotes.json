@@ -3,61 +3,61 @@
     {
       "animation_key": "head_turn",
       "blend": true,
-      "can_move": false,
+      "can_move": true,
       "locks_head": true,
       "locks_tail": true,
-      "loops": false,
+      "loops": true,
       "third_person": false
     },
     {
       "animation_key": "blend_angry",
       "blend": true,
-      "can_move": false,
+      "can_move": true,
       "locks_head": false,
       "locks_tail": false,
-      "loops": false,
+      "loops": true,
       "third_person": false
     },
     {
       "animation_key": "spell_charge",
       "blend": true,
-      "can_move": false,
+      "can_move": true,
       "locks_head": false,
       "locks_tail": false,
-      "loops": false,
+      "loops": true,
       "third_person": false
     },
     {
       "animation_key": "blend_sad",
       "blend": true,
-      "can_move": false,
+      "can_move": true,
       "locks_head": false,
       "locks_tail": false,
-      "loops": false,
+      "loops": true,
       "third_person": false
     },
     {
       "animation_key": "blend_blep",
       "blend": true,
-      "can_move": false,
+      "can_move": true,
       "locks_head": false,
       "locks_tail": false,
-      "loops": false,
+      "loops": true,
       "third_person": false
     },
     {
       "animation_key": "blend_maw",
       "blend": true,
-      "can_move": false,
+      "can_move": true,
       "locks_head": false,
       "locks_tail": false,
-      "loops": false,
+      "loops": true,
       "third_person": false
     },
     {
       "animation_key": "blend_licking",
       "blend": true,
-      "can_move": false,
+      "can_move": true,
       "locks_head": false,
       "locks_tail": false,
       "third_person": false
@@ -65,7 +65,7 @@
     {
       "animation_key": "blend_yawning",
       "blend": true,
-      "can_move": false,
+      "can_move": true,
       "locks_head": false,
       "locks_tail": false,
       "third_person": false
@@ -73,7 +73,7 @@
     {
       "animation_key": "blend_sniffing",
       "blend": true,
-      "can_move": false,
+      "can_move": true,
       "locks_head": false,
       "locks_tail": false,
       "third_person": false
@@ -81,16 +81,16 @@
     {
       "animation_key": "spell_shot",
       "blend": true,
-      "can_move": false,
+      "can_move": true,
       "locks_head": false,
       "locks_tail": false,
-      "loops": false,
+      "loops": true,
       "third_person": false
     },
     {
       "animation_key": "bite",
       "blend": true,
-      "can_move": false,
+      "can_move": true,
       "locks_head": false,
       "locks_tail": false,
       "third_person": false
@@ -98,10 +98,10 @@
     {
       "animation_key": "breath",
       "blend": true,
-      "can_move": false,
+      "can_move": true,
       "locks_head": false,
       "locks_tail": false,
-      "loops": false,
+      "loops": true,
       "third_person": false
     },
     {
@@ -110,7 +110,7 @@
       "can_move": false,
       "locks_head": false,
       "locks_tail": false,
-      "loops": false,
+      "loops": true,
       "third_person": false
     },
     {
@@ -119,7 +119,6 @@
       "can_move": false,
       "locks_head": true,
       "locks_tail": true,
-      "loops": false,
       "third_person": false,
       "translation_override": "sitting_curled_tail_left_head_locked"
     },
@@ -129,7 +128,6 @@
       "can_move": false,
       "locks_head": false,
       "locks_tail": false,
-      "loops": false,
       "third_person": false,
       "translation_override": "sitting_curled_tail_left_no_loop"
     }
