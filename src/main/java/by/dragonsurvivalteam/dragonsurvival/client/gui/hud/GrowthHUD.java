@@ -25,8 +25,6 @@ public class GrowthHUD {
     private static final Color OUTLINE_COLOR = new Color(125, 125, 125);
     private static final Color ADD_COLOR = new Color(0, 200, 0);
     private static final Color SUBTRACT_COLOR = new Color(200, 0, 0);
-    private static float currentProgress = 0;
-    private static ResourceKey<DragonStage> currentStage;
 
     @ConfigRange(min = -1000, max = 1000)
     @Translation(key = "growth_x_offset", type = Translation.Type.CONFIGURATION, comments = "Offset for the x position of the item growth icon")
@@ -50,14 +48,15 @@ public class GrowthHUD {
         Holder<DragonStage> dragonStage = handler.getStage();
         double nextSize = dragonStage.value().sizeRange().max();
 
-        float progress = (float) dragonStage.value().getProgress(handler.getSize());
-        float progressDiff = Math.abs(currentProgress - progress);
+        float currentProgress = (float) dragonStage.value().getProgress(handler.getSize());
+        float desiredProgress = (float) dragonStage.value().getProgress(handler.getDesiredSize());
+        float progressDiff = Math.abs(currentProgress - desiredProgress);
         boolean progressDiffIsSmall = progressDiff < 0.01;
         if (progressDiffIsSmall && (handler.getSize() == nextSize || dragonStage.value().growthItems().stream().noneMatch(item -> item.items().contains(stack.getItemHolder())))) {
             return;
         }
 
-        progress = Math.min(1, progress);
+        currentProgress = Math.min(1, currentProgress);
 
         int radius = 17;
         int circleX = width / 2 - radius;
@@ -66,25 +65,13 @@ public class GrowthHUD {
         circleX += growthXOffset;
         circleY += growthYOffset;
 
-        float deltaTick = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks();
-        float lerpRate = Math.min(1, deltaTick * 0.2f);
-        currentProgress = Mth.lerp(lerpRate, currentProgress, progress);
-        ResourceKey<DragonStage> lastStage = currentStage;
-        if(lastStage != dragonStage.getKey()) {
-            if(progress > currentProgress) {
-                currentProgress = 1;
-            } else {
-                currentProgress = 0;
-            }
-        }
-        currentStage = dragonStage.getKey();
-        float targetPercent;
+        float targetProgress;
         if(progressDiffIsSmall) {
-            targetPercent = (float) dragonStage.value().getProgress(handler.getSize() + DragonGrowthHandler.getGrowth(dragonStage, stack.getItem()));
+            targetProgress = (float) dragonStage.value().getProgress(handler.getSize() + DragonGrowthHandler.getGrowth(dragonStage, stack.getItem()));
         } else {
-            targetPercent = progress;
+            targetProgress = desiredProgress;
         }
-        RenderingUtils.drawGrowthCircle(guiGraphics, circleX, circleY, radius, 6, 0.13f, currentProgress, targetPercent, CENTER_COLOR, OUTLINE_COLOR, ADD_COLOR, SUBTRACT_COLOR);
+        RenderingUtils.drawGrowthCircle(guiGraphics, circleX, circleY, radius, 6, 0.13f, currentProgress, targetProgress, CENTER_COLOR, OUTLINE_COLOR, ADD_COLOR, SUBTRACT_COLOR);
 
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0, 0, 300);

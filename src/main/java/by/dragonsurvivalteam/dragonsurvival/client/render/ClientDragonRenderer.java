@@ -222,7 +222,7 @@ public class ClientDragonRenderer {
                 Vector3f lookVector = Functions.getDragonCameraOffset(player);
                 poseStack.translate(-lookVector.x(), lookVector.y(), -lookVector.z());
 
-                double size = handler.getSize();
+                double size = handler.getSize(partialRenderTick);
                 EntityRenderer<? extends Player> playerRenderer = renderPlayerEvent.getRenderer();
                 int eventLight = renderPlayerEvent.getPackedLight();
                 final MultiBufferSource renderTypeBuffer = renderPlayerEvent.getMultiBufferSource();

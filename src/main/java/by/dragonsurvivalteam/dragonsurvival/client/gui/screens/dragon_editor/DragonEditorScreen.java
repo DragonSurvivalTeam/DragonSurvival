@@ -427,7 +427,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         }
 
         HANDLER.setType(dragonType);
-        HANDLER.setSize(null, dragonStage.value().sizeRange().min());
+        HANDLER.setDesiredSize(null, dragonStage.value().sizeRange().min());
         HANDLER.setBody(dragonBody);
 
         preset = new SkinPreset();
@@ -824,7 +824,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
 
         HANDLER.setBody(dragonBody);
         HANDLER.getSkinData().skinPreset = preset;
-        HANDLER.setSize(null, dragonStage.value().sizeRange().min());
+        HANDLER.setDesiredSize(null, dragonStage.value().sizeRange().min());
 
         lastSelected = selectedSaveSlot;
     }
@@ -880,7 +880,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
                 Holder<DragonStage> dragonStage = minecraft.player.registryAccess().holderOrThrow(DragonStages.newborn);
                 data.setStage(minecraft.player, dragonStage);
             } else {
-                data.setSize(minecraft.player, savedSize);
+                data.setDesiredSize(minecraft.player, savedSize);
             }
 
             FlightData.getData(minecraft.player).hasSpin = ServerConfig.saveGrowthStage && FlightData.getData(minecraft.player).hasSpin;

@@ -11,22 +11,20 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-/** Synchronizes size */
-public record SyncSize(int playerId, double size) implements CustomPacketPayload {
-    public static final Type<SyncSize> TYPE = new Type<>(DragonSurvival.res("sync_size"));
+public record SyncDesiredSize(int playerId, double desiredSize) implements CustomPacketPayload {
+    public static final Type<SyncDesiredSize> TYPE = new Type<>(DragonSurvival.res("sync_desired_size"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, SyncSize> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.VAR_INT, SyncSize::playerId,
-            ByteBufCodecs.DOUBLE, SyncSize::size,
-            SyncSize::new
+    public static final StreamCodec<RegistryFriendlyByteBuf, SyncDesiredSize> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, SyncDesiredSize::playerId,
+            ByteBufCodecs.DOUBLE, SyncDesiredSize::desiredSize,
+            SyncDesiredSize::new
     );
 
-    public static void handleClient(final SyncSize packet, final IPayloadContext context) {
+    public static void handleClient(final SyncDesiredSize packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 DragonStateHandler data = DragonStateProvider.getData(player);
-                data.setSize(player, packet.size());
-                data.updateSizeLastTick();
+                data.setDesiredSize(player, packet.desiredSize());
                 player.refreshDimensions();
             }
         });

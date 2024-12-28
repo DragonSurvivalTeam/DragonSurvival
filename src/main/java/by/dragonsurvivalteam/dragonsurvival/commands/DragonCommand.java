@@ -102,7 +102,7 @@ public class DragonCommand {
         if (dragonStage != null) {
             data.setStage(player, dragonStage);
         } else {
-            data.setSize(player, DragonStateHandler.NO_SIZE);
+            data.setDesiredSize(player, DragonStateHandler.NO_SIZE);
         }
 
         data.setPassengerId(-1);

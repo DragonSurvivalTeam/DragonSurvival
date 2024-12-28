@@ -105,4 +105,9 @@ public class ClientProxy implements Proxy {
 
         dragonEntity.get().stopAllEmotes();
     }
+
+    @Override
+    public float getPartialDeltaTick() {
+        return Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
+    }
 }

@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
@@ -30,7 +31,7 @@ public class DragonSizeHandler {
         // Therefor we set the size again, causing a refresh of the dimension
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             DragonStateHandler data = DragonStateProvider.getData(serverPlayer);
-            data.setSize(serverPlayer, data.getSize());
+            data.setDesiredSize(serverPlayer, data.getSize());
         }
     }
 
@@ -64,9 +65,10 @@ public class DragonSizeHandler {
 
     public static EntityDimensions calculateDimensions(DragonStateHandler handler, Player player, Pose overridePose) {
         double scale = player.getAttributeValue(Attributes.SCALE);
-        double height = calculateRawDragonHeight(handler.getSize()) * handler.getBody().value().heightMultiplier();
-        double eyeHeight = calculateRawDragonEyeHeight(handler.getSize()) * handler.getBody().value().heightMultiplier();
-        double width = calculateRawDragonWidth(handler.getSize());
+        float partialDeltaTick = DragonSurvival.PROXY.getPartialDeltaTick();
+        double height = calculateRawDragonHeight(handler.getSize(partialDeltaTick)) * handler.getBody().value().heightMultiplier();
+        double eyeHeight = calculateRawDragonEyeHeight(handler.getSize(partialDeltaTick)) * handler.getBody().value().heightMultiplier();
+        double width = calculateRawDragonWidth(handler.getSize(partialDeltaTick));
 
         height = applyPose(height, overridePose, handler.getBody().value().hasExtendedCrouch());
         eyeHeight = applyPose(eyeHeight, overridePose, handler.getBody().value().hasExtendedCrouch());
@@ -138,7 +140,7 @@ public class DragonSizeHandler {
     }
 
     @SubscribeEvent
-    public static void playerTick(final PlayerTickEvent.Pre event) {
+    public static void handlePoseFromSizeChangesAndLerpSize(final PlayerTickEvent.Pre event) {
         Player player = event.getEntity();
 
         // In cases where client and server runs on the same machine
@@ -156,6 +158,8 @@ public class DragonSizeHandler {
                     player.refreshDimensions();
                     LAST_SIZE.put(playerIdSide, handler.getSize());
                 }
+
+                handler.lerpSize(player);
             } else if (WAS_DRAGON.getOrDefault(playerIdSide, false)) {
                 player.setForcedPose(null);
                 player.refreshDimensions();

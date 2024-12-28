@@ -8,6 +8,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.subcapabilities.Su
 import by.dragonsurvivalteam.dragonsurvival.common.items.growth.StarHeartItem;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
+import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDesiredSize;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncSize;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSModifiers;
@@ -24,7 +25,6 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -33,6 +33,7 @@ import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.level.block.state.BlockState;
@@ -68,6 +69,8 @@ public class DragonStateHandler extends EntityStateHandler {
 
     private int passengerId = -1;
     private double size = NO_SIZE;
+    private double sizeLastTick = NO_SIZE;
+    private double desiredSize = NO_SIZE;
     private boolean destructionEnabled;
 
     // Needed to calculate collision damage correctly when flying. See ServerFlightHandler.
@@ -83,7 +86,18 @@ public class DragonStateHandler extends EntityStateHandler {
         setSize(player, dragonStage.value().getBoundedSize(size));
     }
 
-    public void setSize(@Nullable final Player player, double size) {
+    /** Used serverside to lerp size values. Then the client is told about the data and lerps further between frames. */
+    public void lerpSize(@Nullable final Player player) {
+        double newSize = Mth.lerp(0.1, size, desiredSize);
+        setSize(player, newSize);
+        sizeLastTick = size;
+    }
+
+    public void updateSizeLastTick() {
+        sizeLastTick = size;
+    }
+
+    public void setSize(@Nullable final Player player, final double size) {
         double oldSize = this.size;
         Holder<DragonStage> oldStage = dragonStage;
         updateSizeAndStage(player != null ? player.registryAccess() : null, size);
@@ -110,9 +124,14 @@ public class DragonStateHandler extends EntityStateHandler {
             // Push the player away from a block they might collide with due to the size change
             // Without this they will get stuck on blocks they walk into while their size changes
             // The limit of 0.001 is a random value - it's so that when using growth items the player won't be teleported by x blocks
-            double pushForce = Math.min(0.001, (this.size - oldSize) + player.getDeltaMovement().horizontalDistance());
+            double pushForce = (this.size - oldSize) + player.getDeltaMovement().horizontalDistance();
+            pushForce *= 0.05;
             Vec3 push = Vec3.ZERO;
 
+            // Multiply the force by the number of collisions. This is because in scenarios where we are colliding with multiple walls (being in a corner)
+            // we need more force than normal to push them away. But we don't want this increaseed force when only colliding with one block, because that
+            // will cause the player to stutter as they slide against a wall (if they are running towards it)
+            int numCollisions = 0;
             for (BlockPos position : BlockPosHelper.betweenClosed(player.getBoundingBox())) {
                 if (player.isColliding(position, player.level().getBlockState(position))) {
 
@@ -120,12 +139,16 @@ public class DragonStateHandler extends EntityStateHandler {
                     double directionX = player.getX() - center.x();
                     double directionZ = player.getZ() - center.z();
 
+                    numCollisions++;
+
                     // Need to collect the pushes otherwise running into the corner of two blocks causes issues
                     push = push.add(directionX, 0, directionZ);
                 }
             }
 
-            player.moveTo(player.position().add(push.normalize().scale(pushForce)));
+            if(push.length() > 0 && pushForce > 0) {
+                player.moveTo(player.position().add(push.normalize().scale(pushForce * numCollisions)));
+            }
         }
 
         if (player instanceof ServerPlayer serverPlayer) {
@@ -139,18 +162,37 @@ public class DragonStateHandler extends EntityStateHandler {
         }
     }
 
+    public void setDesiredSize(@Nullable final Player player, double size) {
+        if(player == null) {
+            desiredSize = size;
+            setSize(null, size);
+            return;
+        }
+
+        desiredSize = boundSize(player.registryAccess(), size);
+        if(player instanceof ServerPlayer serverPlayer) {
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncDesiredSize(serverPlayer.getId(), desiredSize));
+        }
+    }
+
+    private double boundSize(@Nullable final HolderLookup.Provider provider, double size) {
+        double newSize = DragonStage.getValidSize(size);
+        Holder<DragonStage> stageToUseForSizeBounds = DragonStage.getStage(dragonType.value().getStages(provider), newSize);
+        newSize = stageToUseForSizeBounds.value().getBoundedSize(newSize);
+
+        return newSize;
+    }
+
     private void updateSizeAndStage(@Nullable final HolderLookup.Provider provider, double size) {
         if (size == NO_SIZE) {
             dragonStage = null;
             this.size = NO_SIZE;
+            this.desiredSize = NO_SIZE;
             return;
         }
 
-        double newSize = DragonStage.getValidSize(size);
-        dragonStage = DragonStage.getStage(dragonType.value().getStages(provider), newSize);
-        newSize = dragonStage.value().getBoundedSize(newSize);
-
-        this.size = newSize;
+        dragonStage = DragonStage.getStage(dragonType.value().getStages(provider), size);
+        this.size = boundSize(provider, size);
     }
 
     public List<Holder<DragonStage>> getStagesSortedByProgression(@Nullable final HolderLookup.Provider provider) {
@@ -273,9 +315,16 @@ public class DragonStateHandler extends EntityStateHandler {
         this.destructionEnabled = destructionEnabled;
     }
 
+    public double getSize(float partialTick) {
+        return Mth.lerp(partialTick, sizeLastTick, size);
+    }
 
     public double getSize() {
         return size;
+    }
+
+    public double getDesiredSize() {
+        return desiredSize;
     }
 
     public boolean getDestructionEnabled() {
@@ -367,6 +416,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
             // Makes sure that the set size matches the previously set stage
             setSize(null, tag.getDouble(SIZE));
+            desiredSize = size;
             setDestructionEnabled(tag.getBoolean("destructionEnabled"));
             isGrowing = !tag.contains(IS_GROWING) || tag.getBoolean(IS_GROWING);
             starHeartState = StarHeartItem.State.values()[tag.getInt(STAR_HEART_STATE)];
@@ -441,7 +491,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
         setType(null);
         setBody(null, player);
-        setSize(player, NO_SIZE);
+        setDesiredSize(player, NO_SIZE);
 
         AltarData altarData = AltarData.getData(player);
         altarData.altarCooldown = Functions.secondsToTicks(ServerConfig.altarUsageCooldown);
