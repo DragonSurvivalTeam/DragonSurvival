@@ -39,11 +39,11 @@ public class DragonPenalties {
     @Translation(type = Translation.Type.PENALTY, comments = "Water Weakness")
     public static final ResourceKey<DragonPenalty> WATER_WEAKNESS = DragonPenalties.key("water_weakness");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
+    @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
             "■ Drying out under the harsh sun is a major concern for sea dragons. If they are outside of the water for too long, they will dehydrate and suffer damage.\n",
             "■ The skill «Hydration Capacity», rain, ice, snow and water bottles §7could make your life easier.§r\n",
     })
-    @Translation(type = Translation.Type.ABILITY, comments = "Thin Skin")
+    @Translation(type = Translation.Type.PENALTY, comments = "Thin Skin")
     public static final ResourceKey<DragonPenalty> THIN_SKIN = DragonPenalties.key("thin_skin");
 
     @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
@@ -52,16 +52,16 @@ public class DragonPenalties {
     @Translation(type = Translation.Type.PENALTY, comments = "Item Blacklist")
     public static final ResourceKey<DragonPenalty> ITEM_BLACKLIST = DragonPenalties.key("item_blacklist");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
+    @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
             "■ The predatory plants in your body dislike §dDarkness§r. If the light level around you is lower than 4, you may receive the §c«Stress»§r effect, rapidly draining your food gauge.\n",
             "■ The skill «Light the Dark» and effect «Forest Magic» §7could make your life easier.",
     })
-    @Translation(type = Translation.Type.ABILITY, comments = "Fear of Darkness")
+    @Translation(type = Translation.Type.PENALTY, comments = "Fear of Darkness")
     public static final ResourceKey<DragonPenalty> FEAR_OF_DARKNESS = DragonPenalties.key("fear_of_darkness");
 
     public static void registerPenalties(final BootstrapContext<DragonPenalty> context) {
         context.register(SNOW_AND_RAIN_WEAKNESS, new DragonPenalty(
-                DragonSurvival.res("abilities/cave/hot_blood_0"),
+                DragonSurvival.res("abilities/cave/burn_1"),
                 Optional.of(AnyOfCondition.anyOf(
                         Condition.thisEntity(EntityCondition.isInRain()),
                         Condition.thisEntity(EntityCondition.isOnBlock(Blocks.SNOW, Blocks.POWDER_SNOW, Blocks.SNOW_BLOCK))
@@ -71,14 +71,14 @@ public class DragonPenalties {
         ));
 
         context.register(WATER_WEAKNESS, new DragonPenalty(
-                DragonSurvival.res("abilities/cave/hot_blood_0"), // TODO
+                DragonSurvival.res("abilities/cave/cave_claws_and_teeth_1"), // TODO
                 Optional.of(Condition.thisEntity(EntityCondition.isInFluid(context.lookup(BuiltInRegistries.FLUID.key()).getOrThrow(FluidTags.WATER))).build()),
                 new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.WATER_BURN), 1),
                 new InstantTrigger(10)
         ));
 
         context.register(THIN_SKIN, new DragonPenalty(
-                DragonSurvival.res("abilities/cave/hot_blood_0"), // TODO
+                DragonSurvival.res("abilities/cave/cave_magic_1"), // TODO
                 Optional.of(AnyOfCondition.anyOf(
                         Condition.thisEntity(EntityCondition.isInFluid(context.lookup(BuiltInRegistries.FLUID.key()).getOrThrow(FluidTags.WATER))),
                         Condition.thisEntity(EntityCondition.isInRain()),
@@ -103,14 +103,14 @@ public class DragonPenalties {
         ));
 
         context.register(ITEM_BLACKLIST, new DragonPenalty(
-                DragonSurvival.res("abilities/cave/hot_blood_0"), // TODO
+                DragonSurvival.res("abilities/cave/cave_athletics_1"), // TODO
                 Optional.empty(),
                 new ItemBlacklistPenalty(DEFAULT_COMMON_BLACKLIST),
                 PenaltyTrigger.instant()
         ));
 
         context.register(FEAR_OF_DARKNESS, new DragonPenalty(
-                DragonSurvival.res("abilities/cave/hot_blood_0"), // TODO
+                DragonSurvival.res("abilities/cave/hot_blood_1"), // TODO
                 Optional.of(AnyOfCondition.anyOf(
                         Condition.thisEntity(EntityCondition.isInLight(3)),
                         Condition.thisEntity(EntityCondition.hasEffect(DSEffects.MAGIC))

@@ -26,6 +26,56 @@ public class LangKey {
     @Translation(type = Translation.Type.MISC, comments = "Hunger has exhausted you, and you can't fly.")
     public static final String MESSAGE_NO_HUNGER = Translation.Type.GUI.wrap("message.no_hunger");
 
+    // --- Growth Stage --- //
+
+    @Translation(type = Translation.Type.MISC, comments = "■ §6Stage§r§7: ")
+    public static final String GROWTH_STAGE = Translation.Type.GUI.wrap("handler.growth_stage");
+
+    @Translation(type = Translation.Type.MISC, comments = "■ §6Age§r§7: %s")
+    public static final String GROWTH_AGE = Translation.Type.GUI.wrap("handler.growth_age");
+
+    @Translation(type = Translation.Type.MISC, comments = {
+            "\n■ All dragons will gradually grow as time passes, improving their attributes. At certain growth stages, your appearance will change, and your growth will slow.§r",
+            "§7■ A Star Bone will revert your growth slightly, and a Star Heart will completely stop you from growing. The biggest dragons can take other players for a ride!§r",
+            "§7■ Growth items:§r"
+    })
+    public static final String GROWTH_INFO = Translation.Type.GUI.wrap("handler.growth_info");
+
+    @Translation(type = Translation.Type.MISC, comments = "§6Minimum Size§r§7: %s")
+    public static final String GROWTH_STARTING_SIZE = Translation.Type.GUI.wrap("handler.growth_starting_size");
+
+    @Translation(type = Translation.Type.MISC, comments = "§6Maximum Size§r§7: %s")
+    public static final String GROWTH_MAX_SIZE = Translation.Type.GUI.wrap("handler.growth_max_size");
+
+    @Translation(type = Translation.Type.MISC, comments = "§6Time to Grow§r§7: %s")
+    public static final String GROWTH_TIME = Translation.Type.GUI.wrap("handler.growth_time");
+
+    @Translation(type = Translation.Type.MISC, comments = "§6Harvest Level Bonus§r§7: %s")
+    public static final String GROWTH_HARVEST_LEVEL_BONUS = Translation.Type.GUI.wrap("handler.growth_harvest_level_bonus");
+
+    @Translation(type = Translation.Type.MISC, comments = "§6Break Speed Multiplier§r§7: %sx")
+    public static final String GROWTH_BREAK_SPEED_MULTIPLIER = Translation.Type.GUI.wrap("handler.growth_break_speed_multiplier");
+
+    @Translation(type = Translation.Type.MISC, comments = "§6Can destroy blocks at size§r§7: %s")
+    public static final String GROWTH_CAN_DESTROY_BLOCKS = Translation.Type.GUI.wrap("handler.growth_items");
+
+    @Translation(type = Translation.Type.MISC, comments = "§6Can crush entities at size§r§7: %s")
+    public static final String GROWTH_CAN_CRUSH_ENTITIES = Translation.Type.GUI.wrap("handler.growth_can_crush_entities");
+
+    @Translation(type = Translation.Type.MISC, comments = "§6--- Modifiers at Max Size ---§r§7: ")
+    public static final String GROWTH_MODIFIERS_AT_MAX_SIZE = Translation.Type.GUI.wrap("handler.growth_modifiers_at_max_size");
+
+    // --- Flight data --- //
+
+    @Translation(type = Translation.Type.MISC, comments = "You currently cannot fly")
+    public static final String FLIGHT_CANNOT_FLY = Translation.Type.GUI.wrap("handler.flight_cannot_fly_or_spin");
+
+    @Translation(type = Translation.Type.MISC, comments = "You currently can fly")
+    public static final String FLIGHT_CAN_FLY = Translation.Type.GUI.wrap("handler.flight_can_fly");
+
+    @Translation(type = Translation.Type.MISC, comments = "You currently can spin")
+    public static final String FLIGHT_CAN_SPIN = Translation.Type.GUI.wrap("handler.flight_can_spin");
+
     // --- Ability effects --- //
 
     @Translation(type = Translation.Type.MISC, comments = "Next level requires %s experience points (roughly level %s)")

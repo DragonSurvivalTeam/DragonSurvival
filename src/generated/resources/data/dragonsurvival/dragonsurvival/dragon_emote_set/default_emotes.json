@@ -121,15 +121,6 @@
       "locks_tail": true,
       "third_person": false,
       "translation_override": "sitting_curled_tail_left_head_locked"
-    },
-    {
-      "animation_key": "sitting_curled_tail_left",
-      "blend": false,
-      "can_move": false,
-      "locks_head": false,
-      "locks_tail": false,
-      "third_person": false,
-      "translation_override": "sitting_curled_tail_left_no_loop"
     }
   ]
 }

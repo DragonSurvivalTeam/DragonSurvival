@@ -96,32 +96,44 @@ public class DragonTypes {
                 new MiscDragonTextures(
                         DragonSurvival.res("textures/gui/food_icons/cave_food_icons.png"),
                         DragonSurvival.res("textures/gui/mana_icons/cave_mana_icons.png"),
-                        DragonSurvival.res("textures/gui/dragon_altar/cave_altar_icon.png"),
+                        DragonSurvival.res("textures/gui/custom/altar/cave/altar_icon.png"),
                         DragonSurvival.res("textures/gui/source_of_magic/cave_source_of_magic_0.png"),
                         DragonSurvival.res("textures/gui/source_of_magic/cave_source_of_magic_1.png"),
                         DragonSurvival.res("textures/gui/casting_bars/cave_cast_bar.png"),
                         DragonSurvival.res("textures/gui/help_button/cave_help_button.png"),
                         DragonSurvival.res("textures/gui/growth/circle_cave.png"),
                         List.of(new GrowthIcon(
-                                        DragonSurvival.res("textures/gui/stage/cave/newborn_hover.png"),
-                                        DragonSurvival.res("textures/gui/stage/cave/newborn_main.png"),
+                                        DragonSurvival.res("textures/gui/custom/stage/cave/newborn_stage_hover.png"),
+                                        DragonSurvival.res("textures/gui/custom/stage/cave/newborn_stage_main.png"),
                                         DragonStages.newborn
                                 ),
                                 new GrowthIcon(
-                                        DragonSurvival.res("textures/gui/stage/cave/young_hover.png"),
-                                        DragonSurvival.res("textures/gui/stage/cave/young_main.png"),
+                                        DragonSurvival.res("textures/gui/custom/stage/cave/young_stage_hover.png"),
+                                        DragonSurvival.res("textures/gui/custom/stage/cave/young_stage_main.png"),
                                         DragonStages.young
                                 ),
                                 new GrowthIcon(
-                                        DragonSurvival.res("textures/gui/stage/cave/adult_hover.png"),
-                                        DragonSurvival.res("textures/gui/stage/cave/adult_main.png"),
+                                        DragonSurvival.res("textures/gui/custom/stage/cave/adult_stage_hover.png"),
+                                        DragonSurvival.res("textures/gui/custom/stage/cave/adult_stage_main.png"),
                                         DragonStages.adult
                                 ),
                                 new GrowthIcon(
-                                        DragonSurvival.res("textures/gui/stage/cave/ancient_hover.png"),
-                                        DragonSurvival.res("textures/gui/stage/cave/ancient_main.png"),
+                                        DragonSurvival.res("textures/gui/custom/stage/cave/ancient_stage_hover.png"),
+                                        DragonSurvival.res("textures/gui/custom/stage/cave/ancient_stage_main.png"),
                                         AncientDatapack.ancient
                                 )
+                        ),
+                        new MiscDragonTextures.HoverIcon(
+                                DragonSurvival.res("textures/gui/custom/stage/cave/left_arrow_hover.png"),
+                                DragonSurvival.res("textures/gui/custom/stage/cave/left_arrow_main.png")
+                        ),
+                        new MiscDragonTextures.HoverIcon(
+                                DragonSurvival.res("textures/gui/custom/stage/cave/right_arrow_hover.png"),
+                                DragonSurvival.res("textures/gui/custom/stage/cave/right_arrow_main.png")
+                        ),
+                        new MiscDragonTextures.FillIcon(
+                                DragonSurvival.res("textures/gui/custom/stage/cave/point_main.png"),
+                                DragonSurvival.res("textures/gui/custom/stage/cave/point_hover.png")
                         ),
                         new ColorRGBA(16711680),
                         new ColorRGBA(16711680)
@@ -165,32 +177,44 @@ public class DragonTypes {
                 new MiscDragonTextures(
                         DragonSurvival.res("textures/gui/food_icons/cave_food_icons.png"),
                         DragonSurvival.res("textures/gui/mana_icons/cave_mana_icons.png"),
-                        DragonSurvival.res("textures/gui/dragon_altar/sea_altar_icon.png"),
+                        DragonSurvival.res("textures/gui/custom/altar/sea/altar_icon.png"),
                         DragonSurvival.res("textures/gui/source_of_magic/cave_source_of_magic_0.png"),
                         DragonSurvival.res("textures/gui/source_of_magic/cave_source_of_magic_1.png"),
                         DragonSurvival.res("textures/gui/casting_bars/cave_cast_bar.png"),
                         DragonSurvival.res("textures/gui/help_button/cave_help_button.png"),
                         DragonSurvival.res("textures/gui/growth/circle_cave.png"),
                         List.of(new GrowthIcon(
-                                        DragonSurvival.res("textures/gui/stage/sea/newborn_hover.png"),
-                                        DragonSurvival.res("textures/gui/stage/sea/newborn_main.png"),
+                                        DragonSurvival.res("textures/gui/custom/stage/sea/newborn_stage_hover.png"),
+                                        DragonSurvival.res("textures/gui/custom/stage/sea/newborn_stage_main.png"),
                                         DragonStages.newborn
                                 ),
                                 new GrowthIcon(
-                                        DragonSurvival.res("textures/gui/stage/sea/young_hover.png"),
-                                        DragonSurvival.res("textures/gui/stage/sea/young_main.png"),
+                                        DragonSurvival.res("textures/gui/custom/stage/sea/young_stage_hover.png"),
+                                        DragonSurvival.res("textures/gui/custom/stage/sea/young_stage_main.png"),
                                         DragonStages.young
                                 ),
                                 new GrowthIcon(
-                                        DragonSurvival.res("textures/gui/stage/sea/adult_hover.png"),
-                                        DragonSurvival.res("textures/gui/stage/sea/adult_main.png"),
+                                        DragonSurvival.res("textures/gui/custom/stage/sea/adult_stage_hover.png"),
+                                        DragonSurvival.res("textures/gui/custom/stage/sea/adult_stage_main.png"),
                                         DragonStages.adult
                                 ),
                                 new GrowthIcon(
-                                        DragonSurvival.res("textures/gui/stage/sea/ancient_hover.png"),
-                                        DragonSurvival.res("textures/gui/stage/sea/ancient_main.png"),
+                                        DragonSurvival.res("textures/gui/custom/stage/sea/ancient_stage_hover.png"),
+                                        DragonSurvival.res("textures/gui/custom/stage/sea/ancient_stage_main.png"),
                                         AncientDatapack.ancient
                                 )
+                        ),
+                        new MiscDragonTextures.HoverIcon(
+                                DragonSurvival.res("textures/gui/custom/stage/sea/left_arrow_hover.png"),
+                                DragonSurvival.res("textures/gui/custom/stage/sea/left_arrow_main.png")
+                        ),
+                        new MiscDragonTextures.HoverIcon(
+                                DragonSurvival.res("textures/gui/custom/stage/sea/right_arrow_hover.png"),
+                                DragonSurvival.res("textures/gui/custom/stage/sea/right_arrow_main.png")
+                        ),
+                        new MiscDragonTextures.FillIcon(
+                                DragonSurvival.res("textures/gui/custom/stage/sea/point_main.png"),
+                                DragonSurvival.res("textures/gui/custom/stage/sea/point_hover.png")
                         ),
                         new ColorRGBA(16711680),
                         new ColorRGBA(16711680)
@@ -224,32 +248,44 @@ public class DragonTypes {
                 new MiscDragonTextures(
                         DragonSurvival.res("textures/gui/food_icons/forest_food_icons.png"),
                         DragonSurvival.res("textures/gui/mana_icons/forest_mana_icons.png"),
-                        DragonSurvival.res("textures/gui/dragon_altar/forest_altar_icon.png"),
+                        DragonSurvival.res("textures/gui/custom/altar/forest/altar_icon.png"),
                         DragonSurvival.res("textures/gui/source_of_magic/forest_source_of_magic_0.png"),
                         DragonSurvival.res("textures/gui/source_of_magic/forest_source_of_magic_1.png"),
                         DragonSurvival.res("textures/gui/casting_bars/cave_cast_bar.png"),
                         DragonSurvival.res("textures/gui/help_button/cave_help_button.png"),
                         DragonSurvival.res("textures/gui/growth/circle_cave.png"),
                         List.of(new GrowthIcon(
-                                        DragonSurvival.res("textures/gui/stage/forest/newborn_hover.png"),
-                                        DragonSurvival.res("textures/gui/stage/forest/newborn_main.png"),
+                                        DragonSurvival.res("textures/gui/custom/stage/forest/newborn_stage_hover.png"),
+                                        DragonSurvival.res("textures/gui/custom/stage/forest/newborn_stage_main.png"),
                                         DragonStages.newborn
                                 ),
                                 new GrowthIcon(
-                                        DragonSurvival.res("textures/gui/stage/forest/young_hover.png"),
-                                        DragonSurvival.res("textures/gui/stage/forest/young_main.png"),
+                                        DragonSurvival.res("textures/gui/custom/stage/forest/young_stage_hover.png"),
+                                        DragonSurvival.res("textures/gui/custom/stage/forest/young_stage_main.png"),
                                         DragonStages.young
                                 ),
                                 new GrowthIcon(
-                                        DragonSurvival.res("textures/gui/stage/forest/adult_hover.png"),
-                                        DragonSurvival.res("textures/gui/stage/forest/adult_main.png"),
+                                        DragonSurvival.res("textures/gui/custom/stage/forest/adult_stage_hover.png"),
+                                        DragonSurvival.res("textures/gui/custom/stage/forest/adult_stage_main.png"),
                                         DragonStages.adult
                                 ),
                                 new GrowthIcon(
-                                        DragonSurvival.res("textures/gui/stage/forest/ancient_hover.png"),
-                                        DragonSurvival.res("textures/gui/stage/forest/ancient_main.png"),
+                                        DragonSurvival.res("textures/gui/custom/stage/forest/ancient_stage_hover.png"),
+                                        DragonSurvival.res("textures/gui/custom/stage/forest/ancient_stage_main.png"),
                                         AncientDatapack.ancient
                                 )
+                        ),
+                        new MiscDragonTextures.HoverIcon(
+                                DragonSurvival.res("textures/gui/custom/stage/forest/left_arrow_hover.png"),
+                                DragonSurvival.res("textures/gui/custom/stage/forest/left_arrow_main.png")
+                        ),
+                        new MiscDragonTextures.HoverIcon(
+                                DragonSurvival.res("textures/gui/custom/stage/forest/right_arrow_hover.png"),
+                                DragonSurvival.res("textures/gui/custom/stage/forest/right_arrow_main.png")
+                        ),
+                        new MiscDragonTextures.FillIcon(
+                                DragonSurvival.res("textures/gui/custom/stage/forest/point_main.png"),
+                                DragonSurvival.res("textures/gui/custom/stage/forest/point_hover.png")
                         ),
                         new ColorRGBA(16711680),
                         new ColorRGBA(16711680)

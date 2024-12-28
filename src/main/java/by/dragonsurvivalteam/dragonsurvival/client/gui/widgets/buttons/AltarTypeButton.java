@@ -35,7 +35,7 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class AltarTypeButton extends Button {
     private static final ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/dragon_altar_icons.png");
-    private static final ResourceLocation HUMAN_ALTAR_ICON = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/dragon_altar/human_altar_icon.png");
+    private static final ResourceLocation HUMAN_ALTAR_ICON = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/custom/altar/human/altar_icon.png");
 
     @Translation(type = Translation.Type.MISC, comments = "You have awakened from your sleep, and become a human.")
     private static final String CHOICE_HUMAN = Translation.Type.GUI.wrap("altar.choice.human");

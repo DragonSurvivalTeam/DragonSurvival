@@ -15,7 +15,7 @@
     "amount": 1.0,
     "penalty_type": "dragonsurvival:take_damage"
   },
-  "icon": "dragonsurvival:abilities/cave/hot_blood_0",
+  "icon": "dragonsurvival:abilities/cave/cave_claws_and_teeth_1",
   "trigger": {
     "effect_type": "dragonsurvival:instant_trigger",
     "trigger_rate": 10

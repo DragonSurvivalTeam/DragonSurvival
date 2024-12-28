@@ -13,31 +13,43 @@
   ],
   "misc_resources": {
     "ability_bar": "dragonsurvival:textures/gui/casting_bars/cave_cast_bar.png",
-    "altar_banner": "dragonsurvival:textures/gui/dragon_altar/forest_altar_icon.png",
+    "altar_banner": "dragonsurvival:textures/gui/custom/altar/forest/altar_icon.png",
     "food_sprites": "dragonsurvival:textures/gui/food_icons/forest_food_icons.png",
     "growth_bar_fill": "dragonsurvival:textures/gui/growth/circle_cave.png",
+    "growth_crystal": {
+      "empty": "dragonsurvival:textures/gui/custom/stage/forest/point_main.png",
+      "full": "dragonsurvival:textures/gui/custom/stage/forest/point_hover.png"
+    },
     "growth_icons": [
       {
         "dragon_stage": "dragonsurvival:newborn",
-        "hover_icon": "dragonsurvival:textures/gui/stage/forest/newborn_hover.png",
-        "icon": "dragonsurvival:textures/gui/stage/forest/newborn_main.png"
+        "hover_icon": "dragonsurvival:textures/gui/custom/stage/forest/newborn_stage_hover.png",
+        "icon": "dragonsurvival:textures/gui/custom/stage/forest/newborn_stage_main.png"
       },
       {
         "dragon_stage": "dragonsurvival:young",
-        "hover_icon": "dragonsurvival:textures/gui/stage/forest/young_hover.png",
-        "icon": "dragonsurvival:textures/gui/stage/forest/young_main.png"
+        "hover_icon": "dragonsurvival:textures/gui/custom/stage/forest/young_stage_hover.png",
+        "icon": "dragonsurvival:textures/gui/custom/stage/forest/young_stage_main.png"
       },
       {
         "dragon_stage": "dragonsurvival:adult",
-        "hover_icon": "dragonsurvival:textures/gui/stage/forest/adult_hover.png",
-        "icon": "dragonsurvival:textures/gui/stage/forest/adult_main.png"
+        "hover_icon": "dragonsurvival:textures/gui/custom/stage/forest/adult_stage_hover.png",
+        "icon": "dragonsurvival:textures/gui/custom/stage/forest/adult_stage_main.png"
       },
       {
         "dragon_stage": "dragonsurvival:ancient",
-        "hover_icon": "dragonsurvival:textures/gui/stage/forest/ancient_hover.png",
-        "icon": "dragonsurvival:textures/gui/stage/forest/ancient_main.png"
+        "hover_icon": "dragonsurvival:textures/gui/custom/stage/forest/ancient_stage_hover.png",
+        "icon": "dragonsurvival:textures/gui/custom/stage/forest/ancient_stage_main.png"
       }
     ],
+    "growth_left_arrow": {
+      "hover_icon": "dragonsurvival:textures/gui/custom/stage/forest/left_arrow_hover.png",
+      "icon": "dragonsurvival:textures/gui/custom/stage/forest/left_arrow_main.png"
+    },
+    "growth_right_arrow": {
+      "hover_icon": "dragonsurvival:textures/gui/custom/stage/forest/right_arrow_hover.png",
+      "icon": "dragonsurvival:textures/gui/custom/stage/forest/right_arrow_main.png"
+    },
     "help_button": "dragonsurvival:textures/gui/help_button/cave_help_button.png",
     "mana_sprites": "dragonsurvival:textures/gui/mana_icons/forest_mana_icons.png",
     "primary_color": "#00FF0000",

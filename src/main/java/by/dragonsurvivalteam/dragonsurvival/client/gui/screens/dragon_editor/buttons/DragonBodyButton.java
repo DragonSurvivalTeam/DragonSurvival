@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.buttons;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonSpeciesScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.SkinsScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.DragonEditorScreen;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.TextureManagerAccess;
@@ -23,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 public class DragonBodyButton extends Button {
-    public static final String LOCATION_PREFIX = "textures/gui/body/";
+    public static final String LOCATION_PREFIX = "textures/gui/custom/body/";
 
     public static final int HOVERED = 1;
     public static final int SELECTED = 2;
@@ -46,6 +47,8 @@ public class DragonBodyButton extends Button {
 
         if (screen instanceof DragonEditorScreen dragonEditorScreen) {
             iconLocationSuffix = "/" + ResourceHelper.getNameLowercase(dragonEditorScreen.dragonType) + ".png";
+        } else if (screen instanceof DragonSpeciesScreen dragonSpeciesScreen) {
+            iconLocationSuffix = "/" + ResourceHelper.getNameLowercase(dragonSpeciesScreen.dragonType) + ".png";
         } else {
             iconLocationSuffix = "/default.png";
         }

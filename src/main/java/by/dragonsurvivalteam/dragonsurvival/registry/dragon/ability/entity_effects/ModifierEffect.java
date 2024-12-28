@@ -52,18 +52,7 @@ public record ModifierEffect(List<ModifierWithDuration> modifiers) implements Ab
             double duration = Functions.ticksToSeconds((int) modifierWithDuration.duration().calculate(ability.level()));
 
             for (Modifier modifier : modifierWithDuration.modifiers()) {
-                MutableComponent name = Component.literal("§6■ ").append(Component.translatable(modifier.attribute().value().getDescriptionId()).withColor(DSColors.ORANGE));
-                float amount = modifier.amount().calculate(ability.level());
-                String number = amount > 0 ? "+" : amount < 0 ? "-" : "";
-
-                if (modifier.attribute().value() instanceof PercentageAttribute) {
-                    number += NumberFormat.getPercentInstance().format(amount);
-                } else {
-                    number += String.format("%.2f", amount);
-                }
-
-                Component value = Component.literal("§6: ").append(Component.literal(number).withStyle(modifier.attribute().value().getStyle(amount > 0)));
-                name = name.append(value);
+                MutableComponent name = modifier.getFormattedDescription(ability.level());
 
                 if (duration > 0) {
                     name = name.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.blue(duration)));

@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.common.capability;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.GrowthComponent;
 import by.dragonsurvivalteam.dragonsurvival.commands.DragonCommand;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.subcapabilities.SkinCap;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.subcapabilities.SubCap;
@@ -11,6 +12,8 @@ import by.dragonsurvivalteam.dragonsurvival.network.player.SyncSize;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSModifiers;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.*;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBodies;
@@ -18,24 +21,29 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
 import by.dragonsurvivalteam.dragonsurvival.util.*;
+import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Pair;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.awt.*;
+import java.text.NumberFormat;
+import java.util.*;
+import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
@@ -158,6 +166,21 @@ public class DragonStateHandler extends EntityStateHandler {
         newSize = dragonStage.value().getBoundedSize(newSize);
 
         this.size = newSize;
+    }
+
+    public List<Holder<DragonStage>> getStagesSortedByProgression(@Nullable final HolderLookup.Provider provider) {
+        List<Holder<DragonStage>> stages = getStages(provider);
+        List<Holder<DragonStage>> sortedStages = new ArrayList<>(stages);
+        sortedStages.sort(Comparator.comparingDouble(stage -> stage.value().sizeRange().min()));
+        return sortedStages;
+    }
+
+    public List<Holder<DragonStage>> getStages(@Nullable final HolderLookup.Provider provider) {
+        if(dragonType.value().stages().isPresent()) {
+            return dragonType.value().stages().get().stream().toList();
+        } else {
+            return DragonStage.getDefaultStages(provider).stream().toList();
+        }
     }
 
     // TODO :: use optional for these?
@@ -455,6 +478,42 @@ public class DragonStateHandler extends EntityStateHandler {
 
     public ResourceLocation getFoodIcons() {
         return dragonType.value().miscResources().foodSprites();
+    }
+
+    private static final int MAX_SHOWN = 5;
+
+    public Pair<List<Either<FormattedText, TooltipComponent>>, Integer> getGrowthDescription(int currentScroll) {
+        DragonStage stage = dragonStage.value();
+        double percentage = Math.clamp(stage.getProgress(getSize()), 0, 1);
+        percentage = isGrowing ? percentage : -1;
+        String ageInformation = stage.getTimeToGrowFormattedWithPercentage(percentage, getSize());
+
+        List<GrowthComponent> growthItems = new ArrayList<>();
+
+        getStage().value().growthItems().forEach(growthItem -> {
+            // A bit of wasted processing since not all are shown
+            growthItem.items().forEach(item -> growthItems.add(new GrowthComponent(item.value(), growthItem.growthInTicks())));
+        });
+
+        int scroll = currentScroll;
+        if (growthItems.size() <= MAX_SHOWN) {
+            scroll = 0;
+        } else {
+            scroll = Math.clamp(scroll, 0, growthItems.size() - MAX_SHOWN);
+        }
+
+        int max = Math.min(growthItems.size(), scroll + MAX_SHOWN);
+
+        List<Either<FormattedText, TooltipComponent>> components = new ArrayList<>();
+        components.add(Either.left(net.minecraft.network.chat.Component.translatable(LangKey.GROWTH_STAGE).append(DragonStage.translatableName(Objects.requireNonNull(getStage().getKey())))));
+        components.add(Either.left(net.minecraft.network.chat.Component.translatable(LangKey.GROWTH_AGE, ageInformation)));
+        components.add(Either.left(net.minecraft.network.chat.Component.translatable(LangKey.GROWTH_INFO).append(net.minecraft.network.chat.Component.literal(" [" + Math.min(growthItems.size(), scroll + MAX_SHOWN) + " / " + growthItems.size() + "]").withStyle(ChatFormatting.DARK_GRAY))));
+
+        for (int i = scroll; i < max; i++) {
+            components.add(Either.right(growthItems.get(i)));
+        }
+
+        return Pair.of(components, scroll);
     }
 
     public static final String DRAGON_TYPE = "dragon_type";

@@ -53,7 +53,7 @@
     "amount": 1.0,
     "penalty_type": "dragonsurvival:take_damage"
   },
-  "icon": "dragonsurvival:abilities/cave/hot_blood_0",
+  "icon": "dragonsurvival:abilities/cave/cave_magic_1",
   "trigger": {
     "display_like_hunger_bar": true,
     "effect_type": "dragonsurvival:supply_trigger",

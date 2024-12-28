@@ -22,6 +22,7 @@ import org.joml.Vector2ic;
 import software.bernie.geckolib.util.Color;
 
 import java.util.List;
+import java.util.Objects;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
@@ -129,18 +130,26 @@ public class AbilityAndPenaltyTooltipRenderer {
     }
 
 
-    public static void drawPenaltyHover(@NotNull final GuiGraphics guiGraphics, int x, int y, final Holder<DragonPenalty> penalty) {
+    public static void drawPenaltyTooltip(@NotNull final GuiGraphics guiGraphics, int x, int y, final Holder<DragonPenalty> penalty) {
         int colorXPos = 20;
         int colorYPos = 0;
 
         //noinspection DataFlowIssue -> key is present
         FormattedText rawDescription = Component.translatable(Translation.Type.PENALTY_DESCRIPTION.wrap(penalty.getKey().location()));
 
-        List<Component> info = List.of(penalty.value().getDescription(Minecraft.getInstance().player));
-        rawDescription = FormattedText.composite(rawDescription, Component.empty().append("\n\n"));
+        Component infoRaw = penalty.value().getDescription(Minecraft.getInstance().player);
+        List<Component> info;
+        if(Objects.equals(infoRaw, Component.empty())) {
+            info = List.of();
+        }  else {
+            info = List.of(infoRaw);
+        }
+
+        if(!info.isEmpty()) {
+            rawDescription = FormattedText.composite(rawDescription, Component.empty().append("\n\n"));
+        }
 
         List<FormattedCharSequence> description = Minecraft.getInstance().font.split(rawDescription, 150 - 7);
-
         Component name = Component.translatable(Translation.Type.PENALTY.wrap(penalty.getKey().location()));
         drawTooltip(guiGraphics, x, y, info, description, colorXPos, colorYPos, PENALTY, name, Color.ofRGB(145, 46, 46), -1, -1, penalty.value().icon());
     }

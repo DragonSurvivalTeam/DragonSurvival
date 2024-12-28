@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons;
 
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.MagicHUD;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.*;
+import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
 import by.dragonsurvivalteam.dragonsurvival.network.container.RequestOpenInventory;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import net.minecraft.client.Minecraft;
@@ -98,7 +99,7 @@ public class TabButton extends Button {
     @Override
     public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float p_230431_4_) {
         if (isCurrent()) {
-            guiGraphics.blit(MagicHUD.WIDGET_TEXTURES, getX(), getY(), type == Type.INVENTORY_TAB ? 0 : 28, 0, 28, 32);
+            guiGraphics.blit(MagicHUD.WIDGET_TEXTURES, getX(), getY(), 28, 0, 28, 32);
         } else if (isHovered()) {
             guiGraphics.blit(MagicHUD.WIDGET_TEXTURES, getX(), getY(), 84, 0, 28, 32);
         } else {
@@ -109,6 +110,17 @@ public class TabButton extends Button {
             guiGraphics.blit(MagicHUD.WIDGET_TEXTURES, getX() + 2, getY() + 2 + (isCurrent() ? 2 : 0), type.ordinal() * 24, 67, 24, 24);
         } else {
             guiGraphics.blit(MagicHUD.WIDGET_TEXTURES, getX() + 2, getY() + 2 + (isCurrent() ? 2 : 0), type.ordinal() * 24, 41, 24, 24);
+        }
+    }
+
+    public static void addTabButtonsToScreen(Screen screen, int offsetX, int offsetY, TabButton.Type typeSelected) {
+        for(int i = 0; i < Type.values().length; i++) {
+            Type type = Type.values()[i];
+            if (type == typeSelected) {
+                ((ScreenAccessor)screen).dragonSurvival$addRenderableWidget(new TabButton(offsetX + 1 + (i * 28), offsetY - 2, type, screen));
+            } else {
+                ((ScreenAccessor)screen).dragonSurvival$addRenderableWidget(new TabButton(offsetX + (i * 28), offsetY, type, screen));
+            }
         }
     }
 }

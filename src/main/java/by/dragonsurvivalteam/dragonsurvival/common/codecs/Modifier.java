@@ -1,15 +1,19 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
+import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
+import net.neoforged.neoforge.common.PercentageAttribute;
 
+import java.text.NumberFormat;
 import java.util.Optional;
 
 public record Modifier(Holder<Attribute> attribute, LevelBasedValue amount, AttributeModifier.Operation operation, Optional<ResourceKey<DragonType>> dragonType) {
@@ -42,5 +46,22 @@ public record Modifier(Holder<Attribute> attribute, LevelBasedValue amount, Attr
 
     public AttributeModifier getModifier(final ModifierType type, int level) {
         return new AttributeModifier(type.randomId(attribute(), operation()), amount().calculate(level), operation());
+    }
+
+    public MutableComponent getFormattedDescription(int level) {
+        MutableComponent name = net.minecraft.network.chat.Component.literal("§6■ ").append(net.minecraft.network.chat.Component.translatable(attribute().value().getDescriptionId()).withColor(DSColors.ORANGE));
+        float amount = amount().calculate(level);
+        String number = amount > 0 ? "+" : amount < 0 ? "-" : "";
+
+        if (attribute().value() instanceof PercentageAttribute) {
+            number += NumberFormat.getPercentInstance().format(amount);
+        } else {
+            number += String.format("%.2f", amount);
+        }
+
+        net.minecraft.network.chat.Component value = net.minecraft.network.chat.Component.literal("§6: ").append(net.minecraft.network.chat.Component.literal(number).withStyle(attribute().value().getStyle(amount > 0)));
+        name = name.append(value);
+
+        return name;
     }
 }

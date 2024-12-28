@@ -88,7 +88,7 @@ public class GrowthHUD {
 
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0, 0, 300);
-        guiGraphics.blit(handler.getType().value().getGrowthIcon(dragonStage), circleX + 7, circleY + 4, 0, 0, 20, 20, 20, 20);
+        guiGraphics.blit(handler.getType().value().getHoverGrowthIcon(dragonStage), circleX + 7, circleY + 4, 0, 0, 20, 20, 20, 20);
         guiGraphics.pose().popPose();
     }
 }
