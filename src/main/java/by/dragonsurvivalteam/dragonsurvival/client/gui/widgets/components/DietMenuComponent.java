@@ -74,9 +74,11 @@ public class DietMenuComponent implements ScrollableComponent, Renderable {
             }
         }
 
-        String text = "[" + scrollAmount + "/" + maxScroll() + "]";
-        int xPosition = x + (ITEMS_PER_ROW * ITEM_SIZE / 2) - Minecraft.getInstance().font.width(text) / 2;
-        graphics.drawString(Minecraft.getInstance().font, text, xPosition, maxY + 3, DSColors.WHITE, false);
+        if (maxScroll() > 0) {
+            String text = "[" + scrollAmount + "/" + maxScroll() + "]";
+            int xPosition = x + (ITEMS_PER_ROW * ITEM_SIZE / 2) - Minecraft.getInstance().font.width(text) / 2;
+            graphics.drawString(Minecraft.getInstance().font, text, xPosition, maxY + 3, DSColors.WHITE, false);
+        }
     }
 
     private boolean isHovered(double mouseX, double mouseY) {
@@ -90,6 +92,6 @@ public class DietMenuComponent implements ScrollableComponent, Renderable {
             return 0;
         }
 
-        return (int) Math.ceil((double) items.size() / ITEMS_PER_ROW) - VISIBLE_MAX_ROWS;
+        return Math.max(0, (int) Math.ceil((double) items.size() / ITEMS_PER_ROW) - VISIBLE_MAX_ROWS);
     }
 }
