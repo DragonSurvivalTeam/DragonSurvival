@@ -65,10 +65,9 @@ public class DragonSizeHandler {
 
     public static EntityDimensions calculateDimensions(DragonStateHandler handler, Player player, Pose overridePose) {
         double scale = player.getAttributeValue(Attributes.SCALE);
-        float partialDeltaTick = DragonSurvival.PROXY.getPartialDeltaTick();
-        double height = calculateRawDragonHeight(handler.getSize(partialDeltaTick)) * handler.getBody().value().heightMultiplier();
-        double eyeHeight = calculateRawDragonEyeHeight(handler.getSize(partialDeltaTick)) * handler.getBody().value().heightMultiplier();
-        double width = calculateRawDragonWidth(handler.getSize(partialDeltaTick));
+        double height = calculateRawDragonHeight(handler.getSize()) * handler.getBody().value().heightMultiplier();
+        double eyeHeight = calculateRawDragonEyeHeight(handler.getSize()) * handler.getBody().value().heightMultiplier();
+        double width = calculateRawDragonWidth(handler.getSize());
 
         height = applyPose(height, overridePose, handler.getBody().value().hasExtendedCrouch());
         eyeHeight = applyPose(eyeHeight, overridePose, handler.getBody().value().hasExtendedCrouch());

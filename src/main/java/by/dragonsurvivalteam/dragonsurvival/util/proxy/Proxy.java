@@ -34,6 +34,4 @@ public interface Proxy {
     default void beginPlayingEmote(int playerId, DragonEmote emote) { /* Nothing to do */ }
 
     default void stopAllEmotes(int playerId) { /* Nothing to do */ }
-
-    default float getPartialDeltaTick() { return 1.0f; }
 }
