@@ -92,6 +92,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
     /** Used serverside to lerp true size values, and clientside to lerp visual size values. */
     public void lerpSize(final Player player) {
+
         if(player.level().isClientSide) {
             if(visualSize == NO_SIZE) {
                 visualSize = size;
