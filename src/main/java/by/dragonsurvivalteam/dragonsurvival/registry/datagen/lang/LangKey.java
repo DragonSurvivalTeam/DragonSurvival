@@ -62,7 +62,7 @@ public class LangKey {
     @Translation(type = Translation.Type.MISC, comments = "§6Can crush entities at size§r§7: %s")
     public static final String GROWTH_CAN_CRUSH_ENTITIES = Translation.Type.GUI.wrap("handler.growth_can_crush_entities");
 
-    @Translation(type = Translation.Type.MISC, comments = "§6--- Modifiers at Max Size ---§r§7: ")
+    @Translation(type = Translation.Type.MISC, comments = "\n§6--- Modifiers at max. size ---§r§7")
     public static final String GROWTH_MODIFIERS_AT_MAX_SIZE = Translation.Type.GUI.wrap("handler.growth_modifiers_at_max_size");
 
     // --- Flight data --- //

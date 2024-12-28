@@ -881,7 +881,7 @@
   "dragonsurvival.gui.handler.growth_info": "\n■ All dragons will gradually grow as time passes, improving their attributes. At certain growth stages, your appearance will change, and your growth will slow.§r\n§7■ A Star Bone will revert your growth slightly, and a Star Heart will completely stop you from growing. The biggest dragons can take other players for a ride!§r\n§7■ Growth items:§r",
   "dragonsurvival.gui.handler.growth_items": "§6Can destroy blocks at size§r§7: %s",
   "dragonsurvival.gui.handler.growth_max_size": "§6Maximum Size§r§7: %s",
-  "dragonsurvival.gui.handler.growth_modifiers_at_max_size": "§6--- Modifiers at Max Size ---§r§7: ",
+  "dragonsurvival.gui.handler.growth_modifiers_at_max_size": "\n§6--- Modifiers at max. size ---§r§7",
   "dragonsurvival.gui.handler.growth_stage": "■ §6Stage§r§7: ",
   "dragonsurvival.gui.handler.growth_starting_size": "§6Minimum Size§r§7: %s",
   "dragonsurvival.gui.handler.growth_time": "§6Time to Grow§r§7: %s",

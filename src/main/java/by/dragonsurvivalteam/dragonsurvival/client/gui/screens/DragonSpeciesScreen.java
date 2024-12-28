@@ -185,14 +185,17 @@ public class DragonSpeciesScreen extends Screen {
 
         // Growth stage crystals
         List<Holder<DragonStage>> stages = data.getStagesSortedByProgression(minecraft.player.registryAccess());
-        if(!stages.isEmpty()) {
-            List<AbstractWidget> crystals = stages.stream().map(stage -> (AbstractWidget)(new GrowthCrystalButton(0, 0, stage))).toList();
+
+        if (!stages.isEmpty()) {
+            List<AbstractWidget> crystals = stages.stream().map(stage -> (AbstractWidget) new GrowthCrystalButton(0, 0, stage)).toList();
             MiscDragonTextures textures = data.getType().value().miscResources();
+
             crystalBar = new BarComponent(this,
                     startX + 130, startY - 19, 4,
                     crystals, 10,
                     -11, 39, 1, 12, 16, 12, 16,
                     textures.growthLeftArrow().hoverIcon(), textures.growthLeftArrow().icon(), textures.growthRightArrow().hoverIcon(), textures.growthRightArrow().icon());
+
             scrollableComponents.add(crystalBar);
         }
 
