@@ -26,7 +26,6 @@ public record SyncSize(int playerId, double size) implements CustomPacketPayload
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 DragonStateHandler data = DragonStateProvider.getData(player);
                 data.setSize(player, packet.size());
-                data.updateSizeLastTick();
                 player.refreshDimensions();
             }
         });

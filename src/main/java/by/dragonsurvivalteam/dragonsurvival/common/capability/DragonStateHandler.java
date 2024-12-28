@@ -68,9 +68,13 @@ public class DragonStateHandler extends EntityStateHandler {
     private Holder<DragonStage> dragonStage;
 
     private int passengerId = -1;
+
+    private static final double SIZE_LERP_SPEED = 0.1;
     private double size = NO_SIZE;
-    private double sizeLastTick = NO_SIZE;
+    private double visualSize = NO_SIZE;
+    private double visualSizeLastTick = NO_SIZE;
     private double desiredSize = NO_SIZE;
+
     private boolean destructionEnabled;
 
     // Needed to calculate collision damage correctly when flying. See ServerFlightHandler.
@@ -86,15 +90,20 @@ public class DragonStateHandler extends EntityStateHandler {
         setSize(player, dragonStage.value().getBoundedSize(size));
     }
 
-    /** Used serverside to lerp size values. Then the client is told about the data and lerps further between frames. */
-    public void lerpSize(@Nullable final Player player) {
-        double newSize = Mth.lerp(0.1, size, desiredSize);
-        setSize(player, newSize);
-        sizeLastTick = size;
-    }
+    /** Used serverside to lerp true size values, and clientside to lerp visual size values. */
+    public void lerpSize(final Player player) {
 
-    public void updateSizeLastTick() {
-        sizeLastTick = size;
+        if(player.level().isClientSide) {
+            if(visualSize == NO_SIZE) {
+                visualSize = size;
+            }
+
+            visualSizeLastTick = visualSize;
+            visualSize = Mth.lerp(SIZE_LERP_SPEED, visualSize, desiredSize);
+        } else {
+            double newSize = Mth.lerp(SIZE_LERP_SPEED, size, desiredSize);
+            setSize(player, newSize);
+        }
     }
 
     public void setSize(@Nullable final Player player, final double size) {
@@ -315,8 +324,8 @@ public class DragonStateHandler extends EntityStateHandler {
         this.destructionEnabled = destructionEnabled;
     }
 
-    public double getSize(float partialTick) {
-        return Mth.lerp(partialTick, sizeLastTick, size);
+    public double getVisualSize(float partialTick) {
+        return Mth.lerp(partialTick, visualSizeLastTick, visualSize);
     }
 
     public double getSize() {
