@@ -157,13 +157,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
                 continue;
             }
 
-            // Remove any emotes from conflicting layers (blend removes other blends, non-blend removes other non-blends)
-            if(currentlyPlayingEmotes[i].blend() && emote.blend()) {
-                currentlyPlayingEmotes[i] = null;
-                animationTickTimer.putAnimation("emote_" + i, 0.0);
-                continue;
-            }
-
+            // Remove any emotes from conflicting layers (non-blend removes other non-blends)
             if(!currentlyPlayingEmotes[i].blend() && !emote.blend()) {
                 currentlyPlayingEmotes[i] = null;
                 animationTickTimer.putAnimation("emote_" + i, 0.0);
