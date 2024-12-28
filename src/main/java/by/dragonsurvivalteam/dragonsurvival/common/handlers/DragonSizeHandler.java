@@ -14,6 +14,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -87,7 +88,6 @@ public class DragonSizeHandler {
         return (11.0D * size + 54.0D) / 260.0D; // 0.8 -> Config Dragon Max
     }
 
-    // TODO :: what exactly do these numbers mean?
     public static double applyPose(double height, Pose pose, boolean hasExtendedCrouch) {
         if (pose == Pose.CROUCHING) {
             height *= (hasExtendedCrouch ? 3d / 6d : 5d / 6d);
@@ -143,21 +143,26 @@ public class DragonSizeHandler {
         Player player = event.getEntity();
         DragonStateHandler data = DragonStateProvider.getData(player);
 
-        String key = player.getId() + (player.level().isClientSide() ? "client" : "server");
         boolean isDragon = data.isDragon();
-        Boolean wasDragon = WAS_DRAGON.put(key, isDragon);
+        Boolean wasDragon = WAS_DRAGON.put(getKey(player), isDragon);
 
         if (wasDragon != null && wasDragon && !isDragon) {
-            // Dragon -> player
             player.setForcedPose(null);
             player.refreshDimensions();
-        } else if (wasDragon == null || !wasDragon && isDragon) {
-            // Player -> dragon
+        } else if (isDragon) {
+            data.lerpSize(player);
             overridePose(player);
         }
+    }
 
-        if (isDragon) {
-            data.lerpSize(player);
+    @SubscribeEvent
+    public static void removeMapEntry(final EntityLeaveLevelEvent event) {
+        if (event.getEntity() instanceof Player player) {
+            WAS_DRAGON.remove(getKey(player));
         }
+    }
+
+    private static String getKey(final Player player) {
+        return player.getId() + (player.level().isClientSide() ? "client" : "server");
     }
 }
