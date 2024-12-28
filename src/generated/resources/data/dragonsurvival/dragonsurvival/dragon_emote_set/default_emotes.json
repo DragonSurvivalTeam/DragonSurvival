@@ -105,7 +105,16 @@
       "third_person": false
     },
     {
-      "animation_key": "sitting_curled_tail_left",
+      "animation_key": "blend_wing_hug",
+      "blend": true,
+      "can_move": true,
+      "locks_head": false,
+      "locks_tail": false,
+      "loops": true,
+      "third_person": false
+    },
+    {
+      "animation_key": "sit",
       "blend": false,
       "can_move": false,
       "locks_head": false,
@@ -117,10 +126,46 @@
       "animation_key": "sitting_curled_tail_left",
       "blend": false,
       "can_move": false,
-      "locks_head": true,
-      "locks_tail": true,
-      "third_person": false,
-      "translation_override": "sitting_curled_tail_left_head_locked"
+      "locks_head": false,
+      "locks_tail": false,
+      "loops": true,
+      "third_person": false
+    },
+    {
+      "animation_key": "sit_on_magic_source",
+      "blend": false,
+      "can_move": false,
+      "locks_head": false,
+      "locks_tail": false,
+      "loops": true,
+      "third_person": false
+    },
+    {
+      "animation_key": "sitting_spinning_item",
+      "blend": false,
+      "can_move": false,
+      "locks_head": false,
+      "locks_tail": false,
+      "loops": true,
+      "third_person": false
+    },
+    {
+      "animation_key": "sad_sitting",
+      "blend": false,
+      "can_move": false,
+      "locks_head": false,
+      "locks_tail": false,
+      "loops": true,
+      "third_person": false
+    },
+    {
+      "animation_key": "hugging_sitting",
+      "blend": false,
+      "can_move": false,
+      "locks_head": false,
+      "locks_tail": false,
+      "loops": true,
+      "third_person": false
     }
   ]
 }
