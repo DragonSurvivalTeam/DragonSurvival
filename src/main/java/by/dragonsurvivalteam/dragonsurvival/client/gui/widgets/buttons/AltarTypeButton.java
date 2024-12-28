@@ -88,23 +88,23 @@ public class AltarTypeButton extends Button {
             List<Either<FormattedText, TooltipComponent>> components = new ArrayList<>();
 
             if (type != null) {
-                List<Item> foods = type.value().getDietItems();
+                List<Item> diet = type.value().getDietItems();
 
-                if (foods.size() <= MAX_SHOWN) {
+                if (diet.size() <= MAX_SHOWN) {
                     scroll = 0;
                 } else {
-                    scroll = Math.clamp(scroll, 0, foods.size() - MAX_SHOWN);
+                    scroll = Math.clamp(scroll, 0, diet.size() - MAX_SHOWN);
                 }
 
-                int max = Math.min(foods.size(), scroll + MAX_SHOWN);
+                int max = Math.min(diet.size(), scroll + MAX_SHOWN);
 
                 // Using the color codes in the translation doesn't seem to apply the color to the entire text - therefor we create the [shown / max_items] tooltip part here
-                MutableComponent shownFoods = Component.literal(" [" + Math.min(foods.size(), scroll + MAX_SHOWN) + " / " + foods.size() + "]").withStyle(ChatFormatting.DARK_GRAY);
+                MutableComponent shownFoods = Component.literal(" [" + Math.min(diet.size(), scroll + MAX_SHOWN) + " / " + diet.size() + "]").withStyle(ChatFormatting.DARK_GRAY);
                 //noinspection DataFlowIssue -> key is present
                 components.addFirst(Either.left(Component.translatable(Translation.Type.DRAGON_TYPE_DESCRIPTION.wrap(type.getKey().location())).append(shownFoods)));
 
                 for (int i = scroll; i < max; i++) {
-                    components.add(Either.right(new DietComponent(type, foods.get(i))));
+                    components.add(Either.right(new DietComponent(type, diet.get(i))));
                 }
 
                 graphics.renderComponentTooltipFromElements(Minecraft.getInstance().font, components, mouseX, mouseY, ItemStack.EMPTY);

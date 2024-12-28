@@ -105,9 +105,15 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
         event.getEntity().getExistingData(DSDataAttachments.SUMMONED_ENTITIES).ifPresent(data -> {
             SummonEntityEffect.Instance instance = data.getInstance(event.getTarget());
 
-            if (instance != null && instance.removeSummon(event.getTarget())) {
+            if (instance == null) {
+                return;
+            }
+
+            if (instance.removeSummon(event.getTarget())) {
                 data.remove(event.getEntity(), instance);
             }
+
+            event.getTarget().discard();
         });
     }
 

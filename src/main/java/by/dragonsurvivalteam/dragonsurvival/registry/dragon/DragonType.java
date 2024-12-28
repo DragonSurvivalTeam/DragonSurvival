@@ -12,7 +12,6 @@ import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.*;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -26,7 +25,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -63,7 +61,7 @@ public class DragonType implements AttributeModifierSupplier {
     private final List<DietEntry> dietEntries;
     private final MiscDragonTextures miscResources;
 
-    private Map<ResourceKey<Item>, FoodProperties> diet;
+    private Map<Item, FoodProperties> diet;
     private long lastDietUpdate;
 
     public DragonType(final Optional<Double> startingSize, final Optional<HolderSet<DragonStage>> stages, final HolderSet<DragonBody> bodies, final HolderSet<DragonAbility> abilities, final HolderSet<DragonPenalty> penalties, List<Modifier> modifiers, final List<DietEntry> dietEntries, final MiscDragonTextures miscResources) {
@@ -103,25 +101,11 @@ public class DragonType implements AttributeModifierSupplier {
     }
 
     public List<Item> getDietItems() {
-        List<Item> items = new ArrayList<>();
-
-        updateDietMap();
-        diet.keySet().forEach(key -> items.add(BuiltInRegistries.ITEM.get(key)));
-
-        return items;
+        return List.copyOf(getDiet().keySet());
     }
 
     public @Nullable FoodProperties getDiet(final Item item) {
-        updateDietMap();
-        //noinspection deprecation -> ignore
-        return diet.get(item.builtInRegistryHolder().getKey());
-    }
-
-    private void updateDietMap() {
-        if (diet == null || lastDietUpdate < DataReloadHandler.lastReload) {
-            lastDietUpdate = System.currentTimeMillis();
-            diet = DietEntry.map(dietEntries);
-        }
+        return getDiet().get(item);
     }
 
     public boolean isItemBlacklisted(final Item item) {
@@ -202,5 +186,14 @@ public class DragonType implements AttributeModifierSupplier {
 
     public HolderSet<DragonPenalty> penalties() {
         return penalties;
+    }
+
+    private Map<Item, FoodProperties> getDiet() {
+        if (diet == null || lastDietUpdate < DataReloadHandler.lastReload) {
+            lastDietUpdate = System.currentTimeMillis();
+            diet = DietEntry.map(dietEntries);
+        }
+
+        return diet;
     }
 }
