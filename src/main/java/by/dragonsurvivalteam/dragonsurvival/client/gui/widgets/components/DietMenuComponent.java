@@ -37,12 +37,8 @@ public class DietMenuComponent implements ScrollableComponent, Renderable {
     @Override
     public void scroll(double mouseX, double mouseY, double scrollX, double scrollY) {
         if (isHovered(mouseX, mouseY)) {
-            int maxRows = maxScroll();
-
-            if (maxRows > VISIBLE_MAX_ROWS) {
-                // invert the value so that scrolling down shows further entries
-                scrollAmount = Math.clamp(scrollAmount + (int) -scrollY, 0, maxRows);
-            }
+            // invert the value so that scrolling down shows further entries
+            scrollAmount = Math.clamp(scrollAmount + (int) -scrollY, 0, maxScroll());
         }
     }
 
