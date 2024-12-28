@@ -464,8 +464,7 @@ public class DragonStateHandler extends EntityStateHandler {
     public Pair<List<Either<FormattedText, TooltipComponent>>, Integer> getGrowthDescription(int currentScroll) {
         DragonStage stage = dragonStage.value();
         double percentage = Math.clamp(stage.getProgress(getSize()), 0, 1);
-        percentage = isGrowing ? percentage : -1;
-        String ageInformation = stage.getTimeToGrowFormattedWithPercentage(percentage, getSize());
+        String ageInformation = stage.getTimeToGrowFormattedWithPercentage(percentage, getSize(), isGrowing);
 
         List<GrowthComponent> growthItems = new ArrayList<>();
 

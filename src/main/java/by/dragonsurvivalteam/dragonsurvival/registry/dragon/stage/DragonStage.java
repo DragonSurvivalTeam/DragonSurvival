@@ -284,19 +284,19 @@ public record DragonStage(
         return HolderSet.direct(allStages(provider).stream().filter(stage -> stage.value().isDefault()).toList());
     }
 
-    public String getTimeToGrowFormattedWithPercentage(double percentage, double size) {
+    public String getTimeToGrowFormattedWithPercentage(double percentage, double size, boolean isGrowing) {
         String ageInformation = NumberFormat.getPercentInstance().format(percentage);
 
-        if (percentage >= 0) {
-            double sizeToTicks = (sizeRange().max() - sizeRange().min()) / ticksUntilGrown();
-            double missingSize = sizeRange().max() - size;
-            Functions.Time time = Functions.Time.fromTicks((int) (missingSize / sizeToTicks));
+        if (!isGrowing) {
+            return ageInformation + " (§4--:--:--§r)";
+        }
 
-            if (time.hasTime()) {
-                ageInformation += " (" + time.format() + ")";
-            }
-        } else {
-            ageInformation += " (§4--:--:--§r)";
+        double sizeToTicks = (sizeRange().max() - sizeRange().min()) / ticksUntilGrown();
+        double missingSize = sizeRange().max() - size;
+        Functions.Time time = Functions.Time.fromTicks((int) (missingSize / sizeToTicks));
+
+        if (time.hasTime()) {
+            ageInformation += " (" + time.format() + ")";
         }
 
         return ageInformation;

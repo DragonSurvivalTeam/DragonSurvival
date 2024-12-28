@@ -29,35 +29,42 @@ public class GrowthCrystalButton extends ExtendedButton {
     public GrowthCrystalButton(int xPos, int yPos, final Holder<DragonStage> stage) {
         super(xPos, yPos, 8, 16, Component.empty(), action -> { /* Nothing to do */ });
         this.stage = stage;
+        setTooltip();
     }
 
     @Override
     public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        setTooltip(Tooltip.create(getStageTooltip()));
-
         //noinspection DataFlowIssue -> player is present
         DragonStateHandler handler = DragonStateProvider.getData(Minecraft.getInstance().player);
         double percentageFull = stage.value().getProgress(handler.getSize());
 
         if (percentageFull > 1) {
             graphics.blit(handler.getType().value().miscResources().growthCrystal().full(), getX(), getY(), 0, 0, width, height, 8, 16);
-        } else {
-            graphics.blit(handler.getType().value().miscResources().growthCrystal().empty(), getX(), getY(), 0, 0, width, height, 8, 16);
+            return;
+        }
 
-            if (percentageFull > 0) {
-                int scissorHeight = (int) ((1 - percentageFull) * height);
-                graphics.enableScissor(getX(), getY() + (height - scissorHeight), getX() + width, getY() + height);
-                graphics.blit(handler.getType().value().miscResources().growthCrystal().full(), getX(), getY(), 0, 0, width, height, 8, 16);
-                graphics.disableScissor();
-            }
+        graphics.blit(handler.getType().value().miscResources().growthCrystal().empty(), getX(), getY(), 0, 0, width, height, 8, 16);
+
+        if (percentageFull > 0) {
+            int scissorHeight = (int) ((1 - percentageFull) * height);
+            graphics.enableScissor(getX(), getY() + (height - scissorHeight), getX() + width, getY() + height);
+            graphics.blit(handler.getType().value().miscResources().growthCrystal().full(), getX(), getY(), 0, 0, width, height, 8, 16);
+            graphics.disableScissor();
         }
     }
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         if (isHovered()) {
+            int oldScrollAmount = scrollAmount;
+
             // invert the value so that scrolling down shows further entries
             scrollAmount = Math.clamp(scrollAmount + (int) -scrollY, 0, maxScroll());
+
+            if (oldScrollAmount != scrollAmount) {
+                setTooltip();
+            }
+
             return true;
         }
 
@@ -75,7 +82,7 @@ public class GrowthCrystalButton extends ExtendedButton {
         return isHovered;
     }
 
-    private Component getStageTooltip() {
+    private void setTooltip() {
         List<Component> components = new ArrayList<>();
 
         components.add(Component.translatable(LangKey.GROWTH_STAGE).append(DragonStage.translatableName(Objects.requireNonNull(stage.getKey()))));
@@ -113,7 +120,7 @@ public class GrowthCrystalButton extends ExtendedButton {
             }
         }
 
-        return growthStageTooltip;
+        setTooltip(Tooltip.create(growthStageTooltip));
     }
 
     private int maxScroll() {
