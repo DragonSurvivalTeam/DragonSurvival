@@ -84031,6 +84031,23 @@
 				}
 			}
 		},
+		"blend_wing_hug": {
+			"loop": true,
+			"bones": {
+				"SmallWingLeft": {
+					"rotation": [54.49531, 36.718, 157.5827]
+				},
+				"SmallWingEdgeLeft": {
+					"rotation": [0, 0, 30]
+				},
+				"SmallWingRight": {
+					"rotation": [54.49531, -36.71795, -157.58269]
+				},
+				"SmallWingEdgeRight": {
+					"rotation": [0, 0, -30]
+				}
+			}
+		},
 		"blend_maw": {
 			"loop": "loop",
 			"bones": {
@@ -85379,9 +85396,6 @@
 					}
 				}
 			}
-		},
-		"new": {
-			"loop": "loop"
 		}
 	},
 	"geckolib_format_version": 2

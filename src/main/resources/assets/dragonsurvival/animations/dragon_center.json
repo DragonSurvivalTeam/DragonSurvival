@@ -56173,6 +56173,39 @@
 				}
 			}
 		},
+		"blend_wing_hug": {
+			"loop": true,
+			"bones": {
+				"WingRight": {
+					"rotation": [-120, -60, 55],
+					"position": [0.1, 1.2, 2.35]
+				},
+				"WingRightArm": {
+					"rotation": [3, -3, -12.5],
+					"scale": 1
+				},
+				"WingRightHand": {
+					"rotation": [0, -50, -3]
+				},
+				"WingRightEdge": {
+					"rotation": [0, 0, 0]
+				},
+				"WingLeft": {
+					"rotation": [-120, 60, -55],
+					"position": [-0.1, 1.2, 2.35]
+				},
+				"WingLeftArm": {
+					"rotation": [3, 3, 12.5],
+					"scale": 1
+				},
+				"WingLeftHand": {
+					"rotation": [0, 50, 3]
+				},
+				"WingLeftEdge": {
+					"rotation": [0, 0, 0]
+				}
+			}
+		},
 		"spell_charge": {
 			"loop": "loop",
 			"animation_length": 0.32,

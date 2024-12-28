@@ -41,9 +41,9 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Supplier;
+import javax.annotation.Nullable;
 
 public class DragonStateHandler extends EntityStateHandler {
     public static final int NO_SIZE = -1;
@@ -515,8 +515,7 @@ public class DragonStateHandler extends EntityStateHandler {
     public Pair<List<Either<FormattedText, TooltipComponent>>, Integer> getGrowthDescription(int currentScroll) {
         DragonStage stage = dragonStage.value();
         double percentage = Math.clamp(stage.getProgress(getSize()), 0, 1);
-        percentage = isGrowing ? percentage : -1;
-        String ageInformation = stage.getTimeToGrowFormattedWithPercentage(percentage, getSize());
+        String ageInformation = stage.getTimeToGrowFormattedWithPercentage(percentage, getSize(), isGrowing);
 
         List<GrowthComponent> growthItems = new ArrayList<>();
 

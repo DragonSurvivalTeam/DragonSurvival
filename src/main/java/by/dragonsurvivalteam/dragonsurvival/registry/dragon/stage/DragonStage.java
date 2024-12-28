@@ -5,7 +5,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierType;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.AttributeModifierSupplier;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
@@ -16,7 +15,6 @@ import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.core.*;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.RegistryFixedCodec;
@@ -286,19 +284,19 @@ public record DragonStage(
         return HolderSet.direct(allStages(provider).stream().filter(stage -> stage.value().isDefault()).toList());
     }
 
-    public String getTimeToGrowFormattedWithPercentage(double percentage, double size) {
+    public String getTimeToGrowFormattedWithPercentage(double percentage, double size, boolean isGrowing) {
         String ageInformation = NumberFormat.getPercentInstance().format(percentage);
 
-        if (percentage >= 0) {
-            double sizeToTicks = (sizeRange().max() - sizeRange().min()) / ticksUntilGrown();
-            double missingSize = sizeRange().max() - size;
-            Functions.Time time = Functions.Time.fromTicks((int) (missingSize / sizeToTicks));
+        if (!isGrowing) {
+            return ageInformation + " (§4--:--:--§r)";
+        }
 
-            if (time.hasTime()) {
-                ageInformation += " (" + time.format() + ")";
-            }
-        } else {
-            ageInformation += " (§4--:--:--§r)";
+        double sizeToTicks = (sizeRange().max() - sizeRange().min()) / ticksUntilGrown();
+        double missingSize = sizeRange().max() - size;
+        Functions.Time time = Functions.Time.fromTicks((int) (missingSize / sizeToTicks));
+
+        if (time.hasTime()) {
+            ageInformation += " (" + time.format() + ")";
         }
 
         return ageInformation;
@@ -311,41 +309,6 @@ public record DragonStage(
 
         Functions.Time time = Functions.Time.fromTicks(ticksUntilGrown());
         return time.format();
-    }
-
-    public static Component growthStageTooltip(Holder<DragonStage> stage) {
-        List<Component> components = new ArrayList<>();
-
-        components.add(Component.translatable(LangKey.GROWTH_STAGE).append(DragonStage.translatableName(Objects.requireNonNull(stage.getKey()))));
-        components.add(Component.translatable(LangKey.GROWTH_STARTING_SIZE, stage.value().sizeRange().min()));
-        components.add(Component.translatable(LangKey.GROWTH_MAX_SIZE, stage.value().sizeRange().max()));
-        components.add(Component.translatable(LangKey.GROWTH_TIME, stage.value().getTimeToGrowFormatted(false)));
-        components.add(Component.translatable(LangKey.GROWTH_HARVEST_LEVEL_BONUS, stage.value().harvestLevelBonus()));
-        components.add(Component.translatable(LangKey.GROWTH_BREAK_SPEED_MULTIPLIER, stage.value().breakSpeedMultiplier()));
-
-        if(stage.value().destructionData().isPresent()) {
-            components.add(Component.translatable(LangKey.GROWTH_CAN_DESTROY_BLOCKS, stage.value().destructionData().get().blockDestructionSize()));
-            components.add(Component.translatable(LangKey.GROWTH_CAN_CRUSH_ENTITIES, stage.value().destructionData().get().crushingSize()));
-        }
-
-        // FIXME :: This needs to be scrollable or we will go wayyyyy off screen.
-        /*components.add(Component.translatable(LangKey.GROWTH_MODIFIERS_AT_MAX_SIZE));
-
-        for(Modifier modifier : stage.value().modifiers()) {
-            MutableComponent name = modifier.getFormattedDescription((int)stage.value().sizeRange().max());
-            components.add(name);
-        }*/
-
-        MutableComponent growthStageTooltip = Component.empty();
-        for(int i = 0; i < components.size(); i++) {
-            if(i < components.size() - 1) {
-                growthStageTooltip = growthStageTooltip.append(components.get(i)).append("\n");
-            } else {
-                growthStageTooltip = growthStageTooltip.append(components.get(i));
-            }
-        }
-
-        return growthStageTooltip;
     }
 
     @Override

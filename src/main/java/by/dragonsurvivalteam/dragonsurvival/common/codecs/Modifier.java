@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -49,9 +50,10 @@ public record Modifier(Holder<Attribute> attribute, LevelBasedValue amount, Attr
     }
 
     public MutableComponent getFormattedDescription(int level) {
-        MutableComponent name = net.minecraft.network.chat.Component.literal("§6■ ").append(net.minecraft.network.chat.Component.translatable(attribute().value().getDescriptionId()).withColor(DSColors.ORANGE));
+        MutableComponent name = Component.literal("§6■ ").append(Component.translatable(attribute().value().getDescriptionId()).withColor(DSColors.ORANGE));
         float amount = amount().calculate(level);
-        String number = amount > 0 ? "+" : amount < 0 ? "-" : "";
+        // If the number is negative it will already contain a '-'
+        String number = amount > 0 ? "+" : "";
 
         if (attribute().value() instanceof PercentageAttribute) {
             number += NumberFormat.getPercentInstance().format(amount);
@@ -59,7 +61,7 @@ public record Modifier(Holder<Attribute> attribute, LevelBasedValue amount, Attr
             number += String.format("%.2f", amount);
         }
 
-        net.minecraft.network.chat.Component value = net.minecraft.network.chat.Component.literal("§6: ").append(net.minecraft.network.chat.Component.literal(number).withStyle(attribute().value().getStyle(amount > 0)));
+        Component value = Component.literal("§6: ").append(Component.literal(number).withStyle(attribute().value().getStyle(amount > 0)));
         name = name.append(value);
 
         return name;
