@@ -61,13 +61,19 @@ public record SupplyTrigger(String id, Holder<Attribute> attributeToUseAsBase, i
     }
 
     @Override
-    public MutableComponent getDescription(Player dragon) {
+    public MutableComponent getDescription(final Player dragon) {
         AttributeInstance attribute = dragon.getAttribute(attributeToUseAsBase);
 
         if (attribute == null) {
             return Component.empty();
         } else {
-            return Component.translatable(LangKey.PENALTY_SUPPLY_TRIGGER, DSColors.blue(String.format("%.1f", Functions.ticksToSeconds((int) attribute.getValue()))));
+            double seconds = Functions.ticksToSeconds((int) attribute.getValue());
+
+            if (seconds == 0) {
+                return Component.translatable(LangKey.PENALTY_SUPPLY_TRIGGER_CONSTANT);
+            } else {
+                return Component.translatable(LangKey.PENALTY_SUPPLY_TRIGGER, DSColors.blue(String.format("%.1f", seconds)));
+            }
         }
     }
 

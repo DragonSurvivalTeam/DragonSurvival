@@ -172,6 +172,9 @@ public class LangKey {
     @Translation(type = Translation.Type.MISC, comments = " after %s seconds")
     public static final String PENALTY_SUPPLY_TRIGGER = Translation.Type.PENALTY.wrap("general.penalty.supply_trigger");
 
+    @Translation(type = Translation.Type.MISC, comments = " on every game tick")
+    public static final String PENALTY_SUPPLY_TRIGGER_CONSTANT = Translation.Type.PENALTY.wrap("general.penalty.supply_trigger_constant");
+
     // --- Projectile effects --- //
 
     @Translation(type = Translation.Type.MISC, comments = " §6Projectile ")

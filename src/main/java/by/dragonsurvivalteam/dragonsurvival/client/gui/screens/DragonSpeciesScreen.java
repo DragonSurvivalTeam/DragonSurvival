@@ -200,13 +200,12 @@ public class DragonSpeciesScreen extends Screen {
         HoverButton ridingButton = new HoverButton(startX + 186, startY - 18, 16, RIDING_MAIN, RIDING_HOVER);
         addRenderableWidget(ridingButton);
 
-
         // Body type button
         DragonBodyButton bodyTypeButton = new DragonBodyButton(this, startX + 29, startY + 92, 25, 25, data.getBody(), false, button -> {});
         addRenderableWidget(bodyTypeButton);
 
         // Penalties bar
-        List<AbstractWidget> penalties = data.getType().value().penalties().stream().map(penalty -> (AbstractWidget)(new PenaltyButton(0, 0, penalty))).toList();
+        List<AbstractWidget> penalties = data.getType().value().penalties().stream().map(penalty -> (AbstractWidget) new PenaltyButton(0, 0, penalty)).toList();
         scrollableComponents.add(new BarComponent(this,
                 startX + 85, startY + 85, 3,
                 penalties, 40,

@@ -96,9 +96,9 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
         });
     }
 
-    @SubscribeEvent // Discard the summon if right-clicked with no item
+    @SubscribeEvent // Discard the summon if right-clicked with no item (while crouching)
     public static void discardSummon(final PlayerInteractEvent.EntityInteract event) {
-        if (event.getHand() != InteractionHand.OFF_HAND && !event.getItemStack().isEmpty()) {
+        if (!(event.getHand() == InteractionHand.OFF_HAND && event.getItemStack().isEmpty() && event.getEntity().isCrouching())) {
             return;
         }
 

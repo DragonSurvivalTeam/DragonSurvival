@@ -40,10 +40,9 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
-import java.util.List;
-import java.util.function.Supplier;
 import javax.annotation.Nullable;
+import java.util.*;
+import java.util.function.Supplier;
 
 public class DragonStateHandler extends EntityStateHandler {
     public static final int NO_SIZE = -1;
@@ -110,7 +109,7 @@ public class DragonStateHandler extends EntityStateHandler {
         if (this.size > oldSize) {
             // Push the player away from a block they might collide with due to the size change
             // Without this they will get stuck on blocks they walk into while their size changes
-            // The limit of 0.1 is a random value - it's so that when using growth items the player won't be teleported by x blocks
+            // The limit of 0.05 is a random value - it's so that when using growth items the player won't be teleported by x blocks
             double pushForce = Math.min(0.05, (this.size - oldSize) + player.getDeltaMovement().horizontalDistance());
 
             boolean hasCollided = false;
@@ -264,14 +263,9 @@ public class DragonStateHandler extends EntityStateHandler {
         return getDragonHarvestLevel(player, state) >= ToolUtils.getRequiredHarvestLevel(state);
     }
 
-    /**
-     * Returns the calculated harvest level (based on the unlocked bonuses) (-1 for non-dragons) <br>
-     * The unlockable harvest level bonus is only considered if the supplied state is part of {@link AbstractDragonType#harvestableBlocks()} <br>
-     * If the supplied state is 'null' then the unlockable bonuses are also considered
-     */
     public int getDragonHarvestLevel(final Player player, @Nullable final BlockState state) {
         if (!isDragon()) {
-            return -1;
+            return 0;
         }
 
         int harvestLevel = 0;
