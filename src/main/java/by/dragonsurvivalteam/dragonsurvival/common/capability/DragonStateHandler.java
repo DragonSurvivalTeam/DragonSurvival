@@ -47,6 +47,7 @@ import javax.annotation.Nullable;
 
 public class DragonStateHandler extends EntityStateHandler {
     public static final int NO_SIZE = -1;
+    private static final double SIZE_LERP_SPEED = 0.1; // 10% per tick
 
     @SuppressWarnings("unchecked")
     public final Supplier<SubCap>[] caps = new Supplier[]{this::getSkinData};
@@ -69,7 +70,6 @@ public class DragonStateHandler extends EntityStateHandler {
 
     private int passengerId = -1;
 
-    private static final double SIZE_LERP_SPEED = 0.1;
     private double size = NO_SIZE;
     private double visualSize = NO_SIZE;
     private double visualSizeLastTick = NO_SIZE;
@@ -90,19 +90,20 @@ public class DragonStateHandler extends EntityStateHandler {
         setSize(player, dragonStage.value().getBoundedSize(size));
     }
 
-    /** Used serverside to lerp true size values, and clientside to lerp visual size values. */
+    /**
+     * - Server-side: lerp to the actual size <br>
+     * - Client-side: update the visual size
+     */
     public void lerpSize(final Player player) {
-
-        if(player.level().isClientSide) {
-            if(visualSize == NO_SIZE) {
+        if (player.level().isClientSide()) {
+            if (visualSize == NO_SIZE) {
                 visualSize = size;
             }
 
             visualSizeLastTick = visualSize;
             visualSize = Mth.lerp(SIZE_LERP_SPEED, visualSize, desiredSize);
         } else {
-            double newSize = Mth.lerp(SIZE_LERP_SPEED, size, desiredSize);
-            setSize(player, newSize);
+            setSize(player, Mth.lerp(SIZE_LERP_SPEED, size, desiredSize));
         }
     }
 
@@ -130,33 +131,29 @@ public class DragonStateHandler extends EntityStateHandler {
         player.refreshDimensions();
 
         if (this.size > oldSize) {
-            // Push the player away from a block they might collide with due to the size change
-            // Without this they will get stuck on blocks they walk into while their size changes
-            // The limit of 0.001 is a random value - it's so that when using growth items the player won't be teleported by x blocks
-            double pushForce = (this.size - oldSize) + player.getDeltaMovement().horizontalDistance();
-            pushForce *= 0.05;
+            // Push the player away from a block they might collide with due to the size change (to avoid getting stuck on said block)
+            double pushForce = ((this.size - oldSize) + player.getDeltaMovement().horizontalDistance()) * 0.05;
             Vec3 push = Vec3.ZERO;
 
-            // Multiply the force by the number of collisions. This is because in scenarios where we are colliding with multiple walls (being in a corner)
-            // we need more force than normal to push them away. But we don't want this increaseed force when only colliding with one block, because that
-            // will cause the player to stutter as they slide against a wall (if they are running towards it)
-            int numCollisions = 0;
+            // Multiply the force by the number of collisions in case we are colliding with multiple walls (while being in a corner)
+            // (In such a case more force than normal is required - this should not affect collision with a single block though, otherwise it will cause stutter)
+            int collisions = 0;
+
             for (BlockPos position : BlockPosHelper.betweenClosed(player.getBoundingBox())) {
                 if (player.isColliding(position, player.level().getBlockState(position))) {
-
                     Vec3 center = Vec3.atCenterOf(position);
                     double directionX = player.getX() - center.x();
                     double directionZ = player.getZ() - center.z();
 
-                    numCollisions++;
+                    collisions++;
 
                     // Need to collect the pushes otherwise running into the corner of two blocks causes issues
                     push = push.add(directionX, 0, directionZ);
                 }
             }
 
-            if(push.length() > 0 && pushForce > 0) {
-                player.moveTo(player.position().add(push.normalize().scale(pushForce * numCollisions)));
+            if (push.length() > 0 && pushForce > 0) {
+                player.moveTo(player.position().add(push.normalize().scale(pushForce * collisions)));
             }
         }
 
@@ -172,14 +169,15 @@ public class DragonStateHandler extends EntityStateHandler {
     }
 
     public void setDesiredSize(@Nullable final Player player, double size) {
-        if(player == null) {
+        if (player == null) {
             desiredSize = size;
             setSize(null, size);
             return;
         }
 
         desiredSize = boundSize(player.registryAccess(), size);
-        if(player instanceof ServerPlayer serverPlayer) {
+
+        if (player instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncDesiredSize(serverPlayer.getId(), desiredSize));
         }
     }
@@ -324,7 +322,11 @@ public class DragonStateHandler extends EntityStateHandler {
         this.destructionEnabled = destructionEnabled;
     }
 
-    public double getVisualSize(float partialTick) {
+    public double getVisualSize(float partialTick) throws IllegalAccessException {
+        if (!DragonSurvival.PROXY.isOnRenderThread()) {
+            throw new IllegalAccessException("Visual size should only be retrieved for rendering-purposes");
+        }
+
         return Mth.lerp(partialTick, visualSizeLastTick, visualSize);
     }
 
@@ -543,7 +545,8 @@ public class DragonStateHandler extends EntityStateHandler {
         int max = Math.min(growthItems.size(), scroll + MAX_SHOWN);
 
         List<Either<FormattedText, TooltipComponent>> components = new ArrayList<>();
-        components.add(Either.left(Component.translatable(LangKey.GROWTH_STAGE).append(DragonStage.translatableName(Objects.requireNonNull(getStage().getKey())))));
+        //noinspection DataFlowIssue -> key is present
+        components.add(Either.left(Component.translatable(LangKey.GROWTH_STAGE).append(DragonStage.translatableName(getStage().getKey()))));
         components.add(Either.left(Component.translatable(LangKey.GROWTH_AGE, ageInformation)));
         components.add(Either.left(Component.translatable(LangKey.GROWTH_INFO).append(Component.literal(" [" + Math.min(growthItems.size(), scroll + MAX_SHOWN) + " / " + growthItems.size() + "]").withStyle(ChatFormatting.DARK_GRAY))));
 

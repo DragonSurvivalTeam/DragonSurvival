@@ -62,17 +62,16 @@ public interface AttributeModifierSupplier {
             return;
         }
 
-        AttributeModifier attributeModifier = modifier.getModifier(getModifierType(), level);
+        ModifierType type = getModifierType();
+        ResourceLocation id;
+
+        do {
+            id = type.randomId(modifier.attribute(), modifier.operation());
+        } while (instance.hasModifier(id));
+
+        AttributeModifier attributeModifier = modifier.getModifier(id, level);
         instance.addPermanentModifier(attributeModifier);
         storeId(instance.getAttribute(), attributeModifier.id());
-    }
-
-    private void applyModifier(final Modifier modifier, @Nullable final AttributeInstance instance, final Holder<DragonType> dragonType, int level) {
-        if (instance == null || modifier.dragonType().isPresent() && !dragonType.is(modifier.dragonType().get())) {
-            return;
-        }
-
-        instance.addPermanentModifier(modifier.getModifier(getModifierType(), level));
     }
 
     private void applyModifiers(@Nullable final AttributeInstance instance, final Holder<DragonType> dragonType, double value) {

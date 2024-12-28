@@ -196,6 +196,7 @@ public class ClientDragonRenderer {
 
         if (!playerDragonHashMap.containsKey(player.getId())) {
             DragonEntity dummyDragon = DSEntities.DRAGON.get().create(player.level());
+            //noinspection DataFlowIssue -> dragon should not be null
             dummyDragon.playerId = player.getId();
             playerDragonHashMap.put(player.getId(), new AtomicReference<>(dummyDragon));
         }
@@ -228,6 +229,7 @@ public class ClientDragonRenderer {
                 final MultiBufferSource renderTypeBuffer = renderPlayerEvent.getMultiBufferSource();
 
                 if (dragonNameTags && player != minecraft.player) {
+                    //noinspection UnstableApiUsage -> intentional
                     RenderNameTagEvent renderNameplateEvent = new RenderNameTagEvent(player, player.getDisplayName(), playerRenderer, poseStack, renderTypeBuffer, eventLight, partialRenderTick);
                     NeoForge.EVENT_BUS.post(renderNameplateEvent);
 
@@ -256,11 +258,10 @@ public class ClientDragonRenderer {
                     double translate = 1 / (0.4 * Math.pow(size, 0.78) + 0.5);
                     poseStack.translate(0, translate, 0);
                 } else if (player.isSwimming() || player.isAutoSpinAttack() || flightData.isWingsSpread() && !player.onGround() && !player.isInWater() && !player.isInLava()) {
-                    // FIXME level
                     if (size > DragonStage.MAX_HANDLED_SIZE) {
                         poseStack.translate(0, -0.55, 0);
                     } else {
-                        poseStack.translate(0, -0.15 - size / /* dragonStage.ADULT.size */ 40 * 0.2, 0);
+                        poseStack.translate(0, -0.15 - size / 40 * 0.2, 0);
                     }
                 }
 
@@ -376,6 +377,7 @@ public class ClientDragonRenderer {
                         double forward = 0.3 * scale;
                         float parrotHeadYaw = Mth.clamp(-1 * ((float) movement.bodyYaw - (float) movement.headYaw), -75, 75);
                         poseStack.translate(0, -height, -forward);
+                        //noinspection unchecked -> ignore
                         renderLayer.render(poseStack, renderTypeBuffer, eventLight, player, 0, 0, partialRenderTick, (float) player.tickCount + partialRenderTick, parrotHeadYaw, (float) movement.headPitch);
                         poseStack.translate(0, height, forward);
                         poseStack.mulPose(Axis.XN.rotationDegrees(-180));

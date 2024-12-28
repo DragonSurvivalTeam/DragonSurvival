@@ -11,6 +11,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.FormattedCharSequence;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,6 +23,7 @@ public class GrowthCrystalButton extends ExtendedButton {
     public static int MAX_LINES_SHOWN = 10;
 
     private final Holder<DragonStage> stage;
+    private List<FormattedCharSequence> tooltip = List.of();
 
     private int scrollAmount;
     private int maxScroll = Integer.MAX_VALUE;
@@ -29,7 +31,7 @@ public class GrowthCrystalButton extends ExtendedButton {
     public GrowthCrystalButton(int xPos, int yPos, final Holder<DragonStage> stage) {
         super(xPos, yPos, 8, 16, Component.empty(), action -> { /* Nothing to do */ });
         this.stage = stage;
-        setTooltip();
+        updateTooltip();
     }
 
     @Override
@@ -62,7 +64,7 @@ public class GrowthCrystalButton extends ExtendedButton {
             scrollAmount = Math.clamp(scrollAmount + (int) -scrollY, 0, maxScroll());
 
             if (oldScrollAmount != scrollAmount) {
-                setTooltip();
+                updateTooltip();
             }
 
             return true;
@@ -75,14 +77,20 @@ public class GrowthCrystalButton extends ExtendedButton {
     public boolean isHovered() {
         boolean isHovered = super.isHovered();
 
-        if (!isHovered) {
+        if (!isHovered && scrollAmount > 0) {
             scrollAmount = 0;
+            updateTooltip();
+        }
+
+        if (isHovered) {
+            //noinspection DataFlowIssue -> screen is not null
+            Minecraft.getInstance().screen.setTooltipForNextRenderPass(tooltip);
         }
 
         return isHovered;
     }
 
-    private void setTooltip() {
+    private void updateTooltip() {
         List<Component> components = new ArrayList<>();
 
         components.add(Component.translatable(LangKey.GROWTH_STAGE).append(DragonStage.translatableName(Objects.requireNonNull(stage.getKey()))));
@@ -104,23 +112,31 @@ public class GrowthCrystalButton extends ExtendedButton {
             components.add(name);
         }
 
-        maxScroll = components.size();
-        scrollAmount = Math.clamp(scrollAmount, 0, maxScroll());
-        MutableComponent growthStageTooltip = Component.empty();
+        MutableComponent tooltip = Component.empty();
 
-        for (int i = scrollAmount; i < components.size(); i++) {
-            if (i - scrollAmount > MAX_LINES_SHOWN) {
-                break;
-            }
-
-            if (i - scrollAmount < MAX_LINES_SHOWN) {
-                growthStageTooltip = growthStageTooltip.append(components.get(i)).append("\n");
+        for (int i = 0; i < components.size(); i++) {
+            if (i == components.size() - 1) {
+                tooltip = tooltip.append(components.get(i));
             } else {
-                growthStageTooltip = growthStageTooltip.append(components.get(i));
+                tooltip = tooltip.append(components.get(i)).append("\n");
             }
         }
 
-        setTooltip(Tooltip.create(growthStageTooltip));
+        List<FormattedCharSequence> lines = Tooltip.splitTooltip(Minecraft.getInstance(), tooltip);
+        List<FormattedCharSequence> shownTooltip = new ArrayList<>();
+
+        maxScroll = lines.size();
+        scrollAmount = Math.clamp(scrollAmount, 0, maxScroll());
+
+        for (int i = scrollAmount; i < lines.size(); i++) {
+            if (i - scrollAmount == MAX_LINES_SHOWN) {
+                break;
+            }
+
+            shownTooltip.add(lines.get(i));
+        }
+
+        this.tooltip = shownTooltip;
     }
 
     private int maxScroll() {

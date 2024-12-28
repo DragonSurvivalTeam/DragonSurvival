@@ -11,7 +11,6 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,8 +22,8 @@ public class DSDamageTypeTags extends DamageTypeTagsProvider {
     public static TagKey<DamageType> DRAGON_MAGIC = key("dragon_magic");
     public static TagKey<DamageType> IS_ELECTRIC = key("is_electric");
 
-    public DSDamageTypeTags(PackOutput pOutput, CompletableFuture<HolderLookup.Provider> pLookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
-        super(pOutput, pLookupProvider, DragonSurvival.MODID, existingFileHelper);
+    public DSDamageTypeTags(final PackOutput output, final CompletableFuture<HolderLookup.Provider> provider, @Nullable final ExistingFileHelper helper) {
+        super(output, provider, DragonSurvival.MODID, helper);
     }
 
     @Override
@@ -80,9 +79,6 @@ public class DSDamageTypeTags extends DamageTypeTagsProvider {
                 .add(DSDamageTypes.WATER_BURN)
                 .add(DSDamageTypes.RAIN_BURN)
                 .add(DSDamageTypes.BALL_LIGHTNING);
-
-        tag(Tags.DamageTypes.NO_FLINCH)
-                .add(DSDamageTypes.NO_FLINCH);
     }
 
     private static TagKey<DamageType> key(@NotNull final String name) {

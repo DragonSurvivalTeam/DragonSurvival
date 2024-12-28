@@ -34,4 +34,8 @@ public interface Proxy {
     default void beginPlayingEmote(int playerId, DragonEmote emote) { /* Nothing to do */ }
 
     default void stopAllEmotes(int playerId) { /* Nothing to do */ }
+
+    default boolean isOnRenderThread() {
+        return false;
+    }
 }

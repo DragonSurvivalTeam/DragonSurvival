@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.Abil
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationType;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEmote;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -67,9 +68,10 @@ public class ClientProxy implements Proxy {
     }
 
     @Override
-    public void setCurrentAbilityAnimation(int playerId, Pair<AbilityAnimation, AnimationType> animation) {
+    public void setCurrentAbilityAnimation(int playerId, final Pair<AbilityAnimation, AnimationType> animation) {
         AtomicReference<DragonEntity> dragonEntity = ClientDragonRenderer.playerDragonHashMap.get(playerId);
-        if(dragonEntity == null) {
+
+        if (dragonEntity == null) {
             return;
         }
 
@@ -77,9 +79,10 @@ public class ClientProxy implements Proxy {
     }
 
     @Override
-    public void stopEmote(int playerId, DragonEmote emote) {
+    public void stopEmote(int playerId, final DragonEmote emote) {
         AtomicReference<DragonEntity> dragonEntity = ClientDragonRenderer.playerDragonHashMap.get(playerId);
-        if(dragonEntity == null) {
+
+        if (dragonEntity == null) {
             return;
         }
 
@@ -87,9 +90,10 @@ public class ClientProxy implements Proxy {
     }
 
     @Override
-    public void beginPlayingEmote(int playerId, DragonEmote emote) {
+    public void beginPlayingEmote(int playerId, final DragonEmote emote) {
         AtomicReference<DragonEntity> dragonEntity = ClientDragonRenderer.playerDragonHashMap.get(playerId);
-        if(dragonEntity == null) {
+
+        if (dragonEntity == null) {
             return;
         }
 
@@ -99,10 +103,16 @@ public class ClientProxy implements Proxy {
     @Override
     public void stopAllEmotes(int playerId) {
         AtomicReference<DragonEntity> dragonEntity = ClientDragonRenderer.playerDragonHashMap.get(playerId);
-        if(dragonEntity == null) {
+
+        if (dragonEntity == null) {
             return;
         }
 
         dragonEntity.get().stopAllEmotes();
+    }
+
+    @Override
+    public boolean isOnRenderThread() {
+        return RenderSystem.isOnRenderThread();
     }
 }

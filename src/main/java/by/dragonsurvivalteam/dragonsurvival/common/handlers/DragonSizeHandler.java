@@ -20,9 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @EventBusSubscriber
 public class DragonSizeHandler {
-    // TODO :: Add timestamp and clear cache
-    private static final ConcurrentHashMap<String, Boolean> WAS_DRAGON = new ConcurrentHashMap<>(20);
-    private static final ConcurrentHashMap<String, Double> LAST_SIZE = new ConcurrentHashMap<>(20);
+    private static final ConcurrentHashMap<String, Boolean> WAS_DRAGON = new ConcurrentHashMap<>();
 
     @SubscribeEvent
     public static void initializeSizeOnJoin(final EntityJoinLevelEvent event) {
@@ -30,7 +28,10 @@ public class DragonSizeHandler {
         // Therefor we set the size again, causing a refresh of the dimension
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             DragonStateHandler data = DragonStateProvider.getData(serverPlayer);
-            data.setDesiredSize(serverPlayer, data.getSize());
+
+            if (data.isDragon()) {
+                data.setDesiredSize(serverPlayer, data.getSize());
+            }
         }
     }
 
@@ -114,7 +115,7 @@ public class DragonSizeHandler {
         return overridePose;
     }
 
-    public static Pose getOverridePose(Player player) {
+    public static Pose getOverridePose(final Player player) {
         if (player != null) {
             boolean swimming = (player.isInWaterOrBubble() || SwimData.getData(player).canSwimIn(player.getMaxHeightFluidType())) && player.isSprinting() && !player.isPassenger();
             boolean flying = ServerFlightHandler.isFlying(player);
@@ -133,36 +134,30 @@ public class DragonSizeHandler {
         return Pose.STANDING;
     }
 
-    public static boolean canPoseFit(Player player, Pose pose) {
+    public static boolean canPoseFit(final Player player, final Pose pose) {
         return player.level().noCollision(calculateDimensions(DragonStateProvider.getData(player), player, pose).makeBoundingBox(player.position()));
     }
 
     @SubscribeEvent
     public static void handlePoseFromSizeChangesAndLerpSize(final PlayerTickEvent.Pre event) {
         Player player = event.getEntity();
+        DragonStateHandler data = DragonStateProvider.getData(player);
 
-        // In cases where client and server runs on the same machine
-        // Only using the player id results in one side not refreshing the dimensions
-        String playerIdSide = player.getId() + (player.level().isClientSide() ? "client" : "server");
+        String key = player.getId() + (player.level().isClientSide() ? "client" : "server");
+        boolean isDragon = data.isDragon();
+        Boolean wasDragon = WAS_DRAGON.put(key, isDragon);
 
-        DragonStateProvider.getOptional(player).ifPresent(handler -> {
-            if (handler.isDragon()) {
-                overridePose(player);
+        if (wasDragon != null && wasDragon && !isDragon) {
+            // Dragon -> player
+            player.setForcedPose(null);
+            player.refreshDimensions();
+        } else if (wasDragon == null || !wasDragon && isDragon) {
+            // Player -> dragon
+            overridePose(player);
+        }
 
-                if (!WAS_DRAGON.getOrDefault(playerIdSide, false)) {
-                    player.refreshDimensions();
-                    WAS_DRAGON.put(playerIdSide, true);
-                } else if (LAST_SIZE.getOrDefault(playerIdSide, 20.0) != handler.getSize()) {
-                    player.refreshDimensions();
-                    LAST_SIZE.put(playerIdSide, handler.getSize());
-                }
-
-                handler.lerpSize(player);
-            } else if (WAS_DRAGON.getOrDefault(playerIdSide, false)) {
-                player.setForcedPose(null);
-                player.refreshDimensions();
-                WAS_DRAGON.put(playerIdSide, false);
-            }
-        });
+        if (isDragon) {
+            data.lerpSize(player);
+        }
     }
 }

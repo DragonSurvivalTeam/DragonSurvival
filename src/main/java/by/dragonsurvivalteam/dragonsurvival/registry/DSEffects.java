@@ -12,11 +12,8 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
-import static by.dragonsurvivalteam.dragonsurvival.registry.DSModifiers.SLOW_MOVEMENT;
-
 public class DSEffects { // TODO :: add descriptions for the missing N/A marked effects
-    public static final DeferredRegister<MobEffect> DS_MOB_EFFECTS = DeferredRegister.create(BuiltInRegistries.MOB_EFFECT, MODID);
+    public static final DeferredRegister<MobEffect> DS_MOB_EFFECTS = DeferredRegister.create(BuiltInRegistries.MOB_EFFECT, DragonSurvival.MODID);
 
     @Translation(type = Translation.Type.EFFECT, comments = "Stress")
     @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "Applied to forest dragons who remain too long in the dark. Instantly removes all saturation, and quickly depletes hunger.")
@@ -27,7 +24,7 @@ public class DSEffects { // TODO :: add descriptions for the missing N/A marked 
     @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "This net prevents you from escaping into the sky.")
     public static Holder<MobEffect> TRAPPED = DS_MOB_EFFECTS.register("trapped",
             () -> new WingDisablingEffect(MobEffectCategory.HARMFUL, 0xdddddd, true)
-                    .addAttributeModifier(Attributes.MOVEMENT_SPEED, SLOW_MOVEMENT, -0.5, Operation.ADD_MULTIPLIED_TOTAL)
+                    .addAttributeModifier(Attributes.MOVEMENT_SPEED, DragonSurvival.res("slow_movement"), -0.5, Operation.ADD_MULTIPLIED_TOTAL)
     );
 
     /** Some effects are handled in {@link by.dragonsurvivalteam.dragonsurvival.client.handlers.ClientFlightHandler} */

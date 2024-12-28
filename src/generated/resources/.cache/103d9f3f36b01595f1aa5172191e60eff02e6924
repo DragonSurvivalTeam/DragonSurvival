@@ -1,4 +1,4 @@
-// 1.21.1	2024-12-28T15:28:38.4319819	Registries
+// 1.21.1	2024-12-28T22:01:45.5085433	Registries
 011b2ee382ec961722c100bbf059b4aa460f44b0 data/dragonsurvival/damage_type/anti_dragon.json
 d8c3135ecd1879e98a21e83ec1bcfd68c5fc3296 data/dragonsurvival/damage_type/ball_lightning.json
 1deb2bbcd4ed46724235ab398f66ed7559c01fab data/dragonsurvival/damage_type/burn.json
@@ -9,7 +9,6 @@ b1d83aaab6c58b1cbb050f8b97efba1eaf0ff646 data/dragonsurvival/damage_type/drain.j
 d255715ba936e2c4b3bd263a00719feaadfca176 data/dragonsurvival/damage_type/electric.json
 9da6dc04c067acb375f0b967a3832f2891581a64 data/dragonsurvival/damage_type/fire_breath.json
 502634f5af04c2f56f3f66207814acf48f576ea6 data/dragonsurvival/damage_type/lightning_breath.json
-780f7575165b3b6af2633412726cd71fca87a9ec data/dragonsurvival/damage_type/no_flinch.json
 67c4428d53f7e1331f14fd8524469374a052946c data/dragonsurvival/damage_type/poison_breath.json
 76c95def2b1f6ce0901e837d1f93fa7740a10384 data/dragonsurvival/damage_type/rain_burn.json
 7ba4f0731722f846b406544f9eb9a351ca90e6d2 data/dragonsurvival/damage_type/spike.json
