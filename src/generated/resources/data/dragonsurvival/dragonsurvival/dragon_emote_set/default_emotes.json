@@ -116,7 +116,7 @@
     {
       "animation_key": "sit",
       "blend": false,
-      "can_move": false,
+      "can_move": true,
       "locks_head": false,
       "locks_tail": false,
       "loops": true,
@@ -125,7 +125,7 @@
     {
       "animation_key": "sitting_curled_tail_left",
       "blend": false,
-      "can_move": false,
+      "can_move": true,
       "locks_head": false,
       "locks_tail": false,
       "loops": true,
@@ -134,7 +134,7 @@
     {
       "animation_key": "sit_on_magic_source",
       "blend": false,
-      "can_move": false,
+      "can_move": true,
       "locks_head": false,
       "locks_tail": false,
       "loops": true,
@@ -143,7 +143,7 @@
     {
       "animation_key": "sitting_spinning_item",
       "blend": false,
-      "can_move": false,
+      "can_move": true,
       "locks_head": false,
       "locks_tail": false,
       "loops": true,
@@ -152,7 +152,7 @@
     {
       "animation_key": "sad_sitting",
       "blend": false,
-      "can_move": false,
+      "can_move": true,
       "locks_head": false,
       "locks_tail": false,
       "loops": true,
@@ -161,7 +161,7 @@
     {
       "animation_key": "hugging_sitting",
       "blend": false,
-      "can_move": false,
+      "can_move": true,
       "locks_head": false,
       "locks_tail": false,
       "loops": true,
