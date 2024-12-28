@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 
-import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
@@ -158,9 +157,7 @@ public class DragonSizeHandler {
                     LAST_SIZE.put(playerIdSide, handler.getSize());
                 }
 
-                if(!player.level().isClientSide()) {
-                    handler.lerpSize(player);
-                }
+                handler.lerpSize(player);
             } else if (WAS_DRAGON.getOrDefault(playerIdSide, false)) {
                 player.setForcedPose(null);
                 player.refreshDimensions();
