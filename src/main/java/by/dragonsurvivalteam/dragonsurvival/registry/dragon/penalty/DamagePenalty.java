@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.serialization.Codec;
@@ -26,7 +27,8 @@ public record DamagePenalty(Holder<DamageType> damageType, float damage) impleme
     @Override
     public MutableComponent getDescription() {
         //noinspection DataFlowIssue -> key is present
-        return Component.translatable(LangKey.ABILITY_DAMAGE, Component.translatable(damageType.getKey().location().toLanguageKey()), DSColors.blue(String.format("%.1f", damage)));
+        MutableComponent translation = Component.translatable(Translation.Type.DAMAGE_TYPE.wrap(damageType.getKey().location())).withColor(DSColors.ORANGE);
+        return Component.translatable(LangKey.ABILITY_DAMAGE, translation, DSColors.blue(String.format("%.1f", damage)));
     }
 
     @Override

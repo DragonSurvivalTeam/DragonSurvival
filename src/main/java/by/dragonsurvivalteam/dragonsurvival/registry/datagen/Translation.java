@@ -55,25 +55,25 @@ public @interface Translation {
         DESCRIPTION(DragonSurvival.MODID + ".description.", ""),
         DESCRIPTION_ADDITION(DragonSurvival.MODID + ".description.addition.", ""),
 
-        DAMAGE_TYPE(DragonSurvival.MODID + ".damage_type.", ""),
+        DAMAGE_TYPE("damage_type." + DragonSurvival.MODID + ".", ""),
 
         CONFIGURATION(DragonSurvival.MODID + ".configuration.", ".tooltip"),
 
         ABILITY("dragon_ability." + DragonSurvival.MODID + ".", ""),
         ABILITY_DESCRIPTION("dragon_ability." + DragonSurvival.MODID + ".", ".desc"),
 
-        DRAGON_TYPE("dragon_type." + DragonSurvival.MODID + ".", ""),
-        DRAGON_TYPE_DESCRIPTION("dragon_type." + DragonSurvival.MODID + ".", ".desc"),
+        DRAGON_SPECIES("dragon_species." + DragonSurvival.MODID + ".", ""),
+        DRAGON_SPECIES_DESCRIPTION("dragon_species." + DragonSurvival.MODID + ".", ".desc"),
 
         PENALTY("dragon_penalty." + DragonSurvival.MODID + ".", ""),
         PENALTY_DESCRIPTION("dragon_penalty." + DragonSurvival.MODID + ".", ".desc"),
 
-        PROJECTILE(DragonSurvival.MODID + ".projectile.", ""),
+        PROJECTILE("projectile." + DragonSurvival.MODID + ".", ""),
 
         ADVANCEMENT(DragonSurvival.MODID + ".advancement.", ""),
         ADVANCEMENT_DESCRIPTION(DragonSurvival.MODID + ".advancement.", ".desc"),
 
-        SKIN_PART(DragonSurvival.MODID + ".skin_part.", ""),
+        SKIN_PART("skin_part." + DragonSurvival.MODID + ".", ""),
 
         GUI(DragonSurvival.MODID + ".gui.", ""),
 
@@ -81,15 +81,15 @@ public @interface Translation {
 
         EMOTE(DragonSurvival.MODID + ".emote.", ""),
 
-        BODY(DragonSurvival.MODID + ".body.", ""),
-        BODY_DESCRIPTION(DragonSurvival.MODID + ".body.", ".desc"),
-        BODY_WINGS(DragonSurvival.MODID + ".body.", ".wings"),
-        BODY_WINGS_DESCRIPTION(DragonSurvival.MODID + ".body.", ".wings.desc"),
+        BODY("dragon_body." + DragonSurvival.MODID + ".", ""),
+        BODY_DESCRIPTION("dragon_body." + DragonSurvival.MODID + ".", ".desc"),
+        BODY_WINGS("dragon_body." + DragonSurvival.MODID + ".", ".wings"),
+        BODY_WINGS_DESCRIPTION("dragon_body." + DragonSurvival.MODID + ".", ".wings.desc"),
 
-        STAGE(DragonSurvival.MODID + ".stage.", ""),
-        STAGE_DESCRIPTION(DragonSurvival.MODID + ".stage.", ".desc"),
+        STAGE("dragon_stage." + DragonSurvival.MODID + ".", ""),
+        STAGE_DESCRIPTION("dragon_stage." + DragonSurvival.MODID + ".", ".desc"),
 
-        MODIFIER(DragonSurvival.MODID + ".modifier.", ""),
+        MODIFIER("modifier." + DragonSurvival.MODID + ".", ""),
 
         TARGET_MODE("target_mode." + DragonSurvival.MODID + ".", ""),
 

@@ -244,7 +244,8 @@ public class DragonAbilityScreen extends Screen {
     public void tick() {
         //noinspection DataFlowIssue -> players should be present
         DragonStateHandler data = DragonStateProvider.getData(minecraft.player);
-        if(type != data.getType()) {
+
+        if (type != data.getType()) {
             type = data.getType();
             clearWidgets();
             init();

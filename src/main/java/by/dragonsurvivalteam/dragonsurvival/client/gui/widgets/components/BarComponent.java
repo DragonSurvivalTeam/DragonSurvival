@@ -24,26 +24,28 @@ public class BarComponent implements ScrollableComponent {
         this.yPos = yPos;
         this.elementSpacing = elementSpacing;
         this.numberOfElementsToDisplay = numberOfElementsToDisplay;
-        if(widgets.size() > 1) {
+
+        if (widgets.size() > 1) {
             centerIndex = 1;
         }
 
         this.widgets.addAll(widgets);
+
         for (AbstractWidget widget : widgets) {
             ((ScreenAccessor) parentScreen).dragonSurvival$addRenderableWidget(widget);
         }
 
-        if(widgets.size() > numberOfElementsToDisplay) {
+        if (widgets.size() > numberOfElementsToDisplay) {
             leftArrow = new HoverButton(xPos + arrowLeftX, yPos + arrowY, arrowWidth, arrowHeight, arrowTextureWidth, arrowTextureHeight, leftArrowMain, leftArrowHover, button -> rotate(false));
             rightArrow = new HoverButton(xPos + arrowRightX, yPos + arrowY, arrowWidth, arrowHeight, arrowTextureWidth, arrowTextureHeight, rightArrowMain, rightArrowHover, button -> rotate(true));
-            ((ScreenAccessor)parentScreen).dragonSurvival$addRenderableWidget(leftArrow);
-            ((ScreenAccessor)parentScreen).dragonSurvival$addRenderableWidget(rightArrow);
+            ((ScreenAccessor) parentScreen).dragonSurvival$addRenderableWidget(leftArrow);
+            ((ScreenAccessor) parentScreen).dragonSurvival$addRenderableWidget(rightArrow);
 
-            if(centerIndex - getNumberOfElementsLeftOfCenter() <= 0) {
+            if (centerIndex - getNumberOfElementsLeftOfCenter() <= 0) {
                 leftArrow.visible = false;
             }
 
-            if(centerIndex + getNumberOfElementsRightOfCenter() >= widgets.size() - 1) {
+            if (centerIndex + getNumberOfElementsRightOfCenter() >= widgets.size() - 1) {
                 rightArrow.visible = false;
             }
         } else {
@@ -60,12 +62,13 @@ public class BarComponent implements ScrollableComponent {
                 return true;
             }
         }
+
         return false;
     }
 
     @Override
     public void scroll(double mouseX, double mouseY, double scrollX, double scrollY) {
-        if(!isHoveringOverWidget(mouseX, mouseY)) {
+        if (!isHoveringOverWidget(mouseX, mouseY)) {
             return;
         }
 
@@ -80,26 +83,24 @@ public class BarComponent implements ScrollableComponent {
         if (!right) {
             if (centerIndex - getNumberOfElementsLeftOfCenter() > 0) {
                 centerIndex--;
+
                 if (rightArrow != null) {
                     rightArrow.visible = true;
                 }
-                if (centerIndex - getNumberOfElementsLeftOfCenter() <= 0) {
-                    if (leftArrow != null) {
-                        leftArrow.visible = false;
-                    }
+
+                if (leftArrow != null && centerIndex - getNumberOfElementsLeftOfCenter() <= 0) {
+                    leftArrow.visible = false;
                 }
             }
-        } else {
-            if (centerIndex + getNumberOfElementsRightOfCenter() < widgets.size() - 1) {
-                centerIndex++;
-                if (leftArrow != null) {
-                    leftArrow.visible = true;
-                }
-                if (centerIndex + getNumberOfElementsRightOfCenter() >= widgets.size() - 1) {
-                    if (rightArrow != null) {
-                        rightArrow.visible = false;
-                    }
-                }
+        } else if (centerIndex + getNumberOfElementsRightOfCenter() < widgets.size() - 1) {
+            centerIndex++;
+
+            if (leftArrow != null) {
+                leftArrow.visible = true;
+            }
+
+            if (rightArrow != null && centerIndex + getNumberOfElementsRightOfCenter() >= widgets.size() - 1) {
+                rightArrow.visible = false;
             }
         }
 

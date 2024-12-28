@@ -61,6 +61,8 @@ public record DamageModificationEffect(List<DamageModification> modifications) i
             int numTypes = damageModification.damageTypes().size();
             int count = 0;
 
+            // TODO :: special handling for tags? check for 'HolderSet.Named' and use the key
+            //  could be helpful for damage type tags which contain a lot of entries
             for (Holder<DamageType> damageType : damageModification.damageTypes()) {
                 //noinspection DataFlowIssue -> key is present
                 name = name.append(Component.translatable(Translation.Type.DAMAGE_TYPE.wrap(damageType.getKey().location())).withColor(DSColors.BLUE));

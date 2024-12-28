@@ -24,7 +24,7 @@
   "diet": [
     {
       "items": [
-        "#minecraft:doors"
+        "#minecraft:fishes"
       ],
       "properties": {
         "can_always_eat": true,
@@ -35,7 +35,7 @@
     },
     {
       "items": [
-        "#minecraft:wool"
+        "#minecraft:meat"
       ],
       "properties": {
         "can_always_eat": true,
@@ -46,13 +46,18 @@
     },
     {
       "items": [
-        "#minecraft:logs"
+        "#c:ores"
       ],
       "properties": {
         "eat_seconds": 3.0,
         "nutrition": 12,
         "saturation": 5.0
       }
+    },
+    {
+      "items": [
+        "#c:foods"
+      ]
     }
   ],
   "misc_resources": {

@@ -1,11 +1,15 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -13,6 +17,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class DietMenuComponent implements ScrollableComponent, Renderable {
+    @Translation(type = Translation.Type.MISC, comments = "There is no custom dragon diet")
+    public static final String NO_CUSTOM_DIET = Translation.Type.GUI.wrap("diet_menu.no_custom_diet");
+
     private static final int VISIBLE_MAX_ROWS = 3;
     private static final int ITEMS_PER_ROW = 7;
     private static final int ITEM_SIZE = 18;
@@ -44,10 +51,25 @@ public class DietMenuComponent implements ScrollableComponent, Renderable {
 
     @Override
     public void render(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        // TODO :: draw centered string 'no custom diet' or sth. like that if the diet is empty
-//        graphics.fill(x, y, maxX, maxY, 0xFFFF0000);
-
         List<Item> items = dragonSpecies.value().getDietItems();
+
+        if (items.isEmpty()) {
+            MutableComponent component = Component.translatable(NO_CUSTOM_DIET);
+            List<FormattedCharSequence> formatted = Minecraft.getInstance().font.split(component, maxX - x);
+
+            int startX = x + ITEMS_PER_ROW * ITEM_SIZE / 2;
+            int startY = y + VISIBLE_MAX_ROWS * ITEM_SIZE / 2 - Minecraft.getInstance().font.lineHeight / 2;
+
+            for (int row = 0; row < formatted.size(); row++) {
+                FormattedCharSequence text = formatted.get(row);
+                int xPosition = startX - Minecraft.getInstance().font.width(text) / 2;
+                int yPosition = startY + row * (Minecraft.getInstance().font.lineHeight + 2);
+                graphics.drawString(Minecraft.getInstance().font, text, xPosition, yPosition, DSColors.WHITE, false);
+            }
+
+            return;
+        }
+
         int processedRows = 0;
         int processedItems = 0;
 

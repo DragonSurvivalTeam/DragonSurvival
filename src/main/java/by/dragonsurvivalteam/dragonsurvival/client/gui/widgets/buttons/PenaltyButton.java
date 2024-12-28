@@ -11,11 +11,11 @@ import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import org.jetbrains.annotations.NotNull;
 
 public class PenaltyButton extends ExtendedButton  {
-    private final Holder<DragonPenalty> penalty;
-
     private static final int SIZE = 35;
 
-    public PenaltyButton(int xPos, int yPos, Holder<DragonPenalty> penalty) {
+    private final Holder<DragonPenalty> penalty;
+
+    public PenaltyButton(int xPos, int yPos, final Holder<DragonPenalty> penalty) {
         super(xPos, yPos, SIZE, SIZE, Component.empty(), action -> { /* Nothing to do */ });
         this.penalty = penalty;
     }
@@ -28,7 +28,7 @@ public class PenaltyButton extends ExtendedButton  {
         if (isHovered()) {
             graphics.pose().pushPose();
             // Render above the other UI elements
-            graphics.pose().translate(0, 0, 150);
+            graphics.pose().translate(0, 0, 250);
             AbilityAndPenaltyTooltipRenderer.drawPenaltyTooltip(graphics, mouseX, mouseY, penalty);
             graphics.pose().popPose();
         }

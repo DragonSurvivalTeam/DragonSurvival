@@ -62,7 +62,7 @@ public class LangKey {
     @Translation(type = Translation.Type.MISC, comments = "§6Can crush entities at size§r§7: %s")
     public static final String GROWTH_CAN_CRUSH_ENTITIES = Translation.Type.GUI.wrap("handler.growth_can_crush_entities");
 
-    @Translation(type = Translation.Type.MISC, comments = "§6--- Modifiers at Max Size ---§r§7: ")
+    @Translation(type = Translation.Type.MISC, comments = "\n§6--- Modifiers at max. size ---§r§7")
     public static final String GROWTH_MODIFIERS_AT_MAX_SIZE = Translation.Type.GUI.wrap("handler.growth_modifiers_at_max_size");
 
     // --- Flight data --- //
@@ -171,6 +171,9 @@ public class LangKey {
 
     @Translation(type = Translation.Type.MISC, comments = " after %s seconds")
     public static final String PENALTY_SUPPLY_TRIGGER = Translation.Type.PENALTY.wrap("general.penalty.supply_trigger");
+
+    @Translation(type = Translation.Type.MISC, comments = " on every game tick")
+    public static final String PENALTY_SUPPLY_TRIGGER_CONSTANT = Translation.Type.PENALTY.wrap("general.penalty.supply_trigger_constant");
 
     // --- Projectile effects --- //
 

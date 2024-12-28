@@ -185,14 +185,17 @@ public class DragonSpeciesScreen extends Screen {
 
         // Growth stage crystals
         List<Holder<DragonStage>> stages = data.getStagesSortedByProgression(minecraft.player.registryAccess());
-        if(!stages.isEmpty()) {
-            List<AbstractWidget> crystals = stages.stream().map(stage -> (AbstractWidget)(new GrowthCrystalButton(0, 0, stage))).toList();
+
+        if (!stages.isEmpty()) {
+            List<AbstractWidget> crystals = stages.stream().map(stage -> (AbstractWidget) new GrowthCrystalButton(0, 0, stage)).toList();
             MiscDragonTextures textures = data.getType().value().miscResources();
+
             crystalBar = new BarComponent(this,
                     startX + 130, startY - 19, 4,
                     crystals, 10,
                     -11, 39, 1, 12, 16, 12, 16,
                     textures.growthLeftArrow().hoverIcon(), textures.growthLeftArrow().icon(), textures.growthRightArrow().hoverIcon(), textures.growthRightArrow().icon());
+
             scrollableComponents.add(crystalBar);
         }
 
@@ -200,13 +203,12 @@ public class DragonSpeciesScreen extends Screen {
         HoverButton ridingButton = new HoverButton(startX + 186, startY - 18, 16, RIDING_MAIN, RIDING_HOVER);
         addRenderableWidget(ridingButton);
 
-
         // Body type button
         DragonBodyButton bodyTypeButton = new DragonBodyButton(this, startX + 29, startY + 92, 25, 25, data.getBody(), false, button -> {});
         addRenderableWidget(bodyTypeButton);
 
         // Penalties bar
-        List<AbstractWidget> penalties = data.getType().value().penalties().stream().map(penalty -> (AbstractWidget)(new PenaltyButton(0, 0, penalty))).toList();
+        List<AbstractWidget> penalties = data.getType().value().penalties().stream().map(penalty -> (AbstractWidget) new PenaltyButton(0, 0, penalty)).toList();
         scrollableComponents.add(new BarComponent(this,
                 startX + 85, startY + 85, 3,
                 penalties, 40,

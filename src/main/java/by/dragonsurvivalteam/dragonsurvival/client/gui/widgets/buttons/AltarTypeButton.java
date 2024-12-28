@@ -101,7 +101,7 @@ public class AltarTypeButton extends Button {
                 // Using the color codes in the translation doesn't seem to apply the color to the entire text - therefor we create the [shown / max_items] tooltip part here
                 MutableComponent shownFoods = Component.literal(" [" + Math.min(diet.size(), scroll + MAX_SHOWN) + " / " + diet.size() + "]").withStyle(ChatFormatting.DARK_GRAY);
                 //noinspection DataFlowIssue -> key is present
-                components.addFirst(Either.left(Component.translatable(Translation.Type.DRAGON_TYPE_DESCRIPTION.wrap(type.getKey().location())).append(shownFoods)));
+                components.addFirst(Either.left(Component.translatable(Translation.Type.DRAGON_SPECIES_DESCRIPTION.wrap(type.getKey().location())).append(shownFoods)));
 
                 for (int i = scroll; i < max; i++) {
                     components.add(Either.right(new DietComponent(type, diet.get(i))));

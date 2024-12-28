@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -42,7 +43,7 @@ public record MobEffectPenalty(HolderSet<MobEffect> effects, int amplifier, int 
             name.append(Component.literal(" " + amplifier).withColor(DSColors.ORANGE));
         }
 
-        name.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.blue(duration)));
+        name.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.blue(Functions.ticksToSeconds(duration))));
 
         return name;
     }
