@@ -77,11 +77,13 @@ public record DragonBody(List<Modifier> modifiers, double heightMultiplier, bool
         return ModifierType.DRAGON_BODY;
     }
 
-    public static String getWingButtonName(Holder<DragonBody> holder) {
-        return Translation.Type.BODY_WINGS.wrap(holder.getKey().location().getNamespace(), holder.getKey().location().getPath());
+    public static String getWingButtonName(final Holder<DragonBody> holder) {
+        //noinspection DataFlowIssue -> key is present
+        return Translation.Type.BODY_WINGS.wrap(holder.getKey().location());
     }
 
-    public static String getWingButtonDescription(Holder<DragonBody> holder) {
-        return Translation.Type.BODY_WINGS_DESCRIPTION.wrap(holder.getKey().location().getNamespace(), holder.getKey().location().getPath());
+    public static String getWingButtonDescription(final Holder<DragonBody> holder) {
+        //noinspection DataFlowIssue -> key is present
+        return Translation.Type.BODY_WINGS_DESCRIPTION.wrap(holder.getKey().location());
     }
 }

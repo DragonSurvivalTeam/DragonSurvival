@@ -20,40 +20,42 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ColorRGBA;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
+import net.neoforged.neoforge.common.Tags;
 
 import java.util.List;
 import java.util.Optional;
 
 public class DragonTypes {
-    @Translation(type = Translation.Type.DRAGON_TYPE_DESCRIPTION, comments = {
+    @Translation(type = Translation.Type.DRAGON_SPECIES_DESCRIPTION, comments = {
             "§c■ Cave dragon.§r",
             "§2■ Features:§f§r fire resistance, pickaxe claws, fire magic, faster movement on stone and magma blocks.",
             "§4■ Weakness:§r water.",
             "§6■ Diet:§r"
     })
-    @Translation(type = Translation.Type.DRAGON_TYPE, comments = "Cave Dragon")
+    @Translation(type = Translation.Type.DRAGON_SPECIES, comments = "Cave Dragon")
     public static final ResourceKey<DragonType> CAVE = key("cave");
 
-    @Translation(type = Translation.Type.DRAGON_TYPE_DESCRIPTION, comments = {
+    @Translation(type = Translation.Type.DRAGON_SPECIES_DESCRIPTION, comments = {
             "§a■ Forest dragon.§r",
             "§2■ Features:§f§r soft fall, axe claws, poison magic, faster movement on wooden and grass blocks.",
             "§4■ Weakness:§r dark caves.",
             "§6■ Diet:§r"
     })
-    @Translation(type = Translation.Type.DRAGON_TYPE, comments = "Forest Dragon")
+    @Translation(type = Translation.Type.DRAGON_SPECIES, comments = "Forest Dragon")
     public static final ResourceKey<DragonType> FOREST = key("forest");
 
-    @Translation(type = Translation.Type.DRAGON_TYPE_DESCRIPTION, comments = {
+    @Translation(type = Translation.Type.DRAGON_SPECIES_DESCRIPTION, comments = {
             "§3■ Sea dragon.§r",
             "§2■ Features:§f§r underwater breathing, shovel claws, electric magic, faster movement on ice and beach blocks.",
             "§4■ Weakness:§r dehydration.",
             "§6■ Diet:§r"
     })
-    @Translation(type = Translation.Type.DRAGON_TYPE, comments = "Sea Dragon")
+    @Translation(type = Translation.Type.DRAGON_SPECIES, comments = "Sea Dragon")
     public static final ResourceKey<DragonType> SEA = key("sea");
 
     public static void registerTypes(final BootstrapContext<DragonType> context) {
@@ -93,9 +95,10 @@ public class DragonTypes {
                 ),
                 List.of(),
                 List.of(
-                        DietEntry.from("#minecraft:doors", new FoodProperties(2, 1, true, 1, Optional.empty(), List.of())),
-                        DietEntry.from("#minecraft:wool", new FoodProperties(8, 3, true, 1, Optional.empty(), List.of())),
-                        DietEntry.from("#minecraft:logs", new FoodProperties(12, 5, false, 3, Optional.empty(), List.of()))
+                        DietEntry.from(ItemTags.FISHES, new FoodProperties(2, 1, true, 1, Optional.empty(), List.of())),
+                        DietEntry.from(ItemTags.MEAT, new FoodProperties(8, 3, true, 1, Optional.empty(), List.of())),
+                        DietEntry.from(Tags.Items.ORES, new FoodProperties(12, 5, false, 3, Optional.empty(), List.of())),
+                        DietEntry.from(Tags.Items.FOODS)
                 ),
                 new MiscDragonTextures(
                         DragonSurvival.res("textures/gui/food_icons/cave_food_icons.png"),

@@ -61,7 +61,7 @@ public class DragonType implements AttributeModifierSupplier {
     private final List<DietEntry> dietEntries;
     private final MiscDragonTextures miscResources;
 
-    private Map<Item, FoodProperties> diet;
+    private @Nullable Map<Item, FoodProperties> diet;
     private long lastDietUpdate;
 
     public DragonType(final Optional<Double> startingSize, final Optional<HolderSet<DragonStage>> stages, final HolderSet<DragonBody> bodies, final HolderSet<DragonAbility> abilities, final HolderSet<DragonPenalty> penalties, List<Modifier> modifiers, final List<DietEntry> dietEntries, final MiscDragonTextures miscResources) {
