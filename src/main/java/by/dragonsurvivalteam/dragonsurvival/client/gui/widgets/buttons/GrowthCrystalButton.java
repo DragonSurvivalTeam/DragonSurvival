@@ -48,7 +48,7 @@ public class GrowthCrystalButton extends ExtendedButton {
         graphics.blit(handler.getType().value().miscResources().growthCrystal().empty(), getX(), getY(), 0, 0, width, height, 8, 16);
 
         if (percentageFull > 0) {
-            int scissorHeight = (int) ((1 - percentageFull) * height);
+            int scissorHeight = (int) (percentageFull * height);
             graphics.enableScissor(getX(), getY() + (height - scissorHeight), getX() + width, getY() + height);
             graphics.blit(handler.getType().value().miscResources().growthCrystal().full(), getX(), getY(), 0, 0, width, height, 8, 16);
             graphics.disableScissor();
