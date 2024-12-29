@@ -99,20 +99,20 @@ public class DragonContainer extends AbstractContainerMenu {
         // Claw tool slots
         ClawInventoryData clawInventory = ClawInventoryData.getData(player);
         for (int i = 0; i < ClawInventoryData.Slot.size(); i++) {
-            ClawToolSlot clawToolSlot = new ClawToolSlot(this, clawInventory.getContainer(), i, -50, 35 + i * 18, i);
+            ClawToolSlot clawToolSlot = new ClawToolSlot(this, clawInventory.getContainer(), i, -26, 46 + i * 18, i);
             addSlot(clawToolSlot);
         }
 
         // Offhand slot
-        addSlot(new Slot(inventory, 40, 26, 62));
+        addSlot(new Slot(inventory, 40, 178, 142));
 
         // Crafting slots
-        addSlot(new ResultSlot(inventory.player, craftMatrix, craftResult, 0, 178, 33));
+        addSlot(new ResultSlot(inventory.player, craftMatrix, craftResult, 0, 178, 44));
         craftingResultIndex = slots.size() - 1;
 
         for (int row = 0; row < craftMatrix.getWidth(); row++) {
             for (int column = 0; column < craftMatrix.getHeight(); column++) {
-                Slot s = new Slot(craftMatrix, column + row * 3, 111 + column * 18, 15 + row * 18);
+                Slot s = new Slot(craftMatrix, column + row * 3, 116 + column * 18, 26 + row * 18);
                 addSlot(s);
                 craftingSlots.add(s);
             }

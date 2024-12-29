@@ -53,6 +53,7 @@ public class InventoryScreenHandler {
     public static Boolean inventoryToggle = true;
 
     private static final ResourceLocation DS_LOGO = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui_new/ds_logo.png");
+    public static final ResourceLocation INVENTORY_TOGGLE_BUTTON = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory_button.png");
 
     private static ExtendedButton altarOpenButton;
     private static ExtendedButton creativeModeDragonInventoryButton;
@@ -138,7 +139,7 @@ public class InventoryScreenHandler {
                     public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                         float u = 21f;
                         float v = isHoveredOrFocused() ? 20f : 0f;
-                        guiGraphics.blit(DragonInventoryScreen.INVENTORY_TOGGLE_BUTTON, getX(), getY(), u, v, 20, 18, 256, 256);
+                        guiGraphics.blit(INVENTORY_TOGGLE_BUTTON, getX(), getY(), u, v, 20, 18, 256, 256);
                     }
                 };
                 inventoryToggle.setTooltip(Tooltip.create(Component.translatable(TOGGLE_DRAGON_INVENTORY)));
@@ -155,7 +156,7 @@ public class InventoryScreenHandler {
                     public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                         float u = 21f;
                         float v = isHoveredOrFocused() ? 20f : 0f;
-                        guiGraphics.blit(DragonInventoryScreen.INVENTORY_TOGGLE_BUTTON, getX(), getY(), u, v, 20, 18, 256, 256);
+                        guiGraphics.blit(INVENTORY_TOGGLE_BUTTON, getX(), getY(), u, v, 20, 18, 256, 256);
                     }
                 };
                 creativeModeDragonInventoryButton.setTooltip(Tooltip.create(Component.translatable(TOGGLE_DRAGON_INVENTORY)));
