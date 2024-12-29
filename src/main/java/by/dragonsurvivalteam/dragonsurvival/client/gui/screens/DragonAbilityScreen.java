@@ -130,8 +130,8 @@ public class DragonAbilityScreen extends Screen {
             float leftExpBarProgress = Math.min(1f, Math.min(0.5f, minecraft.player.experienceProgress) * 2);
 
             int barYPos = startY + 10;
-            int leftBarX = startX + 17;
-            int rightBarX = startX + 129;
+            int leftBarX = startX + 10;
+            int rightBarX = startX + 136;
 
             graphics.blit(EXP_EMPTY, leftBarX, barYPos, 0, 0, 93, 6, 93, 6);
             graphics.blit(EXP_EMPTY, rightBarX, barYPos, 0, 0, 93, 6, 93, 6);
