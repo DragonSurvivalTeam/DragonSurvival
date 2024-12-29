@@ -13,56 +13,53 @@ import java.util.List;
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class HelpButton extends ExtendedButton {
-    private static final ResourceLocation INFO_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/info_hover.png");
-    private static final ResourceLocation INFO_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/info_main.png");
+    private static final ResourceLocation MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/info_main.png");
+    private static final ResourceLocation HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/info_hover.png");
+    private static final int TEXTURE_SIZE = 16;
+    private static final int UV = 13;
 
-    private final String text;
+    private final String tooltip;
+    private final ResourceLocation hover;
+    private final ResourceLocation main;
 
     private boolean usesVanillaTooltip;
 
-    private ResourceLocation infoHover = INFO_HOVER;
-    private ResourceLocation infoMain = INFO_MAIN;
-    private int uWidth = -1;
-    private int vHeight = -1;
-    private int textureWidth = -1;
-    private int textureHeight = -1;
-
-    public HelpButton(int x, int y, int sizeX, int sizeY, String text) {
+    public HelpButton(int x, int y, int sizeX, int sizeY, final String tooltip) {
         super(x, y, sizeX, sizeY, Component.empty(), action -> { /* Nothing to do */ });
-        this.text = text;
+        this.tooltip = tooltip;
+        this.main = MAIN;
+        this.hover = HOVER;
     }
 
     // This is needed for the DragonScreen, as otherwise we'll get cut out by the scissoring used for the rendering of the player entity in the window
-    public HelpButton(int x, int y, int sizeX, int sizeY, String text, boolean usesVanillaTooltip) {
-        this(x, y, sizeX, sizeY, text);
+    public HelpButton(int x, int y, int sizeX, int sizeY, final String tooltip, boolean usesVanillaTooltip) {
+        this(x, y, sizeX, sizeY, tooltip);
+
         if (usesVanillaTooltip) {
-            setTooltip(Tooltip.create(Component.translatable(text)));
+            setTooltip(Tooltip.create(Component.translatable(tooltip)));
         }
+
         this.usesVanillaTooltip = usesVanillaTooltip;
     }
 
-    public HelpButton(int x, int y, int sizeX, int sizeY, String text, ResourceLocation infoHover, ResourceLocation infoMain, int uWidth, int vHeight, int textureWidth, int textureHeight) {
+    public HelpButton(int x, int y, int sizeX, int sizeY, final String tooltip, final ResourceLocation main, final ResourceLocation hover) {
         super(x, y, sizeX, sizeY, Component.empty(), action -> { /* Nothing to do */ });
-        this.text = text;
-        this.infoHover = infoHover;
-        this.infoMain = infoMain;
-        this.uWidth = uWidth;
-        this.vHeight = vHeight;
-        this.textureWidth = textureWidth;
-        this.textureHeight = textureHeight;
+        this.tooltip = tooltip;
+        this.main = main;
+        this.hover = hover;
     }
 
     @Override
     public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         if (isHovered() && !usesVanillaTooltip) {
             // Render the tooltip manually since minecraft's tooltip positioner often fails with this button type
-            guiGraphics.renderComponentTooltip(Minecraft.getInstance().font, List.of(Component.translatable(text)), mouseX, mouseY);
+            guiGraphics.renderComponentTooltip(Minecraft.getInstance().font, List.of(Component.translatable(tooltip)), mouseX, mouseY);
         }
 
-        if(!isHovered()) {
-            guiGraphics.blit(infoMain, getX(), getY(), width, height, 0, 0, 13, 13, 16, 16);
+        if (!isHovered()) {
+            guiGraphics.blit(main, getX(), getY(), width, height, 0, 0, UV, UV, TEXTURE_SIZE, TEXTURE_SIZE);
         } else {
-            guiGraphics.blit(infoHover, getX(), getY(), width, height, 0, 0, 13, 13, 16, 16);
+            guiGraphics.blit(hover, getX(), getY(), width, height, 0, 0, UV, UV, TEXTURE_SIZE, TEXTURE_SIZE);
         }
     }
 

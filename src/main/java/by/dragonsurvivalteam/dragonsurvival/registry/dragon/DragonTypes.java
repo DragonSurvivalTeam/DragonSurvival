@@ -142,6 +142,7 @@ public class DragonTypes {
                                 DragonSurvival.res("textures/gui/custom/stage/cave/point_main.png"),
                                 DragonSurvival.res("textures/gui/custom/stage/cave/point_hover.png")
                         ),
+                        new MiscDragonTextures.FoodTooltip(MiscDragonTextures.FoodTooltip.DEFAULT_FOOD_TOOLTIP_FONT, "\\uEA02", "\\uEA05", Optional.empty()),
                         new ColorRGBA(16711680),
                         new ColorRGBA(16711680)
                 )
@@ -223,6 +224,7 @@ public class DragonTypes {
                                 DragonSurvival.res("textures/gui/custom/stage/sea/point_main.png"),
                                 DragonSurvival.res("textures/gui/custom/stage/sea/point_hover.png")
                         ),
+                        new MiscDragonTextures.FoodTooltip(MiscDragonTextures.FoodTooltip.DEFAULT_FOOD_TOOLTIP_FONT, "\\uEA03", "\\uEA06", Optional.empty()),
                         new ColorRGBA(16711680),
                         new ColorRGBA(16711680)
                 )
@@ -294,6 +296,7 @@ public class DragonTypes {
                                 DragonSurvival.res("textures/gui/custom/stage/forest/point_main.png"),
                                 DragonSurvival.res("textures/gui/custom/stage/forest/point_hover.png")
                         ),
+                        new MiscDragonTextures.FoodTooltip(MiscDragonTextures.FoodTooltip.DEFAULT_FOOD_TOOLTIP_FONT, "\\uEA01", "\\uEA04", Optional.empty()),
                         new ColorRGBA(16711680),
                         new ColorRGBA(16711680)
                 )

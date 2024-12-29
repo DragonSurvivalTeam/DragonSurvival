@@ -17,6 +17,10 @@
     "ability_bar": "dragonsurvival:textures/gui/casting_bars/cave_cast_bar.png",
     "altar_banner": "dragonsurvival:textures/gui/custom/altar/sea/altar_icon.png",
     "food_sprites": "dragonsurvival:textures/gui/food_icons/cave_food_icons.png",
+    "food_tooltip": {
+      "nutrition_icon": "\\uEA03",
+      "saturation_icon": "\\uEA06"
+    },
     "growth_bar_fill": "dragonsurvival:textures/gui/growth/circle_cave.png",
     "growth_crystal": {
       "empty": "dragonsurvival:textures/gui/custom/stage/sea/point_main.png",

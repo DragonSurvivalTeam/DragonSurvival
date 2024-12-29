@@ -19,7 +19,6 @@ import java.util.Locale;
 
 import static by.dragonsurvivalteam.dragonsurvival.network.container.RequestOpenDragonInventory.SendOpenDragonInventoryAndMaintainCursorPosition;
 
-
 public class TabButton extends Button {
     public enum Type {
         @Translation(type = Translation.Type.GUI, comments = "Inventory")

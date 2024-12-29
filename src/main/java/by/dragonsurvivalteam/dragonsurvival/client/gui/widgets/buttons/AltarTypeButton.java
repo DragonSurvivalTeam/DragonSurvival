@@ -119,7 +119,8 @@ public class AltarTypeButton extends Button {
         RenderSystem.setShaderTexture(0, BACKGROUND_TEXTURE);
 
         graphics.fill(getX() - 1, getY() - 1, getX() + width, getY() + height, new Color(0.5f, 0.5f, 0.5f).getRGB());
-        if(type != null) {
+
+        if (type != null) {
             graphics.blit(type.value().miscResources().altarBanner(), getX(), getY(), 0, isHovered ? 0 : 147, 49, 147, 49, 294);
         } else {
             graphics.blit(HUMAN_ALTAR_ICON, getX(), getY(), 0, isHovered ? 0 : 147, 49, 147, 49, 294);

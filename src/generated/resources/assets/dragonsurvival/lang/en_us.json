@@ -890,8 +890,6 @@
   "dragonsurvival.gui.inventory.toggle_dragon_altar": "Open dragon altar",
   "dragonsurvival.gui.inventory.toggle_dragon_inventory": "Open dragon inventory screen",
   "dragonsurvival.gui.inventory_tab": "Inventory",
-  "dragonsurvival.gui.level_down": "§aDowngrade the skill, gaining§r %s §alevels worth of experience points§r",
-  "dragonsurvival.gui.level_up": "§aUpgrade the skill for§r %s §alevels worth of experience points§r",
   "dragonsurvival.gui.message.altar_cooldown": "The altar is on cooldown for: %s",
   "dragonsurvival.gui.message.no_hunger": "Hunger has exhausted you, and you can't fly.",
   "dragonsurvival.gui.message.no_wings": "You have §cno levitation skill§r. You need to talk to the Ender dragon, or use the Flight Grant special item.",

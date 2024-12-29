@@ -224,7 +224,7 @@ public class DragonAbilityScreen extends Screen {
             widget.visible = leftWindowOpen;
         }
 
-        AbstractWidget leftHelpButton = new HelpButton(guiLeft - 24, startY - 25, 13, 13, HELP_ABILITY_ASSIGNMENT, INFO_HOVER, INFO_MAIN, 13, 13, 16, 16);
+        AbstractWidget leftHelpButton = new HelpButton(guiLeft - 24, startY - 25, 13, 13, HELP_ABILITY_ASSIGNMENT, INFO_MAIN, INFO_HOVER);
         addRenderableWidget(leftHelpButton);
         leftWindowWidgets.add(leftHelpButton);
         leftHelpButton.visible = leftWindowOpen;

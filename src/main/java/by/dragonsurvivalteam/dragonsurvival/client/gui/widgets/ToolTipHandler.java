@@ -23,6 +23,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -46,7 +47,6 @@ import java.util.Objects;
 public class ToolTipHandler {
     private static final ResourceLocation TOOLTIP_BLINKING = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/magic_tips_1.png");
     private static final ResourceLocation TOOLTIP = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/magic_tips_0.png");
-    private static final ResourceLocation ICONS = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "food_tooltip_icon_font");
 
     @Translation(key = "tooltip_changes", type = Translation.Type.CONFIGURATION, comments = "If enabled certain modifications to some tooltips will be made (e.g. dragon food items)")
     @ConfigOption(side = ConfigSide.CLIENT, category = "tooltips", key = "tooltip_changes")
@@ -82,36 +82,6 @@ public class ToolTipHandler {
             return Component.empty();
         }
 
-        String nutritionIcon;
-        String saturationIcon;
-        ChatFormatting color;
-
-        // FIXME
-        // TODO :: need new entry in misc resources for the icon codes?
-        //  not sure if there is a way to retrieve it from the resource / sprite
-        /*switch (type) {
-            case ForestDragonType ignored -> {
-                nutritionIcon = "\uEA01";
-                saturationIcon = "\uEA04";
-                color = ChatFormatting.GREEN;
-            }
-            case CaveDragonType ignored -> {
-                nutritionIcon = "\uEA02";
-                saturationIcon = "\uEA05";
-                color = ChatFormatting.RED;
-            }
-            case SeaDragonType ignored -> {
-                nutritionIcon = "\uEA03";
-                saturationIcon = "\uEA06";
-                color = ChatFormatting.DARK_AQUA;
-            }
-            default -> throw new IllegalArgumentException("Invalid dragon type [" + type + "]");
-        }*/
-
-        nutritionIcon = "\uEA02";
-        saturationIcon = "\uEA05";
-        color = ChatFormatting.RED;
-
         FoodProperties properties = type.value().getDiet(item);
 
         if (properties == null) {
@@ -119,29 +89,39 @@ public class ToolTipHandler {
             return Component.empty();
         }
 
-        String nutrition;
-        String saturation;
-
-        float nutritionValue = properties.nutrition();
-        float saturationValue = properties.saturation();
+        ResourceLocation font = type.value().miscResources().foodTooltip().font();
+        String nutritionIcon = type.value().miscResources().foodTooltip().nutritionIcon();
+        String saturationIcon = type.value().miscResources().foodTooltip().saturationIcon();
 
         // 1 Icon = 2 points (e.g. 10 nutrition icons for a maximum food level of 20)
-        nutrition = String.format("%.1f", nutritionValue / 2);
-        saturation = String.format("%.1f", saturationValue / 2);
+        String nutrition = String.format("%.1f", properties.nutrition() / 2f);
+        String saturation = String.format("%.1f", properties.saturation() / 2f);
+        int color = type.value().miscResources().foodTooltip().color().map(TextColor::getValue).orElse(type.value().miscResources().primaryColor().rgba());
+
+        MutableComponent nutritionComponent = Component.literal(nutrition + " ").withStyle(Style.EMPTY.withColor(color));
+        MutableComponent saturationComponent = Component.literal(" / " + saturation + " ").withStyle(Style.EMPTY.withColor(color));
+
+        return nutritionComponent.append(parseIcon(nutritionIcon, font)).append(saturationComponent).append(parseIcon(saturationIcon, font));
+    }
+
+    private static Component parseIcon(final String icon, final ResourceLocation font) {
+        String actualIcon;
+
+        if (icon.length() == 6 && icon.startsWith("\\u")) {
+            // Since the icon needs to be escaped when defining it in the .json as Unicode
+            // we need to transform it into the character it's supposed to represent
+            actualIcon = new String(Character.toChars(Integer.parseInt(icon.substring(2), 16)));
+        } else {
+            actualIcon = icon;
+        }
 
         // Use white color to reset the color (i.e. don't color the icons)
-        MutableComponent nutritionIconComponent = Component.literal(nutritionIcon).withStyle(Style.EMPTY.withColor(ChatFormatting.WHITE).withFont(ICONS));
-        MutableComponent nutritionComponent = Component.literal(nutrition + " ").withStyle(color);
-
-        MutableComponent saturationIconComponent = Component.literal(saturationIcon).withStyle(Style.EMPTY.withColor(ChatFormatting.WHITE).withFont(ICONS));
-        MutableComponent saturationComponent = Component.literal(" / " + saturation + " ").withStyle(color);
-
-        return nutritionComponent.append(nutritionIconComponent).append(saturationComponent).append(saturationIconComponent);
+        return Component.literal(actualIcon).withStyle(Style.EMPTY.withFont(font).withColor(ChatFormatting.WHITE));
     }
 
     @SubscribeEvent // Add certain descriptions to our items which use generic classes
     @SuppressWarnings("DataFlowIssue") // resource key should be present
-    public static void addCustomItemDescriptions(ItemTooltipEvent event) {
+    public static void addCustomItemDescriptions(final ItemTooltipEvent event) {
         if (event.getEntity() != null && event.getEntity().level().isClientSide() && event.getItemStack() != ItemStack.EMPTY) {
             ResourceLocation location = event.getItemStack().getItemHolder().getKey().location();
             MutableComponent description = null;

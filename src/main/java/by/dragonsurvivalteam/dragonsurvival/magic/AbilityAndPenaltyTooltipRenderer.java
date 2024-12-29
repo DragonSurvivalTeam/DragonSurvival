@@ -15,6 +15,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +23,6 @@ import org.joml.Vector2ic;
 import software.bernie.geckolib.util.Color;
 
 import java.util.List;
-import java.util.Objects;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
@@ -136,22 +136,23 @@ public class AbilityAndPenaltyTooltipRenderer {
         int colorYPos = 0;
 
         //noinspection DataFlowIssue -> key is present
-        FormattedText rawDescription = Component.translatable(Translation.Type.PENALTY_DESCRIPTION.wrap(penalty.getKey().location()));
+        FormattedText description = Component.translatable(Translation.Type.PENALTY_DESCRIPTION.wrap(penalty.getKey().location()));
+        Component component = penalty.value().getDescription(Minecraft.getInstance().player);
 
-        Component infoRaw = penalty.value().getDescription(Minecraft.getInstance().player);
-        List<Component> info;
-        if(Objects.equals(infoRaw, Component.empty())) {
-            info = List.of();
-        }  else {
-            info = List.of(infoRaw);
+        List<Component> components;
+
+        if (component.getContents() == PlainTextContents.EMPTY) {
+            components = List.of();
+        } else {
+            components = List.of(component);
         }
 
-        if(!info.isEmpty()) {
-            rawDescription = FormattedText.composite(rawDescription, Component.empty().append("\n\n"));
+        if (!components.isEmpty()) {
+            description = FormattedText.composite(description, Component.empty().append("\n\n"));
         }
 
-        List<FormattedCharSequence> description = Minecraft.getInstance().font.split(rawDescription, 150 - 7);
+        List<FormattedCharSequence> formattedDescription = Minecraft.getInstance().font.split(description, 150 - 7);
         Component name = Component.translatable(Translation.Type.PENALTY.wrap(penalty.getKey().location()));
-        drawTooltip(guiGraphics, x, y, info, description, colorXPos, colorYPos, PENALTY, name, Color.ofRGB(145, 46, 46), -1, -1, penalty.value().icon());
+        drawTooltip(guiGraphics, x, y, components, formattedDescription, colorXPos, colorYPos, PENALTY, name, Color.ofRGB(145, 46, 46), -1, -1, penalty.value().icon());
     }
 }

@@ -4,10 +4,12 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ColorRGBA;
 
 import java.util.List;
+import java.util.Optional;
 
 public record MiscDragonTextures(
         ResourceLocation foodSprites,
@@ -22,24 +24,24 @@ public record MiscDragonTextures(
         HoverIcon growthLeftArrow,
         HoverIcon growthRightArrow,
         FillIcon growthCrystal,
+        FoodTooltip foodTooltip,
         ColorRGBA primaryColor,
         ColorRGBA secondaryColor
 ) {
-    // TODO :: should all of these be defined?
-    //  could be colored: mana_sprites / help_button / growth_bar_fill
     public static final Codec<MiscDragonTextures> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ResourceLocation.CODEC.fieldOf("food_sprites").forGetter(MiscDragonTextures::foodSprites),
-            ResourceLocation.CODEC.fieldOf("mana_sprites").forGetter(MiscDragonTextures::manaSprites),
+            ResourceLocation.CODEC.fieldOf("food_sprites").forGetter(MiscDragonTextures::foodSprites), // TODO :: use vanilla food bar by default or have it optional and render vanilla bar if missing
+            ResourceLocation.CODEC.fieldOf("mana_sprites").forGetter(MiscDragonTextures::manaSprites), // TODO :: can have default texture (gray / green like the rest of the gui)
             ResourceLocation.CODEC.fieldOf("altar_banner").forGetter(MiscDragonTextures::altarBanner),
             ResourceLocation.CODEC.fieldOf("source_of_magic_background_passive").forGetter(MiscDragonTextures::sourceOfMagicBackgroundPassive),
             ResourceLocation.CODEC.fieldOf("source_of_magic_background_active").forGetter(MiscDragonTextures::sourceOfMagicBackgroundPassive),
-            ResourceLocation.CODEC.fieldOf("ability_bar").forGetter(MiscDragonTextures::castBar),
-            ResourceLocation.CODEC.fieldOf("help_button").forGetter(MiscDragonTextures::helpButton),
+            ResourceLocation.CODEC.fieldOf("ability_bar").forGetter(MiscDragonTextures::castBar), // TODO :: could have a simple cast bar without a dragon as default
+            ResourceLocation.CODEC.fieldOf("help_button").forGetter(MiscDragonTextures::helpButton), // TODO :: can be optional and use gray / green as default if missing
             ResourceLocation.CODEC.fieldOf("growth_bar_fill").forGetter(MiscDragonTextures::growthBarFill),
-            GrowthIcon.CODEC.listOf().fieldOf("growth_icons").forGetter(MiscDragonTextures::growthIcons),
+            GrowthIcon.CODEC.listOf().optionalFieldOf("growth_icons", List.of()).forGetter(MiscDragonTextures::growthIcons),
             HoverIcon.CODEC.fieldOf("growth_left_arrow").forGetter(MiscDragonTextures::growthLeftArrow),
             HoverIcon.CODEC.fieldOf("growth_right_arrow").forGetter(MiscDragonTextures::growthRightArrow),
             FillIcon.CODEC.fieldOf("growth_crystal").forGetter(MiscDragonTextures::growthCrystal),
+            FoodTooltip.CODEC.fieldOf("food_tooltip").forGetter(MiscDragonTextures::foodTooltip),
             ColorRGBA.CODEC.fieldOf("primary_color").forGetter(MiscDragonTextures::primaryColor),
             ColorRGBA.CODEC.fieldOf("secondary_color").forGetter(MiscDragonTextures::secondaryColor)
     ).apply(instance, MiscDragonTextures::new));
@@ -58,7 +60,20 @@ public record MiscDragonTextures(
         ).apply(instance, FillIcon::new));
     }
 
-    public static final ResourceLocation DEFAULT_GROWTH_HOVER_ICON = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/stage/cave/newborn_stage_hover.png");
-    public static final ResourceLocation DEFAULT_GROWTH_BASE_ICON = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/stage/cave/newborn_stage_main.png");
+    public record FoodTooltip(ResourceLocation font, String nutritionIcon, String saturationIcon, Optional<TextColor> color) {
+        public static final ResourceLocation DEFAULT_FOOD_TOOLTIP_FONT = DragonSurvival.res("food_tooltip_icon_font");
+
+        public static final Codec<FoodTooltip> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                ResourceLocation.CODEC.optionalFieldOf("font", DEFAULT_FOOD_TOOLTIP_FONT).forGetter(FoodTooltip::font),
+                // TODO :: use human icons by default? would only be guaranteed to work if we use a non-custom font file
+                //  these could be optional and we use some default font file if they are missing
+                Codec.STRING.fieldOf("nutrition_icon").forGetter(FoodTooltip::nutritionIcon),
+                Codec.STRING.fieldOf("saturation_icon").forGetter(FoodTooltip::saturationIcon),
+                TextColor.CODEC.optionalFieldOf("color").forGetter(FoodTooltip::color)
+        ).apply(instance, FoodTooltip::new));
+    }
+
+    public static final ResourceLocation DEFAULT_GROWTH_HOVER_ICON = DragonSurvival.res("textures/gui/stage/cave/newborn_stage_hover.png");
+    public static final ResourceLocation DEFAULT_GROWTH_BASE_ICON = DragonSurvival.res("textures/gui/stage/cave/newborn_stage_main.png");
     public static final GrowthIcon DEFAULT_GROWTH_ICON = new GrowthIcon(DEFAULT_GROWTH_HOVER_ICON, DEFAULT_GROWTH_BASE_ICON, DragonStages.newborn);
 }

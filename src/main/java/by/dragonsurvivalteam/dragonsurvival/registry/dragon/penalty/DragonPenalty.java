@@ -10,7 +10,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.resources.RegistryFixedCodec;
@@ -72,7 +71,7 @@ public record DragonPenalty(ResourceLocation icon, Optional<LootItemCondition> c
         MutableComponent description = trigger.getDescription(dragon);
 
         if (description.getContents() == PlainTextContents.EMPTY) {
-            return Component.empty();
+            return description;
         }
 
         return effect.getDescription().append(description);
