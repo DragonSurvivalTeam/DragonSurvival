@@ -34,7 +34,8 @@ import static by.dragonsurvivalteam.dragonsurvival.registry.DSItems.DS_ITEMS;
 
 public class DSBlocks {
     public static final DeferredRegister<Block> DS_BLOCKS = DeferredRegister.create(BuiltInRegistries.BLOCK, MODID);
-    public static final HashMap<String, Pair<DeferredHolder<Block, SkeletonPieceBlock>, DeferredHolder<Item, BlockItem>>> SKELETON_PIECES = new HashMap<>(); // FIXME :: why are these stored in a map if the map is unused
+    // TODO :: why are these stored in a map if the map is unused
+    public static final HashMap<String, Pair<DeferredHolder<Block, SkeletonPieceBlock>, DeferredHolder<Item, BlockItem>>> SKELETON_PIECES = new HashMap<>();
 
     // --- Dragon Doors --- //
 
@@ -664,7 +665,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASEDRUM)
                     .strength(1.5f)
                     .sound(SoundType.STONE)
-                    .requiresCorrectToolForDrops(), null, true)
+                    .requiresCorrectToolForDrops(), DSDragonTypeTags.NONE, true)
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Cave Dragon Pressure Plate")
@@ -848,7 +849,7 @@ public class DSBlocks {
     }
 
     static {
-        for (int i = 1; i < 9; i++) { // FIXME :: what does he 9 indicate
+        for (int i = 1; i < 9; i++) { // TODO :: what does he 9 indicate
             for (SkeletonPieceBlock.Type type : SkeletonPieceBlock.Types.values()) {
                 DeferredHolder<Block, SkeletonPieceBlock> block = DS_BLOCKS.register(type.getSerializedName() + "_skin" + i,
                         () -> new SkeletonPieceBlock(type, BlockBehaviour.Properties.of()

@@ -136,22 +136,6 @@ public class DSLanguageProvider extends LanguageProvider {
                 }
             }
 
-            if (key == null && annotationData.targetType() == ElementType.TYPE) {
-                try {
-                    Class<?> classType = Class.forName(annotationData.memberName());
-
-                    // FIXME
-                    /*if (DragonAbility.class.isAssignableFrom(classType)) {
-                        DragonAbility ability = (DragonAbility) classType.getDeclaredConstructor().newInstance();
-                        add(type.wrap(ability.getName()), format(comments));
-
-                        continue;
-                    }*/
-                } catch (ReflectiveOperationException exception) {
-                    throw new RuntimeException("An error occurred while trying to get the translations from [" + annotationData + "]", exception);
-                }
-            }
-
             if (key == null || key.isEmpty()) {
                 throw new IllegalStateException("Empty keys are not supported on that field type - annotation data: [" + annotationData + "]");
             }

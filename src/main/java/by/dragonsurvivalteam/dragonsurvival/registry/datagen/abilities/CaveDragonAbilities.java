@@ -118,7 +118,7 @@ public class CaveDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Cave Dragon")
     public static final ResourceKey<DragonAbility> FIRE_IMMUNITY = DragonAbilities.key("fire_immunity");
 
-    // FIXME :: remove (owner only works properly with static uuid - i.e. 'runClient_static')
+    // FIXME :: only for test (owner only works properly with static uuid - i.e. 'runClient_static')
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Test for summon entity effect\n")
     @Translation(type = Translation.Type.ABILITY, comments = "Summon Test")
     public static final ResourceKey<DragonAbility> SUMMON_TEST = DragonAbilities.key("summon_test");

@@ -39,7 +39,7 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import java.util.List;
 import java.util.Optional;
 
-
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType") // ignore
 public class GenericBallEntity extends AbstractHurtingProjectile implements GeoEntity {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     public static final EntityDataAccessor<String> NAME = SynchedEntityData.defineId(GenericBallEntity.class, EntityDataSerializers.STRING);
@@ -168,8 +168,8 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
         this.accelerationPower = 0;
     }
 
-    public GenericBallEntity(EntityType<GenericBallEntity> genericBallEntityEntityType, Level level) {
-        super(DSEntities.GENERIC_BALL_ENTITY.get(), level);
+    public GenericBallEntity(final EntityType<GenericBallEntity> type, final Level level) {
+        super(type, level);
         this.canHitPredicate = Optional.empty();
         this.trailParticle = Optional.empty();
         this.tickingEffects = List.of();

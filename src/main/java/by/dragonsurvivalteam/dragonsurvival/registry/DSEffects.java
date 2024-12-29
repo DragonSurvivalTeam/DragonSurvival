@@ -108,16 +108,4 @@ public class DSEffects { // TODO :: add descriptions for the missing N/A marked 
     @Translation(type = Translation.Type.EFFECT, comments = "Regeneration Delay")
     @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "N/A") // TODO
     public static Holder<MobEffect> REGENERATION_DELAY = DS_MOB_EFFECTS.register("regeneration_delay", () -> new ModifiableMobEffect(MobEffectCategory.HARMFUL, 0x0, true));
-
-    @Translation(type = Translation.Type.EFFECT, comments = "Cave Dragon Wings")
-    @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "Grants cave dragons the ability to fly.")
-    public static Holder<MobEffect> CAVE_DRAGON_WINGS = DS_MOB_EFFECTS.register("cave_dragon_wings", () -> new ModifiableMobEffect(MobEffectCategory.BENEFICIAL, 0x0, true));
-
-    @Translation(type = Translation.Type.EFFECT, comments = "Sea Dragon Wings")
-    @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "Grants sea dragons the ability to fly.")
-    public static Holder<MobEffect> SEA_DRAGON_WINGS = DS_MOB_EFFECTS.register("sea_dragon_wings", () -> new ModifiableMobEffect(MobEffectCategory.BENEFICIAL, 0x0, true));
-
-    @Translation(type = Translation.Type.EFFECT, comments = "Forest Dragon Wings")
-    @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "Grants forest dragons the ability to fly.")
-    public static Holder<MobEffect> FOREST_DRAGON_WINGS = DS_MOB_EFFECTS.register("forest_dragon_wings", () -> new ModifiableMobEffect(MobEffectCategory.BENEFICIAL, 0x0, true));
 }
