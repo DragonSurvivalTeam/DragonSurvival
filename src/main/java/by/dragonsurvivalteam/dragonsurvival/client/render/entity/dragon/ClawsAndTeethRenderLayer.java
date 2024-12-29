@@ -108,7 +108,7 @@ public class ClawsAndTeethRenderLayer extends GeoRenderLayer<DragonEntity> {
             return null;
         }
 
-        // FIXME
+        // FIXME :: where best to define this? misc resources to indicate a slot? or in the type itself?
         ItemStack clawItem = ItemStack.EMPTY;//ClawInventoryData.getData(player).getContainer().getItem(handler.getType().clawTextureSlot);
 
         if (!clawItem.isEmpty()) {

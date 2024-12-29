@@ -9,9 +9,11 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEm
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.resources.sounds.TickableSoundInstance;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -114,5 +116,16 @@ public class ClientProxy implements Proxy {
     @Override
     public boolean isOnRenderThread() {
         return RenderSystem.isOnRenderThread();
+    }
+
+    @Override
+    public @Nullable RegistryAccess getAccess() {
+        ClientLevel level = Minecraft.getInstance().level;
+
+        if (level != null) {
+            return level.registryAccess();
+        }
+
+        return null;
     }
 }

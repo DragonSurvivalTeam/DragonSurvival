@@ -70,15 +70,6 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class DragonEditorScreen extends Screen implements DragonBodyScreen {
-    @Translation(type = Translation.Type.MISC, comments = "In the depths of your soul, lava has begun to roar. You have chosen to become a §cCave dragon.§r")
-    private static final String CAVE_DRAGON_CHOICE = Translation.Type.GUI.wrap("dragon_editor.cave_dragon_choice");
-
-    @Translation(type = Translation.Type.MISC, comments = "You feel the need for raw meat, and are covered in grassy scales. You have chosen to become a §aForest dragon.§r")
-    private static final String SEA_DRAGON_CHOICE = Translation.Type.GUI.wrap("dragon_editor.sea_dragon_choice");
-
-    @Translation(type = Translation.Type.MISC, comments = "The stormy sea beckons you. You have chosen to become a §3Sea dragon.§r")
-    private static final String FOREST_DRAGON_CHOICE = Translation.Type.GUI.wrap("dragon_editor.forest_dragon_choice");
-
     @Translation(type = Translation.Type.MISC, comments = "Randomize")
     private static final String RANDOMIZE = Translation.Type.GUI.wrap("dragon_editor.randomize");
 
@@ -859,16 +850,6 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         minecraft.player.level().playSound(minecraft.player, minecraft.player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 1, 0.7f);
 
         if (!data.isDragon() || dragonWouldChange(data)) {
-            // FIXME
-            /*String translationKey = switch (dragonType) {
-                case CaveDragonType ignored -> CAVE_DRAGON_CHOICE;
-                case SeaDragonType ignored -> SEA_DRAGON_CHOICE;
-                case ForestDragonType ignored -> FOREST_DRAGON_CHOICE;
-                default -> throw new IllegalStateException("Invalid dragon type [" + dragonType + "]");
-            };*/
-
-            minecraft.player.sendSystemMessage(Component.translatable(CAVE_DRAGON_CHOICE));
-
             if (dragonType == null && data.getType() != null) {
                 DragonCommand.reInsertClawTools(minecraft.player);
             }

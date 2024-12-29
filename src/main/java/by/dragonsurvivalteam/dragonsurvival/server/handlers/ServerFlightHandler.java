@@ -9,18 +9,13 @@ import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SpinDurationAndCooldown;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncWingsSpread;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -159,46 +154,8 @@ public class ServerFlightHandler {
         return data.hasFlight() && data.isWingsSpread() && !player.onGround() && !player.isInWater() && !player.isInLava();
     }
 
-    private static Holder<MobEffect> getFlightEffectForType(Holder<DragonType> type) {
-        // FIXME
-       /* if (DragonUtils.isType(type, DragonTypes.SEA)) {
-            return DSEffects.SEA_DRAGON_WINGS;
-        } else if (DragonUtils.isType(type, DragonTypes.CAVE)) {
-            return DSEffects.CAVE_DRAGON_WINGS;
-        } else if (DragonUtils.isType(type, DragonTypes.FOREST)) {
-            return DSEffects.FOREST_DRAGON_WINGS;
-        }*/
-
-        return DSEffects.CAVE_DRAGON_WINGS;
-    }
-
-    private static boolean hasCorrectFlightEffect(Player player) {
-        DragonStateHandler dragonStateHandler = DragonStateProvider.getData(player);
-        Holder<MobEffect> flightEffect = getFlightEffectForType(dragonStateHandler.getType());
-        if(flightEffect == null) {
-            return false;
-        }
-
-        return player.hasEffect(flightEffect);
-    }
-
-    private static void clearAllFlightEffects(Player player) {
-        // Check for effect first to avoid unnecessary event spam etc.
-        if (player.hasEffect(DSEffects.SEA_DRAGON_WINGS)) {
-            player.removeEffect(DSEffects.SEA_DRAGON_WINGS);
-        }
-
-        if (player.hasEffect(DSEffects.CAVE_DRAGON_WINGS)) {
-            player.removeEffect(DSEffects.CAVE_DRAGON_WINGS);
-        }
-
-        if (player.hasEffect(DSEffects.FOREST_DRAGON_WINGS)) {
-            player.removeEffect(DSEffects.FOREST_DRAGON_WINGS);
-        }
-    }
-
     @SubscribeEvent
-    public static void handleEarlyFlightLogic(PlayerTickEvent.Pre event) {
+    public static void handleEarlyFlightLogic(final PlayerTickEvent.Pre event) {
         Player player = event.getEntity();
         DragonStateHandler handler = DragonStateProvider.getData(player);
 
@@ -209,30 +166,6 @@ public class ServerFlightHandler {
         } else if (isFlying(player)) {
             // Handle fall distance
             player.resetFallDistance();
-        }
-
-        if (event.getEntity().level().isClientSide()) {
-            return;
-        }
-
-        if (!handler.isDragon()) {
-            clearAllFlightEffects(player);
-            return;
-        }
-
-        // Handle flight icon
-        FlightData data = FlightData.getData(player);
-        if (data.isWingsSpread()) {
-            if (!hasCorrectFlightEffect(player)) {
-                clearAllFlightEffects(player);
-                Holder<MobEffect> flightEffect = getFlightEffectForType(handler.getType());
-
-                if (flightEffect != null) {
-                    player.addEffect(new MobEffectInstance(flightEffect, -1, 0, true, false, true));
-                }
-            }
-        } else {
-            clearAllFlightEffects(player);
         }
     }
 

@@ -8,10 +8,8 @@ import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
-
 public class GenericBallRenderer extends GeoEntityRenderer<GenericBallEntity> {
-
-    public GenericBallRenderer(EntityRendererProvider.Context renderManager, GeoModel<GenericBallEntity> model) {
+    public GenericBallRenderer(final EntityRendererProvider.Context renderManager, final GeoModel<GenericBallEntity> model) {
         super(renderManager, model);
     }
 
@@ -22,6 +20,7 @@ public class GenericBallRenderer extends GeoEntityRenderer<GenericBallEntity> {
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull final GenericBallEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(animatable.getTextureLocation().getNamespace(), "textures/entity/projectiles/" + animatable.getTextureLocation().getPath() + ".png");
+        ResourceLocation resource = animatable.getTextureLocation();
+        return ResourceLocation.fromNamespaceAndPath(resource.getNamespace(), "textures/entity/projectiles/" + resource.getPath() + ".png");
     }
 }

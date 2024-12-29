@@ -39,7 +39,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Locale;
 import javax.annotation.Nullable;
 
-// FIXME :: some doors were not usable by dragons, use NONE dragon type tag
 public class DragonDoor extends Block implements SimpleWaterloggedBlock {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty OPEN = BlockStateProperties.OPEN;
@@ -191,11 +190,13 @@ public class DragonDoor extends Block implements SimpleWaterloggedBlock {
 
     @Override
     public @NotNull BlockState mirror(@NotNull final BlockState state, @NotNull final Mirror mirror) {
+        //noinspection deprecation -> ignore
         return mirror == Mirror.NONE ? state : state.rotate(mirror.getRotation(state.getValue(FACING))).cycle(HINGE);
     }
 
     @Override
     public long getSeed(final BlockState state, final BlockPos position) {
+        //noinspection deprecation -> ignore
         return Mth.getSeed(position.getX(), position.below(state.getValue(PART) == Part.BOTTOM ? 0 : 1).getY(), position.getZ());
     }
 

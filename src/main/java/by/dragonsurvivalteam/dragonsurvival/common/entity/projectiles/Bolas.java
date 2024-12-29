@@ -22,15 +22,8 @@ public class Bolas extends AbstractArrow {
         super(DSEntities.BOLAS_ENTITY.get(), world);
     }
 
-    public Bolas(
-            double pX,
-            double pY,
-            double pZ,
-            Level pLevel,
-            ItemStack pPickupItemStack,
-            @Nullable ItemStack pFiredFromWeapon
-    ) {
-        super(DSEntities.BOLAS_ENTITY.value(), pX, pY, pZ, pLevel, pPickupItemStack, pFiredFromWeapon);
+    public Bolas(double x, double y, double z, final Level level, final ItemStack pickup, @Nullable final ItemStack firedFrom) {
+        super(DSEntities.BOLAS_ENTITY.value(), x, y, z, level, pickup, firedFrom);
     }
 
     // FIXME :: why is this commented out?
