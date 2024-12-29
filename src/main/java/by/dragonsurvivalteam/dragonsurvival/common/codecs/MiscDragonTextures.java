@@ -6,7 +6,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ColorRGBA;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,8 +24,8 @@ public record MiscDragonTextures(
         HoverIcon growthRightArrow,
         FillIcon growthCrystal,
         FoodTooltip foodTooltip,
-        ColorRGBA primaryColor,
-        ColorRGBA secondaryColor
+        TextColor primaryColor,
+        TextColor secondaryColor
 ) {
     public static final Codec<MiscDragonTextures> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ResourceLocation.CODEC.fieldOf("food_sprites").forGetter(MiscDragonTextures::foodSprites), // TODO :: use vanilla food bar by default or have it optional and render vanilla bar if missing
@@ -42,8 +41,8 @@ public record MiscDragonTextures(
             HoverIcon.CODEC.fieldOf("growth_right_arrow").forGetter(MiscDragonTextures::growthRightArrow),
             FillIcon.CODEC.fieldOf("growth_crystal").forGetter(MiscDragonTextures::growthCrystal),
             FoodTooltip.CODEC.fieldOf("food_tooltip").forGetter(MiscDragonTextures::foodTooltip),
-            ColorRGBA.CODEC.fieldOf("primary_color").forGetter(MiscDragonTextures::primaryColor),
-            ColorRGBA.CODEC.fieldOf("secondary_color").forGetter(MiscDragonTextures::secondaryColor)
+            TextColor.CODEC.fieldOf("primary_color").forGetter(MiscDragonTextures::primaryColor),
+            TextColor.CODEC.fieldOf("secondary_color").forGetter(MiscDragonTextures::secondaryColor)
     ).apply(instance, MiscDragonTextures::new));
 
     public record HoverIcon(ResourceLocation hoverIcon, ResourceLocation icon) {

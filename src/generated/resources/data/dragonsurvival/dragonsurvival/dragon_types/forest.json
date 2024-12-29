@@ -56,8 +56,8 @@
     },
     "help_button": "dragonsurvival:textures/gui/help_button/cave_help_button.png",
     "mana_sprites": "dragonsurvival:textures/gui/mana_icons/forest_mana_icons.png",
-    "primary_color": "#00FF0000",
-    "secondary_color": "#00FF0000",
+    "primary_color": "#41CC48",
+    "secondary_color": "#117816",
     "source_of_magic_background_active": "dragonsurvival:textures/gui/source_of_magic/forest_source_of_magic_0.png",
     "source_of_magic_background_passive": "dragonsurvival:textures/gui/source_of_magic/forest_source_of_magic_0.png"
   },

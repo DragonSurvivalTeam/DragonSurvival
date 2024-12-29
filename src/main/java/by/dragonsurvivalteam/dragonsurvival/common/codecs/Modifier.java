@@ -46,7 +46,7 @@ public record Modifier(Holder<Attribute> attribute, LevelBasedValue amount, Attr
     }
 
     public MutableComponent getFormattedDescription(int level) {
-        MutableComponent name = Component.literal("§6■ ").append(Component.translatable(attribute.value().getDescriptionId()).withColor(DSColors.ORANGE));
+        MutableComponent name = Component.literal("§6■ ").append(Component.translatable(attribute.value().getDescriptionId()).withColor(DSColors.GOLD));
         float amount = this.amount.calculate(level);
         // If the number is negative it will already contain a '-'
         String number = amount > 0 ? "+" : "";

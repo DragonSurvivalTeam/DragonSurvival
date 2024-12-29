@@ -1,8 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAbilityScreen;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.SkillProgressButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HelpButton;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
@@ -10,13 +8,13 @@ import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonTypes;
-import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
+import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
@@ -40,21 +38,18 @@ import net.neoforged.neoforge.client.event.RenderTooltipEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import org.joml.Vector2ic;
 
-import java.awt.*;
-import java.util.Objects;
-
 @EventBusSubscriber(Dist.CLIENT)
 public class ToolTipHandler {
-    private static final ResourceLocation TOOLTIP_BLINKING = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/magic_tips_1.png");
-    private static final ResourceLocation TOOLTIP = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/magic_tips_0.png");
-
     @Translation(key = "tooltip_changes", type = Translation.Type.CONFIGURATION, comments = "If enabled certain modifications to some tooltips will be made (e.g. dragon food items)")
     @ConfigOption(side = ConfigSide.CLIENT, category = "tooltips", key = "tooltip_changes")
-    public static Boolean tooltipChanges = true;
+    public static Boolean TOOLTIP_CHANGES = true;
 
     @Translation(key = "enchantment_descriptions", type = Translation.Type.CONFIGURATION, comments = "Adds enchantment descriptions to enchanted books which contain 1 enchantment (and said enchantment is from this mod)")
     @ConfigOption(side = ConfigSide.CLIENT, category = "tooltips", key = "enchantment_descriptions")
-    public static Boolean enchantmentDescriptions = true;
+    public static Boolean ENCHANTMENT_DESCRIPTIONS = true;
+
+    private static final ResourceLocation TOOLTIP_BLINKING = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/magic_tips_1.png");
+    private static final ResourceLocation TOOLTIP = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/magic_tips_0.png");
 
     private static boolean isBlinking;
     private static int tick;
@@ -96,7 +91,7 @@ public class ToolTipHandler {
         // 1 Icon = 2 points (e.g. 10 nutrition icons for a maximum food level of 20)
         String nutrition = String.format("%.1f", properties.nutrition() / 2f);
         String saturation = String.format("%.1f", properties.saturation() / 2f);
-        int color = type.value().miscResources().foodTooltip().color().map(TextColor::getValue).orElse(type.value().miscResources().primaryColor().rgba());
+        int color = type.value().miscResources().foodTooltip().color().map(TextColor::getValue).orElse(type.value().miscResources().primaryColor().getValue());
 
         MutableComponent nutritionComponent = Component.literal(nutrition + " ").withStyle(Style.EMPTY.withColor(color));
         MutableComponent saturationComponent = Component.literal(" / " + saturation + " ").withStyle(Style.EMPTY.withColor(color));
@@ -126,7 +121,7 @@ public class ToolTipHandler {
             ResourceLocation location = event.getItemStack().getItemHolder().getKey().location();
             MutableComponent description = null;
 
-            if (enchantmentDescriptions && event.getItemStack().getItem() instanceof EnchantedBookItem) {
+            if (ENCHANTMENT_DESCRIPTIONS && event.getItemStack().getItem() instanceof EnchantedBookItem) {
                 ItemEnchantments enchantments = event.getItemStack().get(DataComponents.STORED_ENCHANTMENTS);
 
                 // Only add it to single-entry enchanted books since the text is longer than usual enchantment descriptions
@@ -217,7 +212,7 @@ public class ToolTipHandler {
     }
 
     private static boolean isHelpText() {
-        if (!tooltipChanges) {
+        if (!TOOLTIP_CHANGES) {
             return false;
         }
 
@@ -237,62 +232,29 @@ public class ToolTipHandler {
     }
 
     @SubscribeEvent
-    public static void renderTooltipBorderInDragonColor(RenderTooltipEvent.Color event) {
-        if (!tooltipChanges) {
+    public static void renderTooltipBorderInDragonColor(final RenderTooltipEvent.Color event) {
+        if (!TOOLTIP_CHANGES) {
             return;
         }
 
-        boolean isAbilityScreen = Minecraft.getInstance().screen instanceof DragonAbilityScreen;
-        ItemStack stack = event.getItemStack();
+        LocalPlayer player = Minecraft.getInstance().player;
 
-        // FIXME
-        boolean isSeaFood = false;//dragonFoodTooltips && !stack.isEmpty() && DragonFoodHandler.getEdibleFoods(DragonTypes.SEA).contains(stack.getItem());
-        boolean isForestFood = false;//dragonFoodTooltips && !stack.isEmpty() && DragonFoodHandler.getEdibleFoods(DragonTypes.FOREST).contains(stack.getItem());
-        boolean isCaveFood = false;//dragonFoodTooltips && !stack.isEmpty() && DragonFoodHandler.getEdibleFoods(DragonTypes.CAVE).contains(stack.getItem());
+        if (player == null) {
+            return;
+        }
 
-        boolean isDragonFood = isSeaFood || isForestFood || isCaveFood;
-        boolean isSkillProgressButtonHovered = false;
+        DragonStateHandler data = DragonStateProvider.getData(player);
 
-        if (isAbilityScreen) {
-            for (GuiEventListener widget : ((DragonAbilityScreen) Minecraft.getInstance().screen).widgetList()) {
-                if (widget instanceof SkillProgressButton && ((SkillProgressButton) widget).isHoveredOrFocused()) {
-                    isSkillProgressButtonHovered = true;
-                    break;
-                }
-            }
+        if (!data.isDragon()) {
+            return;
         }
 
         if (isHelpText()) {
-            int top = new Color(154, 132, 154).getRGB();
-            int bottom = new Color(89, 68, 89).getRGB();
-
-            event.setBorderStart(top);
-            event.setBorderEnd(bottom);
-        } else if (isAbilityScreen || isDragonFood) {
-            Holder<DragonType> type = DragonUtils.getType(DragonSurvival.PROXY.getLocalPlayer());
-            Color topColor = null;
-            Color bottomColor = null;
-
-            if (type != null) {
-                if (Objects.equals(type, DragonTypes.SEA) && isSkillProgressButtonHovered || isSeaFood) {
-                    topColor = new Color(93, 201, 255);
-                    bottomColor = new Color(49, 109, 144);
-                } else if (Objects.equals(type, DragonTypes.FOREST) && isSkillProgressButtonHovered || isForestFood) {
-                    topColor = new Color(0, 255, 148);
-                    bottomColor = new Color(4, 130, 82);
-                } else if (Objects.equals(type, DragonTypes.CAVE) && isSkillProgressButtonHovered || isCaveFood) {
-                    topColor = new Color(255, 118, 133);
-                    bottomColor = new Color(139, 66, 74);
-                }
-            }
-
-            if (topColor != null) {
-                event.setBorderStart(topColor.getRGB());
-            }
-
-            if (bottomColor != null) {
-                event.setBorderEnd(bottomColor.getRGB());
-            }
+            event.setBorderStart(DSColors.withAlpha(DSColors.LIGHT_PURPLE, 1));
+            event.setBorderEnd(DSColors.withAlpha(DSColors.DARK_PURPLE, 1));
+        } else if (data.getType().value().getDiet(event.getItemStack().getItem()) != null) {
+            event.setBorderStart(DSColors.toARGB(data.getType().value().miscResources().primaryColor()));
+            event.setBorderEnd(DSColors.toARGB(data.getType().value().miscResources().secondaryColor()));
         }
     }
 }

@@ -29,7 +29,7 @@ public record MobEffectPenalty(HolderSet<MobEffect> effects, int amplifier, int 
 
     @Override
     public MutableComponent getDescription() {
-        MutableComponent name = Component.literal("§6■ ").append(Component.translatable(LangKey.ABILITY_APPLIES)).withColor(DSColors.ORANGE);
+        MutableComponent name = Component.literal("§6■ ").append(Component.translatable(LangKey.ABILITY_APPLIES)).withColor(DSColors.GOLD);
 
         for (int i = 0; i < effects.size(); i++) {
             name.append(Component.translatable(effects.get(i).value().getDescriptionId()));
@@ -40,7 +40,7 @@ public record MobEffectPenalty(HolderSet<MobEffect> effects, int amplifier, int 
         }
 
         if (amplifier > 0) {
-            name.append(Component.literal(" " + amplifier).withColor(DSColors.ORANGE));
+            name.append(Component.literal(" " + amplifier).withColor(DSColors.GOLD));
         }
 
         name.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.blue(Functions.ticksToSeconds(duration))));

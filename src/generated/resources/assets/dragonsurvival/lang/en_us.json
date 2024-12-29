@@ -899,7 +899,6 @@
   "dragonsurvival.gui.message.star_heart_active": "Star heart state is §2active§r",
   "dragonsurvival.gui.message.star_heart_inactive": "Star heart state is §cinactive§r",
   "dragonsurvival.gui.message.target_too_small": "The dragon you are riding is too young. To ride a dragon as a human, the dragon must be an adult.",
-  "dragonsurvival.gui.required_level": "§6■ Requires level:§r %s",
   "dragonsurvival.gui.skin_screen.discord": "■ Join our §6discord server§r!§7 Read the Rules, FAQ and Wiki before you ask anything.",
   "dragonsurvival.gui.skin_screen.help": "■ A §6Skin§r is a self-made texture for your dragon. In this tab, you can disable the display of your skin for your dragon at different stages, as well as skins of other players.\n■ Skins are not built in the Dragon Editor, but created using outside tools.\n§7■ If you are interested in how to make your own skin or take a commission, use the buttons on the right.",
   "dragonsurvival.gui.skin_screen.no_skin": "This author does not have a skin for this stage.",

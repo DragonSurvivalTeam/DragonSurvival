@@ -11,7 +11,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
@@ -27,16 +26,14 @@ public record ProjectileDamageEffect(Holder<DamageType> damageType, LevelBasedVa
 
     @Override
     public void apply(final Projectile projectile, final Entity target, final int level) {
-        // TODO :: also apply damage to entities (e.g. items, boats or experience)?
-        if (target instanceof LivingEntity) {
-            target.hurt(new DamageSource(damageType, projectile.getOwner()), amount.calculate(level));
-        }
+        target.hurt(new DamageSource(damageType, projectile.getOwner()), amount.calculate(level));
     }
 
     @Override
     public List<MutableComponent> getDescription(final Player dragon, final int level) {
         //noinspection DataFlowIssue -> key is present
-        return List.of(Component.translatable(LangKey.ABILITY_PROJECTILE_DAMAGE, Component.translatable(Translation.Type.DAMAGE_TYPE.wrap(damageType.getKey().location())).withColor(DSColors.ORANGE), amount.calculate(level)));
+        MutableComponent translation = Component.translatable(Translation.Type.DAMAGE_TYPE.wrap(damageType.getKey().location()));
+        return List.of(Component.translatable(LangKey.ABILITY_PROJECTILE_DAMAGE, translation.withColor(DSColors.GOLD), DSColors.blue(amount.calculate(level))));
     }
 
     @Override

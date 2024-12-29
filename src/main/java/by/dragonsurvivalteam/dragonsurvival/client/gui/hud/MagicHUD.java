@@ -11,6 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
+import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Minecraft;
@@ -24,21 +25,19 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import software.bernie.geckolib.util.Color;
 
-import java.awt.*;
 import java.util.Objects;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 @EventBusSubscriber(value = Dist.CLIENT)
 public class MagicHUD {
-    // 1.20.6 moved a whole bunch of widgets around, so to keep compatibiltiy with older versions, we need to use the old widgets texture
+    // 1.20.6 moved a bunch of widgets around, so to keep compatibility with older versions, we need to use the old widgets texture
     public static final ResourceLocation WIDGET_TEXTURES = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/widgets.png");
 
     private static final ResourceLocation VANILLA_WIDGETS = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/pre-1.20.1-widgets.png");
     private static final ResourceLocation CAST_BAR_FILL = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/casting_bars/cast_bar_fill.png");
-
-    public static final Color COLOR = new Color(243, 48, 59);
 
     @Translation(type = Translation.Type.MISC, comments = "§fNot enough§r §cmana or experience§r!")
     public static final String NO_MANA = Translation.Type.GUI.wrap("ability.no_mana");
@@ -129,7 +128,7 @@ public class MagicHUD {
             guiGraphics.drawString(Minecraft.getInstance().font, s, (width - 1), height, 0, false);
             guiGraphics.drawString(Minecraft.getInstance().font, s, width, (height + 1), 0, false);
             guiGraphics.drawString(Minecraft.getInstance().font, s, width, (height - 1), 0, false);
-            guiGraphics.drawString(Minecraft.getInstance().font, s, width, height, COLOR.getRGB(), false);
+            guiGraphics.drawString(Minecraft.getInstance().font, s, width, height, DSColors.RED, false);
 
             Minecraft.getInstance().getProfiler().pop();
         }
@@ -185,13 +184,12 @@ public class MagicHUD {
                     float currentCooldown = ability.getCooldown() - Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
 
                     if (skillCooldown > 0 && currentCooldown > 0 && skillCooldown != currentCooldown) {
-                        float f = Mth.clamp(currentCooldown / skillCooldown, 0, 1);
+                        float cooldown = Mth.clamp(currentCooldown / skillCooldown, 0, 1);
                         int boxX = posX + x * sizeX + 3;
                         int boxY = posY + 1;
-                        int offset = 16 - (int)(16 - (f * 16));
-                        int color = new Color(0.15F, 0.15F, 0.15F, 0.75F).getRGB();
-                        int fColor = errorTicks > 0 ? new Color(1F, 0F, 0F, 0.75F).getRGB() : color;
-                        graphics.fill(boxX, boxY, boxX + 16, boxY + offset, fColor);
+                        int offset = 16 - (int)(16 - (cooldown * 16));
+                        int color = errorTicks > 0 ? DSColors.withAlpha(DSColors.RED, 0.75f) : DSColors.withAlpha(DSColors.DARK_GRAY, 0.75f);
+                        graphics.fill(boxX, boxY, boxX + 16, boxY + offset, color);
                     }
                 }
             }
@@ -245,21 +243,19 @@ public class MagicHUD {
                 graphics.pose().pushPose();
                 graphics.pose().scale(0.5F, 0.5F, 0);
 
-
-                float perc = Math.clamp(1 - currentCastTime / (float) skillCastTime, 0, 1);
-
                 int startX = width / 2 - 49 + castbarXOffset;
                 int startY = height - 96 + castbarYOffset;
+                float percentage = Math.clamp(1 - currentCastTime / (float) skillCastTime, 0, 1);
 
                 graphics.pose().translate(startX, startY, 0);
 
                 DragonStateHandler handler = DragonStateProvider.getData(player);
                 graphics.blit(handler.getDragonType().value().miscResources().castBar(), startX, startY, 0, 0, 196, 47, 196, 47);
 
-                software.bernie.geckolib.util.Color color = new software.bernie.geckolib.util.Color(handler.getType().value().miscResources().primaryColor().rgba());
-                graphics.setColor(color.getRedFloat(), color.getGreenFloat(), color.getBlueFloat(), 1F);
-                graphics.blit(CAST_BAR_FILL, startX + 2, startY + 41, 0, 0, (int) (191 * perc), 4, 191, 4);
-                graphics.setColor(1F, 1F, 1F, 1F);
+                Color color = new Color(DSColors.toARGB(handler.getType().value().miscResources().primaryColor()));
+                graphics.setColor(color.getRedFloat(), color.getGreenFloat(), color.getBlueFloat(), color.getAlpha());
+                graphics.blit(CAST_BAR_FILL, startX + 2, startY + 41, 0, 0, (int) (191 * percentage), 4, 191, 4);
+                graphics.setColor(1, 1, 1, 1);
 
                 graphics.blitSprite(ability.getIcon(), startX + 78, startY + 3, 0, 36, 36);
 

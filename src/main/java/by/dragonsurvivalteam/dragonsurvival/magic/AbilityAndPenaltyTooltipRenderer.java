@@ -52,20 +52,20 @@ public class AbilityAndPenaltyTooltipRenderer {
         }
 
         int extraWidth1 = (int) (150 / 1.25);
-        List<FormattedCharSequence> text = Minecraft.getInstance().font.split(textContents, extraWidth1 - 5);
-        int longest = text.stream().map(s -> Minecraft.getInstance().font.width(s) + 20).max(Integer::compareTo).orElse(0);
+        List<FormattedCharSequence> lines = Minecraft.getInstance().font.split(textContents, extraWidth1 - 5);
+        int longest = lines.stream().map(s -> Minecraft.getInstance().font.width(s) + 20).max(Integer::compareTo).orElse(0);
         int extraWidth = Math.min(longest, extraWidth1);
 
         int backgroundWidth = 150 + 5;
         int backgroundHeight = 35 + 24 + description.size() * 9;
         int sideWidth = Screen.hasShiftDown() ? extraWidth : 15;
-        int sideHeight = Screen.hasShiftDown() ? 27 + text.size() * 9 : backgroundHeight - 10;
+        int sideHeight = Screen.hasShiftDown() ? 27 + lines.size() * 9 : backgroundHeight - 10;
         ClientTooltipPositioner positioner = new AbilityTooltipPositioner(Screen.hasShiftDown() ? sideWidth : 0);
         Vector2ic position = positioner.positionTooltip(graphics.guiWidth(), graphics.guiHeight(), x, y, backgroundWidth, Math.max(sideHeight, backgroundHeight));
         int trueX = position.x();
         int trueY = position.y();
 
-        if(!info.isEmpty()) {
+        if (!info.isEmpty()) {
             // Backing for info tab
             graphics.blitWithBorder(BARS, trueX - (Screen.hasShiftDown() ? extraWidth : 10), trueY + 3, 40, 20, sideWidth, sideHeight, 20, 20, 3);
             // Top bar for info tab
@@ -74,8 +74,8 @@ public class AbilityAndPenaltyTooltipRenderer {
             if (Screen.hasShiftDown()) {
                 graphics.drawString(Minecraft.getInstance().font, Component.translatable(INFO), trueX - extraWidth + 10, trueY + 15, -1);
 
-                for (int k1 = 0; k1 < text.size(); ++k1) {
-                    graphics.drawString(Minecraft.getInstance().font, text.get(k1), trueX - extraWidth + 5, trueY + 5 + 18 + k1 * 9, DSColors.LIGHT_GRAY);
+                for (int line = 0; line < lines.size(); ++line) {
+                    graphics.drawString(Minecraft.getInstance().font, lines.get(line), trueX - extraWidth + 5, trueY + 5 + 18 + line * 9, DSColors.GRAY);
                 }
             }
         }
@@ -122,12 +122,13 @@ public class AbilityAndPenaltyTooltipRenderer {
             rawDescription = FormattedText.composite(rawDescription, upgradeComponent.withColor(Color.GREEN.getColor()));
         }
 
-        if(!info.isEmpty()) {
+        if (!info.isEmpty()) {
             rawDescription = FormattedText.composite(rawDescription, Component.empty().append("\n\n"));
         }
 
         List<FormattedCharSequence> description = Minecraft.getInstance().font.split(rawDescription, 150 - 7);
-        drawTooltip(guiGraphics, x, y, info, description, colorXPos, colorYPos, ability.isPassive() ? PASSIVE : ACTIVE, ability.getName(), ability.isPassive() ? Color.ofRGB(127, 145, 46) : Color.ofRGB(200, 143, 31), ability.getMaxLevel(), ability.level(), ability.getIcon());
+        Color color = ability.isPassive() ? new Color(DSColors.withAlpha(DSColors.PASSIVE_BACKGROUND, 1f)) : new Color(DSColors.withAlpha(DSColors.ACTIVE_BACKGROUND, 1f));
+        drawTooltip(guiGraphics, x, y, info, description, colorXPos, colorYPos, ability.isPassive() ? PASSIVE : ACTIVE, ability.getName(), color, ability.getMaxLevel(), ability.level(), ability.getIcon());
     }
 
 

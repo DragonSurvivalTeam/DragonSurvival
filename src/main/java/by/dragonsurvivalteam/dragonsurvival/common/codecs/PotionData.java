@@ -79,11 +79,11 @@ public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier
         double duration = Functions.ticksToSeconds((int) duration().calculate(level));
 
         for (Holder<MobEffect> effect : effects) {
-            MutableComponent name = Component.literal("§6■ ").append(Component.translatable(LangKey.ABILITY_APPLIES).append(Component.translatable(effect.value().getDescriptionId())).withColor(DSColors.ORANGE));
+            MutableComponent name = Component.literal("§6■ ").append(Component.translatable(LangKey.ABILITY_APPLIES).append(Component.translatable(effect.value().getDescriptionId())).withColor(DSColors.GOLD));
             int amplifier = (int) amplifier().calculate(level);
 
             if (amplifier > 0) {
-                name.append(Component.literal(" [" + amplifier + "]").withColor(DSColors.ORANGE));
+                name.append(Component.literal(" [" + amplifier + "]").withColor(DSColors.GOLD));
             }
 
             name.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.blue(duration)));

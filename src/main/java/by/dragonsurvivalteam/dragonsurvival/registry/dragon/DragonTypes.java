@@ -18,10 +18,10 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.HolderSet;
 import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.ColorRGBA;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
@@ -143,8 +143,8 @@ public class DragonTypes {
                                 DragonSurvival.res("textures/gui/custom/stage/cave/point_hover.png")
                         ),
                         new MiscDragonTextures.FoodTooltip(MiscDragonTextures.FoodTooltip.DEFAULT_FOOD_TOOLTIP_FONT, "\\uEA02", "\\uEA05", Optional.empty()),
-                        new ColorRGBA(16711680),
-                        new ColorRGBA(16711680)
+                        TextColor.fromRgb(0xE84141),
+                        TextColor.fromRgb(0x730B0B)
                 )
         ));
 
@@ -225,8 +225,8 @@ public class DragonTypes {
                                 DragonSurvival.res("textures/gui/custom/stage/sea/point_hover.png")
                         ),
                         new MiscDragonTextures.FoodTooltip(MiscDragonTextures.FoodTooltip.DEFAULT_FOOD_TOOLTIP_FONT, "\\uEA03", "\\uEA06", Optional.empty()),
-                        new ColorRGBA(16711680),
-                        new ColorRGBA(16711680)
+                        TextColor.fromRgb(0x2DA5E0),
+                        TextColor.fromRgb(0x1D7099)
                 )
         ));
 
@@ -297,8 +297,8 @@ public class DragonTypes {
                                 DragonSurvival.res("textures/gui/custom/stage/forest/point_hover.png")
                         ),
                         new MiscDragonTextures.FoodTooltip(MiscDragonTextures.FoodTooltip.DEFAULT_FOOD_TOOLTIP_FONT, "\\uEA01", "\\uEA04", Optional.empty()),
-                        new ColorRGBA(16711680),
-                        new ColorRGBA(16711680)
+                        TextColor.fromRgb(0x41CC48),
+                        TextColor.fromRgb(0x117816)
                 )
         ));
     }
