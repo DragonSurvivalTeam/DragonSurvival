@@ -33,7 +33,7 @@ public class DragonRidingHandler {
     public static final int NO_PASSENGER = -1;
 
     /** This is just the default adult dragon minimum size */
-    private static final int PLAYER_RIDING_SIZE = 30;
+    public static final int PLAYER_RIDING_SIZE = 30;
 
     private enum DragonRideAttemptResult {
         SELF_TOO_BIG,

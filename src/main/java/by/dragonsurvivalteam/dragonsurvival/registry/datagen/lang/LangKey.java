@@ -76,6 +76,14 @@ public class LangKey {
     @Translation(type = Translation.Type.MISC, comments = "You currently can spin")
     public static final String FLIGHT_CAN_SPIN = Translation.Type.GUI.wrap("handler.flight_can_spin");
 
+    // --- Riding data --- //
+
+    @Translation(type = Translation.Type.MISC, comments =
+            "In order to allow other players to mount you, you must crouch and they can right click on you to mount.\n\n" +
+            "§6Human players can ride you at size %s§r§7\n\n" +
+            "§6Dragon players can ride you below or equal to size %s§r§7")
+    public static final String RIDING_INFO = Translation.Type.GUI.wrap("handler.riding_info");
+
     // --- Ability effects --- //
 
     @Translation(type = Translation.Type.MISC, comments = "Next level requires %s experience points (roughly level %s)")

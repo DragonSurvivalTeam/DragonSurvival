@@ -890,6 +890,7 @@
   "dragonsurvival.gui.handler.growth_stage": "■ §6Stage§r§7: ",
   "dragonsurvival.gui.handler.growth_starting_size": "§6Minimum Size§r§7: %s",
   "dragonsurvival.gui.handler.growth_time": "§6Time to Grow§r§7: %s",
+  "dragonsurvival.gui.handler.riding_info": "In order to allow other players to mount you, you must crouch and they can right click on you to mount.\n\n§6Human players can ride you at size %s§r§7\n\n§6Dragon players can ride you below or equal to size %s§r§7",
   "dragonsurvival.gui.help.ability_assignment": "■ §dAbility assignment§r - drag and drop §6Active skills§r to the §9hotbar§r.\n- The §9hotbar§r is used to quickly access your active skills.",
   "dragonsurvival.gui.help.active_abilities": "■ §6Active skills§r are used in combat.\n- §9Skill power§r scales off your current experience level. The higher your EXP level, the stronger your active skills.\n- §9Experience or mana§r points are used to cast spells.\n- §9Controls§r - check in-game Minecraft control settings! You can drag and drop skill icons around.",
   "dragonsurvival.gui.help.claws": "■ A dragon is §6born§r with strong claws and teeth, but you can make them even better! Just put §6any tools§r§f here in your claw slots and your bare paw will borrow their aspect as long as they are intact.\n§7■ Does not stack with §2«Claws and Teeth»§r skill, which only applies if these slots are empty.",
