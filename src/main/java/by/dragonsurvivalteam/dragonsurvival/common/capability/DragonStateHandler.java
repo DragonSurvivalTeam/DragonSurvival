@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.subcapabilities.Sk
 import by.dragonsurvivalteam.dragonsurvival.common.capability.subcapabilities.SubCap;
 import by.dragonsurvivalteam.dragonsurvival.common.items.growth.StarHeartItem;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
+import by.dragonsurvivalteam.dragonsurvival.mixins.EntityAccessor;
 import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDesiredSize;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncSize;
@@ -132,7 +133,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
         if (this.size > oldSize) {
             // Push the player away from a block they might collide with due to the size change (to avoid getting stuck on said block)
-            double pushForce = ((this.size - oldSize) + player.getDeltaMovement().horizontalDistance()) * 0.05;
+            double pushForce = ((this.size - oldSize)) * 0.05;
             Vec3 push = Vec3.ZERO;
 
             // Multiply the force by the number of collisions in case we are colliding with multiple walls (while being in a corner)
@@ -145,6 +146,10 @@ public class DragonStateHandler extends EntityStateHandler {
                     double directionX = player.getX() - center.x();
                     double directionZ = player.getZ() - center.z();
 
+                    if(directionX == 0 && directionZ == 0) {
+                        continue;
+                    }
+
                     collisions++;
 
                     // Need to collect the pushes otherwise running into the corner of two blocks causes issues
@@ -156,6 +161,8 @@ public class DragonStateHandler extends EntityStateHandler {
                 player.moveTo(player.position().add(push.normalize().scale(pushForce * collisions)));
             }
         }
+
+        ((EntityAccessor)player).dragonSurvival$reapplyPosition();
 
         if (player instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncSize(serverPlayer.getId(), getSize()));

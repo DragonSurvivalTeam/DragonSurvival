@@ -10,6 +10,7 @@
     "AttributesMixin",
     "BlockMixin",
     "EndPortalBlockMixin",
+    "EntityAccessor",
     "EntityMixin",
     "FireworkRocketItemMixin",
     "Holder$ReferenceAccess",
