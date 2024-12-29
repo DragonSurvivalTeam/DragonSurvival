@@ -5,18 +5,20 @@
         "applied_effects": {
           "entity_effect": [
             {
-              "amplifier": 0.0,
-              "duration": {
-                "type": "minecraft:linear",
-                "base": 100.0,
-                "per_level_above_first": 100.0
-              },
               "effect_type": "dragonsurvival:on_attack",
-              "effects": "dragonsurvival:burn",
-              "probability": {
-                "type": "minecraft:linear",
-                "base": 0.15,
-                "per_level_above_first": 0.15
+              "potion": {
+                "amplifier": 0.0,
+                "duration": {
+                  "type": "minecraft:linear",
+                  "base": 100.0,
+                  "per_level_above_first": 100.0
+                },
+                "effects": "dragonsurvival:burn",
+                "probability": {
+                  "type": "minecraft:linear",
+                  "base": 0.15,
+                  "per_level_above_first": 0.15
+                }
               }
             }
           ],

@@ -34,7 +34,6 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.util.random.WeightedRandomList;
@@ -65,14 +64,11 @@ public class ForestDragonAbilities {
     public static final ResourceKey<DragonAbility> POISON_BREATH = DragonAbilities.key("poison_breath");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ Personal buff: Activates the §2Hunter§r effect, which allows you to become invisible in tall grass and increases your movement speed. Your first melee strike will remove this effect and cause a critical hit with a §c%s§r damage bonus.\n",
+            "■ Personal buff: Activates the §2Hunter§r effect, which allows you to become invisible on grassy ground. Your first melee strike will remove this effect and cause a critical hit with a  %-based damage bonus.\n",
             "■ Effect does not stack. Cannot be used in flight. Will be removed early if you take damage, or attack a target.",
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Hunter")
     public static final ResourceKey<DragonAbility> HUNTER = DragonAbilities.key("hunter");
-
-    @Translation(type = Translation.Type.MODIFIER, comments = "Hunter")
-    public static final ResourceLocation HUNTER_MODIFIER = DragonSurvival.res("hunter");
 
     // --- Passive --- //
 
@@ -105,9 +101,6 @@ public class ForestDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Forest Athletics")
     public static final ResourceKey<DragonAbility> FOREST_ATHLETICS = DragonAbilities.key("forest_athletics");
 
-    @Translation(type = Translation.Type.MODIFIER, comments = "Forest Athletics")
-    public static final ResourceLocation FOREST_ATHLETICS_MODIFIER = DragonSurvival.res("forest_athletics");
-
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
             "■ AOE buff: provides §2Haste III§r to all nearby creatures, increasing your block harvesting speed.\n"
     })
@@ -135,12 +128,7 @@ public class ForestDragonAbilities {
                         Optional.empty(),
                         Optional.empty(),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(3))),
-                        Optional.of(new Activation.Sound(
-                                Optional.empty(),
-                                Optional.empty(),
-                                Optional.empty(),
-                                Optional.of(SoundEvents.ARROW_SHOOT)
-                        )),
+                        Activation.Sound.of(null, null, null, SoundEvents.ARROW_SHOOT),
                         Optional.empty()
                 ),
                 Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 4, LevelBasedValue.lookup(List.of(0f, 20f, 30f, 40f), LevelBasedValue.perLevel(15))),
@@ -174,12 +162,7 @@ public class ForestDragonAbilities {
                         Optional.of(ManaCost.ticking(LevelBasedValue.constant(0.025f))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(1))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(2))),
-                        Optional.of(new Activation.Sound(
-                                Optional.of(DSSounds.FOREST_BREATH_START.get()),
-                                Optional.empty(),
-                                Optional.of(DSSounds.FOREST_BREATH_LOOP.get()),
-                                Optional.of(DSSounds.FOREST_BREATH_END.get())
-                        )),
+                        Activation.Sound.of(DSSounds.FOREST_BREATH_START.get(), null, DSSounds.FOREST_BREATH_LOOP.get(), DSSounds.FOREST_BREATH_END.get()),
                         Optional.of(new Activation.Animations(
                                 Optional.empty(),
                                 Optional.of(new SimpleAbilityAnimation("breath", AnimationLayer.BREATH, 5, false, false)),
@@ -192,26 +175,15 @@ public class ForestDragonAbilities {
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
                                 Condition.thisEntity(EntityCondition.isLiving()).build(),
                                 List.of(
-                                        new DamageEffect(
-                                                context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.POISON_BREATH),
-                                                LevelBasedValue.perLevel(2)
-                                        ),
-                                        new PotionEffect(new PotionData(
-                                                HolderSet.direct(DSEffects.DRAIN),
-                                                LevelBasedValue.constant(0),
-                                                LevelBasedValue.constant(Functions.secondsToTicks(10)),
-                                                LevelBasedValue.constant(0.3f)
-                                        ))
+                                        new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.POISON_BREATH), LevelBasedValue.perLevel(2)),
+                                        PotionEffect.single(LevelBasedValue.constant(0), LevelBasedValue.constant(Functions.secondsToTicks(10)), LevelBasedValue.constant(0.3f), DSEffects.DRAIN).getFirst()
                                 ),
                                 AbilityTargeting.EntityTargetingMode.TARGET_ENEMIES
                         ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
                                 Condition.thisEntity(EntityCondition.isItem()).build(),
                                 List.of(new ItemConversionEffect(
-                                        List.of(new ItemConversionEffect.ItemConversionData(
-                                                ItemCondition.item(Items.POTATO),
-                                                WeightedRandomList.create(ItemConversionEffect.ItemTo.of(Items.POISONOUS_POTATO))
-                                        )),
+                                        List.of(new ItemConversionEffect.ItemConversionData(ItemCondition.item(Items.POTATO), WeightedRandomList.create(ItemConversionEffect.ItemTo.of(Items.POISONOUS_POTATO)))),
                                         LevelBasedValue.constant(0.5f)
                                 )),
                                 AbilityTargeting.EntityTargetingMode.TARGET_ALL
@@ -255,23 +227,19 @@ public class ForestDragonAbilities {
                         Optional.empty(),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(2))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
-                        Optional.of(new Activation.Sound(
-                                Optional.empty(),
-                                Optional.empty(),
-                                Optional.empty(),
-                                Optional.of(SoundEvents.UI_TOAST_IN)
-                        )),
+                        Activation.Sound.of(null, null, null, SoundEvents.UI_TOAST_IN),
                         Optional.of(new Activation.Animations(
-                                Optional.of(Either.right(new SimpleAbilityAnimation("cast_mass_buff", AnimationLayer.BASE, 2, true, true))),
+                                Optional.of(Either.right(new SimpleAbilityAnimation(SimpleAbilityAnimation.CAST_SELF_BUFF, AnimationLayer.BASE, 2, true, true))),
                                 Optional.empty(),
-                                Optional.of(new SimpleAbilityAnimation("mass_buff", AnimationLayer.BASE, 0, true, true))
+                                Optional.of(new SimpleAbilityAnimation(SimpleAbilityAnimation.SELF_BUFF, AnimationLayer.BASE, 0, true, true))
                         ))
                 ),
                 Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 4, LevelBasedValue.lookup(List.of(0f, 25f, 35f, 55f), LevelBasedValue.perLevel(15))),
                 Optional.empty(),
-                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(List.of(
-                        new PotionEffect(new PotionData(HolderSet.direct(DSEffects.HUNTER), LevelBasedValue.perLevel(1), LevelBasedValue.perLevel(Functions.secondsToTicks(30)), LevelBasedValue.constant(1)))
-                ), AbilityTargeting.EntityTargetingMode.TARGET_ALLIES), true), LevelBasedValue.constant(1))),
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        PotionEffect.single(LevelBasedValue.perLevel(1), LevelBasedValue.perLevel(Functions.secondsToTicks(30)), DSEffects.HUNTER),
+                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                ), true), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/hunter_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/hunter_1"), 1),
@@ -288,27 +256,17 @@ public class ForestDragonAbilities {
                         Optional.empty(),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(1))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
-                        Optional.of(new Activation.Sound(
-                                Optional.empty(),
-                                Optional.empty(),
-                                Optional.empty(),
-                                Optional.of(SoundEvents.UI_TOAST_IN)
-                        )),
+                        Activation.Sound.of(null, null, null, SoundEvents.UI_TOAST_IN),
                         Optional.of(new Activation.Animations(
-                                Optional.of(Either.right(new SimpleAbilityAnimation("cast_mass_buff", AnimationLayer.BASE, 2, true, true))),
+                                Optional.of(Either.right(new SimpleAbilityAnimation(SimpleAbilityAnimation.CAST_MASS_BUFF, AnimationLayer.BASE, 2, true, true))),
                                 Optional.empty(),
-                                Optional.of(new SimpleAbilityAnimation("mass_buff", AnimationLayer.BASE, 0, true, true))
+                                Optional.of(new SimpleAbilityAnimation(SimpleAbilityAnimation.MASS_BUFF, AnimationLayer.BASE, 0, true, true))
                         ))
                 ),
                 Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 3, LevelBasedValue.lookup(List.of(0f, 15f, 35f), LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(
-                        List.of(new PotionEffect(new PotionData(
-                                        HolderSet.direct(MobEffects.DIG_SPEED),
-                                        LevelBasedValue.perLevel(1),
-                                        LevelBasedValue.constant(Functions.secondsToTicks(200)),
-                                        LevelBasedValue.constant(1)
-                        ))),
+                        PotionEffect.single(LevelBasedValue.perLevel(1), LevelBasedValue.constant(Functions.secondsToTicks(200)), MobEffects.DIG_SPEED),
                         AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
                 ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(
@@ -427,20 +385,13 @@ public class ForestDragonAbilities {
 
         context.register(FOREST_ATHLETICS, new DragonAbility(
                 Activation.passive(),
-                Upgrade.value(ValueBasedUpgrade.Type.MANUAL, 5, LevelBasedValue.perLevel(15)), // FIXME :: not the actual values
+                Upgrade.value(ValueBasedUpgrade.Type.MANUAL, 5, LevelBasedValue.perLevel(15)),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.SPEEDS_UP_FOREST_DRAGON)).build(),
-                        ModifierEffect.single(new ModifierWithDuration(
-                                FOREST_ATHLETICS_MODIFIER,
-                                ModifierWithDuration.DEFAULT_MODIFIER_ICON,
-                                // FIXME :: not the final value
-                                List.of(new Modifier(Attributes.MOVEMENT_SPEED, LevelBasedValue.perLevel(0.02f), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
-                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
-                                false
-                        )),
+                        PotionEffect.single(LevelBasedValue.perLevel(1), LevelBasedValue.perLevel(Functions.secondsToTicks(5)), MobEffects.MOVEMENT_SPEED),
                         AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
-                ), true), LevelBasedValue.constant(1))),
+                ), false), LevelBasedValue.constant(Functions.secondsToTicks(1)))),
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_athletics_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_athletics_1"), 1),

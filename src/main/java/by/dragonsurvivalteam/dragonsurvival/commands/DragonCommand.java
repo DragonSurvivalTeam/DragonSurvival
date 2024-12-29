@@ -5,7 +5,6 @@ import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonStageArgume
 import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonTypeArgument;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDragonPassengerID;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;

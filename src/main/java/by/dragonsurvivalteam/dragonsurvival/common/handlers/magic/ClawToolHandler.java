@@ -95,10 +95,6 @@ public class ClawToolHandler {
 
     @SubscribeEvent
     public static void dropBlocksMinedByPaw(PlayerEvent.HarvestCheck harvestCheck) {
-        if (!DragonBonusConfig.bonusesEnabled || !DragonBonusConfig.clawsAreTools) {
-            return;
-        }
-
         Player player = harvestCheck.getEntity();
         DragonStateHandler data = DragonStateProvider.getData(player);
 
@@ -241,10 +237,6 @@ public class ClawToolHandler {
 
     @SubscribeEvent
     public static void modifyBreakSpeed(final PlayerEvent.BreakSpeed event) {
-        if (!DragonBonusConfig.bonusesEnabled || !DragonBonusConfig.clawsAreTools) {
-            return;
-        }
-
         Player player = event.getEntity();
         ItemStack mainStack = player.getMainHandItem();
         DragonStateHandler handler = DragonStateProvider.getData(player);

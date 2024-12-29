@@ -7,8 +7,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
 public record OnAttackEffectInstance(HolderSet<MobEffect> effects, int amplifier, int duration, float probability) {
-
-    public void apply(Entity entity) {
+    public void apply(final Entity entity) {
         if (entity instanceof LivingEntity livingEntity) {
             effects.forEach(effect -> {
                 MobEffectInstance currentInstance = livingEntity.getEffect(effect);

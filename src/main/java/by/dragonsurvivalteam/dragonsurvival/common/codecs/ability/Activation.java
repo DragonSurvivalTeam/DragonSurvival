@@ -190,18 +190,17 @@ public record Activation(
      * @param looping Sound effect that loops while the ability is active
      * @param end Sound effect that plays when the ability ends
      */
-    public record Sound(
-            Optional<SoundEvent> start,
-            Optional<SoundEvent> charging,
-            Optional<SoundEvent> looping,
-            Optional<SoundEvent> end
-    ) {
+    public record Sound(Optional<SoundEvent> start, Optional<SoundEvent> charging, Optional<SoundEvent> looping, Optional<SoundEvent> end) {
         public static final Codec<Sound> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 BuiltInRegistries.SOUND_EVENT.byNameCodec().optionalFieldOf("start").forGetter(Sound::start),
                 BuiltInRegistries.SOUND_EVENT.byNameCodec().optionalFieldOf("charging").forGetter(Sound::charging),
                 BuiltInRegistries.SOUND_EVENT.byNameCodec().optionalFieldOf("looping").forGetter(Sound::looping),
                 BuiltInRegistries.SOUND_EVENT.byNameCodec().optionalFieldOf("end").forGetter(Sound::end)
         ).apply(instance, Sound::new));
+
+        public static Optional<Sound> of(final SoundEvent start, final SoundEvent charging, final SoundEvent looping, final SoundEvent end) {
+            return Optional.of(new Sound(Optional.ofNullable(start), Optional.ofNullable(charging), Optional.ofNullable(looping), Optional.ofNullable(end)));
+        }
     }
 
     /** Animations for the ability

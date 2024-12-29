@@ -21,7 +21,6 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
 public class FakeClientPlayer extends AbstractClientPlayer {
-
     public DragonStateHandler handler = new DragonStateHandler();
     public Supplier<String> animationSupplier = null;
     public AnimationController<DragonEntity> animationController = null;
@@ -29,6 +28,7 @@ public class FakeClientPlayer extends AbstractClientPlayer {
     public int number;
 
     public FakeClientPlayer(int number) {
+        //noinspection DataFlowIssue -> level is expected to be present
         super(Minecraft.getInstance().level, new GameProfile(UUID.randomUUID(), "FAKE_PLAYER_" + number));
         this.number = number;
     }
@@ -83,7 +83,7 @@ public class FakeClientPlayer extends AbstractClientPlayer {
     }
 
     @Override
-    public Component getDisplayName() {
+    public @NotNull Component getDisplayName() {
         return Component.empty();
     }
 

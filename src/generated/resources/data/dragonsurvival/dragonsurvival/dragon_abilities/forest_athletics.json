@@ -5,23 +5,20 @@
         "applied_effects": {
           "entity_effect": [
             {
-              "effect_type": "dragonsurvival:modifier",
-              "modifiers": [
-                {
-                  "id": "dragonsurvival:forest_athletics",
-                  "modifiers": [
-                    {
-                      "amount": {
-                        "type": "minecraft:linear",
-                        "base": 0.02,
-                        "per_level_above_first": 0.02
-                      },
-                      "attribute": "minecraft:generic.movement_speed",
-                      "operation": "add_value"
-                    }
-                  ]
-                }
-              ]
+              "effect_type": "dragonsurvival:potion",
+              "potion": {
+                "amplifier": {
+                  "type": "minecraft:linear",
+                  "base": 1.0,
+                  "per_level_above_first": 1.0
+                },
+                "duration": {
+                  "type": "minecraft:linear",
+                  "base": 100.0,
+                  "per_level_above_first": 100.0
+                },
+                "effects": "minecraft:speed"
+              }
             }
           ],
           "entity_targeting_mode": "TARGET_ALLIES",
@@ -37,9 +34,10 @@
             }
           }
         },
+        "remove_automatically": false,
         "target_type": "dragonsurvival:self"
       },
-      "trigger_rate": 1.0
+      "trigger_rate": 20.0
     }
   ],
   "activation": {

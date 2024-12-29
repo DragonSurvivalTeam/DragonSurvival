@@ -32,13 +32,13 @@
     "type": "active_simple",
     "animations": {
       "end": {
-        "animation_key": "mass_buff",
+        "animation_key": "self_buff",
         "layer": "BASE",
         "locks_neck": true,
         "locks_tail": true
       },
       "start_and_charging": {
-        "animation_key": "cast_mass_buff",
+        "animation_key": "cast_self_buff",
         "layer": "BASE",
         "locks_neck": true,
         "locks_tail": true,

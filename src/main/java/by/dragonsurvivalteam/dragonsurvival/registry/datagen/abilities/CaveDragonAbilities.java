@@ -36,6 +36,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.random.SimpleWeightedRandomList;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -67,13 +68,11 @@ public class CaveDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Sturdy Skin") // TODO :: strong leather, tough skin or sturdy skin?
     public static final ResourceKey<DragonAbility> TOUGH_SKIN = DragonAbilities.key("tough_skin");
 
-    @Translation(type = Translation.Type.MODIFIER, comments = "Cave Athletics")
-    public static final ResourceLocation CAVE_ATHLETICS_MODIFIER = DragonSurvival.res("cave_athletics");
-
     @Translation(type = Translation.Type.MODIFIER, comments = "Sturdy Skin")
     public static final ResourceLocation STURDY_SKIN_MODIFIER = DragonSurvival.res("sturdy_skin");
 
     // --- Passive --- //
+
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Standing on stone surfaces will increase your movement speed.")
     @Translation(type = Translation.Type.ABILITY, comments = "Cave Athletics")
     public static final ResourceKey<DragonAbility> CAVE_ATHLETICS = DragonAbilities.key("cave_athletics");
@@ -151,12 +150,7 @@ public class CaveDragonAbilities {
                         Optional.empty(),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(2))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(7))),
-                        Optional.of(new Activation.Sound(
-                                Optional.empty(),
-                                Optional.empty(),
-                                Optional.empty(),
-                                Optional.of(SoundEvents.FIRECHARGE_USE)
-                        )),
+                        Optional.of(new Activation.Sound(Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(SoundEvents.FIRECHARGE_USE))),
                         Optional.of(new Activation.Animations(
                                 Optional.of(Either.right(new SimpleAbilityAnimation("breath", AnimationLayer.BREATH, 5, false, false))),
                                 Optional.empty(),
@@ -192,12 +186,7 @@ public class CaveDragonAbilities {
                         Optional.of(ManaCost.ticking(LevelBasedValue.constant(0.025f))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(1))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(2))),
-                        Optional.of(new Activation.Sound(
-                                Optional.of(DSSounds.FIRE_BREATH_START.get()),
-                                Optional.empty(),
-                                Optional.of(DSSounds.FIRE_BREATH_LOOP.get()),
-                                Optional.of(DSSounds.FIRE_BREATH_END.get())
-                        )),
+                        Optional.of(new Activation.Sound(Optional.of(DSSounds.FIRE_BREATH_START.get()), Optional.empty(), Optional.of(DSSounds.FIRE_BREATH_LOOP.get()), Optional.of(DSSounds.FIRE_BREATH_END.get()))),
                         Optional.of(new Activation.Animations(
                                 Optional.empty(),
                                 Optional.of(new SimpleAbilityAnimation("breath", AnimationLayer.BREATH, 5, false, false)),
@@ -209,19 +198,9 @@ public class CaveDragonAbilities {
                 List.of(new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
                                 Condition.thisEntity(EntityCondition.isLiving()).build(),
                                 List.of(
-                                        new DamageEffect(
-                                                context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FIRE_BREATH),
-                                                LevelBasedValue.perLevel(3)
-                                        ),
-                                        new IgniteEffect(
-                                                LevelBasedValue.perLevel(Functions.secondsToTicks(5))
-                                        ),
-                                        new PotionEffect(new PotionData(
-                                                HolderSet.direct(DSEffects.BURN),
-                                                LevelBasedValue.constant(0),
-                                                LevelBasedValue.constant(Functions.secondsToTicks(10)),
-                                                LevelBasedValue.constant(0.3f)
-                                        ))
+                                        new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FIRE_BREATH), LevelBasedValue.perLevel(3)),
+                                        new IgniteEffect(LevelBasedValue.perLevel(Functions.secondsToTicks(5))),
+                                        PotionEffect.single(LevelBasedValue.constant(0), LevelBasedValue.constant(Functions.secondsToTicks(10)), LevelBasedValue.constant(0.3f), DSEffects.BURN).getFirst()
                                 ),
                                 AbilityTargeting.EntityTargetingMode.TARGET_ENEMIES
                         ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
@@ -251,12 +230,7 @@ public class CaveDragonAbilities {
                         Optional.empty(),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(1))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
-                        Optional.of(new Activation.Sound(
-                                Optional.empty(),
-                                Optional.empty(),
-                                Optional.empty(),
-                                Optional.of(SoundEvents.UI_TOAST_IN)
-                        )),
+                        Optional.of(new Activation.Sound(Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(SoundEvents.UI_TOAST_IN))),
                         Optional.of(new Activation.Animations(
                                 Optional.of(Either.right(new SimpleAbilityAnimation("cast_self_buff", AnimationLayer.BASE, 2, true, false))),
                                 Optional.empty(),
@@ -266,12 +240,7 @@ public class CaveDragonAbilities {
                 Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 4, LevelBasedValue.lookup(List.of(0f, 25f, 45f, 60f), LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(new PotionEffect(new PotionData(
-                                HolderSet.direct(DSEffects.LAVA_VISION),
-                                LevelBasedValue.constant(0),
-                                LevelBasedValue.perLevel(Functions.secondsToTicks(30)),
-                                LevelBasedValue.constant(1)
-                        ))),
+                        PotionEffect.single(LevelBasedValue.constant(0), LevelBasedValue.perLevel(Functions.secondsToTicks(30)), DSEffects.LAVA_VISION),
                         AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
                 ), true), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(
@@ -290,16 +259,11 @@ public class CaveDragonAbilities {
                         Optional.empty(),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(1))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
-                        Optional.of(new Activation.Sound(
-                                Optional.empty(),
-                                Optional.empty(),
-                                Optional.empty(),
-                                Optional.of(SoundEvents.UI_TOAST_IN)
-                        )),
+                        Optional.of(new Activation.Sound(Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(SoundEvents.UI_TOAST_IN))),
                         Optional.of(new Activation.Animations(
-                                Optional.of(Either.right(new SimpleAbilityAnimation("cast_mass_buff", AnimationLayer.BASE, 2, true, true))),
+                                Optional.of(Either.right(new SimpleAbilityAnimation(SimpleAbilityAnimation.CAST_MASS_BUFF, AnimationLayer.BASE, 2, true, true))),
                                 Optional.empty(),
-                                Optional.of(new SimpleAbilityAnimation("mass_buff", AnimationLayer.BASE, 0, true, true))
+                                Optional.of(new SimpleAbilityAnimation(SimpleAbilityAnimation.MASS_BUFF, AnimationLayer.BASE, 0, true, true))
                         ))
                 ),
                 Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 3, LevelBasedValue.lookup(List.of(0f, 15f, 35f), LevelBasedValue.perLevel(15))),
@@ -326,20 +290,13 @@ public class CaveDragonAbilities {
     private static void registerPassiveAbilities(final BootstrapContext<DragonAbility> context) {
         context.register(CAVE_ATHLETICS, new DragonAbility(
                 Activation.passive(),
-                Upgrade.value(ValueBasedUpgrade.Type.MANUAL, 5, LevelBasedValue.perLevel(15)), // FIXME :: not the actual values
+                Upgrade.value(ValueBasedUpgrade.Type.MANUAL, 5, LevelBasedValue.perLevel(15)),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.SPEEDS_UP_CAVE_DRAGON)).build(),
-                        ModifierEffect.single(new ModifierWithDuration(
-                                CAVE_ATHLETICS_MODIFIER,
-                                ModifierWithDuration.DEFAULT_MODIFIER_ICON,
-                                // FIXME :: not the final value
-                                List.of(new Modifier(Attributes.MOVEMENT_SPEED, LevelBasedValue.perLevel(0.02f), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
-                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
-                                false
-                        )),
+                        PotionEffect.single(LevelBasedValue.perLevel(1), LevelBasedValue.perLevel(Functions.secondsToTicks(5)), MobEffects.MOVEMENT_SPEED),
                         AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
-                ), true), LevelBasedValue.constant(1))),
+                ), false), LevelBasedValue.constant(Functions.secondsToTicks(1)))),
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_athletics_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_athletics_1"), 1),
@@ -355,12 +312,7 @@ public class CaveDragonAbilities {
                 Upgrade.value(ValueBasedUpgrade.Type.MANUAL, 4, LevelBasedValue.perLevel(15)),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(new OnAttackEffect(
-                                HolderSet.direct(DSEffects.BURN),
-                                LevelBasedValue.constant(0),
-                                LevelBasedValue.perLevel(Functions.secondsToTicks(5)),
-                                LevelBasedValue.perLevel(0.15f)
-                        )),
+                        List.of(new OnAttackEffect(PotionData.of(LevelBasedValue.constant(0), LevelBasedValue.perLevel(Functions.secondsToTicks(5)), LevelBasedValue.perLevel(0.15f), DSEffects.BURN))),
                         AbilityTargeting.EntityTargetingMode.TARGET_ALL
                 ), true), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(
@@ -497,20 +449,16 @@ public class CaveDragonAbilities {
 
         context.register(LAVA_SWIMMING, new DragonAbility(
                 Activation.passive(),
-                Optional.empty(), // TODO :: Should this be upgradable?
+                Optional.empty(),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                                List.of(new SwimEffect(
-                                            LevelBasedValue.perLevel(Functions.secondsToTicks(180), Functions.secondsToTicks(60)),
-                                            NeoForgeMod.LAVA_TYPE
-                                        )
-                                ),
+                                List.of(new SwimEffect(LevelBasedValue.perLevel(Functions.secondsToTicks(180), Functions.secondsToTicks(60)), NeoForgeMod.LAVA_TYPE)),
                                 AbilityTargeting.EntityTargetingMode.TARGET_ALL
                         ), true), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(
                         // TODO:: Needs textures
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_dragon_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_dragon_1"), 1)
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/lava_swimming_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/lava_swimming_1"), 1)
                 ))
         ));
 
@@ -575,16 +523,11 @@ public class CaveDragonAbilities {
                         LevelBasedValue.constant(1),
                         LevelBasedValue.constant(Functions.secondsToTicks(1)),
                         LevelBasedValue.constant(Functions.secondsToTicks(30)),
-                        new Activation.Sound(
-                                Optional.empty(),
-                                Optional.empty(),
-                                Optional.empty(),
-                                Optional.of(SoundEvents.UI_TOAST_IN)
-                        ),
+                        new Activation.Sound(Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(SoundEvents.UI_TOAST_IN)),
                         new Activation.Animations(
-                                Optional.of(Either.right(new SimpleAbilityAnimation("cast_mass_buff", AnimationLayer.BASE, 2, true, true))),
+                                Optional.of(Either.right(new SimpleAbilityAnimation(SimpleAbilityAnimation.CAST_MASS_BUFF, AnimationLayer.BASE, 2, true, true))),
                                 Optional.empty(),
-                                Optional.of(new SimpleAbilityAnimation("mass_buff", AnimationLayer.BASE, 0, true, true))
+                                Optional.of(new SimpleAbilityAnimation(SimpleAbilityAnimation.MASS_BUFF, AnimationLayer.BASE, 0, true, true))
                         )
                 ),
                 Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 3, LevelBasedValue.lookup(List.of(0f, 15f, 35f), LevelBasedValue.perLevel(15))),

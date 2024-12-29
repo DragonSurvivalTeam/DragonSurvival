@@ -18,54 +18,6 @@
 //import java.util.List;
 //
 //public class ForestDragonConfig {
-//    // --- Magic --- //
-//
-//    @Translation(key = "forest_abilities", type = Translation.Type.CONFIGURATION, comments = "Enable / Disable forest dragon abilities")
-//    @ConfigOption(side = ConfigSide.SERVER, category = {"forest_dragon", "magic"}, key = "forest_abilities")
-//    public static Boolean areAbilitiesEnabled = true;
-//
-//    @Translation(key = "forest_conditional_mana_blocks", type = Translation.Type.CONFIGURATION, comments = "Blocks that restore mana for forest dragons when under certain conditions (block states) - Formatting: namespace:path:key=value,key=value (prefix namespace with # for tags)")
-//    @ConfigOption(side = ConfigSide.SERVER, category = {"forest_dragon", "magic"}, key = "forest_conditional_mana_blocks")
-//    public static List<BlockStateConfig> forestConditionalManaBlocks = List.of();
-//
-//    // --- Bonus --- //
-//
-//    @ConfigRange(min = 0.0, max = 100.0)
-//    @Translation(key = "forest_fall_reduction", type = Translation.Type.CONFIGURATION, comments = "By how much (in blocks) the fall distance is reduced (resulting in reduced damage when falling) - disabled if set to 0")
-//    @ConfigOption(side = ConfigSide.SERVER, category = {"forest_dragon", "bonuses"}, key = "forest_fall_reduction")
-//    public static Double fallReduction = 5.0;
-//
-//    @Translation(key = "forest_bush_immunity", type = Translation.Type.CONFIGURATION, comments = "Forest dragons will be immune to sweet berry bush damage if enabled")
-//    @ConfigOption(side = ConfigSide.SERVER, category = {"forest_dragon", "bonuses"}, key = "forest_bush_immunity")
-//    public static Boolean bushImmunity = true;
-//
-//    @Translation(key = "forest_cactus_immunity", type = Translation.Type.CONFIGURATION, comments = "Forest dragons will be immune to cactus damage if enabled")
-//    @ConfigOption(side = ConfigSide.SERVER, category = {"forest_dragon", "bonuses"}, key = "forest_cactus_immunity")
-//    public static Boolean cactusImmunity = true;
-//
-//    // --- Penalties --- //
-//
-//    @ConfigRange(min = 0, max = 10_000)
-//    @Translation(key = "forest_stress_ticks", type = Translation.Type.CONFIGURATION, comments = "The amount of ticks (20 ticks = 1 second) can pass before the forest dragon is affected by the stress effect - stress effect is disabled if set to 0")
-//    @ConfigOption(side = ConfigSide.SERVER, category = {"forest_dragon", "penalties"}, key = "forest_stress_ticks")
-//    public static Integer stressTicks = Functions.secondsToTicks(5);
-//
-//    @ConfigRange(min = 2, max = 100_000)
-//    @Translation(key = "forest_stress_effect_duration", type = Translation.Type.CONFIGURATION, comments = "How many seconds the stress effect lasts for")
-//    @ConfigOption(side = ConfigSide.SERVER, category = {"forest_dragon", "penalties"}, key = "forest_stress_effect_duration")
-//    public static Integer stressEffectDuration = 10;
-//
-//    @ConfigRange(min = 0.1, max = 4.0)
-//    @Translation(key = "forest_stress_exhaustion_rate", type = Translation.Type.CONFIGURATION, comments = "The amount of exhaustion applied every 10 tick (0.5 seconds) during the stress effect")
-//    @ConfigOption(side = ConfigSide.SERVER, category = {"forest_dragon", "penalties"}, key = "forest_stress_exhaustion_rate")
-//    public static Double stressExhaustion = 1.0;
-//
-//    // --- Food --- //
-//
-//    @Translation(key = "forest_hurtful_items", type = Translation.Type.CONFIGURATION, comments = "Items which will cause damage to forest dragons when consumed - Formatting: namespace:path:damage (prefix namespace with # for tags)")
-//    @ConfigOption(side = ConfigSide.SERVER, category = {"forest_dragon", "food"}, key = "forest_hurtful_items", validation = Validation.RESOURCE_LOCATION_NUMBER)
-//    public static List<ItemHurtConfig> hurtfulItems = List.of();
-//
 //    @Translation(key = "forest_foods", type = Translation.Type.CONFIGURATION, comments = {
 //            "Determines which items a forest dragon can eat - the item doesn't need to be a food item (e.g. you could add an iron block here",
 //            "Formatting: namespace:path:nutrition:saturation (prefix namespace with # for tags)",

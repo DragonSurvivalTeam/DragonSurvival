@@ -202,9 +202,7 @@ public class DragonSpeciesScreen extends Screen {
 
         // Riding button
         HoverButton ridingButton = new HoverButton(startX + 186, startY - 18, 16, RIDING_MAIN, RIDING_HOVER);
-        MutableComponent ridingTooltip = Component.empty();
-        ridingTooltip.append(Component.translatable(LangKey.RIDING_INFO, DragonRidingHandler.PLAYER_RIDING_SIZE, (int)(data.getSize() / 2)));
-        ridingButton.setTooltip(Tooltip.create(ridingTooltip));
+        ridingButton.setTooltip(Tooltip.create(Component.translatable(LangKey.RIDING_INFO, DragonRidingHandler.PLAYER_RIDING_SIZE, (int) (data.getSize() / 2))));
         addRenderableWidget(ridingButton);
 
         // Body type button

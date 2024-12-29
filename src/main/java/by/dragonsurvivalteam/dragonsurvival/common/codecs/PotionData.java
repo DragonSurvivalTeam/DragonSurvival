@@ -27,11 +27,13 @@ import java.util.Optional;
 import javax.annotation.Nullable;
 
 public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier, LevelBasedValue duration, LevelBasedValue probability) {
+    public static final LevelBasedValue DEFAULT_PROBABILITY = LevelBasedValue.constant(1);
+
     public static final MapCodec<PotionData> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             RegistryCodecs.homogeneousList(BuiltInRegistries.MOB_EFFECT.key()).fieldOf("effects").forGetter(PotionData::effects),
             LevelBasedValue.CODEC.fieldOf("amplifier").forGetter(PotionData::amplifier),
             LevelBasedValue.CODEC.fieldOf("duration").forGetter(PotionData::duration),
-            LevelBasedValue.CODEC.optionalFieldOf("probability", LevelBasedValue.constant(1)).forGetter(PotionData::probability)
+            LevelBasedValue.CODEC.optionalFieldOf("probability", DEFAULT_PROBABILITY).forGetter(PotionData::probability)
     ).apply(instance, PotionData::new));
 
     public void apply(@Nullable final ServerPlayer dragon, final int level, final Entity entity) {
@@ -111,5 +113,15 @@ public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier
         }
 
         return new PotionContents(Optional.empty(), Optional.empty(), instances);
+    }
+
+    @SafeVarargs
+    public static PotionData of(final LevelBasedValue amplifier, final LevelBasedValue duration, final Holder<MobEffect>... effects) {
+        return of(amplifier, duration, DEFAULT_PROBABILITY, effects);
+    }
+
+    @SafeVarargs
+    public static PotionData of(final LevelBasedValue amplifier, final LevelBasedValue duration, final LevelBasedValue probability, final Holder<MobEffect>... effects) {
+        return new PotionData(HolderSet.direct(effects), amplifier, duration, probability);
     }
 }

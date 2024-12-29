@@ -115,7 +115,8 @@ public class AbilityAndPenaltyTooltipRenderer {
         List<Component> info = ability.getInfo(Minecraft.getInstance().player);
 
         Upgrade upgrade = ability.value().upgrade().orElse(null);
-        if(upgrade != null) {
+
+        if (upgrade != null && ability.level() < upgrade.maximumLevel()) {
             rawDescription = FormattedText.composite(rawDescription, Component.empty().append("\n\n"));
             MutableComponent upgradeComponent = upgrade.getDescription(ability.level());
             rawDescription = FormattedText.composite(rawDescription, upgradeComponent.withColor(Color.GREEN.getColor()));

@@ -100,10 +100,10 @@ public class GrowthCrystalButton extends ExtendedButton {
         components.add(Component.translatable(LangKey.GROWTH_HARVEST_LEVEL_BONUS, stage.value().harvestLevelBonus()));
         components.add(Component.translatable(LangKey.GROWTH_BREAK_SPEED_MULTIPLIER, stage.value().breakSpeedMultiplier()));
 
-        if (stage.value().destructionData().isPresent()) {
-            components.add(Component.translatable(LangKey.GROWTH_CAN_DESTROY_BLOCKS, stage.value().destructionData().get().blockDestructionSize()));
-            components.add(Component.translatable(LangKey.GROWTH_CAN_CRUSH_ENTITIES, stage.value().destructionData().get().crushingSize()));
-        }
+        stage.value().destructionData().ifPresent(data -> {
+            components.add(Component.translatable(LangKey.GROWTH_CAN_DESTROY_BLOCKS, data.blockDestructionSize()));
+            components.add(Component.translatable(LangKey.GROWTH_CAN_CRUSH_ENTITIES, data.crushingSize()));
+        });
 
         components.add(Component.translatable(LangKey.GROWTH_MODIFIERS_AT_MAX_SIZE));
 
@@ -128,13 +128,15 @@ public class GrowthCrystalButton extends ExtendedButton {
         maxScroll = lines.size();
         scrollAmount = Math.clamp(scrollAmount, 0, maxScroll());
 
-        for (int i = scrollAmount; i < lines.size(); i++) {
-            if (i - scrollAmount == MAX_LINES_SHOWN) {
+        for (int line = scrollAmount; line < lines.size(); line++) {
+            if (line - scrollAmount == MAX_LINES_SHOWN) {
                 break;
             }
 
-            shownTooltip.add(lines.get(i));
+            shownTooltip.add(lines.get(line));
         }
+
+        // TODO :: add scroll icon or sth. at the bottom like that (if it can still be scrolled)
 
         this.tooltip = shownTooltip;
     }

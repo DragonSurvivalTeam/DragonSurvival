@@ -14,50 +14,9 @@
 //import java.util.List;
 //
 //public class SeaDragonConfig {
-//    // --- Magic --- //
-//
-//    @Translation(key = "sea_abilities", type = Translation.Type.CONFIGURATION, comments = "Enable / Disable sea dragon abilities")
-//    @ConfigOption(side = ConfigSide.SERVER, category = {"sea_dragon", "magic"}, key = "sea_abilities")
-//    public static Boolean seaDragonAbilities = true;
-//
-//    @Translation(key = "sea_swimming_bonus", type = Translation.Type.CONFIGURATION, comments = "If enabled sea dragon gain a water swim speed bonus and will not drown in water")
-//    @ConfigOption(side = ConfigSide.SERVER, category = {"sea_dragon", "bonuses"}, key = "sea_swimming_bonus")
-//    public static Boolean seaSwimmingBonuses = true;
-//
-//    @Translation(key = "sea_conditional_mana_blocks", type = Translation.Type.CONFIGURATION, comments = "Blocks that restore mana for sea dragons when under certain conditions (block states) - Formatting: namespace:path:key=value,key=value (prefix namespace with # for tags)")
-//    @ConfigOption(side = ConfigSide.SERVER, category = {"sea_dragon", "magic"}, key = "sea_conditional_mana_blocks")
-//    public static List<BlockStateConfig> seaConditionalManaBlocks = List.of();
-//
-//    // --- Penalties --- //
-//
-//    @ConfigRange(min = 0, max = 100_000)
-//    @Translation(key = "sea_ticks_without_water", type = Translation.Type.CONFIGURATION, comments = "Amount of ticks (20 ticks = 1 second) a sea dragon can be out of water before taking dehydration damage - disabled if set to 0")
-//    @ConfigOption(side = ConfigSide.SERVER, category = {"sea_dragon", "penalties"}, key = "sea_ticks_without_water")
-//    public static Integer seaTicksWithoutWater = Functions.secondsToTicks(50);
-//
 //    @Translation(key = "sea_ticks_based_on_temperature", type = Translation.Type.CONFIGURATION, comments = "If enabled the sea dragon will lose more water in hot biomes and less during the night")
 //    @ConfigOption(side = ConfigSide.SERVER, category = {"sea_dragon", "penalties"}, key = "sea_ticks_based_on_temperature")
 //    public static Boolean seaTicksBasedOnTemperature = true;
-//
-//    @ConfigRange(min = 0.5, max = 100.0)
-//    @Translation(key = "sea_hydration_damage", type = Translation.Type.CONFIGURATION, comments = "The amount of damage taken every 40 ticks (2 seconds) if dehydrated, or 20 ticks (1 second) if fully dehydrated")
-//    @ConfigOption(side = ConfigSide.SERVER, category = {"sea_dragon", "penalties"}, key = "sea_hydration_damage")
-//    public static Double seaDehydrationDamage = 1.0;
-//
-//    @Translation(key = "sea_allow_water_bottles", type = Translation.Type.CONFIGURATION, comments = "Using water bottles will restore hydration if enabled")
-//    @ConfigOption(side = ConfigSide.SERVER, category = {"sea_dragon", "penalties"}, key = "sea_allow_water_bottles")
-//    public static Boolean seaAllowWaterBottles = true;
-//
-//    @ConfigRange(min = 0, max = 100_000)
-//    @Translation(key = "sea_ticks_without_water_restored", type = Translation.Type.CONFIGURATION, comments = "How many ticks (20 ticks = 1 second) hydration items restore when used - disabled if set to 0")
-//    @ConfigOption(side = ConfigSide.SERVER, category = {"sea_dragon", "penalties"}, key = "sea_ticks_without_water_restored")
-//    public static Integer seaTicksWithoutWaterRestored = Functions.secondsToTicks(250);
-//
-//    // --- Food --- //
-//
-//    @Translation(key = "sea_hurtful_items", type = Translation.Type.CONFIGURATION, comments = "Items which will cause damage to sea dragons when consumed - Formatting: namespace:path:damage (prefix namespace with # for tags)")
-//    @ConfigOption(side = ConfigSide.SERVER, category = {"sea_dragon", "food"}, key = "sea_hurtful_items", validation = Validation.RESOURCE_LOCATION_NUMBER)
-//    public static List<ItemHurtConfig> seaDragonHurtfulItems = List.of();
 //
 //    @Translation(key = "sea_foods", type = Translation.Type.CONFIGURATION, comments = {
 //            "Determines which items a sea dragon can eat - the item doesn't need to be a food item (e.g. you could add an iron block here",

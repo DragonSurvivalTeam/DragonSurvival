@@ -18,12 +18,6 @@
 //import java.util.List;
 //
 //public class CaveDragonConfig {
-//    // --- Magic --- //
-//
-//    @Translation(key = "cave_abilities", type = Translation.Type.CONFIGURATION, comments = "Enable / Disable cave dragon abilities")
-//    @ConfigOption(side = ConfigSide.SERVER, category = {"cave_dragon", "magic"}, key = "cave_abilities")
-//    public static Boolean caveDragonAbilities = true;
-//
 //    @Translation(key = "cave_conditional_mana_blocks", type = Translation.Type.CONFIGURATION, comments = "Blocks that restore mana for cave dragons when under certain conditions (block states) - Formatting: namespace:path:key=value,key=value (prefix namespace with # for tags)")
 //    @ConfigOption(side = ConfigSide.SERVER, category = {"cave_dragon", "magic"}, key = "cave_conditional_mana_blocks")
 //    public static List<BlockStateConfig> caveConditionalManaBlocks = List.of(
@@ -32,38 +26,6 @@
 //            BlockStateConfig.of("minecraft:smoker:lit=true"),
 //            BlockStateConfig.of("minecraft:blast_furnace:lit=true")
 //    );
-//
-//    // --- Bonus --- //
-//
-//    @Translation(key = "cave_fire_immunity", type = Translation.Type.CONFIGURATION, comments = "Enable / Disable cave dragon fire immunity")
-//    @ConfigOption(side = ConfigSide.SERVER, category = {"cave_dragon", "bonus"}, key = "cave_fire_immunity")
-//    public static Boolean caveFireImmunity = true;
-//
-//    @Translation(key = "cave_lava_swimming", type = Translation.Type.CONFIGURATION, comments = "If enabled lava swimming will behave like swimming in water for cave dragons")
-//    @ConfigOption(side = ConfigSide.SERVER, category = {"cave_dragon", "bonus"}, key = "cave_lava_swimming")
-//    public static Boolean caveLavaSwimming = true;
-//
-//    @ConfigRange(min = 0, max = 100_000)
-//    @Translation(key = "cave_lava_swimming_ticks", type = Translation.Type.CONFIGURATION, comments = "The max. amount of ticks (20 ticks = 1 second) cave dragons can swim in lava - if set to 0 the time will be unlimited")
-//    @ConfigOption(side = ConfigSide.SERVER, category = {"cave_dragon", "bonus"}, key = "cave_lava_swimming_ticks")
-//    public static Integer caveLavaSwimmingTicks = Functions.secondsToTicks(180);
-//
-//    // --- Penalties --- //
-//
-//    @ConfigRange(min = 0.0, max = 100.0)
-//    @Translation(key = "cave_water_damage", type = Translation.Type.CONFIGURATION, comments = "The amount of damage taken (while in contact with water) every 10 ticks (0.5 seconds) - disabled if set to 0")
-//    @ConfigOption(side = ConfigSide.SERVER, category = {"cave_dragon", "penalties"}, key = "cave_water_damage")
-//    public static Double caveWaterDamage = 1.0;
-//
-//    @ConfigRange(min = 0.0, max = 100.0)
-//    @Translation(key = "cave_rain_damage", type = Translation.Type.CONFIGURATION, comments = "The amount of damage taken (while in contact with rain) every 40 ticks (2 seconds) - disabled if set to 0")
-//    @ConfigOption(side = ConfigSide.SERVER, category = {"cave_dragon", "penalties"}, key = "cave_rain_damage")
-//    public static Double caveRainDamage = 1.0;
-//
-//    @ConfigRange(min = 0.0, max = 100.0)
-//    @Translation(key = "cave_splash_damage", type = Translation.Type.CONFIGURATION, comments = "The amount of damage taken when hit with a snowball or water splash potion - disabled if set to 0")
-//    @ConfigOption(side = ConfigSide.SERVER, category = {"cave_dragon", "penalties"}, key = "cave_splash_damage")
-//    public static Double caveSplashDamage = 2.0;
 //
 //    // --- Food --- //
 //

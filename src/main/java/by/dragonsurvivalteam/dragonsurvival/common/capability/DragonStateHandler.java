@@ -49,12 +49,11 @@ import javax.annotation.Nullable;
 public class DragonStateHandler extends EntityStateHandler {
     public static final int NO_SIZE = -1;
     private static final double SIZE_LERP_SPEED = 0.1; // 10% per tick
+    private static final double SIZE_EPSILON = 0.001;
 
     @SuppressWarnings("unchecked")
     public final Supplier<SubCap>[] caps = new Supplier[]{this::getSkinData};
     private final Map<ResourceKey<DragonType>, Double> savedSizes = new HashMap<>();
-
-    // --- Other --- //
 
     public boolean isGrowing = true;
     public StarHeartItem.State starHeartState = StarHeartItem.State.INACTIVE;
@@ -70,7 +69,6 @@ public class DragonStateHandler extends EntityStateHandler {
     private Holder<DragonStage> dragonStage;
 
     private int passengerId = -1;
-    private static final double SIZE_EPSILON = 0.001;
     private double size = NO_SIZE;
     private double visualSize = NO_SIZE;
     private double visualSizeLastTick = NO_SIZE;
@@ -138,31 +136,29 @@ public class DragonStateHandler extends EntityStateHandler {
         magicData.handleGrowthAbilityUpgrades(player, this.size);
 
         player.refreshDimensions();
-
         double sizeDifference = this.size - oldSize;
+
         if (sizeDifference > 0) {
             // Push the player away from a block they might collide with due to the size change (to avoid getting stuck on said block)
             double pushForce = sizeDifference * 0.03;
             Vec3 push = Vec3.ZERO;
 
-            // We don't want to accumulate pushes in the same direction from different blocks; so keep track of all directions already
-            // pushed and only push in directions that haven't been pushed yet
+            // We don't want to accumulate pushes in the same direction from different blocks
+            // Therefor we track the positions the player will be pushed to
             boolean negativeXPushed = false;
             boolean negativeZPushed = false;
             boolean positiveXPushed = false;
             boolean positiveZPushed = false;
+
             for (BlockPos position : BlockPosHelper.betweenClosed(player.getBoundingBox())) {
                 if (player.isColliding(position, player.level().getBlockState(position))) {
-                    if(negativeXPushed && positiveXPushed && negativeZPushed && positiveZPushed) {
-                        break;
-                    }
-
                     // Calculate the nearest face of the block to the player
                     Vec3 center = Vec3.atCenterOf(position);
                     double directionX = player.getX() - center.x();
                     double directionZ = player.getZ() - center.z();
 
                     Vec3 nearestFace;
+
                     if (Math.abs(directionX) > Math.abs(directionZ)) {
                         nearestFace = new Vec3(Math.signum(directionX), 0, 0);
                     } else {
@@ -170,28 +166,32 @@ public class DragonStateHandler extends EntityStateHandler {
                     }
 
                     // Determine the push direction
-                    if (nearestFace.x() < 0 && !negativeXPushed) {
+                    if (!negativeXPushed && nearestFace.x() < 0) {
                         push = push.add(nearestFace);
                         negativeXPushed = true;
-                    } else if (nearestFace.x() > 0 && !positiveXPushed) {
+                    } else if (!positiveXPushed && nearestFace.x() > 0) {
                         push = push.add(nearestFace);
                         positiveXPushed = true;
-                    } else if (nearestFace.z() < 0 && !negativeZPushed) {
+                    } else if (!negativeZPushed && nearestFace.z() < 0) {
                         push = push.add(nearestFace);
                         negativeZPushed = true;
-                    } else if (nearestFace.z() > 0 && !positiveZPushed) {
+                    } else if (!positiveZPushed && nearestFace.z() > 0) {
                         push = push.add(nearestFace);
                         positiveZPushed = true;
                     }
                 }
+
+                if (negativeXPushed && positiveXPushed && negativeZPushed && positiveZPushed) {
+                    break;
+                }
             }
 
-            if (push.length() > 0 && pushForce > 0) {
+            if (pushForce > 0 && push.length() > 0) {
                 player.moveTo(player.position().add(push.normalize().scale(pushForce)));
             }
         }
 
-        ((EntityAccessor)player).dragonSurvival$reapplyPosition();
+        ((EntityAccessor) player).dragonSurvival$reapplyPosition();
 
         if (player instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncSize(serverPlayer.getId(), getSize()));
@@ -252,7 +252,6 @@ public class DragonStateHandler extends EntityStateHandler {
         }
     }
 
-    // TODO :: use optional for these?
     public Holder<DragonType> getType() {
         return dragonType;
     }

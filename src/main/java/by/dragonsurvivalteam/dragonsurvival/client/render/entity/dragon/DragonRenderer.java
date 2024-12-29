@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.SimpleAbilityAnimation;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -38,10 +39,10 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
     private static final HashSet<String> magicAnimations = new HashSet<>();
 
     static {
-        magicAnimations.add("cast_mass_buff");
-        magicAnimations.add("mass_buff");
-        magicAnimations.add("cast_self_buff");
-        magicAnimations.add("self_buff");
+        magicAnimations.add(SimpleAbilityAnimation.CAST_MASS_BUFF);
+        magicAnimations.add(SimpleAbilityAnimation.MASS_BUFF);
+        magicAnimations.add(SimpleAbilityAnimation.CAST_SELF_BUFF);
+        magicAnimations.add(SimpleAbilityAnimation.SELF_BUFF);
         magicAnimations.add("fly_head_locked_magic");
         magicAnimations.add("flapping_wings_standing");
         magicAnimations.add("fly_head_locked");

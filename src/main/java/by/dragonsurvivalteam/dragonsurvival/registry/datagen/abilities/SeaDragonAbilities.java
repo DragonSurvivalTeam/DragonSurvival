@@ -13,6 +13,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.conditions.EntityCondition;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.LargeLightningParticleOption;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.SmallLightningParticleOption;
 import by.dragonsurvivalteam.dragonsurvival.registry.*;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBlockTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDamageTypeTags;
@@ -34,8 +35,8 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.neoforged.neoforge.common.NeoForgeMod;
 
@@ -75,12 +76,10 @@ public class SeaDragonAbilities {
     public static final ResourceLocation REVEALING_THE_SOUL = DragonSurvival.res("revealing_the_soul");
 
     // --- Passive --- //
+
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Standing on wet surfaces will increase your movement speed.")
     @Translation(type = Translation.Type.ABILITY, comments = "Sea Athletics")
     public static final ResourceKey<DragonAbility> SEA_ATHLETICS = DragonAbilities.key("sea_athletics");
-
-    @Translation(type = Translation.Type.MODIFIER, comments = "Sea Athletics")
-    public static final ResourceLocation SEA_ATHLETICS_MODIFIER = DragonSurvival.res("sea_athletics");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
             "■ Upgrading this ability increases your maximum mana pool. Cave dragon mana is restored by standing on wet blocks.\n",
@@ -169,12 +168,7 @@ public class SeaDragonAbilities {
                         Optional.of(ManaCost.ticking(LevelBasedValue.constant(0.025f))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(1))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(2))),
-                        Optional.of(new Activation.Sound(
-                                Optional.of(DSSounds.STORM_BREATH_START.get()),
-                                Optional.empty(),
-                                Optional.of(DSSounds.STORM_BREATH_LOOP.get()),
-                                Optional.of(DSSounds.STORM_BREATH_END.get())
-                        )),
+                        Activation.Sound.of(DSSounds.STORM_BREATH_START.get(), null, DSSounds.STORM_BREATH_LOOP.get(), DSSounds.STORM_BREATH_END.get()),
                         Optional.of(new Activation.Animations(
                                 Optional.empty(),
                                 Optional.of(new SimpleAbilityAnimation("breath", AnimationLayer.BREATH, 5, false, false)),
@@ -186,33 +180,18 @@ public class SeaDragonAbilities {
                 List.of(new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
                                 Condition.thisEntity(EntityCondition.isLiving()).build(),
                                 List.of(
-                                        new DamageEffect(
-                                                context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.LIGHTNING_BREATH),
-                                                LevelBasedValue.perLevel(1)
-                                        ),
-                                        new PotionEffect(new PotionData(
-                                                HolderSet.direct(DSEffects.CHARGED),
-                                                LevelBasedValue.constant(0),
-                                                LevelBasedValue.constant(Functions.secondsToTicks(30)),
-                                                LevelBasedValue.constant(0.5f)
-                                        ))
+                                        new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.LIGHTNING_BREATH), LevelBasedValue.perLevel(1)),
+                                        PotionEffect.single(LevelBasedValue.constant(0), LevelBasedValue.constant(Functions.secondsToTicks(30)), LevelBasedValue.constant(0.5f), DSEffects.CHARGED).getFirst()
                                 ),
                                 AbilityTargeting.EntityTargetingMode.TARGET_ENEMIES
                         ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.block(
-                                List.of(
-                                        new AreaCloudEffect(
-                                                new PotionData(
-                                                        HolderSet.direct(DSEffects.CHARGED),
-                                                        LevelBasedValue.constant(0),
-                                                        LevelBasedValue.constant(Functions.secondsToTicks(30)),
-                                                        LevelBasedValue.constant(1.0f)
-                                                ),
-                                                LevelBasedValue.constant(Functions.secondsToTicks(2)),
-                                                0.3,
-                                                new LargeLightningParticleOption(37, false)
-                                        )
-                                )
+                                List.of(new AreaCloudEffect(
+                                        PotionData.of(LevelBasedValue.constant(0), LevelBasedValue.constant(Functions.secondsToTicks(30)), DSEffects.CHARGED),
+                                        LevelBasedValue.constant(Functions.secondsToTicks(2)),
+                                        0.3,
+                                        new LargeLightningParticleOption(37, false)
+                                ))
                         ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 List.of(new BreathParticlesEffect(
@@ -239,12 +218,7 @@ public class SeaDragonAbilities {
                         Optional.empty(),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(1))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
-                        Optional.of(new Activation.Sound(
-                                Optional.empty(),
-                                Optional.empty(),
-                                Optional.empty(),
-                                Optional.of(SoundEvents.UI_TOAST_IN)
-                        )),
+                        Activation.Sound.of(null, null, null, SoundEvents.UI_TOAST_IN),
                         Optional.of(new Activation.Animations(
                                 Optional.of(Either.right(new SimpleAbilityAnimation("cast_self_buff", AnimationLayer.BASE, 2, true, false))),
                                 Optional.empty(),
@@ -254,12 +228,7 @@ public class SeaDragonAbilities {
                 Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 4, LevelBasedValue.lookup(List.of(0f, 25f, 45f, 60f), LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(new PotionEffect(new PotionData(
-                                HolderSet.direct(DSEffects.WATER_VISION),
-                                LevelBasedValue.constant(0),
-                                LevelBasedValue.perLevel(Functions.secondsToTicks(30)),
-                                LevelBasedValue.constant(1)
-                        ))),
+                        PotionEffect.single(LevelBasedValue.constant(0), LevelBasedValue.perLevel(Functions.secondsToTicks(30)), DSEffects.WATER_VISION),
                         AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
                 ), true), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(
@@ -285,9 +254,9 @@ public class SeaDragonAbilities {
                                 Optional.of(SoundEvents.UI_TOAST_IN)
                         )),
                         Optional.of(new Activation.Animations(
-                                Optional.of(Either.right(new SimpleAbilityAnimation("cast_mass_buff", AnimationLayer.BASE, 2, true, true))),
+                                Optional.of(Either.right(new SimpleAbilityAnimation(SimpleAbilityAnimation.CAST_MASS_BUFF, AnimationLayer.BASE, 2, true, true))),
                                 Optional.empty(),
-                                Optional.of(new SimpleAbilityAnimation("mass_buff", AnimationLayer.BASE, 0, true, true))
+                                Optional.of(new SimpleAbilityAnimation(SimpleAbilityAnimation.MASS_BUFF, AnimationLayer.BASE, 0, true, true))
                         ))
                 ),
                 Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 3, LevelBasedValue.lookup(List.of(0f, 15f, 35f), LevelBasedValue.perLevel(15))),
@@ -314,20 +283,13 @@ public class SeaDragonAbilities {
     private static void registerPassiveAbilities(final BootstrapContext<DragonAbility> context) {
         context.register(SEA_ATHLETICS, new DragonAbility(
                 Activation.passive(),
-                Upgrade.value(ValueBasedUpgrade.Type.MANUAL, 5, LevelBasedValue.perLevel(15)), // FIXME :: not the actual values
+                Upgrade.value(ValueBasedUpgrade.Type.MANUAL, 5, LevelBasedValue.perLevel(15)),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.SPEEDS_UP_SEA_DRAGON)).build(),
-                        ModifierEffect.single(new ModifierWithDuration(
-                                SEA_ATHLETICS_MODIFIER,
-                                ModifierWithDuration.DEFAULT_MODIFIER_ICON,
-                                // FIXME :: not the final value
-                                List.of(new Modifier(Attributes.MOVEMENT_SPEED, LevelBasedValue.perLevel(0.02f), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
-                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
-                                false
-                        )),
+                        PotionEffect.single(LevelBasedValue.perLevel(1), LevelBasedValue.perLevel(Functions.secondsToTicks(5)), MobEffects.MOVEMENT_SPEED),
                         AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
-                ), true), LevelBasedValue.constant(1))),
+                ), false), LevelBasedValue.constant(Functions.secondsToTicks(1)))),
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_athletics_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_athletics_1"), 1),
@@ -489,28 +451,25 @@ public class SeaDragonAbilities {
                 Activation.passive(),
                 Optional.empty(),
                 Optional.empty(),
-                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(new SwimEffect(
-                                LevelBasedValue.constant(-1),
-                                NeoForgeMod.WATER_TYPE)
-                        ),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALL), true), LevelBasedValue.constant(1)),
+                List.of(
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                                List.of(new ModifierEffect(
-                                        List.of(
-                                                new ModifierWithDuration(
-                                                        DragonSurvival.res("amphibious"),
-                                                        ModifierWithDuration.DEFAULT_MODIFIER_ICON,
-                                                        List.of(new Modifier(NeoForgeMod.SWIM_SPEED, LevelBasedValue.constant(1.0f), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
-                                                        LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
-                                                        true
-                                                )
-                                        ))
-                                ),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALL), true), LevelBasedValue.constant(1))),
+                                List.of(new SwimEffect(LevelBasedValue.constant(SwimData.UNLIMITED_OXYGEN), NeoForgeMod.WATER_TYPE)),
+                                AbilityTargeting.EntityTargetingMode.TARGET_ALL), true), LevelBasedValue.constant(1)
+                        ),
+                        new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                                ModifierEffect.single(new ModifierWithDuration(
+                                        DragonSurvival.res("amphibious"),
+                                        ModifierWithDuration.DEFAULT_MODIFIER_ICON,
+                                        List.of(new Modifier(NeoForgeMod.SWIM_SPEED, LevelBasedValue.constant(1f), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
+                                        LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                        true
+                                )),
+                                AbilityTargeting.EntityTargetingMode.TARGET_ALL), true), LevelBasedValue.constant(1)
+                        )
+                ),
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_dragon_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_dragon_1"), 1)
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/amphibious_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/amphibious_1"), 1)
                 ))
         ));
     }

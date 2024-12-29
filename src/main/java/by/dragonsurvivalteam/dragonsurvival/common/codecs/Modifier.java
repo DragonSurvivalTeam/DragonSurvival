@@ -51,7 +51,7 @@ public record Modifier(Holder<Attribute> attribute, LevelBasedValue amount, Attr
         // If the number is negative it will already contain a '-'
         String number = amount > 0 ? "+" : "";
 
-        if (attribute().value() instanceof PercentageAttribute) {
+        if (attribute.value() instanceof PercentageAttribute) {
             number += NumberFormat.getPercentInstance().format(amount);
         } else {
             number += String.format("%.2f", amount);

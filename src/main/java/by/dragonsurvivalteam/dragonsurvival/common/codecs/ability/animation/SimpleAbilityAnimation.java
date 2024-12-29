@@ -8,6 +8,11 @@ import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.animation.RawAnimation;
 
 public record SimpleAbilityAnimation(String animationKey, AnimationLayer layer, int transitionLength, boolean locksNeck, boolean locksTail) implements AbilityAnimation {
+    public static final String CAST_MASS_BUFF = "cast_mass_buff";
+    public static final String MASS_BUFF = "mass_buff";
+
+    public static final String CAST_SELF_BUFF = "cast_self_buff";
+    public static final String SELF_BUFF = "self_buff";
 
     public static final Codec<SimpleAbilityAnimation> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("animation_key").forGetter(SimpleAbilityAnimation::animationKey),
@@ -18,9 +23,9 @@ public record SimpleAbilityAnimation(String animationKey, AnimationLayer layer, 
     ).apply(instance, SimpleAbilityAnimation::new));
 
     @Override
-    public void play(AnimationState<?> state, DragonEntity entity, AnimationType animationType) {
-        entity.tailLocked = locksTail;
-        entity.neckLocked = locksNeck;
+    public void play(final AnimationState<?> state, final DragonEntity dragon, final AnimationType animationType) {
+        dragon.tailLocked = locksTail;
+        dragon.neckLocked = locksNeck;
         state.getController().transitionLength(transitionLength);
         state.setAndContinue(getRawAnimation(animationType));
     }
@@ -30,15 +35,18 @@ public record SimpleAbilityAnimation(String animationKey, AnimationLayer layer, 
         return layer();
     }
 
-    private RawAnimation getRawAnimation(AnimationType animationType) {
+    private RawAnimation getRawAnimation(final AnimationType type) {
         RawAnimation rawAnimation = RawAnimation.begin();
-        if(animationType == AnimationType.PLAY_AND_HOLD) {
+
+        if (type == AnimationType.PLAY_AND_HOLD) {
             rawAnimation = rawAnimation.thenPlayAndHold(animationKey);
-        } else if(animationType == AnimationType.LOOPING) {
+        } else if (type == AnimationType.LOOPING) {
             rawAnimation = rawAnimation.thenLoop(animationKey);
-        } else if(animationType == AnimationType.PLAY_ONCE) {
+        } else if (type == AnimationType.PLAY_ONCE) {
+            //noinspection DataFlowIssue -> probably not the same value due to a different animation key
             rawAnimation = rawAnimation.then(animationKey, Animation.LoopType.PLAY_ONCE);
         }
+
         return rawAnimation;
     }
 
