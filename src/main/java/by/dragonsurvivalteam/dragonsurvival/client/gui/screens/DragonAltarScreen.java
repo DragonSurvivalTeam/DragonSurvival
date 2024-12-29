@@ -102,11 +102,11 @@ public class DragonAltarScreen extends Screen {
             animation2++;
 
             if (handler1.getBody() == null) {
-                handler1.setBody(DragonBody.random(null));
+                handler1.setBody(null, DragonBody.random(null));
             }
 
-            handler2.setBody(handler1.getBody());
-            handler1.setBody(DragonBody.random(null));
+            handler2.setBody(null, handler1.getBody());
+            handler1.setBody(null, DragonBody.random(null));
 
             if (animation1 >= animations.length) {
                 animation1 = 0;
@@ -120,8 +120,8 @@ public class DragonAltarScreen extends Screen {
         for (Renderable btn : renderables) {
             if (btn instanceof AltarTypeButton button) {
                 if (button.isHoveredOrFocused()) {
-                    handler1.setType(button.type);
-                    handler2.setType(button.type);
+                    handler1.setType(null, button.type);
+                    handler2.setType(null, button.type);
 
                     if (button.type != null) {
                         initializeHandler(handler1);
@@ -164,7 +164,7 @@ public class DragonAltarScreen extends Screen {
 
     private void initializeHandler(final DragonStateHandler handler) {
         if (handler.getBody() == null) {
-            handler.setBody(DragonBody.random(null));
+            handler.setBody(null, DragonBody.random(null));
         }
 
         //noinspection DataFlowIssue -> registry is expected to be present

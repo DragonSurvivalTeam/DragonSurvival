@@ -60,11 +60,12 @@ public class TestUtils {
     public static void setToDragon(final GameTestHelper helper, final Player player, final ResourceKey<DragonType> dragonType, final ResourceKey<DragonBody> dragonBody, final ResourceKey<DragonStage> dragonStage) {
         DragonStateHandler data = DragonStateProvider.getData(player);
 
-        data.setType(player.level().registryAccess().registry(DragonType.REGISTRY).get().getHolderOrThrow(dragonType), player);
-        helper.assertTrue(data.getDragonType().is(dragonType), String.format("Dragon type was [%s] - expected [%s]", data.getType().getKey(), dragonType));
+        Holder<DragonType> species = player.level().registryAccess().holderOrThrow(dragonType);
+        data.setType(player, species);
+        helper.assertTrue(data.getDragonType().is(dragonType), String.format("Dragon species was [%s] - expected [%s]", data.getType(), species));
 
         Holder<DragonBody> body = player.registryAccess().holderOrThrow(dragonBody);
-        data.setBody(body, player);
+        data.setBody(player, body);
         helper.assertTrue(DragonUtils.isBody(data, body), String.format("Dragon type was [%s] - expected [%s]", data.getBody(), dragonBody));
 
         Holder<DragonStage> stage = player.registryAccess().holderOrThrow(dragonStage);

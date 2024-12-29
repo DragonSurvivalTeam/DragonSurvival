@@ -186,7 +186,6 @@ public class DragonStateHandler extends EntityStateHandler {
         double newSize = DragonStage.getValidSize(size);
         Holder<DragonStage> stageToUseForSizeBounds = DragonStage.getStage(dragonType.value().getStages(provider), newSize);
         newSize = stageToUseForSizeBounds.value().getBoundedSize(newSize);
-
         return newSize;
     }
 
@@ -240,45 +239,38 @@ public class DragonStateHandler extends EntityStateHandler {
         skinData.skinPreset.initDefaults(this);
     }
 
-    public void setType(final Holder<DragonType> type, final Player player) {
-        Holder<DragonType> oldType = dragonType;
-        setType(type);
+    public void setType(@Nullable final Player player, final Holder<DragonType> species) {
+        Holder<DragonType> oldSpecies = dragonType;
+        dragonType = species;
 
-        if (type != null) {
-            // TODO :: save abilities per type
-            if (oldType == null || !oldType.is(type)) {
-                DSModifiers.updateTypeModifiers(player, this);
-                refreshDataOnTypeChange(player);
-            }
-        } else {
+        if (player == null) {
+            return;
+        }
+
+        // TODO :: save abilities per type
+
+        if (species != null && (oldSpecies == null || !oldSpecies.is(species))) {
+            DSModifiers.updateTypeModifiers(player, this);
+            refreshDataOnTypeChange(player);
+        } else if (species == null) {
             DSModifiers.clearModifiers(player);
         }
     }
 
-    /** Only used for rendering related code - to properly set the type (and update modifiers) use {@link DragonStateHandler#setType(Holder, Player)} */
-    public void setType(final Holder<DragonType> type) {
-        dragonType = type;
-    }
-
-    public void setBody(final Holder<DragonBody> body, Player player) {
+    public void setBody(@Nullable final Player player, final Holder<DragonBody> body) {
         Holder<DragonBody> oldBody = dragonBody;
-        setBody(body);
-
-        if (!DragonUtils.isBody(oldBody, dragonBody)) {
-            DSModifiers.updateBodyModifiers(player, this);
-        }
-    }
-
-    /** Only used for rendering (does not update modifiers) */
-    public void setBody(final Holder<DragonBody> body) {
-        if (body == null) {
-            dragonType = null;
-            return;
-        }
 
         if (dragonBody == null || !DragonUtils.isBody(body, dragonBody)) {
             dragonBody = body;
             refreshBody = true;
+        }
+
+        if (player == null) {
+            return;
+        }
+
+        if (!DragonUtils.isBody(oldBody, dragonBody)) {
+            DSModifiers.updateBodyModifiers(player, this);
         }
     }
 
@@ -500,8 +492,8 @@ public class DragonStateHandler extends EntityStateHandler {
         // Drop everything in your claw slots
         DragonCommand.reInsertClawTools(player);
 
-        setType(null);
-        setBody(null, player);
+        setType(player, null);
+        setBody(player, null);
         setDesiredSize(player, NO_SIZE);
 
         AltarData altarData = AltarData.getData(player);

@@ -30,6 +30,8 @@ public class DragonRidingHandler {
     @Translation(type = Translation.Type.MISC, comments = "The dragon you are trying to ride must be crouching for you to mount them.")
     private static final String NOT_CROUCHING = Translation.Type.GUI.wrap("message.not_crouching");
 
+    public static final int NO_PASSENGER = -1;
+
     /** This is just the default adult dragon minimum size */
     private static final int PLAYER_RIDING_SIZE = 30;
 
@@ -111,15 +113,15 @@ public class DragonRidingHandler {
         if (event.getEntity() instanceof ServerPlayer player) {
             DragonStateProvider.getOptional(player).ifPresent(dragonStateHandler -> {
                 int passengerId = dragonStateHandler.getPassengerId();
-                if (passengerId == -1) {
+                if (passengerId == NO_PASSENGER) {
                     return;
                 }
 
                 Entity passenger = player.level().getEntity(passengerId);
                 // Check for any way that riding could have been interrupted and update our internal state tracking
                 if (passenger == null || !player.hasPassenger(passenger) || passenger.getRootVehicle() != player.getRootVehicle() || !player.isVehicle()) {
-                    dragonStateHandler.setPassengerId(-1);
-                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncDragonPassengerID.Data(player.getId(), -1));
+                    dragonStateHandler.setPassengerId(NO_PASSENGER);
+                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncDragonPassengerID.Data(player.getId(), NO_PASSENGER));
                     return;
                 }
 
@@ -130,8 +132,8 @@ public class DragonRidingHandler {
                         return;
                     }
 
-                    dragonStateHandler.setPassengerId(-1);
-                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncDragonPassengerID.Data(player.getId(), -1));
+                    dragonStateHandler.setPassengerId(NO_PASSENGER);
+                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncDragonPassengerID.Data(player.getId(), NO_PASSENGER));
                     passenger.stopRiding();
                     player.connection.send(new ClientboundSetPassengersPacket(player));
                 }
@@ -145,8 +147,8 @@ public class DragonRidingHandler {
             DragonStateProvider.getOptional(vehicle).ifPresent(handler -> {
                 player.stopRiding();
                 vehicle.connection.send(new ClientboundSetPassengersPacket(vehicle));
-                handler.setPassengerId(-1);
-                PacketDistributor.sendToPlayersTrackingEntityAndSelf(vehicle, new SyncDragonPassengerID.Data(vehicle.getId(), -1));
+                handler.setPassengerId(NO_PASSENGER);
+                PacketDistributor.sendToPlayersTrackingEntityAndSelf(vehicle, new SyncDragonPassengerID.Data(vehicle.getId(), NO_PASSENGER));
             });
         }
     }

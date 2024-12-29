@@ -5,12 +5,14 @@ import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonStageArgume
 import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonTypeArgument;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDragonPassengerID;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
+import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.ArgumentCommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -96,8 +98,8 @@ public class DragonCommand {
             reInsertClawTools(player);
         }
 
-        data.setType(type, player);
-        data.setBody(dragonBody, player);
+        data.setType(player, type);
+        data.setBody(player, dragonBody);
 
         if (dragonStage != null) {
             data.setStage(player, dragonStage);
@@ -105,7 +107,7 @@ public class DragonCommand {
             data.setDesiredSize(player, DragonStateHandler.NO_SIZE);
         }
 
-        data.setPassengerId(-1);
+        data.setPassengerId(DragonRidingHandler.NO_PASSENGER);
         data.isGrowing = true;
 
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncComplete.Data(player.getId(), data.serializeNBT(player.registryAccess())));

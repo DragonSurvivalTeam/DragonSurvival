@@ -184,13 +184,13 @@ public class SkinsScreen extends Screen implements DragonBodyScreen {
             DragonStateHandler playerData = DragonStateProvider.getData(minecraft.player);
 
             if (!DragonUtils.isType(handler.getType(), playerData.getType())) {
-                handler.setType(playerData.getType());
+                handler.setType(null, playerData.getType());
             }
 
             handler.setStage(null, dragonStage);
 
             if (handler.getBody() == null) {
-                handler.setBody(playerData.getBody());
+                handler.setBody(null, playerData.getBody());
             }
 
             if (handler.getStage() == null) {
@@ -408,8 +408,8 @@ public class SkinsScreen extends Screen implements DragonBodyScreen {
     }
 
     @Override
-    public DragonBodyButton createButton(Holder<DragonBody> dragonBody, int x, int y) {
-        return new DragonBodyButton(this, x, y, 25, 25, dragonBody, false, button -> handler.setBody(dragonBody));
+    public DragonBodyButton createButton(final Holder<DragonBody> dragonBody, int x, int y) {
+        return new DragonBodyButton(this, x, y, 25, 25, dragonBody, false, button -> handler.setBody(null, dragonBody));
     }
 
     @Override

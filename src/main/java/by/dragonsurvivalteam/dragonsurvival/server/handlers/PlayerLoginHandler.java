@@ -32,12 +32,12 @@ public class PlayerLoginHandler {
         }
     }
 
-    public static void syncCompleteSingle(Entity entity) {
-        if(entity instanceof ServerPlayer player) {
+    public static void syncCompleteSingle(final Entity entity) {
+        if (entity instanceof ServerPlayer player) {
             DragonStateProvider.getOptional(player).ifPresent(handler -> {
                 if (handler.getType() != null && handler.getBody() == null) {
                     // Otherwise players won't be able to join the world
-                    handler.setBody(DragonBody.random(entity.registryAccess()));
+                    handler.setBody(player, DragonBody.random(player.registryAccess()));
                     DragonSurvival.LOGGER.error("Player {} was a dragon but had an invalid dragon body type", player);
                 }
 

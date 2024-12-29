@@ -186,6 +186,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
 
         @Override
         public boolean equals(Object object) {
+            //noinspection DeconstructionCanBeUsed -> not valid
             if (object instanceof EditorAction<?> editorAction) {
                 if (editorAction.action != null && editorAction.value != null) {
                     return editorAction.action.equals(action) && editorAction.value.equals(this.value);
@@ -426,9 +427,9 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
             return;
         }
 
-        HANDLER.setType(dragonType);
+        HANDLER.setType(null, dragonType);
         HANDLER.setDesiredSize(null, dragonStage.value().sizeRange().min());
-        HANDLER.setBody(dragonBody);
+        HANDLER.setBody(null, dragonBody);
 
         preset = new SkinPreset();
         preset.initDefaults(dragonType.getKey(), dragonBody.value().customModel());
@@ -819,10 +820,10 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
 
     public void update() {
         if (dragonType != null) {
-            HANDLER.setType(dragonType);
+            HANDLER.setType(null, dragonType);
         }
 
-        HANDLER.setBody(dragonBody);
+        HANDLER.setBody(null, dragonBody);
         HANDLER.getSkinData().skinPreset = preset;
         HANDLER.setDesiredSize(null, dragonStage.value().sizeRange().min());
 
@@ -872,8 +873,8 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
                 DragonCommand.reInsertClawTools(minecraft.player);
             }
 
-            data.setBody(dragonBody, minecraft.player);
-            data.setType(dragonType, minecraft.player);
+            data.setBody(minecraft.player, dragonBody);
+            data.setType(minecraft.player, dragonType);
 
             double savedSize = data.getSavedDragonSize(data.getType().getKey());
             if (!ServerConfig.saveGrowthStage || savedSize == DragonStateHandler.NO_SIZE) {
