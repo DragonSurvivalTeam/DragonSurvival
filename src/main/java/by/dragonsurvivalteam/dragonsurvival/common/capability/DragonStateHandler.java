@@ -70,7 +70,7 @@ public class DragonStateHandler extends EntityStateHandler {
     private Holder<DragonStage> dragonStage;
 
     private int passengerId = -1;
-
+    private static final double SIZE_EPSILON = 0.001;
     private double size = NO_SIZE;
     private double visualSize = NO_SIZE;
     private double visualSizeLastTick = NO_SIZE;
@@ -102,9 +102,17 @@ public class DragonStateHandler extends EntityStateHandler {
             }
 
             visualSizeLastTick = visualSize;
-            visualSize = Mth.lerp(SIZE_LERP_SPEED, visualSize, desiredSize);
+            if(Math.abs(visualSize - desiredSize) < SIZE_EPSILON) {
+                visualSize = desiredSize;
+            } else {
+                visualSize = Mth.lerp(SIZE_LERP_SPEED, visualSize, desiredSize);
+            }
         } else {
-            setSize(player, Mth.lerp(SIZE_LERP_SPEED, size, desiredSize));
+            if(Math.abs(size - desiredSize) < SIZE_EPSILON) {
+                setSize(player, desiredSize);
+            } else {
+                setSize(player, Mth.lerp(SIZE_LERP_SPEED, size, desiredSize));
+            }
         }
     }
 
@@ -131,34 +139,55 @@ public class DragonStateHandler extends EntityStateHandler {
 
         player.refreshDimensions();
 
-        if (this.size > oldSize) {
+        double sizeDifference = this.size - oldSize;
+        if (sizeDifference > 0) {
             // Push the player away from a block they might collide with due to the size change (to avoid getting stuck on said block)
-            double pushForce = ((this.size - oldSize)) * 0.05;
+            double pushForce = sizeDifference * 0.03;
             Vec3 push = Vec3.ZERO;
 
-            // Multiply the force by the number of collisions in case we are colliding with multiple walls (while being in a corner)
-            // (In such a case more force than normal is required - this should not affect collision with a single block though, otherwise it will cause stutter)
-            int collisions = 0;
-
+            // We don't want to accumulate pushes in the same direction from different blocks; so keep track of all directions already
+            // pushed and only push in directions that haven't been pushed yet
+            boolean negativeXPushed = false;
+            boolean negativeZPushed = false;
+            boolean positiveXPushed = false;
+            boolean positiveZPushed = false;
             for (BlockPos position : BlockPosHelper.betweenClosed(player.getBoundingBox())) {
                 if (player.isColliding(position, player.level().getBlockState(position))) {
+                    if(negativeXPushed && positiveXPushed && negativeZPushed && positiveZPushed) {
+                        break;
+                    }
+
+                    // Calculate the nearest face of the block to the player
                     Vec3 center = Vec3.atCenterOf(position);
                     double directionX = player.getX() - center.x();
                     double directionZ = player.getZ() - center.z();
 
-                    if(directionX == 0 && directionZ == 0) {
-                        continue;
+                    Vec3 nearestFace;
+                    if (Math.abs(directionX) > Math.abs(directionZ)) {
+                        nearestFace = new Vec3(Math.signum(directionX), 0, 0);
+                    } else {
+                        nearestFace = new Vec3(0, 0, Math.signum(directionZ));
                     }
 
-                    collisions++;
-
-                    // Need to collect the pushes otherwise running into the corner of two blocks causes issues
-                    push = push.add(directionX, 0, directionZ);
+                    // Determine the push direction
+                    if (nearestFace.x() < 0 && !negativeXPushed) {
+                        push = push.add(nearestFace);
+                        negativeXPushed = true;
+                    } else if (nearestFace.x() > 0 && !positiveXPushed) {
+                        push = push.add(nearestFace);
+                        positiveXPushed = true;
+                    } else if (nearestFace.z() < 0 && !negativeZPushed) {
+                        push = push.add(nearestFace);
+                        negativeZPushed = true;
+                    } else if (nearestFace.z() > 0 && !positiveZPushed) {
+                        push = push.add(nearestFace);
+                        positiveZPushed = true;
+                    }
                 }
             }
 
             if (push.length() > 0 && pushForce > 0) {
-                player.moveTo(player.position().add(push.normalize().scale(pushForce * collisions)));
+                player.moveTo(player.position().add(push.normalize().scale(pushForce)));
             }
         }
 
