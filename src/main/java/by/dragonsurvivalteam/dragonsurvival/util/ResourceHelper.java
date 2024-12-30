@@ -5,44 +5,19 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.CommonHooks;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 import javax.annotation.Nullable;
 
 public class ResourceHelper {
-    public static ResourceLocation getKey(Block object) {
-        return BuiltInRegistries.BLOCK.getKey(object);
-    }
-
-    public static ResourceLocation getKey(Item object) {
-        return BuiltInRegistries.ITEM.getKey(object);
-    }
-
-    public static ResourceLocation getKey(EntityType<?> object) {
-        return BuiltInRegistries.ENTITY_TYPE.getKey(object);
-    }
-
-    public static ResourceLocation getKey(Entity object) {
-        return getKey(object.getType());
-    }
-
-    public static ResourceLocation getKey(SoundEvent event) {
-        return BuiltInRegistries.SOUND_EVENT.getKey(event);
-    }
-
     public static <T> Optional<Holder.Reference<T>> get(@Nullable final HolderLookup.Provider provider, final ResourceKey<T> key) {
         HolderLookup.RegistryLookup<T> registry;
 
@@ -68,7 +43,7 @@ public class ResourceHelper {
         return registry.listElementIds().toList();
     }
 
-    public static @Nullable <T> ResourceKey<T> parseKey(@Nullable final HolderLookup.Provider provider, final ResourceKey<Registry<T>> registryKey, final CompoundTag tag, final String key) {
+    public static @Nullable <T> ResourceKey<T> decodeKey(@Nullable final HolderLookup.Provider provider, final ResourceKey<Registry<T>> registryKey, final CompoundTag tag, final String key) {
         HolderLookup.Provider actualProvider = provider != null ? provider : DragonSurvival.PROXY.getAccess();
 
         if (actualProvider == null) {
@@ -77,6 +52,20 @@ public class ResourceHelper {
         }
 
         return ResourceKey.codec(registryKey).decode(actualProvider.createSerializationContext(NbtOps.INSTANCE), tag.get(key)).mapOrElse(Pair::getFirst, error -> {
+            DragonSurvival.LOGGER.error(error.message());
+            return null;
+        });
+    }
+
+    public static @Nullable <T> Tag encodeKey(@Nullable final HolderLookup.Provider provider, final ResourceKey<Registry<T>> registryKey, final ResourceKey<T> value) {
+        HolderLookup.Provider actualProvider = provider != null ? provider : DragonSurvival.PROXY.getAccess();
+
+        if (actualProvider == null) {
+            DragonSurvival.LOGGER.error("Context was not available to serialize the value [{}]", value);
+            return null;
+        }
+
+        return ResourceKey.codec(registryKey).encodeStart(actualProvider.createSerializationContext(NbtOps.INSTANCE), value).mapOrElse(Function.identity(),error -> {
             DragonSurvival.LOGGER.error(error.message());
             return null;
         });

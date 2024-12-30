@@ -1,15 +1,13 @@
 package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 
-import by.dragonsurvivalteam.dragonsurvival.common.entity.creatures.DragonHunter;
-import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEnchantments;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSMapDecorationTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSTrades;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
 import by.dragonsurvivalteam.dragonsurvival.util.EnchantmentUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
-import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -52,19 +50,14 @@ public class HunterOmenHandler {
     // FIXME: This will fail if a player dies, then closes the game/server. The player will respawn without the effect. <- why not handle this with data attachments + copyOnDeath
     private static final Map<UUID, MobEffectInstance> playersToReapplyHunterOmen = new HashMap<>();
 
-    private static boolean doesEntityApplyHunterOmen(Entity entity) {
-        String typeName = ResourceHelper.getKey(entity).toString();
-        return ServerConfig.hunterOmenStatusGivers.contains(typeName) || entity instanceof DragonHunter || entity instanceof AbstractVillager;
-    }
-
-    // This used to apply hunter omen for the villagers when killed. Drops are now handled by VillagerLootModifier.
     @SubscribeEvent
-    public static void applyHunterOmenOnMurderedEntities(LivingDeathEvent deathEvent) {
+    public static void applyHunterOmenOnMurderedEntities(final LivingDeathEvent deathEvent) {
         LivingEntity livingEntity = deathEvent.getEntity();
         Entity killer = deathEvent.getSource().getEntity();
-        if (killer instanceof Player playerEntity) {
-            if (doesEntityApplyHunterOmen(livingEntity)) {
-                applyHunterOmenFromKilling(playerEntity);
+
+        if (killer instanceof Player player) {
+            if (livingEntity.getType().is(DSEntityTypeTags.APPLIES_HUNTER_OMEN)) {
+                applyHunterOmenFromKilling(player);
             }
         }
     }
@@ -213,7 +206,7 @@ public class HunterOmenHandler {
             return;
         }
 
-        if (doesEntityApplyHunterOmen(attacked)) {
+        if (attacked.getType().is(DSEntityTypeTags.APPLIES_HUNTER_OMEN)) {
             int duration = 0;
             if (attacker.hasEffect(DSEffects.HUNTER_OMEN)) {
                 duration = attacker.getEffect(DSEffects.HUNTER_OMEN).getDuration();

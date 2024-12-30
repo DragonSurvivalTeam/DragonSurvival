@@ -1,5 +1,6 @@
-// 1.21.1	2024-12-20T19:51:19.9432729	Tags for minecraft:entity_type mod id dragonsurvival
+// 1.21.1	2024-12-30T12:40:48.103591	Tags for minecraft:entity_type mod id dragonsurvival
 d20b8324d465721a7db9daae924ec01a4038df71 data/dragonsurvival/tags/entity_type/animal_avoid_blacklist.json
+9f4c0be8660c527bb6802f95d3ef20273dc47954 data/dragonsurvival/tags/entity_type/applies_hunter_omen.json
 4cf72c424dcd8484399dd32f9d6fba9dd92777e6 data/dragonsurvival/tags/entity_type/charged_spread_blacklist.json
 65bb0916f277f67ee57a107d774c66358f7bf66d data/dragonsurvival/tags/entity_type/hunter_faction.json
 3ea0d4fdac87d561064f3af83baa802d28cb6300 data/dragonsurvival/tags/entity_type/hunter_targets.json

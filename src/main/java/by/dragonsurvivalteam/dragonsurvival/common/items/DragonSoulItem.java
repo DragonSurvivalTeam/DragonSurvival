@@ -155,7 +155,7 @@ public class DragonSoulItem extends Item {
             CompoundTag tag = stack.get(DataComponents.CUSTOM_DATA).getUnsafe();
             tooltips.add(Component.translatable(DESCRIPTION));
 
-            ResourceKey<DragonType> species = ResourceHelper.parseKey(provider, DragonType.REGISTRY, tag, SPECIES);
+            ResourceKey<DragonType> species = ResourceHelper.decodeKey(provider, DragonType.REGISTRY, tag, SPECIES);
             Component name;
 
             if (species != null) {
@@ -198,7 +198,7 @@ public class DragonSoulItem extends Item {
     public @NotNull String getDescriptionId(@NotNull final ItemStack stack) {
         if (stack.has(DataComponents.CUSTOM_DATA)) {
             //noinspection DataFlowIssue, deprecation -> tag isn't modified, no need to create a copy
-            ResourceKey<DragonType> species = ResourceHelper.parseKey(null, DragonType.REGISTRY, stack.get(DataComponents.CUSTOM_DATA).getUnsafe(), SPECIES);
+            ResourceKey<DragonType> species = ResourceHelper.decodeKey(null, DragonType.REGISTRY, stack.get(DataComponents.CUSTOM_DATA).getUnsafe(), SPECIES);
 
             if (species != null) { // TODO :: handle translation (probably annotation on type?)
                 return Translation.Type.ITEM.wrap(species.location().getNamespace(), species.location().getPath() + ".dragon_soul");

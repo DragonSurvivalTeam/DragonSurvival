@@ -6,7 +6,6 @@ import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.DarkDragonArmorItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.LightDragonArmorItem;
-import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -369,9 +368,14 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         return res(texture + "empty_armor.png");
     }
 
-    private static ResourceLocation itemToArmorResLoc(Item item) {
-        if (item == Items.AIR) return null;
-        return ResourceLocation.parse(DragonSurvival.MODID + ":" + "textures/armor/" + ResourceHelper.getKey(item).getNamespace() + "/" + ResourceHelper.getKey(item).getPath() + ".png");
+    private static ResourceLocation itemToArmorResLoc(final Item item) {
+        if (item == Items.AIR) {
+            return null;
+        }
+
+        //noinspection deprecation,DataFlowIssue -> ignore deprecated / key is present
+        ResourceLocation location = item.builtInRegistryHolder().getKey().location();
+        return ResourceLocation.parse(DragonSurvival.MODID + ":" + "textures/armor/" + location.getNamespace() + "/" + location.getPath() + ".png");
     }
 
     private static String stripInvalidPathChars(String loc) {

@@ -24,7 +24,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 public class DragonBodyButton extends Button {
-    public static final String LOCATION_PREFIX = "textures/gui/custom/body/";
+    private static final String LOCATION_PREFIX = "textures/gui/custom/body/";
+    private static final String DEFAULT_SUFFIX = "default";
 
     public static final int HOVERED = 1;
     public static final int SELECTED = 2;
@@ -43,22 +44,22 @@ public class DragonBodyButton extends Button {
         super(x, y, xSize, ySize, Component.translatable(Translation.Type.BODY.wrap(location)), action, DEFAULT_NARRATION);
         setTooltip(Tooltip.create(Component.translatable(Translation.Type.BODY_DESCRIPTION.wrap(location))));
 
-        String iconLocationSuffix;
+        String iconSuffix;
 
-        if (screen instanceof DragonEditorScreen dragonEditorScreen) { // FIXME :: doesn't seem save in a customizable environment
-            iconLocationSuffix = "/" + ResourceHelper.getNameLowercase(dragonEditorScreen.dragonType) + ".png";
+        if (screen instanceof DragonEditorScreen dragonEditorScreen) {
+            iconSuffix = ResourceHelper.getNameLowercase(dragonEditorScreen.dragonType);
         } else if (screen instanceof DragonSpeciesScreen dragonSpeciesScreen) {
-            iconLocationSuffix = "/" + ResourceHelper.getNameLowercase(dragonSpeciesScreen.dragonType) + ".png";
+            iconSuffix = ResourceHelper.getNameLowercase(dragonSpeciesScreen.dragonType);
         } else {
-            iconLocationSuffix = "/default.png";
+            iconSuffix = DEFAULT_SUFFIX;
         }
 
-        ResourceLocation iconLocation = ResourceLocation.fromNamespaceAndPath(location.getNamespace(), LOCATION_PREFIX + location.getPath() + iconLocationSuffix);
+        ResourceLocation iconLocation = ResourceLocation.fromNamespaceAndPath(location.getNamespace(), LOCATION_PREFIX + location.getPath() + "/" + iconSuffix + ".png");
         ResourceManager manager = ((TextureManagerAccess) Minecraft.getInstance().getTextureManager()).dragonSurvival$getResourceManager();
 
         if (manager.getResource(iconLocation).isEmpty()) {
             DragonSurvival.LOGGER.warn("Icon [{}] does not exist - using icon from body type [{}] as fallback", iconLocation, DragonBodies.center);
-            iconLocation = ResourceLocation.fromNamespaceAndPath(DragonBodies.center.location().getNamespace(), LOCATION_PREFIX + DragonBodies.center.location().getPath() + iconLocationSuffix);
+            iconLocation = ResourceLocation.fromNamespaceAndPath(DragonBodies.center.location().getNamespace(), LOCATION_PREFIX + DragonBodies.center.location().getPath() + iconSuffix);
         }
 
         this.iconLocation = iconLocation;
