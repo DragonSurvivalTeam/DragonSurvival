@@ -54,6 +54,10 @@ public class CustomizationFileHandler {
         public static SavedCustomization fromNbt(HolderLookup.Provider provider, CompoundTag nbt) {
             SavedCustomization customization = new SavedCustomization();
             customization.deserializeNBT(provider, nbt);
+            if(customization.customization == null || customization.dragonType == null || customization.dragonModel == null) {
+                return null;
+            }
+
             return customization;
         }
 
@@ -69,9 +73,15 @@ public class CustomizationFileHandler {
         @Override
         public void deserializeNBT(HolderLookup.@NotNull Provider provider, CompoundTag nbt) {
             this.customization = new DragonStageCustomization();
-            this.customization.deserializeNBT(provider, nbt.getCompound(CUSTOMIZATION));
-            this.dragonType = ResourceKey.create(DragonType.REGISTRY, ResourceLocation.parse(nbt.getString(DRAGON_TYPE)));
-            this.dragonModel = ResourceLocation.parse(nbt.getString(DRAGON_MODEL));
+            if(nbt.contains(CUSTOMIZATION)) {
+                this.customization.deserializeNBT(provider, nbt.getCompound(CUSTOMIZATION));
+            }
+            if(nbt.contains(DRAGON_TYPE)) {
+                this.dragonType = ResourceKey.create(DragonType.REGISTRY, ResourceLocation.parse(nbt.getString(DRAGON_TYPE)));
+            }
+            if(nbt.contains(DRAGON_MODEL)) {
+                this.dragonModel = ResourceLocation.parse(nbt.getString(DRAGON_MODEL));
+            }
         }
 
         public DragonStageCustomization getCustomization() {
@@ -124,6 +134,12 @@ public class CustomizationFileHandler {
                 CompoundTag nbt = NbtIo.read(savedFile.toPath());
 
                 if (nbt == null) {
+                    DragonSurvival.LOGGER.warn("Could not read saved skin from the file [{}]", savedFile);
+                    continue;
+                }
+
+                SavedCustomization savedCustomization = SavedCustomization.fromNbt(DragonSurvival.PROXY.getAccess(), nbt);
+                if (savedCustomization == null) {
                     DragonSurvival.LOGGER.warn("Could not read saved skin from the file [{}]", savedFile);
                     continue;
                 }
