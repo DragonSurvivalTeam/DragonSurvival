@@ -31,6 +31,10 @@ public class EditorPartComponent implements ScrollableComponent {
         this.selectedPart = partKey;
         this.skinLayer = skinLayer;
 
+        partButton = new HoverButton(xPos, yPos, 110, 19, 149, 22, DROPDOWN_BUTTON_BACKGROUND, DROPDOWN_BUTTON_BACKGROUND, button -> { /* Nothing to do*/ });
+        partButton.setMessage(Component.translatable(DragonEditorScreen.partToTranslation(partKey)));
+        ((ScreenAccessor) screen).dragonSurvival$addRenderableOnly(partButton);
+
         // Left arrow
         ((ScreenAccessor)screen).dragonSurvival$addRenderableWidget(new HoverButton(xPos - 7, yPos + 2, 9, 16, 20, 20, SMALL_LEFT_ARROW_MAIN, SMALL_LEFT_ARROW_HOVER, button -> {
             List<String> partsFromLayer = screen.getPartsFromLayer(skinLayer);
@@ -70,10 +74,6 @@ public class EditorPartComponent implements ScrollableComponent {
                 }
             }
         }));
-
-        partButton = new HoverButton(xPos, yPos, 110, 19, 149, 22, DROPDOWN_BUTTON_BACKGROUND, DROPDOWN_BUTTON_BACKGROUND, button -> { /* Nothing to do*/ });
-        partButton.setMessage(Component.translatable(DragonEditorScreen.partToTranslation(partKey)));
-        ((ScreenAccessor) screen).dragonSurvival$addRenderableOnly(partButton);
 
         ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(new ColorSelectorButton(screen, skinLayer, isLeft ? xPos - 23 : xPos + 120, yPos + 3, 15, 15, isLeft));
     }
