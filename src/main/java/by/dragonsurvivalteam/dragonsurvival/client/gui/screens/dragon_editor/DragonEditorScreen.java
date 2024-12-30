@@ -5,11 +5,13 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAltarScreen
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonBodyScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.SkinsScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.buttons.*;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.ColorSelectorButton;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.buttons.editor_part_selector.ColorSelectorButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.UndoRedoButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.*;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.DragonEditorConfirmComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.DragonUIRenderComponent;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.buttons.editor_part_selector.EditorPartComponent;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.ScrollableComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.DragonEditorHandler;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.DragonEditorRegistry;
@@ -151,6 +153,9 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     private final List<AbstractWidget> dragonBodyWidgets = new ArrayList<>();
     private int dragonBodySelectionOffset;
 
+    private final List<ScrollableComponent> scrollableComponents = new ArrayList<>();
+    private final Map<EnumSkinLayer, EditorPartComponent> partComponents = new HashMap<>();
+
     private float tick;
     private int curAnimation;
     private int lastSelected;
@@ -224,21 +229,24 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         return previousBody;
     };
 
+    public List<String> getPartsFromLayer(EnumSkinLayer layer) {
+        return DragonEditorHandler.getDragonPartKeys(dragonType, dragonBody, layer);
+    }
+
     public final Function<Pair<EnumSkinLayer, String>, Pair<EnumSkinLayer, String>> dragonPartSelectAction = pair -> {
         Pair<EnumSkinLayer, String> previousPair = new Pair<>(pair.getFirst(), preset.get(Objects.requireNonNull(dragonStage.getKey())).get().layerSettings.get(pair.getFirst()).get().selectedSkin);
 
         EnumSkinLayer layer = pair.getFirst();
         String value = pair.getSecond();
-        dropdownButtons.get(layer).current = value;
-        dropdownButtons.get(layer).updateMessage();
-        preset.get(dragonStage.getKey()).get().layerSettings.get(layer).get().selectedSkin = DragonEditorScreen.partToTechnical(value);
+        partComponents.get(layer).setSelectedPart(value);
+        preset.get(dragonStage.getKey()).get().layerSettings.get(layer).get().selectedSkin = value;
 
         // Make sure that when we change a part, the color is properly updated to the default color of the new part
         LayerSettings settings = preset.get(dragonStage.getKey()).get().layerSettings.get(layer).get();
 
-        DragonPart text = DragonEditorHandler.getDragonPart(layer, settings.selectedSkin, dragonType.getKey());
-        if (text != null && !settings.modifiedColor) {
-            settings.hue = text.averageHue();
+        DragonPart part = DragonEditorHandler.getDragonPart(layer, settings.selectedSkin, dragonType.getKey());
+        if (part != null && !settings.modifiedColor) {
+            settings.hue = part.averageHue();
         }
 
         HANDLER.getSkinData().compileSkin(dragonStage);
@@ -326,6 +334,15 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     }
 
     public final UndoRedoList actionHistory = new UndoRedoList(200);
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        for (ScrollableComponent component : scrollableComponents) {
+            component.scroll(mouseX, mouseY, scrollX, scrollY);
+        }
+
+        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    }
 
     @Override
     public void render(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
@@ -493,66 +510,17 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         }
 
         int row = 0;
-        for (EnumSkinLayer layers : EnumSkinLayer.values()) {
-            ArrayList<String> valueList = DragonEditorHandler.getDragonPartKeys(dragonType, dragonBody, layers);
+        for (EnumSkinLayer layer : EnumSkinLayer.values()) {
+            ArrayList<String> valueList = DragonEditorHandler.getDragonPartKeys(dragonType, dragonBody, layer);
 
-            if (layers != EnumSkinLayer.BASE) {
+            if (layer != EnumSkinLayer.BASE) {
                 valueList.addFirst(DefaultPartLoader.NO_PART);
             }
 
-            String[] values = valueList.toArray(new String[0]);
-            String curValue = partToTranslation(preset.get(Objects.requireNonNull(dragonStage.getKey())).get().layerSettings.get(layers).get().selectedSkin);
-
-            DropDownButton btn = new DragonEditorDropdownButton(this, row < 8 ? width / 2 - 210 : width / 2 + 80, guiTop - 5 + (row >= 8 ? (row - 8) * 20 : row * 20), 100, 15, curValue, values, layers);
-            dropdownButtons.put(layers, btn);
-            addRenderableWidget(btn);
-            addRenderableWidget(new PlusMinusButton(btn.getX() - 15, btn.getY() + 1, 16, 16, false, action -> {
-                int index = 0;
-
-                for (int i1 = 0; i1 < btn.values.length; i1++) {
-                    if (Objects.equals(btn.values[i1], btn.current)) {
-                        index = i1;
-                        break;
-                    }
-                }
-
-                index = Functions.wrap(index - 1, 0, btn.values.length - 1);
-                btn.current = btn.values[index];
-                btn.setter.accept(btn.current);
-                btn.updateMessage();
-
-                LayerSettings settings = preset.get(dragonStage.getKey()).get().layerSettings.get(layers).get();
-                DragonPart text = DragonEditorHandler.getDragonPart(layers, settings.selectedSkin, dragonType.getKey());
-                if (text != null && !settings.modifiedColor) {
-                    settings.hue = text.averageHue();
-                }
-            }));
-
-            addRenderableWidget(new PlusMinusButton(btn.getX() + btn.getWidth() - 1, btn.getY() + 1, 16, 16, true, action -> {
-                int index = 0;
-
-                for (int i1 = 0; i1 < btn.values.length; i1++) {
-                    if (Objects.equals(btn.values[i1], btn.current)) {
-                        index = i1;
-                        break;
-                    }
-                }
-
-                index = Functions.wrap(index + 1, 0, btn.values.length - 1);
-                btn.current = btn.values[index];
-                btn.setter.accept(btn.current);
-                btn.updateMessage();
-
-                LayerSettings settings = preset.get(dragonStage.getKey()).get().layerSettings.get(layers).get();
-                DragonPart text = DragonEditorHandler.getDragonPart(layers, settings.selectedSkin, dragonType.getKey());
-                if (text != null && !settings.modifiedColor) {
-                    settings.hue = text.averageHue();
-                }
-            }));
-
-            ColorSelectorButton colorButton = new ColorSelectorButton(this, layers, btn.getX() + 14 + btn.getWidth() + 2, btn.getY(), btn.getHeight(), btn.getHeight());
-            colorSelectorButtons.put(layers, colorButton);
-            addRenderableWidget(colorButton);
+            String curValue = preset.get(Objects.requireNonNull(dragonStage.getKey())).get().layerSettings.get(layer).get().selectedSkin;
+            EditorPartComponent editorPartComponent = new EditorPartComponent(this, row < 8 ? width / 2 - 184 : width / 2 + 74, guiTop - 24 + (row >= 8 ? (row - 8) * 20 : row * 20), curValue, layer, row < 8);
+            scrollableComponents.add(editorPartComponent);
+            partComponents.put(layer, editorPartComponent);
             row++;
         }
 

@@ -25,4 +25,7 @@ public interface ScreenAccessor {
     @Invoker("addRenderableWidget")
     @SuppressWarnings("UnusedReturnValue") // ignore
     <T extends GuiEventListener & Renderable & NarratableEntry> T dragonSurvival$addRenderableWidget(final T widget);
+
+    @Invoker("addRenderableOnly")
+    <T extends Renderable> T dragonSurvival$addRenderableOnly(T renderable);
 }
