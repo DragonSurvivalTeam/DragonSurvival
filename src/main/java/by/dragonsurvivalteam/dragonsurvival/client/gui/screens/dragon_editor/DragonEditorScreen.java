@@ -312,12 +312,12 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         return prevSelected;
     };
 
-    public final Function<SkinPreset, SkinPreset> loadPresetAction = newPreset -> {
-        SkinPreset previousPreset = preset;
-        preset = newPreset;
+    public final Function<DragonStageCustomization, DragonStageCustomization> loadStageCustomizationAction = newStageCustomization -> {
+        DragonStageCustomization previousStageCustomization = HANDLER.getCurrentStageCustomization();
+        HANDLER.setCurrentStageCustomization(newStageCustomization);
         HANDLER.recompileCurrentSkin();
         update();
-        return previousPreset;
+        return previousStageCustomization;
     };
 
     public static class UndoRedoList {
@@ -707,12 +707,22 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
 
         // FIXME :: This is WIP
         ExtendedButton loadSlotButton = new ExtendedButton(width / 2 + 213, guiTop - 8, 18, 18, Component.empty(), button -> {
-            SkinPreset selectedPreset = CustomizationFileHandler.load(selectedSaveSlot);
-            if(selectedPreset == null) {
+            CustomizationFileHandler.SavedCustomization savedCustomization = CustomizationFileHandler.load(selectedSaveSlot);
+            if(savedCustomization == null) {
                 return;
             }
 
-            actionHistory.add(new EditorAction<>(loadPresetAction, selectedPreset));
+            if(savedCustomization.getDragonModel() != dragonBody.value().customModel()) {
+                // FIXME :: Throw some error about how the model is invalid
+                return;
+            }
+
+            if(savedCustomization.getDragonType() != dragonType.getKey()) {
+                // FIXME :: Throw some error about how the dragon type is invalid
+                return;
+            }
+
+            actionHistory.add(new EditorAction<>(loadStageCustomizationAction, savedCustomization.getCustomization()));
         }) {
             @Override
             public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
@@ -724,9 +734,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
 
         // FIXME :: This is WIP
         ExtendedButton saveSlotButton = new ExtendedButton(width / 2 + 213, guiTop + 10, 18, 18, Component.empty(), button -> {
-            SkinPreset preset = new SkinPreset();
-            preset.deserializeNBT(access, this.preset.serializeNBT(access));
-            CustomizationFileHandler.save(preset, selectedSaveSlot);
+            CustomizationFileHandler.save(HANDLER, selectedSaveSlot);
         }) {
             @Override
             public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {

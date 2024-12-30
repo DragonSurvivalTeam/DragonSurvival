@@ -42,6 +42,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
@@ -424,6 +425,10 @@ public class DragonStateHandler extends EntityStateHandler {
 
     public void recompileCurrentSkin() {
         skinData.compileSkin(dragonStage);
+    }
+
+    public void setCurrentStageCustomization(DragonStageCustomization customization) {
+        skinData.skinPresets.get().get(dragonType.getKey()).put(dragonStage.getKey(), Lazy.of(() -> customization));
     }
 
     public DragonStageCustomization getCurrentStageCustomization() {

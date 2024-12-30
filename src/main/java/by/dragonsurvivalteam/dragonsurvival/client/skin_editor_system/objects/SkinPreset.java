@@ -87,4 +87,12 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
         this.type = ResourceKey.create(DragonType.REGISTRY, ResourceLocation.parse(base.getString(TYPE)));
         ResourceLocation.read(base.getString(MODEL)).ifSuccess(model -> this.model = model);
     }
+
+    public ResourceLocation getModel() {
+        return model;
+    }
+
+    public ResourceKey<DragonType> getType() {
+        return type;
+    }
 }

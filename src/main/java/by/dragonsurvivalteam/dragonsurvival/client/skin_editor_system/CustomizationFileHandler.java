@@ -1,31 +1,98 @@
 package by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.SkinPreset;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
 
 @EventBusSubscriber(value = Dist.CLIENT)
 public class CustomizationFileHandler {
+    private static final String CUSTOMIZATION = "customization";
+    private static final String DRAGON_TYPE = "dragon_type";
+    private static final String DRAGON_MODEL = "dragon_model";
     private static final String SAVED_CUSTOMIZATIONS = "saved_customizations_";
     private static final int MAX_SAVE_SLOTS = 9;
+
+    public static class SavedCustomization implements INBTSerializable<CompoundTag> {
+        private DragonStageCustomization customization;
+        private ResourceKey<DragonType> dragonType;
+        private ResourceLocation dragonModel;
+
+        public SavedCustomization(DragonStageCustomization customization, ResourceKey<DragonType> dragonType, ResourceLocation dragonModel) {
+            this.customization = customization;
+            this.dragonType = dragonType;
+            this.dragonModel = dragonModel;
+        }
+
+        public SavedCustomization() {}
+
+        public static SavedCustomization fromHandler(DragonStateHandler handler) {
+            return new SavedCustomization(handler.getCurrentStageCustomization(), handler.speciesKey(), handler.body().value().customModel());
+        }
+
+        public static SavedCustomization fromNbt(HolderLookup.Provider provider, CompoundTag nbt) {
+            SavedCustomization customization = new SavedCustomization();
+            customization.deserializeNBT(provider, nbt);
+            return customization;
+        }
+
+        @Override
+        public @UnknownNullability CompoundTag serializeNBT(HolderLookup.@NotNull Provider provider) {
+            CompoundTag nbt = new CompoundTag();
+            nbt.put(CUSTOMIZATION, customization.serializeNBT(provider));
+            nbt.putString(DRAGON_TYPE, dragonType.location().toString());
+            nbt.putString(DRAGON_MODEL, dragonModel.toString());
+            return nbt;
+        }
+
+        @Override
+        public void deserializeNBT(HolderLookup.@NotNull Provider provider, CompoundTag nbt) {
+            this.customization = new DragonStageCustomization();
+            this.customization.deserializeNBT(provider, nbt.getCompound(CUSTOMIZATION));
+            this.dragonType = ResourceKey.create(DragonType.REGISTRY, ResourceLocation.parse(nbt.getString(DRAGON_TYPE)));
+            this.dragonModel = ResourceLocation.parse(nbt.getString(DRAGON_MODEL));
+        }
+
+        public DragonStageCustomization getCustomization() {
+            return customization;
+        }
+
+        public ResourceKey<DragonType> getDragonType() {
+            return dragonType;
+        }
+
+        public ResourceLocation getDragonModel() {
+            return dragonModel;
+        }
+    }
 
     /**
      * Contains {@link File} objects for the specified slots {@link CustomizationFileHandler#MAX_SAVE_SLOTS} <br>
      * Said files may not exist in the actual file system though
      */
     private static final Map<Integer, File> savedFileForSlot = new HashMap<>();
-    private static final Map<Integer, SkinPreset> savedCustomizations = new HashMap<>();
+    private static final Map<Integer, SavedCustomization> savedCustomizations = new HashMap<>();
     private static boolean hasInitialized;
 
     @SubscribeEvent
@@ -61,10 +128,7 @@ public class CustomizationFileHandler {
                     continue;
                 }
 
-                SkinPreset preset = new SkinPreset();
-                //noinspection DataFlowIssue -> access is expected to be present
-                preset.deserializeNBT(DragonSurvival.PROXY.getAccess(), nbt);
-                savedCustomizations.put(i, preset);
+                savedCustomizations.put(i, SavedCustomization.fromNbt(DragonSurvival.PROXY.getAccess(), nbt));
             } catch (IOException exception) {
                 DragonSurvival.LOGGER.warn("An error occurred while processing the file [{}]", savedFile, exception);
             }
@@ -73,22 +137,23 @@ public class CustomizationFileHandler {
         hasInitialized = true;
     }
 
-    public static void save(final SkinPreset preset, int slot) {
+    public static void save(final DragonStateHandler handler, int slot) {
         if (!hasInitialized) {
             loadSavedCustomizations();
         }
 
+        SavedCustomization savedCustomization = SavedCustomization.fromHandler(handler);
         try {
             //noinspection DataFlowIssue -> access is expected to be present
-            NbtIo.write(preset.serializeNBT(DragonSurvival.PROXY.getAccess()), savedFileForSlot.get(slot).toPath());
+            NbtIo.write(savedCustomization.serializeNBT(DragonSurvival.PROXY.getAccess()), savedFileForSlot.get(slot).toPath());
         } catch (IOException exception) {
             DragonSurvival.LOGGER.error("An error occurred while trying to save the dragon skin", exception);
         }
 
-        savedCustomizations.put(slot, preset);
+        savedCustomizations.put(slot, savedCustomization);
     }
 
-    public static SkinPreset load(int slot) {
+    public static SavedCustomization load(int slot) {
         if (!hasInitialized) {
             loadSavedCustomizations();
         }
