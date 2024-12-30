@@ -3,11 +3,9 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAltarScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonBodyScreen;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.SkinsScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.buttons.*;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.buttons.editor_part_selector.ColorSelectorButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.buttons.editor_part_selector.EditorPartComponent;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.UndoRedoButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.*;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.DragonEditorConfirmComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.DragonUIRenderComponent;
@@ -87,7 +85,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     @Translation(type = Translation.Type.MISC, comments = "Click here to copy your current settings to the other growth stages.")
     private static final String COPY = Translation.Type.GUI.wrap("dragon_editor.copy");
 
-    @Translation(type = Translation.Type.MISC, comments = "UI")
+    @Translation(type = Translation.Type.MISC, comments = "Show/Hide UI")
     private static final String SHOW_UI = Translation.Type.GUI.wrap("dragon_editor.show_ui");
 
     @Translation(type = Translation.Type.MISC, comments = "Reset to default")
@@ -115,6 +113,47 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     private static final ResourceLocation RANDOM_ICON = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/random_icon.png");
     private static final ResourceLocation RESET_ICON = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/reset_button.png");
 
+    private static final ResourceLocation COPY_ALL_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/copy_off.png");
+    private static final ResourceLocation COPY_ALL_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/copy_on.png");
+
+    private static final ResourceLocation INFO_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/info_main.png");
+    private static final ResourceLocation INFO_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/info_hover.png");
+
+    private static final ResourceLocation ALTERNATIVE_ON = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/alternative_on.png");
+    private static final ResourceLocation ALTERNATIVE_OFF = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/alternative_off.png");
+
+    private static final ResourceLocation CONFIRM_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/accept_background_hover.png");
+    private static final ResourceLocation CONFIRM_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/accept_background_main.png");
+
+    private static final ResourceLocation CANCEL_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/cancel_background_hover.png");
+    private static final ResourceLocation CANCEL_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/cancel_background_main.png");
+
+    private static final ResourceLocation SHOW_UI_ON = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/gui_on.png");
+    private static final ResourceLocation SHOW_UI_OFF = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/gui_off.png");
+
+    private static final ResourceLocation RESET_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/reset_main.png");
+    private static final ResourceLocation RESET_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/reset_hover.png");
+
+    private static final ResourceLocation ANIMATION_NAME_BACKGROUND = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/animation_name_background.png");
+
+    private static final ResourceLocation SMALL_LEFT_ARROW_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/small_left_arrow_hover.png");
+    private static final ResourceLocation SMALL_LEFT_ARROW_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/small_left_arrow_main.png");
+    private static final ResourceLocation SMALL_RIGHT_ARROW_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/small_right_arrow_hover.png");
+    private static final ResourceLocation SMALL_RIGHT_ARROW_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/small_right_arrow_main.png");
+
+    private static final ResourceLocation LEFT_ARROW_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/left_arrow_hover.png");
+    private static final ResourceLocation LEFT_ARROW_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/left_arrow_main.png");
+    private static final ResourceLocation RIGHT_ARROW_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/right_arrow_hover.png");
+    private static final ResourceLocation RIGHT_ARROW_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/right_arrow_main.png");
+
+    private static final ResourceLocation REDO_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/redo_main.png");
+    private static final ResourceLocation REDO_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/redo_hover.png");
+    private static final ResourceLocation UNDO_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/undo_main.png");
+    private static final ResourceLocation UNDO_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/undo_hover.png");
+
+    private static final ResourceLocation RANDOM_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/random_hover.png");
+    private static final ResourceLocation RANDOM_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/random_main.png");
+
     public int guiTop;
     public boolean confirmation;
     public boolean showUi = true;
@@ -141,9 +180,10 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
 
     private DragonUIRenderComponent dragonRender;
     private ExtendedCheckbox defaultSkinCheckbox;
-    private ExtendedCheckbox showUiCheckbox;
+    private ExtendedButton uiButton;
     private DragonEditorConfirmComponent confirmComponent;
-    private ExtendedCheckbox wingsCheckbox;
+    private ExtendedButton wingsButton;
+    private HoverButton animationNameButton;
 
     /**
      * Widgets which belong to the dragon body logic <br>
@@ -159,7 +199,6 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     private int curAnimation;
     private int lastSelected;
     private int selectedDragonStage;
-    private DragonStageButton savedStageButton;
     private boolean hasInit;
     private boolean isEditor;
 
@@ -200,10 +239,8 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         Holder<DragonStage> previousLevel = dragonStage;
         dragonStage = newStage;
         dragonRender.zoom = setZoom(dragonStage);
+        HANDLER.setStage(null, dragonStage);
         HANDLER.getSkinData().compileSkin(dragonStage);
-        if(savedStageButton != null) {
-            savedStageButton.setMessage(DragonStage.translatableName(dragonStage.getKey()));
-        }
         update();
 
         return previousLevel;
@@ -216,6 +253,10 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     public final Function<CompoundTag, CompoundTag> setSkinPresetAction = tag -> {
         CompoundTag prevTag = HANDLER.getSkinData().skinPreset.serializeNBT(Objects.requireNonNull(Minecraft.getInstance().player).registryAccess());
         HANDLER.getSkinData().skinPreset.deserializeNBT(Minecraft.getInstance().player.registryAccess(), tag);
+        HashMap<EnumSkinLayer, Lazy<LayerSettings>> layerSettingsMap = HANDLER.getSkinData().skinPreset.get(dragonStage.getKey()).get().layerSettings;
+        for(EnumSkinLayer layer : layerSettingsMap.keySet()) {
+            partComponents.get(layer).setSelectedPart(layerSettingsMap.get(layer).get().selectedSkin);
+        }
         HANDLER.getSkinData().compileSkin(dragonStage);
         update();
         return prevTag;
@@ -255,8 +296,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     };
 
     public final Function<Boolean, Boolean> checkWingsButtonAction = (selected) -> {
-        boolean prevSelected = !wingsCheckbox.selected;
-        wingsCheckbox.selected = selected;
+        boolean prevSelected = preset.get(Objects.requireNonNull(dragonStage.getKey())).get().wings;
         preset.get(Objects.requireNonNull(dragonStage.getKey())).get().wings = selected;
         HANDLER.getSkinData().compileSkin(dragonStage);
         update();
@@ -368,29 +408,17 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         renderBackground(graphics, mouseX, mouseY, partialTick);
         children().stream().filter(DragonUIRenderComponent.class::isInstance).toList().forEach(s -> ((DragonUIRenderComponent) s).render(graphics, mouseX, mouseY, partialTick));
         DragonAltarScreen.renderBorders(graphics, BACKGROUND_TEXTURE, 0, width, 32, height - 32, width, height);
-        TextRenderUtil.drawCenteredScaledText(graphics, width / 2, 10, 2f, title.getString(), DyeColor.WHITE.getTextColor());
-
-        if (showUi) {
-            int i = 0;
-
-            for (EnumSkinLayer layers : EnumSkinLayer.values()) {
-                String name = layers.name;
-                SkinsScreen.drawNonShadowLineBreak(graphics, font, Component.translatable(Translation.Type.SKIN_PART.wrap(name.toLowerCase(Locale.ENGLISH))), (i < 5 ? width / 2 - 100 - 100 : width / 2 + 83) + 45, guiTop + 10 + (i >= 5 ? (i - 5) * 30 : i * 30) - 12, DyeColor.WHITE.getTextColor());
-                i++;
-            }
-
-            SkinsScreen.drawNonShadowLineBreak(graphics, font, Component.empty().append(WordUtils.capitalize(animations[curAnimation].replace("_", " "))), width / 2, height / 2 + 75 - 22, DyeColor.GRAY.getTextColor());
-        }
+        TextRenderUtil.drawCenteredScaledText(graphics, width / 2, 10, 2f, "Stage: "+DragonStage.translatableName(Objects.requireNonNull(dragonStage.getKey())).getString().toUpperCase(), DyeColor.WHITE.getTextColor());
 
         for (Renderable renderable : new CopyOnWriteArrayList<>(renderables)) {
-            if (renderable instanceof AbstractWidget widget && widget != showUiCheckbox) {
-                if(widget == wingsCheckbox) {
-                    if(dragonBody != null && dragonBody.value().canHideWings() && widget == wingsCheckbox) {
-                        wingsCheckbox.visible = showUi;
-                        wingsCheckbox.setTooltip(Tooltip.create(Component.translatable(DragonBody.getWingButtonDescription(dragonBody))));
-                        wingsCheckbox.setMessage(Component.translatable(DragonBody.getWingButtonName(dragonBody)));
+            if (renderable instanceof AbstractWidget widget && widget != uiButton) {
+                if(widget == wingsButton) {
+                    if(dragonBody != null && dragonBody.value().canHideWings() && widget == wingsButton) {
+                        wingsButton.visible = showUi;
+                        wingsButton.setTooltip(Tooltip.create(Component.translatable(DragonBody.getWingButtonDescription(dragonBody))));
+                        wingsButton.setMessage(Component.translatable(DragonBody.getWingButtonName(dragonBody)));
                     } else {
-                        wingsCheckbox.visible = false;
+                        wingsButton.visible = false;
                     }
                 } else {
                     widget.visible = showUi;
@@ -409,7 +437,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
 
 
         defaultSkinCheckbox.selected = preset.get(Objects.requireNonNull(dragonStage.getKey())).get().defaultSkin;
-        showUiCheckbox.visible = true;
+        uiButton.visible = true;
     }
 
     @Override
@@ -477,27 +505,20 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
             hasInit = true;
         }
 
-        if (DragonStage.onlyBuiltInLevelsAreLoaded(minecraft.player.registryAccess())) {
-            addRenderableWidget(new DragonStageButton(this, DragonStages.newborn, -180));
-            addRenderableWidget(new DragonStageButton(this, DragonStages.young, -60));
-            addRenderableWidget(new DragonStageButton(this, DragonStages.adult, 60));
-        } else {
-            selectedDragonStage = DragonStage.allStages(minecraft.player.registryAccess()).indexOf(dragonStage);
-            addRenderableWidget(new ArrowButton(ArrowButton.Type.PREVIOUS, width / 2 - 45 - 20, height / 2 - 90, 15, 15, action -> {
-                List<Holder<DragonStage>> allStages = DragonStage.allStages(minecraft.player.registryAccess());
-                selectedDragonStage = Functions.wrap(selectedDragonStage - 1, 0, allStages.size() - 1);
-                actionHistory.add(new EditorAction<>(selectStageAction, allStages.get(selectedDragonStage)));
-            }));
+        selectedDragonStage = DragonStage.allStages(minecraft.player.registryAccess()).indexOf(dragonStage);
+        HoverButton leftArrow = new HoverButton(width / 2 - 100, 10, 18, 20, 20, 20, LEFT_ARROW_MAIN, LEFT_ARROW_HOVER, button -> {
+            List<Holder<DragonStage>> allStages = DragonStage.allStages(minecraft.player.registryAccess());
+            selectedDragonStage = Functions.wrap(selectedDragonStage - 1, 0, allStages.size() - 1);
+            actionHistory.add(new EditorAction<>(selectStageAction, allStages.get(selectedDragonStage)));
+        });
+        addRenderableWidget(leftArrow);
 
-            savedStageButton = new DragonStageButton(this, dragonStage.getKey(), -60, false);
-            addRenderableWidget(savedStageButton);
-
-            addRenderableWidget(new ArrowButton(ArrowButton.Type.NEXT, width / 2 + 45, height / 2 - 90, 15, 15, action -> {
-                List<Holder<DragonStage>> allStages = DragonStage.allStages(minecraft.player.registryAccess());
-                selectedDragonStage = Functions.wrap(selectedDragonStage + 1, 0, allStages.size() - 1);
-                actionHistory.add(new EditorAction<>(selectStageAction, allStages.get(selectedDragonStage)));
-            }));
-        }
+        HoverButton rightArrow = new HoverButton(width / 2 + 83, 10, 18, 20, 20, 20, RIGHT_ARROW_MAIN, RIGHT_ARROW_HOVER, button -> {
+            List<Holder<DragonStage>> allStages = DragonStage.allStages(minecraft.player.registryAccess());
+            selectedDragonStage = Functions.wrap(selectedDragonStage + 1, 0, allStages.size() - 1);
+            actionHistory.add(new EditorAction<>(selectStageAction, allStages.get(selectedDragonStage)));
+        });
+        addRenderableWidget(rightArrow);
 
         addDragonBodyWidgets();
 
@@ -523,36 +544,40 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
             row++;
         }
 
-        addRenderableWidget(new ArrowButton(ArrowButton.Type.PREVIOUS, width / 2 - 45 - 20, height / 2 + 75 - 27, 15, 15, action -> {
+        animationNameButton = new HoverButton(width / 2 - 60, height - 55, 120, 20, 120, 20, ANIMATION_NAME_BACKGROUND, ANIMATION_NAME_BACKGROUND, btn -> { /* Nothing to do */ });
+        animationNameButton.setMessage(Component.empty().append(WordUtils.capitalize(animations[curAnimation].replace("_", " "))));
+        addRenderableWidget(animationNameButton);
+
+        HoverButton leftAnimationArrow = new HoverButton(width / 2 - 67, height - 53, 9, 16, 20, 20, SMALL_LEFT_ARROW_MAIN, SMALL_LEFT_ARROW_HOVER, button -> {
             curAnimation -= 1;
 
             if (curAnimation < 0) {
                 curAnimation = animations.length - 1;
             }
-        }));
+            animationNameButton.setMessage(Component.empty().append(WordUtils.capitalize(animations[curAnimation].replace("_", " "))));
+        });
+        addRenderableWidget(leftAnimationArrow);
 
-        addRenderableWidget(new ArrowButton(ArrowButton.Type.NEXT, width / 2 + 45, height / 2 + 75 - 27, 15, 15, action -> {
+        HoverButton rightAnimationArrow = new HoverButton(width / 2 + 58, height - 53, 9, 16, 20, 20, SMALL_RIGHT_ARROW_MAIN, SMALL_RIGHT_ARROW_HOVER, button -> {
             curAnimation += 1;
 
             if (curAnimation >= animations.length) {
                 curAnimation = 0;
             }
-        }));
+            animationNameButton.setMessage(Component.empty().append(WordUtils.capitalize(animations[curAnimation].replace("_", " "))));
+        });
+        addRenderableWidget(rightAnimationArrow);
+
 
         for (int num = 1; num <= 9; num++) {
             addRenderableWidget(new DragonEditorSlotButton(width / 2 + 200 + 15, guiTop + (num - 1) * 12 + 5 + 30, num, this));
         }
 
-        wingsCheckbox = new ExtendedCheckbox(width / 2 - 220, height - 25, 120, 17, 17, Component.translatable(DragonBody.getWingButtonName(dragonBody)), preset.get(dragonStage.getKey()).get().wings, p -> actionHistory.add(new EditorAction<>(checkWingsButtonAction, p.selected())));
-        wingsCheckbox.setTooltip(Tooltip.create(Component.translatable(DragonBody.getWingButtonDescription(dragonBody))));
-        wingsCheckbox.selected = preset.get(dragonStage.getKey()).get().wings;
-        addRenderableWidget(wingsCheckbox);
-
         defaultSkinCheckbox = new ExtendedCheckbox(width / 2 + 100, height - 25, 120, 17, 17, Component.translatable(DEFAULT_SKIN), preset.get(dragonStage.getKey()).get().defaultSkin, p -> actionHistory.add(new EditorAction<>(checkDefaultSkinAction, p.selected())));
         defaultSkinCheckbox.setTooltip(Tooltip.create(Component.translatable(DEFAULT_SKIN_INFO)));
         addRenderableWidget(defaultSkinCheckbox);
 
-        ExtendedButton saveButton = new ExtendedButton(width / 2 - 75 - 10, height - 25, 75, 20, Component.translatable(LangKey.GUI_CONFIRM), action -> { /* Nothing to do */ }) {
+        ExtendedButton saveButton = new HoverButton(width / 2 - 60, height - 25, 60, 19, 60, 19, CONFIRM_MAIN, CONFIRM_HOVER, button -> { /* Nothing to do */ }) {
             Renderable renderButton;
             boolean toggled;
 
@@ -569,7 +594,6 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
 
             @Override
             public void onPress() {
-                assert minecraft != null && minecraft.player != null;
                 DragonStateHandler handler = DragonStateProvider.getData(minecraft.player);
                 minecraft.player.level().playSound(minecraft.player, minecraft.player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 1, 0.7f);
                 boolean dragonDataIsPreserved = ServerConfig.saveAllAbilities && ServerConfig.saveGrowthStage;
@@ -604,32 +628,16 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
                 }
             }
         };
-
+        saveButton.setMessage(Component.translatable(LangKey.GUI_CONFIRM));
         addRenderableWidget(saveButton);
 
-        ExtendedButton discardButton = new ExtendedButton(width / 2 + 10, height - 25, 75, 20, Component.translatable(LangKey.GUI_CANCEL), btn -> Minecraft.getInstance().setScreen(source));
+        ExtendedButton discardButton = new HoverButton(width / 2 + 1, height - 25, 60, 19, 60, 19, CANCEL_MAIN, CANCEL_HOVER, btn -> Minecraft.getInstance().setScreen(source));
+        discardButton.setMessage(Component.translatable(LangKey.GUI_CANCEL));
         addRenderableWidget(discardButton);
 
         RegistryAccess access = Objects.requireNonNull(Minecraft.getInstance().player).registryAccess();
 
-        ExtendedButton resetButton = new ExtendedButton(guiLeft + 290, 11, 18, 18, Component.empty(), button -> {
-            // Don't actually modify the skin preset here, do it inside setSkinPresetAction
-            SkinPreset preset = new SkinPreset();
-
-            preset.deserializeNBT(access, this.preset.serializeNBT(access));
-            preset.put(dragonStage.getKey(), Lazy.of(() -> new DragonStageCustomization(dragonStage.getKey().location(), dragonType.getKey())));
-            wingsCheckbox.selected = true;
-            actionHistory.add(new EditorAction<>(setSkinPresetAction, preset.serializeNBT(access)));
-        }) {
-            @Override
-            public void renderWidget(@NotNull final GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-                guiGraphics.blit(RESET_ICON, getX(), getY(), 0, 0, width, height, width, height);
-            }
-        };
-        resetButton.setTooltip(Tooltip.create(Component.translatable(RESET)));
-        addRenderableWidget(resetButton);
-
-        ExtendedButton randomButton = new ExtendedButton(guiLeft + 260, 11, 18, 18, Component.empty(), btn -> {
+        HoverButton randomButton = new HoverButton(width / 2 - 8, 40, 16, 17, 20, 20, RANDOM_MAIN, RANDOM_HOVER, btn -> {
             ArrayList<String> extraKeys = DragonEditorHandler.getDragonPartKeys(FakeClientPlayerUtils.getFakePlayer(0, HANDLER), EnumSkinLayer.EXTRA);
 
             extraKeys.removeIf(partKey -> {
@@ -686,20 +694,15 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
             }
 
             actionHistory.add(new EditorAction<>(setSkinPresetAction, preset.serializeNBT(access)));
-        }) {
-            @Override
-            public void renderWidget(@NotNull final GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-                guiGraphics.blit(RANDOM_ICON, getX(), getY(), 0, 0, 16, 16, 16, 16);
-            }
-        };
+        });
         randomButton.setTooltip(Tooltip.create(Component.translatable(RANDOMIZE)));
         addRenderableWidget(randomButton);
 
-        UndoRedoButton undoButton = new UndoRedoButton(guiLeft + 318, 11, 18, 18, false, button -> actionHistory.undo());
+        HoverButton undoButton = new HoverButton(width / 2 - 27, 40, 15, 14, 20, 20,  UNDO_MAIN, UNDO_HOVER, button -> actionHistory.undo());
         undoButton.setTooltip(Tooltip.create(Component.translatable(UNDO)));
         addRenderableWidget(undoButton);
 
-        UndoRedoButton redoButton = new UndoRedoButton(guiLeft + 340, 11, 18, 18, true, button -> actionHistory.redo());
+        HoverButton redoButton = new HoverButton(width / 2 + 12, 40, 15, 14, 20, 20, REDO_MAIN, REDO_HOVER, button -> actionHistory.redo());
         redoButton.setTooltip(Tooltip.create(Component.translatable(REDO)));
         addRenderableWidget(redoButton);
 
@@ -734,12 +737,81 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         saveSlotButton.setTooltip(Tooltip.create(Component.literal("save")));
         addRenderableWidget(saveSlotButton);
 
-        addRenderableWidget(new CopySettingsButton(this, guiLeft + 230, 11, 18, 18, Component.translatable(COPY), button -> { /* Nothing to do */ }));
+        // Copy to all stages button
+        HoverButton copyToAllStagesButton = new HoverButton(guiLeft - 75, 10, 18, 18, 18, 18, COPY_ALL_MAIN, COPY_ALL_HOVER, button -> {
+            Lazy<DragonStageCustomization> lazy = preset.get(Objects.requireNonNull(dragonStage.getKey()));
+            CompoundTag storedPresetData = lazy.get().serializeNBT(access);
 
-        showUiCheckbox = new ExtendedCheckbox(guiLeft - 15, 11, 40, 18, 18, Component.translatable(SHOW_UI), showUi, p -> showUi = p.selected());
-        addRenderableWidget(showUiCheckbox);
-        addRenderableWidget(new BackgroundColorButton(guiLeft - 45, 11, 18, 18, Component.empty(), action -> { /* Nothing to do */ }, this));
-        addRenderableWidget(new HelpButton(guiLeft - 75, 11, 15, 15, CUSTOMIZATION));
+            for (Holder<DragonStage> stage : DragonStage.allStages(access)) {
+                this.preset.put(Objects.requireNonNull(stage.getKey()), Lazy.of(() -> {
+                    DragonStageCustomization customization = new DragonStageCustomization();
+                    customization.deserializeNBT(access, storedPresetData);
+                    return customization;
+                }));
+            }
+
+            // Undoing this action is not supported at the moment
+            actionHistory.clear();
+        });
+        copyToAllStagesButton.setTooltip(Tooltip.create(Component.translatable(COPY)));
+        addRenderableWidget(copyToAllStagesButton);
+
+        // Help button
+        HoverButton helpButton = new HoverButton(guiLeft - 75, height - 30, 20, 20, 20, 20, INFO_MAIN, INFO_HOVER, button -> {});
+        helpButton.setTooltip(Tooltip.create(Component.translatable(CUSTOMIZATION)));
+        addRenderableWidget(helpButton);
+
+        // Wings button
+        wingsButton = new ExtendedButton(guiLeft - 35, height - 30, 20, 20,  Component.translatable(DragonBody.getWingButtonDescription(dragonBody)), button -> {
+            actionHistory.add(new EditorAction<>(checkWingsButtonAction, !preset.get(Objects.requireNonNull(dragonStage.getKey())).get().wings));
+        }){
+            @Override
+            public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+                ResourceLocation texture = preset.get(Objects.requireNonNull(dragonStage.getKey())).get().wings ? ALTERNATIVE_ON : ALTERNATIVE_OFF;
+                guiGraphics.pose().pushPose();
+                guiGraphics.pose().translate(0, 0, 100);
+                guiGraphics.blit(texture, getX(), getY(), 0, 0, 20, 20, 20, 20);
+                guiGraphics.pose().popPose();
+            }
+        };
+        addRenderableWidget(wingsButton);
+
+        // Show UI button
+        uiButton = new ExtendedButton(guiLeft - 13, height - 30, 20, 20,  Component.translatable(SHOW_UI), button -> {
+            showUi = !showUi;
+        }){
+            @Override
+            public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+                ResourceLocation texture = showUi ? SHOW_UI_ON : SHOW_UI_OFF;
+                guiGraphics.pose().pushPose();
+                guiGraphics.pose().translate(0, 0, 100);
+                guiGraphics.blit(texture, getX(), getY(), 0, 0, 20, 20, 20, 20);
+                guiGraphics.pose().popPose();
+            }
+        };
+        uiButton.setTooltip(Tooltip.create(Component.translatable(SHOW_UI)));
+        addRenderableWidget(uiButton);
+
+        // Reset button
+        HoverButton resetButton = new HoverButton(guiLeft + 9, height - 30, 20, 20, 20, 20, RESET_MAIN, RESET_HOVER, button -> {
+            // Don't actually modify the skin preset here, do it inside setSkinPresetAction
+            SkinPreset preset = new SkinPreset();
+
+            preset.deserializeNBT(access, this.preset.serializeNBT(access));
+            preset.put(dragonStage.getKey(), Lazy.of(() -> new DragonStageCustomization(dragonStage.getKey().location(), dragonType.getKey())));
+            actionHistory.add(new EditorAction<>(setSkinPresetAction, preset.serializeNBT(access)));
+        }) {
+            @Override
+            public void renderWidget(@NotNull final GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+                guiGraphics.blit(RESET_ICON, getX(), getY(), 0, 0, width, height, width, height);
+            }
+        };
+        resetButton.setTooltip(Tooltip.create(Component.translatable(RESET)));
+        addRenderableWidget(resetButton);
+
+        // Background color button
+        BackgroundColorButton backgroundColorButton = new BackgroundColorButton(guiLeft + 31, height - 30, 20, 20, Component.empty(), action -> { /* Nothing to do */ }, this);
+        addRenderableWidget(backgroundColorButton);
     }
 
     @Override
@@ -763,7 +835,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
 
     @Override
     public int getDragonBodyButtonYOffset() {
-        return 69;
+        return 38;
     }
 
     @Override
@@ -791,7 +863,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     private void initDragonRender() {
         children().removeIf(DragonUIRenderComponent.class::isInstance);
 
-        float yRot = -3, xRot = -5, zoom = 0, xOffset = 0, yOffset = 0;
+        float yRot = -3, xRot = -5, zoom = 0, xOffset = 0, yOffset = -20;
         if (dragonRender != null) {
             yRot = dragonRender.yRot;
             xRot = dragonRender.xRot;

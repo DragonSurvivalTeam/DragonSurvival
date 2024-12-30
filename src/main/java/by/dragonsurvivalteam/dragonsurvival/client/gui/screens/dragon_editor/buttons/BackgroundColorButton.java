@@ -18,7 +18,8 @@ public class BackgroundColorButton extends ExtendedButton {
     @Translation(type = Translation.Type.MISC, comments = "Change the background color")
     private static final String BACKGROUND_COLOR = Translation.Type.GUI.wrap("dragon_editor.background_color");
 
-    private static final ResourceLocation BUTTON_TEXTURE = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/background_color_button.png");
+    private static final ResourceLocation BACKGROUND_COLOR_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/gui_color_main.png");
+    private static final ResourceLocation BACKGROUND_COLOR_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/gui_color_hover.png");
 
     private final DragonEditorScreen screen;
     private BackgroundColorSelectorComponent colorComponent;
@@ -48,7 +49,7 @@ public class BackgroundColorButton extends ExtendedButton {
                 }
             };
 
-            colorComponent = new BackgroundColorSelectorComponent(this.screen, getX() - 50, getY() + height + 3, 120, 61);
+            colorComponent = new BackgroundColorSelectorComponent(this.screen, getX() - 50, getY() - height - 45, 120, 61);
             screen.renderables.add(renderButton);
             colorComponent.children().forEach(listener -> ((ScreenAccessor) screen).dragonSurvival$children().add(listener));
         } else {
@@ -72,7 +73,11 @@ public class BackgroundColorButton extends ExtendedButton {
         }
 
         if (visible) {
-            guiGraphics.blit(BUTTON_TEXTURE, getX() + 3, getY() + 3, 0, 0, width - 6, height - 6, width - 6, height - 6);
+            if(isHovered()) {
+                guiGraphics.blit(BACKGROUND_COLOR_HOVER, getX(), getY(), 0, 0, width, height, width, height);
+            } else {
+                guiGraphics.blit(BACKGROUND_COLOR_MAIN, getX(), getY(), 0, 0, width, height, width, height);
+            }
         }
     }
 }

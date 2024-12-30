@@ -22,7 +22,7 @@ public interface DragonBodyScreen {
         Screen screen = self();
 
         int buttonWidth = 25;
-        int gap = 3;
+        int gap = 1;
 
         boolean cannotFit = bodies.size() > 5;
         int elements = Math.min(5, bodies.size());
