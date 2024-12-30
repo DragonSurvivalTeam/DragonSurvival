@@ -46,7 +46,7 @@ public class DragonGlowLayerRenderer extends GeoRenderLayer<DragonEntity> {
         }
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
-        SkinPreset preset = handler.getSkinData().skinPreset;
+        SkinPreset preset = handler.getCurrentSkinPreset();
 
         DragonStageCustomization customization = preset.get(handler.stageKey()).get();
         ResourceLocation glowTexture = DragonSkins.getGlowTexture(player, handler.stageKey());
@@ -57,7 +57,7 @@ public class DragonGlowLayerRenderer extends GeoRenderLayer<DragonEntity> {
             }
         }
 
-        if (glowTexture == null && handler.getSkinData().get(handler.stageKey()).get().defaultSkin) {
+        if (glowTexture == null && handler.getCurrentStageCustomization().defaultSkin) {
             ResourceLocation location = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/dragon/" + handler.speciesId().getPath() + "_" + handler.stageId().getPath() + "_glow.png");
 
             if (Minecraft.getInstance().getResourceManager().getResource(location).isPresent()) {

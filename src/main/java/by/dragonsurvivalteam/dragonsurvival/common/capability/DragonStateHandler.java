@@ -2,6 +2,8 @@ package by.dragonsurvivalteam.dragonsurvival.common.capability;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.GrowthComponent;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.SkinPreset;
 import by.dragonsurvivalteam.dragonsurvival.commands.DragonCommand;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.subcapabilities.SkinCap;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.subcapabilities.SubCap;
@@ -305,7 +307,6 @@ public class DragonStateHandler extends EntityStateHandler {
     public void refreshDataOnTypeChange(final Player player) {
         PenaltySupply.getData(player).clear();
         MagicData.getData(player).refresh(species(), player);
-        skinData.skinPreset.initDefaults(this);
     }
 
     public void setType(@Nullable final Player player, final Holder<DragonType> species) {
@@ -332,6 +333,12 @@ public class DragonStateHandler extends EntityStateHandler {
         if (dragonBody == null || !DragonUtils.isBody(body, dragonBody)) {
             dragonBody = body;
             refreshBody = true;
+            // If the model has changed, just override the skin preset with the default one as a failsafe
+            if(oldBody != null && dragonBody.value().customModel() != oldBody.value().customModel()) {
+                SkinPreset freshPreset = new SkinPreset();
+                freshPreset.initDefaults(dragonType.getKey(), dragonBody.value().customModel());
+                skinData.skinPresets.get().put(speciesKey(), freshPreset);
+            }
         }
 
         if (player == null) {
@@ -396,6 +403,31 @@ public class DragonStateHandler extends EntityStateHandler {
 
     public SkinCap getSkinData() {
         return skinData;
+    }
+
+    public void initializeSkinDataToDefaults() {
+        skinData.skinPresets.get().get(dragonType.getKey()).initDefaults(dragonType.getKey(), dragonBody.value().customModel());
+    }
+
+    public void setSkinPresetForType(ResourceKey<DragonType> dragonType, SkinPreset preset) {
+        skinData.skinPresets.get().put(dragonType, preset);
+    }
+
+    public void setCurrentSkinPreset(SkinPreset preset) {
+        skinData.skinPresets.get().put(dragonType.getKey(), preset);
+        recompileCurrentSkin();
+    }
+
+    public SkinPreset getCurrentSkinPreset() {
+        return skinData.skinPresets.get().get(dragonType.getKey());
+    }
+
+    public void recompileCurrentSkin() {
+        skinData.compileSkin(dragonStage);
+    }
+
+    public DragonStageCustomization getCurrentStageCustomization() {
+        return skinData.get(dragonType.getKey(), dragonStage.getKey()).get();
     }
 
     public CompoundTag serializeNBT(HolderLookup.Provider provider, boolean isSavingForSoul) {

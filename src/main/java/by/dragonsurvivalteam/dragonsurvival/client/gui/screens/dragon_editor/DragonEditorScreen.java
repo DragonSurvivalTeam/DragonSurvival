@@ -240,7 +240,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         dragonStage = newStage;
         dragonRender.zoom = setZoom(dragonStage);
         HANDLER.setStage(null, dragonStage);
-        HANDLER.getSkinData().compileSkin(dragonStage);
+        HANDLER.recompileCurrentSkin();
         update();
 
         return previousLevel;
@@ -251,13 +251,13 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
 
     // FIXME :: Known issue: if I switch to a body type that invalidates my preset, my preset data will be lost even if I undo
     public final Function<CompoundTag, CompoundTag> setSkinPresetAction = tag -> {
-        CompoundTag prevTag = HANDLER.getSkinData().skinPreset.serializeNBT(Objects.requireNonNull(Minecraft.getInstance().player).registryAccess());
-        HANDLER.getSkinData().skinPreset.deserializeNBT(Minecraft.getInstance().player.registryAccess(), tag);
-        HashMap<EnumSkinLayer, Lazy<LayerSettings>> layerSettingsMap = HANDLER.getSkinData().skinPreset.get(dragonStage.getKey()).get().layerSettings;
+        CompoundTag prevTag = HANDLER.getCurrentSkinPreset().serializeNBT(Objects.requireNonNull(Minecraft.getInstance().player).registryAccess());
+        HANDLER.getCurrentSkinPreset().deserializeNBT(Minecraft.getInstance().player.registryAccess(), tag);
+        HashMap<EnumSkinLayer, Lazy<LayerSettings>> layerSettingsMap = HANDLER.getCurrentStageCustomization().layerSettings;
         for(EnumSkinLayer layer : layerSettingsMap.keySet()) {
             partComponents.get(layer).setSelectedPart(layerSettingsMap.get(layer).get().partKey);
         }
-        HANDLER.getSkinData().compileSkin(dragonStage);
+        HANDLER.recompileCurrentSkin();
         update();
         return prevTag;
     };
@@ -289,7 +289,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
             settings.hue = part.averageHue();
         }
 
-        HANDLER.getSkinData().compileSkin(dragonStage);
+        HANDLER.recompileCurrentSkin();
         update();
 
         return previousPair;
@@ -298,7 +298,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     public final Function<Boolean, Boolean> checkWingsButtonAction = (selected) -> {
         boolean prevSelected = preset.get(Objects.requireNonNull(dragonStage.getKey())).get().wings;
         preset.get(Objects.requireNonNull(dragonStage.getKey())).get().wings = selected;
-        HANDLER.getSkinData().compileSkin(dragonStage);
+        HANDLER.recompileCurrentSkin();
         update();
         return prevSelected;
     };
@@ -307,7 +307,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         boolean prevSelected = !defaultSkinCheckbox.selected;
         defaultSkinCheckbox.selected = selected;
         preset.get(Objects.requireNonNull(dragonStage.getKey())).get().defaultSkin = selected;
-        HANDLER.getSkinData().compileSkin(dragonStage);
+        HANDLER.recompileCurrentSkin();
         update();
         return prevSelected;
     };
@@ -315,7 +315,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     public final Function<SkinPreset, SkinPreset> loadPresetAction = newPreset -> {
         SkinPreset previousPreset = preset;
         preset = newPreset;
-        HANDLER.getSkinData().compileSkin(dragonStage);
+        HANDLER.recompileCurrentSkin();
         update();
         return previousPreset;
     };
@@ -467,8 +467,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
 
         preset = new SkinPreset();
         preset.initDefaults(dragonType.getKey(), dragonBody.value().customModel());
-        HANDLER.getSkinData().skinPreset = preset;
-        HANDLER.getSkinData().compileSkin(dragonStage);
+        HANDLER.setCurrentSkinPreset(preset);
 
         dragonRender.zoom = setZoom(dragonStage);
     }
@@ -813,7 +812,14 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     public DragonBodyButton createButton(Holder<DragonBody> dragonBody, int x, int y) {
         return new DragonBodyButton(this, x, y, 25, 25, dragonBody, isEditor, button -> {
             if (!((DragonBodyButton) button).isLocked()) {
-                actionHistory.add(new DragonEditorScreen.EditorAction<>(dragonBodySelectAction, dragonBody));
+                if(dragonBody.value() != this.dragonBody.value()) {
+                    if(dragonBody.value().customModel() != this.dragonBody.value().customModel()) {
+                        // We don't support undo-redo behavior when swapping between body types that have different custom models
+                        actionHistory.clear();
+                    } else {
+                        actionHistory.add(new DragonEditorScreen.EditorAction<>(dragonBodySelectAction, dragonBody));
+                    }
+                }
             }
         });
     }
@@ -849,7 +855,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         }
 
         HANDLER.setBody(null, dragonBody);
-        HANDLER.getSkinData().skinPreset = preset;
+        HANDLER.setCurrentSkinPreset(preset);
         HANDLER.setDesiredSize(null, dragonStage.value().sizeRange().min());
 
         lastSelected = selectedSaveSlot;
@@ -901,7 +907,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
 
             FlightData.getData(minecraft.player).hasSpin = ServerConfig.saveGrowthStage && FlightData.getData(minecraft.player).hasSpin;
 
-            data.getSkinData().skinPreset = preset;
+            data.setCurrentSkinPreset(preset);
             data.getSkinData().renderCustomSkin = ClientDragonRenderer.renderCustomSkin;
 
             AltarData altarData = AltarData.getData(minecraft.player);
@@ -912,8 +918,8 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
             PacketDistributor.sendToServer(new SyncAltarCooldown.Data(minecraft.player.getId(), altarData.altarCooldown));
             PacketDistributor.sendToServer(new SyncComplete.Data(minecraft.player.getId(), data.serializeNBT(minecraft.player.registryAccess())));
         } else {
-            data.getSkinData().skinPreset = preset;
-            PacketDistributor.sendToServer(new SyncPlayerSkinPreset.Data(minecraft.player.getId(), HANDLER.getSkinData().skinPreset.serializeNBT(minecraft.player.registryAccess())));
+            data.setCurrentSkinPreset(preset);
+            PacketDistributor.sendToServer(new SyncPlayerSkinPreset(minecraft.player.getId(), HANDLER.speciesKey(), HANDLER.getCurrentSkinPreset().serializeNBT(minecraft.player.registryAccess())));
         }
 
         minecraft.player.closeContainer();

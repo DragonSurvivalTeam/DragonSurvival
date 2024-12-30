@@ -196,7 +196,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
         }
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
-        DragonStageCustomization customization = handler.getSkinData().get(handler.stageKey()).get();
+        DragonStageCustomization customization = handler.getCurrentStageCustomization();
 
         if (handler.getSkinData().blankSkin) {
             return DragonSurvival.res("textures/dragon/blank_skin_" + handler.speciesId().getPath() + ".png");

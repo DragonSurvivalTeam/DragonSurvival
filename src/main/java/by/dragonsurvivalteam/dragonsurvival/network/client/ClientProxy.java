@@ -86,7 +86,7 @@ public class ClientProxy {
 
         PacketDistributor.sendToServer(new SyncDragonClawRender.Data(localPlayer.getId(), ClientDragonRenderer.renderDragonClaws));
         PacketDistributor.sendToServer(new SyncDragonSkinSettings(localPlayer.getId(), ClientDragonRenderer.renderCustomSkin));
-        PacketDistributor.sendToServer(new SyncPlayerSkinPreset.Data(localPlayer.getId(), data.getSkinData().skinPreset.serializeNBT(localPlayer.registryAccess())));
+        PacketDistributor.sendToServer(new SyncPlayerSkinPreset(localPlayer.getId(), data.speciesKey(), data.getCurrentSkinPreset().serializeNBT(localPlayer.registryAccess())));
     }
 
     // For replying during the configuration stage
@@ -97,7 +97,7 @@ public class ClientProxy {
         context.reply(new SyncDragonSkinSettings(sender.getId(), ClientDragonRenderer.renderCustomSkin));
     }
 
-    public static void handleSyncPlayerSkinPreset(final SyncPlayerSkinPreset.Data message, HolderLookup.Provider provider) {
+    public static void handleSyncPlayerSkinPreset(final SyncPlayerSkinPreset message, HolderLookup.Provider provider) {
         Player localPlayer = Minecraft.getInstance().player;
 
         if (localPlayer != null) {
@@ -107,10 +107,10 @@ public class ClientProxy {
                 DragonStateProvider.getOptional(player).ifPresent(handler -> {
                     SkinPreset preset = new SkinPreset();
                     preset.deserializeNBT(provider, message.preset());
-                    handler.getSkinData().skinPreset = preset;
+                    handler.setSkinPresetForType(message.dragonType(), preset);
 
                     if (handler.isDragon()) {
-                        handler.getSkinData().compileSkin(handler.stage());
+                        handler.recompileCurrentSkin();
                     }
                 });
             }

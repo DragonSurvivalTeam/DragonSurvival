@@ -170,7 +170,7 @@ public class DragonAltarScreen extends Screen {
         //noinspection DataFlowIssue -> registry is expected to be present
         Holder.Reference<DragonStage> dragonStage = CommonHooks.resolveLookup(DragonStage.REGISTRY).getOrThrow(DragonStages.adult);
         handler.setStage(null, dragonStage);
-        handler.getSkinData().get(handler.stageKey()).get().defaultSkin = true;
+        handler.getCurrentStageCustomization().defaultSkin = true;
     }
 
     @Override

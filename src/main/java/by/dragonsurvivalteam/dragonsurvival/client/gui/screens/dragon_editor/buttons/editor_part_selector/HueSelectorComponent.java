@@ -88,7 +88,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
             private final Function<Integer, Integer> setHueAction = value -> {
                 settingsSupplier.get().hue = value / 360f;
                 settingsSupplier.get().modifiedColor = hasModifiedColor(dragonPart);
-                DragonEditorScreen.HANDLER.getSkinData().compileSkin(screen.dragonStage);
+                DragonEditorScreen.HANDLER.recompileCurrentSkin();
                 screen.update();
 
                 return previousHue;
@@ -142,7 +142,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
             private final Function<Integer, Integer> setSaturationAction = value -> {
                 settingsSupplier.get().saturation = value / 360f;
                 settingsSupplier.get().modifiedColor = hasModifiedColor(dragonPart);
-                DragonEditorScreen.HANDLER.getSkinData().compileSkin(screen.dragonStage);
+                DragonEditorScreen.HANDLER.recompileCurrentSkin();
                 screen.update();
 
                 return previousSaturation;
@@ -201,7 +201,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
             private final Function<Integer, Integer> setBrightnessAction = value -> {
                 settingsSupplier.get().brightness = value / 360f;
                 settingsSupplier.get().modifiedColor = hasModifiedColor(dragonPart);
-                DragonEditorScreen.HANDLER.getSkinData().compileSkin(screen.dragonStage);
+                DragonEditorScreen.HANDLER.recompileCurrentSkin();
                 screen.update();
 
                 return previousBrightness;
@@ -258,7 +258,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
             final Function<Boolean, Boolean> setGlowingAction = value -> {
                 settingsSupplier.get().glowing = value;
                 this.selected = settingsSupplier.get().glowing;
-                DragonEditorScreen.HANDLER.getSkinData().compileSkin(screen.dragonStage);
+                DragonEditorScreen.HANDLER.recompileCurrentSkin();
                 screen.update();
                 return !value;
             };

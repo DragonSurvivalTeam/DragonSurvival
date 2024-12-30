@@ -153,7 +153,7 @@ public class DragonEditorHandler {
         glowTarget.clear(true);
 
         ResourceKey<DragonStage> stageKey = handler.stageKey();
-        DragonStageCustomization customization = handler.getSkinData().get(stageKey).get();
+        DragonStageCustomization customization = handler.getCurrentStageCustomization();
         String uuid = player.getStringUUID();
 
         ResourceLocation dynamicNormalKey = ResourceLocation.fromNamespaceAndPath(MODID, "dynamic_normal_" + uuid + "_" + stageKey.location().getPath());
@@ -241,7 +241,7 @@ public class DragonEditorHandler {
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
         List<Pair<NativeImage, ResourceLocation>> texturesToRegister = new ArrayList<>();
-        DragonStageCustomization customization = handler.getSkinData().get(handler.stageKey()).get();
+        DragonStageCustomization customization = handler.getCurrentStageCustomization();
         NativeImage normal = new NativeImage(512, 512, true);
         NativeImage glow = new NativeImage(512, 512, true);
 

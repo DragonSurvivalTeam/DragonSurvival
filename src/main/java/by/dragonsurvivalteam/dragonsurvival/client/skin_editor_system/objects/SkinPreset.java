@@ -17,8 +17,10 @@ import java.util.HashMap;
 
 public class SkinPreset implements INBTSerializable<CompoundTag> {
     private static final String MODEL = "model";
+    private static final String TYPE = "type";
 
     private final Lazy<HashMap<ResourceKey<DragonStage>, Lazy<DragonStageCustomization>>> skins = Lazy.of(this::initialize);
+    private ResourceKey<DragonType> type;
     private ResourceLocation model = DragonBody.DEFAULT_MODEL;
 
     public Lazy<DragonStageCustomization> get(final ResourceKey<DragonStage> dragonStage) {
@@ -29,14 +31,12 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
         skins.get().put(dragonStage, customization);
     }
 
-    public void initDefaults(final DragonStateHandler handler) {
-        initDefaults(handler.speciesKey(), handler.body() != null ? handler.body().value().customModel() : null);
-    }
-
     public void initDefaults(final ResourceKey<DragonType> type, final ResourceLocation model) {
         if (type == null) {
             return;
         }
+
+        this.type = type;
 
         if (model != null) {
             this.model = model;
@@ -61,6 +61,9 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
     public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
         tag.putString(MODEL, model.toString());
+        if(type != null) {
+            tag.putString(TYPE, type.location().toString());
+        }
 
         for (ResourceKey<DragonStage> dragonStage : ResourceHelper.keys(provider, DragonStage.REGISTRY)) {
             tag.put(dragonStage.location().toString(), skins.get().getOrDefault(dragonStage, Lazy.of(DragonStageCustomization::new)).get().serializeNBT(provider));
@@ -81,6 +84,7 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
             );
         }
 
+        this.type = ResourceKey.create(DragonType.REGISTRY, ResourceLocation.parse(base.getString(TYPE)));
         ResourceLocation.read(base.getString(MODEL)).ifSuccess(model -> this.model = model);
     }
 }

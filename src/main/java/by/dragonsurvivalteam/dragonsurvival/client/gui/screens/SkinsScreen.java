@@ -13,7 +13,6 @@ import by.dragonsurvivalteam.dragonsurvival.client.skins.SkinObject;
 import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayerUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.common.capability.subcapabilities.SkinCap;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.config.ConfigHandler;
 import by.dragonsurvivalteam.dragonsurvival.network.dragon_editor.SyncDragonSkinSettings;
@@ -142,10 +141,8 @@ public class SkinsScreen extends Screen implements DragonBodyScreen {
         this.sourceScreen = sourceScreen;
 
         LocalPlayer localPlayer = sourceScreen.getMinecraft().player;
-        //noinspection DataFlowIssue -> player should not be null
-        SkinCap skinData = DragonStateProvider.getData(localPlayer).getSkinData();
-
         if (dragonStage == null) {
+            //noinspection DataFlowIssue -> player should not be null
             dragonStage = DragonStage.get(localPlayer.registryAccess(), Double.MAX_VALUE);
         }
     }
@@ -198,12 +195,12 @@ public class SkinsScreen extends Screen implements DragonBodyScreen {
                 handler.setStage(null, dragonStage);
             }
 
-            handler.getSkinData().skinPreset.initDefaults(handler);
+            handler.initializeSkinDataToDefaults();
 
             if (noSkin && Objects.equals(playerName, minecraft.player.getGameProfile().getName())) {
-                handler.getSkinData().skinPreset.deserializeNBT(minecraft.player.registryAccess(), playerData.getSkinData().skinPreset.serializeNBT(minecraft.player.registryAccess()));
+                handler.getCurrentSkinPreset().deserializeNBT(minecraft.player.registryAccess(), playerData.getCurrentSkinPreset().serializeNBT(minecraft.player.registryAccess()));
             } else {
-                handler.getSkinData().get(dragonStage.getKey()).get().defaultSkin = true;
+                handler.getCurrentStageCustomization().defaultSkin = true;
             }
 
             FakeClientPlayerUtils.getFakePlayer(0, handler).animationSupplier = () -> "fly_animation_magic";
