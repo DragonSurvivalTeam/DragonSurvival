@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.projectile.targeting;
 import by.dragonsurvivalteam.dragonsurvival.network.particle.SyncParticleTrail;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AbilityTargeting;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -32,8 +33,9 @@ public record ProjectileAreaTarget(Either<Either<ProjectileTargeting.BlockTarget
     ).apply(instance, ProjectileAreaTarget::new));
 
     public void apply(final Projectile projectile, final int projectileLevel) {
-        if(target.right().isPresent()) {
-            throw new IllegalStateException("Area target must be a block or entity target");
+        if (target.right().isPresent()) {
+            Functions.logOrThrow("Point target must be a world target");
+            return;
         }
 
         double radius = radius().calculate(projectileLevel);

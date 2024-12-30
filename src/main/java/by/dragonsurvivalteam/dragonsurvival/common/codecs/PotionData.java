@@ -86,11 +86,11 @@ public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier
                 name.append(Component.literal(" [" + amplifier + "]").withColor(DSColors.GOLD));
             }
 
-            name.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.blue(duration)));
+            name.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.dynamicValue(duration)));
             float probability = probability().calculate(level);
 
             if (probability < 1) {
-                name.append(Component.translatable(LangKey.ABILITY_EFFECT_CHANCE, DSColors.blue(NumberFormat.getPercentInstance().format(probability))));
+                name.append(Component.translatable(LangKey.ABILITY_EFFECT_CHANCE, DSColors.dynamicValue(NumberFormat.getPercentInstance().format(probability))));
             }
 
             components.add(name);

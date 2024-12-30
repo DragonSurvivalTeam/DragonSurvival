@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.projectile.targeting;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -18,9 +19,10 @@ public record ProjectilePointTarget(Either<Either<BlockTargeting, EntityTargetin
     ).apply(instance, ProjectilePointTarget::new));
 
     @Override
-    public void apply(Projectile projectile, int projectileLevel) {
-        if(target.left().isPresent()) {
-            throw new IllegalStateException("Point target must be a world target");
+    public void apply(final Projectile projectile, int projectileLevel) {
+        if (target.left().isPresent()) {
+            Functions.logOrThrow("Point target must be a world target");
+            return;
         }
 
         WorldTargeting target = this.target.right().get();

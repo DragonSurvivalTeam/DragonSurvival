@@ -1,12 +1,17 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncData;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -16,6 +21,10 @@ public abstract class Storage<T extends StorageEntry> implements INBTSerializabl
     public static final String STORAGE = "storage";
 
     @Nullable protected Map<ResourceLocation, T> storage;
+
+    public void sync(final ServerPlayer player) {
+        player.getExistingData(type()).ifPresent(data -> PacketDistributor.sendToPlayer(player, new SyncData(NeoForgeRegistries.ATTACHMENT_TYPES.getKey(type()), serializeNBT(player.registryAccess()))));
+    }
 
     public void tick() {
         if (storage != null) {
@@ -112,6 +121,8 @@ public abstract class Storage<T extends StorageEntry> implements INBTSerializabl
         this.storage = !storage.isEmpty() ? storage : null;
     }
 
-    abstract protected Tag save(@NotNull final HolderLookup.Provider provider, final T entry);
-    abstract protected T load(@NotNull final HolderLookup.Provider provider, final CompoundTag tag);
+    public abstract AttachmentType<?> type();
+
+    protected abstract Tag save(@NotNull final HolderLookup.Provider provider, final T entry);
+    protected abstract T load(@NotNull final HolderLookup.Provider provider, final CompoundTag tag);
 }

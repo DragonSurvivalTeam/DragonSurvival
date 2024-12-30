@@ -33,7 +33,7 @@ public record DamageEffect(Holder<DamageType> type, LevelBasedValue amount) impl
     public List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
         //noinspection DataFlowIssue -> key is present
         MutableComponent translation = Component.translatable(Translation.Type.DAMAGE_TYPE.wrap(type.getKey().location())).withColor(DSColors.GOLD);
-        return List.of(Component.translatable(LangKey.ABILITY_DAMAGE, translation, DSColors.blue(amount.calculate(ability.level()))));
+        return List.of(Component.translatable(LangKey.ABILITY_DAMAGE, translation, DSColors.dynamicValue(amount.calculate(ability.level()))));
     }
 
     @Override

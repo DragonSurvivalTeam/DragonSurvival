@@ -21,7 +21,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.fml.loading.FMLEnvironment;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -116,7 +115,7 @@ public class ClientProxy implements Proxy {
 
     @Override
     public boolean isOnRenderThread() {
-        return !FMLEnvironment.production && RenderSystem.isOnRenderThread();
+        return RenderSystem.isOnRenderThread();
     }
 
     @Override

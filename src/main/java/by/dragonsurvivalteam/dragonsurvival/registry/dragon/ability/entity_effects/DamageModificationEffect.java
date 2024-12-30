@@ -53,9 +53,9 @@ public record DamageModificationEffect(List<DamageModification> modifications) i
             if (amount == 0) {
                 name = name.append(Component.translatable(LangKey.ABILITY_IMMUNITY));
             } else if (amount < 1) {
-                name = name.append(Component.translatable(LangKey.ABILITY_DAMAGE_REDUCTION, DSColors.blue(difference)));
+                name = name.append(Component.translatable(LangKey.ABILITY_DAMAGE_REDUCTION, DSColors.dynamicValue(difference)));
             } else {
-                name = name.append(Component.translatable(LangKey.ABILITY_DAMAGE_INCREASE, DSColors.blue(difference)));
+                name = name.append(Component.translatable(LangKey.ABILITY_DAMAGE_INCREASE, DSColors.dynamicValue(difference)));
             }
 
             int numTypes = damageModification.damageTypes().size();
@@ -76,7 +76,7 @@ public record DamageModificationEffect(List<DamageModification> modifications) i
             }
 
             if (duration > 0) {
-                name = name.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.blue(duration)));
+                name = name.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.dynamicValue(duration)));
             }
 
             components.add(name);

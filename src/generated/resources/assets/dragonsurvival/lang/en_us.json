@@ -197,7 +197,7 @@
   "dragon_ability.dragonsurvival.general.ability.explosion_power": "§6■%s§6Explosion Power:§r %s",
   "dragon_ability.dragonsurvival.general.ability.flight": "§6■ Can use flight",
   "dragon_ability.dragonsurvival.general.ability.growth_auto_upgrade": "Next level will be unlocked at size %s",
-  "dragon_ability.dragonsurvival.general.ability.harvest_level_bonus": "§6■ Harvest Level Bonus:§r %s",
+  "dragon_ability.dragonsurvival.general.ability.harvest_level_bonus": "§6■ Harvest Bonus:§r\n - Harvest level: %s\n - Break speed: %s",
   "dragon_ability.dragonsurvival.general.ability.immunity": "§6■ Immune§r to ",
   "dragon_ability.dragonsurvival.general.ability.initial_mana_cost": "§6■ Initial mana cost:§r %s",
   "dragon_ability.dragonsurvival.general.ability.level_auto_upgrade": "Next level will be unlocked at experience level %s",

@@ -43,7 +43,7 @@ public record MobEffectPenalty(HolderSet<MobEffect> effects, int amplifier, int 
             name.append(Component.literal(" " + amplifier).withColor(DSColors.GOLD));
         }
 
-        name.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.blue(Functions.ticksToSeconds(duration))));
+        name.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.dynamicValue(Functions.ticksToSeconds(duration))));
 
         return name;
     }

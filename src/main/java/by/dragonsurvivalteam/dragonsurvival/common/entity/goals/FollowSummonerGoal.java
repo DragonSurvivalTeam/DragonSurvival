@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.entity.goals;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonedEntities;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
@@ -36,7 +37,7 @@ public class FollowSummonerGoal extends Goal {
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
 
         if (!(mob.getNavigation() instanceof GroundPathNavigation) && !(mob.getNavigation() instanceof FlyingPathNavigation)) {
-            throw new IllegalArgumentException("Unsupported mob type for FollowSummonerGoal");
+            Functions.logOrThrow("Unsupported mob type for [" + getClass().getSimpleName() + "]");
         }
     }
 
@@ -78,7 +79,7 @@ public class FollowSummonerGoal extends Goal {
     @Override
     public void tick() {
         //noinspection DataFlowIssue -> owner should not be null
-        boolean shouldTeleport = mob.distanceToSqr(owner) >= TamableAnimal.TELEPORT_WHEN_DISTANCE_IS_SQ;
+        boolean shouldTeleport = mob.distanceToSqr(owner) >= TamableAnimal.TELEPORT_WHEN_DISTANCE_IS_SQ * 2;
 
         if (!shouldTeleport) {
             mob.getLookControl().setLookAt(owner, 10, mob.getMaxHeadXRot());

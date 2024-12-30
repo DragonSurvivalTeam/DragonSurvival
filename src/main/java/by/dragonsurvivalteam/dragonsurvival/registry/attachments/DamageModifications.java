@@ -9,6 +9,7 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.event.entity.EntityInvulnerabilityCheckEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
@@ -16,10 +17,6 @@ import org.jetbrains.annotations.NotNull;
 
 @EventBusSubscriber
 public class DamageModifications extends Storage<DamageModification.Instance> {
-    public static DamageModifications getData(final Entity entity) {
-        return entity.getData(DSDataAttachments.DAMAGE_MODIFICATIONS);
-    }
-
     public boolean isFireImmune() {
         if (storage == null) {
             return false;
@@ -90,5 +87,14 @@ public class DamageModifications extends Storage<DamageModification.Instance> {
     @Override
     protected DamageModification.Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag tag) {
         return DamageModification.Instance.load(provider, tag);
+    }
+
+    public static DamageModifications getData(final Entity entity) {
+        return entity.getData(DSDataAttachments.DAMAGE_MODIFICATIONS);
+    }
+
+    @Override
+    public AttachmentType<?> type() {
+        return DSDataAttachments.DAMAGE_MODIFICATIONS.get();
     }
 }

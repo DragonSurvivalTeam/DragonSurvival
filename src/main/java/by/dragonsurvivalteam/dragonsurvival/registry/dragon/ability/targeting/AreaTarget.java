@@ -44,9 +44,9 @@ public record AreaTarget(Either<BlockTargeting, EntityTargeting> target, LevelBa
         Component targetingComponent = target.map(block -> null, entity -> entity.targetingMode().translation());
 
         if (targetingComponent == null) {
-            return Component.translatable(LangKey.ABILITY_AREA, DSColors.blue(getArea(ability)));
+            return Component.translatable(LangKey.ABILITY_AREA, DSColors.dynamicValue(getArea(ability)));
         } else {
-            return Component.translatable(LangKey.ABILITY_TO_TARGET_AREA, DSColors.blue(targetingComponent), DSColors.blue(getArea(ability)));
+            return Component.translatable(LangKey.ABILITY_TO_TARGET_AREA, DSColors.dynamicValue(targetingComponent), DSColors.dynamicValue(getArea(ability)));
         }
     }
 

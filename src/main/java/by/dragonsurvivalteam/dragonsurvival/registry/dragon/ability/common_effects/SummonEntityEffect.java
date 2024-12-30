@@ -89,14 +89,14 @@ public record SummonEntityEffect(
 
     @Override
     public List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
-        MutableComponent component = Component.translatable(LangKey.ABILITY_SUMMON, DSColors.blue(maxSummons.calculate(ability.level())));
+        MutableComponent component = Component.translatable(LangKey.ABILITY_SUMMON, DSColors.dynamicValue(maxSummons.calculate(ability.level())));
         int totalWeight = WeightedRandom.getTotalWeight(entities.unwrap());
 
         entities.unwrap().forEach(wrapper -> {
             //noinspection DataFlowIssue -> key is present
-            Component entityName = DSColors.blue(Component.translatable(wrapper.data().getKey().location().toLanguageKey("entity")));
+            Component entityName = DSColors.dynamicValue(Component.translatable(wrapper.data().getKey().location().toLanguageKey("entity")));
             double chance = (double) wrapper.getWeight().asInt() / totalWeight;
-            component.append(Component.translatable(LangKey.ABILITY_SUMMON_CHANCE, DSColors.blue(entityName), DSColors.blue(NumberFormat.getPercentInstance().format(chance))));
+            component.append(Component.translatable(LangKey.ABILITY_SUMMON_CHANCE, DSColors.dynamicValue(entityName), DSColors.dynamicValue(NumberFormat.getPercentInstance().format(chance))));
         });
 
         return List.of(component);
@@ -194,9 +194,7 @@ public record SummonEntityEffect(
         }
 
         if (entity instanceof Mob mob) {
-            try {
-                mob.goalSelector.addGoal(3, new FollowSummonerGoal(mob, 1, 10, 2));
-            } catch (IllegalArgumentException ignored) { /* Ignore due to custom path navigation */ }
+            mob.goalSelector.addGoal(3, new FollowSummonerGoal(mob, 1, 10, 2));
         }
     }
 

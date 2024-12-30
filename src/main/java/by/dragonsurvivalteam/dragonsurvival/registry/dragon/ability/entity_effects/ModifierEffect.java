@@ -53,7 +53,7 @@ public record ModifierEffect(List<ModifierWithDuration> modifiers) implements Ab
                 MutableComponent name = modifier.getFormattedDescription(ability.level());
 
                 if (duration > 0) {
-                    name = name.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.blue(duration)));
+                    name = name.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.dynamicValue(duration)));
                 }
 
                 components.add(name);

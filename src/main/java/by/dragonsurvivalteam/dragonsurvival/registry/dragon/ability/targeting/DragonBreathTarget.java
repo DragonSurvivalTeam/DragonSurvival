@@ -54,9 +54,9 @@ public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target,
         Component targetingComponent = target.map(block -> null, entity -> entity.targetingMode().translation());
 
         if (targetingComponent == null) {
-            return Component.translatable(LangKey.ABILITY_CONE, DSColors.blue(getRange(dragon, ability)));
+            return Component.translatable(LangKey.ABILITY_CONE, DSColors.dynamicValue(getRange(dragon, ability)));
         } else {
-            return Component.translatable(LangKey.ABILITY_TO_TARGET_CONE, DSColors.blue(targetingComponent), DSColors.blue(getRange(dragon, ability)));
+            return Component.translatable(LangKey.ABILITY_TO_TARGET_CONE, DSColors.dynamicValue(targetingComponent), DSColors.dynamicValue(getRange(dragon, ability)));
         }
     }
 

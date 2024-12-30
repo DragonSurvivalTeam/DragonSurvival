@@ -39,7 +39,7 @@ public class DSColors {
     public static final int SEA_TOP = 0x5DC9FF;
     public static final int SEA_BOTTOM = 0x316D90;
 
-    public static Component blue(final Object value) {
+    public static Component dynamicValue(final Object value) {
         return withColor(value, BLUE);
     }
 

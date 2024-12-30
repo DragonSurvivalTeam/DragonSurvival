@@ -1,17 +1,20 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.HarvestBonus;
+import by.dragonsurvivalteam.dragonsurvival.util.ToolUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import org.jetbrains.annotations.NotNull;
 
-@EventBusSubscriber
+@EventBusSubscriber // Only relevant for Players since the harvest events are only fired for them
 public class HarvestBonuses extends Storage<HarvestBonus.Instance> {
     public int getHarvestBonus(final BlockState state) {
         if (storage == null) {
@@ -41,15 +44,28 @@ public class HarvestBonuses extends Storage<HarvestBonus.Instance> {
         return multiplier;
     }
 
+    /**
+     * Determines if the player can harvest the provided block state
+     * @param considerTool if 'true' the main hand harvest level will be added (determined by {@link ToolUtils#toolToHarvestLevel(ItemStack)})
+     */
+    public static boolean canHarvest(final Player player, final BlockState state, boolean considerTool) {
+        int bonus = player.getExistingData(DSDataAttachments.HARVEST_BONUSES).map(data -> data.getHarvestBonus(state)).orElse(HarvestBonus.NO_BONUS_VALUE);
+
+        if (considerTool) {
+            return bonus + ToolUtils.toolToHarvestLevel(player.getMainHandItem()) > ToolUtils.getRequiredHarvestLevel(state);
+        }
+
+        return bonus >= ToolUtils.getRequiredHarvestLevel(state);
+    }
+
     @SubscribeEvent
     public static void tickData(final EntityTickEvent.Post event) {
-        // TODO :: could these be relevant for non-living entities?
-        if (event.getEntity() instanceof LivingEntity livingEntity) {
-            livingEntity.getExistingData(DSDataAttachments.HARVEST_BONUSES).ifPresent(storage -> {
+        if (event.getEntity() instanceof Player player) {
+            player.getExistingData(DSDataAttachments.HARVEST_BONUSES).ifPresent(storage -> {
                 storage.tick();
 
                 if (storage.isEmpty()) {
-                    livingEntity.removeData(DSDataAttachments.HARVEST_BONUSES);
+                    player.removeData(DSDataAttachments.HARVEST_BONUSES);
                 }
             });
         }
@@ -63,5 +79,10 @@ public class HarvestBonuses extends Storage<HarvestBonus.Instance> {
     @Override
     protected HarvestBonus.Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag tag) {
         return HarvestBonus.Instance.load(provider, tag);
+    }
+
+    @Override
+    public AttachmentType<?> type() {
+        return DSDataAttachments.HARVEST_BONUSES.get();
     }
 }

@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.util;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
@@ -11,6 +12,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.fml.loading.FMLLoader;
 import org.joml.Vector3f;
 import software.bernie.geckolib.util.RenderUtil;
 
@@ -283,5 +285,13 @@ public class Functions {
         sunAngle = sunAngle + (angleTarget - sunAngle) * 0.2f;
         // 1 means it's a time of 6000 (sun is at the highest point)
         return Mth.cos(sunAngle);
+    }
+
+    public static void logOrThrow(final String message) {
+        if (FMLLoader.isProduction()) {
+            DragonSurvival.LOGGER.error(message);
+        } else {
+            throw new IllegalStateException(message);
+        }
     }
 }

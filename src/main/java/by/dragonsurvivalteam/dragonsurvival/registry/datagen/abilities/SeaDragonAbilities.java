@@ -400,7 +400,7 @@ public class SeaDragonAbilities {
                         HarvestBonusEffect.single(new HarvestBonus(
                                 DragonSurvival.res("sea_claws_and_teeth"),
                                 Optional.of(context.lookup(Registries.BLOCK).getOrThrow(DSBlockTags.SEA_DRAGON_HARVESTABLE)),
-                                LevelBasedValue.constant(1),
+                                LevelBasedValue.perLevel(1, 0.5f),
                                 LevelBasedValue.perLevel(0.5f),
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)
                         )),

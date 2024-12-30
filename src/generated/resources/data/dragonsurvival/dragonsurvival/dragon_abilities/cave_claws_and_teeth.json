@@ -13,7 +13,11 @@
                     "base": 0.5,
                     "per_level_above_first": 0.5
                   },
-                  "harvest_bonus": 1.0,
+                  "harvest_bonus": {
+                    "type": "minecraft:linear",
+                    "base": 1.0,
+                    "per_level_above_first": 0.5
+                  },
                   "id": "dragonsurvival:cave_claws_and_teeth"
                 }
               ],

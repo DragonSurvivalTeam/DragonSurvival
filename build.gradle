@@ -80,11 +80,11 @@ dependencies {
 	runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
 
 	// Test
-//	implementation "curse.maven:jade-324717:5846105" // 15.8.2
+	implementation "curse.maven:jade-324717:5846105" // 15.8.2
+
 //	implementation "maven.modrinth:sodium:mc1.21-0.6.0-beta.2-neoforge"
 //	implementation "curse.maven:irisshaders-455508:5765375" // 1.8 Beta 5
 
-	// Has issues with game tests
 //	implementation "curse.maven:apothic-attributes-898963:5751458" // 2.4.0
 //	implementation "curse.maven:placebo-283644:5869769" // 9.5.4
 

@@ -153,7 +153,11 @@ public class LangKey {
     @Translation(type = Translation.Type.MISC, comments = " with a %s chance")
     public static final String ABILITY_EFFECT_CHANCE = Translation.Type.ABILITY.wrap("general.ability.effect_chance");
 
-    @Translation(type = Translation.Type.MISC, comments = "§6■ Harvest Level Bonus:§r %s")
+    @Translation(type = Translation.Type.MISC, comments = {
+            "§6■ Harvest Bonus:§r",
+            " - Harvest level: %s",
+            " - Break speed: %s"
+    })
     public static final String ABILITY_HARVEST_LEVEL_BONUS = Translation.Type.ABILITY.wrap("general.ability.harvest_level_bonus");
 
     @Translation(type = Translation.Type.MISC, comments = "§6■ Immune§r to ")

@@ -13,6 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.event.entity.EntityInvulnerabilityCheckEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
@@ -30,6 +31,10 @@ import org.jetbrains.annotations.Nullable;
 public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
     public static final String MOVEMENT_BEHAVIOUR = "movement_behaviour";
     public static final String ATTACK_BEHAVIOUR = "attack_behaviour";
+
+    // TODO :: changeable with keybinds?
+    public enum MovementBehaviour {DEFAULT, FOLLOW}
+    public enum AttackBehaviour {DEFAULT, DEFENSIVE, AGGRESSIVE}
 
     private MovementBehaviour movementBehaviour = MovementBehaviour.FOLLOW;
     private AttackBehaviour attackBehaviour = AttackBehaviour.DEFENSIVE;
@@ -138,9 +143,7 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
                 }
 
                 if (instance.baseData().shouldSetAllied()) {
-                    try {
-                        mob.goalSelector.addGoal(3, new FollowSummonerGoal(mob, 1, 10, 2));
-                    } catch (IllegalArgumentException ignored) { /* Ignore due to custom path navigation */ }
+                    mob.goalSelector.addGoal(3, new FollowSummonerGoal(mob, 1, 10, 2));
                 }
             }
         });
@@ -275,12 +278,8 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
         attackBehaviour = AttackBehaviour.values()[tag.getInt(ATTACK_BEHAVIOUR)];
     }
 
-    // TODO :: changeable with keybinds?
-    public enum MovementBehaviour {
-        DEFAULT, FOLLOW
-    }
-
-    public enum AttackBehaviour {
-        DEFAULT, DEFENSIVE, AGGRESSIVE
+    @Override
+    public AttachmentType<?> type() {
+        return DSDataAttachments.SUMMONED_ENTITIES.get();
     }
 }

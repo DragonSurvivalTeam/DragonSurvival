@@ -400,7 +400,7 @@ public class CaveDragonAbilities {
                         HarvestBonusEffect.single(new HarvestBonus(
                                 DragonSurvival.res("cave_claws_and_teeth"),
                                 Optional.of(context.lookup(Registries.BLOCK).getOrThrow(DSBlockTags.CAVE_DRAGON_HARVESTABLE)),
-                                LevelBasedValue.constant(1),
+                                LevelBasedValue.perLevel(1, 0.5f),
                                 LevelBasedValue.perLevel(0.5f),
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)
                         )),

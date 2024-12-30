@@ -16,7 +16,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilit
 import by.dragonsurvivalteam.dragonsurvival.util.ExperienceUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
@@ -89,10 +88,6 @@ public class DragonAbilityScreen extends Screen {
     public DragonAbilityScreen(Screen sourceScreen) {
         super(Component.empty());
         this.sourceScreen = sourceScreen;
-    }
-
-    public List<? extends GuiEventListener> widgetList() {
-        return children();
     }
 
     @Override
@@ -208,6 +203,8 @@ public class DragonAbilityScreen extends Screen {
 
         //noinspection DataFlowIssue -> player is present
         MagicData data = MagicData.getData(minecraft.player);
+        // TODO :: need some consistent order - could do it based on a tag (that is what enchantments and dragon bodies are doing)
+        //  or on some other factors (level -> name e.g.)
         List<DragonAbilityInstance> actives = data.getActiveAbilities();
         List<DragonAbilityInstance> upgradablePassives = data.getPassiveAbilities(true);
         List<DragonAbilityInstance> constantPassives = data.getPassiveAbilities(false);
@@ -217,7 +214,7 @@ public class DragonAbilityScreen extends Screen {
         scrollableComponents.add(new AbilityColumnsComponent(this,guiLeft + 186, guiTop, 40, 20, 0.8f, 0.5f, constantPassives));
 
         // Left panel (hotbar)
-        for(int i = 0; i < MagicData.HOTBAR_SLOTS; i++) {
+        for (int i = 0; i < MagicData.HOTBAR_SLOTS; i++) {
             AbstractWidget widget = new AbilityButton(guiLeft - 35, guiTop + i * 40, data.fromSlot(i), this, true, i);
             addRenderableWidget(widget);
             leftWindowWidgets.add(widget);

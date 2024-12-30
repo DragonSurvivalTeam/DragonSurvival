@@ -9,6 +9,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -16,7 +17,8 @@ import org.jetbrains.annotations.NotNull;
 
 @EventBusSubscriber
 public class ModifiersWithDuration extends Storage<ModifierWithDuration.Instance> {
-    public void syncModifiersToPlayer(final ServerPlayer player) {
+    @Override
+    public void sync(final ServerPlayer player) {
         if (storage == null) {
             return;
         }
@@ -57,5 +59,14 @@ public class ModifiersWithDuration extends Storage<ModifierWithDuration.Instance
     @Override
     protected ModifierWithDuration.Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag tag) {
         return ModifierWithDuration.Instance.load(provider, tag);
+    }
+
+    public static ModifiersWithDuration getData(final LivingEntity entity) {
+        return entity.getData(DSDataAttachments.MODIFIERS_WITH_DURATION);
+    }
+
+    @Override
+    public AttachmentType<?> type() {
+        return DSDataAttachments.MODIFIERS_WITH_DURATION.get();
     }
 }

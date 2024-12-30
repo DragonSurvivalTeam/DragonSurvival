@@ -5,7 +5,6 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.GrowthComponent;
 import by.dragonsurvivalteam.dragonsurvival.commands.DragonCommand;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.subcapabilities.SkinCap;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.subcapabilities.SubCap;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.HarvestBonus;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.ValueBasedUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.common.items.growth.StarHeartItem;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
@@ -85,10 +84,11 @@ public class DragonStateHandler extends EntityStateHandler {
     public void setStage(@Nullable final Player player, final Holder<DragonStage> dragonStage) {
         if (!dragonType.value().getStages(player != null ? player.registryAccess() : null).contains(dragonStage)) {
             //noinspection DataFlowIssue -> key is present
-            throw new IllegalArgumentException("The dragon stage [" + dragonStage.getKey().location() + "] is not valid for the dragon type [" + dragonType.getKey().location() + "]");
+            Functions.logOrThrow("The dragon stage [" + dragonStage.getKey().location() + "] is not valid for the dragon type [" + dragonType.getKey().location() + "]");
+            return;
         }
 
-        setSize(player, dragonStage.value().getBoundedSize(size));
+        setDesiredSize(player, dragonStage.value().getBoundedSize(size));
     }
 
     /**
@@ -345,34 +345,16 @@ public class DragonStateHandler extends EntityStateHandler {
 
     /** Determines if the current dragon type can harvest the supplied block (with or without tools) (configured harvest bonuses are taken into account) */
     public boolean canHarvestWithPaw(final Player player, final BlockState state) {
-        if (isDragon() && ClawInventoryData.getData(player).hasValidClawTool(state)) {
+        if (!ToolUtils.shouldUseDragonTools(player.getMainHandItem())) {
+            // Player is holding a tool in the hotbar
+            return HarvestBonuses.canHarvest(player, state, true);
+        }
+
+        if (ClawInventoryData.getData(player).hasValidClawTool(state)) {
             return true;
         }
 
-        return canHarvestWithPawNoTools(player, state);
-    }
-
-    /** Determines if the current dragon type can harvest the supplied block without a tool (configured harvest bonuses are taken into account) */
-    public boolean canHarvestWithPawNoTools(final Player player, final BlockState state) {
-        if (!isDragon()) {
-            return false;
-        }
-
-        return getDragonHarvestLevel(player, state) >= ToolUtils.getRequiredHarvestLevel(state);
-    }
-
-    public int getDragonHarvestLevel(final Player player, @Nullable final BlockState state) {
-        if (!isDragon()) {
-            return HarvestBonus.NO_BONUS_VALUE;
-        }
-
-        int harvestLevel = HarvestBonus.NO_BONUS_VALUE;
-
-        if (state != null) {
-            harvestLevel += player.getExistingData(DSDataAttachments.HARVEST_BONUSES).map(data -> data.getHarvestBonus(state)).orElse(HarvestBonus.NO_BONUS_VALUE);
-        }
-
-        return harvestLevel;
+        return HarvestBonuses.canHarvest(player, state, false);
     }
 
     public void setPassengerId(int passengerId) {
@@ -383,9 +365,10 @@ public class DragonStateHandler extends EntityStateHandler {
         this.destructionEnabled = destructionEnabled;
     }
 
-    public double getVisualSize(float partialTick) throws IllegalAccessException {
+    public double getVisualSize(float partialTick) {
         if (!DragonSurvival.PROXY.isOnRenderThread()) {
-            throw new IllegalAccessException("Visual size should only be retrieved for rendering-purposes");
+            Functions.logOrThrow("Visual size should only be retrieved for rendering-purposes");
+            return size;
         }
 
         return Mth.lerp(partialTick, visualSizeLastTick, visualSize);

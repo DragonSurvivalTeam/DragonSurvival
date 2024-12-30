@@ -29,20 +29,18 @@ public record SpinOrFlightEffect(int flightLevel, int spinLevel, Holder<FluidTyp
     ).apply(instance, SpinOrFlightEffect::new));
 
     @Override
-    public void apply(ServerPlayer dragon, DragonAbilityInstance ability, Entity entity) {
-        if(dragon != entity) {
-            throw new IllegalArgumentException("The entity must be the same as the dragon for SpinOrFlightEffect.");
-        }
-
+    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity) {
         FlightData data = FlightData.getData(dragon);
-        boolean prevFlight = data.hasFlight;
+        boolean hadFlight = data.hasFlight;
         data.hasFlight = ability.level() >= flightLevel;
-        if(prevFlight != data.hasFlight) {
+
+        if (hadFlight != data.hasFlight) {
             PacketDistributor.sendToPlayersTrackingEntityAndSelf(dragon, new FlightStatus(dragon.getId(), data.hasFlight));
         }
 
-        boolean prevSpin = data.hasSpin;
-        if(ability.level() >= spinLevel) {
+        boolean hadSpin = data.hasSpin;
+
+        if (ability.level() >= spinLevel) {
             data.hasSpin = true;
             data.swimSpinFluid = swimSpinFluid;
         } else {
@@ -50,7 +48,7 @@ public record SpinOrFlightEffect(int flightLevel, int spinLevel, Holder<FluidTyp
             data.swimSpinFluid = null;
         }
 
-        if(prevSpin != data.hasSpin) {
+        if (hadSpin != data.hasSpin) {
             PacketDistributor.sendToPlayersTrackingEntityAndSelf(dragon, new SpinStatus(dragon.getId(), data.hasSpin, data.swimSpinFluid.getKey()));
         }
     }
@@ -61,11 +59,12 @@ public record SpinOrFlightEffect(int flightLevel, int spinLevel, Holder<FluidTyp
     @Override
     public List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
         List<MutableComponent> components = new ArrayList<>();
-        if(ability.level() >= flightLevel) {
+
+        if (ability.level() >= flightLevel) {
             components.add(Component.translatable(LangKey.ABILITY_FLIGHT));
         }
 
-        if(ability.level() >= spinLevel) {
+        if (ability.level() >= spinLevel) {
             components.add(Component.translatable(LangKey.ABILITY_SPIN));
         }
 

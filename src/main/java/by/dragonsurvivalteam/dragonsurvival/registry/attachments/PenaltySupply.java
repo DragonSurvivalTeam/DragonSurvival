@@ -98,7 +98,7 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
         supplyData.put(supplyType, new Data(maximumSupply, maximumSupply, reductionRate, regenerationRate));
     }
 
-    public void syncPenaltySupplyToPlayer(final ServerPlayer player) {
+    public void sync(final ServerPlayer player) {
         PacketDistributor.sendToPlayer(player, new SyncPenaltySupply(serializeNBT(player.registryAccess())));
     }
 
@@ -112,10 +112,6 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
 
     public void clear() {
         supplyData.clear();
-    }
-
-    public static PenaltySupply getData(final Player player) {
-        return player.getData(DSDataAttachments.PENALTY_SUPPLY);
     }
 
     @SubscribeEvent
@@ -151,19 +147,6 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
         }
 
         getData(player).replenishSupplyFromItemStack(player, destroyItemEvent.getItem());
-    }
-
-    @Override
-    public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
-        CompoundTag tag = new CompoundTag();
-        supplyData.forEach((key, value) -> tag.put(key, value.serializeNBT()));
-        return tag;
-    }
-
-    @Override
-    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag tag) {
-        supplyData.clear();
-        tag.getAllKeys().forEach(key -> supplyData.put(key, Data.deserializeNBT(tag.getCompound(key))));
     }
 
     private void replenishSupplyFromItemStack(final ServerPlayer player, final ItemStack stack) {
@@ -215,6 +198,23 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
 
         data.regeneratePercentage(amount);
         PacketDistributor.sendToPlayer(player, new SyncPenaltySupplyAmount(supplyType, data.getSupply()));
+    }
+
+    @Override
+    public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
+        CompoundTag tag = new CompoundTag();
+        supplyData.forEach((key, value) -> tag.put(key, value.serializeNBT()));
+        return tag;
+    }
+
+    @Override
+    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag tag) {
+        supplyData.clear();
+        tag.getAllKeys().forEach(key -> supplyData.put(key, Data.deserializeNBT(tag.getCompound(key))));
+    }
+
+    public static PenaltySupply getData(final Player player) {
+        return player.getData(DSDataAttachments.PENALTY_SUPPLY);
     }
 
     private static class Data {

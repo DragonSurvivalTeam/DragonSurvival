@@ -55,9 +55,9 @@ public record LookingAtTarget(Either<BlockTargeting, EntityTargeting> target, Le
         Component targetingComponent = target.map(block -> null, entity -> entity.targetingMode().translation());
 
         if (targetingComponent == null) {
-            return Component.translatable(LangKey.ABILITY_LOOK_AT, DSColors.blue(range.calculate(ability.level())));
+            return Component.translatable(LangKey.ABILITY_LOOK_AT, DSColors.dynamicValue(range.calculate(ability.level())));
         } else {
-            return Component.translatable(LangKey.ABILITY_LOOK_AT_TARGET, DSColors.blue(targetingComponent), DSColors.blue(range.calculate(ability.level())));
+            return Component.translatable(LangKey.ABILITY_LOOK_AT_TARGET, DSColors.dynamicValue(targetingComponent), DSColors.dynamicValue(range.calculate(ability.level())));
         }
     }
 

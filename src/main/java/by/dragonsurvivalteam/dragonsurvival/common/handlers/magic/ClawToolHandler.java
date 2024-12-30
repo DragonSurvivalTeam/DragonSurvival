@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.config.server.dragon.DragonBonusConf
 import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncBrokenTool;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HarvestBonuses;
 import by.dragonsurvivalteam.dragonsurvival.util.ToolUtils;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.Holder;
@@ -95,19 +96,24 @@ public class ClawToolHandler {
     }
 
     @SubscribeEvent
-    public static void dropBlocksMinedByPaw(PlayerEvent.HarvestCheck harvestCheck) {
-        Player player = harvestCheck.getEntity();
-        DragonStateHandler data = DragonStateProvider.getData(player);
-
-        if (!data.isDragon()) {
+    public static void dropBlocksMinedByPaw(final PlayerEvent.HarvestCheck event) {
+        if (event.canHarvest()) {
             return;
         }
 
-        ItemStack stack = player.getMainHandItem();
-        BlockState state = harvestCheck.getTargetBlock();
+        Player player = event.getEntity();
+        DragonStateHandler data = DragonStateProvider.getData(player);
 
-        if (!harvestCheck.canHarvest() && ToolUtils.shouldUseDragonTools(stack)) {
-            harvestCheck.setCanHarvest(data.canHarvestWithPaw(player, state));
+        boolean canHarvest;
+
+        if (data.isDragon()) {
+            canHarvest = data.canHarvestWithPaw(player, event.getTargetBlock());
+        } else {
+            canHarvest = HarvestBonuses.canHarvest(player, event.getTargetBlock(), true);
+        }
+
+        if (canHarvest) {
+            event.setCanHarvest(true);
         }
     }
 

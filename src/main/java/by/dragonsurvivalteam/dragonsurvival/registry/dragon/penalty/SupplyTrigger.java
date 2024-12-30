@@ -72,7 +72,7 @@ public record SupplyTrigger(String id, Holder<Attribute> attributeToUseAsBase, i
             if (seconds == 0) {
                 return Component.translatable(LangKey.PENALTY_SUPPLY_TRIGGER_CONSTANT);
             } else {
-                return Component.translatable(LangKey.PENALTY_SUPPLY_TRIGGER, DSColors.blue(String.format("%.1f", seconds)));
+                return Component.translatable(LangKey.PENALTY_SUPPLY_TRIGGER, DSColors.dynamicValue(String.format("%.1f", seconds)));
             }
         }
     }

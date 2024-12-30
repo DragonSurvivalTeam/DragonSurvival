@@ -142,7 +142,7 @@ public class ClawInventoryData implements INBTSerializable<CompoundTag> {
         for (int i = 0; i < 4; i++) {
             ItemStack stack = getContainer().getItem(i);
 
-            if (stack.isCorrectToolForDrops(state) || stack.getDestroySpeed(state) > 1) {
+            if (stack.isCorrectToolForDrops(state)) {
                 return true;
             }
         }

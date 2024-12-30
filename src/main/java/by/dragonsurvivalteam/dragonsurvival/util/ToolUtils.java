@@ -8,7 +8,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.Tags;
-import org.jetbrains.annotations.Nullable;
 
 public class ToolUtils {
     public static boolean shouldUseDragonTools(final ItemStack itemStack) {
@@ -45,32 +44,36 @@ public class ToolUtils {
 
     public static int getRequiredHarvestLevel(final BlockState state) {
         if (state.is(Tags.Blocks.NEEDS_NETHERITE_TOOL)) {
-            return 4;
+            return 5;
         } else if (state.is(BlockTags.NEEDS_DIAMOND_TOOL)) {
-            return 3;
+            return 4;
         } else if (state.is(BlockTags.NEEDS_IRON_TOOL)) {
-            return 2;
+            return 3;
         } else if (state.is(BlockTags.NEEDS_STONE_TOOL)) {
+            return 2;
+        } else if (state.requiresCorrectToolForDrops()) {
             return 1;
         }
+
+        // There is 'Tags.Blocks.NEEDS_WOOD_TOOL' / 'Tags.Blocks.NEEDS_GOLD_TOOL' but they don't seem to be used
 
         return 0;
     }
 
-    /** Converts the supplied harvest level to a corresponding vanilla {@link Tier} */
-    public static @Nullable Tier harvestLevelToTier(int harvestLevel) {
-        if (harvestLevel == 0) {
-            return Tiers.WOOD;
-        } else if (harvestLevel == 1) {
-            return Tiers.STONE;
-        } else if (harvestLevel == 2) {
-            return Tiers.IRON;
-        } else if (harvestLevel == 3) {
-            return Tiers.DIAMOND;
-        } else if (harvestLevel > 4) {
-            return Tiers.NETHERITE;
+    public static int toolToHarvestLevel(final ItemStack stack) {
+        Item item = stack.getItem();
+
+        if (item instanceof TieredItem tiered) {
+            return switch (tiered.getTier()) {
+                case Tiers.WOOD, Tiers.GOLD -> 1;
+                case Tiers.STONE -> 2;
+                case Tiers.IRON -> 3;
+                case Tiers.DIAMOND -> 4;
+                case Tiers.NETHERITE -> 5;
+                default -> 0;
+            };
         }
 
-        return null;
+        return 0;
     }
 }
