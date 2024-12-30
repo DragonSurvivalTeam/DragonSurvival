@@ -800,12 +800,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
             preset.deserializeNBT(access, this.preset.serializeNBT(access));
             preset.put(dragonStage.getKey(), Lazy.of(() -> new DragonStageCustomization(dragonStage.getKey().location(), dragonType.getKey())));
             actionHistory.add(new EditorAction<>(setSkinPresetAction, preset.serializeNBT(access)));
-        }) {
-            @Override
-            public void renderWidget(@NotNull final GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
-                guiGraphics.blit(RESET_ICON, getX(), getY(), 0, 0, width, height, width, height);
-            }
-        };
+        });
         resetButton.setTooltip(Tooltip.create(Component.translatable(RESET)));
         addRenderableWidget(resetButton);
 
