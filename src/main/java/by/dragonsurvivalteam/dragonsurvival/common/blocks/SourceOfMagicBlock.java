@@ -54,8 +54,8 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.concurrent.atomic.AtomicBoolean;
 import javax.annotation.Nullable;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 // TODO :: add a generic one (same for doors, pressure plates) which is handled through some level storage
 //  (said storage contains the relevant types and effects etc. per position aka place block)
@@ -321,7 +321,12 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
 
         SourceOfMagicTileEntity source = getSource(level, sourcePosition);
 
-        if (source == null || !interactWith(entity)) {
+        if (source == null) {
+            return;
+        }
+
+        if (!shouldHurt(entity)) {
+            // TODO :: player animation?
             return;
         }
 
@@ -349,18 +354,14 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
         }
     }
 
-    private boolean interactWith(final Entity entity) {
+    private boolean shouldHurt(final Entity entity) {
         if (entity instanceof ItemEntity) {
             return true;
         }
 
-        if (types == null) {
-            return false;
-        }
-
         if (entity instanceof Player player) {
             DragonStateHandler data = DragonStateProvider.getData(player);
-            return data.isDragon() && data.species().is(types);
+            return data.isDragon() && types != null && data.species().is(types);
         }
 
         return false;
