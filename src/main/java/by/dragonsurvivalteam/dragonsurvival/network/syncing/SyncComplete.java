@@ -32,10 +32,10 @@ public class SyncComplete implements IMessage<SyncComplete.Data> {
         if (entity instanceof Player player) {
             context.enqueueWork(() -> {
                 DragonStateHandler handler = DragonStateProvider.getData(player);
-                Holder<DragonType> oldType = handler.getType();
+                Holder<DragonType> oldType = handler.species();
                 handler.deserializeNBT(player.registryAccess(), message.nbt);
 
-                if (!DragonUtils.isType(oldType, handler.getType())) {
+                if (!DragonUtils.isType(oldType, handler.species())) {
                     handler.refreshDataOnTypeChange(player);
                 }
 
@@ -58,7 +58,7 @@ public class SyncComplete implements IMessage<SyncComplete.Data> {
         Player player = context.player();
         context.enqueueWork(() -> {
                     DragonStateHandler handler = DragonStateProvider.getData(player);
-                    Holder<DragonType> previousType = handler.getDragonType();
+                    Holder<DragonType> previousType = handler.species();
                     handler.deserializeNBT(player.registryAccess(), message.nbt);
                     // When we are sending a complete sync to the client, the client has requested it. This happens in two cases:
                     // 1. When the player changes dragon type in the dragon selection screen
@@ -66,7 +66,7 @@ public class SyncComplete implements IMessage<SyncComplete.Data> {
                     // In both of these cases, we want to make sure to refresh the magic data and penalty supply if the server isn't set to save it
 
                     // TODO: This doesn't fully work with saveAllAbilities config. We'd need to make a mapping of dragon types to magicData instances.
-                    if (previousType == null || (!ServerConfig.saveAllAbilities && !previousType.is(handler.getType()))) {
+                    if (previousType == null || (!ServerConfig.saveAllAbilities && !previousType.is(handler.species()))) {
                         handler.refreshDataOnTypeChange(player);
                     }
                     handleDragonSync(player);

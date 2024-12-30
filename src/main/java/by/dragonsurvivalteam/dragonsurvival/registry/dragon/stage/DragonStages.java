@@ -59,8 +59,6 @@ public class DragonStages {
                         Modifier.per(Attributes.MAX_HEALTH, 0.5f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.per(DSAttributes.DRAGON_BREATH_RANGE, 0.05f, AttributeModifier.Operation.ADD_VALUE)
                 ),
-                0,
-                1.5,
                 List.of(
                         MiscCodecs.GrowthItem.create(Functions.hoursToTicks(1), DSItems.ELDER_DRAGON_HEART.value()),
                         MiscCodecs.GrowthItem.create(Functions.minutesToTicks(30), DSItems.WEAK_DRAGON_HEART.value()),
@@ -92,8 +90,6 @@ public class DragonStages {
                         Modifier.per(Attributes.MAX_HEALTH, 0.5f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.per(DSAttributes.DRAGON_BREATH_RANGE, 0.05f, AttributeModifier.Operation.ADD_VALUE)
                 ),
-                1,
-                2,
                 List.of(
                         MiscCodecs.GrowthItem.create(Functions.hoursToTicks(1), DSItems.ELDER_DRAGON_HEART.value()),
                         MiscCodecs.GrowthItem.create(Functions.minutesToTicks(30), DSItems.WEAK_DRAGON_HEART.value()),
@@ -124,8 +120,6 @@ public class DragonStages {
                         Modifier.per(Attributes.MAX_HEALTH, 0.5f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.per(DSAttributes.DRAGON_BREATH_RANGE, 0.05f, AttributeModifier.Operation.ADD_VALUE)
                 ),
-                1,
-                3,
                 List.of(
                         MiscCodecs.GrowthItem.create(Functions.hoursToTicks(1), DSItems.ELDER_DRAGON_HEART.value()),
                         MiscCodecs.GrowthItem.create(Functions.hoursToTicks(-1), DSItems.STAR_BONE.value())

@@ -87,7 +87,7 @@ public class EnchantmentEffectHandler {
 
     private static double getStolenTime(DragonStateHandler handler) {
         int ticksToSteal = Functions.minutesToTicks(30); // TODO :: make this configurable in the enchantment
-        DragonStage level = handler.getStage().value();
+        DragonStage level = handler.stage().value();
         return level.ticksToSize(ticksToSteal);
     }
 }

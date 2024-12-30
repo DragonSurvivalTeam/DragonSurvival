@@ -33,7 +33,7 @@ public class DragonDestructionHandler {
     public static float boundingBoxSizeRatioForCrushing = 4.0f;
 
     private static void checkAndDestroyCollidingBlocks(DragonStateHandler data, PlayerTickEvent event, AABB boundingBox) {
-        MiscCodecs.DestructionData destructionData = data.getStage().value().destructionData().orElse(null);
+        MiscCodecs.DestructionData destructionData = data.stage().value().destructionData().orElse(null);
         if (destructionData == null || !destructionData.isBlockDestructionAllowed(data.getSize())) {
             return;
         }
@@ -79,7 +79,7 @@ public class DragonDestructionHandler {
     }
 
     private static void checkAndDamageCrushedEntities(DragonStateHandler data, ServerPlayer player, AABB boundingBox) {
-        MiscCodecs.DestructionData destructionData = data.getStage().value().destructionData().orElse(null);
+        MiscCodecs.DestructionData destructionData = data.stage().value().destructionData().orElse(null);
         if (destructionData == null || !destructionData.isCrushingAllowed(data.getSize())) {
             return;
         }
@@ -131,7 +131,7 @@ public class DragonDestructionHandler {
             return;
         }
 
-        MiscCodecs.DestructionData destructionData = data.getStage().value().destructionData().orElse(null);
+        MiscCodecs.DestructionData destructionData = data.stage().value().destructionData().orElse(null);
         if (destructionData == null || !destructionData.isDestructionAllowed(data.getSize())) {
             return;
         }

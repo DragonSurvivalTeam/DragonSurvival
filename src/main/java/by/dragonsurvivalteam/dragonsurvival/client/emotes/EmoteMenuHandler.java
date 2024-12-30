@@ -106,7 +106,7 @@ public class EmoteMenuHandler {
         if (screen instanceof ChatScreen chatScreen && DragonStateProvider.isDragon(Minecraft.getInstance().player)) {
             emoteButtons.clear();
             DragonStateHandler handler = DragonStateProvider.getData(Minecraft.getInstance().player);
-            List<DragonEmote> emotes = handler.getBody().value().emotes().value().emotes();
+            List<DragonEmote> emotes = handler.body().value().emotes().value().emotes();
             emotePage = Mth.clamp(emotePage, 0, maxPages(emotes) - 1);
 
             if (emotes.isEmpty()) {
@@ -362,7 +362,7 @@ public class EmoteMenuHandler {
 
         DragonEntity dragon = atomicDragon.get();
         DragonStateHandler handler = DragonStateProvider.getData(Minecraft.getInstance().player);
-        DragonEmote emote = handler.getBody().value().emotes().value().getEmote(key);
+        DragonEmote emote = handler.body().value().emotes().value().getEmote(key);
         dragon.beginPlayingEmote(emote);
         PacketDistributor.sendToServer(new SyncEmote(Minecraft.getInstance().player.getId(), emote, false));
     }
@@ -383,7 +383,7 @@ public class EmoteMenuHandler {
     public static List<DragonEmote> getShownEmotes() {
         //noinspection DataFlowIssue -> player is present
         DragonStateHandler handler = DragonStateProvider.getData(Minecraft.getInstance().player);
-        List<DragonEmote> emotes = handler.getBody().value().emotes().value().emotes();
+        List<DragonEmote> emotes = handler.body().value().emotes().value().emotes();
         List<DragonEmote> shownEmotes = new ArrayList<>();
 
         for (int index = emotePage * PER_PAGE; index < emotes.size(); index++) {

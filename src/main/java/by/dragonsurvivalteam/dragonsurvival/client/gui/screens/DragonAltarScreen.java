@@ -101,11 +101,11 @@ public class DragonAltarScreen extends Screen {
             animation1++;
             animation2++;
 
-            if (handler1.getBody() == null) {
+            if (handler1.body() == null) {
                 handler1.setBody(null, DragonBody.random(null));
             }
 
-            handler2.setBody(null, handler1.getBody());
+            handler2.setBody(null, handler1.body());
             handler1.setBody(null, DragonBody.random(null));
 
             if (animation1 >= animations.length) {
@@ -163,14 +163,14 @@ public class DragonAltarScreen extends Screen {
     }
 
     private void initializeHandler(final DragonStateHandler handler) {
-        if (handler.getBody() == null) {
+        if (handler.body() == null) {
             handler.setBody(null, DragonBody.random(null));
         }
 
         //noinspection DataFlowIssue -> registry is expected to be present
         Holder.Reference<DragonStage> dragonStage = CommonHooks.resolveLookup(DragonStage.REGISTRY).getOrThrow(DragonStages.adult);
         handler.setStage(null, dragonStage);
-        handler.getSkinData().get(handler.getStage().getKey()).get().defaultSkin = true;
+        handler.getSkinData().get(handler.stageKey()).get().defaultSkin = true;
     }
 
     @Override

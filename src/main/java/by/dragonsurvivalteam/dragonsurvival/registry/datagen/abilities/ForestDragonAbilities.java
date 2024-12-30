@@ -354,8 +354,9 @@ public class ForestDragonAbilities {
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         HarvestBonusEffect.single(new HarvestBonus(
                                 DragonSurvival.res("forest_claws_and_teeth"),
-                                context.lookup(Registries.BLOCK).getOrThrow(DSBlockTags.FOREST_DRAGON_HARVESTABLE),
+                                Optional.of(context.lookup(Registries.BLOCK).getOrThrow(DSBlockTags.FOREST_DRAGON_HARVESTABLE)),
                                 LevelBasedValue.constant(1),
+                                LevelBasedValue.perLevel(0.5f),
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)
                         )),
                         AbilityTargeting.EntityTargetingMode.TARGET_ALLIES

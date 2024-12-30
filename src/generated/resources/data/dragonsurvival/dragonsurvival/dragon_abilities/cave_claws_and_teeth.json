@@ -7,8 +7,13 @@
             {
               "bonuses": [
                 {
-                  "applicable_to": "#dragonsurvival:cave_dragon_harvestable",
-                  "bonus": 1.0,
+                  "blocks": "#dragonsurvival:cave_dragon_harvestable",
+                  "break_speed_multiplier": {
+                    "type": "minecraft:linear",
+                    "base": 0.5,
+                    "per_level_above_first": 0.5
+                  },
+                  "harvest_bonus": 1.0,
                   "id": "dragonsurvival:cave_claws_and_teeth"
                 }
               ],

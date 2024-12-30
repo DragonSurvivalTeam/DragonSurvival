@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.ValueBasedUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
@@ -20,6 +21,6 @@ public abstract class ServerPlayerMixin extends Player {
     /** The 'set (...) levels' command does not trigger the neoforge event */
     @Inject(method = "setExperienceLevels", at = @At("TAIL"))
     private void dragonSurvival$triggerPassiveAbilityUpgrades(int level, final CallbackInfo callback) {
-        MagicData.handlePassiveAbilityUpgrades(this, level);
+        MagicData.getData(this).handleValueUpgrades(this, ValueBasedUpgrade.InputData.passive(level));
     }
 }

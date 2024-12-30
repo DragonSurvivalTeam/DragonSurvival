@@ -57,7 +57,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
     private boolean castWasDenied;
     private int castTimer;
 
-    public static MagicData getData(Player player) {
+    public static MagicData getData(final Player player) {
         return player.getData(DSDataAttachments.MAGIC);
     }
 
@@ -127,31 +127,11 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         }));
     }
 
-    public static void handlePassiveAbilityUpgrades(final Player player, int experienceLevels) {
+    public void handleValueUpgrades(final Player player, final ValueBasedUpgrade.InputData... inputs) {
         if (!DragonStateProvider.isDragon(player)) {
             return;
         }
 
-        MagicData magic = MagicData.getData(player);
-
-        for (DragonAbilityInstance ability : magic.abilities.values()) {
-            Upgrade upgrade = ability.value().upgrade().orElse(null);
-
-            if (upgrade == null) {
-                continue;
-            }
-
-            if (upgrade.attemptUpgrade(ability, ValueBasedUpgrade.InputData.passive(experienceLevels))) {
-                if (player instanceof ServerPlayer serverPlayer) {
-                    PacketDistributor.sendToPlayer(serverPlayer, new SyncAbilityLevel(ability.key(), ability.level()));
-                } else {
-                    PacketDistributor.sendToServer(new SyncAbilityLevel(ability.key(), ability.level()));
-                }
-            }
-        }
-    }
-
-    public void handleGrowthAbilityUpgrades(final Player player, double newSize) {
         for (DragonAbilityInstance ability : abilities.values()) {
             Upgrade upgrade = ability.value().upgrade().orElse(null);
 
@@ -159,12 +139,22 @@ public class MagicData implements INBTSerializable<CompoundTag> {
                 continue;
             }
 
-            if (upgrade.attemptUpgrade(ability, ValueBasedUpgrade.InputData.passiveGrowth((int) newSize))) {
-                if (player instanceof ServerPlayer serverPlayer) {
-                    PacketDistributor.sendToPlayer(serverPlayer, new SyncAbilityLevel(ability.key(), ability.level()));
-                } else {
-                    PacketDistributor.sendToServer(new SyncAbilityLevel(ability.key(), ability.level()));
+            boolean changed = false;
+
+            for (ValueBasedUpgrade.InputData input : inputs) {
+                if (upgrade.attemptUpgrade(ability, input)) {
+                    changed = true;
                 }
+            }
+
+            if (!changed) {
+                continue;
+            }
+
+            if (player instanceof ServerPlayer serverPlayer) {
+                PacketDistributor.sendToPlayer(serverPlayer, new SyncAbilityLevel(ability.key(), ability.level()));
+            } else if (player.level().isClientSide()) {
+                PacketDistributor.sendToServer(new SyncAbilityLevel(ability.key(), ability.level()));
             }
         }
     }
@@ -353,33 +343,17 @@ public class MagicData implements INBTSerializable<CompoundTag> {
             abilities.put(ability.getKey(), instance);
         }
 
-        // Check for passive levelling abilities
-        handleGrowthAbilityUpgrades(player, DragonStateProvider.getData(player).getSize());
-        handlePassiveAbilityUpgrades(player, player.experienceLevel);
+        ValueBasedUpgrade.InputData experienceInput = ValueBasedUpgrade.InputData.passive(player.experienceLevel);
+        ValueBasedUpgrade.InputData growthInput = ValueBasedUpgrade.InputData.passiveGrowth((int) DragonStateProvider.getData(player).getSize());
+        handleValueUpgrades(player, experienceInput, growthInput);
     }
 
     public List<DragonAbilityInstance> getActiveAbilities() {
         return abilities.values().stream().filter(instance -> instance.ability().value().activation().type() != Activation.Type.PASSIVE).toList();
     }
 
-    public List<DragonAbilityInstance> getPassiveAbilities() {
-        return abilities.values().stream().filter(
-                instance -> instance.ability().value().activation().type() == Activation.Type.PASSIVE
-        ).sorted((a, b) -> Boolean.compare(b.isManuallyUpgraded(), a.isManuallyUpgraded())).toList();
-    }
-
-    public List<DragonAbilityInstance> getUpgradablePassives() {
-        return abilities.values().stream().filter(
-                instance ->
-                        instance.ability().value().activation().type() == Activation.Type.PASSIVE && instance.value().upgrade().isPresent() && instance.value().upgrade().get().type() == ValueBasedUpgrade.Type.MANUAL
-        ).toList();
-    }
-
-    public List<DragonAbilityInstance> getNonUpgradablePassives() {
-        return abilities.values().stream().filter(
-                instance ->
-                        instance.ability().value().activation().type() == Activation.Type.PASSIVE && (instance.value().upgrade().isEmpty() || instance.value().upgrade().isPresent() && instance.value().upgrade().get().type() != ValueBasedUpgrade.Type.MANUAL)
-        ).toList();
+    public List<DragonAbilityInstance> getPassiveAbilities(boolean upgradable) {
+        return abilities.values().stream().filter(instance -> instance.ability().value().activation().type() == Activation.Type.PASSIVE && instance.value().upgrade().isPresent() == upgradable).toList();
     }
 
     /** Returns the amount of experience gained / lost when down- or upgrading the ability */

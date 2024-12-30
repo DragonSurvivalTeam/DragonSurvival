@@ -41,16 +41,16 @@ public class GrowthCrystalButton extends ExtendedButton {
         double percentageFull = stage.value().getProgress(handler.getSize());
 
         if (percentageFull > 1) {
-            graphics.blit(handler.getType().value().miscResources().growthCrystal().full(), getX(), getY(), 0, 0, width, height, 8, 16);
+            graphics.blit(handler.species().value().miscResources().growthCrystal().full(), getX(), getY(), 0, 0, width, height, 8, 16);
             return;
         }
 
-        graphics.blit(handler.getType().value().miscResources().growthCrystal().empty(), getX(), getY(), 0, 0, width, height, 8, 16);
+        graphics.blit(handler.species().value().miscResources().growthCrystal().empty(), getX(), getY(), 0, 0, width, height, 8, 16);
 
         if (percentageFull > 0) {
             int scissorHeight = (int) (percentageFull * height);
             graphics.enableScissor(getX(), getY() + (height - scissorHeight), getX() + width, getY() + height);
-            graphics.blit(handler.getType().value().miscResources().growthCrystal().full(), getX(), getY(), 0, 0, width, height, 8, 16);
+            graphics.blit(handler.species().value().miscResources().growthCrystal().full(), getX(), getY(), 0, 0, width, height, 8, 16);
             graphics.disableScissor();
         }
     }
@@ -97,8 +97,6 @@ public class GrowthCrystalButton extends ExtendedButton {
         components.add(Component.translatable(LangKey.GROWTH_STARTING_SIZE, stage.value().sizeRange().min()));
         components.add(Component.translatable(LangKey.GROWTH_MAX_SIZE, stage.value().sizeRange().max()));
         components.add(Component.translatable(LangKey.GROWTH_TIME, stage.value().getTimeToGrowFormatted(false)));
-        components.add(Component.translatable(LangKey.GROWTH_HARVEST_LEVEL_BONUS, stage.value().harvestLevelBonus()));
-        components.add(Component.translatable(LangKey.GROWTH_BREAK_SPEED_MULTIPLIER, stage.value().breakSpeedMultiplier()));
 
         stage.value().destructionData().ifPresent(data -> {
             components.add(Component.translatable(LangKey.GROWTH_CAN_DESTROY_BLOCKS, data.blockDestructionSize()));

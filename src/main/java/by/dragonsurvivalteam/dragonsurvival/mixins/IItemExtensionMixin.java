@@ -22,7 +22,7 @@ public interface IItemExtensionMixin {
             DragonStateHandler handler = DragonStateProvider.getData(player);
 
             if (handler.isDragon()) {
-                return DragonFoodHandler.getDragonFoodProperties(stack, handler.getType());
+                return DragonFoodHandler.getDragonFoodProperties(stack, handler.species());
             }
         }
 

@@ -115,7 +115,7 @@ public class DragonEditorHandler {
     }
 
     public static ArrayList<String> getDragonPartKeys(final Player player, final EnumSkinLayer layer) {
-        return getDragonPartKeys(DragonStateProvider.getData(player).getType(), DragonUtils.getBody(player), layer);
+        return getDragonPartKeys(DragonStateProvider.getData(player).species(), DragonUtils.getBody(player), layer);
     }
 
     public static CompletableFuture<List<Pair<NativeImage, ResourceLocation>>> generateSkinTextures(final DragonEntity dragon) {
@@ -152,7 +152,7 @@ public class DragonEditorHandler {
         normalTarget.clear(true);
         glowTarget.clear(true);
 
-        ResourceKey<DragonStage> stageKey = Objects.requireNonNull(handler.getStage().getKey());
+        ResourceKey<DragonStage> stageKey = handler.stageKey();
         DragonStageCustomization customization = handler.getSkinData().get(stageKey).get();
         String uuid = player.getStringUUID();
 
@@ -164,14 +164,14 @@ public class DragonEditorHandler {
             String selectedSkin = settings.partKey;
 
             if (selectedSkin != null) {
-                DragonPart skinTexture = getDragonPart(layer, selectedSkin, handler.getType().getKey());
+                DragonPart skinTexture = getDragonPart(layer, selectedSkin, handler.speciesKey());
 
                 if (skinTexture != null) {
                     float hueVal = settings.hue - skinTexture.averageHue();
                     float satVal = settings.saturation;
                     float brightVal = settings.brightness;
 
-                    ResourceLocation location = getDragonPartLocation(layer, selectedSkin, handler.getType().getKey());
+                    ResourceLocation location = getDragonPartLocation(layer, selectedSkin, handler.speciesKey());
                     AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(location);
 
                     if (settings.glowing) {
@@ -241,7 +241,7 @@ public class DragonEditorHandler {
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
         List<Pair<NativeImage, ResourceLocation>> texturesToRegister = new ArrayList<>();
-        DragonStageCustomization customization = handler.getSkinData().get(handler.getStage().getKey()).get();
+        DragonStageCustomization customization = handler.getSkinData().get(handler.stageKey()).get();
         NativeImage normal = new NativeImage(512, 512, true);
         NativeImage glow = new NativeImage(512, 512, true);
 
@@ -250,14 +250,14 @@ public class DragonEditorHandler {
             String selectedSkin = settings.partKey;
 
             if (selectedSkin != null) {
-                DragonPart skinTexture = getDragonPart(layer, selectedSkin, handler.getType().getKey());
+                DragonPart skinTexture = getDragonPart(layer, selectedSkin, handler.speciesKey());
 
                 if (skinTexture != null) {
                     float hue = settings.hue - skinTexture.averageHue();
                     float saturation = settings.saturation;
                     float brightness = settings.brightness;
 
-                    ResourceLocation textureLocation = getDragonPartLocation(layer, selectedSkin, handler.getType().getKey());
+                    ResourceLocation textureLocation = getDragonPartLocation(layer, selectedSkin, handler.speciesKey());
                     NativeImage skinImage = RenderingUtils.getImageFromResource(textureLocation);
 
                     for (int x = 0; x < skinImage.getWidth(); x++) {
@@ -286,10 +286,8 @@ public class DragonEditorHandler {
         }
 
         String uuid = player.getStringUUID();
-
-        //noinspection DataFlowIssue -> level and key are present
-        ResourceLocation dynamicNormalKey = ResourceLocation.fromNamespaceAndPath(MODID, "dynamic_normal_" + uuid + "_" + handler.getStage().getKey().location().getPath());
-        ResourceLocation dynamicGlowKey = ResourceLocation.fromNamespaceAndPath(MODID, "dynamic_glow_" + uuid + "_" + handler.getStage().getKey().location().getPath());
+        ResourceLocation dynamicNormalKey = ResourceLocation.fromNamespaceAndPath(MODID, "dynamic_normal_" + uuid + "_" + handler.stageId().getPath());
+        ResourceLocation dynamicGlowKey = ResourceLocation.fromNamespaceAndPath(MODID, "dynamic_glow_" + uuid + "_" + handler.stageId().getPath());
 
         texturesToRegister.add(new Pair<>(normal, dynamicNormalKey));
         texturesToRegister.add(new Pair<>(glow, dynamicGlowKey));

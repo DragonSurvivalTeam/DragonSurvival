@@ -110,7 +110,7 @@ public class DragonDestructionHandler {
             return;
         }
 
-        MiscCodecs.DestructionData destructionData = data.getStage().value().destructionData().orElse(null);
+        MiscCodecs.DestructionData destructionData = data.stage().value().destructionData().orElse(null);
 
         if (destructionData == null || !destructionData.isDestructionAllowed(data.getSize())) {
             return;

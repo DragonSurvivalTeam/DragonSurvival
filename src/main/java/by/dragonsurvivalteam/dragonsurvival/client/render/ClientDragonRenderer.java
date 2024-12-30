@@ -213,7 +213,7 @@ public class ClientDragonRenderer {
             float partialRenderTick = renderPlayerEvent.getPartialTick();
             float yaw = player.getViewYRot(partialRenderTick);
 
-            Holder<DragonStage> dragonStage = handler.getStage();
+            Holder<DragonStage> dragonStage = handler.stage();
             ResourceLocation texture = DragonSkins.getPlayerSkin(player, Objects.requireNonNull(Objects.requireNonNull(dragonStage).getKey()));
             PoseStack poseStack = renderPlayerEvent.getPoseStack();
 

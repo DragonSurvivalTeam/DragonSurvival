@@ -1,5 +1,4 @@
 {
-  "break_speed_multiplier": 3.0,
   "destruction_data": {
     "block_destruction_size": 120.0,
     "crushing_damage_scalar": 0.05,
@@ -15,7 +14,6 @@
       "items": "dragonsurvival:star_bone"
     }
   ],
-  "harvest_level_bonus": 1,
   "is_default": true,
   "is_natural_growth_stopped": {
     "type_specific": {

@@ -11,7 +11,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.gametest.GameTestHolder;
@@ -22,7 +21,7 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 public class GeneralTests {
     @GameTest(template = TestUtils.AIR_CUBE_1X)
     public static void test_tool_swap(final GameTestHelper helper) {
-        Player player = TestUtils.createPlayer(helper, GameType.DEFAULT_MODE);
+        Player player = TestUtils.createPlayer(helper);
         TestUtils.setToDragon(helper, player, DragonTypes.CAVE, DragonBodies.center, DragonStages.young);
 
         ClawInventoryData clawInventory = ClawInventoryData.getData(player);

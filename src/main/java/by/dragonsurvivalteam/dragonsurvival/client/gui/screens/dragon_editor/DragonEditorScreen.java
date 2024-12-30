@@ -430,7 +430,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
 
         if (showUi) {
             for (ColorSelectorButton colorSelectorButton : colorSelectorButtons.values()) {
-                DragonPart text = DragonEditorHandler.getDragonPart(colorSelectorButton.layer, preset.get(Objects.requireNonNull(dragonStage.getKey())).get().layerSettings.get(colorSelectorButton.layer).get().partKey, HANDLER.getType().getKey());
+                DragonPart text = DragonEditorHandler.getDragonPart(colorSelectorButton.layer, preset.get(Objects.requireNonNull(dragonStage.getKey())).get().layerSettings.get(colorSelectorButton.layer).get().partKey, HANDLER.speciesKey());
                 colorSelectorButton.visible = (text != null && text.isColorable()) && !defaultSkinCheckbox.selected;
             }
         }
@@ -446,9 +446,9 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
 
     private void initDummyDragon(final DragonStateHandler localHandler) {
         if (dragonType == null && localHandler.isDragon()) {
-            dragonType = localHandler.getType();
-            dragonStage = localHandler.getStage();
-            dragonBody = localHandler.getBody();
+            dragonType = localHandler.species();
+            dragonStage = localHandler.stage();
+            dragonBody = localHandler.body();
         } else if (dragonType != null) {
             if (dragonStage == null) {
                 dragonStage = ResourceHelper.get(null, DragonStages.newborn).orElseThrow();
@@ -474,15 +474,15 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     }
 
     private boolean dragonTypeWouldChange(DragonStateHandler handler) {
-        return handler.getType() != null && !handler.getType().equals(dragonType);
+        return handler.species() != null && !handler.species().equals(dragonType);
     }
 
     private boolean dragonBodyWouldChange(DragonStateHandler handler) {
-        return handler.getBody() != null && !handler.getBody().equals(dragonBody);
+        return handler.body() != null && !handler.body().equals(dragonBody);
     }
 
     public boolean dragonWouldChange(DragonStateHandler handler) {
-        return (handler.getType() != null && !handler.getType().equals(dragonType)) || (handler.getBody() != null && !handler.getBody().equals(dragonBody));
+        return (handler.species() != null && !handler.species().equals(dragonType)) || (handler.body() != null && !handler.body().equals(dragonBody));
     }
 
     @Override
@@ -884,14 +884,14 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         minecraft.player.level().playSound(minecraft.player, minecraft.player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 1, 0.7f);
 
         if (!data.isDragon() || dragonWouldChange(data)) {
-            if (dragonType == null && data.getType() != null) {
+            if (dragonType == null && data.species() != null) {
                 DragonCommand.reInsertClawTools(minecraft.player);
             }
 
             data.setBody(minecraft.player, dragonBody);
             data.setType(minecraft.player, dragonType);
 
-            double savedSize = data.getSavedDragonSize(data.getType().getKey());
+            double savedSize = data.getSavedDragonSize(data.speciesKey());
             if (!ServerConfig.saveGrowthStage || savedSize == DragonStateHandler.NO_SIZE) {
                 Holder<DragonStage> dragonStage = minecraft.player.registryAccess().holderOrThrow(DragonStages.newborn);
                 data.setStage(minecraft.player, dragonStage);
@@ -929,7 +929,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     }
 
     public static String partToTranslation(final String part) { // TODO :: the part should be able to provide its translation by itself
-        return Translation.Type.SKIN_PART.wrap(DragonEditorScreen.HANDLER.getTypeNameLowerCase() + "." + part.toLowerCase(Locale.ENGLISH));
+        return Translation.Type.SKIN_PART.wrap(DragonEditorScreen.HANDLER.speciesId().getPath() + "." + part.toLowerCase(Locale.ENGLISH));
     }
 
     @SubscribeEvent

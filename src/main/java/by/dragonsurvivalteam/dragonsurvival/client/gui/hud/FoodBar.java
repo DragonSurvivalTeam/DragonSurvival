@@ -16,7 +16,7 @@ import net.minecraft.world.food.FoodData;
 public class FoodBar {
     private static final RandomSource RANDOM = RandomSource.create();
 
-    public static boolean render(final Gui gui, final GuiGraphics guiGraphics, int width, int height) {
+    public static boolean render(final Gui gui, final GuiGraphics graphics, int width, int height) {
         Player localPlayer = DragonSurvival.PROXY.getLocalPlayer();
 
         if (localPlayer == null || !Minecraft.getInstance().gameMode.canHurtPlayer()) {
@@ -37,7 +37,7 @@ public class FoodBar {
         gui.rightHeight += 10;
         final FoodData food = localPlayer.getFoodData();
 
-        ResourceLocation foodIcons = handler.getFoodIcons();
+        ResourceLocation foodIcons = handler.species().value().miscResources().foodSprites();
 
         final boolean hunger = localPlayer.hasEffect(MobEffects.HUNGER);
 
@@ -50,13 +50,12 @@ public class FoodBar {
                 y = top + RANDOM.nextInt(3) - 1;
             }
 
-
-            guiGraphics.blit(foodIcons, left - i * 8 - 9, y, hunger ? 117 : 0, 0, 9, 9);
+            graphics.blit(foodIcons, left - i * 8 - 9, y, hunger ? 117 : 0, 0, 9, 9);
 
             if (icon < food.getFoodLevel()) {
-                guiGraphics.blit(foodIcons, left - i * 8 - 9, y, hunger ? 72 : 36, 0, 9, 9);
+                graphics.blit(foodIcons, left - i * 8 - 9, y, hunger ? 72 : 36, 0, 9, 9);
             } else if (icon == food.getFoodLevel()) {
-                guiGraphics.blit(foodIcons, left - i * 8 - 9, y, hunger ? 81 : 45, 0, 9, 9);
+                graphics.blit(foodIcons, left - i * 8 - 9, y, hunger ? 81 : 45, 0, 9, 9);
             }
         }
 

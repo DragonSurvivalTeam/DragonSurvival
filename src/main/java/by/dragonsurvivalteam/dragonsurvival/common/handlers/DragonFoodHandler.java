@@ -66,7 +66,7 @@ public class DragonFoodHandler {
     }
 
     public static int getUseDuration(final ItemStack stack, final Player entity) {
-        FoodProperties properties = getDragonFoodProperties(stack.getItem(), DragonStateProvider.getData(entity).getType());
+        FoodProperties properties = getDragonFoodProperties(stack.getItem(), DragonStateProvider.getData(entity).species());
 
         if (properties != null) {
             return properties.eatDurationTicks();
@@ -83,11 +83,11 @@ public class DragonFoodHandler {
 
         DragonStateHandler data = DragonStateProvider.getData(player);
 
-        if (!data.isDragon() || DragonFoodHandler.isEdible(event.getItem(), data.getType())) {
+        if (!data.isDragon() || DragonFoodHandler.isEdible(event.getItem(), data.species())) {
             return;
         }
 
-        FoodProperties properties = DragonFoodHandler.getDragonFoodProperties(event.getItem().getItem(), data.getType());
+        FoodProperties properties = DragonFoodHandler.getDragonFoodProperties(event.getItem().getItem(), data.species());
 
         if (properties != null) {
             event.setDuration(properties.eatDurationTicks());

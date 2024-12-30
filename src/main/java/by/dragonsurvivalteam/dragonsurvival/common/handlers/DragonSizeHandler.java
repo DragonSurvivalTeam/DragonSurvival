@@ -54,24 +54,24 @@ public class DragonSizeHandler {
 
     public static double calculateDragonHeight(DragonStateHandler handler, Player player) {
         double scale = player.getAttributeValue(Attributes.SCALE);
-        double height = calculateRawDragonHeight(handler.getSize()) * handler.getBody().value().heightMultiplier();
-        return applyPose(height * scale, overridePose(player), handler.getBody().value().hasExtendedCrouch());
+        double height = calculateRawDragonHeight(handler.getSize()) * handler.body().value().heightMultiplier();
+        return applyPose(height * scale, overridePose(player), handler.body().value().hasExtendedCrouch());
     }
 
     public static double calculateDragonEyeHeight(DragonStateHandler handler, Player player) {
         double scale = player.getAttributeValue(Attributes.SCALE);
-        double eyeHeight = calculateRawDragonEyeHeight(handler.getSize()) * handler.getBody().value().heightMultiplier();
-        return applyPose(eyeHeight * scale, overridePose(player), handler.getBody().value().hasExtendedCrouch());
+        double eyeHeight = calculateRawDragonEyeHeight(handler.getSize()) * handler.body().value().heightMultiplier();
+        return applyPose(eyeHeight * scale, overridePose(player), handler.body().value().hasExtendedCrouch());
     }
 
     public static EntityDimensions calculateDimensions(DragonStateHandler handler, Player player, Pose overridePose) {
         double scale = player.getAttributeValue(Attributes.SCALE);
-        double height = calculateRawDragonHeight(handler.getSize()) * handler.getBody().value().heightMultiplier();
-        double eyeHeight = calculateRawDragonEyeHeight(handler.getSize()) * handler.getBody().value().heightMultiplier();
+        double height = calculateRawDragonHeight(handler.getSize()) * handler.body().value().heightMultiplier();
+        double eyeHeight = calculateRawDragonEyeHeight(handler.getSize()) * handler.body().value().heightMultiplier();
         double width = calculateRawDragonWidth(handler.getSize());
 
-        height = applyPose(height, overridePose, handler.getBody().value().hasExtendedCrouch());
-        eyeHeight = applyPose(eyeHeight, overridePose, handler.getBody().value().hasExtendedCrouch());
+        height = applyPose(height, overridePose, handler.body().value().hasExtendedCrouch());
+        eyeHeight = applyPose(eyeHeight, overridePose, handler.body().value().hasExtendedCrouch());
 
         return EntityDimensions.scalable((float) (width * scale), (float) (height * scale)).withEyeHeight((float) (eyeHeight * scale));
     }

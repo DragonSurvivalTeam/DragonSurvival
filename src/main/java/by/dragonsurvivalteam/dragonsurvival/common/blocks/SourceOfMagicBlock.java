@@ -360,7 +360,7 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
 
         if (entity instanceof Player player) {
             DragonStateHandler data = DragonStateProvider.getData(player);
-            return data.isDragon() && data.getType().is(types);
+            return data.isDragon() && data.species().is(types);
         }
 
         return false;

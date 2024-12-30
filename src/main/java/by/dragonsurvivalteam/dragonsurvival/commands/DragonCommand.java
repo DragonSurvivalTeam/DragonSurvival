@@ -93,7 +93,7 @@ public class DragonCommand {
             dragonStage = player.registryAccess().holderOrThrow(DragonStages.newborn);
         }
 
-        if (type == null && data.getType() != null) {
+        if (type == null && data.species() != null) {
             reInsertClawTools(player);
         }
 
@@ -114,8 +114,9 @@ public class DragonCommand {
         return 1;
     }
 
-    public static void reInsertClawTools(Player player) {
+    public static void reInsertClawTools(final Player player) {
         SimpleContainer clawsContainer = ClawInventoryData.getData(player).getContainer();
+
         for (int i = 0; i < 4; i++) {
             ItemStack stack = clawsContainer.getItem(i);
 

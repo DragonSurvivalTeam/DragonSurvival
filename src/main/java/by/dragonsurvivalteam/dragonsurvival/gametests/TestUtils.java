@@ -12,9 +12,10 @@ import net.minecraft.core.Holder;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 import java.lang.reflect.Field;
 
@@ -56,27 +57,31 @@ public class TestUtils {
         }
     }
 
-    @SuppressWarnings("DataFlowIssue") // ignore
     public static void setToDragon(final GameTestHelper helper, final Player player, final ResourceKey<DragonType> dragonType, final ResourceKey<DragonBody> dragonBody, final ResourceKey<DragonStage> dragonStage) {
         DragonStateHandler data = DragonStateProvider.getData(player);
 
         Holder<DragonType> species = player.level().registryAccess().holderOrThrow(dragonType);
         data.setType(player, species);
-        helper.assertTrue(data.getDragonType().is(dragonType), String.format("Dragon species was [%s] - expected [%s]", data.getType(), species));
+        helper.assertTrue(data.species().is(dragonType), String.format("Dragon species was [%s] - expected [%s]", data.species(), species));
 
         Holder<DragonBody> body = player.registryAccess().holderOrThrow(dragonBody);
         data.setBody(player, body);
-        helper.assertTrue(DragonUtils.isBody(data, body), String.format("Dragon type was [%s] - expected [%s]", data.getBody(), dragonBody));
+        helper.assertTrue(DragonUtils.isBody(data, body), String.format("Dragon type was [%s] - expected [%s]", data.body(), dragonBody));
 
         Holder<DragonStage> stage = player.registryAccess().holderOrThrow(dragonStage);
         data.setStage(player, stage);
-        helper.assertTrue(data.getStage().is(stage), String.format("Dragon stage was [%s] - expected [%s]", data.getStage().getKey().location(), stage.getKey().location()));
+        helper.assertTrue(data.stage().is(stage), String.format("Dragon stage was [%s] - expected [%s]", data.stage(), stage));
 
         helper.assertTrue(data.isDragon(), "Player is not a dragon - expected player to be a dragon");
+
+        tick(player);
     }
 
-    public static Player createPlayer(final GameTestHelper helper, final GameType type) {
-        Player player = helper.makeMockPlayer(type);
+    public static Player createPlayer(final GameTestHelper helper) {
+        // FIXME :: crashes instantly due to 'NetworkRegistry#checkPacket'
+        //  helper.makeMockPlayer() doesn't create a 'ServerPlayer' but rather a mix of client and server elements
+        //noinspection removal -> ignore
+        Player player = helper.makeMockServerPlayerInLevel();
         resetPlayer(helper, player);
         return player;
     }
@@ -85,16 +90,24 @@ public class TestUtils {
         DragonStateHandler data = DragonStateProvider.getData(player);
         data.revertToHumanForm(player, false);
 
-        Holder<DragonType> dragonType = data.getType();
+        Holder<DragonType> dragonType = data.species();
         helper.assertTrue(dragonType == null, String.format("Dragon type was [%s] - expected [null]", dragonType));
 
-        Holder<DragonBody> dragonBody = data.getBody();
+        Holder<DragonBody> dragonBody = data.body();
         helper.assertTrue(dragonBody == null, String.format("Dragon body was [%s] - expected [null]", dragonBody));
 
-        Holder<DragonStage> dragonStage = data.getStage();
+        Holder<DragonStage> dragonStage = data.stage();
         helper.assertTrue(dragonStage == null, String.format("Dragon level was [%s] - expected [null]", dragonStage));
 
         double size = data.getSize();
         helper.assertTrue(size == DragonStateHandler.NO_SIZE, String.format("Size was [%f] - expected [0]", size));
+
+        tick(player);
+    }
+
+    /** The mock player is not ticked, even if 'tick()' is explicitly called */
+    public static void tick(final Player player) {
+        NeoForge.EVENT_BUS.post(new PlayerTickEvent.Pre(player));
+        NeoForge.EVENT_BUS.post(new PlayerTickEvent.Post(player));
     }
 }

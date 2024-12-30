@@ -110,7 +110,7 @@ public class ClientProxy {
                     handler.getSkinData().skinPreset = preset;
 
                     if (handler.isDragon()) {
-                        handler.getSkinData().compileSkin(handler.getStage());
+                        handler.getSkinData().compileSkin(handler.stage());
                     }
                 });
             }

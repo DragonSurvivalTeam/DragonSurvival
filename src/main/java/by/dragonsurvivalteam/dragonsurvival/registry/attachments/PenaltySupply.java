@@ -91,7 +91,7 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
     }
 
     public Optional<Holder<DragonPenalty>> getMatchingPenalty(final String supplyType, final DragonStateHandler handler) {
-        return handler.getDragonType().value().penalties().stream().filter(penalty -> penalty.value().trigger().id().equals(supplyType)).findFirst();
+        return handler.species().value().penalties().stream().filter(penalty -> penalty.value().trigger().id().equals(supplyType)).findFirst();
     }
 
     public void initialize(final String supplyType, float maximumSupply, float reductionRate, float regenerationRate) {
@@ -132,13 +132,13 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
             return;
         }
 
-        for (Holder<DragonPenalty> penalty : handler.getDragonType().value().penalties()) {
+        for (Holder<DragonPenalty> penalty : handler.species().value().penalties()) {
             penalty.value().apply(serverPlayer);
         }
 
         // Remove any penalties the player no longer has
         for (String id : data.getSupplyTypes()) {
-            if (handler.getDragonType().value().penalties().stream().noneMatch(penalty -> penalty.value().trigger().id().equals(id))) {
+            if (handler.species().value().penalties().stream().noneMatch(penalty -> penalty.value().trigger().id().equals(id))) {
                 data.remove(id);
             }
         }

@@ -48,15 +48,15 @@ public record DragonPredicate(
             return false;
         }
 
-        if (dragonType().isPresent() && !dragonType().get().contains(data.getType())) {
+        if (dragonType().isPresent() && !dragonType().get().contains(data.species())) {
             return false;
         }
 
-        if (dragonStage().isPresent() && !dragonStage().get().matches(data.getStage(), data.getSize())) {
+        if (dragonStage().isPresent() && !dragonStage().get().matches(data.stage(), data.getSize())) {
             return false;
         }
 
-        if (dragonBody().isPresent() && !dragonBody().get().contains(data.getBody())) {
+        if (dragonBody().isPresent() && !dragonBody().get().contains(data.body())) {
             return false;
         }
 

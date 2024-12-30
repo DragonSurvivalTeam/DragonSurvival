@@ -16,7 +16,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.TamableAnimal;
@@ -77,8 +76,8 @@ public interface AbilityTargeting {
                 AbilityBlockEffect.CODEC.listOf().fieldOf("block_effect").forGetter(BlockTargeting::effect)
         ).apply(instance, BlockTargeting::new));
 
-        public boolean matches(final ServerLevel level, final BlockPos position) {
-            return targetConditions.map(condition -> condition.test(Condition.createContext(level, position))).orElse(true);
+        public boolean matches(final ServerPlayer dragon, final BlockPos position) {
+            return targetConditions.map(condition -> condition.test(Condition.blockContext(dragon, position))).orElse(true);
         }
     }
 
@@ -89,8 +88,8 @@ public interface AbilityTargeting {
                 Codec.STRING.xmap(EntityTargetingMode::valueOf, EntityTargetingMode::name).fieldOf("entity_targeting_mode").forGetter(EntityTargeting::targetingMode)
         ).apply(instance, EntityTargeting::new));
 
-        public boolean matches(final ServerLevel level, final Entity entity, final Vec3 position) {
-            return targetConditions.map(condition -> condition.test(Condition.createContext(level, entity, position))).orElse(true);
+        public boolean matches(final ServerPlayer dragon, final Entity entity, final Vec3 position) {
+            return targetConditions.map(condition -> condition.test(Condition.playerContext(dragon, entity, position))).orElse(true);
         }
     }
 
@@ -179,10 +178,10 @@ public interface AbilityTargeting {
         return descriptions;
     }
 
+    default void remove(final ServerPlayer dragon, final DragonAbilityInstance ability) { /* Nothing to do */ }
 
     MutableComponent getDescription(final Player dragon, final DragonAbilityInstance ability);
     void apply(final ServerPlayer dragon, final DragonAbilityInstance ability);
-    default void remove(final ServerPlayer dragon, final DragonAbilityInstance ability) {};
     MapCodec<? extends AbilityTargeting> codec();
     Either<BlockTargeting, EntityTargeting> target();
 }

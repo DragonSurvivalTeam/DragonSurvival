@@ -8,7 +8,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffect
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
@@ -19,6 +18,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.block.Block;
@@ -29,11 +29,15 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 import javax.annotation.Nullable;
 
-public record HarvestBonus(ResourceLocation id, HolderSet<Block> applicableTo, LevelBasedValue bonus, LevelBasedValue duration) {
+public record HarvestBonus(ResourceLocation id, Optional<HolderSet<Block>> blocks, LevelBasedValue harvestBonus, LevelBasedValue breakSpeedMultiplier, LevelBasedValue duration) {
+    public static int NO_BONUS_VALUE = 0;
+    public static final LevelBasedValue NO_BONUS = LevelBasedValue.constant(NO_BONUS_VALUE);
+
     public static final Codec<HarvestBonus> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ResourceLocation.CODEC.fieldOf("id").forGetter(HarvestBonus::id),
-            RegistryCodecs.homogeneousList(Registries.BLOCK).fieldOf("applicable_to").forGetter(HarvestBonus::applicableTo),
-            LevelBasedValue.CODEC.fieldOf("bonus").forGetter(HarvestBonus::bonus),
+            RegistryCodecs.homogeneousList(Registries.BLOCK).optionalFieldOf("blocks").forGetter(HarvestBonus::blocks),
+            LevelBasedValue.CODEC.optionalFieldOf("harvest_bonus", NO_BONUS).forGetter(HarvestBonus::harvestBonus),
+            LevelBasedValue.CODEC.optionalFieldOf("break_speed_multiplier", NO_BONUS).forGetter(HarvestBonus::breakSpeedMultiplier),
             LevelBasedValue.CODEC.optionalFieldOf("duration", LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)).forGetter(HarvestBonus::duration)
     ).apply(instance, HarvestBonus::new));
 
@@ -55,21 +59,11 @@ public record HarvestBonus(ResourceLocation id, HolderSet<Block> applicableTo, L
         ClientEffectProvider.ClientData clientData = new ClientEffectProvider.ClientData(ability.getIcon(), /* TODO */ Component.empty(), Optional.of(dragon.getUUID()));
         instance = new Instance(this, clientData, abilityLevel, newDuration);
         data.add(target, instance);
-
-        if (target instanceof ServerPlayer player) {
-            PacketDistributor.sendToPlayer(player, new SyncHarvestBonus(player.getId(), instance, false));
-        }
     }
 
     public void remove(final LivingEntity target) {
         HarvestBonuses data = target.getData(DSDataAttachments.HARVEST_BONUSES);
-        Instance instance = data.get(id);
-
-        if (instance != null && target instanceof ServerPlayer player) {
-            PacketDistributor.sendToPlayer(player, new SyncHarvestBonus(player.getId(), instance, true));
-        }
-
-        data.remove(target, instance);
+        data.remove(target, data.get(id));
     }
 
     public static class Instance extends DurationInstance<HarvestBonus> {
@@ -87,12 +81,34 @@ public record HarvestBonus(ResourceLocation id, HolderSet<Block> applicableTo, L
             return CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), nbt).resultOrPartial(DragonSurvival.LOGGER::error).orElse(null);
         }
 
-        public int getBonus(final BlockState state) {
-            return getBonus(state.getBlockHolder());
+        @Override
+        public void onAddedToStorage(final Entity storageHolder) {
+            if (storageHolder instanceof ServerPlayer player) {
+                PacketDistributor.sendToPlayer(player, new SyncHarvestBonus(player.getId(), this, false));
+            }
         }
 
-        public int getBonus(final Holder<Block> block) {
-            return baseData().applicableTo().contains(block) ? (int) baseData().bonus().calculate(appliedAbilityLevel()) : 0;
+        @Override
+        public void onRemovalFromStorage(final Entity storageHolder) {
+            if (storageHolder instanceof ServerPlayer player) {
+                PacketDistributor.sendToPlayer(player, new SyncHarvestBonus(player.getId(), this, true));
+            }
+        }
+
+        public int getHarvestBonus(final BlockState state) {
+            if (baseData().blocks().isPresent() && !baseData().blocks().get().contains(state.getBlockHolder())) {
+                return NO_BONUS_VALUE;
+            }
+
+            return (int) baseData().harvestBonus().calculate(appliedAbilityLevel());
+        }
+
+        public float getSpeedMultiplier(final BlockState state) {
+            if (baseData().blocks().isPresent() && !baseData().blocks().get().contains(state.getBlockHolder())) {
+                return NO_BONUS_VALUE;
+            }
+
+            return baseData().breakSpeedMultiplier().calculate(appliedAbilityLevel());
         }
 
         @Override

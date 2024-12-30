@@ -19,8 +19,6 @@ import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
-import java.util.Objects;
-
 // TODO :: geckolib has an 'AutoGlowingGeoLayer' class, could that help here?
 // FIXME :: glow layer doesn't like translucency much (it goes dark once the alpha changes)
 public class DragonGlowLayerRenderer extends GeoRenderLayer<DragonEntity> {
@@ -50,17 +48,17 @@ public class DragonGlowLayerRenderer extends GeoRenderLayer<DragonEntity> {
         DragonStateHandler handler = DragonStateProvider.getData(player);
         SkinPreset preset = handler.getSkinData().skinPreset;
 
-        DragonStageCustomization customization = preset.get(Objects.requireNonNull(handler.getStage().getKey())).get();
-        ResourceLocation glowTexture = DragonSkins.getGlowTexture(player, handler.getStage().getKey());
+        DragonStageCustomization customization = preset.get(handler.stageKey()).get();
+        ResourceLocation glowTexture = DragonSkins.getGlowTexture(player, handler.stageKey());
 
-        if (glowTexture == null || glowTexture.getPath().contains("/" + handler.getTypeNameLowerCase() + "_")) {
+        if (glowTexture == null || glowTexture.getPath().contains("/" + handler.speciesId().getPath() + "_")) {
             if (dragonRenderer.glowTexture != null) {
                 glowTexture = dragonRenderer.glowTexture;
             }
         }
 
-        if (glowTexture == null && handler.getSkinData().get(handler.getStage().getKey()).get().defaultSkin) {
-            ResourceLocation location = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/dragon/" + handler.getTypeNameLowerCase() + "_" + handler.getStage().getKey().location().getPath() + "_glow.png");
+        if (glowTexture == null && handler.getSkinData().get(handler.stageKey()).get().defaultSkin) {
+            ResourceLocation location = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/dragon/" + handler.speciesId().getPath() + "_" + handler.stageId().getPath() + "_glow.png");
 
             if (Minecraft.getInstance().getResourceManager().getResource(location).isPresent()) {
                 glowTexture = location;
@@ -74,7 +72,7 @@ public class DragonGlowLayerRenderer extends GeoRenderLayer<DragonEntity> {
             VertexConsumer vertexConsumer = bufferSource.getBuffer(type);
             dragonRenderer.actuallyRender(poseStack, animatable, bakedModel, type, bufferSource, vertexConsumer, true, partialTick, packedLight, OverlayTexture.NO_OVERLAY, renderer.getRenderColor(animatable, partialTick, packedLight).getColor());
         } else {
-            ResourceLocation dynamicGlowKey = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "dynamic_glow_" + animatable.getPlayer().getStringUUID() + "_" + handler.getStage().getKey().location().getPath());
+            ResourceLocation dynamicGlowKey = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "dynamic_glow_" + animatable.getPlayer().getStringUUID() + "_" + handler.stageId().getPath());
 
             if (customization.layerSettings.values().stream().anyMatch(layerSettings -> layerSettings.get().glowing)) {
                 RenderType type = RenderType.EYES.apply(dynamicGlowKey, RenderType.LIGHTNING_TRANSPARENCY);

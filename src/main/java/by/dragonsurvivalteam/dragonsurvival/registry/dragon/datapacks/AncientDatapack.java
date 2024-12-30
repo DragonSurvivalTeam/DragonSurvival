@@ -18,7 +18,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import java.util.List;
 import java.util.Optional;
 
-
 public class AncientDatapack {
     @Translation(type = Translation.Type.STAGE, comments = "Ancient")
     public static ResourceKey<DragonStage> ancient = DragonStages.key("ancient");
@@ -51,8 +50,6 @@ public class AncientDatapack {
                         Modifier.per(Attributes.SAFE_FALL_DISTANCE, 0.015f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.per(DSAttributes.BLOCK_BREAK_RADIUS, 0.01f, AttributeModifier.Operation.ADD_VALUE)
                         ),
-                1,
-                3,
                 List.of(
                         MiscCodecs.GrowthItem.create(Functions.hoursToTicks(1), DSItems.ELDER_DRAGON_HEART.value()),
                         MiscCodecs.GrowthItem.create(Functions.hoursToTicks(-1), DSItems.STAR_BONE.value())

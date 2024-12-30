@@ -83,7 +83,10 @@ public class ManaHandler {
         }
 
         data.setCurrentMana(data.getCurrentMana() + mana);
-        PacketDistributor.sendToPlayer((ServerPlayer) player, new SyncMana(player.getId(), data.getCurrentMana()));
+
+        if (player instanceof ServerPlayer serverPlayer) {
+            PacketDistributor.sendToPlayer(serverPlayer, new SyncMana(player.getId(), data.getCurrentMana()));
+        }
     }
 
     public static void consumeMana(final Player player, float manaCost) {

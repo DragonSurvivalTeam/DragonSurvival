@@ -209,12 +209,12 @@ public class DragonAbilityScreen extends Screen {
         //noinspection DataFlowIssue -> player is present
         MagicData data = MagicData.getData(minecraft.player);
         List<DragonAbilityInstance> actives = data.getActiveAbilities();
-        List<DragonAbilityInstance> passivesThatAreUpgradable = data.getUpgradablePassives();
-        List<DragonAbilityInstance> passivesThatAreNotUpgradable = data.getNonUpgradablePassives();
+        List<DragonAbilityInstance> upgradablePassives = data.getPassiveAbilities(true);
+        List<DragonAbilityInstance> constantPassives = data.getPassiveAbilities(false);
 
         scrollableComponents.add(new AbilityColumnsComponent(this, guiLeft + 35, guiTop, 40, 20, 0.8f, 0.5f, actives));
-        scrollableComponents.add(new AbilityColumnsComponent(this, guiLeft + 111, guiTop, 40, 20, 0.8f, 0.5f, passivesThatAreUpgradable));
-        scrollableComponents.add(new AbilityColumnsComponent(this,guiLeft + 186, guiTop, 40, 20, 0.8f, 0.5f, passivesThatAreNotUpgradable));
+        scrollableComponents.add(new AbilityColumnsComponent(this, guiLeft + 111, guiTop, 40, 20, 0.8f, 0.5f, upgradablePassives));
+        scrollableComponents.add(new AbilityColumnsComponent(this,guiLeft + 186, guiTop, 40, 20, 0.8f, 0.5f, constantPassives));
 
         // Left panel (hotbar)
         for(int i = 0; i < MagicData.HOTBAR_SLOTS; i++) {
@@ -245,8 +245,8 @@ public class DragonAbilityScreen extends Screen {
         //noinspection DataFlowIssue -> players should be present
         DragonStateHandler data = DragonStateProvider.getData(minecraft.player);
 
-        if (type != data.getType()) {
-            type = data.getType();
+        if (type != data.species()) {
+            type = data.species();
             clearWidgets();
             init();
         }

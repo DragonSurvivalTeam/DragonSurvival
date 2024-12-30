@@ -8,9 +8,9 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.AttributeModifierSupplier;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.core.*;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -26,7 +26,10 @@ import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 
 import java.text.NumberFormat;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.annotation.Nullable;
 
@@ -36,8 +39,6 @@ public record DragonStage(
         MiscCodecs.Bounds sizeRange,
         int ticksUntilGrown,
         List<Modifier> modifiers,
-        int harvestLevelBonus,
-        double breakSpeedMultiplier,
         List<MiscCodecs.GrowthItem> growthItems,
         Optional<EntityPredicate> isNaturalGrowthStopped,
         Optional<EntityPredicate> growIntoRequirements,
@@ -50,8 +51,6 @@ public record DragonStage(
             MiscCodecs.bounds().fieldOf("size_range").forGetter(DragonStage::sizeRange),
             ExtraCodecs.intRange(20, Functions.daysToTicks(365)).fieldOf("ticks_until_grown").forGetter(DragonStage::ticksUntilGrown),
             Modifier.CODEC.listOf().optionalFieldOf("modifiers", List.of()).forGetter(DragonStage::modifiers),
-            ExtraCodecs.intRange(0, 4).optionalFieldOf("harvest_level_bonus", 0).forGetter(DragonStage::harvestLevelBonus),
-            MiscCodecs.doubleRange(1, 10).optionalFieldOf("break_speed_multiplier", 1d).forGetter(DragonStage::breakSpeedMultiplier),
             MiscCodecs.GrowthItem.CODEC.listOf().optionalFieldOf("growth_items", List.of()).forGetter(DragonStage::growthItems),
             EntityPredicate.CODEC.optionalFieldOf("is_natural_growth_stopped").forGetter(DragonStage::isNaturalGrowthStopped),
             EntityPredicate.CODEC.optionalFieldOf("grow_into_requirements").forGetter(DragonStage::growIntoRequirements),
@@ -69,13 +68,13 @@ public record DragonStage(
 
     public static void update(final RegistryAccess access) {
         Pair<DragonStage, DragonStage> sizes = getSizes(access);
-        smallest = sizes.first();
-        largest = sizes.second();
+        smallest = sizes.getFirst();
+        largest = sizes.getSecond();
 
         validate(access);
     }
 
-    private static void validate(RegistryAccess access) {
+    private static void validate(final RegistryAccess access) {
         boolean areBuiltInLevelsValid = true;
         StringBuilder builtInCheck = new StringBuilder("The following required built-in dragon levels are missing:");
 
@@ -159,14 +158,6 @@ public record DragonStage(
     @SubscribeEvent
     public static void register(final DataPackRegistryEvent.NewRegistry event) {
         event.dataPackRegistry(REGISTRY, DIRECT_CODEC, DIRECT_CODEC);
-    }
-
-    public static boolean isBuiltinLevel(final ResourceKey<DragonStage> dragonStage) {
-        return dragonStage == DragonStages.newborn || dragonStage == DragonStages.young || dragonStage == DragonStages.adult;
-    }
-
-    public static boolean onlyBuiltInLevelsAreLoaded(final HolderLookup.Provider provider) {
-        return ResourceHelper.keys(provider, REGISTRY).stream().allMatch(DragonStage::isBuiltinLevel);
     }
 
     public static List<Holder<DragonStage>> allStages(@Nullable final HolderLookup.Provider provider) {

@@ -9,7 +9,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBodies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
-import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -40,6 +39,7 @@ public class DragonBodyButton extends Button {
         this(screen, x, y, xSize, ySize, dragonBody, Objects.requireNonNull(dragonBody.getKey()).location(), locked, action);
     }
 
+    @SuppressWarnings("DataFlowIssue") // key is expected to be present
     private DragonBodyButton(Screen screen, int x, int y, int xSize, int ySize, final Holder<DragonBody> dragonBody, final ResourceLocation location, boolean locked, OnPress action) {
         super(x, y, xSize, ySize, Component.translatable(Translation.Type.BODY.wrap(location)), action, DEFAULT_NARRATION);
         setTooltip(Tooltip.create(Component.translatable(Translation.Type.BODY_DESCRIPTION.wrap(location))));
@@ -47,9 +47,9 @@ public class DragonBodyButton extends Button {
         String iconSuffix;
 
         if (screen instanceof DragonEditorScreen dragonEditorScreen) {
-            iconSuffix = ResourceHelper.getNameLowercase(dragonEditorScreen.dragonType);
+            iconSuffix = dragonEditorScreen.dragonType.getKey().location().getPath();
         } else if (screen instanceof DragonSpeciesScreen dragonSpeciesScreen) {
-            iconSuffix = ResourceHelper.getNameLowercase(dragonSpeciesScreen.dragonType);
+            iconSuffix = dragonSpeciesScreen.dragonType.getKey().location().getPath();
         } else {
             iconSuffix = DEFAULT_SUFFIX;
         }
@@ -97,7 +97,7 @@ public class DragonBodyButton extends Button {
         }
 
         if (screen instanceof SkinsScreen skinsScreen) {
-            return DragonUtils.isBody(dragonBody, skinsScreen.handler.getBody());
+            return DragonUtils.isBody(dragonBody, skinsScreen.handler.body());
         }
 
         return false;

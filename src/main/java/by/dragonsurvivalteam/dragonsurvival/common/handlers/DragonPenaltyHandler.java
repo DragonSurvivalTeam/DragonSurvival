@@ -53,7 +53,7 @@ public class DragonPenaltyHandler {
 
                 DragonStateProvider.getOptional(player).ifPresent(dragonStateHandler -> {
                     if(dragonStateHandler.isDragon()){
-                        if(dragonStateHandler.getType() == null || !DragonUtils.isType(dragonStateHandler, DragonTypes.CAVE)){
+                        if(dragonStateHandler.species() == null || !DragonUtils.isType(dragonStateHandler, DragonTypes.CAVE)){
                             return;
                         }
                         // FIXME
@@ -142,7 +142,7 @@ public class DragonPenaltyHandler {
 
         DragonStateHandler data = DragonStateProvider.getData(player);
 
-        if (data.isDragon() && data.getType().value().isItemBlacklisted(stack.getItem())) {
+        if (data.isDragon() && data.species().value().isItemBlacklisted(stack.getItem())) {
             event.setCanceled(true);
             return;
         }

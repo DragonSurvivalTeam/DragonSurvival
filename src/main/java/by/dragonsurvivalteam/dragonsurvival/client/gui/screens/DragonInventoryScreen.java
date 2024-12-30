@@ -182,7 +182,7 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
         DragonStateHandler data = DragonStateProvider.getData(minecraft.player);
 
         // Growth stage button
-        GrowthIcon growthIcon = data.getType().value().getGrowthIcon(data.getStage());
+        GrowthIcon growthIcon = data.species().value().getGrowthIcon(data.stage());
         growthButton = new HoverButton(leftPos + 114, topPos + 4, 20, growthIcon.icon(), growthIcon.hoverIcon(), () -> {
             DragonStateHandler handler = DragonStateProvider.getData(minecraft.player);
             Pair<List<Either<FormattedText, TooltipComponent>>, Integer> growthDescriptionResult = handler.getGrowthDescription(growthTooltipScroll);
@@ -198,7 +198,7 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
 
         if (!stages.isEmpty()) {
             List<AbstractWidget> crystals = stages.stream().map(stage -> (AbstractWidget) new GrowthCrystalButton(0, 0, stage)).toList();
-            MiscDragonTextures textures = data.getType().value().miscResources();
+            MiscDragonTextures textures = data.species().value().miscResources();
 
             crystalBar = new BarComponent(this,
                     leftPos + 145, topPos + 6, 4,

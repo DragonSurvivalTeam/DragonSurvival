@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.config.server.dragon.DragonBonusConfig;
 import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncBrokenTool;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.util.ToolUtils;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.Holder;
@@ -221,15 +222,13 @@ public class ClawToolHandler {
 
             if (ItemStack.matches(clawTool, event.getOriginal())) {
                 clawTool.hurtAndBreak(1, player, LivingEntity.getSlotForHand(event.getHand()));
-            } else {
-                if (!player.level().isClientSide()) {
-                    DragonStateHandler handler = DragonStateProvider.getData(player);
-                    ClawInventoryData clawInventory = ClawInventoryData.getData(player);
-                    if (clawInventory.switchedTool || clawInventory.switchedWeapon) {
-                        player.level().playSound(null, player.blockPosition(), SoundEvents.ITEM_BREAK, SoundSource.PLAYERS, 1, 1);
-                        player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
-                        PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncBrokenTool.Data(player.getId(), clawInventory.switchedTool ? clawInventory.switchedToolSlot : ClawInventoryData.Slot.SWORD.ordinal()));
-                    }
+            } else if (!player.level().isClientSide()) {
+                ClawInventoryData clawInventory = ClawInventoryData.getData(player);
+
+                if (clawInventory.switchedTool || clawInventory.switchedWeapon) {
+                    player.level().playSound(null, player.blockPosition(), SoundEvents.ITEM_BREAK, SoundSource.PLAYERS, 1, 1);
+                    player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncBrokenTool.Data(player.getId(), clawInventory.switchedTool ? clawInventory.switchedToolSlot : ClawInventoryData.Slot.SWORD.ordinal()));
                 }
             }
         }
@@ -238,30 +237,30 @@ public class ClawToolHandler {
     @SubscribeEvent
     public static void modifyBreakSpeed(final PlayerEvent.BreakSpeed event) {
         Player player = event.getEntity();
-        ItemStack mainStack = player.getMainHandItem();
-        DragonStateHandler handler = DragonStateProvider.getData(player);
 
-        if (!ClawInventoryData.getData(player).switchedTool && !ToolUtils.shouldUseDragonTools(mainStack)) {
-            // Bonus does not apply to held tools
-            return;
-        }
+        player.getExistingData(DSDataAttachments.HARVEST_BONUSES).ifPresent(bonuses -> {
+            DragonStateHandler data = DragonStateProvider.getData(player);
 
-        if (!handler.isDragon()) {
-            return;
-        }
+            if (data.isDragon()) {
+                ClawInventoryData clawData = ClawInventoryData.getData(player);
 
-        double bonus = handler.getStage().value().breakSpeedMultiplier();
-        BlockState state = event.getState();
+                if (!clawData.switchedTool && !ToolUtils.shouldUseDragonTools(player.getMainHandItem())) {
+                    // Bonus does not apply when the player is holding a tool in the hotbar while being a dragon
+                    return;
+                }
 
-        // FIXME
-        /*if (!state.is(handler.getType().harvestableBlocks()) || ClawInventoryData.getData(player).hasValidClawTool(state)) {
-            bonus = getReducedBonus(bonus);
-        }*/
+                float multiplier = bonuses.getSpeedMultiplier(event.getState());
 
-        event.setNewSpeed((float) (event.getNewSpeed() * bonus));
+                if (clawData.hasValidClawTool(event.getState())) {
+                    multiplier = getReducedBonus(multiplier);
+                }
+
+                event.setNewSpeed(event.getNewSpeed() * multiplier);
+            }
+        });
     }
 
-    public static double getReducedBonus(double bonus) {
+    public static float getReducedBonus(float bonus) {
         // 1 is the default / minimum multiplier - only reduce the added bonus (e.g. 1.5 -> 1.25)
         return 1 + (bonus - 1) / DragonBonusConfig.breakSpeedReduction;
     }

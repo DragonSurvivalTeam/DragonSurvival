@@ -63,7 +63,7 @@ public class ToolTipHandler {
                 return;
             }
 
-            MutableComponent foodData = getFoodTooltipData(event.getItemStack().getItem(), data.getType());
+            MutableComponent foodData = getFoodTooltipData(event.getItemStack().getItem(), data.species());
 
             if (foodData.getContents() != PlainTextContents.EMPTY) {
                 event.getToolTip().add(foodData);
@@ -251,9 +251,9 @@ public class ToolTipHandler {
         if (isHelpText()) {
             event.setBorderStart(DSColors.withAlpha(DSColors.LIGHT_PURPLE, 1));
             event.setBorderEnd(DSColors.withAlpha(DSColors.DARK_PURPLE, 1));
-        } else if (data.getType().value().getDiet(event.getItemStack().getItem()) != null) {
-            event.setBorderStart(DSColors.toARGB(data.getType().value().miscResources().primaryColor()));
-            event.setBorderEnd(DSColors.toARGB(data.getType().value().miscResources().secondaryColor()));
+        } else if (data.species().value().getDiet(event.getItemStack().getItem()) != null) {
+            event.setBorderStart(DSColors.toARGB(data.species().value().miscResources().primaryColor()));
+            event.setBorderEnd(DSColors.toARGB(data.species().value().miscResources().secondaryColor()));
         }
     }
 }

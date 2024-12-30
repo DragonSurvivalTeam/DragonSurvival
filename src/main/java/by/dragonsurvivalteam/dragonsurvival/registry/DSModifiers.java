@@ -43,7 +43,7 @@ public class DSModifiers {
         AttributeModifierSupplier.removeModifiers(ModifierType.DRAGON_TYPE, player);
 
         if (handler.isDragon()) {
-            handler.getType().value().applyModifiers(player, handler.getDragonType(), /* Type has nothing to scale */ 1);
+            handler.species().value().applyModifiers(player, handler.species(), /* Type has nothing to scale */ 1);
         }
 
         player.setHealth(player.getMaxHealth() * healthPercentage);
@@ -58,7 +58,7 @@ public class DSModifiers {
         AttributeModifierSupplier.removeModifiers(ModifierType.DRAGON_STAGE, player);
 
         if (handler.isDragon()) {
-            handler.getStage().value().applyModifiers(player, handler.getDragonType(), handler.getSize());
+            handler.stage().value().applyModifiers(player, handler.species(), handler.getSize());
         }
 
         player.setHealth(player.getMaxHealth() * healthPercentage);
@@ -73,7 +73,7 @@ public class DSModifiers {
         AttributeModifierSupplier.removeModifiers(ModifierType.DRAGON_BODY, player);
 
         if (handler.isDragon()) {
-            handler.getBody().value().applyModifiers(player, handler.getDragonType(), /* Body has nothing to scale */ 1);
+            handler.body().value().applyModifiers(player, handler.species(), /* Body has nothing to scale */ 1);
         }
         player.setHealth(player.getMaxHealth() * healthPercentage);
     }

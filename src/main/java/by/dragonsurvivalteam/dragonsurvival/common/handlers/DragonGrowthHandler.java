@@ -40,7 +40,7 @@ public class DragonGrowthHandler {
             return;
         }
 
-        double growth = getGrowth(data.getStage(), event.getItemStack().getItem());
+        double growth = getGrowth(data.stage(), event.getItemStack().getItem());
 
         if (growth == 0) {
             return;
@@ -84,7 +84,7 @@ public class DragonGrowthHandler {
         }
 
         if (serverPlayer.tickCount % getInterval() == 0) {
-            DragonStage dragonStage = data.getStage().value();
+            DragonStage dragonStage = data.stage().value();
             double oldSize = data.getDesiredSize();
             data.setDesiredSize(serverPlayer, data.getDesiredSize() + dragonStage.ticksToSize(getInterval()));
             Optional<EntityPredicate> isNaturalGrowthStopped = dragonStage.isNaturalGrowthStopped();

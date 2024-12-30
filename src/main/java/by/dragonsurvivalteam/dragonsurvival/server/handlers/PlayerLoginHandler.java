@@ -21,24 +21,21 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 @EventBusSubscriber
 public class PlayerLoginHandler {
-
-    public static void syncCompleteSingle(Entity tracker, Entity tracked) {
-        if (tracker instanceof ServerPlayer) {
-            if (tracked instanceof ServerPlayer) {
-                DragonStateProvider.getOptional(tracked).ifPresent(dragonStateHandler -> {
-                    PacketDistributor.sendToPlayer((ServerPlayer) tracker, new SyncComplete.Data(tracked.getId(), dragonStateHandler.serializeNBT(tracked.registryAccess())));
-                });
-            }
+    public static void syncCompleteSingle(final Entity tracker, final Entity tracked) {
+        if (tracker instanceof ServerPlayer serverTracker && tracked instanceof ServerPlayer) {
+            DragonStateProvider.getOptional(tracked).ifPresent(dragonStateHandler -> {
+                PacketDistributor.sendToPlayer(serverTracker, new SyncComplete.Data(tracked.getId(), dragonStateHandler.serializeNBT(tracked.registryAccess())));
+            });
         }
     }
 
     public static void syncCompleteSingle(final Entity entity) {
         if (entity instanceof ServerPlayer player) {
             DragonStateProvider.getOptional(player).ifPresent(handler -> {
-                if (handler.getType() != null && handler.getBody() == null) {
+                if (handler.species() != null && handler.body() == null) {
                     // Otherwise players won't be able to join the world
                     handler.setBody(player, DragonBody.random(player.registryAccess()));
-                    DragonSurvival.LOGGER.error("Player {} was a dragon but had an invalid dragon body type", player);
+                    DragonSurvival.LOGGER.error("Player {} was a dragon but had no dragon body", player);
                 }
 
                 SyncComplete.handleDragonSync(player);
@@ -93,12 +90,12 @@ public class PlayerLoginHandler {
     }
 
     @SubscribeEvent
-    public static void onLogin(PlayerEvent.PlayerLoggedInEvent event) {
+    public static void onLogin(final PlayerEvent.PlayerLoggedInEvent event) {
         syncCompleteSingle(event.getEntity());
     }
 
     @SubscribeEvent
-    public static void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
+    public static void onRespawn(final PlayerEvent.PlayerRespawnEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
            syncCompleteSingle(player);
         }

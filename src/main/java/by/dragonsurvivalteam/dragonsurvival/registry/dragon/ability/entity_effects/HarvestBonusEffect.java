@@ -43,7 +43,7 @@ public record HarvestBonusEffect(List<HarvestBonus> bonuses) implements AbilityE
         List<MutableComponent> components = new ArrayList<>();
 
         for(HarvestBonus bonus : bonuses) {
-            components.add(Component.translatable(LangKey.ABILITY_HARVEST_LEVEL_BONUS, String.format("%.0f", bonus.bonus().calculate(ability.level()))));
+            components.add(Component.translatable(LangKey.ABILITY_HARVEST_LEVEL_BONUS, String.format("%.0f", bonus.harvestBonus().calculate(ability.level()))));
         }
 
         return components;

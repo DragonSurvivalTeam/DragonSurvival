@@ -30,7 +30,7 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
     }
 
     public void initDefaults(final DragonStateHandler handler) {
-        initDefaults(handler.getType().getKey(), handler.getBody() != null ? handler.getBody().value().customModel() : null);
+        initDefaults(handler.speciesKey(), handler.body() != null ? handler.body().value().customModel() : null);
     }
 
     public void initDefaults(final ResourceKey<DragonType> type, final ResourceLocation model) {

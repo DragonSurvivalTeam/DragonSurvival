@@ -158,7 +158,7 @@ public class DragonDoor extends Block implements SimpleWaterloggedBlock {
         if (!data.isDragon()) {
             canOpen = allowHumans;
         } else {
-            canOpen = types == null || data.getType().is(types);
+            canOpen = types == null || data.species().is(types);
         }
 
         if (!requiresPower && canOpen) {

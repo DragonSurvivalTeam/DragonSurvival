@@ -80,7 +80,7 @@ public class DragonPressurePlates extends PressurePlateBlock implements SimpleWa
                 return allowHumans ? 15 : 0;
             }
 
-            return types != null && data.getType().is(types) ? 15 : 0;
+            return types != null && data.species().is(types) ? 15 : 0;
         }
 
         return 0;

@@ -36,6 +36,7 @@ public interface Proxy {
 
     default void stopAllEmotes(int playerId) { /* Nothing to do */ }
 
+    /** This will always return 'false' when in production */
     default boolean isOnRenderThread() {
         return false;
     }

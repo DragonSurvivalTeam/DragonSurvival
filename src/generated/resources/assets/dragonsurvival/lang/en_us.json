@@ -439,7 +439,7 @@
   "dragonsurvival.configuration.block_destruction_removal": "Block Destruction Removal",
   "dragonsurvival.configuration.block_destruction_removal.tooltip": "Determines the percentage chance that a block is removed, bypassing sound or particle effects\nThis is to avoid potential lag issues due to large amounts of sound effects or particles",
   "dragonsurvival.configuration.break_speed_reduction": "Break Speed Reduction",
-  "dragonsurvival.configuration.break_speed_reduction.tooltip": "The break speed multiplier of the dragon level will be divided by this value if:\n- The block is not part of the harvestable blocks of that dragon type\n- The dragon has a valid tool in the claw inventory",
+  "dragonsurvival.configuration.break_speed_reduction.tooltip": "The break speed multiplier of the dragon level will be divided by this value if:\n- The dragon has a valid tool in the claw inventory",
   "dragonsurvival.configuration.can_move_while_casting": "Can Move While Casting",
   "dragonsurvival.configuration.can_move_while_casting.tooltip": "If enabled the movement restrictions from casting certain abilities will be ignored",
   "dragonsurvival.configuration.cast_bar_x_offset": "Cast Bar X Offset",

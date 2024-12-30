@@ -1,5 +1,4 @@
 {
-  "break_speed_multiplier": 3.0,
   "growth_items": [
     {
       "growth_in_ticks": 72000,
@@ -10,7 +9,6 @@
       "items": "dragonsurvival:star_bone"
     }
   ],
-  "harvest_level_bonus": 1,
   "is_default": true,
   "is_natural_growth_stopped": {
     "type_specific": {

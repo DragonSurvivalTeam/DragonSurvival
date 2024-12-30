@@ -207,7 +207,7 @@ public class MagicHUD {
             manaX += manabarXOffset;
             manaY += manabarYOffset;
 
-            ResourceLocation manaIcons = DragonStateProvider.getData(player).getType().value().miscResources().manaSprites();
+            ResourceLocation manaIcons = DragonStateProvider.getData(player).species().value().miscResources().manaSprites();
 
             for (int row = 0; row < 1 + Math.ceil(maxMana / 10); row++) {
                 for (int point = 0; point < 10; point++) {
@@ -250,9 +250,9 @@ public class MagicHUD {
                 graphics.pose().translate(startX, startY, 0);
 
                 DragonStateHandler handler = DragonStateProvider.getData(player);
-                graphics.blit(handler.getDragonType().value().miscResources().castBar(), startX, startY, 0, 0, 196, 47, 196, 47);
+                graphics.blit(handler.species().value().miscResources().castBar(), startX, startY, 0, 0, 196, 47, 196, 47);
 
-                Color color = new Color(DSColors.toARGB(handler.getType().value().miscResources().primaryColor()));
+                Color color = new Color(DSColors.toARGB(handler.species().value().miscResources().primaryColor()));
                 graphics.setColor(color.getRedFloat(), color.getGreenFloat(), color.getBlueFloat(), color.getAlpha());
                 graphics.blit(CAST_BAR_FILL, startX + 2, startY + 41, 0, 0, (int) (191 * percentage), 4, 191, 4);
                 graphics.setColor(1, 1, 1, 1);

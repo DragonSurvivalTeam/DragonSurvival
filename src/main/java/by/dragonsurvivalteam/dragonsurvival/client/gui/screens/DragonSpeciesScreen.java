@@ -110,7 +110,7 @@ public class DragonSpeciesScreen extends Screen {
 
         DragonStateHandler data = DragonStateProvider.getData(minecraft.player);
         graphics.blit(BACKGROUND_MAIN, startX, startY, 0, 0, 256, 256);
-        graphics.blit(data.getType().value().miscResources().altarBanner(), startX + 7, startY + 8, 0, 0, 49, 147, 49, 294);
+        graphics.blit(data.species().value().miscResources().altarBanner(), startX + 7, startY + 8, 0, 0, 49, 147, 49, 294);
 
         for (ScrollableComponent component : scrollableComponents) {
             component.update();
@@ -127,8 +127,8 @@ public class DragonSpeciesScreen extends Screen {
     @Override
     public void init() {
         //noinspection DataFlowIssue -> player is present
-        dragonType = DragonStateProvider.getData(minecraft.player).getType();
-        dragonStage = DragonStateProvider.getData(minecraft.player).getStage();
+        dragonType = DragonStateProvider.getData(minecraft.player).species();
+        dragonStage = DragonStateProvider.getData(minecraft.player).stage();
 
         int xSize = 256;
         int ySize = 256;
@@ -172,7 +172,7 @@ public class DragonSpeciesScreen extends Screen {
         wingButton.setTooltip(Tooltip.create(flightTooltip));
 
         // Growth stage button
-        GrowthIcon growthIcon = data.getType().value().getGrowthIcon(data.getStage());
+        GrowthIcon growthIcon = data.species().value().getGrowthIcon(data.stage());
         growthButton = new HoverButton(startX + 99, startY - 21, 20, growthIcon.icon(), growthIcon.hoverIcon(), () -> {
             DragonStateHandler handler = DragonStateProvider.getData(minecraft.player);
             Pair<List<Either<FormattedText, TooltipComponent>>, Integer> growthDescriptionResult = handler.getGrowthDescription(growthTooltipScroll);
@@ -188,7 +188,7 @@ public class DragonSpeciesScreen extends Screen {
 
         if (!stages.isEmpty()) {
             List<AbstractWidget> crystals = stages.stream().map(stage -> (AbstractWidget) new GrowthCrystalButton(0, 0, stage)).toList();
-            MiscDragonTextures textures = data.getType().value().miscResources();
+            MiscDragonTextures textures = data.species().value().miscResources();
 
             crystalBar = new BarComponent(this,
                     startX + 130, startY - 19, 4,
@@ -205,11 +205,11 @@ public class DragonSpeciesScreen extends Screen {
         addRenderableWidget(ridingButton);
 
         // Body type button
-        DragonBodyButton bodyTypeButton = new DragonBodyButton(this, startX + 29, startY + 92, 25, 25, data.getBody(), false, button -> {});
+        DragonBodyButton bodyTypeButton = new DragonBodyButton(this, startX + 29, startY + 92, 25, 25, data.body(), false, button -> {});
         addRenderableWidget(bodyTypeButton);
 
         // Penalties bar
-        List<AbstractWidget> penalties = data.getType().value().penalties().stream().map(penalty -> (AbstractWidget) new PenaltyButton(0, 0, penalty)).toList();
+        List<AbstractWidget> penalties = data.species().value().penalties().stream().map(penalty -> (AbstractWidget) new PenaltyButton(0, 0, penalty)).toList();
         scrollableComponents.add(new BarComponent(this,
                 startX + 85, startY + 85, 3,
                 penalties, 40,
@@ -227,9 +227,9 @@ public class DragonSpeciesScreen extends Screen {
             onClose();
         }
 
-        if (dragonType != data.getType() || dragonStage != data.getStage()) {
-            dragonType = data.getType();
-            dragonStage = data.getStage();
+        if (dragonType != data.species() || dragonStage != data.stage()) {
+            dragonType = data.species();
+            dragonStage = data.stage();
             clearWidgets();
             init();
         }

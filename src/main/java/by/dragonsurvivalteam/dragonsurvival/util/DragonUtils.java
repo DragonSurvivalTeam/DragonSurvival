@@ -14,11 +14,11 @@ import java.util.List;
 
 public class DragonUtils {
     public static Holder<DragonType> getType(Player entity) {
-        return DragonStateProvider.getData(entity).getType();
+        return DragonStateProvider.getData(entity).species();
     }
 
     public static Holder<DragonType> getType(DragonStateHandler handler) {
-        return handler.getType();
+        return handler.species();
     }
 
     public static Holder<DragonBody> getBody(Player player) {
@@ -26,7 +26,7 @@ public class DragonUtils {
     }
 
     public static Holder<DragonBody> getBody(DragonStateHandler handler) {
-        return handler.getBody();
+        return handler.body();
     }
 
     public static boolean isBody(final DragonStateHandler data, final Holder<DragonBody> typeToCheck) {
@@ -34,7 +34,7 @@ public class DragonUtils {
             return false;
         }
 
-        return isBody(data.getBody(), typeToCheck);
+        return isBody(data.body(), typeToCheck);
     }
 
     public static boolean isBody(final Holder<DragonBody> playerBody, final Holder<DragonBody> typeToCheck) {
@@ -50,7 +50,7 @@ public class DragonUtils {
     }
 
     public static boolean isType(final DragonStateHandler handler, final ResourceKey<DragonType> typeToCheck) {
-        return isType(handler.getType().getKey(), typeToCheck);
+        return isType(handler.speciesKey(), typeToCheck);
     }
 
     public static boolean isType(final Entity entity, ResourceKey<DragonType> typeToCheck) {
@@ -58,7 +58,7 @@ public class DragonUtils {
             return false;
         }
 
-        Holder<DragonType> playerType = DragonStateProvider.getData(player).getType();
+        Holder<DragonType> playerType = DragonStateProvider.getData(player).species();
 
         if (playerType == null) {
             return false;

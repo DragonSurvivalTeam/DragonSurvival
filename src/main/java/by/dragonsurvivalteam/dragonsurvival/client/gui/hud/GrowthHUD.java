@@ -43,7 +43,7 @@ public class GrowthHUD {
 
         ItemStack stack = localPlayer.getMainHandItem();
 
-        Holder<DragonStage> dragonStage = handler.getStage();
+        Holder<DragonStage> dragonStage = handler.stage();
         double nextSize = dragonStage.value().sizeRange().max();
 
         float currentProgress = (float) dragonStage.value().getProgress(handler.getSize());
@@ -64,16 +64,18 @@ public class GrowthHUD {
         circleY += growthYOffset;
 
         float targetProgress;
-        if(progressDiffIsSmall) {
+
+        if (progressDiffIsSmall) {
             targetProgress = (float) dragonStage.value().getProgress(handler.getSize() + DragonGrowthHandler.getGrowth(dragonStage, stack.getItem()));
         } else {
             targetProgress = desiredProgress;
         }
+
         RenderingUtils.drawGrowthCircle(guiGraphics, circleX, circleY, radius, 6, 0.13f, currentProgress, targetProgress, CENTER_COLOR, OUTLINE_COLOR, ADD_COLOR, SUBTRACT_COLOR);
 
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0, 0, 300);
-        guiGraphics.blit(handler.getType().value().getHoverGrowthIcon(dragonStage), circleX + 7, circleY + 4, 0, 0, 20, 20, 20, 20);
+        guiGraphics.blit(handler.species().value().getHoverGrowthIcon(dragonStage), circleX + 7, circleY + 4, 0, 0, 20, 20, 20, 20);
         guiGraphics.pose().popPose();
     }
 }

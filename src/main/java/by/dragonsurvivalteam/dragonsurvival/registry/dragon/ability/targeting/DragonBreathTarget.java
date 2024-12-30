@@ -34,7 +34,7 @@ public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target,
             AABB breathArea = calculateBreathArea(dragon, ability);
 
             BlockPos.betweenClosedStream(breathArea).forEach(position -> {
-                if (blockTarget.matches(dragon.serverLevel(), position)) {
+                if (blockTarget.matches(dragon, position)) {
                     // TODO :: Is this too expensive to calculate for each block?
                     BlockHitResult blockHitResult = getBlockHitResult(dragon, ability);
                     blockTarget.effect().forEach(target -> target.apply(dragon, ability, position, blockHitResult.getDirection()));
@@ -44,7 +44,7 @@ public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target,
             AABB breathArea = calculateBreathArea(dragon, ability);
 
             dragon.serverLevel().getEntities(EntityTypeTest.forClass(Entity.class), breathArea,
-                    entity -> isEntityRelevant(dragon, entityTarget, entity) && entityTarget.matches(dragon.serverLevel(), entity, entity.position())
+                    entity -> isEntityRelevant(dragon, entityTarget, entity) && entityTarget.matches(dragon, entity, entity.position())
             ).forEach(entity -> entityTarget.effects().forEach(target -> target.apply(dragon, ability, entity)));
         });
     }
@@ -60,12 +60,7 @@ public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target,
         }
     }
 
-    @Override
-    public MapCodec<? extends AbilityTargeting> codec() {
-        return CODEC;
-    }
-
-    public BlockHitResult getBlockHitResult(Player dragon, final DragonAbilityInstance ability) {
+    public BlockHitResult getBlockHitResult(final Player dragon, final DragonAbilityInstance ability) {
         Vec3 viewVector = dragon.getLookAngle().scale(rangeMultiplier.calculate(ability.level()) * dragon.getAttributeValue(DSAttributes.DRAGON_BREATH_RANGE));
         return dragon.level().clip(new ClipContext(viewVector, viewVector, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty()));
     }
@@ -103,5 +98,10 @@ public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target,
         }
 
         return Math.max(value, defaultValue);
+    }
+
+    @Override
+    public MapCodec<? extends AbilityTargeting> codec() {
+        return CODEC;
     }
 }

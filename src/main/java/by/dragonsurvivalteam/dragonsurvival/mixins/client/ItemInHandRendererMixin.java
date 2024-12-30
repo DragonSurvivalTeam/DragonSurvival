@@ -31,7 +31,7 @@ public class ItemInHandRendererMixin {
         DragonStateHandler data = DragonStateProvider.getData(player);
 
         if (data.isDragon()) {
-            return DragonFoodHandler.isEdible(stack, data.getType()) ? UseAnim.EAT : original;
+            return DragonFoodHandler.isEdible(stack, data.species()) ? UseAnim.EAT : original;
         }
 
         return original;
