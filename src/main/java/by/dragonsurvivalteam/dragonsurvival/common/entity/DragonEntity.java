@@ -529,7 +529,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
                     clearVerticalVelocity();
                 }
 
-                lockTailAndNeck();
                 useDynamicScaling = true;
                 baseSpeed = DEFAULT_FAST_SWIM_SPEED; // Default base fast speed for the player
                 state.setAnimation(AnimationUtils.createAnimation(builder, SWIM_FAST));
