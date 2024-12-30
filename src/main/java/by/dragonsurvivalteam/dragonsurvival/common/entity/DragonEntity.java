@@ -56,28 +56,30 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     public PoseStack.Pose currentlyRenderedPose;
 
-    public final ArrayList<Double> bodyYawHistory = new ArrayList<>();
-    public double currentBodyYawChange = 0;
-    public final ArrayList<Double> headYawHistory = new ArrayList<>();
-    public double currentHeadYawChange = 0;
-    public final ArrayList<Double> headPitchHistory = new ArrayList<>();
-    public double currentHeadPitchChange = 0;
-    public final ArrayList<Double> verticalVelocityHistory = new ArrayList<>();
-    public double currentTailMotionUp = 0;
-    /**
-     * This reference must be updated whenever player is remade, for example, when changing dimensions
-     */
-    public volatile Integer playerId; // TODO :: Use string uuid?
-    public boolean neckLocked = false;
-    public boolean tailLocked = false;
-    public float prevZRot = 0;
-    public float prevXRot = 0;
+    public ArrayList<Double> bodyYawHistory = new ArrayList<>();
+    public double currentBodyYawChange;
+
+    public ArrayList<Double> headYawHistory = new ArrayList<>();
+    public double currentHeadYawChange;
+
+    public ArrayList<Double> headPitchHistory = new ArrayList<>();
+    public double currentHeadPitchChange;
+
+    public ArrayList<Double> verticalVelocityHistory = new ArrayList<>();
+    public double currentTailMotionUp;
+    /** This reference must be updated whenever player is remade, for example, when changing dimensions */
+    public volatile Integer playerId;
+    public boolean neckLocked;
+    public boolean tailLocked;
+    public float prevZRot;
+    public float prevXRot;
+
     // In certain circumstances, we need to override the UUID with the local player's UUID when gathering textures for the dragon entity
     // At the moment, this only happens on the smithing screen, as the player in the inventory panels is actually referring the real player and therefore has the correct UUID for textures
     // The dragon displayed in the editor doesn't want to mirror the local player's UUID, so this isn't used there either
-    public boolean overrideUUIDWithLocalPlayerForTextureFetch = false;
+    public boolean overrideUUIDWithLocalPlayerForTextureFetch;
 
-    public boolean clearVerticalVelocity = false;
+    public boolean clearVerticalVelocity;
     AnimationTickTimer animationTickTimer = new AnimationTickTimer();
 
     // Default player values

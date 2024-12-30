@@ -46,16 +46,6 @@ public class DragonModel extends GeoModel<DragonEntity> {
     /** Factor to multiply the delta movement by, needed for scaling for the animations */
     private static final double DELTA_MOVEMENT_FACTOR = 10;
 
-    /**
-     * TODO Body Types Update
-     * Required:
-     * - tips for body types like for magic abilities
-     * <p>
-     * Extras:
-     * - customization.json - Ability to disallow some details in the editor for some Body Types (for example, wing details are not required for wingless).
-     * - emotes.json - Ability to disallow some emotions for certain Body Types.
-     */
-
     @Override
     public void applyMolangQueries(final AnimationState<DragonEntity> animationState, double currentTick) {
         super.applyMolangQueries(animationState, currentTick);
@@ -70,7 +60,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
         float partialDeltaTick = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
         MovementData movement = MovementData.getData(player);
 
-        if(dragon.neckLocked) {
+        if (dragon.neckLocked) {
             MathParser.setVariable("query.head_yaw", () -> 0);
             MathParser.setVariable("query.head_pitch", () -> 0);
         } else {
@@ -81,11 +71,11 @@ public class DragonModel extends GeoModel<DragonEntity> {
         double gravity = player.getAttributeValue(Attributes.GRAVITY);
         MathParser.setVariable("query.gravity", () -> gravity);
 
-
         double bodyYawAvg;
         double headYawAvg;
         double headPitchAvg;
         double verticalVelocityAvg;
+
         if (!ClientDragonRenderer.isOverridingMovementData) {
             double bodyYawChange = Functions.angleDifference(movement.bodyYaw, movement.bodyYawLastFrame) / deltaTick * DELTA_YAW_PITCH_FACTOR;
             double headYawChange = Functions.angleDifference(movement.headYaw, movement.headYawLastFrame) / deltaTick * DELTA_YAW_PITCH_FACTOR;
@@ -98,33 +88,48 @@ public class DragonModel extends GeoModel<DragonEntity> {
             verticalVelocity *= 1 - Mth.abs(Mth.clampedMap(movement.prevXRot, -90, 90, -1, 1));
 
             float deltaTickFor60FPS = AnimationUtils.getDeltaTickFor60FPS();
-            // Accumulate them in the history
-            while(dragon.bodyYawHistory.size() > 10 / deltaTickFor60FPS ) {
-                dragon.bodyYawHistory.removeFirst();
-            }
-            dragon.bodyYawHistory.add(bodyYawChange);
-
-            while(dragon.headYawHistory.size() > 10 / deltaTickFor60FPS ) {
-                dragon.headYawHistory.removeFirst();
-            }
-            dragon.headYawHistory.add(headYawChange);
-
-            while(dragon.headPitchHistory.size() > 10 / deltaTickFor60FPS ) {
-                dragon.headPitchHistory.removeFirst();
-            }
-            dragon.headPitchHistory.add(headPitchChange);
+            int removeSize = (int) (10 / deltaTickFor60FPS);
 
             // Handle the clear case (see DragonEntity.java)
-            if(dragon.clearVerticalVelocity) {
+            if (dragon.clearVerticalVelocity) {
                 dragon.verticalVelocityHistory.clear();
-                while(dragon.verticalVelocityHistory.size() < 10 / deltaTickFor60FPS) {
-                    dragon.verticalVelocityHistory.add(0.);
+
+                while (dragon.verticalVelocityHistory.size() < removeSize) {
+                    dragon.verticalVelocityHistory.add(0d);
                 }
             }
 
-            while(dragon.verticalVelocityHistory.size() > 10 / deltaTickFor60FPS ) {
-                dragon.verticalVelocityHistory.removeFirst();
+            while(true) {
+                boolean removedElement = false;
+
+                if (dragon.bodyYawHistory.size() > removeSize) {
+                    dragon.bodyYawHistory.removeFirst();
+                    removedElement = true;
+                }
+
+                if (dragon.headYawHistory.size() > removeSize) {
+                    dragon.headYawHistory.removeFirst();
+                    removedElement = true;
+                }
+
+                if (dragon.headPitchHistory.size() > removeSize) {
+                    dragon.headPitchHistory.removeFirst();
+                    removedElement = true;
+                }
+
+                if (dragon.verticalVelocityHistory.size() > removeSize) {
+                    dragon.verticalVelocityHistory.removeFirst();
+                    removedElement = true;
+                }
+
+                if (!removedElement) {
+                    break;
+                }
             }
+
+            dragon.bodyYawHistory.add(bodyYawChange);
+            dragon.headYawHistory.add(headYawChange);
+            dragon.headPitchHistory.add(headPitchChange);
             dragon.verticalVelocityHistory.add(verticalVelocity);
 
             bodyYawAvg = dragon.bodyYawHistory.stream().mapToDouble(Double::doubleValue).average().orElse(0);
@@ -138,18 +143,19 @@ public class DragonModel extends GeoModel<DragonEntity> {
             verticalVelocityAvg = 0;
         }
 
-        double lerpRate = Math.min(1., deltaTick);
+        double lerpRate = Math.min(1, deltaTick);
         dragon.currentBodyYawChange = Mth.lerp(lerpRate, dragon.currentBodyYawChange, bodyYawAvg);
         dragon.currentHeadYawChange = Mth.lerp(lerpRate, dragon.currentHeadYawChange, headYawAvg);
         dragon.currentHeadPitchChange = Mth.lerp(lerpRate, dragon.currentHeadPitchChange, headPitchAvg);
-        if(dragon.clearVerticalVelocity) {
+
+        if (dragon.clearVerticalVelocity) {
             dragon.currentTailMotionUp = 0;
             dragon.clearVerticalVelocity = false;
         } else {
             dragon.currentTailMotionUp = Mth.lerp(lerpRate, dragon.currentTailMotionUp, -verticalVelocityAvg);
         }
 
-        if(dragon.tailLocked) {
+        if (dragon.tailLocked) {
             MathParser.setVariable("query.tail_motion_up", () -> 0);
             MathParser.setVariable("query.body_yaw_change", () -> 0);
         } else {
@@ -163,8 +169,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
 
     @Override
     public ResourceLocation getModelResource(final DragonEntity dragon) {
-        // TODO :: What would be a good fallback here?
-        if(dragon.getPlayer() == null) {
+        if (dragon.getPlayer() == null) {
             return DragonBody.DEFAULT_MODEL;
         } else {
             return DragonStateProvider.getData(dragon.getPlayer()).getBody().value().customModel();

@@ -173,15 +173,14 @@ public class DragonSpeciesScreen extends Screen {
 
         // Growth stage button
         GrowthIcon growthIcon = data.getType().value().getGrowthIcon(data.getStage());
-        growthButton = new HoverButton(startX + 99, startY - 21, 20, growthIcon.icon(), growthIcon.hoverIcon(),
-                () -> {
-                        DragonStateHandler handler = DragonStateProvider.getData(minecraft.player);
-                        Pair<List<Either<FormattedText, TooltipComponent>>, Integer> growthDescriptionResult = handler.getGrowthDescription(growthTooltipScroll);
-                        List<Either<FormattedText, TooltipComponent>> components = growthDescriptionResult.getFirst();
-                        growthTooltipScroll = growthDescriptionResult.getSecond();
+        growthButton = new HoverButton(startX + 99, startY - 21, 20, growthIcon.icon(), growthIcon.hoverIcon(), () -> {
+            DragonStateHandler handler = DragonStateProvider.getData(minecraft.player);
+            Pair<List<Either<FormattedText, TooltipComponent>>, Integer> growthDescriptionResult = handler.getGrowthDescription(growthTooltipScroll);
+            List<Either<FormattedText, TooltipComponent>> components = growthDescriptionResult.getFirst();
+            growthTooltipScroll = growthDescriptionResult.getSecond();
 
-                        return components;
-                });
+            return components;
+        });
         addRenderableWidget(growthButton);
 
         // Growth stage crystals

@@ -129,7 +129,7 @@ public class DragonSoulItem extends Item {
 
         level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ENDER_DRAGON_GROWL, entity.getSoundSource(), 1.0F, 1.0F);
 
-        for (int i = 0; i < 10; i++) { // TODO :: use other generic particle?
+        for (int i = 0; i < 10; i++) { // TODO :: use other generic particle (custom particle and color it using the primary / secondary color)?
             level.addParticle(ParticleTypes.SOUL, entity.getX() + (level.random.nextDouble() - 0.5D) * 0.5D, entity.getY() + (level.random.nextDouble() - 0.5D) * 0.5D, entity.getZ() + (level.random.nextDouble() - 0.5D) * 0.5D, (level.random.nextDouble() - 0.5D) * 0.5D, level.random.nextDouble() * 0.5D, (level.random.nextDouble() - 0.5D) * 0.5D);
         }
 

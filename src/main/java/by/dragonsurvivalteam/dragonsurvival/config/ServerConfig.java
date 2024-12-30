@@ -11,7 +11,7 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 import java.util.List;
 
 public class ServerConfig {
-    ServerConfig(ModConfigSpec.Builder builder) {
+    ServerConfig(final ModConfigSpec.Builder builder) {
         ConfigHandler.createConfigEntries(builder, ConfigSide.SERVER);
     }
 
@@ -39,10 +39,6 @@ public class ServerConfig {
     @ConfigOption(side = ConfigSide.SERVER, category = "general", key = "sync_claw_render")
     public static Boolean syncClawRender = true;
 
-    @Translation(key = "can_move_in_emotes", type = Translation.Type.CONFIGURATION, comments = "If enabled players will be able to move while performing emotes")
-    @ConfigOption(side = ConfigSide.SERVER, category = "general", key = "can_move_in_emotes")
-    public static Boolean canMoveInEmote = true;
-
     @Translation(key = "can_move_while_casting", type = Translation.Type.CONFIGURATION, comments = "If enabled the movement restrictions from casting certain abilities will be ignored")
     @ConfigOption(side = ConfigSide.SERVER, category = "general", key = "can_move_while_casting")
     public static Boolean canMoveWhileCasting = false;
@@ -64,10 +60,6 @@ public class ServerConfig {
     @Translation(key = "destructible_blocks_blacklist", type = Translation.Type.CONFIGURATION, comments = "If enabled the destructible block tag for is used as a blacklist - if disabled it will be used as a whitelist")
     @ConfigOption(side = ConfigSide.SERVER, category = {"growth", "big_dragon"}, key = "destructible_blocks_blacklist")
     public static Boolean destructibleBlocksIsBlacklist = false;
-
-    @Translation(key = "allow_block_destruction", type = Translation.Type.CONFIGURATION, comments = "If enabled certain blocks will be automatically destroyed when dragons above a certain size collide with them - not active while crouching")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"growth", "big_dragon"}, key = "allow_block_destruction")
-    public static Boolean allowBlockDestruction = false;
 
     @ConfigRange(min = 0.0, max = 1.0)
     @Translation(key = "block_destruction_removal", type = Translation.Type.CONFIGURATION, comments = {
@@ -189,11 +181,6 @@ public class ServerConfig {
 
     // --- Penalties --- //
 
-    // FIXME :: is this checked in all places? should we have these global "turn off all" configs at all? seems easy to miss
-    @Translation(key = "penalties_enabled", type = Translation.Type.CONFIGURATION, comments = "If disabled all penalties will be turned off")
-    @ConfigOption(side = ConfigSide.SERVER, category = "penalties", key = "penalties_enabled")
-    public static Boolean penaltiesEnabled = true;
-
     @Translation(key = "dragons_are_scary", type = Translation.Type.CONFIGURATION, comments = "If enabled animals will try run away from dragons")
     @ConfigOption(side = ConfigSide.SERVER, category = "penalties", key = "dragons_are_scary")
     public static Boolean dragonsAreScary = true;
@@ -226,38 +213,9 @@ public class ServerConfig {
 
     // --- Magic --- //
 
-    @Translation(key = "dragon_abilities", type = Translation.Type.CONFIGURATION, comments = "Enable / Disable dragon abilities")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"magic", "abilities"}, key = "dragon_abilities")
-    public static Boolean dragonAbilities = true;
-
-    // TODO :: make the required experience configurable -> probably only when the system gets reworked into datapack registries
-    @Translation(key = "no_experience_requirements", type = Translation.Type.CONFIGURATION, comments = "If enabled abilities will be unlocked at their max. level at all times")
-    @ConfigOption(side = ConfigSide.SERVER, category = "magic", key = "no_experience_requirements")
-    public static Boolean noExperienceRequirements = false;
-
     @Translation(key = "consume_experience_as_mana", type = Translation.Type.CONFIGURATION, comments = "If enabled experience will be used to substitute for missing mana (10 experience points equals 1 mana point)")
     @ConfigOption(side = ConfigSide.SERVER, category = "magic", key = "consume_experience_as_mana")
     public static Boolean consumeExperienceAsMana = true;
-
-    @ConfigRange(min = 0, max = 100)
-    @Translation(key = "passive_ability_initial_cost", type = Translation.Type.CONFIGURATION, comments = "The initial experience cost for leveling passive abilities")
-    @ConfigOption(side = ConfigSide.SERVER, category = "magic", key = "passive_ability_initial_cost")
-    public static Integer initialPassiveCost = 1;
-
-    @ConfigRange(min = 0, max = 100)
-    @Translation(key = "passive_ability_cost_multiplier", type = Translation.Type.CONFIGURATION, comments = "Multiplier to the experience cost of passive skills")
-    @ConfigOption(side = ConfigSide.SERVER, category = "magic", key = "passive_ability_cost_multiplier")
-    public static Double passiveScalingCost = 4.0;
-
-    @ConfigRange(min = 1, max = 1000)
-    @Translation(key = "favorable_mana_regeneration", type = Translation.Type.CONFIGURATION, comments = "Determines how fast (in ticks) (20 ticks = 1 second) mana is restored in favorable conditions")
-    @ConfigOption(side = ConfigSide.SERVER, category = "magic", key = "favorable_mana_regeneration")
-    public static Integer favorableManaTicks = 1;
-
-    @ConfigRange(min = 1, max = 1000)
-    @Translation(key = "normal_mana_regeneration", type = Translation.Type.CONFIGURATION, comments = "Determines how fast (in ticks) (20 ticks = 1 second) mana is restored in normal conditions")
-    @ConfigOption(side = ConfigSide.SERVER, category = "magic", key = "normal_mana_regeneration")
-    public static Integer normalManaTicks = 10;
 
     @Translation(key = "save_all_abilities", type = Translation.Type.CONFIGURATION, comments = {
             "If enabled all abilities will remain when changing dragon types",

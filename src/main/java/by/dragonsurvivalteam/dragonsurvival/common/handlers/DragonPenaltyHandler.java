@@ -2,7 +2,6 @@ package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
@@ -33,11 +32,6 @@ import java.util.Optional;
 public class DragonPenaltyHandler {
     @SubscribeEvent // TODO :: remove this logic entirely? have some sort of config or penalty?
     public static void hitByWaterPotion(final ProjectileImpactEvent event) {
-        // TODO :: add snowball logic here as well if this stays
-        if (!ServerConfig.penaltiesEnabled /*|| CaveDragonConfig.caveSplashDamage == 0.0*/) {
-            return;
-        }
-
         if (event.getProjectile() instanceof ThrownPotion potion) {
             if (potion.getItem().getItem() != Items.SPLASH_POTION) {
                 return;

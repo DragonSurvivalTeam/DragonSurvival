@@ -23,9 +23,15 @@ public class ExperienceUtils {
     /** Calculates the experience level the experience is worth */
     public static int getLevel(int experience) {
         int level = 0;
+        int currentExperience = 0;
 
-        // TODO :: the older variant has better performance, switch back
-        while (experience > getTotalExperience(level + 1)) {
+        while (true) {
+            currentExperience += getExperienceForLevel(level);
+
+            if (currentExperience > experience) {
+                break;
+            }
+
             level++;
         }
 

@@ -99,7 +99,7 @@ public class ClientFlightHandler {
     public static boolean wasFlying;
 
     /** Acceleration */
-    static double ax, ay, az; // TODO :: Turn into vector?
+    static double ax, ay, az;
     static float lastIncrease;
     static float lastZoom = 1f;
     private static int levitationLeft;
@@ -272,7 +272,6 @@ public class ClientFlightHandler {
                             Vec3 deltaMovement = player.getDeltaMovement();
 
                             double maxFlightSpeed = ServerFlightHandler.maxFlightSpeed;
-                            // TODO :: Magic numbers at various places
                             ax = Mth.clamp(ax, -0.4 * maxFlightSpeed, 0.4 * maxFlightSpeed);
                             az = Mth.clamp(az, -0.4 * maxFlightSpeed, 0.4 * maxFlightSpeed);
 
@@ -296,7 +295,6 @@ public class ClientFlightHandler {
                             Input movement = player.input;
 
                             if (!hasEnoughFoodToStartFlight(player) || player.isCreative()) {
-                                // TODO :: If you use Math.abs you always get a positive number, shouldn't this be max() instead of clamp()?
                                 ay = Mth.clamp(Math.abs(ay * 4), -0.4 * ServerFlightHandler.maxFlightSpeed, 0.4 * ServerFlightHandler.maxFlightSpeed);
                             }
 
@@ -356,7 +354,7 @@ public class ClientFlightHandler {
                                     ax = Mth.clamp(ax, -0.4 * speedLimit, 0.4 * speedLimit);
                                     az = Mth.clamp(az, -0.4 * speedLimit, 0.4 * speedLimit);
 
-                                    if (ServerFlightHandler.isSpin(player)) { // TODO :: If the spin move is used in water won't the acceleration be applied twice?
+                                    if (ServerFlightHandler.isSpin(player)) {
                                         ax += (Math.cos(yaw) * flightSpeedMultiplier * 100 * 2) / 500;
                                         az += (Math.sin(yaw) * flightSpeedMultiplier * 100 * 2) / 500;
                                         ay = viewVector.y / 4;

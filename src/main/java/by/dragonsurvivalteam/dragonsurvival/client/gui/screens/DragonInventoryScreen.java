@@ -1,11 +1,8 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.screens;
 
-import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.GrowthCrystalButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.TabButton;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.ArrowButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.ClickHoverButton;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HelpButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.BarComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.ScrollableComponent;
@@ -14,7 +11,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.GrowthIcon;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscDragonTextures;
-import by.dragonsurvivalteam.dragonsurvival.config.ConfigHandler;
 import by.dragonsurvivalteam.dragonsurvival.input.Keybind;
 import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawRender;
 import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawsMenuToggle;
@@ -27,8 +23,6 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
-import com.mojang.realmsclient.gui.screens.RealmsSelectWorldTemplateScreen;
-import mezz.jei.api.constants.ModIds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -189,15 +183,14 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
 
         // Growth stage button
         GrowthIcon growthIcon = data.getType().value().getGrowthIcon(data.getStage());
-        growthButton = new HoverButton(leftPos + 114, topPos + 4, 20, growthIcon.icon(), growthIcon.hoverIcon(),
-                () -> {
-                    DragonStateHandler handler = DragonStateProvider.getData(minecraft.player);
-                    Pair<List<Either<FormattedText, TooltipComponent>>, Integer> growthDescriptionResult = handler.getGrowthDescription(growthTooltipScroll);
-                    List<Either<FormattedText, TooltipComponent>> components = growthDescriptionResult.getFirst();
-                    growthTooltipScroll = growthDescriptionResult.getSecond();
+        growthButton = new HoverButton(leftPos + 114, topPos + 4, 20, growthIcon.icon(), growthIcon.hoverIcon(), () -> {
+            DragonStateHandler handler = DragonStateProvider.getData(minecraft.player);
+            Pair<List<Either<FormattedText, TooltipComponent>>, Integer> growthDescriptionResult = handler.getGrowthDescription(growthTooltipScroll);
+            List<Either<FormattedText, TooltipComponent>> components = growthDescriptionResult.getFirst();
+            growthTooltipScroll = growthDescriptionResult.getSecond();
 
-                    return components;
-                });
+            return components;
+        });
         addRenderableWidget(growthButton);
 
         // Growth stage crystals

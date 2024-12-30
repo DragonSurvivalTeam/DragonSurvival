@@ -19,7 +19,7 @@ public abstract class AbstractContainerEventHandlerMixin {
     @Inject(method = "setFocused", at = @At("HEAD"), cancellable = true)
     private void dragonSurvival$skipFocus(final GuiEventListener listener, final CallbackInfo callback) {
         if ((Object) this instanceof ChatScreen chatScreen) {
-            // TODO :: keybind button currently also loses focus and thefor the entered keybind is also entered into the chat window
+            // TODO :: keybind button currently also loses focus and therefor the entered keybind is also entered into the chat window
             // The actual class is synthetic (e.g. ...EmoteMenuHandler$4)
             if (listener instanceof Button && listener.getClass().getName().startsWith(EmoteMenuHandler.class.getName())) {
                 EmoteMenuHandler.focusChatBox(chatScreen);

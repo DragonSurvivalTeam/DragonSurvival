@@ -60,16 +60,12 @@ public class DSColors {
         return FastColor.ARGB32.color((int) (255 * alpha), rgb);
     }
 
+    /** Returns a color in the format of {@link FastColor.ARGB32} */
     public static int toARGB(final TextColor color) {
-        int rgb = color.getValue();
-
-        int red = (rgb >> 16) & 0xFF;
-        int green = (rgb >> 8) & 0xFF;
-        int blue = rgb & 0xFF;
-
-        return FastColor.ARGB32.color(1, red, green, blue);
+        return FastColor.ARGB32.color(255, color.getValue());
     }
 
+    /** Returns a color in the format of {@link FastColor.ARGB32} */
     public static int toARGB(final ColorRGBA color) {
         int rgba = color.rgba();
 

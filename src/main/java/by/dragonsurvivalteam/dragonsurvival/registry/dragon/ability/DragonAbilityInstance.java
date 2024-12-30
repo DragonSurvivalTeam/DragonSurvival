@@ -25,6 +25,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,7 +35,7 @@ import javax.annotation.Nullable;
 
 public class DragonAbilityInstance {
     public static final int MIN_LEVEL = 0;
-    // LevelBasedValues do not support using 0 as a level. In our system, level 0 = disabled
+    /** Since {@link LevelBasedValue} does not expect a level of 0 we handle 0 as "ability is disabled" */
     public static final int MIN_LEVEL_FOR_CALCULATIONS = 1;
     public static final int MAX_LEVEL = 255;
     public static final int NO_COOLDOWN = 0;
@@ -47,7 +48,6 @@ public class DragonAbilityInstance {
     private final Holder<DragonAbility> ability;
     private int level;
 
-    // TODO :: values which will not be saved
     private boolean isActive;
     private int currentTick;
     private int cooldown;
@@ -256,9 +256,6 @@ public class DragonAbilityInstance {
 
     public void setLevel(int level) {
         this.level = Mth.clamp(level, MIN_LEVEL, getMaxLevel());
-        // TODO :: 'onLevelChanged' needed which goes through all abilities forces them to update their effect instances?
-        //  might only be relevant for active abilities - user could level up a skill, cast the buff, then de-level
-        //  might also be fixable by applying an xp penalty for de-leveling the ability (e.g. you lose 25% or some other global configurable amount)
     }
 
     public int getMaxLevel() {

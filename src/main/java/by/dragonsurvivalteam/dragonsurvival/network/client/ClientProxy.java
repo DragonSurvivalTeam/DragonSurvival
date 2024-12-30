@@ -246,23 +246,6 @@ public class ClientProxy {
         }
     }
 
-    // TODO: Don't think this is needed anymore (we need something new for penalty data sync maybe?
-    /*public static void handleSyncDragonTypeData(final SyncDragonType.Data message) {
-        Player localPlayer = Minecraft.getInstance().player;
-
-        if (localPlayer != null) {
-            Entity entity = localPlayer.level().getEntity(message.playerId());
-
-            if (entity instanceof Player player) {
-                DragonStateProvider.getOptional(player).ifPresent(handler -> {
-                    if (handler.getType() != null) {
-                        handler.getType().readNBT(message.nbt());
-                    }
-                });
-            }
-        }
-    }*/
-
     public static void handleSyncGrowthState(final SyncGrowthState.Data message) {
         Player localPlayer = Minecraft.getInstance().player;
 

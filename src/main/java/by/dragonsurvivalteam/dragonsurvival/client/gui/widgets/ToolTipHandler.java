@@ -80,7 +80,6 @@ public class ToolTipHandler {
         FoodProperties properties = type.value().getDiet(item);
 
         if (properties == null) {
-            // TODO :: only show custom diet in the tooltip?
             return Component.empty();
         }
 
