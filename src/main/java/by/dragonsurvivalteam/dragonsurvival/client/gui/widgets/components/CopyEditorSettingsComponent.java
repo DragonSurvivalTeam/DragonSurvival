@@ -27,6 +27,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Objects;
 
+import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
+
 // TODO :: Currently this only supports the built-in types
 public class CopyEditorSettingsComponent extends AbstractContainerEventHandler implements Renderable {
     @Translation(type = Translation.Type.MISC, comments = "Copy to...")
@@ -34,6 +36,7 @@ public class CopyEditorSettingsComponent extends AbstractContainerEventHandler i
 
     private static final ResourceLocation CONFIRM_BUTTON = DragonSurvival.res("textures/gui/confirm_button.png");
     private static final ResourceLocation CANCEL_BUTTON = DragonSurvival.res("textures/gui/cancel_button.png");
+    private static final ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/textbox.png");
 
     public boolean visible;
 
@@ -183,7 +186,7 @@ public class CopyEditorSettingsComponent extends AbstractContainerEventHandler i
         // Render pop-up contents above the other elements
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0, 0, 200);
-        guiGraphics.blitWithBorder(DropdownList.BACKGROUND_TEXTURE, x, y - 3, 0, 0, xSize, ySize + 6, 32, 32, 10, 10, 10, 10);
+        guiGraphics.blitWithBorder(BACKGROUND_TEXTURE, x, y - 3, 0, 0, xSize, ySize + 6, 32, 32, 10, 10, 10, 10);
         confirm.render(guiGraphics, pMouseX, pMouseY, pPartialTicks);
         cancel.render(guiGraphics, pMouseX, pMouseY, pPartialTicks);
         newborn.render(guiGraphics, pMouseX, pMouseY, pPartialTicks);
