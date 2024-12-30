@@ -5,7 +5,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
-import com.mojang.serialization.DataResult;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
@@ -17,16 +16,17 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 
 public class SkinPreset implements INBTSerializable<CompoundTag> {
-    private String MODEL = "model";
+    private static final String MODEL = "model";
+
+    private final Lazy<HashMap<ResourceKey<DragonStage>, Lazy<DragonStageCustomization>>> skins = Lazy.of(this::initialize);
     private ResourceLocation model = DragonBody.DEFAULT_MODEL;
-    private final Lazy<HashMap<ResourceLocation, Lazy<DragonStageCustomization>>> skins = Lazy.of(this::initialize);
 
     public Lazy<DragonStageCustomization> get(final ResourceKey<DragonStage> dragonStage) {
-        return skins.get().get(dragonStage.location());
+        return skins.get().get(dragonStage);
     }
 
     public void put(final ResourceKey<DragonStage> dragonStage, final Lazy<DragonStageCustomization> customization) {
-        skins.get().put(dragonStage.location(), customization);
+        skins.get().put(dragonStage, customization);
     }
 
     public void initDefaults(final DragonStateHandler handler) {
@@ -38,20 +38,20 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
             return;
         }
 
-        if(model != null) {
+        if (model != null) {
             this.model = model;
         }
 
         for (ResourceKey<DragonStage> dragonStage : ResourceHelper.keys(null, DragonStage.REGISTRY)) {
-            skins.get().put(dragonStage.location(), Lazy.of(() -> new DragonStageCustomization(dragonStage.location(), type)));
+            skins.get().put(dragonStage, Lazy.of(() -> new DragonStageCustomization(dragonStage, type)));
         }
     }
 
-    public HashMap<ResourceLocation, Lazy<DragonStageCustomization>> initialize() {
-        HashMap<ResourceLocation, Lazy<DragonStageCustomization>> customizations = new HashMap<>();
+    public HashMap<ResourceKey<DragonStage>, Lazy<DragonStageCustomization>> initialize() {
+        HashMap<ResourceKey<DragonStage>, Lazy<DragonStageCustomization>> customizations = new HashMap<>();
 
         for (ResourceKey<DragonStage> dragonStage : ResourceHelper.keys(null, DragonStage.REGISTRY)) {
-            customizations.computeIfAbsent(dragonStage.location(), location -> Lazy.of(DragonStageCustomization::new));
+            customizations.computeIfAbsent(dragonStage, location -> Lazy.of(DragonStageCustomization::new));
         }
 
         return customizations;
@@ -61,8 +61,9 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
     public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
         tag.putString(MODEL, model.toString());
+
         for (ResourceKey<DragonStage> dragonStage : ResourceHelper.keys(provider, DragonStage.REGISTRY)) {
-            tag.put(dragonStage.location().toString(), skins.get().getOrDefault(dragonStage.location(), Lazy.of(DragonStageCustomization::new)).get().serializeNBT(provider));
+            tag.put(dragonStage.location().toString(), skins.get().getOrDefault(dragonStage, Lazy.of(DragonStageCustomization::new)).get().serializeNBT(provider));
         }
 
         return tag;
@@ -70,19 +71,16 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
 
     @Override
     public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag base) {
-        for (ResourceKey<DragonStage> level : ResourceHelper.keys(provider, DragonStage.REGISTRY)) {
-            skins.get().put(level.location(), Lazy.of(() -> {
+        for (ResourceKey<DragonStage> dragonStage : ResourceHelper.keys(provider, DragonStage.REGISTRY)) {
+            skins.get().put(dragonStage, Lazy.of(() -> {
                         DragonStageCustomization group = new DragonStageCustomization();
-                        CompoundTag dragonStageData = base.getCompound(level.location().toString());
+                        CompoundTag dragonStageData = base.getCompound(dragonStage.location().toString());
                         group.deserializeNBT(provider, dragonStageData);
                         return group;
                     })
             );
         }
 
-        DataResult<ResourceLocation> result = ResourceLocation.read(base.getString(MODEL));
-        if (result.result().isPresent()) {
-            model = result.result().get();
-        }
+        ResourceLocation.read(base.getString(MODEL)).ifSuccess(model -> this.model = model);
     }
 }

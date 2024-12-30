@@ -35,17 +35,17 @@ public class DragonBodyButton extends Button {
     private final ResourceLocation iconLocation;
     private final boolean locked;
 
-    public DragonBodyButton(Screen screen, int x, int y, int xSize, int ySize, Holder<DragonBody> dragonBody, boolean locked, OnPress action) {
+    public DragonBodyButton(Screen screen, int x, int y, int xSize, int ySize, final Holder<DragonBody> dragonBody, boolean locked, OnPress action) {
         this(screen, x, y, xSize, ySize, dragonBody, Objects.requireNonNull(dragonBody.getKey()).location(), locked, action);
     }
 
-    private DragonBodyButton(Screen screen, int x, int y, int xSize, int ySize, Holder<DragonBody> dragonBody, ResourceLocation location, boolean locked, OnPress action) {
+    private DragonBodyButton(Screen screen, int x, int y, int xSize, int ySize, final Holder<DragonBody> dragonBody, final ResourceLocation location, boolean locked, OnPress action) {
         super(x, y, xSize, ySize, Component.translatable(Translation.Type.BODY.wrap(location)), action, DEFAULT_NARRATION);
         setTooltip(Tooltip.create(Component.translatable(Translation.Type.BODY_DESCRIPTION.wrap(location))));
 
         String iconLocationSuffix;
 
-        if (screen instanceof DragonEditorScreen dragonEditorScreen) {
+        if (screen instanceof DragonEditorScreen dragonEditorScreen) { // FIXME :: doesn't seem save in a customizable environment
             iconLocationSuffix = "/" + ResourceHelper.getNameLowercase(dragonEditorScreen.dragonType) + ".png";
         } else if (screen instanceof DragonSpeciesScreen dragonSpeciesScreen) {
             iconLocationSuffix = "/" + ResourceHelper.getNameLowercase(dragonSpeciesScreen.dragonType) + ".png";

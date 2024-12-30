@@ -68,7 +68,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
 
         settingsSupplier = () -> screen.preset.get(Objects.requireNonNull(screen.dragonStage.getKey())).get().layerSettings.get(layer).get();
         LayerSettings settings = settingsSupplier.get();
-        DragonPart dragonPart = DragonEditorHandler.getDragonPart(layer, settings.selectedSkin, DragonEditorScreen.HANDLER.getType().getKey());
+        DragonPart dragonPart = DragonEditorHandler.getDragonPart(layer, settings.partKey, DragonEditorScreen.HANDLER.getType().getKey());
 
         float[] hsb = new float[]{settings.hue, settings.saturation, settings.brightness};
 

@@ -11,8 +11,8 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.Dragon
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.DragonUIRenderComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.ScrollableComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.CustomizationFileHandler;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.DragonEditorHandler;
-import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.DragonEditorRegistry;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.EnumSkinLayer;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DefaultPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.*;
@@ -255,7 +255,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         HANDLER.getSkinData().skinPreset.deserializeNBT(Minecraft.getInstance().player.registryAccess(), tag);
         HashMap<EnumSkinLayer, Lazy<LayerSettings>> layerSettingsMap = HANDLER.getSkinData().skinPreset.get(dragonStage.getKey()).get().layerSettings;
         for(EnumSkinLayer layer : layerSettingsMap.keySet()) {
-            partComponents.get(layer).setSelectedPart(layerSettingsMap.get(layer).get().selectedSkin);
+            partComponents.get(layer).setSelectedPart(layerSettingsMap.get(layer).get().partKey);
         }
         HANDLER.getSkinData().compileSkin(dragonStage);
         update();
@@ -274,17 +274,17 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     }
 
     public final Function<Pair<EnumSkinLayer, String>, Pair<EnumSkinLayer, String>> dragonPartSelectAction = pair -> {
-        Pair<EnumSkinLayer, String> previousPair = new Pair<>(pair.getFirst(), preset.get(Objects.requireNonNull(dragonStage.getKey())).get().layerSettings.get(pair.getFirst()).get().selectedSkin);
+        Pair<EnumSkinLayer, String> previousPair = new Pair<>(pair.getFirst(), preset.get(Objects.requireNonNull(dragonStage.getKey())).get().layerSettings.get(pair.getFirst()).get().partKey);
 
         EnumSkinLayer layer = pair.getFirst();
         String value = pair.getSecond();
         partComponents.get(layer).setSelectedPart(value);
-        preset.get(dragonStage.getKey()).get().layerSettings.get(layer).get().selectedSkin = value;
+        preset.get(dragonStage.getKey()).get().layerSettings.get(layer).get().partKey = value;
 
         // Make sure that when we change a part, the color is properly updated to the default color of the new part
         LayerSettings settings = preset.get(dragonStage.getKey()).get().layerSettings.get(layer).get();
 
-        DragonPart part = DragonEditorHandler.getDragonPart(layer, settings.selectedSkin, dragonType.getKey());
+        DragonPart part = DragonEditorHandler.getDragonPart(layer, settings.partKey, dragonType.getKey());
         if (part != null && !settings.modifiedColor) {
             settings.hue = part.averageHue();
         }
@@ -430,11 +430,10 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
 
         if (showUi) {
             for (ColorSelectorButton colorSelectorButton : colorSelectorButtons.values()) {
-                DragonPart text = DragonEditorHandler.getDragonPart(colorSelectorButton.layer, preset.get(Objects.requireNonNull(dragonStage.getKey())).get().layerSettings.get(colorSelectorButton.layer).get().selectedSkin, HANDLER.getType().getKey());
+                DragonPart text = DragonEditorHandler.getDragonPart(colorSelectorButton.layer, preset.get(Objects.requireNonNull(dragonStage.getKey())).get().layerSettings.get(colorSelectorButton.layer).get().partKey, HANDLER.getType().getKey());
                 colorSelectorButton.visible = (text != null && text.isColorable()) && !defaultSkinCheckbox.selected;
             }
         }
-
 
         defaultSkinCheckbox.selected = preset.get(Objects.requireNonNull(dragonStage.getKey())).get().defaultSkin;
         uiButton.visible = true;
@@ -537,8 +536,9 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
                 valueList.addFirst(DefaultPartLoader.NO_PART);
             }
 
-            String curValue = preset.get(Objects.requireNonNull(dragonStage.getKey())).get().layerSettings.get(layer).get().selectedSkin;
-            EditorPartComponent editorPartComponent = new EditorPartComponent(this, row < 8 ? width / 2 - 184 : width / 2 + 74, guiTop - 24 + (row >= 8 ? (row - 8) * 20 : row * 20), curValue, layer, row < 8);
+            //noinspection DataFlowIssue -> key is present
+            String partKey = preset.get(dragonStage.getKey()).get().layerSettings.get(layer).get().partKey;
+            EditorPartComponent editorPartComponent = new EditorPartComponent(this, row < 8 ? width / 2 - 184 : width / 2 + 74, guiTop - 24 + (row >= 8 ? (row - 8) * 20 : row * 20), partKey, layer, row < 8);
             scrollableComponents.add(editorPartComponent);
             partComponents.put(layer, editorPartComponent);
             row++;
@@ -672,7 +672,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
                     }
 
                     LayerSettings settings = preset.get(dragonStage.getKey()).get().layerSettings.get(layer).get();
-                    settings.selectedSkin = key;
+                    settings.partKey = key;
                     DragonPart text = DragonEditorHandler.getDragonPart(layer, key, dragonType.getKey());
 
                     if (text != null && text.isHueRandom()) {
@@ -708,7 +708,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
 
         // FIXME :: This is WIP
         ExtendedButton loadSlotButton = new ExtendedButton(width / 2 + 213, guiTop - 8, 18, 18, Component.empty(), button -> {
-            SkinPreset selectedPreset = DragonEditorRegistry.load(selectedSaveSlot);
+            SkinPreset selectedPreset = CustomizationFileHandler.load(selectedSaveSlot);
             if(selectedPreset == null) {
                 return;
             }
@@ -727,7 +727,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         ExtendedButton saveSlotButton = new ExtendedButton(width / 2 + 213, guiTop + 10, 18, 18, Component.empty(), button -> {
             SkinPreset preset = new SkinPreset();
             preset.deserializeNBT(access, this.preset.serializeNBT(access));
-            DragonEditorRegistry.save(preset, selectedSaveSlot);
+            CustomizationFileHandler.save(preset, selectedSaveSlot);
         }) {
             @Override
             public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
@@ -798,7 +798,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
             SkinPreset preset = new SkinPreset();
 
             preset.deserializeNBT(access, this.preset.serializeNBT(access));
-            preset.put(dragonStage.getKey(), Lazy.of(() -> new DragonStageCustomization(dragonStage.getKey().location(), dragonType.getKey())));
+            preset.put(dragonStage.getKey(), Lazy.of(() -> new DragonStageCustomization(dragonStage.getKey(), dragonType.getKey())));
             actionHistory.add(new EditorAction<>(setSkinPresetAction, preset.serializeNBT(access)));
         });
         resetButton.setTooltip(Tooltip.create(Component.translatable(RESET)));
@@ -928,12 +928,8 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         return super.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
     }
 
-    public static String partToTranslation(final String part) {
+    public static String partToTranslation(final String part) { // TODO :: the part should be able to provide its translation by itself
         return Translation.Type.SKIN_PART.wrap(DragonEditorScreen.HANDLER.getTypeNameLowerCase() + "." + part.toLowerCase(Locale.ENGLISH));
-    }
-
-    public static String partToTechnical(final String key) {
-        return Translation.Type.SKIN_PART.unwrap(key).replace(DragonEditorScreen.HANDLER.getTypeNameLowerCase() + ".", "");
     }
 
     @SubscribeEvent

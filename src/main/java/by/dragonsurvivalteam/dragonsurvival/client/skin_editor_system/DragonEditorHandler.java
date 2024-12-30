@@ -161,7 +161,7 @@ public class DragonEditorHandler {
 
         for (EnumSkinLayer layer : EnumSkinLayer.values()) {
             LayerSettings settings = customization.layerSettings.get(layer).get();
-            String selectedSkin = settings.selectedSkin;
+            String selectedSkin = settings.partKey;
 
             if (selectedSkin != null) {
                 DragonPart skinTexture = getDragonPart(layer, selectedSkin, handler.getType().getKey());
@@ -247,7 +247,7 @@ public class DragonEditorHandler {
 
         for (EnumSkinLayer layer : EnumSkinLayer.values()) {
             LayerSettings settings = customization.layerSettings.get(layer).get();
-            String selectedSkin = settings.selectedSkin;
+            String selectedSkin = settings.partKey;
 
             if (selectedSkin != null) {
                 DragonPart skinTexture = getDragonPart(layer, selectedSkin, handler.getType().getKey());

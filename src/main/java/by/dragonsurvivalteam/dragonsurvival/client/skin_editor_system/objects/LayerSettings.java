@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 /** Entries within the 'saved_customizations.json' file */
 public class LayerSettings implements INBTSerializable<CompoundTag> {
-    public static final String SELECTED_SKIN = "selectedSkin";
+    public static final String PART_KEY = "part_key";
     public static final String HUE = "hue";
     public static final String SATURATION = "saturation";
     public static final String BRIGHTNESS = "brightness";
@@ -16,7 +16,7 @@ public class LayerSettings implements INBTSerializable<CompoundTag> {
     public static final String IS_GLOWING = "glowing";
 
     // The field names currently affect the result of the 'saved_customizations.json' file
-    public String selectedSkin;
+    public String partKey;
 
     public float hue;
     public float saturation;
@@ -29,8 +29,8 @@ public class LayerSettings implements INBTSerializable<CompoundTag> {
         this(DefaultPartLoader.NO_PART, 0.5f);
     }
 
-    public LayerSettings(String selectedSkin, float defaultHue) {
-        this.selectedSkin = selectedSkin;
+    public LayerSettings(final String partKey, float defaultHue) {
+        this.partKey = partKey;
         this.hue = defaultHue;
         this.saturation = 0.5f;
         this.brightness = 0.5f;
@@ -39,7 +39,7 @@ public class LayerSettings implements INBTSerializable<CompoundTag> {
     @Override
     public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
         CompoundTag nbt = new CompoundTag();
-        nbt.putString(SELECTED_SKIN, selectedSkin);
+        nbt.putString(PART_KEY, partKey);
 
         nbt.putFloat(HUE, hue);
         nbt.putFloat(SATURATION, saturation);
@@ -52,7 +52,7 @@ public class LayerSettings implements INBTSerializable<CompoundTag> {
 
     @Override
     public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag tag) {
-        selectedSkin = tag.getString(SELECTED_SKIN);
+        partKey = tag.getString(PART_KEY);
 
         hue = tag.getFloat(HUE);
         saturation = tag.getFloat(SATURATION);

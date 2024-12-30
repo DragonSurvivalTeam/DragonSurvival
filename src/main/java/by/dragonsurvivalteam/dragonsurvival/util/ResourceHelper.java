@@ -1,17 +1,19 @@
 package by.dragonsurvivalteam.dragonsurvival.util;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.PotionItem;
-import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.CommonHooks;
 
@@ -41,12 +43,8 @@ public class ResourceHelper {
         return BuiltInRegistries.SOUND_EVENT.getKey(event);
     }
 
-    public static Potion getPotionFromItem(Item item) {
-        return BuiltInRegistries.POTION.getHolder(PotionItem.getId(item)).get().value();
-    }
-
     public static <T> Optional<Holder.Reference<T>> get(@Nullable final HolderLookup.Provider provider, final ResourceKey<T> key) {
-        HolderLookup.RegistryLookup<T> registry; // TODO :: make custom lookup in PROXY which looks up holders from the resource key directly
+        HolderLookup.RegistryLookup<T> registry;
 
         if (provider == null) {
             registry = CommonHooks.resolveLookup(key.registryKey());
@@ -70,7 +68,21 @@ public class ResourceHelper {
         return registry.listElementIds().toList();
     }
 
-    public static <T> String getNameLowercase(Holder<T> holder) {
+    public static @Nullable <T> ResourceKey<T> parseKey(@Nullable final HolderLookup.Provider provider, final ResourceKey<Registry<T>> registryKey, final CompoundTag tag, final String key) {
+        HolderLookup.Provider actualProvider = provider != null ? provider : DragonSurvival.PROXY.getAccess();
+
+        if (actualProvider == null) {
+            DragonSurvival.LOGGER.error("Context was not available to deserialize the value of [{}] from the tag [{}]", key, tag);
+            return null;
+        }
+
+        return ResourceKey.codec(registryKey).decode(actualProvider.createSerializationContext(NbtOps.INSTANCE), tag.get(key)).mapOrElse(Pair::getFirst, error -> {
+            DragonSurvival.LOGGER.error(error.message());
+            return null;
+        });
+    }
+
+    public static <T> String getNameLowercase(final Holder<T> holder) {
         String rawPath = holder.getKey().location().getPath();
         // Get the last part of the path
         return rawPath.substring(rawPath.lastIndexOf("/") + 1).toLowerCase();

@@ -45,7 +45,7 @@ public class ColorSelectorButton extends ExtendedButton {
     public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         active = !screen.preset.get(Objects.requireNonNull(screen.dragonStage.getKey())).get().defaultSkin;
 
-        DragonPart part = DragonEditorHandler.getDragonPart(layer, screen.preset.get(screen.dragonStage.getKey()).get().layerSettings.get(layer).get().selectedSkin, DragonEditorScreen.HANDLER.getType().getKey());
+        DragonPart part = DragonEditorHandler.getDragonPart(layer, screen.preset.get(screen.dragonStage.getKey()).get().layerSettings.get(layer).get().partKey, DragonEditorScreen.HANDLER.getType().getKey());
         visible = part != null && !Objects.equals(part.key(), DefaultPartLoader.NO_PART) &&  part.isColorable();
 
         if (visible) {
@@ -71,7 +71,7 @@ public class ColorSelectorButton extends ExtendedButton {
     @Override
     public void onPress() {
         if (!toggled) {
-            DragonPart part = DragonEditorHandler.getDragonPart(layer, screen.preset.get(screen.dragonStage.getKey()).get().layerSettings.get(layer).get().selectedSkin, DragonEditorScreen.HANDLER.getType().getKey());
+            DragonPart part = DragonEditorHandler.getDragonPart(layer, screen.preset.get(screen.dragonStage.getKey()).get().layerSettings.get(layer).get().partKey, DragonEditorScreen.HANDLER.getType().getKey());
 
             if (part == null) {
                 return;

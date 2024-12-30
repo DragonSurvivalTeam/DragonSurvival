@@ -17,10 +17,9 @@ import java.util.*;
 
 public class DragonPartLoader extends SimpleJsonResourceReloadListener {
     public static final Map<ResourceKey<DragonType>, Map<EnumSkinLayer, List<DragonPart>>> DRAGON_PARTS = new HashMap<>();
-    private static final String DIRECTORY = "skin/parts";
 
     public DragonPartLoader() {
-        super(new Gson(), DIRECTORY);
+        super(new Gson(), "skin/parts");
     }
 
     @Override

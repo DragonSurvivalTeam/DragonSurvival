@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.common.items;
 
-import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
@@ -9,16 +8,12 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.PlayerLoginHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.DataResult;
+import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
@@ -35,7 +30,6 @@ import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.CustomModelData;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -161,7 +155,7 @@ public class DragonSoulItem extends Item {
             CompoundTag tag = stack.get(DataComponents.CUSTOM_DATA).getUnsafe();
             tooltips.add(Component.translatable(DESCRIPTION));
 
-            ResourceKey<DragonType> species = getSpecies(provider, tag);
+            ResourceKey<DragonType> species = ResourceHelper.parseKey(provider, DragonType.REGISTRY, tag, SPECIES);
             Component name;
 
             if (species != null) {
@@ -202,11 +196,9 @@ public class DragonSoulItem extends Item {
 
     @Override
     public @NotNull String getDescriptionId(@NotNull final ItemStack stack) {
-        RegistryAccess access = DragonSurvival.PROXY.getAccess();
-
-        if (access != null && stack.has(DataComponents.CUSTOM_DATA)) {
+        if (stack.has(DataComponents.CUSTOM_DATA)) {
             //noinspection DataFlowIssue, deprecation -> tag isn't modified, no need to create a copy
-            ResourceKey<DragonType> species = getSpecies(access, stack.get(DataComponents.CUSTOM_DATA).getUnsafe());
+            ResourceKey<DragonType> species = ResourceHelper.parseKey(null, DragonType.REGISTRY, stack.get(DataComponents.CUSTOM_DATA).getUnsafe(), SPECIES);
 
             if (species != null) { // TODO :: handle translation (probably annotation on type?)
                 return Translation.Type.ITEM.wrap(species.location().getNamespace(), species.location().getPath() + ".dragon_soul");
@@ -214,16 +206,6 @@ public class DragonSoulItem extends Item {
         }
 
         return EMPTY_DRAGON_SOUL;
-    }
-
-    private @Nullable ResourceKey<DragonType> getSpecies(final HolderLookup.Provider provider, final CompoundTag tag) {
-        DataResult<Pair<ResourceKey<DragonType>, Tag>> result = ResourceKey.codec(DragonType.REGISTRY).decode(provider.createSerializationContext(NbtOps.INSTANCE), tag.get(SPECIES));
-
-        if (result.isSuccess()) {
-            return result.getOrThrow().getFirst();
-        }
-
-        return null;
     }
 
     public static final String SPECIES = "species";

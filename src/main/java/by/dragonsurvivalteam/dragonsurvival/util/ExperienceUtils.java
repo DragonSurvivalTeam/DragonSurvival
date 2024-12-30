@@ -22,13 +22,13 @@ public class ExperienceUtils {
 
     /** Calculates the experience level the experience is worth */
     public static int getLevel(int experience) {
+        int requiredExperience = 0;
         int level = 0;
-        int currentExperience = 0;
 
         while (true) {
-            currentExperience += getExperienceForLevel(level);
+            requiredExperience += getExperienceForLevel(level);
 
-            if (currentExperience > experience) {
+            if (requiredExperience > experience) {
                 break;
             }
 

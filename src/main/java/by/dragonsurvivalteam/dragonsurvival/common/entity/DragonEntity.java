@@ -56,17 +56,18 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     public PoseStack.Pose currentlyRenderedPose;
 
-    public ArrayList<Double> bodyYawHistory = new ArrayList<>();
+    public final ArrayList<Double> bodyYawHistory = new ArrayList<>();
     public double currentBodyYawChange;
 
-    public ArrayList<Double> headYawHistory = new ArrayList<>();
+    public final ArrayList<Double> headYawHistory = new ArrayList<>();
     public double currentHeadYawChange;
 
-    public ArrayList<Double> headPitchHistory = new ArrayList<>();
+    public final ArrayList<Double> headPitchHistory = new ArrayList<>();
     public double currentHeadPitchChange;
 
-    public ArrayList<Double> verticalVelocityHistory = new ArrayList<>();
+    public final ArrayList<Double> verticalVelocityHistory = new ArrayList<>();
     public double currentTailMotionUp;
+
     /** This reference must be updated whenever player is remade, for example, when changing dimensions */
     public volatile Integer playerId;
     public boolean neckLocked;
