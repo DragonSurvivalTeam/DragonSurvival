@@ -74,6 +74,7 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
     private static final BooleanProperty BACK_BLOCK = BooleanProperty.create("back");
     private static final BooleanProperty TOP_BLOCK = BooleanProperty.create("top");
 
+    /** null -> all are valid */
     private final @Nullable TagKey<DragonType> types;
 
     public SourceOfMagicBlock(final Properties properties, @Nullable final TagKey<DragonType> types) {
@@ -325,9 +326,14 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
             return;
         }
 
-        if (!shouldHurt(entity)) {
-            // TODO :: player animation?
-            return;
+        if (entity instanceof Player player) {
+            DragonStateHandler data = DragonStateProvider.getData(player);
+
+            if (data.isDragon() && (types == null || data.species().is(types))) {
+               // TODO :: animation
+            } else if (ServerConfig.damageWrongSourceOfMagic) {
+                entity.hurt(state.getBlock() == DSBlocks.CAVE_SOURCE_OF_MAGIC.get() ? entity.damageSources().hotFloor() : state.getBlock() == DSBlocks.SEA_SOURCE_OF_MAGIC.get() ? entity.damageSources().drown() : entity.damageSources().cactus(), 1F);
+            }
         }
 
         if (entity instanceof ItemEntity item) {
@@ -345,26 +351,7 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
                     tileStack.setCount(tileStack.getCount() + toAdd);
                 }
             }
-
-            return;
         }
-
-        if (ServerConfig.damageWrongSourceOfMagic) {
-            entity.hurt(state.getBlock() == DSBlocks.CAVE_SOURCE_OF_MAGIC.get() ? entity.damageSources().hotFloor() : state.getBlock() == DSBlocks.SEA_SOURCE_OF_MAGIC.get() ? entity.damageSources().drown() : entity.damageSources().cactus(), 1F);
-        }
-    }
-
-    private boolean shouldHurt(final Entity entity) {
-        if (entity instanceof ItemEntity) {
-            return true;
-        }
-
-        if (entity instanceof Player player) {
-            DragonStateHandler data = DragonStateProvider.getData(player);
-            return data.isDragon() && types != null && data.species().is(types);
-        }
-
-        return false;
     }
 
     public SourceOfMagicTileEntity getSource(Level world, BlockPos pos) {
