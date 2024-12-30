@@ -12,6 +12,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonFoodHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.ClientConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.TreasureRestData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEmote;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
@@ -470,6 +471,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         MovementData movement = MovementData.getData(player);
         Vec2 rawInput = movement.desiredMoveVec;
         boolean hasMoveInput = rawInput.lengthSquared() > INPUT_EPSILON * INPUT_EPSILON;
+        boolean isInSwimmableFluid = (player.isInWaterOrBubble() || SwimData.getData(player).canSwimIn(player.getMaxHeightFluidType())) && player.isSprinting() && !player.isPassenger();
 
         // TODO: The transition length of animations doesn't work correctly when the framerate varies too much from 60 FPS
         // FIXME
@@ -534,7 +536,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
                 state.setAnimation(AnimationUtils.createAnimation(builder, SWIM_FAST));
                 animationController.transitionLength(2);
             }
-        } else if ((player.isInLava() || player.isInWaterOrBubble()) && !player.onGround()) {
+        } else if (isInSwimmableFluid) {
             if (ServerFlightHandler.isSpin(player)) {
                 animationSpeed = 2;
                 lockTailAndNeck();
