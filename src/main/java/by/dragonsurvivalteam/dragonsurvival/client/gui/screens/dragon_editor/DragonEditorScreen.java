@@ -1066,7 +1066,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
             double savedSize = data.getSavedDragonSize(data.speciesKey());
             if (!ServerConfig.saveGrowthStage || savedSize == DragonStateHandler.NO_SIZE) {
                 Holder<DragonStage> dragonStage = minecraft.player.registryAccess().holderOrThrow(DragonStages.newborn);
-                data.setStage(minecraft.player, dragonStage);
+                data.setSize(minecraft.player, dragonStage.value().sizeRange().min());
             } else {
                 data.setDesiredSize(minecraft.player, savedSize);
             }
