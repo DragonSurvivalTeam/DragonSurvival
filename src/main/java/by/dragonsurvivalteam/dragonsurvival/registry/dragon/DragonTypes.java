@@ -69,8 +69,6 @@ public class DragonTypes {
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.FIRE_BALL),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.LAVA_VISION),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.TOUGH_SKIN),
-                        // FIXME :: just for test
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.SUMMON_TEST),
                         // Passive
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.CAVE_ATHLETICS),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.BURN),
@@ -79,14 +77,7 @@ public class DragonTypes {
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.FIRE_IMMUNITY),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.CAVE_WINGS),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.CAVE_CLAWS_AND_TEETH),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.LAVA_SWIMMING),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.EMPTY_ABILITY),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.EMPTY_ABILITY_2),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.EMPTY_ABILITY_3),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.EMPTY_ABILITY_4),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.EMPTY_ABILITY_5),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.EMPTY_ABILITY_6),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.EMPTY_ABILITY_7)
+                        context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.LAVA_SWIMMING)
                 ),
                 HolderSet.direct(
                         context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.SNOW_AND_RAIN_WEAKNESS),
@@ -239,6 +230,7 @@ public class DragonTypes {
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.SPIKE),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.POISON_BREATH),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.HUNTER),
+                        context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.INSPIRATION),
                         // Passive
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.FOREST_IMMUNITY),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.FOREST_MAGIC),

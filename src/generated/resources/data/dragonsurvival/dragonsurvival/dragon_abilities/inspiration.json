@@ -57,15 +57,15 @@
       },
       {
         "from_level": 1,
-        "texture_resource": "dragonsurvival:abilities/sea/inspiration_1"
+        "texture_resource": "dragonsurvival:abilities/forest/inspiration_1"
       },
       {
         "from_level": 2,
-        "texture_resource": "dragonsurvival:abilities/sea/inspiration_2"
+        "texture_resource": "dragonsurvival:abilities/forest/inspiration_2"
       },
       {
         "from_level": 3,
-        "texture_resource": "dragonsurvival:abilities/sea/inspiration_3"
+        "texture_resource": "dragonsurvival:abilities/forest/inspiration_3"
       }
     ]
   },

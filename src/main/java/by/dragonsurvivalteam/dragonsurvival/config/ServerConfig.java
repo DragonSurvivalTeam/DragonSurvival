@@ -57,10 +57,6 @@ public class ServerConfig {
 
     // --- Large dragon scaling --- //
 
-    @Translation(key = "destructible_blocks_blacklist", type = Translation.Type.CONFIGURATION, comments = "If enabled the destructible block tag for is used as a blacklist - if disabled it will be used as a whitelist")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"growth", "big_dragon"}, key = "destructible_blocks_blacklist")
-    public static Boolean destructibleBlocksIsBlacklist = false;
-
     @ConfigRange(min = 0.0, max = 1.0)
     @Translation(key = "block_destruction_removal", type = Translation.Type.CONFIGURATION, comments = {
             "Determines the percentage chance that a block is removed, bypassing sound or particle effects",

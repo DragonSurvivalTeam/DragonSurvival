@@ -60,14 +60,14 @@ public class SeaDragonAbilities {
     public static final ResourceKey<DragonAbility> STORM_BREATH = DragonAbilities.key("storm_breath");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ Personal Buff: provides §2Sea Vision§r for a short time.\n"
+            "■ Give yourself §2Sea Vision§r for a short time.\n"
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Sea Vision")
     public static final ResourceKey<DragonAbility> SEA_EYES = DragonAbilities.key("sea_eyes");
 
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ AOE Buff: multiplies the amount of §2experience§r gained from monsters.\n"
+            "■ Give a buff to yourself and your allies that multiplies the amount of §2experience§r gained from monsters.\n"
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Soul Revelation")
     public static final ResourceKey<DragonAbility> SOUL_REVELATION = DragonAbilities.key("soul_revelation");
@@ -469,8 +469,8 @@ public class SeaDragonAbilities {
                         )
                 ),
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/amphibious_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/amphibious_1"), 1)
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/amphibian_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/amphibian_1"), 1)
                 ))
         ));
     }

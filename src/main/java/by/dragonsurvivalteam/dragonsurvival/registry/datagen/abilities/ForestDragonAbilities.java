@@ -64,7 +64,7 @@ public class ForestDragonAbilities {
     public static final ResourceKey<DragonAbility> POISON_BREATH = DragonAbilities.key("poison_breath");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ Personal buff: Activates the §2Hunter§r effect, which allows you to become invisible on grassy ground. Your first melee strike will remove this effect and cause a critical hit with a  %-based damage bonus.\n",
+            "■ Activates the §2Hunter§r effect, which allows you to become invisible on grassy ground. Your first melee strike will remove this effect and cause a critical hit with a  %-based damage bonus.\n",
             "■ Effect does not stack. Cannot be used in flight. Will be removed early if you take damage, or attack a target.",
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Hunter")
@@ -102,7 +102,7 @@ public class ForestDragonAbilities {
     public static final ResourceKey<DragonAbility> FOREST_ATHLETICS = DragonAbilities.key("forest_athletics");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ AOE buff: provides §2Haste III§r to all nearby creatures, increasing your block harvesting speed.\n"
+            "■ Provides §2Haste§r to all nearby creatures, increasing your block harvesting speed.\n"
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Inspiration")
     public static final ResourceKey<DragonAbility> INSPIRATION = DragonAbilities.key("inspiration");
@@ -271,9 +271,9 @@ public class ForestDragonAbilities {
                 ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/inspiration_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/inspiration_1"), 1),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/inspiration_2"), 2),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/inspiration_3"), 3)
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/inspiration_1"), 1),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/inspiration_2"), 2),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/inspiration_3"), 3)
                 ))
         ));
     }

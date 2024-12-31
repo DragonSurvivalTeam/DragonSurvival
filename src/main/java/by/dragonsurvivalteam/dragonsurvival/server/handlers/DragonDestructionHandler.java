@@ -59,13 +59,7 @@ public class DragonDestructionHandler {
                     if (!blockstate.isAir()) {
                         boolean isInTag = blockstate.is(DSBlockTags.GIANT_DRAGON_DESTRUCTIBLE);
 
-                        if (!isInTag && ServerConfig.destructibleBlocksIsBlacklist) {
-                            if (random.nextFloat() > ServerConfig.blockDestructionRemoval) {
-                                level.destroyBlock(blockpos, false);
-                            } else {
-                                level.removeBlock(blockpos, false);
-                            }
-                        } else if (isInTag) {
+                        if (isInTag) {
                             if (random.nextFloat() > ServerConfig.blockDestructionRemoval) {
                                 level.destroyBlock(blockpos, false);
                             } else {

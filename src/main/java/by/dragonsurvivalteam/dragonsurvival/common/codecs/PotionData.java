@@ -10,6 +10,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
@@ -74,6 +75,8 @@ public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier
         }
     }
 
+
+
     public List<MutableComponent> getDescription(final int level) {
         List<MutableComponent> components = new ArrayList<>();
         double duration = Functions.ticksToSeconds((int) duration().calculate(level));
@@ -83,7 +86,7 @@ public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier
             int amplifier = (int) amplifier().calculate(level);
 
             if (amplifier > 0) {
-                name.append(Component.literal(" [" + amplifier + "]").withColor(DSColors.GOLD));
+                name.append(CommonComponents.SPACE).append(Component.translatable("enchantment.level." + (amplifier + 1))).withColor(DSColors.GOLD);
             }
 
             name.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.dynamicValue(duration)));

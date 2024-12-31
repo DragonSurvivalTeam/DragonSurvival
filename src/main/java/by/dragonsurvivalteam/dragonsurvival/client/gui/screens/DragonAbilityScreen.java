@@ -206,8 +206,8 @@ public class DragonAbilityScreen extends Screen {
         // TODO :: need some consistent order - could do it based on a tag (that is what enchantments and dragon bodies are doing)
         //  or on some other factors (level -> name e.g.)
         List<DragonAbilityInstance> actives = data.getActiveAbilities();
-        List<DragonAbilityInstance> upgradablePassives = data.getPassiveAbilities(true);
-        List<DragonAbilityInstance> constantPassives = data.getPassiveAbilities(false);
+        List<DragonAbilityInstance> upgradablePassives = data.getManuallyUpgradablePassiveAbilities();
+        List<DragonAbilityInstance> constantPassives = data.getPassivelyUpgradablePassiveAbilities();
 
         scrollableComponents.add(new AbilityColumnsComponent(this, guiLeft + 35, guiTop, 40, 20, 0.8f, 0.5f, actives));
         scrollableComponents.add(new AbilityColumnsComponent(this, guiLeft + 111, guiTop, 40, 20, 0.8f, 0.5f, upgradablePassives));

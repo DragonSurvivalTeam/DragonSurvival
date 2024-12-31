@@ -51,11 +51,11 @@
     "texture_entries": [
       {
         "from_level": 0,
-        "texture_resource": "dragonsurvival:abilities/sea/amphibious_0"
+        "texture_resource": "dragonsurvival:abilities/sea/amphibian_0"
       },
       {
         "from_level": 1,
-        "texture_resource": "dragonsurvival:abilities/sea/amphibious_1"
+        "texture_resource": "dragonsurvival:abilities/sea/amphibian_1"
       }
     ]
   }

@@ -4,7 +4,6 @@
     "dragonsurvival:fire_ball",
     "dragonsurvival:lava_vision",
     "dragonsurvival:tough_skin",
-    "dragonsurvival:summon_test",
     "dragonsurvival:cave_athletics",
     "dragonsurvival:burn",
     "dragonsurvival:cave_magic",
@@ -12,14 +11,7 @@
     "dragonsurvival:fire_immunity",
     "dragonsurvival:cave_wings",
     "dragonsurvival:cave_claws_and_teeth",
-    "dragonsurvival:lava_swimming",
-    "dragonsurvival:empty_ability",
-    "dragonsurvival:empty_ability_2",
-    "dragonsurvival:empty_ability_3",
-    "dragonsurvival:empty_ability_4",
-    "dragonsurvival:empty_ability_5",
-    "dragonsurvival:empty_ability_6",
-    "dragonsurvival:empty_ability_7"
+    "dragonsurvival:lava_swimming"
   ],
   "diet": [
     {
