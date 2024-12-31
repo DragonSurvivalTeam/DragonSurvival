@@ -28,6 +28,7 @@ import java.util.function.Function;
 public class CustomizationFileHandler {
     public static final Function<Integer, String> FILE_NAME = slot -> "saved_customizations_" + slot + ".nbt";
     public static final String DIRECTORY = "dragon-survival";
+    public static final int STARTING_SLOT = 1;
     public static final int MAX_SAVE_SLOTS = 5;
 
     private static final String CUSTOMIZATION = "customization";
@@ -125,7 +126,7 @@ public class CustomizationFileHandler {
             directory.mkdirs();
         }
 
-        for (int slot = 0; slot < MAX_SAVE_SLOTS; slot++) {
+        for (int slot = STARTING_SLOT; slot <= MAX_SAVE_SLOTS; slot++) {
             File savedFile = new File(directory, FILE_NAME.apply(slot));
             savedFileForSlot.put(slot, savedFile);
 

@@ -194,7 +194,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     public Holder<DragonStage> dragonStage;
 
     public SkinPreset preset;
-    public int selectedSaveSlot = 1;
+    public int selectedSaveSlot = CustomizationFileHandler.STARTING_SLOT;
 
     public int backgroundColor = -804253680;
 
@@ -933,7 +933,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         slotInfoButton.setTooltip(createSlotInfoTooltip());
         addRenderableWidget(slotInfoButton);
 
-        for (int slot = 1; slot <= CustomizationFileHandler.MAX_SAVE_SLOTS; slot++) {
+        for (int slot = CustomizationFileHandler.STARTING_SLOT; slot <= CustomizationFileHandler.MAX_SAVE_SLOTS; slot++) {
             addRenderableWidget(new DragonEditorSlotButton(width / 2 + 95 + 12 * (slot - 1), height - 26, slot, this, () -> slotInfoButton.setTooltip(createSlotInfoTooltip())));
         }
 
