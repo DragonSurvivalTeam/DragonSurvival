@@ -61,9 +61,8 @@ public class DragonAltarScreen extends Screen {
 
     @Translation(type = Translation.Type.MISC, comments = {
             "§6■ Welcome to Dragon Survival!§r",
-            "■§7 You can choose which type of dragon you want to become, each with pros and cons.§r",
-            "■§7 This decision is not permanent, but you may lose progress if you change your mind.§r",
-            "■§7 Don't forget to delete old configs if you update our mod to avoid bugs! Enjoy the game! :3"
+            "■ You can choose which §6dragon species§r you want to become. This decision is not permanent, but you may lose progress if you change your mind.§r",
+            "■§7 Don't forget to read patch notes and delete old configs if you update our mod to avoid bugs! Enjoy the game! :3"
     })
     private static final String HELP = Translation.Type.GUI.wrap("altar.help");
 
@@ -71,7 +70,7 @@ public class DragonAltarScreen extends Screen {
 
     private final DragonStateHandler handler1 = new DragonStateHandler();
     private final DragonStateHandler handler2 = new DragonStateHandler();
-    private final String[] animations = {"sit_animation", "idle_animation", "fly_animation", "swim_animation", "run_animation", "dig_animation", "resting_left_animation", "vibing_sitting", "shy_sitting", "vibing_sitting", "rocking_on_back"};
+    private final String[] animations = {"sit_animation", "idle_animation", "fly_animation", "swim_animation", "run_animation", "dig_animation", "vibing_sitting", "shy_sitting", "vibing_sitting", "rocking_on_back"};
     private final List<ScrollableComponent> scrollableComponents = new ArrayList<>();
 
     private static final ResourceLocation ALTAR_ARROW_LEFT_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_left_arrow_hover.png");

@@ -82,7 +82,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
 
     @Translation(type = Translation.Type.MISC, comments = {
             "■ You can select any §6slot§r here and click the §6load/save button§r to save your current settings to that slot or load the settings from that slot.■ ",
-            "■ Your exports are stored here: §r§7dragon-survival/saved_customizations_0.nbt§r"
+            "■ Your exports are stored here: §r§7dragon-survival/saved_customizations_1.nbt§r"
     })
     private static final String SAVING_INFO = Translation.Type.GUI.wrap("dragon_editor.save_slot_info");
 
@@ -564,7 +564,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
                 color = DyeColor.RED.getTextColor();
             }
             if(tickWhenSlotDisplayMessageSet + 200 - tick > 0) {
-                TextRenderUtil.drawCenteredScaledText(graphics, width / 2, height / 2 + 25, 0.5f, loadSlotDisplayMessage(slotDisplayMessage).getString(), color);
+                TextRenderUtil.drawCenteredScaledText(graphics, width / 2, height / 2 + 30, 0.5f, loadSlotDisplayMessage(slotDisplayMessage).getString(), color);
             } else {
                 slotDisplayMessage = SlotDisplayMessage.NONE;
             }
@@ -697,17 +697,17 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
 
             //noinspection DataFlowIssue -> key is present
             String partKey = preset.get(dragonStage.getKey()).get().layerSettings.get(layer).get().partKey;
-            EditorPartComponent editorPartComponent = new EditorPartComponent(this, row < 8 ? width / 2 - 184 : width / 2 + 74, guiTop - 24 + (row >= 8 ? (row - 8) * 20 : row * 20), partKey, layer, row < 8, (row / 4 % 2) == 0);
+            EditorPartComponent editorPartComponent = new EditorPartComponent(this, row < 8 ? width / 2 - 184 : width / 2 + 74, guiTop - 24 + (row >= 8 ? (row - 8) * 21 : row * 21), partKey, layer, row < 8, (row / 4 % 2) == 0);
             scrollableComponents.add(editorPartComponent);
             partComponents.put(layer, editorPartComponent);
             row++;
         }
 
-        animationNameButton = new HoverButton(width / 2 - 60, height - 55, 120, 20, 120, 20, ANIMATION_NAME_BACKGROUND, ANIMATION_NAME_BACKGROUND, btn -> { /* Nothing to do */ });
+        animationNameButton = new HoverButton(width / 2 - 50, height - 55 - 10, 100, 20, 100, 20, ANIMATION_NAME_BACKGROUND, ANIMATION_NAME_BACKGROUND, btn -> { /* Nothing to do */ });
         animationNameButton.setMessage(Component.empty().append(WordUtils.capitalize(animations[curAnimation].replace("_", " "))));
         addRenderableWidget(animationNameButton);
 
-        HoverButton leftAnimationArrow = new HoverButton(width / 2 - 67, height - 53, 9, 16, 20, 20, SMALL_LEFT_ARROW_MAIN, SMALL_LEFT_ARROW_HOVER, button -> {
+        HoverButton leftAnimationArrow = new HoverButton(width / 2 - 57, height - 53 - 10, 9, 16, 20, 20, SMALL_LEFT_ARROW_MAIN, SMALL_LEFT_ARROW_HOVER, button -> {
             curAnimation -= 1;
 
             if (curAnimation < 0) {
@@ -717,7 +717,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         });
         addRenderableWidget(leftAnimationArrow);
 
-        HoverButton rightAnimationArrow = new HoverButton(width / 2 + 58, height - 53, 9, 16, 20, 20, SMALL_RIGHT_ARROW_MAIN, SMALL_RIGHT_ARROW_HOVER, button -> {
+        HoverButton rightAnimationArrow = new HoverButton(width / 2 + 48, height - 53 - 10, 9, 16, 20, 20, SMALL_RIGHT_ARROW_MAIN, SMALL_RIGHT_ARROW_HOVER, button -> {
             curAnimation += 1;
 
             if (curAnimation >= animations.length) {
@@ -727,7 +727,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         });
         addRenderableWidget(rightAnimationArrow);
 
-        ExtendedButton saveButton = new HoverButton(width / 2 - 60, height - 25, 60, 19, 60, 19, CONFIRM_MAIN, CONFIRM_HOVER, button -> { /* Nothing to do */ }) {
+        ExtendedButton saveButton = new HoverButton(width / 2 - 60, height - 30, 60, 20, 60, 20, CONFIRM_MAIN, CONFIRM_HOVER, button -> { /* Nothing to do */ }) {
             Renderable renderButton;
             boolean toggled;
 
@@ -781,7 +781,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         saveButton.setMessage(Component.translatable(LangKey.GUI_CONFIRM));
         addRenderableWidget(saveButton);
 
-        ExtendedButton discardButton = new HoverButton(width / 2 + 1, height - 25, 60, 19, 60, 19, CANCEL_MAIN, CANCEL_HOVER, btn -> Minecraft.getInstance().setScreen(source));
+        ExtendedButton discardButton = new HoverButton(width / 2 + 1, height - 30, 60, 20, 60, 20, CANCEL_MAIN, CANCEL_HOVER, btn -> Minecraft.getInstance().setScreen(source));
         discardButton.setMessage(Component.translatable(LangKey.GUI_CANCEL));
         addRenderableWidget(discardButton);
 
@@ -928,18 +928,18 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         addRenderableWidget(backgroundColorButton);
 
         // Save slots
-        HoverButton slotBackground = new HoverButton(width / 2 + 85, height - 25, 121, 18, 121, 18, SAVE_SLOT_BACKGROUND, SAVE_SLOT_BACKGROUND, button -> { /* Nothing to do */ });
+        HoverButton slotBackground = new HoverButton(width / 2 + 85, height - 25-3, 121, 18, 121, 18, SAVE_SLOT_BACKGROUND, SAVE_SLOT_BACKGROUND, button -> { /* Nothing to do */ });
         addRenderableOnly(slotBackground);
 
         for (int num = 1; num <= 9; num++) {
             addRenderableWidget(new DragonEditorSlotButton(width / 2 + 95 + 12 * (num - 1), height - 24, num, this));
         }
 
-        HoverButton slotInfoButton = new HoverButton(width / 2 + 74, height - 27, 17, 18, 20, 20, SLOT_INFO_MAIN, SLOT_INFO_HOVER, button -> { /* Nothing to do */ });
+        HoverButton slotInfoButton = new HoverButton(width / 2 + 74, height - 25-3, 17, 18, 20, 20, SLOT_INFO_MAIN, SLOT_INFO_HOVER, button -> { /* Nothing to do */ });
         slotInfoButton.setTooltip(Tooltip.create(Component.translatable(SAVING_INFO)));
         addRenderableWidget(slotInfoButton);
 
-        HoverButton loadSlotButton = new HoverButton(width / 2 + 100, height - 44, 17, 18, 20, 20, SLOT_LOAD_MAIN, SLOT_LOAD_HOVER, button -> {
+        HoverButton loadSlotButton = new HoverButton(width / 2 + 182, height - 28, 17, 18, 20, 20, SLOT_LOAD_MAIN, SLOT_LOAD_HOVER, button -> {
             CustomizationFileHandler.SavedCustomization savedCustomization = CustomizationFileHandler.load(selectedSaveSlot);
             if(savedCustomization == null) {
                 slotDisplayMessage = SlotDisplayMessage.NO_DATA;
@@ -964,7 +964,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         loadSlotButton.setTooltip(Tooltip.create(Component.translatable(LOAD)));
         addRenderableWidget(loadSlotButton);
 
-        HoverButton saveSlotButton = new HoverButton(width / 2 + 120, height - 44, 17, 18, 20, 20, SLOT_SAVE_MAIN, SLOT_SAVE_HOVER, button -> {
+        HoverButton saveSlotButton = new HoverButton(width / 2 + 160, height - 28, 17, 18, 20, 20, SLOT_SAVE_MAIN, SLOT_SAVE_HOVER, button -> {
             CustomizationFileHandler.save(HANDLER, selectedSaveSlot);
             slotDisplayMessage = SlotDisplayMessage.SLOT_SAVED;
             tickWhenSlotDisplayMessageSet = tick;

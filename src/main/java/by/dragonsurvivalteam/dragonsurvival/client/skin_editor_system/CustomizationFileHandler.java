@@ -32,7 +32,7 @@ public class CustomizationFileHandler {
     private static final String DRAGON_TYPE = "dragon_type";
     private static final String DRAGON_MODEL = "dragon_model";
     private static final String SAVED_CUSTOMIZATIONS = "saved_customizations_";
-    private static final int MAX_SAVE_SLOTS = 9;
+    private static final int MAX_SAVE_SLOTS = 5;
 
     public static class SavedCustomization implements INBTSerializable<CompoundTag> {
         private DragonStageCustomization customization;

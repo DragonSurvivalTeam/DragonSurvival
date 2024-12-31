@@ -19,8 +19,7 @@ import java.util.List;
 public class DragonBodies {
     @Translation(type = Translation.Type.BODY_DESCRIPTION, comments = {
             "§6■ Central Type§r",
-            "■ Inhabitants of all biomes, and the most common type of dragon. They are the most balanced type of dragon, having no particular strengths or weaknesses.",
-            "§7■ You may change your body type at any time, but you will lose your growth progress."
+            "■ Inhabitants of all biomes, and the most common type of dragon. They are the most balanced type of dragon, having no particular strengths or weaknesses."
     })
     @Translation(type = Translation.Type.BODY, comments = "Center")
     @Translation(type = Translation.Type.BODY_WINGS, comments = "Show wings")
@@ -29,8 +28,7 @@ public class DragonBodies {
 
     @Translation(type = Translation.Type.BODY_DESCRIPTION, comments = {
             "§6■ Eastern Type§r",
-            "■ Adapted to life in caves, they lack large wings, reducing the effectiveness of their levitation magic, but they are still excellent swimmers. They have a larger supply of mana, and natural armor.",
-            "§7■ You may change your body type at any time, but you will lose your growth progress."
+            "■ Adapted to life in caves, they lack large wings, reducing the effectiveness of their levitation magic, but they are still excellent swimmers. They have a larger supply of mana, and natural armor."
     })
     @Translation(type = Translation.Type.BODY, comments = "East")
     @Translation(type = Translation.Type.BODY_WINGS, comments = "Show wings")
@@ -39,8 +37,7 @@ public class DragonBodies {
 
     @Translation(type = Translation.Type.BODY_DESCRIPTION, comments = {
             "§6■ Northern Type§r",
-            "■ Perfect travelers, conquering water, lava and air. They are slower on the ground and weaker physically, but are magically adept and excel at swimming. Their flat bodies allow them to go places other dragons cannot.",
-            "§7■ You may change your body type at any time, but you will lose your growth progress. Each type has their own strengths and weaknesses, but the change is mostly cosmetic."
+            "■ Perfect travelers, conquering water, lava and air. They are slower on the ground and weaker physically, but are magically adept and excel at swimming. Their flat bodies allow them to go places other dragons cannot."
     })
     @Translation(type = Translation.Type.BODY, comments = "North")
     @Translation(type = Translation.Type.BODY_WINGS, comments = "Show wings")
@@ -49,8 +46,7 @@ public class DragonBodies {
 
     @Translation(type = Translation.Type.BODY_DESCRIPTION, comments = {
             "§6■ Southern Type§r",
-            "■ They are adapted to life on the plains, capable of running swiftly, and leaping high into the air. The special structure of their paws gives them many advantages on the ground, and they are physically strong, but they will struggle at flight and swimming.",
-            "§7■ You may change your body type at any time, but you will lose your growth progress. Each type has their own strengths and weaknesses, but the change is mostly cosmetic."
+            "■ They are adapted to life on the plains, capable of running swiftly, and leaping high into the air. The special structure of their paws gives them many advantages on the ground, and they are physically strong, but they will struggle at flight and swimming."
     })
     @Translation(type = Translation.Type.BODY, comments = "South")
     @Translation(type = Translation.Type.BODY_WINGS, comments = "Show wings")
@@ -59,8 +55,7 @@ public class DragonBodies {
 
     @Translation(type = Translation.Type.BODY_DESCRIPTION, comments = {
             "§6■ Western Type§r",
-            "■ Conquerors of mountain and sky, they are unrivalled in their element, but are rather clumsy on the ground.",
-            "§7■ You may change your body type at any time, but you will lose your growth progress."
+            "■ Conquerors of mountain and sky, they are unrivalled in their element, but are rather clumsy on the ground."
     })
     @Translation(type = Translation.Type.BODY, comments = "West")
     @Translation(type = Translation.Type.BODY_WINGS, comments = "Show wings")
