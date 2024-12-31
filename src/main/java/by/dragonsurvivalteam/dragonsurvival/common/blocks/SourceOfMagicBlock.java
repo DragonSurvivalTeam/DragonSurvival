@@ -54,8 +54,8 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.util.concurrent.atomic.AtomicBoolean;
+import javax.annotation.Nullable;
 
 // TODO :: add a generic one (same for doors, pressure plates) which is handled through some level storage
 //  (said storage contains the relevant types and effects etc. per position aka place block)

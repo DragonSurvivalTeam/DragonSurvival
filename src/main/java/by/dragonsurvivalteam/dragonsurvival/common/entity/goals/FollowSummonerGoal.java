@@ -104,7 +104,7 @@ public class FollowSummonerGoal extends Goal {
         if (mob.distanceToSqr(owner) < distance * distance) {
             return false;
         } else {
-            return owner.getData(DSDataAttachments.SUMMONED_ENTITIES).getMovementBehaviour() == SummonedEntities.MovementBehaviour.FOLLOW;
+            return owner.getData(DSDataAttachments.SUMMONED_ENTITIES).movementBehaviour == SummonedEntities.MovementBehaviour.FOLLOW;
         }
     }
 

@@ -55,7 +55,10 @@ public enum Keybind {
     FREE_LOOK(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_LEFT_ALT),
 
     @Translation(type = Translation.Type.KEYBIND, comments = "Toggle Large Dragon Destruction")
-    TOGGLE_DESTRUCTION(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_RIGHT_ALT);
+    TOGGLE_DESTRUCTION(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_RIGHT_ALT),
+
+    @Translation(type = Translation.Type.KEYBIND, comments = "Toggle summon behaviour (+ SHIFT)")
+    TOGGLE_SUMMON_BEHAVIOUR(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_UNKNOWN);
 
     @Translation(type = Translation.Type.MISC, comments = "Dragon Survival")
     private static final String CATEGORY = Translation.Type.KEYBIND.wrap("category");
@@ -75,7 +78,7 @@ public enum Keybind {
     }
 
     @SubscribeEvent
-    public static void registerAllKeys(RegisterKeyMappingsEvent event) {
+    public static void registerAllKeys(final RegisterKeyMappingsEvent event) {
         for (Keybind keybind : values()) {
             event.register(keybind.get());
         }
@@ -119,6 +122,7 @@ public enum Keybind {
     }
 
     /** Checks if the supplied key code (see {@link InputConstants}) matches the key */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted") // ignore
     public boolean isKey(int keyCode) {
         return getKey().getValue() == keyCode;
     }

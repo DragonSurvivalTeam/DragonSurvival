@@ -62,7 +62,7 @@ public class HarvestBonuses extends Storage<HarvestBonus.Instance> {
     public static void tickData(final EntityTickEvent.Post event) {
         if (event.getEntity() instanceof Player player) {
             player.getExistingData(DSDataAttachments.HARVEST_BONUSES).ifPresent(storage -> {
-                storage.tick();
+                storage.tick(event.getEntity());
 
                 if (storage.isEmpty()) {
                     player.removeData(DSDataAttachments.HARVEST_BONUSES);

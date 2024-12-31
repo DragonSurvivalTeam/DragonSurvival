@@ -9,6 +9,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.Abilit
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.ScrollableComponent;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.Upgrade;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
@@ -206,8 +207,8 @@ public class DragonAbilityScreen extends Screen {
         // TODO :: need some consistent order - could do it based on a tag (that is what enchantments and dragon bodies are doing)
         //  or on some other factors (level -> name e.g.)
         List<DragonAbilityInstance> actives = data.getActiveAbilities();
-        List<DragonAbilityInstance> upgradablePassives = data.getManuallyUpgradablePassiveAbilities();
-        List<DragonAbilityInstance> constantPassives = data.getPassivelyUpgradablePassiveAbilities();
+        List<DragonAbilityInstance> upgradablePassives = data.getPassiveAbilities(Upgrade.IS_MANUAL);
+        List<DragonAbilityInstance> constantPassives = data.getPassiveAbilities(Upgrade.IS_MANUAL.negate());
 
         scrollableComponents.add(new AbilityColumnsComponent(this, guiLeft + 35, guiTop, 40, 20, 0.8f, 0.5f, actives));
         scrollableComponents.add(new AbilityColumnsComponent(this, guiLeft + 111, guiTop, 40, 20, 0.8f, 0.5f, upgradablePassives));

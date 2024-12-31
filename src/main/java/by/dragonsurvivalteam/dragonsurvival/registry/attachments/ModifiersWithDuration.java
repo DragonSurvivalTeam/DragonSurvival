@@ -33,7 +33,7 @@ public class ModifiersWithDuration extends Storage<ModifierWithDuration.Instance
         // Attribute modifiers are only relevant for living entities
         if (event.getEntity() instanceof LivingEntity livingEntity) {
             livingEntity.getExistingData(DSDataAttachments.MODIFIERS_WITH_DURATION).ifPresent(data -> {
-                data.tick();
+                data.tick(event.getEntity());
 
                 if (data.isEmpty()) {
                     livingEntity.removeData(DSDataAttachments.MODIFIERS_WITH_DURATION);

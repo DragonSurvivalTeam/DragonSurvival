@@ -15,7 +15,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 public class EntityStateHandler implements INBTSerializable<CompoundTag> {
-    public UUID summonOwner;
     // To handle the burn effect damage
     public Vec3 lastPos;
     // Amount of times the last chain attack has chained
@@ -23,12 +22,26 @@ public class EntityStateHandler implements INBTSerializable<CompoundTag> {
     // Currently only used for item entities
     public boolean isFireImmune;
 
+    private UUID summonOwner;
+
     public @Nullable Entity getSummonOwner(final Level level) {
         if (summonOwner != null && level instanceof ServerLevel serverLevel) {
             return serverLevel.getEntity(summonOwner);
         }
 
         return null;
+    }
+
+    public void setSummonOwner(@Nullable final Entity entity) {
+        if (entity == null) {
+            summonOwner = null;
+        } else {
+            summonOwner = entity.getUUID();
+        }
+    }
+
+    public boolean isOwner(final Entity entity) {
+        return summonOwner != null && summonOwner.equals(entity.getUUID());
     }
 
     @Override

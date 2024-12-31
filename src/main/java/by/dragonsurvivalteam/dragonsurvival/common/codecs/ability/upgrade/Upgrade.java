@@ -12,12 +12,15 @@ import net.minecraft.world.item.enchantment.LevelBasedValue;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public record Upgrade(Either<ValueBasedUpgrade, ItemBasedUpgrade> upgrade) {
     public static final Codec<Upgrade> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.either(ValueBasedUpgrade.CODEC, ItemBasedUpgrade.CODEC).fieldOf("upgrade_data").forGetter(Upgrade::upgrade)
     ).apply(instance, Upgrade::new));
 
+    public static final Predicate<Optional<Upgrade>> IS_MANUAL = optional -> optional.map(upgrade -> upgrade.upgrade().map(type -> type.type() == ValueBasedUpgrade.Type.MANUAL, type -> false)).orElse(false);
+    
     public MutableComponent getDescription(int level) {
         return upgrade.map(upgrade -> upgrade.getDescription(level), upgrade -> upgrade.getDescription(level));
     }

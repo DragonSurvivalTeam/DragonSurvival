@@ -283,5 +283,9 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
         clawMenuButtons.forEach(button -> button.visible = clawsMenu);
         super.render(graphics, mouseX, mouseY, partialTick);
         renderTooltip(graphics, mouseX, mouseY);
+
+        // Bandaid solution since we are rendering the tooltip twice now
+        // But with this it is guaranteed to be rendered after the slot icons
+        growthButton.renderTooltip(graphics, mouseX, mouseY);
     }
 }

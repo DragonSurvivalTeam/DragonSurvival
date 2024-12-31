@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.DurationInstance;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierType;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.goals.FollowSummonerGoal;
 import by.dragonsurvivalteam.dragonsurvival.mixins.PrimedTntAccess;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncSummonedEntity;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonedEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
@@ -13,6 +14,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilit
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.AbilityBlockEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.AbilityEntityEffect;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -37,6 +39,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.NumberFormat;
@@ -46,9 +49,6 @@ import java.util.UUID;
 import java.util.function.Function;
 import javax.annotation.Nullable;
 
-// TODO :: add optional mana cost for keeping the entity?
-// TODO :: add option to add some goals to make sure entities can act as proper summons?
-//  e.g. a target entity goal with switchable modes (on entity right click or sth.) between stuff like aggressive, stay in place, etc.
 public record SummonEntityEffect(
         SimpleWeightedRandomList<Holder<EntityType<?>>> entities,
         ResourceLocation id,
@@ -99,6 +99,8 @@ public record SummonEntityEffect(
             component.append(Component.translatable(LangKey.ABILITY_SUMMON_CHANCE, DSColors.dynamicValue(entityName), DSColors.dynamicValue(NumberFormat.getPercentInstance().format(chance))));
         });
 
+        // TODO :: somehow the duration is missing
+        component.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.dynamicValue(Functions.ticksToSeconds((int) duration.calculate(ability.level())))));
         return List.of(component);
     }
 
@@ -166,7 +168,7 @@ public record SummonEntityEffect(
 
         setAllied(dragon, entity);
 
-        entity.getData(DSDataAttachments.ENTITY_HANDLER).summonOwner = dragon.getUUID();
+        entity.getData(DSDataAttachments.ENTITY_HANDLER).setSummonOwner(dragon);
         entity.moveTo(spawnPosition.getX(), spawnPosition.getY() + 1, spawnPosition.getZ(), entity.getYRot(), entity.getXRot());
 
         if (instance == null) {
@@ -175,8 +177,6 @@ public record SummonEntityEffect(
         } else {
             instance.increment(entity.getUUID());
         }
-
-        // TODO :: sync to client? would maybe be interesting outside inventory as well (indicator of current / max)
     }
 
     private void setAllied(final ServerPlayer dragon, final Entity entity) {
@@ -240,6 +240,13 @@ public record SummonEntityEffect(
         }
 
         @Override
+        public void onAddedToStorage(final Entity storageHolder) {
+            if (storageHolder instanceof ServerPlayer serverPlayer) {
+                PacketDistributor.sendToPlayer(serverPlayer, new SyncSummonedEntity(this, false));
+            }
+        }
+
+        @Override
         public void onRemovalFromStorage(final Entity storageHolder) {
             if (!(storageHolder.level() instanceof ServerLevel serverLevel)) {
                 return;
@@ -250,10 +257,14 @@ public record SummonEntityEffect(
 
                 if (summonedEntity != null) {
                     // Since the entry is already removed from the storage we don't need any behaviour based on the owner
-                    summonedEntity.getData(DSDataAttachments.ENTITY_HANDLER).summonOwner = null;
+                    summonedEntity.getData(DSDataAttachments.ENTITY_HANDLER).setSummonOwner(null);
                     summonedEntity.discard();
                 }
             });
+
+            if (storageHolder instanceof ServerPlayer serverPlayer) {
+                PacketDistributor.sendToPlayer(serverPlayer, new SyncSummonedEntity(this, true));
+            }
         }
 
         @Override
@@ -264,23 +275,6 @@ public record SummonEntityEffect(
         public void increment(final UUID uuid) {
             summonedAmount++;
             entityUUIDs.add(uuid);
-        }
-
-        public void discard(final ServerLevel level, int amount) {
-            while (amount > 0 && !entityUUIDs.isEmpty()) {
-                UUID removed = entityUUIDs.removeFirst();
-                Entity entity = level.getEntity(removed);
-
-                if (entity != null) {
-                    // We already handled the removal ourselves
-                    entity.getData(DSDataAttachments.ENTITY_HANDLER).summonOwner = null;
-                    entity.discard();
-                }
-
-                amount--;
-            }
-
-            summonedAmount = entityUUIDs.size();
         }
 
         /**

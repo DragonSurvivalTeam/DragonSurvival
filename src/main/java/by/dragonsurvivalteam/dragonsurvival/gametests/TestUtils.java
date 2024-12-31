@@ -12,6 +12,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.NeoForge;
@@ -78,10 +79,9 @@ public class TestUtils {
     }
 
     public static Player createPlayer(final GameTestHelper helper) {
-        // FIXME :: crashes instantly due to 'NetworkRegistry#checkPacket'
-        //  helper.makeMockPlayer() doesn't create a 'ServerPlayer' but rather a mix of client and server elements
-        //noinspection removal -> ignore
-        Player player = helper.makeMockServerPlayerInLevel();
+        // FIXME :: 'helper.makeMockServerPlayerInLevel()' crashes instantly due to 'NetworkRegistry#checkPacket'
+        //  'helper.makeMockPlayer()' doesn't create a 'ServerPlayer' but rather a mix of client and server elements
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         resetPlayer(helper, player);
         return player;
     }

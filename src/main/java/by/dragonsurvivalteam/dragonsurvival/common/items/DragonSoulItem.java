@@ -105,11 +105,11 @@ public class DragonSoulItem extends Item {
                 handler.deserializeNBT(level.registryAccess(), storedDragonData, true);
                 stack.set(DataComponents.CUSTOM_DATA, CustomData.of(currentDragonData));
                 stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(getCustomModelData(currentDragonData)));
-                PlayerLoginHandler.syncCompleteAll(player);
+                PlayerLoginHandler.syncDragonData(player);
             } else {
                 CompoundTag tag = stack.get(DataComponents.CUSTOM_DATA).copyTag();
                 handler.deserializeNBT(level.registryAccess(), tag, true);
-                PlayerLoginHandler.syncCompleteAll(player);
+                PlayerLoginHandler.syncDragonData(player);
                 stack.set(DataComponents.CUSTOM_DATA, null);
                 stack.set(DataComponents.CUSTOM_MODEL_DATA, null);
             }
@@ -118,7 +118,7 @@ public class DragonSoulItem extends Item {
             stack.set(DataComponents.CUSTOM_DATA, CustomData.of(currentDragonData));
             stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(getCustomModelData(currentDragonData)));
             handler.revertToHumanForm(player, true);
-            PlayerLoginHandler.syncCompleteAll(player);
+            PlayerLoginHandler.syncDragonData(player);
         }
 
         level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ENDER_DRAGON_GROWL, entity.getSoundSource(), 1.0F, 1.0F);

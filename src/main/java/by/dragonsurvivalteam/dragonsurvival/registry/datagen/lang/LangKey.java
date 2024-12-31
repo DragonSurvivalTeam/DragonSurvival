@@ -147,7 +147,7 @@ public class LangKey {
     @Translation(type = Translation.Type.MISC, comments = "§6■ Cast time:§r %ss")
     public static final String ABILITY_CAST_TIME = Translation.Type.ABILITY.wrap("general.ability.cast_time");
 
-    @Translation(type = Translation.Type.MISC, comments = " for %s seconds")
+    @Translation(type = Translation.Type.MISC, comments = " for %s seconds") // TODO :: separate tooltip for infinite duration?
     public static final String ABILITY_EFFECT_DURATION = Translation.Type.ABILITY.wrap("general.ability.effect_duration");
 
     @Translation(type = Translation.Type.MISC, comments = " with a %s chance")

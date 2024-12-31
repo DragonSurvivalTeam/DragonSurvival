@@ -1,10 +1,8 @@
 package by.dragonsurvivalteam.dragonsurvival.common.handlers.magic;
 
-import by.dragonsurvivalteam.dragonsurvival.common.capability.EntityStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEnchantments;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDamageTypeTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEffectTags;
 import by.dragonsurvivalteam.dragonsurvival.util.AdditionalEffectData;
@@ -25,11 +23,9 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.damagesource.DamageContainer;
-import net.neoforged.neoforge.event.entity.EntityStruckByLightningEvent;
 import net.neoforged.neoforge.event.entity.living.LivingExperienceDropEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
-import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -37,34 +33,6 @@ import java.util.Optional;
 
 @EventBusSubscriber
 public class EffectHandler {
-    @SubscribeEvent
-    public static void storeLastEntityPosForBurnEffect(EntityTickEvent.Post event){
-        if(event.getEntity() instanceof LivingEntity entity) {
-            EntityStateHandler data = entity.getData(DSDataAttachments.ENTITY_HANDLER);
-            if (entity.tickCount % 20 == 0) {
-                data.lastPos = entity.position();
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public static void playerStruckByLightning(EntityStruckByLightningEvent event) {
-        // TODO: I believe we can already do this with our ability system now
-        // Just give the sea dragon immunity to that damage type
-        /*if (event.getEntity() instanceof Player player) {
-
-            DragonStateProvider.getOptional(player).ifPresent(cap -> {
-                if (!cap.isDragon()) {
-                    return;
-                }
-
-                if(DragonUtils.isType(cap, DragonTypes.SEA)){
-                    event.setCanceled(true);
-                }
-            });
-        }*/
-    }
-
     @SubscribeEvent
     public static void markLastAfflictedOnApplyEffect(final MobEffectEvent.Added event) {
         ((AdditionalEffectData) event.getEffectInstance()).dragonSurvival$setApplier(event.getEffectSource());

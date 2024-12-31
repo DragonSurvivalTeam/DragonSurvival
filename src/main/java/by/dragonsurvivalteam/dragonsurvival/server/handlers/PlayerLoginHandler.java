@@ -23,54 +23,12 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 @EventBusSubscriber
 public class PlayerLoginHandler {
-    public static void syncCompleteSingle(final Entity tracker, final Entity tracked) {
-        if (tracker instanceof ServerPlayer serverTracker && tracked instanceof ServerPlayer) {
-            DragonStateProvider.getOptional(tracked).ifPresent(dragonStateHandler -> {
-                PacketDistributor.sendToPlayer(serverTracker, new SyncComplete.Data(tracked.getId(), dragonStateHandler.serializeNBT(tracked.registryAccess())));
-            });
-        }
-    }
-
-    public static void syncCompleteSingle(final Entity entity) {
-        if (entity instanceof ServerPlayer player) {
-            DragonStateProvider.getOptional(player).ifPresent(handler -> {
-                if (handler.species() != null && handler.body() == null) {
-                    // Otherwise players won't be able to join the world
-                    handler.setBody(player, DragonBody.random(player.registryAccess()));
-                    DragonSurvival.LOGGER.error("Player {} was a dragon but had no dragon body", player);
-                }
-
-                SyncComplete.handleDragonSync(player);
-                PacketDistributor.sendToPlayer(player, new SyncComplete.Data(player.getId(), handler.serializeNBT(player.registryAccess())));
-            });
-
-            MagicData magicData = MagicData.getData(player);
-            PacketDistributor.sendToPlayer(player, new SyncMagicData.Data(player.getId(), magicData.serializeNBT(player.registryAccess())));
-
-            player.getExistingData(DSDataAttachments.MODIFIERS_WITH_DURATION).ifPresent(data -> data.sync(player));
-            player.getExistingData(DSDataAttachments.PENALTY_SUPPLY).ifPresent(data -> data.sync(player));
-            player.getExistingData(DSDataAttachments.DAMAGE_MODIFICATIONS).ifPresent(data -> data.sync(player));
-            player.getExistingData(DSDataAttachments.HARVEST_BONUSES).ifPresent(data -> data.sync(player));
-        }
-    }
-
-    public static void syncCompleteAll(Entity entity) {
+    public static void syncDragonData(final Entity entity) {
         if (entity instanceof ServerPlayer player) {
             DragonStateProvider.getOptional(player).ifPresent(dragonStateHandler -> {
                 SyncComplete.handleDragonSync(player);
                 PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncComplete.Data(player.getId(), dragonStateHandler.serializeNBT(player.registryAccess())));
             });
-        }
-    }
-
-    public static void stopTickingSounds(final Entity tracker, final Entity tracked) {
-        if (tracker instanceof ServerPlayer trackerPlayer && tracked instanceof ServerPlayer trackedPlayer) {
-            MagicData magicDataTracked = MagicData.getData(trackedPlayer);
-            DragonAbilityInstance currentlyCasting = magicDataTracked.getCurrentlyCasting();
-
-            if (currentlyCasting != null) {
-                PacketDistributor.sendToPlayer(trackerPlayer, new StopTickingSound(currentlyCasting.location().withSuffix(trackedPlayer.getStringUUID())));
-            }
         }
     }
 
@@ -80,7 +38,7 @@ public class PlayerLoginHandler {
     public static void onTrackingStart(final PlayerEvent.StartTracking event) {
         Entity tracker = event.getEntity();
         Entity tracked = event.getTarget();
-        syncCompleteSingle(tracker, tracked);
+        syncDragonData(tracker, tracked);
     }
 
     @SubscribeEvent
@@ -92,19 +50,19 @@ public class PlayerLoginHandler {
 
     @SubscribeEvent
     public static void onLogin(final PlayerEvent.PlayerLoggedInEvent event) {
-        syncCompleteSingle(event.getEntity());
+        syncComplete(event.getEntity());
     }
 
     @SubscribeEvent
     public static void onRespawn(final PlayerEvent.PlayerRespawnEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
-           syncCompleteSingle(player);
+           syncComplete(player);
         }
     }
 
     @SubscribeEvent
     public static void onChangeDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
-        syncCompleteSingle(event.getEntity());
+        syncComplete(event.getEntity());
     }
 
     @SubscribeEvent
@@ -125,5 +83,52 @@ public class PlayerLoginHandler {
 
         PacketDistributor.sendToPlayer(serverPlayer, OpenDragonAltar.INSTANCE);
         data.isInAltar = true;
+    }
+
+    private static void stopTickingSounds(final Entity tracker, final Entity tracked) {
+        if (tracker instanceof ServerPlayer trackerPlayer && tracked instanceof ServerPlayer trackedPlayer) {
+            MagicData magicDataTracked = MagicData.getData(trackedPlayer);
+            DragonAbilityInstance currentlyCasting = magicDataTracked.getCurrentlyCasting();
+
+            if (currentlyCasting != null) {
+                PacketDistributor.sendToPlayer(trackerPlayer, new StopTickingSound(currentlyCasting.location().withSuffix(trackedPlayer.getStringUUID())));
+            }
+        }
+    }
+
+    private static void syncDragonData(final Entity syncTo, final Entity syncFrom) {
+        if (syncTo instanceof ServerPlayer target && syncFrom instanceof ServerPlayer) {
+            DragonStateProvider.getOptional(syncFrom).ifPresent(dragonStateHandler -> {
+                PacketDistributor.sendToPlayer(target, new SyncComplete.Data(syncFrom.getId(), dragonStateHandler.serializeNBT(syncFrom.registryAccess())));
+            });
+        }
+    }
+
+    private static void syncComplete(final Entity entity) {
+        if (entity instanceof ServerPlayer player) {
+            DragonStateProvider.getOptional(player).ifPresent(handler -> {
+                if (handler.species() != null && handler.body() == null) {
+                    // Otherwise players won't be able to join the world
+                    handler.setBody(player, DragonBody.random(player.registryAccess()));
+                    DragonSurvival.LOGGER.error("Player {} was a dragon but had no dragon body", player);
+                }
+
+                SyncComplete.handleDragonSync(player);
+                PacketDistributor.sendToPlayer(player, new SyncComplete.Data(player.getId(), handler.serializeNBT(player.registryAccess())));
+            });
+
+            MagicData magicData = MagicData.getData(player);
+            PacketDistributor.sendToPlayer(player, new SyncMagicData.Data(player.getId(), magicData.serializeNBT(player.registryAccess())));
+
+            syncDataAttachments(player);
+        }
+    }
+
+    private static void syncDataAttachments(final ServerPlayer player) {
+        player.getExistingData(DSDataAttachments.MODIFIERS_WITH_DURATION).ifPresent(data -> data.sync(player));
+        player.getExistingData(DSDataAttachments.PENALTY_SUPPLY).ifPresent(data -> data.sync(player));
+        player.getExistingData(DSDataAttachments.DAMAGE_MODIFICATIONS).ifPresent(data -> data.sync(player));
+        player.getExistingData(DSDataAttachments.HARVEST_BONUSES).ifPresent(data -> data.sync(player));
+        player.getExistingData(DSDataAttachments.SUMMONED_ENTITIES).ifPresent(data -> data.sync(player));
     }
 }

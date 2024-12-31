@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import by.dragonsurvivalteam.dragonsurvival.common.entity.goals.FollowSummonerGoal;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.SummonEntityEffect;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -32,12 +33,26 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
     public static final String MOVEMENT_BEHAVIOUR = "movement_behaviour";
     public static final String ATTACK_BEHAVIOUR = "attack_behaviour";
 
-    // TODO :: changeable with keybinds?
-    public enum MovementBehaviour {DEFAULT, FOLLOW}
-    public enum AttackBehaviour {DEFAULT, DEFENSIVE, AGGRESSIVE}
+    @Translation(type = Translation.Type.ENUM, comments = "Movement Behaviour")
+    public enum MovementBehaviour {
+        @Translation(type = Translation.Type.ENUM, comments = "Default")
+        DEFAULT,
+        @Translation(type = Translation.Type.ENUM, comments = "Follow")
+        FOLLOW
+    }
 
-    private MovementBehaviour movementBehaviour = MovementBehaviour.FOLLOW;
-    private AttackBehaviour attackBehaviour = AttackBehaviour.DEFENSIVE;
+    @Translation(type = Translation.Type.ENUM, comments = "Attack Behaviour")
+    public enum AttackBehaviour {
+        @Translation(type = Translation.Type.ENUM, comments = "Default")
+        DEFAULT,
+        @Translation(type = Translation.Type.ENUM, comments = "Defensive")
+        DEFENSIVE,
+        @Translation(type = Translation.Type.ENUM, comments = "Aggressive")
+        AGGRESSIVE
+    }
+
+    public MovementBehaviour movementBehaviour = MovementBehaviour.FOLLOW;
+    public AttackBehaviour attackBehaviour = AttackBehaviour.DEFENSIVE;
 
     /** Returns the instance the entity is part of */
     public @Nullable SummonEntityEffect.Instance getInstance(final Entity entity) {
@@ -50,21 +65,13 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
         return null;
     }
 
-    public MovementBehaviour getMovementBehaviour() {
-        return movementBehaviour;
-    }
-
     public static boolean hasSummonRelationship(final Entity entity, final Entity target) {
         if (entity == null || target == null) {
             return false;
         }
 
         return entity.getExistingData(DSDataAttachments.ENTITY_HANDLER).map(data -> {
-            if (data.summonOwner == null) {
-                return false;
-            }
-
-            if (target.getUUID().equals(data.summonOwner)) {
+            if (data.isOwner(target)) {
                 SummonedEntities summonData = target.getData(DSDataAttachments.SUMMONED_ENTITIES);
                 SummonEntityEffect.Instance instance = summonData.getInstance(entity);
                 return instance != null && instance.baseData().shouldSetAllied();
@@ -86,7 +93,7 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
     @SubscribeEvent
     public static void tickData(final EntityTickEvent.Post event) {
         event.getEntity().getExistingData(DSDataAttachments.SUMMONED_ENTITIES).ifPresent(data -> {
-            data.tick();
+            data.tick(event.getEntity());
 
             if (data.isEmpty()) {
                 event.getEntity().removeData(DSDataAttachments.SUMMONED_ENTITIES);
@@ -212,7 +219,7 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
 
     @SubscribeEvent
     public static void handleOwnerAttack(final AttackEntityEvent event) {
-        if (!(event.getTarget() instanceof LivingEntity livingTarget) || livingTarget.isAlliedTo(event.getEntity())) {
+        if (!(event.getTarget() instanceof LivingEntity livingTarget) || hasSummonRelationship(event.getEntity(), livingTarget)) {
             return;
         }
 
@@ -249,7 +256,7 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
         });
     }
 
-    private void setTarget(final LivingEntity target) {
+    private void setTarget(final LivingEntity target) { // TODO :: search for target on entity join for the summon (if there is a hostile entity that targets the player)
         all().forEach(instance -> instance.setTarget(target));
     }
 

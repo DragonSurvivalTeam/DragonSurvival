@@ -64,19 +64,19 @@
     "texture_entries": [
       {
         "from_level": 0,
-        "texture_resource": "dragonsurvival:abilities/cave/strong_leather_0"
+        "texture_resource": "dragonsurvival:abilities/cave/empty"
       },
       {
         "from_level": 1,
-        "texture_resource": "dragonsurvival:abilities/cave/strong_leather_1"
+        "texture_resource": "dragonsurvival:abilities/cave/empty"
       },
       {
         "from_level": 2,
-        "texture_resource": "dragonsurvival:abilities/cave/strong_leather_2"
+        "texture_resource": "dragonsurvival:abilities/cave/empty"
       },
       {
         "from_level": 3,
-        "texture_resource": "dragonsurvival:abilities/cave/strong_leather_3"
+        "texture_resource": "dragonsurvival:abilities/cave/empty"
       }
     ]
   },

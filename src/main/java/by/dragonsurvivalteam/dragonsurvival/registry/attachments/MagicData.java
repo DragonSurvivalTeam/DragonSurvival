@@ -40,6 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 @EventBusSubscriber
 public class MagicData implements INBTSerializable<CompoundTag> {
@@ -352,16 +353,8 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         return abilities.values().stream().filter(instance -> instance.ability().value().activation().type() != Activation.Type.PASSIVE).toList();
     }
 
-    public List<DragonAbilityInstance> getPassiveAbilities() {
-        return abilities.values().stream().filter(instance -> instance.ability().value().activation().type() == Activation.Type.PASSIVE).toList();
-    }
-
-    public List<DragonAbilityInstance> getManuallyUpgradablePassiveAbilities() {
-        return abilities.values().stream().filter(instance ->  instance.ability().value().activation().type() == Activation.Type.PASSIVE && instance.value().upgrade().isPresent() && instance.value().upgrade().get().type() == ValueBasedUpgrade.Type.MANUAL).toList();
-    }
-
-    public List<DragonAbilityInstance> getPassivelyUpgradablePassiveAbilities() {
-        return abilities.values().stream().filter(instance ->  instance.ability().value().activation().type() == Activation.Type.PASSIVE && (instance.value().upgrade().isPresent() && instance.value().upgrade().get().type() != ValueBasedUpgrade.Type.MANUAL || instance.value().upgrade().isEmpty())).toList();
+    public List<DragonAbilityInstance> getPassiveAbilities(final Predicate<Optional<Upgrade>> predicate) {
+        return abilities.values().stream().filter(instance -> instance.ability().value().activation().type() == Activation.Type.PASSIVE && predicate.test(instance.value().upgrade())).toList();
     }
 
     /** Returns the amount of experience gained / lost when down- or upgrading the ability */

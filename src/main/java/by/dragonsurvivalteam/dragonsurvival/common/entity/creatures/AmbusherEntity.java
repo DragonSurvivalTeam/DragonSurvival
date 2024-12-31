@@ -66,66 +66,70 @@ public class AmbusherEntity extends Hunter implements RangedAttackMob {
     public void tick() {
         super.tick();
 
-        if (!this.level().isClientSide()) {
-            if (isAggro() && !hasReleasedGriffin()) {
-                setHasReleasedGriffin(true);
-                summonGriffin();
-                if (this.getTarget().hasEffect(DSEffects.HUNTER_OMEN)) {
-                    beginSummonReinforcements();
-                } else {
-                    beginGriffinReleaseReloadTimer();
-                }
-            }
-
-            if (getRangedAttackTimer() == CROSSBOW_ATTACK_START_TIME) {
-                fireArrow();
-            }
-            if (getRangedAttackTimer() == CROSSBOW_RELOAD_CHARGE_SOUND_TIME) {
-                this.playSound(SoundEvents.CROSSBOW_LOADING_MIDDLE.value(), 1.0F, 1.0F);
-            }
-
-            if (getRangedAttackTimer() == CROSSBOW_RELOAD_ARROW_PLACE_SOUND_TIME) {
-                this.playSound(SoundEvents.CROSSBOW_LOADING_END.value(), 1.0F, 1.0F);
-            }
-
-            if (getRangedAttackTimer() < ServerConfig.ambusherAttackInterval && getRangedAttackTimer() >= 0) {
-                setRangedAttackTimer(getRangedAttackTimer() + 1);
-            } else {
-                setRangedAttackTimer(-1);
-            }
-
-            if (getAmbushHornTimer() == AMBUSH_HORN_SOUND_START_TIME) {
-                this.playSound(SoundEvents.GOAT_HORN_SOUND_VARIANTS.getFirst().value(), 1.0F, 1.0F);
-            }
-
-            if (getAmbushHornTimer() == AMBUSH_ARROW_PLACE_SOUND_TIME) {
-                this.playSound(SoundEvents.CROSSBOW_LOADING_END.value(), 1.0F, 1.0F);
-            }
-
-            if (getAmbushHornTimer() < AMBUSH_ANIM_DURATION && getAmbushHornTimer() >= 0) {
-                setAmbushHornTimer(getAmbushHornTimer() + 1);
-            } else {
-                if (hasCalledReinforcements() && !hasSummonedReinforcements()) {
-                    summonReinforcements();
-                }
-                setAmbushHornTimer(-1);
-            }
-
-            if (getGriffinReleaseReloadTimer() < GRIFFIN_RELEASE_ANIM_DURATION && getGriffinReleaseReloadTimer() >= 0) {
-                setGriffinReleaseReloadTimer(getGriffinReleaseReloadTimer() + 1);
-            } else {
-                setGriffinReleaseReloadTimer(-1);
-            }
-
-            setNearbyDragonPlayer(DragonUtils.isNearbyDragonPlayerToEntity(8.0, this.level(), this));
-        } else {
+        if (level().isClientSide()) {
             if (isFirstClientTick) {
                 // Sync up with the server's data to prevent animations from playing that shouldn't when the entity is loaded
                 hasPlayedReleaseAnimation = hasReleasedGriffin();
                 hasPlayedReinforcementsAnimation = hasCalledReinforcements();
                 isFirstClientTick = false;
             }
+
+            return;
         }
+
+        if (isAggro() && !hasReleasedGriffin()) {
+            setHasReleasedGriffin(true);
+            summonGriffin();
+            LivingEntity target = getTarget();
+
+            if (target != null && target.hasEffect(DSEffects.HUNTER_OMEN)) {
+                beginSummonReinforcements();
+            } else {
+                beginGriffinReleaseReloadTimer();
+            }
+        }
+
+        if (getRangedAttackTimer() == CROSSBOW_ATTACK_START_TIME) {
+            fireArrow();
+        }
+        if (getRangedAttackTimer() == CROSSBOW_RELOAD_CHARGE_SOUND_TIME) {
+            this.playSound(SoundEvents.CROSSBOW_LOADING_MIDDLE.value(), 1.0F, 1.0F);
+        }
+
+        if (getRangedAttackTimer() == CROSSBOW_RELOAD_ARROW_PLACE_SOUND_TIME) {
+            this.playSound(SoundEvents.CROSSBOW_LOADING_END.value(), 1.0F, 1.0F);
+        }
+
+        if (getRangedAttackTimer() < ServerConfig.ambusherAttackInterval && getRangedAttackTimer() >= 0) {
+            setRangedAttackTimer(getRangedAttackTimer() + 1);
+        } else {
+            setRangedAttackTimer(-1);
+        }
+
+        if (getAmbushHornTimer() == AMBUSH_HORN_SOUND_START_TIME) {
+            this.playSound(SoundEvents.GOAT_HORN_SOUND_VARIANTS.getFirst().value(), 1.0F, 1.0F);
+        }
+
+        if (getAmbushHornTimer() == AMBUSH_ARROW_PLACE_SOUND_TIME) {
+            this.playSound(SoundEvents.CROSSBOW_LOADING_END.value(), 1.0F, 1.0F);
+        }
+
+        if (getAmbushHornTimer() < AMBUSH_ANIM_DURATION && getAmbushHornTimer() >= 0) {
+            setAmbushHornTimer(getAmbushHornTimer() + 1);
+        } else {
+            if (hasCalledReinforcements() && !hasSummonedReinforcements()) {
+                summonReinforcements();
+            }
+            setAmbushHornTimer(-1);
+        }
+
+        if (getGriffinReleaseReloadTimer() < GRIFFIN_RELEASE_ANIM_DURATION && getGriffinReleaseReloadTimer() >= 0) {
+            setGriffinReleaseReloadTimer(getGriffinReleaseReloadTimer() + 1);
+        } else {
+            setGriffinReleaseReloadTimer(-1);
+        }
+
+        setNearbyDragonPlayer(DragonUtils.isNearbyDragonPlayerToEntity(8.0, this.level(), this));
     }
 
     @Override

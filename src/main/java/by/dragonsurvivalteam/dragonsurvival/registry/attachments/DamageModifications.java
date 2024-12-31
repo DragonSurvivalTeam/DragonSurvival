@@ -50,7 +50,7 @@ public class DamageModifications extends Storage<DamageModification.Instance> {
         }
 
         event.getEntity().getExistingData(DSDataAttachments.DAMAGE_MODIFICATIONS).ifPresent(data -> {
-            data.tick();
+            data.tick(event.getEntity());
 
             if (data.isEmpty()) {
                 event.getEntity().removeData(DSDataAttachments.DAMAGE_MODIFICATIONS);

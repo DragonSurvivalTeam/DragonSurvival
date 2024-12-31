@@ -294,4 +294,19 @@ public class Functions {
             throw new IllegalStateException(message);
         }
     }
+
+    public static <T extends Enum<T>> T cycleEnum(final T type) {
+        int ordinal = type.ordinal();
+
+        Class<T> declaringClass = type.getDeclaringClass();
+        T[] values = declaringClass.getEnumConstants();
+
+        if (ordinal == values.length - 1) {
+            ordinal = 0;
+        } else {
+            ordinal++;
+        }
+
+        return values[ordinal];
+    }
 }
