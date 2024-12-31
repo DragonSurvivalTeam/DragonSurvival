@@ -99,9 +99,14 @@ public class HoverButton extends ExtendedButton implements HoverDisableable {
         graphics.pose().popPose();
 
         this.renderString(graphics, Minecraft.getInstance().font, getFGColor() | Mth.ceil(this.alpha * 255.0F) << 24);
+        renderTooltip(graphics, mouseX, mouseY);
+    }
 
-        if (customTooltip != null && isHovered()) {
-            graphics.renderComponentTooltipFromElements(Minecraft.getInstance().font, customTooltip.get(), mouseX, mouseY, ItemStack.EMPTY);
+    public void renderTooltip(final GuiGraphics graphics, int mouseX, int mouseY) {
+        if (customTooltip == null || !isHovered()) {
+            return;
         }
+
+        graphics.renderComponentTooltipFromElements(Minecraft.getInstance().font, customTooltip.get(), mouseX, mouseY, ItemStack.EMPTY);
     }
 }
