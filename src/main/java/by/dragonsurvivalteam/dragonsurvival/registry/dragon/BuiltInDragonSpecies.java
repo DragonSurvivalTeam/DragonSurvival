@@ -30,7 +30,7 @@ import net.neoforged.neoforge.common.Tags;
 import java.util.List;
 import java.util.Optional;
 
-public class DragonTypes {
+public class BuiltInDragonSpecies {
     @Translation(type = Translation.Type.DRAGON_SPECIES_DESCRIPTION, comments = {
             "§c■ Cave dragon.§r",
             "§2■ Features:§f§r fire resistance, pickaxe claws, fire magic, faster movement on stone and magma blocks.",
@@ -38,7 +38,7 @@ public class DragonTypes {
             "§6■ Diet:§r"
     })
     @Translation(type = Translation.Type.DRAGON_SPECIES, comments = "Cave Dragon")
-    public static final ResourceKey<DragonType> CAVE = key("cave");
+    public static final ResourceKey<DragonSpecies> CAVE = key("cave");
 
     @Translation(type = Translation.Type.DRAGON_SPECIES_DESCRIPTION, comments = {
             "§a■ Forest dragon.§r",
@@ -47,7 +47,7 @@ public class DragonTypes {
             "§6■ Diet:§r"
     })
     @Translation(type = Translation.Type.DRAGON_SPECIES, comments = "Forest Dragon")
-    public static final ResourceKey<DragonType> FOREST = key("forest");
+    public static final ResourceKey<DragonSpecies> FOREST = key("forest");
 
     @Translation(type = Translation.Type.DRAGON_SPECIES_DESCRIPTION, comments = {
             "§3■ Sea dragon.§r",
@@ -56,10 +56,10 @@ public class DragonTypes {
             "§6■ Diet:§r"
     })
     @Translation(type = Translation.Type.DRAGON_SPECIES, comments = "Sea Dragon")
-    public static final ResourceKey<DragonType> SEA = key("sea");
+    public static final ResourceKey<DragonSpecies> SEA = key("sea");
 
-    public static void registerTypes(final BootstrapContext<DragonType> context) {
-        context.register(CAVE, new DragonType(
+    public static void registerTypes(final BootstrapContext<DragonSpecies> context) {
+        context.register(CAVE, new DragonSpecies(
                 Optional.empty(),
                 Optional.empty(),
                 HolderSet.empty(),
@@ -141,7 +141,7 @@ public class DragonTypes {
                 )
         ));
 
-        context.register(SEA, new DragonType(
+        context.register(SEA, new DragonSpecies(
                 Optional.empty(),
                 Optional.empty(),
                 HolderSet.empty(),
@@ -223,7 +223,7 @@ public class DragonTypes {
                 )
         ));
 
-        context.register(FOREST, new DragonType(
+        context.register(FOREST, new DragonSpecies(
                 Optional.empty(),
                 Optional.empty(),
                 HolderSet.empty(),
@@ -297,11 +297,11 @@ public class DragonTypes {
         ));
     }
 
-    public static ResourceKey<DragonType> key(final ResourceLocation location) {
-        return ResourceKey.create(DragonType.REGISTRY, location);
+    public static ResourceKey<DragonSpecies> key(final ResourceLocation location) {
+        return ResourceKey.create(DragonSpecies.REGISTRY, location);
     }
 
-    private static ResourceKey<DragonType> key(final String path) {
+    private static ResourceKey<DragonSpecies> key(final String path) {
         return key(DragonSurvival.res(path));
     }
 }

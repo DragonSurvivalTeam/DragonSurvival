@@ -5,7 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.modifiers.SyncModifierWithDu
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ModifiersWithDuration;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.AttributeModifierSupplier;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
@@ -114,7 +114,7 @@ public record ModifierWithDuration(ResourceLocation id, ResourceLocation icon, L
                 return;
             }
 
-            Holder<DragonType> type = null;
+            Holder<DragonSpecies> type = null;
 
             if (storageHolder instanceof Player player) {
                 type = DragonUtils.getType(player);

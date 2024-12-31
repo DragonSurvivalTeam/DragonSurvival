@@ -43,11 +43,11 @@ public class ServerConfig {
     @ConfigOption(side = ConfigSide.SERVER, category = "general", key = "can_move_while_casting")
     public static Boolean canMoveWhileCasting = false;
 
-    @Translation(key = "start_with_dragon_choice", type = Translation.Type.CONFIGURATION, comments = "If enabled players will be giving a choice to select a dragon type when first joining the world")
+    @Translation(key = "start_with_dragon_choice", type = Translation.Type.CONFIGURATION, comments = "If enabled players will be given a choice to select a dragon species when first joining the world")
     @ConfigOption(side = ConfigSide.SERVER, category = "general", key = "start_with_dragon_choice")
     public static Boolean startWithDragonChoice = true;
 
-    @Translation(key = "allow_dragon_choice_from_inventory", type = Translation.Type.CONFIGURATION, comments = "If enabled players that have not yet chosen a dragon type will be able to do so from the vanilla inventory")
+    @Translation(key = "allow_dragon_choice_from_inventory", type = Translation.Type.CONFIGURATION, comments = "If enabled players that have not yet chosen a dragon species will be able to do so from the vanilla inventory")
     @ConfigOption(side = ConfigSide.SERVER, category = "general", key = "allow_dragon_choice_from_inventory")
     public static Boolean allowDragonChoiceFromInventory = true;
 
@@ -72,7 +72,7 @@ public class ServerConfig {
 
     // --- Standard dragon scaling --- //
 
-    @Translation(key = "save_growth_stage", type = Translation.Type.CONFIGURATION, comments = "If enabled the current growth will be saved for the current dragon type when changing types or reverting back to being a human")
+    @Translation(key = "save_growth_stage", type = Translation.Type.CONFIGURATION, comments = "If enabled the current growth will be saved for the current dragon species when changing types or reverting back to being a human")
     @ConfigOption(side = ConfigSide.SERVER, category = {"growth"}, key = "save_growth_stage")
     public static Boolean saveGrowthStage = false;
 
@@ -146,7 +146,7 @@ public class ServerConfig {
 
     // --- Source of magic --- //
 
-    @Translation(key = "damage_on_wrong_source_of_magic", type = Translation.Type.CONFIGURATION, comments = "Source of magic that does not match the dragon type will damage the player if enabled")
+    @Translation(key = "damage_on_wrong_source_of_magic", type = Translation.Type.CONFIGURATION, comments = "Source of magic that does not match the dragon species will damage the player if enabled")
     @ConfigOption(side = ConfigSide.SERVER, category = "source_of_magic", key = "damage_on_wrong_source_of_magic")
     public static Boolean damageWrongSourceOfMagic = true;
 
@@ -214,8 +214,8 @@ public class ServerConfig {
     public static Boolean consumeExperienceAsMana = true;
 
     @Translation(key = "save_all_abilities", type = Translation.Type.CONFIGURATION, comments = {
-            "If enabled all abilities will remain when changing dragon types",
-            "This does not mean that the other dragon type gains these abilities",
+            "If enabled all abilities will remain when changing dragon species",
+            "This does not mean that the other dragon species gains these abilities",
             "It means that when turning to the previous type the abilities will have the same levels"
     })
     @ConfigOption(side = ConfigSide.SERVER, category = {"magic", "abilities"}, key = "save_all_abilities")

@@ -10,8 +10,8 @@
 //import java.util.function.Consumer;
 //
 //public class ChargedCoalItem extends DragonFoodItem {
-//    public ChargedCoalItem(Properties properties, AbstractDragonType dragonType, Consumer<LivingEntity> onEat) {
-//        super(properties, dragonType, onEat);
+//    public ChargedCoalItem(Properties properties, AbstractDragonType dragonSpecies, Consumer<LivingEntity> onEat) {
+//        super(properties, dragonSpecies, onEat);
 //    }
 //
 //    @Override

@@ -12,7 +12,7 @@ logoFile = "dragonsurvival.png"
     authors = "${mod_authors}"
     description = '''
         This mod lets you play as a dragon. There are 3 dragon kinds, which have different traits.
-        To start, you must create a Dragon Altar where you can choose the dragon type you want to become.
+        To start, you must create a Dragon Altar where you can choose the dragon species you want to become.
         '''
     enumExtensions="META-INF/enumextensions.json"
 

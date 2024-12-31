@@ -2,7 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.util;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
@@ -13,11 +13,11 @@ import net.minecraft.world.level.Level;
 import java.util.List;
 
 public class DragonUtils {
-    public static Holder<DragonType> getType(Player entity) {
+    public static Holder<DragonSpecies> getType(Player entity) {
         return DragonStateProvider.getData(entity).species();
     }
 
-    public static Holder<DragonType> getType(DragonStateHandler handler) {
+    public static Holder<DragonSpecies> getType(DragonStateHandler handler) {
         return handler.species();
     }
 
@@ -49,16 +49,16 @@ public class DragonUtils {
         return playerBody.is(typeToCheck);
     }
 
-    public static boolean isType(final DragonStateHandler handler, final ResourceKey<DragonType> typeToCheck) {
+    public static boolean isType(final DragonStateHandler handler, final ResourceKey<DragonSpecies> typeToCheck) {
         return isType(handler.speciesKey(), typeToCheck);
     }
 
-    public static boolean isType(final Entity entity, ResourceKey<DragonType> typeToCheck) {
+    public static boolean isType(final Entity entity, ResourceKey<DragonSpecies> typeToCheck) {
         if (!(entity instanceof Player player)) {
             return false;
         }
 
-        Holder<DragonType> playerType = DragonStateProvider.getData(player).species();
+        Holder<DragonSpecies> playerType = DragonStateProvider.getData(player).species();
 
         if (playerType == null) {
             return false;
@@ -67,7 +67,7 @@ public class DragonUtils {
         return isType(playerType.getKey(), typeToCheck);
     }
 
-    public static boolean isType(final Holder<DragonType> first, final Holder<DragonType> second) {
+    public static boolean isType(final Holder<DragonSpecies> first, final Holder<DragonSpecies> second) {
         if (first == second) {
             return true;
         }
@@ -79,7 +79,7 @@ public class DragonUtils {
         return first.getKey() == second.getKey();
     }
 
-    public static boolean isType(final ResourceKey<DragonType> playerType, final ResourceKey<DragonType> typeToCheck) {
+    public static boolean isType(final ResourceKey<DragonSpecies> playerType, final ResourceKey<DragonSpecies> typeToCheck) {
         if (playerType == typeToCheck) {
             return true;
         }

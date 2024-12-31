@@ -49,9 +49,9 @@ public class DragonBodyButton extends Button implements HoverDisableable {
         String iconSuffix;
 
         if (screen instanceof DragonEditorScreen dragonEditorScreen) {
-            iconSuffix = dragonEditorScreen.dragonType.getKey().location().getPath();
+            iconSuffix = dragonEditorScreen.dragonSpecies.getKey().location().getPath();
         } else if (screen instanceof DragonSpeciesScreen dragonSpeciesScreen) {
-            iconSuffix = dragonSpeciesScreen.dragonType.getKey().location().getPath();
+            iconSuffix = dragonSpeciesScreen.dragonSpecies.getKey().location().getPath();
         } else {
             iconSuffix = DEFAULT_SUFFIX;
         }

@@ -191,7 +191,7 @@ public class DSBlockTags extends BlockTagsProvider {
                 .addTag(BlockTags.BANNERS);
     }
 
-    /** These blocks grant mana regeneration when the corresponding dragon type stands on them */
+    /** These blocks grant mana regeneration when the corresponding dragon species stands on them */
     private void addToDragonManaBlocks() {
         tag(REGENERATES_CAVE_DRAGON_MANA)
                 .addTag(BlockTags.FIRE)
@@ -260,7 +260,7 @@ public class DSBlockTags extends BlockTagsProvider {
                 .addOptional(DragonSurvival.location("vinery", "grass_slab"));
     }
 
-    /** These blocks grant a speed bonus when the corresponding dragon type stands on them */
+    /** These blocks grant a speed bonus when the corresponding dragon species stands on them */
     private void addToDragonSpeedUpBlocks() {
         tag(SPEEDS_UP_CAVE_DRAGON)
                 .addTag(BlockTags.BASE_STONE_OVERWORLD)

@@ -21,32 +21,32 @@
 //@ParametersAreNonnullByDefault
 //public class DragonFoodItem extends TooltipItem {
 //    private final List<Supplier<MobEffectInstance>> effects;
-//    private final @Nullable AbstractDragonType dragonType;
+//    private final @Nullable AbstractDragonType dragonSpecies;
 //    private final @Nullable Consumer<LivingEntity> onEat;
 //
 //    public DragonFoodItem(Properties properties) {
 //        this(properties, null, null, List.of());
 //    }
 //
-//    public DragonFoodItem(Properties properties, @Nullable AbstractDragonType dragonType, @Nullable Consumer<LivingEntity> onEat) {
-//        this(properties, dragonType, onEat, List.of());
+//    public DragonFoodItem(Properties properties, @Nullable AbstractDragonType dragonSpecies, @Nullable Consumer<LivingEntity> onEat) {
+//        this(properties, dragonSpecies, onEat, List.of());
 //    }
 //
-//    public DragonFoodItem(Properties properties, @Nullable AbstractDragonType dragonType, Supplier<MobEffectInstance> effectInstance) {
-//        this(properties, dragonType, null, List.of(effectInstance));
+//    public DragonFoodItem(Properties properties, @Nullable AbstractDragonType dragonSpecies, Supplier<MobEffectInstance> effectInstance) {
+//        this(properties, dragonSpecies, null, List.of(effectInstance));
 //    }
 //
-//    public DragonFoodItem(Properties properties, @Nullable AbstractDragonType dragonType, List<Supplier<MobEffectInstance>> effectInstance) {
-//        this(properties, dragonType, null, effectInstance);
+//    public DragonFoodItem(Properties properties, @Nullable AbstractDragonType dragonSpecies, List<Supplier<MobEffectInstance>> effectInstance) {
+//        this(properties, dragonSpecies, null, effectInstance);
 //    }
 //
-//    public DragonFoodItem(Properties properties, @Nullable AbstractDragonType dragonType, @Nullable Consumer<LivingEntity> onEat, Supplier<MobEffectInstance> effectInstance) {
-//        this(properties, dragonType, onEat, List.of(effectInstance));
+//    public DragonFoodItem(Properties properties, @Nullable AbstractDragonType dragonSpecies, @Nullable Consumer<LivingEntity> onEat, Supplier<MobEffectInstance> effectInstance) {
+//        this(properties, dragonSpecies, onEat, List.of(effectInstance));
 //    }
 //
-//    public DragonFoodItem(Properties properties, @Nullable AbstractDragonType dragonType, @Nullable Consumer<LivingEntity> onEat, List<Supplier<MobEffectInstance>> effectInstances) {
+//    public DragonFoodItem(Properties properties, @Nullable AbstractDragonType dragonSpecies, @Nullable Consumer<LivingEntity> onEat, List<Supplier<MobEffectInstance>> effectInstances) {
 //        super(properties.food(genFoodProperties(effectInstances)), null);
-//        this.dragonType = dragonType;
+//        this.dragonSpecies = dragonSpecies;
 //        this.effects = effectInstances;
 //        this.onEat = onEat;
 //    }
@@ -65,7 +65,7 @@
 //    public @NotNull ItemStack finishUsingItem(@NotNull ItemStack stack, @NotNull Level level, @NotNull LivingEntity entity) {
 //        ItemStack result = super.finishUsingItem(stack, level, entity);
 //
-//        if (dragonType == null || DragonUtils.isType(entity, dragonType)) {
+//        if (dragonSpecies == null || DragonUtils.isType(entity, dragonSpecies)) {
 //            if (onEat != null) {
 //                onEat.accept(entity);
 //            }

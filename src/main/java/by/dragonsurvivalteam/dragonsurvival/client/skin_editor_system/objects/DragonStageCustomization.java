@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.EnumSkinLayer;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DefaultPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DragonPartLoader;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -27,7 +27,7 @@ public class DragonStageCustomization implements INBTSerializable<CompoundTag> {
     public boolean wings = true;
     public boolean defaultSkin;
 
-    public DragonStageCustomization(final ResourceKey<DragonStage> dragonStage, final ResourceKey<DragonType> type) {
+    public DragonStageCustomization(final ResourceKey<DragonStage> dragonStage, final ResourceKey<DragonSpecies> type) {
         this();
 
         for (EnumSkinLayer layer : EnumSkinLayer.values()) {

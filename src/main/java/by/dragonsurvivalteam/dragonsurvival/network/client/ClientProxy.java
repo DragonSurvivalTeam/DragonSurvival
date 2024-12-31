@@ -107,7 +107,7 @@ public class ClientProxy {
                 DragonStateProvider.getOptional(player).ifPresent(handler -> {
                     SkinPreset preset = new SkinPreset();
                     preset.deserializeNBT(provider, message.preset());
-                    handler.setSkinPresetForType(message.dragonType(), preset);
+                    handler.setSkinPresetForType(message.dragonSpecies(), preset);
 
                     if (handler.isDragon()) {
                         handler.recompileCurrentSkin();

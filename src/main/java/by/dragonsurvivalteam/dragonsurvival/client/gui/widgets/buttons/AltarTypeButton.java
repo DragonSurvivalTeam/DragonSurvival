@@ -6,7 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.DietComponent;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -47,14 +47,14 @@ public class AltarTypeButton extends Button {
     })
     private static final String HUMAN = Translation.Type.GUI.wrap("altar.info.human");
 
-    public Holder<DragonType> type;
+    public Holder<DragonSpecies> type;
     private final DragonAltarScreen parent;
 
     private static final int MAX_SHOWN = 5;
     private int scroll;
     private boolean resetScroll;
 
-    public AltarTypeButton(DragonAltarScreen parent, Holder<DragonType> type, int x, int y) {
+    public AltarTypeButton(DragonAltarScreen parent, Holder<DragonSpecies> type, int x, int y) {
         super(x, y, 49, 147, Component.empty(), Button::onPress, DEFAULT_NARRATION);
         this.parent = parent;
         this.type = type;
@@ -130,7 +130,7 @@ public class AltarTypeButton extends Button {
         return mouseY > getY() + 6 && mouseY < getY() + 26;
     }
 
-    private void initiateDragonForm(Holder<DragonType> type) {
+    private void initiateDragonForm(Holder<DragonSpecies> type) {
         LocalPlayer player = Minecraft.getInstance().player;
 
         if (player == null) {

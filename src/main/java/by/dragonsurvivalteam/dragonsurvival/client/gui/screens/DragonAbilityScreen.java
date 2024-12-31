@@ -12,7 +12,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.Upgrade;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.ExperienceUtils;
 import net.minecraft.client.gui.GuiGraphics;
@@ -78,7 +78,7 @@ public class DragonAbilityScreen extends Screen {
     public Screen sourceScreen;
     public LevelButton hoveredLevelButton;
 
-    private Holder<DragonType> type;
+    private Holder<DragonSpecies> type;
     private int guiLeft;
     private int guiTop;
 

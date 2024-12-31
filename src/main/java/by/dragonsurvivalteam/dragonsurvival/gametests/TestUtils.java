@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.gametests;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.ConfigHandler;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
@@ -58,12 +58,12 @@ public class TestUtils {
         }
     }
 
-    public static void setToDragon(final GameTestHelper helper, final Player player, final ResourceKey<DragonType> dragonType, final ResourceKey<DragonBody> dragonBody, final ResourceKey<DragonStage> dragonStage) {
+    public static void setToDragon(final GameTestHelper helper, final Player player, final ResourceKey<DragonSpecies> dragonSpecies, final ResourceKey<DragonBody> dragonBody, final ResourceKey<DragonStage> dragonStage) {
         DragonStateHandler data = DragonStateProvider.getData(player);
 
-        Holder<DragonType> species = player.level().registryAccess().holderOrThrow(dragonType);
+        Holder<DragonSpecies> species = player.level().registryAccess().holderOrThrow(dragonSpecies);
         data.setType(player, species);
-        helper.assertTrue(data.species().is(dragonType), String.format("Dragon species was [%s] - expected [%s]", data.species(), species));
+        helper.assertTrue(data.species().is(dragonSpecies), String.format("Dragon species was [%s] - expected [%s]", data.species(), species));
 
         Holder<DragonBody> body = player.registryAccess().holderOrThrow(dragonBody);
         data.setBody(player, body);
@@ -90,8 +90,8 @@ public class TestUtils {
         DragonStateHandler data = DragonStateProvider.getData(player);
         data.revertToHumanForm(player, false);
 
-        Holder<DragonType> dragonType = data.species();
-        helper.assertTrue(dragonType == null, String.format("Dragon type was [%s] - expected [null]", dragonType));
+        Holder<DragonSpecies> dragonSpecies = data.species();
+        helper.assertTrue(dragonSpecies == null, String.format("Dragon type was [%s] - expected [null]", dragonSpecies));
 
         Holder<DragonBody> dragonBody = data.body();
         helper.assertTrue(dragonBody == null, String.format("Dragon body was [%s] - expected [null]", dragonBody));

@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -24,7 +24,7 @@ public class DietMenuComponent implements ScrollableComponent, Renderable {
     private static final int ITEMS_PER_ROW = 7;
     private static final int ITEM_SIZE = 18;
 
-    private final Holder<DragonType> dragonSpecies;
+    private final Holder<DragonSpecies> dragonSpecies;
 
     private final int x;
     private final int y;
@@ -33,7 +33,7 @@ public class DietMenuComponent implements ScrollableComponent, Renderable {
 
     private int scrollAmount;
 
-    public DietMenuComponent(final Holder<DragonType> dragonSpecies, int x, int y) {
+    public DietMenuComponent(final Holder<DragonSpecies> dragonSpecies, int x, int y) {
         this.dragonSpecies = dragonSpecies;
         this.x = x;
         this.y = y;

@@ -4,8 +4,8 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.commands.*;
 import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonBodyArgument;
 import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonSizeArgument;
+import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonSpeciesArgument;
 import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonStageArgument;
-import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonTypeArgument;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
@@ -27,7 +27,7 @@ public class DSCommands {
         ARGUMENT_TYPES.register(DragonBodyArgument.ID, () -> ArgumentTypeInfos.registerByClass(DragonBodyArgument.class, SingletonArgumentInfo.contextAware(DragonBodyArgument::new)));
         ARGUMENT_TYPES.register(DragonStageArgument.ID, () -> ArgumentTypeInfos.registerByClass(DragonStageArgument.class, SingletonArgumentInfo.contextAware(DragonStageArgument::new)));
         ARGUMENT_TYPES.register(DragonSizeArgument.ID, () -> ArgumentTypeInfos.registerByClass(DragonSizeArgument.class, SingletonArgumentInfo.contextAware(DragonSizeArgument::new)));
-        ARGUMENT_TYPES.register(DragonTypeArgument.ID, () -> ArgumentTypeInfos.registerByClass(DragonTypeArgument.class, SingletonArgumentInfo.contextAware(DragonTypeArgument::new)));
+        ARGUMENT_TYPES.register(DragonSpeciesArgument.ID, () -> ArgumentTypeInfos.registerByClass(DragonSpeciesArgument.class, SingletonArgumentInfo.contextAware(DragonSpeciesArgument::new)));
     }
 
     @SubscribeEvent

@@ -2,7 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.blocks;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.TagKey;
@@ -32,10 +32,10 @@ public class DragonPressurePlates extends PressurePlateBlock implements SimpleWa
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
-    private final TagKey<DragonType> types;
+    private final TagKey<DragonSpecies> types;
     private final boolean allowHumans;
 
-    public DragonPressurePlates(final Properties properties, final TagKey<DragonType> types, boolean allowHumans) {
+    public DragonPressurePlates(final Properties properties, final TagKey<DragonSpecies> types, boolean allowHumans) {
         super(BlockSetType.WARPED, properties);
         registerDefaultState(stateDefinition.any().setValue(POWERED, false).setValue(WATERLOGGED, false));
 
@@ -43,7 +43,7 @@ public class DragonPressurePlates extends PressurePlateBlock implements SimpleWa
         this.allowHumans = allowHumans;
     }
 
-    public @Nullable TagKey<DragonType> getTypes() {
+    public @Nullable TagKey<DragonSpecies> getTypes() {
         return types;
     }
 

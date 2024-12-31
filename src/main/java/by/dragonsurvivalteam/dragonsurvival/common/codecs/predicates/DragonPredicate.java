@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.items.growth.StarHeartItem;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import com.mojang.serialization.MapCodec;
@@ -23,13 +23,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 public record DragonPredicate(
-        Optional<HolderSet<DragonType>> dragonType,
+        Optional<HolderSet<DragonSpecies>> dragonSpecies,
         Optional<DragonStagePredicate> dragonStage,
         Optional<HolderSet<DragonBody>> dragonBody,
         Optional<StarHeartItem.State> starHeartState
 ) implements EntitySubPredicate {
     public static final MapCodec<DragonPredicate> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            RegistryCodecs.homogeneousList(DragonType.REGISTRY).optionalFieldOf("dragon_type").forGetter(DragonPredicate::dragonType),
+            RegistryCodecs.homogeneousList(DragonSpecies.REGISTRY).optionalFieldOf("dragon_species").forGetter(DragonPredicate::dragonSpecies),
             DragonStagePredicate.CODEC.optionalFieldOf("stage_specific").forGetter(DragonPredicate::dragonStage),
             RegistryCodecs.homogeneousList(DragonBody.REGISTRY).optionalFieldOf("dragon_body").forGetter(DragonPredicate::dragonBody),
             StarHeartItem.State.CODEC.optionalFieldOf("star_heart_state").forGetter(DragonPredicate::starHeartState)
@@ -48,7 +48,7 @@ public record DragonPredicate(
             return false;
         }
 
-        if (dragonType().isPresent() && !dragonType().get().contains(data.species())) {
+        if (dragonSpecies().isPresent() && !dragonSpecies().get().contains(data.species())) {
             return false;
         }
 
@@ -74,7 +74,7 @@ public record DragonPredicate(
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // ignore
     public static class Builder {
-        private Optional<HolderSet<DragonType>> dragonType = Optional.empty();
+        private Optional<HolderSet<DragonSpecies>> dragonSpecies = Optional.empty();
         private Optional<DragonStagePredicate> dragonStage = Optional.empty();
         private Optional<HolderSet<DragonBody>> dragonBody = Optional.empty();
         private Optional<StarHeartItem.State> starHeartState = Optional.empty();
@@ -83,8 +83,8 @@ public record DragonPredicate(
             return new DragonPredicate.Builder();
         }
 
-        public DragonPredicate.Builder type(final Holder<DragonType> dragonType) {
-            this.dragonType = Optional.of(HolderSet.direct(dragonType));
+        public DragonPredicate.Builder type(final Holder<DragonSpecies> dragonSpecies) {
+            this.dragonSpecies = Optional.of(HolderSet.direct(dragonSpecies));
             return this;
         }
 
@@ -114,7 +114,7 @@ public record DragonPredicate(
         }
 
         public DragonPredicate build() {
-            return new DragonPredicate(dragonType, dragonStage, dragonBody, starHeartState);
+            return new DragonPredicate(dragonSpecies, dragonStage, dragonBody, starHeartState);
         }
     }
 }

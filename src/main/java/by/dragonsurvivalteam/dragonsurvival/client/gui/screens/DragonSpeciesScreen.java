@@ -14,7 +14,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.GrowthIcon;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscDragonTextures;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
 import com.mojang.datafixers.util.Either;
@@ -51,7 +51,7 @@ public class DragonSpeciesScreen extends Screen {
     private static final ResourceLocation PENALTIES_RIGHT_ARROW_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_right_arrow_hover.png");
     private static final ResourceLocation PENALTIES_RIGHT_ARROW_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_right_arrow_main.png");
 
-    public Holder<DragonType> dragonType;
+    public Holder<DragonSpecies> dragonSpecies;
 
     private final List<ScrollableComponent> scrollableComponents = new ArrayList<>();
     private Holder<DragonStage> dragonStage;
@@ -127,7 +127,7 @@ public class DragonSpeciesScreen extends Screen {
     @Override
     public void init() {
         //noinspection DataFlowIssue -> player is present
-        dragonType = DragonStateProvider.getData(minecraft.player).species();
+        dragonSpecies = DragonStateProvider.getData(minecraft.player).species();
         dragonStage = DragonStateProvider.getData(minecraft.player).stage();
 
         int xSize = 256;
@@ -142,7 +142,7 @@ public class DragonSpeciesScreen extends Screen {
         TabButton.addTabButtonsToScreen(this, startX + 17, startY - 56, TabButton.Type.SPECIES_TAB);
         DragonStateHandler data = DragonStateProvider.getData(minecraft.player);
 
-        DietMenuComponent dietMenu = new DietMenuComponent(dragonType, startX + 78, startY + 10);
+        DietMenuComponent dietMenu = new DietMenuComponent(dragonSpecies, startX + 78, startY + 10);
         scrollableComponents.add(dietMenu);
         renderables.add(dietMenu);
 
@@ -223,12 +223,12 @@ public class DragonSpeciesScreen extends Screen {
         //noinspection DataFlowIssue -> players should be present
         DragonStateHandler data = DragonStateProvider.getData(minecraft.player);
 
-        if (dragonType == null) {
+        if (dragonSpecies == null) {
             onClose();
         }
 
-        if (dragonType != data.species() || dragonStage != data.stage()) {
-            dragonType = data.species();
+        if (dragonSpecies != data.species() || dragonStage != data.stage()) {
+            dragonSpecies = data.species();
             dragonStage = data.stage();
             clearWidgets();
             init();

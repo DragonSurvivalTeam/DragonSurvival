@@ -29,10 +29,10 @@ public interface AttributeModifierSupplier {
         }));
     }
 
-    default void applyModifiers(final LivingEntity entity, @Nullable final Holder<DragonType> dragonType, double level) {
+    default void applyModifiers(final LivingEntity entity, @Nullable final Holder<DragonSpecies> dragonSpecies, double level) {
         modifiers().forEach(modifier -> {
             AttributeInstance instance = entity.getAttribute(modifier.attribute());
-            applyModifier(modifier, instance, dragonType, level);
+            applyModifier(modifier, instance, dragonSpecies, level);
         });
     }
 
@@ -51,14 +51,14 @@ public interface AttributeModifierSupplier {
     }
 
     /** Intended for usage within descriptions */
-    default double getAttributeValue(final Holder<DragonType> dragonType, double value, final Holder<Attribute> attribute) {
+    default double getAttributeValue(final Holder<DragonSpecies> dragonSpecies, double value, final Holder<Attribute> attribute) {
         AttributeInstance instance = new AttributeInstance(attribute, ignored -> { /* Nothing to do */ });
-        applyModifiers(instance, dragonType, value);
+        applyModifiers(instance, dragonSpecies, value);
         return instance.getValue();
     }
 
-    private void applyModifier(final Modifier modifier, @Nullable final AttributeInstance instance, @Nullable final Holder<DragonType> dragonType, double level) {
-        if (instance == null || modifier.dragonType().isPresent() && (dragonType == null || !dragonType.is(modifier.dragonType().get()))) {
+    private void applyModifier(final Modifier modifier, @Nullable final AttributeInstance instance, @Nullable final Holder<DragonSpecies> dragonSpecies, double level) {
+        if (instance == null || modifier.dragonSpecies().isPresent() && (dragonSpecies == null || !dragonSpecies.is(modifier.dragonSpecies().get()))) {
             return;
         }
 
@@ -74,14 +74,14 @@ public interface AttributeModifierSupplier {
         storeId(instance.getAttribute(), attributeModifier.id());
     }
 
-    private void applyModifiers(@Nullable final AttributeInstance instance, final Holder<DragonType> dragonType, double value) {
+    private void applyModifiers(@Nullable final AttributeInstance instance, final Holder<DragonSpecies> dragonSpecies, double value) {
         if (instance == null) {
             return;
         }
 
         modifiers().forEach(modifier -> {
             if (modifier.attribute().is(instance.getAttribute())) {
-                applyModifier(modifier, instance, dragonType, value);
+                applyModifier(modifier, instance, dragonSpecies, value);
             }
         });
     }

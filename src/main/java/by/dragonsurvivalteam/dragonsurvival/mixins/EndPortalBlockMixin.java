@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.mixins;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonTypes;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -44,11 +44,11 @@ public class EndPortalBlockMixin {
     private BlockPos modifyBlockPosForEndSpawnPoint(BlockPos original, @Local(argsOnly = true) Entity entity, @Local(argsOnly = true) ServerLevel level) {
         boolean travellingToTheEnd = level.dimension().equals(ServerLevel.OVERWORLD);
         if(travellingToTheEnd) {
-            if(DragonUtils.isType(entity, DragonTypes.CAVE)) {
+            if(DragonUtils.isType(entity, BuiltInDragonSpecies.CAVE)) {
                 return END_CAVE_DRAGON_SPAWN_POINT;
-            } else if(DragonUtils.isType(entity, DragonTypes.SEA)) {
+            } else if(DragonUtils.isType(entity, BuiltInDragonSpecies.SEA)) {
                 return END_SEA_DRAGON_SPAWN_POINT;
-            } else if(DragonUtils.isType(entity, DragonTypes.FOREST)) {
+            } else if(DragonUtils.isType(entity, BuiltInDragonSpecies.FOREST)) {
                 return END_FOREST_DRAGON_SPAWN_POINT;
             }
         }
@@ -57,11 +57,11 @@ public class EndPortalBlockMixin {
     }
 
     @Unique private static ResourceLocation dragonSurvival$getDragonSpawnPlatformStructure(ServerLevelAccessor serverLevelAccessor, Entity entity) {
-        if(DragonUtils.isType(entity, DragonTypes.CAVE)) {
+        if(DragonUtils.isType(entity, BuiltInDragonSpecies.CAVE)) {
             return ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "end_spawn_platforms/cave_end_spawn_platform");
-        } else if(DragonUtils.isType(entity, DragonTypes.SEA)) {
+        } else if(DragonUtils.isType(entity, BuiltInDragonSpecies.SEA)) {
             return ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "end_spawn_platforms/sea_end_spawn_platform");
-        } else if(DragonUtils.isType(entity, DragonTypes.FOREST)) {
+        } else if(DragonUtils.isType(entity, BuiltInDragonSpecies.FOREST)) {
             return ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "end_spawn_platforms/forest_end_spawn_platform");
         } else {
             throw new IllegalArgumentException("Entity is an invalid dragon type");

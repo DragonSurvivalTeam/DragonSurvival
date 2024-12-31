@@ -5,7 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonTypes;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.server.containers.slots.ClawToolSlot;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.PotionUtils;
@@ -53,7 +53,7 @@ public class DragonPenaltyHandler {
 
                 DragonStateProvider.getOptional(player).ifPresent(dragonStateHandler -> {
                     if(dragonStateHandler.isDragon()){
-                        if(dragonStateHandler.species() == null || !DragonUtils.isType(dragonStateHandler, DragonTypes.CAVE)){
+                        if(dragonStateHandler.species() == null || !DragonUtils.isType(dragonStateHandler, BuiltInDragonSpecies.CAVE)){
                             return;
                         }
                         // FIXME

@@ -36,7 +36,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AltarData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
@@ -114,7 +114,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     })
     private static final String CUSTOMIZATION = Translation.Type.GUI.wrap("dragon_editor.customization");
 
-    @Translation(comments = "Save data invalid for this dragon type")
+    @Translation(comments = "Save data invalid for this dragon species")
     private static final String INVALID_FOR_TYPE = Translation.Type.GUI.wrap("dragon_editor.invalid_for_type");
 
     @Translation(comments = "Save data invalid for this model")
@@ -185,7 +185,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     public boolean showUi = true;
 
     /** Dragon type of {@link DragonEditorScreen#HANDLER} */
-    public Holder<DragonType> dragonType;
+    public Holder<DragonSpecies> dragonSpecies;
 
     /** Dragon body of {@link DragonEditorScreen#HANDLER} */
     public Holder<DragonBody> dragonBody;
@@ -253,10 +253,10 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         this.isEditor = true;
     }
 
-    public DragonEditorScreen(Screen source, Holder<DragonType> dragonType) {
+    public DragonEditorScreen(Screen source, Holder<DragonSpecies> dragonSpecies) {
         super(Component.translatable(LangKey.GUI_DRAGON_EDITOR));
         this.source = source;
-        this.dragonType = dragonType;
+        this.dragonSpecies = dragonSpecies;
     }
 
     public record EditorAction<T>(Function<T, T> action, T value) {
@@ -316,7 +316,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     };
 
     public List<String> getPartsFromLayer(EnumSkinLayer layer) {
-        return DragonEditorHandler.getDragonPartKeys(dragonType, dragonBody, layer);
+        return DragonEditorHandler.getDragonPartKeys(dragonSpecies, dragonBody, layer);
     }
 
     public final Function<Pair<EnumSkinLayer, String>, Pair<EnumSkinLayer, String>> dragonPartSelectAction = pair -> {
@@ -330,7 +330,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         // Make sure that when we change a part, the color is properly updated to the default color of the new part
         LayerSettings settings = preset.get(dragonStage.getKey()).get().layerSettings.get(layer).get();
 
-        DragonPart part = DragonEditorHandler.getDragonPart(layer, settings.partKey, dragonType.getKey());
+        DragonPart part = DragonEditorHandler.getDragonPart(layer, settings.partKey, dragonSpecies.getKey());
         if (part != null && !settings.modifiedColor) {
             settings.hue = part.averageHue();
         }
@@ -601,11 +601,11 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     }
 
     private void initDummyDragon(final DragonStateHandler localHandler) {
-        if (dragonType == null && localHandler.isDragon()) {
-            dragonType = localHandler.species();
+        if (dragonSpecies == null && localHandler.isDragon()) {
+            dragonSpecies = localHandler.species();
             dragonStage = localHandler.stage();
             dragonBody = localHandler.body();
-        } else if (dragonType != null) {
+        } else if (dragonSpecies != null) {
             if (dragonStage == null) {
                 dragonStage = ResourceHelper.get(null, DragonStages.newborn).orElseThrow();
             }
@@ -617,19 +617,19 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
             return;
         }
 
-        HANDLER.setType(null, dragonType);
+        HANDLER.setType(null, dragonSpecies);
         HANDLER.setDesiredSize(null, dragonStage.value().sizeRange().min());
         HANDLER.setBody(null, dragonBody);
 
         preset = new SkinPreset();
-        preset.initDefaults(dragonType.getKey(), dragonBody.value().customModel());
+        preset.initDefaults(dragonSpecies.getKey(), dragonBody.value().customModel());
         HANDLER.setCurrentSkinPreset(preset);
 
         dragonRender.zoom = setZoom(dragonStage);
     }
 
-    private boolean dragonTypeWouldChange(DragonStateHandler handler) {
-        return handler.species() != null && !handler.species().equals(dragonType);
+    private boolean dragonSpeciesWouldChange(DragonStateHandler handler) {
+        return handler.species() != null && !handler.species().equals(dragonSpecies);
     }
 
     private boolean dragonBodyWouldChange(DragonStateHandler handler) {
@@ -637,7 +637,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     }
 
     public boolean dragonWouldChange(DragonStateHandler handler) {
-        return (handler.species() != null && !handler.species().equals(dragonType)) || (handler.body() != null && !handler.body().equals(dragonBody));
+        return (handler.species() != null && !handler.species().equals(dragonSpecies)) || (handler.body() != null && !handler.body().equals(dragonBody));
     }
 
     @Override
@@ -687,7 +687,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
 
         int row = 0;
         for (EnumSkinLayer layer : EnumSkinLayer.values()) {
-            ArrayList<String> valueList = DragonEditorHandler.getDragonPartKeys(dragonType, dragonBody, layer);
+            ArrayList<String> valueList = DragonEditorHandler.getDragonPartKeys(dragonSpecies, dragonBody, layer);
 
             if (layer != EnumSkinLayer.BASE) {
                 valueList.addFirst(DefaultPartLoader.NO_PART);
@@ -748,7 +748,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
 
                 if (handler.isDragon() && dragonWouldChange(handler) && !dragonDataIsPreserved) {
                     confirmation = true;
-                    confirmComponent.isBodyTypeChange = dragonBodyWouldChange(handler) && !dragonTypeWouldChange(handler);
+                    confirmComponent.isBodyTypeChange = dragonBodyWouldChange(handler) && !dragonSpeciesWouldChange(handler);
                 } else {
                     confirm();
                 }
@@ -789,7 +789,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
             ArrayList<String> extraKeys = DragonEditorHandler.getDragonPartKeys(FakeClientPlayerUtils.getFakePlayer(0, HANDLER), EnumSkinLayer.EXTRA);
 
             extraKeys.removeIf(partKey -> {
-                DragonPart text = DragonEditorHandler.getDragonPart(EnumSkinLayer.EXTRA, partKey, dragonType.getKey());
+                DragonPart text = DragonEditorHandler.getDragonPart(EnumSkinLayer.EXTRA, partKey, dragonSpecies.getKey());
                 if (text == null) {
                     DragonSurvival.LOGGER.error("Key {} not found!", partKey);
                     return true;
@@ -821,7 +821,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
 
                     LayerSettings settings = preset.get(dragonStage.getKey()).get().layerSettings.get(layer).get();
                     settings.partKey = key;
-                    DragonPart text = DragonEditorHandler.getDragonPart(layer, key, dragonType.getKey());
+                    DragonPart text = DragonEditorHandler.getDragonPart(layer, key, dragonSpecies.getKey());
 
                     if (text != null && text.isHueRandom()) {
                         settings.hue = minecraft.player.getRandom().nextFloat();
@@ -915,7 +915,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
             SkinPreset preset = new SkinPreset();
 
             preset.deserializeNBT(access, this.preset.serializeNBT(access));
-            preset.put(dragonStage.getKey(), Lazy.of(() -> new DragonStageCustomization(dragonStage.getKey(), dragonType.getKey())));
+            preset.put(dragonStage.getKey(), Lazy.of(() -> new DragonStageCustomization(dragonStage.getKey(), dragonSpecies.getKey())));
             actionHistory.add(new EditorAction<>(setSkinPresetAction, preset.serializeNBT(access)));
         });
         resetButton.setTooltip(Tooltip.create(Component.translatable(RESET)));
@@ -952,7 +952,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
                 return;
             }
 
-            if (savedCustomization.getDragonType() != dragonType.getKey()) {
+            if (savedCustomization.getDragonType() != dragonSpecies.getKey()) {
                 slotDisplayMessage = SlotDisplayMessage.INVALID_FOR_TYPE;
                 tickWhenSlotDisplayMessageSet = tick;
                 return;
@@ -1015,8 +1015,8 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     }
 
     public void update() {
-        if (dragonType != null) {
-            HANDLER.setType(null, dragonType);
+        if (dragonSpecies != null) {
+            HANDLER.setType(null, dragonSpecies);
         }
 
         HANDLER.setBody(null, dragonBody);
@@ -1055,12 +1055,12 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         minecraft.player.level().playSound(minecraft.player, minecraft.player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 1, 0.7f);
 
         if (!data.isDragon() || dragonWouldChange(data)) {
-            if (dragonType == null && data.species() != null) {
+            if (dragonSpecies == null && data.species() != null) {
                 DragonCommand.reInsertClawTools(minecraft.player);
             }
 
             data.setBody(minecraft.player, dragonBody);
-            data.setType(minecraft.player, dragonType);
+            data.setType(minecraft.player, dragonSpecies);
 
             double savedSize = data.getSavedDragonSize(data.speciesKey());
             if (!ServerConfig.saveGrowthStage || savedSize == DragonStateHandler.NO_SIZE) {

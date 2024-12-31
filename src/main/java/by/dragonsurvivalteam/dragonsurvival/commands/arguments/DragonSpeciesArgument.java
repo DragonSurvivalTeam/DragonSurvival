@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.commands.arguments;
 
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -21,21 +21,21 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.Nullable;
 
-public class DragonTypeArgument implements ArgumentType<Holder<DragonType>> {
-    public static final String ID = "dragon_type";
+public class DragonSpeciesArgument implements ArgumentType<Holder<DragonSpecies>> {
+    public static final String ID = "dragon_species";
 
-    private final HolderLookup.RegistryLookup<DragonType> lookup;
+    private final HolderLookup.RegistryLookup<DragonSpecies> lookup;
 
-    public DragonTypeArgument(final CommandBuildContext context) {
-        lookup = context.lookupOrThrow(DragonType.REGISTRY);
+    public DragonSpeciesArgument(final CommandBuildContext context) {
+        lookup = context.lookupOrThrow(DragonSpecies.REGISTRY);
     }
 
     @Override
-    public @Nullable Holder<DragonType> parse(final StringReader reader) throws CommandSyntaxException {
+    public @Nullable Holder<DragonSpecies> parse(final StringReader reader) throws CommandSyntaxException {
         try {
             int start = reader.getCursor();
-            ResourceLocation dragonType = ResourceLocation.read(reader);
-            Optional<Holder.Reference<DragonType>> optional = lookup.get(ResourceKey.create(DragonType.REGISTRY, dragonType));
+            ResourceLocation dragonSpecies = ResourceLocation.read(reader);
+            Optional<Holder.Reference<DragonSpecies>> optional = lookup.get(ResourceKey.create(DragonSpecies.REGISTRY, dragonSpecies));
 
             if (optional.isEmpty()) { // TODO :: do the same (error handling) for stage and body
                 reader.setCursor(start);
@@ -49,9 +49,9 @@ public class DragonTypeArgument implements ArgumentType<Holder<DragonType>> {
         }
     }
 
-    public static Holder<DragonType> get(final CommandContext<?> context) {
+    public static Holder<DragonSpecies> get(final CommandContext<?> context) {
         //noinspection unchecked -> type is valid
-        return (Holder<DragonType>) context.getArgument(ID, Holder.class);
+        return (Holder<DragonSpecies>) context.getArgument(ID, Holder.class);
     }
 
     @Override

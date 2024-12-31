@@ -1,13 +1,13 @@
 package by.dragonsurvivalteam.dragonsurvival.commands;
 
 import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonBodyArgument;
+import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonSpeciesArgument;
 import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonStageArgument;
-import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonTypeArgument;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
@@ -40,25 +40,25 @@ public class DragonCommand {
 
         RootCommandNode<CommandSourceStack> rootCommandNode = commandDispatcher.getRoot();
         LiteralCommandNode<CommandSourceStack> dragon = literal("dragon").requires(commandSource -> commandSource.hasPermission(2)).executes(context -> {
-            Holder<DragonType> type = DragonTypeArgument.get(context);
+            Holder<DragonSpecies> type = DragonSpeciesArgument.get(context);
             return runCommand(type, null, null, context.getSource().getPlayerOrException());
         }).build();
 
-        ArgumentCommandNode<CommandSourceStack, Holder<DragonType>> dragonType = argument(DragonTypeArgument.ID, new DragonTypeArgument(event.getBuildContext())).executes(context -> {
-            Holder<DragonType> type = DragonTypeArgument.get(context);
+        ArgumentCommandNode<CommandSourceStack, Holder<DragonSpecies>> dragonSpecies = argument(DragonSpeciesArgument.ID, new DragonSpeciesArgument(event.getBuildContext())).executes(context -> {
+            Holder<DragonSpecies> type = DragonSpeciesArgument.get(context);
             ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
             return runCommand(type, null, null, serverPlayer);
         }).build();
 
         ArgumentCommandNode<CommandSourceStack, Holder<DragonBody>> dragonBody = argument(DragonBodyArgument.ID, new DragonBodyArgument(event.getBuildContext())).executes(context -> {
-            Holder<DragonType> type = DragonTypeArgument.get(context);
+            Holder<DragonSpecies> type = DragonSpeciesArgument.get(context);
             Holder<DragonBody> body = DragonBodyArgument.get(context);
             ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
             return runCommand(type, body, null, serverPlayer);
         }).build();
 
         ArgumentCommandNode<CommandSourceStack, Holder<DragonStage>> dragonStage = argument(DragonStageArgument.ID, new DragonStageArgument(event.getBuildContext())).executes(context -> {
-            Holder<DragonType> type = DragonTypeArgument.get(context);
+            Holder<DragonSpecies> type = DragonSpeciesArgument.get(context);
             Holder<DragonBody> body = DragonBodyArgument.get(context);
             Holder<DragonStage> level = DragonStageArgument.get(context);
             ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
@@ -66,7 +66,7 @@ public class DragonCommand {
         }).build();
 
         ArgumentCommandNode<CommandSourceStack, EntitySelector> target = argument("target", EntityArgument.players()).executes(context -> {
-            Holder<DragonType> type = DragonTypeArgument.get(context);
+            Holder<DragonSpecies> type = DragonSpeciesArgument.get(context);
             Holder<DragonBody> body = DragonBodyArgument.get(context);
             Holder<DragonStage> level = DragonStageArgument.get(context);
             EntitySelector selector = context.getArgument("target", EntitySelector.class);
@@ -76,13 +76,13 @@ public class DragonCommand {
         }).build();
 
         rootCommandNode.addChild(dragon);
-        dragon.addChild(dragonType);
-        dragonType.addChild(dragonBody);
+        dragon.addChild(dragonSpecies);
+        dragonSpecies.addChild(dragonBody);
         dragonBody.addChild(dragonStage);
         dragonStage.addChild(target);
     }
 
-    private static int runCommand(Holder<DragonType> type, @Nullable Holder<DragonBody> dragonBody, @Nullable Holder<DragonStage> dragonStage, ServerPlayer player) {
+    private static int runCommand(Holder<DragonSpecies> type, @Nullable Holder<DragonBody> dragonBody, @Nullable Holder<DragonStage> dragonStage, ServerPlayer player) {
         DragonStateHandler data = DragonStateProvider.getData(player);
 
         if (type != null && dragonBody == null) {

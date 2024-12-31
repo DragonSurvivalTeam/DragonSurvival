@@ -32,25 +32,25 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // ignore
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
-public class DragonType implements AttributeModifierSupplier {
-    public static final ResourceKey<Registry<DragonType>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_types"));
+public class DragonSpecies implements AttributeModifierSupplier {
+    public static final ResourceKey<Registry<DragonSpecies>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_species"));
 
-    public static final Codec<DragonType> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.DOUBLE.optionalFieldOf("starting_size").forGetter(DragonType::startingSize),
+    public static final Codec<DragonSpecies> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.DOUBLE.optionalFieldOf("starting_size").forGetter(DragonSpecies::startingSize),
             // No defined stages means all are applicable
             // TODO :: rename to stage_progression / custom_stage_progression or sth. like that?
-            RegistryCodecs.homogeneousList(DragonStage.REGISTRY).optionalFieldOf("stages").forGetter(DragonType::stages),
+            RegistryCodecs.homogeneousList(DragonStage.REGISTRY).optionalFieldOf("stages").forGetter(DragonSpecies::stages),
             // No defined bodies means all are applicable
-            RegistryCodecs.homogeneousList(DragonBody.REGISTRY).optionalFieldOf("bodies", HolderSet.empty()).forGetter(DragonType::bodies),
-            RegistryCodecs.homogeneousList(DragonAbility.REGISTRY).optionalFieldOf("abilities", HolderSet.empty()).forGetter(DragonType::abilities),
-            RegistryCodecs.homogeneousList(DragonPenalty.REGISTRY).optionalFieldOf("penalties", HolderSet.empty()).forGetter(DragonType::penalties),
-            Modifier.CODEC.listOf().optionalFieldOf("modifiers", List.of()).forGetter(DragonType::modifiers),
-            DietEntry.CODEC.listOf().optionalFieldOf("diet", List.of()).forGetter(DragonType::diet),
-            MiscDragonTextures.CODEC.fieldOf("misc_resources").forGetter(DragonType::miscResources)
-    ).apply(instance, instance.stable(DragonType::new)));
+            RegistryCodecs.homogeneousList(DragonBody.REGISTRY).optionalFieldOf("bodies", HolderSet.empty()).forGetter(DragonSpecies::bodies),
+            RegistryCodecs.homogeneousList(DragonAbility.REGISTRY).optionalFieldOf("abilities", HolderSet.empty()).forGetter(DragonSpecies::abilities),
+            RegistryCodecs.homogeneousList(DragonPenalty.REGISTRY).optionalFieldOf("penalties", HolderSet.empty()).forGetter(DragonSpecies::penalties),
+            Modifier.CODEC.listOf().optionalFieldOf("modifiers", List.of()).forGetter(DragonSpecies::modifiers),
+            DietEntry.CODEC.listOf().optionalFieldOf("diet", List.of()).forGetter(DragonSpecies::diet),
+            MiscDragonTextures.CODEC.fieldOf("misc_resources").forGetter(DragonSpecies::miscResources)
+    ).apply(instance, instance.stable(DragonSpecies::new)));
 
-    public static final Codec<Holder<DragonType>> CODEC = RegistryFixedCodec.create(REGISTRY);
-    public static final StreamCodec<RegistryFriendlyByteBuf, Holder<DragonType>> STREAM_CODEC = ByteBufCodecs.holderRegistry(REGISTRY);
+    public static final Codec<Holder<DragonSpecies>> CODEC = RegistryFixedCodec.create(REGISTRY);
+    public static final StreamCodec<RegistryFriendlyByteBuf, Holder<DragonSpecies>> STREAM_CODEC = ByteBufCodecs.holderRegistry(REGISTRY);
 
     private final Optional<Double> startingSize;
     private final Optional<HolderSet<DragonStage>> stages;
@@ -64,7 +64,7 @@ public class DragonType implements AttributeModifierSupplier {
     private @Nullable Map<Item, FoodProperties> diet;
     private long lastDietUpdate;
 
-    public DragonType(final Optional<Double> startingSize, final Optional<HolderSet<DragonStage>> stages, final HolderSet<DragonBody> bodies, final HolderSet<DragonAbility> abilities, final HolderSet<DragonPenalty> penalties, List<Modifier> modifiers, final List<DietEntry> dietEntries, final MiscDragonTextures miscResources) {
+    public DragonSpecies(final Optional<Double> startingSize, final Optional<HolderSet<DragonStage>> stages, final HolderSet<DragonBody> bodies, final HolderSet<DragonAbility> abilities, final HolderSet<DragonPenalty> penalties, List<Modifier> modifiers, final List<DietEntry> dietEntries, final MiscDragonTextures miscResources) {
         this.startingSize = startingSize;
         this.stages = stages;
         this.bodies = bodies;
@@ -81,7 +81,7 @@ public class DragonType implements AttributeModifierSupplier {
 
         ResourceHelper.keys(provider, REGISTRY).forEach(key -> {
             //noinspection OptionalGetWithoutIsPresent -> ignore
-            Holder.Reference<DragonType> type = ResourceHelper.get(provider, key).get();
+            Holder.Reference<DragonSpecies> type = ResourceHelper.get(provider, key).get();
 
             if (type.value().stages().isPresent()) {
                 if (!DragonStage.stagesHaveContinousSizeRange(type.value().stages().get(), validationError, false)) {

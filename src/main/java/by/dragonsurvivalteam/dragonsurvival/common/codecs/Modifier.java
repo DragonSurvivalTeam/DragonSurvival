@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -17,28 +17,28 @@ import net.neoforged.neoforge.common.PercentageAttribute;
 import java.text.NumberFormat;
 import java.util.Optional;
 
-public record Modifier(Holder<Attribute> attribute, LevelBasedValue amount, AttributeModifier.Operation operation, Optional<ResourceKey<DragonType>> dragonType) {
+public record Modifier(Holder<Attribute> attribute, LevelBasedValue amount, AttributeModifier.Operation operation, Optional<ResourceKey<DragonSpecies>> dragonSpecies) {
     public static final Codec<Modifier> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Attribute.CODEC.fieldOf("attribute").forGetter(Modifier::attribute),
             LevelBasedValue.CODEC.fieldOf("amount").forGetter(Modifier::amount),
             AttributeModifier.Operation.CODEC.fieldOf("operation").forGetter(Modifier::operation),
-            ResourceLocation.CODEC.xmap(location -> ResourceKey.create(DragonType.REGISTRY, location), ResourceKey::location).optionalFieldOf("dragon_type").forGetter(Modifier::dragonType)
+            ResourceLocation.CODEC.xmap(location -> ResourceKey.create(DragonSpecies.REGISTRY, location), ResourceKey::location).optionalFieldOf("dragon_species").forGetter(Modifier::dragonSpecies)
     ).apply(instance, Modifier::new));
 
     public static Modifier constant(final Holder<Attribute> attribute, float amount, final AttributeModifier.Operation operation) {
         return new Modifier(attribute, LevelBasedValue.constant(amount), operation, Optional.empty());
     }
 
-    public static Modifier constant(final Holder<Attribute> attribute, float amount, final AttributeModifier.Operation operation, final ResourceKey<DragonType> dragonType) {
-        return new Modifier(attribute, LevelBasedValue.constant(amount), operation, Optional.of(dragonType));
+    public static Modifier constant(final Holder<Attribute> attribute, float amount, final AttributeModifier.Operation operation, final ResourceKey<DragonSpecies> dragonSpecies) {
+        return new Modifier(attribute, LevelBasedValue.constant(amount), operation, Optional.of(dragonSpecies));
     }
 
     public static Modifier per(final Holder<Attribute> attribute, float amount, final AttributeModifier.Operation operation) {
         return new Modifier(attribute, LevelBasedValue.perLevel(amount), operation, Optional.empty());
     }
 
-    public static Modifier per(final Holder<Attribute> attribute, float amount, final AttributeModifier.Operation operation, final ResourceKey<DragonType> dragonType) {
-        return new Modifier(attribute, LevelBasedValue.perLevel(amount), operation, Optional.of(dragonType));
+    public static Modifier per(final Holder<Attribute> attribute, float amount, final AttributeModifier.Operation operation, final ResourceKey<DragonSpecies> dragonSpecies) {
+        return new Modifier(attribute, LevelBasedValue.perLevel(amount), operation, Optional.of(dragonSpecies));
     }
 
     public AttributeModifier getModifier(final ResourceLocation id, double level) {

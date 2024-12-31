@@ -7,7 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.IMessage;
 import by.dragonsurvivalteam.dragonsurvival.network.RequestClientData;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSModifiers;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
@@ -32,7 +32,7 @@ public class SyncComplete implements IMessage<SyncComplete.Data> {
         if (entity instanceof Player player) {
             context.enqueueWork(() -> {
                 DragonStateHandler handler = DragonStateProvider.getData(player);
-                Holder<DragonType> oldType = handler.species();
+                Holder<DragonSpecies> oldType = handler.species();
                 handler.deserializeNBT(player.registryAccess(), message.nbt);
 
                 if (!DragonUtils.isType(oldType, handler.species())) {
@@ -58,14 +58,14 @@ public class SyncComplete implements IMessage<SyncComplete.Data> {
         Player player = context.player();
         context.enqueueWork(() -> {
                     DragonStateHandler handler = DragonStateProvider.getData(player);
-                    Holder<DragonType> previousType = handler.species();
+                    Holder<DragonSpecies> previousType = handler.species();
                     handler.deserializeNBT(player.registryAccess(), message.nbt);
                     // When we are sending a complete sync to the client, the client has requested it. This happens in two cases:
-                    // 1. When the player changes dragon type in the dragon selection screen
+                    // 1. When the player changes dragon species in the dragon selection screen
                     // 2. When the player reverts to human in the dragon altar screen
                     // In both of these cases, we want to make sure to refresh the magic data and penalty supply if the server isn't set to save it
 
-                    // TODO: This doesn't fully work with saveAllAbilities config. We'd need to make a mapping of dragon types to magicData instances.
+                    // TODO: This doesn't fully work with saveAllAbilities config. We'd need to make a mapping of dragon species to magicData instances.
                     if (previousType == null || (!ServerConfig.saveAllAbilities && !previousType.is(handler.species()))) {
                         handler.refreshDataOnTypeChange(player);
                     }

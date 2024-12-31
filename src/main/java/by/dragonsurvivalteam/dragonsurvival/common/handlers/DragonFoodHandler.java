@@ -6,7 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -31,11 +31,11 @@ public class DragonFoodHandler {
     @ConfigOption(side = ConfigSide.SERVER, category = {"food"}, key = "charged_soup_effect_duration")
     public static Integer chargedSoupBuffDuration = 300;
 
-    public static @Nullable FoodProperties getDragonFoodProperties(final Item item, final Holder<DragonType> type) {
+    public static @Nullable FoodProperties getDragonFoodProperties(final Item item, final Holder<DragonSpecies> type) {
         return getDragonFoodProperties(item.getDefaultInstance(), type);
     }
 
-    public static @Nullable FoodProperties getDragonFoodProperties(final ItemStack stack, final Holder<DragonType> type) {
+    public static @Nullable FoodProperties getDragonFoodProperties(final ItemStack stack, final Holder<DragonSpecies> type) {
         FoodProperties properties = type.value().getDiet(stack.getItem());
 
         if (properties != null) {
@@ -56,7 +56,7 @@ public class DragonFoodHandler {
     }
 
     /** Checks if the item can be eaten (not whether it makes sense, see {@link DragonFoodHandler#getBadFoodProperties()}) */
-    public static boolean isEdible(final ItemStack stack, final Holder<DragonType> type) {
+    public static boolean isEdible(final ItemStack stack, final Holder<DragonSpecies> type) {
         if (stack.getFoodProperties(null) != null) {
             return true;
         }

@@ -4,7 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.PlayerLoginHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
@@ -69,13 +69,13 @@ public class DragonSoulItem extends Item {
     private static int getCustomModelData(final CompoundTag tag) {
         // FIXME
         /*
-        AbstractDragonType dragonType = DragonTypes.newDragonTypeInstance(tag.getString("type"));
+        AbstractDragonType dragonSpecies = DragonTypes.newDragonTypeInstance(tag.getString("type"));
 
-        if (dragonType == null) {
+        if (dragonSpecies == null) {
             return 0;
         }
 
-        return switch (dragonType) {
+        return switch (dragonSpecies) {
             case ForestDragonType ignored -> 1;
             case CaveDragonType ignored -> 2;
             case SeaDragonType ignored -> 3;
@@ -155,7 +155,7 @@ public class DragonSoulItem extends Item {
             CompoundTag tag = stack.get(DataComponents.CUSTOM_DATA).getUnsafe();
             tooltips.add(Component.translatable(DESCRIPTION));
 
-            ResourceKey<DragonType> species = ResourceHelper.decodeKey(provider, DragonType.REGISTRY, tag, SPECIES);
+            ResourceKey<DragonSpecies> species = ResourceHelper.decodeKey(provider, DragonSpecies.REGISTRY, tag, SPECIES);
             Component name;
 
             if (species != null) {
@@ -198,7 +198,7 @@ public class DragonSoulItem extends Item {
     public @NotNull String getDescriptionId(@NotNull final ItemStack stack) {
         if (stack.has(DataComponents.CUSTOM_DATA)) {
             //noinspection DataFlowIssue, deprecation -> tag isn't modified, no need to create a copy
-            ResourceKey<DragonType> species = ResourceHelper.decodeKey(null, DragonType.REGISTRY, stack.get(DataComponents.CUSTOM_DATA).getUnsafe(), SPECIES);
+            ResourceKey<DragonSpecies> species = ResourceHelper.decodeKey(null, DragonSpecies.REGISTRY, stack.get(DataComponents.CUSTOM_DATA).getUnsafe(), SPECIES);
 
             if (species != null) { // TODO :: handle translation (probably annotation on type?)
                 return Translation.Type.ITEM.wrap(species.location().getNamespace(), species.location().getPath() + ".dragon_soul");

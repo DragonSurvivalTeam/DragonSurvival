@@ -151,7 +151,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
     private void buildPlaceAltarChildren(final AdvancementHolder parent) {
         // --- Parent: place_altar --- //
 
-        // TODO :: add a method that supports creating a new display info and supply it with an item stack with the proper data attachment for the dragon type
+        // TODO :: add a method that supports creating a new display info and supply it with an item stack with the proper data attachment for the dragon species
         AdvancementHolder beCaveDragon = createWithToast(parent, CAVE_BE_DRAGON, DSItems.DRAGON_SOUL.value(), beDragon(DragonTypes.CAVE), 12);
         buildBeCaveDragonChildren(beCaveDragon);
 
@@ -178,13 +178,13 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         ), 60);
 
         AdvancementHolder swimInLava = create(parent, CAVE_SWIM_IN_LAVA, Items.LAVA_BUCKET, location(
-                dragonType(DragonTypes.CAVE).located(isInFluid(FluidTags.LAVA))
+                dragonSpecies(DragonTypes.CAVE).located(isInFluid(FluidTags.LAVA))
         ), 20);
 
         // --- Parent: cave/rock_eater --- //
 
         create(rockEater, CAVE_WATER_SAFETY, DSItems.CHARGED_SOUP.value(), location(
-                dragonType(DragonTypes.CAVE)
+                dragonSpecies(DragonTypes.CAVE)
                         .located(isInFluid(FluidTags.WATER))
                         .effects(MobEffectsPredicate.Builder.effects().and(DSEffects.FIRE))
         ), 40);
@@ -194,7 +194,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         AdvancementHolder diamondsInLava = create(swimInLava, CAVE_DIAMONDS_IN_LAVA, Items.DIAMOND_ORE, mineBlockInLava(Tags.Blocks.ORES_DIAMOND), 40);
 
         createWithToast(diamondsInLava, CAVE_GO_HOME, Items.NETHER_BRICK_STAIRS, location(
-                dragonType(DragonTypes.CAVE)
+                dragonSpecies(DragonTypes.CAVE)
                         .located(dimension(Level.NETHER).setFluid(fluid(FluidTags.LAVA)))
                         .effects(effect(DSEffects.LAVA_VISION))
         ), 20);
@@ -205,11 +205,11 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         // TODO :: have either chat or toast notification for this one?
         // TODO :: previously checked if all loot tables were looted -> might be better to check if all shipwreck (variants) have been visited?
-        AdvancementHolder lootShipwreck = create(parent, SEA_LOOT_SHIPWRECK, Items.HEART_OF_THE_SEA, location(dragonType(DragonTypes.SEA).located(structure(StructureTags.SHIPWRECK))), 20);
+        AdvancementHolder lootShipwreck = create(parent, SEA_LOOT_SHIPWRECK, Items.HEART_OF_THE_SEA, location(dragonSpecies(DragonTypes.SEA).located(structure(StructureTags.SHIPWRECK))), 20);
 
         AdvancementHolder rainDancing = create(parent, SEA_RAIN_DANCING, Items.WATER_BUCKET, List.of(
-                location(ContextAwarePredicate.create(entityCondition(dragonType(DragonTypes.SEA).build()), WeatherCheck.weather().setRaining(true).build())),
-                location(ContextAwarePredicate.create(entityCondition(dragonType(DragonTypes.SEA).build()), WeatherCheck.weather().setThundering(true).build()))
+                location(ContextAwarePredicate.create(entityCondition(dragonSpecies(DragonTypes.SEA).build()), WeatherCheck.weather().setRaining(true).build())),
+                location(ContextAwarePredicate.create(entityCondition(dragonSpecies(DragonTypes.SEA).build()), WeatherCheck.weather().setThundering(true).build()))
         ), 30);
 
         // --- Parent: sea/loot_shipwreck --- //
@@ -226,13 +226,13 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         // --- Parent: sea/rain_dancing --- //
 
         AdvancementHolder placeSnowInNether = create(rainDancing, SEA_PLACE_SNOW_IN_NETHER, Items.SNOW_BLOCK, placeBlockAsDragon(
-                dragonType(DragonTypes.SEA).located(dimension(Level.NETHER)), Blocks.SNOW_BLOCK
+                dragonSpecies(DragonTypes.SEA).located(dimension(Level.NETHER)), Blocks.SNOW_BLOCK
         ), 16);
 
         // --- Parent: sea/place_snow_in_nether --- //
 
         create(placeSnowInNether, SEA_PEACE_IN_NETHER, Items.CAULDRON, location(
-                dragonType(DragonTypes.SEA)
+                dragonSpecies(DragonTypes.SEA)
                         .effects(effect(DSEffects.PEACE))
                         .located(dimension(Level.NETHER))
         ), 0);
@@ -241,17 +241,17 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
     private void buildBeForestDragonChildren(final AdvancementHolder parent) {
         // --- Parent: forest/be_dragon --- //
 
-        AdvancementHolder standOnSweetBerries = create(parent, FOREST_STAND_ON_SWEET_BERRIES, Items.SWEET_BERRIES, location(dragonType(DragonTypes.FOREST).steppingOn(block(Blocks.SWEET_BERRY_BUSH))), 30);
+        AdvancementHolder standOnSweetBerries = create(parent, FOREST_STAND_ON_SWEET_BERRIES, Items.SWEET_BERRIES, location(dragonSpecies(DragonTypes.FOREST).steppingOn(block(Blocks.SWEET_BERRY_BUSH))), 30);
 
         // --- Parent: forest/stand_on_sweet_berries --- //
 
         create(standOnSweetBerries, FOREST_PREVENT_DARKNESS_PENALTY, DSItems.LUMINOUS_OINTMENT.value(), location(
-                dragonType(DragonTypes.FOREST)
+                dragonSpecies(DragonTypes.FOREST)
                         .located(light(MinMaxBounds.Ints.between(0, 3)))
                         .effects(MobEffectsPredicate.Builder.effects().and(DSEffects.MAGIC))
         ), 40);
 
-        AdvancementHolder poisonousPotato = create(parent, FOREST_POISONOUS_POTATO, Items.POISONOUS_POTATO, convertPotato(dragonType(DragonTypes.FOREST)), 16);
+        AdvancementHolder poisonousPotato = create(parent, FOREST_POISONOUS_POTATO, Items.POISONOUS_POTATO, convertPotato(dragonSpecies(DragonTypes.FOREST)), 16);
 
         // --- Parent: forest/poisonous_potato --- //
 
@@ -268,7 +268,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         // --- Parent: forest/meat_eater --- //
 
         create(meatEater, FOREST_TRANSPLANT_CHORUS_FRUIT, DSItems.DIAMOND_CHORUS.value(), placeBlockAsDragon(
-                dragonType(DragonTypes.FOREST).located(dimension(Level.OVERWORLD)), Blocks.CHORUS_FLOWER
+                dragonSpecies(DragonTypes.FOREST).located(dimension(Level.OVERWORLD)), Blocks.CHORUS_FLOWER
         ), 90);
     }
 
@@ -452,7 +452,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
     }
 
     private Optional<ContextAwarePredicate> caveDragonInLava() {
-        return Optional.of(EntityPredicate.wrap(dragonType(DragonTypes.CAVE).located(isInFluid(FluidTags.LAVA))));
+        return Optional.of(EntityPredicate.wrap(dragonSpecies(DragonTypes.CAVE).located(isInFluid(FluidTags.LAVA))));
     }
 
     private FluidPredicate.Builder fluid(final TagKey<Fluid> fluids) {
@@ -472,14 +472,14 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
     }
 
     @SuppressWarnings("deprecation") // ignore
-    public Criterion<InventoryChangeTrigger.TriggerInstance> dragonHasItem(final AbstractDragonType dragonType, final ItemLike... items) {
+    public Criterion<InventoryChangeTrigger.TriggerInstance> dragonHasItem(final AbstractDragonType dragonSpecies, final ItemLike... items) {
         List<ItemPredicate> predicates = new ArrayList<>();
 
         for (ItemLike item : items) {
             predicates.add(new ItemPredicate(Optional.of(HolderSet.direct(item.asItem().builtInRegistryHolder())), MinMaxBounds.Ints.ANY, DataComponentPredicate.EMPTY, Map.of()));
         }
 
-        return CriteriaTriggers.INVENTORY_CHANGED.createCriterion(new InventoryChangeTrigger.TriggerInstance(Optional.of(EntityPredicate.wrap(dragonType(dragonType))), InventoryChangeTrigger.TriggerInstance.Slots.ANY, predicates));
+        return CriteriaTriggers.INVENTORY_CHANGED.createCriterion(new InventoryChangeTrigger.TriggerInstance(Optional.of(EntityPredicate.wrap(dragonSpecies(dragonSpecies))), InventoryChangeTrigger.TriggerInstance.Slots.ANY, predicates));
     }
 
     public Criterion<PlayerTrigger.TriggerInstance> location(final ContextAwarePredicate predicate) {
@@ -594,7 +594,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
     }
 
     public Criterion<BeDragonTrigger.Instance> beDragon(final AbstractDragonType type) {
-        return beDragon(Condition.dragonType(type));
+        return beDragon(Condition.dragonSpecies(type));
     }
 
     public Criterion<BeDragonTrigger.Instance> beDragon(double size) {

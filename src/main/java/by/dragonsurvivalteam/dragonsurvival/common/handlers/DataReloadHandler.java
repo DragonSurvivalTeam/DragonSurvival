@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -15,7 +15,7 @@ public class DataReloadHandler {
     public static void handleDatapackReload(final TagsUpdatedEvent event) {
         lastReload = System.currentTimeMillis();
         DragonStage.update(event.getRegistryAccess());
-        DragonType.validate(event.getRegistryAccess());
+        DragonSpecies.validate(event.getRegistryAccess());
         DragonAbility.validate(event.getRegistryAccess());
     }
 }

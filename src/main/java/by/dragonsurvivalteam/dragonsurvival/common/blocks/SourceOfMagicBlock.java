@@ -7,7 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSTileEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicPlaceholder;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicTileEntity;
 import by.dragonsurvivalteam.dragonsurvival.util.SpawningUtils;
@@ -75,9 +75,9 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
     private static final BooleanProperty TOP_BLOCK = BooleanProperty.create("top");
 
     /** null -> all are valid */
-    private final @Nullable TagKey<DragonType> types;
+    private final @Nullable TagKey<DragonSpecies> types;
 
-    public SourceOfMagicBlock(final Properties properties, @Nullable final TagKey<DragonType> types) {
+    public SourceOfMagicBlock(final Properties properties, @Nullable final TagKey<DragonSpecies> types) {
         super(properties);
         registerDefaultState(getStateDefinition().any().setValue(WATERLOGGED, false).setValue(PRIMARY_BLOCK, true).setValue(BACK_BLOCK, false).setValue(TOP_BLOCK, false).setValue(FILLED, false));
 

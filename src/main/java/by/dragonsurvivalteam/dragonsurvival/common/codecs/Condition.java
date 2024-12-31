@@ -2,7 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.DragonPredicate;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.DragonStagePredicate;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
@@ -81,7 +81,7 @@ public class Condition {
 
     // --- Builder --- //
 
-    public static EntityPredicate.Builder dragonType(final Holder<DragonType> type) {
+    public static EntityPredicate.Builder dragonSpecies(final Holder<DragonSpecies> type) {
         return EntityPredicate.Builder.entity().subPredicate(DragonPredicate.Builder.dragon().type(type).build());
     }
 

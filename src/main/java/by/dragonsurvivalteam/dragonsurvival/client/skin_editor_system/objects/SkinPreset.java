@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects;
 
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
@@ -19,7 +19,7 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
     private static final String TYPE = "type";
 
     private final Lazy<HashMap<ResourceKey<DragonStage>, Lazy<DragonStageCustomization>>> skins = Lazy.of(this::initialize);
-    private ResourceKey<DragonType> type;
+    private ResourceKey<DragonSpecies> type;
     private ResourceLocation model = DragonBody.DEFAULT_MODEL;
 
     public Lazy<DragonStageCustomization> get(final ResourceKey<DragonStage> dragonStage) {
@@ -30,7 +30,7 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
         skins.get().put(dragonStage, customization);
     }
 
-    public void initDefaults(final ResourceKey<DragonType> type, final ResourceLocation model) {
+    public void initDefaults(final ResourceKey<DragonSpecies> type, final ResourceLocation model) {
         if (type == null) {
             return;
         }
@@ -83,7 +83,7 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
             );
         }
 
-        this.type = ResourceKey.create(DragonType.REGISTRY, ResourceLocation.parse(base.getString(TYPE)));
+        this.type = ResourceKey.create(DragonSpecies.REGISTRY, ResourceLocation.parse(base.getString(TYPE)));
         ResourceLocation.read(base.getString(MODEL)).ifSuccess(model -> this.model = model);
     }
 
@@ -91,7 +91,7 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
         return model;
     }
 
-    public ResourceKey<DragonType> getType() {
+    public ResourceKey<DragonSpecies> getType() {
         return type;
     }
 }

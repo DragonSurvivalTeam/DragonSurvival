@@ -9,7 +9,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.Upgrad
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.ValueBasedUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncAbilityLevel;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncCooldownState;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
@@ -310,7 +310,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         this.renderAbilities = renderAbilities;
     }
 
-    public void refresh(final Holder<DragonType> type, final Player player) {
+    public void refresh(final Holder<DragonSpecies> type, final Player player) {
         if (type == null) {
             return;
         }

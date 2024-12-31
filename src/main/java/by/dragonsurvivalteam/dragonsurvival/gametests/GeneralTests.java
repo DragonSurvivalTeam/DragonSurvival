@@ -2,7 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.gametests;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonTypes;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBodies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
 import net.minecraft.gametest.framework.GameTest;
@@ -22,7 +22,7 @@ public class GeneralTests {
     @GameTest(template = TestUtils.AIR_CUBE_1X)
     public static void test_tool_swap(final GameTestHelper helper) {
         Player player = TestUtils.createPlayer(helper);
-        TestUtils.setToDragon(helper, player, DragonTypes.CAVE, DragonBodies.center, DragonStages.young);
+        TestUtils.setToDragon(helper, player, BuiltInDragonSpecies.CAVE, DragonBodies.center, DragonStages.young);
 
         ClawInventoryData clawInventory = ClawInventoryData.getData(player);
         ItemStack mainHandItem = Items.APPLE.getDefaultInstance();

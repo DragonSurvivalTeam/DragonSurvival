@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.blocks;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBlockTags;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvent;
@@ -46,7 +46,7 @@ public class SmallDragonDoor extends Block implements SimpleWaterloggedBlock {
     protected static final VoxelShape WEST_AABB = Block.box(13.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
     protected static final VoxelShape EAST_AABB = Block.box(0.0D, 0.0D, 0.0D, 3.0D, 16.0D, 16.0D);
 
-    private final @Nullable TagKey<DragonType> types;
+    private final @Nullable TagKey<DragonSpecies> types;
     private final boolean allowHumans;
     private final boolean requiresPower;
 
@@ -54,7 +54,7 @@ public class SmallDragonDoor extends Block implements SimpleWaterloggedBlock {
         this(properties, null, true, false);
     }
 
-    public SmallDragonDoor(final Properties properties, final TagKey<DragonType> types) {
+    public SmallDragonDoor(final Properties properties, final TagKey<DragonSpecies> types) {
         this(properties, types, false, false);
     }
 
@@ -62,7 +62,7 @@ public class SmallDragonDoor extends Block implements SimpleWaterloggedBlock {
         this(properties, null, true, requiresPower);
     }
 
-    public SmallDragonDoor(final Properties properties, @Nullable final TagKey<DragonType> types, boolean allowHumans, boolean requiresPower) {
+    public SmallDragonDoor(final Properties properties, @Nullable final TagKey<DragonSpecies> types, boolean allowHumans, boolean requiresPower) {
         super(properties);
         registerDefaultState(getStateDefinition().any().setValue(FACING, Direction.NORTH).setValue(OPEN, false).setValue(HINGE, DoorHingeSide.LEFT).setValue(POWERED, false));
 

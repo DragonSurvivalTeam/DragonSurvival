@@ -13,7 +13,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AltarData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
@@ -252,7 +252,7 @@ public class DragonAltarScreen extends Screen {
         addRenderableWidget(new HelpButton(width / 2, 32 + 5, 16, 16, HELP));
 
         RegistryAccess access = Objects.requireNonNull(DragonSurvival.PROXY.getAccess());
-        List<AbstractWidget> altarButtons = new ArrayList<>(ResourceHelper.keys(access, DragonType.REGISTRY).stream().map(typeKey -> (AbstractWidget) new AltarTypeButton(this, access.holderOrThrow(typeKey), 0, 0)).toList());
+        List<AbstractWidget> altarButtons = new ArrayList<>(ResourceHelper.keys(access, DragonSpecies.REGISTRY).stream().map(typeKey -> (AbstractWidget) new AltarTypeButton(this, access.holderOrThrow(typeKey), 0, 0)).toList());
         altarButtons.add(new AltarTypeButton(this, null, 0, 0));
 
         scrollableComponents.add(new BarComponent(this,

@@ -10,7 +10,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
@@ -55,7 +55,7 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 public class DragonEditorHandler {
     private static ShaderInstance skinGenerationShader;
 
-    private static @Nullable ResourceLocation getDragonPartLocation(final EnumSkinLayer layer, final String partKey, final ResourceKey<DragonType> type) {
+    private static @Nullable ResourceLocation getDragonPartLocation(final EnumSkinLayer layer, final String partKey, final ResourceKey<DragonSpecies> type) {
         if (Objects.equals(layer.name, "Extra") && layer != EnumSkinLayer.EXTRA) {
             return getDragonPartLocation(EnumSkinLayer.EXTRA, partKey, type);
         }
@@ -76,7 +76,7 @@ public class DragonEditorHandler {
         return null;
     }
 
-    public static @Nullable DragonPart getDragonPart(final EnumSkinLayer layer, final String partKey, final ResourceKey<DragonType> type) {
+    public static @Nullable DragonPart getDragonPart(final EnumSkinLayer layer, final String partKey, final ResourceKey<DragonSpecies> type) {
         if (Objects.equals(layer.name, "Extra") && layer != EnumSkinLayer.EXTRA) {
             return getDragonPart(EnumSkinLayer.EXTRA, partKey, type);
         }
@@ -97,7 +97,7 @@ public class DragonEditorHandler {
         return null;
     }
 
-    public static ArrayList<String> getDragonPartKeys(final Holder<DragonType> type, final Holder<DragonBody> body, final EnumSkinLayer layer) {
+    public static ArrayList<String> getDragonPartKeys(final Holder<DragonSpecies> type, final Holder<DragonBody> body, final EnumSkinLayer layer) {
         if (Objects.equals(layer.name, "Extra") && layer != EnumSkinLayer.EXTRA) {
             return getDragonPartKeys(type, body, EnumSkinLayer.EXTRA);
         }

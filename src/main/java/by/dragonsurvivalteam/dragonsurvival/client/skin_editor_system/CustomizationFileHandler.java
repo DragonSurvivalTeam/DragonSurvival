@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
@@ -32,17 +32,17 @@ public class CustomizationFileHandler {
     public static final int MAX_SAVE_SLOTS = 5;
 
     private static final String CUSTOMIZATION = "customization";
-    private static final String DRAGON_TYPE = "dragon_type";
+    private static final String DRAGON_SPECIES = "dragon_species";
     private static final String DRAGON_MODEL = "dragon_model";
 
     public static class SavedCustomization implements INBTSerializable<CompoundTag> {
         private DragonStageCustomization customization;
-        private ResourceKey<DragonType> dragonType;
+        private ResourceKey<DragonSpecies> dragonSpecies;
         private ResourceLocation dragonModel;
 
-        public SavedCustomization(DragonStageCustomization customization, ResourceKey<DragonType> dragonType, ResourceLocation dragonModel) {
+        public SavedCustomization(DragonStageCustomization customization, ResourceKey<DragonSpecies> dragonSpecies, ResourceLocation dragonModel) {
             this.customization = customization;
-            this.dragonType = dragonType;
+            this.dragonSpecies = dragonSpecies;
             this.dragonModel = dragonModel;
         }
 
@@ -55,7 +55,7 @@ public class CustomizationFileHandler {
         public static SavedCustomization fromNbt(HolderLookup.Provider provider, CompoundTag nbt) {
             SavedCustomization customization = new SavedCustomization();
             customization.deserializeNBT(provider, nbt);
-            if(customization.customization == null || customization.dragonType == null || customization.dragonModel == null) {
+            if(customization.customization == null || customization.dragonSpecies == null || customization.dragonModel == null) {
                 return null;
             }
 
@@ -66,7 +66,7 @@ public class CustomizationFileHandler {
         public @UnknownNullability CompoundTag serializeNBT(HolderLookup.@NotNull Provider provider) {
             CompoundTag nbt = new CompoundTag();
             nbt.put(CUSTOMIZATION, customization.serializeNBT(provider));
-            nbt.putString(DRAGON_TYPE, dragonType.location().toString());
+            nbt.putString(DRAGON_SPECIES, dragonSpecies.location().toString());
             nbt.putString(DRAGON_MODEL, dragonModel.toString());
             return nbt;
         }
@@ -79,8 +79,8 @@ public class CustomizationFileHandler {
                 this.customization.deserializeNBT(provider, nbt.getCompound(CUSTOMIZATION));
             }
 
-            if (nbt.contains(DRAGON_TYPE)) {
-                this.dragonType = ResourceKey.create(DragonType.REGISTRY, ResourceLocation.parse(nbt.getString(DRAGON_TYPE)));
+            if (nbt.contains(DRAGON_SPECIES)) {
+                this.dragonSpecies = ResourceKey.create(DragonSpecies.REGISTRY, ResourceLocation.parse(nbt.getString(DRAGON_SPECIES)));
             }
 
             if (nbt.contains(DRAGON_MODEL)) {
@@ -92,8 +92,8 @@ public class CustomizationFileHandler {
             return customization;
         }
 
-        public ResourceKey<DragonType> getDragonType() {
-            return dragonType;
+        public ResourceKey<DragonSpecies> getDragonType() {
+            return dragonSpecies;
         }
 
         public ResourceLocation getDragonModel() {
