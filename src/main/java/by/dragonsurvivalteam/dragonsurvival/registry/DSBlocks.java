@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonTypeTags;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonSpeciesTags;
 import by.dragonsurvivalteam.dragonsurvival.util.CompoundTagBuilder;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.component.DataComponents;
@@ -178,7 +178,7 @@ public class DSBlocks {
                     .requiresCorrectToolForDrops()
                     .strength(7.0F)
                     .sound(SoundType.GILDED_BLACKSTONE)
-                    .noOcclusion(), DSDragonTypeTags.CAVE)
+                    .noOcclusion(), DSDragonSpeciesTags.CAVE)
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Forest Dragon Door")
@@ -191,7 +191,7 @@ public class DSBlocks {
                     .requiresCorrectToolForDrops()
                     .strength(7.0F)
                     .sound(SoundType.WOOD)
-                    .noOcclusion(), DSDragonTypeTags.FOREST)
+                    .noOcclusion(), DSDragonSpeciesTags.FOREST)
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Sea Dragon Door")
@@ -204,7 +204,7 @@ public class DSBlocks {
                     .requiresCorrectToolForDrops()
                     .strength(7.0F)
                     .sound(SoundType.STONE)
-                    .noOcclusion(), DSDragonTypeTags.SEA)
+                    .noOcclusion(), DSDragonSpeciesTags.SEA)
     );
 
     // --- Small Dragon Doors --- //
@@ -336,7 +336,7 @@ public class DSBlocks {
                     .requiresCorrectToolForDrops()
                     .strength(7.0F)
                     .sound(SoundType.GILDED_BLACKSTONE)
-                    .noOcclusion(), DSDragonTypeTags.CAVE)
+                    .noOcclusion(), DSDragonSpeciesTags.CAVE)
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Small Forest Dragon Door")
@@ -348,7 +348,7 @@ public class DSBlocks {
                     .requiresCorrectToolForDrops()
                     .strength(7.0F)
                     .sound(SoundType.WOOD)
-                    .noOcclusion(), DSDragonTypeTags.FOREST)
+                    .noOcclusion(), DSDragonSpeciesTags.FOREST)
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Small Sea Dragon Door")
@@ -360,7 +360,7 @@ public class DSBlocks {
                     .requiresCorrectToolForDrops()
                     .strength(7.0F)
                     .sound(SoundType.STONE)
-                    .noOcclusion(), DSDragonTypeTags.SEA)
+                    .noOcclusion(), DSDragonSpeciesTags.SEA)
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Small Iron Dragon Door")
@@ -396,7 +396,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASEDRUM)
                     .randomTicks()
                     .strength(3, 100)
-                    .noOcclusion().lightLevel(state -> state.getValue(SourceOfMagicBlock.FILLED) ? 10 : 5), DSDragonTypeTags.FOREST)
+                    .noOcclusion().lightLevel(state -> state.getValue(SourceOfMagicBlock.FILLED) ? 10 : 5), DSDragonSpeciesTags.FOREST)
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Cave Source of Magic")
@@ -407,7 +407,7 @@ public class DSBlocks {
                     .mapColor(MapColor.STONE)
                     .instrument(NoteBlockInstrument.BASEDRUM)
                     .strength(3, 100)
-                    .noOcclusion().lightLevel(state -> state.getValue(SourceOfMagicBlock.FILLED) ? 10 : 5), DSDragonTypeTags.CAVE)
+                    .noOcclusion().lightLevel(state -> state.getValue(SourceOfMagicBlock.FILLED) ? 10 : 5), DSDragonSpeciesTags.CAVE)
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Sea Source of Magic")
@@ -419,7 +419,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASEDRUM)
                     .strength(3, 100)
                     .noOcclusion()
-                    .lightLevel(state -> state.getValue(SourceOfMagicBlock.FILLED) ? 10 : 5), DSDragonTypeTags.SEA)
+                    .lightLevel(state -> state.getValue(SourceOfMagicBlock.FILLED) ? 10 : 5), DSDragonSpeciesTags.SEA)
     );
 
     // --- Dragon Altars --- //
@@ -653,7 +653,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASEDRUM)
                     .strength(1.5f)
                     .sound(SoundType.STONE)
-                    .requiresCorrectToolForDrops(), DSDragonTypeTags.ALL, false)
+                    .requiresCorrectToolForDrops(), DSDragonSpeciesTags.ALL, false)
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Human Pressure Plate")
@@ -665,7 +665,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASEDRUM)
                     .strength(1.5f)
                     .sound(SoundType.STONE)
-                    .requiresCorrectToolForDrops(), DSDragonTypeTags.NONE, true)
+                    .requiresCorrectToolForDrops(), DSDragonSpeciesTags.NONE, true)
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Cave Dragon Pressure Plate")
@@ -677,7 +677,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASEDRUM)
                     .strength(1.5f)
                     .sound(SoundType.STONE)
-                    .requiresCorrectToolForDrops(), DSDragonTypeTags.CAVE, false)
+                    .requiresCorrectToolForDrops(), DSDragonSpeciesTags.CAVE, false)
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Forest Dragon Pressure Plate")
@@ -690,7 +690,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASS)
                     .strength(2.0F)
                     .sound(SoundType.WOOD)
-                    .requiresCorrectToolForDrops(), DSDragonTypeTags.FOREST, false)
+                    .requiresCorrectToolForDrops(), DSDragonSpeciesTags.FOREST, false)
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Sea Dragon Pressure Plate")
@@ -702,7 +702,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASEDRUM)
                     .strength(1.5f)
                     .sound(SoundType.STONE)
-                    .requiresCorrectToolForDrops(), DSDragonTypeTags.SEA, false)
+                    .requiresCorrectToolForDrops(), DSDragonSpeciesTags.SEA, false)
     );
 
     // --- Helmets --- //

@@ -952,7 +952,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
                 return;
             }
 
-            if (savedCustomization.getDragonType() != dragonSpecies.getKey()) {
+            if (savedCustomization.getDragonSpecies() != dragonSpecies.getKey()) {
                 slotDisplayMessage = SlotDisplayMessage.INVALID_FOR_TYPE;
                 tickWhenSlotDisplayMessageSet = tick;
                 return;

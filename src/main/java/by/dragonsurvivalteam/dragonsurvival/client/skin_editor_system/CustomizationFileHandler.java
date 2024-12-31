@@ -92,7 +92,7 @@ public class CustomizationFileHandler {
             return customization;
         }
 
-        public ResourceKey<DragonSpecies> getDragonType() {
+        public ResourceKey<DragonSpecies> getDragonSpecies() {
             return dragonSpecies;
         }
 

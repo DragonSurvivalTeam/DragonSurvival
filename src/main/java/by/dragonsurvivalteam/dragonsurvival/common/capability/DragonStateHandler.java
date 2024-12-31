@@ -439,7 +439,7 @@ public class DragonStateHandler extends EntityStateHandler {
         CompoundTag tag = new CompoundTag();
         tag.putString(DRAGON_BODY, dragonBody != null ? Objects.requireNonNull(dragonBody.getKey()).location().toString() : "none");
         tag.putString(DRAGON_STAGE, dragonStage != null ? Objects.requireNonNull(dragonStage.getKey()).location().toString() : "none");
-        tag.putString(DRAGON_TYPE, dragonSpecies != null ? Objects.requireNonNull(dragonSpecies.getKey()).location().toString() : "none");
+        tag.putString(DRAGON_SPECIES, dragonSpecies != null ? Objects.requireNonNull(dragonSpecies.getKey()).location().toString() : "none");
 
         if (isDragon()) {
             tag.putDouble("size", getSize());
@@ -475,12 +475,12 @@ public class DragonStateHandler extends EntityStateHandler {
     }
 
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag, boolean isLoadingForSoul) { // TODO :: make a different method for soul
-        String storedDragonType = tag.getString(DRAGON_TYPE);
+        String storedDragonSpecies = tag.getString(DRAGON_SPECIES);
 
-        if (!storedDragonType.isEmpty()) {
-            provider.holder(BuiltInDragonSpecies.key(ResourceLocation.parse(storedDragonType)))
-                    .ifPresentOrElse(realDragonType -> this.dragonSpecies = realDragonType,
-                            () -> DragonSurvival.LOGGER.warn("Cannot set dragon species [{}] while deserializing NBT of [{}] due to the dragon type not existing", storedDragonType, tag));
+        if (!storedDragonSpecies.isEmpty()) {
+            provider.holder(BuiltInDragonSpecies.key(ResourceLocation.parse(storedDragonSpecies)))
+                    .ifPresentOrElse(realDragonSpecies -> this.dragonSpecies = realDragonSpecies,
+                            () -> DragonSurvival.LOGGER.warn("Cannot set dragon species [{}] while deserializing NBT of [{}] due to the dragon type not existing", storedDragonSpecies, tag));
         }
 
 

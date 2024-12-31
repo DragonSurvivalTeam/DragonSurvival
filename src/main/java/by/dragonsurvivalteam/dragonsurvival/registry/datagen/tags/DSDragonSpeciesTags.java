@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
-public class DSDragonTypeTags extends TagsProvider<DragonSpecies> {
+public class DSDragonSpeciesTags extends TagsProvider<DragonSpecies> {
     public static final TagKey<DragonSpecies> NONE = key("none");
     public static final TagKey<DragonSpecies> ALL = key("all");
 
@@ -21,7 +21,7 @@ public class DSDragonTypeTags extends TagsProvider<DragonSpecies> {
     public static final TagKey<DragonSpecies> FOREST = key("forest");
     public static final TagKey<DragonSpecies> SEA = key("sea");
 
-    public DSDragonTypeTags(final PackOutput output, final CompletableFuture<HolderLookup.Provider> provider, @Nullable final ExistingFileHelper helper) {
+    public DSDragonSpeciesTags(final PackOutput output, final CompletableFuture<HolderLookup.Provider> provider, @Nullable final ExistingFileHelper helper) {
         super(output, DragonSpecies.REGISTRY, provider, DragonSurvival.MODID, helper);
     }
 
