@@ -80,7 +80,10 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     @Translation(type = Translation.Type.MISC, comments = "Redo changes")
     private static final String REDO = Translation.Type.GUI.wrap("dragon_editor.redo");
 
-    @Translation(type = Translation.Type.MISC, comments = "You can select any slot here and click the load/save button to save your current settings to that slot or load the settings from that slot.")
+    @Translation(type = Translation.Type.MISC, comments = {
+            "■ You can select any §6slot§r here and click the §6load/save button§r to save your current settings to that slot or load the settings from that slot.■ ",
+            "■ Your exports are stored here: §r§7dragon-survival/saved_customizations_0.nbt§r"
+    })
     private static final String SAVING_INFO = Translation.Type.GUI.wrap("dragon_editor.save_slot_info");
 
     @Translation(type = Translation.Type.MISC, comments = "Save to current slot")
@@ -89,7 +92,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     @Translation(type = Translation.Type.MISC, comments = "Load from current slot")
     private static final String LOAD = Translation.Type.GUI.wrap("dragon_editor.load");
 
-    @Translation(type = Translation.Type.MISC, comments = "Click here to copy your current settings to the other growth stages.")
+    @Translation(type = Translation.Type.MISC, comments = "■ Click here to §6copy§r your current settings to the other growth stages.")
     private static final String COPY = Translation.Type.GUI.wrap("dragon_editor.copy");
 
     @Translation(type = Translation.Type.MISC, comments = "Show/Hide UI")
@@ -105,11 +108,8 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     private static final String DEFAULT_SKIN_INFO = Translation.Type.GUI.wrap("dragon_editor.default_skin_info");
 
     @Translation(type = Translation.Type.MISC, comments = {
-            "■ You chose a dragon species! Now it's time to §6customize§r your dragon. You can select different parts, and change their color freely.",
-            "■ You can use §6Preset slots§r to save different appearances. Don't forget to apply your looks to all stages of growth!",
-            "■ If you don't know where to start, use the \"§6randomize§r\" button on the top right.§r",
-            "§r-§7 Shaders can affect the result. This is especially noticeable on glowing textures.§r",
-            "§r-§7 The texture from this editor is only visible if your custom skins are turned off in Skin Tab (dragon inventory). You can learn how to create your own custom skins on the Wiki or Dragon Survival discord."
+            "■ The texture from this editor is only visible if your §6custom§r skins are turned off in Skin Tab (dragon inventory). You can learn how to create your own custom skins on the §6Github Wiki§r or Dragon Survival discord.",
+            "§r-§7 Dragon Survival works with shaders, but they can affect the appearance of glowing textures.§r"
     })
     private static final String CUSTOMIZATION = Translation.Type.GUI.wrap("dragon_editor.customization");
 
