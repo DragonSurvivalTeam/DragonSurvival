@@ -75,8 +75,6 @@ public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier
         }
     }
 
-
-
     public List<MutableComponent> getDescription(final int level) {
         List<MutableComponent> components = new ArrayList<>();
         double duration = Functions.ticksToSeconds((int) duration().calculate(level));

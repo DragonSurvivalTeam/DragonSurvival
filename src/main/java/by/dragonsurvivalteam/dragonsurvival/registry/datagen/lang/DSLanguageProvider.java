@@ -8,6 +8,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageType;
@@ -28,12 +29,24 @@ import java.util.concurrent.CompletableFuture;
 
 public class DSLanguageProvider extends LanguageProvider {
     private final String locale;
-    private CompletableFuture<HolderLookup.Provider> lookup;
+    private final CompletableFuture<HolderLookup.Provider> lookup;
 
     public DSLanguageProvider(final PackOutput output, final CompletableFuture<HolderLookup.Provider> lookup, final String locale) {
         super(output, DragonSurvival.MODID, locale);
         this.lookup = lookup;
         this.locale = locale;
+    }
+
+    public static Component enumClass(final Enum<?> enumValue) {
+        return Component.translatable(Translation.Type.ENUM.wrap(enumClassKey(enumValue)));
+    }
+
+    private static String enumClassKey(final Enum<?> enumValue) {
+        return enumValue.getClass().getSimpleName().replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase(Locale.ENGLISH);
+    }
+
+    public static Component enumValue(final Enum<?> enumValue) {
+        return Component.translatable(Translation.Type.ENUM.wrap(enumClassKey(enumValue) + "." + enumValue.toString().toLowerCase(Locale.ENGLISH)));
     }
 
     @Override
@@ -85,35 +98,30 @@ public class DSLanguageProvider extends LanguageProvider {
                         Holder<?> holder = (Holder<?>) field.get(null);
                         //noinspection DataFlowIssue -> only a problem if we work with Holder$Direct which should not be the case here
                         add(type.wrap(holder.getKey().location().getPath()), format(comments));
-
                         continue;
                     }
 
                     if (ResourceKey.class.isAssignableFrom(field.getType())) {
                         ResourceKey<?> resourceKey = (ResourceKey<?>) field.get(null);
                         add(type.wrap(resourceKey.location().getPath()), format(comments));
-
                         continue;
                     }
 
                     if (ResourceLocation.class.isAssignableFrom(field.getType())) {
                         ResourceLocation resourceLocation = (ResourceLocation) field.get(null);
                         add(type.wrap(resourceLocation.getPath()), format(comments));
-
                         continue;
                     }
 
                     if (type == Translation.Type.MISC && String.class.isAssignableFrom(field.getType())) {
                         String translationKey = (String) field.get(null);
                         add(translationKey, format(comments));
-
                         continue;
                     }
 
                     if (type == Translation.Type.EMOTE && String.class.isAssignableFrom(field.getType())) {
                         String translationKey = (String) field.get(null);
                         add(type.wrap(translationKey), format(comments));
-
                         continue;
                     }
 
@@ -121,14 +129,32 @@ public class DSLanguageProvider extends LanguageProvider {
                     if ((type == Translation.Type.ADVANCEMENT || type == Translation.Type.ADVANCEMENT_DESCRIPTION) && String.class.isAssignableFrom(field.getType())) {
                         String path = (String) field.get(null);
                         add(type.wrap(path), format(comments));
-
                         continue;
                     }
 
                     if (field.getType().isEnum()) {
                         Enum<?> value = (Enum<?>) field.get(null);
-                        add(type.wrap(value.toString().toLowerCase(Locale.ENGLISH)), format(comments));
 
+                        if (type == Translation.Type.ENUM) {
+                            add(type.wrap(enumClassKey(value) + "." + value.toString().toLowerCase(Locale.ENGLISH)), format(comments));
+                        } else {
+                            add(type.wrap(value.toString().toLowerCase(Locale.ENGLISH)), format(comments));
+                        }
+
+                        continue;
+                    }
+                } catch (ReflectiveOperationException exception) {
+                    throw new RuntimeException("An error occurred while trying to get the translations from [" + annotationData + "]", exception);
+                }
+            }
+
+            if (key == null && annotationData.targetType() == ElementType.TYPE) {
+                try {
+                    Class<?> classType = Class.forName(annotationData.memberName());
+
+                    if (classType.isEnum()) {
+                        // Replace 'SomeDefinedClass' with 'some_defined_class' for the translation key
+                        add(type.wrap(classType.getSimpleName().replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase(Locale.ENGLISH)), format(comments));
                         continue;
                     }
                 } catch (ReflectiveOperationException exception) {

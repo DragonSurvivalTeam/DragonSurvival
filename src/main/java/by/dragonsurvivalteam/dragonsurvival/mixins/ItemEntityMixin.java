@@ -31,6 +31,6 @@ public abstract class ItemEntityMixin extends Entity implements IEntityWithCompl
 
     @ModifyReturnValue(method = "fireImmune", at = @At("RETURN"))
     private boolean dragonSurvival$makeFireImmune(boolean isFireImmune) {
-        return isFireImmune || getData(DSDataAttachments.ENTITY_HANDLER).isFireImmune;
+        return isFireImmune || getExistingData(DSDataAttachments.ENTITY_HANDLER).map(data -> data.isFireImmune).orElse(false);
     }
 }

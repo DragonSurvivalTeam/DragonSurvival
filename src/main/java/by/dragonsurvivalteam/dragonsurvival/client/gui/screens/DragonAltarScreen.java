@@ -1,8 +1,8 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.screens;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.DragonEditorScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.AltarTypeButton;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.PenaltyButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HelpButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.BarComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.ScrollableComponent;
@@ -31,8 +31,8 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.Holder;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.DyeColor;
@@ -248,11 +248,14 @@ public class DragonAltarScreen extends Screen {
         }
 
         int guiTop = (height - 190) / 2;
+        int xPos = width / 2 - 104;
 
         addRenderableWidget(new HelpButton(width / 2, 32 + 5, 16, 16, HELP));
-        int xPos = width / 2 - 104;
-        List<AbstractWidget> altarButtons = new ArrayList<>(ResourceHelper.keys(Minecraft.getInstance().level.registryAccess(), DragonType.REGISTRY).stream().map(typeKey -> (AbstractWidget) new AltarTypeButton(this, Minecraft.getInstance().level.registryAccess().holderOrThrow(typeKey), 0, 0)).toList());
+
+        RegistryAccess access = Objects.requireNonNull(DragonSurvival.PROXY.getAccess());
+        List<AbstractWidget> altarButtons = new ArrayList<>(ResourceHelper.keys(access, DragonType.REGISTRY).stream().map(typeKey -> (AbstractWidget) new AltarTypeButton(this, access.holderOrThrow(typeKey), 0, 0)).toList());
         altarButtons.add(new AltarTypeButton(this, null, 0, 0));
+
         scrollableComponents.add(new BarComponent(this,
                 xPos, guiTop + 30, 4,
                 altarButtons, 55,

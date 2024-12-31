@@ -26,7 +26,7 @@ public abstract class Storage<T extends StorageEntry> implements INBTSerializabl
         player.getExistingData(type()).ifPresent(data -> PacketDistributor.sendToPlayer(player, new SyncData(NeoForgeRegistries.ATTACHMENT_TYPES.getKey(type()), serializeNBT(player.registryAccess()))));
     }
 
-    public void tick() {
+    public void tick(final Entity storageHolder) {
         if (storage != null) {
             Set<ResourceLocation> finished = new HashSet<>();
 
@@ -36,7 +36,13 @@ public abstract class Storage<T extends StorageEntry> implements INBTSerializabl
                 }
             });
 
-            finished.forEach(id -> storage.remove(id));
+            finished.forEach(id -> {
+                T removed = storage.remove(id);
+
+                if (removed != null) {
+                    removed.onRemovalFromStorage(storageHolder);
+                }
+            });
         }
     }
 

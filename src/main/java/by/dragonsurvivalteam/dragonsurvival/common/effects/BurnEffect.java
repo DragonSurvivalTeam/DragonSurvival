@@ -35,6 +35,10 @@ public class BurnEffect extends ModifiableMobEffect {
 
         EntityStateHandler data = entity.getData(DSDataAttachments.ENTITY_HANDLER);
 
+        if (data.lastPos == null) {
+            data.lastPos = entity.position();
+        }
+
         if (!DragonStateProvider.isDragon(entity)) {
             ParticleOptions particle = new SmallFireParticleOption(37F, false);
 
@@ -64,6 +68,7 @@ public class BurnEffect extends ModifiableMobEffect {
             }
         }
 
+        data.lastPos = entity.position();
         return super.applyEffectTick(entity, amplifier);
     }
 }
