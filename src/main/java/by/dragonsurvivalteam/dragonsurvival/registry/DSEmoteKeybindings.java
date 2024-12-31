@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.emotes.EmoteKeybinds;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.CustomizationFileHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.json.GsonFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -30,7 +31,7 @@ public class DSEmoteKeybindings {
             return;
         }
 
-        File directory = new File(FMLPaths.GAMEDIR.get().toFile(), "dragon-survival");
+        File directory = new File(FMLPaths.GAMEDIR.get().toFile(), CustomizationFileHandler.DIRECTORY);
         if (!directory.exists()) {
             directory.mkdirs();
         }
@@ -63,7 +64,7 @@ public class DSEmoteKeybindings {
         }
 
         try {
-            File directory = new File(FMLPaths.GAMEDIR.get().toFile(), "dragon-survival");
+            File directory = new File(FMLPaths.GAMEDIR.get().toFile(), CustomizationFileHandler.DIRECTORY);
             if (!directory.exists()) {
                 directory.mkdirs();
             }

@@ -87,7 +87,10 @@ public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier
                 name.append(CommonComponents.SPACE).append(Component.translatable("enchantment.level." + (amplifier + 1))).withColor(DSColors.GOLD);
             }
 
-            name.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.dynamicValue(duration)));
+            if (duration > 0) {
+                name.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.dynamicValue(duration)));
+            }
+
             float probability = probability().calculate(level);
 
             if (probability < 1) {

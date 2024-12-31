@@ -17,10 +17,10 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public class StarHeartItem extends TooltipItem {
-    @Translation(type = Translation.Type.MISC, comments = "Star heart state is §cinactive§r")
+    @Translation(comments = "Star heart state is §cinactive§r")
     private static final String INACTIVE = Translation.Type.GUI.wrap("message.star_heart_inactive");
 
-    @Translation(type = Translation.Type.MISC, comments = "Star heart state is §2active§r")
+    @Translation(comments = "Star heart state is §2active§r")
     private static final String ACTIVE = Translation.Type.GUI.wrap("message.star_heart_active");
 
     public StarHeartItem(final Properties properties, final String key){

@@ -30,8 +30,9 @@ import java.util.Objects;
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 // TODO :: Currently this only supports the built-in types
+//  add ancient?
 public class CopyEditorSettingsComponent extends AbstractContainerEventHandler implements Renderable {
-    @Translation(type = Translation.Type.MISC, comments = "Copy to...")
+    @Translation(comments = "Copy to...")
     private static final String COPY_TO = Translation.Type.GUI.wrap("copy_to");
 
     private static final ResourceLocation CONFIRM_BUTTON = DragonSurvival.res("textures/gui/confirm_button.png");

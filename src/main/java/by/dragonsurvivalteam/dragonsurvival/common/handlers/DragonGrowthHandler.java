@@ -25,10 +25,10 @@ import java.util.Optional;
 
 @EventBusSubscriber(modid = DragonSurvival.MODID)
 public class DragonGrowthHandler {
-    @Translation(type = Translation.Type.MISC, comments = "You have reached the largest size")
+    @Translation(comments = "You have reached the largest size")
     private static final String REACHED_LARGEST = Translation.Type.GUI.wrap("system.reached_largest");
 
-    @Translation(type = Translation.Type.MISC, comments = "You have reached the smallest size")
+    @Translation(comments = "You have reached the smallest size")
     private static final String REACHED_SMALLEST = Translation.Type.GUI.wrap("system.reached_smallest");
 
     @SubscribeEvent

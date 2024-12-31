@@ -19,7 +19,7 @@ import java.util.List;
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class BackgroundColorButton extends ExtendedButton {
-    @Translation(type = Translation.Type.MISC, comments = "Change the background color")
+    @Translation(comments = "Change the background color")
     private static final String BACKGROUND_COLOR = Translation.Type.GUI.wrap("dragon_editor.background_color");
 
     private static final ResourceLocation BACKGROUND_COLOR_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/gui_color_main.png");

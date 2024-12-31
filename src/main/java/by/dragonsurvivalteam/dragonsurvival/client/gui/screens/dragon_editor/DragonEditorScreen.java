@@ -3,10 +3,13 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAltarScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonBodyScreen;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.buttons.*;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.buttons.BackgroundColorButton;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.buttons.DragonBodyButton;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.buttons.DragonEditorSlotButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.buttons.editor_part_selector.EditorPartComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.buttons.editor_part_selector.HueSelectorComponent;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.*;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverButton;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverDisableable;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.DragonEditorConfirmComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.DragonUIRenderComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.ScrollableComponent;
@@ -15,7 +18,10 @@ import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.Customizat
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.DragonEditorHandler;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.EnumSkinLayer;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DefaultPartLoader;
-import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.*;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonPart;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.LayerSettings;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.SkinPreset;
 import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayerUtils;
 import by.dragonsurvivalteam.dragonsurvival.client.util.TextRenderUtil;
 import by.dragonsurvivalteam.dragonsurvival.commands.DragonCommand;
@@ -34,6 +40,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
+import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import com.mojang.datafixers.util.Pair;
@@ -71,62 +78,53 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class DragonEditorScreen extends Screen implements DragonBodyScreen {
-    @Translation(type = Translation.Type.MISC, comments = "Randomize")
+    @Translation(comments = "Randomize")
     private static final String RANDOMIZE = Translation.Type.GUI.wrap("dragon_editor.randomize");
 
-    @Translation(type = Translation.Type.MISC, comments = "Undo changes")
+    @Translation(comments = "Undo changes")
     private static final String UNDO = Translation.Type.GUI.wrap("dragon_editor.undo");
 
-    @Translation(type = Translation.Type.MISC, comments = "Redo changes")
+    @Translation(comments = "Redo changes")
     private static final String REDO = Translation.Type.GUI.wrap("dragon_editor.redo");
 
-    @Translation(type = Translation.Type.MISC, comments = {
-            "■ You can select any §6slot§r here and click the §6load/save button§r to save your current settings to that slot or load the settings from that slot.■ ",
-            "■ Your exports are stored here: §r§7dragon-survival/saved_customizations_1.nbt§r"
+    @Translation(comments = {
+            "■ You can select any §6slot§r here and click the §6load/save button§r to save your current settings to that slot or load the settings from that slot.",
+            "■ Your exports are stored here: %s"
     })
     private static final String SAVING_INFO = Translation.Type.GUI.wrap("dragon_editor.save_slot_info");
 
-    @Translation(type = Translation.Type.MISC, comments = "Save to current slot")
+    @Translation(comments = "Save to current slot")
     private static final String SAVE = Translation.Type.GUI.wrap("dragon_editor.save");
 
-    @Translation(type = Translation.Type.MISC, comments = "Load from current slot")
+    @Translation(comments = "Load from current slot")
     private static final String LOAD = Translation.Type.GUI.wrap("dragon_editor.load");
 
-    @Translation(type = Translation.Type.MISC, comments = "■ Click here to §6copy§r your current settings to the other growth stages.")
+    @Translation(comments = "■ Click here to §6copy§r your current settings to the other growth stages.")
     private static final String COPY = Translation.Type.GUI.wrap("dragon_editor.copy");
 
-    @Translation(type = Translation.Type.MISC, comments = "Show/Hide UI")
+    @Translation(comments = "Show/Hide UI")
     private static final String SHOW_UI = Translation.Type.GUI.wrap("dragon_editor.show_ui");
 
-    @Translation(type = Translation.Type.MISC, comments = "Reset to default")
+    @Translation(comments = "Reset to default")
     private static final String RESET = Translation.Type.GUI.wrap("dragon_editor.reset");
 
-    @Translation(type = Translation.Type.MISC, comments = "Old texture")
-    private static final String DEFAULT_SKIN = Translation.Type.GUI.wrap("dragon_editor.default_skin");
-
-    @Translation(type = Translation.Type.MISC, comments = "If you are using a §6texture pack§r to test your custom skin before submitting it, check this box.")
-    private static final String DEFAULT_SKIN_INFO = Translation.Type.GUI.wrap("dragon_editor.default_skin_info");
-
-    @Translation(type = Translation.Type.MISC, comments = {
+    @Translation(comments = {
             "■ The texture from this editor is only visible if your §6custom§r skins are turned off in Skin Tab (dragon inventory). You can learn how to create your own custom skins on the §6Github Wiki§r or Dragon Survival discord.",
             "§r-§7 Dragon Survival works with shaders, but they can affect the appearance of glowing textures.§r"
     })
     private static final String CUSTOMIZATION = Translation.Type.GUI.wrap("dragon_editor.customization");
 
-    @Translation(type = Translation.Type.MISC, comments = "Save data invalid for this dragon type")
+    @Translation(comments = "Save data invalid for this dragon type")
     private static final String INVALID_FOR_TYPE = Translation.Type.GUI.wrap("dragon_editor.invalid_for_type");
 
-    @Translation(type = Translation.Type.MISC, comments = "Save data invalid for this model")
+    @Translation(comments = "Save data invalid for this model")
     private static final String INVALID_FOR_MODEL = Translation.Type.GUI.wrap("dragon_editor.invalid_for_model");
 
-    @Translation(type = Translation.Type.MISC, comments = "No save data for this slot")
+    @Translation(comments = "No save data for this slot")
     private static final String NO_DATA = Translation.Type.GUI.wrap("dragon_editor.no_data");
 
-    @Translation(type = Translation.Type.MISC, comments = "Slot saved")
+    @Translation(comments = "Slot saved")
     private static final String SLOT_SAVED = Translation.Type.GUI.wrap("dragon_editor.slot_saved");
-
-    @Translation(type = Translation.Type.MISC, comments = "Saved customization data")
-    private static final String SAVED_CUSTOMIZATION = Translation.Type.GUI.wrap("dragon_editor.saved_customization");
 
     public static final DragonStateHandler HANDLER = new DragonStateHandler();
 
@@ -196,7 +194,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     public Holder<DragonStage> dragonStage;
 
     public SkinPreset preset;
-    public int selectedSaveSlot;
+    public int selectedSaveSlot = 1;
 
     public int backgroundColor = -804253680;
 
@@ -928,32 +926,33 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         addRenderableWidget(backgroundColorButton);
 
         // Save slots
-        HoverButton slotBackground = new HoverButton(width / 2 + 85, height - 25-3, 121, 18, 121, 18, SAVE_SLOT_BACKGROUND, SAVE_SLOT_BACKGROUND, button -> { /* Nothing to do */ });
+        HoverButton slotBackground = new HoverButton(width / 2 + 85, height - 28, 121, 18, 121, 18, SAVE_SLOT_BACKGROUND, SAVE_SLOT_BACKGROUND, button -> { /* Nothing to do */ });
         addRenderableOnly(slotBackground);
 
-        for (int num = 1; num <= 9; num++) {
-            addRenderableWidget(new DragonEditorSlotButton(width / 2 + 95 + 12 * (num - 1), height - 24, num, this));
-        }
-
-        HoverButton slotInfoButton = new HoverButton(width / 2 + 74, height - 25-3, 17, 18, 20, 20, SLOT_INFO_MAIN, SLOT_INFO_HOVER, button -> { /* Nothing to do */ });
-        slotInfoButton.setTooltip(Tooltip.create(Component.translatable(SAVING_INFO)));
+        HoverButton slotInfoButton = new HoverButton(width / 2 + 74, height - 28, 17, 18, 20, 20, SLOT_INFO_MAIN, SLOT_INFO_HOVER, button -> { /* Nothing to do */ });
+        slotInfoButton.setTooltip(createSlotInfoTooltip());
         addRenderableWidget(slotInfoButton);
+
+        for (int slot = 1; slot <= CustomizationFileHandler.MAX_SAVE_SLOTS; slot++) {
+            addRenderableWidget(new DragonEditorSlotButton(width / 2 + 95 + 12 * (slot - 1), height - 26, slot, this, () -> slotInfoButton.setTooltip(createSlotInfoTooltip())));
+        }
 
         HoverButton loadSlotButton = new HoverButton(width / 2 + 182, height - 28, 17, 18, 20, 20, SLOT_LOAD_MAIN, SLOT_LOAD_HOVER, button -> {
             CustomizationFileHandler.SavedCustomization savedCustomization = CustomizationFileHandler.load(selectedSaveSlot);
-            if(savedCustomization == null) {
+
+            if (savedCustomization == null) {
                 slotDisplayMessage = SlotDisplayMessage.NO_DATA;
                 tickWhenSlotDisplayMessageSet = tick;
                 return;
             }
 
-            if(!savedCustomization.getDragonModel().equals(dragonBody.value().customModel())) {
+            if (!savedCustomization.getDragonModel().equals(dragonBody.value().customModel())) {
                 slotDisplayMessage = SlotDisplayMessage.INVALID_FOR_MODEL;
                 tickWhenSlotDisplayMessageSet = tick;
                 return;
             }
 
-            if(savedCustomization.getDragonType() != dragonType.getKey()) {
+            if (savedCustomization.getDragonType() != dragonType.getKey()) {
                 slotDisplayMessage = SlotDisplayMessage.INVALID_FOR_TYPE;
                 tickWhenSlotDisplayMessageSet = tick;
                 return;
@@ -1113,5 +1112,9 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
                 screen.actionHistory.redo();
             }
         }
+    }
+
+    private Tooltip createSlotInfoTooltip() {
+        return Tooltip.create(Component.translatable(SAVING_INFO, Component.literal(CustomizationFileHandler.DIRECTORY + "/" + CustomizationFileHandler.FILE_NAME.apply(selectedSaveSlot)).withColor(DSColors.GOLD)));
     }
 }

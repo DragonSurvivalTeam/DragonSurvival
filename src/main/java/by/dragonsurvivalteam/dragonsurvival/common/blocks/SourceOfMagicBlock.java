@@ -60,7 +60,7 @@ import javax.annotation.Nullable;
 // TODO :: add a generic one (same for doors, pressure plates) which is handled through some level storage
 //  (said storage contains the relevant types and effects etc. per position aka place block)
 public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements SimpleWaterloggedBlock, EntityBlock {
-    @Translation(type = Translation.Type.MISC, comments = "You need a 3x3 area to place %s")
+    @Translation(comments = "You need a 3x3 area to place %s")
     private static final String OCCUPIED = Translation.Type.GUI.wrap("message.occupied");
 
     public static final VoxelShape SHAPE = Shapes.box(0, 0, 0, 1, 0.25, 1);

@@ -34,22 +34,22 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class DragonSoulItem extends Item {
-    @Translation(type = Translation.Type.MISC, comments = "Empty Dragon Soul")
+    @Translation(comments = "Empty Dragon Soul")
     private static final String EMPTY_DRAGON_SOUL = Translation.Type.ITEM.wrap("empty_dragon_soul");
 
-    @Translation(type = Translation.Type.MISC, comments = "■§7 This vessel holds the dragon's soul. Use it to become a dragon. Replaces your current stats if you are a dragon.\n")
+    @Translation(comments = "■§7 This vessel holds the dragon's soul. Use it to become a dragon. Replaces your current stats if you are a dragon.\n")
     private static final String DESCRIPTION = Translation.Type.DESCRIPTION.wrap("dragon_soul");
 
-    @Translation(type = Translation.Type.MISC, comments = "§6■ Type:§r %s\n§6■ Growth Stage:§r %s\n§6■ Size:§r %s\n")
+    @Translation(comments = "§6■ Type:§r %s\n§6■ Growth Stage:§r %s\n§6■ Size:§r %s\n")
     private static final String INFO = Translation.Type.DESCRIPTION.wrap("dragon_soul.info");
 
-    @Translation(type = Translation.Type.MISC, comments = "§6■ Can Spin§r")
+    @Translation(comments = "§6■ Can Spin§r")
     private static final String HAS_SPIN = Translation.Type.DESCRIPTION.wrap("dragon_soul.has_spin");
 
-    @Translation(type = Translation.Type.MISC, comments = "§6■ Can Fly§r")
+    @Translation(comments = "§6■ Can Fly§r")
     private static final String HAS_FLIGHT = Translation.Type.DESCRIPTION.wrap("dragon_soul.has_flight");
 
-    @Translation(type = Translation.Type.MISC, comments = "■§7 An empty dragon's soul. With this item, you can store all your dragon's characteristics. After using it, you become human.")
+    @Translation(comments = "■§7 An empty dragon's soul. With this item, you can store all your dragon's characteristics. After using it, you become human.")
     private static final String IS_EMPTY = Translation.Type.DESCRIPTION.wrap("dragon_soul.empty");
 
     public DragonSoulItem(final Properties properties) {

@@ -18,7 +18,7 @@ import org.lwjgl.opengl.GL11;
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class SourceOfMagicScreen extends AbstractContainerScreen<SourceOfMagicContainer> {
-    @Translation(type = Translation.Type.MISC, comments = {
+    @Translation(comments = {
             "■ A source of magic can be charged with Elder Dragon items.",
             "■ Crouch + right click to use.",
             "■ §6+10 sec§r - Elder Dragon Dust",

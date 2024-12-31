@@ -38,10 +38,10 @@ import java.util.SortedSet;
 /** See {@link by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonDestructionHandler} for server-specific handling */
 @EventBusSubscriber(Dist.CLIENT)
 public class DragonDestructionHandler {
-    @Translation(type = Translation.Type.MISC, comments = "Destruction mode enabled")
+    @Translation(comments = "Destruction mode enabled")
     private static final String ENABLED = Translation.Type.GUI.wrap("destruction.enabled");
 
-    @Translation(type = Translation.Type.MISC, comments = "Destruction mode disabled")
+    @Translation(comments = "Destruction mode disabled")
     private static final String DISABLED = Translation.Type.GUI.wrap("destruction.disabled");
 
     /** Currently this is only tracked for the local player */

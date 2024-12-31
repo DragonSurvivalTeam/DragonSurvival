@@ -15,7 +15,6 @@ public class LayerSettings implements INBTSerializable<CompoundTag> {
     public static final String IS_COLOR_MODIFIED = "modifiedColor";
     public static final String IS_GLOWING = "glowing";
 
-    // The field names currently affect the result of the 'saved_customizations.json' file
     public String partKey;
 
     public float hue;

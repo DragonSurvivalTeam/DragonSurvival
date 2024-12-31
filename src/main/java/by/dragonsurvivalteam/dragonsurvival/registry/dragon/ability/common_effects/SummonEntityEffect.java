@@ -99,8 +99,12 @@ public record SummonEntityEffect(
             component.append(Component.translatable(LangKey.ABILITY_SUMMON_CHANCE, DSColors.dynamicValue(entityName), DSColors.dynamicValue(NumberFormat.getPercentInstance().format(chance))));
         });
 
-        // TODO :: somehow the duration is missing
-        component.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.dynamicValue(Functions.ticksToSeconds((int) duration.calculate(ability.level())))));
+        float duration = this.duration.calculate(ability.level());
+
+        if (duration != DurationInstance.INFINITE_DURATION) {
+            component.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.dynamicValue(Functions.ticksToSeconds((int) duration))));
+        }
+
         return List.of(component);
     }
 

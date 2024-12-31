@@ -11,9 +11,12 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.modscan.ModAnnotation;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.neoforged.neoforgespi.language.ModFileScanData;
 import org.apache.commons.lang3.text.WordUtils;
@@ -21,10 +24,7 @@ import org.objectweb.asm.Type;
 
 import java.lang.annotation.ElementType;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class DSLanguageProvider extends LanguageProvider {
@@ -65,6 +65,9 @@ public class DSLanguageProvider extends LanguageProvider {
         for (ResourceKey<DamageType> damageType : ResourceHelper.keys(lookup.join(), Registries.DAMAGE_TYPE)) {
             add(Translation.Type.DAMAGE_TYPE.wrap(damageType.location()), capitalize(damageType.location().getPath()));
         }
+
+        // Tags are not available during data generation
+        add(Tags.getTagTranslationKey(DamageTypeTags.IS_FIRE), capitalize("Fire"));
     }
 
     private void handleTranslationAnnotations(final Set<ModFileScanData.AnnotationData> annotationDataSet) {
@@ -83,7 +86,8 @@ public class DSLanguageProvider extends LanguageProvider {
             }
 
             String key = (String) annotationData.annotationData().get("key");
-            Translation.Type type = Translation.Type.valueOf(((ModAnnotation.EnumHolder) annotationData.annotationData().get("type")).value());
+            Optional<ModAnnotation.EnumHolder> optionalEnum = Optional.ofNullable((ModAnnotation.EnumHolder) annotationData.annotationData().get("type"));
+            Translation.Type type = optionalEnum.map(holder -> Translation.Type.valueOf(holder.value())).orElse(Translation.Type.NONE);
             //noinspection unchecked -> type is correct
             List<String> comments = (List<String>) annotationData.annotationData().get("comments");
 
@@ -101,6 +105,12 @@ public class DSLanguageProvider extends LanguageProvider {
                         continue;
                     }
 
+                    if (TagKey.class.isAssignableFrom(field.getType())) {
+                        TagKey<?> tag = (TagKey<?>) field.get(null);
+                        add(Tags.getTagTranslationKey(tag), format(comments));
+                        continue;
+                    }
+
                     if (ResourceKey.class.isAssignableFrom(field.getType())) {
                         ResourceKey<?> resourceKey = (ResourceKey<?>) field.get(null);
                         add(type.wrap(resourceKey.location().getPath()), format(comments));
@@ -113,7 +123,7 @@ public class DSLanguageProvider extends LanguageProvider {
                         continue;
                     }
 
-                    if (type == Translation.Type.MISC && String.class.isAssignableFrom(field.getType())) {
+                    if (type == Translation.Type.NONE && String.class.isAssignableFrom(field.getType())) {
                         String translationKey = (String) field.get(null);
                         add(translationKey, format(comments));
                         continue;

@@ -831,7 +831,7 @@ public class DSBlocks {
 
     public static final DeferredHolder<Item, BlockItem> DRAGON_RIDER_WORKBENCH_ITEM = DS_ITEMS.register("dragon_rider_workbench",
             () -> new BlockItem(DRAGON_RIDER_WORKBENCH.get(), new Item.Properties()) {
-                @Translation(type = Translation.Type.MISC, comments = "■§7 A work station for a villager who sells useful dragon enchantments. Knows the secrets to getting into the draconic vaults.")
+                @Translation(comments = "■§7 A work station for a villager who sells useful dragon enchantments. Knows the secrets to getting into the draconic vaults.")
                 private static final String DRAGON_RIDER_WORKBENCH = Translation.Type.DESCRIPTION.wrap("dragon_rider_workbench");
 
                 @Override

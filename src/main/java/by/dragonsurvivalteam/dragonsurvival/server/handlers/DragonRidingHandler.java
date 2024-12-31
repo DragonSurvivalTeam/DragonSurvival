@@ -21,13 +21,13 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 @EventBusSubscriber
 public class DragonRidingHandler {
-    @Translation(type = Translation.Type.MISC, comments = "You are too big to mount on this dragon. You must be at least half the size of the dragon you are trying to ride or smaller, but you are size %s and the dragon is size %s.")
+    @Translation(comments = "You are too big to mount on this dragon. You must be at least half the size of the dragon you are trying to ride or smaller, but you are size %s and the dragon is size %s.")
     private static final String SELF_TOO_BIG = Translation.Type.GUI.wrap("message.self_too_big");
 
-    @Translation(type = Translation.Type.MISC, comments = "The dragon you are riding is too young. To ride a dragon as a human, the dragon must be an adult.")
+    @Translation(comments = "The dragon you are riding is too young. To ride a dragon as a human, the dragon must be an adult.")
     private static final String TARGET_TOO_SMALL = Translation.Type.GUI.wrap("message.target_too_small");
 
-    @Translation(type = Translation.Type.MISC, comments = "The dragon you are trying to ride must be crouching for you to mount them.")
+    @Translation(comments = "The dragon you are trying to ride must be crouching for you to mount them.")
     private static final String NOT_CROUCHING = Translation.Type.GUI.wrap("message.not_crouching");
 
     public static final int NO_PASSENGER = -1;

@@ -36,10 +36,11 @@ public class AltarTypeButton extends Button {
     private static final ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/dragon_altar_icons.png");
     private static final ResourceLocation HUMAN_ALTAR_ICON = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/custom/altar/human/altar_icon.png");
 
-    @Translation(type = Translation.Type.MISC, comments = "You have awakened from your sleep, and become a human.")
+    @Translation(comments = "You have awakened from your sleep, and become a human.")
     private static final String CHOICE_HUMAN = Translation.Type.GUI.wrap("altar.choice.human");
+    // TODO :: add message for dragons (dragon species would be a parameter)?
 
-    @Translation(type = Translation.Type.MISC, comments = {
+    @Translation(comments = {
             "■ §nHuman.§r",
             "■ Homo sapiens.§r",
             "Travelers, builders, and creators."

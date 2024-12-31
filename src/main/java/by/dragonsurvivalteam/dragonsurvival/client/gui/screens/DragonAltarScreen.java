@@ -50,16 +50,16 @@ import java.util.Objects;
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class DragonAltarScreen extends Screen {
-    @Translation(type = Translation.Type.MISC, comments = "Choose a Dragon Species")
+    @Translation(comments = "Choose a Dragon Species")
     private static final String CHOOSE_SPECIES = Translation.Type.GUI.wrap("altar.choose_species");
 
-    @Translation(type = Translation.Type.MISC, comments = {
+    @Translation(comments = {
             "You didn't make your initial choice in the Dragon Altar!",
             "You may still open the altar in your inventory."
     })
     private static final String NO_CHOICE = Translation.Type.GUI.wrap("altar.no_choice");
 
-    @Translation(type = Translation.Type.MISC, comments = {
+    @Translation(comments = {
             "§6■ Welcome to Dragon Survival!§r",
             "■ You can choose which §6dragon species§r you want to become. This decision is not permanent, but you may lose progress if you change your mind.§r",
             "■§7 Don't forget to read patch notes and delete old configs if you update our mod to avoid bugs! Enjoy the game! :3"

@@ -49,10 +49,10 @@ public class EmoteMenuHandler {
     public static final int NO_KEY = -1;
     public static final int REMOVE_KEY = 256;
 
-    @Translation(type = Translation.Type.MISC, comments = " ■ §6Emotes§r ■")
+    @Translation(comments = " ■ §6Emotes§r ■")
     private static final String TOGGLE = Translation.Type.GUI.wrap("emotes.toggle");
 
-    @Translation(type = Translation.Type.MISC, comments = "Keybinds")
+    @Translation(comments = "Keybinds")
     private static final String KEYBINDS = Translation.Type.GUI.wrap("emotes.keybinds");
 
     @ConfigRange(min = -1000, max = 1000)

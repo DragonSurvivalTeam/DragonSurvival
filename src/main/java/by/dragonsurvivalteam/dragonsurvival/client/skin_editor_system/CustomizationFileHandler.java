@@ -22,14 +22,17 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 @EventBusSubscriber(value = Dist.CLIENT)
 public class CustomizationFileHandler {
+    public static final Function<Integer, String> FILE_NAME = slot -> "saved_customizations_" + slot + ".nbt";
+    public static final String DIRECTORY = "dragon-survival";
+    public static final int MAX_SAVE_SLOTS = 5;
+
     private static final String CUSTOMIZATION = "customization";
     private static final String DRAGON_TYPE = "dragon_type";
     private static final String DRAGON_MODEL = "dragon_model";
-    private static final String SAVED_CUSTOMIZATIONS = "saved_customizations_";
-    private static final int MAX_SAVE_SLOTS = 5;
 
     public static class SavedCustomization implements INBTSerializable<CompoundTag> {
         private DragonStageCustomization customization;
@@ -68,15 +71,18 @@ public class CustomizationFileHandler {
         }
 
         @Override
-        public void deserializeNBT(HolderLookup.@NotNull Provider provider, CompoundTag nbt) {
+        public void deserializeNBT(@NotNull final HolderLookup.Provider provider, final CompoundTag nbt) {
             this.customization = new DragonStageCustomization();
-            if(nbt.contains(CUSTOMIZATION)) {
+
+            if (nbt.contains(CUSTOMIZATION)) {
                 this.customization.deserializeNBT(provider, nbt.getCompound(CUSTOMIZATION));
             }
-            if(nbt.contains(DRAGON_TYPE)) {
+
+            if (nbt.contains(DRAGON_TYPE)) {
                 this.dragonType = ResourceKey.create(DragonType.REGISTRY, ResourceLocation.parse(nbt.getString(DRAGON_TYPE)));
             }
-            if(nbt.contains(DRAGON_MODEL)) {
+
+            if (nbt.contains(DRAGON_MODEL)) {
                 this.dragonModel = ResourceLocation.parse(nbt.getString(DRAGON_MODEL));
             }
         }
@@ -112,16 +118,16 @@ public class CustomizationFileHandler {
             return;
         }
 
-        File directory = new File(FMLPaths.GAMEDIR.get().toFile(), "dragon-survival");
+        File directory = new File(FMLPaths.GAMEDIR.get().toFile(), DIRECTORY);
 
         if (!directory.exists()) {
             //noinspection ResultOfMethodCallIgnored -> ignore
             directory.mkdirs();
         }
 
-        for (int i = 0; i < MAX_SAVE_SLOTS; i++) {
-            File savedFile = new File(directory, SAVED_CUSTOMIZATIONS + i + ".nbt");
-            savedFileForSlot.put(i, savedFile);
+        for (int slot = 0; slot < MAX_SAVE_SLOTS; slot++) {
+            File savedFile = new File(directory, FILE_NAME.apply(slot));
+            savedFileForSlot.put(slot, savedFile);
 
             if (!savedFile.exists()) {
                 continue;
@@ -141,7 +147,7 @@ public class CustomizationFileHandler {
                     continue;
                 }
 
-                savedCustomizations.put(i, SavedCustomization.fromNbt(DragonSurvival.PROXY.getAccess(), nbt));
+                savedCustomizations.put(slot, SavedCustomization.fromNbt(DragonSurvival.PROXY.getAccess(), nbt));
             } catch (IOException exception) {
                 DragonSurvival.LOGGER.warn("An error occurred while processing the file [{}]", savedFile, exception);
             }
@@ -156,6 +162,7 @@ public class CustomizationFileHandler {
         }
 
         SavedCustomization savedCustomization = SavedCustomization.fromHandler(handler);
+
         try {
             //noinspection DataFlowIssue -> access is expected to be present
             NbtIo.write(savedCustomization.serializeNBT(DragonSurvival.PROXY.getAccess()), savedFileForSlot.get(slot).toPath());

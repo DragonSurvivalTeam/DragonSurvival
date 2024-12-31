@@ -56,47 +56,47 @@ import java.util.*;
 import java.util.function.Supplier;
 
 public class SkinsScreen extends Screen implements DragonBodyScreen {
-    @Translation(type = Translation.Type.MISC, comments = "Skin Settings")
+    @Translation(comments = "Skin Settings")
     private static final String SETTINGS = Translation.Type.GUI.wrap("skin_screen.settings");
 
-    @Translation(type = Translation.Type.MISC, comments = "Enable / disable skins")
+    @Translation(comments = "Enable / disable skins")
     private static final String TOGGLE = Translation.Type.GUI.wrap("skin_screen.toggle");
 
-    @Translation(type = Translation.Type.MISC, comments = "This author does not have a skin for this stage.")
+    @Translation(comments = "This author does not have a skin for this stage.")
     private static final String NO_SKIN = Translation.Type.GUI.wrap("skin_screen.no_skin");
 
-    @Translation(type = Translation.Type.MISC, comments = "You do not have a skin for this stage.")
+    @Translation(comments = "You do not have a skin for this stage.")
     private static final String NO_SKIN_SELF = Translation.Type.GUI.wrap("skin_screen.no_skin_self");
 
-    @Translation(type = Translation.Type.MISC, comments = "■ Join our §6discord server§r!§7 Read the Rules, FAQ and Wiki before you ask anything.")
+    @Translation(comments = "■ Join our §6discord server§r!§7 Read the Rules, FAQ and Wiki before you ask anything.")
     private static final String DISCORD = Translation.Type.GUI.wrap("skin_screen.discord");
 
-    @Translation(type = Translation.Type.MISC, comments = "■ This is a link to our §6Wiki§r dedicated to making your own skin!§7 Remember that this will be very difficult, and requires knowledge of graphic editors.")
+    @Translation(comments = "■ This is a link to our §6Wiki§r dedicated to making your own skin!§7 Remember that this will be very difficult, and requires knowledge of graphic editors.")
     private static final String WIKI = Translation.Type.GUI.wrap("skin_screen.wiki");
 
-    @Translation(type = Translation.Type.MISC, comments = {
+    @Translation(comments = {
             "■ A §6Skin§r is a self-made texture for your dragon. In this tab, you can disable the display of your skin for your dragon at different stages, as well as skins of other players.",
             "■ Skins are not built in the Dragon Editor, but created using outside tools.",
             "§7■ If you are interested in how to make your own skin or take a commission, use the buttons on the right."
     })
     private static final String HELP = Translation.Type.GUI.wrap("skin_screen.help");
 
-    @Translation(type = Translation.Type.MISC, comments = "Your dragon")
+    @Translation(comments = "Your dragon")
     private static final String SELF = Translation.Type.GUI.wrap("skin_screen.self");
 
-    @Translation(type = Translation.Type.MISC, comments = "■ This is what §6you§r look like now.")
+    @Translation(comments = "■ This is what §6you§r look like now.")
     private static final String SELF_INFO = Translation.Type.GUI.wrap("skin_screen.self_info");
 
-    @Translation(type = Translation.Type.MISC, comments = "Random")
+    @Translation(comments = "Random")
     private static final String RANDOM = Translation.Type.GUI.wrap("skin_screen.random");
 
-    @Translation(type = Translation.Type.MISC, comments = "■ Shows a randomly selected §6other player§r§f who uploaded a skin. You §ccan't use§r§f their appearance for yourself!§7 Only look and admire! >:D")
+    @Translation(comments = "■ Shows a randomly selected §6other player§r§f who uploaded a skin. You §ccan't use§r§f their appearance for yourself!§7 Only look and admire! >:D")
     private static final String RANDOM_INFO = Translation.Type.GUI.wrap("skin_screen.random_info");
 
-    @Translation(type = Translation.Type.MISC, comments = "Show custom player skins")
+    @Translation(comments = "Show custom player skins")
     private static final String SHOW_OTHER_CUSTOM_SKINS = Translation.Type.GUI.wrap("skin_screen.show_other_custom_skins");
 
-    @Translation(type = Translation.Type.MISC, comments = "Show your custom skin")
+    @Translation(comments = "Show your custom skin")
     private static final String SHOW_CUSTOM_SKIN = Translation.Type.GUI.wrap("skin_screen.show_custom_skin");
 
     private static final ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin_interface.png");

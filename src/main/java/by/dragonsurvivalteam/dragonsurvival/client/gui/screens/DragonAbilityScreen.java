@@ -29,7 +29,7 @@ import java.util.List;
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class DragonAbilityScreen extends Screen {
-    @Translation(type = Translation.Type.MISC, comments = {
+    @Translation(comments = {
             "■ §6Active skills§r are used in combat.",
             "- §9Skill power§r scales off your current experience level. The higher your EXP level, the stronger your active skills.",
             "- §9Experience or mana§r points are used to cast spells.",
@@ -37,14 +37,14 @@ public class DragonAbilityScreen extends Screen {
     })
     private static final String HELP_ACTIVE = Translation.Type.GUI.wrap("help.active_abilities");
 
-    @Translation(type = Translation.Type.MISC, comments = {
+    @Translation(comments = {
             "■ §aPassive skills§r are upgraded by spending experience levels.",
             "- §9Mana§r - do not forget use the Source of Magic and Dragons Treats for an infinite supply of mana!",
             "- §9More information§r can be found on our Wiki and in our Discord. Check the Curseforge mod page."
     })
     private static final String HELP_PASSIVE = Translation.Type.GUI.wrap("help.passive_abilities");
 
-    @Translation(type = Translation.Type.MISC, comments = {
+    @Translation(comments = {
             "■ §6Active skills§r are used in combat.",
             "- §9Skill power§r scales off your current experience level. The higher your EXP level, the stronger your active skills.",
             "- §9Experience or mana§r points are used to cast spells.",
@@ -56,13 +56,13 @@ public class DragonAbilityScreen extends Screen {
     })
     private static final String HELP_PASSIVE_ACTIVE = Translation.Type.GUI.wrap("help.passive_active_abilities");
 
-    @Translation(type = Translation.Type.MISC, comments = {
+    @Translation(comments = {
             "■ §dAbility assignment§r - drag and drop §6Active skills§r to the §9hotbar§r.",
             "- The §9hotbar§r is used to quickly access your active skills."
     })
     private static final String HELP_ABILITY_ASSIGNMENT = Translation.Type.GUI.wrap("help.ability_assignment");
 
-    @Translation(type = Translation.Type.MISC, comments = "■ §dInnate skills§r are a dragon's quirks, and represent the benefits and drawbacks of each dragon type.")
+    @Translation(comments = "■ §dInnate skills§r are a dragon's quirks, and represent the benefits and drawbacks of each dragon type.")
     private static final String HELP_INNATE = Translation.Type.GUI.wrap("help.innate_abilities");
 
     private static final ResourceLocation BACKGROUND_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/background_main.png");

@@ -52,19 +52,19 @@ import java.util.Optional;
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class DragonInventoryScreen extends EffectRenderingInventoryScreen<DragonContainer> {
-    @Translation(type = Translation.Type.MISC, comments = "Toggle showing claws and teeth textures on your model.")
+    @Translation(comments = "Toggle showing claws and teeth textures on your model.")
     private static final String TOGGLE_CLAWS = Translation.Type.GUI.wrap("dragon_inventory.toggle_claws");
 
-    @Translation(type = Translation.Type.MISC, comments = "Open vanilla inventory screen")
+    @Translation(comments = "Open vanilla inventory screen")
     private static final String TOGGLE_VANILLA_INVENTORY = Translation.Type.GUI.wrap("dragon_inventory.toggle_vanilla_inventory");
 
-    @Translation(type = Translation.Type.MISC, comments = "Open the config screen")
+    @Translation(comments = "Open the config screen")
     private static final String TOGGLE_CONFIG = Translation.Type.GUI.wrap("inventory.toggle_config");
 
-    @Translation(type = Translation.Type.MISC, comments = "Open the wiki")
+    @Translation(comments = "Open the wiki")
     private static final String TOGGLE_WIKI = Translation.Type.GUI.wrap("inventory.toggle_wiki");
 
-    @Translation(type = Translation.Type.MISC, comments = {
+    @Translation(comments = {
             "■ A dragon is §6born§r with strong claws and teeth, but you can make them even better! Just put §6any tools§r§f here in your claw slots and your bare paw will borrow their aspect as long as they are intact.",
             "§7■ Does not stack with §2«Claws and Teeth»§r skill, which only applies if these slots are empty."
     })

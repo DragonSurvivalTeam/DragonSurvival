@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DamageModification;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.DurationInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
@@ -9,6 +10,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
@@ -16,6 +18,7 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.common.Tags;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -43,40 +46,40 @@ public record DamageModificationEffect(List<DamageModification> modifications) i
         List<MutableComponent> components = new ArrayList<>();
 
         for (DamageModification damageModification : modifications) {
-            double duration = Functions.ticksToSeconds((int) damageModification.duration().calculate(ability.level()));
-            MutableComponent name = Component.empty();
-
             float amount = damageModification.multiplier().calculate(ability.level());
             String difference = NumberFormat.getPercentInstance().format(Math.abs(amount - 1));
-            // TODO :: skip tooltip if amount equals 1?
+
+            MutableComponent name;
 
             if (amount == 0) {
-                name = name.append(Component.translatable(LangKey.ABILITY_IMMUNITY));
+                name = Component.translatable(LangKey.ABILITY_IMMUNITY);
             } else if (amount < 1) {
-                name = name.append(Component.translatable(LangKey.ABILITY_DAMAGE_REDUCTION, DSColors.dynamicValue(difference)));
+                name = Component.translatable(LangKey.ABILITY_DAMAGE_REDUCTION, DSColors.dynamicValue(difference));
             } else {
-                name = name.append(Component.translatable(LangKey.ABILITY_DAMAGE_INCREASE, DSColors.dynamicValue(difference)));
+                name = Component.translatable(LangKey.ABILITY_DAMAGE_INCREASE, DSColors.dynamicValue(difference));
             }
 
-            int numTypes = damageModification.damageTypes().size();
-            int count = 0;
+            if (damageModification.damageTypes() instanceof HolderSet.Named<DamageType> named) {
+                name.append(DSColors.dynamicValue(Component.translatable(Tags.getTagTranslationKey(named.key()))));
+            } else {
+                int count = 0;
 
-            // TODO :: special handling for tags? check for 'HolderSet.Named' and use the key
-            //  could be helpful for damage type tags which contain a lot of entries
-            for (Holder<DamageType> damageType : damageModification.damageTypes()) {
-                //noinspection DataFlowIssue -> key is present
-                name = name.append(Component.translatable(Translation.Type.DAMAGE_TYPE.wrap(damageType.getKey().location())).withColor(DSColors.BLUE));
-                count++;
+                for (Holder<DamageType> damageType : damageModification.damageTypes()) {
+                    //noinspection DataFlowIssue -> key is present
+                    name.append(DSColors.dynamicValue(Component.translatable(Translation.Type.DAMAGE_TYPE.wrap(damageType.getKey().location()))));
 
-                if (count == numTypes - 1) {
-                    name = name.append(" and ");
-                } else if (count < numTypes - 1) {
-                    name = name.append(", ");
+                    if (count < damageModification.damageTypes().size() - 1) {
+                        name.append(", ");
+                    }
+
+                    count++;
                 }
             }
 
-            if (duration > 0) {
-                name = name.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.dynamicValue(duration)));
+            float duration = damageModification.duration().calculate(ability.level());
+
+            if (duration != DurationInstance.INFINITE_DURATION) {
+                name.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.dynamicValue(Functions.ticksToSeconds((int) duration))));
             }
 
             components.add(name);

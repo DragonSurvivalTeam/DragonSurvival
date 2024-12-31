@@ -39,13 +39,13 @@ public class MagicHUD {
     private static final ResourceLocation VANILLA_WIDGETS = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/pre-1.20.1-widgets.png");
     private static final ResourceLocation CAST_BAR_FILL = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/casting_bars/cast_bar_fill.png");
 
-    @Translation(type = Translation.Type.MISC, comments = "§fNot enough§r §cmana or experience§r!")
+    @Translation(comments = "§fNot enough§r §cmana or experience§r!")
     public static final String NO_MANA = Translation.Type.GUI.wrap("ability.no_mana");
 
-    @Translation(type = Translation.Type.MISC, comments = "§fThis ability is §r§cnot ready§r§f yet!§r (%s)")
+    @Translation(comments = "§fThis ability is §r§cnot ready§r§f yet!§r (%s)")
     public static final String COOLDOWN = Translation.Type.GUI.wrap("ability.cooldown");
 
-    @Translation(type = Translation.Type.MISC, comments = "§fThis skill cannot be used §r§cwhile flying§r§f!§f")
+    @Translation(comments = "§fThis skill cannot be used §r§cwhile flying§r§f!§f")
     public static final String FLYING = Translation.Type.GUI.wrap("ability.flying");
 
     @ConfigRange(min = -1000, max = 1000)

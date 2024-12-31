@@ -49,7 +49,7 @@ import java.util.Optional;
 import javax.annotation.Nullable;
 
 public class TreasureBlock extends FallingBlock implements SimpleWaterloggedBlock {
-    @Translation(type = Translation.Type.MISC, comments = "■§7 Dragons can sleep on treasure to regenerate health and mana. Gathering more treasure increases the speed of the regeneration. Build your horde and show off your wealth!")
+    @Translation(comments = "■§7 Dragons can sleep on treasure to regenerate health and mana. Gathering more treasure increases the speed of the regeneration. Build your horde and show off your wealth!")
     private static final String TREASURE = Translation.Type.DESCRIPTION.wrap("treasure");
 
     public static final IntegerProperty LAYERS = BlockStateProperties.LAYERS;

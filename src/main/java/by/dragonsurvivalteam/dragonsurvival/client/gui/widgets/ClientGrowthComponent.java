@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 
 public class ClientGrowthComponent implements ClientTooltipComponent {
-    @Translation(type = Translation.Type.MISC, comments = "%s %s:%s:%s")
+    @Translation(comments = "%s %s:%s:%s")
     private static final String TIME = Translation.Type.GUI.wrap("growth.time");
 
     private static final int ICON_SIZE = 20;

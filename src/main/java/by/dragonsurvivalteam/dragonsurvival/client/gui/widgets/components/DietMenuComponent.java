@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class DietMenuComponent implements ScrollableComponent, Renderable {
-    @Translation(type = Translation.Type.MISC, comments = "There is no custom dragon diet")
+    @Translation(comments = "There is no custom dragon diet")
     public static final String NO_CUSTOM_DIET = Translation.Type.GUI.wrap("diet_menu.no_custom_diet");
 
     private static final int VISIBLE_MAX_ROWS = 3;

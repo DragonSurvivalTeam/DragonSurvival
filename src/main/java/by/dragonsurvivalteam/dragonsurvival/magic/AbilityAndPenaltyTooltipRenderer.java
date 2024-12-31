@@ -27,19 +27,19 @@ import java.util.List;
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class AbilityAndPenaltyTooltipRenderer {
-    @Translation(type = Translation.Type.MISC, comments = "Active Ability")
+    @Translation(comments = "Active Ability")
     private static final String ACTIVE = Translation.Type.ABILITY.wrap("general.active");
 
-    @Translation(type = Translation.Type.MISC, comments = "Passive Ability")
+    @Translation(comments = "Passive Ability")
     private static final String PASSIVE = Translation.Type.ABILITY.wrap("general.passive");
 
-    @Translation(type = Translation.Type.MISC, comments = "Penalty")
+    @Translation(comments = "Penalty")
     private static final String PENALTY = Translation.Type.ABILITY.wrap("general.innate");
 
-    @Translation(type = Translation.Type.MISC, comments = "Info")
+    @Translation(comments = "Info")
     private static final String INFO = Translation.Type.ABILITY.wrap("general.info");
 
-    @Translation(type = Translation.Type.MISC, comments = "Hold ‘Shift’ for info")
+    @Translation(comments = "Hold ‘Shift’ for info")
     private static final String INFO_SHIFT = Translation.Type.ABILITY.wrap("general.info_shift");
 
     private static final ResourceLocation BARS = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/widget_bars.png");

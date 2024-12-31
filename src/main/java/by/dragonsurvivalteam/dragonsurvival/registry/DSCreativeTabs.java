@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 import static by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks.DS_BLOCKS;
 
 public class DSCreativeTabs {
-    @Translation(type = Translation.Type.MISC, comments = "Dragon Survival")
+    @Translation(comments = "Dragon Survival")
     private static final String CREATIVE_TAB = Translation.Type.GUI.wrap("creative_tab");
 
     public static final DeferredRegister<CreativeModeTab> DS_CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, DragonSurvival.MODID);

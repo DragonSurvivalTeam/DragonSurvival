@@ -34,10 +34,10 @@ import static by.dragonsurvivalteam.dragonsurvival.network.container.RequestOpen
 
 @EventBusSubscriber(Dist.CLIENT)
 public class InventoryScreenHandler {
-    @Translation(type = Translation.Type.MISC, comments = "Open dragon inventory screen")
+    @Translation(comments = "Open dragon inventory screen")
     private static final String TOGGLE_DRAGON_INVENTORY = Translation.Type.GUI.wrap("inventory.toggle_dragon_inventory");
 
-    @Translation(type = Translation.Type.MISC, comments = "Open dragon altar")
+    @Translation(comments = "Open dragon altar")
     private static final String TOGGLE_DRAGON_ALTAR = Translation.Type.GUI.wrap("inventory.toggle_dragon_altar");
 
     @Translation(key = "dragon_inventory", type = Translation.Type.CONFIGURATION, comments = "If enabled the default inventory is replaced with a custom inventory")

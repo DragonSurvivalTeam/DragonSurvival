@@ -60,7 +60,7 @@ public enum Keybind {
     @Translation(type = Translation.Type.KEYBIND, comments = "Toggle summon behaviour (+ SHIFT)")
     TOGGLE_SUMMON_BEHAVIOUR(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_UNKNOWN);
 
-    @Translation(type = Translation.Type.MISC, comments = "Dragon Survival")
+    @Translation(comments = "Dragon Survival")
     private static final String CATEGORY = Translation.Type.KEYBIND.wrap("category");
 
     public static final int KEY_RELEASED = 0;

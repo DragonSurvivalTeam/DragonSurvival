@@ -32,10 +32,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class DragonAltarBlock extends Block {
-    @Translation(type = Translation.Type.MISC, comments = "The altar is on cooldown for: %s")
+    @Translation(comments = "The altar is on cooldown for: %s")
     private static final String ALTAR_COOLDOWN = Translation.Type.GUI.wrap("message.altar_cooldown");
 
-    @Translation(type = Translation.Type.MISC, comments = "■§7 An altar that allows you to turn into a dragon.")
+    @Translation(comments = "■§7 An altar that allows you to turn into a dragon.")
     private static final String ALTAR = Translation.Type.DESCRIPTION.wrap("dragon_altar");
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;

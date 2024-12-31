@@ -5,6 +5,8 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProv
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.neoforged.neoforge.common.Tags;
 
 import java.lang.annotation.*;
 import java.util.Locale;
@@ -13,9 +15,10 @@ import java.util.Locale;
  * The following field types have special behaviour when no {@link Translation#key()} is supplied: <br>
  * - {@link Enum} will use {@link Enum#toString()} -> {@link String#toLowerCase(Locale)} to determine the wrapped value <br>
  * - {@link Enum} will add {@link DSLanguageProvider#enumClassKey(Enum)} as prefix if the type is {@link Translation.Type#ENUM} <br>
- * - {@link String} annotated with the type {@link Type#MISC} will use its stored value, not wrapping anything <br>
+ * - {@link String} annotated with the type {@link Type#NONE} will use its stored value, not wrapping anything <br>
  * - {@link String} annotated with the type {@link Type#EMOTE} will use its stored value, wrapped with emote <br>
  * - {@link Holder} will use {@link Holder#getKey()} -> {@link ResourceKey#location()} -> {@link ResourceLocation#getPath()} to determine the wrapped value <br>
+ * - {@link TagKey} will use {@link Tags#getTagTranslationKey(TagKey)} <br>
  * - {@link ResourceKey} will use {@link ResourceKey#location()} -> {@link ResourceLocation#getPath()} to determine the wrapped value <br>
  * - {@link ResourceLocation} will use {@link ResourceLocation#getPath()} to determine the wrapped value <br>
  */
@@ -26,7 +29,7 @@ public @interface Translation {
     /** If it's empty the key will be derived from the field (behaviour depends on the field type) */
     String key() default "";
 
-    Type type();
+    Type type() default Type.NONE;
 
     String locale() default "en_us";
 
@@ -97,8 +100,12 @@ public @interface Translation {
 
         ENUM("enum.", ""),
 
-        /** When used on {@link String} and no specified key it's expected that the string contains the translation key */
-        MISC("", "");
+        /**
+         * When used on {@link String} and no specified key it's expected that the string contains the translation key <br>
+         * Otherwise it generally means the key is being handled in a special way / no prefix is required <br>
+         * (Usually meaning that {@link Translation.Type#wrap(ResourceLocation)} is not used)
+         */
+        NONE("", "");
 
         public final String prefix;
         public final String suffix;
