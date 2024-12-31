@@ -1,20 +1,30 @@
 package by.dragonsurvivalteam.dragonsurvival.registry;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.items.*;
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.DarkDragonArmorItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.DragonHunterWeapon;
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.LightDragonArmorItem;
+import by.dragonsurvivalteam.dragonsurvival.common.items.food.CustomOnFinishEffectItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.growth.StarHeartItem;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.util.BlockPosHelper;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
@@ -75,38 +85,37 @@ public class DSItems {
 
     // --- Food --- //
 
-    // FIXME
-    /*@Translation(type = Translation.Type.ITEM, comments = "Charged Coal")
+    @Translation(type = Translation.Type.ITEM, comments = "Charged Coal")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 Removes all effects. Can also be used to smelt a large number of items. More efficient than a block of coal.")
-    public static final Holder<Item> CHARGED_COAL = DS_ITEMS.register("charged_coal", () -> new ChargedCoalItem(new Properties(), DragonTypes.CAVE, REMOVE_EFFECTS_CURED_BY_MILK));
+    public static final Holder<Item> CHARGED_COAL = DS_ITEMS.register("charged_coal", location -> new ChargedCoalItem(new Properties(), location.getPath(), REMOVE_EFFECTS_CURED_BY_MILK));
 
     @Translation(type = Translation.Type.ITEM, comments = "Charged Soup")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 A concoction of various cave dragon delicacies. Heats up the body enough to protect it from the damaging effects of water.")
-    public static final Holder<Item> CHARGED_SOUP = DS_ITEMS.register("charged_soup", () -> new ChargedSoupItem(new Properties()));
+    public static final Holder<Item> CHARGED_SOUP = DS_ITEMS.register("charged_soup", location -> new TooltipItem(new Properties(), location.getPath()));
 
     @Translation(type = Translation.Type.ITEM, comments = "Charred Meat")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 A cave dragon's 'medium rare'.")
-    public static final Holder<Item> CHARRED_MEAT = DS_ITEMS.register("charred_meat", () -> new DragonFoodItem(new Properties()));
+    public static final Holder<Item> CHARRED_MEAT = DS_ITEMS.register("charred_meat", location -> new TooltipItem(new Properties(), location.getPath()));
 
     @Translation(type = Translation.Type.ITEM, comments = "Charred Vegetable")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 Crunchy!")
-    public static final Holder<Item> CHARRED_VEGETABLE = DS_ITEMS.register("charred_vegetable", () -> new DragonFoodItem(new Properties()));
+    public static final Holder<Item> CHARRED_VEGETABLE = DS_ITEMS.register("charred_vegetable", location -> new TooltipItem(new Properties(), location.getPath()));
 
     @Translation(type = Translation.Type.ITEM, comments = "Charred Mushroom")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 Spore-free!")
-    public static final Holder<Item> CHARRED_MUSHROOM = DS_ITEMS.register("charred_mushroom", () -> new DragonFoodItem(new Properties()));
+    public static final Holder<Item> CHARRED_MUSHROOM = DS_ITEMS.register("charred_mushroom", location -> new TooltipItem(new Properties(), location.getPath()));
 
     @Translation(type = Translation.Type.ITEM, comments = "Charred Seafood")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 Stories speak of a time when someone tried to feed a cave dragon fish. This is what they got back!")
-    public static final Holder<Item> CHARRED_SEAFOOD = DS_ITEMS.register("charred_seafood", () -> new DragonFoodItem(new Properties()));
+    public static final Holder<Item> CHARRED_SEAFOOD = DS_ITEMS.register("charred_seafood", location -> new TooltipItem(new Properties(), location.getPath()));
 
     @Translation(type = Translation.Type.ITEM, comments = "Hot Dragon Rod")
-    @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 Protects cave dragons from water for a short time. A blaze rod seasoned with dragon dust; a crispy snack that increases the dragon's body temperature.")
-    public static final Holder<Item> HOT_DRAGON_ROD = DS_ITEMS.register("hot_dragon_rod", () -> new DragonFoodItem(new Properties(), DragonTypes.CAVE, () -> new MobEffectInstance(DSEffects.FIRE, Functions.minutesToTicks(1))));
+    @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 A blaze rod seasoned with dragon dust; a crispy snack that increases the dragon's body temperature. Protects cave dragons from water for a short time.")
+    public static final Holder<Item> HOT_DRAGON_ROD = DS_ITEMS.register("hot_dragon_rod", location -> new CustomOnFinishEffectItem(new Properties(), location.getPath(), entity -> entity.addEffect(new MobEffectInstance(DSEffects.FIRE, Functions.minutesToTicks(1)))));
 
     @Translation(type = Translation.Type.ITEM, comments = "Explosive Copper")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 Cave dragon dessert. Dangerous and unstable.")
-    public static final Holder<Item> EXPLOSIVE_COPPER = DS_ITEMS.register("explosive_copper", () -> new DragonFoodItem(new Properties(), null, entity -> {
+    public static final Holder<Item> EXPLOSIVE_COPPER = DS_ITEMS.register("explosive_copper", location -> new CustomOnFinishEffectItem(new Properties(), location.getPath(), entity -> {
         entity.hurt(entity.damageSources().explosion(entity, entity), 1f);
         entity.level().addParticle(ParticleTypes.EXPLOSION, entity.getX(), entity.getEyeY(), entity.getZ(), 1.0D, 0.0D, 0.0D);
         entity.level().playSound(null, BlockPosHelper.get(entity.getEyePosition()), SoundEvents.FIREWORK_ROCKET_TWINKLE_FAR, SoundSource.PLAYERS, 1f, 1f);
@@ -114,92 +123,88 @@ public class DSItems {
 
     @Translation(type = Translation.Type.ITEM, comments = "Volatile Mineral Mix")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 Removes Wither and Poison effects, gives Absorption and Regeneration. A high-pressure heated mixture of Fused Quartz and Explosive Copper.")
-    public static final Holder<Item> QUARTZ_EXPLOSIVE_COPPER = DS_ITEMS.register("quartz_explosive_copper", () -> new DragonFoodItem(new Properties(), DragonTypes.CAVE, entity -> {
+    public static final Holder<Item> QUARTZ_EXPLOSIVE_COPPER = DS_ITEMS.register("quartz_explosive_copper", location -> new CustomOnFinishEffectItem(new Properties(), location.getPath(), entity -> {
         entity.removeEffect(MobEffects.POISON);
         entity.removeEffect(MobEffects.WITHER);
-    }, List.of(
-            () -> new MobEffectInstance(MobEffects.ABSORPTION, Functions.minutesToTicks(5)),
-            () -> new MobEffectInstance(MobEffects.REGENERATION, Functions.secondsToTicks(10), 1))
-    ));
+        entity.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, Functions.minutesToTicks(5)));
+        entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION, Functions.secondsToTicks(10), 1));
+    }));
 
     @Translation(type = Translation.Type.ITEM, comments = "Fused Quartz")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 Grants Regeneration. Quartz and Amethyst that has been combined with enough heat and force to greatly improve their flavor.")
-    public static final Holder<Item> DOUBLE_QUARTZ = DS_ITEMS.register("double_quartz", () -> new DragonFoodItem(new Properties(), DragonTypes.CAVE, () -> new MobEffectInstance(MobEffects.REGENERATION, Functions.secondsToTicks(5))));
+    public static final Holder<Item> DOUBLE_QUARTZ = DS_ITEMS.register("double_quartz", location -> new CustomOnFinishEffectItem(new Properties(), location.getPath(), entity -> entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION, Functions.secondsToTicks(5)))));
 
     @Translation(type = Translation.Type.ITEM, comments = "Sweet & Sour Rabbit")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 Cleanses all active effects. Rabbit, marinated with a mixture of honey and spider eyes. Traditionally served during dragon holidays.")
-    public static final Holder<Item> SWEET_SOUR_RABBIT = DS_ITEMS.register("sweet_sour_rabbit", () -> new DragonFoodItem(new Properties(), DragonTypes.FOREST, REMOVE_EFFECTS_CURED_BY_MILK));
+    public static final Holder<Item> SWEET_SOUR_RABBIT = DS_ITEMS.register("sweet_sour_rabbit", location -> new CustomOnFinishEffectItem(new Properties(), location.getPath(), REMOVE_EFFECTS_CURED_BY_MILK));
 
     @Translation(type = Translation.Type.ITEM, comments = "Luminous Tincture")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 A tincture of various glowing ingredients that protects against the darkness when consumed. Dark environments sap a forest dragon's strength as their own plants begin to devour them.")
-    public static final Holder<Item> LUMINOUS_OINTMENT = DS_ITEMS.register("luminous_ointment", () -> new DragonFoodItem(new Properties(), DragonTypes.FOREST, List.of(
-            () -> new MobEffectInstance(MobEffects.GLOWING, Functions.minutesToTicks(5)),
-            () -> new MobEffectInstance(DSEffects.MAGIC, Functions.minutesToTicks(5)))
-    ));
+    public static final Holder<Item> LUMINOUS_OINTMENT = DS_ITEMS.register("luminous_ointment", location -> new CustomOnFinishEffectItem(new Properties(), location.getPath(), entity -> {
+        entity.addEffect(new MobEffectInstance(DSEffects.MAGIC, Functions.minutesToTicks(5)));
+        entity.addEffect(new MobEffectInstance(MobEffects.GLOWING, Functions.minutesToTicks(5)));
+    }));
 
     @Translation(type = Translation.Type.ITEM, comments = "Crystalline Chorus")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 Removes Wither and Poison effects, and gives Absorption and Regeneration. Chorus Fruit stuffed with diamond dust. The diamonds are pulverized using the Ender Dragon's breath.")
-    public static final Holder<Item> DIAMOND_CHORUS = DS_ITEMS.register("diamond_chorus", () -> new DragonFoodItem(new Properties(), DragonTypes.FOREST, entity -> {
+    public static final Holder<Item> DIAMOND_CHORUS = DS_ITEMS.register("diamond_chorus", location -> new CustomOnFinishEffectItem(new Properties(), location.getPath(),  entity -> {
         entity.removeEffect(MobEffects.POISON);
         entity.removeEffect(MobEffects.WITHER);
-    }, List.of(
-            () -> new MobEffectInstance(MobEffects.ABSORPTION, Functions.minutesToTicks(5)),
-            () -> new MobEffectInstance(MobEffects.REGENERATION, Functions.secondsToTicks(10), 1))
-    ));
+        entity.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, Functions.minutesToTicks(5)));
+        entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION, Functions.secondsToTicks(10), 1));
+    }));
 
     @Translation(type = Translation.Type.ITEM, comments = "Smelly Meat Porridge")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 A meat and bone fertilizer. Contains plenty of nutrients to feed a forest dragon's plants.")
-    public static final Holder<Item> SMELLY_MEAT_PORRIDGE = DS_ITEMS.register("smelly_meat_porridge", () -> new DragonFoodItem(new Properties()));
+    public static final Holder<Item> SMELLY_MEAT_PORRIDGE = DS_ITEMS.register("smelly_meat_porridge", location -> new TooltipItem(new Properties(), location.getPath()));
 
     @Translation(type = Translation.Type.ITEM, comments = "Meat & Wild Berries")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 A classic combination of sweet berries and wild herbs. A favorite amongst forest dragons.")
-    public static final Holder<Item> MEAT_WILD_BERRIES = DS_ITEMS.register("meat_wild_berries", () -> new DragonFoodItem(new Properties()));
+    public static final Holder<Item> MEAT_WILD_BERRIES = DS_ITEMS.register("meat_wild_berries", location -> new TooltipItem(new Properties(), location.getPath()));
 
     @Translation(type = Translation.Type.ITEM, comments = "Meat-Chorus Mix")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 Grants Regeneration. The exotic Chorus Fruit has always been prized among forest dragons, and is commonly combined with raw meats.")
-    public static final Holder<Item> MEAT_CHORUS_MIX = DS_ITEMS.register("meat_chorus_mix", () -> new DragonFoodItem(new Properties(), DragonTypes.FOREST, () -> new MobEffectInstance(MobEffects.REGENERATION, Functions.secondsToTicks(5))));
+    public static final Holder<Item> MEAT_CHORUS_MIX = DS_ITEMS.register("meat_chorus_mix", location -> new CustomOnFinishEffectItem(new Properties(), location.getPath(), entity -> entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION, Functions.secondsToTicks(5)))));
 
     @Translation(type = Translation.Type.ITEM, comments = "Seasoned Fish")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 A popular seafood dish amongst dragons. It is prepared by removing the skin and coating it with ink. This gives it an unusual taste and hue. The kelp leaf is for decoration and freshness.")
-    public static final Holder<Item> SEASONED_FISH = DS_ITEMS.register("seasoned_fish", () -> new DragonFoodItem(new Properties()));
+    public static final Holder<Item> SEASONED_FISH = DS_ITEMS.register("seasoned_fish", location -> new TooltipItem(new Properties(), location.getPath()));
 
     @Translation(type = Translation.Type.ITEM, comments = "Golden Pufferfish")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 Grants Regeneration. Gilded pufferfish dusted with crushed coral. The gold neutralizes the natural poison of the pufferfish, making it safer for consumption.")
-    public static final Holder<Item> GOLDEN_CORAL_PUFFERFISH = DS_ITEMS.register("golden_coral_pufferfish", () -> new DragonFoodItem(new Properties(), DragonTypes.SEA, () -> new MobEffectInstance(MobEffects.REGENERATION, Functions.secondsToTicks(5))));
+    public static final Holder<Item> GOLDEN_CORAL_PUFFERFISH = DS_ITEMS.register("golden_coral_pufferfish", location -> new CustomOnFinishEffectItem(new Properties(), location.getPath(), entity -> entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION, Functions.secondsToTicks(5)))));
 
     @Translation(type = Translation.Type.ITEM, comments = "Frozen Fish")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 Cleanses all effects and replenishes water. Food and water in one convenient package!")
-    public static final Holder<Item> FROZEN_RAW_FISH = DS_ITEMS.register("frozen_raw_fish", () -> new DragonFoodItem(new Properties(), DragonTypes.SEA, entity -> {
-        REMOVE_EFFECTS_CURED_BY_MILK.accept(entity);
-
-        if (entity instanceof ServerPlayer serverPlayer) {
-            if (DragonStateProvider.getData(serverPlayer).getType() instanceof SeaDragonType type) {
-                type.timeWithoutWater = 0;
-            }
-        }
-    }));
+    public static final Holder<Item> FROZEN_RAW_FISH = DS_ITEMS.register("frozen_raw_fish", location -> new CustomOnFinishEffectItem(new Properties(), location.getPath(), REMOVE_EFFECTS_CURED_BY_MILK));
 
     @Translation(type = Translation.Type.ITEM, comments = "Golden Turtle Egg")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 Removes Wither and Poison effects, and gives Absorption and Regeneration. A turtle egg stuffed with dragon dust and gold. After a while, the dust reacts with the eggshell, changing its color and texture.")
-    public static final Holder<Item> GOLDEN_TURTLE_EGG = DS_ITEMS.register("golden_turtle_egg", () -> new DragonFoodItem(new Properties(), DragonTypes.SEA, entity -> {
+    public static final Holder<Item> GOLDEN_TURTLE_EGG = DS_ITEMS.register("golden_turtle_egg", location -> new CustomOnFinishEffectItem(new Properties(), location.getPath(), entity -> {
         entity.removeEffect(MobEffects.POISON);
         entity.removeEffect(MobEffects.WITHER);
-    }, List.of(
-            () -> new MobEffectInstance(MobEffects.ABSORPTION, Functions.minutesToTicks(5)),
-            () -> new MobEffectInstance(MobEffects.REGENERATION, Functions.secondsToTicks(10), 1))
-    ));
+        entity.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, Functions.minutesToTicks(5)));
+        entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION, Functions.secondsToTicks(10), 1));
+    }));
+
+    private static final Consumer<LivingEntity> EAT_TREAT_EFFECT = entity -> {
+        if (entity instanceof Player player) {
+            ManaHandler.replenishMana(player, ManaHandler.getMaxMana(player));
+            player.addEffect(new MobEffectInstance(DSEffects.SOURCE_OF_MAGIC, Functions.minutesToTicks(1)));
+        }
+    };
 
     @Translation(type = Translation.Type.ITEM, comments = "Sea Dragon Treat")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 Grants infinite mana temporarily.")
-    public static final Holder<Item> SEA_DRAGON_TREAT = DS_ITEMS.register("sea_dragon_treat", () -> new DragonTreatItem(DragonTypes.SEA, new Properties()));
+    public static final Holder<Item> SEA_DRAGON_TREAT = DS_ITEMS.register("sea_dragon_treat", location -> new CustomOnFinishEffectItem(new Properties(), location.getPath(), EAT_TREAT_EFFECT));
 
     @Translation(type = Translation.Type.ITEM, comments = "Cave Dragon Treat")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 Grants infinite mana temporarily.")
-    public static final Holder<Item> CAVE_DRAGON_TREAT = DS_ITEMS.register("cave_dragon_treat", () -> new DragonTreatItem(DragonTypes.CAVE, new Properties()));
+    public static final Holder<Item> CAVE_DRAGON_TREAT = DS_ITEMS.register("cave_dragon_treat", location -> new CustomOnFinishEffectItem(new Properties(), location.getPath(), EAT_TREAT_EFFECT));
 
     @Translation(type = Translation.Type.ITEM, comments = "Forest Dragon Treat")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 Grants infinite mana temporarily.")
-    public static final Holder<Item> FOREST_DRAGON_TREAT = DS_ITEMS.register("forest_dragon_treat", () -> new DragonTreatItem(DragonTypes.FOREST, new Properties()));*/
+    public static final Holder<Item> FOREST_DRAGON_TREAT = DS_ITEMS.register("forest_dragon_treat", location -> new CustomOnFinishEffectItem(new Properties(), location.getPath(), EAT_TREAT_EFFECT));
 
     // --- Armor --- //
 
