@@ -562,7 +562,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
                 color = DyeColor.RED.getTextColor();
             }
             if(tickWhenSlotDisplayMessageSet + 200 - tick > 0) {
-                TextRenderUtil.drawCenteredScaledText(graphics, width / 2, height / 2 + 30, 0.5f, loadSlotDisplayMessage(slotDisplayMessage).getString(), color);
+                TextRenderUtil.drawCenteredScaledText(graphics, width / 2, height / 2 + 20, 0.5f, loadSlotDisplayMessage(slotDisplayMessage).getString(), color);
             } else {
                 slotDisplayMessage = SlotDisplayMessage.NONE;
             }
