@@ -12,6 +12,9 @@ import net.minecraft.world.item.Item;
 import java.util.*;
 
 public record DietEntry(List<String> items, Optional<FoodProperties> properties) {
+    // Copied from FoodProperties.java. Trying to AT this didn't work out well.
+    public static final float DEFAULT_EAT_SECONDS = 1.6f;
+
     public static final Codec<DietEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ResourceLocationWrapper.validatedCodec().listOf().fieldOf("items").forGetter(DietEntry::items),
             FoodProperties.DIRECT_CODEC.optionalFieldOf("properties").forGetter(DietEntry::properties)
@@ -59,11 +62,11 @@ public record DietEntry(List<String> items, Optional<FoodProperties> properties)
 
                 keys.forEach(key -> {
                     Item item = BuiltInRegistries.ITEM.get(key);
-                    //noinspection DataFlowIssue -> item is present
-                    FoodProperties properties = entry.properties.orElse(item.getDefaultInstance().getFoodProperties(null));
-
-                    if (properties != null) {
-                        diet.put(item, properties);
+                    if(item != null) {
+                        FoodProperties properties = entry.properties.orElse(item.getDefaultInstance().getFoodProperties(null));
+                        if (properties != null) {
+                            diet.put(item, properties);
+                        }
                     }
                 });
             }

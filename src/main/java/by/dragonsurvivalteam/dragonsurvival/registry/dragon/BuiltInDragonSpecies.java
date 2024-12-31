@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.GrowthIcon;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscDragonTextures;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.CaveDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.ForestDragonAbilities;
@@ -88,10 +89,40 @@ public class BuiltInDragonSpecies {
                 ),
                 List.of(),
                 List.of(
-                        DietEntry.from(ItemTags.FISHES, new FoodProperties(2, 1, true, 1, Optional.empty(), List.of())),
-                        DietEntry.from(ItemTags.MEAT, new FoodProperties(8, 3, true, 1, Optional.empty(), List.of())),
-                        DietEntry.from(Tags.Items.ORES, new FoodProperties(12, 5, false, 3, Optional.empty(), List.of())),
-                        DietEntry.from(Tags.Items.FOODS)
+                        DietEntry.from(ItemTags.FISHES, new FoodProperties(2, 1, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                        DietEntry.from(ItemTags.COALS, new FoodProperties(1, 1, false, 0.8f, Optional.empty(), List.of())),
+                        DietEntry.from(Tags.Items.RAW_MATERIALS, new FoodProperties(4, 4, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                        DietEntry.from(DSItems.CHARGED_COAL.value(), new FoodProperties(6, 1, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                        DietEntry.from(DSItems.CHARRED_MEAT.value(), new FoodProperties(8, 10, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                        DietEntry.from(DSItems.CAVE_DRAGON_TREAT.value(), new FoodProperties(4, 8, true, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                        DietEntry.from(DSItems.CHARRED_SEAFOOD.value(), new FoodProperties(7, 11, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                        DietEntry.from(DSItems.CHARRED_VEGETABLE.value(), new FoodProperties(8, 9, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                        DietEntry.from(DSItems.CHARRED_MUSHROOM.value(), new FoodProperties(9, 9, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                        DietEntry.from(DSItems.CHARGED_SOUP.value(), new FoodProperties(15, 15, true, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                        DietEntry.from(DSItems.HOT_DRAGON_ROD.value(), new FoodProperties(4, 15, true, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                        DietEntry.from(DSItems.EXPLOSIVE_COPPER.value(), new FoodProperties(6, 4, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                        DietEntry.from(DSItems.DOUBLE_QUARTZ.value(), new FoodProperties(8, 6, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                        DietEntry.from(DSItems.QUARTZ_EXPLOSIVE_COPPER.value(), new FoodProperties(12, 18, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                        DietEntry.from("netherdepthsupgrade:blazefish", new FoodProperties(6, 7, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                        DietEntry.from("netherdepthsupgrade:cooked_magmacubefish_slice", new FoodProperties(2, 2, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                        DietEntry.from("netherdepthsupgrade:blazefish_slice", new FoodProperties(2, 2, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                        DietEntry.from("netherdepthsupgrade:magmacubefish", new FoodProperties(6, 7, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                        DietEntry.from("netherdepthsupgrade:fortress_grouper", new FoodProperties(3, 1, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                        DietEntry.from("desolation:cinder_fruit", new FoodProperties(6, 7, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                        DietEntry.from("desolation:powered_cinder_fruit", new FoodProperties(8, 12, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                        DietEntry.from("desolation:activatedcharcoal", new FoodProperties(2, 2, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                        DietEntry.from("desolation:infused_powder", new FoodProperties(10, 10, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                        DietEntry.from("desolation:primed_ash", new FoodProperties(7, 8, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                        DietEntry.from("undergarden:ditchbulb", new FoodProperties(5, 6, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                        DietEntry.from("xreliquary:molten_core", new FoodProperties(1, 1, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                        DietEntry.from("mekanism:dust_coal", new FoodProperties(1, 1, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                        DietEntry.from("mekanism:dust_charcoal", new FoodProperties(1, 1, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                        DietEntry.from("thermal:coal_coke", new FoodProperties(1, 1, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                        DietEntry.from("thermal:basalz_rod", new FoodProperties(2, 4, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                        DietEntry.from("thermal:basalz_powder", new FoodProperties(1, 2, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                        DietEntry.from("create:blaze_cake", new FoodProperties(10, 10, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                        DietEntry.from("create:creative_blaze_cake", new FoodProperties(50, 50, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                        DietEntry.from("nethersdelight:nether_skewer", new FoodProperties(6, 8, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of()))
                 ),
                 new MiscDragonTextures(
                         DragonSurvival.res("textures/gui/food_icons/cave_food_icons.png"),

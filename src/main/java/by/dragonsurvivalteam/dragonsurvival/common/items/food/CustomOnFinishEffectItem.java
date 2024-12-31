@@ -17,17 +17,15 @@ public class CustomOnFinishEffectItem extends TooltipItem {
 
     public CustomOnFinishEffectItem(final Item.Properties properties, final @Nullable String key, final @Nullable Consumer<LivingEntity> onEat) {
         super(properties, key);
-        this.onEat = null;
+        this.onEat = onEat;
     }
 
     @Override
     public @NotNull ItemStack finishUsingItem(@NotNull ItemStack stack, @NotNull Level level, @NotNull LivingEntity entity) {
-        ItemStack result = super.finishUsingItem(stack, level, entity);
-
         if (onEat != null) {
             onEat.accept(entity);
         }
 
-        return result;
+        return super.finishUsingItem(stack, level, entity);
     }
 }

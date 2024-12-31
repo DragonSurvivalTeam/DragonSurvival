@@ -21,36 +21,311 @@
       ],
       "properties": {
         "can_always_eat": true,
-        "eat_seconds": 1.0,
         "nutrition": 2,
         "saturation": 1.0
       }
     },
     {
       "items": [
-        "#minecraft:meat"
+        "#minecraft:coals"
       ],
       "properties": {
         "can_always_eat": true,
-        "eat_seconds": 1.0,
-        "nutrition": 8,
-        "saturation": 3.0
+        "eat_seconds": 0.8,
+        "nutrition": 1,
+        "saturation": 1.0
       }
     },
     {
       "items": [
-        "#c:ores"
+        "#c:raw_materials"
       ],
       "properties": {
-        "eat_seconds": 3.0,
-        "nutrition": 12,
-        "saturation": 5.0
+        "nutrition": 4,
+        "saturation": 4.0
       }
     },
     {
       "items": [
-        "#c:foods"
-      ]
+        "dragonsurvival:charged_coal"
+      ],
+      "properties": {
+        "nutrition": 6,
+        "saturation": 1.0
+      }
+    },
+    {
+      "items": [
+        "dragonsurvival:charred_meat"
+      ],
+      "properties": {
+        "nutrition": 8,
+        "saturation": 10.0
+      }
+    },
+    {
+      "items": [
+        "dragonsurvival:cave_dragon_treat"
+      ],
+      "properties": {
+        "can_always_eat": true,
+        "nutrition": 4,
+        "saturation": 8.0
+      }
+    },
+    {
+      "items": [
+        "dragonsurvival:charred_seafood"
+      ],
+      "properties": {
+        "nutrition": 7,
+        "saturation": 11.0
+      }
+    },
+    {
+      "items": [
+        "dragonsurvival:charred_vegetable"
+      ],
+      "properties": {
+        "nutrition": 8,
+        "saturation": 9.0
+      }
+    },
+    {
+      "items": [
+        "dragonsurvival:charred_mushroom"
+      ],
+      "properties": {
+        "nutrition": 9,
+        "saturation": 9.0
+      }
+    },
+    {
+      "items": [
+        "dragonsurvival:charged_soup"
+      ],
+      "properties": {
+        "can_always_eat": true,
+        "nutrition": 15,
+        "saturation": 15.0
+      }
+    },
+    {
+      "items": [
+        "dragonsurvival:hot_dragon_rod"
+      ],
+      "properties": {
+        "can_always_eat": true,
+        "nutrition": 4,
+        "saturation": 15.0
+      }
+    },
+    {
+      "items": [
+        "dragonsurvival:explosive_copper"
+      ],
+      "properties": {
+        "nutrition": 6,
+        "saturation": 4.0
+      }
+    },
+    {
+      "items": [
+        "dragonsurvival:double_quartz"
+      ],
+      "properties": {
+        "nutrition": 8,
+        "saturation": 6.0
+      }
+    },
+    {
+      "items": [
+        "dragonsurvival:quartz_explosive_copper"
+      ],
+      "properties": {
+        "nutrition": 12,
+        "saturation": 18.0
+      }
+    },
+    {
+      "items": [
+        "netherdepthsupgrade:blazefish"
+      ],
+      "properties": {
+        "nutrition": 6,
+        "saturation": 7.0
+      }
+    },
+    {
+      "items": [
+        "netherdepthsupgrade:cooked_magmacubefish_slice"
+      ],
+      "properties": {
+        "nutrition": 2,
+        "saturation": 2.0
+      }
+    },
+    {
+      "items": [
+        "netherdepthsupgrade:blazefish_slice"
+      ],
+      "properties": {
+        "nutrition": 2,
+        "saturation": 2.0
+      }
+    },
+    {
+      "items": [
+        "netherdepthsupgrade:magmacubefish"
+      ],
+      "properties": {
+        "nutrition": 6,
+        "saturation": 7.0
+      }
+    },
+    {
+      "items": [
+        "netherdepthsupgrade:fortress_grouper"
+      ],
+      "properties": {
+        "nutrition": 3,
+        "saturation": 1.0
+      }
+    },
+    {
+      "items": [
+        "desolation:cinder_fruit"
+      ],
+      "properties": {
+        "nutrition": 6,
+        "saturation": 7.0
+      }
+    },
+    {
+      "items": [
+        "desolation:powered_cinder_fruit"
+      ],
+      "properties": {
+        "nutrition": 8,
+        "saturation": 12.0
+      }
+    },
+    {
+      "items": [
+        "desolation:activatedcharcoal"
+      ],
+      "properties": {
+        "nutrition": 2,
+        "saturation": 2.0
+      }
+    },
+    {
+      "items": [
+        "desolation:infused_powder"
+      ],
+      "properties": {
+        "nutrition": 10,
+        "saturation": 10.0
+      }
+    },
+    {
+      "items": [
+        "desolation:primed_ash"
+      ],
+      "properties": {
+        "nutrition": 7,
+        "saturation": 8.0
+      }
+    },
+    {
+      "items": [
+        "undergarden:ditchbulb"
+      ],
+      "properties": {
+        "nutrition": 5,
+        "saturation": 6.0
+      }
+    },
+    {
+      "items": [
+        "xreliquary:molten_core"
+      ],
+      "properties": {
+        "nutrition": 1,
+        "saturation": 1.0
+      }
+    },
+    {
+      "items": [
+        "mekanism:dust_coal"
+      ],
+      "properties": {
+        "nutrition": 1,
+        "saturation": 1.0
+      }
+    },
+    {
+      "items": [
+        "mekanism:dust_charcoal"
+      ],
+      "properties": {
+        "nutrition": 1,
+        "saturation": 1.0
+      }
+    },
+    {
+      "items": [
+        "thermal:coal_coke"
+      ],
+      "properties": {
+        "nutrition": 1,
+        "saturation": 1.0
+      }
+    },
+    {
+      "items": [
+        "thermal:basalz_rod"
+      ],
+      "properties": {
+        "nutrition": 2,
+        "saturation": 4.0
+      }
+    },
+    {
+      "items": [
+        "thermal:basalz_powder"
+      ],
+      "properties": {
+        "nutrition": 1,
+        "saturation": 2.0
+      }
+    },
+    {
+      "items": [
+        "create:blaze_cake"
+      ],
+      "properties": {
+        "nutrition": 10,
+        "saturation": 10.0
+      }
+    },
+    {
+      "items": [
+        "create:creative_blaze_cake"
+      ],
+      "properties": {
+        "nutrition": 50,
+        "saturation": 50.0
+      }
+    },
+    {
+      "items": [
+        "nethersdelight:nether_skewer"
+      ],
+      "properties": {
+        "nutrition": 6,
+        "saturation": 8.0
+      }
     }
   ],
   "misc_resources": {

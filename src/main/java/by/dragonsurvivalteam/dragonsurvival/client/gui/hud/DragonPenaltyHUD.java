@@ -39,11 +39,9 @@ public class DragonPenaltyHUD {
                 supplyTrigger = (SupplyTrigger) penalty.get().value().trigger();
             }
 
-            boolean shouldRender = penaltySupply.hasSupply(supplyType);
+            boolean shouldRender = penaltySupply.hasSupply(supplyType) && supplyPercentage < 1;
             if(supplyTrigger != null) {
                 shouldRender = shouldRender || supplyTrigger.displayLikeHungerBar();
-            } else {
-                shouldRender = shouldRender && supplyPercentage < 1;
             }
 
             if(shouldRender) {

@@ -15,6 +15,7 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.block.Blocks;
@@ -65,14 +66,15 @@ public class DragonPenalties {
                 Optional.of(AnyOfCondition.anyOf(
                         Condition.thisEntity(EntityCondition.isInRain()),
                         Condition.thisEntity(EntityCondition.isOnBlock(Blocks.SNOW, Blocks.POWDER_SNOW, Blocks.SNOW_BLOCK))
-                ).build()),
+                ).and(Condition.thisEntity(EntityCondition.hasEffect(DSEffects.FIRE)).invert()).build()),
                 new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.RAIN_BURN), 1),
                 new SupplyTrigger("rain_supply", DSAttributes.PENALTY_RESISTANCE_TIME, Functions.secondsToTicks(2), 1, 0.013f, List.of(), false)
         ));
 
         context.register(WATER_WEAKNESS, new DragonPenalty(
                 DragonSurvival.res("abilities/cave/cave_claws_and_teeth_1"), // TODO
-                Optional.of(Condition.thisEntity(EntityCondition.isInFluid(context.lookup(BuiltInRegistries.FLUID.key()).getOrThrow(FluidTags.WATER))).build()),
+                Optional.of(Condition.thisEntity(EntityCondition.isInFluid(context.lookup(BuiltInRegistries.FLUID.key()).getOrThrow(FluidTags.WATER)))
+                        .and(Condition.thisEntity(EntityCondition.hasEffect(DSEffects.FIRE)).invert()).build()),
                 new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.WATER_BURN), 1),
                 new InstantTrigger(10)
         ));
@@ -113,7 +115,8 @@ public class DragonPenalties {
                 DragonSurvival.res("abilities/cave/hot_blood_1"), // TODO
                 Optional.of(AnyOfCondition.anyOf(
                         Condition.thisEntity(EntityCondition.isInLight(3)),
-                        Condition.thisEntity(EntityCondition.hasEffect(DSEffects.MAGIC))
+                        Condition.thisEntity(EntityCondition.hasEffect(DSEffects.MAGIC)),
+                        Condition.thisEntity(EntityCondition.hasEffect(MobEffects.GLOWING))
                 ).invert().build()),
                 new MobEffectPenalty(HolderSet.direct(DSEffects.STRESS), 0, Functions.secondsToTicks(10)),
                 new SupplyTrigger("stress_supply", DSAttributes.PENALTY_RESISTANCE_TIME, Functions.secondsToTicks(2), 1, 0.013f, List.of(), false)

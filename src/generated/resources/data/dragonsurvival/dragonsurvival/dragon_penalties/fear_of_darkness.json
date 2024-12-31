@@ -25,6 +25,15 @@
               "dragonsurvival:forest_magic": {}
             }
           }
+        },
+        {
+          "condition": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "effects": {
+              "minecraft:glowing": {}
+            }
+          }
         }
       ]
     }

@@ -83,15 +83,11 @@ public class DragonFoodHandler {
 
         DragonStateHandler data = DragonStateProvider.getData(player);
 
-        if (!data.isDragon() || DragonFoodHandler.isEdible(event.getItem(), data.species())) {
+        if (!data.isDragon() || !DragonFoodHandler.isEdible(event.getItem(), data.species())) {
             return;
         }
 
-        FoodProperties properties = DragonFoodHandler.getDragonFoodProperties(event.getItem().getItem(), data.species());
-
-        if (properties != null) {
-            event.setDuration(properties.eatDurationTicks());
-        }
+        event.setDuration(getUseDuration(event.getItem(), player));
     }
 
     private static FoodProperties getBadFoodProperties() {

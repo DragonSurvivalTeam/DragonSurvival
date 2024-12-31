@@ -1,14 +1,31 @@
 {
   "condition": {
-    "condition": "minecraft:entity_properties",
-    "entity": "this",
-    "predicate": {
-      "location": {
-        "fluid": {
-          "fluids": "#minecraft:water"
+    "condition": "minecraft:all_of",
+    "terms": [
+      {
+        "condition": "minecraft:entity_properties",
+        "entity": "this",
+        "predicate": {
+          "location": {
+            "fluid": {
+              "fluids": "#minecraft:water"
+            }
+          }
+        }
+      },
+      {
+        "condition": "minecraft:inverted",
+        "term": {
+          "condition": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "effects": {
+              "dragonsurvival:cave_fire": {}
+            }
+          }
         }
       }
-    }
+    ]
   },
   "effect": {
     "type": "dragonsurvival:water_burn",
