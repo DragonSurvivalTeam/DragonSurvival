@@ -842,6 +842,7 @@
   "dragonsurvival.gui.dragon_inventory.toggle_vanilla_inventory": "Open vanilla inventory screen",
   "dragonsurvival.gui.emotes.keybinds": "Keybinds",
   "dragonsurvival.gui.emotes.toggle": " ■ §6Emotes§r ■",
+  "dragonsurvival.gui.emotes_tab": "Emotes",
   "dragonsurvival.gui.general.cancel": "Cancel",
   "dragonsurvival.gui.general.confirm": "Confirm",
   "dragonsurvival.gui.general.dragon_editor": "DRAGON EDITOR",

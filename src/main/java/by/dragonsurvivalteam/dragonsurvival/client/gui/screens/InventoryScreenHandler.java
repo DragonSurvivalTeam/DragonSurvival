@@ -181,7 +181,7 @@ public class InventoryScreenHandler {
 
         if (screen == null) {
             PacketDistributor.sendToServer(new RequestOpenDragonInventory.Data());
-        } else if (screen instanceof DragonInventoryScreen || screen instanceof DragonAbilityScreen || screen instanceof SkinsScreen) {
+        } else if (screen instanceof DragonInventoryScreen || screen instanceof DragonAbilityScreen || screen instanceof DragonSkinsScreen) {
             player.closeContainer();
         }
     }

@@ -1,8 +1,9 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.buttons;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonEmoteScreen;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonSkinsScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonSpeciesScreen;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.SkinsScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.DragonEditorScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverDisableable;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.TextureManagerAccess;
@@ -114,7 +115,7 @@ public class DragonBodyButton extends Button implements HoverDisableable {
             return DragonUtils.isBody(dragonBody, dragonEditorScreen.dragonBody);
         }
 
-        if (screen instanceof SkinsScreen skinsScreen) {
+        if (screen instanceof DragonSkinsScreen skinsScreen) {
             return DragonUtils.isBody(dragonBody, skinsScreen.handler.body());
         }
 

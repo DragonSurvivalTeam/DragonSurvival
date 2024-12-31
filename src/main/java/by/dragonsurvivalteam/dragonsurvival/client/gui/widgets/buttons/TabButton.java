@@ -28,7 +28,9 @@ public class TabButton extends Button {
         @Translation(type = Translation.Type.GUI, comments = "Species Info")
         SPECIES_TAB,
         @Translation(type = Translation.Type.GUI, comments = "Skin customization")
-        SKINS_TAB;
+        SKINS_TAB,
+        @Translation(type = Translation.Type.GUI, comments = "Emotes")
+        EMOTES_TAB
     }
 
     private final Type type;
@@ -65,9 +67,9 @@ public class TabButton extends Button {
                         if (((DragonAbilityScreen) parent).sourceScreen != null) {
                             setSuccessfully = setInventoryScreen(((DragonAbilityScreen) parent).sourceScreen);
                         }
-                    } else if (parent instanceof SkinsScreen) {
-                        if (((SkinsScreen) parent).sourceScreen != null) {
-                            setSuccessfully = setInventoryScreen(((SkinsScreen) parent).sourceScreen);
+                    } else if (parent instanceof DragonSkinsScreen) {
+                        if (((DragonSkinsScreen) parent).sourceScreen != null) {
+                            setSuccessfully = setInventoryScreen(((DragonSkinsScreen) parent).sourceScreen);
                         }
                     }
 
@@ -81,8 +83,9 @@ public class TabButton extends Button {
                     }
                 }
                 case ABILITY_TAB -> Minecraft.getInstance().setScreen(new DragonAbilityScreen(parent));
-                case SKINS_TAB -> Minecraft.getInstance().setScreen(new SkinsScreen(parent));
+                case SKINS_TAB -> Minecraft.getInstance().setScreen(new DragonSkinsScreen(parent));
                 case SPECIES_TAB -> Minecraft.getInstance().setScreen(new DragonSpeciesScreen());
+                case EMOTES_TAB -> Minecraft.getInstance().setScreen(new DragonEmoteScreen());
             }
     }
 
@@ -90,8 +93,9 @@ public class TabButton extends Button {
         return switch (type) {
             case INVENTORY_TAB -> parent instanceof DragonInventoryScreen || parent instanceof InventoryScreen;
             case ABILITY_TAB -> parent instanceof DragonAbilityScreen;
-            case SKINS_TAB -> parent instanceof SkinsScreen;
+            case SKINS_TAB -> parent instanceof DragonSkinsScreen;
             case SPECIES_TAB -> parent instanceof DragonSpeciesScreen;
+            case EMOTES_TAB -> parent instanceof DragonEmoteScreen;
         };
     }
 

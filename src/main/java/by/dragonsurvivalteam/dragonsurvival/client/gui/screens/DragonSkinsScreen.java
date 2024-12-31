@@ -55,7 +55,7 @@ import java.net.URISyntaxException;
 import java.util.*;
 import java.util.function.Supplier;
 
-public class SkinsScreen extends Screen implements DragonBodyScreen {
+public class DragonSkinsScreen extends Screen implements DragonBodyScreen {
     @Translation(comments = "Skin Settings")
     private static final String SETTINGS = Translation.Type.GUI.wrap("skin_screen.settings");
 
@@ -136,7 +136,7 @@ public class SkinsScreen extends Screen implements DragonBodyScreen {
     private float zoom;
     private URI clickedLink;
 
-    public SkinsScreen(Screen sourceScreen) {
+    public DragonSkinsScreen(Screen sourceScreen) {
         super(Component.empty());
         this.sourceScreen = sourceScreen;
 
@@ -450,8 +450,8 @@ public class SkinsScreen extends Screen implements DragonBodyScreen {
             glowTexture = DragonSkins.getPlayerGlow(playerName, dragonStage.getKey());
         }
 
-        SkinsScreen.glowTexture = glowTexture;
-        SkinsScreen.skinTexture = skinTexture;
+        DragonSkinsScreen.glowTexture = glowTexture;
+        DragonSkinsScreen.skinTexture = skinTexture;
 
         if (Objects.equals(lastPlayerName, playerName) || lastPlayerName == null) {
             zoom = DragonEditorScreen.setZoom(dragonStage);
