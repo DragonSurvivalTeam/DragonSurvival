@@ -4,13 +4,17 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.Dra
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.BackgroundColorSelectorComponent;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
@@ -24,12 +28,16 @@ public class BackgroundColorButton extends ExtendedButton {
     private final DragonEditorScreen screen;
     private BackgroundColorSelectorComponent colorComponent;
     private Renderable renderButton;
-    private boolean toggled;
+    public boolean toggled;
 
     public BackgroundColorButton(int xPos, int yPos, int width, int height, Component displayString, OnPress handler, DragonEditorScreen dragonEditorScreen) {
         super(xPos, yPos, width, height, displayString, handler);
         screen = dragonEditorScreen;
         setTooltip(Tooltip.create(Component.translatable(BACKGROUND_COLOR)));
+    }
+
+    public @NotNull List<? extends GuiEventListener> childrenAndSelf() {
+        return ImmutableList.of(colorComponent, this, colorComponent.children().getFirst(), colorComponent.children().getLast());
     }
 
     @Override
@@ -49,7 +57,7 @@ public class BackgroundColorButton extends ExtendedButton {
                 }
             };
 
-            colorComponent = new BackgroundColorSelectorComponent(this.screen, getX() - 50, getY() - height - 45, 120, 61);
+            colorComponent = new BackgroundColorSelectorComponent(this.screen, getX() - 60, getY() - height - 50, 80, 70);
             screen.renderables.add(renderButton);
             colorComponent.children().forEach(listener -> ((ScreenAccessor) screen).dragonSurvival$children().add(listener));
         } else {

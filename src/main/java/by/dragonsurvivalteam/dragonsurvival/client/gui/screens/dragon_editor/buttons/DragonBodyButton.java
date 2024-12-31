@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonSpeciesScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.SkinsScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.DragonEditorScreen;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverDisableable;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.TextureManagerAccess;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBodies;
@@ -22,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public class DragonBodyButton extends Button {
+public class DragonBodyButton extends Button implements HoverDisableable {
     private static final String LOCATION_PREFIX = "textures/gui/custom/body/";
     private static final String DEFAULT_SUFFIX = "default";
 
@@ -34,6 +35,7 @@ public class DragonBodyButton extends Button {
     private final Holder<DragonBody> dragonBody;
     private final ResourceLocation iconLocation;
     private final boolean locked;
+    private boolean disableHover;
 
     public DragonBodyButton(Screen screen, int x, int y, int xSize, int ySize, final Holder<DragonBody> dragonBody, boolean locked, OnPress action) {
         this(screen, x, y, xSize, ySize, dragonBody, Objects.requireNonNull(dragonBody.getKey()).location(), locked, action);
@@ -66,6 +68,22 @@ public class DragonBodyButton extends Button {
         this.screen = screen;
         this.dragonBody = dragonBody;
         this.locked = locked;
+    }
+
+    public void disableHover() {
+        this.disableHover = true;
+    }
+
+    public void enableHover() {
+        this.disableHover = false;
+    }
+
+    public boolean isHovered() {
+        return !disableHover && super.isHovered();
+    }
+
+    public boolean isFocused() {
+        return !disableHover && super.isFocused();
     }
 
     public boolean isLocked() {

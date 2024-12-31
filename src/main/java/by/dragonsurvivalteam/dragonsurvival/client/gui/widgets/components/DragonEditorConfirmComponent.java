@@ -32,7 +32,9 @@ public class DragonEditorConfirmComponent extends AbstractContainerEventHandler 
     @Translation(type = Translation.Type.MISC, comments = "\nWith your current config settings your ability progress will be lost when changing species.\n\nWould you still like to continue?")
     private final static String CONFIRM_LOSE_ABILITIES = Translation.Type.GUI.wrap("dragon_editor.confirm.abilities");
 
-    private static final ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/dragon_altar_warning.png");
+    private static final ResourceLocation WARNING_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/warning_main.png");
+    private static final ResourceLocation WARNING_ACCEPT = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/warning_accept.png");
+    private static final ResourceLocation WARNING_CANCEL = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/warning_cancel.png");
 
     private final AbstractWidget confirmButton;
     private final AbstractWidget cancelButton;
@@ -52,7 +54,7 @@ public class DragonEditorConfirmComponent extends AbstractContainerEventHandler 
         this.ySize = ySize;
         this.isBodyTypeChange = false;
 
-        confirmButton = new ExtendedButton(x + 19, y + 133, 41, 21, CommonComponents.GUI_YES, action -> { /* Nothing to do */ }) {
+        confirmButton = new ExtendedButton(x + 3, y + 132, 60, 19, CommonComponents.GUI_YES, action -> { /* Nothing to do */ }) {
             @Override
             public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
                 guiGraphics.drawCenteredString(Minecraft.getInstance().font, getMessage(), getX() + getWidth() / 2, getY() + (getHeight() - 8) / 2, getFGColor());
@@ -68,7 +70,7 @@ public class DragonEditorConfirmComponent extends AbstractContainerEventHandler 
             }
         };
 
-        cancelButton = new ExtendedButton(x + 66, y + 133, 41, 21, CommonComponents.GUI_NO, action -> { /* Nothing to do */ }) {
+        cancelButton = new ExtendedButton(x + 66, y + 132, 60, 19, CommonComponents.GUI_NO, action -> { /* Nothing to do */ }) {
             @Override
             public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
                 guiGraphics.drawCenteredString(Minecraft.getInstance().font, getMessage(), getX() + getWidth() / 2, getY() + (getHeight() - 8) / 2, getFGColor());
@@ -114,7 +116,14 @@ public class DragonEditorConfirmComponent extends AbstractContainerEventHandler 
         }
 
         String text = Component.translatable(key).getString();
-        graphics.blit(BACKGROUND_TEXTURE, x, y, 0, 0, xSize, ySize);
+        if (confirmButton.isHovered()) {
+            graphics.blit(WARNING_ACCEPT, x, y, 0, 0, xSize, ySize);
+        } else if (cancelButton.isHovered()) {
+            graphics.blit(WARNING_CANCEL, x, y, 0, 0, xSize, ySize);
+        } else {
+            graphics.blit(WARNING_MAIN, x, y, 0, 0, xSize, ySize);
+        }
+
         TextRenderUtil.drawCenteredScaledTextSplit(graphics, x + xSize / 2, y + 42, 1f, text, DyeColor.WHITE.getTextColor(), xSize - 10, 150);
 
         confirmButton.render(graphics, pMouseX, pMouseY, pPartialTicks);

@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.DragonEdit
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.EnumSkinLayer;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DefaultPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonPart;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.LayerSettings;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
@@ -25,20 +26,26 @@ public class ColorSelectorButton extends ExtendedButton {
 
     private final int xSize;
     private final int ySize;
-    private boolean toggled;
+    public boolean toggled;
     private final boolean opensRight;
+    private final boolean opensUp;
 
     private static final ResourceLocation BUTTON_HUE_UNCHANGED = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/hue_unchanged.png");
     private static final ResourceLocation BUTTON_HUE_CHANGED = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/hue_changed.png");
 
-    public ColorSelectorButton(DragonEditorScreen screen, EnumSkinLayer layer, int x, int y, int xSize, int ySize, boolean opensRight) {
+    public ColorSelectorButton(DragonEditorScreen screen, EnumSkinLayer layer, int x, int y, int xSize, int ySize, boolean opensRight, boolean opensUp) {
         super(x, y, xSize, ySize, Component.empty(), action -> { /* Nothing to do */ });
         this.xSize = xSize;
         this.ySize = ySize;
         this.screen = screen;
         this.layer = layer;
         this.opensRight = opensRight;
+        this.opensUp = opensUp;
         visible = true;
+    }
+
+    public HueSelectorComponent getHueComponent() {
+        return hueComponent;
     }
 
     @Override
@@ -49,7 +56,8 @@ public class ColorSelectorButton extends ExtendedButton {
         visible = part != null && !Objects.equals(part.key(), DefaultPartLoader.NO_PART) &&  part.isColorable();
 
         if (visible) {
-            if(screen.preset.get(Objects.requireNonNull(screen.dragonStage.getKey())).get().layerSettings.get(layer).get().modifiedColor) {
+            LayerSettings layerSettings = screen.preset.get(Objects.requireNonNull(screen.dragonStage.getKey())).get().layerSettings.get(layer).get();
+            if(layerSettings.modifiedColor || layerSettings.glowing) {
                 guiGraphics.blit(BUTTON_HUE_CHANGED, getX(), getY(), 0, 0, width, height, width, height);
             } else {
                 guiGraphics.blit(BUTTON_HUE_UNCHANGED, getX(), getY(), 0, 0, width, height, width, height);
@@ -92,8 +100,6 @@ public class ColorSelectorButton extends ExtendedButton {
                 }
             };
 
-            int offset = screen.height - (getY() + 80);
-
             int xOffset;
             if(opensRight) {
                 xOffset = getX() + xSize;
@@ -101,7 +107,14 @@ public class ColorSelectorButton extends ExtendedButton {
                 xOffset = getX() - 120;
             }
 
-            hueComponent = new HueSelectorComponent(this.screen, xOffset, getY() + Math.min(offset, 0), 120, 90, layer);
+            int yOffset;
+            if(opensUp) {
+                yOffset = 0;
+            } else {
+                yOffset = -60;
+            }
+
+            hueComponent = new HueSelectorComponent(this.screen, xOffset, getY() + yOffset, 120, 90, layer);
             ((ScreenAccessor) screen).dragonSurvival$children().addFirst(hueComponent);
             ((ScreenAccessor) screen).dragonSurvival$children().add(hueComponent);
             screen.renderables.add(renderButton);

@@ -22,11 +22,12 @@ public class EditorPartComponent implements ScrollableComponent {
 
     private final DragonEditorScreen screen;
     private final HoverButton partButton;
+    private final ColorSelectorButton colorSelectorButton;
 
     private final EnumSkinLayer skinLayer;
     private String selectedPart;
 
-    public EditorPartComponent(final DragonEditorScreen screen, int xPos, int yPos, final String partKey, final EnumSkinLayer skinLayer, boolean isLeft) {
+    public EditorPartComponent(final DragonEditorScreen screen, int xPos, int yPos, final String partKey, final EnumSkinLayer skinLayer, boolean isLeft, boolean isTop) {
         this.screen = screen;
         this.selectedPart = partKey;
         this.skinLayer = skinLayer;
@@ -75,7 +76,16 @@ public class EditorPartComponent implements ScrollableComponent {
             }
         }));
 
-        ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(new ColorSelectorButton(screen, skinLayer, isLeft ? xPos - 23 : xPos + 120, yPos + 3, 15, 15, isLeft));
+        colorSelectorButton = new ColorSelectorButton(screen, skinLayer, isLeft ? xPos - 23 : xPos + 120, yPos + 3, 15, 15, isLeft, isTop);
+        ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(colorSelectorButton);
+    }
+
+    public boolean colorSelectorIsToggled () {
+        return colorSelectorButton.toggled;
+    }
+
+    public ColorSelectorButton getColorSelectorButton() {
+        return colorSelectorButton;
     }
 
     @Override

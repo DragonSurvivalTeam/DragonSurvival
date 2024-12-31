@@ -4,8 +4,8 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAltarScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonBodyScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.buttons.*;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.buttons.editor_part_selector.ColorSelectorButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.buttons.editor_part_selector.EditorPartComponent;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.buttons.editor_part_selector.HueSelectorComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.*;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.DragonEditorConfirmComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.DragonUIRenderComponent;
@@ -42,6 +42,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
@@ -79,8 +80,14 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     @Translation(type = Translation.Type.MISC, comments = "Redo changes")
     private static final String REDO = Translation.Type.GUI.wrap("dragon_editor.redo");
 
-    @Translation(type = Translation.Type.MISC, comments = "You can select any slot here and the result will be automatically saved.")
-    private static final String SAVE_SLOT = Translation.Type.GUI.wrap("dragon_editor.save_slot");
+    @Translation(type = Translation.Type.MISC, comments = "You can select any slot here and click the load/save button to save your current settings to that slot or load the settings from that slot.")
+    private static final String SAVING_INFO = Translation.Type.GUI.wrap("dragon_editor.save_slot_info");
+
+    @Translation(type = Translation.Type.MISC, comments = "Save to current slot")
+    private static final String SAVE = Translation.Type.GUI.wrap("dragon_editor.save");
+
+    @Translation(type = Translation.Type.MISC, comments = "Load from current slot")
+    private static final String LOAD = Translation.Type.GUI.wrap("dragon_editor.load");
 
     @Translation(type = Translation.Type.MISC, comments = "Click here to copy your current settings to the other growth stages.")
     private static final String COPY = Translation.Type.GUI.wrap("dragon_editor.copy");
@@ -106,12 +113,24 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     })
     private static final String CUSTOMIZATION = Translation.Type.GUI.wrap("dragon_editor.customization");
 
+    @Translation(type = Translation.Type.MISC, comments = "Save data invalid for this dragon type")
+    private static final String INVALID_FOR_TYPE = Translation.Type.GUI.wrap("dragon_editor.invalid_for_type");
+
+    @Translation(type = Translation.Type.MISC, comments = "Save data invalid for this model")
+    private static final String INVALID_FOR_MODEL = Translation.Type.GUI.wrap("dragon_editor.invalid_for_model");
+
+    @Translation(type = Translation.Type.MISC, comments = "No save data for this slot")
+    private static final String NO_DATA = Translation.Type.GUI.wrap("dragon_editor.no_data");
+
+    @Translation(type = Translation.Type.MISC, comments = "Slot saved")
+    private static final String SLOT_SAVED = Translation.Type.GUI.wrap("dragon_editor.slot_saved");
+
+    @Translation(type = Translation.Type.MISC, comments = "Saved customization data")
+    private static final String SAVED_CUSTOMIZATION = Translation.Type.GUI.wrap("dragon_editor.saved_customization");
+
     public static final DragonStateHandler HANDLER = new DragonStateHandler();
 
     private static final ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.withDefaultNamespace("textures/block/black_concrete.png");
-    private static final ResourceLocation SAVE_ICON = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/save_icon.png");
-    private static final ResourceLocation RANDOM_ICON = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/random_icon.png");
-    private static final ResourceLocation RESET_ICON = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/reset_button.png");
 
     private static final ResourceLocation COPY_ALL_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/copy_off.png");
     private static final ResourceLocation COPY_ALL_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/copy_on.png");
@@ -154,6 +173,15 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     private static final ResourceLocation RANDOM_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/random_hover.png");
     private static final ResourceLocation RANDOM_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/random_main.png");
 
+    private static final ResourceLocation SAVE_SLOT_BACKGROUND = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/slot_background.png");
+
+    private static final ResourceLocation SLOT_LOAD_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/slot_load_hover.png");
+    private static final ResourceLocation SLOT_LOAD_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/slot_load_main.png");
+    private static final ResourceLocation SLOT_SAVE_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/slot_save_hover.png");
+    private static final ResourceLocation SLOT_SAVE_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/slot_save_main.png");
+    private static final ResourceLocation SLOT_INFO_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/slot_info_hover.png");
+    private static final ResourceLocation SLOT_INFO_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/slot_info_main.png");
+
     public int guiTop;
     public boolean confirmation;
     public boolean showUi = true;
@@ -176,14 +204,13 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     private int guiLeft;
 
     private final String[] animations = {"sit_dentist", "sit_animation", "idle_animation", "fly_animation", "swim_animation", "run_animation", "spinning_on_back"};
-    private final Map<EnumSkinLayer, ColorSelectorButton> colorSelectorButtons = new HashMap<>();
 
     private DragonUIRenderComponent dragonRender;
-    private ExtendedCheckbox defaultSkinCheckbox;
     private ExtendedButton uiButton;
     private DragonEditorConfirmComponent confirmComponent;
     private ExtendedButton wingsButton;
     private HoverButton animationNameButton;
+    private BackgroundColorButton backgroundColorButton;
 
     /**
      * Widgets which belong to the dragon body logic <br>
@@ -201,6 +228,27 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     private int selectedDragonStage;
     private boolean hasInit;
     private boolean isEditor;
+
+    private enum SlotDisplayMessage {
+        INVALID_FOR_TYPE,
+        INVALID_FOR_MODEL,
+        NO_DATA,
+        SLOT_SAVED,
+        NONE
+    }
+
+    private Component loadSlotDisplayMessage(SlotDisplayMessage reason) {
+        return switch (reason) {
+            case INVALID_FOR_TYPE -> Component.translatable(INVALID_FOR_TYPE);
+            case INVALID_FOR_MODEL -> Component.translatable(INVALID_FOR_MODEL);
+            case NO_DATA -> Component.translatable(NO_DATA);
+            case SLOT_SAVED -> Component.translatable(SLOT_SAVED);
+            default -> Component.empty();
+        };
+    }
+
+    private float tickWhenSlotDisplayMessageSet = -1;
+    private SlotDisplayMessage slotDisplayMessage = SlotDisplayMessage.NONE;
 
     public DragonEditorScreen(Screen source) {
         this(source, null);
@@ -303,15 +351,6 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         return prevSelected;
     };
 
-    public final Function<Boolean, Boolean> checkDefaultSkinAction = (selected) -> {
-        boolean prevSelected = !defaultSkinCheckbox.selected;
-        defaultSkinCheckbox.selected = selected;
-        preset.get(Objects.requireNonNull(dragonStage.getKey())).get().defaultSkin = selected;
-        HANDLER.recompileCurrentSkin();
-        update();
-        return prevSelected;
-    };
-
     public final Function<DragonStageCustomization, DragonStageCustomization> loadStageCustomizationAction = newStageCustomization -> {
         DragonStageCustomization previousStageCustomization = HANDLER.getCurrentStageCustomization();
         HANDLER.setCurrentStageCustomization(newStageCustomization);
@@ -383,6 +422,113 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
     }
 
+    private boolean onlyCheckForColorSelectorComponentButtons() {
+        boolean onlyCheckForColorSelectorComponentButtons = false;
+        for(EditorPartComponent partComponent : partComponents.values()) {
+            if(partComponent.colorSelectorIsToggled()) {
+                onlyCheckForColorSelectorComponentButtons = true;
+                break;
+            }
+        }
+
+        return onlyCheckForColorSelectorComponentButtons;
+    }
+
+    // Ignore clicks on elements that are not in a popup menu, if one is open
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if(onlyCheckForColorSelectorComponentButtons()) {
+            for(EditorPartComponent partComponent : partComponents.values()) {
+                HueSelectorComponent hueComponent = partComponent.getColorSelectorButton().getHueComponent();
+                if(hueComponent != null && partComponent.getColorSelectorButton().toggled) {
+                    List<GuiEventListener> hueComponentChildrenAndColorButton = new ArrayList<>(hueComponent.children());
+                    hueComponentChildrenAndColorButton.add(partComponent.getColorSelectorButton());
+                    for(GuiEventListener guieventlistener : hueComponentChildrenAndColorButton) {
+                        if (guieventlistener.mouseClicked(mouseX, mouseY, button)) {
+                            this.setFocused(guieventlistener);
+                            if (button == 0) {
+                                this.setDragging(true);
+                            }
+
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        if(confirmComponent != null && confirmation) {
+            for (GuiEventListener guieventlistener : confirmComponent.children()) {
+                if (guieventlistener.mouseClicked(mouseX, mouseY, button)) {
+                    this.setFocused(guieventlistener);
+                    if (button == 0) {
+                        this.setDragging(true);
+                    }
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        if(backgroundColorButton != null && backgroundColorButton.toggled) {
+            for (GuiEventListener guieventlistener : backgroundColorButton.childrenAndSelf()) {
+                if (guieventlistener.mouseClicked(mouseX, mouseY, button)) {
+                    this.setFocused(guieventlistener);
+                    if (button == 0) {
+                        this.setDragging(true);
+                    }
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        for (GuiEventListener guieventlistener : this.children()) {
+            if (guieventlistener.mouseClicked(mouseX, mouseY, button)) {
+                this.setFocused(guieventlistener);
+                if (button == 0) {
+                    this.setDragging(true);
+                }
+
+                // Do this after we have processed the click event, so that we can properly disable the other buttons immediately
+                if(onlyCheckForColorSelectorComponentButtons()) {
+                    for (GuiEventListener guieventlistener2 : this.children()) {
+                        // Don't disable the button that opened the panel in the first place
+                        if(guieventlistener2 instanceof HoverDisableable hoverDisableable && guieventlistener != guieventlistener2) {
+                            hoverDisableable.disableHover();
+                        }
+                    }
+                }
+
+                if(confirmComponent != null && confirmation) {
+                    for (GuiEventListener guieventlistener2 : this.children()) {
+                        if(guieventlistener2 instanceof HoverDisableable hoverDisableable) {
+                            hoverDisableable.disableHover();
+                        }
+                    }
+                }
+
+                if(backgroundColorButton != null && backgroundColorButton.toggled) {
+                    for (GuiEventListener guieventlistener2 : this.children()) {
+                        if(guieventlistener2 instanceof HoverDisableable hoverDisableable && !backgroundColorButton.childrenAndSelf().contains(guieventlistener2)) {
+                            hoverDisableable.disableHover();
+                        }
+                    }
+                }
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     @Override
     public void render(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         if (dragonRender == null) { // In the past this could occur when using the dragon editor command before using the dragon altar first
@@ -408,9 +554,29 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         renderBackground(graphics, mouseX, mouseY, partialTick);
         children().stream().filter(DragonUIRenderComponent.class::isInstance).toList().forEach(s -> ((DragonUIRenderComponent) s).render(graphics, mouseX, mouseY, partialTick));
         DragonAltarScreen.renderBorders(graphics, BACKGROUND_TEXTURE, 0, width, 32, height - 32, width, height);
-        TextRenderUtil.drawCenteredScaledText(graphics, width / 2, 10, 2f, "Stage: "+DragonStage.translatableName(Objects.requireNonNull(dragonStage.getKey())).getString().toUpperCase(), DyeColor.WHITE.getTextColor());
+        TextRenderUtil.drawCenteredScaledText(graphics, width / 2, 10, 2f, DragonStage.translatableName(Objects.requireNonNull(dragonStage.getKey())).getString().toUpperCase(), DyeColor.WHITE.getTextColor());
+
+        if(slotDisplayMessage != SlotDisplayMessage.NONE) {
+            int color;
+            if(slotDisplayMessage == SlotDisplayMessage.SLOT_SAVED) {
+                color = DyeColor.GREEN.getTextColor();
+            } else {
+                color = DyeColor.RED.getTextColor();
+            }
+            if(tickWhenSlotDisplayMessageSet + 200 - tick > 0) {
+                TextRenderUtil.drawCenteredScaledText(graphics, width / 2, height / 2 + 25, 0.5f, loadSlotDisplayMessage(slotDisplayMessage).getString(), color);
+            } else {
+                slotDisplayMessage = SlotDisplayMessage.NONE;
+            }
+        }
 
         for (Renderable renderable : new CopyOnWriteArrayList<>(renderables)) {
+            if(!onlyCheckForColorSelectorComponentButtons() && !confirmation && (backgroundColorButton == null || !backgroundColorButton.toggled)) {
+                if(renderable instanceof HoverDisableable hoverDisableable) {
+                    hoverDisableable.enableHover();
+                }
+            }
+
             if (renderable instanceof AbstractWidget widget && widget != uiButton) {
                 if(widget == wingsButton) {
                     if(dragonBody != null && dragonBody.value().canHideWings() && widget == wingsButton) {
@@ -428,14 +594,6 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
             renderable.render(graphics, mouseX, mouseY, partialTick);
         }
 
-        if (showUi) {
-            for (ColorSelectorButton colorSelectorButton : colorSelectorButtons.values()) {
-                DragonPart text = DragonEditorHandler.getDragonPart(colorSelectorButton.layer, preset.get(Objects.requireNonNull(dragonStage.getKey())).get().layerSettings.get(colorSelectorButton.layer).get().partKey, HANDLER.speciesKey());
-                colorSelectorButton.visible = (text != null && text.isColorable()) && !defaultSkinCheckbox.selected;
-            }
-        }
-
-        defaultSkinCheckbox.selected = preset.get(Objects.requireNonNull(dragonStage.getKey())).get().defaultSkin;
         uiButton.visible = true;
     }
 
@@ -491,8 +649,10 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
 
         guiLeft = (width - 256) / 2;
         guiTop = (height - 120) / 2;
+        slotDisplayMessage = SlotDisplayMessage.NONE;
 
         confirmComponent = new DragonEditorConfirmComponent(this, width / 2 - 130 / 2, height / 2 - 181 / 2, 130, 154);
+        confirmation = false;
         initDragonRender();
 
         DragonStateHandler data = DragonStateProvider.getData(minecraft.player);
@@ -537,7 +697,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
 
             //noinspection DataFlowIssue -> key is present
             String partKey = preset.get(dragonStage.getKey()).get().layerSettings.get(layer).get().partKey;
-            EditorPartComponent editorPartComponent = new EditorPartComponent(this, row < 8 ? width / 2 - 184 : width / 2 + 74, guiTop - 24 + (row >= 8 ? (row - 8) * 20 : row * 20), partKey, layer, row < 8);
+            EditorPartComponent editorPartComponent = new EditorPartComponent(this, row < 8 ? width / 2 - 184 : width / 2 + 74, guiTop - 24 + (row >= 8 ? (row - 8) * 20 : row * 20), partKey, layer, row < 8, (row / 4 % 2) == 0);
             scrollableComponents.add(editorPartComponent);
             partComponents.put(layer, editorPartComponent);
             row++;
@@ -566,15 +726,6 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
             animationNameButton.setMessage(Component.empty().append(WordUtils.capitalize(animations[curAnimation].replace("_", " "))));
         });
         addRenderableWidget(rightAnimationArrow);
-
-
-        for (int num = 1; num <= 9; num++) {
-            addRenderableWidget(new DragonEditorSlotButton(width / 2 + 200 + 15, guiTop + (num - 1) * 12 + 5 + 30, num, this));
-        }
-
-        defaultSkinCheckbox = new ExtendedCheckbox(width / 2 + 100, height - 25, 120, 17, 17, Component.translatable(DEFAULT_SKIN), preset.get(dragonStage.getKey()).get().defaultSkin, p -> actionHistory.add(new EditorAction<>(checkDefaultSkinAction, p.selected())));
-        defaultSkinCheckbox.setTooltip(Tooltip.create(Component.translatable(DEFAULT_SKIN_INFO)));
-        addRenderableWidget(defaultSkinCheckbox);
 
         ExtendedButton saveButton = new HoverButton(width / 2 - 60, height - 25, 60, 19, 60, 19, CONFIRM_MAIN, CONFIRM_HOVER, button -> { /* Nothing to do */ }) {
             Renderable renderButton;
@@ -705,45 +856,6 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         redoButton.setTooltip(Tooltip.create(Component.translatable(REDO)));
         addRenderableWidget(redoButton);
 
-        // FIXME :: This is WIP
-        ExtendedButton loadSlotButton = new ExtendedButton(width / 2 + 213, guiTop - 8, 18, 18, Component.empty(), button -> {
-            CustomizationFileHandler.SavedCustomization savedCustomization = CustomizationFileHandler.load(selectedSaveSlot);
-            if(savedCustomization == null) {
-                return;
-            }
-
-            if(savedCustomization.getDragonModel() != dragonBody.value().customModel()) {
-                // FIXME :: Throw some error about how the model is invalid
-                return;
-            }
-
-            if(savedCustomization.getDragonType() != dragonType.getKey()) {
-                // FIXME :: Throw some error about how the dragon type is invalid
-                return;
-            }
-
-            actionHistory.add(new EditorAction<>(loadStageCustomizationAction, savedCustomization.getCustomization()));
-        }) {
-            @Override
-            public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-                guiGraphics.blit(SAVE_ICON, getX(), getY(), 0, 0, 16, 16, 16, 16);
-            }
-        };
-        loadSlotButton.setTooltip(Tooltip.create(Component.literal("load")));
-        addRenderableWidget(loadSlotButton);
-
-        // FIXME :: This is WIP
-        ExtendedButton saveSlotButton = new ExtendedButton(width / 2 + 213, guiTop + 10, 18, 18, Component.empty(), button -> {
-            CustomizationFileHandler.save(HANDLER, selectedSaveSlot);
-        }) {
-            @Override
-            public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-                guiGraphics.blit(SAVE_ICON, getX(), getY(), 0, 0, 16, 16, 16, 16);
-            }
-        };
-        saveSlotButton.setTooltip(Tooltip.create(Component.literal("save")));
-        addRenderableWidget(saveSlotButton);
-
         // Copy to all stages button
         HoverButton copyToAllStagesButton = new HoverButton(guiLeft - 75, 10, 18, 18, 18, 18, COPY_ALL_MAIN, COPY_ALL_HOVER, button -> {
             Lazy<DragonStageCustomization> lazy = preset.get(Objects.requireNonNull(dragonStage.getKey()));
@@ -812,8 +924,54 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         addRenderableWidget(resetButton);
 
         // Background color button
-        BackgroundColorButton backgroundColorButton = new BackgroundColorButton(guiLeft + 31, height - 30, 20, 20, Component.empty(), action -> { /* Nothing to do */ }, this);
+        backgroundColorButton = new BackgroundColorButton(guiLeft + 31, height - 30, 20, 20, Component.empty(), action -> { /* Nothing to do */ }, this);
         addRenderableWidget(backgroundColorButton);
+
+        // Save slots
+        HoverButton slotBackground = new HoverButton(width / 2 + 85, height - 25, 121, 18, 121, 18, SAVE_SLOT_BACKGROUND, SAVE_SLOT_BACKGROUND, button -> { /* Nothing to do */ });
+        addRenderableOnly(slotBackground);
+
+        for (int num = 1; num <= 9; num++) {
+            addRenderableWidget(new DragonEditorSlotButton(width / 2 + 95 + 12 * (num - 1), height - 24, num, this));
+        }
+
+        HoverButton slotInfoButton = new HoverButton(width / 2 + 74, height - 27, 17, 18, 20, 20, SLOT_INFO_MAIN, SLOT_INFO_HOVER, button -> { /* Nothing to do */ });
+        slotInfoButton.setTooltip(Tooltip.create(Component.translatable(SAVING_INFO)));
+        addRenderableWidget(slotInfoButton);
+
+        HoverButton loadSlotButton = new HoverButton(width / 2 + 100, height - 44, 17, 18, 20, 20, SLOT_LOAD_MAIN, SLOT_LOAD_HOVER, button -> {
+            CustomizationFileHandler.SavedCustomization savedCustomization = CustomizationFileHandler.load(selectedSaveSlot);
+            if(savedCustomization == null) {
+                slotDisplayMessage = SlotDisplayMessage.NO_DATA;
+                tickWhenSlotDisplayMessageSet = tick;
+                return;
+            }
+
+            if(!savedCustomization.getDragonModel().equals(dragonBody.value().customModel())) {
+                slotDisplayMessage = SlotDisplayMessage.INVALID_FOR_MODEL;
+                tickWhenSlotDisplayMessageSet = tick;
+                return;
+            }
+
+            if(savedCustomization.getDragonType() != dragonType.getKey()) {
+                slotDisplayMessage = SlotDisplayMessage.INVALID_FOR_TYPE;
+                tickWhenSlotDisplayMessageSet = tick;
+                return;
+            }
+
+            actionHistory.add(new EditorAction<>(loadStageCustomizationAction, savedCustomization.getCustomization()));
+        });
+        loadSlotButton.setTooltip(Tooltip.create(Component.translatable(LOAD)));
+        addRenderableWidget(loadSlotButton);
+
+        HoverButton saveSlotButton = new HoverButton(width / 2 + 120, height - 44, 17, 18, 20, 20, SLOT_SAVE_MAIN, SLOT_SAVE_HOVER, button -> {
+            CustomizationFileHandler.save(HANDLER, selectedSaveSlot);
+            slotDisplayMessage = SlotDisplayMessage.SLOT_SAVED;
+            tickWhenSlotDisplayMessageSet = tick;
+        });
+        saveSlotButton.setTooltip(Tooltip.create(Component.translatable(SAVE)));
+        addRenderableWidget(saveSlotButton);
+
     }
 
     @Override
@@ -935,7 +1093,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
 
     @Override
     public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
-        if (dragonRender != null && dragonRender.isMouseOver(pMouseX, pMouseY)) {
+        if (dragonRender != null && dragonRender.isMouseOver(pMouseX, pMouseY) && (backgroundColorButton == null || !backgroundColorButton.toggled)) {
             return dragonRender.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
         }
 

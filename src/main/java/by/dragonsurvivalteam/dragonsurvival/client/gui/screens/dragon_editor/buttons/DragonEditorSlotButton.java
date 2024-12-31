@@ -1,10 +1,12 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.buttons;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.DragonEditorScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.util.TextRenderUtil;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,6 +16,7 @@ import java.util.function.Function;
 public class DragonEditorSlotButton extends Button {
     private final DragonEditorScreen screen;
     private final Function<Integer, Integer> setDragonSlotAction;
+    private final ResourceLocation SLOT_NUMBER_BACKGROUND = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/slot_number_background.png");
 
     public int num;
 
@@ -43,10 +46,13 @@ public class DragonEditorSlotButton extends Button {
         active = visible = screen.showUi;
 
         if (screen.selectedSaveSlot == num - 1) {
-            guiGraphics.fill(getX(), getY(), getX() + width, getY() + height, new Color(1, 1, 1, isHovered ? 0.95F : 0.75F).getRGB());
-            guiGraphics.fill(getX() + 1, getY() + 1, getX() + width - 1, getY() + height - 1, new Color(0.05F, 0.05F, 0.05F, isHovered ? 0.95F : 0.75F).getRGB());
+            guiGraphics.blit(SLOT_NUMBER_BACKGROUND, getX(), getY(), 0, 0, 20, 20, 20, 20);
         }
 
-        TextRenderUtil.drawScaledText(guiGraphics, getX() + 2.5f, getY() + 1f, 1.5F, Integer.toString(num), DyeColor.WHITE.getTextColor());
+        if(screen.selectedSaveSlot == num - 1) {
+            TextRenderUtil.drawScaledText(guiGraphics, getX() + 4.5f, getY() + 3.5f, 1F, Integer.toString(num), DyeColor.WHITE.getTextColor());
+        } else {
+            TextRenderUtil.drawScaledText(guiGraphics, getX() + 4.5f, getY() + 3.5f, 1F, Integer.toString(num), DyeColor.GRAY.getTextColor());
+        }
     }
 }

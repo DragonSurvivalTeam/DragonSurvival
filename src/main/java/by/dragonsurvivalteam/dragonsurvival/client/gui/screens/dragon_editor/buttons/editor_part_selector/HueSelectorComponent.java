@@ -8,6 +8,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.EnumSkinLa
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonPart;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.LayerSettings;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
@@ -34,6 +35,9 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
     private static final ResourceLocation SLIDER_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/color_slider_hover.png");
     private static final ResourceLocation SLIDER_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/color_slider_main.png");
 
+    private static final ResourceLocation GLOW_ON = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/glow_on.png");
+    private static final ResourceLocation GLOW_OFF = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/editor/glow_off.png");
+
     public static final int BACKGROUND_COLOR = -14935012;
     public static final int INNER_BORDER_COLOR = new Color(0x78787880, true).getRGB();
 
@@ -42,7 +46,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
     private final ExtendedButton hueReset;
     private final ExtendedButton saturationReset;
     private final ExtendedButton brightnessReset;
-    private final ExtendedCheckbox glowing;
+    private final ExtendedButton glowing;
     private final ExtendedSlider hueSlider;
     private final ExtendedSlider saturationSlider;
     private final ExtendedSlider brightnessSlider;
@@ -69,6 +73,26 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
         settingsSupplier = () -> screen.preset.get(Objects.requireNonNull(screen.dragonStage.getKey())).get().layerSettings.get(layer).get();
         LayerSettings settings = settingsSupplier.get();
         DragonPart dragonPart = DragonEditorHandler.getDragonPart(layer, settings.partKey, DragonEditorScreen.HANDLER.speciesKey());
+
+        glowing = new ExtendedButton(x + 4, y - 25, 27, 25, Component.empty(),button -> {
+            final Function<Boolean, Boolean> setGlowingAction = value -> {
+                settingsSupplier.get().glowing = value;
+                DragonEditorScreen.HANDLER.recompileCurrentSkin();
+                screen.update();
+                return !value;
+            };
+
+            screen.actionHistory.add(new DragonEditorScreen.EditorAction<>(setGlowingAction, !settingsSupplier.get().glowing));
+        }){
+            @Override
+            public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+                ResourceLocation texture = settingsSupplier.get().glowing ? GLOW_ON : GLOW_OFF;
+                guiGraphics.pose().pushPose();
+                guiGraphics.pose().translate(0, 0, 100);
+                guiGraphics.blit(texture, getX(), getY(), 0, 0, 27, 25, 27, 25);
+                guiGraphics.pose().popPose();
+            }
+        };
 
         float[] hsb = new float[]{settings.hue, settings.saturation, settings.brightness};
 
@@ -253,26 +277,11 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
         };
 
         brightnessReset = new HoverButton(x + 3 + xSize - 26, y + INITIAL_BAR_OFFSET +  GAP_BETWEEN_BARS * 2 - 1, 24, 24, 24, 24, RESET_SETTINGS_MAIN, RESET_SETTINGS_HOVER, button -> brightnessSlider.setValue(180));
-
-        glowing = new ExtendedCheckbox(x + 7, y + INITIAL_BAR_OFFSET + GAP_BETWEEN_BARS * 2 + 27, 20, 20, 20, Component.empty(), settings.glowing, action -> { /* Nothing to do */ }) {
-            final Function<Boolean, Boolean> setGlowingAction = value -> {
-                settingsSupplier.get().glowing = value;
-                this.selected = settingsSupplier.get().glowing;
-                DragonEditorScreen.HANDLER.recompileCurrentSkin();
-                screen.update();
-                return !value;
-            };
-
-            @Override
-            public void onPress() {
-                screen.actionHistory.add(new DragonEditorScreen.EditorAction<>(setGlowingAction, !settingsSupplier.get().glowing));
-            }
-        };
     }
 
     @Override
     public boolean isMouseOver(double pMouseX, double pMouseY) {
-        return visible && pMouseY >= (double) y - 3 && pMouseY <= (double) y + ySize + 18 && pMouseX >= (double) x && pMouseX <= (double) x + xSize;
+        return visible && pMouseY >= (double) y - 30 && pMouseY <= (double) y + ySize && pMouseX >= (double) x - 5 && pMouseX <= (double) x + xSize;
     }
 
     @Override
@@ -287,9 +296,9 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
         guiGraphics.pose().translate(0, 0, 150);
 
         // Background for glow button
-        guiGraphics.fill(x + 2, y + ySize - 16, x + 32, y + ySize + 15,  BACKGROUND_COLOR);
-        guiGraphics.renderOutline(x + 2, y + ySize - 16, 30, 31, Color.black.getRGB());
-        guiGraphics.renderOutline(x + 3, y + ySize - 15, 28, 29, INNER_BORDER_COLOR);
+        guiGraphics.fill(x + 2, y - 25, x + 32, y + 5,  BACKGROUND_COLOR);
+        guiGraphics.renderOutline(x + 2, y - 26, 30, 31, Color.black.getRGB());
+        guiGraphics.renderOutline(x + 3, y - 25, 28, 29, INNER_BORDER_COLOR);
 
         // Main background
         guiGraphics.fill(x, y, x + xSize + 2, y + ySize - 10, BACKGROUND_COLOR);

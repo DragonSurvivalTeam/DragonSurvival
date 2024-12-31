@@ -16,11 +16,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class HoverButton extends ExtendedButton {
+public class HoverButton extends ExtendedButton implements HoverDisableable {
     private final ResourceLocation main;
     private final ResourceLocation hover;
     private final Supplier<List<Either<FormattedText, TooltipComponent>>> customTooltip;
 
+    private boolean disableHover;
     private final int originalWidth;
     private final int originalHeight;
     private final int textureWidth;
@@ -55,12 +56,28 @@ public class HoverButton extends ExtendedButton {
         this.originalHeight = height;
     }
 
+    public void disableHover() {
+        this.disableHover = true;
+    }
+
+    public void enableHover() {
+        this.disableHover = false;
+    }
+
     public void setScale(float scaleX, float scaleY) {
         this.scale = new Vec2(scaleX, scaleY);
     }
 
     public void setOffset(float offsetX, float offsetY) {
         this.offset = new Vec2(offsetX, offsetY);
+    }
+
+    public boolean isHovered() {
+        return !disableHover && super.isHovered();
+    }
+
+    public boolean isFocused() {
+        return !disableHover && super.isFocused();
     }
 
     @Override

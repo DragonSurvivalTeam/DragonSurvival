@@ -27,6 +27,14 @@ public class ColorPickerButton extends ExtendedButton {
         selectorY = (hsb[2] < 1.0f ? hsb[2] * (height / 2f) : height / 2f + (1 - hsb[1]) * (height / 2f));
     }
 
+    public void resetColor() {
+        Color emptyColor = new Color(0, 0, 0, 0);
+        colorConsumer.accept(emptyColor);
+        float[] hsb = Color.RGBtoHSB(emptyColor.getRed(), emptyColor.getGreen(), emptyColor.getBlue(), null);
+        selectorX = (hsb[0] * width);
+        selectorY = (hsb[2] < 1.0f ? hsb[2] * (height / 2f) : height / 2f + (1 - hsb[1]) * (height / 2f));
+    }
+
     @Override
     public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
         RenderingUtils.renderColorSquare(guiGraphics, getX(), getY(), width, height);
