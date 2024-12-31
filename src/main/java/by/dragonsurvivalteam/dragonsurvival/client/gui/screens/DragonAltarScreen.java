@@ -2,7 +2,10 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.screens;
 
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.DragonEditorScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.AltarTypeButton;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.PenaltyButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HelpButton;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.BarComponent;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.ScrollableComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayerUtils;
 import by.dragonsurvivalteam.dragonsurvival.client.util.TextRenderUtil;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
@@ -21,6 +24,7 @@ import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
@@ -39,7 +43,11 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+
+import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class DragonAltarScreen extends Screen {
     @Translation(type = Translation.Type.MISC, comments = "Choose a Dragon Species")
@@ -64,6 +72,12 @@ public class DragonAltarScreen extends Screen {
     private final DragonStateHandler handler1 = new DragonStateHandler();
     private final DragonStateHandler handler2 = new DragonStateHandler();
     private final String[] animations = {"sit_animation", "idle_animation", "fly_animation", "swim_animation", "run_animation", "dig_animation", "resting_left_animation", "vibing_sitting", "shy_sitting", "vibing_sitting", "rocking_on_back"};
+    private final List<ScrollableComponent> scrollableComponents = new ArrayList<>();
+
+    private static final ResourceLocation ALTAR_ARROW_LEFT_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_left_arrow_hover.png");
+    private static final ResourceLocation ALTAR_ARROW_LEFT_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_left_arrow_main.png");
+    private static final ResourceLocation ALTAR_ARROW_RIGHT_MAIN =  ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_right_arrow_hover.png");
+    private static final ResourceLocation ALTAR_ARROW_RIGHT_HOVER =  ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_right_arrow_main.png");
 
     private boolean hasInit = false;
     private int animation1 = 1;
@@ -85,6 +99,15 @@ public class DragonAltarScreen extends Screen {
         if (data.hasUsedAltar) {
             player.displayClientMessage(Component.translatable(NO_CHOICE), false);
         }
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        for (ScrollableComponent component : scrollableComponents) {
+            component.scroll(mouseX, mouseY, scrollX, scrollY);
+        }
+
+        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
     }
 
     @Override
@@ -228,11 +251,14 @@ public class DragonAltarScreen extends Screen {
 
         addRenderableWidget(new HelpButton(width / 2, 32 + 5, 16, 16, HELP));
         int xPos = width / 2 - 104;
-        for (ResourceKey<DragonType> key : ResourceHelper.keys(Minecraft.getInstance().level.registryAccess(), DragonType.REGISTRY)) {
-            addRenderableWidget(new AltarTypeButton(this, Minecraft.getInstance().level.registryAccess().holderOrThrow(key), xPos, guiTop + 30));
-            xPos += 53;
-        }
-        addRenderableWidget(new AltarTypeButton(this, null, xPos, guiTop + 30));
+        List<AbstractWidget> altarButtons = new ArrayList<>(ResourceHelper.keys(Minecraft.getInstance().level.registryAccess(), DragonType.REGISTRY).stream().map(typeKey -> (AbstractWidget) new AltarTypeButton(this, Minecraft.getInstance().level.registryAccess().holderOrThrow(typeKey), 0, 0)).toList());
+        altarButtons.add(new AltarTypeButton(this, null, 0, 0));
+        scrollableComponents.add(new BarComponent(this,
+                xPos, guiTop + 30, 4,
+                altarButtons, 55,
+                -10, 215, 60, 9, 16, 20, 20,
+                ALTAR_ARROW_LEFT_MAIN, ALTAR_ARROW_LEFT_HOVER, ALTAR_ARROW_RIGHT_MAIN, ALTAR_ARROW_RIGHT_HOVER));
+
         addRenderableWidget(new ExtendedButton(width / 2 - 75, height - 25, 150, 20, Component.translatable(LangKey.GUI_DRAGON_EDITOR), action -> Minecraft.getInstance().setScreen(new DragonEditorScreen(Minecraft.getInstance().screen))) {
             @Override
             public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {

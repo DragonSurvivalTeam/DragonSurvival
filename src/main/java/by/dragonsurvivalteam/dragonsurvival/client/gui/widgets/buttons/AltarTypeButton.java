@@ -7,7 +7,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonType;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -69,7 +68,7 @@ public class AltarTypeButton extends Button {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        if (isHovered() && isBottomOrTop(mouseY)) {
+        if (isHovered() && isTop(mouseY)) {
             scroll += (int) -scrollY; // invert the value so that scrolling down shows further entries
             return true;
         }
@@ -79,7 +78,7 @@ public class AltarTypeButton extends Button {
 
     @Override
     protected void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        if (isHovered() && isBottomOrTop(mouseY)) {
+        if (isHovered() && isTop(mouseY)) {
             if (resetScroll) {
                 resetScroll = false;
                 scroll = 0;
@@ -116,19 +115,18 @@ public class AltarTypeButton extends Button {
             resetScroll = true;
         }
 
-        RenderSystem.setShaderTexture(0, BACKGROUND_TEXTURE);
-
-        graphics.fill(getX() - 1, getY() - 1, getX() + width, getY() + height, new Color(0.5f, 0.5f, 0.5f).getRGB());
+        graphics.renderOutline(getX() - 1, getY() - 1, width + 2, height + 2, Color.black.getRGB());
 
         if (type != null) {
             graphics.blit(type.value().miscResources().altarBanner(), getX(), getY(), 0, isHovered ? 0 : 147, 49, 147, 49, 294);
+            graphics.blit(type.value().miscResources().growthIcons().getFirst().hoverIcon(), getX() + 1, getY() + 1, 0, 0, 18, 18, 18, 18);
         } else {
             graphics.blit(HUMAN_ALTAR_ICON, getX(), getY(), 0, isHovered ? 0 : 147, 49, 147, 49, 294);
         }
     }
 
-    private boolean isBottomOrTop(double mouseY) {
-        return mouseY > getY() + 6 && mouseY < getY() + 26 || mouseY > getY() + 133 && mouseY < getY() + 153;
+    private boolean isTop(double mouseY) {
+        return mouseY > getY() + 6 && mouseY < getY() + 26;
     }
 
     private void initiateDragonForm(Holder<DragonType> type) {
