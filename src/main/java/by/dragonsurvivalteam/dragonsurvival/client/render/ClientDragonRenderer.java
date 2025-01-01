@@ -49,6 +49,7 @@ import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.*;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -490,12 +491,6 @@ public class ClientDragonRenderer {
     }
 
     private record BodyAngles(double bodyYaw, double headPitch, double headYaw) {
-
-        /// Minimum magnitude for player input to consider the player to be moving
-        /// This is used for deliberate movement, i.e. player input
-        /// Forced movement (midair momentum etc.) relies on MOVE_DELTA_EPSILON for the world-space move delta vector
-        static final double INPUT_EPSILON = 0.0000001D;
-
         /// Minimum magnitude to consider the player to be moving (horizontally)
         /// Applies to world-space horizontal movement (as opposed to raw player input)
         static final double MOVE_DELTA_EPSILON = 0.0001D;
@@ -586,7 +581,7 @@ public class ClientDragonRenderer {
             boolean hasPosDelta = posDelta.horizontalDistanceSqr() > MOVE_DELTA_EPSILON * MOVE_DELTA_EPSILON;
 
             var rawInput = movement.desiredMoveVec;
-            var hasMoveInput = rawInput.lengthSquared() > INPUT_EPSILON * INPUT_EPSILON;
+            var hasMoveInput = rawInput.lengthSquared() > DragonEntity.INPUT_EPSILON * DragonEntity.INPUT_EPSILON;
             boolean isInputBack = rawInput.y < 0;
 
             if (hasMoveInput) {

@@ -14,14 +14,17 @@ import java.util.Optional;
 
 public class UpgradeAbilityTrigger extends SimpleCriterionTrigger<UpgradeAbilityTrigger.UpgradeAbilityInstance> {
     public void trigger(ServerPlayer player, ResourceKey<DragonAbility> ability, int level) {
-        this.trigger(player, triggerInstance -> {
+        this.trigger(player, instance -> {
             boolean flag = true;
-            if (triggerInstance.ability.isPresent()) {
-                flag = triggerInstance.ability.get().equals(ability);
+
+            if (instance.ability().isPresent()) {
+                flag = instance.ability().get().equals(ability);
             }
-            if (triggerInstance.level.isPresent()) {
-                flag = flag && triggerInstance.level.get().equals(level);
+
+            if (instance.level().isPresent()) {
+                flag = flag && instance.level().get().equals(level);
             }
+
             return flag;
         });
     }
@@ -31,8 +34,7 @@ public class UpgradeAbilityTrigger extends SimpleCriterionTrigger<UpgradeAbility
         return UpgradeAbilityInstance.CODEC;
     }
 
-    public record UpgradeAbilityInstance(Optional<ContextAwarePredicate> player, Optional<ResourceKey<DragonAbility>> ability,
-                                        Optional<Integer> level) implements SimpleCriterionTrigger.SimpleInstance {
+    public record UpgradeAbilityInstance(Optional<ContextAwarePredicate> player, Optional<ResourceKey<DragonAbility>> ability, Optional<Integer> level) implements SimpleCriterionTrigger.SimpleInstance {
         public static final Codec<UpgradeAbilityInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(UpgradeAbilityInstance::player),
                 ResourceKey.codec(DragonAbility.REGISTRY).optionalFieldOf("ability").forGetter(UpgradeAbilityInstance::ability),

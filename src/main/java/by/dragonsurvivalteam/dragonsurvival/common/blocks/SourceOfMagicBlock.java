@@ -23,6 +23,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
@@ -48,6 +49,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
@@ -56,9 +58,10 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
-import javax.annotation.Nullable;
 
 // TODO :: add a generic one (same for doors, pressure plates) which is handled through some level storage
 //  (said storage contains the relevant types and effects etc. per position aka place block)
@@ -66,16 +69,36 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
     @Translation(comments = "You need a 3x3 area to place %s")
     private static final String OCCUPIED = Translation.Type.GUI.wrap("message.occupied");
 
-    public static final VoxelShape SHAPE = Shapes.box(0, 0, 0, 1, 0.25, 1);
-    public static final VoxelShape OUTLINE = Shapes.box(0, 0, 0, 1, 0.5, 1);
-    public static final VoxelShape FULL_OUTLINE = Shapes.box(0, 0, 0, 1, 0.99, 1);
+    public static final VoxelShape SLAB = Shapes.box(0, 0, 0, 1, 0.5, 1);
 
-    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+    public static final VoxelShape FULL_NORTH = Shapes.box(0, 0, 0.5, 1, 1, 1);
+    public static final VoxelShape FULL_SOUTH = Shapes.box(0, 0, 0, 1, 1, 0.5);
+    public static final VoxelShape FULL_EAST = Shapes.box(0, 0, 0, 0.5, 1, 1);
+    public static final VoxelShape FULL_WEST = Shapes.box(0.5, 0, 0, 1, 1, 1);
+
+    public static final VoxelShape SLAB_NORTH = Shapes.box(0, 0, 0.5, 1, 0.5, 1);
+    public static final VoxelShape SLAB_SOUTH = Shapes.box(0, 0, 0, 1, 0.5, 0.5);
+    public static final VoxelShape SLAB_EAST = Shapes.box(0, 0, 0, 0.5, 0.5, 1);
+    public static final VoxelShape SLAB_WEST = Shapes.box(0.5, 0, 0, 1, 0.5, 1);
+
+    public static final VoxelShape BACK_NORTH = Shapes.or(SLAB, FULL_NORTH);
+    public static final VoxelShape BACK_SOUTH = Shapes.or(SLAB, FULL_SOUTH);
+    public static final VoxelShape BACK_EAST = Shapes.or(SLAB, FULL_EAST);
+    public static final VoxelShape BACK_WEST = Shapes.or(SLAB, FULL_WEST);
+
     public static final BooleanProperty PRIMARY_BLOCK = BooleanProperty.create("primary");
     public static final BooleanProperty FILLED = BooleanProperty.create("filled");
 
-    private static final BooleanProperty BACK_BLOCK = BooleanProperty.create("back");
-    private static final BooleanProperty TOP_BLOCK = BooleanProperty.create("top");
+    private enum Type implements StringRepresentable {
+        GROUND, BACK, BACK_MIDDLE, TOP;
+
+        @Override
+        public @NotNull String getSerializedName() {
+            return toString().toLowerCase(Locale.ENGLISH);
+        }
+    }
+
+    private static final EnumProperty<Type> TYPE = EnumProperty.create("type", Type.class);
 
     /** null -> all are valid */
     private final @Nullable TagKey<DragonSpecies> types;
@@ -83,7 +106,7 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
 
     public SourceOfMagicBlock(final Properties properties, @Nullable final TagKey<DragonSpecies> types, final Function<DamageSources, DamageSource> damageSourceProvider) {
         super(properties);
-        registerDefaultState(getStateDefinition().any().setValue(WATERLOGGED, false).setValue(PRIMARY_BLOCK, true).setValue(BACK_BLOCK, false).setValue(TOP_BLOCK, false).setValue(FILLED, false));
+        registerDefaultState(getStateDefinition().any().setValue(BlockStateProperties.WATERLOGGED, false).setValue(PRIMARY_BLOCK, true).setValue(TYPE, Type.GROUND).setValue(FILLED, false));
 
         this.types = types;
         this.damageSourceProvider = damageSourceProvider;
@@ -171,30 +194,35 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
         if (placer != null) {
             Direction direction = placer.getDirection();
             setPlaceholder(level, state, position, position.relative(direction.getOpposite()));
-            setPlaceholder(level, state.setValue(BACK_BLOCK, true), position, position.relative(direction));
+            setPlaceholder(level, state.setValue(TYPE, Type.BACK), position, position.relative(direction));
 
             setPlaceholder(level, state, position, position.relative(direction.getClockWise()));
             setPlaceholder(level, state, position, position.relative(direction.getCounterClockWise()));
 
-            setPlaceholder(level, state.setValue(BACK_BLOCK, true), position, position.relative(direction).relative(direction.getClockWise()));
-            setPlaceholder(level, state.setValue(BACK_BLOCK, true), position, position.relative(direction).relative(direction.getCounterClockWise()));
+            setPlaceholder(level, state.setValue(TYPE, Type.BACK), position, position.relative(direction).relative(direction.getClockWise()));
+            setPlaceholder(level, state.setValue(TYPE, Type.BACK), position, position.relative(direction).relative(direction.getCounterClockWise()));
 
             setPlaceholder(level, state, position, position.relative(direction.getOpposite()).relative(direction.getCounterClockWise()));
             setPlaceholder(level, state, position, position.relative(direction.getOpposite()).relative(direction.getClockWise()));
 
-            setPlaceholder(level, state.setValue(TOP_BLOCK, true), position, position.above().relative(direction));
-            setPlaceholder(level, state, position, position.above().relative(direction).relative(direction.getCounterClockWise()));
-            setPlaceholder(level, state, position, position.above().relative(direction).relative(direction.getClockWise()));
+            setPlaceholder(level, state.setValue(TYPE, Type.TOP), position, position.above().relative(direction));
+            setPlaceholder(level, state.setValue(TYPE, Type.BACK_MIDDLE), position, position.above().relative(direction).relative(direction.getCounterClockWise()));
+            setPlaceholder(level, state.setValue(TYPE, Type.BACK_MIDDLE), position, position.above().relative(direction).relative(direction.getClockWise()));
         }
     }
 
     @Override
     protected void createBlockStateDefinition(@NotNull final Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(FACING, WATERLOGGED, PRIMARY_BLOCK, BACK_BLOCK, TOP_BLOCK, FILLED);
+        builder.add(BlockStateProperties.WATERLOGGED, FACING, PRIMARY_BLOCK, TYPE, FILLED);
     }
 
     private static void setPlaceholder(final Level level, final BlockState state, final BlockPos rootPosition, final BlockPos newPosition) {
+        if (!(state.getBlock() instanceof SourceOfMagicBlock)) {
+            level.setBlockAndUpdate(newPosition, state);
+            return;
+        }
+
         level.setBlockAndUpdate(newPosition, state.setValue(PRIMARY_BLOCK, false));
 
         if (level.getBlockEntity(newPosition) instanceof SourceOfMagicPlaceholder placeholder) {
@@ -204,7 +232,7 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
 
     @Override
     public @NotNull BlockState updateShape(final BlockState state, @NotNull final Direction facing, @NotNull final BlockState neighborState, @NotNull final LevelAccessor level, @NotNull final BlockPos position, @NotNull final BlockPos neighborPosition) {
-        if (state.getValue(WATERLOGGED)) {
+        if (state.getValue(BlockStateProperties.WATERLOGGED)) {
             level.scheduleTick(position, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
 
@@ -269,6 +297,8 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
             return InteractionResult.sidedSuccess(player.level().isClientSide());
         }
 
+        // TODO :: previously on the else branch the entity was marked to be on magic source (if the source was not empty)
+
         return InteractionResult.PASS;
     }
 
@@ -286,7 +316,7 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
 
     @Override
     public @NotNull FluidState getFluidState(final BlockState state) {
-        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+        return state.getValue(BlockStateProperties.WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
     @Override
@@ -296,13 +326,13 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
     }
 
     @Override
-    public @NotNull VoxelShape getShape(final BlockState state, @NotNull final BlockGetter level, @NotNull final BlockPos position, @NotNull final CollisionContext context) {
-        return state.getValue(TOP_BLOCK) || state.getValue(BACK_BLOCK) ? FULL_OUTLINE : OUTLINE;
+    public @NotNull VoxelShape getShape(@NotNull final BlockState state, @NotNull final BlockGetter level, @NotNull final BlockPos position, @NotNull final CollisionContext context) {
+        return getShape(state);
     }
 
     @Override
-    public @NotNull VoxelShape getCollisionShape(final BlockState state, @NotNull final BlockGetter level, @NotNull final BlockPos position, @NotNull final CollisionContext context) {
-        return state.getValue(TOP_BLOCK) ? FULL_OUTLINE : SHAPE;
+    public @NotNull VoxelShape getCollisionShape(@NotNull final BlockState state, @NotNull final BlockGetter level, @NotNull final BlockPos position, @NotNull final CollisionContext context) {
+        return getShape(state);
     }
 
     @Override
@@ -332,7 +362,7 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
         }
 
         if (ServerConfig.damageWrongSourceOfMagic && entity instanceof Player player && !isFor(player)) {
-            entity.hurt(damageSourceProvider.apply(entity.damageSources()), 1f);
+            entity.hurt(damageSourceProvider.apply(entity.damageSources()), isMagic(state) ? 1f : 0.5f);
         }
 
         if (entity instanceof ItemEntity item) {
@@ -353,8 +383,8 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
         }
     }
 
-    public SourceOfMagicTileEntity getSource(Level world, BlockPos pos) {
-        BlockEntity entity = world.getBlockEntity(pos);
+    public SourceOfMagicTileEntity getSource(final Level level, final BlockPos position) {
+        BlockEntity entity = level.getBlockEntity(position);
         return entity instanceof SourceOfMagicTileEntity source ? source : null;
     }
 
@@ -454,5 +484,46 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
     public boolean isFor(final Player player) {
         DragonStateHandler data = DragonStateProvider.getData(player);
         return data.isDragon() && (types == null || data.species().is(types));
+    }
+
+    public boolean isMagic(final BlockState state) {
+        return state.getValue(SourceOfMagicBlock.PRIMARY_BLOCK) && state.getValue(SourceOfMagicBlock.FILLED);
+    }
+
+    private VoxelShape getShape(final BlockState state) {
+        Direction facing = state.getValue(FACING);
+        Type type = state.getValue(TYPE);
+
+        if (type == Type.TOP) {
+            return switch (facing) {
+                case NORTH -> FULL_NORTH;
+                case SOUTH -> FULL_SOUTH;
+                case EAST -> FULL_EAST;
+                case WEST -> FULL_WEST;
+                default -> Shapes.block();
+            };
+        }
+
+        if (type == Type.BACK) {
+            return switch (facing) {
+                case NORTH -> BACK_NORTH;
+                case SOUTH -> BACK_SOUTH;
+                case EAST -> BACK_EAST;
+                case WEST -> BACK_WEST;
+                default -> Shapes.block();
+            };
+        }
+
+        if (type == Type.BACK_MIDDLE) {
+            return switch (facing) {
+                case NORTH -> SLAB_NORTH;
+                case SOUTH -> SLAB_SOUTH;
+                case EAST -> SLAB_EAST;
+                case WEST -> SLAB_WEST;
+                default -> SLAB;
+            };
+        }
+
+        return SLAB;
     }
 }

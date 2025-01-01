@@ -26,6 +26,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.PlayerTeam;
@@ -37,8 +38,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.*;
 import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animation.*;
 import software.bernie.geckolib.cache.GeckoLibCache;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
@@ -52,6 +53,11 @@ import java.util.stream.Stream;
 
 @EventBusSubscriber
 public class DragonEntity extends LivingEntity implements GeoEntity {
+    /// Minimum magnitude for player input to consider the player to be moving
+    /// This is used for deliberate movement, i.e. player input
+    /// Forced movement (midair momentum etc.) relies on MOVE_DELTA_EPSILON for the world-space move delta vector
+    public static final double INPUT_EPSILON = 0.0000001D;
+
     private static final int MAX_EMOTES = 4;
     private static final int REQUIRED_SOURCE_OF_MAGIC_TICKS = Functions.secondsToTicks(2);
 
@@ -474,21 +480,21 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             return PlayState.CONTINUE;
         }
 
-        final double INPUT_EPSILON = 0.0000001D;
         MovementData movement = MovementData.getData(player);
         Vec2 rawInput = movement.desiredMoveVec;
         boolean hasMoveInput = rawInput.lengthSquared() > INPUT_EPSILON * INPUT_EPSILON;
         boolean isInSwimmableFluid = (player.isInWaterOrBubble() || SwimData.getData(player).canSwimIn(player.getMaxHeightFluidType())) && player.isSprinting() && !player.isPassenger();
 
-        if (player.getBlockStateOn().getBlock() instanceof SourceOfMagicBlock source && source.isFor(player)) {
+        BlockState blockStateOn = player.getBlockStateOn();
+
+        if (!hasMoveInput && blockStateOn.getBlock() instanceof SourceOfMagicBlock source && source.isMagic(blockStateOn) && source.isFor(player)) {
             sourceOfMagicTicks++;
         } else {
             sourceOfMagicTicks = 0;
         }
 
         // TODO: The transition length of animations doesn't work correctly when the framerate varies too much from 60 FPS
-        if (!hasMoveInput && sourceOfMagicTicks >= REQUIRED_SOURCE_OF_MAGIC_TICKS) {
-            // TODO :: should this only play when the source is filled (i.e. check blockstate)?
+        if (sourceOfMagicTicks >= REQUIRED_SOURCE_OF_MAGIC_TICKS) {
             return state.setAndContinue(AnimationUtils.createAnimation(builder, SIT_ON_MAGIC_SOURCE));
         } else if (player.isSleeping() || treasureRest.isResting) {
             return state.setAndContinue(AnimationUtils.createAnimation(builder, SLEEP));

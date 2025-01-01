@@ -8,7 +8,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.DarkDragonArmorItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.LightDragonArmorItem;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -52,24 +51,30 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         this.renderer = renderer;
     }
 
-    private void initArmorMasks(String modelName, ResourceLocation modelLocation) {
-        armorMasksPerModel.computeIfAbsent(modelLocation, resourceLocation -> {
-            HashMap<EquipmentSlot, NativeImage> armorMasks = new HashMap<>();
+    private void initArmorMasks(final String modelName, final ResourceLocation modelResource) {
+        armorMasksPerModel.computeIfAbsent(modelResource, resourceLocation -> {
+            HashMap<EquipmentSlot, NativeImage> masks = new HashMap<>();
+
             for (EquipmentSlot slot : EquipmentSlot.values()) {
                 if (slot.isArmor()) {
-                    Optional<Resource> armorFile = Minecraft.getInstance().getResourceManager().getResource(res("textures/armor/" + modelName + "/armor_trims/" + slot.getName() + "_mask.png"));
-                    if (armorFile.isPresent()) {
-                        try {
-                            InputStream textureStream = armorFile.get().open();
-                            armorMasks.put(slot, NativeImage.read(textureStream));
-                            textureStream.close();
-                        } catch (IOException e) {
-                            LOGGER.error("Failed to read file {}", "textures/armor/" + modelName + "/armor_trims/" + slot.getName() + "_mask.png");
-                        }
+                    String texture = "textures/armor/" + modelName + "/armor_trims/" + slot.getName() + "_mask.png";
+                    Optional<Resource> armorFile = Minecraft.getInstance().getResourceManager().getResource(res(texture));
+
+                    if (armorFile.isEmpty()) {
+                        continue;
+                    }
+
+                    try {
+                        InputStream textureStream = armorFile.get().open();
+                        masks.put(slot, NativeImage.read(textureStream));
+                        textureStream.close();
+                    } catch (IOException e) {
+                        LOGGER.error("Failed to read file {}", texture);
                     }
                 }
             }
-            return armorMasks;
+
+            return masks;
         });
     }
 

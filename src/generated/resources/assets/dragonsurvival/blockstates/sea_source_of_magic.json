@@ -1,482 +1,482 @@
 {
   "variants": {
-    "back=false,facing=east,filled=false,primary=false,top=false,waterlogged=false": {
+    "facing=east,filled=false,primary=false,type=back,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty",
       "y": 90
     },
-    "back=false,facing=east,filled=false,primary=false,top=false,waterlogged=true": {
+    "facing=east,filled=false,primary=false,type=back,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty",
       "y": 90
     },
-    "back=false,facing=east,filled=false,primary=false,top=true,waterlogged=false": {
+    "facing=east,filled=false,primary=false,type=back_middle,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty",
       "y": 90
     },
-    "back=false,facing=east,filled=false,primary=false,top=true,waterlogged=true": {
+    "facing=east,filled=false,primary=false,type=back_middle,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty",
       "y": 90
     },
-    "back=false,facing=east,filled=false,primary=true,top=false,waterlogged=false": {
+    "facing=east,filled=false,primary=false,type=ground,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty",
       "y": 90
     },
-    "back=false,facing=east,filled=false,primary=true,top=false,waterlogged=true": {
+    "facing=east,filled=false,primary=false,type=ground,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty",
       "y": 90
     },
-    "back=false,facing=east,filled=false,primary=true,top=true,waterlogged=false": {
+    "facing=east,filled=false,primary=false,type=top,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty",
       "y": 90
     },
-    "back=false,facing=east,filled=false,primary=true,top=true,waterlogged=true": {
+    "facing=east,filled=false,primary=false,type=top,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty",
       "y": 90
     },
-    "back=false,facing=east,filled=true,primary=false,top=false,waterlogged=false": {
+    "facing=east,filled=false,primary=true,type=back,waterlogged=false": {
+      "model": "dragonsurvival:block/sea_source_of_magic_empty",
+      "y": 90
+    },
+    "facing=east,filled=false,primary=true,type=back,waterlogged=true": {
+      "model": "dragonsurvival:block/sea_source_of_magic_empty",
+      "y": 90
+    },
+    "facing=east,filled=false,primary=true,type=back_middle,waterlogged=false": {
+      "model": "dragonsurvival:block/sea_source_of_magic_empty",
+      "y": 90
+    },
+    "facing=east,filled=false,primary=true,type=back_middle,waterlogged=true": {
+      "model": "dragonsurvival:block/sea_source_of_magic_empty",
+      "y": 90
+    },
+    "facing=east,filled=false,primary=true,type=ground,waterlogged=false": {
+      "model": "dragonsurvival:block/sea_source_of_magic_empty",
+      "y": 90
+    },
+    "facing=east,filled=false,primary=true,type=ground,waterlogged=true": {
+      "model": "dragonsurvival:block/sea_source_of_magic_empty",
+      "y": 90
+    },
+    "facing=east,filled=false,primary=true,type=top,waterlogged=false": {
+      "model": "dragonsurvival:block/sea_source_of_magic_empty",
+      "y": 90
+    },
+    "facing=east,filled=false,primary=true,type=top,waterlogged=true": {
+      "model": "dragonsurvival:block/sea_source_of_magic_empty",
+      "y": 90
+    },
+    "facing=east,filled=true,primary=false,type=back,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic",
       "y": 90
     },
-    "back=false,facing=east,filled=true,primary=false,top=false,waterlogged=true": {
+    "facing=east,filled=true,primary=false,type=back,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic",
       "y": 90
     },
-    "back=false,facing=east,filled=true,primary=false,top=true,waterlogged=false": {
+    "facing=east,filled=true,primary=false,type=back_middle,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic",
       "y": 90
     },
-    "back=false,facing=east,filled=true,primary=false,top=true,waterlogged=true": {
+    "facing=east,filled=true,primary=false,type=back_middle,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic",
       "y": 90
     },
-    "back=false,facing=east,filled=true,primary=true,top=false,waterlogged=false": {
+    "facing=east,filled=true,primary=false,type=ground,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic",
       "y": 90
     },
-    "back=false,facing=east,filled=true,primary=true,top=false,waterlogged=true": {
+    "facing=east,filled=true,primary=false,type=ground,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic",
       "y": 90
     },
-    "back=false,facing=east,filled=true,primary=true,top=true,waterlogged=false": {
+    "facing=east,filled=true,primary=false,type=top,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic",
       "y": 90
     },
-    "back=false,facing=east,filled=true,primary=true,top=true,waterlogged=true": {
+    "facing=east,filled=true,primary=false,type=top,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic",
       "y": 90
     },
-    "back=false,facing=north,filled=false,primary=false,top=false,waterlogged=false": {
+    "facing=east,filled=true,primary=true,type=back,waterlogged=false": {
+      "model": "dragonsurvival:block/sea_source_of_magic",
+      "y": 90
+    },
+    "facing=east,filled=true,primary=true,type=back,waterlogged=true": {
+      "model": "dragonsurvival:block/sea_source_of_magic",
+      "y": 90
+    },
+    "facing=east,filled=true,primary=true,type=back_middle,waterlogged=false": {
+      "model": "dragonsurvival:block/sea_source_of_magic",
+      "y": 90
+    },
+    "facing=east,filled=true,primary=true,type=back_middle,waterlogged=true": {
+      "model": "dragonsurvival:block/sea_source_of_magic",
+      "y": 90
+    },
+    "facing=east,filled=true,primary=true,type=ground,waterlogged=false": {
+      "model": "dragonsurvival:block/sea_source_of_magic",
+      "y": 90
+    },
+    "facing=east,filled=true,primary=true,type=ground,waterlogged=true": {
+      "model": "dragonsurvival:block/sea_source_of_magic",
+      "y": 90
+    },
+    "facing=east,filled=true,primary=true,type=top,waterlogged=false": {
+      "model": "dragonsurvival:block/sea_source_of_magic",
+      "y": 90
+    },
+    "facing=east,filled=true,primary=true,type=top,waterlogged=true": {
+      "model": "dragonsurvival:block/sea_source_of_magic",
+      "y": 90
+    },
+    "facing=north,filled=false,primary=false,type=back,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty"
     },
-    "back=false,facing=north,filled=false,primary=false,top=false,waterlogged=true": {
+    "facing=north,filled=false,primary=false,type=back,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty"
     },
-    "back=false,facing=north,filled=false,primary=false,top=true,waterlogged=false": {
+    "facing=north,filled=false,primary=false,type=back_middle,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty"
     },
-    "back=false,facing=north,filled=false,primary=false,top=true,waterlogged=true": {
+    "facing=north,filled=false,primary=false,type=back_middle,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty"
     },
-    "back=false,facing=north,filled=false,primary=true,top=false,waterlogged=false": {
+    "facing=north,filled=false,primary=false,type=ground,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty"
     },
-    "back=false,facing=north,filled=false,primary=true,top=false,waterlogged=true": {
+    "facing=north,filled=false,primary=false,type=ground,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty"
     },
-    "back=false,facing=north,filled=false,primary=true,top=true,waterlogged=false": {
+    "facing=north,filled=false,primary=false,type=top,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty"
     },
-    "back=false,facing=north,filled=false,primary=true,top=true,waterlogged=true": {
+    "facing=north,filled=false,primary=false,type=top,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty"
     },
-    "back=false,facing=north,filled=true,primary=false,top=false,waterlogged=false": {
-      "model": "dragonsurvival:block/sea_source_of_magic"
-    },
-    "back=false,facing=north,filled=true,primary=false,top=false,waterlogged=true": {
-      "model": "dragonsurvival:block/sea_source_of_magic"
-    },
-    "back=false,facing=north,filled=true,primary=false,top=true,waterlogged=false": {
-      "model": "dragonsurvival:block/sea_source_of_magic"
-    },
-    "back=false,facing=north,filled=true,primary=false,top=true,waterlogged=true": {
-      "model": "dragonsurvival:block/sea_source_of_magic"
-    },
-    "back=false,facing=north,filled=true,primary=true,top=false,waterlogged=false": {
-      "model": "dragonsurvival:block/sea_source_of_magic"
-    },
-    "back=false,facing=north,filled=true,primary=true,top=false,waterlogged=true": {
-      "model": "dragonsurvival:block/sea_source_of_magic"
-    },
-    "back=false,facing=north,filled=true,primary=true,top=true,waterlogged=false": {
-      "model": "dragonsurvival:block/sea_source_of_magic"
-    },
-    "back=false,facing=north,filled=true,primary=true,top=true,waterlogged=true": {
-      "model": "dragonsurvival:block/sea_source_of_magic"
-    },
-    "back=false,facing=south,filled=false,primary=false,top=false,waterlogged=false": {
-      "model": "dragonsurvival:block/sea_source_of_magic_empty",
-      "y": 180
-    },
-    "back=false,facing=south,filled=false,primary=false,top=false,waterlogged=true": {
-      "model": "dragonsurvival:block/sea_source_of_magic_empty",
-      "y": 180
-    },
-    "back=false,facing=south,filled=false,primary=false,top=true,waterlogged=false": {
-      "model": "dragonsurvival:block/sea_source_of_magic_empty",
-      "y": 180
-    },
-    "back=false,facing=south,filled=false,primary=false,top=true,waterlogged=true": {
-      "model": "dragonsurvival:block/sea_source_of_magic_empty",
-      "y": 180
-    },
-    "back=false,facing=south,filled=false,primary=true,top=false,waterlogged=false": {
-      "model": "dragonsurvival:block/sea_source_of_magic_empty",
-      "y": 180
-    },
-    "back=false,facing=south,filled=false,primary=true,top=false,waterlogged=true": {
-      "model": "dragonsurvival:block/sea_source_of_magic_empty",
-      "y": 180
-    },
-    "back=false,facing=south,filled=false,primary=true,top=true,waterlogged=false": {
-      "model": "dragonsurvival:block/sea_source_of_magic_empty",
-      "y": 180
-    },
-    "back=false,facing=south,filled=false,primary=true,top=true,waterlogged=true": {
-      "model": "dragonsurvival:block/sea_source_of_magic_empty",
-      "y": 180
-    },
-    "back=false,facing=south,filled=true,primary=false,top=false,waterlogged=false": {
-      "model": "dragonsurvival:block/sea_source_of_magic",
-      "y": 180
-    },
-    "back=false,facing=south,filled=true,primary=false,top=false,waterlogged=true": {
-      "model": "dragonsurvival:block/sea_source_of_magic",
-      "y": 180
-    },
-    "back=false,facing=south,filled=true,primary=false,top=true,waterlogged=false": {
-      "model": "dragonsurvival:block/sea_source_of_magic",
-      "y": 180
-    },
-    "back=false,facing=south,filled=true,primary=false,top=true,waterlogged=true": {
-      "model": "dragonsurvival:block/sea_source_of_magic",
-      "y": 180
-    },
-    "back=false,facing=south,filled=true,primary=true,top=false,waterlogged=false": {
-      "model": "dragonsurvival:block/sea_source_of_magic",
-      "y": 180
-    },
-    "back=false,facing=south,filled=true,primary=true,top=false,waterlogged=true": {
-      "model": "dragonsurvival:block/sea_source_of_magic",
-      "y": 180
-    },
-    "back=false,facing=south,filled=true,primary=true,top=true,waterlogged=false": {
-      "model": "dragonsurvival:block/sea_source_of_magic",
-      "y": 180
-    },
-    "back=false,facing=south,filled=true,primary=true,top=true,waterlogged=true": {
-      "model": "dragonsurvival:block/sea_source_of_magic",
-      "y": 180
-    },
-    "back=false,facing=west,filled=false,primary=false,top=false,waterlogged=false": {
-      "model": "dragonsurvival:block/sea_source_of_magic_empty",
-      "y": 270
-    },
-    "back=false,facing=west,filled=false,primary=false,top=false,waterlogged=true": {
-      "model": "dragonsurvival:block/sea_source_of_magic_empty",
-      "y": 270
-    },
-    "back=false,facing=west,filled=false,primary=false,top=true,waterlogged=false": {
-      "model": "dragonsurvival:block/sea_source_of_magic_empty",
-      "y": 270
-    },
-    "back=false,facing=west,filled=false,primary=false,top=true,waterlogged=true": {
-      "model": "dragonsurvival:block/sea_source_of_magic_empty",
-      "y": 270
-    },
-    "back=false,facing=west,filled=false,primary=true,top=false,waterlogged=false": {
-      "model": "dragonsurvival:block/sea_source_of_magic_empty",
-      "y": 270
-    },
-    "back=false,facing=west,filled=false,primary=true,top=false,waterlogged=true": {
-      "model": "dragonsurvival:block/sea_source_of_magic_empty",
-      "y": 270
-    },
-    "back=false,facing=west,filled=false,primary=true,top=true,waterlogged=false": {
-      "model": "dragonsurvival:block/sea_source_of_magic_empty",
-      "y": 270
-    },
-    "back=false,facing=west,filled=false,primary=true,top=true,waterlogged=true": {
-      "model": "dragonsurvival:block/sea_source_of_magic_empty",
-      "y": 270
-    },
-    "back=false,facing=west,filled=true,primary=false,top=false,waterlogged=false": {
-      "model": "dragonsurvival:block/sea_source_of_magic",
-      "y": 270
-    },
-    "back=false,facing=west,filled=true,primary=false,top=false,waterlogged=true": {
-      "model": "dragonsurvival:block/sea_source_of_magic",
-      "y": 270
-    },
-    "back=false,facing=west,filled=true,primary=false,top=true,waterlogged=false": {
-      "model": "dragonsurvival:block/sea_source_of_magic",
-      "y": 270
-    },
-    "back=false,facing=west,filled=true,primary=false,top=true,waterlogged=true": {
-      "model": "dragonsurvival:block/sea_source_of_magic",
-      "y": 270
-    },
-    "back=false,facing=west,filled=true,primary=true,top=false,waterlogged=false": {
-      "model": "dragonsurvival:block/sea_source_of_magic",
-      "y": 270
-    },
-    "back=false,facing=west,filled=true,primary=true,top=false,waterlogged=true": {
-      "model": "dragonsurvival:block/sea_source_of_magic",
-      "y": 270
-    },
-    "back=false,facing=west,filled=true,primary=true,top=true,waterlogged=false": {
-      "model": "dragonsurvival:block/sea_source_of_magic",
-      "y": 270
-    },
-    "back=false,facing=west,filled=true,primary=true,top=true,waterlogged=true": {
-      "model": "dragonsurvival:block/sea_source_of_magic",
-      "y": 270
-    },
-    "back=true,facing=east,filled=false,primary=false,top=false,waterlogged=false": {
-      "model": "dragonsurvival:block/sea_source_of_magic_empty",
-      "y": 90
-    },
-    "back=true,facing=east,filled=false,primary=false,top=false,waterlogged=true": {
-      "model": "dragonsurvival:block/sea_source_of_magic_empty",
-      "y": 90
-    },
-    "back=true,facing=east,filled=false,primary=false,top=true,waterlogged=false": {
-      "model": "dragonsurvival:block/sea_source_of_magic_empty",
-      "y": 90
-    },
-    "back=true,facing=east,filled=false,primary=false,top=true,waterlogged=true": {
-      "model": "dragonsurvival:block/sea_source_of_magic_empty",
-      "y": 90
-    },
-    "back=true,facing=east,filled=false,primary=true,top=false,waterlogged=false": {
-      "model": "dragonsurvival:block/sea_source_of_magic_empty",
-      "y": 90
-    },
-    "back=true,facing=east,filled=false,primary=true,top=false,waterlogged=true": {
-      "model": "dragonsurvival:block/sea_source_of_magic_empty",
-      "y": 90
-    },
-    "back=true,facing=east,filled=false,primary=true,top=true,waterlogged=false": {
-      "model": "dragonsurvival:block/sea_source_of_magic_empty",
-      "y": 90
-    },
-    "back=true,facing=east,filled=false,primary=true,top=true,waterlogged=true": {
-      "model": "dragonsurvival:block/sea_source_of_magic_empty",
-      "y": 90
-    },
-    "back=true,facing=east,filled=true,primary=false,top=false,waterlogged=false": {
-      "model": "dragonsurvival:block/sea_source_of_magic",
-      "y": 90
-    },
-    "back=true,facing=east,filled=true,primary=false,top=false,waterlogged=true": {
-      "model": "dragonsurvival:block/sea_source_of_magic",
-      "y": 90
-    },
-    "back=true,facing=east,filled=true,primary=false,top=true,waterlogged=false": {
-      "model": "dragonsurvival:block/sea_source_of_magic",
-      "y": 90
-    },
-    "back=true,facing=east,filled=true,primary=false,top=true,waterlogged=true": {
-      "model": "dragonsurvival:block/sea_source_of_magic",
-      "y": 90
-    },
-    "back=true,facing=east,filled=true,primary=true,top=false,waterlogged=false": {
-      "model": "dragonsurvival:block/sea_source_of_magic",
-      "y": 90
-    },
-    "back=true,facing=east,filled=true,primary=true,top=false,waterlogged=true": {
-      "model": "dragonsurvival:block/sea_source_of_magic",
-      "y": 90
-    },
-    "back=true,facing=east,filled=true,primary=true,top=true,waterlogged=false": {
-      "model": "dragonsurvival:block/sea_source_of_magic",
-      "y": 90
-    },
-    "back=true,facing=east,filled=true,primary=true,top=true,waterlogged=true": {
-      "model": "dragonsurvival:block/sea_source_of_magic",
-      "y": 90
-    },
-    "back=true,facing=north,filled=false,primary=false,top=false,waterlogged=false": {
+    "facing=north,filled=false,primary=true,type=back,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty"
     },
-    "back=true,facing=north,filled=false,primary=false,top=false,waterlogged=true": {
+    "facing=north,filled=false,primary=true,type=back,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty"
     },
-    "back=true,facing=north,filled=false,primary=false,top=true,waterlogged=false": {
+    "facing=north,filled=false,primary=true,type=back_middle,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty"
     },
-    "back=true,facing=north,filled=false,primary=false,top=true,waterlogged=true": {
+    "facing=north,filled=false,primary=true,type=back_middle,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty"
     },
-    "back=true,facing=north,filled=false,primary=true,top=false,waterlogged=false": {
+    "facing=north,filled=false,primary=true,type=ground,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty"
     },
-    "back=true,facing=north,filled=false,primary=true,top=false,waterlogged=true": {
+    "facing=north,filled=false,primary=true,type=ground,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty"
     },
-    "back=true,facing=north,filled=false,primary=true,top=true,waterlogged=false": {
+    "facing=north,filled=false,primary=true,type=top,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty"
     },
-    "back=true,facing=north,filled=false,primary=true,top=true,waterlogged=true": {
+    "facing=north,filled=false,primary=true,type=top,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty"
     },
-    "back=true,facing=north,filled=true,primary=false,top=false,waterlogged=false": {
+    "facing=north,filled=true,primary=false,type=back,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic"
     },
-    "back=true,facing=north,filled=true,primary=false,top=false,waterlogged=true": {
+    "facing=north,filled=true,primary=false,type=back,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic"
     },
-    "back=true,facing=north,filled=true,primary=false,top=true,waterlogged=false": {
+    "facing=north,filled=true,primary=false,type=back_middle,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic"
     },
-    "back=true,facing=north,filled=true,primary=false,top=true,waterlogged=true": {
+    "facing=north,filled=true,primary=false,type=back_middle,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic"
     },
-    "back=true,facing=north,filled=true,primary=true,top=false,waterlogged=false": {
+    "facing=north,filled=true,primary=false,type=ground,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic"
     },
-    "back=true,facing=north,filled=true,primary=true,top=false,waterlogged=true": {
+    "facing=north,filled=true,primary=false,type=ground,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic"
     },
-    "back=true,facing=north,filled=true,primary=true,top=true,waterlogged=false": {
+    "facing=north,filled=true,primary=false,type=top,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic"
     },
-    "back=true,facing=north,filled=true,primary=true,top=true,waterlogged=true": {
+    "facing=north,filled=true,primary=false,type=top,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic"
     },
-    "back=true,facing=south,filled=false,primary=false,top=false,waterlogged=false": {
+    "facing=north,filled=true,primary=true,type=back,waterlogged=false": {
+      "model": "dragonsurvival:block/sea_source_of_magic"
+    },
+    "facing=north,filled=true,primary=true,type=back,waterlogged=true": {
+      "model": "dragonsurvival:block/sea_source_of_magic"
+    },
+    "facing=north,filled=true,primary=true,type=back_middle,waterlogged=false": {
+      "model": "dragonsurvival:block/sea_source_of_magic"
+    },
+    "facing=north,filled=true,primary=true,type=back_middle,waterlogged=true": {
+      "model": "dragonsurvival:block/sea_source_of_magic"
+    },
+    "facing=north,filled=true,primary=true,type=ground,waterlogged=false": {
+      "model": "dragonsurvival:block/sea_source_of_magic"
+    },
+    "facing=north,filled=true,primary=true,type=ground,waterlogged=true": {
+      "model": "dragonsurvival:block/sea_source_of_magic"
+    },
+    "facing=north,filled=true,primary=true,type=top,waterlogged=false": {
+      "model": "dragonsurvival:block/sea_source_of_magic"
+    },
+    "facing=north,filled=true,primary=true,type=top,waterlogged=true": {
+      "model": "dragonsurvival:block/sea_source_of_magic"
+    },
+    "facing=south,filled=false,primary=false,type=back,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty",
       "y": 180
     },
-    "back=true,facing=south,filled=false,primary=false,top=false,waterlogged=true": {
+    "facing=south,filled=false,primary=false,type=back,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty",
       "y": 180
     },
-    "back=true,facing=south,filled=false,primary=false,top=true,waterlogged=false": {
+    "facing=south,filled=false,primary=false,type=back_middle,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty",
       "y": 180
     },
-    "back=true,facing=south,filled=false,primary=false,top=true,waterlogged=true": {
+    "facing=south,filled=false,primary=false,type=back_middle,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty",
       "y": 180
     },
-    "back=true,facing=south,filled=false,primary=true,top=false,waterlogged=false": {
+    "facing=south,filled=false,primary=false,type=ground,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty",
       "y": 180
     },
-    "back=true,facing=south,filled=false,primary=true,top=false,waterlogged=true": {
+    "facing=south,filled=false,primary=false,type=ground,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty",
       "y": 180
     },
-    "back=true,facing=south,filled=false,primary=true,top=true,waterlogged=false": {
+    "facing=south,filled=false,primary=false,type=top,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty",
       "y": 180
     },
-    "back=true,facing=south,filled=false,primary=true,top=true,waterlogged=true": {
+    "facing=south,filled=false,primary=false,type=top,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty",
       "y": 180
     },
-    "back=true,facing=south,filled=true,primary=false,top=false,waterlogged=false": {
+    "facing=south,filled=false,primary=true,type=back,waterlogged=false": {
+      "model": "dragonsurvival:block/sea_source_of_magic_empty",
+      "y": 180
+    },
+    "facing=south,filled=false,primary=true,type=back,waterlogged=true": {
+      "model": "dragonsurvival:block/sea_source_of_magic_empty",
+      "y": 180
+    },
+    "facing=south,filled=false,primary=true,type=back_middle,waterlogged=false": {
+      "model": "dragonsurvival:block/sea_source_of_magic_empty",
+      "y": 180
+    },
+    "facing=south,filled=false,primary=true,type=back_middle,waterlogged=true": {
+      "model": "dragonsurvival:block/sea_source_of_magic_empty",
+      "y": 180
+    },
+    "facing=south,filled=false,primary=true,type=ground,waterlogged=false": {
+      "model": "dragonsurvival:block/sea_source_of_magic_empty",
+      "y": 180
+    },
+    "facing=south,filled=false,primary=true,type=ground,waterlogged=true": {
+      "model": "dragonsurvival:block/sea_source_of_magic_empty",
+      "y": 180
+    },
+    "facing=south,filled=false,primary=true,type=top,waterlogged=false": {
+      "model": "dragonsurvival:block/sea_source_of_magic_empty",
+      "y": 180
+    },
+    "facing=south,filled=false,primary=true,type=top,waterlogged=true": {
+      "model": "dragonsurvival:block/sea_source_of_magic_empty",
+      "y": 180
+    },
+    "facing=south,filled=true,primary=false,type=back,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic",
       "y": 180
     },
-    "back=true,facing=south,filled=true,primary=false,top=false,waterlogged=true": {
+    "facing=south,filled=true,primary=false,type=back,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic",
       "y": 180
     },
-    "back=true,facing=south,filled=true,primary=false,top=true,waterlogged=false": {
+    "facing=south,filled=true,primary=false,type=back_middle,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic",
       "y": 180
     },
-    "back=true,facing=south,filled=true,primary=false,top=true,waterlogged=true": {
+    "facing=south,filled=true,primary=false,type=back_middle,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic",
       "y": 180
     },
-    "back=true,facing=south,filled=true,primary=true,top=false,waterlogged=false": {
+    "facing=south,filled=true,primary=false,type=ground,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic",
       "y": 180
     },
-    "back=true,facing=south,filled=true,primary=true,top=false,waterlogged=true": {
+    "facing=south,filled=true,primary=false,type=ground,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic",
       "y": 180
     },
-    "back=true,facing=south,filled=true,primary=true,top=true,waterlogged=false": {
+    "facing=south,filled=true,primary=false,type=top,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic",
       "y": 180
     },
-    "back=true,facing=south,filled=true,primary=true,top=true,waterlogged=true": {
+    "facing=south,filled=true,primary=false,type=top,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic",
       "y": 180
     },
-    "back=true,facing=west,filled=false,primary=false,top=false,waterlogged=false": {
+    "facing=south,filled=true,primary=true,type=back,waterlogged=false": {
+      "model": "dragonsurvival:block/sea_source_of_magic",
+      "y": 180
+    },
+    "facing=south,filled=true,primary=true,type=back,waterlogged=true": {
+      "model": "dragonsurvival:block/sea_source_of_magic",
+      "y": 180
+    },
+    "facing=south,filled=true,primary=true,type=back_middle,waterlogged=false": {
+      "model": "dragonsurvival:block/sea_source_of_magic",
+      "y": 180
+    },
+    "facing=south,filled=true,primary=true,type=back_middle,waterlogged=true": {
+      "model": "dragonsurvival:block/sea_source_of_magic",
+      "y": 180
+    },
+    "facing=south,filled=true,primary=true,type=ground,waterlogged=false": {
+      "model": "dragonsurvival:block/sea_source_of_magic",
+      "y": 180
+    },
+    "facing=south,filled=true,primary=true,type=ground,waterlogged=true": {
+      "model": "dragonsurvival:block/sea_source_of_magic",
+      "y": 180
+    },
+    "facing=south,filled=true,primary=true,type=top,waterlogged=false": {
+      "model": "dragonsurvival:block/sea_source_of_magic",
+      "y": 180
+    },
+    "facing=south,filled=true,primary=true,type=top,waterlogged=true": {
+      "model": "dragonsurvival:block/sea_source_of_magic",
+      "y": 180
+    },
+    "facing=west,filled=false,primary=false,type=back,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty",
       "y": 270
     },
-    "back=true,facing=west,filled=false,primary=false,top=false,waterlogged=true": {
+    "facing=west,filled=false,primary=false,type=back,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty",
       "y": 270
     },
-    "back=true,facing=west,filled=false,primary=false,top=true,waterlogged=false": {
+    "facing=west,filled=false,primary=false,type=back_middle,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty",
       "y": 270
     },
-    "back=true,facing=west,filled=false,primary=false,top=true,waterlogged=true": {
+    "facing=west,filled=false,primary=false,type=back_middle,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty",
       "y": 270
     },
-    "back=true,facing=west,filled=false,primary=true,top=false,waterlogged=false": {
+    "facing=west,filled=false,primary=false,type=ground,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty",
       "y": 270
     },
-    "back=true,facing=west,filled=false,primary=true,top=false,waterlogged=true": {
+    "facing=west,filled=false,primary=false,type=ground,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty",
       "y": 270
     },
-    "back=true,facing=west,filled=false,primary=true,top=true,waterlogged=false": {
+    "facing=west,filled=false,primary=false,type=top,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty",
       "y": 270
     },
-    "back=true,facing=west,filled=false,primary=true,top=true,waterlogged=true": {
+    "facing=west,filled=false,primary=false,type=top,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic_empty",
       "y": 270
     },
-    "back=true,facing=west,filled=true,primary=false,top=false,waterlogged=false": {
+    "facing=west,filled=false,primary=true,type=back,waterlogged=false": {
+      "model": "dragonsurvival:block/sea_source_of_magic_empty",
+      "y": 270
+    },
+    "facing=west,filled=false,primary=true,type=back,waterlogged=true": {
+      "model": "dragonsurvival:block/sea_source_of_magic_empty",
+      "y": 270
+    },
+    "facing=west,filled=false,primary=true,type=back_middle,waterlogged=false": {
+      "model": "dragonsurvival:block/sea_source_of_magic_empty",
+      "y": 270
+    },
+    "facing=west,filled=false,primary=true,type=back_middle,waterlogged=true": {
+      "model": "dragonsurvival:block/sea_source_of_magic_empty",
+      "y": 270
+    },
+    "facing=west,filled=false,primary=true,type=ground,waterlogged=false": {
+      "model": "dragonsurvival:block/sea_source_of_magic_empty",
+      "y": 270
+    },
+    "facing=west,filled=false,primary=true,type=ground,waterlogged=true": {
+      "model": "dragonsurvival:block/sea_source_of_magic_empty",
+      "y": 270
+    },
+    "facing=west,filled=false,primary=true,type=top,waterlogged=false": {
+      "model": "dragonsurvival:block/sea_source_of_magic_empty",
+      "y": 270
+    },
+    "facing=west,filled=false,primary=true,type=top,waterlogged=true": {
+      "model": "dragonsurvival:block/sea_source_of_magic_empty",
+      "y": 270
+    },
+    "facing=west,filled=true,primary=false,type=back,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic",
       "y": 270
     },
-    "back=true,facing=west,filled=true,primary=false,top=false,waterlogged=true": {
+    "facing=west,filled=true,primary=false,type=back,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic",
       "y": 270
     },
-    "back=true,facing=west,filled=true,primary=false,top=true,waterlogged=false": {
+    "facing=west,filled=true,primary=false,type=back_middle,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic",
       "y": 270
     },
-    "back=true,facing=west,filled=true,primary=false,top=true,waterlogged=true": {
+    "facing=west,filled=true,primary=false,type=back_middle,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic",
       "y": 270
     },
-    "back=true,facing=west,filled=true,primary=true,top=false,waterlogged=false": {
+    "facing=west,filled=true,primary=false,type=ground,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic",
       "y": 270
     },
-    "back=true,facing=west,filled=true,primary=true,top=false,waterlogged=true": {
+    "facing=west,filled=true,primary=false,type=ground,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic",
       "y": 270
     },
-    "back=true,facing=west,filled=true,primary=true,top=true,waterlogged=false": {
+    "facing=west,filled=true,primary=false,type=top,waterlogged=false": {
       "model": "dragonsurvival:block/sea_source_of_magic",
       "y": 270
     },
-    "back=true,facing=west,filled=true,primary=true,top=true,waterlogged=true": {
+    "facing=west,filled=true,primary=false,type=top,waterlogged=true": {
+      "model": "dragonsurvival:block/sea_source_of_magic",
+      "y": 270
+    },
+    "facing=west,filled=true,primary=true,type=back,waterlogged=false": {
+      "model": "dragonsurvival:block/sea_source_of_magic",
+      "y": 270
+    },
+    "facing=west,filled=true,primary=true,type=back,waterlogged=true": {
+      "model": "dragonsurvival:block/sea_source_of_magic",
+      "y": 270
+    },
+    "facing=west,filled=true,primary=true,type=back_middle,waterlogged=false": {
+      "model": "dragonsurvival:block/sea_source_of_magic",
+      "y": 270
+    },
+    "facing=west,filled=true,primary=true,type=back_middle,waterlogged=true": {
+      "model": "dragonsurvival:block/sea_source_of_magic",
+      "y": 270
+    },
+    "facing=west,filled=true,primary=true,type=ground,waterlogged=false": {
+      "model": "dragonsurvival:block/sea_source_of_magic",
+      "y": 270
+    },
+    "facing=west,filled=true,primary=true,type=ground,waterlogged=true": {
+      "model": "dragonsurvival:block/sea_source_of_magic",
+      "y": 270
+    },
+    "facing=west,filled=true,primary=true,type=top,waterlogged=false": {
+      "model": "dragonsurvival:block/sea_source_of_magic",
+      "y": 270
+    },
+    "facing=west,filled=true,primary=true,type=top,waterlogged=true": {
       "model": "dragonsurvival:block/sea_source_of_magic",
       "y": 270
     }

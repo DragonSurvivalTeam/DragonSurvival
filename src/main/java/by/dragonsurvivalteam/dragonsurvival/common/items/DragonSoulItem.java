@@ -3,13 +3,11 @@ package by.dragonsurvivalteam.dragonsurvival.common.items;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSModifiers;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonSpeciesTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.PlayerLoginHandler;
-import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import net.minecraft.core.Holder;
@@ -208,17 +206,17 @@ public class DragonSoulItem extends Item {
     }
 
     @Override
-    public @NotNull String getDescriptionId(@NotNull final ItemStack stack) {
+    public @NotNull Component getName(@NotNull final ItemStack stack) {
         if (stack.has(DataComponents.CUSTOM_DATA)) {
             //noinspection DataFlowIssue, deprecation -> tag isn't modified, no need to create a copy
             ResourceKey<DragonSpecies> species = ResourceHelper.decodeKey(null, DragonSpecies.REGISTRY, stack.get(DataComponents.CUSTOM_DATA).getUnsafe(), SPECIES);
 
             if (species != null) {
-                return Component.translatable(Translation.Type.DRAGON_SPECIES.wrap(species.location())).append(Component.translatable(SOUL)).getString();
+                return Component.translatable(Translation.Type.DRAGON_SPECIES.wrap(species.location())).append(Component.translatable(SOUL));
             }
         }
 
-        return EMPTY_DRAGON_SOUL;
+        return Component.translatable(EMPTY_DRAGON_SOUL);
     }
 
     public static final String SPECIES = "dragon_species";
