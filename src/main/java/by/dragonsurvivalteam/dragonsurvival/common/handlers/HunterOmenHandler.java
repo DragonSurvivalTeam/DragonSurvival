@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEnchantments;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSMapDecorationTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSTrades;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.EffectsMaintainedThroughDeath;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
 import by.dragonsurvivalteam.dragonsurvival.util.EnchantmentUtils;
@@ -40,16 +41,12 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 
 import java.util.*;
 import javax.annotation.Nullable;
 
 @EventBusSubscriber
 public class HunterOmenHandler {
-    // FIXME: This will fail if a player dies, then closes the game/server. The player will respawn without the effect. <- why not handle this with data attachments + copyOnDeath
-    private static final Map<UUID, MobEffectInstance> playersToReapplyHunterOmen = new HashMap<>();
-
     @SubscribeEvent
     public static void applyHunterOmenOnMurderedEntities(final LivingDeathEvent deathEvent) {
         LivingEntity livingEntity = deathEvent.getEntity();
@@ -154,21 +151,11 @@ public class HunterOmenHandler {
     @SubscribeEvent
     public static void preserveHunterOmenOnRespawn(LivingDeathEvent deathEvent) {
         LivingEntity livingEntity = deathEvent.getEntity();
-        if (livingEntity instanceof Player playerEntity) {
-            if (playerEntity.hasEffect(DSEffects.HUNTER_OMEN)) {
-                playersToReapplyHunterOmen.put(playerEntity.getUUID(), playerEntity.getEffect(DSEffects.HUNTER_OMEN));
+        if (livingEntity instanceof Player player) {
+            EffectsMaintainedThroughDeath effectsMaintainedThroughDeath = EffectsMaintainedThroughDeath.getData(player);
+            if (player.hasEffect(DSEffects.HUNTER_OMEN)) {
+                effectsMaintainedThroughDeath.addEffect(player.getEffect(DSEffects.HUNTER_OMEN));
             }
-        }
-    }
-
-    @SubscribeEvent
-    public static void reapplyHunterOmenOnRespawn(final PlayerEvent.PlayerRespawnEvent event) {
-        Player player = event.getEntity();
-        UUID uuid = player.getUUID();
-        MobEffectInstance effectInstance = playersToReapplyHunterOmen.remove(uuid);
-
-        if (effectInstance != null) {
-            player.addEffect(effectInstance);
         }
     }
 

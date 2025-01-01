@@ -1,7 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.buttons;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonEmoteScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonSkinsScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonSpeciesScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.DragonEditorScreen;

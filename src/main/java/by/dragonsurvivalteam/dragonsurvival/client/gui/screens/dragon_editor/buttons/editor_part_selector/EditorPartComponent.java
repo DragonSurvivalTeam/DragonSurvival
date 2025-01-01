@@ -90,7 +90,7 @@ public class EditorPartComponent implements ScrollableComponent {
 
     @Override
     public void scroll(double mouseX, double mouseY, double scrollX, double scrollY) {
-        // FIXME :: Weird things happen with collision, where you can end up scrolling multiple buttons at once
+        // TODO :: Weird things happen with collision, where you can end up scrolling multiple buttons at once
        /*List<String> partsFromLayer = screen.getPartsFromLayer(skinLayer);
         int currentPart = partsFromLayer.indexOf(this.selectedPart);
         if(partButton.isMouseOver(mouseX, mouseY)) {
