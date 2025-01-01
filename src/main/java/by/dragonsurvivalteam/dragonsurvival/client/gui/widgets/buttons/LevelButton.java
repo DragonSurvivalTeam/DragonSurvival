@@ -114,7 +114,7 @@ public class LevelButton extends ClickHoverButton {
         }
 
         // Check if you can afford to upgrade
-        if (type == Type.UPGRADE && ExperienceUtils.getTotalExperience(Minecraft.getInstance().player) < data.getCost(ability.key(), 1)) {
+        if (!player.isCreative() && type == Type.UPGRADE && ExperienceUtils.getTotalExperience(Minecraft.getInstance().player) < data.getCost(ability.key(), 1)) {
             return false;
         }
 

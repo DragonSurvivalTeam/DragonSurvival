@@ -307,7 +307,15 @@ public class DragonStateHandler extends EntityStateHandler {
 
     public void refreshDataOnTypeChange(final Player player) {
         PenaltySupply.getData(player).clear();
-        MagicData.getData(player).refresh(species(), player);
+        if(!ServerConfig.saveAllAbilities) {
+            MagicData.getData(player).refresh(species(), player);
+        } else {
+            if(MagicData.getData(player).dataForSpeciesIsEmpty(speciesKey())) {
+                MagicData.getData(player).refresh(species(), player);
+            } else {
+                MagicData.getData(player).setCurrentSpecies(speciesKey());
+            }
+        }
     }
 
     public void setType(@Nullable final Player player, final Holder<DragonSpecies> species) {
@@ -317,8 +325,6 @@ public class DragonStateHandler extends EntityStateHandler {
         if (player == null) {
             return;
         }
-
-        // TODO :: save abilities per type
 
         if (species != null && (oldSpecies == null || !oldSpecies.is(species))) {
             DSModifiers.updateTypeModifiers(player, this);
