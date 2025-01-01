@@ -92,7 +92,6 @@ public class BuiltInDragonSpecies {
                 List.of(),
                 List.of(
                         DietEntry.from(ItemTags.COALS, new FoodProperties(1, 1, false, 0.8f, Optional.empty(), List.of())),
-                        DietEntry.from(Tags.Items.RAW_MATERIALS, new FoodProperties(4, 4, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
                         DietEntry.from(DSItems.CHARGED_COAL.value(), new FoodProperties(6, 1, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
                         DietEntry.from(DSItems.CHARRED_MEAT.value(), new FoodProperties(8, 10, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
                         DietEntry.from(DSItems.CAVE_DRAGON_TREAT.value(), new FoodProperties(4, 8, true, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),

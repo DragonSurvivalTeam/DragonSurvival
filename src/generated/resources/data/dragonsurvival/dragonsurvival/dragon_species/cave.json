@@ -27,15 +27,6 @@
     },
     {
       "items": [
-        "#c:raw_materials"
-      ],
-      "properties": {
-        "nutrition": 4,
-        "saturation": 4.0
-      }
-    },
-    {
-      "items": [
         "dragonsurvival:charged_coal"
       ],
       "properties": {
