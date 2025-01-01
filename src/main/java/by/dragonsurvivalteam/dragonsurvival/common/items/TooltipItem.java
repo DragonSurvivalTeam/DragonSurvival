@@ -17,7 +17,7 @@ import java.util.function.Function;
 public class TooltipItem extends Item {
     private final Function<ItemStack, String> keySupplier;
 
-    /** If they key argument is not it will use {@link ResourceLocation#getPath()} of the item holder as key */
+    /** If no key is provided {@link ResourceLocation#getPath()} of the item holder will be used instead */
     public TooltipItem(final Item.Properties properties, final @Nullable String key) {
         super(properties);
         //noinspection DataFlowIssue -> this is a Holder$Reference not a Holder$Direct, meaning it's fine

@@ -36,11 +36,7 @@
           "predicate": {
             "stepping_on": {
               "block": {
-                "blocks": [
-                  "minecraft:snow",
-                  "minecraft:powder_snow",
-                  "minecraft:snow_block"
-                ]
+                "blocks": "#dragonsurvival:hydrates_sea_dragon"
               }
             }
           }
@@ -53,7 +49,7 @@
     "amount": 1.0,
     "penalty_type": "dragonsurvival:take_damage"
   },
-  "icon": "dragonsurvival:abilities/cave/cave_magic_1",
+  "icon": "dragonsurvival:abilities/sea/thin_skin",
   "trigger": {
     "display_like_hunger_bar": true,
     "effect_type": "dragonsurvival:supply_trigger",

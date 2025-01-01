@@ -14,7 +14,7 @@
     ],
     "penalty_type": "dragonsurvival:item_blacklist"
   },
-  "icon": "dragonsurvival:abilities/cave/cave_athletics_1",
+  "icon": "dragonsurvival:abilities/cave/item_blacklist",
   "trigger": {
     "effect_type": "dragonsurvival:instant_trigger",
     "trigger_rate": 1

@@ -46,9 +46,9 @@ import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Supplier;
-import javax.annotation.Nullable;
 
 public class DragonStateHandler extends EntityStateHandler {
     public static final double NO_SIZE = -1;
@@ -328,16 +328,18 @@ public class DragonStateHandler extends EntityStateHandler {
         }
     }
 
-    public void setBody(@Nullable final Player player, final Holder<DragonBody> body) {
-        Holder<DragonBody> oldBody = dragonBody;
+    public void setBody(@Nullable final Player player, final Holder<DragonBody> dragonBody) {
+        Holder<DragonBody> oldBody = this.dragonBody;
+        this.dragonBody = dragonBody;
+        boolean isSameBody = DragonUtils.isBody(oldBody, this.dragonBody);
 
-        if (dragonBody == null || !DragonUtils.isBody(body, dragonBody)) {
-            dragonBody = body;
+        if (this.dragonBody != null && !isSameBody) {
             refreshBody = true;
+
             // If the model has changed, just override the skin preset with the default one as a failsafe
-            if(oldBody != null && dragonBody.value().customModel() != oldBody.value().customModel()) {
+            if (oldBody != null && this.dragonBody.value().customModel() != oldBody.value().customModel()) {
                 SkinPreset freshPreset = new SkinPreset();
-                freshPreset.initDefaults(dragonSpecies.getKey(), dragonBody.value().customModel());
+                freshPreset.initDefaults(dragonSpecies.getKey(), this.dragonBody.value().customModel());
                 skinData.skinPresets.get().put(speciesKey(), freshPreset);
             }
         }
@@ -346,7 +348,7 @@ public class DragonStateHandler extends EntityStateHandler {
             return;
         }
 
-        if (!DragonUtils.isBody(oldBody, dragonBody)) {
+        if (!isSameBody) {
             DSModifiers.updateBodyModifiers(player, this);
         }
     }

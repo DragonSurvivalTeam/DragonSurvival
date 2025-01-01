@@ -67,7 +67,7 @@ public class DSLanguageProvider extends LanguageProvider {
         }
 
         // Tags are not available during data generation
-        add(Tags.getTagTranslationKey(DamageTypeTags.IS_FIRE), capitalize("Fire"));
+        add(Tags.getTagTranslationKey(DamageTypeTags.IS_FIRE), "Fire");
     }
 
     private void handleTranslationAnnotations(final Set<ModFileScanData.AnnotationData> annotationDataSet) {

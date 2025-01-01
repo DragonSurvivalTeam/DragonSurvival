@@ -20,7 +20,6 @@
         "#minecraft:fishes"
       ],
       "properties": {
-        "can_always_eat": true,
         "nutrition": 2,
         "saturation": 1.0
       }
@@ -30,7 +29,6 @@
         "#minecraft:coals"
       ],
       "properties": {
-        "can_always_eat": true,
         "eat_seconds": 0.8,
         "nutrition": 1,
         "saturation": 1.0
