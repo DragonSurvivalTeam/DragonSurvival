@@ -6,7 +6,14 @@
   },
   "icon": "dragonsurvival:none",
   "trigger": {
-    "items": "minecraft:potion",
+    "condition": {
+      "condition": "minecraft:match_tool",
+      "predicate": {
+        "predicates": {
+          "minecraft:potion_contents": "minecraft:water"
+        }
+      }
+    },
     "penalty_trigger": "dragonsurvival:item_used"
   }
 }

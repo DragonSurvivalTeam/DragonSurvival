@@ -183,7 +183,7 @@ public class ForestDragonAbilities {
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
                                 Condition.thisEntity(EntityCondition.isItem()).build(),
                                 List.of(new ItemConversionEffect(
-                                        List.of(new ItemConversionEffect.ItemConversionData(ItemCondition.item(Items.POTATO), WeightedRandomList.create(ItemConversionEffect.ItemTo.of(Items.POISONOUS_POTATO)))),
+                                        List.of(new ItemConversionEffect.ItemConversionData(ItemCondition.is(Items.POTATO), WeightedRandomList.create(ItemConversionEffect.ItemTo.of(Items.POISONOUS_POTATO)))),
                                         LevelBasedValue.constant(0.5f)
                                 )),
                                 AbilityTargeting.EntityTargetingMode.TARGET_ALL

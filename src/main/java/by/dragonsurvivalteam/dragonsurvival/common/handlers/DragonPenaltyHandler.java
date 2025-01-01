@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PenaltySupply;
@@ -22,6 +23,7 @@ import net.minecraft.world.inventory.ArmorSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -79,12 +81,7 @@ public class DragonPenaltyHandler {
         }
 
         for (Holder<DragonPenalty> penalty : handler.species().value().penalties()) {
-            //noinspection DeconstructionCanBeUsed -> TODO :: unsure why this should be done
-            if (!(penalty.value().trigger() instanceof ItemUsedTrigger itemUsedTrigger)) {
-                continue;
-            }
-
-            if (itemUsedTrigger.items().contains(event.getItem().getItemHolder())) {
+            if (penalty.value().trigger() instanceof ItemUsedTrigger(LootItemCondition condition) && condition.test(Condition.createContext(serverPlayer.serverLevel(), event.getItem()))) {
                 penalty.value().apply(serverPlayer);
             }
         }

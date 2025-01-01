@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.conditions.EntityCondition;
+import by.dragonsurvivalteam.dragonsurvival.common.conditions.ItemCondition;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
@@ -132,7 +133,7 @@ public class DragonPenalties {
                 DragonSurvival.res("none"),
                 Optional.empty(),
                 new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.STING), 2),
-                new ItemUsedTrigger(HolderSet.direct(Items.POTION.builtInRegistryHolder()))
+                new ItemUsedTrigger(Condition.item(ItemCondition.hasPotion(Potions.WATER)).build())
         ));
     }
 

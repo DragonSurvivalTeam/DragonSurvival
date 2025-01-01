@@ -7,8 +7,10 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -20,6 +22,7 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
+import net.minecraft.world.level.storage.loot.predicates.MatchTool;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
@@ -39,6 +42,13 @@ public class Condition {
             .required(LootContextParams.ORIGIN)
             .optional(LootContextParams.BLOCK_ENTITY)
             .build();
+
+    private static final LootContextParamSet ITEM_CONTEXT = new LootContextParamSet.Builder().required(LootContextParams.TOOL).build();
+
+    public static LootContext createContext(final ServerLevel level, final ItemStack stack) {
+        LootParams parameters = new LootParams.Builder(level).withParameter(LootContextParams.TOOL, stack).create(ITEM_CONTEXT);
+        return new LootContext.Builder(parameters).create(Optional.empty());
+    }
 
     public static LootContext createContext(final ServerPlayer dragon) {
         return playerContext(dragon, dragon, dragon.position());
@@ -71,6 +81,10 @@ public class Condition {
 
     public static LootItemCondition.Builder thisEntity(final EntityPredicate predicate) {
         return LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS, predicate);
+    }
+
+    public static LootItemCondition.Builder item(final ItemPredicate.Builder predicate) {
+        return MatchTool.toolMatches(predicate);
     }
 
     // Misc.

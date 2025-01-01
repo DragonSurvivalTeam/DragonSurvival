@@ -1,4 +1,4 @@
-// 1.21.1	2025-01-01T16:28:35.1366454	Registries
+// 1.21.1	2025-01-01T18:32:03.8825487	Registries
 011b2ee382ec961722c100bbf059b4aa460f44b0 data/dragonsurvival/damage_type/anti_dragon.json
 d8c3135ecd1879e98a21e83ec1bcfd68c5fc3296 data/dragonsurvival/damage_type/ball_lightning.json
 1deb2bbcd4ed46724235ab398f66ed7559c01fab data/dragonsurvival/damage_type/burn.json
@@ -58,7 +58,7 @@ ce02da885d4dfb9173a9de394e37b316cb4904fe data/dragonsurvival/dragonsurvival/drag
 2998c86b5d47b060b37b4b1e51490cacd71a2885 data/dragonsurvival/dragonsurvival/dragon_penalties/fear_of_darkness.json
 42836aa35cb7d5759e244f07f9e1e67779b6ec15 data/dragonsurvival/dragonsurvival/dragon_penalties/item_blacklist.json
 e36d5c7b9d7553a0c61dd5fd7c0a2ce57ee7958a data/dragonsurvival/dragonsurvival/dragon_penalties/snow_and_rain_weakness.json
-26ca04780329c1abb2b2513d269d1bf98de67fb5 data/dragonsurvival/dragonsurvival/dragon_penalties/test_item_used.json
+1f696b6201e689b8e43a76e8faf2b839b1f4257f data/dragonsurvival/dragonsurvival/dragon_penalties/test_item_used.json
 9e7db0929e22f5c8caa5ff97213c4a74c443aaf8 data/dragonsurvival/dragonsurvival/dragon_penalties/thin_skin.json
 f2e1ab6b39954c5cabf426f66c203c67844467f4 data/dragonsurvival/dragonsurvival/dragon_penalties/water_weakness.json
 785bd4000c7ff2badf8dd8b8b2ae0e147736f2db data/dragonsurvival/dragonsurvival/dragon_species/cave.json
