@@ -246,7 +246,8 @@ public class MagicData implements INBTSerializable<CompoundTag> {
             if (forceApplyingEffects) {
                 currentlyCasting.release(player);
                 currentlyCasting.value().activation().playEndSound(player);
-                if(currentlyCasting.hasEndAnimation()) {
+
+                if (currentlyCasting.hasEndAnimation()) {
                     currentlyCasting.value().activation().playEndAnimation(player);
                 } else {
                     DragonSurvival.PROXY.setCurrentAbilityAnimation(player.getId(), null);

@@ -13,6 +13,14 @@
                   "weight": 30
                 },
                 {
+                  "data": "dragonsurvival:hunter_griffin",
+                  "weight": 30
+                },
+                {
+                  "data": "dragonsurvival:hunter_hound",
+                  "weight": 30
+                },
+                {
                   "data": "dragonsurvival:hunter_knight",
                   "weight": 15
                 },
@@ -23,6 +31,26 @@
                 {
                   "data": "dragonsurvival:hunter_leader",
                   "weight": 2
+                },
+                {
+                  "data": "minecraft:zombie",
+                  "weight": 1
+                },
+                {
+                  "data": "minecraft:skeleton",
+                  "weight": 1
+                },
+                {
+                  "data": "minecraft:creeper",
+                  "weight": 1
+                },
+                {
+                  "data": "minecraft:bogged",
+                  "weight": 1
+                },
+                {
+                  "data": "minecraft:boat",
+                  "weight": 1
                 }
               ],
               "id": "dragonsurvival:test",

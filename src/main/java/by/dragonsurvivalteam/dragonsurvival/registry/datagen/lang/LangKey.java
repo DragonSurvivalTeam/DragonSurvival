@@ -178,7 +178,7 @@ public class LangKey {
     @Translation(comments = "§6■ Can summon up to§r %s §6entities:§r")
     public static final String ABILITY_SUMMON = Translation.Type.ABILITY.wrap("general.ability.summon");
 
-    @Translation(comments = "\n- %s (%s chance)")
+    @Translation(comments = "\n- %s (%s)")
     public static final String ABILITY_SUMMON_CHANCE = Translation.Type.ABILITY.wrap("general.ability.summon_chance");
 
     @Translation(comments = " after %s seconds")

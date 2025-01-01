@@ -83,8 +83,8 @@ public class Condition {
         return LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS, predicate);
     }
 
-    public static LootItemCondition.Builder item(final ItemPredicate.Builder predicate) {
-        return MatchTool.toolMatches(predicate);
+    public static LootItemCondition.Builder tool(final ItemPredicate predicate) {
+        return () -> new MatchTool(Optional.of(predicate));
     }
 
     // Misc.

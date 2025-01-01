@@ -25,7 +25,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.projectile.ProjectileData;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.Projectiles;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.datafixers.util.Either;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -471,11 +470,18 @@ public class CaveDragonAbilities {
                 Optional.empty(),
                 List.of(new ActionContainer(new LookingAtTarget(AbilityTargeting.block(
                         List.of(new SummonEntityEffect(
-                                new SimpleWeightedRandomList.Builder<Holder<EntityType<?>>>()
-                                        .add(DSEntities.HUNTER_SPEARMAN, 30)
-                                        .add(DSEntities.HUNTER_KNIGHT, 15)
-                                        .add(DSEntities.HUNTER_AMBUSHER, 10)
-                                        .add(DSEntities.HUNTER_LEADER, 2)
+                                new SimpleWeightedRandomList.Builder<EntityType<?>>()
+                                        .add(DSEntities.HUNTER_SPEARMAN.value(), 30)
+                                        .add(DSEntities.HUNTER_GRIFFIN.value(), 30)
+                                        .add(DSEntities.HUNTER_HOUND.value(), 30)
+                                        .add(DSEntities.HUNTER_KNIGHT.value(), 15)
+                                        .add(DSEntities.HUNTER_AMBUSHER.value(), 10)
+                                        .add(DSEntities.HUNTER_LEADER.value(), 2)
+                                        .add(EntityType.ZOMBIE, 1)
+                                        .add(EntityType.SKELETON, 1)
+                                        .add(EntityType.CREEPER, 1)
+                                        .add(EntityType.BOGGED, 1)
+                                        .add(EntityType.BOAT, 1)
                                         .build(),
                                 DragonSurvival.res("test"),
                                 LevelBasedValue.constant(4),

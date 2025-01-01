@@ -133,7 +133,7 @@ public class DragonPenalties {
                 DragonSurvival.res("none"),
                 Optional.empty(),
                 new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.STING), 2),
-                new ItemUsedTrigger(Condition.item(ItemCondition.hasPotion(Potions.WATER)).build())
+                new ItemUsedTrigger(Condition.tool(ItemCondition.hasPotion(Potions.WATER)).build())
         ));
     }
 

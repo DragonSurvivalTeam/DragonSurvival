@@ -29,7 +29,6 @@ import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nullable;
 
@@ -51,7 +50,6 @@ public class DragonAbilityInstance {
     private boolean isActive;
     private int currentTick;
     private int cooldown;
-    private boolean justCompletedCast;
 
     public DragonAbilityInstance(final Holder<DragonAbility> ability, int level) {
         this(ability, level, true);
@@ -228,7 +226,6 @@ public class DragonAbilityInstance {
 
     public void release(final Player dragon) {
         currentTick = 0;
-        this.justCompletedCast = true;
 
         if (dragon.isCreative()) {
             cooldown = NO_COOLDOWN;
@@ -237,21 +234,8 @@ public class DragonAbilityInstance {
         }
     }
 
-    public boolean pollJustCompletedCast() {
-        if(justCompletedCast) {
-            justCompletedCast = false;
-            return true;
-        }
-
-        return false;
-    }
-
     public boolean isPassive() {
         return value().activation().type() == Activation.Type.PASSIVE;
-    }
-
-    public List<Component> getInfo(final Player dragon) {
-        return value().getInfo(dragon, this);
     }
 
     public void setLevel(int level) {

@@ -10,9 +10,9 @@ import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 
-public record FireEffect(LevelBasedValue igniteProbabiltiy) implements AbilityBlockEffect {
+public record FireEffect(LevelBasedValue igniteProbability) implements AbilityBlockEffect {
     public static final MapCodec<FireEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            LevelBasedValue.CODEC.fieldOf("ignite_probability").forGetter(FireEffect::igniteProbabiltiy)
+            LevelBasedValue.CODEC.fieldOf("ignite_probability").forGetter(FireEffect::igniteProbability)
     ).apply(instance, FireEffect::new));
 
     @Override
@@ -25,7 +25,7 @@ public record FireEffect(LevelBasedValue igniteProbabiltiy) implements AbilityBl
             dragon.level().setBlock(position, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL_IMMEDIATE);
         } else if (block instanceof CampfireBlock && !state.getValue(CampfireBlock.LIT)) {
             dragon.level().setBlock(position, state.setValue(CampfireBlock.LIT, true), Block.UPDATE_ALL_IMMEDIATE);
-        } else if (FireBlock.canBePlacedAt(dragon.level(), position, direction) && dragon.getRandom().nextDouble() < igniteProbabiltiy.calculate(ability.level())) {
+        } else if (FireBlock.canBePlacedAt(dragon.level(), position, direction) && dragon.getRandom().nextDouble() < igniteProbability.calculate(ability.level())) {
             BlockState fireBlockState = FireBlock.getState(dragon.level(), position);
             dragon.level().setBlock(position, fireBlockState, Block.UPDATE_ALL_IMMEDIATE);
             state.onCaughtFire(dragon.level(), position, direction, dragon);

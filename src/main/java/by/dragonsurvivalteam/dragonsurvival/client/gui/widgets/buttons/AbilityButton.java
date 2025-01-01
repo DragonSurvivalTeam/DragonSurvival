@@ -11,6 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilit
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
@@ -25,21 +26,23 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 public class AbilityButton extends ExtendedButton {
     public static final ResourceLocation ACTIVE_BACKGROUND = ResourceLocation.fromNamespaceAndPath(MODID, "ability_screen/skill_main");
     public static final ResourceLocation PASSIVE_BACKGROUND = ResourceLocation.fromNamespaceAndPath(MODID, "ability_screen/skill_other");
-    public static final ResourceLocation AUTOUPGRADE_ORNAMENTATION = ResourceLocation.fromNamespaceAndPath(MODID, "ability_screen/skill_autoupgrade");
+    public static final ResourceLocation AUTO_UPGRADE_ORNAMENTATION = ResourceLocation.fromNamespaceAndPath(MODID, "ability_screen/skill_autoupgrade");
 
     private static final int SIZE = 34;
     private static final int ORNAMENTATION_SIZE = 38;
 
-    private DragonAbilityInstance ability;
     private final DragonAbilityScreen screen;
-    private int slot = MagicData.NO_SLOT;
-    private boolean isHotbar;
-    private boolean isDragging;
-    private float scale;
-    private Vec3 offset = new Vec3(0, 0, 0);
-    private boolean isInteractable = true;
+    private DragonAbilityInstance ability;
     private @Nullable LevelButton leftLevelButton;
     private @Nullable LevelButton rightLevelButton;
+    private Vec3 offset = Vec3.ZERO;
+
+    private float scale;
+    private int slot = MagicData.NO_SLOT;
+    private int scrollAmount;
+    private boolean isHotbar;
+    private boolean isDragging;
+    private boolean isInteractable = true;
 
     public AbilityButton(int x, int y, @Nullable final DragonAbilityInstance ability, final DragonAbilityScreen screen, float scale) {
         // Don't actually change the scale of the button itself based on the scale value; this is because we only rescale the button when it is
@@ -98,17 +101,20 @@ public class AbilityButton extends ExtendedButton {
 
     public void setInteractable(boolean interactable) {
         isInteractable = interactable;
-        if(isInteractable) {
+
+        if (isInteractable) {
             width = SIZE;
             height = SIZE;
-            if(leftLevelButton != null && rightLevelButton != null) {
+
+            if (leftLevelButton != null && rightLevelButton != null) {
                 leftLevelButton.resetDimensions();
                 rightLevelButton.resetDimensions();
             }
         } else {
             width = 0;
             height = 0;
-            if(leftLevelButton != null && rightLevelButton != null) {
+
+            if (leftLevelButton != null && rightLevelButton != null) {
                 leftLevelButton.setWidth(0);
                 leftLevelButton.setHeight(0);
                 rightLevelButton.setWidth(0);
@@ -209,7 +215,7 @@ public class AbilityButton extends ExtendedButton {
         }
 
         if (!ability.isManuallyUpgraded()) {
-            blit(graphics, AUTOUPGRADE_ORNAMENTATION, getX() - 2, getY() - 2, ORNAMENTATION_SIZE);
+            blit(graphics, AUTO_UPGRADE_ORNAMENTATION, getX() - 2, getY() - 2, ORNAMENTATION_SIZE);
         }
 
         graphics.pose().pushPose();
@@ -232,11 +238,33 @@ public class AbilityButton extends ExtendedButton {
             graphics.pose().pushPose();
             // Render above the other UI elements
             graphics.pose().translate(0, 0, 150);
-            AbilityAndPenaltyTooltipRenderer.drawAbilityTooltip(graphics, mouseX, mouseY, ability);
+            AbilityAndPenaltyTooltipRenderer.drawAbilityTooltip(graphics, mouseX, mouseY, ability, scrollAmount);
             graphics.pose().popPose();
         }
 
         graphics.pose().popPose();
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (Screen.hasShiftDown() && isHovered()) {
+            // invert the value so that scrolling down shows further entries
+            scrollAmount = Math.clamp(scrollAmount + (int) -scrollY, 0, AbilityAndPenaltyTooltipRenderer.maxScroll());
+            return true;
+        }
+
+        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    }
+
+    @Override
+    public boolean isHovered() {
+        boolean isHovered = super.isHovered();
+
+        if (!isHovered) {
+            scrollAmount = 0;
+        }
+
+        return isHovered;
     }
 
     private void blit(final GuiGraphics graphics, final ResourceLocation texture, int x, int y, int size) {

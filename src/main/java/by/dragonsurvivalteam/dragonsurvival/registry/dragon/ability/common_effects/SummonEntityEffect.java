@@ -30,6 +30,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.random.SimpleWeightedRandomList;
+import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.util.random.WeightedRandom;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -50,7 +51,7 @@ import java.util.function.Function;
 import javax.annotation.Nullable;
 
 public record SummonEntityEffect(
-        SimpleWeightedRandomList<Holder<EntityType<?>>> entities,
+        SimpleWeightedRandomList<EntityType<?>> entities,
         ResourceLocation id,
         LevelBasedValue maxSummons,
         LevelBasedValue duration,
@@ -58,7 +59,7 @@ public record SummonEntityEffect(
         boolean shouldSetAllied
 ) implements AbilityBlockEffect, AbilityEntityEffect {
     public static final MapCodec<SummonEntityEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-                    SimpleWeightedRandomList.wrappedCodec(BuiltInRegistries.ENTITY_TYPE.holderByNameCodec()).fieldOf("entities").forGetter(SummonEntityEffect::entities),
+                    SimpleWeightedRandomList.wrappedCodec(BuiltInRegistries.ENTITY_TYPE.byNameCodec()).fieldOf("entities").forGetter(SummonEntityEffect::entities),
                     ResourceLocation.CODEC.fieldOf("id").forGetter(SummonEntityEffect::id),
                     LevelBasedValue.CODEC.fieldOf("max_summons").forGetter(SummonEntityEffect::maxSummons),
                     LevelBasedValue.CODEC.optionalFieldOf("duration", LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)).forGetter(SummonEntityEffect::duration),
@@ -93,11 +94,14 @@ public record SummonEntityEffect(
         int totalWeight = WeightedRandom.getTotalWeight(entities.unwrap());
 
         entities.unwrap().forEach(wrapper -> {
-            //noinspection DataFlowIssue -> key is present
-            Component entityName = DSColors.dynamicValue(Component.translatable(wrapper.data().getKey().location().toLanguageKey("entity")));
+            Component entityName = DSColors.dynamicValue(wrapper.data().getDescription());
             double chance = (double) wrapper.getWeight().asInt() / totalWeight;
             component.append(Component.translatable(LangKey.ABILITY_SUMMON_CHANCE, DSColors.dynamicValue(entityName), DSColors.dynamicValue(NumberFormat.getPercentInstance().format(chance))));
         });
+
+        if (!entities.isEmpty()) {
+            component.append(Component.literal("\n"));
+        }
 
         float duration = this.duration.calculate(ability.level());
 
@@ -141,7 +145,7 @@ public record SummonEntityEffect(
             return;
         }
 
-        EntityType<?> type = entities.getRandom(level.getRandom()).map(entry -> entry.data().value()).orElse(null);
+        EntityType<?> type = entities.getRandom(level.getRandom()).map(WeightedEntry.Wrapper::data).orElse(null);
 
         if (type == null) {
             return;

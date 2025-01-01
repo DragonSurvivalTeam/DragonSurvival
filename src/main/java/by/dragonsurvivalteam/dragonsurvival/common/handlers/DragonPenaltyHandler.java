@@ -23,7 +23,6 @@ import net.minecraft.world.inventory.ArmorSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -81,7 +80,8 @@ public class DragonPenaltyHandler {
         }
 
         for (Holder<DragonPenalty> penalty : handler.species().value().penalties()) {
-            if (penalty.value().trigger() instanceof ItemUsedTrigger(LootItemCondition condition) && condition.test(Condition.createContext(serverPlayer.serverLevel(), event.getItem()))) {
+            //noinspection DeconstructionCanBeUsed -> spotless is too stupid to handle this
+            if (penalty.value().trigger() instanceof ItemUsedTrigger trigger && trigger.condition().test(Condition.createContext(serverPlayer.serverLevel(), event.getItem()))) {
                 penalty.value().apply(serverPlayer);
             }
         }
