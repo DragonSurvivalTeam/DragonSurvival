@@ -36,7 +36,7 @@
           "predicate": {
             "stepping_on": {
               "block": {
-                "blocks": "#dragonsurvival:hydrates_sea_dragon"
+                "blocks": "#dragonsurvival:is_wet"
               }
             }
           }
