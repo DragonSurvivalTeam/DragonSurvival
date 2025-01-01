@@ -161,19 +161,13 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
         addRenderableWidget(infoButton);
         clawMenuButtons.add(infoButton);
 
-        // Button to enable / disable the rendering of claws
-        ExtendedButton clawRenderButton = new ExtendedButton(leftPos - 30, topPos + 120, 24, 42, Component.translatable(TOGGLE_CLAWS), button -> {
+        // Button to enable / disable the rendering of claws (extra x and y offset is the location of the button in the texture)
+        ExtendedButton clawRenderButton = new ExtendedButton(leftPos - 30 + 7, topPos + 120 + 27, 10, 10, Component.translatable(TOGGLE_CLAWS), button -> {
             ClientDragonRenderer.renderDragonClaws = !ClientDragonRenderer.renderDragonClaws;
             PacketDistributor.sendToServer(new SyncDragonClawRender.Data(player.getId(), ClientDragonRenderer.renderDragonClaws));
         }) {
             @Override
-            public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-                ResourceLocation texture = ClientDragonRenderer.renderDragonClaws ? CLAW_DISPLAY_ON : CLAW_DISPLAY_OFF;
-                guiGraphics.pose().pushPose();
-                guiGraphics.pose().translate(0, 0, 100);
-                guiGraphics.blit(texture, getX(), getY(), 0, 0, 24, 42, 24, 42);
-                guiGraphics.pose().popPose();
-            }
+            public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) { /* Texture is rendered separately */ }
         };
         clawRenderButton.setTooltip(Tooltip.create(Component.translatable(TOGGLE_CLAWS)));
         addRenderableWidget(clawRenderButton);
@@ -282,6 +276,15 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
     public void render(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         clawMenuButtons.forEach(button -> button.visible = clawsMenu);
         super.render(graphics, mouseX, mouseY, partialTick);
+
+        if (clawsMenu) {
+            ResourceLocation texture = ClientDragonRenderer.renderDragonClaws ? CLAW_DISPLAY_ON : CLAW_DISPLAY_OFF;
+            graphics.pose().pushPose();
+            graphics.pose().translate(0, 0, 100);
+            graphics.blit(texture, leftPos - 30, topPos + 120, 0, 0, 24, 42, 24, 42);
+            graphics.pose().popPose();
+        }
+
         renderTooltip(graphics, mouseX, mouseY);
 
         // Bandaid solution since we are rendering the tooltip twice now
