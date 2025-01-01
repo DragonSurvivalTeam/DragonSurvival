@@ -56,7 +56,7 @@ public class ValueBasedUpgrade extends UpgradeType<ValueBasedUpgrade.InputData> 
     }
 
     private void handleManual(final DragonAbilityInstance ability, final InputData inputData) {
-        // TODO :: implement here?
+        // TODO :: implement here? add a UPGRADE_ABILITY advancement trigger here as well
     }
 
     private void handlePassive(final DragonAbilityInstance ability, final InputData inputData) {
