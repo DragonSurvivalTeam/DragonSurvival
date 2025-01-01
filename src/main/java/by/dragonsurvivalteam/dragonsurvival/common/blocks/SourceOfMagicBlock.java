@@ -58,10 +58,10 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
+import javax.annotation.Nullable;
 
 // TODO :: add a generic one (same for doors, pressure plates) which is handled through some level storage
 //  (said storage contains the relevant types and effects etc. per position aka place block)
@@ -71,16 +71,19 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
 
     public static final VoxelShape SLAB = Shapes.box(0, 0, 0, 1, 0.5, 1);
 
+    // Full height but half "frontal" width to the direction the block is facing
     public static final VoxelShape FULL_NORTH = Shapes.box(0, 0, 0.5, 1, 1, 1);
     public static final VoxelShape FULL_SOUTH = Shapes.box(0, 0, 0, 1, 1, 0.5);
     public static final VoxelShape FULL_EAST = Shapes.box(0, 0, 0, 0.5, 1, 1);
     public static final VoxelShape FULL_WEST = Shapes.box(0.5, 0, 0, 1, 1, 1);
 
-    public static final VoxelShape SLAB_NORTH = Shapes.box(0, 0, 0.5, 1, 0.5, 1);
-    public static final VoxelShape SLAB_SOUTH = Shapes.box(0, 0, 0, 1, 0.5, 0.5);
-    public static final VoxelShape SLAB_EAST = Shapes.box(0, 0, 0, 0.5, 0.5, 1);
-    public static final VoxelShape SLAB_WEST = Shapes.box(0.5, 0, 0, 1, 0.5, 1);
+    // Triangle shape
+    public static final VoxelShape TOP_NORTH = Shapes.or(FULL_NORTH, Shapes.box(1, 0, 0.5, 1.5, 0.5, 1), Shapes.box(-0.5, 0, 0.5, 0, 0.5, 1));
+    public static final VoxelShape TOP_SOUTH = Shapes.or(FULL_SOUTH, Shapes.box(1, 0, 0, 1.5, 0.5, 0.5), Shapes.box(-0.5, 0, 0, 0, 0.5, 0.5));
+    public static final VoxelShape TOP_EAST = Shapes.or(FULL_EAST, Shapes.box(0, 0, 1, 0.5, 0.5, 1.5), Shapes.box(0, 0, -0.5, 0.5, 0.5, 0));
+    public static final VoxelShape TOP_WEST = Shapes.or(FULL_WEST, Shapes.box(0.5, 0, 1, 1, 0.5, 1.5), Shapes.box(0.5, 0, -0.5, 1, 0.5, 0));
 
+    // Stair shape
     public static final VoxelShape BACK_NORTH = Shapes.or(SLAB, FULL_NORTH);
     public static final VoxelShape BACK_SOUTH = Shapes.or(SLAB, FULL_SOUTH);
     public static final VoxelShape BACK_EAST = Shapes.or(SLAB, FULL_EAST);
@@ -496,10 +499,10 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
 
         if (type == Type.TOP) {
             return switch (facing) {
-                case NORTH -> FULL_NORTH;
-                case SOUTH -> FULL_SOUTH;
-                case EAST -> FULL_EAST;
-                case WEST -> FULL_WEST;
+                case NORTH -> TOP_NORTH;
+                case SOUTH -> TOP_SOUTH;
+                case EAST -> TOP_EAST;
+                case WEST -> TOP_WEST;
                 default -> Shapes.block();
             };
         }
@@ -515,13 +518,9 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
         }
 
         if (type == Type.BACK_MIDDLE) {
-            return switch (facing) {
-                case NORTH -> SLAB_NORTH;
-                case SOUTH -> SLAB_SOUTH;
-                case EAST -> SLAB_EAST;
-                case WEST -> SLAB_WEST;
-                default -> SLAB;
-            };
+            // Collision is handled by the top shape
+            // Otherwise we would need more specific block states to handle left / right from top
+            return Shapes.empty();
         }
 
         return SLAB;

@@ -46,8 +46,8 @@
   },
   "icon": "dragonsurvival:abilities/cave/fear_of_darkness",
   "trigger": {
-    "effect_type": "dragonsurvival:supply_trigger",
     "id": "stress_supply",
+    "penalty_trigger": "dragonsurvival:supply",
     "recovery_items": [],
     "reduction_rate": 1.0,
     "regeneration_rate": 0.013,

@@ -18,7 +18,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
-import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
@@ -119,38 +118,12 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
     }
 
     @SubscribeEvent
-    public static void applyPenalties(final PlayerTickEvent.Post event) {
-        if (!(event.getEntity() instanceof ServerPlayer serverPlayer)) {
+    public static void onRegenerationItemConsumed(final LivingEntityUseItemEvent.Finish event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) {
             return;
         }
 
-        DragonStateHandler handler = DragonStateProvider.getData(serverPlayer);
-        PenaltySupply data = getData(serverPlayer);
-
-        if (!handler.isDragon()) {
-            data.clear();
-            return;
-        }
-
-        for (Holder<DragonPenalty> penalty : handler.species().value().penalties()) {
-            penalty.value().apply(serverPlayer);
-        }
-
-        // Remove any penalties the player no longer has
-        for (String id : data.getSupplyTypes()) {
-            if (handler.species().value().penalties().stream().noneMatch(penalty -> penalty.value().trigger().id().equals(id))) {
-                data.remove(id);
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public static void onRegenerationItemConsumed(LivingEntityUseItemEvent.Finish destroyItemEvent) {
-        if (!(destroyItemEvent.getEntity() instanceof ServerPlayer player)) {
-            return;
-        }
-
-        getData(player).replenishSupplyFromItemStack(player, destroyItemEvent.getItem());
+        getData(player).replenishSupplyFromItemStack(player, event.getItem());
     }
 
     private void replenishSupplyFromItemStack(final ServerPlayer player, final ItemStack stack) {

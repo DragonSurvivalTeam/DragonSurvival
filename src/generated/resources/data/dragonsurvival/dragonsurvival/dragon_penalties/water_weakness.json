@@ -34,7 +34,7 @@
   },
   "icon": "dragonsurvival:abilities/cave/water_weakness",
   "trigger": {
-    "effect_type": "dragonsurvival:instant_trigger",
+    "penalty_trigger": "dragonsurvival:instant",
     "trigger_rate": 10
   }
 }

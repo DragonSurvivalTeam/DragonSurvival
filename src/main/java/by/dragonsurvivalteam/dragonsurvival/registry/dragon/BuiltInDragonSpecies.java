@@ -87,7 +87,9 @@ public class BuiltInDragonSpecies {
                 HolderSet.direct(
                         context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.SNOW_AND_RAIN_WEAKNESS),
                         context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.WATER_WEAKNESS),
-                        context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.ITEM_BLACKLIST)
+                        context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.ITEM_BLACKLIST),
+                        // FIXME :: test
+                        context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.TEST_ITEM_USED)
                 ),
                 List.of(),
                 List.of(

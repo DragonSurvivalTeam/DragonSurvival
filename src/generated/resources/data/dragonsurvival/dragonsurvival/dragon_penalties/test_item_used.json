@@ -1,0 +1,12 @@
+{
+  "effect": {
+    "type": "minecraft:sting",
+    "amount": 2.0,
+    "penalty_type": "dragonsurvival:take_damage"
+  },
+  "icon": "dragonsurvival:none",
+  "trigger": {
+    "items": "minecraft:potion",
+    "penalty_trigger": "dragonsurvival:item_used"
+  }
+}

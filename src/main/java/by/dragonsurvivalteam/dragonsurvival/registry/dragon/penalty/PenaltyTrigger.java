@@ -22,8 +22,10 @@ public interface PenaltyTrigger {
     ResourceKey<Registry<MapCodec<? extends PenaltyTrigger>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("penalty_triggers"));
     Registry<MapCodec<? extends PenaltyTrigger>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();
 
-    Codec<PenaltyTrigger> CODEC = REGISTRY.byNameCodec().dispatch("effect_type", PenaltyTrigger::codec, Function.identity());
+    Codec<PenaltyTrigger> CODEC = REGISTRY.byNameCodec().dispatch("penalty_trigger", PenaltyTrigger::codec, Function.identity());
 
+    /** If this returns 'false' it will be applied per player tick */
+    default boolean hasCustomTrigger() { return false; }
     default MutableComponent getDescription(Player player) { return Component.empty(); }
     default String id() { return ""; }
 
@@ -42,8 +44,9 @@ public interface PenaltyTrigger {
     @SubscribeEvent
     static void registerEntries(final RegisterEvent event) {
         if (event.getRegistry() == REGISTRY) {
-            event.register(REGISTRY_KEY, DragonSurvival.res("supply_trigger"), () -> SupplyTrigger.CODEC);
-            event.register(REGISTRY_KEY, DragonSurvival.res("instant_trigger"), () -> InstantTrigger.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("supply"), () -> SupplyTrigger.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("instant"), () -> InstantTrigger.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("item_used"), () -> ItemUsedTrigger.CODEC);
         }
     }
 }

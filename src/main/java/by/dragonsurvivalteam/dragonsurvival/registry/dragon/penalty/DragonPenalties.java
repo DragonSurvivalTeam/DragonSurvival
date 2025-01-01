@@ -17,6 +17,7 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potions;
@@ -60,6 +61,8 @@ public class DragonPenalties {
     })
     @Translation(type = Translation.Type.PENALTY, comments = "Fear of Darkness")
     public static final ResourceKey<DragonPenalty> FEAR_OF_DARKNESS = DragonPenalties.key("fear_of_darkness");
+
+    public static final ResourceKey<DragonPenalty> TEST_ITEM_USED = DragonPenalties.key("test_item_used");
 
     public static void registerPenalties(final BootstrapContext<DragonPenalty> context) {
         context.register(SNOW_AND_RAIN_WEAKNESS, new DragonPenalty(
@@ -122,6 +125,14 @@ public class DragonPenalties {
                 ).invert().build()),
                 new MobEffectPenalty(HolderSet.direct(DSEffects.STRESS), 0, Functions.secondsToTicks(10)),
                 new SupplyTrigger("stress_supply", DSAttributes.PENALTY_RESISTANCE_TIME, Functions.secondsToTicks(2), 1, 0.013f, List.of(), false)
+        ));
+
+        // FIXME :: test
+        context.register(TEST_ITEM_USED, new DragonPenalty(
+                DragonSurvival.res("none"),
+                Optional.empty(),
+                new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.STING), 2),
+                new ItemUsedTrigger(HolderSet.direct(Items.POTION.builtInRegistryHolder()))
         ));
     }
 
