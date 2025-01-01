@@ -414,6 +414,15 @@ public class DragonStateHandler extends EntityStateHandler {
         return skinData;
     }
 
+    public ResourceLocation getCurrentCustomModel() {
+        return dragonBody.value().customModel();
+    }
+
+    public String getCustomModelName() {
+        String customModelPath = getCurrentCustomModel().getPath();
+        return customModelPath.substring(customModelPath.lastIndexOf("/") + 1, customModelPath.indexOf("."));
+    }
+
     public void initializeSkinDataToDefaults() {
         skinData.skinPresets.get().get(dragonSpecies.getKey()).initDefaults(dragonSpecies.getKey(), dragonBody.value().customModel());
     }
