@@ -59,7 +59,7 @@ public class DragonPenaltyHUD {
                 final float vanillaSupplyPercentageOffset = (float) 2 / 360;
                 final int left = Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2 + 91;
                 final int top =  Minecraft.getInstance().getWindow().getGuiScaledHeight() - rightHeight;
-                ResourceLocation supplyIcon = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/supply_icons/" + supplyType + ".png");
+                ResourceLocation supplyIcon = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/custom/supply_icons/" + supplyType + ".png");
 
                 if(displayLikeHungerBar) {
                     int foodLevel = Mth.ceil(supplyPercentage * 20);

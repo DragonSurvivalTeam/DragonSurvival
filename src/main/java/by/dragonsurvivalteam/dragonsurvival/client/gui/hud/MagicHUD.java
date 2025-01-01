@@ -37,7 +37,7 @@ public class MagicHUD {
     public static final ResourceLocation WIDGET_TEXTURES = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/widgets.png");
 
     private static final ResourceLocation VANILLA_WIDGETS = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/pre-1.20.1-widgets.png");
-    private static final ResourceLocation CAST_BAR_FILL = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/casting_bars/cast_bar_fill.png");
+    private static final ResourceLocation CAST_BAR_FILL = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/cast_bar_fill.png");
 
     @Translation(comments = "§fNot enough§r §cmana or experience§r!")
     public static final String NO_MANA = Translation.Type.GUI.wrap("ability.no_mana");
