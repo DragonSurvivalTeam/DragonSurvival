@@ -85,7 +85,7 @@ public class DragonEmoteScreen extends Screen {
         int xSize = 256;
         int ySize = 256;
 
-        guiLeft = (width - xSize) / 2 + 155;
+        guiLeft = (width - xSize) / 2 + 185;
         guiTop = (height - ySize / 2) / 2 - 20;
 
         int startX = guiLeft - 15;

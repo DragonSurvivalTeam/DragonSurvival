@@ -12,61 +12,61 @@ public class DragonEmoteSets {
     public static final ResourceKey<DragonEmoteSet> DEFAULT_EMOTES = key("default_emotes");
 
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend§r - Fix Head and Tail")
+    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Fix Head")
     public static final String BLEND_HEAD_LOCKED = "head_turn";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend§r - Angry")
+    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Angry")
     public static final String BLEND_ANGRY = "blend_angry";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend§r - Charge")
+    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Charge")
     public static final String BLEND_SPELL_CHARGE = "spell_charge";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend§r - Sad")
+    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Sad")
     public static final String BLEND_SAD = "blend_sad";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend§r - Blep ")
+    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Blep ")
     public static final String BLEND_BLEP = "blend_blep";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend§r - Tongue")
+    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Tongue")
     public static final String BLEND_MAW = "blend_maw";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend§r - Lick")
+    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Lick")
     public static final String BLEND_LICKING = "blend_licking";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend§r - Yaw")
+    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Yaw")
     public static final String BLEND_YAWNING = "blend_yawning";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend§r - Sniff")
+    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Sniff")
     public static final String BLEND_SNIFFING = "blend_sniffing";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend§r - Bites")
+    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Bites")
     public static final String BLEND_BITE = "spell_shot";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend§r - One Bite")
+    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r One Bite")
     public static final String BLEND_ONE_BITE = "bite";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend§r - Open Mouth")
+    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Open Mouth")
     public static final String BLEND_BREATH = "breath";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend§r - Wing Hug")
+    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Wing Hug")
     public static final String BLEND_WING =  "blend_wing_hug";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§5Sit§r - Just Sit")
+    @Translation(type = Translation.Type.EMOTE, comments = "§5Sit:§r Just Sit")
     public static final String SIT = "sit";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§5Sit§r - Curled")
+    @Translation(type = Translation.Type.EMOTE, comments = "§5Sit:§r Curled")
     public static final String SITTING_CURLED = "sitting_curled_tail_left";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§5Sit§r - Magic")
+    @Translation(type = Translation.Type.EMOTE, comments = "§5Sit:§r Magic")
     public static final String SITTING_MAGIC = "sit_on_magic_source";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§5Sit§r - Item")
+    @Translation(type = Translation.Type.EMOTE, comments = "§5Sit:§r Item")
     public static final String SITTING_ITEM = "sitting_spinning_item";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§5Sit§r - Sad")
+    @Translation(type = Translation.Type.EMOTE, comments = "§5Sit:§r Sad")
     public static final String SITTING_SAD = "sad_sitting";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§5Sit§r - Hug")
+    @Translation(type = Translation.Type.EMOTE, comments = "§5Sit:§r Hug")
     public static final String SITTING_HUG = "hugging_sitting";
 
 
