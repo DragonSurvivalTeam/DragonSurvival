@@ -66,7 +66,7 @@ public class DragonPenaltyHandler {
 
     @SubscribeEvent
     public static void consumeHurtfulItem(LivingEntityUseItemEvent.Finish destroyItemEvent) {
-        // FIXME
+        // FIXME :: Hurtful item penalty?
         /*if (!ServerConfig.penaltiesEnabled || !(destroyItemEvent.getEntity() instanceof Player player)) {
             return;
         }
@@ -95,35 +95,6 @@ public class DragonPenaltyHandler {
                 return;
             }
         }*/
-    }
-
-    @SubscribeEvent
-    public static void onWaterConsumed(LivingEntityUseItemEvent.Finish destroyItemEvent) {
-        // FIXME
-        /*if (!ServerConfig.penaltiesEnabled || SeaDragonConfig.seaTicksWithoutWater == 0) {
-            return;
-        }
-
-        DragonStateProvider.getOptional(destroyItemEvent.getEntity()).ifPresent(handler -> {
-            if (handler.isDragon() && handler.getType() instanceof SeaDragonType seaDragonType) {
-                ItemStack itemStack = destroyItemEvent.getItem();
-                Player player = (Player) destroyItemEvent.getEntity();
-
-                if (!player.level().isClientSide() && SeaDragonConfig.seaAllowWaterBottles && itemStack.getItem() instanceof PotionItem) {
-                    Optional<Potion> potion = PotionUtils.getPotion(itemStack);
-
-                    if (potion.isPresent() && potion.get() == Potions.WATER.value() && DragonUtils.isType(handler, DragonTypes.SEA)) {
-                        seaDragonType.timeWithoutWater = Math.max(seaDragonType.timeWithoutWater - SeaDragonConfig.seaTicksWithoutWaterRestored, 0);
-                        PacketDistributor.sendToPlayersTrackingEntity(player, new SyncDragonType.Data(player.getId(), seaDragonType.writeNBT()));
-                    }
-                }
-
-                if (itemStack.is(DSItemTags.SEA_DRAGON_HYDRATION) && !player.level().isClientSide()) {
-                    seaDragonType.timeWithoutWater = Math.max(seaDragonType.timeWithoutWater - SeaDragonConfig.seaTicksWithoutWaterRestored, 0);
-                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncDragonType.Data(player.getId(), seaDragonType.writeNBT()));
-                }
-            }
-        });*/
     }
 
     @SubscribeEvent // Prevent the player from equipping blacklisted armor (or from mixing light and dark dragon armor)

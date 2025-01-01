@@ -128,4 +128,15 @@ public class ClientProxy implements Proxy {
 
         return null;
     }
+
+    @Override
+    public void setSourceOfMagicAnimationEnabled(int playerId, boolean enabled) {
+        AtomicReference<DragonEntity> dragonEntity = ClientDragonRenderer.playerDragonHashMap.get(playerId);
+
+        if (dragonEntity == null) {
+            return;
+        }
+
+        dragonEntity.get().setOnSourceOfMagic(enabled);
+    }
 }

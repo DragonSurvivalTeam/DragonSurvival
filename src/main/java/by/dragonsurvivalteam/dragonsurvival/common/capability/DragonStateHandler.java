@@ -46,9 +46,9 @@ import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Supplier;
+import javax.annotation.Nullable;
 
 public class DragonStateHandler extends EntityStateHandler {
     public static final double NO_SIZE = -1;

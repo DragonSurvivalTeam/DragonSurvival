@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.blocks;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
@@ -52,13 +53,20 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.annotation.Nullable;
 
 // TODO :: add a generic one (same for doors, pressure plates) which is handled through some level storage
 //  (said storage contains the relevant types and effects etc. per position aka place block)
+@EventBusSubscriber
 public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements SimpleWaterloggedBlock, EntityBlock {
     @Translation(comments = "You need a 3x3 area to place %s")
     private static final String OCCUPIED = Translation.Type.GUI.wrap("message.occupied");
@@ -73,6 +81,8 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
 
     private static final BooleanProperty BACK_BLOCK = BooleanProperty.create("back");
     private static final BooleanProperty TOP_BLOCK = BooleanProperty.create("top");
+
+    private static final List<Player> playersPlayingSourceOfMagicAnimation = new ArrayList<>();
 
     /** null -> all are valid */
     private final @Nullable TagKey<DragonSpecies> types;
@@ -310,6 +320,23 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
         }
     }
 
+
+    @SubscribeEvent
+    public static void onClientTick(final ClientTickEvent.Pre event) {
+        playersPlayingSourceOfMagicAnimation.clear();
+    }
+
+    @SubscribeEvent
+    public static void onPlayerTick(final PlayerTickEvent.Post event) {
+        if(!event.getEntity().level().isClientSide()) {
+            return;
+        }
+
+        if (!playersPlayingSourceOfMagicAnimation.contains(event.getEntity())) {
+            DragonSurvival.PROXY.setSourceOfMagicAnimationEnabled(event.getEntity().getId(), false);
+        }
+    }
+
     @Override
     public void entityInside(@NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Entity entity) {
         super.entityInside(state, level, position, entity);
@@ -330,7 +357,10 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
             DragonStateHandler data = DragonStateProvider.getData(player);
 
             if (data.isDragon() && (types == null || data.species().is(types))) {
-               // TODO :: animation
+                if(level.isClientSide()) {
+                    playersPlayingSourceOfMagicAnimation.add(player);
+                    DragonSurvival.PROXY.setSourceOfMagicAnimationEnabled(player.getId(), true);
+                }
             } else if (ServerConfig.damageWrongSourceOfMagic) {
                 entity.hurt(state.getBlock() == DSBlocks.CAVE_SOURCE_OF_MAGIC.get() ? entity.damageSources().hotFloor() : state.getBlock() == DSBlocks.SEA_SOURCE_OF_MAGIC.get() ? entity.damageSources().drown() : entity.damageSources().cactus(), 1F);
             }

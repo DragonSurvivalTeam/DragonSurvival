@@ -96,11 +96,16 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     private static final int MAX_EMOTES = 4;
     private final DragonEmote[] currentlyPlayingEmotes = new DragonEmote[MAX_EMOTES];
     private boolean begunPlayingAbilityAnimation = false;
+    private boolean isOnSourceOfMagic = false;
 
     private static double globalTickCount = 0;
 
     public DragonEntity(EntityType<? extends LivingEntity> type, Level worldIn) {
         super(type, worldIn);
+    }
+
+    public void setOnSourceOfMagic(boolean onSourceOfMagic) {
+        isOnSourceOfMagic = onSourceOfMagic;
     }
 
     @SubscribeEvent
@@ -474,10 +479,9 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         boolean isInSwimmableFluid = (player.isInWaterOrBubble() || SwimData.getData(player).canSwimIn(player.getMaxHeightFluidType())) && player.isSprinting() && !player.isPassenger();
 
         // TODO: The transition length of animations doesn't work correctly when the framerate varies too much from 60 FPS
-        // FIXME
-        /*if (magicData.onMagicSource) {
+        if (isOnSourceOfMagic) {
             return state.setAndContinue(AnimationUtils.createAnimation(builder, SIT_ON_MAGIC_SOURCE));
-        } else*/ if (player.isSleeping() || treasureRest.isResting) {
+        } else if (player.isSleeping() || treasureRest.isResting) {
             return state.setAndContinue(AnimationUtils.createAnimation(builder, SLEEP));
         } else if (player.isPassenger()) {
             return state.setAndContinue(AnimationUtils.createAnimation(builder, SIT));
