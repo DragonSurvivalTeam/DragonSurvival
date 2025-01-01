@@ -8,6 +8,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBlockTags;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -19,7 +20,6 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.loot.predicates.AnyOfCondition;
 import net.neoforged.neoforge.common.Tags;
 
@@ -66,14 +66,15 @@ public class DragonPenalties {
                 DragonSurvival.res("abilities/cave/burn_1"),
                 Optional.of(AnyOfCondition.anyOf(
                         Condition.thisEntity(EntityCondition.isInRain()),
-                        Condition.thisEntity(EntityCondition.isOnBlock(Blocks.SNOW, Blocks.POWDER_SNOW, Blocks.SNOW_BLOCK))
+                        Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_WET)),
+                        Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_WET))
                 ).and(Condition.thisEntity(EntityCondition.hasEffect(DSEffects.FIRE)).invert()).build()),
                 new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.RAIN_BURN), 1),
                 new SupplyTrigger("rain_supply", DSAttributes.PENALTY_RESISTANCE_TIME, Functions.secondsToTicks(2), 1, 0.013f, List.of(), false)
         ));
 
         context.register(WATER_WEAKNESS, new DragonPenalty(
-                DragonSurvival.res("abilities/cave/cave_claws_and_teeth_1"), // TODO
+                DragonSurvival.res("abilities/cave/water_weakness"),
                 Optional.of(Condition.thisEntity(EntityCondition.isInFluid(context.lookup(BuiltInRegistries.FLUID.key()).getOrThrow(FluidTags.WATER)))
                         .and(Condition.thisEntity(EntityCondition.hasEffect(DSEffects.FIRE)).invert()).build()),
                 new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.WATER_BURN), 1),
@@ -81,11 +82,11 @@ public class DragonPenalties {
         ));
 
         context.register(THIN_SKIN, new DragonPenalty(
-                DragonSurvival.res("abilities/cave/cave_magic_1"), // TODO
+                DragonSurvival.res("abilities/sea/thin_skin"),
                 Optional.of(AnyOfCondition.anyOf(
                         Condition.thisEntity(EntityCondition.isInFluid(context.lookup(BuiltInRegistries.FLUID.key()).getOrThrow(FluidTags.WATER))),
                         Condition.thisEntity(EntityCondition.isInRain()),
-                        Condition.thisEntity(EntityCondition.isOnBlock(Blocks.SNOW, Blocks.POWDER_SNOW, Blocks.SNOW_BLOCK))
+                        Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_WET))
                 ).invert().build()),
                 new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.DEHYDRATION), 1),
                 new SupplyTrigger(
@@ -106,14 +107,14 @@ public class DragonPenalties {
         ));
 
         context.register(ITEM_BLACKLIST, new DragonPenalty(
-                DragonSurvival.res("abilities/cave/cave_athletics_1"), // TODO
+                DragonSurvival.res("abilities/cave/item_blacklist"),
                 Optional.empty(),
                 new ItemBlacklistPenalty(DEFAULT_COMMON_BLACKLIST),
                 PenaltyTrigger.instant()
         ));
 
         context.register(FEAR_OF_DARKNESS, new DragonPenalty(
-                DragonSurvival.res("abilities/cave/hot_blood_1"), // TODO
+                DragonSurvival.res("abilities/cave/fear_of_darkness"),
                 Optional.of(AnyOfCondition.anyOf(
                         Condition.thisEntity(EntityCondition.isInLight(3)),
                         Condition.thisEntity(EntityCondition.hasEffect(DSEffects.MAGIC)),

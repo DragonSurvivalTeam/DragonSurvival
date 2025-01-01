@@ -316,8 +316,7 @@ public class SeaDragonAbilities {
                                 AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
                         ), true), LevelBasedValue.constant(1)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                                Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.REGENERATES_SEA_DRAGON_MANA))
-                                        .or(Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.REGENERATES_SEA_DRAGON_MANA))).build(),
+                                Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_WET)).or(Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_WET))).build(),
                                 ModifierEffect.single(new ModifierWithDuration(
                                         DragonAbilities.GOOD_MANA_CONDITION,
                                         ModifierWithDuration.DEFAULT_MODIFIER_ICON,

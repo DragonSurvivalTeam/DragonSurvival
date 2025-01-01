@@ -26,11 +26,18 @@
             "predicate": {
               "stepping_on": {
                 "block": {
-                  "blocks": [
-                    "minecraft:snow",
-                    "minecraft:powder_snow",
-                    "minecraft:snow_block"
-                  ]
+                  "blocks": "#dragonsurvival:is_wet"
+                }
+              }
+            }
+          },
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "block": {
+                  "blocks": "#dragonsurvival:is_wet"
                 }
               }
             }

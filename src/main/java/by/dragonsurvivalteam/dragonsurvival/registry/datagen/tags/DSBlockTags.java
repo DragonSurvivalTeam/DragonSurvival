@@ -30,7 +30,6 @@ public class DSBlockTags extends BlockTagsProvider {
     public static final TagKey<Block> SPEEDS_UP_FOREST_DRAGON = key("speeds_up_forest_dragon");
 
     public static final TagKey<Block> REGENERATES_CAVE_DRAGON_MANA = key("regenerates_cave_dragon_mana");
-    public static final TagKey<Block> REGENERATES_SEA_DRAGON_MANA = key("regenerates_sea_dragon_mana");
     public static final TagKey<Block> REGENERATES_FOREST_DRAGON_MANA = key("regenerates_forest_dragon_mana");
 
     public static final TagKey<Block> CAVE_DRAGON_BREATH_DESTRUCTIBLE = key("cave_dragon_breath_destructible");
@@ -41,7 +40,7 @@ public class DSBlockTags extends BlockTagsProvider {
     public static final TagKey<Block> SEA_DRAGON_HARVESTABLE = key("sea_dragon_harvestable");
     public static final TagKey<Block> FOREST_DRAGON_HARVESTABLE = key("forest_dragon_harvestable");
 
-    public static final TagKey<Block> HYDRATES_SEA_DRAGON = key("hydrates_sea_dragon");
+    public static final TagKey<Block> IS_WET = key("is_wet");
     public static final TagKey<Block> FOREST_BREATH_GROW_BLACKLIST = key("forest_breath_grow_blacklist");
 
     public static final TagKey<Block> DRAGON_ALTARS = key("dragon_altars");
@@ -75,12 +74,37 @@ public class DSBlockTags extends BlockTagsProvider {
             }
         });
 
-        // FIXME :: give cave dragon its own tag
-        // Blocks that hydrate sea dragons (or damage cave dragons) when standing on them
-        tag(HYDRATES_SEA_DRAGON)
-                .addTag(REGENERATES_SEA_DRAGON_MANA)
+        tag(IS_WET)
+                .addTag(BlockTags.SNOW)
+                .addTag(BlockTags.ICE)
+                .add(Blocks.WATER_CAULDRON)
+                .add(Blocks.WET_SPONGE)
                 .add(Blocks.MUDDY_MANGROVE_ROOTS)
                 .add(Blocks.MUD)
+                .add(DSBlocks.SEA_SOURCE_OF_MAGIC.value())
+                .addOptional(DragonSurvival.location("immersive_weathering", "thin_ice"))
+                .addOptional(DragonSurvival.location("immersive_weathering", "cryosol"))
+                .addOptional(DragonSurvival.location("immersive_weathering", "permafrost"))
+                .addOptional(DragonSurvival.location("immersive_weathering", "frosty_grass"))
+                .addOptional(DragonSurvival.location("immersive_weathering", "frosty_fern"))
+                .addOptional(DragonSurvival.location("immersive_weathering", "icicle"))
+                .addOptional(DragonSurvival.location("immersive_weathering", "snowy_stone"))
+                .addOptional(DragonSurvival.location("immersive_weathering", "snowy_stone_slab"))
+                .addOptional(DragonSurvival.location("immersive_weathering", "snowy_stone_wall"))
+                .addOptional(DragonSurvival.location("immersive_weathering", "snowy_stone_stairs"))
+                .addOptional(DragonSurvival.location("immersive_weathering", "snowy_stone_bricks"))
+                .addOptional(DragonSurvival.location("immersive_weathering", "snowy_stone_brick_slab"))
+                .addOptional(DragonSurvival.location("immersive_weathering", "snowy_stone_brick_wall"))
+                .addOptional(DragonSurvival.location("immersive_weathering", "snowy_stone_brick_stairs"))
+                .addOptional(DragonSurvival.location("immersive_weathering", "snowy_cobblestone"))
+                .addOptional(DragonSurvival.location("immersive_weathering", "snowy_cobblestone_slab"))
+                .addOptional(DragonSurvival.location("immersive_weathering", "snowy_cobblestone_wall"))
+                .addOptional(DragonSurvival.location("immersive_weathering", "snowy_cobblestone_stairs"))
+                .addOptional(DragonSurvival.location("immersive_weathering", "snow_bricks"))
+                .addOptional(DragonSurvival.location("immersive_weathering", "snow_brick_slab"))
+                .addOptional(DragonSurvival.location("immersive_weathering", "snow_brick_wall"))
+                .addOptional(DragonSurvival.location("immersive_weathering", "snow_brick_stairs"))
+                .addOptional(DragonSurvival.location("immersive_weathering", "snowy_chiseled_stone_bricks"))
                 .addOptional(DragonSurvival.location("regions_unexplored", "plains_mud"))
                 .addOptional(DragonSurvival.location("regions_unexplored", "silt_mud"))
                 .addOptional(DragonSurvival.location("regions_unexplored", "peat_mud"))
@@ -138,35 +162,6 @@ public class DSBlockTags extends BlockTagsProvider {
                 .add(Blocks.NETHER_SPROUTS)
                 .add(Blocks.BIG_DRIPLEAF)
                 .add(Blocks.SMALL_DRIPLEAF);
-
-        // TODO :: what is this used for?
-        tag(key("castle_blocks"))
-                .add(Blocks.STONE_BRICKS)
-                .add(Blocks.STONE_BRICK_STAIRS)
-                .add(Blocks.STONE_BRICK_SLAB)
-                .add(Blocks.STONE_BRICK_WALL)
-                .add(Blocks.CRACKED_STONE_BRICKS)
-                .add(Blocks.MOSSY_STONE_BRICKS)
-                .add(Blocks.CHISELED_STONE_BRICKS)
-                .add(Blocks.DEEPSLATE_BRICKS)
-                .add(Blocks.DEEPSLATE_BRICK_STAIRS)
-                .add(Blocks.DEEPSLATE_BRICK_SLAB)
-                .add(Blocks.DEEPSLATE_BRICK_WALL)
-                .add(Blocks.DEEPSLATE_TILES)
-                .add(Blocks.DEEPSLATE_TILE_STAIRS)
-                .add(Blocks.DEEPSLATE_TILE_SLAB)
-                .add(Blocks.DEEPSLATE_TILE_WALL)
-                .add(Blocks.CRACKED_DEEPSLATE_BRICKS)
-                .add(Blocks.CRACKED_DEEPSLATE_TILES)
-                .add(Blocks.POLISHED_DEEPSLATE)
-                .add(Blocks.POLISHED_DEEPSLATE_STAIRS)
-                .add(Blocks.POLISHED_DEEPSLATE_SLAB)
-                .add(Blocks.POLISHED_DEEPSLATE_WALL)
-                .add(Blocks.CHISELED_DEEPSLATE)
-                .add(Blocks.CHISELED_POLISHED_BLACKSTONE)
-                .add(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS)
-                .add(Blocks.CHAIN)
-                .add(Blocks.LANTERN);
     }
 
     private void addToHarvestableBlocks() {
@@ -201,36 +196,6 @@ public class DSBlockTags extends BlockTagsProvider {
                 .addOptionalTag(DragonSurvival.location("regions_unexplored", "ash"))
                 .addOptional(DragonSurvival.location("netherdepthsupgrade", "wet_lava_sponge"))
                 .addOptional(DragonSurvival.location("regions_unexplored", "brimwood_log_magma"));
-
-        tag(REGENERATES_SEA_DRAGON_MANA)
-                .addTag(BlockTags.SNOW)
-                .addTag(BlockTags.ICE)
-                .add(Blocks.WATER_CAULDRON)
-                .add(Blocks.WET_SPONGE)
-                .add(DSBlocks.SEA_SOURCE_OF_MAGIC.value())
-                .addOptional(DragonSurvival.location("immersive_weathering", "thin_ice"))
-                .addOptional(DragonSurvival.location("immersive_weathering", "cryosol"))
-                .addOptional(DragonSurvival.location("immersive_weathering", "permafrost"))
-                .addOptional(DragonSurvival.location("immersive_weathering", "frosty_grass"))
-                .addOptional(DragonSurvival.location("immersive_weathering", "frosty_fern"))
-                .addOptional(DragonSurvival.location("immersive_weathering", "icicle"))
-                .addOptional(DragonSurvival.location("immersive_weathering", "snowy_stone"))
-                .addOptional(DragonSurvival.location("immersive_weathering", "snowy_stone_slab"))
-                .addOptional(DragonSurvival.location("immersive_weathering", "snowy_stone_wall"))
-                .addOptional(DragonSurvival.location("immersive_weathering", "snowy_stone_stairs"))
-                .addOptional(DragonSurvival.location("immersive_weathering", "snowy_stone_bricks"))
-                .addOptional(DragonSurvival.location("immersive_weathering", "snowy_stone_brick_slab"))
-                .addOptional(DragonSurvival.location("immersive_weathering", "snowy_stone_brick_wall"))
-                .addOptional(DragonSurvival.location("immersive_weathering", "snowy_stone_brick_stairs"))
-                .addOptional(DragonSurvival.location("immersive_weathering", "snowy_cobblestone"))
-                .addOptional(DragonSurvival.location("immersive_weathering", "snowy_cobblestone_slab"))
-                .addOptional(DragonSurvival.location("immersive_weathering", "snowy_cobblestone_wall"))
-                .addOptional(DragonSurvival.location("immersive_weathering", "snowy_cobblestone_stairs"))
-                .addOptional(DragonSurvival.location("immersive_weathering", "snow_bricks"))
-                .addOptional(DragonSurvival.location("immersive_weathering", "snow_brick_slab"))
-                .addOptional(DragonSurvival.location("immersive_weathering", "snow_brick_wall"))
-                .addOptional(DragonSurvival.location("immersive_weathering", "snow_brick_stairs"))
-                .addOptional(DragonSurvival.location("immersive_weathering", "snowy_chiseled_stone_bricks"));
 
         tag(REGENERATES_FOREST_DRAGON_MANA)
                 .addTag(BlockTags.FLOWERS)
@@ -280,7 +245,7 @@ public class DSBlockTags extends BlockTagsProvider {
                 .addTag(BlockTags.SAND)
                 .addTag(Tags.Blocks.SANDSTONE_BLOCKS)
                 .addTag(Tags.Blocks.SANDS)
-                .addTag(REGENERATES_SEA_DRAGON_MANA)
+                .addTag(IS_WET)
                 .add(Blocks.DIRT_PATH)
                 .add(Blocks.MUD);
 

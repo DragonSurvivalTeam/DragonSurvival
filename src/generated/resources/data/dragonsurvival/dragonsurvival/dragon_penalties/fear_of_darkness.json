@@ -44,7 +44,7 @@
     "effects": "dragonsurvival:stress",
     "penalty_type": "dragonsurvival:mob_effect"
   },
-  "icon": "dragonsurvival:abilities/cave/hot_blood_1",
+  "icon": "dragonsurvival:abilities/cave/fear_of_darkness",
   "trigger": {
     "effect_type": "dragonsurvival:supply_trigger",
     "id": "stress_supply",

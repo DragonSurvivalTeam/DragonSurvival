@@ -4,6 +4,8 @@
     "#minecraft:ice",
     "minecraft:water_cauldron",
     "minecraft:wet_sponge",
+    "minecraft:muddy_mangrove_roots",
+    "minecraft:mud",
     "dragonsurvival:sea_source_of_magic",
     {
       "id": "immersive_weathering:thin_ice",
@@ -95,6 +97,22 @@
     },
     {
       "id": "immersive_weathering:snowy_chiseled_stone_bricks",
+      "required": false
+    },
+    {
+      "id": "regions_unexplored:plains_mud",
+      "required": false
+    },
+    {
+      "id": "regions_unexplored:silt_mud",
+      "required": false
+    },
+    {
+      "id": "regions_unexplored:peat_mud",
+      "required": false
+    },
+    {
+      "id": "regions_unexplored:forest_mud",
       "required": false
     }
   ]

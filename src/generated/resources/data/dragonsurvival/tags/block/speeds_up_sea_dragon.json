@@ -5,7 +5,7 @@
     "#minecraft:sand",
     "#c:sandstone/blocks",
     "#c:sands",
-    "#dragonsurvival:regenerates_sea_dragon_mana",
+    "#dragonsurvival:is_wet",
     "minecraft:dirt_path",
     "minecraft:mud"
   ]
