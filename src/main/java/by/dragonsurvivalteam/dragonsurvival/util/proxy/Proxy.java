@@ -30,8 +30,6 @@ public interface Proxy {
 
     default void setCurrentAbilityAnimation(int playerId, Pair<AbilityAnimation, AnimationType> animation) { /* Nothing to do */ }
 
-    default void setSourceOfMagicAnimationEnabled(int playerId, boolean enabled) { /* Nothing to do */ }
-
     default void stopEmote(int playerId, DragonEmote emote) { /* Nothing to do */ }
 
     default void beginPlayingEmote(int playerId, DragonEmote emote) { /* Nothing to do */ }

@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.entity;
 import by.dragonsurvivalteam.dragonsurvival.client.models.DragonModel;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.util.AnimationTickTimer;
+import by.dragonsurvivalteam.dragonsurvival.common.blocks.SourceOfMagicBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AbilityAnimation;
@@ -18,6 +19,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEm
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.entity.*;
@@ -50,18 +52,26 @@ import java.util.stream.Stream;
 
 @EventBusSubscriber
 public class DragonEntity extends LivingEntity implements GeoEntity {
-    /**
-     * Durations of jumps
-     */
-    public static ConcurrentHashMap<Integer, Integer> dragonsJumpingTicks = new ConcurrentHashMap<>(20);
-    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
-    public PoseStack.Pose currentlyRenderedPose;
+    private static final int MAX_EMOTES = 4;
+    private static final int REQUIRED_SOURCE_OF_MAGIC_TICKS = Functions.secondsToTicks(2);
 
-    public final ArrayList<Double> bodyYawHistory = new ArrayList<>();
-    public double currentBodyYawChange;
+    // Default player values
+    private static final double DEFAULT_WALK_SPEED = 0.1; // Abilities#walkingSpeed
+    private static final double DEFAULT_SNEAK_SPEED = 0.03; // Attributes#SNEAKING_SPEED default value
+    private static final double DEFAULT_SPRINT_SPEED = 0.165;
+    private static final double DEFAULT_SWIM_SPEED = 0.051;
+    private static final double DEFAULT_FAST_SWIM_SPEED = 0.13;
+
+    /** Durations of jumps */
+    public static ConcurrentHashMap<Integer, Integer> dragonsJumpingTicks = new ConcurrentHashMap<>();
+
+    private static double globalTickCount;
 
     public final ArrayList<Double> headYawHistory = new ArrayList<>();
     public double currentHeadYawChange;
+
+    public final ArrayList<Double> bodyYawHistory = new ArrayList<>();
+    public double currentBodyYawChange;
 
     public final ArrayList<Double> headPitchHistory = new ArrayList<>();
     public double currentHeadPitchChange;
@@ -69,8 +79,12 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     public final ArrayList<Double> verticalVelocityHistory = new ArrayList<>();
     public double currentTailMotionUp;
 
+    public AnimationController<DragonEntity> mainAnimationController;
+    public PoseStack.Pose currentlyRenderedPose;
+
     /** This reference must be updated whenever player is remade, for example, when changing dimensions */
     public volatile Integer playerId;
+
     public boolean neckLocked;
     public boolean tailLocked;
     public float prevZRot;
@@ -82,30 +96,18 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     public boolean overrideUUIDWithLocalPlayerForTextureFetch;
 
     public boolean clearVerticalVelocity;
-    AnimationTickTimer animationTickTimer = new AnimationTickTimer();
 
-    // Default player values
-    private static final double DEFAULT_WALK_SPEED = 0.1; // Abilities#walkingSpeed
-    private static final double DEFAULT_SNEAK_SPEED = 0.03; // Attributes#SNEAKING_SPEED default value
-    private static final double DEFAULT_SPRINT_SPEED = 0.165;
-    private static final double DEFAULT_SWIM_SPEED = 0.051;
-    private static final double DEFAULT_FAST_SWIM_SPEED = 0.13;
-
-    public AnimationController<DragonEntity> mainAnimationController;
-    private Pair<AbilityAnimation, AnimationType> currentAbilityAnimation;
-    private static final int MAX_EMOTES = 4;
     private final DragonEmote[] currentlyPlayingEmotes = new DragonEmote[MAX_EMOTES];
-    private boolean begunPlayingAbilityAnimation = false;
-    private boolean isOnSourceOfMagic = false;
+    private final AnimationTickTimer animationTickTimer = new AnimationTickTimer();
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-    private static double globalTickCount = 0;
+    private Pair<AbilityAnimation, AnimationType> currentAbilityAnimation;
+
+    private boolean begunPlayingAbilityAnimation;
+    private int sourceOfMagicTicks;
 
     public DragonEntity(EntityType<? extends LivingEntity> type, Level worldIn) {
         super(type, worldIn);
-    }
-
-    public void setOnSourceOfMagic(boolean onSourceOfMagic) {
-        isOnSourceOfMagic = onSourceOfMagic;
     }
 
     @SubscribeEvent
@@ -478,8 +480,15 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         boolean hasMoveInput = rawInput.lengthSquared() > INPUT_EPSILON * INPUT_EPSILON;
         boolean isInSwimmableFluid = (player.isInWaterOrBubble() || SwimData.getData(player).canSwimIn(player.getMaxHeightFluidType())) && player.isSprinting() && !player.isPassenger();
 
+        if (player.getBlockStateOn().getBlock() instanceof SourceOfMagicBlock source && source.isFor(player)) {
+            sourceOfMagicTicks++;
+        } else {
+            sourceOfMagicTicks = 0;
+        }
+
         // TODO: The transition length of animations doesn't work correctly when the framerate varies too much from 60 FPS
-        if (isOnSourceOfMagic) {
+        if (!hasMoveInput && sourceOfMagicTicks >= REQUIRED_SOURCE_OF_MAGIC_TICKS) {
+            // TODO :: should this only play when the source is filled (i.e. check blockstate)?
             return state.setAndContinue(AnimationUtils.createAnimation(builder, SIT_ON_MAGIC_SOURCE));
         } else if (player.isSleeping() || treasureRest.isResting) {
             return state.setAndContinue(AnimationUtils.createAnimation(builder, SLEEP));

@@ -11,6 +11,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FastColor;
+import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -394,9 +395,11 @@ public class DSBlocks {
             () -> new SourceOfMagicBlock(Block.Properties.of()
                     .mapColor(MapColor.STONE)
                     .instrument(NoteBlockInstrument.BASEDRUM)
-                    .randomTicks()
-                    .strength(3, 100)
-                    .noOcclusion().lightLevel(state -> state.getValue(SourceOfMagicBlock.FILLED) ? 10 : 5), DSDragonSpeciesTags.FOREST)
+                    .randomTicks().strength(3, 100)
+                    .noOcclusion().lightLevel(state -> state.getValue(SourceOfMagicBlock.FILLED) ? 10 : 5),
+                    DSDragonSpeciesTags.FOREST,
+                    DamageSources::cactus
+            )
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Cave Source of Magic")
@@ -407,7 +410,10 @@ public class DSBlocks {
                     .mapColor(MapColor.STONE)
                     .instrument(NoteBlockInstrument.BASEDRUM)
                     .strength(3, 100)
-                    .noOcclusion().lightLevel(state -> state.getValue(SourceOfMagicBlock.FILLED) ? 10 : 5), DSDragonSpeciesTags.CAVE)
+                    .noOcclusion().lightLevel(state -> state.getValue(SourceOfMagicBlock.FILLED) ? 10 : 5),
+                    DSDragonSpeciesTags.CAVE,
+                    DamageSources::hotFloor
+            )
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Sea Source of Magic")
@@ -419,7 +425,10 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASEDRUM)
                     .strength(3, 100)
                     .noOcclusion()
-                    .lightLevel(state -> state.getValue(SourceOfMagicBlock.FILLED) ? 10 : 5), DSDragonSpeciesTags.SEA)
+                    .lightLevel(state -> state.getValue(SourceOfMagicBlock.FILLED) ? 10 : 5),
+                    DSDragonSpeciesTags.SEA,
+                    DamageSources::drown
+            )
     );
 
     // --- Dragon Altars --- //
