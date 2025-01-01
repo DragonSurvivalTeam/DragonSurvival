@@ -3,10 +3,13 @@ package by.dragonsurvivalteam.dragonsurvival.common.items;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSModifiers;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonSpeciesTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.PlayerLoginHandler;
+import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import net.minecraft.core.Holder;
@@ -32,15 +35,19 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 
 public class DragonSoulItem extends Item {
     @Translation(comments = "Empty Dragon Soul")
     private static final String EMPTY_DRAGON_SOUL = Translation.Type.ITEM.wrap("empty_dragon_soul");
 
+    @Translation(comments = " Soul")
+    private static final String SOUL = Translation.Type.DESCRIPTION.wrap("dragon_soul.soul");
+
     @Translation(comments = "■§7 This vessel holds the dragon's soul. Use it to become a dragon. Replaces your current stats if you are a dragon.\n")
     private static final String DESCRIPTION = Translation.Type.DESCRIPTION.wrap("dragon_soul");
 
-    @Translation(comments = "§6■ Type:§r %s\n§6■ Growth Stage:§r %s\n§6■ Size:§r %s\n")
+    @Translation(comments = "§6■ Species:§r %s\n§6■ Growth Stage:§r %s\n§6■ Size:§r %s\n")
     private static final String INFO = Translation.Type.DESCRIPTION.wrap("dragon_soul.info");
 
     @Translation(comments = "§6■ Can Spin§r")
@@ -51,6 +58,9 @@ public class DragonSoulItem extends Item {
 
     @Translation(comments = "■§7 An empty dragon's soul. With this item, you can store all your dragon's characteristics. After using it, you become human.")
     private static final String IS_EMPTY = Translation.Type.DESCRIPTION.wrap("dragon_soul.empty");
+
+    @Translation(comments = "Invalid dragon type")
+    private static final String INVALID_DRAGON_TYPE = Translation.Type.DESCRIPTION.wrap("dragon_soul.invalid_type");
 
     public DragonSoulItem(final Properties properties) {
         super(properties);
@@ -66,21 +76,25 @@ public class DragonSoulItem extends Item {
         }
     }
 
-    private static int getCustomModelData(final CompoundTag tag) {
-        // FIXME
-        /*
-        AbstractDragonType dragonSpecies = DragonTypes.newDragonTypeInstance(tag.getString("type"));
-
-        if (dragonSpecies == null) {
+    private static int getCustomModelData(@NotNull final HolderLookup.Provider provider, final CompoundTag tag) {
+        ResourceKey<DragonSpecies> species = ResourceHelper.decodeKey(provider, DragonSpecies.REGISTRY, tag, SPECIES);
+        if(species == null) {
             return 0;
         }
 
-        return switch (dragonSpecies) {
-            case ForestDragonType ignored -> 1;
-            case CaveDragonType ignored -> 2;
-            case SeaDragonType ignored -> 3;
-            default -> 0;
-        };*/
+        Optional<Holder.Reference<DragonSpecies>> optionalDragonSpeciesReference = ResourceHelper.get(provider, species);
+        if(optionalDragonSpeciesReference.isEmpty()) {
+            return 0;
+        }
+
+        Holder<DragonSpecies> dragonSpecies = optionalDragonSpeciesReference.get();
+        if (dragonSpecies.is(DSDragonSpeciesTags.FOREST)) {
+            return 1;
+        } else if (dragonSpecies.is(DSDragonSpeciesTags.CAVE)) {
+            return 2;
+        } else if (dragonSpecies.is(DSDragonSpeciesTags.SEA)) {
+            return 3;
+        }
 
         return 0;
     }
@@ -104,7 +118,7 @@ public class DragonSoulItem extends Item {
                 CompoundTag currentDragonData = handler.serializeNBT(level.registryAccess(), true);
                 handler.deserializeNBT(level.registryAccess(), storedDragonData, true);
                 stack.set(DataComponents.CUSTOM_DATA, CustomData.of(currentDragonData));
-                stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(getCustomModelData(currentDragonData)));
+                stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(getCustomModelData(level.registryAccess(), currentDragonData)));
                 PlayerLoginHandler.syncDragonData(player);
             } else {
                 CompoundTag tag = stack.get(DataComponents.CUSTOM_DATA).copyTag();
@@ -116,7 +130,7 @@ public class DragonSoulItem extends Item {
         } else if (handler.isDragon()) {
             CompoundTag currentDragonData = handler.serializeNBT(level.registryAccess(), true);
             stack.set(DataComponents.CUSTOM_DATA, CustomData.of(currentDragonData));
-            stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(getCustomModelData(currentDragonData)));
+            stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(getCustomModelData(level.registryAccess(), currentDragonData)));
             handler.revertToHumanForm(player, true);
             PlayerLoginHandler.syncDragonData(player);
         }
@@ -161,8 +175,7 @@ public class DragonSoulItem extends Item {
             if (species != null) {
                 name = Component.translatable(Translation.Type.DRAGON_SPECIES.wrap(species.location()));
             } else {
-                // FIXME :: translatable
-                name = Component.literal("Invalid dragon type");
+                name = Component.translatable(INVALID_DRAGON_TYPE);
             }
 
             double size = tag.getDouble(SIZE); // TODO :: should it store the stage as well?
@@ -200,15 +213,15 @@ public class DragonSoulItem extends Item {
             //noinspection DataFlowIssue, deprecation -> tag isn't modified, no need to create a copy
             ResourceKey<DragonSpecies> species = ResourceHelper.decodeKey(null, DragonSpecies.REGISTRY, stack.get(DataComponents.CUSTOM_DATA).getUnsafe(), SPECIES);
 
-            if (species != null) { // TODO :: handle translation (probably annotation on type?)
-                return Translation.Type.ITEM.wrap(species.location().getNamespace(), species.location().getPath() + ".dragon_soul");
+            if (species != null) {
+                return Component.translatable(Translation.Type.DRAGON_SPECIES.wrap(species.location())).append(Component.translatable(SOUL)).getString();
             }
         }
 
         return EMPTY_DRAGON_SOUL;
     }
 
-    public static final String SPECIES = "species";
+    public static final String SPECIES = "dragon_species";
     public static final String SIZE = "size";
     public static final String IS_SPIN_LEARNED = "is_spin_learned";
     public static final String IS_FLIGHT_LEARNED = "is_flight_learned";

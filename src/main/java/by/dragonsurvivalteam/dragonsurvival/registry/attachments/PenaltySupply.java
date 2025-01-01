@@ -91,6 +91,10 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
     }
 
     public Optional<Holder<DragonPenalty>> getMatchingPenalty(final String supplyType, final DragonStateHandler handler) {
+        if(handler.species() == null) {
+            return Optional.empty();
+        }
+
         return handler.species().value().penalties().stream().filter(penalty -> penalty.value().trigger().id().equals(supplyType)).findFirst();
     }
 
