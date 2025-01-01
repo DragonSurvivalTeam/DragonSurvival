@@ -83,7 +83,7 @@ public record DragonPredicate(
             return new DragonPredicate.Builder();
         }
 
-        public DragonPredicate.Builder type(final Holder<DragonSpecies> dragonSpecies) {
+        public DragonPredicate.Builder species(final Holder<DragonSpecies> dragonSpecies) {
             this.dragonSpecies = Optional.of(HolderSet.direct(dragonSpecies));
             return this;
         }

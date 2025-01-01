@@ -1,0 +1,56 @@
+{
+  "parent": "dragonsurvival:forest/stand_on_sweet_berries",
+  "criteria": {
+    "criterion_0": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "effects": {
+                "dragonsurvival:forest_magic": {}
+              },
+              "location": {
+                "light": {
+                  "light": {
+                    "max": 3,
+                    "min": 0
+                  }
+                }
+              },
+              "type_specific": {
+                "type": "dragonsurvival:dragon_predicate",
+                "dragon_species": "dragonsurvival:forest"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "dragonsurvival.advancement.forest/prevent_darkness_penalty.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "dragonsurvival:luminous_ointment"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "dragonsurvival.advancement.forest/prevent_darkness_penalty"
+    }
+  },
+  "requirements": [
+    [
+      "criterion_0"
+    ]
+  ],
+  "rewards": {
+    "experience": 40
+  },
+  "sends_telemetry_event": true
+}

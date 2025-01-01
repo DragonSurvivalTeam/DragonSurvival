@@ -1,0 +1,32 @@
+{
+  "parent": "dragonsurvival:sleep_on_hoard",
+  "criteria": {
+    "criterion_0": {
+      "conditions": {
+        "nearby_treasure_amount": 240
+      },
+      "trigger": "dragonsurvival:sleep_on_treasure"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "dragonsurvival.advancement.sleep_on_massive_hoard.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "dragonsurvival:gold_dragon_treasure"
+    },
+    "title": {
+      "translate": "dragonsurvival.advancement.sleep_on_massive_hoard"
+    }
+  },
+  "requirements": [
+    [
+      "criterion_0"
+    ]
+  ],
+  "rewards": {
+    "experience": 120
+  },
+  "sends_telemetry_event": true
+}

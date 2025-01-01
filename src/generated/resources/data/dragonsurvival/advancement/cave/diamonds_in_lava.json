@@ -1,0 +1,51 @@
+{
+  "parent": "dragonsurvival:cave/swim_in_lava",
+  "criteria": {
+    "criterion_0": {
+      "conditions": {
+        "block": "#c:ores/diamond",
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "fluid": {
+                  "fluids": "#minecraft:lava"
+                }
+              },
+              "type_specific": {
+                "type": "dragonsurvival:dragon_predicate",
+                "dragon_species": "dragonsurvival:cave"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "dragonsurvival:mine_block_under_lava"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "dragonsurvival.advancement.cave/diamonds_in_lava.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:diamond_ore"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "dragonsurvival.advancement.cave/diamonds_in_lava"
+    }
+  },
+  "requirements": [
+    [
+      "criterion_0"
+    ]
+  ],
+  "rewards": {
+    "experience": 40
+  },
+  "sends_telemetry_event": true
+}

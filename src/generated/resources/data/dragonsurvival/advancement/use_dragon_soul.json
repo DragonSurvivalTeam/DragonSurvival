@@ -1,0 +1,29 @@
+{
+  "parent": "dragonsurvival:use_star_heart",
+  "criteria": {
+    "criterion_0": {
+      "trigger": "dragonsurvival:use_dragon_soul"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "dragonsurvival.advancement.use_dragon_soul.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "dragonsurvival:dragon_soul"
+    },
+    "title": {
+      "translate": "dragonsurvival.advancement.use_dragon_soul"
+    }
+  },
+  "requirements": [
+    [
+      "criterion_0"
+    ]
+  ],
+  "rewards": {
+    "experience": 120
+  },
+  "sends_telemetry_event": true
+}

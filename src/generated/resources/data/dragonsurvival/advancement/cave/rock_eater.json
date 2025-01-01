@@ -1,0 +1,124 @@
+{
+  "parent": "dragonsurvival:cave/be_dragon",
+  "criteria": {
+    "criterion_0": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:charged_coal"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "criterion_1": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:charged_soup"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "criterion_2": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:charred_meat"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "criterion_3": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:charred_seafood"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "criterion_4": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:hot_dragon_rod"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "criterion_5": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:explosive_copper"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "criterion_6": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:quartz_explosive_copper"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "criterion_7": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:double_quartz"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "criterion_8": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:cave_dragon_treat"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "dragonsurvival.advancement.cave/rock_eater.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "dragonsurvival:charged_coal"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "dragonsurvival.advancement.cave/rock_eater"
+    }
+  },
+  "requirements": [
+    [
+      "criterion_0"
+    ],
+    [
+      "criterion_1"
+    ],
+    [
+      "criterion_2"
+    ],
+    [
+      "criterion_3"
+    ],
+    [
+      "criterion_4"
+    ],
+    [
+      "criterion_5"
+    ],
+    [
+      "criterion_6"
+    ],
+    [
+      "criterion_7"
+    ],
+    [
+      "criterion_8"
+    ]
+  ],
+  "rewards": {
+    "experience": 60
+  },
+  "sends_telemetry_event": true
+}

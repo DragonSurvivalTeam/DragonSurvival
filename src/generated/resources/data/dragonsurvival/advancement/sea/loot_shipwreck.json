@@ -1,0 +1,48 @@
+{
+  "parent": "dragonsurvival:sea/be_dragon",
+  "criteria": {
+    "criterion_0": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structures": "#minecraft:shipwreck"
+              },
+              "type_specific": {
+                "type": "dragonsurvival:dragon_predicate",
+                "dragon_species": "dragonsurvival:sea"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "dragonsurvival.advancement.sea/loot_shipwreck.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:heart_of_the_sea"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "dragonsurvival.advancement.sea/loot_shipwreck"
+    }
+  },
+  "requirements": [
+    [
+      "criterion_0"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  },
+  "sends_telemetry_event": true
+}

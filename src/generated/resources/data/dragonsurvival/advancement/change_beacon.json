@@ -1,0 +1,51 @@
+{
+  "parent": "dragonsurvival:use_memory_block",
+  "criteria": {
+    "criterion_0": {
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "block": {
+                "blocks": "dragonsurvival:empty_dragon_beacon"
+              }
+            }
+          },
+          {
+            "condition": "minecraft:match_tool",
+            "predicate": {
+              "items": [
+                "minecraft:diamond_block",
+                "minecraft:gold_block",
+                "minecraft:netherite_ingot"
+              ]
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:item_used_on_block"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "dragonsurvival.advancement.change_beacon.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:netherite_ingot"
+    },
+    "title": {
+      "translate": "dragonsurvival.advancement.change_beacon"
+    }
+  },
+  "requirements": [
+    [
+      "criterion_0"
+    ]
+  ],
+  "rewards": {
+    "experience": 10
+  },
+  "sends_telemetry_event": true
+}

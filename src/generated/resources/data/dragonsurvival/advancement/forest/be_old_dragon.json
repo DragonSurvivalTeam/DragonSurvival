@@ -1,0 +1,49 @@
+{
+  "parent": "dragonsurvival:collect_heart_from_monster",
+  "criteria": {
+    "criterion_0": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type_specific": {
+                "type": "dragonsurvival:dragon_predicate",
+                "dragon_species": "dragonsurvival:forest",
+                "stage_specific": {
+                  "dragon_stage": "dragonsurvival:adult",
+                  "growth_percentage": {
+                    "min": 1.0
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "dragonsurvival:be_dragon"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "dragonsurvival.advancement.forest/be_old_dragon.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "dragonsurvival:forest_dragon_beacon"
+    },
+    "title": {
+      "translate": "dragonsurvival.advancement.forest/be_old_dragon"
+    }
+  },
+  "requirements": [
+    [
+      "criterion_0"
+    ]
+  ],
+  "rewards": {
+    "experience": 120
+  },
+  "sends_telemetry_event": true
+}

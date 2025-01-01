@@ -1,0 +1,42 @@
+{
+  "parent": "dragonsurvival:root",
+  "criteria": {
+    "criterion_0": {
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "minecraft:villager"
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:player_interacted_with_entity"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "dragonsurvival.advancement.path_choice.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:oak_sign"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "dragonsurvival.advancement.path_choice"
+    }
+  },
+  "requirements": [
+    [
+      "criterion_0"
+    ]
+  ],
+  "rewards": {
+    "experience": 6
+  },
+  "sends_telemetry_event": true
+}

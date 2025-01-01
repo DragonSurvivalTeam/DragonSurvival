@@ -1,0 +1,38 @@
+{
+  "parent": "dragonsurvival:path_choice",
+  "criteria": {
+    "criterion_0": {
+      "conditions": {
+        "effects": {
+          "dragonsurvival:hunter_omen": {
+            "duration": {
+              "min": 300
+            }
+          }
+        }
+      },
+      "trigger": "minecraft:effects_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "dragonsurvival.advancement.dark/affected_by_hunter_omen.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:ominous_bottle"
+    },
+    "title": {
+      "translate": "dragonsurvival.advancement.dark/affected_by_hunter_omen"
+    }
+  },
+  "requirements": [
+    [
+      "criterion_0"
+    ]
+  ],
+  "rewards": {
+    "experience": 6
+  },
+  "sends_telemetry_event": true
+}

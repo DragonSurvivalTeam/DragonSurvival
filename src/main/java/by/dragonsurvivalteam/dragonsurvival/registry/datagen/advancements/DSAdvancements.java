@@ -1,10 +1,56 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen.advancements;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.DragonPredicate;
+import by.dragonsurvivalteam.dragonsurvival.common.criteria.*;
+import by.dragonsurvivalteam.dragonsurvival.registry.*;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.CaveDragonAbilities;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.ForestDragonAbilities;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.SeaDragonAbilities;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.advancements.*;
+import net.minecraft.advancements.critereon.*;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.component.DataComponentPredicate;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.StructureTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.predicates.*;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.AdvancementProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 public class DSAdvancements implements AdvancementProvider.AdvancementGenerator {
@@ -13,12 +59,6 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
     private ExistingFileHelper helper;
 
     @Override
-    public void generate(HolderLookup.Provider registries, Consumer<AdvancementHolder> saver, ExistingFileHelper existingFileHelper) {
-
-    }
-
-    //FIXME
-/*    @Override
     public void generate(@NotNull HolderLookup.Provider registries, @NotNull Consumer<AdvancementHolder> saver, @NotNull ExistingFileHelper helper) {
         this.registries = registries;
         this.saver = saver;
@@ -27,7 +67,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         AdvancementHolder root = Advancement.Builder.advancement()
                 .display(
                         DSItems.ELDER_DRAGON_BONE.value(),
-                        Component.translatable(ROOT),
+                        Component.translatable(LangKey.ROOT),
                         Component.empty(),
                         DragonSurvival.res("textures/block/stone_dragon_door_top.png"),
                         AdvancementType.GOAL,
@@ -40,16 +80,16 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         // --- Parent: root --- //
 
-        AdvancementHolder beDragon = create(root, BE_DRAGON, DSItems.STAR_BONE.value(), beDragon(), 12);
+        AdvancementHolder beDragon = create(root, LangKey.BE_DRAGON, DSItems.STAR_BONE.value(), beDragon(), 12);
         buildBeDragonChildren(beDragon);
 
-        AdvancementHolder collectDust = create(root, COLLECT_DUST, Items.COAL_ORE, InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.ELDER_DRAGON_DUST.value()), 6);
+        AdvancementHolder collectDust = create(root, LangKey.COLLECT_DUST, Items.COAL_ORE, InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.ELDER_DRAGON_DUST.value()), 6);
         buildCollectDustChildren(collectDust);
 
-        AdvancementHolder placeAltar = create(root, PLACE_ALTAR, DSBlocks.STONE_DRAGON_ALTAR.value(), placeBlock(DSItemTags.DRAGON_ALTARS), 6);
+        AdvancementHolder placeAltar = create(root, LangKey.PLACE_ALTAR, DSBlocks.STONE_DRAGON_ALTAR.value(), placeBlock(DSItemTags.DRAGON_ALTARS), 6);
         buildPlaceAltarChildren(placeAltar);
 
-        AdvancementHolder pathChoice = create(root, PATH_CHOICE, Items.OAK_SIGN, noItemInteract(EntityType.VILLAGER), 6);
+        AdvancementHolder pathChoice = create(root, LangKey.PATH_CHOICE, Items.OAK_SIGN, noItemInteract(EntityType.VILLAGER), 6);
         buildHunterAdvancements(pathChoice);
         buildLightAdvancements(pathChoice);
         buildDarkAdvancements(pathChoice);
@@ -58,7 +98,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
     private void buildDarkAdvancements(final AdvancementHolder parent) {
         // --- Parent: path_choice --- //
 
-        *//* TODO :: previously used the below item stack
+        /* TODO :: previously used the below item stack
             currently using sth. else because providing support for item stack displays for 1 advancement would be annoying
         "id": "minecraft:player_head",
         "components": {
@@ -66,26 +106,26 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
                 "name": "MHF_Villager"
             }
         }
-        *//*
-        AdvancementHolder affectedByHunterOmen = createWithToast(parent, DARK_AFFECTED_BY_HUNTER_OMEN, Items.OMINOUS_BOTTLE, effectWithMinDuration(DSEffects.HUNTER_OMEN, 300), 6);
+        */
+        AdvancementHolder affectedByHunterOmen = createWithToast(parent, LangKey.DARK_AFFECTED_BY_HUNTER_OMEN, Items.OMINOUS_BOTTLE, effectWithMinDuration(DSEffects.HUNTER_OMEN, 300), 6);
 
         // --- Parent: dark/affected_by_hunter_omen --- //
 
-        AdvancementHolder collectKey = createWithToast(affectedByHunterOmen, DARK_COLLECT_KEY, DSItems.DARK_KEY.value(), InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.DARK_KEY.value()), 0);
+        AdvancementHolder collectKey = createWithToast(affectedByHunterOmen, LangKey.DARK_COLLECT_KEY, DSItems.DARK_KEY.value(), InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.DARK_KEY.value()), 0);
 
         // --- Parent: dark/collect_key --- //
 
-        AdvancementHolder openVault = createWithToast(collectKey, DARK_OPEN_VAULT, DSBlocks.DARK_VAULT.value(), itemUsedOnBlock(DSBlocks.DARK_VAULT.value(), DSItems.DARK_KEY.value()), 10);
+        AdvancementHolder openVault = createWithToast(collectKey, LangKey.DARK_OPEN_VAULT, DSBlocks.DARK_VAULT.value(), itemUsedOnBlock(DSBlocks.DARK_VAULT.value(), DSItems.DARK_KEY.value()), 10);
 
         // --- Parent: dark/open_vault --- //
 
-        AdvancementHolder getArmorItem = createWithToast(openVault, DARK_GET_ARMOR_ITEM, DSItems.DARK_DRAGON_HELMET.value(), List.of(
+        AdvancementHolder getArmorItem = createWithToast(openVault, LangKey.DARK_GET_ARMOR_ITEM, DSItems.DARK_DRAGON_HELMET.value(), List.of(
                 InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.DARK_DRAGON_HELMET.value(), DSItems.DARK_DRAGON_CHESTPLATE.value(), DSItems.DARK_DRAGON_LEGGINGS.value(), DSItems.DARK_DRAGON_BOOTS.value())
         ), 0);
 
         // --- Parent: dark/get_armor_item --- //
 
-        createWithToast(getArmorItem, DARK_GET_ARMOR_SET, DSItems.DARK_DRAGON_HELMET.value(), List.of(
+        createWithToast(getArmorItem, LangKey.DARK_GET_ARMOR_SET, DSItems.DARK_DRAGON_HELMET.value(), List.of(
                 InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.DARK_DRAGON_HELMET.value()),
                 InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.DARK_DRAGON_CHESTPLATE.value()),
                 InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.DARK_DRAGON_LEGGINGS.value()),
@@ -96,25 +136,25 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
     private void buildLightAdvancements(final AdvancementHolder parent) {
         // --- Parent: path_choice --- //
 
-        AdvancementHolder dragonRiderWorkbench = create(parent, LIGHT_DRAGON_RIDER_WORKBENCH, DSBlocks.DRAGON_RIDER_WORKBENCH.value(), crafted(DSBlocks.DRAGON_RIDER_WORKBENCH.value()), 6);
+        AdvancementHolder dragonRiderWorkbench = create(parent, LangKey.LIGHT_DRAGON_RIDER_WORKBENCH, DSBlocks.DRAGON_RIDER_WORKBENCH.value(), crafted(DSBlocks.DRAGON_RIDER_WORKBENCH.value()), 6);
 
         // --- Parent: light/dragon_rider_workbench --- //
 
-        AdvancementHolder collectKey = createWithToast(dragonRiderWorkbench, LIGHT_COLLECT_KEY, DSItems.LIGHT_KEY.value(), InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.LIGHT_KEY.value()), 0);
+        AdvancementHolder collectKey = createWithToast(dragonRiderWorkbench, LangKey.LIGHT_COLLECT_KEY, DSItems.LIGHT_KEY.value(), InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.LIGHT_KEY.value()), 0);
 
         // --- Parent: light/collect_key --- //
 
-        AdvancementHolder openVault = createWithToast(collectKey, LIGHT_OPEN_VAULT, DSBlocks.LIGHT_VAULT.value(), itemUsedOnBlock(DSBlocks.LIGHT_VAULT.value(), DSItems.LIGHT_KEY.value()), 10);
+        AdvancementHolder openVault = createWithToast(collectKey, LangKey.LIGHT_OPEN_VAULT, DSBlocks.LIGHT_VAULT.value(), itemUsedOnBlock(DSBlocks.LIGHT_VAULT.value(), DSItems.LIGHT_KEY.value()), 10);
 
         // --- Parent: light/open_vault --- //
 
-        AdvancementHolder getArmorItem = createWithToast(openVault, LIGHT_GET_ARMOR_ITEM, DSItems.LIGHT_DRAGON_HELMET.value(), List.of(
+        AdvancementHolder getArmorItem = createWithToast(openVault, LangKey.LIGHT_GET_ARMOR_ITEM, DSItems.LIGHT_DRAGON_HELMET.value(), List.of(
                 InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.LIGHT_DRAGON_HELMET.value(), DSItems.LIGHT_DRAGON_CHESTPLATE.value(), DSItems.LIGHT_DRAGON_LEGGINGS.value(), DSItems.LIGHT_DRAGON_BOOTS.value())
         ), 0);
 
         // --- Parent: light/get_armor_item --- //
 
-        createWithToast(getArmorItem, LIGHT_GET_ARMOR_SET, DSItems.LIGHT_DRAGON_HELMET.value(), List.of(
+        createWithToast(getArmorItem, LangKey.LIGHT_GET_ARMOR_SET, DSItems.LIGHT_DRAGON_HELMET.value(), List.of(
                 InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.LIGHT_DRAGON_HELMET.value()),
                 InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.LIGHT_DRAGON_CHESTPLATE.value()),
                 InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.LIGHT_DRAGON_LEGGINGS.value()),
@@ -125,20 +165,20 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
     private void buildHunterAdvancements(final AdvancementHolder parent) {
         // --- Parent: path_choice --- //
 
-        AdvancementHolder promotion = createWithToast(parent, HUNTER_PROMOTION, DSItems.SPEARMAN_PROMOTION.value(), itemInteract(DSEntities.HUNTER_SPEARMAN.value(), DSItems.SPEARMAN_PROMOTION.value()), 6);
+        AdvancementHolder promotion = createWithToast(parent, LangKey.HUNTER_PROMOTION, DSItems.SPEARMAN_PROMOTION.value(), itemInteract(DSEntities.HUNTER_SPEARMAN.value(), DSItems.SPEARMAN_PROMOTION.value()), 6);
 
         // --- Parent: hunter/promotion --- //
 
-        AdvancementHolder collectKey = createWithToast(promotion, HUNTER_COLLECT_KEY, DSItems.HUNTER_KEY.value(), InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.HUNTER_KEY.value()), 0);
+        AdvancementHolder collectKey = createWithToast(promotion, LangKey.HUNTER_COLLECT_KEY, DSItems.HUNTER_KEY.value(), InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.HUNTER_KEY.value()), 0);
 
         // --- Parent: hunter/collect_key --- //
 
-        AdvancementHolder openVault = createWithToast(collectKey, HUNTER_OPEN_VAULT, DSBlocks.HUNTER_VAULT.value(), itemUsedOnBlock(DSBlocks.HUNTER_VAULT.value(), DSItems.HUNTER_KEY.value()), 10);
+        AdvancementHolder openVault = createWithToast(collectKey, LangKey.HUNTER_OPEN_VAULT, DSBlocks.HUNTER_VAULT.value(), itemUsedOnBlock(DSBlocks.HUNTER_VAULT.value(), DSItems.HUNTER_KEY.value()), 10);
 
         // --- Parent: hunter/open_vault --- //
 
         Holder.Reference<Enchantment> bolas = registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(DSEnchantments.BOLAS);
-        create(openVault, HUNTER_FIRE_BOLAS, DSItems.BOLAS.value(), ShotCrossbowTrigger.TriggerInstance.shotCrossbow(
+        create(openVault, LangKey.HUNTER_FIRE_BOLAS, DSItems.BOLAS.value(), ShotCrossbowTrigger.TriggerInstance.shotCrossbow(
                 Optional.of(ItemPredicate.Builder.item().of(Tags.Items.TOOLS_CROSSBOW).withSubPredicate(
                                 ItemSubPredicates.ENCHANTMENTS, ItemEnchantmentsPredicate.enchantments(
                                         List.of(new EnchantmentPredicate(bolas, MinMaxBounds.Ints.atLeast(1)))
@@ -152,20 +192,20 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         // --- Parent: place_altar --- //
 
         // TODO :: add a method that supports creating a new display info and supply it with an item stack with the proper data attachment for the dragon species
-        AdvancementHolder beCaveDragon = createWithToast(parent, CAVE_BE_DRAGON, DSItems.DRAGON_SOUL.value(), beDragon(DragonTypes.CAVE), 12);
+        AdvancementHolder beCaveDragon = createWithToast(parent, LangKey.CAVE_BE_DRAGON, DSItems.DRAGON_SOUL.value(), beDragon(registries.holderOrThrow(BuiltInDragonSpecies.CAVE)), 12);
         buildBeCaveDragonChildren(beCaveDragon);
 
-        AdvancementHolder beSeaDragon = createWithToast(parent, SEA_BE_DRAGON, DSItems.DRAGON_SOUL.value(), beDragon(DragonTypes.SEA), 12);
+        AdvancementHolder beSeaDragon = createWithToast(parent, LangKey.SEA_BE_DRAGON, DSItems.DRAGON_SOUL.value(), beDragon(registries.holderOrThrow(BuiltInDragonSpecies.SEA)), 12);
         buildBeSeaDragonChildren(beSeaDragon);
 
-        AdvancementHolder beForestDragon = createWithToast(parent, FOREST_BE_DRAGON, DSItems.DRAGON_SOUL.value(), beDragon(DragonTypes.FOREST), 12);
+        AdvancementHolder beForestDragon = createWithToast(parent, LangKey.FOREST_BE_DRAGON, DSItems.DRAGON_SOUL.value(), beDragon(registries.holderOrThrow(BuiltInDragonSpecies.FOREST)), 12);
         buildBeForestDragonChildren(beForestDragon);
     }
 
     private void buildBeCaveDragonChildren(final AdvancementHolder parent) {
         // --- Parent: cave/be_dragon --- //
 
-        AdvancementHolder rockEater = create(parent, CAVE_ROCK_EATER, DSItems.CHARGED_COAL.value(), List.of(
+        AdvancementHolder rockEater = create(parent, LangKey.CAVE_ROCK_EATER, DSItems.CHARGED_COAL.value(), List.of(
                 consumeItem(DSItems.CHARGED_COAL.value()),
                 consumeItem(DSItems.CHARGED_SOUP.value()),
                 consumeItem(DSItems.CHARRED_MEAT.value()),
@@ -177,24 +217,24 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
                 consumeItem(DSItems.CAVE_DRAGON_TREAT.value())
         ), 60);
 
-        AdvancementHolder swimInLava = create(parent, CAVE_SWIM_IN_LAVA, Items.LAVA_BUCKET, location(
-                dragonSpecies(DragonTypes.CAVE).located(isInFluid(FluidTags.LAVA))
+        AdvancementHolder swimInLava = create(parent, LangKey.CAVE_SWIM_IN_LAVA, Items.LAVA_BUCKET, location(
+                Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.CAVE)).located(isInFluid(FluidTags.LAVA))
         ), 20);
 
         // --- Parent: cave/rock_eater --- //
 
-        create(rockEater, CAVE_WATER_SAFETY, DSItems.CHARGED_SOUP.value(), location(
-                dragonSpecies(DragonTypes.CAVE)
+        create(rockEater, LangKey.CAVE_WATER_SAFETY, DSItems.CHARGED_SOUP.value(), location(
+                Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.CAVE))
                         .located(isInFluid(FluidTags.WATER))
                         .effects(MobEffectsPredicate.Builder.effects().and(DSEffects.FIRE))
         ), 40);
 
         // --- Parent: cave/swim_in_lava --- //
 
-        AdvancementHolder diamondsInLava = create(swimInLava, CAVE_DIAMONDS_IN_LAVA, Items.DIAMOND_ORE, mineBlockInLava(Tags.Blocks.ORES_DIAMOND), 40);
+        AdvancementHolder diamondsInLava = create(swimInLava, LangKey.CAVE_DIAMONDS_IN_LAVA, Items.DIAMOND_ORE, mineBlockInLava(Tags.Blocks.ORES_DIAMOND), 40);
 
-        createWithToast(diamondsInLava, CAVE_GO_HOME, Items.NETHER_BRICK_STAIRS, location(
-                dragonSpecies(DragonTypes.CAVE)
+        createWithToast(diamondsInLava, LangKey.CAVE_GO_HOME, Items.NETHER_BRICK_STAIRS, location(
+                Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.CAVE))
                         .located(dimension(Level.NETHER).setFluid(fluid(FluidTags.LAVA)))
                         .effects(effect(DSEffects.LAVA_VISION))
         ), 20);
@@ -205,16 +245,16 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         // TODO :: have either chat or toast notification for this one?
         // TODO :: previously checked if all loot tables were looted -> might be better to check if all shipwreck (variants) have been visited?
-        AdvancementHolder lootShipwreck = create(parent, SEA_LOOT_SHIPWRECK, Items.HEART_OF_THE_SEA, location(dragonSpecies(DragonTypes.SEA).located(structure(StructureTags.SHIPWRECK))), 20);
+        AdvancementHolder lootShipwreck = create(parent, LangKey.SEA_LOOT_SHIPWRECK, Items.HEART_OF_THE_SEA, location(Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.SEA)).located(structure(StructureTags.SHIPWRECK))), 20);
 
-        AdvancementHolder rainDancing = create(parent, SEA_RAIN_DANCING, Items.WATER_BUCKET, List.of(
-                location(ContextAwarePredicate.create(entityCondition(dragonSpecies(DragonTypes.SEA).build()), WeatherCheck.weather().setRaining(true).build())),
-                location(ContextAwarePredicate.create(entityCondition(dragonSpecies(DragonTypes.SEA).build()), WeatherCheck.weather().setThundering(true).build()))
+        AdvancementHolder rainDancing = create(parent, LangKey.SEA_RAIN_DANCING, Items.WATER_BUCKET, List.of(
+                location(ContextAwarePredicate.create(entityCondition(Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.SEA)).build()), WeatherCheck.weather().setRaining(true).build())),
+                location(ContextAwarePredicate.create(entityCondition(Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.SEA)).build()), WeatherCheck.weather().setThundering(true).build()))
         ), 30);
 
         // --- Parent: sea/loot_shipwreck --- //
 
-        create(lootShipwreck, SEA_FISH_EATER, DSItems.SEASONED_FISH.value(), List.of(
+        create(lootShipwreck, LangKey.SEA_FISH_EATER, DSItems.SEASONED_FISH.value(), List.of(
                 consumeItem(Items.KELP),
                 consumeItem(DSItems.SEASONED_FISH.value()),
                 consumeItem(DSItems.GOLDEN_CORAL_PUFFERFISH.value()),
@@ -225,14 +265,14 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         // --- Parent: sea/rain_dancing --- //
 
-        AdvancementHolder placeSnowInNether = create(rainDancing, SEA_PLACE_SNOW_IN_NETHER, Items.SNOW_BLOCK, placeBlockAsDragon(
-                dragonSpecies(DragonTypes.SEA).located(dimension(Level.NETHER)), Blocks.SNOW_BLOCK
+        AdvancementHolder placeSnowInNether = create(rainDancing, LangKey.SEA_PLACE_SNOW_IN_NETHER, Items.SNOW_BLOCK, placeBlockAsDragon(
+                Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.SEA)).located(dimension(Level.NETHER)), Blocks.SNOW_BLOCK
         ), 16);
 
         // --- Parent: sea/place_snow_in_nether --- //
 
-        create(placeSnowInNether, SEA_PEACE_IN_NETHER, Items.CAULDRON, location(
-                dragonSpecies(DragonTypes.SEA)
+        create(placeSnowInNether, LangKey.SEA_PEACE_IN_NETHER, Items.CAULDRON, location(
+                Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.SEA))
                         .effects(effect(DSEffects.PEACE))
                         .located(dimension(Level.NETHER))
         ), 0);
@@ -241,21 +281,21 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
     private void buildBeForestDragonChildren(final AdvancementHolder parent) {
         // --- Parent: forest/be_dragon --- //
 
-        AdvancementHolder standOnSweetBerries = create(parent, FOREST_STAND_ON_SWEET_BERRIES, Items.SWEET_BERRIES, location(dragonSpecies(DragonTypes.FOREST).steppingOn(block(Blocks.SWEET_BERRY_BUSH))), 30);
+        AdvancementHolder standOnSweetBerries = create(parent, LangKey.FOREST_STAND_ON_SWEET_BERRIES, Items.SWEET_BERRIES, location(Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.FOREST)).steppingOn(block(Blocks.SWEET_BERRY_BUSH))), 30);
 
         // --- Parent: forest/stand_on_sweet_berries --- //
 
-        create(standOnSweetBerries, FOREST_PREVENT_DARKNESS_PENALTY, DSItems.LUMINOUS_OINTMENT.value(), location(
-                dragonSpecies(DragonTypes.FOREST)
+        create(standOnSweetBerries, LangKey.FOREST_PREVENT_DARKNESS_PENALTY, DSItems.LUMINOUS_OINTMENT.value(), location(
+                Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.FOREST))
                         .located(light(MinMaxBounds.Ints.between(0, 3)))
                         .effects(MobEffectsPredicate.Builder.effects().and(DSEffects.MAGIC))
         ), 40);
 
-        AdvancementHolder poisonousPotato = create(parent, FOREST_POISONOUS_POTATO, Items.POISONOUS_POTATO, convertPotato(dragonSpecies(DragonTypes.FOREST)), 16);
+        AdvancementHolder poisonousPotato = create(parent, LangKey.FOREST_POISONOUS_POTATO, Items.POISONOUS_POTATO, convertPotato(Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.FOREST))), 16);
 
         // --- Parent: forest/poisonous_potato --- //
 
-        AdvancementHolder meatEater = create(poisonousPotato, FOREST_MEAT_EATER, DSItems.MEAT_WILD_BERRIES.value(), List.of(
+        AdvancementHolder meatEater = create(poisonousPotato, LangKey.FOREST_MEAT_EATER, DSItems.MEAT_WILD_BERRIES.value(), List.of(
                 consumeItem(DSItems.SWEET_SOUR_RABBIT.value()),
                 consumeItem(DSItems.LUMINOUS_OINTMENT.value()),
                 consumeItem(DSItems.DIAMOND_CHORUS.value()),
@@ -267,45 +307,45 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         // --- Parent: forest/meat_eater --- //
 
-        create(meatEater, FOREST_TRANSPLANT_CHORUS_FRUIT, DSItems.DIAMOND_CHORUS.value(), placeBlockAsDragon(
-                dragonSpecies(DragonTypes.FOREST).located(dimension(Level.OVERWORLD)), Blocks.CHORUS_FLOWER
+        create(meatEater, LangKey.FOREST_TRANSPLANT_CHORUS_FRUIT, DSItems.DIAMOND_CHORUS.value(), placeBlockAsDragon(
+                Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.FOREST)).located(dimension(Level.OVERWORLD)), Blocks.CHORUS_FLOWER
         ), 90);
     }
 
     private void buildBeDragonChildren(final AdvancementHolder parent) {
         // --- Parent: be_dragon --- //
 
-        AdvancementHolder useStarHeart = createWithToast(parent, USE_STAR_HEART, DSItems.STAR_HEART.value(), useStarHeart(), 30);
+        AdvancementHolder useStarHeart = createWithToast(parent, LangKey.USE_STAR_HEART, DSItems.STAR_HEART.value(), useStarHeart(), 30);
 
         // --- Parent: use_star_heart --- //
 
-        createWithToast(useStarHeart, USE_DRAGON_SOUL, DSItems.DRAGON_SOUL.value(), useDragonSoul(), 120);
+        createWithToast(useStarHeart, LangKey.USE_DRAGON_SOUL, DSItems.DRAGON_SOUL.value(), useDragonSoul(), 120);
     }
 
     private void buildCollectDustChildren(final AdvancementHolder parent) {
         // --- Parent: collect_dust --- //
 
-        AdvancementHolder beYoungDragon = createWithToast(parent, BE_YOUNG_DRAGON, DSItems.DRAGON_HEART_SHARD.value(), beDragon(DragonStages.young), 12);
+        AdvancementHolder beYoungDragon = createWithToast(parent, LangKey.BE_YOUNG_DRAGON, DSItems.DRAGON_HEART_SHARD.value(), beDragon(DragonStages.young), 12);
         buildBeYoungDragonChildren(beYoungDragon);
 
-        AdvancementHolder sleepOnTreasure = createWithAnnouncement(parent, SLEEP_ON_TREASURE, Items.GOLD_NUGGET, sleepOnTreasure(10), 10);
+        AdvancementHolder sleepOnTreasure = createWithAnnouncement(parent, LangKey.SLEEP_ON_TREASURE, Items.GOLD_NUGGET, sleepOnTreasure(10), 10);
         buildSleepOnTreasureChildren(sleepOnTreasure);
 
         TagKey<Structure> tag = TagKey.create(Registries.STRUCTURE, DragonSurvival.res("dragon_skeletons")); // FIXME :: use tag from data generation
-        createWithToast(parent, FIND_BONES, DSItems.STAR_BONE.value(), PlayerTrigger.TriggerInstance.located(structure(tag)), 12);
+        createWithToast(parent, LangKey.FIND_BONES, DSItems.STAR_BONE.value(), PlayerTrigger.TriggerInstance.located(structure(tag)), 12);
 
-        AdvancementHolder useMemoryBlock = createWithToast(parent, USE_MEMORY_BLOCK, DSBlocks.DRAGON_MEMORY_BLOCK.value(), itemUsedOnBlock(DSBlocks.DRAGON_MEMORY_BLOCK.value(), DSItemTags.DRAGON_BEACONS), 10);
+        AdvancementHolder useMemoryBlock = createWithToast(parent, LangKey.USE_MEMORY_BLOCK, DSBlocks.DRAGON_MEMORY_BLOCK.value(), itemUsedOnBlock(DSBlocks.DRAGON_MEMORY_BLOCK.value(), DSItemTags.DRAGON_BEACONS), 10);
         buildUseMemoryBlockChildren(useMemoryBlock);
     }
 
     private void buildUseMemoryBlockChildren(final AdvancementHolder parent) {
         // --- Parent: use_memory_block --- //
 
-        AdvancementHolder changeBeacon = createWithToast(parent, CHANGE_BEACON, Items.NETHERITE_INGOT, itemUsedOnBlock(DSBlocks.EMPTY_DRAGON_BEACON.value(), Items.DIAMOND_BLOCK, Items.GOLD_BLOCK, Items.NETHERITE_INGOT), 10);
+        AdvancementHolder changeBeacon = createWithToast(parent, LangKey.CHANGE_BEACON, Items.NETHERITE_INGOT, itemUsedOnBlock(DSBlocks.EMPTY_DRAGON_BEACON.value(), Items.DIAMOND_BLOCK, Items.GOLD_BLOCK, Items.NETHERITE_INGOT), 10);
 
         // --- Parent: change_beacon --- //
 
-        createWithToast(changeBeacon, GET_ALL_BEACONS, DSItems.ELDER_DRAGON_DUST.value(), List.of(
+        createWithToast(changeBeacon, LangKey.GET_ALL_BEACONS, DSItems.ELDER_DRAGON_DUST.value(), List.of(
                 effectWithMinDuration(DSEffects.PEACE, Functions.secondsToTicks(20)),
                 effectWithMinDuration(DSEffects.FIRE, Functions.secondsToTicks(20)),
                 effectWithMinDuration(DSEffects.MAGIC, Functions.secondsToTicks(20))
@@ -315,55 +355,55 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
     private void buildSleepOnTreasureChildren(final AdvancementHolder parent) {
         // --- Parent: sleep_on_treasure --- //
 
-        AdvancementHolder sleepOnHoard = createWithToast(parent, SLEEP_ON_HOARD, Items.GOLD_INGOT, sleepOnTreasure(100), 40);
+        AdvancementHolder sleepOnHoard = createWithToast(parent, LangKey.SLEEP_ON_HOARD, Items.GOLD_INGOT, sleepOnTreasure(100), 40);
 
         // --- Parent: sleep_on_hoard --- //
 
-        createWithToast(sleepOnHoard, SLEEP_ON_MASSIVE_HOARD, DSBlocks.GOLD_DRAGON_TREASURE.value(), sleepOnTreasure(240), 120);
+        createWithToast(sleepOnHoard, LangKey.SLEEP_ON_MASSIVE_HOARD, DSBlocks.GOLD_DRAGON_TREASURE.value(), sleepOnTreasure(240), 120);
     }
 
     private void buildBeYoungDragonChildren(final AdvancementHolder parent) {
         // --- Parent: be_young_dragon --- //
 
-        AdvancementHolder beAdultDragon = createWithToast(parent, BE_ADULT_DRAGON, DSItems.WEAK_DRAGON_HEART.value(), beDragon(DragonStages.adult), 0);
+        AdvancementHolder beAdultDragon = createWithToast(parent, LangKey.BE_ADULT_DRAGON, DSItems.WEAK_DRAGON_HEART.value(), beDragon(DragonStages.adult), 0);
 
         // --- Parent: be_adult_dragon --- //
 
-        AdvancementHolder collectHeartFromMonster = create(beAdultDragon, COLLECT_HEART_FROM_MONSTER, DSItems.ELDER_DRAGON_HEART.value(), InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.ELDER_DRAGON_HEART.value()), 6);
+        AdvancementHolder collectHeartFromMonster = create(beAdultDragon, LangKey.COLLECT_HEART_FROM_MONSTER, DSItems.ELDER_DRAGON_HEART.value(), InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.ELDER_DRAGON_HEART.value()), 6);
 
         // --- Parent: collect_heart_from_monster --- //
 
-        AdvancementHolder beOldCaveDragon = createWithToast(collectHeartFromMonster, CAVE_BE_OLD_DRAGON, DSBlocks.CAVE_DRAGON_BEACON.value(), beDragon(DragonTypes.CAVE, registries.holderOrThrow(DragonStages.adult), 1), 120);
+        AdvancementHolder beOldCaveDragon = createWithToast(collectHeartFromMonster, LangKey.CAVE_BE_OLD_DRAGON, DSBlocks.CAVE_DRAGON_BEACON.value(), beDragon(registries.holderOrThrow(BuiltInDragonSpecies.CAVE), registries.holderOrThrow(DragonStages.adult), 1), 120);
 
         // --- Parent: cave/be_old_dragon --- //
 
-        createWithToast(beOldCaveDragon, CAVE_MASTER_ALL_PASSIVES, DSBlocks.CAVE_SOURCE_OF_MAGIC.value(), List.of(
-                upgradeAbilityMax(BurnAbility.class),
-                upgradeAbilityMax(CaveAthleticsAbility.class),
-                upgradeAbilityMax(ContrastShowerAbility.class),
-                upgradeAbilityMax(CaveMagicAbility.class)
+        createWithToast(beOldCaveDragon, LangKey.CAVE_MASTER_ALL_PASSIVES, DSBlocks.CAVE_SOURCE_OF_MAGIC.value(), List.of(
+                upgradeAbilityMax(registries.holderOrThrow(CaveDragonAbilities.BURN)),
+                upgradeAbilityMax(registries.holderOrThrow(CaveDragonAbilities.CAVE_ATHLETICS)),
+                upgradeAbilityMax(registries.holderOrThrow(CaveDragonAbilities.CONTRAST_SHOWER)),
+                upgradeAbilityMax(registries.holderOrThrow(CaveDragonAbilities.CAVE_MAGIC))
         ), 150);
 
-        AdvancementHolder beOldSeaDragon = createWithToast(collectHeartFromMonster, SEA_BE_OLD_DRAGON, DSBlocks.SEA_DRAGON_BEACON.value(), beDragon(DragonTypes.SEA, registries.holderOrThrow(DragonStages.adult), 1), 120);
+        AdvancementHolder beOldSeaDragon = createWithToast(collectHeartFromMonster, LangKey.SEA_BE_OLD_DRAGON, DSBlocks.SEA_DRAGON_BEACON.value(), beDragon(registries.holderOrThrow(BuiltInDragonSpecies.SEA), registries.holderOrThrow(DragonStages.adult), 1), 120);
 
         // --- Parent: sea/be_old_dragon --- //
 
-        createWithToast(beOldSeaDragon, SEA_MASTER_ALL_PASSIVES, DSBlocks.SEA_SOURCE_OF_MAGIC.value(), List.of(
-                upgradeAbilityMax(SpectralImpactAbility.class),
-                upgradeAbilityMax(SeaAthleticsAbility.class),
-                upgradeAbilityMax(WaterAbility.class),
-                upgradeAbilityMax(SeaMagicAbility.class)
+        createWithToast(beOldSeaDragon, LangKey.SEA_MASTER_ALL_PASSIVES, DSBlocks.SEA_SOURCE_OF_MAGIC.value(), List.of(
+                upgradeAbilityMax(registries.holderOrThrow(SeaDragonAbilities.SPECTRAL_IMPACT)),
+                upgradeAbilityMax(registries.holderOrThrow(SeaDragonAbilities.SEA_ATHLETICS)),
+                upgradeAbilityMax(registries.holderOrThrow(SeaDragonAbilities.HYDRATION)),
+                upgradeAbilityMax(registries.holderOrThrow(SeaDragonAbilities.SEA_MAGIC))
         ), 150);
 
-        AdvancementHolder beOldForestDragon = createWithToast(collectHeartFromMonster, FOREST_BE_OLD_DRAGON, DSBlocks.FOREST_DRAGON_BEACON.value(), beDragon(DragonTypes.FOREST, registries.holderOrThrow(DragonStages.adult), 1), 120);
+        AdvancementHolder beOldForestDragon = createWithToast(collectHeartFromMonster, LangKey.FOREST_BE_OLD_DRAGON, DSBlocks.FOREST_DRAGON_BEACON.value(), beDragon(registries.holderOrThrow(BuiltInDragonSpecies.FOREST), registries.holderOrThrow(DragonStages.adult), 1), 120);
 
         // --- Parent: forest/be_old_dragon --- //
 
-        createWithToast(beOldForestDragon, FOREST_MASTER_ALL_PASSIVES, DSBlocks.FOREST_SOURCE_OF_MAGIC.value(), List.of(
-                upgradeAbilityMax(CliffhangerAbility.class),
-                upgradeAbilityMax(ForestAthleticsAbility.class),
-                upgradeAbilityMax(LightInDarknessAbility.class),
-                upgradeAbilityMax(ForestMagicAbility.class)
+        createWithToast(beOldForestDragon, LangKey.FOREST_MASTER_ALL_PASSIVES, DSBlocks.FOREST_SOURCE_OF_MAGIC.value(), List.of(
+                upgradeAbilityMax(registries.holderOrThrow(ForestDragonAbilities.CLIFFHANGER)),
+                upgradeAbilityMax(registries.holderOrThrow(ForestDragonAbilities.FOREST_ATHLETICS)),
+                upgradeAbilityMax(registries.holderOrThrow(ForestDragonAbilities.LIGHT_IN_DARKNESS)),
+                upgradeAbilityMax(registries.holderOrThrow(ForestDragonAbilities.FOREST_MAGIC))
         ), 150);
     }
 
@@ -452,7 +492,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
     }
 
     private Optional<ContextAwarePredicate> caveDragonInLava() {
-        return Optional.of(EntityPredicate.wrap(dragonSpecies(DragonTypes.CAVE).located(isInFluid(FluidTags.LAVA))));
+        return Optional.of(EntityPredicate.wrap(Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.CAVE)).located(isInFluid(FluidTags.LAVA))));
     }
 
     private FluidPredicate.Builder fluid(final TagKey<Fluid> fluids) {
@@ -472,14 +512,14 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
     }
 
     @SuppressWarnings("deprecation") // ignore
-    public Criterion<InventoryChangeTrigger.TriggerInstance> dragonHasItem(final AbstractDragonType dragonSpecies, final ItemLike... items) {
+    public Criterion<InventoryChangeTrigger.TriggerInstance> dragonHasItem(final Holder<DragonSpecies> dragonSpecies, final ItemLike... items) {
         List<ItemPredicate> predicates = new ArrayList<>();
 
         for (ItemLike item : items) {
             predicates.add(new ItemPredicate(Optional.of(HolderSet.direct(item.asItem().builtInRegistryHolder())), MinMaxBounds.Ints.ANY, DataComponentPredicate.EMPTY, Map.of()));
         }
 
-        return CriteriaTriggers.INVENTORY_CHANGED.createCriterion(new InventoryChangeTrigger.TriggerInstance(Optional.of(EntityPredicate.wrap(dragonSpecies(dragonSpecies))), InventoryChangeTrigger.TriggerInstance.Slots.ANY, predicates));
+        return CriteriaTriggers.INVENTORY_CHANGED.createCriterion(new InventoryChangeTrigger.TriggerInstance(Optional.of(EntityPredicate.wrap(Condition.dragonSpecies(dragonSpecies))), InventoryChangeTrigger.TriggerInstance.Slots.ANY, predicates));
     }
 
     public Criterion<PlayerTrigger.TriggerInstance> location(final ContextAwarePredicate predicate) {
@@ -571,19 +611,11 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
     // --- Upgrade Ability --- //
 
-    public Criterion<UpgradeAbilityTrigger.UpgradeAbilityInstance> upgradeAbilityMax(final Class<? extends DragonAbility> abilityType) {
-        DragonAbility ability;
-
-        try {
-            ability = abilityType.getDeclaredConstructor().newInstance();
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
-        }
-
-        return upgradeAbility(ability.getName(), ability.getMaxLevel());
+    public Criterion<UpgradeAbilityTrigger.UpgradeAbilityInstance> upgradeAbilityMax(final Holder<DragonAbility> ability) {
+        return upgradeAbility(ability.getKey(), ability.value().getMaxLevel());
     }
 
-    public Criterion<UpgradeAbilityTrigger.UpgradeAbilityInstance> upgradeAbility(final String ability, int level) {
+    public Criterion<UpgradeAbilityTrigger.UpgradeAbilityInstance> upgradeAbility(final ResourceKey<DragonAbility> ability, int level) {
         return DSAdvancementTriggers.UPGRADE_ABILITY.get().createCriterion(new UpgradeAbilityTrigger.UpgradeAbilityInstance(Optional.empty(), Optional.of(ability), Optional.of(level)));
     }
 
@@ -593,7 +625,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         return DSAdvancementTriggers.BE_DRAGON.get().createCriterion(new BeDragonTrigger.Instance(Optional.empty()));
     }
 
-    public Criterion<BeDragonTrigger.Instance> beDragon(final AbstractDragonType type) {
+    public Criterion<BeDragonTrigger.Instance> beDragon(final Holder<DragonSpecies> type) {
         return beDragon(Condition.dragonSpecies(type));
     }
 
@@ -605,11 +637,11 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         return beDragon(Condition.dragonStage(registries.holderOrThrow(dragonStage)));
     }
 
-    public Criterion<BeDragonTrigger.Instance> beDragon(final AbstractDragonType type, final Holder<DragonStage> dragonStage, double growthPercentage) {
-        return beDragon(EntityPredicate.Builder.entity().subPredicate(DragonPredicate.Builder.dragon().type(type).stage(dragonStage, MinMaxBounds.Doubles.atLeast(growthPercentage)).build()));
+    public Criterion<BeDragonTrigger.Instance> beDragon(final Holder<DragonSpecies> species, final Holder<DragonStage> dragonStage, double growthPercentage) {
+        return beDragon(EntityPredicate.Builder.entity().subPredicate(DragonPredicate.Builder.dragon().species(species).stage(dragonStage, MinMaxBounds.Doubles.atLeast(growthPercentage)).build()));
     }
 
     public Criterion<BeDragonTrigger.Instance> beDragon(final EntityPredicate.Builder builder) {
         return DSAdvancementTriggers.BE_DRAGON.get().createCriterion(new BeDragonTrigger.Instance(Optional.of(EntityPredicate.wrap(builder.build()))));
-    }*/
+    }
 }

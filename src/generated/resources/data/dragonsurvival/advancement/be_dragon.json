@@ -1,0 +1,31 @@
+{
+  "parent": "dragonsurvival:root",
+  "criteria": {
+    "criterion_0": {
+      "trigger": "dragonsurvival:be_dragon"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "dragonsurvival.advancement.be_dragon.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "dragonsurvival:star_bone"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "dragonsurvival.advancement.be_dragon"
+    }
+  },
+  "requirements": [
+    [
+      "criterion_0"
+    ]
+  ],
+  "rewards": {
+    "experience": 12
+  },
+  "sends_telemetry_event": true
+}

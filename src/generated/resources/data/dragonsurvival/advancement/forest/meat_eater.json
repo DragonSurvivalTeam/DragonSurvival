@@ -1,0 +1,102 @@
+{
+  "parent": "dragonsurvival:forest/poisonous_potato",
+  "criteria": {
+    "criterion_0": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:sweet_sour_rabbit"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "criterion_1": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:luminous_ointment"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "criterion_2": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:diamond_chorus"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "criterion_3": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:smelly_meat_porridge"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "criterion_4": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:meat_wild_berries"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "criterion_5": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:meat_chorus_mix"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "criterion_6": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:forest_dragon_treat"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "dragonsurvival.advancement.forest/meat_eater.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "dragonsurvival:meat_wild_berries"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "dragonsurvival.advancement.forest/meat_eater"
+    }
+  },
+  "requirements": [
+    [
+      "criterion_0"
+    ],
+    [
+      "criterion_1"
+    ],
+    [
+      "criterion_2"
+    ],
+    [
+      "criterion_3"
+    ],
+    [
+      "criterion_4"
+    ],
+    [
+      "criterion_5"
+    ],
+    [
+      "criterion_6"
+    ]
+  ],
+  "rewards": {
+    "experience": 60
+  },
+  "sends_telemetry_event": true
+}

@@ -1,0 +1,42 @@
+{
+  "parent": "dragonsurvival:light/open_vault",
+  "criteria": {
+    "criterion_0": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dragonsurvival:light_dragon_helmet"
+          },
+          {
+            "items": "dragonsurvival:light_dragon_chestplate"
+          },
+          {
+            "items": "dragonsurvival:light_dragon_leggings"
+          },
+          {
+            "items": "dragonsurvival:light_dragon_boots"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "dragonsurvival.advancement.light/get_armor_item.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "dragonsurvival:light_dragon_helmet"
+    },
+    "title": {
+      "translate": "dragonsurvival.advancement.light/get_armor_item"
+    }
+  },
+  "requirements": [
+    [
+      "criterion_0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

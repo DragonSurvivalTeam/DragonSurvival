@@ -1,0 +1,38 @@
+{
+  "parent": "dragonsurvival:be_adult_dragon",
+  "criteria": {
+    "criterion_0": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dragonsurvival:elder_dragon_heart"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "dragonsurvival.advancement.collect_heart_from_monster.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "dragonsurvival:elder_dragon_heart"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "dragonsurvival.advancement.collect_heart_from_monster"
+    }
+  },
+  "requirements": [
+    [
+      "criterion_0"
+    ]
+  ],
+  "rewards": {
+    "experience": 6
+  },
+  "sends_telemetry_event": true
+}

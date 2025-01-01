@@ -1,0 +1,43 @@
+{
+  "parent": "dragonsurvival:path_choice",
+  "criteria": {
+    "criterion_0": {
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "dragonsurvival:hunter_spearman"
+            }
+          }
+        ],
+        "item": {
+          "items": "dragonsurvival:spearman_promotion"
+        }
+      },
+      "trigger": "minecraft:player_interacted_with_entity"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "dragonsurvival.advancement.hunter/promotion.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "dragonsurvival:spearman_promotion"
+    },
+    "title": {
+      "translate": "dragonsurvival.advancement.hunter/promotion"
+    }
+  },
+  "requirements": [
+    [
+      "criterion_0"
+    ]
+  ],
+  "rewards": {
+    "experience": 6
+  },
+  "sends_telemetry_event": true
+}

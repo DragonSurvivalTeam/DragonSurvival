@@ -1,0 +1,38 @@
+{
+  "parent": "dragonsurvival:root",
+  "criteria": {
+    "criterion_0": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dragonsurvival:elder_dragon_dust"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "dragonsurvival.advancement.collect_dust.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:coal_ore"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "dragonsurvival.advancement.collect_dust"
+    }
+  },
+  "requirements": [
+    [
+      "criterion_0"
+    ]
+  ],
+  "rewards": {
+    "experience": 6
+  },
+  "sends_telemetry_event": true
+}

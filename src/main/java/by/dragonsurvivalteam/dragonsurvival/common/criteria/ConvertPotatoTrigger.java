@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
+// FIXME :: We need to make this into a generic "convert" trigger tied to dragon abilities and make an instance of this trigger for the forest dragon potato conversion
 public class ConvertPotatoTrigger extends SimpleCriterionTrigger<ConvertPotatoTrigger.TriggerInstance> {
     public void trigger(final ServerPlayer player) {
         this.trigger(player, instance -> true);

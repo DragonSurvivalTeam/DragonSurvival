@@ -1,0 +1,42 @@
+{
+  "parent": "dragonsurvival:dark/open_vault",
+  "criteria": {
+    "criterion_0": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dragonsurvival:dark_dragon_helmet"
+          },
+          {
+            "items": "dragonsurvival:dark_dragon_chestplate"
+          },
+          {
+            "items": "dragonsurvival:dark_dragon_leggings"
+          },
+          {
+            "items": "dragonsurvival:dark_dragon_boots"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "dragonsurvival.advancement.dark/get_armor_item.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "dragonsurvival:dark_dragon_helmet"
+    },
+    "title": {
+      "translate": "dragonsurvival.advancement.dark/get_armor_item"
+    }
+  },
+  "requirements": [
+    [
+      "criterion_0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

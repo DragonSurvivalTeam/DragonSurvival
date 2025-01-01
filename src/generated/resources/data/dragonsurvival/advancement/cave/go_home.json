@@ -1,0 +1,52 @@
+{
+  "parent": "dragonsurvival:cave/diamonds_in_lava",
+  "criteria": {
+    "criterion_0": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "effects": {
+                "dragonsurvival:lava_vision": {}
+              },
+              "location": {
+                "dimension": "minecraft:the_nether",
+                "fluid": {
+                  "fluids": "#minecraft:lava"
+                }
+              },
+              "type_specific": {
+                "type": "dragonsurvival:dragon_predicate",
+                "dragon_species": "dragonsurvival:cave"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "dragonsurvival.advancement.cave/go_home.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:nether_brick_stairs"
+    },
+    "title": {
+      "translate": "dragonsurvival.advancement.cave/go_home"
+    }
+  },
+  "requirements": [
+    [
+      "criterion_0"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  },
+  "sends_telemetry_event": true
+}

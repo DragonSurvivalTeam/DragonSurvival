@@ -1,0 +1,47 @@
+{
+  "parent": "dragonsurvival:hunter/collect_key",
+  "criteria": {
+    "criterion_0": {
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "block": {
+                "blocks": "dragonsurvival:hunter_vault"
+              }
+            }
+          },
+          {
+            "condition": "minecraft:match_tool",
+            "predicate": {
+              "items": "dragonsurvival:hunter_key"
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:item_used_on_block"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "dragonsurvival.advancement.hunter/open_vault.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "dragonsurvival:hunter_vault"
+    },
+    "title": {
+      "translate": "dragonsurvival.advancement.hunter/open_vault"
+    }
+  },
+  "requirements": [
+    [
+      "criterion_0"
+    ]
+  ],
+  "rewards": {
+    "experience": 10
+  },
+  "sends_telemetry_event": true
+}

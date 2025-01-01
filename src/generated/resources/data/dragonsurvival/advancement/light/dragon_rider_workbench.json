@@ -1,0 +1,34 @@
+{
+  "parent": "dragonsurvival:path_choice",
+  "criteria": {
+    "criterion_0": {
+      "conditions": {
+        "recipe_id": "dragonsurvival:dragon_rider_workbench"
+      },
+      "trigger": "minecraft:recipe_crafted"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "dragonsurvival.advancement.light/dragon_rider_workbench.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "dragonsurvival:dragon_rider_workbench"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "dragonsurvival.advancement.light/dragon_rider_workbench"
+    }
+  },
+  "requirements": [
+    [
+      "criterion_0"
+    ]
+  ],
+  "rewards": {
+    "experience": 6
+  },
+  "sends_telemetry_event": true
+}

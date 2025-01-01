@@ -1,0 +1,63 @@
+{
+  "parent": "dragonsurvival:sea/be_old_dragon",
+  "criteria": {
+    "criterion_0": {
+      "conditions": {
+        "ability": "dragonsurvival:spectral_impact",
+        "level": 3
+      },
+      "trigger": "dragonsurvival:upgrade_ability"
+    },
+    "criterion_1": {
+      "conditions": {
+        "ability": "dragonsurvival:sea_athletics",
+        "level": 5
+      },
+      "trigger": "dragonsurvival:upgrade_ability"
+    },
+    "criterion_2": {
+      "conditions": {
+        "ability": "dragonsurvival:hydration",
+        "level": 7
+      },
+      "trigger": "dragonsurvival:upgrade_ability"
+    },
+    "criterion_3": {
+      "conditions": {
+        "ability": "dragonsurvival:sea_magic",
+        "level": 10
+      },
+      "trigger": "dragonsurvival:upgrade_ability"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "dragonsurvival.advancement.sea/master_all_passives.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "dragonsurvival:sea_source_of_magic"
+    },
+    "title": {
+      "translate": "dragonsurvival.advancement.sea/master_all_passives"
+    }
+  },
+  "requirements": [
+    [
+      "criterion_0"
+    ],
+    [
+      "criterion_1"
+    ],
+    [
+      "criterion_2"
+    ],
+    [
+      "criterion_3"
+    ]
+  ],
+  "rewards": {
+    "experience": 150
+  },
+  "sends_telemetry_event": true
+}

@@ -1,0 +1,33 @@
+{
+  "parent": "dragonsurvival:collect_dust",
+  "criteria": {
+    "criterion_0": {
+      "conditions": {
+        "nearby_treasure_amount": 10
+      },
+      "trigger": "dragonsurvival:sleep_on_treasure"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "dragonsurvival.advancement.sleep_on_treasure.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:gold_nugget"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "dragonsurvival.advancement.sleep_on_treasure"
+    }
+  },
+  "requirements": [
+    [
+      "criterion_0"
+    ]
+  ],
+  "rewards": {
+    "experience": 10
+  },
+  "sends_telemetry_event": true
+}

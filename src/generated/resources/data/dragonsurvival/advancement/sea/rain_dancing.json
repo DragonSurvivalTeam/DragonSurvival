@@ -1,0 +1,73 @@
+{
+  "parent": "dragonsurvival:sea/be_dragon",
+  "criteria": {
+    "criterion_0": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type_specific": {
+                "type": "dragonsurvival:dragon_predicate",
+                "dragon_species": "dragonsurvival:sea"
+              }
+            }
+          },
+          {
+            "condition": "minecraft:weather_check",
+            "raining": true
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    },
+    "criterion_1": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type_specific": {
+                "type": "dragonsurvival:dragon_predicate",
+                "dragon_species": "dragonsurvival:sea"
+              }
+            }
+          },
+          {
+            "condition": "minecraft:weather_check",
+            "thundering": true
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "dragonsurvival.advancement.sea/rain_dancing.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:water_bucket"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "dragonsurvival.advancement.sea/rain_dancing"
+    }
+  },
+  "requirements": [
+    [
+      "criterion_0"
+    ],
+    [
+      "criterion_1"
+    ]
+  ],
+  "rewards": {
+    "experience": 30
+  },
+  "sends_telemetry_event": true
+}

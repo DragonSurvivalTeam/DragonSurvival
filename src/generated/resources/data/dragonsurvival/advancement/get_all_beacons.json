@@ -1,0 +1,65 @@
+{
+  "parent": "dragonsurvival:change_beacon",
+  "criteria": {
+    "criterion_0": {
+      "conditions": {
+        "effects": {
+          "dragonsurvival:sea_peace": {
+            "duration": {
+              "min": 400
+            }
+          }
+        }
+      },
+      "trigger": "minecraft:effects_changed"
+    },
+    "criterion_1": {
+      "conditions": {
+        "effects": {
+          "dragonsurvival:cave_fire": {
+            "duration": {
+              "min": 400
+            }
+          }
+        }
+      },
+      "trigger": "minecraft:effects_changed"
+    },
+    "criterion_2": {
+      "conditions": {
+        "effects": {
+          "dragonsurvival:forest_magic": {
+            "duration": {
+              "min": 400
+            }
+          }
+        }
+      },
+      "trigger": "minecraft:effects_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "dragonsurvival.advancement.get_all_beacons.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "dragonsurvival:elder_dragon_dust"
+    },
+    "title": {
+      "translate": "dragonsurvival.advancement.get_all_beacons"
+    }
+  },
+  "requirements": [
+    [
+      "criterion_0"
+    ],
+    [
+      "criterion_1"
+    ],
+    [
+      "criterion_2"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

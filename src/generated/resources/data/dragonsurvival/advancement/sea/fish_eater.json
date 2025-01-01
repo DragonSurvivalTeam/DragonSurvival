@@ -1,0 +1,91 @@
+{
+  "parent": "dragonsurvival:sea/loot_shipwreck",
+  "criteria": {
+    "criterion_0": {
+      "conditions": {
+        "item": {
+          "items": "minecraft:kelp"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "criterion_1": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:seasoned_fish"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "criterion_2": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:golden_coral_pufferfish"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "criterion_3": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:frozen_raw_fish"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "criterion_4": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:golden_turtle_egg"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "criterion_5": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:sea_dragon_treat"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "dragonsurvival.advancement.sea/fish_eater.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "dragonsurvival:seasoned_fish"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "dragonsurvival.advancement.sea/fish_eater"
+    }
+  },
+  "requirements": [
+    [
+      "criterion_0"
+    ],
+    [
+      "criterion_1"
+    ],
+    [
+      "criterion_2"
+    ],
+    [
+      "criterion_3"
+    ],
+    [
+      "criterion_4"
+    ],
+    [
+      "criterion_5"
+    ]
+  ],
+  "rewards": {
+    "experience": 80
+  },
+  "sends_telemetry_event": true
+}
