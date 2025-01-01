@@ -17,20 +17,9 @@
   "diet": [
     {
       "items": [
-        "#minecraft:fishes"
-      ],
-      "properties": {
-        "can_always_eat": true,
-        "nutrition": 2,
-        "saturation": 1.0
-      }
-    },
-    {
-      "items": [
         "#minecraft:coals"
       ],
       "properties": {
-        "can_always_eat": true,
         "eat_seconds": 0.8,
         "nutrition": 1,
         "saturation": 1.0
@@ -329,14 +318,13 @@
     }
   ],
   "misc_resources": {
-    "ability_bar": "dragonsurvival:textures/gui/casting_bars/cave_cast_bar.png",
+    "ability_bar": "dragonsurvival:textures/gui/custom/casting_bars/cave_cast_bar.png",
     "altar_banner": "dragonsurvival:textures/gui/custom/altar/cave/altar_icon.png",
-    "food_sprites": "dragonsurvival:textures/gui/food_icons/cave_food_icons.png",
+    "food_sprites": "dragonsurvival:textures/gui/custom/food_icons/cave_food_icons.png",
     "food_tooltip": {
       "nutrition_icon": "\\uEA02",
       "saturation_icon": "\\uEA05"
     },
-    "growth_bar_fill": "dragonsurvival:textures/gui/growth/circle_cave.png",
     "growth_crystal": {
       "empty": "dragonsurvival:textures/gui/custom/stage/cave/point_main.png",
       "full": "dragonsurvival:textures/gui/custom/stage/cave/point_hover.png"
@@ -371,12 +359,10 @@
       "hover_icon": "dragonsurvival:textures/gui/custom/stage/cave/right_arrow_hover.png",
       "icon": "dragonsurvival:textures/gui/custom/stage/cave/right_arrow_main.png"
     },
-    "help_button": "dragonsurvival:textures/gui/help_button/cave_help_button.png",
-    "mana_sprites": "dragonsurvival:textures/gui/mana_icons/cave_mana_icons.png",
+    "help_button": "dragonsurvival:textures/gui/custom/help_button/cave_help_button.png",
+    "mana_sprites": "dragonsurvival:textures/gui/custom/mana_icons/cave_mana_icons.png",
     "primary_color": "#E84141",
-    "secondary_color": "#730B0B",
-    "source_of_magic_background_active": "dragonsurvival:textures/gui/source_of_magic/cave_source_of_magic_0.png",
-    "source_of_magic_background_passive": "dragonsurvival:textures/gui/source_of_magic/cave_source_of_magic_0.png"
+    "secondary_color": "#730B0B"
   },
   "penalties": [
     "dragonsurvival:snow_and_rain_weakness",

@@ -60,7 +60,10 @@
     "id": "water_supply",
     "recovery_items": [
       {
-        "items": "minecraft:milk_bucket",
+        "items": [
+          "minecraft:milk_bucket",
+          "dragonsurvival:frozen_raw_fish"
+        ],
         "percent_restored": 0.5,
         "potions": "minecraft:water"
       }

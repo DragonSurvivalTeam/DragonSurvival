@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.conditions.EntityCondition;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.HolderSet;
@@ -95,7 +96,7 @@ public class DragonPenalties {
                         0.013f,
                         List.of(
                                 new SupplyTrigger.RecoveryItems(
-                                        HolderSet.direct(Items.MILK_BUCKET.builtInRegistryHolder()),
+                                        HolderSet.direct(Items.MILK_BUCKET.builtInRegistryHolder(), DSItems.FROZEN_RAW_FISH),
                                         HolderSet.direct(Potions.WATER),
                                         0.5f
                                 )

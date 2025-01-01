@@ -12,15 +12,973 @@
     "dragonsurvival:cliffhanger",
     "dragonsurvival:light_in_darkness"
   ],
+  "diet": [
+    {
+      "items": [
+        "#c:foods/raw_meat"
+      ],
+      "properties": {
+        "nutrition": 6,
+        "saturation": 4.0
+      }
+    },
+    {
+      "items": [
+        "#c:foods/berry"
+      ],
+      "properties": {
+        "nutrition": 2,
+        "saturation": 1.0
+      }
+    },
+    {
+      "items": [
+        "#c:mushrooms"
+      ],
+      "properties": {
+        "nutrition": 1,
+        "saturation": 1.0
+      }
+    },
+    {
+      "items": [
+        "minecraft:rotten_flesh"
+      ],
+      "properties": {
+        "nutrition": 2,
+        "saturation": 4.0
+      }
+    },
+    {
+      "items": [
+        "minecraft:spider_eye"
+      ],
+      "properties": {
+        "nutrition": 6,
+        "saturation": 8.0
+      }
+    },
+    {
+      "items": [
+        "minecraft:rabbit"
+      ],
+      "properties": {
+        "nutrition": 7,
+        "saturation": 8.0
+      }
+    },
+    {
+      "items": [
+        "minecraft:poisonous_potato"
+      ],
+      "properties": {
+        "nutrition": 7,
+        "saturation": 8.0
+      }
+    },
+    {
+      "items": [
+        "minecraft:chorus_fruit"
+      ],
+      "properties": {
+        "nutrition": 9,
+        "saturation": 8.0
+      }
+    },
+    {
+      "items": [
+        "minecraft:brown_mushroom"
+      ],
+      "properties": {
+        "nutrition": 2,
+        "saturation": 1.0
+      }
+    },
+    {
+      "items": [
+        "minecraft:red_mushroom"
+      ],
+      "properties": {
+        "nutrition": 2,
+        "saturation": 3.0
+      }
+    },
+    {
+      "items": [
+        "minecraft:honey_bottle"
+      ],
+      "properties": {
+        "nutrition": 6,
+        "saturation": 1.0,
+        "using_converts_to": {
+          "id": "minecraft:glass_bottle"
+        }
+      }
+    },
+    {
+      "items": [
+        "minecraft:warped_fungus"
+      ],
+      "properties": {
+        "nutrition": 3,
+        "saturation": 3.0
+      }
+    },
+    {
+      "items": [
+        "minecraft:crimson_fungus"
+      ],
+      "properties": {
+        "nutrition": 3,
+        "saturation": 3.0
+      }
+    },
+    {
+      "items": [
+        "dragonsurvival:forest_dragon_treat"
+      ],
+      "properties": {
+        "nutrition": 4,
+        "saturation": 8.0
+      }
+    },
+    {
+      "items": [
+        "dragonsurvival:meat_chorus_mix"
+      ],
+      "properties": {
+        "nutrition": 12,
+        "saturation": 8.0
+      }
+    },
+    {
+      "items": [
+        "dragonsurvival:meat_wild_berries"
+      ],
+      "properties": {
+        "nutrition": 12,
+        "saturation": 10.0
+      }
+    },
+    {
+      "items": [
+        "dragonsurvival:smelly_meat_porridge"
+      ],
+      "properties": {
+        "nutrition": 6,
+        "saturation": 10.0
+      }
+    },
+    {
+      "items": [
+        "dragonsurvival:diamond_chorus"
+      ],
+      "properties": {
+        "nutrition": 15,
+        "saturation": 12.0
+      }
+    },
+    {
+      "items": [
+        "dragonsurvival:luminous_ointment"
+      ],
+      "properties": {
+        "nutrition": 5,
+        "saturation": 3.0
+      }
+    },
+    {
+      "items": [
+        "dragonsurvival:sweet_sour_rabbit"
+      ],
+      "properties": {
+        "nutrition": 10,
+        "saturation": 6.0
+      }
+    },
+    {
+      "items": [
+        "additionaldragons:cursed_marrow"
+      ],
+      "properties": {
+        "nutrition": 0,
+        "saturation": 0.0
+      }
+    },
+    {
+      "items": [
+        "aquaculture:turtle_soup"
+      ],
+      "properties": {
+        "nutrition": 8,
+        "saturation": 8.0
+      }
+    },
+    {
+      "items": [
+        "netherdepthsupgrade:wither_bonefish"
+      ],
+      "properties": {
+        "nutrition": 4,
+        "saturation": 6.0
+      }
+    },
+    {
+      "items": [
+        "netherdepthsupgrade:bonefish"
+      ],
+      "properties": {
+        "nutrition": 4,
+        "saturation": 6.0
+      }
+    },
+    {
+      "items": [
+        "phantasm:chorus_fruit_salad"
+      ],
+      "properties": {
+        "nutrition": 10,
+        "saturation": 10.0
+      }
+    },
+    {
+      "items": [
+        "aoa3:fiery_chops"
+      ],
+      "properties": {
+        "nutrition": 6,
+        "saturation": 7.0
+      }
+    },
+    {
+      "items": [
+        "aoa3:raw_chimera_chop"
+      ],
+      "properties": {
+        "nutrition": 6,
+        "saturation": 7.0
+      }
+    },
+    {
+      "items": [
+        "aoa3:raw_furlion_chop"
+      ],
+      "properties": {
+        "nutrition": 6,
+        "saturation": 7.0
+      }
+    },
+    {
+      "items": [
+        "aoa3:raw_halycon_beef"
+      ],
+      "properties": {
+        "nutrition": 7,
+        "saturation": 8.0
+      }
+    },
+    {
+      "items": [
+        "aoa3:raw_charger_shank"
+      ],
+      "properties": {
+        "nutrition": 6,
+        "saturation": 7.0
+      }
+    },
+    {
+      "items": [
+        "aoa3:trilliad_leaves"
+      ],
+      "properties": {
+        "nutrition": 8,
+        "saturation": 11.0
+      }
+    },
+    {
+      "items": [
+        "pamhc2foodextended:rawtofabbititem"
+      ],
+      "properties": {
+        "nutrition": 0,
+        "saturation": 0.0
+      }
+    },
+    {
+      "items": [
+        "pamhc2foodextended:rawtofickenitem"
+      ],
+      "properties": {
+        "nutrition": 0,
+        "saturation": 0.0
+      }
+    },
+    {
+      "items": [
+        "quark:golden_frog_leg"
+      ],
+      "properties": {
+        "nutrition": 12,
+        "saturation": 14.0
+      }
+    },
+    {
+      "items": [
+        "pamhc2foodextended:rawtofuttonitem"
+      ],
+      "properties": {
+        "nutrition": 0,
+        "saturation": 0.0
+      }
+    },
+    {
+      "items": [
+        "alexsmobs:kangaroo_meat"
+      ],
+      "properties": {
+        "nutrition": 5,
+        "saturation": 6.0
+      }
+    },
+    {
+      "items": [
+        "alexsmobs:moose_ribs"
+      ],
+      "properties": {
+        "nutrition": 6,
+        "saturation": 8.0
+      }
+    },
+    {
+      "items": [
+        "simplefarming:raw_horse_meat"
+      ],
+      "properties": {
+        "nutrition": 5,
+        "saturation": 6.0
+      }
+    },
+    {
+      "items": [
+        "simplefarming:raw_bacon"
+      ],
+      "properties": {
+        "nutrition": 3,
+        "saturation": 3.0
+      }
+    },
+    {
+      "items": [
+        "simplefarming:raw_chicken_wings"
+      ],
+      "properties": {
+        "nutrition": 2,
+        "saturation": 3.0
+      }
+    },
+    {
+      "items": [
+        "simplefarming:raw_sausage"
+      ],
+      "properties": {
+        "nutrition": 3,
+        "saturation": 4.0
+      }
+    },
+    {
+      "items": [
+        "xenoclustwo:raw_tortice"
+      ],
+      "properties": {
+        "nutrition": 7,
+        "saturation": 8.0
+      }
+    },
+    {
+      "items": [
+        "unnamedanimalmod:musk_ox_shank"
+      ],
+      "properties": {
+        "nutrition": 7,
+        "saturation": 8.0
+      }
+    },
+    {
+      "items": [
+        "unnamedanimalmod:frog_legs"
+      ],
+      "properties": {
+        "nutrition": 5,
+        "saturation": 6.0
+      }
+    },
+    {
+      "items": [
+        "unnamedanimalmod:mangrove_fruit"
+      ],
+      "properties": {
+        "nutrition": 4,
+        "saturation": 7.0
+      }
+    },
+    {
+      "items": [
+        "betteranimalsplus:venisonraw"
+      ],
+      "properties": {
+        "nutrition": 7,
+        "saturation": 6.0
+      }
+    },
+    {
+      "items": [
+        "born_in_chaos_v1:corpse_maggot"
+      ],
+      "properties": {
+        "nutrition": 1,
+        "saturation": 1.0
+      }
+    },
+    {
+      "items": [
+        "born_in_chaos_v1:monster_flesh"
+      ],
+      "properties": {
+        "nutrition": 1,
+        "saturation": 1.0
+      }
+    },
+    {
+      "items": [
+        "betteranimalsplus:pheasantraw"
+      ],
+      "properties": {
+        "nutrition": 7,
+        "saturation": 5.0
+      }
+    },
+    {
+      "items": [
+        "betteranimalsplus:turkey_leg_raw"
+      ],
+      "properties": {
+        "nutrition": 4,
+        "saturation": 5.0
+      }
+    },
+    {
+      "items": [
+        "infernalexp:raw_hogchop"
+      ],
+      "properties": {
+        "nutrition": 6,
+        "saturation": 7.0
+      }
+    },
+    {
+      "items": [
+        "infernalexp:cured_jerky"
+      ],
+      "properties": {
+        "nutrition": 10,
+        "saturation": 7.0
+      }
+    },
+    {
+      "items": [
+        "rats:raw_rat"
+      ],
+      "properties": {
+        "nutrition": 4,
+        "saturation": 5.0
+      }
+    },
+    {
+      "items": [
+        "aquaculture:frog"
+      ],
+      "properties": {
+        "nutrition": 4,
+        "saturation": 5.0
+      }
+    },
+    {
+      "items": [
+        "aquaculture:frog_legs_raw"
+      ],
+      "properties": {
+        "nutrition": 4,
+        "saturation": 4.0
+      }
+    },
+    {
+      "items": [
+        "aquaculture:box_turtle"
+      ],
+      "properties": {
+        "nutrition": 4,
+        "saturation": 5.0
+      }
+    },
+    {
+      "items": [
+        "aquaculture:arrau_turtle"
+      ],
+      "properties": {
+        "nutrition": 4,
+        "saturation": 5.0
+      }
+    },
+    {
+      "items": [
+        "aquaculture:starshell_turtle"
+      ],
+      "properties": {
+        "nutrition": 4,
+        "saturation": 5.0
+      }
+    },
+    {
+      "items": [
+        "undergarden:raw_gloomper_leg"
+      ],
+      "properties": {
+        "nutrition": 4,
+        "saturation": 5.0
+      }
+    },
+    {
+      "items": [
+        "undergarden:raw_dweller_meat"
+      ],
+      "properties": {
+        "nutrition": 6,
+        "saturation": 7.0
+      }
+    },
+    {
+      "items": [
+        "farmersdelight:chicken_cuts"
+      ],
+      "properties": {
+        "nutrition": 3,
+        "saturation": 3.0
+      }
+    },
+    {
+      "items": [
+        "farmersdelight:bacon"
+      ],
+      "properties": {
+        "nutrition": 3,
+        "saturation": 3.0
+      }
+    },
+    {
+      "items": [
+        "farmersdelight:ham"
+      ],
+      "properties": {
+        "nutrition": 9,
+        "saturation": 10.0
+      }
+    },
+    {
+      "items": [
+        "farmersdelight:minced_beef"
+      ],
+      "properties": {
+        "nutrition": 5,
+        "saturation": 3.0
+      }
+    },
+    {
+      "items": [
+        "farmersdelight:mutton_chops"
+      ],
+      "properties": {
+        "nutrition": 5,
+        "saturation": 3.0
+      }
+    },
+    {
+      "items": [
+        "abnormals_delight:duck_fillet"
+      ],
+      "properties": {
+        "nutrition": 2,
+        "saturation": 3.0
+      }
+    },
+    {
+      "items": [
+        "abnormals_delight:venison_shanks"
+      ],
+      "properties": {
+        "nutrition": 7,
+        "saturation": 3.0
+      }
+    },
+    {
+      "items": [
+        "autumnity:foul_berries"
+      ],
+      "properties": {
+        "nutrition": 2,
+        "saturation": 4.0
+      }
+    },
+    {
+      "items": [
+        "autumnity:turkey"
+      ],
+      "properties": {
+        "nutrition": 7,
+        "saturation": 8.0
+      }
+    },
+    {
+      "items": [
+        "autumnity:turkey_piece"
+      ],
+      "properties": {
+        "nutrition": 2,
+        "saturation": 4.0
+      }
+    },
+    {
+      "items": [
+        "autumnity:foul_soup"
+      ],
+      "properties": {
+        "nutrition": 12,
+        "saturation": 8.0
+      }
+    },
+    {
+      "items": [
+        "endergetic:bolloom_fruit"
+      ],
+      "properties": {
+        "nutrition": 3,
+        "saturation": 4.0
+      }
+    },
+    {
+      "items": [
+        "quark:frog_leg"
+      ],
+      "properties": {
+        "nutrition": 4,
+        "saturation": 5.0
+      }
+    },
+    {
+      "items": [
+        "nethers_delight:hoglin_loin"
+      ],
+      "properties": {
+        "nutrition": 8,
+        "saturation": 6.0
+      }
+    },
+    {
+      "items": [
+        "nethers_delight:raw_stuffed_hoglin"
+      ],
+      "properties": {
+        "nutrition": 18,
+        "saturation": 10.0
+      }
+    },
+    {
+      "items": [
+        "xreliquary:zombie_heart"
+      ],
+      "properties": {
+        "nutrition": 4,
+        "saturation": 7.0
+      }
+    },
+    {
+      "items": [
+        "xreliquary:bat_wing"
+      ],
+      "properties": {
+        "nutrition": 2,
+        "saturation": 2.0
+      }
+    },
+    {
+      "items": [
+        "eidolon:zombie_heart"
+      ],
+      "properties": {
+        "nutrition": 7,
+        "saturation": 7.0
+      }
+    },
+    {
+      "items": [
+        "forbidden_arcanus:bat_wing"
+      ],
+      "properties": {
+        "nutrition": 5,
+        "saturation": 2.0
+      }
+    },
+    {
+      "items": [
+        "twilightforest:raw_venison"
+      ],
+      "properties": {
+        "nutrition": 7,
+        "saturation": 7.0
+      }
+    },
+    {
+      "items": [
+        "twilightforest:raw_meef"
+      ],
+      "properties": {
+        "nutrition": 9,
+        "saturation": 5.0
+      }
+    },
+    {
+      "items": [
+        "twilightforest:hydra_chop"
+      ],
+      "properties": {
+        "nutrition": 0,
+        "saturation": 0.0
+      }
+    },
+    {
+      "items": [
+        "cyclic:chorus_flight"
+      ],
+      "properties": {
+        "nutrition": 0,
+        "saturation": 0.0
+      }
+    },
+    {
+      "items": [
+        "cyclic:chorus_spectral"
+      ],
+      "properties": {
+        "nutrition": 0,
+        "saturation": 0.0
+      }
+    },
+    {
+      "items": [
+        "cyclic:toxic_carrot"
+      ],
+      "properties": {
+        "nutrition": 15,
+        "saturation": 15.0
+      }
+    },
+    {
+      "items": [
+        "artifacts:everlasting_beef"
+      ],
+      "properties": {
+        "nutrition": 0,
+        "saturation": 0.0
+      }
+    },
+    {
+      "items": [
+        "byg:soul_shroom"
+      ],
+      "properties": {
+        "nutrition": 9,
+        "saturation": 5.0
+      }
+    },
+    {
+      "items": [
+        "byg:death_cap"
+      ],
+      "properties": {
+        "nutrition": 9,
+        "saturation": 8.0
+      }
+    },
+    {
+      "items": [
+        "minecolonies:chorus_bread"
+      ],
+      "properties": {
+        "nutrition": 0,
+        "saturation": 0.0
+      }
+    },
+    {
+      "items": [
+        "wyrmroost:raw_lowtier_meat"
+      ],
+      "properties": {
+        "nutrition": 3,
+        "saturation": 2.0
+      }
+    },
+    {
+      "items": [
+        "wyrmroost:raw_common_meat"
+      ],
+      "properties": {
+        "nutrition": 5,
+        "saturation": 3.0
+      }
+    },
+    {
+      "items": [
+        "wyrmroost:raw_apex_meat"
+      ],
+      "properties": {
+        "nutrition": 8,
+        "saturation": 6.0
+      }
+    },
+    {
+      "items": [
+        "wyrmroost:raw_behemoth_meat"
+      ],
+      "properties": {
+        "nutrition": 11,
+        "saturation": 12.0
+      }
+    },
+    {
+      "items": [
+        "wyrmroost:desert_wyrm"
+      ],
+      "properties": {
+        "nutrition": 4,
+        "saturation": 3.0
+      }
+    },
+    {
+      "items": [
+        "eanimod:rawchicken_darkbig"
+      ],
+      "properties": {
+        "nutrition": 9,
+        "saturation": 5.0
+      }
+    },
+    {
+      "items": [
+        "eanimod:rawchicken_dark"
+      ],
+      "properties": {
+        "nutrition": 5,
+        "saturation": 4.0
+      }
+    },
+    {
+      "items": [
+        "eanimod:rawchicken_darksmall"
+      ],
+      "properties": {
+        "nutrition": 3,
+        "saturation": 2.0
+      }
+    },
+    {
+      "items": [
+        "eanimod:rawchicken_pale"
+      ],
+      "properties": {
+        "nutrition": 5,
+        "saturation": 3.0
+      }
+    },
+    {
+      "items": [
+        "eanimod:rawchicken_palesmall"
+      ],
+      "properties": {
+        "nutrition": 4,
+        "saturation": 3.0
+      }
+    },
+    {
+      "items": [
+        "eanimod:rawrabbit_small"
+      ],
+      "properties": {
+        "nutrition": 4,
+        "saturation": 4.0
+      }
+    },
+    {
+      "items": [
+        "environmental:duck"
+      ],
+      "properties": {
+        "nutrition": 4,
+        "saturation": 3.0
+      }
+    },
+    {
+      "items": [
+        "environmental:venison"
+      ],
+      "properties": {
+        "nutrition": 7,
+        "saturation": 7.0
+      }
+    },
+    {
+      "items": [
+        "cnb:lizard_item_jungle"
+      ],
+      "properties": {
+        "nutrition": 4,
+        "saturation": 4.0
+      }
+    },
+    {
+      "items": [
+        "cnb:lizard_item_mushroom"
+      ],
+      "properties": {
+        "nutrition": 4,
+        "saturation": 4.0
+      }
+    },
+    {
+      "items": [
+        "cnb:lizard_item_jungle_2"
+      ],
+      "properties": {
+        "nutrition": 4,
+        "saturation": 4.0
+      }
+    },
+    {
+      "items": [
+        "cnb:lizard_item_desert_2"
+      ],
+      "properties": {
+        "nutrition": 4,
+        "saturation": 4.0
+      }
+    }
+  ],
   "misc_resources": {
-    "ability_bar": "dragonsurvival:textures/gui/casting_bars/cave_cast_bar.png",
+    "ability_bar": "dragonsurvival:textures/gui/custom/casting_bars/forest_cast_bar.png",
     "altar_banner": "dragonsurvival:textures/gui/custom/altar/forest/altar_icon.png",
-    "food_sprites": "dragonsurvival:textures/gui/food_icons/forest_food_icons.png",
+    "food_sprites": "dragonsurvival:textures/gui/custom/food_icons/forest_food_icons.png",
     "food_tooltip": {
       "nutrition_icon": "\\uEA01",
       "saturation_icon": "\\uEA04"
     },
-    "growth_bar_fill": "dragonsurvival:textures/gui/growth/circle_cave.png",
     "growth_crystal": {
       "empty": "dragonsurvival:textures/gui/custom/stage/forest/point_main.png",
       "full": "dragonsurvival:textures/gui/custom/stage/forest/point_hover.png"
@@ -55,12 +1013,10 @@
       "hover_icon": "dragonsurvival:textures/gui/custom/stage/forest/right_arrow_hover.png",
       "icon": "dragonsurvival:textures/gui/custom/stage/forest/right_arrow_main.png"
     },
-    "help_button": "dragonsurvival:textures/gui/help_button/cave_help_button.png",
-    "mana_sprites": "dragonsurvival:textures/gui/mana_icons/forest_mana_icons.png",
+    "help_button": "dragonsurvival:textures/gui/custom/help_button/forest_help_button.png",
+    "mana_sprites": "dragonsurvival:textures/gui/custom/mana_icons/forest_mana_icons.png",
     "primary_color": "#41CC48",
-    "secondary_color": "#117816",
-    "source_of_magic_background_active": "dragonsurvival:textures/gui/source_of_magic/forest_source_of_magic_0.png",
-    "source_of_magic_background_passive": "dragonsurvival:textures/gui/source_of_magic/forest_source_of_magic_0.png"
+    "secondary_color": "#117816"
   },
   "penalties": [
     "dragonsurvival:fear_of_darkness",

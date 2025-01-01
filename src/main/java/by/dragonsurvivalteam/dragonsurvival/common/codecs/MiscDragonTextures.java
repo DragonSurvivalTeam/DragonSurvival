@@ -14,11 +14,8 @@ public record MiscDragonTextures(
         ResourceLocation foodSprites,
         ResourceLocation manaSprites,
         ResourceLocation altarBanner,
-        ResourceLocation sourceOfMagicBackgroundPassive,
-        ResourceLocation sourceOfMagicBackgroundActive,
         ResourceLocation castBar,
         ResourceLocation helpButton,
-        ResourceLocation growthBarFill,
         List<GrowthIcon> growthIcons,
         HoverIcon growthLeftArrow,
         HoverIcon growthRightArrow,
@@ -31,11 +28,8 @@ public record MiscDragonTextures(
             ResourceLocation.CODEC.fieldOf("food_sprites").forGetter(MiscDragonTextures::foodSprites), // TODO :: use vanilla food bar by default or have it optional and render vanilla bar if missing
             ResourceLocation.CODEC.fieldOf("mana_sprites").forGetter(MiscDragonTextures::manaSprites), // TODO :: can have default texture (gray / green like the rest of the gui)
             ResourceLocation.CODEC.fieldOf("altar_banner").forGetter(MiscDragonTextures::altarBanner),
-            ResourceLocation.CODEC.fieldOf("source_of_magic_background_passive").forGetter(MiscDragonTextures::sourceOfMagicBackgroundPassive),
-            ResourceLocation.CODEC.fieldOf("source_of_magic_background_active").forGetter(MiscDragonTextures::sourceOfMagicBackgroundPassive),
             ResourceLocation.CODEC.fieldOf("ability_bar").forGetter(MiscDragonTextures::castBar), // TODO :: could have a simple cast bar without a dragon as default
             ResourceLocation.CODEC.fieldOf("help_button").forGetter(MiscDragonTextures::helpButton), // TODO :: can be optional and use gray / green as default if missing
-            ResourceLocation.CODEC.fieldOf("growth_bar_fill").forGetter(MiscDragonTextures::growthBarFill),
             GrowthIcon.CODEC.listOf().optionalFieldOf("growth_icons", List.of()).forGetter(MiscDragonTextures::growthIcons),
             HoverIcon.CODEC.fieldOf("growth_left_arrow").forGetter(MiscDragonTextures::growthLeftArrow),
             HoverIcon.CODEC.fieldOf("growth_right_arrow").forGetter(MiscDragonTextures::growthRightArrow),
