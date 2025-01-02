@@ -4,11 +4,11 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.MagicHUD;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.ValueBasedUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncStopCast;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ExperienceUpgrade;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
@@ -29,7 +29,6 @@ import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nullable;
 
@@ -51,7 +50,6 @@ public class DragonAbilityInstance {
     private boolean isActive;
     private int currentTick;
     private int cooldown;
-    private boolean justCompletedCast;
 
     public DragonAbilityInstance(final Holder<DragonAbility> ability, int level) {
         this(ability, level, true);
@@ -75,7 +73,7 @@ public class DragonAbilityInstance {
     }
 
     public void tick(final Player dragon) {
-        if (dragon.isCreative()) {
+        if (dragon.hasInfiniteMaterials()) {
             cooldown = NO_COOLDOWN;
         } else {
             cooldown = Math.max(NO_COOLDOWN, cooldown - 1);
@@ -228,30 +226,16 @@ public class DragonAbilityInstance {
 
     public void release(final Player dragon) {
         currentTick = 0;
-        this.justCompletedCast = true;
 
-        if (dragon.isCreative()) {
+        if (dragon.hasInfiniteMaterials()) {
             cooldown = NO_COOLDOWN;
         } else {
             cooldown = ability.value().getCooldown(level);
         }
     }
 
-    public boolean pollJustCompletedCast() {
-        if(justCompletedCast) {
-            justCompletedCast = false;
-            return true;
-        }
-
-        return false;
-    }
-
     public boolean isPassive() {
         return value().activation().type() == Activation.Type.PASSIVE;
-    }
-
-    public List<Component> getInfo(final Player dragon) {
-        return value().getInfo(dragon, this);
     }
 
     public void setLevel(int level) {
@@ -316,6 +300,6 @@ public class DragonAbilityInstance {
     }
 
     public boolean isManuallyUpgraded() {
-        return value().upgrade().map(upgrade -> upgrade.type() == ValueBasedUpgrade.Type.MANUAL).orElse(false);
+        return value().upgrade().map(upgrade -> upgrade instanceof ExperienceUpgrade).orElse(false);
     }
 }

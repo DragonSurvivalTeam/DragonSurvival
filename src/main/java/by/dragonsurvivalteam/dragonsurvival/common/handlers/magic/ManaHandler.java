@@ -51,7 +51,7 @@ public class ManaHandler {
     }
 
     public static boolean hasEnoughMana(final Player player, float manaCost) {
-        if (manaCost == 0 || player.hasEffect(DSEffects.SOURCE_OF_MAGIC) || player.isCreative()) {
+        if (manaCost == 0 || player.hasEffect(DSEffects.SOURCE_OF_MAGIC) || player.hasInfiniteMaterials()) {
             return true;
         }
 
@@ -90,7 +90,7 @@ public class ManaHandler {
     }
 
     public static void consumeMana(final Player player, float manaCost) {
-        if (manaCost == 0 || player == null || player.isCreative() || player.hasEffect(DSEffects.SOURCE_OF_MAGIC)) {
+        if (manaCost == 0 || player == null || player.hasInfiniteMaterials() || player.hasEffect(DSEffects.SOURCE_OF_MAGIC)) {
             return;
         }
 

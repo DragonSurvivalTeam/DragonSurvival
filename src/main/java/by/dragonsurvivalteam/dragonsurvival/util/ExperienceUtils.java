@@ -8,7 +8,8 @@ public class ExperienceUtils {
      * <br> <br>
      * Calculates the amount of experience the passed level is worth - <a href="https://minecraft.wiki/w/Experience#Leveling_up">Reference</a> <br>
      * It is intentionally different compared to {@link Player#getXpNeededForNextLevel()} <br>
-     * (Since it calculates the experience required to reach the passed level from the previous level)
+     * (Since it calculates the experience required to reach the passed level from the previous level) <br>
+     * (The player method returns the experience required for the next level from the passed level)
      *
      * @param level The target level
      * @return The amount of experience required to reach the given level when starting from the previous level
@@ -20,13 +21,22 @@ public class ExperienceUtils {
         return 7 + (level - 1) * 2;
     }
 
+    /** See {@link Player#getXpNeededForNextLevel()} */
+    public static int getExperienceForLevelAfter(int level) {
+        if (level >= 30) {
+            return 112 + (level - 30) * 9;
+        } else {
+            return level >= 15 ? 37 + (level - 15) * 5 : 7 + level * 2;
+        }
+    }
+
     /** Calculates the experience level the experience is worth */
     public static int getLevel(int experience) {
         int requiredExperience = 0;
         int level = 0;
 
         while (true) {
-            requiredExperience += getExperienceForLevel(level);
+            requiredExperience += getExperienceForLevelAfter(level);
 
             if (requiredExperience > experience) {
                 break;
@@ -55,6 +65,6 @@ public class ExperienceUtils {
      */
     public static int getTotalExperience(final Player player) {
         int currentExperience = getTotalExperience(player.experienceLevel);
-        return (int) (currentExperience + player.experienceProgress * getExperienceForLevel(player.experienceLevel + 1));
+        return (int) (currentExperience + player.experienceProgress * getExperienceForLevelAfter(player.experienceLevel));
     }
 }

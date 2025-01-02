@@ -5,14 +5,14 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.MagicHUD;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.Upgrade;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.ValueBasedUpgrade;
-import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncAbilityLevel;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncCooldownState;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ExperienceUpgrade;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.InputData;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.UpgradeType;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
@@ -50,7 +50,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
     private final Map<ResourceKey<DragonSpecies>, Map<ResourceKey<DragonAbility>, DragonAbilityInstance>> abilities = new HashMap<>();
     private final Map<ResourceKey<DragonSpecies>, Map<Integer, ResourceKey<DragonAbility>>> hotbar = new HashMap<>();
-    private ResourceKey<DragonSpecies> currentSpecies;
+    private @Nullable ResourceKey<DragonSpecies> currentSpecies;
     private boolean renderAbilities = true;
     private int selectedAbilitySlot;
     private float currentMana;
@@ -84,19 +84,27 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         return castTimer;
     }
 
-    public void setCurrentSpecies(final ResourceKey<DragonSpecies> species) {
-        currentSpecies = species;
+    public void setCurrentSpecies(@Nullable final ResourceKey<DragonSpecies> currentSpecies) {
+        this.currentSpecies = currentSpecies;
     }
 
     public boolean dataForSpeciesIsEmpty(final ResourceKey<DragonSpecies> species) {
         return abilities.get(species) == null || abilities.get(species).isEmpty();
     }
 
-    private Map<ResourceKey<DragonAbility>, DragonAbilityInstance> getAbilities() {
+    public Map<ResourceKey<DragonAbility>, DragonAbilityInstance> getAbilities() {
+        if (currentSpecies == null) {
+            return Map.of();
+        }
+
         return abilities.computeIfAbsent(currentSpecies, species -> new HashMap<>());
     }
 
     private Map<Integer, ResourceKey<DragonAbility>> getHotbar() {
+        if (currentSpecies == null) {
+            return Map.of();
+        }
+
         return hotbar.computeIfAbsent(currentSpecies, species -> new HashMap<>());
     }
 
@@ -114,8 +122,12 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
         MagicData magic = optional.get();
 
-        for (DragonAbilityInstance instance : magic.getAbilities().values()) {
-            instance.tick(event.getEntity());
+        for (DragonAbilityInstance ability : magic.getAbilities().values()) {
+            if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+                ability.value().upgrade().ifPresent(upgrade -> upgrade.attempt(serverPlayer, ability, null));
+            }
+
+            ability.tick(event.getEntity());
         }
 
         if (event.getEntity().level().isClientSide() && magic.isCasting()) {
@@ -129,51 +141,32 @@ public class MagicData implements INBTSerializable<CompoundTag> {
             return;
         }
 
-        MagicData.getData(player).getAbilities().values().forEach(instance -> instance.value().upgrade().ifPresent(upgrade -> {
+        MagicData.getData(player).getAbilities().values().forEach(ability -> ability.value().upgrade().ifPresent(upgrade -> {
             if (event.getItemStack().isEmpty()) {
                 return;
             }
 
-            if (upgrade.attemptUpgrade(instance, event.getItemStack().getItem())) {
-                PacketDistributor.sendToPlayer(player, new SyncAbilityLevel(instance.key(), instance.level()));
-
-                if (!player.isCreative()) {
-                    event.getItemStack().shrink(1);
-                }
-
+            if (upgrade.attempt(player, ability, event.getItemStack().getItem())) {
+                event.getItemStack().consume(1, player);
                 player.playNotifySound(SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.PLAYERS, 1, 0);
             }
         }));
     }
 
-    public void handleValueUpgrades(final Player player, final ValueBasedUpgrade.InputData... inputs) {
+    public void handleAutoUpgrades(final ServerPlayer player, final Object... inputs) {
         if (!DragonStateProvider.isDragon(player)) {
             return;
         }
 
         for (DragonAbilityInstance ability : getAbilities().values()) {
-            Upgrade upgrade = ability.value().upgrade().orElse(null);
+            UpgradeType<?> upgrade = ability.value().upgrade().orElse(null);
 
             if (upgrade == null) {
                 continue;
             }
 
-            boolean changed = false;
-
-            for (ValueBasedUpgrade.InputData input : inputs) {
-                if (upgrade.attemptUpgrade(ability, input)) {
-                    changed = true;
-                }
-            }
-
-            if (!changed) {
-                continue;
-            }
-
-            if (player instanceof ServerPlayer serverPlayer) {
-                PacketDistributor.sendToPlayer(serverPlayer, new SyncAbilityLevel(ability.key(), ability.level()));
-            } else if (player.level().isClientSide()) {
-                PacketDistributor.sendToServer(new SyncAbilityLevel(ability.key(), ability.level()));
+            for (Object input : inputs) {
+                upgrade.attempt(player, ability, input);
             }
         }
     }
@@ -246,7 +239,8 @@ public class MagicData implements INBTSerializable<CompoundTag> {
             if (forceApplyingEffects) {
                 currentlyCasting.release(player);
                 currentlyCasting.value().activation().playEndSound(player);
-                if(currentlyCasting.hasEndAnimation()) {
+
+                if (currentlyCasting.hasEndAnimation()) {
                     currentlyCasting.value().activation().playEndAnimation(player);
                 } else {
                     DragonSurvival.PROXY.setCurrentAbilityAnimation(player.getId(), null);
@@ -361,31 +355,33 @@ public class MagicData implements INBTSerializable<CompoundTag> {
             getAbilities().put(ability.getKey(), instance);
         }
 
-        ValueBasedUpgrade.InputData experienceInput = ValueBasedUpgrade.InputData.passive(player.experienceLevel);
-        ValueBasedUpgrade.InputData growthInput = ValueBasedUpgrade.InputData.passiveGrowth((int) DragonStateProvider.getData(player).getSize());
-        handleValueUpgrades(player, experienceInput, growthInput);
+        if (player instanceof ServerPlayer serverPlayer) {
+            InputData levels = InputData.experienceLevels(player.experienceLevel);
+            InputData size = InputData.size((int) DragonStateProvider.getData(player).getSize());
+
+            handleAutoUpgrades(serverPlayer, levels, size);
+        }
     }
 
     public List<DragonAbilityInstance> getActiveAbilities() {
         return getAbilities().values().stream().filter(instance -> instance.ability().value().activation().type() != Activation.Type.PASSIVE).toList();
     }
 
-    public List<DragonAbilityInstance> getPassiveAbilities(final Predicate<Optional<Upgrade>> predicate) {
+    public List<DragonAbilityInstance> getPassiveAbilities(final Predicate<Optional<UpgradeType<?>>> predicate) {
         return getAbilities().values().stream().filter(instance -> instance.ability().value().activation().type() == Activation.Type.PASSIVE && predicate.test(instance.value().upgrade())).toList();
     }
 
     /** Returns the amount of experience gained / lost when down- or upgrading the ability */
-    public float getCost(final ResourceKey<DragonAbility> key, int delta) {
-        DragonAbilityInstance instance = getAbilities().get(key);
-        int newLevel = instance.level() + delta;
+    public int getCost(final Player dragon, final ResourceKey<DragonAbility> key, ExperienceUpgrade.Type type) {
+        DragonAbilityInstance ability = getAbilities().get(key);
 
-        // TODO :: the calculation kind of breaks once the delta is more than 1 level
-        //  probably needs a loop to add together the xp cost for each level?
+        return ability.value().upgrade().map(upgrade -> {
+            if (upgrade instanceof ExperienceUpgrade experienceUpgrade) {
+                return experienceUpgrade.getExperience(dragon, ability, type);
+            }
 
-        // The +1 is a bandaid
-        // When going from 3 to 2 we need to refund the cost for going from 2 to 3
-        // Without the +1 it would calculate the cost for reaching 2 (not 3)
-        return instance.value().upgrade().map(upgrade -> upgrade.getExperienceCost(delta < 0 ? newLevel + 1 : newLevel)).orElse(0f);
+            return 0;
+        }).orElse(0);
     }
 
     public void moveAbilityToSlot(final ResourceKey<DragonAbility> key, int newSlot) {
@@ -399,44 +395,19 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         }
     }
 
-    public void handleManualUpgrade(final Player player, final ResourceKey<DragonAbility> key, int newLevel) {
-        DragonAbilityInstance instance = getAbilities().get(key);
-
-        if (instance == null || instance.value().upgrade().isEmpty()) {
-            return;
-        }
-
-        int delta = newLevel - instance.level();
-
-        if (newLevel < DragonAbilityInstance.MIN_LEVEL || newLevel > instance.value().upgrade().get().maximumLevel()) {
-            return;
-        }
-
-        if (instance.value().upgrade().isPresent() && instance.value().upgrade().get().type() == ValueBasedUpgrade.Type.MANUAL) {
-            if(!player.isCreative()) {
-                // Subtract the experience cost
-                float cost = getCost(key, delta);
-                cost = delta > 0 ? -cost : cost;
-                player.giveExperiencePoints((int) cost);
-            }
-        }
-
-        instance.setLevel(newLevel);
-    }
-
     @Override
     public @UnknownNullability CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
 
         CompoundTag allAbilities = new CompoundTag();
-        for(Map.Entry<ResourceKey<DragonSpecies>, Map<ResourceKey<DragonAbility>, DragonAbilityInstance>> entry : abilities.entrySet()) {
+        for (Map.Entry<ResourceKey<DragonSpecies>, Map<ResourceKey<DragonAbility>, DragonAbilityInstance>> entry : abilities.entrySet()) {
             CompoundTag abilities = new CompoundTag();
             entry.getValue().values().forEach(instance -> abilities.put(instance.key().location().toString(), instance.save(provider)));
             allAbilities.put(entry.getKey().location().toString(), abilities);
         }
 
         CompoundTag allHotbars = new CompoundTag();
-        for(Map.Entry<ResourceKey<DragonSpecies>, Map<Integer, ResourceKey<DragonAbility>>> entry : hotbar.entrySet()) {
+        for (Map.Entry<ResourceKey<DragonSpecies>, Map<Integer, ResourceKey<DragonAbility>>> entry : hotbar.entrySet()) {
             CompoundTag hotbar = new CompoundTag();
             entry.getValue().forEach((slot, key) -> hotbar.putInt(key.location().toString(), slot));
             allHotbars.put(entry.getKey().location().toString(), hotbar);
@@ -444,21 +415,24 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
         tag.put(ABILITIES, allAbilities);
         tag.put(HOTBARS, allHotbars);
-        tag.putString(CURRENT_SPECIES, currentSpecies.location().toString());
         tag.putFloat(CURRENT_MANA, currentMana);
         tag.putInt(SELECTED_SLOT, selectedAbilitySlot);
         tag.putBoolean(RENDER_ABILITIES, renderAbilities);
-        tag.putString(CURRENT_SPECIES, currentSpecies.location().toString());
+
+        if (currentSpecies != null) {
+            tag.putString(CURRENT_SPECIES, currentSpecies.location().toString());
+        }
 
         return tag;
     }
 
     @Override
     public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag tag) {
-        if(tag.contains(ABILITIES)) {
+        if (tag.contains(ABILITIES)) {
             for (String speciesLocation : tag.getCompound(ABILITIES).getAllKeys()) {
                 ResourceKey<DragonSpecies> speciesKey = ResourceKey.create(DragonSpecies.REGISTRY, ResourceLocation.parse(speciesLocation));
-                if(provider.lookup(DragonSpecies.REGISTRY).get().get(speciesKey).isEmpty()) {
+
+                if (provider.holder(speciesKey).isEmpty()) {
                     continue;
                 }
 
@@ -469,7 +443,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
                     CompoundTag abilityTag = storedAbilities.getCompound(abilityLocation);
                     DragonAbilityInstance instance = DragonAbilityInstance.load(provider, abilityTag);
 
-                    if(instance != null) {
+                    if (instance != null) {
                         abilities.put(instance.key(), instance);
                     }
                 }
@@ -478,10 +452,11 @@ public class MagicData implements INBTSerializable<CompoundTag> {
             }
         }
 
-        if(tag.contains(HOTBARS)) {
+        if (tag.contains(HOTBARS)) {
             for (String speciesLocation : tag.getCompound(HOTBARS).getAllKeys()) {
                 ResourceKey<DragonSpecies> speciesKey = ResourceKey.create(DragonSpecies.REGISTRY, ResourceLocation.parse(speciesLocation));
-                if(provider.lookup(DragonSpecies.REGISTRY).get().get(speciesKey).isEmpty()) {
+
+                if (provider.holder(speciesKey).isEmpty()) {
                     continue;
                 }
 
@@ -491,7 +466,8 @@ public class MagicData implements INBTSerializable<CompoundTag> {
                 for (String abilityLocation : storedHotbar.getAllKeys()) {
                     int slot = storedHotbar.getInt(abilityLocation);
                     ResourceKey<DragonAbility> key = ResourceKey.create(DragonAbility.REGISTRY, ResourceLocation.parse(abilityLocation));
-                    if(provider.lookup(DragonAbility.REGISTRY).get().get(key).isEmpty()) {
+
+                    if (provider.holder(key).isEmpty()) {
                         continue;
                     }
 
@@ -502,14 +478,17 @@ public class MagicData implements INBTSerializable<CompoundTag> {
             }
         }
 
-        currentSpecies = ResourceKey.create(DragonSpecies.REGISTRY, ResourceLocation.parse(tag.getString(CURRENT_SPECIES)));
         currentMana = tag.getFloat(CURRENT_MANA);
         selectedAbilitySlot = tag.getInt(SELECTED_SLOT);
         renderAbilities = tag.getBoolean(RENDER_ABILITIES);
 
-        if(currentSpecies == null || provider.lookup(DragonSpecies.REGISTRY).get().get(currentSpecies).isEmpty()) {
-            DragonSurvival.LOGGER.warn("Failed to load current species for magic data! Did you remove a species from this save? Defaulting to cave dragon");
-            currentSpecies = BuiltInDragonSpecies.CAVE;
+        if (tag.contains( CURRENT_SPECIES)) {
+            currentSpecies = ResourceKey.create(DragonSpecies.REGISTRY, ResourceLocation.parse(tag.getString(CURRENT_SPECIES)));
+
+            if (provider.holder(currentSpecies).isEmpty()) {
+                DragonSurvival.LOGGER.warn("Failed to load current species for magic data! Did you remove a species from this save? Defaulting to cave dragon");
+                currentSpecies = BuiltInDragonSpecies.CAVE;
+            }
         }
     }
 

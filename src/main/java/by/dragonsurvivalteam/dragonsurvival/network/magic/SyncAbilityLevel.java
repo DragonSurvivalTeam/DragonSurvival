@@ -11,26 +11,19 @@ import net.minecraft.resources.ResourceKey;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record SyncAbilityLevel(ResourceKey<DragonAbility> abilityToChangeLevel, int newLevel) implements CustomPacketPayload {
-    public static final Type<SyncAbilityLevel> TYPE = new CustomPacketPayload.Type<>(DragonSurvival.res("sync_ability_level"));
+public record SyncAbilityLevel(ResourceKey<DragonAbility> ability, int level) implements CustomPacketPayload {
+    public static final Type<SyncAbilityLevel> TYPE = new Type<>(DragonSurvival.res("sync_ability_level"));
 
     public static final StreamCodec<FriendlyByteBuf, SyncAbilityLevel> STREAM_CODEC = StreamCodec.composite(
-        ResourceKey.streamCodec(DragonAbility.REGISTRY), SyncAbilityLevel::abilityToChangeLevel,
-        ByteBufCodecs.VAR_INT, SyncAbilityLevel::newLevel,
+        ResourceKey.streamCodec(DragonAbility.REGISTRY), SyncAbilityLevel::ability,
+        ByteBufCodecs.VAR_INT, SyncAbilityLevel::level,
         SyncAbilityLevel::new
     );
-
-    public static void handleServer(final SyncAbilityLevel packet, final IPayloadContext context) {
-        context.enqueueWork(() -> {
-            MagicData data = MagicData.getData(context.player());
-            data.handleManualUpgrade(context.player(), packet.abilityToChangeLevel(), packet.newLevel());
-        });
-    }
 
     public static void handleClient(final SyncAbilityLevel packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
             MagicData data = MagicData.getData(context.player());
-            data.handleManualUpgrade(context.player(), packet.abilityToChangeLevel(), packet.newLevel());
+            data.getAbilities().get(packet.ability()).setLevel(packet.level());
         });
     }
 

@@ -7,8 +7,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationLayer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.SimpleAbilityAnimation;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.Upgrade;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.ValueBasedUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.common.conditions.EntityCondition;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.LargeFireParticleOption;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.SmallFireParticleOption;
@@ -21,11 +19,11 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effect
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.SummonEntityEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.*;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.ProjectileData;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.Projectiles;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.datafixers.util.Either;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -149,7 +147,7 @@ public class CaveDragonAbilities {
                                 Optional.empty()
                         ))
                 ),
-                Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 4, LevelBasedValue.lookup(List.of(0f, 20f, 40f, 45f), LevelBasedValue.perLevel(15))),
+                Optional.of(new LevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 20f, 40f, 45f), LevelBasedValue.perLevel(15)))),
                 Optional.of(Condition.thisEntity(EntityCondition.isInFluid(context.lookup(BuiltInRegistries.FLUID.key()).getOrThrow(FluidTags.WATER))).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         Condition.thisEntity(EntityCondition.isLiving()).build(),
@@ -185,7 +183,7 @@ public class CaveDragonAbilities {
                                 Optional.empty()
                         ))
                 ),
-                Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 4, LevelBasedValue.lookup(List.of(0f, 10f, 30f, 50f), LevelBasedValue.perLevel(15))),
+                Optional.of(new LevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 10f, 30f, 50f), LevelBasedValue.perLevel(15)))),
                 Optional.of(Condition.thisEntity(EntityCondition.isInFluid(context.lookup(BuiltInRegistries.FLUID.key()).getOrThrow(FluidTags.WATER))).build()),
                 List.of(new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
                                 Condition.thisEntity(EntityCondition.isLiving()).build(),
@@ -229,7 +227,7 @@ public class CaveDragonAbilities {
                                 Optional.of(new SimpleAbilityAnimation("self_buff", AnimationLayer.BASE, 0, true, false))
                         ))
                 ),
-                Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 4, LevelBasedValue.lookup(List.of(0f, 25f, 45f, 60f), LevelBasedValue.perLevel(15))),
+                Optional.of(new LevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 25f, 45f, 60f), LevelBasedValue.perLevel(15)))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         PotionEffect.single(LevelBasedValue.constant(0), LevelBasedValue.perLevel(Functions.secondsToTicks(30)), DSEffects.LAVA_VISION),
@@ -258,7 +256,7 @@ public class CaveDragonAbilities {
                                 Optional.of(new SimpleAbilityAnimation(SimpleAbilityAnimation.MASS_BUFF, AnimationLayer.BASE, 0, true, true))
                         ))
                 ),
-                Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 3, LevelBasedValue.lookup(List.of(0f, 15f, 35f), LevelBasedValue.perLevel(15))),
+                Optional.of(new LevelUpgrade(3, LevelBasedValue.lookup(List.of(0f, 15f, 35f), LevelBasedValue.perLevel(15)))),
                 Optional.empty(),
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(
                         ModifierEffect.single(new ModifierWithDuration(
@@ -282,7 +280,7 @@ public class CaveDragonAbilities {
     private static void registerPassiveAbilities(final BootstrapContext<DragonAbility> context) {
         context.register(CAVE_ATHLETICS, new DragonAbility(
                 Activation.passive(),
-                Upgrade.value(ValueBasedUpgrade.Type.MANUAL, 5, LevelBasedValue.perLevel(15)),
+                Optional.of(new ExperienceUpgrade(5, LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.SPEEDS_UP_CAVE_DRAGON)).build(),
@@ -301,7 +299,7 @@ public class CaveDragonAbilities {
 
         context.register(BURN, new DragonAbility(
                 Activation.passive(),
-                Upgrade.value(ValueBasedUpgrade.Type.MANUAL, 4, LevelBasedValue.perLevel(15)),
+                Optional.of(new ExperienceUpgrade(4, LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         List.of(new OnAttackEffect(PotionData.of(LevelBasedValue.constant(0), LevelBasedValue.perLevel(Functions.secondsToTicks(5)), LevelBasedValue.perLevel(0.15f), DSEffects.BURN))),
@@ -318,7 +316,7 @@ public class CaveDragonAbilities {
 
         context.register(CAVE_MAGIC, new DragonAbility(
                 Activation.passive(),
-                Upgrade.value(ValueBasedUpgrade.Type.MANUAL, 10, LevelBasedValue.perLevel(15)),
+                Optional.of(new ExperienceUpgrade(10, LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -361,7 +359,7 @@ public class CaveDragonAbilities {
 
         context.register(CONTRAST_SHOWER, new DragonAbility(
                 Activation.passive(),
-                Upgrade.value(ValueBasedUpgrade.Type.MANUAL, 5, LevelBasedValue.perLevel(15)),
+                Optional.of(new ExperienceUpgrade(5, LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         ModifierEffect.single(new ModifierWithDuration(
@@ -386,7 +384,7 @@ public class CaveDragonAbilities {
         context.register(CAVE_CLAWS_AND_TEETH, new DragonAbility(
                 Activation.passive(),
                 // FIXME :: lookup for stages seems to throw an exception at the moment
-                Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_GROWTH, 4, LevelBasedValue.lookup(List.of(0f, 25f, 40f, 60f), LevelBasedValue.perLevel(15))),
+                Optional.of(new SizeUpgrade(4, LevelBasedValue.lookup(List.of(0f, 25f, 40f, 60f), LevelBasedValue.perLevel(15)))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         HarvestBonusEffect.single(new HarvestBonus(
@@ -409,7 +407,7 @@ public class CaveDragonAbilities {
 
         context.register(CAVE_WINGS, new DragonAbility(
                 Activation.passive(),
-                Upgrade.item(List.of(HolderSet.direct(DSItems.WING_GRANT_ITEM), HolderSet.direct(DSItems.SPIN_GRANT_ITEM)), HolderSet.empty()),
+                Optional.of(new ItemUpgrade(List.of(HolderSet.direct(DSItems.WING_GRANT_ITEM), HolderSet.direct(DSItems.SPIN_GRANT_ITEM)), HolderSet.empty())),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         List.of(new SpinOrFlightEffect(1, 2, NeoForgeMod.LAVA_TYPE)),
@@ -467,15 +465,25 @@ public class CaveDragonAbilities {
                                 Optional.of(new SimpleAbilityAnimation(SimpleAbilityAnimation.MASS_BUFF, AnimationLayer.BASE, 0, true, true))
                         )
                 ),
-                Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 3, LevelBasedValue.lookup(List.of(0f, 15f, 35f), LevelBasedValue.perLevel(15))),
+                Optional.of(new ConditionUpgrade(List.of(
+                        Condition.thisEntity(EntityCondition.isInRain()).build(),
+                        Condition.thisEntity(EntityCondition.isInSunlight(12)).build()
+                ), false)),
                 Optional.empty(),
                 List.of(new ActionContainer(new LookingAtTarget(AbilityTargeting.block(
                         List.of(new SummonEntityEffect(
-                                new SimpleWeightedRandomList.Builder<Holder<EntityType<?>>>()
-                                        .add(DSEntities.HUNTER_SPEARMAN, 30)
-                                        .add(DSEntities.HUNTER_KNIGHT, 15)
-                                        .add(DSEntities.HUNTER_AMBUSHER, 10)
-                                        .add(DSEntities.HUNTER_LEADER, 2)
+                                new SimpleWeightedRandomList.Builder<EntityType<?>>()
+                                        .add(DSEntities.HUNTER_SPEARMAN.value(), 30)
+                                        .add(DSEntities.HUNTER_GRIFFIN.value(), 30)
+                                        .add(DSEntities.HUNTER_HOUND.value(), 30)
+                                        .add(DSEntities.HUNTER_KNIGHT.value(), 15)
+                                        .add(DSEntities.HUNTER_AMBUSHER.value(), 10)
+                                        .add(DSEntities.HUNTER_LEADER.value(), 2)
+                                        .add(EntityType.ZOMBIE, 1)
+                                        .add(EntityType.SKELETON, 1)
+                                        .add(EntityType.CREEPER, 1)
+                                        .add(EntityType.BOGGED, 1)
+                                        .add(EntityType.BOAT, 1)
                                         .build(),
                                 DragonSurvival.res("test"),
                                 LevelBasedValue.constant(4),

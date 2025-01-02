@@ -72,14 +72,12 @@
     ]
   },
   "upgrade": {
-    "upgrade_data": {
-      "type": "manual",
-      "maximum_level": 7,
-      "requirement_or_cost": {
-        "type": "minecraft:linear",
-        "base": 15.0,
-        "per_level_above_first": 15.0
-      }
-    }
+    "experience_cost": {
+      "type": "minecraft:linear",
+      "base": 15.0,
+      "per_level_above_first": 15.0
+    },
+    "maximum_level": 7,
+    "upgrade_type": "dragonsurvival:experience_points"
   }
 }

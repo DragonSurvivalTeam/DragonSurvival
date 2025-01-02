@@ -207,7 +207,7 @@
   "dragon_ability.dragonsurvival.general.ability.on_hit": " on hit",
   "dragon_ability.dragonsurvival.general.ability.spin": "§6■ Can use spin",
   "dragon_ability.dragonsurvival.general.ability.summon": "§6■ Can summon up to§r %s §6entities:§r",
-  "dragon_ability.dragonsurvival.general.ability.summon_chance": "\n- %s (%s chance)",
+  "dragon_ability.dragonsurvival.general.ability.summon_chance": "\n- %s (%s)",
   "dragon_ability.dragonsurvival.general.ability.target_self": "self",
   "dragon_ability.dragonsurvival.general.ability.to_target": " to %s",
   "dragon_ability.dragonsurvival.general.ability.to_target_area": " to %s in a %s block radius",
