@@ -46,7 +46,7 @@ public record ExperienceUpgrade(int maxLevel, LevelBasedValue experienceCost) im
 
     /** Returns the experience that will be either taken ({@link Type#UPGRADE}) (i.e. negative) or granted ({@link Type#DOWNGRADE}) */
     public int getExperience(final Player dragon, final DragonAbilityInstance ability, final Type type) {
-        if (dragon.isCreative()) {
+        if (dragon.hasInfiniteMaterials()) {
             return 0;
         }
 

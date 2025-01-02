@@ -73,7 +73,7 @@ public class DragonAbilityInstance {
     }
 
     public void tick(final Player dragon) {
-        if (dragon.isCreative()) {
+        if (dragon.hasInfiniteMaterials()) {
             cooldown = NO_COOLDOWN;
         } else {
             cooldown = Math.max(NO_COOLDOWN, cooldown - 1);
@@ -227,7 +227,7 @@ public class DragonAbilityInstance {
     public void release(final Player dragon) {
         currentTick = 0;
 
-        if (dragon.isCreative()) {
+        if (dragon.hasInfiniteMaterials()) {
             cooldown = NO_COOLDOWN;
         } else {
             cooldown = ability.value().getCooldown(level);

@@ -8,6 +8,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSSounds;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSTileEntities;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonBeaconTileEntity;
+import by.dragonsurvivalteam.dragonsurvival.util.ExperienceUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.MobEffectUtils;
 import net.minecraft.core.BlockPos;
@@ -40,7 +41,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Optional;
 import javax.annotation.Nullable;
 
 public class DragonBeacon extends Block implements SimpleWaterloggedBlock, EntityBlock {
@@ -87,21 +87,20 @@ public class DragonBeacon extends Block implements SimpleWaterloggedBlock, Entit
     }
 
     @Override
-    public @NotNull InteractionResult useWithoutItem(@NotNull BlockState pState, @NotNull Level pLevel, @NotNull BlockPos pPos, @NotNull Player pPlayer, @NotNull BlockHitResult pHitResult) {
-        Optional<DragonStateHandler> dragonState = DragonStateProvider.getOptional(pPlayer);
+    public @NotNull InteractionResult useWithoutItem(@NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final BlockHitResult hitResult) {
+        DragonStateHandler data = DragonStateProvider.getData(player);
 
-        if (dragonState.isPresent()) {
-            DragonStateHandler dragonStateHandler = dragonState.orElse(null);
+        if (!data.isDragon()) {
+            return InteractionResult.FAIL;
+        }
 
-            if (dragonStateHandler.isDragon() && (pPlayer.totalExperience >= 60 || pPlayer.isCreative())) {
-                if(tryAddEffectsForBeacon(pState.getBlock(), pLevel, pPlayer)) {
-                    if(!pPlayer.isCreative()) {
-                        pPlayer.giveExperiencePoints(-60);
-                    }
-                    pLevel.playSound(pPlayer, pPos, DSSounds.APPLY_EFFECT.get(), SoundSource.PLAYERS, 1, 1);
-                    return InteractionResult.SUCCESS;
-                }
+        if ((ExperienceUtils.getTotalExperience(player) >= 60 || player.hasInfiniteMaterials()) && tryAddEffectsForBeacon(state.getBlock(), level, player)) {
+            if (!player.hasInfiniteMaterials()) {
+                player.giveExperiencePoints(-60);
             }
+
+            level.playSound(player, position, DSSounds.APPLY_EFFECT.get(), SoundSource.PLAYERS, 1, 1);
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
 
         return InteractionResult.FAIL;

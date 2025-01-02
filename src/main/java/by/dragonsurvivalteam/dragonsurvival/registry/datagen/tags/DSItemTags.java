@@ -40,6 +40,8 @@ public class DSItemTags extends ItemTagsProvider {
     public static final TagKey<Item> CHARRED_FOOD = key("charred_food");
     public static final TagKey<Item> COLD_ITEMS = key("cold_items");
 
+    public static final TagKey<Item> PRIMORDIAL_ANCHOR_FUEL = key("primordial_anchor_fuel");
+
     public DSItemTags(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, CompletableFuture<TagLookup<Block>> blockTags, @Nullable ExistingFileHelper helper) {
         super(output, provider, blockTags, DragonSurvival.MODID, helper);
     }
@@ -90,6 +92,8 @@ public class DSItemTags extends ItemTagsProvider {
                 .add(Items.SNOW_BLOCK)
                 .add(Items.POWDER_SNOW_BUCKET)
                 .addOptional(ResourceLocation.fromNamespaceAndPath("immersive_weathering", "icicle"));
+
+        tag(PRIMORDIAL_ANCHOR_FUEL).add(Items.ENDER_PEARL);
 
         // Used in enchantments
         tag(key("enchantable/chest_armor_and_elytra"))

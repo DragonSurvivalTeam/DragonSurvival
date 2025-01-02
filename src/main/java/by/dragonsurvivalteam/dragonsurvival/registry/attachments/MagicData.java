@@ -147,10 +147,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
             }
 
             if (upgrade.attempt(player, ability, event.getItemStack().getItem())) {
-                if (!player.isCreative()) {
-                    event.getItemStack().shrink(1);
-                }
-
+                event.getItemStack().consume(1, player);
                 player.playNotifySound(SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.PLAYERS, 1, 0);
             }
         }));
