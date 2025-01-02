@@ -14,11 +14,8 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilit
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -29,7 +26,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
-import org.joml.Matrix4f;
 import software.bernie.geckolib.util.Color;
 
 import java.util.Objects;
@@ -244,6 +240,8 @@ public class MagicHUD {
                         int x = manaX + 2 + point * 9;
                         int y = manaY - 11 - row * 9;
 
+                        // The float 'u' and 'v' offset values are the starting x / y position divided by the max width / height of the texture
+                        // e.g. the colored small icon starts at x '22' so it is '22/56', i.e. '0.393' (starting position is inclusive, ending position is exclusive)
                         ((GuiGraphicsAccess) graphics).dragonSurvival$innerBlit(manaSprite.atlasLocation(), x, (int) (x + 10 / scale), y, (int) (y + 10 / scale), 0, manaSprite.getU(0.714f), manaSprite.getU(0.893f), manaSprite.getV(0.154f), manaSprite.getV(0.538f), 1, 1, 1, 1);
 
                         if (manaSlot < maxMana) {
@@ -292,22 +290,5 @@ public class MagicHUD {
         if (errorTicks > 0) {
             graphics.drawString(Minecraft.getInstance().font, errorMessage.getVisualOrderText(), (int) (width / 2f - Minecraft.getInstance().font.width(errorMessage) / 2f), height - 70, 0);
         }
-    }
-
-    private static void blit(final GuiGraphics graphics, final ResourceLocation resource, final int x, final int y, final int u, final int v, final int width, final int height, final int textureWidth, final int textureHeight, final int alpha) {
-        int minU = u / textureWidth;
-        int maxU = (u + width) / textureWidth;
-        int minV = v / textureHeight;
-        int maxV = (v + height) / textureHeight;
-
-        RenderSystem.setShaderTexture(0, resource);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        Matrix4f pose = graphics.pose().last().pose();
-        BufferBuilder bufferbuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        bufferbuilder.addVertex(pose, x, y, 0).setUv(minU, minV).setWhiteAlpha(alpha);
-        bufferbuilder.addVertex(pose, x, y + height, 0).setUv(minU, maxV).setWhiteAlpha(alpha);
-        bufferbuilder.addVertex(pose, x + width, y + height, 0).setUv(maxU, maxV).setWhiteAlpha(alpha);
-        bufferbuilder.addVertex(pose, x + width, y, 0).setUv(maxU, minV).setWhiteAlpha(alpha);
-        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
     }
 }
