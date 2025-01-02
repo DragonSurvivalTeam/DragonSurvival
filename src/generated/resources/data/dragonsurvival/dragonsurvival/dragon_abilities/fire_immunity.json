@@ -23,7 +23,11 @@
     }
   ],
   "activation": {
-    "type": "passive"
+    "type": "passive",
+    "continuous_mana_cost": {
+      "type": "reserved",
+      "amount": 10.0
+    }
   },
   "icon": {
     "texture_entries": [

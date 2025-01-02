@@ -50,7 +50,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
     private final Map<ResourceKey<DragonSpecies>, Map<ResourceKey<DragonAbility>, DragonAbilityInstance>> abilities = new HashMap<>();
     private final Map<ResourceKey<DragonSpecies>, Map<Integer, ResourceKey<DragonAbility>>> hotbar = new HashMap<>();
-    private @Nullable ResourceKey<DragonSpecies> currentSpecies;
+    private @Nullable ResourceKey<DragonSpecies> currentSpecies; // TODO :: are we storing this in two data attachments now?
     private boolean renderAbilities = true;
     private int selectedAbilitySlot;
     private float currentMana;

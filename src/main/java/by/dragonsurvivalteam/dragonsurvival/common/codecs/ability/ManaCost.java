@@ -22,7 +22,6 @@ public record ManaCost(Type type, LevelBasedValue manaCost) {
 
     public enum Type implements StringRepresentable {
         TICKING("ticking"),
-        // TODO :: this will be handled in the mana handler (reduce max. by the reserved amount)
         RESERVED("reserved");
 
         public static final Codec<Type> CODEC = StringRepresentable.fromEnum(Type::values);

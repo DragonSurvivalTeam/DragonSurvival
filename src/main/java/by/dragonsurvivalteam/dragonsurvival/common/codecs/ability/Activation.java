@@ -88,7 +88,11 @@ public record Activation(
     }
 
     public static Activation passive() {
-        return new Activation(Type.PASSIVE, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+        return passive(null);
+    }
+
+    public static Activation passive(final ManaCost continuousManaCost) {
+        return new Activation(Type.PASSIVE, Optional.empty(), Optional.ofNullable(continuousManaCost), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
     }
 
     public enum Type implements StringRepresentable {

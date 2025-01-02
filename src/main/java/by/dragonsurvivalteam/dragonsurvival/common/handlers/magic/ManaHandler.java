@@ -1,11 +1,13 @@
 package by.dragonsurvivalteam.dragonsurvival.common.handlers.magic;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncMana;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.ExperienceUtils;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -51,7 +53,7 @@ public class ManaHandler {
     }
 
     public static boolean hasEnoughMana(final Player player, float manaCost) {
-        if (manaCost == 0 || player.hasEffect(DSEffects.SOURCE_OF_MAGIC) || player.hasInfiniteMaterials()) {
+        if (player.hasEffect(DSEffects.SOURCE_OF_MAGIC) || player.hasInfiniteMaterials()) {
             return true;
         }
 
@@ -61,12 +63,15 @@ public class ManaHandler {
             currentMana += getManaFromExperience(player);
         }
 
-        return currentMana - manaCost >= 0;
+        // If we query by mana cost and the player has no mana we should consider them as not having enough
+        // No mana should be a state of not being able to cast magic
+        return currentMana - manaCost > 0;
     }
 
     public static float getMaxMana(final Player player) {
         float mana = (float) player.getAttributeValue(DSAttributes.MANA);
         mana += getBonusManaFromExperience(player);
+        mana -= getReservedMana(player);
 
         return Math.max(0, mana);
     }
@@ -124,7 +129,18 @@ public class ManaHandler {
         PacketDistributor.sendToPlayer(serverPlayer, new SyncMana(player.getId(), magic.getCurrentMana()));
     }
 
-    public static float getCurrentMana(Player player) {
+    public static float getReservedMana(final Player player) {
+        float reservedMana = 0;
+        MagicData magic = MagicData.getData(player);
+
+        for (DragonAbilityInstance ability : magic.getAbilities().values()) {
+            reservedMana += ability.getContinuousManaCost(ManaCost.Type.RESERVED);
+        }
+
+        return reservedMana;
+    }
+
+    public static float getCurrentMana(final Player player) {
         return Math.min(MagicData.getData(player).getCurrentMana(), getMaxMana(player));
     }
 

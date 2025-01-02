@@ -43,6 +43,8 @@ public class AbilityButton extends ExtendedButton {
     private boolean isDragging;
     private boolean isInteractable = true;
 
+    // TODO :: option to disable (ctrl+click or sth. like that?)
+
     public AbilityButton(int x, int y, @Nullable final DragonAbilityInstance ability, final DragonAbilityScreen screen, float scale) {
         // Don't actually change the scale of the button itself based on the scale value; this is because we only rescale the button when it is
         // on the sides of the column, in which case it can't be interacted with anyway. Minecraft's GUI doesn't offer a clean way to adjust

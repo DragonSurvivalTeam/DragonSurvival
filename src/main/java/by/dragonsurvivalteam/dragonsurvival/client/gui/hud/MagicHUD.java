@@ -7,15 +7,19 @@ import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
+import by.dragonsurvivalteam.dragonsurvival.mixins.client.GuiGraphicsAccess;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.blaze3d.platform.Window;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -25,6 +29,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import org.joml.Matrix4f;
 import software.bernie.geckolib.util.Color;
 
 import java.util.Objects;
@@ -153,9 +158,24 @@ public class MagicHUD {
         }
     }
 
+    private static float deltaCounter;
+    private static boolean lerpReversed;
+
     public static void renderAbilityHUD(final Player player, final GuiGraphics graphics, int width, int height) {
         if (player == null || player.isSpectator()) {
             return;
+        }
+
+        // TODO :: currently added as a test, i.e. not finalized / approved
+        float delta = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true) / 30;
+        deltaCounter += lerpReversed ? -delta : delta;
+
+        if (deltaCounter > 1) {
+            lerpReversed = true;
+            deltaCounter = 1;
+        } else if (deltaCounter < 0) {
+            lerpReversed = false;
+            deltaCounter = 0;
         }
 
         int sizeX = 20;
@@ -198,7 +218,9 @@ public class MagicHUD {
 
             // Don't render more than two rows (1 icon = 1 mana point)
             // This makes the mana bars also stop just before the emote button when the chat window is open
+            float reservedMana = Math.min(20, ManaHandler.getReservedMana(player));
             float maxMana = Math.min(20, ManaHandler.getMaxMana(player));
+            float combinedMana = Math.min(20, reservedMana + maxMana);
             float currentMana = Math.min(maxMana, ManaHandler.getCurrentMana(player));
 
             int manaX = i1;
@@ -207,28 +229,32 @@ public class MagicHUD {
             manaX += manabarXOffset;
             manaY += manabarYOffset;
 
-            ResourceLocation manaIcons = DragonStateProvider.getData(player).species().value().miscResources().manaSprites();
+            TextureAtlasSprite manaSprite = Minecraft.getInstance().getGuiSprites().getSprite(DragonStateProvider.getData(player).species().value().miscResources().manaSprites());
+            float scale = 1.85f; // This value makes sure that the inner part of the full icon aligns with the empty ones
 
-            for (int row = 0; row < 1 + Math.ceil(maxMana / 10); row++) {
+            for (int row = 0; row < 1 + Math.ceil(combinedMana / 10); row++) {
                 for (int point = 0; point < 10; point++) {
                     int manaSlot = row * 10 + point;
 
-                    if (manaSlot < maxMana) {
-                        int xPos;
+                    if (manaSlot > combinedMana) {
+                        continue;
+                    }
 
-                        if (currentMana <= manaSlot) {
-                            // TODO :: have a partially-filled icon for 0.01..0.99 values?
-                            //  would only apply to the last "filled" mana icon
+                    if (currentMana <= manaSlot) {
+                        int x = manaX + 2 + point * 9;
+                        int y = manaY - 11 - row * 9;
 
-                            // TODO :: icons show as colored once the player regenerates at least 0.5 mana per second
-                            //  could be adjusted or have some other check
-                            xPos = player.getAttributeValue(DSAttributes.MANA_REGENERATION) > 0.025 ? 19 : 37;
-                        } else {
-                            xPos = 0;
+                        ((GuiGraphicsAccess) graphics).dragonSurvival$innerBlit(manaSprite.atlasLocation(), x, (int) (x + 10 / scale), y, (int) (y + 10 / scale), 0, manaSprite.getU(0.714f), manaSprite.getU(0.893f), manaSprite.getV(0.154f), manaSprite.getV(0.538f), 1, 1, 1, 1);
+
+                        if (manaSlot < maxMana) {
+                            // Mana that is being regenerated
+                            ((GuiGraphicsAccess) graphics).dragonSurvival$innerBlit(manaSprite.atlasLocation(), x, (int) (x + 10 / scale), y, (int) (y + 10 / scale), 0, manaSprite.getU(0.393f), manaSprite.getU(0.571f), manaSprite.getV(0.154f), manaSprite.getV(0.538f), 1, 1, 1, deltaCounter);
                         }
+                    } else {
+                        int x = manaX + point * 9;
+                        int y = manaY - 13 - row * 10;
 
-                        float rescale = 2.15F;
-                        graphics.blit(manaIcons, manaX + point * (int) (18 / rescale), manaY - 12 - row * ((int) (18 / rescale) + 1), xPos / rescale, 0, (int) (18 / rescale), (int) (18 / rescale), (int) (256 / rescale), (int) (256 / rescale));
+                        ((GuiGraphicsAccess) graphics).dragonSurvival$innerBlit(manaSprite.atlasLocation(), x, (int) (x + 17 / scale), y, (int) (y + 17 / scale), 0, manaSprite.getU0(), manaSprite.getU(0.321f), manaSprite.getV0(), manaSprite.getV(0.692f), 1, 1, 1, 1);
                     }
                 }
             }
@@ -266,5 +292,22 @@ public class MagicHUD {
         if (errorTicks > 0) {
             graphics.drawString(Minecraft.getInstance().font, errorMessage.getVisualOrderText(), (int) (width / 2f - Minecraft.getInstance().font.width(errorMessage) / 2f), height - 70, 0);
         }
+    }
+
+    private static void blit(final GuiGraphics graphics, final ResourceLocation resource, final int x, final int y, final int u, final int v, final int width, final int height, final int textureWidth, final int textureHeight, final int alpha) {
+        int minU = u / textureWidth;
+        int maxU = (u + width) / textureWidth;
+        int minV = v / textureHeight;
+        int maxV = (v + height) / textureHeight;
+
+        RenderSystem.setShaderTexture(0, resource);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        Matrix4f pose = graphics.pose().last().pose();
+        BufferBuilder bufferbuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        bufferbuilder.addVertex(pose, x, y, 0).setUv(minU, minV).setWhiteAlpha(alpha);
+        bufferbuilder.addVertex(pose, x, y + height, 0).setUv(minU, maxV).setWhiteAlpha(alpha);
+        bufferbuilder.addVertex(pose, x + width, y + height, 0).setUv(maxU, maxV).setWhiteAlpha(alpha);
+        bufferbuilder.addVertex(pose, x + width, y, 0).setUv(maxU, minV).setWhiteAlpha(alpha);
+        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
     }
 }

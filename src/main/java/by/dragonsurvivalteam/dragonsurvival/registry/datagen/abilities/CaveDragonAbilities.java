@@ -420,7 +420,9 @@ public class CaveDragonAbilities {
         ));
 
         context.register(FIRE_IMMUNITY, new DragonAbility(
-                Activation.passive(),
+                // FIXME :: for testing purpose
+//                Activation.passive(),
+                Activation.passive(ManaCost.reserved(LevelBasedValue.constant(10))),
                 Optional.empty(),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(

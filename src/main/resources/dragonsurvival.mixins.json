@@ -48,6 +48,7 @@
     "client.EntityRendererAccessor",
     "client.GameRendererMixin",
     "client.GuiAccessor",
+    "client.GuiGraphicsAccess",
     "client.GuiMixin",
     "client.HumanoidArmorLayerMixin",
     "client.InventoryScreenMixin",

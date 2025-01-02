@@ -1014,7 +1014,7 @@
       "icon": "dragonsurvival:textures/gui/custom/stage/forest/right_arrow_main.png"
     },
     "help_button": "dragonsurvival:textures/gui/custom/help_button/forest_help_button.png",
-    "mana_sprites": "dragonsurvival:textures/gui/custom/mana_icons/forest_mana_icons.png",
+    "mana_sprites": "dragonsurvival:mana_icons/forest",
     "primary_color": "#41CC48",
     "secondary_color": "#117816"
   },
