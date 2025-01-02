@@ -9,11 +9,11 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.Abilit
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.ScrollableComponent;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.UpgradeType;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.UpgradeType;
 import by.dragonsurvivalteam.dragonsurvival.util.ExperienceUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -123,7 +123,7 @@ public class DragonAbilityScreen extends Screen {
         }
 
         if (dragonSpecies != null) {
-            // Our calculation is different from 'Player#experienceProgress' resulting in the hover progress not matching up
+            // Our calculation is different from 'Player#experienceProgress' resulting in the hover progress not matching up if we use it
             // The largest difference so far was ~0.03
             int totalExperience = ExperienceUtils.getTotalExperience(minecraft.player);
             float progress = (float) (totalExperience - ExperienceUtils.getTotalExperience(minecraft.player.experienceLevel)) / ExperienceUtils.getExperienceForLevelAfter(minecraft.player.experienceLevel);

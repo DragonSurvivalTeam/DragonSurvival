@@ -1,4 +1,4 @@
-package by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade;
+package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.util.StringRepresentable;

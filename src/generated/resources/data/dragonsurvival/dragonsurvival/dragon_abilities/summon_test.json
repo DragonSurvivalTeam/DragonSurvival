@@ -109,20 +109,37 @@
     ]
   },
   "upgrade": {
-    "level_requirement": {
-      "type": "minecraft:lookup",
-      "fallback": {
-        "type": "minecraft:linear",
-        "base": 15.0,
-        "per_level_above_first": 15.0
+    "conditions": [
+      {
+        "condition": "minecraft:entity_properties",
+        "entity": "this",
+        "predicate": {
+          "location": {
+            "can_see_sky": true
+          },
+          "type_specific": {
+            "type": "dragonsurvival:custom_predicates",
+            "weather_predicate": {
+              "is_raining": true
+            }
+          }
+        }
       },
-      "values": [
-        0.0,
-        15.0,
-        35.0
-      ]
-    },
-    "maximum_level": 3,
-    "upgrade_type": "dragonsurvival:experience_levels"
+      {
+        "condition": "minecraft:entity_properties",
+        "entity": "this",
+        "predicate": {
+          "type_specific": {
+            "type": "dragonsurvival:custom_predicates",
+            "sun_light_level": {
+              "min": 12
+            },
+            "weather_predicate": {}
+          }
+        }
+      }
+    ],
+    "require_previous": false,
+    "upgrade_type": "dragonsurvival:condition_based"
   }
 }

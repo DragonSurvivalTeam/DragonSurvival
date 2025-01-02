@@ -5,14 +5,14 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.MagicHUD;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.ExperienceUpgrade;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.InputData;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.UpgradeType;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncCooldownState;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ExperienceUpgrade;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.InputData;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.UpgradeType;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
@@ -122,8 +122,12 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
         MagicData magic = optional.get();
 
-        for (DragonAbilityInstance instance : magic.getAbilities().values()) {
-            instance.tick(event.getEntity());
+        for (DragonAbilityInstance ability : magic.getAbilities().values()) {
+            if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+                ability.value().upgrade().ifPresent(upgrade -> upgrade.attempt(serverPlayer, ability, null));
+            }
+
+            ability.tick(event.getEntity());
         }
 
         if (event.getEntity().level().isClientSide() && magic.isCasting()) {

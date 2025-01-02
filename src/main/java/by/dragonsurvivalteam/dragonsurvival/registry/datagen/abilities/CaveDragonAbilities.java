@@ -7,10 +7,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationLayer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.SimpleAbilityAnimation;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.ExperienceUpgrade;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.ItemUpgrade;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.LevelUpgrade;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.SizeUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.common.conditions.EntityCondition;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.LargeFireParticleOption;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.SmallFireParticleOption;
@@ -23,6 +19,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effect
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.SummonEntityEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.*;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.ProjectileData;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.Projectiles;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
@@ -468,7 +465,10 @@ public class CaveDragonAbilities {
                                 Optional.of(new SimpleAbilityAnimation(SimpleAbilityAnimation.MASS_BUFF, AnimationLayer.BASE, 0, true, true))
                         )
                 ),
-                Optional.of(new LevelUpgrade(3, LevelBasedValue.lookup(List.of(0f, 15f, 35f), LevelBasedValue.perLevel(15)))),
+                Optional.of(new ConditionUpgrade(List.of(
+                        Condition.thisEntity(EntityCondition.isInRain()).build(),
+                        Condition.thisEntity(EntityCondition.isInSunlight(12)).build()
+                ), false)),
                 Optional.empty(),
                 List.of(new ActionContainer(new LookingAtTarget(AbilityTargeting.block(
                         List.of(new SummonEntityEffect(

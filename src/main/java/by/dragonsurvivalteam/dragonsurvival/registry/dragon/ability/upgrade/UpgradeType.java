@@ -1,4 +1,4 @@
-package by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade;
+package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncAbilityLevel;
@@ -18,6 +18,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -47,6 +48,7 @@ public interface UpgradeType<T> {
             event.register(REGISTRY_KEY, DragonSurvival.res("experience_levels"), () -> LevelUpgrade.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("dragon_size"), () -> SizeUpgrade.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("item_based"), () -> ItemUpgrade.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("condition_based"), () -> ConditionUpgrade.CODEC);
         }
     }
 
@@ -55,7 +57,7 @@ public interface UpgradeType<T> {
     }
 
     @SuppressWarnings("unchecked") // ignore
-    default boolean attempt(final ServerPlayer dragon, final DragonAbilityInstance ability, final Object input) {
+    default boolean attempt(final ServerPlayer dragon, final DragonAbilityInstance ability, @Nullable final Object input) {
         // Need to find the 'UpgradeType' interface to check the parameter type
         Type[] interfaces = getClass().getGenericInterfaces();
 
@@ -68,7 +70,10 @@ public interface UpgradeType<T> {
                 continue;
             }
 
-            if (((Class<?>) parameterized.getActualTypeArguments()[0]).isAssignableFrom(input.getClass())) {
+            Class<?> parameterClass = (Class<?>) parameterized.getActualTypeArguments()[0];
+
+            // 'Void' as type parameter means the upgrade logic is not dependent on any input
+            if (input == null && parameterClass == Void.class || input != null && parameterClass.isAssignableFrom(input.getClass())) {
                 if (apply(dragon, ability, (T) input)) {
                     PacketDistributor.sendToPlayer(dragon, new SyncAbilityLevel(ability.key(), ability.level()));
                     return true;
