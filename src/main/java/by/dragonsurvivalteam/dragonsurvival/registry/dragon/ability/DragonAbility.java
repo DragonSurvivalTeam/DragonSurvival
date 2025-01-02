@@ -4,7 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.Upgrade;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.UpgradeType;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public record DragonAbility(
         Activation activation,
-        Optional<Upgrade> upgrade,
+        Optional<UpgradeType<?>> upgrade,
         Optional<LootItemCondition> usageBlocked,
         List<ActionContainer> actions,
         LevelBasedResource icon
@@ -42,7 +42,7 @@ public record DragonAbility(
 
     public static final Codec<DragonAbility> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Activation.codec().fieldOf("activation").forGetter(DragonAbility::activation),
-            Upgrade.CODEC.optionalFieldOf("upgrade").forGetter(DragonAbility::upgrade),
+            UpgradeType.CODEC.optionalFieldOf("upgrade").forGetter(DragonAbility::upgrade),
             LootItemCondition.DIRECT_CODEC.optionalFieldOf("usage_blocked").forGetter(DragonAbility::usageBlocked),
             ActionContainer.CODEC.listOf().optionalFieldOf("actions", List.of()).forGetter(DragonAbility::actions),
             LevelBasedResource.CODEC.fieldOf("icon").forGetter(DragonAbility::icon)
@@ -60,7 +60,7 @@ public record DragonAbility(
     }
 
     public int getMaxLevel() {
-        return upgrade.map(Upgrade::maximumLevel).orElse(DragonAbilityInstance.MIN_LEVEL);
+        return upgrade.map(UpgradeType::maxLevel).orElse(DragonAbilityInstance.MIN_LEVEL);
     }
 
     public static void validate(RegistryAccess access) {

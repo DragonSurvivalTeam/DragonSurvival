@@ -9,7 +9,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.Abilit
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.ScrollableComponent;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.Upgrade;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.UpgradeType;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
@@ -21,6 +21,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.fml.loading.FMLLoader;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -78,7 +79,7 @@ public class DragonAbilityScreen extends Screen {
     public Screen sourceScreen;
     public LevelButton hoveredLevelButton;
 
-    private Holder<DragonSpecies> type;
+    private Holder<DragonSpecies> dragonSpecies;
     private int guiLeft;
     private int guiTop;
 
@@ -121,9 +122,19 @@ public class DragonAbilityScreen extends Screen {
             component.update();
         }
 
-        if (type != null) {
+        if (dragonSpecies != null) {
+            // Our calculation is different from 'Player#experienceProgress' resulting in the hover progress not matching up
+            // The largest difference so far was ~0.03
+            int totalExperience = ExperienceUtils.getTotalExperience(minecraft.player);
+            float progress = (float) (totalExperience - ExperienceUtils.getTotalExperience(minecraft.player.experienceLevel)) / ExperienceUtils.getExperienceForLevelAfter(minecraft.player.experienceLevel);
+
+            // Just for debugging purposes
+            if (!FMLLoader.isProduction() && Math.abs(progress - minecraft.player.experienceProgress) > 0.075) {
+                throw new IllegalStateException("Experience difference too big - calculated: [" + progress + "] / vanilla: [" + minecraft.player.experienceProgress + "]");
+            }
+
             // Draw XP bars
-            float leftExpBarProgress = Math.min(1f, Math.min(0.5f, minecraft.player.experienceProgress) * 2);
+            float leftExpBarProgress = Math.min(1f, Math.min(0.5f, progress) * 2);
 
             int barYPos = startY + 10;
             int leftBarX = startX + 10;
@@ -133,19 +144,26 @@ public class DragonAbilityScreen extends Screen {
             graphics.blit(EXP_EMPTY, rightBarX, barYPos, 0, 0, 93, 6, 93, 6);
             graphics.blit(EXP_FULL, leftBarX, barYPos, 0, 0, (int) (93 * leftExpBarProgress), 6, 93, 6);
 
-            if (minecraft.player.experienceProgress > 0.5) {
-                float rightExpBarProgress = Math.min(1f, Math.min(0.5f, minecraft.player.experienceProgress - 0.5f) * 2);
+            if (progress > 0.5) {
+                float rightExpBarProgress = Math.min(1f, Math.min(0.5f, progress - 0.5f) * 2);
                 graphics.blit(EXP_FULL, rightBarX, barYPos, 0, 0, (int) (93 * rightExpBarProgress), 6, 93, 6);
             }
 
-            int experienceModification = hoveredLevelButton != null ? hoveredLevelButton.getExperienceModification() : 0;
-            int newExperience = ExperienceUtils.getTotalExperience(minecraft.player) + experienceModification;
+            int experienceModification;
+
+            if (hoveredLevelButton == null || !hoveredLevelButton.canModifyLevel()) {
+                experienceModification = 0;
+            } else {
+                experienceModification = hoveredLevelButton.getExperienceModification();
+            }
+
+            int newExperience = totalExperience + experienceModification;
             int newLevel = Math.max(0, ExperienceUtils.getLevel(newExperience));
 
             if (experienceModification != 0) {
                 // Used to show the new experience progress of the new level
                 // The level difference itself is shown through the rendered level number
-                float hoverProgress = (float) (newExperience - ExperienceUtils.getTotalExperience(newLevel)) / ExperienceUtils.getExperienceForLevel(newLevel + 1);
+                float hoverProgress = (float) (newExperience - ExperienceUtils.getTotalExperience(newLevel)) / ExperienceUtils.getExperienceForLevelAfter(newLevel);
                 float leftExpBarHoverProgress = Math.min(0.5f, hoverProgress) * 2;
                 float rightExpBarHoverProgress = Math.min(0.5f, hoverProgress - leftExpBarHoverProgress / 2) * 2;
 
@@ -207,8 +225,8 @@ public class DragonAbilityScreen extends Screen {
         // TODO :: need some consistent order - could do it based on a tag (that is what enchantments and dragon bodies are doing)
         //  or on some other factors (level -> name e.g.)
         List<DragonAbilityInstance> actives = data.getActiveAbilities();
-        List<DragonAbilityInstance> upgradablePassives = data.getPassiveAbilities(Upgrade.IS_MANUAL);
-        List<DragonAbilityInstance> constantPassives = data.getPassiveAbilities(Upgrade.IS_MANUAL.negate());
+        List<DragonAbilityInstance> upgradablePassives = data.getPassiveAbilities(UpgradeType.IS_MANUAL);
+        List<DragonAbilityInstance> constantPassives = data.getPassiveAbilities(UpgradeType.IS_MANUAL.negate());
 
         scrollableComponents.add(new AbilityColumnsComponent(this, guiLeft + 35, guiTop, 40, 20, 0.8f, 0.5f, actives));
         scrollableComponents.add(new AbilityColumnsComponent(this, guiLeft + 111, guiTop, 40, 20, 0.8f, 0.5f, upgradablePassives));
@@ -243,8 +261,8 @@ public class DragonAbilityScreen extends Screen {
         //noinspection DataFlowIssue -> players should be present
         DragonStateHandler data = DragonStateProvider.getData(minecraft.player);
 
-        if (type != data.species()) {
-            type = data.species();
+        if (dragonSpecies != data.species()) {
+            dragonSpecies = data.species();
             clearWidgets();
             init();
         }

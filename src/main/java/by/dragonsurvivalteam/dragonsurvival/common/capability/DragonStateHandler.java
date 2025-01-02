@@ -7,7 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.Sk
 import by.dragonsurvivalteam.dragonsurvival.commands.DragonCommand;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.subcapabilities.SkinCap;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.subcapabilities.SubCap;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.ValueBasedUpgrade;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.InputData;
 import by.dragonsurvivalteam.dragonsurvival.common.items.growth.StarHeartItem;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.mixins.EntityAccessor;
@@ -138,9 +138,6 @@ public class DragonStateHandler extends EntityStateHandler {
             return;
         }
 
-        MagicData magicData = MagicData.getData(player);
-        magicData.handleValueUpgrades(player, ValueBasedUpgrade.InputData.passiveGrowth((int) this.size));
-
         player.refreshDimensions();
         double sizeDifference = this.size - oldSize;
 
@@ -201,6 +198,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
         if (player instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncSize(serverPlayer.getId(), getSize()));
+            MagicData.getData(player).handleAutoUpgrades(serverPlayer, InputData.size((int) this.size));
             DSAdvancementTriggers.BE_DRAGON.get().trigger(serverPlayer);
             DSModifiers.updateSizeModifiers(serverPlayer, this);
         }
@@ -307,10 +305,11 @@ public class DragonStateHandler extends EntityStateHandler {
 
     public void refreshDataOnTypeChange(final Player player) {
         PenaltySupply.getData(player).clear();
-        if(!ServerConfig.saveAllAbilities) {
+
+        if (!ServerConfig.saveAllAbilities) {
             MagicData.getData(player).refresh(species(), player);
         } else {
-            if(MagicData.getData(player).dataForSpeciesIsEmpty(speciesKey())) {
+            if (MagicData.getData(player).dataForSpeciesIsEmpty(speciesKey())) {
                 MagicData.getData(player).refresh(species(), player);
             } else {
                 MagicData.getData(player).setCurrentSpecies(speciesKey());

@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.magic;
 
 import by.dragonsurvivalteam.dragonsurvival.client.gui.AbilityTooltipPositioner;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.Upgrade;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.UpgradeType;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
@@ -167,11 +167,11 @@ public class AbilityAndPenaltyTooltipRenderer {
         FormattedText rawDescription = Component.translatable(Translation.Type.ABILITY_DESCRIPTION.wrap(ability.location()));
         List<Component> info = ability.value().getInfo(Minecraft.getInstance().player, ability);
 
-        Upgrade upgrade = ability.value().upgrade().orElse(null);
+        UpgradeType<?> upgrade = ability.value().upgrade().orElse(null);
 
-        if (upgrade != null && ability.level() < upgrade.maximumLevel()) {
+        if (upgrade != null && ability.level() < upgrade.maxLevel()) {
             rawDescription = FormattedText.composite(rawDescription, Component.empty().append("\n\n"));
-            MutableComponent upgradeComponent = upgrade.getDescription(ability.level());
+            MutableComponent upgradeComponent = upgrade.getDescription(ability.level() + 1);
             rawDescription = FormattedText.composite(rawDescription, upgradeComponent.withColor(Color.GREEN.getColor()));
         }
 

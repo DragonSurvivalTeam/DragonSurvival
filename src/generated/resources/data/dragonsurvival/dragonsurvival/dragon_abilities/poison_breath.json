@@ -223,24 +223,22 @@
     ]
   },
   "upgrade": {
-    "upgrade_data": {
-      "type": "passive_level",
-      "maximum_level": 4,
-      "requirement_or_cost": {
-        "type": "minecraft:lookup",
-        "fallback": {
-          "type": "minecraft:linear",
-          "base": 15.0,
-          "per_level_above_first": 15.0
-        },
-        "values": [
-          0.0,
-          10.0,
-          30.0,
-          50.0
-        ]
-      }
-    }
+    "level_requirement": {
+      "type": "minecraft:lookup",
+      "fallback": {
+        "type": "minecraft:linear",
+        "base": 15.0,
+        "per_level_above_first": 15.0
+      },
+      "values": [
+        0.0,
+        10.0,
+        30.0,
+        50.0
+      ]
+    },
+    "maximum_level": 4,
+    "upgrade_type": "dragonsurvival:experience_levels"
   },
   "usage_blocked": {
     "condition": "minecraft:entity_properties",

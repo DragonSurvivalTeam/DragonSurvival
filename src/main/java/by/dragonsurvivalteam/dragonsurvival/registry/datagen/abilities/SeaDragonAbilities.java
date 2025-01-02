@@ -7,8 +7,10 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationLayer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.SimpleAbilityAnimation;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.Upgrade;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.ValueBasedUpgrade;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.ExperienceUpgrade;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.ItemUpgrade;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.LevelUpgrade;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.upgrade.SizeUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.common.conditions.EntityCondition;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.LargeLightningParticleOption;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.SmallLightningParticleOption;
@@ -137,7 +139,7 @@ public class SeaDragonAbilities {
                         Optional.empty(),
                         Optional.empty()
                 ),
-                Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 4, LevelBasedValue.lookup(List.of(0f, 20f, 45f, 50f), LevelBasedValue.perLevel(15))),
+                Optional.of(new LevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 20f, 45f, 50f), LevelBasedValue.perLevel(15)))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         Condition.thisEntity(EntityCondition.isLiving()).build(),
@@ -175,7 +177,7 @@ public class SeaDragonAbilities {
                                 Optional.empty()
                         ))
                 ),
-                Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 4, LevelBasedValue.lookup(List.of(0f, 10f, 30f, 50f), LevelBasedValue.perLevel(15))),
+                Optional.of(new LevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 10f, 30f, 50f), LevelBasedValue.perLevel(15)))),
                 Optional.empty(),
                 List.of(new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
                                 Condition.thisEntity(EntityCondition.isLiving()).build(),
@@ -225,7 +227,7 @@ public class SeaDragonAbilities {
                                 Optional.of(new SimpleAbilityAnimation("self_buff", AnimationLayer.BASE, 0, true, false))
                         ))
                 ),
-                Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 4, LevelBasedValue.lookup(List.of(0f, 25f, 45f, 60f), LevelBasedValue.perLevel(15))),
+                Optional.of(new LevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 25f, 45f, 60f), LevelBasedValue.perLevel(15)))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         PotionEffect.single(LevelBasedValue.constant(0), LevelBasedValue.perLevel(Functions.secondsToTicks(30)), DSEffects.WATER_VISION),
@@ -259,7 +261,7 @@ public class SeaDragonAbilities {
                                 Optional.of(new SimpleAbilityAnimation(SimpleAbilityAnimation.MASS_BUFF, AnimationLayer.BASE, 0, true, true))
                         ))
                 ),
-                Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_LEVEL, 3, LevelBasedValue.lookup(List.of(0f, 15f, 35f), LevelBasedValue.perLevel(15))),
+                Optional.of(new LevelUpgrade(3, LevelBasedValue.lookup(List.of(0f, 15f, 35f), LevelBasedValue.perLevel(15)))),
                 Optional.empty(),
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(
                         ModifierEffect.single(new ModifierWithDuration(
@@ -283,7 +285,7 @@ public class SeaDragonAbilities {
     private static void registerPassiveAbilities(final BootstrapContext<DragonAbility> context) {
         context.register(SEA_ATHLETICS, new DragonAbility(
                 Activation.passive(),
-                Upgrade.value(ValueBasedUpgrade.Type.MANUAL, 5, LevelBasedValue.perLevel(15)),
+                Optional.of(new ExperienceUpgrade(5, LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.SPEEDS_UP_SEA_DRAGON)).build(),
@@ -302,7 +304,7 @@ public class SeaDragonAbilities {
 
         context.register(SEA_MAGIC, new DragonAbility(
                 Activation.passive(),
-                Upgrade.value(ValueBasedUpgrade.Type.MANUAL, 10, LevelBasedValue.perLevel(15)),
+                Optional.of(new ExperienceUpgrade(10, LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -344,7 +346,7 @@ public class SeaDragonAbilities {
 
         context.register(SPECTRAL_IMPACT, new DragonAbility(
                 Activation.passive(),
-                Upgrade.value(ValueBasedUpgrade.Type.MANUAL, 3, LevelBasedValue.perLevel(15)),
+                Optional.of(new ExperienceUpgrade(3, LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         ModifierEffect.single(new ModifierWithDuration(
@@ -366,7 +368,7 @@ public class SeaDragonAbilities {
 
         context.register(HYDRATION, new DragonAbility(
                 Activation.passive(),
-                Upgrade.value(ValueBasedUpgrade.Type.MANUAL, 7, LevelBasedValue.perLevel(15)),
+                Optional.of(new ExperienceUpgrade(7, LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         ModifierEffect.single(new ModifierWithDuration(
@@ -393,7 +395,7 @@ public class SeaDragonAbilities {
         context.register(SEA_CLAWS_AND_TEETH, new DragonAbility(
                 Activation.passive(),
                 // FIXME :: lookup for stages seems to throw an exception at the moment
-                Upgrade.value(ValueBasedUpgrade.Type.PASSIVE_GROWTH, 4, LevelBasedValue.lookup(List.of(0f, 25f, 40f, 60f), LevelBasedValue.perLevel(15))),
+                Optional.of(new SizeUpgrade(4, LevelBasedValue.lookup(List.of(0f, 25f, 40f, 60f), LevelBasedValue.perLevel(15)))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         HarvestBonusEffect.single(new HarvestBonus(
@@ -416,7 +418,7 @@ public class SeaDragonAbilities {
 
         context.register(SEA_WINGS, new DragonAbility(
                 Activation.passive(),
-                Upgrade.item(List.of(HolderSet.direct(DSItems.WING_GRANT_ITEM), HolderSet.direct(DSItems.SPIN_GRANT_ITEM)), HolderSet.empty()),
+                Optional.of(new ItemUpgrade(List.of(HolderSet.direct(DSItems.WING_GRANT_ITEM), HolderSet.direct(DSItems.SPIN_GRANT_ITEM)), HolderSet.empty())),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         List.of(new SpinOrFlightEffect(1, 2, NeoForgeMod.LAVA_TYPE)),

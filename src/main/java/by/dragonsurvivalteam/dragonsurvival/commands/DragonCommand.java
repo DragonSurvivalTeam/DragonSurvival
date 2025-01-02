@@ -111,6 +111,7 @@ public class DragonCommand {
 
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncComplete.Data(player.getId(), data.serializeNBT(player.registryAccess())));
         player.refreshDimensions();
+
         return 1;
     }
 
