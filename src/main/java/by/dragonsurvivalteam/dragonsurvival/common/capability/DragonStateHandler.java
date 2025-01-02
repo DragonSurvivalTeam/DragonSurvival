@@ -91,7 +91,11 @@ public class DragonStateHandler extends EntityStateHandler {
             return;
         }
 
-        setDesiredSize(player, dragonStage.value().getBoundedSize(size));
+        double boundedSize = dragonStage.value().getBoundedSize(size);
+        if(boundedSize == dragonStage.value().sizeRange().min()) {
+            boundedSize += 0.0001f; // Ties go to the lower stage, so we need to be slightly above the minimum size
+        }
+        setDesiredSize(player, boundedSize);
     }
 
     /**
@@ -449,6 +453,10 @@ public class DragonStateHandler extends EntityStateHandler {
 
     public DragonStageCustomization getCurrentStageCustomization() {
         return skinData.get(dragonSpecies.getKey(), dragonStage.getKey()).get();
+    }
+
+    public DragonStageCustomization getCustomizationForStage(ResourceKey<DragonStage> stage) {
+        return skinData.get(dragonSpecies.getKey(), stage).get();
     }
 
     public CompoundTag serializeNBT(HolderLookup.Provider provider, boolean isSavingForSoul) {

@@ -187,8 +187,8 @@ public record DragonStage(
         Holder<DragonStage> largest = null;
 
         for (Holder<DragonStage> stage : stages) {
-            // Don't consider it a match if it is equal to the max size of the stage; we want to prefer the bigger stage always
-            if (stage.value().sizeRange().matches(size) && stage.value().sizeRange().max() != size) {
+            // Don't consider it a match if it is equal to the max size of the stage; we want to prefer the smaller stage always
+            if (stage.value().sizeRange().matches(size) && stage.value().sizeRange().min() != size) {
                 return stage;
             }
 
