@@ -194,7 +194,7 @@ public class DragonSpeciesScreen extends Screen {
                     startX + 130, startY - 19, 4,
                     crystals, 10,
                     -11, 39, 1, 12, 16, 12, 16,
-                    textures.growthLeftArrow().hoverIcon(), textures.growthLeftArrow().icon(), textures.growthRightArrow().hoverIcon(), textures.growthRightArrow().icon());
+                    textures.growthLeftArrow().hoverIcon(), textures.growthLeftArrow().icon(), textures.growthRightArrow().hoverIcon(), textures.growthRightArrow().icon(), false);
 
             scrollableComponents.add(crystalBar);
         }
@@ -214,7 +214,7 @@ public class DragonSpeciesScreen extends Screen {
                 startX + 85, startY + 85, 3,
                 penalties, 40,
                 -10, 116, 10, 9, 16, 20, 20,
-                PENALTIES_LEFT_ARROW_MAIN, PENALTIES_LEFT_ARROW_HOVER, PENALTIES_RIGHT_ARROW_MAIN, PENALTIES_RIGHT_ARROW_HOVER));
+                PENALTIES_LEFT_ARROW_MAIN, PENALTIES_LEFT_ARROW_HOVER, PENALTIES_RIGHT_ARROW_MAIN, PENALTIES_RIGHT_ARROW_HOVER, false));
     }
 
 

@@ -2,7 +2,6 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAltarScreen;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonBodyScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.buttons.BackgroundColorButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.buttons.DragonBodyButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.buttons.DragonEditorSlotButton;
@@ -10,6 +9,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.but
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.buttons.editor_part_selector.HueSelectorComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverDisableable;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.BarComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.DragonEditorConfirmComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.DragonUIRenderComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.ScrollableComponent;
@@ -36,6 +36,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AltarData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBodyTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
@@ -77,7 +78,7 @@ import java.util.function.Function;
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 @EventBusSubscriber(Dist.CLIENT)
-public class DragonEditorScreen extends Screen implements DragonBodyScreen {
+public class DragonEditorScreen extends Screen {
     @Translation(comments = "Randomize")
     private static final String RANDOMIZE = Translation.Type.GUI.wrap("dragon_editor.randomize");
 
@@ -209,13 +210,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
     private ExtendedButton wingsButton;
     private HoverButton animationNameButton;
     private BackgroundColorButton backgroundColorButton;
-
-    /**
-     * Widgets which belong to the dragon body logic <br>
-     * (they are stored to properly reference (and remove) them when using the arrow buttons to navigate through the bodies)
-     */
-    private final List<AbstractWidget> dragonBodyWidgets = new ArrayList<>();
-    private int dragonBodySelectionOffset;
+    private BarComponent dragonBodyBar;
 
     private final List<ScrollableComponent> scrollableComponents = new ArrayList<>();
     private final Map<EnumSkinLayer, EditorPartComponent> partComponents = new HashMap<>();
@@ -585,7 +580,11 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
                         wingsButton.visible = false;
                     }
                 } else {
-                    widget.visible = showUi;
+                    if(dragonBodyBar.currentlyHiddenWidgets().contains(widget)) {
+                        widget.visible = false;
+                    } else {
+                        widget.visible = showUi;
+                    }
                 }
             }
 
@@ -676,7 +675,16 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
         });
         addRenderableWidget(rightArrow);
 
-        addDragonBodyWidgets();
+        // Add scrollable list of dragon bodies
+        List<AbstractWidget> dragonBodyWidgets = new ArrayList<>();
+        for(Holder<DragonBody> dragonBodyHolder : DSBodyTags.getOrdered(null)) {
+            dragonBodyWidgets.add(createButton(dragonBodyHolder, 0, 0));
+        }
+        dragonBodyBar = new BarComponent(this,
+                width / 2 - 38, height / 2 + 30, 5,
+                dragonBodyWidgets, 25,
+                -16, 82, 4, 18, 20, 20, 20,
+                SMALL_LEFT_ARROW_HOVER, SMALL_LEFT_ARROW_MAIN, SMALL_RIGHT_ARROW_HOVER, SMALL_RIGHT_ARROW_MAIN, true);
 
         int maxWidth = -1;
 
@@ -973,8 +981,7 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
 
     }
 
-    @Override
-    public DragonBodyButton createButton(Holder<DragonBody> dragonBody, int x, int y) {
+    private DragonBodyButton createButton(Holder<DragonBody> dragonBody, int x, int y) {
         return new DragonBodyButton(this, x, y, 25, 25, dragonBody, isEditor, button -> {
             if (!((DragonBodyButton) button).isLocked()) {
                 if(dragonBody.value() != this.dragonBody.value()) {
@@ -987,31 +994,6 @@ public class DragonEditorScreen extends Screen implements DragonBodyScreen {
                 }
             }
         });
-    }
-
-    @Override
-    public List<AbstractWidget> getDragonBodyWidgets() {
-        return dragonBodyWidgets;
-    }
-
-    @Override
-    public int getDragonBodyButtonXOffset() {
-        return 0;
-    }
-
-    @Override
-    public int getDragonBodyButtonYOffset() {
-        return 28;
-    }
-
-    @Override
-    public void setDragonBodyButtonOffset(int dragonBodySelectionOffset) {
-        this.dragonBodySelectionOffset = dragonBodySelectionOffset;
-    }
-
-    @Override
-    public int getDragonBodySelectionOffset() {
-        return dragonBodySelectionOffset;
     }
 
     public void update() {

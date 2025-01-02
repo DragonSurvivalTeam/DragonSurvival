@@ -19,14 +19,25 @@ public class BarComponent implements ScrollableComponent {
     private final int yPos;
     private final int elementSpacing;
 
-    public BarComponent(Screen parentScreen, int xPos, int yPos, int numberOfElementsToDisplay, List<AbstractWidget> widgets, int elementSpacing, int arrowLeftX, int arrowRightX, int arrowY, int arrowWidth, int arrowHeight, int arrowTextureWidth, int arrowTextureHeight, ResourceLocation leftArrowHover, ResourceLocation leftArrowMain, ResourceLocation rightArrowHover, ResourceLocation rightArrowMain) {
+    public BarComponent(Screen parentScreen, int xPos, int yPos, int numberOfElementsToDisplay, List<AbstractWidget> widgets, int elementSpacing, int arrowLeftX, int arrowRightX, int arrowY, int arrowWidth, int arrowHeight, int arrowTextureWidth, int arrowTextureHeight, ResourceLocation leftArrowHover, ResourceLocation leftArrowMain, ResourceLocation rightArrowHover, ResourceLocation rightArrowMain, boolean replaceButtonsWithArrowsWhenOversize) {
         this.xPos = xPos;
         this.yPos = yPos;
         this.elementSpacing = elementSpacing;
-        this.numberOfElementsToDisplay = numberOfElementsToDisplay;
+        if(replaceButtonsWithArrowsWhenOversize) {
+            if (widgets.size() > numberOfElementsToDisplay) {
+                this.numberOfElementsToDisplay = numberOfElementsToDisplay - 2;
+            } else {
+                this.numberOfElementsToDisplay = numberOfElementsToDisplay;
+            }
+        } else {
+            this.numberOfElementsToDisplay = numberOfElementsToDisplay;
+        }
 
-        if (widgets.size() > 1) {
-            centerIndex = 1;
+        if (widgets.size() > 3) {
+            int oddOffset = widgets.size() % 2 == 0 ? 0 : 1;
+            centerIndex = widgets.size() / 2 - 1 + oddOffset;
+        } else if (widgets.size() > 1) {
+            centerIndex = 0;
         }
 
         this.widgets.addAll(widgets);
@@ -35,7 +46,7 @@ public class BarComponent implements ScrollableComponent {
             ((ScreenAccessor) parentScreen).dragonSurvival$addRenderableWidget(widget);
         }
 
-        if (widgets.size() > numberOfElementsToDisplay) {
+        if (widgets.size() > this.numberOfElementsToDisplay) {
             leftArrow = new HoverButton(xPos + arrowLeftX, yPos + arrowY, arrowWidth, arrowHeight, arrowTextureWidth, arrowTextureHeight, leftArrowMain, leftArrowHover, button -> rotate(false));
             rightArrow = new HoverButton(xPos + arrowRightX, yPos + arrowY, arrowWidth, arrowHeight, arrowTextureWidth, arrowTextureHeight, rightArrowMain, rightArrowHover, button -> rotate(true));
             ((ScreenAccessor) parentScreen).dragonSurvival$addRenderableWidget(leftArrow);
@@ -131,5 +142,24 @@ public class BarComponent implements ScrollableComponent {
                 widgets.get(i).visible = true;
             }
         }
+    }
+
+    public List<AbstractWidget> currentlyHiddenWidgets() {
+        List<AbstractWidget> hiddenWidgets = new ArrayList<>();
+        for (int i = 0; i < widgets.size(); i++) {
+            if (!isAnIndexBeingDisplayed(i)) {
+                hiddenWidgets.add(widgets.get(i));
+            }
+        }
+
+        if (rightArrow != null && centerIndex + getNumberOfElementsRightOfCenter() >= widgets.size() - 1) {
+            hiddenWidgets.add(rightArrow);
+        }
+
+        if (leftArrow != null && centerIndex - getNumberOfElementsLeftOfCenter() <= 0) {
+            hiddenWidgets.add(leftArrow);
+        }
+
+        return hiddenWidgets;
     }
 }

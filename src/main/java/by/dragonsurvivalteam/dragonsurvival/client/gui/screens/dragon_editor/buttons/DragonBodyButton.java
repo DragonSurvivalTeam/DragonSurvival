@@ -19,13 +19,17 @@ import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public class DragonBodyButton extends Button implements HoverDisableable {
+public class DragonBodyButton extends ExtendedButton implements HoverDisableable {
     private static final String LOCATION_PREFIX = "textures/gui/custom/body/";
     private static final String DEFAULT_SUFFIX = "default";
+
+    private static final ResourceLocation SELECTED_BACKGROUND = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/icon_skin_on.png");
+    private static final ResourceLocation DESELECTED_BACKGROUND = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/icon_skin_off.png");
 
     public static final int HOVERED = 1;
     public static final int SELECTED = 2;
@@ -36,15 +40,22 @@ public class DragonBodyButton extends Button implements HoverDisableable {
     private final ResourceLocation iconLocation;
     private final boolean locked;
     private boolean disableHover;
+    private final boolean useBackground;
 
     public DragonBodyButton(Screen screen, int x, int y, int xSize, int ySize, final Holder<DragonBody> dragonBody, boolean locked, OnPress action) {
-        this(screen, x, y, xSize, ySize, dragonBody, Objects.requireNonNull(dragonBody.getKey()).location(), locked, action);
+        this(screen, x, y, xSize, ySize, dragonBody, Objects.requireNonNull(dragonBody.getKey()).location(), locked, action, false, false);
+    }
+
+    public DragonBodyButton(Screen screen, int x, int y, int xSize, int ySize, final Holder<DragonBody> dragonBody, boolean locked, OnPress action, boolean useBackground, boolean noTooltip) {
+        this(screen, x, y, xSize, ySize, dragonBody, Objects.requireNonNull(dragonBody.getKey()).location(), locked, action, useBackground, noTooltip);
     }
 
     @SuppressWarnings("DataFlowIssue") // key is expected to be present
-    private DragonBodyButton(Screen screen, int x, int y, int xSize, int ySize, final Holder<DragonBody> dragonBody, final ResourceLocation location, boolean locked, OnPress action) {
-        super(x, y, xSize, ySize, Component.translatable(Translation.Type.BODY.wrap(location)), action, DEFAULT_NARRATION);
-        setTooltip(Tooltip.create(Component.translatable(Translation.Type.BODY_DESCRIPTION.wrap(location))));
+    private DragonBodyButton(Screen screen, int x, int y, int xSize, int ySize, final Holder<DragonBody> dragonBody, final ResourceLocation location, boolean locked, OnPress action, boolean useBackground, boolean noTooltip) {
+        super(x, y, xSize, ySize, Component.empty(), action, DEFAULT_NARRATION);
+        if(!noTooltip) {
+            setTooltip(Tooltip.create(Component.translatable(Translation.Type.BODY_DESCRIPTION.wrap(location))));
+        }
 
         String iconSuffix;
 
@@ -68,6 +79,7 @@ public class DragonBodyButton extends Button implements HoverDisableable {
         this.screen = screen;
         this.dragonBody = dragonBody;
         this.locked = locked;
+        this.useBackground = useBackground;
     }
 
     public void disableHover() {
@@ -92,10 +104,6 @@ public class DragonBodyButton extends Button implements HoverDisableable {
 
     @Override
     public void renderWidget(@NotNull GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
-        if (screen instanceof DragonEditorScreen dragonEditorScreen) {
-            active = visible = dragonEditorScreen.showUi;
-        }
-
         int state = 0;
 
         if (isSelected()) {
@@ -106,7 +114,13 @@ public class DragonBodyButton extends Button implements HoverDisableable {
             state = HOVERED;
         }
 
-        graphics.blit(iconLocation, getX(), getY(), 0, state * this.height, this.width, this.height, 32, 104);
+        if(this.useBackground) {
+            ResourceLocation background = state == SELECTED ? SELECTED_BACKGROUND : DESELECTED_BACKGROUND;
+            graphics.blit(background, getX(), getY(), 0, 0, this.width, this.height, 35, 35);
+            graphics.blit(iconLocation, getX() + 5, getY() + 5, 0, state * 25, 25, 25, 32, 104);
+        } else {
+            graphics.blit(iconLocation, getX(), getY(), 0, state * this.height, this.width, this.height, 32, 104);
+        }
     }
 
     private boolean isSelected() {

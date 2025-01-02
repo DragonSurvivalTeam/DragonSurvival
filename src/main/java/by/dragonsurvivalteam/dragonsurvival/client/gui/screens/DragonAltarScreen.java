@@ -259,7 +259,7 @@ public class DragonAltarScreen extends Screen {
                 xPos, guiTop + 30, 4,
                 altarButtons, 55,
                 -10, 215, 60, 9, 16, 20, 20,
-                ALTAR_ARROW_LEFT_MAIN, ALTAR_ARROW_LEFT_HOVER, ALTAR_ARROW_RIGHT_MAIN, ALTAR_ARROW_RIGHT_HOVER));
+                ALTAR_ARROW_LEFT_MAIN, ALTAR_ARROW_LEFT_HOVER, ALTAR_ARROW_RIGHT_MAIN, ALTAR_ARROW_RIGHT_HOVER, false));
 
         addRenderableWidget(new ExtendedButton(width / 2 - 75, height - 25, 150, 20, Component.translatable(LangKey.GUI_DRAGON_EDITOR), action -> Minecraft.getInstance().setScreen(new DragonEditorScreen(Minecraft.getInstance().screen))) {
             @Override

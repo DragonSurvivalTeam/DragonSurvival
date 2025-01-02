@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.Dra
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.buttons.DragonBodyButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.TabButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverButton;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.BarComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.DragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.skins.DragonSkins;
@@ -16,6 +17,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.config.ConfigHandler;
 import by.dragonsurvivalteam.dragonsurvival.network.dragon_editor.SyncDragonSkinSettings;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBodyTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
@@ -52,7 +54,7 @@ import java.net.URISyntaxException;
 import java.util.*;
 import java.util.function.Supplier;
 
-public class DragonSkinsScreen extends Screen implements DragonBodyScreen {
+public class DragonSkinsScreen extends Screen {
     @Translation(comments = "Skin Settings")
     private static final String SETTINGS = Translation.Type.GUI.wrap("skin_screen.settings");
 
@@ -113,6 +115,12 @@ public class DragonSkinsScreen extends Screen implements DragonBodyScreen {
     private static final ResourceLocation STAGE_ARROW_RIGHT_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/stage_arrow_right_main.png");
     private static final ResourceLocation STAGE_ARROW_RIGHT_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/stage_arrow_right_hover.png");
 
+    private static final ResourceLocation BODY_ARROW_LEFT_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/body_arrow_left_main.png");
+    private static final ResourceLocation BODY_ARROW_LEFT_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/body_arrow_left_hover.png");
+
+    private static final ResourceLocation BODY_ARROW_RIGHT_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/body_arrow_right_main.png");
+    private static final ResourceLocation BODY_ARROW_RIGHT_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/body_arrow_right_hover.png");
+
     private static final ResourceLocation OPEN_EDITOR_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/open_editor_main.png");
     private static final ResourceLocation OPEN_EDITOR_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/open_editor_hover.png");
 
@@ -127,6 +135,8 @@ public class DragonSkinsScreen extends Screen implements DragonBodyScreen {
 
     private static final ResourceLocation DISCORD_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/discord_main.png");
     private static final ResourceLocation DISCORD_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/discord_hover.png");
+
+    private static final ResourceLocation ADDITIONS_BACKGROUND = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/additions_background.png");
 
     private static final String DISCORD_URL = "https://discord.gg/8SsB8ar";
     private static final String WIKI_URL = "https://github.com/DragonSurvivalTeam/DragonSurvival/wiki/3.-Customization";
@@ -152,6 +162,7 @@ public class DragonSkinsScreen extends Screen implements DragonBodyScreen {
 
     private HoverButton playerNameDisplay;
     private HoverButton playerStageDisplay;
+    private BarComponent dragonBodyBar;
 
     private final int imageWidth = 164;
     private final int imageHeight = 128;
@@ -271,7 +282,16 @@ public class DragonSkinsScreen extends Screen implements DragonBodyScreen {
 
         TabButton.addTabButtonsToScreen(this, startX + 138, startY - 26, TabButton.Type.SKINS_TAB);
 
-        addDragonBodyWidgets();
+        // Add scrollable list of dragon bodies
+        List<AbstractWidget> dragonBodyWidgets = new ArrayList<>();
+        for(Holder<DragonBody> dragonBodyHolder : DSBodyTags.getOrdered(null)) {
+            dragonBodyWidgets.add(createButton(dragonBodyHolder, 0, 0));
+        }
+        dragonBodyBar = new BarComponent(this,
+                startX + 128 + 4, height / 2 + 14, 4,
+                dragonBodyWidgets, 40,
+                -15, 160, 7, 18, 20, 20, 20,
+                BODY_ARROW_LEFT_HOVER, BODY_ARROW_LEFT_MAIN, BODY_ARROW_RIGHT_HOVER, BODY_ARROW_RIGHT_MAIN, false);
 
         playerNameDisplay = new HoverButton(startX - 62 , startY - 50 , 165, 22, 165, 22, BUTTON_BACKGROUND_WHITE, BUTTON_BACKGROUND_WHITE, button -> {});
         playerNameDisplay.setMessage(Component.literal(Objects.requireNonNull(player).getGameProfile().getName()));
@@ -404,6 +424,9 @@ public class DragonSkinsScreen extends Screen implements DragonBodyScreen {
         openEditorButton.setMessage(Component.translatable(OPEN_EDITOR));
         addRenderableWidget(openEditorButton);
 
+        HoverButton additionsBackground = new HoverButton(startX + 128 + 44, startY + 128 + 16, 69, 22, 69, 22, ADDITIONS_BACKGROUND, ADDITIONS_BACKGROUND, button -> {});
+        addRenderableOnly(additionsBackground);
+
         ExtendedButton oldTextureButton = new ExtendedButton(startX + 176, startY + 128 + 20, 14, 14, Component.empty(), button -> {
             handler.getCurrentSkinPreset().setAllStagesToUseDefaultSkin(!handler.getCurrentSkinPreset().isAnyStageUsingDefaultSkin());
         }, Supplier::get) {
@@ -442,34 +465,8 @@ public class DragonSkinsScreen extends Screen implements DragonBodyScreen {
         addRenderableWidget(wikiButton);
     }
 
-    @Override
-    public DragonBodyButton createButton(final Holder<DragonBody> dragonBody, int x, int y) {
-        return new DragonBodyButton(this, x, y, 25, 25, dragonBody, false, button -> handler.setBody(null, dragonBody));
-    }
-
-    @Override
-    public List<AbstractWidget> getDragonBodyWidgets() {
-        return dragonBodyWidgets;
-    }
-
-    @Override
-    public int getDragonBodyButtonXOffset() {
-        return -150;
-    }
-
-    @Override
-    public int getDragonBodyButtonYOffset() {
-        return 15;
-    }
-
-    @Override
-    public void setDragonBodyButtonOffset(int dragonBodySelectionOffset) {
-        this.dragonBodySelectionOffset = dragonBodySelectionOffset;
-    }
-
-    @Override
-    public int getDragonBodySelectionOffset() {
-        return dragonBodySelectionOffset;
+    private DragonBodyButton createButton(final Holder<DragonBody> dragonBody, int x, int y) {
+        return new DragonBodyButton(this, x, y, 35, 35, dragonBody, false, button -> handler.setBody(null, dragonBody), true, true);
     }
 
     public void setTextures() {

@@ -198,7 +198,7 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
                     leftPos + 145, topPos + 6, 4,
                     crystals, 10,
                     -11, 39, 1, 12, 16, 12, 16,
-                    textures.growthLeftArrow().hoverIcon(), textures.growthLeftArrow().icon(), textures.growthRightArrow().hoverIcon(), textures.growthRightArrow().icon());
+                    textures.growthLeftArrow().hoverIcon(), textures.growthLeftArrow().icon(), textures.growthRightArrow().hoverIcon(), textures.growthRightArrow().icon(), false);
         }
 
         // Vanilla inventory
