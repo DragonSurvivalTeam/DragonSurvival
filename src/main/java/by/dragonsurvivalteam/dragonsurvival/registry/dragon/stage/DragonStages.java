@@ -46,7 +46,7 @@ public class DragonStages {
         return new DragonStage(
                 true,
                 new MiscCodecs.Bounds(10, 25),
-                Functions.hoursToTicks(10),
+                Functions.hoursToTicks(3),
                 List.of(
                         /* Constant */
                         Modifier.constant(Attributes.SUBMERGED_MINING_SPEED, 1, AttributeModifier.Operation.ADD_VALUE, BuiltInDragonSpecies.SEA),
@@ -75,7 +75,7 @@ public class DragonStages {
         return new DragonStage(
                 true,
                 new MiscCodecs.Bounds(25, 40),
-                Functions.daysToTicks(3),
+                Functions.hoursToTicks(6),
                 List.of(
                         /* Constant */
                         Modifier.constant(Attributes.SUBMERGED_MINING_SPEED, 2, AttributeModifier.Operation.ADD_VALUE, BuiltInDragonSpecies.SEA),
@@ -105,7 +105,7 @@ public class DragonStages {
         return new DragonStage(
                 true,
                 new MiscCodecs.Bounds(40, 60),
-                Functions.daysToTicks(20),
+                Functions.hoursToTicks(24),
                 List.of(
                         /* Constant */
                         Modifier.constant(Attributes.SUBMERGED_MINING_SPEED, 3, AttributeModifier.Operation.ADD_VALUE, BuiltInDragonSpecies.SEA),

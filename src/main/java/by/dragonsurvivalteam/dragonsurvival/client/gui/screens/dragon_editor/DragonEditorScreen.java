@@ -709,11 +709,11 @@ public class DragonEditorScreen extends Screen {
             row++;
         }
 
-        animationNameButton = new HoverButton(width / 2 - 50, height / 2 + 60, 100, 20, 100, 20, ANIMATION_NAME_BACKGROUND, ANIMATION_NAME_BACKGROUND, btn -> { /* Nothing to do */ });
+        animationNameButton = new HoverButton(width / 2 - 50, height / 2 + 63, 100, 20, 100, 20, ANIMATION_NAME_BACKGROUND, ANIMATION_NAME_BACKGROUND, btn -> { /* Nothing to do */ });
         animationNameButton.setMessage(Component.empty().append(WordUtils.capitalize(animations[curAnimation].replace("_", " "))));
         addRenderableWidget(animationNameButton);
 
-        HoverButton leftAnimationArrow = new HoverButton(width / 2 - 57, height / 2 + 62, 9, 16, 20, 20, SMALL_LEFT_ARROW_MAIN, SMALL_LEFT_ARROW_HOVER, button -> {
+        HoverButton leftAnimationArrow = new HoverButton(width / 2 - 57, height / 2 + 65, 9, 16, 20, 20, SMALL_LEFT_ARROW_MAIN, SMALL_LEFT_ARROW_HOVER, button -> {
             curAnimation -= 1;
 
             if (curAnimation < 0) {
@@ -723,7 +723,7 @@ public class DragonEditorScreen extends Screen {
         });
         addRenderableWidget(leftAnimationArrow);
 
-        HoverButton rightAnimationArrow = new HoverButton(width / 2 + 48, height / 2 + 62, 9, 16, 20, 20, SMALL_RIGHT_ARROW_MAIN, SMALL_RIGHT_ARROW_HOVER, button -> {
+        HoverButton rightAnimationArrow = new HoverButton(width / 2 + 48, height / 2 + 65, 9, 16, 20, 20, SMALL_RIGHT_ARROW_MAIN, SMALL_RIGHT_ARROW_HOVER, button -> {
             curAnimation += 1;
 
             if (curAnimation >= animations.length) {
