@@ -1014,7 +1014,12 @@
       "icon": "dragonsurvival:textures/gui/custom/stage/forest/right_arrow_main.png"
     },
     "help_button": "dragonsurvival:textures/gui/custom/help_button/forest_help_button.png",
-    "mana_sprites": "dragonsurvival:mana_icons/forest",
+    "mana_sprites": {
+      "fast_recovery": "dragonsurvival:textures/gui/custom/mana_icons/forest/fast_recovery.png",
+      "full": "dragonsurvival:textures/gui/custom/mana_icons/forest/full.png",
+      "reserved": "dragonsurvival:textures/gui/custom/mana_icons/forest/reserved.png",
+      "slow_recovery": "dragonsurvival:textures/gui/custom/mana_icons/forest/slow_recovery.png"
+    },
     "primary_color": "#41CC48",
     "secondary_color": "#117816"
   },

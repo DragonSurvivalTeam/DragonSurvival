@@ -14,6 +14,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.UpgradeType;
+import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.ExperienceUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -142,15 +143,6 @@ public class DragonAbilityScreen extends Screen {
                 graphics.blit(EXP_FULL, rightBarX, barYPos, 0, 0, (int) (93 * rightExpBarProgress), 6, 93, 6);
             }
 
-            if (true) { // FIXME :: for comparison (will be removed later)
-                graphics.blit(EXP_FULL, leftBarX, barYPos + 8, 0, 0, (int) (93 * Math.min(1f, Math.min(0.5f, minecraft.player.experienceProgress) * 2)), 6, 93, 6);
-
-                if (minecraft.player.experienceProgress > 0.5) {
-                    float rightExpBarProgress = Math.min(1f, Math.min(0.5f, minecraft.player.experienceProgress - 0.5f) * 2);
-                    graphics.blit(EXP_FULL, rightBarX, barYPos + 8, 0, 0, (int) (93 * rightExpBarProgress), 6, 93, 6);
-                }
-            }
-
             int experienceModification;
 
             if (hoveredLevelButton == null || !hoveredLevelButton.canModifyLevel()) {
@@ -184,13 +176,15 @@ public class DragonAbilityScreen extends Screen {
                 graphics.setColor(1, 1, 1, 1);
             }
 
-            int greenFontColor = 0x57882F;
-            int redFontColor = 0xE4472F; // TODO :: use darker color
-            // TODO :: add neutral color for no change
-            int color = experienceModification < 0 ? redFontColor : greenFontColor;
+            int color;
+
+            if (experienceModification == 0) {
+                color = DSColors.DARK_GRAY;
+            } else {
+                color = experienceModification > 0 ? DSColors.GREEN : DSColors.DARK_RED;
+            }
 
             Component expectedLevel = Component.literal(String.valueOf(newLevel)).withColor(color);
-
             int expLevelXPos = ((rightBarX + leftBarX) / 2 + 48 - minecraft.font.width(expectedLevel) / 2) - 1;
             int expLevelYPos = barYPos - 1;
             graphics.drawString(minecraft.font, expectedLevel, expLevelXPos, expLevelYPos, 0, false);

@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public record MiscDragonTextures(
         ResourceLocation foodSprites,
-        ResourceLocation manaSprites,
+        ManaSprites manaSprites,
         ResourceLocation altarBanner,
         ResourceLocation castBar,
         ResourceLocation helpButton,
@@ -26,7 +26,7 @@ public record MiscDragonTextures(
 ) {
     public static final Codec<MiscDragonTextures> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ResourceLocation.CODEC.fieldOf("food_sprites").forGetter(MiscDragonTextures::foodSprites), // TODO :: use vanilla food bar by default or have it optional and render vanilla bar if missing
-            ResourceLocation.CODEC.fieldOf("mana_sprites").forGetter(MiscDragonTextures::manaSprites), // TODO :: can have default texture (gray / green like the rest of the gui)
+            ManaSprites.CODEC.fieldOf("mana_sprites").forGetter(MiscDragonTextures::manaSprites), // TODO :: can have default texture (gray and color with primary color)
             ResourceLocation.CODEC.fieldOf("altar_banner").forGetter(MiscDragonTextures::altarBanner),
             ResourceLocation.CODEC.fieldOf("ability_bar").forGetter(MiscDragonTextures::castBar), // TODO :: could have a simple cast bar without a dragon as default
             ResourceLocation.CODEC.fieldOf("help_button").forGetter(MiscDragonTextures::helpButton), // TODO :: can be optional and use gray / green as default if missing
@@ -51,6 +51,15 @@ public record MiscDragonTextures(
                 ResourceLocation.CODEC.fieldOf("empty").forGetter(FillIcon::empty),
                 ResourceLocation.CODEC.fieldOf("full").forGetter(FillIcon::full)
         ).apply(instance, FillIcon::new));
+    }
+
+    public record ManaSprites(ResourceLocation full, ResourceLocation reserved, ResourceLocation fastRecovery, ResourceLocation slowRecovery) {
+        public static final Codec<ManaSprites> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                ResourceLocation.CODEC.fieldOf("full").forGetter(ManaSprites::full),
+                ResourceLocation.CODEC.fieldOf("reserved").forGetter(ManaSprites::reserved),
+                ResourceLocation.CODEC.fieldOf("fast_recovery").forGetter(ManaSprites::fastRecovery),
+                ResourceLocation.CODEC.fieldOf("slow_recovery").forGetter(ManaSprites::slowRecovery)
+        ).apply(instance, ManaSprites::new));
     }
 
     public record FoodTooltip(ResourceLocation font, String nutritionIcon, String saturationIcon, Optional<TextColor> color) {

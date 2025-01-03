@@ -9,6 +9,9 @@ import net.minecraft.util.FastColor;
 
 /** Colors are defined as RGB (no alpha) */
 public class DSColors {
+    /** {@link ChatFormatting#BLACK} */
+    public static final int BLACK = 0x000000;
+
     /** {@link ChatFormatting#WHITE} */
     public static final int WHITE = 0xFFFFFF;
 
@@ -20,6 +23,11 @@ public class DSColors {
 
     /** {@link ChatFormatting#GOLD} */
     public static final int GOLD = 0xFFAA00;
+
+    /** {@link ChatFormatting#DARK_RED} */
+    public static final int DARK_RED = 0xAA0000;
+
+    public static final int GREEN = 0x57882F;
 
     public static final int RED = 0xF3303B;
     public static final int DARK_GRAY = 0x262626;

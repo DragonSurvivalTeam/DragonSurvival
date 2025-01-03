@@ -43,7 +43,7 @@ public class ManaHandler {
 
         MagicData magic = MagicData.getData(player);
 
-        if (magic.getCurrentlyCasting() != null) {
+        if (magic.isCasting()) {
             return;
         }
 

@@ -128,7 +128,12 @@ public class BuiltInDragonSpecies {
                 ),
                 new MiscDragonTextures(
                         DragonSurvival.res("textures/gui/custom/food_icons/cave_food_icons.png"),
-                        DragonSurvival.res("mana_icons/cave"),
+                        new MiscDragonTextures.ManaSprites(
+                                DragonSurvival.res("textures/gui/custom/mana_icons/cave/full.png"),
+                                DragonSurvival.res("textures/gui/custom/mana_icons/cave/reserved.png"),
+                                DragonSurvival.res("textures/gui/custom/mana_icons/cave/fast_recovery.png"),
+                                DragonSurvival.res("textures/gui/custom/mana_icons/cave/slow_recovery.png")
+                        ),
                         DragonSurvival.res("textures/gui/custom/altar/cave/altar_icon.png"),
                         DragonSurvival.res("textures/gui/custom/casting_bars/cave_cast_bar.png"),
                         DragonSurvival.res("textures/gui/custom/help_button/cave_help_button.png"),
@@ -368,7 +373,12 @@ public class BuiltInDragonSpecies {
                 ),
                 new MiscDragonTextures(
                         DragonSurvival.res("textures/gui/custom/food_icons/sea_food_icons.png"),
-                        DragonSurvival.res("mana_icons/sea"),
+                        new MiscDragonTextures.ManaSprites(
+                                DragonSurvival.res("textures/gui/custom/mana_icons/sea/full.png"),
+                                DragonSurvival.res("textures/gui/custom/mana_icons/sea/reserved.png"),
+                                DragonSurvival.res("textures/gui/custom/mana_icons/sea/fast_recovery.png"),
+                                DragonSurvival.res("textures/gui/custom/mana_icons/sea/slow_recovery.png")
+                        ),
                         DragonSurvival.res("textures/gui/custom/altar/sea/altar_icon.png"),
                         DragonSurvival.res("textures/gui/custom/casting_bars/sea_cast_bar.png"),
                         DragonSurvival.res("textures/gui/custom/help_button/sea_help_button.png"),
@@ -545,7 +555,12 @@ public class BuiltInDragonSpecies {
                 ),
                 new MiscDragonTextures(
                         DragonSurvival.res("textures/gui/custom/food_icons/forest_food_icons.png"),
-                        DragonSurvival.res("mana_icons/forest"),
+                        new MiscDragonTextures.ManaSprites(
+                                DragonSurvival.res("textures/gui/custom/mana_icons/forest/full.png"),
+                                DragonSurvival.res("textures/gui/custom/mana_icons/forest/reserved.png"),
+                                DragonSurvival.res("textures/gui/custom/mana_icons/forest/fast_recovery.png"),
+                                DragonSurvival.res("textures/gui/custom/mana_icons/forest/slow_recovery.png")
+                        ),
                         DragonSurvival.res("textures/gui/custom/altar/forest/altar_icon.png"),
                         DragonSurvival.res("textures/gui/custom/casting_bars/forest_cast_bar.png"),
                         DragonSurvival.res("textures/gui/custom/help_button/forest_help_button.png"),

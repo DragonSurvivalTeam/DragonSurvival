@@ -3,11 +3,13 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.hud;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscDragonTextures;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.GuiGraphicsAccess;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
@@ -16,7 +18,6 @@ import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -184,14 +185,14 @@ public class MagicHUD {
         posX += skillbarXOffset;
         posY += skillbarYOffset;
 
-        MagicData magicData = MagicData.getData(player);
+        MagicData magic = MagicData.getData(player);
 
-        if (magicData.shouldRenderAbilities()) {
+        if (magic.shouldRenderAbilities()) {
             graphics.blit(VANILLA_WIDGETS, posX, posY - 2, 0, 0, 0, 41, 22, 256, 256);
             graphics.blit(VANILLA_WIDGETS, posX + 41, posY - 2, 0, 141, 0, 41, 22, 256, 256);
 
             for (int x = 0; x < MagicData.HOTBAR_SLOTS; x++) {
-                DragonAbilityInstance ability = magicData.fromSlot(x);
+                DragonAbilityInstance ability = magic.fromSlot(x);
 
                 if (ability != null) {
                     graphics.blitSprite(ability.getIcon(), posX + x * sizeX + 3, posY + 1, 0, 16, 16);
@@ -210,7 +211,7 @@ public class MagicHUD {
                 }
             }
 
-            graphics.blit(VANILLA_WIDGETS, posX + sizeX * magicData.getSelectedAbilitySlot() - 1, posY - 3, 2, 0, 22, 24, 24, 256, 256);
+            graphics.blit(VANILLA_WIDGETS, posX + sizeX * magic.getSelectedAbilitySlot() - 1, posY - 3, 2, 0, 22, 24, 24, 256, 256);
 
             // Don't render more than two rows (1 icon = 1 mana point)
             // This makes the mana bars also stop just before the emote button when the chat window is open
@@ -225,8 +226,7 @@ public class MagicHUD {
             manaX += manabarXOffset;
             manaY += manabarYOffset;
 
-            TextureAtlasSprite manaSprite = Minecraft.getInstance().getGuiSprites().getSprite(DragonStateProvider.getData(player).species().value().miscResources().manaSprites());
-            float scale = 1.85f; // This value makes sure that the inner part of the full icon aligns with the empty ones
+            MiscDragonTextures.ManaSprites manaSprites = DragonStateProvider.getData(player).species().value().miscResources().manaSprites();
 
             for (int row = 0; row < 1 + Math.ceil(combinedMana / 10); row++) {
                 for (int point = 0; point < 10; point++) {
@@ -237,30 +237,35 @@ public class MagicHUD {
                     }
 
                     if (currentMana <= manaSlot) {
-                        int x = manaX + 2 + point * 9;
-                        int y = manaY - 11 - row * 9;
-
-                        // The float 'u' and 'v' offset values are the starting x / y position divided by the max width / height of the texture
-                        // e.g. the colored small icon starts at x '22' so it is '22/56', i.e. '0.393' (starting position is inclusive, ending position is exclusive)
-                        ((GuiGraphicsAccess) graphics).dragonSurvival$innerBlit(manaSprite.atlasLocation(), x, (int) (x + 10 / scale), y, (int) (y + 10 / scale), 0, manaSprite.getU(0.714f), manaSprite.getU(0.893f), manaSprite.getV(0.154f), manaSprite.getV(0.538f), 1, 1, 1, 1);
+                        int x = manaX + point * 9;
+                        int y = manaY - 13 - row * 9;
 
                         if (manaSlot < maxMana) {
-                            // Mana that is being regenerated
-                            ((GuiGraphicsAccess) graphics).dragonSurvival$innerBlit(manaSprite.atlasLocation(), x, (int) (x + 10 / scale), y, (int) (y + 10 / scale), 0, manaSprite.getU(0.393f), manaSprite.getU(0.571f), manaSprite.getV(0.154f), manaSprite.getV(0.538f), 1, 1, 1, deltaCounter);
+                            if (magic.isCasting()) {
+                                blit(graphics, manaSprites.slowRecovery(), x, y, 9, 1);
+                            } else {
+                                // Mana that is being regenerated
+                                if (player.getAttributeValue(DSAttributes.MANA_REGENERATION) > player.getAttributeBaseValue(DSAttributes.MANA_REGENERATION)) {
+                                    blit(graphics, manaSprites.fastRecovery(), x, y, 9, 1);
+                                } else {
+                                    blit(graphics, manaSprites.slowRecovery(), x, y, 9, 1);
+                                    blit(graphics, manaSprites.fastRecovery(), x, y, 9, deltaCounter);
+                                }
+                            }
+                        } else {
+                            // Reserved mana
+                            blit(graphics, manaSprites.reserved(), x, y, 9, 1);
                         }
                     } else {
-                        int x = manaX + point * 9;
-                        int y = manaY - 13 - row * 10;
-
-                        ((GuiGraphicsAccess) graphics).dragonSurvival$innerBlit(manaSprite.atlasLocation(), x, (int) (x + 17 / scale), y, (int) (y + 17 / scale), 0, manaSprite.getU0(), manaSprite.getU(0.321f), manaSprite.getV0(), manaSprite.getV(0.692f), 1, 1, 1, 1);
+                        blit(graphics, manaSprites.full(), manaX + point * 9, manaY - 13 - row * 10, 9, 1);
                     }
                 }
             }
         }
 
-        if (magicData.isCasting()) {
-            DragonAbilityInstance ability = Objects.requireNonNull(magicData.fromSlot(magicData.getSelectedAbilitySlot()));
-            float currentCastTime = magicData.getClientCastTimer() - Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
+        if (magic.isCasting()) {
+            DragonAbilityInstance ability = Objects.requireNonNull(magic.fromSlot(magic.getSelectedAbilitySlot()));
+            float currentCastTime = magic.getClientCastTimer() - Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
             int skillCastTime = ability.getCastTime();
 
             if (skillCastTime > 0) {
@@ -290,5 +295,10 @@ public class MagicHUD {
         if (errorTicks > 0) {
             graphics.drawString(Minecraft.getInstance().font, errorMessage.getVisualOrderText(), (int) (width / 2f - Minecraft.getInstance().font.width(errorMessage) / 2f), height - 70, 0);
         }
+    }
+
+    @SuppressWarnings("SameParameterValue") // ignore
+    private static void blit(final GuiGraphics graphics, final ResourceLocation resource, int x, int y, int size, float alpha) {
+        ((GuiGraphicsAccess) graphics).dragonSurvival$innerBlit(resource, x, x + size, y, y + size, 0, 0, 1, 0, 1, 1, 1, 1, alpha);
     }
 }
