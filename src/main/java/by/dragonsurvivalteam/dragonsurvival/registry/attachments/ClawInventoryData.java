@@ -43,7 +43,7 @@ public class ClawInventoryData implements INBTSerializable<CompoundTag> {
     public int switchedToolSlot = -1;
 
     private final SimpleContainer clawsInventory = new SimpleContainer(4);
-    private boolean isMenuOpen;
+    private boolean isMenuOpen = true;
     /** To track the state if a tool swap is triggered within a tool swap (should only swap back if the last tool swap finishes) */
     private int toolSwapLayer;
 

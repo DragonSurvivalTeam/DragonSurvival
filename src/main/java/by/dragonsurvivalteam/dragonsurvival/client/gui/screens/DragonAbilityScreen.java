@@ -213,6 +213,7 @@ public class DragonAbilityScreen extends Screen {
 
         guiLeft = (width - xSize) / 2;
         guiTop = (height - ySize / 2) / 2;
+        leftWindowOpen = true;
 
         int startX = guiLeft - 2;
         int startY = guiTop + 2;
