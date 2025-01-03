@@ -52,6 +52,7 @@ public interface AbilityBlockEffect {
             event.register(REGISTRY_KEY, DragonSurvival.res("summon_entity"), () -> SummonEntityEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("fire"), () -> FireEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("area_cloud"), () -> AreaCloudEffect.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("block_break"), () -> BlockBreakEffect.CODEC);
         }
     }
 }

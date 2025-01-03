@@ -575,8 +575,8 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
     // --- Convert Potato --- //
 
-    public Criterion<ConvertPotatoTrigger.TriggerInstance> convertPotato(final EntityPredicate.Builder builder) {
-        return DSAdvancementTriggers.CONVERT_POTATO.get().createCriterion(new ConvertPotatoTrigger.TriggerInstance(Optional.of(EntityPredicate.wrap(builder.build()))));
+    public Criterion<ConvertItemFromAbility.TriggerInstance> convertPotato(final EntityPredicate.Builder builder) {
+        return DSAdvancementTriggers.CONVERT_ITEM_FROM_ABILITY.get().createCriterion(new ConvertItemFromAbility.TriggerInstance(Optional.of(EntityPredicate.wrap(builder.build())), Items.POTATO.builtInRegistryHolder(), Items.POISONOUS_POTATO.builtInRegistryHolder()));
     }
 
     // --- Mine Block Under Lava --- //

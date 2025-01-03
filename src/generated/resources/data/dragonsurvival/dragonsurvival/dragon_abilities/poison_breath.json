@@ -140,6 +140,13 @@
               ],
               "effect_type": "dragonsurvival:conversion",
               "probability": 0.2
+            },
+            {
+              "effect_type": "dragonsurvival:block_break",
+              "probability": 0.2,
+              "valid_blocks": {
+                "blocks": "minecraft:potatoes"
+              }
             }
           ]
         },

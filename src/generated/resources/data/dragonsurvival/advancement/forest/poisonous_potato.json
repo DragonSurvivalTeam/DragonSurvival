@@ -3,6 +3,8 @@
   "criteria": {
     "criterion_0": {
       "conditions": {
+        "item_from": "minecraft:potato",
+        "item_to": "minecraft:poisonous_potato",
         "player": [
           {
             "condition": "minecraft:entity_properties",
@@ -16,7 +18,7 @@
           }
         ]
       },
-      "trigger": "dragonsurvival:convert_potato"
+      "trigger": "dragonsurvival:convert_item_from_ability"
     }
   },
   "display": {

@@ -1,4 +1,4 @@
-// 1.21.1	2025-01-01T02:10:27.1869734	Advancements
+// 1.21.1	2025-01-02T18:23:55.078047	Advancements
 1a7d4520fc656360fe5fccecd785f600641927d3 data/dragonsurvival/advancement/be_adult_dragon.json
 550afd5ed2eeeeefe5bfaff761df685a793a5978 data/dragonsurvival/advancement/be_dragon.json
 a52fbc87e18b5cfd6830774af942373c963d546f data/dragonsurvival/advancement/be_young_dragon.json
@@ -23,7 +23,7 @@ b74067d46c5b7579fa2131b5a94a533f35a41f85 data/dragonsurvival/advancement/forest/
 609bee3fdab762a68770ff0474b7af41c03163d8 data/dragonsurvival/advancement/forest/be_old_dragon.json
 6322654ca128b878232380a6a16add857ec0d656 data/dragonsurvival/advancement/forest/master_all_passives.json
 7c4645cd9ab79aa95c3890ba68548fc1982a06b6 data/dragonsurvival/advancement/forest/meat_eater.json
-d489ba90301e64b2b045f3385e40fbbdf7ce6fed data/dragonsurvival/advancement/forest/poisonous_potato.json
+0ce801f1049d86bf459a5fc8da7d0a6952bd00c0 data/dragonsurvival/advancement/forest/poisonous_potato.json
 ec36ed53f03c3381e7776d902e632abfc3632f55 data/dragonsurvival/advancement/forest/prevent_darkness_penalty.json
 55999bf025de9c9d9105ca3a9cb46e9ef0cbaef3 data/dragonsurvival/advancement/forest/stand_on_sweet_berries.json
 4c879de1ba8484745b31ddad0b48cc178614034e data/dragonsurvival/advancement/forest/transplant_chorus_fruit.json

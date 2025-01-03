@@ -1,11 +1,13 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.random.SimpleWeightedRandomList;
@@ -71,7 +73,11 @@ public record ItemConversionEffect(List<ItemConversionData> itemConversions, Lev
 
         for (ItemConversionData conversion : itemConversions) {
             if (conversion.predicate().test(itemEntity.getItem())) {
-                conversion.itemsTo().getRandom(entity.getRandom()).ifPresent(item -> itemEntity.setItem(new ItemStack(item.item(), itemEntity.getItem().getCount())));
+                conversion.itemsTo().getRandom(entity.getRandom()).ifPresent(item -> {
+                    DSAdvancementTriggers.CONVERT_ITEM_FROM_ABILITY.get().trigger(dragon, itemEntity.getItem().getItemHolder(), item.item());
+                    itemEntity.setItem(new ItemStack(item.item(), itemEntity.getItem().getCount()));
+                });
+
                 return;
             }
         }
