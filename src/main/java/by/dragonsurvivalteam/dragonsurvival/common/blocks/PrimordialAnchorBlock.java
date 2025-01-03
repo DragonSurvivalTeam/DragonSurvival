@@ -25,6 +25,8 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RespawnAnchorBlock;
+import net.minecraft.world.level.block.entity.TheEndGatewayBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
@@ -38,7 +40,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
-/** Mixture of vanilla implementation from RespawnAnchorBlock.java and TheEndGateWayBlockEntity.java */
+/** Mixture of vanilla implementation from {@link RespawnAnchorBlock} and {@link TheEndGatewayBlockEntity} */
 public class PrimordialAnchorBlock extends Block {
     public static final BooleanProperty CHARGED = BooleanProperty.create("charged");
 
@@ -132,6 +134,7 @@ public class PrimordialAnchorBlock extends Block {
         return false;
     }
 
+    /** See {@link TheEndGatewayBlockEntity#findTallestBlock(BlockGetter, BlockPos, int, boolean)} */
     @SuppressWarnings("SameParameterValue") // ignore
     private BlockPos findTallestBlock(final BlockGetter level, final BlockPos position, int radius, boolean allowBedrock) {
         BlockPos tallestPosition = null;
@@ -155,6 +158,7 @@ public class PrimordialAnchorBlock extends Block {
         return tallestPosition == null ? position : tallestPosition;
     }
 
+    /** See {@link TheEndGatewayBlockEntity#findValidSpawnInChunk} */
     private @Nullable BlockPos findValidSpawnInChunk(final LevelChunk chunk) {
         ChunkPos chunkPosition = chunk.getPos();
         BlockPos position = new BlockPos(chunkPosition.getMinBlockX(), 30, chunkPosition.getMinBlockZ());
@@ -191,6 +195,7 @@ public class PrimordialAnchorBlock extends Block {
         return getChunk(level, position).getHighestFilledSectionIndex() == -1;
     }
 
+    /** See {@link TheEndGatewayBlockEntity#findExitPortalXZPosTentative(ServerLevel, BlockPos)} */
     private Vec3 findExitPortalXZPosTentative(final Level level, final BlockPos startPosition) {
         Vec3 horizontal = new Vec3(startPosition.getX(), 0, startPosition.getZ()).normalize();
         Vec3 position = horizontal.scale(1024);
@@ -207,6 +212,7 @@ public class PrimordialAnchorBlock extends Block {
         return position;
     }
 
+    /** See {@link TheEndGatewayBlockEntity#findOrCreateValidTeleportPos(ServerLevel, BlockPos)} */
     private BlockPos findOrCreateValidTeleportPos(final ServerLevel level, final BlockPos position) {
         Vec3 exitPortalPosition = findExitPortalXZPosTentative(level, position);
         LevelChunk chunk = getChunk(level, exitPortalPosition);

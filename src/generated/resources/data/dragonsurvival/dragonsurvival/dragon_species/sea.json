@@ -1500,10 +1500,10 @@
     },
     "help_button": "dragonsurvival:textures/gui/custom/help_button/sea_help_button.png",
     "mana_sprites": {
-      "fast_recovery": "dragonsurvival:textures/gui/custom/mana_icons/sea/fast_recovery.png",
+      "empty": "dragonsurvival:textures/gui/custom/mana_icons/sea/empty.png",
       "full": "dragonsurvival:textures/gui/custom/mana_icons/sea/full.png",
-      "reserved": "dragonsurvival:textures/gui/custom/mana_icons/sea/reserved.png",
-      "slow_recovery": "dragonsurvival:textures/gui/custom/mana_icons/sea/slow_recovery.png"
+      "recovery": "dragonsurvival:textures/gui/custom/mana_icons/sea/recovery.png",
+      "reserved": "dragonsurvival:textures/gui/custom/mana_icons/sea/reserved.png"
     },
     "primary_color": "#2DA5E0",
     "secondary_color": "#1D7099"

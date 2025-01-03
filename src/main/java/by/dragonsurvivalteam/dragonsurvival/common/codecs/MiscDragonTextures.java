@@ -53,12 +53,12 @@ public record MiscDragonTextures(
         ).apply(instance, FillIcon::new));
     }
 
-    public record ManaSprites(ResourceLocation full, ResourceLocation reserved, ResourceLocation fastRecovery, ResourceLocation slowRecovery) {
+    public record ManaSprites(ResourceLocation full, ResourceLocation reserved, ResourceLocation recovery, ResourceLocation empty) {
         public static final Codec<ManaSprites> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 ResourceLocation.CODEC.fieldOf("full").forGetter(ManaSprites::full),
                 ResourceLocation.CODEC.fieldOf("reserved").forGetter(ManaSprites::reserved),
-                ResourceLocation.CODEC.fieldOf("fast_recovery").forGetter(ManaSprites::fastRecovery),
-                ResourceLocation.CODEC.fieldOf("slow_recovery").forGetter(ManaSprites::slowRecovery)
+                ResourceLocation.CODEC.fieldOf("recovery").forGetter(ManaSprites::recovery),
+                ResourceLocation.CODEC.fieldOf("empty").forGetter(ManaSprites::empty)
         ).apply(instance, ManaSprites::new));
     }
 

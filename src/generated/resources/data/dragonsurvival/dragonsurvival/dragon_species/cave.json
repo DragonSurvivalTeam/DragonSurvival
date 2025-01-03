@@ -352,10 +352,10 @@
     },
     "help_button": "dragonsurvival:textures/gui/custom/help_button/cave_help_button.png",
     "mana_sprites": {
-      "fast_recovery": "dragonsurvival:textures/gui/custom/mana_icons/cave/fast_recovery.png",
+      "empty": "dragonsurvival:textures/gui/custom/mana_icons/cave/empty.png",
       "full": "dragonsurvival:textures/gui/custom/mana_icons/cave/full.png",
-      "reserved": "dragonsurvival:textures/gui/custom/mana_icons/cave/reserved.png",
-      "slow_recovery": "dragonsurvival:textures/gui/custom/mana_icons/cave/slow_recovery.png"
+      "recovery": "dragonsurvival:textures/gui/custom/mana_icons/cave/recovery.png",
+      "reserved": "dragonsurvival:textures/gui/custom/mana_icons/cave/reserved.png"
     },
     "primary_color": "#E84141",
     "secondary_color": "#730B0B"

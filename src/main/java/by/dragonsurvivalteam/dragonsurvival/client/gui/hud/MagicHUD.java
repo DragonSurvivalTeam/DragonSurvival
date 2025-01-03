@@ -156,22 +156,22 @@ public class MagicHUD {
     }
 
     private static float deltaCounter;
-    private static boolean lerpReversed;
+    private static boolean reverseCounter;
 
     public static void renderAbilityHUD(final Player player, final GuiGraphics graphics, int width, int height) {
         if (player == null || player.isSpectator()) {
             return;
         }
 
-        // TODO :: currently added as a test, i.e. not finalized / approved
+        // Blinking speed
         float delta = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true) / 30;
-        deltaCounter += lerpReversed ? -delta : delta;
+        deltaCounter += reverseCounter ? -delta : delta;
 
         if (deltaCounter > 1) {
-            lerpReversed = true;
+            reverseCounter = true;
             deltaCounter = 1;
         } else if (deltaCounter < 0) {
-            lerpReversed = false;
+            reverseCounter = false;
             deltaCounter = 0;
         }
 
@@ -242,15 +242,15 @@ public class MagicHUD {
 
                         if (manaSlot < maxMana) {
                             if (magic.isCasting()) {
-                                blit(graphics, manaSprites.slowRecovery(), x, y, 9, 1);
+                                // No mana regeneration
+                                blit(graphics, manaSprites.empty(), x, y, 9, 1);
+                            } else if (player.getAttributeValue(DSAttributes.MANA_REGENERATION) > player.getAttributeBaseValue(DSAttributes.MANA_REGENERATION)) {
+                                // Fast mana regeneration
+                                blit(graphics, manaSprites.recovery(), x, y, 9, 1);
                             } else {
-                                // Mana that is being regenerated
-                                if (player.getAttributeValue(DSAttributes.MANA_REGENERATION) > player.getAttributeBaseValue(DSAttributes.MANA_REGENERATION)) {
-                                    blit(graphics, manaSprites.fastRecovery(), x, y, 9, 1);
-                                } else {
-                                    blit(graphics, manaSprites.slowRecovery(), x, y, 9, 1);
-                                    blit(graphics, manaSprites.fastRecovery(), x, y, 9, deltaCounter);
-                                }
+                                // Slow mana regeneration
+                                blit(graphics, manaSprites.empty(), x, y, 9, 1);
+                                blit(graphics, manaSprites.recovery(), x, y, 9, deltaCounter);
                             }
                         } else {
                             // Reserved mana
