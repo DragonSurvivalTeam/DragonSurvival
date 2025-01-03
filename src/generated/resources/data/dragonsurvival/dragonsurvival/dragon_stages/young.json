@@ -93,5 +93,5 @@
     "max": 40.0,
     "min": 25.0
   },
-  "ticks_until_grown": 5184000
+  "ticks_until_grown": 432000
 }
