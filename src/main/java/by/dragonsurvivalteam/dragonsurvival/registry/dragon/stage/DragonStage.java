@@ -202,7 +202,7 @@ public record DragonStage(
         }
 
         //noinspection DataFlowIssue -> stage should not be null at this point
-        if (size < smallest.value().sizeRange().min()) {
+        if (size <= smallest.value().sizeRange().min()) {
             return smallest;
         }
 
