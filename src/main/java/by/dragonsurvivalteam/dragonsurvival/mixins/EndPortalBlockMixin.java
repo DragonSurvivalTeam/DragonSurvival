@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.mixins;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonSpeciesTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -43,29 +44,41 @@ public class EndPortalBlockMixin {
     @ModifyVariable(method = "getPortalDestination", at = @At(value = "STORE"), ordinal = 1)
     private BlockPos modifyBlockPosForEndSpawnPoint(BlockPos original, @Local(argsOnly = true) Entity entity, @Local(argsOnly = true) ServerLevel level) {
         boolean travellingToTheEnd = level.dimension().equals(ServerLevel.OVERWORLD);
-        if(travellingToTheEnd) {
-            if(DragonUtils.isType(entity, BuiltInDragonSpecies.CAVE)) {
-                return END_CAVE_DRAGON_SPAWN_POINT;
-            } else if(DragonUtils.isType(entity, BuiltInDragonSpecies.SEA)) {
-                return END_SEA_DRAGON_SPAWN_POINT;
-            } else if(DragonUtils.isType(entity, BuiltInDragonSpecies.FOREST)) {
-                return END_FOREST_DRAGON_SPAWN_POINT;
+        if(entity instanceof Player player) {
+            DragonStateHandler handler = DragonStateProvider.getData(player);
+            if(!handler.isDragon()) {
+                return original;
+            }
+
+            if(travellingToTheEnd) {
+                if(handler.species().is(DSDragonSpeciesTags.CAVE)) {
+                    return END_CAVE_DRAGON_SPAWN_POINT;
+                } else if(handler.species().is(DSDragonSpeciesTags.SEA)) {
+                    return END_SEA_DRAGON_SPAWN_POINT;
+                } else if(handler.species().is(DSDragonSpeciesTags.FOREST)) {
+                    return END_FOREST_DRAGON_SPAWN_POINT;
+                }
             }
         }
 
         return original;
     }
 
-    @Unique private static ResourceLocation dragonSurvival$getDragonSpawnPlatformStructure(ServerLevelAccessor serverLevelAccessor, Entity entity) {
-        if(DragonUtils.isType(entity, BuiltInDragonSpecies.CAVE)) {
-            return ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "end_spawn_platforms/cave_end_spawn_platform");
-        } else if(DragonUtils.isType(entity, BuiltInDragonSpecies.SEA)) {
-            return ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "end_spawn_platforms/sea_end_spawn_platform");
-        } else if(DragonUtils.isType(entity, BuiltInDragonSpecies.FOREST)) {
-            return ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "end_spawn_platforms/forest_end_spawn_platform");
-        } else {
-            throw new IllegalArgumentException("Entity is an invalid dragon type");
-        }
+    @Unique private static ResourceLocation dragonSurvival$getDragonSpawnPlatformStructure(Player player) {
+            DragonStateHandler handler = DragonStateProvider.getData(player);
+            if (!handler.isDragon()) {
+                throw new IllegalArgumentException("Entity is not a dragon");
+            }
+
+            if (handler.species().is(DSDragonSpeciesTags.CAVE)) {
+                return ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "end_spawn_platforms/cave_end_spawn_platform");
+            } else if (handler.species().is(DSDragonSpeciesTags.SEA)) {
+                return ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "end_spawn_platforms/sea_end_spawn_platform");
+            } else if (handler.species().is(DSDragonSpeciesTags.FOREST)) {
+                return ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "end_spawn_platforms/forest_end_spawn_platform");
+            } else {
+                throw new IllegalArgumentException("Entity is an invalid dragon type");
+            }
     }
 
     @Unique private static StructureBlockEntity dragonSurvival$createStructureBlock(ResourceLocation structure, BlockPos pos, Rotation rotation, ServerLevel level) {
@@ -102,15 +115,15 @@ public class EndPortalBlockMixin {
     private void spawnDragonPlatform(ServerLevelAccessor serverLevelAccessor, BlockPos blockPos, boolean dropBlocks, Operation<Void> original, @Local(argsOnly = true) Entity entity) {
         if(entity instanceof Player player) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
-            if(handler.isDragon()) {
+            if(handler.isDragon() && handler.species().is(DSDragonSpeciesTags.CAVE) || handler.species().is(DSDragonSpeciesTags.SEA) || handler.species().is(DSDragonSpeciesTags.FOREST)) {
                 // Construct a different platform for the dragon to spawn on by getting structure data
                 ServerLevel level = serverLevelAccessor.getLevel();
-                Vec3i structureSize = level.getStructureManager().get(dragonSurvival$getDragonSpawnPlatformStructure(serverLevelAccessor, entity)).get().getSize();
+                Vec3i structureSize = level.getStructureManager().get(dragonSurvival$getDragonSpawnPlatformStructure(player)).get().getSize();
                 // Offset the blockPos to the bottom left corner of the structure
                 blockPos = blockPos.offset(-structureSize.getX() / 2, -structureSize.getY() / 2, -structureSize.getZ() / 2);
                 BoundingBox boundingbox = StructureUtils.getStructureBoundingBox(blockPos, structureSize, Rotation.NONE);
                 dragonSurvival$clearSpaceForStructure(boundingbox, level);
-                StructureBlockEntity structureblockentity = dragonSurvival$createStructureBlock(dragonSurvival$getDragonSpawnPlatformStructure(serverLevelAccessor, entity), blockPos, Rotation.NONE, level);
+                StructureBlockEntity structureblockentity = dragonSurvival$createStructureBlock(dragonSurvival$getDragonSpawnPlatformStructure(player), blockPos, Rotation.NONE, level);
                 structureblockentity.placeStructure(level);
                 level.getBlockTicks().clearArea(boundingbox);
                 level.clearBlockEvents(boundingbox);
