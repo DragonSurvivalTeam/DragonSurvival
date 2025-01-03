@@ -12,11 +12,14 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.GrowthIcon;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscDragonTextures;
+import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
+import by.dragonsurvivalteam.dragonsurvival.compat.jei.JEIPlugin;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.gui.GuiGraphics;
@@ -54,6 +57,7 @@ public class DragonSpeciesScreen extends Screen {
     public Holder<DragonSpecies> dragonSpecies;
 
     private final List<ScrollableComponent> scrollableComponents = new ArrayList<>();
+    private DietMenuComponent dietMenu;
     private Holder<DragonStage> dragonStage;
     private HoverButton growthButton;
     private ScrollableComponent crystalBar;
@@ -85,6 +89,15 @@ public class DragonSpeciesScreen extends Screen {
         }
 
         return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    }
+
+    @Override
+    public boolean keyPressed(final int keyCode, final int scanCode, final int modifiers) {
+        if (dietMenu.getHovered() != null && Compat.isModLoaded(Compat.JEI)) {
+            return JEIPlugin.handleKeyPress(InputConstants.getKey(keyCode, scanCode), dietMenu.getHovered());
+        }
+
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
@@ -142,7 +155,7 @@ public class DragonSpeciesScreen extends Screen {
         TabButton.addTabButtonsToScreen(this, startX + 17, startY - 56, TabButton.Type.SPECIES_TAB);
         DragonStateHandler data = DragonStateProvider.getData(minecraft.player);
 
-        DietMenuComponent dietMenu = new DietMenuComponent(dragonSpecies, startX + 78, startY + 10);
+        dietMenu = new DietMenuComponent(dragonSpecies, startX + 78, startY + 10);
         scrollableComponents.add(dietMenu);
         renderables.add(dietMenu);
 

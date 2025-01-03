@@ -10,28 +10,28 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-@EventBusSubscriber
+@EventBusSubscriber // Failsafe in case the data gets out of sync
 public class ServerPlayerStatusSync {
+    // TODO :: is there any point in syncing once every 10 minutes?
+    private static final int SYNC_RATE = Functions.secondsToTicks(600);
 
-    // This function is a failsafe that sync the player's data with the server after a certain period of time if it somehow gets out of sync.
-
-    // TODO: Include some error reporting that says what went out of sync if the server and client data are not the same.
     @SubscribeEvent
-    public static void onServerTick(PlayerTickEvent.Post event) {
-        int syncTicks = Functions.secondsToTicks(600);
-        if (event.getEntity().level().isClientSide()) return;
+    public static void onServerTick(final PlayerTickEvent.Post event) {
+        if (event.getEntity().level().isClientSide()) {
+            return;
+        }
 
         Player player = event.getEntity();
 
-        if (player.isAddedToLevel() && player.isAlive()) {
-            if (DragonStateProvider.isDragon(player)) {
-                DragonStateHandler handler = DragonStateProvider.getData(player);
-                if (player.tickCount >= handler.lastSync + syncTicks) {
-                    // We don't do an initial sync here since it could result in the player syncing before their data is loaded, causing data loss.
-                    handler.lastSync = player.tickCount;
-                    PacketDistributor.sendToPlayersTrackingEntity(player, new SyncComplete.Data(player.getId(), handler.serializeNBT(player.registryAccess())));
-                }
-            }
+        if (!player.isAddedToLevel() || !player.isAlive()) {
+            return;
+        }
+
+        DragonStateHandler data = DragonStateProvider.getData(player);
+
+        if (data.isDragon() && player.tickCount >= data.lastSync + SYNC_RATE) {
+            data.lastSync = player.tickCount;
+            PacketDistributor.sendToPlayersTrackingEntity(player, new SyncComplete.Data(player.getId(), data.serializeNBT(player.registryAccess())));
         }
     }
 }

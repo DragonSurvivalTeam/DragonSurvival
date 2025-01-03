@@ -99,8 +99,6 @@ public class DragonSurvival {
         event.addPackFinders(location(MODID, folder), PackType.SERVER_DATA, name, PackSource.FEATURE, true, Pack.Position.TOP);
     }
 
-    // TODO :: move into a utils class?
-
     /** Creates a {@link ResourceLocation} with the dragon survival namespace */
     public static ResourceLocation res(final String path) {
         return location(DragonSurvival.MODID, path);

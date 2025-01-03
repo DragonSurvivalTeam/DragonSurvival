@@ -13,18 +13,20 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class DietMenuComponent implements ScrollableComponent, Renderable {
     @Translation(comments = "There is no custom dragon diet")
-    public static final String NO_CUSTOM_DIET = Translation.Type.GUI.wrap("diet_menu.no_custom_diet");
+    private static final String NO_CUSTOM_DIET = Translation.Type.GUI.wrap("diet_menu.no_custom_diet");
 
     private static final int VISIBLE_MAX_ROWS = 3;
     private static final int ITEMS_PER_ROW = 7;
     private static final int ITEM_SIZE = 18;
 
     private final Holder<DragonSpecies> dragonSpecies;
+    private @Nullable ItemStack hovered;
 
     private final int x;
     private final int y;
@@ -39,6 +41,10 @@ public class DietMenuComponent implements ScrollableComponent, Renderable {
         this.y = y;
         this.maxX = x + ITEMS_PER_ROW * ITEM_SIZE;
         this.maxY = y + VISIBLE_MAX_ROWS * ITEM_SIZE;
+    }
+
+    public @Nullable ItemStack getHovered() {
+        return hovered;
     }
 
     @Override
@@ -72,6 +78,7 @@ public class DietMenuComponent implements ScrollableComponent, Renderable {
 
         int processedRows = 0;
         int processedItems = 0;
+        hovered = null;
 
         for (int i = scrollAmount * ITEMS_PER_ROW; i < items.size(); i++) {
             int itemX = x + (processedItems % ITEMS_PER_ROW) * ITEM_SIZE;
@@ -82,6 +89,7 @@ public class DietMenuComponent implements ScrollableComponent, Renderable {
 
             if (mouseX >= itemX && mouseX < itemX + ITEM_SIZE && mouseY >= itemY && mouseY < itemY + ITEM_SIZE) {
                 graphics.renderTooltip(Minecraft.getInstance().font, stack, mouseX, mouseY);
+                hovered = stack;
             }
 
             processedItems++;

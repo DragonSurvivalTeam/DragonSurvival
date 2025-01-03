@@ -1,4 +1,4 @@
-package by.dragonsurvivalteam.dragonsurvival.api.jei;
+package by.dragonsurvivalteam.dragonsurvival.compat.jei;
 
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonInventoryScreen;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.EffectRenderingInventoryScreenAccessor;

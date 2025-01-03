@@ -1,4 +1,4 @@
-package by.dragonsurvivalteam.dragonsurvival.api.jei;
+package by.dragonsurvivalteam.dragonsurvival.compat.jei;
 
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.EffectRenderingInventoryScreenAccessor;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
