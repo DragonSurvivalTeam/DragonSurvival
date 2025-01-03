@@ -38,8 +38,7 @@ public class DragonSpecies implements AttributeModifierSupplier {
     public static final Codec<DragonSpecies> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.DOUBLE.optionalFieldOf("starting_size").forGetter(DragonSpecies::startingSize),
             // No defined stages means all are applicable
-            // TODO :: rename to stage_progression / custom_stage_progression or sth. like that?
-            RegistryCodecs.homogeneousList(DragonStage.REGISTRY).optionalFieldOf("stages").forGetter(DragonSpecies::stages),
+            RegistryCodecs.homogeneousList(DragonStage.REGISTRY).optionalFieldOf("custom_stage_progression").forGetter(DragonSpecies::stages),
             // No defined bodies means all are applicable
             RegistryCodecs.homogeneousList(DragonBody.REGISTRY).optionalFieldOf("bodies", HolderSet.empty()).forGetter(DragonSpecies::bodies),
             RegistryCodecs.homogeneousList(DragonAbility.REGISTRY).optionalFieldOf("abilities", HolderSet.empty()).forGetter(DragonSpecies::abilities),
@@ -53,7 +52,7 @@ public class DragonSpecies implements AttributeModifierSupplier {
     public static final StreamCodec<RegistryFriendlyByteBuf, Holder<DragonSpecies>> STREAM_CODEC = ByteBufCodecs.holderRegistry(REGISTRY);
 
     private final Optional<Double> startingSize;
-    private final Optional<HolderSet<DragonStage>> stages;
+    private final Optional<HolderSet<DragonStage>> customStageProgression;
     private final HolderSet<DragonBody> bodies;
     private final HolderSet<DragonAbility> abilities;
     private final HolderSet<DragonPenalty> penalties;
@@ -64,9 +63,9 @@ public class DragonSpecies implements AttributeModifierSupplier {
     private @Nullable Map<Item, FoodProperties> diet;
     private long lastDietUpdate;
 
-    public DragonSpecies(final Optional<Double> startingSize, final Optional<HolderSet<DragonStage>> stages, final HolderSet<DragonBody> bodies, final HolderSet<DragonAbility> abilities, final HolderSet<DragonPenalty> penalties, List<Modifier> modifiers, final List<DietEntry> dietEntries, final MiscDragonTextures miscResources) {
+    public DragonSpecies(final Optional<Double> startingSize, final Optional<HolderSet<DragonStage>> customStageProgression, final HolderSet<DragonBody> bodies, final HolderSet<DragonAbility> abilities, final HolderSet<DragonPenalty> penalties, List<Modifier> modifiers, final List<DietEntry> dietEntries, final MiscDragonTextures miscResources) {
         this.startingSize = startingSize;
-        this.stages = stages;
+        this.customStageProgression = customStageProgression;
         this.bodies = bodies;
         this.abilities = abilities;
         this.penalties = penalties;
@@ -132,7 +131,7 @@ public class DragonSpecies implements AttributeModifierSupplier {
     }
 
     public HolderSet<DragonStage> getStages(@Nullable final HolderLookup.Provider provider) {
-        return stages.orElseGet(() -> DragonStage.getDefaultStages(provider));
+        return customStageProgression.orElseGet(() -> DragonStage.getDefaultStages(provider));
     }
 
     public GrowthIcon getGrowthIcon(final Holder<DragonStage> stage) {
@@ -165,7 +164,7 @@ public class DragonSpecies implements AttributeModifierSupplier {
     }
 
     public Optional<HolderSet<DragonStage>> stages() {
-        return stages;
+        return customStageProgression;
     }
 
     public HolderSet<DragonBody> bodies() {
