@@ -21,7 +21,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.fml.loading.FMLLoader;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -123,15 +122,9 @@ public class DragonAbilityScreen extends Screen {
         }
 
         if (dragonSpecies != null) {
-            // Our calculation is different from 'Player#experienceProgress' resulting in the hover progress not matching up if we use it
-            // The largest difference so far was ~0.03
+            // 'Player#experienceProgress' is somehow different from our calculation result causing the hover progress to not match up if we use it
             int totalExperience = ExperienceUtils.getTotalExperience(minecraft.player);
             float progress = (float) (totalExperience - ExperienceUtils.getTotalExperience(minecraft.player.experienceLevel)) / ExperienceUtils.getExperienceForLevelAfter(minecraft.player.experienceLevel);
-
-            // Just for debugging purposes
-            if (!FMLLoader.isProduction() && Math.abs(progress - minecraft.player.experienceProgress) > 0.075) {
-                throw new IllegalStateException("Experience difference too big - calculated: [" + progress + "] / vanilla: [" + minecraft.player.experienceProgress + "]");
-            }
 
             // Draw XP bars
             float leftExpBarProgress = Math.min(1f, Math.min(0.5f, progress) * 2);
@@ -147,6 +140,15 @@ public class DragonAbilityScreen extends Screen {
             if (progress > 0.5) {
                 float rightExpBarProgress = Math.min(1f, Math.min(0.5f, progress - 0.5f) * 2);
                 graphics.blit(EXP_FULL, rightBarX, barYPos, 0, 0, (int) (93 * rightExpBarProgress), 6, 93, 6);
+            }
+
+            if (true) { // FIXME :: for comparison (will be removed later)
+                graphics.blit(EXP_FULL, leftBarX, barYPos + 8, 0, 0, (int) (93 * Math.min(1f, Math.min(0.5f, minecraft.player.experienceProgress) * 2)), 6, 93, 6);
+
+                if (minecraft.player.experienceProgress > 0.5) {
+                    float rightExpBarProgress = Math.min(1f, Math.min(0.5f, minecraft.player.experienceProgress - 0.5f) * 2);
+                    graphics.blit(EXP_FULL, rightBarX, barYPos + 8, 0, 0, (int) (93 * rightExpBarProgress), 6, 93, 6);
+                }
             }
 
             int experienceModification;

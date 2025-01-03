@@ -51,7 +51,6 @@ import org.joml.Vector3f;
 import software.bernie.geckolib.cache.object.GeoBone;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.*;
 import java.util.function.Supplier;
 
