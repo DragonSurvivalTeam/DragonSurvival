@@ -24,6 +24,8 @@ import net.minecraft.world.phys.AABB;
 import java.util.List;
 import java.util.Random;
 
+// TODO :: new data attachment that stores effects valid dragon items
+//  said attachment is stored in the item stack data and transferred to the placed block entity
 public class DragonBeaconTileEntity extends BaseBlockTileEntity {
     public Type type = Type.NONE;
     public float tick;

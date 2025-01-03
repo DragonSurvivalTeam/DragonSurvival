@@ -46,4 +46,5 @@ public interface Proxy {
     }
 
     @Nullable RegistryAccess getAccess();
+    boolean isMining(final Player player);
 }

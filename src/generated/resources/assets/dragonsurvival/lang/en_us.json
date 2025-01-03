@@ -259,8 +259,6 @@
   "dragon_ability.dragonsurvival.storm_breath.desc": "■ Breathe out a stream of sparks and electricity. Targets become §c«Electrified»§r and deal electric damage to everything nearby.\n\n■ Charges creepers, and may summon thunderbolts during a storm.\n\n■ Range depends on the age of the dragon.",
   "dragon_ability.dragonsurvival.sturdy_skin": "Sturdy Skin",
   "dragon_ability.dragonsurvival.sturdy_skin.desc": "Grants additional armor points to all entities in an area around the dragon.",
-  "dragon_ability.dragonsurvival.summon_test": "Summon Test",
-  "dragon_ability.dragonsurvival.summon_test.desc": "■ Test for summon entity effect\n",
   "dragon_body.dragonsurvival.center": "Center",
   "dragon_body.dragonsurvival.center.desc": "§6■ Central Type§r\n■ Inhabitants of all biomes, and the most common type of dragon. They are the most balanced type of dragon, having no particular strengths or weaknesses.",
   "dragon_body.dragonsurvival.center.wings": "Show wings",

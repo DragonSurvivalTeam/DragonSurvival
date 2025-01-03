@@ -2,7 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.blocks;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.TreasureParticleOption;
-import by.dragonsurvivalteam.dragonsurvival.network.status.SyncTreasureRestStatus;
+import by.dragonsurvivalteam.dragonsurvival.network.status.SyncResting;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.TreasureRestData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import com.mojang.serialization.MapCodec;
@@ -76,30 +76,27 @@ public class TreasureBlock extends FallingBlock implements SimpleWaterloggedBloc
     }
 
     @Override
-    public @NotNull InteractionResult useWithoutItem(BlockState blockState, @NotNull Level world, @NotNull BlockPos blockPos, Player player, @NotNull BlockHitResult blockHitResult) {
-        if (player.getBlockStateOn().getBlock() == blockState.getBlock()) {
-            TreasureRestData data = TreasureRestData.getData(player);
+    public @NotNull InteractionResult useWithoutItem(final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, final Player player, @NotNull final BlockHitResult hitResult) {
+        if (player.getBlockStateOn().getBlock() == state.getBlock()) {
+            TreasureRestData treasureData = TreasureRestData.getData(player);
+            treasureData.setResting(true);
 
-            if (!data.isResting) {
-                if (world.isClientSide()) {
-                    data.isResting = true;
-                    PacketDistributor.sendToServer(new SyncTreasureRestStatus.Data(player.getId(), true));
-                }
+            if (player instanceof ServerPlayer serverPlayer) {
+                serverPlayer.resetStat(Stats.CUSTOM.get(Stats.TIME_SINCE_REST));
+                serverPlayer.serverLevel().updateSleepingPlayerList();
+                PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncResting(serverPlayer.getId(), treasureData.isResting()));
 
-                return InteractionResult.SUCCESS;
-            }
+                BlockPos respawnPosition = serverPlayer.getRespawnPosition();
 
-            if (!world.isClientSide()) {
-                player.resetStat(Stats.CUSTOM.get(Stats.TIME_SINCE_REST));
-                ServerPlayer serverplayerentity = (ServerPlayer) player;
-                if (serverplayerentity.getRespawnPosition() == null || serverplayerentity.getRespawnDimension() != world.dimension() || serverplayerentity.getRespawnPosition() != null && !serverplayerentity.getRespawnPosition().equals(blockPos) && serverplayerentity.getRespawnPosition().distSqr(blockPos) > 40) {
-                    serverplayerentity.setRespawnPosition(world.dimension(), blockPos, 0.0F, false, true);
-                    return InteractionResult.SUCCESS;
+                if (respawnPosition == null || serverPlayer.getRespawnDimension() != level.dimension() || !respawnPosition.equals(position) && respawnPosition.distSqr(position) > 40) {
+                    serverPlayer.setRespawnPosition(level.dimension(), position, 0, false, true);
                 }
             }
+
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
 
-        return super.useWithoutItem(blockState, world, blockPos, player, blockHitResult);
+        return super.useWithoutItem(state, level, position, player, hitResult);
     }
 
     @Override

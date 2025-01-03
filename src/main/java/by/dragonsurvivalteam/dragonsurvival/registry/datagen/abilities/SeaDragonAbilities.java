@@ -395,7 +395,6 @@ public class SeaDragonAbilities {
 
         context.register(SEA_CLAWS_AND_TEETH, new DragonAbility(
                 Activation.passive(),
-                // FIXME :: lookup for stages seems to throw an exception at the moment
                 Optional.of(new SizeUpgrade(4, LevelBasedValue.lookup(List.of(0f, 25f, 40f, 60f), LevelBasedValue.perLevel(15)))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(

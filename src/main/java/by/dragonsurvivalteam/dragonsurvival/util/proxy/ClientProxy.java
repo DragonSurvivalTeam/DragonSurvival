@@ -114,6 +114,17 @@ public class ClientProxy implements Proxy {
     }
 
     @Override
+    public boolean isPlayingEmote(int playerId, final DragonEmote emote) {
+        AtomicReference<DragonEntity> dragonEntity = ClientDragonRenderer.playerDragonHashMap.get(playerId);
+
+        if (dragonEntity == null) {
+            return false;
+        }
+
+        return dragonEntity.get().isPlayingEmote(emote);
+    }
+
+    @Override
     public boolean isOnRenderThread() {
         return RenderSystem.isOnRenderThread();
     }
@@ -130,13 +141,7 @@ public class ClientProxy implements Proxy {
     }
 
     @Override
-    public boolean isPlayingEmote(int playerId, final DragonEmote emote) {
-        AtomicReference<DragonEntity> dragonEntity = ClientDragonRenderer.playerDragonHashMap.get(playerId);
-
-        if (dragonEntity == null) {
-            return false;
-        }
-
-        return dragonEntity.get().isPlayingEmote(emote);
+    public boolean isMining(final Player player) {
+        return Minecraft.getInstance().gameMode != null && Minecraft.getInstance().gameMode.isDestroying();
     }
 }

@@ -121,39 +121,6 @@ public class DragonPenaltyHandler {
         }
     }
 
-    @SubscribeEvent
-    public static void consumeHurtfulItem(LivingEntityUseItemEvent.Finish destroyItemEvent) {
-        // FIXME :: Hurtful item penalty?
-        /*if (!ServerConfig.penaltiesEnabled || !(destroyItemEvent.getEntity() instanceof Player player)) {
-            return;
-        }
-
-        ItemStack stack = destroyItemEvent.getItem();
-        DragonStateHandler data = DragonStateProvider.getData(player);
-
-        if (!data.isDragon()) {
-            return;
-        }
-
-        List<ItemHurtConfig> hurtfulItems = switch (data.getType()) {
-            case CaveDragonType ignored -> CaveDragonConfig.caveDragonHurtfulItems;
-            case SeaDragonType ignored -> SeaDragonConfig.seaDragonHurtfulItems;
-            case ForestDragonType ignored -> ForestDragonConfig.hurtfulItems;
-            default -> throw new IllegalStateException("Not a valid dragon type: " + data.getType().getClass().getName());
-        };
-
-        for (ItemHurtConfig config : hurtfulItems) {
-            // TODO :: should only the first non-zero value be relevant or should it potentially call 'hurt' multiple times if an item is present in multiple configs?
-            float damage = config.getDamage(stack);
-
-            // TODO :: change config name and allow < 0 items to heal the dragon?
-            if (damage > 0) {
-                player.hurt(player.damageSources().generic(), damage);
-                return;
-            }
-        }*/
-    }
-
     @SubscribeEvent // Prevent the player from equipping blacklisted armor (or from mixing light and dark dragon armor)
     public static void preventEquipment(final ItemStackedOnOtherEvent event) {
         ItemStack stack = event.getStackedOnItem(); // FIXME :: this is probably a neoforge bug, this should be carried item -> might be changed in the future

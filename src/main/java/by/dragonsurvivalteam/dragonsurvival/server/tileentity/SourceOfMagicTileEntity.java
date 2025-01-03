@@ -34,6 +34,8 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.HashMap;
 
+// TODO :: new data attachment that stores effects, input items and valid dragon items
+//  said attachment is stored in the item stack data and transferred to the placed block entity
 public class SourceOfMagicTileEntity extends BaseBlockTileEntity implements Container, MenuProvider, GeoBlockEntity {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     /** List of valid items that can be placed in the container */

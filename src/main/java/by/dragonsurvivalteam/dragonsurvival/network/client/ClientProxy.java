@@ -16,7 +16,6 @@ import by.dragonsurvivalteam.dragonsurvival.network.flight.SpinStatus;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncDeltaMovement;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncWingsSpread;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.*;
-import by.dragonsurvivalteam.dragonsurvival.network.particle.SyncBreathParticles;
 import by.dragonsurvivalteam.dragonsurvival.network.particle.SyncParticleTrail;
 import by.dragonsurvivalteam.dragonsurvival.network.player.*;
 import by.dragonsurvivalteam.dragonsurvival.network.status.*;
@@ -26,7 +25,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -268,15 +266,6 @@ public class ClientProxy {
         }
     }
 
-    public static void handleDiggingStatus(final SyncDiggingStatus.Data message) {
-        Player localPlayer = Minecraft.getInstance().player;
-
-        if (localPlayer != null) {
-            Entity entity = localPlayer.level().getEntity(message.playerId());
-            MovementData.getData(entity).dig = message.status();
-        }
-    }
-
     public static void handlePlayerJumpSync(final SyncPlayerJump.Data message) {
         Entity entity = Minecraft.getInstance().level.getEntity(message.playerId());
 
@@ -311,40 +300,6 @@ public class ClientProxy {
         }
     }
 
-    // TODO: Don't think this is needed anymore
-    /*public static void handleSyncMagicSourceStatus(final SyncMagicSourceStatus.Data message) {
-        Player localPlayer = Minecraft.getInstance().player;
-
-        if (localPlayer != null) {
-            Entity entity = localPlayer.level().getEntity(message.playerId());
-
-            if (entity instanceof Player player) {
-                DragonStateProvider.getOptional(player).ifPresent(handler -> {
-                    handler.getMagicData().onMagicSource = message.state();
-                    handler.getMagicData().magicSourceTimer = message.timer();
-                });
-            }
-        }
-    }*/
-
-    public static void handleSyncTreasureRestStatus(final SyncTreasureRestStatus.Data message) {
-        Player localPlayer = Minecraft.getInstance().player;
-
-        if (localPlayer != null) {
-            Entity entity = localPlayer.level().getEntity(message.playerId());
-
-            if (entity instanceof Player player) {
-                TreasureRestData data = TreasureRestData.getData(player);
-                if (message.state() != data.isResting) {
-                    data.restingTicks = 0;
-                    data.sleepingTicks = 0;
-                }
-
-                data.isResting = message.state();
-            }
-        }
-    }
-
     public static void handleSyncParticleTrail(SyncParticleTrail message) {
             // Creates a trail of particles between the entity and target(s)
             Vec3 source = new Vec3(message.source().x(), message.source().y(), message.source().z());
@@ -358,54 +313,5 @@ public class ClientProxy {
                 Vec3 step = target.add(distV.scale(stepSize * i));
                 Minecraft.getInstance().level.addParticle(message.trailParticle(), step.x(), step.y(), step.z(), 0.0, 0.0, 0.0);
             }
-    }
-
-    private static Vec3 calculateParticleVelocity(float yaw, float pitch, float speed) {
-        float xVel = (float) (Math.sin(yaw) * Math.cos(pitch) * speed);
-        float yVel = (float) Math.sin(pitch) * speed;
-        float zVel = (float) (Math.cos(yaw) * Math.cos(pitch) * speed);
-        return new Vec3(xVel, yVel, zVel);
-    }
-
-    public static void handleSyncBreathParticles(SyncBreathParticles message) {
-        if(!(Minecraft.getInstance().level.getEntity(message.playerId()) instanceof Player player)) {
-            return;
-        }
-
-        DragonStateHandler handler = DragonStateProvider.getData(player);
-
-        // TODO :: Figure out how to render particles from the mouth bone
-        /*DragonEntity dragonEntity = ClientDragonRenderer.playerDragonHashMap.get(player.getId()).get();
-        BoneSnapshot breathSourceBoneSnapshot = dragonEntity.getAnimatableInstanceCache().getManagerForId(message.playerId()).getBoneSnapshotCollection().get("BreathSource");
-        GeoBone breathSourceBone = breathSourceBoneSnapshot.getBone();
-        Vector3d boneWorldPos = breathSourceBone.getWorldPosition();*/
-
-        float yaw = (float) Math.toRadians(-player.getYRot());
-        float pitch = (float) Math.toRadians(-player.getXRot());
-        float speed = (float) (handler.getSize() * message.speedPerSize());
-
-        Vec3 eyePos = player.getEyePosition();
-        Vec3 lookAngle = player.getLookAngle();
-        Vec3 position;
-        if (player.getAbilities().flying) {
-            Vec3 forward = lookAngle.scale(2.0F);
-            position = eyePos.add(forward).add(0F, -0.1 - 0.5F * (handler.getSize() / 30F), 0F);
-        } else {
-            Vec3 forward = lookAngle.scale(1.0F);
-            position = eyePos.add(forward).add(0F, -0.1F - 0.2F * (handler.getSize() / 30F), 0F);
-        }
-
-        RandomSource rand = Minecraft.getInstance().level.getRandom();
-
-        for (int i = 0; i < message.numParticles(); i++) {
-            Vec3 velocity = calculateParticleVelocity((float) (yaw + message.spread() * 2 * (rand.nextDouble() * 2 - 1) * 2.f * Math.PI), (float) (pitch + message.spread() * (rand.nextDouble() * 2 - 1) * 2.f * Math.PI), speed);
-            // Get the dragon model and place the particles at the mouth of the dragon
-            Minecraft.getInstance().level.addParticle(message.secondaryParticle(), position.x, position.y, position.z, velocity.x, velocity.y, velocity.z);
-        }
-
-        for (int i = 0; i <  message.numParticles() / 2; i++) {
-            Vec3 velocity = calculateParticleVelocity((float) (yaw + message.spread() * 2 * (rand.nextDouble() * 2 - 1) * 2.f * Math.PI), (float) (pitch + message.spread() * (rand.nextDouble() * 2 - 1) * 2.f * Math.PI), speed);
-            Minecraft.getInstance().level.addParticle(message.mainParticle(), position.x, position.y, position.z, velocity.x, velocity.y, velocity.z);
-        }
     }
 }

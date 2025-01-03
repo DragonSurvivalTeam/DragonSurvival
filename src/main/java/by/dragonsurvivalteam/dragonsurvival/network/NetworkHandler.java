@@ -22,7 +22,10 @@ import by.dragonsurvivalteam.dragonsurvival.network.particle.SyncParticleTrail;
 import by.dragonsurvivalteam.dragonsurvival.network.player.*;
 import by.dragonsurvivalteam.dragonsurvival.network.sound.StartTickingSound;
 import by.dragonsurvivalteam.dragonsurvival.network.sound.StopTickingSound;
-import by.dragonsurvivalteam.dragonsurvival.network.status.*;
+import by.dragonsurvivalteam.dragonsurvival.network.status.RefreshDragon;
+import by.dragonsurvivalteam.dragonsurvival.network.status.SyncAltarCooldown;
+import by.dragonsurvivalteam.dragonsurvival.network.status.SyncPlayerJump;
+import by.dragonsurvivalteam.dragonsurvival.network.status.SyncResting;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -38,8 +41,6 @@ public class NetworkHandler {
     public static void register(final RegisterPayloadHandlersEvent event) {
         // Sets the current network version
         final PayloadRegistrar registrar = event.registrar(PROTOCOL_VERSION);
-        registrar.playBidirectional(SyncTreasureRestStatus.Data.TYPE, SyncTreasureRestStatus.Data.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncTreasureRestStatus::handleClient, SyncTreasureRestStatus::handleServer));
-        //registrar.playBidirectional(SyncMagicSourceStatus.Data.TYPE, SyncMagicSourceStatus.Data.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncMagicSourceStatus::handleClient, SyncMagicSourceStatus::handleServer));
 
         // Generic packets
         registrar.playBidirectional(FlightStatus.TYPE, FlightStatus.STREAM_CODEC, new DirectionalPayloadHandler<>(FlightStatus::handleClient, FlightStatus::handleServer));
@@ -60,8 +61,8 @@ public class NetworkHandler {
         registrar.playToClient(SyncGrowthState.Data.TYPE, SyncGrowthState.Data.STREAM_CODEC, SyncGrowthState::handleClient);
         registrar.playToClient(SyncSize.TYPE, SyncSize.STREAM_CODEC, SyncSize::handleClient);
         registrar.playToClient(SyncDesiredSize.TYPE, SyncDesiredSize.STREAM_CODEC, SyncDesiredSize::handleClient);
-        registrar.playToClient(SyncDiggingStatus.Data.TYPE, SyncDiggingStatus.Data.STREAM_CODEC, SyncDiggingStatus::handleClient);
         registrar.playToClient(RequestOpenDragonEditor.Data.TYPE, RequestOpenDragonEditor.Data.STREAM_CODEC, RequestOpenDragonEditor::handleClient);
+        registrar.playBidirectional(SyncResting.TYPE, SyncResting.STREAM_CODEC, SyncResting::handleClient);
 
         // Flight
         registrar.playBidirectional(SyncWingsSpread.Data.TYPE, SyncWingsSpread.Data.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncWingsSpread::handleClient, SyncWingsSpread::handleServer));
