@@ -57,7 +57,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
 
             for (EquipmentSlot slot : EquipmentSlot.values()) {
                 if (slot.isArmor()) {
-                    String texture = "textures/armor/" + modelName + "/armor_trims/" + slot.getName() + "_mask.png";
+                    String texture = "textures/armor/" + modelName + "/armor_trims/masks/" + slot.getName() + "_mask.png";
                     Optional<Resource> armorFile = Minecraft.getInstance().getResourceManager().getResource(res(texture));
 
                     if (armorFile.isEmpty()) {
