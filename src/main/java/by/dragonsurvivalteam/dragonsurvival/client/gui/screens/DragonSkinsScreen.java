@@ -17,6 +17,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.config.ConfigHandler;
 import by.dragonsurvivalteam.dragonsurvival.network.dragon_editor.SyncDragonSkinSettings;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBodyTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
@@ -60,9 +61,6 @@ public class DragonSkinsScreen extends Screen {
 
     @Translation(comments = "Enable / disable skins")
     private static final String TOGGLE = Translation.Type.GUI.wrap("skin_screen.toggle");
-
-    @Translation(comments = "■ Join our §6discord server§r!§7 Read the Rules, FAQ and Wiki before you ask anything.")
-    private static final String DISCORD = Translation.Type.GUI.wrap("skin_screen.discord");
 
     @Translation(comments = "■ This is a link to our §6Wiki§r dedicated to making your own skin!§7 Remember that this will be very difficult, and requires knowledge of graphic editors.")
     private static final String WIKI = Translation.Type.GUI.wrap("skin_screen.wiki");
@@ -137,10 +135,9 @@ public class DragonSkinsScreen extends Screen {
     private static final ResourceLocation DISCORD_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/discord_hover.png");
 
     private static final ResourceLocation ADDITIONS_BACKGROUND = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/additions_background.png");
-
-    private static final String DISCORD_URL = "https://discord.gg/8SsB8ar";
-    private static final String WIKI_URL = "https://github.com/DragonSurvivalTeam/DragonSurvival/wiki/3.-Customization";
     private static final ArrayList<String> SEEN_SKINS = new ArrayList<>();
+
+    private static final String SKIN_WIKI_URL = "https://github.com/DragonSurvivalTeam/DragonSurvival/wiki/3.-Customization";
 
     private static Holder<DragonStage> dragonStage;
     private static ResourceLocation skinTexture;
@@ -171,7 +168,6 @@ public class DragonSkinsScreen extends Screen {
     private float yRot = -3;
     private float xRot = -5;
     private float zoom;
-    private URI clickedLink;
 
     public DragonSkinsScreen(Screen sourceScreen) {
         super(Component.empty());
@@ -442,25 +438,11 @@ public class DragonSkinsScreen extends Screen {
         helpButton.setTooltip(Tooltip.create(Component.translatable(HELP)));
         addRenderableWidget(helpButton);
 
-        HoverButton discordButton = new HoverButton(startX + 176 + 32, startY + 128 + 20, 14, 14, 14, 14, DISCORD_MAIN, DISCORD_HOVER, button -> {
-            try {
-                clickedLink = new URI(DISCORD_URL);
-                minecraft.setScreen(new ConfirmLinkScreen(this::confirmLink, DISCORD_URL, false));
-            } catch (URISyntaxException exception) {
-                DragonSurvival.LOGGER.error(exception);
-            }
-        });
-        discordButton.setTooltip(Tooltip.create(Component.translatable(DISCORD)));
+        HoverButton discordButton = new HoverButton(startX + 176 + 32, startY + 128 + 20, 14, 14, 14, 14, DISCORD_MAIN, DISCORD_HOVER, ConfirmLinkScreen.confirmLink(this, DragonSurvival.DISCORD_URL));
+        discordButton.setTooltip(Tooltip.create(Component.translatable(LangKey.DISCORD)));
         addRenderableWidget(discordButton);
 
-        HoverButton wikiButton = new HoverButton(startX + 176 + 48, startY + 128 + 20, 14, 14, 14, 14, WIKI_MAIN, WIKI_HOVER, button -> {
-            try {
-                clickedLink = new URI(WIKI_URL);
-                minecraft.setScreen(new ConfirmLinkScreen(this::confirmLink, WIKI_URL, false));
-            } catch (URISyntaxException exception) {
-                DragonSurvival.LOGGER.error(exception);
-            }
-        });
+        HoverButton wikiButton = new HoverButton(startX + 176 + 48, startY + 128 + 20, 14, 14, 14, 14, WIKI_MAIN, WIKI_HOVER, ConfirmLinkScreen.confirmLink(this, SKIN_WIKI_URL));
         wikiButton.setTooltip(Tooltip.create(Component.translatable(WIKI)));
         addRenderableWidget(wikiButton);
     }
@@ -495,15 +477,6 @@ public class DragonSkinsScreen extends Screen {
         noSkin = defaultSkin;
         loading = false;
         lastPlayerName = playerName;
-    }
-
-    private void confirmLink(boolean confirmed) {
-        if (confirmed) {
-            openLink(clickedLink);
-        }
-
-        clickedLink = null;
-        minecraft.setScreen(this);
     }
 
     private void openLink(URI uri) {

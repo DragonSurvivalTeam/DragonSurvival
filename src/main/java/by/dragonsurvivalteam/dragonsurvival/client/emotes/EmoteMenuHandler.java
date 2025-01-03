@@ -44,7 +44,6 @@ import java.util.function.Supplier;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
-@EventBusSubscriber(Dist.CLIENT)
 public class EmoteMenuHandler {
     public static final int NO_KEY = -1;
     public static final int REMOVE_KEY = 256;

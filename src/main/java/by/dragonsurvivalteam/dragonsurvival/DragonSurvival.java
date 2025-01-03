@@ -33,6 +33,8 @@ import java.util.Map;
 
 @Mod(DragonSurvival.MODID)
 public class DragonSurvival {
+    public static final String DISCORD_URL = "https://discord.gg/8SsB8ar";
+
     public static final String MODID = "dragonsurvival";
     public static final Logger LOGGER = LogManager.getLogger("Dragon Survival");
     public static Proxy PROXY;

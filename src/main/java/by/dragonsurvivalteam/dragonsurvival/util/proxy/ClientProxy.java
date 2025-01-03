@@ -128,4 +128,15 @@ public class ClientProxy implements Proxy {
 
         return null;
     }
+
+    @Override
+    public boolean isPlayingEmote(int playerId, final DragonEmote emote) {
+        AtomicReference<DragonEntity> dragonEntity = ClientDragonRenderer.playerDragonHashMap.get(playerId);
+
+        if (dragonEntity == null) {
+            return false;
+        }
+
+        return dragonEntity.get().isPlayingEmote(emote);
+    }
 }

@@ -36,6 +36,10 @@ public interface Proxy {
 
     default void stopAllEmotes(int playerId) { /* Nothing to do */ }
 
+    default boolean isPlayingEmote(int playerId, DragonEmote emote) {
+        return false;
+    }
+
     /** This will always return 'false' when in production */
     default boolean isOnRenderThread() {
         return false;

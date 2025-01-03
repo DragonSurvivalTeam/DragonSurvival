@@ -26,6 +26,9 @@ public class LangKey {
     @Translation(comments = "Hunger has exhausted you, and you can't fly.")
     public static final String MESSAGE_NO_HUNGER = Translation.Type.GUI.wrap("message.no_hunger");
 
+    @Translation(comments = "■ Join our §6discord server§r!§7 Read the Rules, FAQ and Wiki before you ask anything.")
+    public static final String DISCORD = Translation.Type.GUI.wrap("general.discord");
+
     // --- Growth Stage --- //
 
     @Translation(comments = "■ §6Stage§r§7: ")

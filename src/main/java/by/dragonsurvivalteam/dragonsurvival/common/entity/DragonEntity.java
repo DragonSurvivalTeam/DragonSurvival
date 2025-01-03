@@ -217,6 +217,10 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         return Stream.of(currentlyPlayingEmotes).anyMatch(Objects::nonNull);
     }
 
+    public boolean isPlayingEmote(DragonEmote emote) {
+        return Stream.of(currentlyPlayingEmotes).anyMatch(e -> e == emote);
+    }
+
     public void setCurrentAbilityAnimation(Pair<AbilityAnimation, AnimationType> currentAbilityAnimation) {
         if(this.currentAbilityAnimation != null) {
             animationTickTimer.putAnimation(this.currentAbilityAnimation.getFirst().getName(), 0.0);

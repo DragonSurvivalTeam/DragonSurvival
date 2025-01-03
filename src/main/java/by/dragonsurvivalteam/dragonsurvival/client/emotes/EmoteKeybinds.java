@@ -12,6 +12,8 @@ public class EmoteKeybinds {
     }
 
     public void put(int keyCode, final String emote) {
+        // Remove the previous keybind if it exists
+        emoteKeybinds.entrySet().removeIf(entry -> entry.getValue().equals(emote));
         emoteKeybinds.put(keyCode, emote);
     }
 
@@ -33,5 +35,9 @@ public class EmoteKeybinds {
         }
 
         return EmoteMenuHandler.NO_KEY;
+    }
+
+    public void clear() {
+        emoteKeybinds.clear();
     }
 }
