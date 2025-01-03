@@ -87,6 +87,7 @@ public class NetworkHandler {
         registrar.playToClient(SyncModifierWithDuration.TYPE, SyncModifierWithDuration.STREAM_CODEC, SyncModifierWithDuration::handleClient);
         registrar.playToServer(SyncSlotAssignment.TYPE, SyncSlotAssignment.STREAM_CODEC, SyncSlotAssignment::handleServer);
         registrar.playToClient(SyncAbilityLevel.TYPE, SyncAbilityLevel.STREAM_CODEC, SyncAbilityLevel::handleClient);
+        registrar.playToServer(SyncAbilityEnabled.TYPE, SyncAbilityEnabled.STREAM_CODEC, SyncAbilityEnabled::handleServer);
         registrar.playToServer(AttemptManualUpgrade.TYPE, AttemptManualUpgrade.STREAM_CODEC, AttemptManualUpgrade::handleServer);
         registrar.playToClient(SyncHarvestBonus.TYPE, SyncHarvestBonus.STREAM_CODEC, SyncHarvestBonus::handleClient);
         registrar.playToClient(SyncAddPenaltySupply.TYPE, SyncAddPenaltySupply.STREAM_CODEC, SyncAddPenaltySupply::handleClient);

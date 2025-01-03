@@ -34,7 +34,7 @@ public class GrowthHUD {
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "growth"}, key = "growth_y_offset")
     public static Integer growthYOffset = 0;
 
-    public static void renderGrowthHUD(final DragonStateHandler handler, @NotNull final GuiGraphics guiGraphics, int width, int height) {
+    public static void renderGrowthHUD(final DragonStateHandler handler, @NotNull final GuiGraphics graphics, int width, int height) {
         Player localPlayer = Minecraft.getInstance().player;
 
         if (localPlayer == null || localPlayer.isSpectator()) {
@@ -50,6 +50,7 @@ public class GrowthHUD {
         float desiredProgress = (float) dragonStage.value().getProgress(handler.getDesiredSize());
         float progressDiff = Math.abs(currentProgress - desiredProgress);
         boolean progressDiffIsSmall = progressDiff < 0.01;
+
         if (progressDiffIsSmall && (handler.getSize() == nextSize || dragonStage.value().growthItems().stream().noneMatch(item -> item.items().contains(stack.getItemHolder())))) {
             return;
         }
@@ -71,11 +72,11 @@ public class GrowthHUD {
             targetProgress = desiredProgress;
         }
 
-        RenderingUtils.drawGrowthCircle(guiGraphics, circleX, circleY, radius, 6, 0.13f, currentProgress, targetProgress, CENTER_COLOR, OUTLINE_COLOR, ADD_COLOR, SUBTRACT_COLOR);
+        RenderingUtils.drawGrowthCircle(graphics, circleX, circleY, radius, 6, 0.13f, currentProgress, targetProgress, CENTER_COLOR, OUTLINE_COLOR, ADD_COLOR, SUBTRACT_COLOR);
 
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0, 0, 300);
-        guiGraphics.blit(handler.species().value().getHoverGrowthIcon(dragonStage), circleX + 7, circleY + 4, 0, 0, 20, 20, 20, 20);
-        guiGraphics.pose().popPose();
+        graphics.pose().pushPose();
+        graphics.pose().translate(0, 0, 300);
+        graphics.blit(handler.species().value().getHoverGrowthIcon(dragonStage), circleX + 7, circleY + 4, 0, 0, 20, 20, 20, 20);
+        graphics.pose().popPose();
     }
 }

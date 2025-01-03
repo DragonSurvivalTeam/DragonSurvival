@@ -214,7 +214,7 @@ public class DragonSpeciesScreen extends Screen {
                 startX + 85, startY + 85, 3,
                 penalties, 40,
                 -10, 116, 10, 9, 16, 20, 20,
-                PENALTIES_LEFT_ARROW_MAIN, PENALTIES_LEFT_ARROW_HOVER, PENALTIES_RIGHT_ARROW_MAIN, PENALTIES_RIGHT_ARROW_HOVER, false));
+                PENALTIES_LEFT_ARROW_HOVER, PENALTIES_LEFT_ARROW_MAIN, PENALTIES_RIGHT_ARROW_HOVER, PENALTIES_RIGHT_ARROW_MAIN, false));
     }
 
 

@@ -47,10 +47,6 @@ import java.util.Optional;
 public class CaveDragonAbilities {
     // --- Active --- //
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Ranged attack: shoots out a fireball that §cexplodes§r and sets the area on fire.")
-    @Translation(type = Translation.Type.ABILITY, comments = "Fireball")
-    public static final ResourceKey<DragonAbility> FIRE_BALL = DragonAbilities.key("fire_ball");
-
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
             "■ Elemental breath: a stream of fire that ignites enemies and blocks. Range depends on age of the dragon.",
             "■ Is able to destroy some blocks. Cannot be used under water, and during rain."
@@ -58,22 +54,39 @@ public class CaveDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Nether breath")
     public static final ResourceKey<DragonAbility> NETHER_BREATH = DragonAbilities.key("nether_breath");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Personal buff: makes lava more §2transparent§r while active.")
-    @Translation(type = Translation.Type.ABILITY, comments = "Lava Vision")
-    public static final ResourceKey<DragonAbility> LAVA_VISION = DragonAbilities.key("lava_vision");
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Ranged attack: shoots out a fireball that §cexplodes§r and sets the area on fire.")
+    @Translation(type = Translation.Type.ABILITY, comments = "Fireball")
+    public static final ResourceKey<DragonAbility> FIRE_BALL = DragonAbilities.key("fire_ball");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "Grants additional armor points to all entities in an area around the dragon.")
-    @Translation(type = Translation.Type.ABILITY, comments = "Sturdy Skin") // TODO :: strong leather, tough skin or sturdy skin?
-    public static final ResourceKey<DragonAbility> TOUGH_SKIN = DragonAbilities.key("tough_skin");
+    @Translation(type = Translation.Type.ABILITY, comments = "Sturdy Skin")
+    public static final ResourceKey<DragonAbility> STURDY_SKIN = DragonAbilities.key("sturdy_skin");
 
     @Translation(type = Translation.Type.MODIFIER, comments = "Sturdy Skin")
     public static final ResourceLocation STURDY_SKIN_MODIFIER = DragonSurvival.res("sturdy_skin");
 
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Personal buff: makes lava more §2transparent§r while active.")
+    @Translation(type = Translation.Type.ABILITY, comments = "Lava Vision")
+    public static final ResourceKey<DragonAbility> LAVA_VISION = DragonAbilities.key("lava_vision");
+
     // --- Passive --- //
+
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
+            "■ Upgrading this ability increases your maximum mana pool. Cave dragon mana is restored by standing on hot blocks.\n",
+    })
+    @Translation(type = Translation.Type.ABILITY, comments = "Cave Magic")
+    public static final ResourceKey<DragonAbility> CAVE_MAGIC = DragonAbilities.key("cave_magic");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Standing on stone surfaces will increase your movement speed.")
     @Translation(type = Translation.Type.ABILITY, comments = "Cave Athletics")
     public static final ResourceKey<DragonAbility> CAVE_ATHLETICS = DragonAbilities.key("cave_athletics");
+
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
+            "■ You can increase your resistance to rain, snow and snowfall by upgrading this ability\n",
+            "■ Water, potions and snowballs are still dangerous"
+    })
+    @Translation(type = Translation.Type.ABILITY, comments = "Contrast Shower")
+    public static final ResourceKey<DragonAbility> CONTRAST_SHOWER = DragonAbilities.key("contrast_shower");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
             "■ Your target has a chance to receive the §c«Burned»§r effect from your attacks.\n",
@@ -83,19 +96,6 @@ public class CaveDragonAbilities {
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Burn")
     public static final ResourceKey<DragonAbility> BURN = DragonAbilities.key("burn");
-
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ Upgrading this ability increases your maximum mana pool. Cave dragon mana is restored by standing on hot blocks.\n",
-    })
-    @Translation(type = Translation.Type.ABILITY, comments = "Cave Magic")
-    public static final ResourceKey<DragonAbility> CAVE_MAGIC = DragonAbilities.key("cave_magic");
-
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ You can increase your resistance to rain, snow and snowfall by upgrading this ability\n",
-            "■ Water, potions and snowballs are still dangerous"
-    })
-    @Translation(type = Translation.Type.ABILITY, comments = "Contrast Shower")
-    public static final ResourceKey<DragonAbility> CONTRAST_SHOWER = DragonAbilities.key("contrast_shower");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
             "■ Cave dragons can mine stone blocks and various ores without tools. This ability gets stronger as you grow.\n"
@@ -116,16 +116,16 @@ public class CaveDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Cave Dragon")
     public static final ResourceKey<DragonAbility> FIRE_IMMUNITY = DragonAbilities.key("fire_immunity");
 
-    // FIXME :: only for test (owner only works properly with static uuid - i.e. 'runClient_static')
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Test for summon entity effect\n")
-    @Translation(type = Translation.Type.ABILITY, comments = "Summon Test")
-    public static final ResourceKey<DragonAbility> SUMMON_TEST = DragonAbilities.key("summon_test");
-
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
             "■ Cave dragons can swim in lava, but still need to hold their breath when swimming in it.\n",
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Lava Swimming")
     public static final ResourceKey<DragonAbility> LAVA_SWIMMING = DragonAbilities.key("lava_swimming");
+
+    // FIXME :: only for test (owner only works properly with static uuid - i.e. 'runClient_static')
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Test for summon entity effect\n")
+    @Translation(type = Translation.Type.ABILITY, comments = "Summon Test")
+    public static final ResourceKey<DragonAbility> SUMMON_TEST = DragonAbilities.key("summon_test");
 
     public static void registerAbilities(final BootstrapContext<DragonAbility> context) {
         registerActiveAbilities(context);
@@ -133,42 +133,6 @@ public class CaveDragonAbilities {
     }
 
     private static void registerActiveAbilities(final BootstrapContext<DragonAbility> context) {
-        context.register(FIRE_BALL, new DragonAbility(
-                new Activation(
-                        Activation.Type.ACTIVE_SIMPLE,
-                        Optional.of(LevelBasedValue.constant(1)),
-                        Optional.empty(),
-                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(2))),
-                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(7))),
-                        Optional.of(new Activation.Sound(Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(SoundEvents.FIRECHARGE_USE))),
-                        Optional.of(new Activation.Animations(
-                                Optional.of(Either.right(new SimpleAbilityAnimation("breath", AnimationLayer.BREATH, 5, false, false))),
-                                Optional.empty(),
-                                Optional.empty()
-                        ))
-                ),
-                Optional.of(new LevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 20f, 40f, 45f), LevelBasedValue.perLevel(15)))),
-                Optional.of(Condition.thisEntity(EntityCondition.isInFluid(context.lookup(BuiltInRegistries.FLUID.key()).getOrThrow(FluidTags.WATER))).build()),
-                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        Condition.thisEntity(EntityCondition.isLiving()).build(),
-                        List.of(new ProjectileEffect(
-                                context.lookup(ProjectileData.REGISTRY).getOrThrow(Projectiles.FIREBALL),
-                                TargetDirection.lookingAt(),
-                                LevelBasedValue.constant(1),
-                                LevelBasedValue.constant(0),
-                                LevelBasedValue.constant(1)
-                        )),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALL
-                ), true), LevelBasedValue.constant(1))),
-                new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/fireball_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/fireball_1"), 1),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/fireball_2"), 2),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/fireball_3"), 3),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/fireball_4"), 4)
-                ))
-        ));
-
         context.register(NETHER_BREATH, new DragonAbility(
                 new Activation(
                         Activation.Type.ACTIVE_CHANNELED,
@@ -213,36 +177,43 @@ public class CaveDragonAbilities {
                 ))
         ));
 
-        context.register(LAVA_VISION, new DragonAbility(
+        context.register(FIRE_BALL, new DragonAbility(
                 new Activation(
                         Activation.Type.ACTIVE_SIMPLE,
                         Optional.of(LevelBasedValue.constant(1)),
                         Optional.empty(),
-                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(1))),
-                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
-                        Optional.of(new Activation.Sound(Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(SoundEvents.UI_TOAST_IN))),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(2))),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(7))),
+                        Optional.of(new Activation.Sound(Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(SoundEvents.FIRECHARGE_USE))),
                         Optional.of(new Activation.Animations(
-                                Optional.of(Either.right(new SimpleAbilityAnimation("cast_self_buff", AnimationLayer.BASE, 2, true, false))),
+                                Optional.of(Either.right(new SimpleAbilityAnimation("breath", AnimationLayer.BREATH, 5, false, false))),
                                 Optional.empty(),
-                                Optional.of(new SimpleAbilityAnimation("self_buff", AnimationLayer.BASE, 0, true, false))
+                                Optional.empty()
                         ))
                 ),
-                Optional.of(new LevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 25f, 45f, 60f), LevelBasedValue.perLevel(15)))),
-                Optional.empty(),
+                Optional.of(new LevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 20f, 40f, 45f), LevelBasedValue.perLevel(15)))),
+                Optional.of(Condition.thisEntity(EntityCondition.isInFluid(context.lookup(BuiltInRegistries.FLUID.key()).getOrThrow(FluidTags.WATER))).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        PotionEffect.single(LevelBasedValue.constant(0), LevelBasedValue.perLevel(Functions.secondsToTicks(30)), DSEffects.LAVA_VISION),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                        Condition.thisEntity(EntityCondition.isLiving()).build(),
+                        List.of(new ProjectileEffect(
+                                context.lookup(ProjectileData.REGISTRY).getOrThrow(Projectiles.FIREBALL),
+                                TargetDirection.lookingAt(),
+                                LevelBasedValue.constant(1),
+                                LevelBasedValue.constant(0),
+                                LevelBasedValue.constant(1)
+                        )),
+                        AbilityTargeting.EntityTargetingMode.TARGET_ALL
                 ), true), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/lava_vision_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/lava_vision_1"), 1),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/lava_vision_2"), 2),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/lava_vision_3"), 3),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/lava_vision_4"), 4)
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/fireball_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/fireball_1"), 1),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/fireball_2"), 2),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/fireball_3"), 3),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/fireball_4"), 4)
                 ))
         ));
 
-        context.register(TOUGH_SKIN, new DragonAbility(
+        context.register(STURDY_SKIN, new DragonAbility(
                 new Activation(
                         Activation.Type.ACTIVE_SIMPLE,
                         Optional.of(LevelBasedValue.constant(1)),
@@ -275,45 +246,38 @@ public class CaveDragonAbilities {
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/strong_leather_3"), 3)
                 ))
         ));
+
+        context.register(LAVA_VISION, new DragonAbility(
+                new Activation(
+                        Activation.Type.ACTIVE_SIMPLE,
+                        Optional.of(LevelBasedValue.constant(1)),
+                        Optional.empty(),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(1))),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
+                        Optional.of(new Activation.Sound(Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(SoundEvents.UI_TOAST_IN))),
+                        Optional.of(new Activation.Animations(
+                                Optional.of(Either.right(new SimpleAbilityAnimation("cast_self_buff", AnimationLayer.BASE, 2, true, false))),
+                                Optional.empty(),
+                                Optional.of(new SimpleAbilityAnimation("self_buff", AnimationLayer.BASE, 0, true, false))
+                        ))
+                ),
+                Optional.of(new LevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 25f, 45f, 60f), LevelBasedValue.perLevel(15)))),
+                Optional.empty(),
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        PotionEffect.single(LevelBasedValue.constant(0), LevelBasedValue.perLevel(Functions.secondsToTicks(30)), DSEffects.LAVA_VISION),
+                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                ), true), LevelBasedValue.constant(1))),
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/lava_vision_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/lava_vision_1"), 1),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/lava_vision_2"), 2),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/lava_vision_3"), 3),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/lava_vision_4"), 4)
+                ))
+        ));
     }
 
     private static void registerPassiveAbilities(final BootstrapContext<DragonAbility> context) {
-        context.register(CAVE_ATHLETICS, new DragonAbility(
-                Activation.passive(),
-                Optional.of(new ExperienceUpgrade(5, LevelBasedValue.perLevel(15))),
-                Optional.empty(),
-                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.SPEEDS_UP_CAVE_DRAGON)).build(),
-                        PotionEffect.single(LevelBasedValue.perLevel(1), LevelBasedValue.perLevel(Functions.secondsToTicks(5)), MobEffects.MOVEMENT_SPEED),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
-                ), false), LevelBasedValue.constant(Functions.secondsToTicks(1)))),
-                new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_athletics_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_athletics_1"), 1),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_athletics_2"), 2),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_athletics_3"), 3),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_athletics_4"), 4),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_athletics_5"), 5)
-                ))
-        ));
-
-        context.register(BURN, new DragonAbility(
-                Activation.passive(),
-                Optional.of(new ExperienceUpgrade(4, LevelBasedValue.perLevel(15))),
-                Optional.empty(),
-                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(new OnAttackEffect(PotionData.of(LevelBasedValue.constant(0), LevelBasedValue.perLevel(Functions.secondsToTicks(5)), LevelBasedValue.perLevel(0.15f), DSEffects.BURN))),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALL
-                ), true), LevelBasedValue.constant(1))),
-                new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/burn_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/burn_1"), 1),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/burn_2"), 2),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/burn_3"), 3),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/burn_4"), 4)
-                ))
-        ));
-
         context.register(CAVE_MAGIC, new DragonAbility(
                 Activation.passive(),
                 Optional.of(new ExperienceUpgrade(10, LevelBasedValue.perLevel(15))),
@@ -357,6 +321,25 @@ public class CaveDragonAbilities {
                 ))
         ));
 
+        context.register(CAVE_ATHLETICS, new DragonAbility(
+                Activation.passive(),
+                Optional.of(new ExperienceUpgrade(5, LevelBasedValue.perLevel(15))),
+                Optional.empty(),
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.SPEEDS_UP_CAVE_DRAGON)).build(),
+                        PotionEffect.single(LevelBasedValue.perLevel(1), LevelBasedValue.perLevel(Functions.secondsToTicks(5)), MobEffects.MOVEMENT_SPEED),
+                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                ), false), LevelBasedValue.constant(Functions.secondsToTicks(1)))),
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_athletics_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_athletics_1"), 1),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_athletics_2"), 2),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_athletics_3"), 3),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_athletics_4"), 4),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_athletics_5"), 5)
+                ))
+        ));
+
         context.register(CONTRAST_SHOWER, new DragonAbility(
                 Activation.passive(),
                 Optional.of(new ExperienceUpgrade(5, LevelBasedValue.perLevel(15))),
@@ -378,6 +361,23 @@ public class CaveDragonAbilities {
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/contrast_shower_3"), 3),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/contrast_shower_4"), 4),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/contrast_shower_5"), 5)
+                ))
+        ));
+
+        context.register(BURN, new DragonAbility(
+                Activation.passive(),
+                Optional.of(new ExperienceUpgrade(4, LevelBasedValue.perLevel(15))),
+                Optional.empty(),
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        List.of(new OnAttackEffect(PotionData.of(LevelBasedValue.constant(0), LevelBasedValue.perLevel(Functions.secondsToTicks(5)), LevelBasedValue.perLevel(0.15f), DSEffects.BURN))),
+                        AbilityTargeting.EntityTargetingMode.TARGET_ALL
+                ), true), LevelBasedValue.constant(1))),
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/burn_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/burn_1"), 1),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/burn_2"), 2),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/burn_3"), 3),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/burn_4"), 4)
                 ))
         ));
 
@@ -420,9 +420,7 @@ public class CaveDragonAbilities {
         ));
 
         context.register(FIRE_IMMUNITY, new DragonAbility(
-                // FIXME :: for testing purpose
-//                Activation.passive(),
-                Activation.passive(ManaCost.reserved(LevelBasedValue.constant(10))),
+                Activation.passive(),
                 Optional.empty(),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(

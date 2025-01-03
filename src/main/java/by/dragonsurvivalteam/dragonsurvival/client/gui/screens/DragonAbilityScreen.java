@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.screens;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.AbilityButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.LevelButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.TabButton;
@@ -9,9 +10,12 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.Abilit
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.ScrollableComponent;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.mixins.HolderSet$NamedAccess;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonAbilityTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.UpgradeType;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
@@ -25,6 +29,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
@@ -219,11 +224,24 @@ public class DragonAbilityScreen extends Screen {
 
         //noinspection DataFlowIssue -> player is present
         MagicData data = MagicData.getData(minecraft.player);
-        // TODO :: need some consistent order - could do it based on a tag (that is what enchantments and dragon bodies are doing)
-        //  or on some other factors (level -> name e.g.)
         List<DragonAbilityInstance> actives = data.getActiveAbilities();
         List<DragonAbilityInstance> upgradablePassives = data.getPassiveAbilities(UpgradeType.IS_MANUAL);
         List<DragonAbilityInstance> constantPassives = data.getPassiveAbilities(UpgradeType.IS_MANUAL.negate());
+
+        //noinspection DataFlowIssue -> access is expected to be present
+        DragonSurvival.PROXY.getAccess().registryOrThrow(DragonAbility.REGISTRY).getTag(DSDragonAbilityTags.ORDER).ifPresent(order -> {
+            //noinspection unchecked -> cast is valid
+            List<Holder<DragonAbility>> list = ((HolderSet$NamedAccess<DragonAbility>) order).dragonSurvival$contents();
+            Comparator<DragonAbilityInstance> comparator = Comparator.comparingInt(instance -> {
+                int index = list.indexOf(instance.ability());
+                // Sort entries that are not present to the end
+                return index == -1 ? Integer.MAX_VALUE : index;
+            });
+
+            actives.sort(comparator);
+            upgradablePassives.sort(comparator);
+            constantPassives.sort(comparator);
+        });
 
         scrollableComponents.add(new AbilityColumnsComponent(this, guiLeft + 35, guiTop, 40, 20, 0.8f, 0.5f, actives));
         scrollableComponents.add(new AbilityColumnsComponent(this, guiLeft + 111, guiTop, 40, 20, 0.8f, 0.5f, upgradablePassives));

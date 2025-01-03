@@ -36,7 +36,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AltarData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBodyTags;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonBodyTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
@@ -677,7 +677,7 @@ public class DragonEditorScreen extends Screen {
 
         // Add scrollable list of dragon bodies
         List<AbstractWidget> dragonBodyWidgets = new ArrayList<>();
-        for(Holder<DragonBody> dragonBodyHolder : DSBodyTags.getOrdered(null)) {
+        for(Holder<DragonBody> dragonBodyHolder : DSDragonBodyTags.getOrdered(null)) {
             dragonBodyWidgets.add(createButton(dragonBodyHolder, 0, 0));
         }
         dragonBodyBar = new BarComponent(this,
@@ -701,7 +701,6 @@ public class DragonEditorScreen extends Screen {
                 valueList.addFirst(DefaultPartLoader.NO_PART);
             }
 
-            //noinspection DataFlowIssue -> key is present
             String partKey = preset.get(dragonStage.getKey()).get().layerSettings.get(layer).get().partKey;
             EditorPartComponent editorPartComponent = new EditorPartComponent(this, row < 8 ? width / 2 - 184 : width / 2 + 74, guiTop - 24 + (row >= 8 ? (row - 8) * 21 : row * 21), partKey, layer, row < 8, (row / 4 % 2) == 0);
             scrollableComponents.add(editorPartComponent);

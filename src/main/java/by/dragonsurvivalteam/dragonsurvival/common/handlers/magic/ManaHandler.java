@@ -134,7 +134,9 @@ public class ManaHandler {
         MagicData magic = MagicData.getData(player);
 
         for (DragonAbilityInstance ability : magic.getAbilities().values()) {
-            reservedMana += ability.getContinuousManaCost(ManaCost.Type.RESERVED);
+            if (ability.isApplyingEffects()) {
+                reservedMana += ability.getContinuousManaCost(ManaCost.ManaCostType.RESERVED);
+            }
         }
 
         return reservedMana;

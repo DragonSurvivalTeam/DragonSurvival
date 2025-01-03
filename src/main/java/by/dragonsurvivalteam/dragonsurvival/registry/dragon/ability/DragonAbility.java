@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.UpgradeType;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
@@ -63,7 +64,7 @@ public record DragonAbility(
         return upgrade.map(UpgradeType::maxLevel).orElse(DragonAbilityInstance.MIN_LEVEL);
     }
 
-    public static void validate(RegistryAccess access) {
+    public static void validate(final RegistryAccess access) {
         StringBuilder validationError = new StringBuilder("The following stages are incorrectly defined:");
         AtomicBoolean areStagesValid = new AtomicBoolean(true);
 
@@ -74,36 +75,27 @@ public record DragonAbility(
         }
     }
 
-    public List<Component> getInfo(final Player dragon, final DragonAbilityInstance ability) {
+    public List<Component> getInfo(final Player dragon, final DragonAbilityInstance instance) {
         List<Component> info = new ArrayList<>();
 
         for (ActionContainer action : actions) {
-            info.addAll(action.effect().getAllEffectDescriptions(dragon, ability));
+            info.addAll(action.effect().getAllEffectDescriptions(dragon, instance));
         }
 
-        int castTime = ability.getCastTime();
+        int castTime = instance.getCastTime();
 
         if (castTime > 0) {
             info.add(Component.translatable(LangKey.ABILITY_CAST_TIME, Functions.ticksToSeconds(castTime)));
         }
 
-        int cooldown = ability.ability().value().getCooldown(ability.level());
+        int cooldown = instance.ability().value().getCooldown(instance.level());
 
         if (cooldown > 0) {
             info.add(Component.translatable(LangKey.ABILITY_COOLDOWN, Functions.ticksToSeconds(cooldown)));
         }
 
-        float initialManaCost = ability.ability().value().activation().initialManaCost().map(cost -> cost.calculate(ability.level())).orElse(0f);
-
-        if (initialManaCost > 0) {
-            info.add(Component.translatable(LangKey.ABILITY_INITIAL_MANA_COST, initialManaCost));
-        }
-
-        float continuousManaCost = ability.ability().value().activation().continuousManaCost().map(cost -> cost.manaCost().calculate(ability.level())).orElse(0f);
-
-        if (continuousManaCost > 0) {
-            info.add(Component.translatable(LangKey.ABILITY_CONTINUOUS_MANA_COST, continuousManaCost));
-        }
+        instance.ability().value().activation().initialManaCost().ifPresent(cost -> info.add(Component.translatable(LangKey.ABILITY_INITIAL_MANA_COST, cost.calculate(instance.level()))));
+        instance.ability().value().activation().continuousManaCost().ifPresent(cost -> info.add(Component.translatable(LangKey.ABILITY_CONTINUOUS_MANA_COST, cost.manaCost().calculate(instance.level()), DSLanguageProvider.enumValue(cost.manaCostType()))));
 
         return info;
     }

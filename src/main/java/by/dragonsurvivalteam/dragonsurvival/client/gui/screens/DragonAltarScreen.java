@@ -73,10 +73,10 @@ public class DragonAltarScreen extends Screen {
     private final String[] animations = {"sit_animation", "idle_animation", "fly_animation", "swim_animation", "run_animation", "dig_animation", "vibing_sitting", "shy_sitting", "vibing_sitting", "rocking_on_back"};
     private final List<ScrollableComponent> scrollableComponents = new ArrayList<>();
 
-    private static final ResourceLocation ALTAR_ARROW_LEFT_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_left_arrow_hover.png");
-    private static final ResourceLocation ALTAR_ARROW_LEFT_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_left_arrow_main.png");
-    private static final ResourceLocation ALTAR_ARROW_RIGHT_MAIN =  ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_right_arrow_hover.png");
-    private static final ResourceLocation ALTAR_ARROW_RIGHT_HOVER =  ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_right_arrow_main.png");
+    private static final ResourceLocation ALTAR_ARROW_LEFT_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_left_arrow_hover.png");
+    private static final ResourceLocation ALTAR_ARROW_LEFT_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_left_arrow_main.png");
+    private static final ResourceLocation ALTAR_ARROW_RIGHT_HOVER =  ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_right_arrow_hover.png");
+    private static final ResourceLocation ALTAR_ARROW_RIGHT_MAIN =  ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_right_arrow_main.png");
 
     private boolean hasInit = false;
     private int animation1 = 1;
@@ -262,7 +262,7 @@ public class DragonAltarScreen extends Screen {
                 xPos, guiTop + 30, 4,
                 altarButtons, 55,
                 -10, 215, 60, 9, 16, 20, 20,
-                ALTAR_ARROW_LEFT_MAIN, ALTAR_ARROW_LEFT_HOVER, ALTAR_ARROW_RIGHT_MAIN, ALTAR_ARROW_RIGHT_HOVER, false));
+                ALTAR_ARROW_LEFT_HOVER, ALTAR_ARROW_LEFT_MAIN, ALTAR_ARROW_RIGHT_HOVER, ALTAR_ARROW_RIGHT_MAIN, false));
 
         addRenderableWidget(new ExtendedButton(width / 2 - 75, height - 25, 150, 20, Component.translatable(LangKey.GUI_DRAGON_EDITOR), action -> Minecraft.getInstance().setScreen(new DragonEditorScreen(Minecraft.getInstance().screen))) {
             @Override

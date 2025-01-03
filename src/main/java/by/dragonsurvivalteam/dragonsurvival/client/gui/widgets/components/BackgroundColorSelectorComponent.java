@@ -15,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.*;
 import java.util.List;
 
-
 public class BackgroundColorSelectorComponent extends AbstractContainerEventHandler implements Renderable {
     public static final int BACKGROUND_COLOR = -14935012;
     public static final int INNER_BORDER_COLOR = new Color(0x78787880, true).getRGB();

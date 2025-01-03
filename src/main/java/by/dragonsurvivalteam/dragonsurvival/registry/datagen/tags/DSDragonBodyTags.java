@@ -17,10 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-public class DSBodyTags extends TagsProvider<DragonBody> {
+public class DSDragonBodyTags extends TagsProvider<DragonBody> {
     public static final TagKey<DragonBody> ORDER = key("order");
 
-    public DSBodyTags(final PackOutput output, final CompletableFuture<HolderLookup.Provider> provider, @Nullable final ExistingFileHelper helper) {
+    public DSDragonBodyTags(final PackOutput output, final CompletableFuture<HolderLookup.Provider> provider, @Nullable final ExistingFileHelper helper) {
         super(output, DragonBody.REGISTRY, provider, DragonSurvival.MODID, helper);
     }
 

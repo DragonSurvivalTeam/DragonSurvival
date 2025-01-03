@@ -101,7 +101,8 @@ public class DataGeneration {
         generator.addProvider(event.includeServer(), new DSEffectTags(output, lookup, helper));
         generator.addProvider(event.includeServer(), new DSPoiTypeTags(output, lookup, helper));
         generator.addProvider(event.includeServer(), new DSEnchantmentTags(output, lookup, helper));
-        generator.addProvider(event.includeServer(), new DSBodyTags(output, lookup, helper));
+        generator.addProvider(event.includeServer(), new DSDragonBodyTags(output, lookup, helper));
+        generator.addProvider(event.includeServer(), new DSDragonAbilityTags(output, lookup, helper));
         generator.addProvider(event.includeServer(), new DSDragonSpeciesTags(output, lookup, helper));
 
         generator.addProvider(event.includeServer(), new DataBlockModelProvider(output, helper));

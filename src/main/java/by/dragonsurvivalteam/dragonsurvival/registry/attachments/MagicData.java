@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @EventBusSubscriber
 public class MagicData implements INBTSerializable<CompoundTag> {
@@ -230,13 +231,13 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         castWasDenied = true;
     }
 
-    public void stopCasting(final Player player, boolean forceApplyingEffects) {
+    public void stopCasting(final Player player, boolean withCooldown) {
         DragonAbilityInstance currentlyCasting = getCurrentlyCasting();
 
         if (currentlyCasting != null) {
             currentlyCasting.stopSound(player);
 
-            if (forceApplyingEffects) {
+            if (withCooldown) {
                 currentlyCasting.release(player);
                 currentlyCasting.value().activation().playEndSound(player);
 
@@ -364,11 +365,11 @@ public class MagicData implements INBTSerializable<CompoundTag> {
     }
 
     public List<DragonAbilityInstance> getActiveAbilities() {
-        return getAbilities().values().stream().filter(instance -> instance.ability().value().activation().type() != Activation.Type.PASSIVE).toList();
+        return getAbilities().values().stream().filter(instance -> instance.ability().value().activation().type() != Activation.Type.PASSIVE).collect(Collectors.toList());
     }
 
     public List<DragonAbilityInstance> getPassiveAbilities(final Predicate<Optional<UpgradeType<?>>> predicate) {
-        return getAbilities().values().stream().filter(instance -> instance.ability().value().activation().type() == Activation.Type.PASSIVE && predicate.test(instance.value().upgrade())).toList();
+        return getAbilities().values().stream().filter(instance -> instance.ability().value().activation().type() == Activation.Type.PASSIVE && predicate.test(instance.value().upgrade())).collect(Collectors.toList());
     }
 
     /** Returns the amount of experience gained / lost when down- or upgrading the ability */

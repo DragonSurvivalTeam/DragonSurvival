@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.MagicHUD;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.*;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
+import by.dragonsurvivalteam.dragonsurvival.network.container.RequestOpenDragonInventory;
 import by.dragonsurvivalteam.dragonsurvival.network.container.RequestOpenInventory;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import net.minecraft.client.Minecraft;
@@ -16,8 +17,6 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
-
-import static by.dragonsurvivalteam.dragonsurvival.network.container.RequestOpenDragonInventory.SendOpenDragonInventoryAndMaintainCursorPosition;
 
 public class TabButton extends Button {
     public enum Type {
@@ -36,7 +35,7 @@ public class TabButton extends Button {
     private final Type type;
     private final Screen parent;
 
-    public TabButton(int x, int y, Type type, Screen parent) {
+    public TabButton(int x, int y, final Type type, final Screen parent) {
         super(x, y, 28, 32, Component.empty(), action -> { /* Nothing to do */ }, DEFAULT_NARRATION);
         this.type = type;
         this.parent = parent;
@@ -46,11 +45,12 @@ public class TabButton extends Button {
 
     private boolean setInventoryScreen(Screen sourceScreen) {
         if (sourceScreen instanceof InventoryScreen) {
+            //noinspection DataFlowIssue -> player is present
             Minecraft.getInstance().setScreen(new InventoryScreen(Minecraft.getInstance().player));
             PacketDistributor.sendToServer(new RequestOpenInventory.Data());
             return true;
         } else if (sourceScreen instanceof DragonInventoryScreen) {
-            SendOpenDragonInventoryAndMaintainCursorPosition();
+            RequestOpenDragonInventory.SendOpenDragonInventoryAndMaintainCursorPosition();
             return true;
         }
 
@@ -59,34 +59,37 @@ public class TabButton extends Button {
 
     @Override
     public void onPress() {
-        if (!isCurrent())
-            switch (type) {
-                case INVENTORY_TAB -> {
-                    boolean setSuccessfully = false;
-                    if (parent instanceof DragonAbilityScreen) {
-                        if (((DragonAbilityScreen) parent).sourceScreen != null) {
-                            setSuccessfully = setInventoryScreen(((DragonAbilityScreen) parent).sourceScreen);
-                        }
-                    } else if (parent instanceof DragonSkinsScreen) {
-                        if (((DragonSkinsScreen) parent).sourceScreen != null) {
-                            setSuccessfully = setInventoryScreen(((DragonSkinsScreen) parent).sourceScreen);
-                        }
-                    }
+        if (isCurrent()) {
+            return;
+        }
 
-                    if (!setSuccessfully) {
-                        if (InventoryScreenHandler.dragonInventory) {
-                            SendOpenDragonInventoryAndMaintainCursorPosition();
-                        } else {
-                            Minecraft.getInstance().setScreen(new InventoryScreen(Minecraft.getInstance().player));
-                            PacketDistributor.sendToServer(new RequestOpenInventory.Data());
-                        }
-                    }
+        switch (type) {
+            case INVENTORY_TAB -> {
+                boolean setSuccessfully = false;
+
+                if (parent instanceof DragonAbilityScreen abilityScreen && abilityScreen.sourceScreen != null) {
+                    setSuccessfully = setInventoryScreen(abilityScreen.sourceScreen);
+                } else if (parent instanceof DragonSkinsScreen skinsScreen && skinsScreen.sourceScreen != null) {
+                    setSuccessfully = setInventoryScreen(skinsScreen.sourceScreen);
                 }
-                case ABILITY_TAB -> Minecraft.getInstance().setScreen(new DragonAbilityScreen(parent));
-                case SKINS_TAB -> Minecraft.getInstance().setScreen(new DragonSkinsScreen(parent));
-                case SPECIES_TAB -> Minecraft.getInstance().setScreen(new DragonSpeciesScreen());
-                case EMOTES_TAB -> Minecraft.getInstance().setScreen(new DragonEmoteScreen());
+
+                if (setSuccessfully) {
+                    return;
+                }
+
+                if (InventoryScreenHandler.dragonInventory) {
+                    RequestOpenDragonInventory.SendOpenDragonInventoryAndMaintainCursorPosition();
+                } else {
+                    //noinspection DataFlowIssue -> player is present
+                    Minecraft.getInstance().setScreen(new InventoryScreen(Minecraft.getInstance().player));
+                    PacketDistributor.sendToServer(new RequestOpenInventory.Data());
+                }
             }
+            case ABILITY_TAB -> Minecraft.getInstance().setScreen(new DragonAbilityScreen(parent));
+            case SKINS_TAB -> Minecraft.getInstance().setScreen(new DragonSkinsScreen(parent));
+            case SPECIES_TAB -> Minecraft.getInstance().setScreen(new DragonSpeciesScreen());
+            case EMOTES_TAB -> Minecraft.getInstance().setScreen(new DragonEmoteScreen());
+        }
     }
 
     public boolean isCurrent() {

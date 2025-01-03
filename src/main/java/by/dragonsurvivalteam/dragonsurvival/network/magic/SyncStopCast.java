@@ -37,7 +37,7 @@ public record SyncStopCast(int playerId, boolean wasDenied, boolean forceWasAppl
                     magic.denyCast();
                 }
 
-                if(packet.forceWasApplyingEffects()) {
+                if (packet.forceWasApplyingEffects()) {
                     magic.stopCasting(player, true);
                 } else {
                     magic.stopCasting(player);

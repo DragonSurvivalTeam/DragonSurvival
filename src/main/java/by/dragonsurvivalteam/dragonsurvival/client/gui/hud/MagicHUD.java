@@ -215,9 +215,8 @@ public class MagicHUD {
 
             // Don't render more than two rows (1 icon = 1 mana point)
             // This makes the mana bars also stop just before the emote button when the chat window is open
-            float reservedMana = Math.min(20, ManaHandler.getReservedMana(player));
-            float maxMana = Math.min(20, ManaHandler.getMaxMana(player));
-            float combinedMana = Math.min(20, reservedMana + maxMana);
+            float reservedMana = ManaHandler.getReservedMana(player);
+            float maxMana = ManaHandler.getMaxMana(player);
             float currentMana = Math.min(maxMana, ManaHandler.getCurrentMana(player));
 
             int manaX = i1;
@@ -227,20 +226,17 @@ public class MagicHUD {
             manaY += manabarYOffset;
 
             MiscDragonTextures.ManaSprites manaSprites = DragonStateProvider.getData(player).species().value().miscResources().manaSprites();
+            int perRow = 9;
 
-            for (int row = 0; row < 1 + Math.ceil(combinedMana / 10); row++) {
-                for (int point = 0; point < 10; point++) {
-                    int manaSlot = row * 10 + point;
+            for (int row = 0; row < 3; row++) {
+                for (int point = 0; point < perRow; point++) {
+                    int slot = row * perRow + point;
 
-                    if (manaSlot > combinedMana) {
-                        continue;
-                    }
-
-                    if (currentMana <= manaSlot) {
+                    if (slot > currentMana) {
                         int x = manaX + point * 9;
-                        int y = manaY - 13 - row * 9;
+                        int y = manaY - 13 - row * 10;
 
-                        if (manaSlot < maxMana) {
+                        if (maxMana > 0 && maxMana > slot) {
                             if (magic.isCasting()) {
                                 // No mana regeneration
                                 blit(graphics, manaSprites.empty(), x, y, 9, 1);
@@ -252,7 +248,7 @@ public class MagicHUD {
                                 blit(graphics, manaSprites.empty(), x, y, 9, 1);
                                 blit(graphics, manaSprites.recovery(), x, y, 9, deltaCounter);
                             }
-                        } else {
+                        } else if (reservedMana > 0 && reservedMana > slot) {
                             // Reserved mana
                             blit(graphics, manaSprites.reserved(), x, y, 9, 1);
                         }

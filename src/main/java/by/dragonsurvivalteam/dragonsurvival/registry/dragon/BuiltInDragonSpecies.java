@@ -71,7 +71,7 @@ public class BuiltInDragonSpecies {
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.NETHER_BREATH),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.FIRE_BALL),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.LAVA_VISION),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.TOUGH_SKIN),
+                        context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.STURDY_SKIN),
                         // Passive
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.CAVE_ATHLETICS),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.BURN),

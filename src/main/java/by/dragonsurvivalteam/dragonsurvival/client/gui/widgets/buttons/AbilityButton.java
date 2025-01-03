@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAbilityScreen;
 import by.dragonsurvivalteam.dragonsurvival.magic.AbilityAndPenaltyTooltipRenderer;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncAbilityEnabled;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncSlotAssignment;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
@@ -42,8 +43,6 @@ public class AbilityButton extends ExtendedButton {
     private boolean isHotbar;
     private boolean isDragging;
     private boolean isInteractable = true;
-
-    // TODO :: option to disable (ctrl+click or sth. like that?)
 
     public AbilityButton(int x, int y, @Nullable final DragonAbilityInstance ability, final DragonAbilityScreen screen, float scale) {
         // Don't actually change the scale of the button itself based on the scale value; this is because we only rescale the button when it is
@@ -94,7 +93,8 @@ public class AbilityButton extends ExtendedButton {
 
     public void setVisible(boolean visible) {
         this.visible = visible;
-        if(leftLevelButton != null && rightLevelButton != null) {
+
+        if (leftLevelButton != null && rightLevelButton != null) {
             leftLevelButton.visible = visible;
             rightLevelButton.visible = visible;
         }
@@ -125,10 +125,10 @@ public class AbilityButton extends ExtendedButton {
     }
 
     @Override
-    protected void onDrag(double pMouseX, double pMouseY, double pDragX, double pDragY) {
-        super.onDrag(pMouseX, pMouseY, pDragX, pDragY);
+    protected void onDrag(double mouseX, double mouseY, double dragX, double dragY) {
+        super.onDrag(mouseX, mouseY, dragX, dragY);
 
-        if (ability == null) {
+        if (ability == null || Screen.hasControlDown()) {
             return;
         }
 
@@ -138,13 +138,24 @@ public class AbilityButton extends ExtendedButton {
     }
 
     @Override
-    public void onClick(double pMouseX, double pMouseY) {
-        super.onClick(pMouseX, pMouseY);
+    public void onClick(double mouseX, double mouseY) {
+        if (Screen.hasControlDown()) {
+            ability.setEnabled(!ability.isEnabled());
+            PacketDistributor.sendToServer(new SyncAbilityEnabled(ability.key(), ability.isEnabled()));
+            return;
+        }
+
+        super.onClick(mouseX, mouseY);
     }
 
     @Override
-    public void onRelease(double pMouseX, double pMouseY) {
-        super.onRelease(pMouseX, pMouseY);
+    public void onRelease(double mouseX, double mouseY) {
+        super.onRelease(mouseX, mouseY);
+
+        if (!isDragging) {
+            return;
+        }
+
         isDragging = false;
 
         if (ability == null) {
@@ -158,7 +169,7 @@ public class AbilityButton extends ExtendedButton {
             boolean wasSwappedToASlot = false;
             for (Renderable renderable : screen.renderables) {
                 if (renderable instanceof AbilityButton button && button.slot != MagicData.NO_SLOT) {
-                    if (button.isMouseOver(pMouseX, pMouseY)) {
+                    if (button.isMouseOver(mouseX, mouseY)) {
                         PacketDistributor.sendToServer(new SyncSlotAssignment(ability.key(), button.slot));
                         data.moveAbilityToSlot(ability.key(), button.slot);
                         wasSwappedToASlot = true;
@@ -215,7 +226,8 @@ public class AbilityButton extends ExtendedButton {
             blit(graphics, ACTIVE_BACKGROUND, getX() - 2, getY() - 2, ORNAMENTATION_SIZE);
         }
 
-        if (!ability.isManuallyUpgraded()) {
+        // TODO :: abilities without any upgrade also get this ornament at the moment
+        if (UpgradeType.IS_MANUAL.negate().test(ability.value().upgrade())) {
             blit(graphics, AUTO_UPGRADE_ORNAMENTATION, getX() - 2, getY() - 2, ORNAMENTATION_SIZE);
         }
 

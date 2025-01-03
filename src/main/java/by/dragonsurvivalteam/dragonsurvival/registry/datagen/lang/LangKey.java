@@ -53,12 +53,6 @@ public class LangKey {
     @Translation(comments = "§6Time to Grow§r§7: %s")
     public static final String GROWTH_TIME = Translation.Type.GUI.wrap("handler.growth_time");
 
-    @Translation(comments = "§6Harvest Level Bonus§r§7: %s")
-    public static final String GROWTH_HARVEST_LEVEL_BONUS = Translation.Type.GUI.wrap("handler.growth_harvest_level_bonus");
-
-    @Translation(comments = "§6Break Speed Multiplier§r§7: %sx")
-    public static final String GROWTH_BREAK_SPEED_MULTIPLIER = Translation.Type.GUI.wrap("handler.growth_break_speed_multiplier");
-
     @Translation(comments = "§6Can destroy blocks at size§r§7: %s")
     public static final String GROWTH_CAN_DESTROY_BLOCKS = Translation.Type.GUI.wrap("handler.growth_items");
 
@@ -144,7 +138,7 @@ public class LangKey {
     @Translation(comments = "§6■ Initial mana cost:§r %s")
     public static final String ABILITY_INITIAL_MANA_COST = Translation.Type.ABILITY.wrap("general.ability.initial_mana_cost");
 
-    @Translation(comments = "§6■ Continuous mana cost:§r %s")
+    @Translation(comments = "§6■ Continuous mana cost:§r %s [%s]")
     public static final String ABILITY_CONTINUOUS_MANA_COST = Translation.Type.ABILITY.wrap("general.ability.continuous_mana_cost");
 
     @Translation(comments = "§6■ Cast time:§r %ss")

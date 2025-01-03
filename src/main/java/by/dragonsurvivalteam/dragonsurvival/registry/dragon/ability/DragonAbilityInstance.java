@@ -2,13 +2,13 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.MagicHUD;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncStopCast;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ExperienceUpgrade;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
@@ -41,15 +41,17 @@ public class DragonAbilityInstance {
 
     public static Codec<DragonAbilityInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             DragonAbility.CODEC.fieldOf("ability").forGetter(DragonAbilityInstance::ability),
-            Codec.INT.fieldOf("level").forGetter(DragonAbilityInstance::level)
+            Codec.INT.fieldOf("level").forGetter(DragonAbilityInstance::level),
+            Codec.BOOL.optionalFieldOf("is_enabled", true).forGetter(DragonAbilityInstance::isEnabled)
     ).apply(instance, DragonAbilityInstance::new));
 
     private final Holder<DragonAbility> ability;
     private int level;
+    private boolean isEnabled;
 
-    private boolean isActive;
     private int currentTick;
     private int cooldown;
+    private boolean isActive;
 
     public DragonAbilityInstance(final Holder<DragonAbility> ability, int level) {
         this(ability, level, true);
@@ -58,6 +60,7 @@ public class DragonAbilityInstance {
     public DragonAbilityInstance(final Holder<DragonAbility> ability, int level, boolean isEnabled) {
         this.ability = ability;
         this.level = level;
+        this.isEnabled = isEnabled;
 
         if (isEnabled && value().activation().type() == Activation.Type.PASSIVE) {
             this.isActive = true;
@@ -116,6 +119,11 @@ public class DragonAbilityInstance {
             return;
         }
 
+        if (value().usageBlocked().map(condition -> condition.test(Condition.createContext(serverPlayer))).orElse(false)) {
+            stopCasting(serverPlayer);
+            return;
+        }
+
         if (currentTick < castTime) {
             return;
         }
@@ -125,7 +133,7 @@ public class DragonAbilityInstance {
         }
 
         if (currentTick > castTime) {
-            float manaCost = getContinuousManaCost(ManaCost.Type.TICKING);
+            float manaCost = getContinuousManaCost(ManaCost.ManaCostType.TICKING);
 
             if (ManaHandler.hasEnoughMana(serverPlayer, manaCost)) {
                 // TODO :: make this return a boolean and remove 'hasEnoughMana'?
@@ -156,7 +164,7 @@ public class DragonAbilityInstance {
         return value().activation().initialManaCost().map(cost -> cost.calculate(level)).orElse(0f);
     }
 
-    public float getContinuousManaCost(final ManaCost.Type type) {
+    public float getContinuousManaCost(final ManaCost.ManaCostType manaCostType) {
         Optional<ManaCost> optional = value().activation().continuousManaCost();
 
         if (optional.isEmpty()) {
@@ -165,7 +173,7 @@ public class DragonAbilityInstance {
 
         ManaCost manaCost = optional.get();
 
-        if (manaCost.type() != type) {
+        if (manaCost.manaCostType() != manaCostType) {
             return 0;
         }
 
@@ -199,10 +207,14 @@ public class DragonAbilityInstance {
     }
 
     public boolean canBeCast() {
-        return isEnabled() && cooldown == NO_COOLDOWN;
+        return isUsable() && cooldown == NO_COOLDOWN;
     }
 
     public ResourceLocation getIcon() {
+        if (!isEnabled) {
+            return value().icon().get(0);
+        }
+
         return ability.value().icon().get(level);
     }
 
@@ -210,10 +222,10 @@ public class DragonAbilityInstance {
         this.isActive = isActive;
     }
 
-    public void setActive(boolean isActive, ServerPlayer player) {
+    public void setActive(boolean isActive, final ServerPlayer player) {
         setActive(isActive);
 
-        if (ability.value().activation().type() == Activation.Type.PASSIVE) {
+        if (!isActive && ability.value().activation().type() == Activation.Type.PASSIVE) {
             // Also makes sure to remove any affects that are applied by the ability
             ability.value().actions().forEach(action -> action.remove(player, this));
         }
@@ -238,10 +250,6 @@ public class DragonAbilityInstance {
         return value().activation().type() == Activation.Type.PASSIVE;
     }
 
-    public void setLevel(int level) {
-        this.level = Mth.clamp(level, MIN_LEVEL, getMaxLevel());
-    }
-
     public int getMaxLevel() {
         return value().getMaxLevel();
     }
@@ -257,6 +265,10 @@ public class DragonAbilityInstance {
     //  should not be needed, since the client has info about the level and would reach the same value as the server here
     public int getCastTime() {
         return value().activation().castTime().map(time -> time.calculate(level)).orElse(0f).intValue();
+    }
+
+    public boolean isUsable() {
+        return isEnabled && level > 0;
     }
 
     public void setCooldown(int cooldown) {
@@ -287,19 +299,33 @@ public class DragonAbilityInstance {
         return location().toString();
     }
 
+    /** Returns the field in an unmodified way (also used by the codec) */
     public Holder<DragonAbility> ability() {
         return ability;
     }
 
+    public void setLevel(int level) {
+        this.level = Mth.clamp(level, MIN_LEVEL, getMaxLevel());
+    }
+
+    /** Returns the field in an unmodified way (also used by the codec) */
     public int level() {
         return level;
     }
 
-    public boolean isEnabled() {
-        return level != 0;
+    public void setEnabled(boolean isEnabled) {
+        this.isEnabled = isEnabled;
+
+        if (!isEnabled) {
+            setActive(false);
+        } else if (value().activation().type() == Activation.Type.PASSIVE) {
+            // Active status for passive abilities is manually handled
+            setActive(true);
+        }
     }
 
-    public boolean isManuallyUpgraded() {
-        return value().upgrade().map(upgrade -> upgrade instanceof ExperienceUpgrade).orElse(false);
+    /** Returns the field in an unmodified way (also used by the codec) */
+    public boolean isEnabled() {
+        return isEnabled;
     }
 }

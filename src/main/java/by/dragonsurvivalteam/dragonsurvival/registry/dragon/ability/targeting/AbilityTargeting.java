@@ -143,31 +143,31 @@ public interface AbilityTargeting {
         return false;
     }
 
-    default List<MutableComponent> getAllEffectDescriptions(final Player dragon, final DragonAbilityInstance abilityInstance) {
+    default List<MutableComponent> getAllEffectDescriptions(final Player dragon, final DragonAbilityInstance ability) {
         // Don't try to generate a description for an ability that is disabled; it will be level 0, which causes LevelBasedValues to throw an exception when using a lookup table
         // TODO :: we could add a mixin to the lookup method to return 0 if it would otherwise cause an exception
         //  we wouldn't exactly modify anyone's behaviour since the alternative would be a crash
-        if (!abilityInstance.isEnabled()) {
+        if (!ability.isUsable()) {
             return List.of();
         }
 
         List<MutableComponent> descriptions = new ArrayList<>();
-        MutableComponent targetDescription = getDescription(dragon, abilityInstance);
+        MutableComponent targetDescription = getDescription(dragon, ability);
 
         target().ifLeft(blockTargeting -> blockTargeting.effect().forEach(effect -> {
-            List<MutableComponent> abilityEffectDescriptions = effect.getDescription(dragon, abilityInstance);
+            List<MutableComponent> abilityEffectDescriptions = effect.getDescription(dragon, ability);
 
-            if (!effect.getDescription(dragon, abilityInstance).isEmpty()) {
+            if (!effect.getDescription(dragon, ability).isEmpty()) {
                 descriptions.addAll(abilityEffectDescriptions.stream().map(description -> description.append(targetDescription)).toList());
             }
         })).ifRight(entityTargeting -> entityTargeting.effects().forEach(effect -> {
-            List<MutableComponent> abilityEffectDescriptions = effect.getDescription(dragon, abilityInstance);
+            List<MutableComponent> abilityEffectDescriptions = effect.getDescription(dragon, ability);
 
-            if (!effect.getDescription(dragon, abilityInstance).isEmpty()) {
+            if (!effect.getDescription(dragon, ability).isEmpty()) {
                 if (!effect.shouldAppendSelfTargetingToDescription() && this instanceof SelfTarget) {
                     // Special case where we don't want to append the "self target" for certain effects
                     // TODO :: why is that the case? this looks kinda clunky atm
-                    descriptions.addAll(effect.getDescription(dragon, abilityInstance));
+                    descriptions.addAll(effect.getDescription(dragon, ability));
                 } else {
                     descriptions.addAll(abilityEffectDescriptions.stream().map(description -> description.append(targetDescription)).toList());
                 }

@@ -18,7 +18,7 @@ import by.dragonsurvivalteam.dragonsurvival.config.ConfigHandler;
 import by.dragonsurvivalteam.dragonsurvival.network.dragon_editor.SyncDragonSkinSettings;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBodyTags;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonBodyTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
@@ -272,7 +272,7 @@ public class DragonSkinsScreen extends Screen {
 
         // Add scrollable list of dragon bodies
         List<AbstractWidget> dragonBodyWidgets = new ArrayList<>();
-        for(Holder<DragonBody> dragonBodyHolder : DSBodyTags.getOrdered(null)) {
+        for(Holder<DragonBody> dragonBodyHolder : DSDragonBodyTags.getOrdered(null)) {
             dragonBodyWidgets.add(createButton(dragonBodyHolder, 0, 0));
         }
         dragonBodyBar = new BarComponent(this,
