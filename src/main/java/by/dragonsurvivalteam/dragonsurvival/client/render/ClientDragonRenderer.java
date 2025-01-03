@@ -580,7 +580,7 @@ public class ClientDragonRenderer {
             boolean hasPosDelta = posDelta.horizontalDistanceSqr() > MOVE_DELTA_EPSILON * MOVE_DELTA_EPSILON;
 
             var rawInput = movement.desiredMoveVec;
-            var hasMoveInput = rawInput.lengthSquared() > DragonEntity.INPUT_EPSILON * DragonEntity.INPUT_EPSILON;
+            var hasMoveInput = rawInput.lengthSquared() > MovementData.INPUT_EPSILON * MovementData.INPUT_EPSILON;
             boolean isInputBack = rawInput.y < 0;
 
             if (hasMoveInput) {

@@ -37,23 +37,27 @@ public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier
             LevelBasedValue.CODEC.optionalFieldOf("probability", DEFAULT_PROBABILITY).forGetter(PotionData::probability)
     ).apply(instance, PotionData::new));
 
+    public record Calculated(int amplifier, int duration, float probability) {
+        public static Calculated from(final PotionData data, final int level) {
+            return new Calculated((int) data.amplifier().calculate(level), (int) data.duration().calculate(level), data.probability().calculate(level));
+        }
+    }
+
     public void apply(@Nullable final ServerPlayer dragon, final int level, final Entity entity) {
         if (entity instanceof LivingEntity livingEntity) {
             effects().forEach(effect -> {
                 MobEffectInstance instance = livingEntity.getEffect(effect);
+                Calculated calculated = Calculated.from(this, level);
 
-                int duration = (int) duration().calculate(level);
-                int amplifier = (int) amplifier().calculate(level);
-
-                if (instance != null && (instance.getAmplifier() >= amplifier && instance.getDuration() >= duration)) {
+                if (instance != null && (instance.getAmplifier() >= calculated.amplifier() && instance.getDuration() >= calculated.duration())) {
                     // Don't do anything if the current effect is at least equally strong and has at least the same duration
                     // For all other cases this new effect will either override the current instance or be added as hidden effect
                     // (Whose duration etc. will be applied once the stronger (and shorter) effect runs out)
                     return;
                 }
 
-                if (livingEntity.getRandom().nextDouble() < probability.calculate(level)) {
-                    livingEntity.addEffect(new MobEffectInstance(effect, duration, amplifier), dragon);
+                if (livingEntity.getRandom().nextDouble() < calculated.probability()) {
+                    livingEntity.addEffect(new MobEffectInstance(effect, calculated.duration(), calculated.amplifier()), dragon);
                 }
             });
         }
@@ -77,24 +81,21 @@ public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier
 
     public List<MutableComponent> getDescription(final int level) {
         List<MutableComponent> components = new ArrayList<>();
-        double duration = Functions.ticksToSeconds((int) duration().calculate(level));
+        Calculated calculated = Calculated.from(this, level);
 
         for (Holder<MobEffect> effect : effects) {
             MutableComponent name = Component.literal("§6■ ").append(Component.translatable(LangKey.ABILITY_APPLIES).append(Component.translatable(effect.value().getDescriptionId())).withColor(DSColors.GOLD));
-            int amplifier = (int) amplifier().calculate(level);
 
-            if (amplifier > 0) {
-                name.append(CommonComponents.SPACE).append(Component.translatable("enchantment.level." + (amplifier + 1))).withColor(DSColors.GOLD);
+            if (calculated.amplifier() > 0) {
+                name.append(CommonComponents.SPACE).append(Component.translatable("enchantment.level." + (calculated.amplifier() + 1))).withColor(DSColors.GOLD);
             }
 
-            if (duration > 0) {
-                name.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.dynamicValue(duration)));
+            if (calculated.duration() != DurationInstance.INFINITE_DURATION) {
+                name.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.dynamicValue(Functions.ticksToSeconds(calculated.duration()))));
             }
 
-            float probability = probability().calculate(level);
-
-            if (probability < 1) {
-                name.append(Component.translatable(LangKey.ABILITY_EFFECT_CHANCE, DSColors.dynamicValue(NumberFormat.getPercentInstance().format(probability))));
+            if (calculated.probability() < 1) {
+                name.append(Component.translatable(LangKey.ABILITY_EFFECT_CHANCE, DSColors.dynamicValue(NumberFormat.getPercentInstance().format(calculated.probability()))));
             }
 
             components.add(name);
@@ -105,15 +106,14 @@ public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier
 
     public PotionContents toPotionContents(final ServerPlayer player, final int level) {
         List<MobEffectInstance> instances = new ArrayList<>();
+        Calculated calculated = Calculated.from(this, level);
 
         for (Holder<MobEffect> effect : effects) {
-            if (player.getRandom().nextDouble() >= probability.calculate(level)) {
+            if (player.getRandom().nextDouble() >= calculated.probability()) {
                 continue;
             }
 
-            int duration = (int) this.duration.calculate(level);
-            int amplifier = (int) this.amplifier.calculate(level);
-            instances.add(new MobEffectInstance(effect, duration, amplifier));
+            instances.add(new MobEffectInstance(effect, calculated.duration(), calculated.amplifier()));
         }
 
         return new PotionContents(Optional.empty(), Optional.empty(), instances);

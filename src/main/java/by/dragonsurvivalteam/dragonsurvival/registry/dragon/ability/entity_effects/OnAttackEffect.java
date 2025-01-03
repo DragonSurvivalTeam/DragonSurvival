@@ -15,6 +15,7 @@ import net.minecraft.world.entity.player.Player;
 
 import java.util.List;
 
+// TODO :: shouldn't this have the option to add a duration (to have the ability to apply said effect)
 public record OnAttackEffect(PotionData potionData) implements AbilityEntityEffect {
     public static final MapCodec<OnAttackEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             PotionData.CODEC.fieldOf("potion").forGetter(OnAttackEffect::potionData)
@@ -23,7 +24,8 @@ public record OnAttackEffect(PotionData potionData) implements AbilityEntityEffe
     @Override
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity) {
         OnAttackEffects data = OnAttackEffects.getData(entity);
-        data.addEffect(ability.id(), new OnAttackEffectInstance(potionData.effects(), (int) potionData.amplifier().calculate(ability.level()), (int) potionData.duration().calculate(ability.level()), potionData.probability().calculate(ability.level())));
+        PotionData.Calculated calculated = PotionData.Calculated.from(potionData, ability.level());
+        data.addEffect(ability.id(), new OnAttackEffectInstance(potionData.effects(), calculated.amplifier(), calculated.duration(), calculated.probability()));
     }
 
     @Override

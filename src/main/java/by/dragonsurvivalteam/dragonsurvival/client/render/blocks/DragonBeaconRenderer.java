@@ -43,21 +43,21 @@ public class DragonBeaconRenderer implements BlockEntityRenderer<DragonBeaconTil
                 item = hasMemoryBlock ? DSItems.PASSIVE_PEACE_BEACON.getDelegate().value() : DSItems.INACTIVE_PEACE_DRAGON_BEACON.getDelegate().value();
 
                 if (!minecraft.isPaused() && dragonBeaconEntity.tick % 5 == 0 && hasMemoryBlock) {
-                    clientWorld.addParticle(DSParticles.PEACE_BEACON_PARTICLE.value(), dragonBeaconEntity.getX() + x, dragonBeaconEntity.getY() + 0.5, dragonBeaconEntity.getZ() + z, 0, 0, 0);
+                    clientWorld.addParticle(DSParticles.FOREST_BEACON_PARTICLE.value(), dragonBeaconEntity.getX() + x, dragonBeaconEntity.getY() + 0.5, dragonBeaconEntity.getZ() + z, 0, 0, 0);
                 }
             }
             case MAGIC -> {
                 item = hasMemoryBlock ? DSItems.PASSIVE_MAGIC_BEACON.getDelegate().value() : DSItems.INACTIVE_MAGIC_DRAGON_BEACON.getDelegate().value();
 
                 if (!minecraft.isPaused() && dragonBeaconEntity.tick % 5 == 0 && hasMemoryBlock) {
-                    clientWorld.addParticle(DSParticles.MAGIC_BEACON_PARTICLE.value(), dragonBeaconEntity.getX() + x, dragonBeaconEntity.getY() + 0.5, dragonBeaconEntity.getZ() + z, 0, 0, 0);
+                    clientWorld.addParticle(DSParticles.SEA_BEACON_PARTICLE.value(), dragonBeaconEntity.getX() + x, dragonBeaconEntity.getY() + 0.5, dragonBeaconEntity.getZ() + z, 0, 0, 0);
                 }
             }
             case FIRE -> {
                 item = hasMemoryBlock ? DSItems.PASSIVE_FIRE_BEACON.getDelegate().value() : DSItems.INACTIVE_FIRE_DRAGON_BEACON.getDelegate().value();
 
                 if (!minecraft.isPaused() && dragonBeaconEntity.tick % 5 == 0 && hasMemoryBlock) {
-                    clientWorld.addParticle(DSParticles.FIRE_BEACON_PARTICLE.value(), dragonBeaconEntity.getX() + x, dragonBeaconEntity.getY() + 0.5, dragonBeaconEntity.getZ() + z, 0, 0, 0);
+                    clientWorld.addParticle(DSParticles.CAVE_BEACON_PARTICLE.value(), dragonBeaconEntity.getX() + x, dragonBeaconEntity.getY() + 0.5, dragonBeaconEntity.getZ() + z, 0, 0, 0);
                 }
             }
         }

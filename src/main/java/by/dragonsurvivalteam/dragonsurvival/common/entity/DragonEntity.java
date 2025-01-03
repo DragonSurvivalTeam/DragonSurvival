@@ -3,7 +3,6 @@ package by.dragonsurvivalteam.dragonsurvival.common.entity;
 import by.dragonsurvivalteam.dragonsurvival.client.models.DragonModel;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.util.AnimationTickTimer;
-import by.dragonsurvivalteam.dragonsurvival.common.blocks.SourceOfMagicBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AbilityAnimation;
@@ -19,15 +18,12 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEm
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
-import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.PlayerTeam;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -53,13 +49,7 @@ import java.util.stream.Stream;
 
 @EventBusSubscriber
 public class DragonEntity extends LivingEntity implements GeoEntity {
-    /// Minimum magnitude for player input to consider the player to be moving
-    /// This is used for deliberate movement, i.e. player input
-    /// Forced movement (midair momentum etc.) relies on MOVE_DELTA_EPSILON for the world-space move delta vector
-    public static final double INPUT_EPSILON = 0.0000001D;
-
     private static final int MAX_EMOTES = 4;
-    private static final int REQUIRED_SOURCE_OF_MAGIC_TICKS = Functions.secondsToTicks(2);
 
     // Default player values
     private static final double DEFAULT_WALK_SPEED = 0.1; // Abilities#walkingSpeed
@@ -108,9 +98,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     private Pair<AbilityAnimation, AnimationType> currentAbilityAnimation;
-
     private boolean begunPlayingAbilityAnimation;
-    private int sourceOfMagicTicks;
 
     public DragonEntity(EntityType<? extends LivingEntity> type, Level worldIn) {
         super(type, worldIn);
@@ -485,20 +473,10 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         }
 
         MovementData movement = MovementData.getData(player);
-        Vec2 rawInput = movement.desiredMoveVec;
-        boolean hasMoveInput = rawInput.lengthSquared() > INPUT_EPSILON * INPUT_EPSILON;
         boolean isInSwimmableFluid = (player.isInWaterOrBubble() || SwimData.getData(player).canSwimIn(player.getMaxHeightFluidType())) && player.isSprinting() && !player.isPassenger();
 
-        BlockState blockStateOn = player.getBlockStateOn();
-
-        if (!hasMoveInput && blockStateOn.getBlock() instanceof SourceOfMagicBlock source && source.isMagic(blockStateOn) && source.isFor(player)) {
-            sourceOfMagicTicks++;
-        } else {
-            sourceOfMagicTicks = 0;
-        }
-
         // TODO: The transition length of animations doesn't work correctly when the framerate varies too much from 60 FPS
-        if (sourceOfMagicTicks >= REQUIRED_SOURCE_OF_MAGIC_TICKS) {
+        if (!movement.isMoving() && handler.isOnMagicSource) {
             return state.setAndContinue(AnimationUtils.createAnimation(builder, SIT_ON_MAGIC_SOURCE));
         } else if (player.isSleeping() || treasureRest.isResting) {
             return state.setAndContinue(AnimationUtils.createAnimation(builder, SLEEP));
@@ -589,7 +567,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             animationController.transitionLength(6);
         } else if (player.isShiftKeyDown() || !DragonSizeHandler.canPoseFit(player, Pose.STANDING) && DragonSizeHandler.canPoseFit(player, Pose.CROUCHING)) {
             // Player is Sneaking
-            if (hasMoveInput) {
+            if (movement.isMoving()) {
                 useDynamicScaling = true;
                 baseSpeed = DEFAULT_SNEAK_SPEED;
                 state.setAnimation(AnimationUtils.createAnimation(builder, SNEAK_WALK));
@@ -606,7 +584,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             baseSpeed = DEFAULT_SPRINT_SPEED;
             state.setAnimation(AnimationUtils.createAnimation(builder, RUN));
             animationController.transitionLength(2);
-        } else if (hasMoveInput) {
+        } else if (movement.isMoving()) {
             useDynamicScaling = true;
             state.setAnimation(AnimationUtils.createAnimation(builder, WALK));
             animationController.transitionLength(2);

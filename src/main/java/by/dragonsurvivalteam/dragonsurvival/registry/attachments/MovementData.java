@@ -5,6 +5,11 @@ import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
 public class MovementData {
+    /// Minimum magnitude for player input to consider the player to be moving
+    /// This is used for deliberate movement, i.e. player input
+    /// Forced movement (midair momentum etc.) relies on MOVE_DELTA_EPSILON for the world-space move delta vector
+    public static final double INPUT_EPSILON = 0.0000001D;
+
     public double headYaw = 0;
     public double headPitch = 0;
     public double bodyYaw = 0;
@@ -27,6 +32,10 @@ public class MovementData {
     //TODO: Biting is not correctly synced, since we are setting it inside of the clientside animation code after it is received from other players over the server
     public boolean bite = false;
     public boolean dig = false;
+
+    public boolean isMoving() {
+        return desiredMoveVec.lengthSquared() > INPUT_EPSILON * INPUT_EPSILON;
+    }
 
     public void setFreeLook(boolean isFreeLook) {
         this.wasFreeLook = this.isFreeLook;

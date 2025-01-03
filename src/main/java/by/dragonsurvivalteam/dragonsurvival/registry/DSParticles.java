@@ -45,9 +45,9 @@ public class DSParticles {
     public static final DeferredHolder<ParticleType<?>, ParticleType<TreasureParticleOption>> TREASURE = register("treasure", () -> TreasureParticleOption.CODEC, () -> TreasureParticleOption.STREAM_CODEC);
     public static final DeferredHolder<ParticleType<?>, ParticleType<SeaSweepParticleOption>> SEA_SWEEP = register("sea_sweep", () -> SeaSweepParticleOption.CODEC, () -> SeaSweepParticleOption.STREAM_CODEC);
 
-    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> FIRE_BEACON_PARTICLE = DS_PARTICLES.register("netherite_particle", () -> new SimpleParticleType(false));
-    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> MAGIC_BEACON_PARTICLE = DS_PARTICLES.register("diamond_particle", () -> new SimpleParticleType(false));
-    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> PEACE_BEACON_PARTICLE = DS_PARTICLES.register("gold_particle", () -> new SimpleParticleType(false));
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> CAVE_BEACON_PARTICLE = DS_PARTICLES.register("netherite_particle", () -> new SimpleParticleType(false));
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> SEA_BEACON_PARTICLE = DS_PARTICLES.register("diamond_particle", () -> new SimpleParticleType(false));
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> FOREST_BEACON_PARTICLE = DS_PARTICLES.register("gold_particle", () -> new SimpleParticleType(false));
 
     private static <T extends ParticleOptions> DeferredHolder<ParticleType<?>, ParticleType<T>> register(final String name, final Supplier<MapCodec<T>> codecSupplier, final Supplier<StreamCodec<? super RegistryFriendlyByteBuf, T>> streamCodecSupplier) {
         return DS_PARTICLES.register(name, () -> new ParticleType<>(false) {
@@ -73,8 +73,8 @@ public class DSParticles {
         event.registerSpriteSet(DSParticles.LARGE_LIGHTNING.get(), LargeLightningParticle.Factory::new);
         event.registerSpriteSet(DSParticles.TREASURE.get(), TreasureParticle.Factory::new);
         event.registerSpriteSet(DSParticles.SEA_SWEEP.get(), SeaSweepParticle.Factory::new);
-        event.registerSpriteSet(DSParticles.FIRE_BEACON_PARTICLE.get(), BeaconParticle.FireFactory::new);
-        event.registerSpriteSet(DSParticles.MAGIC_BEACON_PARTICLE.get(), BeaconParticle.MagicFactory::new);
-        event.registerSpriteSet(DSParticles.PEACE_BEACON_PARTICLE.get(), BeaconParticle.PeaceFactory::new);
+        event.registerSpriteSet(DSParticles.CAVE_BEACON_PARTICLE.get(), BeaconParticle.FireFactory::new);
+        event.registerSpriteSet(DSParticles.SEA_BEACON_PARTICLE.get(), BeaconParticle.MagicFactory::new);
+        event.registerSpriteSet(DSParticles.FOREST_BEACON_PARTICLE.get(), BeaconParticle.PeaceFactory::new);
     }
 }

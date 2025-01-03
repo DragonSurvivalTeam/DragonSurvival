@@ -59,8 +59,11 @@ public class DragonStateHandler extends EntityStateHandler {
     public final Supplier<SubCap>[] caps = new Supplier[]{this::getSkinData};
     private final Map<ResourceKey<DragonSpecies>, Double> savedSizes = new HashMap<>();
 
-    public boolean isGrowing = true;
     public StarHeartItem.State starHeartState = StarHeartItem.State.INACTIVE;
+    public boolean isGrowing = true;
+
+    public int magicSource;
+    public boolean isOnMagicSource;
 
     public boolean refreshBody;
 

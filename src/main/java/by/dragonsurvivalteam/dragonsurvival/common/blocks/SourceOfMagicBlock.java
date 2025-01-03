@@ -3,17 +3,17 @@ package by.dragonsurvivalteam.dragonsurvival.common.blocks;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSTileEntities;
+import by.dragonsurvivalteam.dragonsurvival.registry.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicPlaceholder;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicTileEntity;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.SpawningUtils;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -30,6 +30,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageSources;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -69,28 +70,30 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
     @Translation(comments = "You need a 3x3 area to place %s")
     private static final String OCCUPIED = Translation.Type.GUI.wrap("message.occupied");
 
-    public static final VoxelShape SLAB = Shapes.box(0, 0, 0, 1, 0.5, 1);
-
-    // Full height but half "frontal" width to the direction the block is facing
-    public static final VoxelShape FULL_NORTH = Shapes.box(0, 0, 0.5, 1, 1, 1);
-    public static final VoxelShape FULL_SOUTH = Shapes.box(0, 0, 0, 1, 1, 0.5);
-    public static final VoxelShape FULL_EAST = Shapes.box(0, 0, 0, 0.5, 1, 1);
-    public static final VoxelShape FULL_WEST = Shapes.box(0.5, 0, 0, 1, 1, 1);
-
-    // Triangle shape
-    public static final VoxelShape TOP_NORTH = Shapes.or(FULL_NORTH, Shapes.box(1, 0, 0.5, 1.5, 0.5, 1), Shapes.box(-0.5, 0, 0.5, 0, 0.5, 1));
-    public static final VoxelShape TOP_SOUTH = Shapes.or(FULL_SOUTH, Shapes.box(1, 0, 0, 1.5, 0.5, 0.5), Shapes.box(-0.5, 0, 0, 0, 0.5, 0.5));
-    public static final VoxelShape TOP_EAST = Shapes.or(FULL_EAST, Shapes.box(0, 0, 1, 0.5, 0.5, 1.5), Shapes.box(0, 0, -0.5, 0.5, 0.5, 0));
-    public static final VoxelShape TOP_WEST = Shapes.or(FULL_WEST, Shapes.box(0.5, 0, 1, 1, 0.5, 1.5), Shapes.box(0.5, 0, -0.5, 1, 0.5, 0));
-
-    // Stair shape
-    public static final VoxelShape BACK_NORTH = Shapes.or(SLAB, FULL_NORTH);
-    public static final VoxelShape BACK_SOUTH = Shapes.or(SLAB, FULL_SOUTH);
-    public static final VoxelShape BACK_EAST = Shapes.or(SLAB, FULL_EAST);
-    public static final VoxelShape BACK_WEST = Shapes.or(SLAB, FULL_WEST);
-
     public static final BooleanProperty PRIMARY_BLOCK = BooleanProperty.create("primary");
     public static final BooleanProperty FILLED = BooleanProperty.create("filled");
+
+    private static final int REQUIRED_SOURCE_OF_MAGIC_TICKS = Functions.secondsToTicks(10);
+
+    private static final VoxelShape SLAB = Shapes.box(0, 0, 0, 1, 0.5, 1);
+
+    // Full height but half "frontal" width to the direction the block is facing
+    private static final VoxelShape FULL_NORTH = Shapes.box(0, 0, 0.5, 1, 1, 1);
+    private static final VoxelShape FULL_SOUTH = Shapes.box(0, 0, 0, 1, 1, 0.5);
+    private static final VoxelShape FULL_EAST = Shapes.box(0, 0, 0, 0.5, 1, 1);
+    private static final VoxelShape FULL_WEST = Shapes.box(0.5, 0, 0, 1, 1, 1);
+
+    // Triangle shape
+    private static final VoxelShape TOP_NORTH = Shapes.or(FULL_NORTH, Shapes.box(1, 0, 0.5, 1.5, 0.5, 1), Shapes.box(-0.5, 0, 0.5, 0, 0.5, 1));
+    private static final VoxelShape TOP_SOUTH = Shapes.or(FULL_SOUTH, Shapes.box(1, 0, 0, 1.5, 0.5, 0.5), Shapes.box(-0.5, 0, 0, 0, 0.5, 0.5));
+    private static final VoxelShape TOP_EAST = Shapes.or(FULL_EAST, Shapes.box(0, 0, 1, 0.5, 0.5, 1.5), Shapes.box(0, 0, -0.5, 0.5, 0.5, 0));
+    private static final VoxelShape TOP_WEST = Shapes.or(FULL_WEST, Shapes.box(0.5, 0, 1, 1, 0.5, 1.5), Shapes.box(0.5, 0, -0.5, 1, 0.5, 0));
+
+    // Stair shape
+    private static final VoxelShape BACK_NORTH = Shapes.or(SLAB, FULL_NORTH);
+    private static final VoxelShape BACK_SOUTH = Shapes.or(SLAB, FULL_SOUTH);
+    private static final VoxelShape BACK_EAST = Shapes.or(SLAB, FULL_EAST);
+    private static final VoxelShape BACK_WEST = Shapes.or(SLAB, FULL_WEST);
 
     private enum Type implements StringRepresentable {
         GROUND, BACK, BACK_MIDDLE, TOP;
@@ -364,10 +367,6 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
             return;
         }
 
-        if (ServerConfig.damageWrongSourceOfMagic && entity instanceof Player player && !isFor(player)) {
-            entity.hurt(damageSourceProvider.apply(entity.damageSources()), isMagic(state) ? 1f : 0.5f);
-        }
-
         if (entity instanceof ItemEntity item) {
             ItemStack stack = item.getItem();
             ItemStack tileStack = source.getItem(0);
@@ -383,6 +382,52 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
                     tileStack.setCount(tileStack.getCount() + toAdd);
                 }
             }
+        }
+
+        if (!(entity instanceof Player player)) {
+            return;
+        }
+
+        DragonStateHandler handler = DragonStateProvider.getData(player);
+        boolean isFor = isFor(handler);
+
+        if (isFor && isMagic(state) && !source.isEmpty()) {
+            if (handler.magicSource > REQUIRED_SOURCE_OF_MAGIC_TICKS) {
+                handler.magicSource = 0;
+
+                MobEffectInstance instance = player.getEffect(DSEffects.SOURCE_OF_MAGIC);
+                int duration = SourceOfMagicTileEntity.consumables.get(source.getItem(0).getItem());
+
+                if (instance == null) {
+                    player.addEffect(new MobEffectInstance(DSEffects.SOURCE_OF_MAGIC, duration, 0, true, false));
+                } else {
+                    // TODO :: should there be a max. duration?
+                    player.addEffect(new MobEffectInstance(DSEffects.SOURCE_OF_MAGIC, instance.getDuration() + duration, 0, true, false));
+                }
+
+                player.playNotifySound(SoundEvents.BEACON_POWER_SELECT, SoundSource.NEUTRAL, 1, 1);
+                source.removeItem(0, 1);
+            } else {
+                RandomSource random = player.getRandom();
+                double x = -1 + random.nextDouble() * 2;
+                double z = -1 + random.nextDouble() * 2;
+
+                ParticleOptions particle = null;
+
+                if (state.getBlock() == DSBlocks.CAVE_SOURCE_OF_MAGIC.get()) {
+                    particle = DSParticles.CAVE_BEACON_PARTICLE.value();
+                } else if (state.getBlock() == DSBlocks.FOREST_SOURCE_OF_MAGIC.get()) {
+                    particle = DSParticles.FOREST_BEACON_PARTICLE.value();
+                } else if (state.getBlock() == DSBlocks.SEA_SOURCE_OF_MAGIC.get()) {
+                    particle = DSParticles.SEA_BEACON_PARTICLE.value();
+                }
+
+                if (particle != null) {
+                    player.level().addParticle(particle, player.getX() + x, player.getY() + 0.5, player.getZ() + z, 0, 0, 0);
+                }
+            }
+        } else if (!isFor && ServerConfig.damageWrongSourceOfMagic) {
+            entity.hurt(damageSourceProvider.apply(entity.damageSources()), isMagic(state) ? 1f : 0.5f);
         }
     }
 
@@ -484,9 +529,8 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
         return level.isClientSide ? null : BaseEntityBlock.createTickerHelper(type, DSTileEntities.SOURCE_OF_MAGIC_TILE_ENTITY.get(), SourceOfMagicTileEntity::serverTick);
     }
 
-    public boolean isFor(final Player player) {
-        DragonStateHandler data = DragonStateProvider.getData(player);
-        return data.isDragon() && (types == null || data.species().is(types));
+    public boolean isFor(final DragonStateHandler handler) {
+        return handler.isDragon() && (types == null || handler.species().is(types));
     }
 
     public boolean isMagic(final BlockState state) {
