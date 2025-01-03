@@ -181,7 +181,10 @@ public class DragonAltarScreen extends Screen {
         }
 
         TextRenderUtil.drawCenteredScaledText(guiGraphics, width / 2, 10, 2f, title.getString(), DyeColor.WHITE.getTextColor());
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(0, 0, 300);
         super.render(guiGraphics, mouseX, mouseY, partialTick);
+        guiGraphics.pose().popPose();
     }
 
     private void initializeHandler(final DragonStateHandler handler) {
