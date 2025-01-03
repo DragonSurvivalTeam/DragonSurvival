@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.emotes;
 
+import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonEmoteScreen;
+
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nullable;
@@ -22,7 +24,7 @@ public class EmoteKeybinds {
     }
 
     public boolean contains(final String emote) {
-        return getKey(emote) != EmoteMenuHandler.NO_KEY;
+        return getKey(emote) != DragonEmoteScreen.NO_KEY;
     }
 
     public int getKey(final String emote) {
@@ -34,7 +36,7 @@ public class EmoteKeybinds {
             }
         }
 
-        return EmoteMenuHandler.NO_KEY;
+        return DragonEmoteScreen.NO_KEY;
     }
 
     public void clear() {

@@ -59,9 +59,6 @@ public class DragonSkinsScreen extends Screen {
     @Translation(comments = "Skin Settings")
     private static final String SETTINGS = Translation.Type.GUI.wrap("skin_screen.settings");
 
-    @Translation(comments = "Enable / disable skins")
-    private static final String TOGGLE = Translation.Type.GUI.wrap("skin_screen.toggle");
-
     @Translation(comments = "■ This is a link to our §6Wiki§r dedicated to making your own skin!§7 Remember that this will be very difficult, and requires knowledge of graphic editors.")
     private static final String WIKI = Translation.Type.GUI.wrap("skin_screen.wiki");
 
@@ -87,11 +84,7 @@ public class DragonSkinsScreen extends Screen {
     @Translation(comments = "Open Editor")
     private static final String OPEN_EDITOR = Translation.Type.GUI.wrap("skin_screen.open_editor");
 
-    private static final ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin_interface.png");
-    private static final ResourceLocation DISCORD_TEXTURE = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/discord_button.png");
-    private static final ResourceLocation WIKI_TEXTURE = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/wiki_button.png");
-    private static final ResourceLocation UNCHECKED = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/unchecked.png");
-    private static final ResourceLocation CHECKED = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/dragon_claws_checked.png");
+    private static final ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/skin_interface.png");
 
     private static final ResourceLocation BUTTON_BACKGROUND_BLACK = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/background_black.png");
     private static final ResourceLocation BUTTON_BACKGROUND_WHITE = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/background_white.png");
