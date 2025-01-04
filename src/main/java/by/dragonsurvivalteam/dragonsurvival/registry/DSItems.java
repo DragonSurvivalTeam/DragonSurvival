@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.SourceOfMagicData;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.items.*;
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.DarkDragonArmorItem;
@@ -8,7 +9,9 @@ import by.dragonsurvivalteam.dragonsurvival.common.items.armor.DragonHunterWeapo
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.LightDragonArmorItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.food.CustomOnFinishEffectItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.growth.StarHeartItem;
+import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataComponents;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.util.BlockPosHelper;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import it.unimi.dsi.fastutil.Pair;
@@ -305,6 +308,53 @@ public class DSItems {
                     .add(Attributes.ENTITY_INTERACTION_RANGE, new AttributeModifier(DragonSurvival.res("partisan_attack_reach"), 1f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                     .build()
     ), location.getPath(), List.of(Pair.of(DSEnchantments.DRAGONSBANE, 3))));
+
+    // --- Block items --- //
+
+    public static final Holder<Item> CAVE_SOURCE_OF_MAGIC = DS_ITEMS.register("cave_source_of_magic", () -> new SourceOfMagicItem(
+            DSBlocks.CAVE_SOURCE_OF_MAGIC.get(),
+            new Item.Properties().rarity(Rarity.EPIC)
+                    .component(DSDataComponents.SOURCE_OF_MAGIC, new SourceOfMagicData(
+                            List.of(
+                                    new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_DUST.value(), Functions.secondsToTicks(20)),
+                                    new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_BONE.value(), Functions.secondsToTicks(60)),
+                                    new SourceOfMagicData.Consumable(DSItems.DRAGON_HEART_SHARD.value(), Functions.secondsToTicks(110)),
+                                    new SourceOfMagicData.Consumable(DSItems.WEAK_DRAGON_HEART.value(), Functions.secondsToTicks(310)),
+                                    new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_HEART.value(), Functions.secondsToTicks(1010))
+                            ),
+                            List.of(BuiltInDragonSpecies.CAVE)
+                    ))
+    ));
+
+    public static final Holder<Item> FOREST_SOURCE_OF_MAGIC = DS_ITEMS.register("forest_source_of_magic", () -> new SourceOfMagicItem(
+            DSBlocks.FOREST_SOURCE_OF_MAGIC.get(),
+            new Item.Properties().rarity(Rarity.EPIC)
+                    .component(DSDataComponents.SOURCE_OF_MAGIC, new SourceOfMagicData(
+                            List.of(
+                                    new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_DUST.value(), Functions.secondsToTicks(20)),
+                                    new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_BONE.value(), Functions.secondsToTicks(60)),
+                                    new SourceOfMagicData.Consumable(DSItems.DRAGON_HEART_SHARD.value(), Functions.secondsToTicks(110)),
+                                    new SourceOfMagicData.Consumable(DSItems.WEAK_DRAGON_HEART.value(), Functions.secondsToTicks(310)),
+                                    new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_HEART.value(), Functions.secondsToTicks(1010))
+                            ),
+                            List.of(BuiltInDragonSpecies.FOREST)
+                    ))
+    ));
+
+    public static final Holder<Item> SEA_SOURCE_OF_MAGIC = DS_ITEMS.register("sea_source_of_magic", () -> new SourceOfMagicItem(
+            DSBlocks.SEA_SOURCE_OF_MAGIC.get(),
+            new Item.Properties().rarity(Rarity.EPIC)
+                    .component(DSDataComponents.SOURCE_OF_MAGIC, new SourceOfMagicData(
+                            List.of(
+                                    new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_DUST.value(), Functions.secondsToTicks(20)),
+                                    new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_BONE.value(), Functions.secondsToTicks(60)),
+                                    new SourceOfMagicData.Consumable(DSItems.DRAGON_HEART_SHARD.value(), Functions.secondsToTicks(110)),
+                                    new SourceOfMagicData.Consumable(DSItems.WEAK_DRAGON_HEART.value(), Functions.secondsToTicks(310)),
+                                    new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_HEART.value(), Functions.secondsToTicks(1010))
+                            ),
+                            List.of(BuiltInDragonSpecies.SEA)
+                    ))
+    ));
 
     // --- Misc --- //
 

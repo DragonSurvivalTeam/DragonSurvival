@@ -832,6 +832,7 @@
   "dragonsurvival.gui.altar.help": "§6■ Welcome to Dragon Survival!§r\n■ You can choose which §6dragon species§r you want to become. This decision is not permanent, but you may lose progress if you change your mind.§r\n■§7 Don't forget to read patch notes and delete old configs if you update our mod to avoid bugs! Enjoy the game! :3",
   "dragonsurvival.gui.altar.info.human": "■ §nHuman.§r\n■ Homo sapiens.§r\nTravelers, builders, and creators.",
   "dragonsurvival.gui.altar.no_choice": "You didn't make your initial choice in the Dragon Altar!\nYou may still open the altar in your inventory.",
+  "dragonsurvival.gui.container.source_of_magic": "Source of Magic",
   "dragonsurvival.gui.creative_tab": "Dragon Survival",
   "dragonsurvival.gui.destruction.disabled": "Destruction mode disabled",
   "dragonsurvival.gui.destruction.enabled": "Destruction mode enabled",

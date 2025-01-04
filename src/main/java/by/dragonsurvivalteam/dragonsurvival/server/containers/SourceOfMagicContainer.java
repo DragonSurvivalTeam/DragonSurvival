@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.server.containers;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.DSContainers;
-import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicTileEntity;
+import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicBlockEntity;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -14,27 +14,27 @@ import net.neoforged.neoforge.items.wrapper.InvWrapper;
 import javax.annotation.Nonnull;
 
 public class SourceOfMagicContainer extends AbstractContainerMenu {
-    public SourceOfMagicTileEntity nestEntity;
+    public SourceOfMagicBlockEntity blockEntity;
 
-    public SourceOfMagicContainer(int windowId, Inventory inv, FriendlyByteBuf data) {
+    public SourceOfMagicContainer(int windowId, final Inventory inventory, final FriendlyByteBuf buffer) {
         super(DSContainers.SOURCE_OF_MAGIC_CONTAINER.value(), windowId);
-        nestEntity = (SourceOfMagicTileEntity) inv.player.level().getBlockEntity(data.readBlockPos());
+        blockEntity = (SourceOfMagicBlockEntity) inventory.player.level().getBlockEntity(buffer.readBlockPos());
         int index = 0;
+
         for (int i = 0; i < 9; i++) {
-            addSlot(new Slot(inv, index++, 8 + 18 * i, 142));
+            addSlot(new Slot(inventory, index++, 8 + 18 * i, 142));
         }
+
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
-                addSlot(new Slot(inv, index++, 8 + 18 * j, 84 + 18 * i));
+                addSlot(new Slot(inventory, index++, 8 + 18 * j, 84 + 18 * i));
             }
         }
 
-        addSlot(new SlotItemHandler(new InvWrapper(nestEntity), 0, 80, 62) {
+        addSlot(new SlotItemHandler(new InvWrapper(blockEntity), 0, 80, 62) {
             @Override
-            public boolean mayPlace(
-                    @Nonnull
-                    ItemStack stack) {
-                return SourceOfMagicTileEntity.consumables.containsKey(stack.getItem());
+            public boolean mayPlace(@Nonnull final ItemStack stack) {
+                return blockEntity.getDuration(stack.getItem()) > 0;
             }
         });
     }

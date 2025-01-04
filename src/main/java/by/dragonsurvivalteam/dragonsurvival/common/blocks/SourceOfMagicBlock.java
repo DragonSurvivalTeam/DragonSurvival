@@ -5,9 +5,8 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
+import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicBlockEntity;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicPlaceholder;
-import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicTileEntity;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.SpawningUtils;
 import com.mojang.serialization.MapCodec;
@@ -21,7 +20,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.Container;
@@ -107,14 +105,11 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
     private static final EnumProperty<Type> TYPE = EnumProperty.create("type", Type.class);
 
     /** null -> all are valid */
-    private final @Nullable TagKey<DragonSpecies> types;
     private final Function<DamageSources, DamageSource> damageSourceProvider;
 
-    public SourceOfMagicBlock(final Properties properties, @Nullable final TagKey<DragonSpecies> types, final Function<DamageSources, DamageSource> damageSourceProvider) {
+    public SourceOfMagicBlock(final Properties properties, final Function<DamageSources, DamageSource> damageSourceProvider) {
         super(properties);
         registerDefaultState(getStateDefinition().any().setValue(BlockStateProperties.WATERLOGGED, false).setValue(PRIMARY_BLOCK, true).setValue(TYPE, Type.GROUND).setValue(FILLED, false));
-
-        this.types = types;
         this.damageSourceProvider = damageSourceProvider;
     }
 
@@ -279,7 +274,7 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
             breakBlock(level, position.above().relative(direction).relative(direction.getCounterClockWise()));
             breakBlock(level, position.above().relative(direction).relative(direction.getClockWise()));
         } else if (level.getBlockEntity(position) instanceof SourceOfMagicPlaceholder placeholder) {
-            if (level.getBlockEntity(placeholder.rootPos) instanceof SourceOfMagicTileEntity root) {
+            if (level.getBlockEntity(placeholder.rootPos) instanceof SourceOfMagicBlockEntity root) {
                 onRemove(root.getBlockState(), level, placeholder.rootPos, Blocks.BUBBLE_COLUMN.defaultBlockState(), isMoving);
             }
         }
@@ -361,7 +356,7 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
             sourcePosition = placeholder.rootPos;
         }
 
-        SourceOfMagicTileEntity source = getSource(level, sourcePosition);
+        SourceOfMagicBlockEntity source = getSource(level, sourcePosition);
 
         if (source == null) {
             return;
@@ -371,7 +366,7 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
             ItemStack stack = item.getItem();
             ItemStack tileStack = source.getItem(0);
 
-            if (SourceOfMagicTileEntity.consumables.containsKey(stack.getItem())) {
+            if (source.getDuration(stack.getItem()) > 0) {
                 if (source.isEmpty()) {
                     source.setItem(0, stack);
                     item.kill();
@@ -389,14 +384,13 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
         }
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
-        boolean isFor = isFor(handler);
 
-        if (isFor && isMagic(state) && !source.isEmpty()) {
+        if (source.isApplicableFor(handler) && isMagic(state) && !source.isEmpty()) {
             if (handler.magicSource > REQUIRED_SOURCE_OF_MAGIC_TICKS) {
                 handler.magicSource = 0;
 
                 MobEffectInstance instance = player.getEffect(DSEffects.SOURCE_OF_MAGIC);
-                int duration = SourceOfMagicTileEntity.consumables.get(source.getItem(0).getItem());
+                int duration = source.getCurrentDuration();
 
                 if (instance == null) {
                     player.addEffect(new MobEffectInstance(DSEffects.SOURCE_OF_MAGIC, duration, 0, true, false));
@@ -426,14 +420,14 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
                     player.level().addParticle(particle, player.getX() + x, player.getY() + 0.5, player.getZ() + z, 0, 0, 0);
                 }
             }
-        } else if (!isFor && ServerConfig.damageWrongSourceOfMagic) {
+        } else if (!source.isApplicableFor(handler) && ServerConfig.damageWrongSourceOfMagic) {
             entity.hurt(damageSourceProvider.apply(entity.damageSources()), isMagic(state) ? 1f : 0.5f);
         }
     }
 
-    public SourceOfMagicTileEntity getSource(final Level level, final BlockPos position) {
+    public SourceOfMagicBlockEntity getSource(final Level level, final BlockPos position) {
         BlockEntity entity = level.getBlockEntity(position);
-        return entity instanceof SourceOfMagicTileEntity source ? source : null;
+        return entity instanceof SourceOfMagicBlockEntity source ? source : null;
     }
 
     @Override
@@ -462,11 +456,11 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
 
         if (entity instanceof SourceOfMagicPlaceholder placeholder) {
             rootPosition = placeholder.rootPos;
-        } else if (entity instanceof SourceOfMagicTileEntity source) {
+        } else if (entity instanceof SourceOfMagicBlockEntity source) {
             return updateAndTakeLiquid(level, position, state, source);
         }
 
-        if (rootPosition != null && level.getBlockEntity(rootPosition) instanceof SourceOfMagicTileEntity source) {
+        if (rootPosition != null && level.getBlockEntity(rootPosition) instanceof SourceOfMagicBlockEntity source) {
             return updateAndTakeLiquid(level, rootPosition, level.getBlockState(rootPosition), source);
         }
 
@@ -475,10 +469,10 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
 
     /**
      * If the block entity is filled ({@link SourceOfMagicBlock#FILLED}) it will return the appropriate liquid <br>
-     * If an item was present in the container (see {@link SourceOfMagicTileEntity#consumables} then said stack may be decremented <br> <br>
-     * This happens here because in {@link SourceOfMagicTileEntity#serverTick(Level, BlockPos, BlockState, SourceOfMagicTileEntity)} it will fill back up if an item is present
+     * If an item was present in the container (see {@link SourceOfMagicBlockEntity#consumables} then said stack may be decremented <br> <br>
+     * This happens here because in {@link SourceOfMagicBlockEntity#serverTick(Level, BlockPos, BlockState, SourceOfMagicBlockEntity)} it will fill back up if an item is present
      */
-    private ItemStack updateAndTakeLiquid(final LevelAccessor level, final BlockPos position, final BlockState state, final SourceOfMagicTileEntity source) {
+    private ItemStack updateAndTakeLiquid(final LevelAccessor level, final BlockPos position, final BlockState state, final SourceOfMagicBlockEntity source) {
         if (!state.getValue(SourceOfMagicBlock.FILLED)) {
             return ItemStack.EMPTY;
         }
@@ -526,11 +520,7 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
 
     @Override
     public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(final Level level, @NotNull final BlockState state, @NotNull final BlockEntityType<T> type) {
-        return level.isClientSide ? null : BaseEntityBlock.createTickerHelper(type, DSTileEntities.SOURCE_OF_MAGIC_TILE_ENTITY.get(), SourceOfMagicTileEntity::serverTick);
-    }
-
-    public boolean isFor(final DragonStateHandler handler) {
-        return handler.isDragon() && (types == null || handler.species().is(types));
+        return level.isClientSide ? null : BaseEntityBlock.createTickerHelper(type, DSTileEntities.SOURCE_OF_MAGIC_TILE_ENTITY.get(), SourceOfMagicBlockEntity::serverTick);
     }
 
     public boolean isMagic(final BlockState state) {

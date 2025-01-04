@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.render.blocks;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSParticles;
-import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonBeaconTileEntity;
+import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonBeaconBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
@@ -17,16 +17,16 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
-public class DragonBeaconRenderer implements BlockEntityRenderer<DragonBeaconTileEntity> {
+public class DragonBeaconRenderer implements BlockEntityRenderer<DragonBeaconBlockEntity> {
 
     public DragonBeaconRenderer(BlockEntityRendererProvider.Context pContext) {
     }
 
     @Override
-    public void render(DragonBeaconTileEntity dragonBeaconEntity, float v, PoseStack PoseStack, MultiBufferSource iRenderTypeBuffer, int light, int overlay) {
+    public void render(DragonBeaconBlockEntity dragonBeaconEntity, float v, PoseStack PoseStack, MultiBufferSource iRenderTypeBuffer, int light, int overlay) {
         dragonBeaconEntity.tick += 0.5f;
         PoseStack.pushPose();
-        DragonBeaconTileEntity.Type type = dragonBeaconEntity.type;
+        DragonBeaconBlockEntity.Type type = dragonBeaconEntity.type;
 
         Item item = DSBlocks.EMPTY_DRAGON_BEACON.get().asItem();
 

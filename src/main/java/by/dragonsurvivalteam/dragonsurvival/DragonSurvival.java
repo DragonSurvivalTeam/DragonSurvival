@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival;
 import by.dragonsurvivalteam.dragonsurvival.config.ConfigHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
+import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataComponents;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.loot.AddTableLootExtendedLootModifier;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.loot.DragonHeartLootModifier;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.loot.DragonOreLootModifier;
@@ -51,6 +52,7 @@ public class DragonSurvival {
         bus.addListener(this::addPackFinders);
 
         DSDataAttachments.DS_ATTACHMENT_TYPES.register(bus);
+        DSDataComponents.REGISTRY.register(bus);
         DSAttributes.DS_ATTRIBUTES.register(bus);
         DSEquipment.DS_ARMOR_MATERIALS.register(bus);
         // We need to register blocks before items, since otherwise the items will register before the item-blocks can be assigned

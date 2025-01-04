@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.common.items;
 
 import by.dragonsurvivalteam.dragonsurvival.client.render.item.RotatingKeyRenderer;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSDataComponents;
+import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataComponents;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;

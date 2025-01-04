@@ -55,7 +55,11 @@ public record Activation(
                         return DataResult.error(() -> "[cooldown] is not applicable for [" + activation.type() + "] activation");
                     }
                 }
-                case ACTIVE_CHANNELED -> { /* Nothing to do */ }
+                case ACTIVE_CHANNELED -> {
+                    if (activation.continuousManaCost().isPresent() && activation.continuousManaCost().get().manaCostType() == ManaCost.ManaCostType.RESERVED) {
+                        return DataResult.error(() -> "[continuous_mana_cost] -> [reserved] is not applicable for [" + activation.type() + "] activation");
+                    }
+                }
                 case ACTIVE_SIMPLE -> {
                     if (activation.continuousManaCost().isPresent()) {
                         return DataResult.error(() -> "[continuous_mana_cost] is not applicable for [" + activation.type() + "] activation");
@@ -75,7 +79,7 @@ public record Activation(
                 return DataResult.error(() -> "[sound] -> [charging] is not applicable when no [cast_time] is present");
             }
 
-            if(activation.castTime().isEmpty() && activation.animations().isPresent() && activation.animations().get().startAndCharging().isPresent()) {
+            if (activation.castTime().isEmpty() && activation.animations().isPresent() && activation.animations().get().startAndCharging().isPresent()) {
                 return DataResult.error(() -> "[animations] -> [start_and_charging] is not applicable when no [cast_time] is present");
             }
 
@@ -97,7 +101,6 @@ public record Activation(
 
     public enum Type implements StringRepresentable {
         PASSIVE("passive"),
-        // TODO :: remove the 'ACTIVE_' part?
         ACTIVE_CHANNELED("active_channeled"),
         ACTIVE_SIMPLE("active_simple");
 

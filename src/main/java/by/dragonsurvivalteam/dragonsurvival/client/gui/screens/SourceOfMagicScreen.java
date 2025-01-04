@@ -4,7 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.H
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.server.containers.SourceOfMagicContainer;
-import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicTileEntity;
+import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicBlockEntity;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -26,7 +26,7 @@ public class SourceOfMagicScreen extends AbstractContainerScreen<SourceOfMagicCo
             "■ §6+100 sec§r - Dragon Heart Shard",
             "■ §6+300 sec§r - Weak Dragon Heart",
             "■ §6+1000 sec§r - Elder Dragon Heart"
-    }) // TODO :: add config for item:time pairs
+    }) // TODO :: make tooltip dynamic (scrollable...?) depending on the valid consumables of said source
     private static final String HELP = Translation.Type.GUI.wrap("source_of_magic.help");
 
     private static final ResourceLocation BACKGROUND = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/source_of_magic/source_of_magic_ui.png");
@@ -37,11 +37,11 @@ public class SourceOfMagicScreen extends AbstractContainerScreen<SourceOfMagicCo
     private static final ResourceLocation SEA_NEST0 = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/source_of_magic/sea_source_of_magic_0.png");
     private static final ResourceLocation SEA_NEST1 = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/source_of_magic/sea_source_of_magic_1.png");
 
-    private final SourceOfMagicTileEntity nest;
+    private final SourceOfMagicBlockEntity blockEntity;
 
-    public SourceOfMagicScreen(SourceOfMagicContainer screenContainer, Inventory inv, Component titleIn) {
-        super(screenContainer, inv, titleIn);
-        nest = screenContainer.nestEntity;
+    public SourceOfMagicScreen(final SourceOfMagicContainer container, final Inventory inventory, final Component title) {
+        super(container, inventory, title);
+        blockEntity = container.blockEntity;
     }
 
     @Override
@@ -57,8 +57,8 @@ public class SourceOfMagicScreen extends AbstractContainerScreen<SourceOfMagicCo
     protected void renderBg(@NotNull final GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         guiGraphics.blit(BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
-        boolean hasItem = !nest.getItem(0).isEmpty();
-        Block block = nest.getBlockState().getBlock();
+        boolean hasItem = !blockEntity.getItem(0).isEmpty();
+        Block block = blockEntity.getBlockState().getBlock();
 
         ResourceLocation resourceLocation = null;
 

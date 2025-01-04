@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins;
 
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSDataComponents;
+import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataComponents;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -19,10 +19,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(VaultBlockEntity.Server.class)
 public class VaultBlockEntityServerMixin {
     @ModifyReturnValue(method = "isValidToInsert", at = @At(value = "RETURN"))
-    private static boolean dragonSurvival$isValidToInsert(boolean original, VaultConfig pConfig, ItemStack pStack) {
-        if (pStack.getComponents().get(DSDataComponents.TARGET_POSITION) != null) {
+    private static boolean dragonSurvival$isValidToInsert(boolean original, final VaultConfig config, final ItemStack stack) {
+        if (stack.getComponents().get(DSDataComponents.TARGET_POSITION.get()) != null) {
             // Skip the components check if it is our vaults and keys
-            return ItemStack.isSameItem(pStack, pConfig.keyItem()) && pStack.getCount() >= pConfig.keyItem().getCount();
+            return ItemStack.isSameItem(stack, config.keyItem()) && stack.getCount() >= config.keyItem().getCount();
         }
         return original;
     }
