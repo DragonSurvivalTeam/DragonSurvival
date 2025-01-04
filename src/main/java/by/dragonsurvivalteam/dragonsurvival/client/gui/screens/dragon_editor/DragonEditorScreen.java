@@ -620,10 +620,16 @@ public class DragonEditorScreen extends Screen {
         HANDLER.setType(null, dragonSpecies);
         HANDLER.setDesiredSize(null, dragonStage.value().sizeRange().min());
         HANDLER.setBody(null, dragonBody);
-
-        preset = new SkinPreset();
-        preset.initDefaults(dragonSpecies.getKey(), dragonBody.value().customModel());
-        HANDLER.setCurrentSkinPreset(preset);
+        SkinPreset skinPreset = localHandler.getSkinPresetForSpecies(dragonSpecies.getKey());
+        if(skinPreset != null) {
+            HANDLER.setCurrentSkinPreset(skinPreset);
+            this.preset = skinPreset;
+        } else {
+            SkinPreset freshSkinPreset = new SkinPreset();
+            freshSkinPreset.initDefaults(dragonSpecies.getKey(), dragonBody.value().customModel());
+            HANDLER.setCurrentSkinPreset(freshSkinPreset);
+            this.preset = freshSkinPreset;
+        }
 
         dragonRender.zoom = setZoom(dragonStage);
     }

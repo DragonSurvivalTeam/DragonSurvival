@@ -451,6 +451,10 @@ public class DragonStateHandler extends EntityStateHandler {
         return skinData.skinPresets.get().get(dragonSpecies.getKey());
     }
 
+    public SkinPreset getSkinPresetForSpecies(ResourceKey<DragonSpecies> dragonSpecies) {
+        return skinData.skinPresets.get().get(dragonSpecies);
+    }
+
     public void recompileCurrentSkin() {
         skinData.compileSkin(dragonStage);
     }

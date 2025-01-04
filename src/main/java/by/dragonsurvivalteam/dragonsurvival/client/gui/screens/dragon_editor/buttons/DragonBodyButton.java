@@ -24,6 +24,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 public class DragonBodyButton extends ExtendedButton implements HoverDisableable {
+
+    @Translation(comments = "Can only change body type at the dragon altar")
+    private static final String UNAVAILABLE = Translation.Type.GUI.wrap("dragon_body_button.unavailable");
+
     private static final String LOCATION_PREFIX = "textures/gui/custom/body/";
     private static final String DEFAULT_SUFFIX = "default";
 
@@ -37,9 +41,11 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
     private final Screen screen;
     private final Holder<DragonBody> dragonBody;
     private final ResourceLocation iconLocation;
+    private final ResourceLocation bodyLocation;
     private final boolean locked;
     private boolean disableHover;
     private final boolean useBackground;
+    private final boolean noTooltip;
 
     public DragonBodyButton(Screen screen, int x, int y, int xSize, int ySize, final Holder<DragonBody> dragonBody, boolean locked, OnPress action) {
         this(screen, x, y, xSize, ySize, dragonBody, Objects.requireNonNull(dragonBody.getKey()).location(), locked, action, false, false);
@@ -77,8 +83,10 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
         this.iconLocation = iconLocation;
         this.screen = screen;
         this.dragonBody = dragonBody;
+        this.bodyLocation = location;
         this.locked = locked;
         this.useBackground = useBackground;
+        this.noTooltip = noTooltip;
     }
 
     public void disableHover() {
@@ -111,6 +119,14 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
             state = LOCKED;
         } else if (isHoveredOrFocused()) {
             state = HOVERED;
+        }
+
+        if(!noTooltip) {
+            if(state == LOCKED) {
+                setTooltip(Tooltip.create(Component.translatable(UNAVAILABLE)));
+            } else {
+                setTooltip(Tooltip.create(Component.translatable(Translation.Type.BODY_DESCRIPTION.wrap(bodyLocation))));
+            }
         }
 
         if(this.useBackground) {
