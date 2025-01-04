@@ -37,8 +37,8 @@ public class DSDamageTypes {
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Crushed")
     public static final ResourceKey<DamageType> CRUSHED = key("crushed");
 
-    @Translation(type = Translation.Type.DEATH, comments = "N/A")
-    @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "%s dried out.")
+    @Translation(type = Translation.Type.DEATH, comments = "%s dried out.")
+    @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Dehydration")
     public static final ResourceKey<DamageType> DEHYDRATION = key("dehydration");
 
     @Translation(type = Translation.Type.DEATH, comments = "%s was struck by a ball of lightning.")
