@@ -66,7 +66,7 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
 
     @Translation(comments = {
             "■ A dragon is §6born§r with strong claws and teeth, but you can make them even better! Just put §6any tools§r§f here in your claw slots and your bare paw will borrow their aspect as long as they are intact.",
-            "§7■ Does not stack with §2«Claws and Teeth»§r skill, which only applies if these slots are empty."
+            "§7■ Does not stack with §2«Claws and Teeth»§r§7 skill, which only applies if these slots are empty."
     })
     private static final String HELP_CLAWS = Translation.Type.GUI.wrap("help.claws");
 

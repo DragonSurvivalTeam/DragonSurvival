@@ -432,12 +432,137 @@
       "locks_head": false,
       "locks_tail": false,
       "sound": {
-        "interval": 100,
-        "pitch": 0.1,
-        "sound_event": "minecraft:entity.ender_dragon.growl"
+        "interval": 160,
+        "pitch": 0.8,
+        "sound_event": "minecraft:entity.cat.purr",
+        "volume": 1.5
       },
       "third_person": false,
+      "translation_override": "purr"
+    },
+    {
+      "animation_key": "head_turn",
+      "blend": true,
+      "can_move": false,
+      "locks_head": false,
+      "locks_tail": false,
+      "sound": {
+        "interval": 160,
+        "pitch": 0.3,
+        "sound_event": "minecraft:entity.cat.purreow",
+        "volume": 2.0
+      },
+      "third_person": false,
+      "translation_override": "purreow"
+    },
+    {
+      "animation_key": "eat_item_left",
+      "blend": true,
+      "can_move": false,
+      "locks_head": false,
+      "locks_tail": false,
+      "sound": {
+        "interval": 160,
+        "pitch": 0.2,
+        "sound_event": "minecraft:entity.cat.stray_ambient",
+        "volume": 2.0
+      },
+      "speed": 0.1,
+      "third_person": false,
+      "translation_override": "stray"
+    },
+    {
+      "animation_key": "breath",
+      "blend": true,
+      "can_move": false,
+      "locks_head": false,
+      "locks_tail": false,
+      "sound": {
+        "interval": 160,
+        "pitch": 0.1,
+        "sound_event": "minecraft:entity.ender_dragon.growl",
+        "volume": 0.3
+      },
+      "speed": 0.1,
+      "third_person": false,
       "translation_override": "roar"
+    },
+    {
+      "animation_key": "breath",
+      "blend": true,
+      "can_move": false,
+      "locks_head": false,
+      "locks_tail": false,
+      "sound": {
+        "interval": 160,
+        "pitch": 0.2,
+        "sound_event": "minecraft:entity.cat.hiss",
+        "volume": 1.5
+      },
+      "speed": 0.2,
+      "third_person": false,
+      "translation_override": "hiss"
+    },
+    {
+      "animation_key": "spell_charge",
+      "blend": true,
+      "can_move": false,
+      "locks_head": false,
+      "locks_tail": false,
+      "sound": {
+        "interval": 160,
+        "pitch": 0.2,
+        "sound_event": "minecraft:entity.wolf.growl"
+      },
+      "speed": 0.001,
+      "third_person": false,
+      "translation_override": "growl"
+    },
+    {
+      "animation_key": "eat_item_left",
+      "blend": true,
+      "can_move": false,
+      "locks_head": false,
+      "locks_tail": false,
+      "sound": {
+        "interval": 160,
+        "pitch": 0.2,
+        "sound_event": "minecraft:entity.camel.ambient"
+      },
+      "speed": 0.01,
+      "third_person": false,
+      "translation_override": "camel"
+    },
+    {
+      "animation_key": "eat_item_left",
+      "blend": true,
+      "can_move": false,
+      "locks_head": false,
+      "locks_tail": false,
+      "sound": {
+        "interval": 160,
+        "pitch": 0.2,
+        "sound_event": "minecraft:entity.polar_bear.ambient"
+      },
+      "speed": 0.02,
+      "third_person": false,
+      "translation_override": "bear"
+    },
+    {
+      "animation_key": "breath",
+      "blend": true,
+      "can_move": false,
+      "locks_head": false,
+      "locks_tail": false,
+      "sound": {
+        "interval": 160,
+        "pitch": 0.8,
+        "sound_event": "minecraft:entity.sniffer.happy",
+        "volume": 0.5
+      },
+      "speed": 0.01,
+      "third_person": false,
+      "translation_override": "happy"
     }
   ]
 }
