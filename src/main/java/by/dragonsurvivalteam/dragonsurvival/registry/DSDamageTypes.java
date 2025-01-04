@@ -20,42 +20,66 @@ public class DSDamageTypes {
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Anti-Dragon")
     public static final ResourceKey<DamageType> ANTI_DRAGON = key("anti_dragon");
 
+    @Translation(type = Translation.Type.DEATH, comments = "N/A")
+    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "N/A")
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Fire Breath")
     public static final ResourceKey<DamageType> FIRE_BREATH = key("fire_breath");
 
+    @Translation(type = Translation.Type.DEATH, comments = "N/A")
+    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "N/A")
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Burn")
     public static final ResourceKey<DamageType> BURN = key("burn");
 
+    @Translation(type = Translation.Type.DEATH, comments = "N/A")
+    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "N/A")
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Crushed")
     public static final ResourceKey<DamageType> CRUSHED = key("crushed");
 
+    @Translation(type = Translation.Type.DEATH, comments = "N/A")
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Dehydration")
     public static final ResourceKey<DamageType> DEHYDRATION = key("dehydration");
 
+    @Translation(type = Translation.Type.DEATH, comments = "N/A")
+    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "N/A")
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Ball Lightning")
     public static final ResourceKey<DamageType> BALL_LIGHTNING = key("ball_lightning");
 
+    @Translation(type = Translation.Type.DEATH, comments = "N/A")
+    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "N/A")
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Dragon Breath")
     public static final ResourceKey<DamageType> DRAGON_BREATH = key("dragon_breath");
 
+    @Translation(type = Translation.Type.DEATH, comments = "N/A")
+    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "N/A")
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Poison Breath")
     public static final ResourceKey<DamageType> POISON_BREATH = key("poison_breath");
 
+    @Translation(type = Translation.Type.DEATH, comments = "N/A")
+    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "N/A")
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Drain")
     public static final ResourceKey<DamageType> DRAIN = key("drain");
 
+    @Translation(type = Translation.Type.DEATH, comments = "N/A")
+    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "N/A")
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Rain Burn")
     public static final ResourceKey<DamageType> RAIN_BURN = key("rain_burn");
 
+    @Translation(type = Translation.Type.DEATH, comments = "N/A")
+    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "N/A")
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Lightning Breath")
     public static final ResourceKey<DamageType> LIGHTNING_BREATH = key("lightning_breath");
 
+    @Translation(type = Translation.Type.DEATH, comments = "N/A")
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Water Burn")
     public static final ResourceKey<DamageType> WATER_BURN = key("water_burn");
 
+    @Translation(type = Translation.Type.DEATH, comments = "N/A")
+    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "N/A")
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Spike")
     public static final ResourceKey<DamageType> SPIKE = key("spike");
 
+    @Translation(type = Translation.Type.DEATH, comments = "N/A")
+    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "N/A")
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Electric")
     public static final ResourceKey<DamageType> ELECTRIC = key("electric");
 
