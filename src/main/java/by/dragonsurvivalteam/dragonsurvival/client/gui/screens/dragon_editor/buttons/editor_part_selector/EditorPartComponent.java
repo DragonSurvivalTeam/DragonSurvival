@@ -32,9 +32,19 @@ public class EditorPartComponent implements ScrollableComponent {
         this.selectedPart = partKey;
         this.skinLayer = skinLayer;
 
-        partButton = new HoverButton(xPos, yPos, 110, 19, 149, 22, DROPDOWN_BUTTON_BACKGROUND, DROPDOWN_BUTTON_BACKGROUND, button -> { /* Nothing to do*/ });
+        partButton = new HoverButton(xPos, yPos, 110, 19, 149, 22, DROPDOWN_BUTTON_BACKGROUND, DROPDOWN_BUTTON_BACKGROUND, button -> { /* Nothing to do*/ }){
+            @Override
+            public boolean isValidClickButton(int button) {
+                return button == 1 && skinLayer != EnumSkinLayer.BASE;
+            }
+
+            @Override
+            public void onClick(double mouseX, double mouseY, int button) {
+                setSelectedPartInternal(DefaultPartLoader.NO_PART);
+            }
+        };
         partButton.setMessage(Component.translatable(DragonEditorScreen.partToTranslation(partKey)));
-        ((ScreenAccessor) screen).dragonSurvival$addRenderableOnly(partButton);
+        ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(partButton);
 
         // Left arrow
         ((ScreenAccessor)screen).dragonSurvival$addRenderableWidget(new HoverButton(xPos - 7, yPos + 2, 9, 16, 20, 20, SMALL_LEFT_ARROW_MAIN, SMALL_LEFT_ARROW_HOVER, button -> {
