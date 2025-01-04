@@ -29,7 +29,10 @@ import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.annotation.Nullable;
 
 public record ModifierWithDuration(ResourceLocation id, ResourceLocation icon, List<Modifier> modifiers, LevelBasedValue duration, boolean isHidden) {
@@ -57,7 +60,8 @@ public record ModifierWithDuration(ResourceLocation id, ResourceLocation icon, L
             data.remove(target, instance);
         }
 
-        ClientEffectProvider.ClientData clientData = new ClientEffectProvider.ClientData(icon, /* TODO */ Component.empty(), Optional.of(dragon.getUUID()));
+        // TODO
+        ClientEffectProvider.ClientData clientData = ClientEffectProvider.ClientData.customIcon(ClientEffectProvider.ClientData.from(dragon, ability, id, level -> Component.empty()), icon);
         instance = new ModifierWithDuration.Instance(this, clientData, ability.level(), newDuration, new HashMap<>());
         data.add(target, instance);
 

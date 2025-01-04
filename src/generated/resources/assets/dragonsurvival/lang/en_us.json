@@ -199,6 +199,7 @@
   "dragon_ability.dragonsurvival.fire_ball.desc": "■ Ranged attack: shoots out a fireball that §cexplodes§r and sets the area on fire.",
   "dragon_ability.dragonsurvival.fire_immunity": "Cave Dragon",
   "dragon_ability.dragonsurvival.fire_immunity.desc": "■ Cave dragons have a netherite skeleton, and are made mostly of lava.\n\n■ They have innate §2immunity to fire§r.",
+  "dragon_ability.dragonsurvival.fire_immunity.effect": "Fire Immunity",
   "dragon_ability.dragonsurvival.forest_athletics": "Forest Athletics",
   "dragon_ability.dragonsurvival.forest_athletics.desc": "■ Standing on grassy or wooden surfaces will increase your movement speed.",
   "dragon_ability.dragonsurvival.forest_claws_and_teeth": "Claws and Teeth",

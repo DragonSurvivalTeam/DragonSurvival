@@ -4,8 +4,12 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncDamageModification;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DamageModifications;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
+import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
@@ -17,6 +21,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
@@ -25,10 +30,11 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
+import java.text.NumberFormat;
 import javax.annotation.Nullable;
 
 public record DamageModification(ResourceLocation id, HolderSet<DamageType> damageTypes, LevelBasedValue multiplier, LevelBasedValue duration) {
@@ -51,9 +57,7 @@ public record DamageModification(ResourceLocation id, HolderSet<DamageType> dama
         }
 
         data.remove(entity, instance);
-
-        ClientEffectProvider.ClientData clientData = new ClientEffectProvider.ClientData(ability.getIcon(), /* TODO */ Component.empty(), Optional.of(dragon.getUUID()));
-        instance = new Instance(this, clientData, abilityLevel, newDuration);
+        instance = new Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, id, this::getDescription), abilityLevel, newDuration);
         data.add(entity, instance);
     }
 
@@ -78,6 +82,46 @@ public record DamageModification(ResourceLocation id, HolderSet<DamageType> dama
         }
 
         return false;
+    }
+
+    public @NotNull MutableComponent getDescription(int abilityLevel) {
+        float amount = multiplier.calculate(abilityLevel);
+        String difference = NumberFormat.getPercentInstance().format(Math.abs(amount - 1));
+
+        MutableComponent name;
+
+        if (amount == 0) {
+            name = Component.translatable(LangKey.ABILITY_IMMUNITY);
+        } else if (amount < 1) {
+            name = Component.translatable(LangKey.ABILITY_DAMAGE_REDUCTION, DSColors.dynamicValue(difference));
+        } else {
+            name = Component.translatable(LangKey.ABILITY_DAMAGE_INCREASE, DSColors.dynamicValue(difference));
+        }
+
+        if (damageTypes instanceof HolderSet.Named<DamageType> named) {
+            name.append(DSColors.dynamicValue(Component.translatable(Tags.getTagTranslationKey(named.key()))));
+        } else {
+            int count = 0;
+
+            for (Holder<DamageType> damageType : damageTypes) {
+                //noinspection DataFlowIssue -> key is present
+                name.append(DSColors.dynamicValue(Component.translatable(Translation.Type.DAMAGE_TYPE.wrap(damageType.getKey().location()))));
+
+                if (count < damageTypes.size() - 1) {
+                    name.append(", ");
+                }
+
+                count++;
+            }
+        }
+
+        float duration = duration().calculate(abilityLevel);
+
+        if (duration != DurationInstance.INFINITE_DURATION) {
+            name.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.dynamicValue(Functions.ticksToSeconds((int) duration))));
+        }
+
+        return name;
     }
 
     public static class Instance extends DurationInstance<DamageModification> {
@@ -119,6 +163,10 @@ public record DamageModification(ResourceLocation id, HolderSet<DamageType> dama
             return damageAmount * modification;
         }
 
+        public boolean isFireImmune() {
+            return baseData().isFireImmune(appliedAbilityLevel());
+        }
+
         @Override
         public ResourceLocation id() {
             return baseData().id();
@@ -131,11 +179,7 @@ public record DamageModification(ResourceLocation id, HolderSet<DamageType> dama
 
         @Override
         public boolean isInvisible() {
-            return true;
-        }
-
-        public boolean isFireImmune() {
-            return baseData().isFireImmune(appliedAbilityLevel());
+            return false;
         }
     }
 }

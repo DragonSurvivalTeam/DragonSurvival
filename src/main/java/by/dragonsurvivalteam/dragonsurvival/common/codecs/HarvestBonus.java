@@ -56,8 +56,7 @@ public record HarvestBonus(ResourceLocation id, Optional<HolderSet<Block>> block
             data.remove(target, instance);
         }
 
-        ClientEffectProvider.ClientData clientData = new ClientEffectProvider.ClientData(ability.getIcon(), /* TODO */ Component.empty(), Optional.of(dragon.getUUID()));
-        instance = new Instance(this, clientData, abilityLevel, newDuration);
+        instance = new Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, id, /* TODO */ level -> Component.empty()), abilityLevel, newDuration);
         data.add(target, instance);
     }
 
