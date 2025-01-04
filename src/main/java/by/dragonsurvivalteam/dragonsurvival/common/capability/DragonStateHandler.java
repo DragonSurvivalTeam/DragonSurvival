@@ -316,10 +316,10 @@ public class DragonStateHandler extends EntityStateHandler {
         MagicData magic = MagicData.getData(player);
 
         if (!ServerConfig.saveAllAbilities) {
-            magic.refresh(species(), player);
+            magic.refresh(player, species());
         } else {
             if (magic.dataForSpeciesIsEmpty(speciesKey())) {
-                magic.refresh(species(), player);
+                magic.refresh(player, species());
             } else {
                 magic.setCurrentSpecies(speciesKey());
             }

@@ -327,43 +327,38 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         this.renderAbilities = renderAbilities;
     }
 
-    public void refresh(final Holder<DragonSpecies> type, final Player player) {
+    public void refresh(final ServerPlayer player, final Holder<DragonSpecies> type) {
         if (type == null) {
             return;
         }
 
+        currentSpecies = type.getKey();
+
         // Make sure we remove any passive effects for abilities that are no longer available
-        if (player instanceof ServerPlayer serverPlayer) {
-            for (DragonAbilityInstance instance : getAbilities().values()) {
-                instance.setActive(false, serverPlayer);
-            }
+        for (DragonAbilityInstance instance : getAbilities().values()) {
+            instance.setActive(false, player);
         }
 
-        currentSpecies = type.getKey();
-        InputData levels = InputData.experienceLevels(player.experienceLevel);
-        InputData size = InputData.size((int) DragonStateProvider.getData(player).getSize());
+        InputData levelInput = InputData.experienceLevels(player.experienceLevel);
+        InputData sizeInput = InputData.size((int) DragonStateProvider.getData(player).getSize());
 
         int slot = 0;
 
         for (Holder<DragonAbility> ability : type.value().abilities()) {
+            UpgradeType<?> upgrade = ability.value().upgrade().orElse(null);
             DragonAbilityInstance instance;
 
-            if (ability.value().upgrade().isEmpty()) {
+            if (upgrade == null) {
                 instance = new DragonAbilityInstance(ability, ability.value().getMaxLevel());
             } else {
                 instance = new DragonAbilityInstance(ability, DragonAbilityInstance.MIN_LEVEL);
+                upgrade.attempt(player, instance, levelInput);
+                upgrade.attempt(player, instance, sizeInput);
             }
 
             if (slot < HOTBAR_SLOTS && ability.value().activation().type() != Activation.Type.PASSIVE) {
                 getHotbar().put(slot, ability.getKey());
                 slot++;
-            }
-
-            if (player instanceof ServerPlayer serverPlayer) {
-                ability.value().upgrade().ifPresent(upgrade -> {
-                    upgrade.attempt(serverPlayer, instance, levels);
-                    upgrade.attempt(serverPlayer, instance, size);
-                });
             }
 
             getAbilities().put(ability.getKey(), instance);
