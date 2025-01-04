@@ -17,69 +17,71 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class DSDamageTypes {
     // We don't need to use a DeferredRegister for DamageTypes, as they are fully data driven.
+    @Translation(type = Translation.Type.DEATH, comments = "%s died to anti-dragon weaponry.")
+    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "%s was slain by %s using anti-dragon weaponry.")
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Anti-Dragon")
     public static final ResourceKey<DamageType> ANTI_DRAGON = key("anti_dragon");
 
-    @Translation(type = Translation.Type.DEATH, comments = "N/A")
-    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "N/A")
+    @Translation(type = Translation.Type.DEATH, comments = "%s was incinerated by fire breath.")
+    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "%s burnt to a crisp by %s's fire breath.")
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Fire Breath")
     public static final ResourceKey<DamageType> FIRE_BREATH = key("fire_breath");
 
-    @Translation(type = Translation.Type.DEATH, comments = "N/A")
-    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "N/A")
+    @Translation(type = Translation.Type.DEATH, comments = "%s succumbed to searing burns.")
+    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "%s succumbed to searing burns whilst fighting %s.")
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Burn")
     public static final ResourceKey<DamageType> BURN = key("burn");
 
-    @Translation(type = Translation.Type.DEATH, comments = "N/A")
-    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "N/A")
+    @Translation(type = Translation.Type.DEATH, comments = "%s was crushed.")
+    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "%s was crushed (probably by accident) by %s.")
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Crushed")
     public static final ResourceKey<DamageType> CRUSHED = key("crushed");
 
     @Translation(type = Translation.Type.DEATH, comments = "N/A")
-    @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Dehydration")
+    @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "%s dried out.")
     public static final ResourceKey<DamageType> DEHYDRATION = key("dehydration");
 
-    @Translation(type = Translation.Type.DEATH, comments = "N/A")
-    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "N/A")
+    @Translation(type = Translation.Type.DEATH, comments = "%s was struck by a ball of lightning.")
+    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "%s was struck by a ball of lightning summoned by %s.")
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Ball Lightning")
     public static final ResourceKey<DamageType> BALL_LIGHTNING = key("ball_lightning");
 
-    @Translation(type = Translation.Type.DEATH, comments = "N/A")
-    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "N/A")
+    @Translation(type = Translation.Type.DEATH, comments = "%s succumbed to the breath weapon of a dragon.")
+    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "%s succumbed to the breath weapon of %s.")
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Dragon Breath")
     public static final ResourceKey<DamageType> DRAGON_BREATH = key("dragon_breath");
 
-    @Translation(type = Translation.Type.DEATH, comments = "N/A")
-    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "N/A")
+    @Translation(type = Translation.Type.DEATH, comments = "%s was poisoned by a poison breath.")
+    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "%s was poisoned by %s's poison breath.")
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Poison Breath")
     public static final ResourceKey<DamageType> POISON_BREATH = key("poison_breath");
 
-    @Translation(type = Translation.Type.DEATH, comments = "N/A")
-    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "N/A")
+    @Translation(type = Translation.Type.DEATH, comments = "%s had their life force drained.")
+    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "%s had their life force drained by %s.")
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Drain")
     public static final ResourceKey<DamageType> DRAIN = key("drain");
 
-    @Translation(type = Translation.Type.DEATH, comments = "N/A")
-    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "N/A")
+    @Translation(type = Translation.Type.DEATH, comments = "%s couldn't handle a light rain.")
+    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "%s couldn't handle a light rain whilst fighting %s.")
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Rain Burn")
     public static final ResourceKey<DamageType> RAIN_BURN = key("rain_burn");
 
-    @Translation(type = Translation.Type.DEATH, comments = "N/A")
-    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "N/A")
+    @Translation(type = Translation.Type.DEATH, comments = "%s was zapped by lightning breath.")
+    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "%s was zapped by %s's lightning breath.")
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Lightning Breath")
     public static final ResourceKey<DamageType> LIGHTNING_BREATH = key("lightning_breath");
 
-    @Translation(type = Translation.Type.DEATH, comments = "N/A")
+    @Translation(type = Translation.Type.DEATH, comments = "%s was burned by water.")
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Water Burn")
     public static final ResourceKey<DamageType> WATER_BURN = key("water_burn");
 
-    @Translation(type = Translation.Type.DEATH, comments = "N/A")
-    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "N/A")
+    @Translation(type = Translation.Type.DEATH, comments = "%s was impaled by rocky spikes.")
+    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "%s was impaled by %s's rocky spikes.")
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Spike")
     public static final ResourceKey<DamageType> SPIKE = key("spike");
 
-    @Translation(type = Translation.Type.DEATH, comments = "N/A")
-    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "N/A")
+    @Translation(type = Translation.Type.DEATH, comments = "%s was electrocuted.")
+    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "%s was electrocuted by %s.")
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Electric")
     public static final ResourceKey<DamageType> ELECTRIC = key("electric");
 
