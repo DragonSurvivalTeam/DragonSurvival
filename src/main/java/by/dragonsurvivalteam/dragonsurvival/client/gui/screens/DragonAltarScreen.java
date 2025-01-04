@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.DragonEditorScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.AltarTypeButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HelpButton;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.BarComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.ScrollableComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayerUtils;
@@ -26,6 +27,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
@@ -66,6 +68,9 @@ public class DragonAltarScreen extends Screen {
     })
     private static final String HELP = Translation.Type.GUI.wrap("altar.help");
 
+    @Translation(comments = "Dragon Survival")
+    private static final String TITLE = Translation.Type.GUI.wrap("altar.title");
+
     private static final ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.withDefaultNamespace("textures/block/black_concrete.png");
 
     private final DragonStateHandler handler1 = new DragonStateHandler();
@@ -73,10 +78,13 @@ public class DragonAltarScreen extends Screen {
     private final String[] animations = {"sit_animation", "idle_animation", "fly_animation", "swim_animation", "run_animation", "dig_animation", "vibing_sitting", "shy_sitting", "vibing_sitting", "rocking_on_back"};
     private final List<ScrollableComponent> scrollableComponents = new ArrayList<>();
 
-    private static final ResourceLocation ALTAR_ARROW_LEFT_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_left_arrow_hover.png");
-    private static final ResourceLocation ALTAR_ARROW_LEFT_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_left_arrow_main.png");
-    private static final ResourceLocation ALTAR_ARROW_RIGHT_HOVER =  ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_right_arrow_hover.png");
-    private static final ResourceLocation ALTAR_ARROW_RIGHT_MAIN =  ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_right_arrow_main.png");
+    private static final ResourceLocation ALTAR_ARROW_LEFT_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/arrow_left_hover.png");
+    private static final ResourceLocation ALTAR_ARROW_LEFT_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/arrow_left_main.png");
+    private static final ResourceLocation ALTAR_ARROW_RIGHT_HOVER =  ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/arrow_right_hover.png");
+    private static final ResourceLocation ALTAR_ARROW_RIGHT_MAIN =  ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/arrow_right_main.png");
+
+    private static final ResourceLocation INFO_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/info_hover.png");
+    private static final ResourceLocation INFO_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/info_main.png");
 
     private boolean hasInit = false;
     private int animation1 = 1;
@@ -180,7 +188,7 @@ public class DragonAltarScreen extends Screen {
             }
         }
 
-        TextRenderUtil.drawCenteredScaledText(guiGraphics, width / 2, 10, 2f, title.getString(), DyeColor.WHITE.getTextColor());
+        TextRenderUtil.drawCenteredScaledText(guiGraphics, width / 2 + 7, 10, 2f, Component.translatable(TITLE).getString(), DyeColor.WHITE.getTextColor());
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0, 0, 300);
         super.render(guiGraphics, mouseX, mouseY, partialTick);
@@ -201,7 +209,7 @@ public class DragonAltarScreen extends Screen {
     @Override
     public void renderBackground(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         guiGraphics.fillGradient(0, 0, this.width, this.height, -300, -1072689136, -804253680);
-        renderBorders(guiGraphics, BACKGROUND_TEXTURE, 0, width, 32, height - 32, width, height);
+        renderBorders(guiGraphics, BACKGROUND_TEXTURE, 0, width, 25, height - 25, width, height);
     }
 
     public static void renderBorders(@NotNull final GuiGraphics guiGraphics, ResourceLocation texture, int x0, int x1, int y0, int y1, int width, int height) {
@@ -211,8 +219,6 @@ public class DragonAltarScreen extends Screen {
         float zLevel = 0;
 
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
-        RenderSystem.enableDepthTest();
-        RenderSystem.depthFunc(GL11.GL_ALWAYS);
         bufferbuilder.addVertex(x0, y0, zLevel).setUv(0.0F, (float) y0 / 32.0F).setColor(64, 64, 64, 55);
         bufferbuilder.addVertex(x0 + width, y0, zLevel).setUv((float) width / 32.0F, (float) y0 / 32.0F).setColor(64, 64, 64, 255);
         bufferbuilder.addVertex(x0 + width, 0.0F, zLevel).setUv((float) width / 32.0F, 0.0F).setColor(64, 64, 64, 255);
@@ -223,8 +229,6 @@ public class DragonAltarScreen extends Screen {
         bufferbuilder.addVertex(x0, y1, zLevel).setUv(0.0F, (float) y1 / 32.0F).setColor(64, 64, 64, 255);
         BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
 
-        RenderSystem.depthFunc(GL11.GL_LEQUAL);
-        RenderSystem.disableDepthTest();
         RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ZERO, GlStateManager.DestFactor.ONE);
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
@@ -252,7 +256,9 @@ public class DragonAltarScreen extends Screen {
         int guiTop = (height - 190) / 2;
         int xPos = width / 2 - 104;
 
-        addRenderableWidget(new HelpButton(width / 2, 32 + 5, 16, 16, HELP));
+        HoverButton helpButton = new HoverButton(width / 2 - 29, 31, 65, 18, 65, 18, INFO_MAIN, INFO_HOVER, button -> {});
+        helpButton.setTooltip(Tooltip.create(Component.translatable(HELP)));
+        addRenderableWidget(helpButton);
 
         RegistryAccess access = Objects.requireNonNull(DragonSurvival.PROXY.getAccess());
         List<AbstractWidget> altarButtons = new ArrayList<>(ResourceHelper.keys(access, DragonSpecies.REGISTRY).stream().map(typeKey -> (AbstractWidget) new AltarTypeButton(this, access.holderOrThrow(typeKey), 0, 0)).toList());
@@ -261,7 +267,7 @@ public class DragonAltarScreen extends Screen {
         scrollableComponents.add(new BarComponent(this,
                 xPos, guiTop + 30, 4,
                 altarButtons, 55,
-                -10, 215, 60, 9, 16, 20, 20,
+                -13, 215, 60, 12, 19, 12, 19,
                 ALTAR_ARROW_LEFT_HOVER, ALTAR_ARROW_LEFT_MAIN, ALTAR_ARROW_RIGHT_HOVER, ALTAR_ARROW_RIGHT_MAIN, false));
 
         addRenderableWidget(new ExtendedButton(width / 2 - 75, height - 25, 150, 20, Component.translatable(LangKey.GUI_DRAGON_EDITOR), action -> Minecraft.getInstance().setScreen(new DragonEditorScreen(Minecraft.getInstance().screen))) {
