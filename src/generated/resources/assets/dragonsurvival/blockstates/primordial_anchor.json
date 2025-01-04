@@ -1,10 +1,10 @@
 {
   "variants": {
     "charged=false": {
-      "model": "dragonsurvival:block/primordial_anchor"
+      "model": "dragonsurvival:block/primordial_anchor_empty"
     },
     "charged=true": {
-      "model": "dragonsurvival:block/primordial_anchor_charged"
+      "model": "dragonsurvival:block/primordial_anchor_charge"
     }
   }
 }

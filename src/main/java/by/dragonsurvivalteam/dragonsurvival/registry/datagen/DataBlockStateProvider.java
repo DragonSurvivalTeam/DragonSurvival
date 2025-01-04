@@ -228,15 +228,10 @@ public class DataBlockStateProvider extends BlockStateProvider {
             } else if (holder.get() instanceof PrimordialAnchorBlock) {
                 getVariantBuilder(holder.get())
                         .forAllStates(state -> {
-                            String suffix = state.getValue(PrimordialAnchorBlock.CHARGED) ? "_charged" : "";
-                            BlockModelBuilder builder = models().withExistingParent(holder.getId().getPath() + suffix, BLOCK_FOLDER + "/" + "cube_bottom_top")
-                                    .texture("bottom", ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + "primordial_anchor_bottom"))
-                                    .texture("top", ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + "primordial_anchor_top"));
-                            if (state.getValue(PrimordialAnchorBlock.CHARGED)) {
-                                builder = builder.texture("side", ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + "primordial_anchor_side_charged"));
-                            } else {
-                                builder = builder.texture("side", ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + "primordial_anchor_side"));
-                            }
+                            // FIXME :: Add one for _bloody as well
+                            String suffix = state.getValue(PrimordialAnchorBlock.CHARGED) ? "_charge" : "_empty";
+                            BlockModelBuilder builder = models().withExistingParent(holder.getId().getPath() + suffix, ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + "primordial_anchor"))
+                                    .texture("1", ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + "primordial_anchor" + suffix ));
 
                             return ConfiguredModel.builder().modelFile(builder).build();
                         });

@@ -1,4 +1,4 @@
-// 1.21.1	2024-12-31T17:08:58.3620391	Dragon Survival Item models
+// 1.21.1	2025-01-03T20:25:46.958301	Dragon Survival Item models
 3103bf7bf2acab8c6053dd037bfd4f26275aad26 assets/dragonsurvival/models/item/acacia_dragon_door.json
 63ec6c618a3a23eab4cab9c52d7d3250de9b516e assets/dragonsurvival/models/item/ambusher_spawn_egg.json
 35c9e7543317fe33adcaaa05ecc3e165dc93222e assets/dragonsurvival/models/item/beacon_fire_0.json
@@ -81,7 +81,7 @@ d8b2495c4a84c7abbbd643189ab9d5fb806b3a81 assets/dragonsurvival/models/item/light
 bc113c0a5a67a75d2fc68472395ed302599cc0ba assets/dragonsurvival/models/item/nether_brick_dragon_altar.json
 ced80be2cfdc30fec81dfa4f72b07df5140ce3e7 assets/dragonsurvival/models/item/oak_dragon_altar.json
 e57793ac9459c6a6771bf34ccd5a955cd52db801 assets/dragonsurvival/models/item/oak_dragon_door.json
-2799dd4fc03613b72e545dfe672e86515b976a74 assets/dragonsurvival/models/item/primordial_anchor.json
+34cbca4f76da52880a9bf905b24841cddf5cb3f7 assets/dragonsurvival/models/item/primordial_anchor.json
 49dcdcf6053d5224f685763f8d9c87ceaf8e91de assets/dragonsurvival/models/item/purpur_dragon_altar.json
 0fd90e288a0cd87dd344d7625555bbd4113b477c assets/dragonsurvival/models/item/quartz_explosive_copper.json
 6c284930c4fd556aa7319760d619c69cd3cbfbe1 assets/dragonsurvival/models/item/red_sandstone_dragon_altar.json

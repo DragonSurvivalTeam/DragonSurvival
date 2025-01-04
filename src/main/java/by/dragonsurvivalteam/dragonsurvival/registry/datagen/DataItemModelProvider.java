@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.blocks.PrimordialAnchorBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.TreasureBlock;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -67,7 +68,11 @@ public class DataItemModelProvider extends ItemModelProvider {
                     // Show the 1 layer texture
                     ResourceLocation parent = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + holder.getId().getPath() + "2");
                     getBuilder(blockItem.toString()).parent(new ModelFile.UncheckedModelFile(parent));
-                }else {
+                } else if (blockItem.getBlock() instanceof PrimordialAnchorBlock) {
+                    getBuilder(blockItem.toString())
+                            .parent(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + holder.getId().getPath())))
+                            .texture("1", ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + "primordial_anchor_empty"));
+                } else {
                     getBuilder(blockItem.toString()).parent(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + holder.getId().getPath())));
                 }
             } else {
