@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.TreasureRestData;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
@@ -49,15 +50,10 @@ public abstract class PlayerMixin extends LivingEntity {
     @Inject(method = "isImmobile", at = @At("HEAD"), cancellable = true)
     private void dragonSurvival$preventMovement(CallbackInfoReturnable<Boolean> callback) {
         if (!isDeadOrDying() && !isSleeping()) {
-            DragonStateHandler data = DragonStateProvider.getData((Player) (Object) this);
+            MagicData data = MagicData.getData((Player) (Object) this);
 
-            if (!ServerConfig.canMoveWhileCasting) {
-                // FIXME
-                /*ActiveDragonAbility casting = data.getMagicData().getCurrentlyCasting();
-
-                if (casting != null && casting.requiresStationaryCasting()) {
-                    callback.setReturnValue(true);
-                }*/
+            if (data.getCurrentlyCasting() != null && !data.getCurrentlyCasting().canMoveWhileCasting()) {
+                callback.setReturnValue(true);
             }
 
 

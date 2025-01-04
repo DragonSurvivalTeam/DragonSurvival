@@ -267,6 +267,10 @@ public class DragonAbilityInstance {
         return value().activation().castTime().map(time -> time.calculate(level)).orElse(0f).intValue();
     }
 
+    public boolean canMoveWhileCasting() {
+        return value().activation().canMoveWhileCasting();
+    }
+
     public boolean isUsable() {
         return isEnabled && level > 0;
     }

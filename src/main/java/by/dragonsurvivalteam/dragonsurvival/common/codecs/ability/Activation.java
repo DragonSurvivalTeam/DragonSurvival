@@ -30,6 +30,7 @@ public record Activation(
         Optional<ManaCost> continuousManaCost,
         Optional<LevelBasedValue> castTime,
         Optional<LevelBasedValue> cooldown,
+        boolean canMoveWhileCasting,
         Optional<Sound> sound,
         Optional<Animations> animations
 ) {
@@ -39,6 +40,7 @@ public record Activation(
             ManaCost.CODEC.optionalFieldOf("continuous_mana_cost").forGetter(Activation::continuousManaCost),
             LevelBasedValue.CODEC.optionalFieldOf("cast_time").forGetter(Activation::castTime),
             LevelBasedValue.CODEC.optionalFieldOf("cooldown").forGetter(Activation::cooldown),
+            Codec.BOOL.optionalFieldOf("can_move_while_casting", true).forGetter(Activation::canMoveWhileCasting),
             Sound.CODEC.optionalFieldOf("sound").forGetter(Activation::sound),
             Animations.CODEC.optionalFieldOf("animations").forGetter(Activation::animations)
     ).apply(instance, Activation::new));
@@ -87,8 +89,8 @@ public record Activation(
         });
     }
 
-    public static Activation simple(final LevelBasedValue initialManaCost, final LevelBasedValue castTime, final LevelBasedValue cooldown, final Sound sound, final Animations animations) {
-        return new Activation(Type.ACTIVE_SIMPLE, Optional.ofNullable(initialManaCost), Optional.empty(), Optional.ofNullable(castTime), Optional.ofNullable(cooldown), Optional.ofNullable(sound), Optional.ofNullable(animations));
+    public static Activation simple(final LevelBasedValue initialManaCost, final LevelBasedValue castTime, final LevelBasedValue cooldown, boolean canMoveWhileCasting, final Sound sound, final Animations animations) {
+        return new Activation(Type.ACTIVE_SIMPLE, Optional.ofNullable(initialManaCost), Optional.empty(), Optional.ofNullable(castTime), Optional.ofNullable(cooldown), canMoveWhileCasting, Optional.ofNullable(sound), Optional.ofNullable(animations));
     }
 
     public static Activation passive() {
@@ -96,7 +98,7 @@ public record Activation(
     }
 
     public static Activation passive(final ManaCost continuousManaCost) {
-        return new Activation(Type.PASSIVE, Optional.empty(), Optional.ofNullable(continuousManaCost), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+        return new Activation(Type.PASSIVE, Optional.empty(), Optional.ofNullable(continuousManaCost), Optional.empty(), Optional.empty(), true, Optional.empty(), Optional.empty());
     }
 
     public enum Type implements StringRepresentable {
