@@ -647,6 +647,7 @@ public class DragonStateHandler extends EntityStateHandler {
         List<Either<FormattedText, TooltipComponent>> components = new ArrayList<>();
         components.add(Either.left(Component.translatable(LangKey.GROWTH_STAGE).append(DragonStage.translatableName(stageKey()))));
         components.add(Either.left(Component.translatable(LangKey.GROWTH_AGE, ageInformation)));
+        components.add(Either.left(Component.translatable(LangKey.GROWTH_SIZE, (int)getSize())));
         components.add(Either.left(Component.translatable(LangKey.GROWTH_INFO).append(Component.literal(" [" + Math.min(growthItems.size(), scroll + MAX_SHOWN) + " / " + growthItems.size() + "]").withStyle(ChatFormatting.DARK_GRAY))));
 
         for (int i = scroll; i < max; i++) {
