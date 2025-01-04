@@ -27,6 +27,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.util.TextRenderUtil;
 import by.dragonsurvivalteam.dragonsurvival.commands.DragonCommand;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
 import by.dragonsurvivalteam.dragonsurvival.network.dragon_editor.SyncPlayerSkinPreset;
@@ -1019,7 +1020,12 @@ public class DragonEditorScreen extends Screen {
             yOffset = dragonRender.yOffset;
         }
 
-        dragonRender = new DragonUIRenderComponent(this, width / 2 - 70, guiTop, 140, 125, () -> FakeClientPlayerUtils.getFakeDragon(0, HANDLER));
+        dragonRender = new DragonUIRenderComponent(this, width / 2 - 70, guiTop, 140, 125, () -> {
+            DragonEntity dragon = FakeClientPlayerUtils.getFakeDragon(0, HANDLER);
+            dragon.tailLocked = true;
+            dragon.neckLocked = true;
+            return dragon;
+        });
         dragonRender.xRot = xRot;
         dragonRender.yRot = yRot;
         dragonRender.zoom = zoom;
