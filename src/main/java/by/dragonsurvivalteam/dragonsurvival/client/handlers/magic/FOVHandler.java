@@ -1,7 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.client.handlers.magic;
 
-import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
-import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import net.minecraft.util.Mth;
@@ -11,7 +9,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ComputeFovModifierEvent;
 
-import java.util.concurrent.atomic.AtomicReference;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class FOVHandler {
