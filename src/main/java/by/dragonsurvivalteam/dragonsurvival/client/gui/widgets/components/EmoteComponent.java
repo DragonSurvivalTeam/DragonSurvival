@@ -66,7 +66,7 @@ public class EmoteComponent {
             @Override
             public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 // Copied from ExtendedButton#renderWidget, we only want to render the text for this one
-                final FormattedText buttonText = Minecraft.getInstance().font.ellipsize(this.getMessage(), this.width - 6); // Remove 6 pixels so that the text is always contained within the button's borders
+                final FormattedText buttonText = Minecraft.getInstance().font.ellipsize(this.getMessage(), this.width + 26); // Remove 6 pixels so that the text is always contained within the button's borders
                 int color;
                 if(this.isHovered()) {
                     color = 0xFFFFA0;
