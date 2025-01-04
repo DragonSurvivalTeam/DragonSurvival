@@ -16,7 +16,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBlockTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.FireEffect;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.SummonEntityEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.*;
@@ -33,9 +32,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
@@ -121,11 +118,6 @@ public class CaveDragonAbilities {
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Lava Swimming")
     public static final ResourceKey<DragonAbility> LAVA_SWIMMING = DragonAbilities.key("lava_swimming");
-
-    // FIXME :: only for test (owner only works properly with static uuid - i.e. 'runClient_static')
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Test for summon entity effect\n")
-    @Translation(type = Translation.Type.ABILITY, comments = "Summon Test")
-    public static final ResourceKey<DragonAbility> SUMMON_TEST = DragonAbilities.key("summon_test");
 
     public static void registerAbilities(final BootstrapContext<DragonAbility> context) {
         registerActiveAbilities(context);
@@ -383,7 +375,6 @@ public class CaveDragonAbilities {
 
         context.register(CAVE_CLAWS_AND_TEETH, new DragonAbility(
                 Activation.passive(),
-                // FIXME :: lookup for stages seems to throw an exception at the moment
                 Optional.of(new SizeUpgrade(4, LevelBasedValue.lookup(List.of(0f, 25f, 40f, 60f), LevelBasedValue.perLevel(15)))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -450,53 +441,6 @@ public class CaveDragonAbilities {
                         // TODO:: Needs textures
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/lava_swimming_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/lava_swimming_1"), 1)
-                ))
-        ));
-
-        context.register(SUMMON_TEST, new DragonAbility(
-                Activation.simple(
-                        LevelBasedValue.constant(1),
-                        LevelBasedValue.constant(Functions.secondsToTicks(1)),
-                        LevelBasedValue.constant(Functions.secondsToTicks(30)),
-                        new Activation.Sound(Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(SoundEvents.UI_TOAST_IN)),
-                        new Activation.Animations(
-                                Optional.of(Either.right(new SimpleAbilityAnimation(SimpleAbilityAnimation.CAST_MASS_BUFF, AnimationLayer.BASE, 2, true, true))),
-                                Optional.empty(),
-                                Optional.of(new SimpleAbilityAnimation(SimpleAbilityAnimation.MASS_BUFF, AnimationLayer.BASE, 0, true, true))
-                        )
-                ),
-                Optional.of(new ConditionUpgrade(List.of(
-                        Condition.thisEntity(EntityCondition.isInRain()).build(),
-                        Condition.thisEntity(EntityCondition.isInSunlight(12)).build()
-                ), false)),
-                Optional.empty(),
-                List.of(new ActionContainer(new LookingAtTarget(AbilityTargeting.block(
-                        List.of(new SummonEntityEffect(
-                                new SimpleWeightedRandomList.Builder<EntityType<?>>()
-                                        .add(DSEntities.HUNTER_SPEARMAN.value(), 30)
-                                        .add(DSEntities.HUNTER_GRIFFIN.value(), 30)
-                                        .add(DSEntities.HUNTER_HOUND.value(), 30)
-                                        .add(DSEntities.HUNTER_KNIGHT.value(), 15)
-                                        .add(DSEntities.HUNTER_AMBUSHER.value(), 10)
-                                        .add(DSEntities.HUNTER_LEADER.value(), 2)
-                                        .add(EntityType.ZOMBIE, 1)
-                                        .add(EntityType.SKELETON, 1)
-                                        .add(EntityType.CREEPER, 1)
-                                        .add(EntityType.BOGGED, 1)
-                                        .add(EntityType.BOAT, 1)
-                                        .build(),
-                                DragonSurvival.res("test"),
-                                LevelBasedValue.constant(4),
-                                LevelBasedValue.constant(Functions.secondsToTicks(30)),
-                                List.of(),
-                                true
-                        ))
-                ), LevelBasedValue.constant(10)), LevelBasedValue.constant(1))),
-                new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/empty"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/empty"), 1),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/empty"), 2),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/empty"), 3)
                 ))
         ));
     }

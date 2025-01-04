@@ -390,35 +390,33 @@ public class DSBlocks {
 
     @Translation(type = Translation.Type.BLOCK, comments = "Forest Source of Magic")
     @Translation(type = Translation.Type.DESCRIPTION_ADDITION, comments = "■§7 Forest dragons can bathe here to temporarily gain infinite mana. Damages other creatures.")
-    public static final DeferredHolder<Block, SourceOfMagicBlock> FOREST_SOURCE_OF_MAGIC = register(
+    public static final DeferredHolder<Block, SourceOfMagicBlock> FOREST_SOURCE_OF_MAGIC = DS_BLOCKS.register(
             "forest_source_of_magic",
             () -> new SourceOfMagicBlock(Block.Properties.of()
                     .mapColor(MapColor.STONE)
                     .instrument(NoteBlockInstrument.BASEDRUM)
                     .randomTicks().strength(3, 100)
                     .noOcclusion().lightLevel(state -> state.getValue(SourceOfMagicBlock.FILLED) ? 10 : 5),
-                    DSDragonSpeciesTags.FOREST,
                     DamageSources::cactus
             )
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Cave Source of Magic")
     @Translation(type = Translation.Type.DESCRIPTION_ADDITION, comments = "■§7 Cave dragons can bathe here to temporarily gain infinite mana. Damages other creatures.")
-    public static final DeferredHolder<Block, SourceOfMagicBlock> CAVE_SOURCE_OF_MAGIC = register(
+    public static final DeferredHolder<Block, SourceOfMagicBlock> CAVE_SOURCE_OF_MAGIC = DS_BLOCKS.register(
             "cave_source_of_magic",
             () -> new SourceOfMagicBlock(Block.Properties.of()
                     .mapColor(MapColor.STONE)
                     .instrument(NoteBlockInstrument.BASEDRUM)
                     .strength(3, 100)
                     .noOcclusion().lightLevel(state -> state.getValue(SourceOfMagicBlock.FILLED) ? 10 : 5),
-                    DSDragonSpeciesTags.CAVE,
                     DamageSources::hotFloor
             )
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Sea Source of Magic")
     @Translation(type = Translation.Type.DESCRIPTION_ADDITION, comments = "■§7 Sea dragons can bathe here to temporarily gain infinite mana. Damages other creatures.")
-    public static final DeferredHolder<Block, SourceOfMagicBlock> SEA_SOURCE_OF_MAGIC = register(
+    public static final DeferredHolder<Block, SourceOfMagicBlock> SEA_SOURCE_OF_MAGIC = DS_BLOCKS.register(
             "sea_source_of_magic",
             () -> new SourceOfMagicBlock(Block.Properties.of()
                     .mapColor(MapColor.STONE)
@@ -426,7 +424,6 @@ public class DSBlocks {
                     .strength(3, 100)
                     .noOcclusion()
                     .lightLevel(state -> state.getValue(SourceOfMagicBlock.FILLED) ? 10 : 5),
-                    DSDragonSpeciesTags.SEA,
                     DamageSources::drown
             )
     );

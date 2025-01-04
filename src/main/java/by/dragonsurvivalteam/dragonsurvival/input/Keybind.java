@@ -21,9 +21,6 @@ public enum Keybind {
     @Translation(type = Translation.Type.KEYBIND, comments = "Toggle flight")
     TOGGLE_FLIGHT(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_G),
 
-    @Translation(type = Translation.Type.KEYBIND, comments = "Dragon inventory")
-    DRAGON_INVENTORY(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_UNKNOWN),
-
     @Translation(type = Translation.Type.KEYBIND, comments = "Use ability")
     USE_ABILITY(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_C),
 
@@ -54,8 +51,23 @@ public enum Keybind {
     @Translation(type = Translation.Type.KEYBIND, comments = "Activate free look (hold)")
     FREE_LOOK(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_LEFT_ALT),
 
-    @Translation(type = Translation.Type.KEYBIND, comments = "Toggle Large Dragon Destruction")
+    @Translation(type = Translation.Type.KEYBIND, comments = "Toggle large dragon destruction")
     TOGGLE_DESTRUCTION(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_RIGHT_ALT),
+
+    @Translation(type = Translation.Type.KEYBIND, comments = "Open dragon inventory")
+    OPEN_DRAGON_INVENTORY(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_UNKNOWN),
+
+    @Translation(type = Translation.Type.KEYBIND, comments = "Open ability menu")
+    OPEN_ABILITY_MENU(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_UNKNOWN),
+
+    @Translation(type = Translation.Type.KEYBIND, comments = "Open species menu")
+    OPEN_SPECIES_MENU(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_UNKNOWN),
+
+    @Translation(type = Translation.Type.KEYBIND, comments = "Open emote menu")
+    OPEN_EMOTE_MENU(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_UNKNOWN),
+
+    @Translation(type = Translation.Type.KEYBIND, comments = "Open skins menu")
+    OPEN_SKINS_MENU(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_UNKNOWN),
 
     @Translation(type = Translation.Type.KEYBIND, comments = "Toggle summon behaviour (+ SHIFT)")
     TOGGLE_SUMMON_BEHAVIOUR(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_UNKNOWN);

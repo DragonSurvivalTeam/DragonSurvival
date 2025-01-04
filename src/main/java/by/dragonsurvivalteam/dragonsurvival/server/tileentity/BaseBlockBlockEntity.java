@@ -13,8 +13,8 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
-public class BaseBlockTileEntity extends BlockEntity {
-    public BaseBlockTileEntity(BlockEntityType<?> pType, BlockPos pWorldPosition, BlockState pBlockState) {
+public class BaseBlockBlockEntity extends BlockEntity {
+    public BaseBlockBlockEntity(BlockEntityType<?> pType, BlockPos pWorldPosition, BlockState pBlockState) {
         super(pType, pWorldPosition, pBlockState);
     }
 

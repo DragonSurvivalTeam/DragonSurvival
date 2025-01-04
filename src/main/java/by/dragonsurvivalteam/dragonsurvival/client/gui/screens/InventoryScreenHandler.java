@@ -44,10 +44,6 @@ public class InventoryScreenHandler {
     @ConfigOption(side = ConfigSide.CLIENT, category = "inventory", key = "dragon_inventory")
     public static Boolean dragonInventory = true;
 
-    @Translation(key = "dragon_tabs", type = Translation.Type.CONFIGURATION, comments = "If enabled tabs will be added to the vanilla inventory")
-    @ConfigOption(side = ConfigSide.CLIENT, category = "inventory", key = "dragon_tabs")
-    public static Boolean dragonTabs = true;
-
     @Translation(key = "inventory_toggle", type = Translation.Type.CONFIGURATION, comments = "If enabled there will be a button that lets you switch between the custom and vanilla inventory")
     @ConfigOption(side = ConfigSide.CLIENT, category = "inventory", key = "inventory_toggle")
     public static Boolean inventoryToggle = true;
@@ -124,13 +120,6 @@ public class InventoryScreenHandler {
 
         // Dragon only UI
         if (sc instanceof InventoryScreen screen) {
-            if (dragonTabs) {
-                initGuiEvent.addListener(new TabButton(screen.getGuiLeft(), screen.getGuiTop() - 28, TabButton.Type.INVENTORY_TAB, screen));
-                initGuiEvent.addListener(new TabButton(screen.getGuiLeft() + 28, screen.getGuiTop() - 26, TabButton.Type.ABILITY_TAB, screen));
-                initGuiEvent.addListener(new TabButton(screen.getGuiLeft() + 57, screen.getGuiTop() - 26, TabButton.Type.SPECIES_TAB, screen));
-                initGuiEvent.addListener(new TabButton(screen.getGuiLeft() + 86, screen.getGuiTop() - 26, TabButton.Type.SKINS_TAB, screen));
-            }
-
             if (inventoryToggle) {
                 ExtendedButton inventoryToggle = new ExtendedButton(screen.getGuiLeft() + 128, screen.height / 2 - 22, 20, 18, Component.empty(), p_onPress_1_ -> {
                     SendOpenDragonInventoryAndMaintainCursorPosition();
@@ -167,7 +156,7 @@ public class InventoryScreenHandler {
 
     @SubscribeEvent
     public static void handleKey(final InputEvent.Key event) {
-        if (!Keybind.DRAGON_INVENTORY.isKey(event.getKey()) || event.getAction() != Keybind.KEY_PRESSED) {
+        if (event.getAction() != Keybind.KEY_PRESSED) {
             return;
         }
 
@@ -179,10 +168,30 @@ public class InventoryScreenHandler {
 
         Screen screen = Minecraft.getInstance().screen;
 
-        if (screen == null) {
-            PacketDistributor.sendToServer(new RequestOpenDragonInventory.Data());
-        } else if (screen instanceof DragonInventoryScreen || screen instanceof DragonAbilityScreen || screen instanceof DragonSkinsScreen) {
-            player.closeContainer();
+        boolean anyScreenKeybindWasPressed =
+                Keybind.OPEN_DRAGON_INVENTORY.isKey(event.getKey())
+                || Keybind.OPEN_ABILITY_MENU.isKey(event.getKey())
+                || Keybind.OPEN_SPECIES_MENU.isKey(event.getKey())
+                || Keybind.OPEN_SKINS_MENU.isKey(event.getKey())
+                || Keybind.OPEN_EMOTE_MENU.isKey(event.getKey());
+
+
+        if(anyScreenKeybindWasPressed) {
+            if (screen == null) {
+                if(Keybind.OPEN_DRAGON_INVENTORY.isKey(event.getKey())) {
+                    PacketDistributor.sendToServer(new RequestOpenDragonInventory.Data());
+                } else if (Keybind.OPEN_SKINS_MENU.isKey(event.getKey())) {
+                    Minecraft.getInstance().setScreen(new DragonSkinsScreen());
+                } else if (Keybind.OPEN_ABILITY_MENU.isKey(event.getKey())) {
+                    Minecraft.getInstance().setScreen(new DragonAbilityScreen());
+                } else if (Keybind.OPEN_SPECIES_MENU.isKey(event.getKey())) {
+                    Minecraft.getInstance().setScreen(new DragonSpeciesScreen());
+                } else if (Keybind.OPEN_EMOTE_MENU.isKey(event.getKey())) {
+                    Minecraft.getInstance().setScreen(new DragonEmoteScreen());
+                }
+            } else if (screen instanceof DragonInventoryScreen || screen instanceof DragonAbilityScreen || screen instanceof DragonSkinsScreen || screen instanceof DragonSpeciesScreen || screen instanceof DragonEmoteScreen) {
+                player.closeContainer();
+            }
         }
     }
 }

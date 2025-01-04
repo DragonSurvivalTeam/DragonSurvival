@@ -119,7 +119,11 @@ public class AltarTypeButton extends Button {
 
         if (type != null) {
             graphics.blit(type.value().miscResources().altarBanner(), getX(), getY(), 0, isHovered ? 0 : 147, 49, 147, 49, 294);
-            graphics.blit(type.value().miscResources().growthIcons().getFirst().hoverIcon(), getX() + 1, getY() + 1, 0, 0, 18, 18, 18, 18);
+            if(isHovered() && isTop(mouseY)) {
+                graphics.blit(type.value().miscResources().growthIcons().getFirst().hoverIcon(), getX() + 1, getY() + 1, 0, 0, 18, 18, 18, 18);
+            } else {
+                graphics.blit(type.value().miscResources().growthIcons().getFirst().icon(), getX() + 1, getY() + 1, 0, 0, 18, 18, 18, 18);
+            }
         } else {
             graphics.blit(HUMAN_ALTAR_ICON, getX(), getY(), 0, isHovered ? 0 : 147, 49, 147, 49, 294);
         }

@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.server.tileentity;
 
-
 import by.dragonsurvivalteam.dragonsurvival.registry.DSTileEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;

@@ -24,7 +24,9 @@ import net.minecraft.world.phys.AABB;
 import java.util.List;
 import java.util.Random;
 
-public class DragonBeaconTileEntity extends BaseBlockTileEntity {
+// TODO :: new data attachment that stores effects valid dragon items
+//  said attachment is stored in the item stack data and transferred to the placed block entity
+public class DragonBeaconBlockEntity extends BaseBlockBlockEntity {
     public Type type = Type.NONE;
     public float tick;
 
@@ -37,13 +39,13 @@ public class DragonBeaconTileEntity extends BaseBlockTileEntity {
         NONE
     }
 
-    public DragonBeaconTileEntity(BlockPos pWorldPosition, BlockState pBlockState) {
+    public DragonBeaconBlockEntity(BlockPos pWorldPosition, BlockState pBlockState) {
         super(DSTileEntities.DRAGON_BEACON.get(), pWorldPosition, pBlockState);
         setType(this, pBlockState.getBlock());
         bobOffs = new Random().nextFloat() * (float) Math.PI * 2.0F;
     }
 
-    public static void serverTick(Level level, BlockPos position, BlockState state, DragonBeaconTileEntity beacon) {
+    public static void serverTick(Level level, BlockPos position, BlockState state, DragonBeaconBlockEntity beacon) {
         BlockState below = level.getBlockState(position.below());
 
         if (below.getBlock() == DSBlocks.DRAGON_MEMORY_BLOCK.get() && beacon.type != Type.NONE) {
@@ -82,7 +84,7 @@ public class DragonBeaconTileEntity extends BaseBlockTileEntity {
         }
     }
 
-    private static void setType(final DragonBeaconTileEntity beaconTileEntity, final Block beacon) {
+    private static void setType(final DragonBeaconBlockEntity beaconTileEntity, final Block beacon) {
         if (beaconTileEntity.type == Type.NONE) {
             if (beacon == DSBlocks.SEA_DRAGON_BEACON.get()) {
                 beaconTileEntity.type = Type.PEACE;

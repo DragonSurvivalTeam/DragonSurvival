@@ -7,7 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSSounds;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSTileEntities;
-import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonBeaconTileEntity;
+import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonBeaconBlockEntity;
 import by.dragonsurvivalteam.dragonsurvival.util.ExperienceUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.MobEffectUtils;
@@ -106,32 +106,32 @@ public class DragonBeacon extends Block implements SimpleWaterloggedBlock, Entit
         return InteractionResult.FAIL;
     }
 
-    private static DragonBeaconTileEntity.Type itemToBeaconType(Item item) {
+    private static DragonBeaconBlockEntity.Type itemToBeaconType(Item item) {
         if (item == Items.GOLD_BLOCK) {
-            return DragonBeaconTileEntity.Type.PEACE;
+            return DragonBeaconBlockEntity.Type.PEACE;
         } else if (item == Items.DIAMOND_BLOCK) {
-            return DragonBeaconTileEntity.Type.MAGIC;
+            return DragonBeaconBlockEntity.Type.MAGIC;
         } else if (item == Items.NETHERITE_INGOT) {
-            return DragonBeaconTileEntity.Type.FIRE;
+            return DragonBeaconBlockEntity.Type.FIRE;
         }
 
         return null;
     }
 
-    private static Block beaconTypeToBlock(DragonBeaconTileEntity.Type type) {
+    private static Block beaconTypeToBlock(DragonBeaconBlockEntity.Type type) {
         return switch (type) {
-            case DragonBeaconTileEntity.Type.PEACE -> DSBlocks.SEA_DRAGON_BEACON.get();
-            case DragonBeaconTileEntity.Type.MAGIC -> DSBlocks.FOREST_DRAGON_BEACON.get();
-            case DragonBeaconTileEntity.Type.FIRE -> DSBlocks.CAVE_DRAGON_BEACON.get();
-            case DragonBeaconTileEntity.Type.NONE -> null;
+            case DragonBeaconBlockEntity.Type.PEACE -> DSBlocks.SEA_DRAGON_BEACON.get();
+            case DragonBeaconBlockEntity.Type.MAGIC -> DSBlocks.FOREST_DRAGON_BEACON.get();
+            case DragonBeaconBlockEntity.Type.FIRE -> DSBlocks.CAVE_DRAGON_BEACON.get();
+            case DragonBeaconBlockEntity.Type.NONE -> null;
         };
     }
 
     private boolean tryUpgradeBeacon(Level level, BlockPos blockPos, Player player, Item item) {
-        DragonBeaconTileEntity old = (DragonBeaconTileEntity) level.getBlockEntity(blockPos);
+        DragonBeaconBlockEntity old = (DragonBeaconBlockEntity) level.getBlockEntity(blockPos);
         if(old == null) return false;
 
-        DragonBeaconTileEntity.Type type = itemToBeaconType(item);
+        DragonBeaconBlockEntity.Type type = itemToBeaconType(item);
         if(old.type == type) return false;
         if(type == null) return false;
 
@@ -139,7 +139,7 @@ public class DragonBeacon extends Block implements SimpleWaterloggedBlock, Entit
         if(beaconBlock == null) return false;
 
         level.setBlockAndUpdate(blockPos, beaconBlock.defaultBlockState());
-        DragonBeaconTileEntity dragonBeaconEntity = (DragonBeaconTileEntity) level.getBlockEntity(blockPos);
+        DragonBeaconBlockEntity dragonBeaconEntity = (DragonBeaconBlockEntity) level.getBlockEntity(blockPos);
         if(dragonBeaconEntity == null) return false;
 
         dragonBeaconEntity.type = type;
@@ -206,6 +206,6 @@ public class DragonBeacon extends Block implements SimpleWaterloggedBlock, Entit
 
     @Override
     @Nullable public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
-        return level.isClientSide ? null : BaseEntityBlock.createTickerHelper(type, DSTileEntities.DRAGON_BEACON.get(), DragonBeaconTileEntity::serverTick);
+        return level.isClientSide ? null : BaseEntityBlock.createTickerHelper(type, DSTileEntities.DRAGON_BEACON.get(), DragonBeaconBlockEntity::serverTick);
     }
 }

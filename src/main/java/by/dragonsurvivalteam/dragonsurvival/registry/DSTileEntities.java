@@ -1,9 +1,9 @@
 package by.dragonsurvivalteam.dragonsurvival.registry;
 
-import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonBeaconTileEntity;
+import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonBeaconBlockEntity;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.HelmetTileEntity;
+import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicBlockEntity;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicPlaceholder;
-import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicTileEntity;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -17,9 +17,9 @@ public class DSTileEntities {
             MODID
     );
 
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SourceOfMagicTileEntity>> SOURCE_OF_MAGIC_TILE_ENTITY = DS_TILE_ENTITIES.register(
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SourceOfMagicBlockEntity>> SOURCE_OF_MAGIC_TILE_ENTITY = DS_TILE_ENTITIES.register(
             "dragon_nest", () -> BlockEntityType.Builder.of(
-                            SourceOfMagicTileEntity::new,
+                            SourceOfMagicBlockEntity::new,
                             DSBlocks.CAVE_SOURCE_OF_MAGIC.get(),
                             DSBlocks.SEA_SOURCE_OF_MAGIC.get(),
                             DSBlocks.FOREST_SOURCE_OF_MAGIC.get())
@@ -44,9 +44,9 @@ public class DSTileEntities {
                     .build(null)
     );
 
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DragonBeaconTileEntity>> DRAGON_BEACON = DS_TILE_ENTITIES.register(
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DragonBeaconBlockEntity>> DRAGON_BEACON = DS_TILE_ENTITIES.register(
             "dragon_beacon", () -> BlockEntityType.Builder.of(
-                            DragonBeaconTileEntity::new,
+                            DragonBeaconBlockEntity::new,
                             DSBlocks.EMPTY_DRAGON_BEACON.get(),
                             DSBlocks.FOREST_DRAGON_BEACON.get(),
                             DSBlocks.SEA_DRAGON_BEACON.get(),

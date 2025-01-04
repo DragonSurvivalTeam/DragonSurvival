@@ -37,6 +37,9 @@ public class LangKey {
     @Translation(comments = "■ §6Age§r§7: %s")
     public static final String GROWTH_AGE = Translation.Type.GUI.wrap("handler.growth_age");
 
+    @Translation(comments = "■ §6Size§r§7: %s")
+    public static final String GROWTH_SIZE = Translation.Type.GUI.wrap("handler.growth_size");
+
     @Translation(comments = {
             "\n■ All dragons will gradually grow as time passes, improving their attributes. At certain growth stages, your appearance will change, and your growth will slow.§r",
             "§7■ A Star Bone will revert your growth slightly, and a Star Heart will completely stop you from growing. The biggest dragons can take other players for a ride!§r",

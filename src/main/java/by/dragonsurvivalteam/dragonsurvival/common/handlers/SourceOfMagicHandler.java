@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.blocks.SourceOfMagicBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
+import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicBlockEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -21,16 +22,28 @@ public class SourceOfMagicHandler {
             return;
         }
 
-        BlockState blockStateOn = event.getEntity().getBlockStateOn();
         MovementData movement = MovementData.getData(event.getEntity());
-        handler.isOnMagicSource = blockStateOn.getBlock() instanceof SourceOfMagicBlock source && source.isMagic(blockStateOn) && source.isFor(handler);
+        handler.isOnMagicSource = isOnMagicSource(event.getEntity(), handler);
 
-        if (handler.isOnMagicSource && !movement.isMoving()) {
-            // TODO :: previously checked for crouching and digging as well
+        if (handler.isOnMagicSource && !movement.isMoving() && !movement.dig && !event.getEntity().isCrouching()) {
             handler.magicSource++;
         } else {
             handler.magicSource = 0;
         }
+    }
+
+    private static boolean isOnMagicSource(final Player player, final DragonStateHandler handler) {
+        BlockState state = player.getBlockStateOn();
+
+        if (!(state.getBlock() instanceof SourceOfMagicBlock sourceBlock)) {
+            return false;
+        }
+
+        if (!sourceBlock.isMagic(state)) {
+            return false;
+        }
+
+        return player.level().getBlockEntity(player.blockPosition()) instanceof SourceOfMagicBlockEntity source && source.isApplicableFor(handler);
     }
 
     @SubscribeEvent

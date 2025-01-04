@@ -6,7 +6,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class SourceOfMagicPlaceholder extends BaseBlockTileEntity {
+public class SourceOfMagicPlaceholder extends BaseBlockBlockEntity {
     public BlockPos rootPos = BlockPos.ZERO;
 
     public SourceOfMagicPlaceholder(BlockPos pWorldPosition, BlockState pBlockState) {

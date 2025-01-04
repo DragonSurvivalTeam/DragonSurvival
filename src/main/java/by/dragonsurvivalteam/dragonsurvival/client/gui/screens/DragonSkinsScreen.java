@@ -161,14 +161,13 @@ public class DragonSkinsScreen extends Screen {
     private float xRot = -5;
     private float zoom;
 
-    public DragonSkinsScreen(Screen sourceScreen) {
+    public DragonSkinsScreen() {
         super(Component.empty());
-        this.sourceScreen = sourceScreen;
+        this.minecraft = Minecraft.getInstance();
 
-        LocalPlayer localPlayer = sourceScreen.getMinecraft().player;
         if (dragonStage == null) {
             //noinspection DataFlowIssue -> player should not be null
-            dragonStage = DragonStage.get(localPlayer.registryAccess(), Double.MAX_VALUE);
+            dragonStage = DragonStage.get(minecraft.player.registryAccess(), Double.MAX_VALUE);
         }
     }
 

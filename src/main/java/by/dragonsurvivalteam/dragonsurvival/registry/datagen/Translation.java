@@ -69,6 +69,7 @@ public @interface Translation {
 
         DRAGON_SPECIES("dragon_species." + DragonSurvival.MODID + ".", ""),
         DRAGON_SPECIES_DESCRIPTION("dragon_species." + DragonSurvival.MODID + ".", ".desc"),
+        DRAGON_SPECIES_DESCRIPTION_NO_DIET("dragon_species." + DragonSurvival.MODID + ".", ".desc.no_diet"),
 
         PENALTY("dragon_penalty." + DragonSurvival.MODID + ".", ""),
         PENALTY_DESCRIPTION("dragon_penalty." + DragonSurvival.MODID + ".", ".desc"),
