@@ -151,8 +151,32 @@ public class DragonEmoteSets {
     @Translation(type = Translation.Type.EMOTE, comments = "§2Misc:§r Swim")
     public static final String MISC_SWIM = "swim_fast";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§1Sound:§r Ender Dragon Roar")
+    @Translation(type = Translation.Type.EMOTE, comments = "§1Sound:§r Purr")
+    public static final String SOUND_PURR = "purr";
+
+    @Translation(type = Translation.Type.EMOTE, comments = "§1Sound:§r Purreow")
+    public static final String SOUND_PURREOW = "purreow";
+
+    @Translation(type = Translation.Type.EMOTE, comments = "§1Sound:§r Hungry")
+    public static final String SOUND_STRAY_AMBIENT = "stray";
+
+    @Translation(type = Translation.Type.EMOTE, comments = "§1Sound:§r Loud Angry Roar")
     public static final String SOUND_ROAR = "roar";
+
+    @Translation(type = Translation.Type.EMOTE, comments = "§1Sound:§r Hiss")
+    public static final String SOUND_HISS = "hiss";
+
+    @Translation(type = Translation.Type.EMOTE, comments = "§1Sound:§r Growl")
+    public static final String SOUND_GROWL = "growl";
+
+    @Translation(type = Translation.Type.EMOTE, comments = "§1Sound:§r Pft")
+    public static final String SOUND_CAMEL = "camel";
+
+    @Translation(type = Translation.Type.EMOTE, comments = "§1Sound:§r Hurr")
+    public static final String SOUND_BEAR = "bear";
+
+    @Translation(type = Translation.Type.EMOTE, comments = "§1Sound:§r Happy")
+    public static final String SOUND_HAPPY = "happy";
 
 
 
@@ -206,7 +230,15 @@ public class DragonEmoteSets {
                                 DragonEmote.Builder.of(MISC_SOARING).loops().canMove().build(),
                                 DragonEmote.Builder.of(MISC_FLY).loops().canMove().build(),
                                 DragonEmote.Builder.of(MISC_PASSENGER).loops().canMove().build(),
-                                DragonEmote.Builder.of(BLEND_HEAD_LOCKED, SOUND_ROAR).sound(SoundEvents.ENDER_DRAGON_GROWL,100,1.0f,0.1f).blend().build()
+                                DragonEmote.Builder.of(BLEND_HEAD_LOCKED, SOUND_PURR).sound(SoundEvents.CAT_PURR,160,1.5f,0.8f).blend().build(),
+                                DragonEmote.Builder.of(BLEND_HEAD_LOCKED, SOUND_PURREOW).sound(SoundEvents.CAT_PURREOW,160,2.0f,0.3f).blend().build(),
+                                DragonEmote.Builder.of(BLEND_TALK, SOUND_STRAY_AMBIENT).speed(0.1).sound(SoundEvents.CAT_STRAY_AMBIENT,160,2.0f,0.2f).blend().build(),
+                                DragonEmote.Builder.of(BLEND_BREATH, SOUND_ROAR).speed(0.1).sound(SoundEvents.ENDER_DRAGON_GROWL,160,0.3f,0.1f).blend().build(),
+                                DragonEmote.Builder.of(BLEND_BREATH, SOUND_HISS).speed(0.2).sound(SoundEvents.CAT_HISS,160,1.5f,0.2f).blend().build(),
+                                DragonEmote.Builder.of(BLEND_SPELL_CHARGE, SOUND_GROWL).speed(0.001).sound(SoundEvents.WOLF_GROWL,160,1.0f,0.2f).blend().build(),
+                                DragonEmote.Builder.of(BLEND_TALK, SOUND_CAMEL).speed(0.01).sound(SoundEvents.CAMEL_AMBIENT,160,1.0f,0.2f).blend().build(),
+                                DragonEmote.Builder.of(BLEND_TALK, SOUND_BEAR).speed(0.02).sound(SoundEvents.POLAR_BEAR_AMBIENT,160,1.0f,0.2f).blend().build(),
+                                DragonEmote.Builder.of(BLEND_BREATH, SOUND_HAPPY).speed(0.01).sound(SoundEvents.SNIFFER_HAPPY,160,0.5f,0.8f).blend().build()
                         )
                 )
         );
