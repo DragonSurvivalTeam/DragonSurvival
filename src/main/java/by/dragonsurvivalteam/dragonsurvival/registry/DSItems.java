@@ -316,11 +316,11 @@ public class DSItems {
             new Item.Properties().rarity(Rarity.EPIC)
                     .component(DSDataComponents.SOURCE_OF_MAGIC, new SourceOfMagicData(
                             List.of(
-                                    new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_DUST.value(), Functions.secondsToTicks(20)),
-                                    new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_BONE.value(), Functions.secondsToTicks(60)),
-                                    new SourceOfMagicData.Consumable(DSItems.DRAGON_HEART_SHARD.value(), Functions.secondsToTicks(110)),
-                                    new SourceOfMagicData.Consumable(DSItems.WEAK_DRAGON_HEART.value(), Functions.secondsToTicks(310)),
-                                    new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_HEART.value(), Functions.secondsToTicks(1010))
+                                    new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_DUST.value(), Functions.secondsToTicks(10)),
+                                    new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_BONE.value(), Functions.secondsToTicks(30)),
+                                    new SourceOfMagicData.Consumable(DSItems.DRAGON_HEART_SHARD.value(), Functions.secondsToTicks(60)),
+                                    new SourceOfMagicData.Consumable(DSItems.WEAK_DRAGON_HEART.value(), Functions.secondsToTicks(120)),
+                                    new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_HEART.value(), Functions.secondsToTicks(300))
                             ),
                             List.of(BuiltInDragonSpecies.CAVE)
                     ))
@@ -331,11 +331,11 @@ public class DSItems {
             new Item.Properties().rarity(Rarity.EPIC)
                     .component(DSDataComponents.SOURCE_OF_MAGIC, new SourceOfMagicData(
                             List.of(
-                                    new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_DUST.value(), Functions.secondsToTicks(20)),
-                                    new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_BONE.value(), Functions.secondsToTicks(60)),
-                                    new SourceOfMagicData.Consumable(DSItems.DRAGON_HEART_SHARD.value(), Functions.secondsToTicks(110)),
-                                    new SourceOfMagicData.Consumable(DSItems.WEAK_DRAGON_HEART.value(), Functions.secondsToTicks(310)),
-                                    new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_HEART.value(), Functions.secondsToTicks(1010))
+                                    new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_DUST.value(), Functions.secondsToTicks(10)),
+                                    new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_BONE.value(), Functions.secondsToTicks(30)),
+                                    new SourceOfMagicData.Consumable(DSItems.DRAGON_HEART_SHARD.value(), Functions.secondsToTicks(60)),
+                                    new SourceOfMagicData.Consumable(DSItems.WEAK_DRAGON_HEART.value(), Functions.secondsToTicks(120)),
+                                    new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_HEART.value(), Functions.secondsToTicks(300))
                             ),
                             List.of(BuiltInDragonSpecies.FOREST)
                     ))
@@ -346,11 +346,11 @@ public class DSItems {
             new Item.Properties().rarity(Rarity.EPIC)
                     .component(DSDataComponents.SOURCE_OF_MAGIC, new SourceOfMagicData(
                             List.of(
-                                    new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_DUST.value(), Functions.secondsToTicks(20)),
-                                    new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_BONE.value(), Functions.secondsToTicks(60)),
-                                    new SourceOfMagicData.Consumable(DSItems.DRAGON_HEART_SHARD.value(), Functions.secondsToTicks(110)),
-                                    new SourceOfMagicData.Consumable(DSItems.WEAK_DRAGON_HEART.value(), Functions.secondsToTicks(310)),
-                                    new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_HEART.value(), Functions.secondsToTicks(1010))
+                                    new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_DUST.value(), Functions.secondsToTicks(10)),
+                                    new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_BONE.value(), Functions.secondsToTicks(30)),
+                                    new SourceOfMagicData.Consumable(DSItems.DRAGON_HEART_SHARD.value(), Functions.secondsToTicks(60)),
+                                    new SourceOfMagicData.Consumable(DSItems.WEAK_DRAGON_HEART.value(), Functions.secondsToTicks(120)),
+                                    new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_HEART.value(), Functions.secondsToTicks(300))
                             ),
                             List.of(BuiltInDragonSpecies.SEA)
                     ))

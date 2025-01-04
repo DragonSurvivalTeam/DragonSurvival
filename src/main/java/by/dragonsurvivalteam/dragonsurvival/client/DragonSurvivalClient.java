@@ -3,9 +3,9 @@ package by.dragonsurvivalteam.dragonsurvival.client;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.extensions.ShakeWhenUsedExtension;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.ClientDietComponent;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.ClientGrowthComponent;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.ClientTimeComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.DietComponent;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.GrowthComponent;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.TimeComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.models.aligned_armor.DragonBoots;
 import by.dragonsurvivalteam.dragonsurvival.client.models.aligned_armor.DragonChestplate;
 import by.dragonsurvivalteam.dragonsurvival.client.models.aligned_armor.DragonHelmet;
@@ -88,7 +88,7 @@ public class DragonSurvivalClient {
 
     private void registerTooltips(final RegisterClientTooltipComponentFactoriesEvent event) {
         event.register(DietComponent.class, ClientDietComponent::new);
-        event.register(GrowthComponent.class, ClientGrowthComponent::new);
+        event.register(TimeComponent.class, ClientTimeComponent::new);
     }
 
     private void registerItemExtensions(RegisterClientExtensionsEvent event) {

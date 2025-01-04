@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.common.capability;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.GrowthComponent;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.TimeComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.SkinPreset;
 import by.dragonsurvivalteam.dragonsurvival.commands.DragonCommand;
@@ -633,11 +633,11 @@ public class DragonStateHandler extends EntityStateHandler {
         double percentage = Math.clamp(stage.getProgress(getSize()), 0, 1);
         String ageInformation = stage.getTimeToGrowFormattedWithPercentage(percentage, getSize(), isGrowing);
 
-        List<GrowthComponent> growthItems = new ArrayList<>();
+        List<TimeComponent> growthItems = new ArrayList<>();
 
         stage().value().growthItems().forEach(growthItem -> {
             // A bit of wasted processing since not all are shown
-            growthItem.items().forEach(item -> growthItems.add(new GrowthComponent(item.value(), growthItem.growthInTicks())));
+            growthItem.items().forEach(item -> growthItems.add(new TimeComponent(item.value(), growthItem.growthInTicks())));
         });
 
         int scroll = currentScroll;
