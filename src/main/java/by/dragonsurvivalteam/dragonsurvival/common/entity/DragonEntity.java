@@ -364,12 +364,22 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         if (currentlyPlayingEmotes[slot] != null) {
             DragonEmote emote = currentlyPlayingEmotes[slot];
 
-            if(animationTickTimer.getDuration("emote_" + slot) > 0 || emote.loops()) {
+            double duration = animationTickTimer.getDuration("emote_" + slot);
+            if(duration > 0 || emote.loops()) {
                 state.getController().setAnimationSpeed(emote.speed());
 
                 if (!emote.loops()) {
                     return state.setAndContinue(RawAnimation.begin().thenPlay(emote.animationKey()));
                 } else {
+                    // If the emote loops, we need to check if the duration is set to 0, and if so, set it to the default duration so that the sounds can keep playing properly
+                    if(duration <= 0) {
+                        if(emote.duration() != DragonEmote.NO_DURATION) {
+                            animationTickTimer.putAnimation("emote_" + slot, (double)emote.duration());
+                        } else {
+                            animationTickTimer.putAnimation("emote_" + slot, animationDuration(getPlayer(), emote.animationKey()));
+                        }
+                    }
+
                     return state.setAndContinue(RawAnimation.begin().thenLoop(emote.animationKey()));
                 }
             } else {
