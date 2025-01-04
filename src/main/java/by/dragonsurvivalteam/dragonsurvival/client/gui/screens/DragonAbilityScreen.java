@@ -81,7 +81,6 @@ public class DragonAbilityScreen extends Screen {
     private static final ResourceLocation INFO_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/info_hover.png");
     private static final ResourceLocation INFO_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/info_main.png");
 
-    public Screen sourceScreen;
     public LevelButton hoveredLevelButton;
 
     private Holder<DragonSpecies> dragonSpecies;
@@ -92,9 +91,8 @@ public class DragonAbilityScreen extends Screen {
     private final List<AbstractWidget> leftWindowWidgets = new ArrayList<>();
     private final List<ScrollableComponent> scrollableComponents = new ArrayList<>();
 
-    public DragonAbilityScreen(Screen sourceScreen) {
+    public DragonAbilityScreen() {
         super(Component.empty());
-        this.sourceScreen = sourceScreen;
     }
 
     @Override

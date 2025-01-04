@@ -264,7 +264,7 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         InputConstants.Key mouseKey = InputConstants.getKey(keyCode, scanCode);
 
-        if (Keybind.DRAGON_INVENTORY.get().isActiveAndMatches(mouseKey)) {
+        if (Keybind.OPEN_DRAGON_INVENTORY.get().isActiveAndMatches(mouseKey)) {
             onClose();
             return true;
         }

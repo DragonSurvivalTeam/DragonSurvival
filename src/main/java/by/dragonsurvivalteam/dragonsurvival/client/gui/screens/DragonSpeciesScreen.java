@@ -15,6 +15,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscDragonTextures;
 import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
 import by.dragonsurvivalteam.dragonsurvival.compat.jei.JEIPlugin;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
@@ -22,18 +23,22 @@ import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -123,7 +128,6 @@ public class DragonSpeciesScreen extends Screen {
 
         DragonStateHandler data = DragonStateProvider.getData(minecraft.player);
         graphics.blit(BACKGROUND_MAIN, startX, startY, 0, 0, 256, 256);
-        graphics.blit(data.species().value().miscResources().altarBanner(), startX + 7, startY + 8, 0, 0, 49, 147, 49, 294);
 
         for (ScrollableComponent component : scrollableComponents) {
             component.update();
@@ -158,6 +162,24 @@ public class DragonSpeciesScreen extends Screen {
         dietMenu = new DietMenuComponent(dragonSpecies, startX + 78, startY + 10);
         scrollableComponents.add(dietMenu);
         renderables.add(dietMenu);
+
+        // Dragon species banner
+        ExtendedButton speciesBanner = new ExtendedButton(startX + 17, startY - 22, 49, 147, Component.empty(), button -> {}){
+            private boolean isTop(double mouseY) {
+                return mouseY > getY() + 6 && mouseY < getY() + 100;
+            }
+
+            @Override
+            public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+                guiGraphics.blit(data.species().value().miscResources().altarBanner(), getX(), getY(), 0, 0, 49, 147, 49, 294);
+                if(isHovered() && isTop(mouseY)) {
+                    List<Either<FormattedText, TooltipComponent>> components = new ArrayList<>();
+                    components.addFirst(Either.left(Component.translatable(Translation.Type.DRAGON_SPECIES_DESCRIPTION_NO_DIET.wrap(dragonSpecies.getKey().location()))));
+                    guiGraphics.renderComponentTooltipFromElements(Minecraft.getInstance().font, components, mouseX, mouseY, ItemStack.EMPTY);
+                }
+            }
+        };
+        addRenderableWidget(speciesBanner);
 
         // Wing button
         HoverButton wingButton = new HoverButton(startX + 79, startY - 19, 20, WINGS_MAIN, WINGS_HOVER);
