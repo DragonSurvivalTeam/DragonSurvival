@@ -1,37 +1,29 @@
 package by.dragonsurvivalteam.dragonsurvival.network.magic;
 
-import by.dragonsurvivalteam.dragonsurvival.network.IMessage;
-import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
-import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
+public record SyncMagicData(CompoundTag magicData) implements CustomPacketPayload {
+    public static final Type<SyncMagicData> TYPE = new Type<>(DragonSurvival.res("sync_magic_data"));
 
-public class SyncMagicData implements IMessage<SyncMagicData.Data> {
+    public static final StreamCodec<FriendlyByteBuf, SyncMagicData> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.COMPOUND_TAG, SyncMagicData::magicData,
+            SyncMagicData::new
+    );
 
-    public static void handleClient(final SyncMagicData.Data message, final IPayloadContext context) {
-        context.enqueueWork(() -> ClientProxy.handleSyncMagicData(message));
+    public static void handleClient(final SyncMagicData packet, final IPayloadContext context) {
+        context.enqueueWork(() -> MagicData.getData(context.player()).deserializeNBT(context.player().registryAccess(), packet.magicData()));
     }
 
-    public record Data(int playerid, CompoundTag nbt) implements CustomPacketPayload {
-        public static final Type<Data> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "magic_stats"));
-
-        public static final StreamCodec<FriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
-                ByteBufCodecs.VAR_INT,
-                Data::playerid,
-                ByteBufCodecs.COMPOUND_TAG,
-                Data::nbt,
-                Data::new
-        );
-
-        @Override
-        public Type<? extends CustomPacketPayload> type() {
-            return TYPE;
-        }
+    @Override
+    public @NotNull Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

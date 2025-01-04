@@ -12,18 +12,18 @@ import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 
-public class ClientGrowthComponent implements ClientTooltipComponent {
+public class ClientTimeComponent implements ClientTooltipComponent {
     @Translation(comments = "%s %s:%s:%s")
     private static final String TIME = Translation.Type.GUI.wrap("growth.time");
 
     private static final int ICON_SIZE = 20;
 
-    private final GrowthComponent component;
+    private final TimeComponent component;
     private final Component tooltip;
 
-    public ClientGrowthComponent(final GrowthComponent component) {
+    public ClientTimeComponent(final TimeComponent component) {
         this.component = component;
-        this.tooltip = Component.translatable(component.item().getDescriptionId()).append(": ").append(time(component.growth()));
+        this.tooltip = Component.translatable(component.item().getDescriptionId()).append(": ").append(time(component.ticks()));
     }
 
     private Component time(int ticks) {

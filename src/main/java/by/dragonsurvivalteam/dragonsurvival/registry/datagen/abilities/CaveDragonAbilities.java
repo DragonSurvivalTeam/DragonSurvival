@@ -224,7 +224,7 @@ public class CaveDragonAbilities {
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(
                         ModifierEffect.single(new ModifierWithDuration(
                                 STURDY_SKIN_MODIFIER,
-                                DragonSurvival.res("textures/modifiers/strong_leather.png"),
+                                DragonSurvival.res("textures/modifiers/sturdy_skin.png"),
                                 List.of(new Modifier(Attributes.ARMOR, LevelBasedValue.constant(3), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
                                 LevelBasedValue.perLevel(Functions.secondsToTicks(60)),
                                 false
@@ -232,10 +232,10 @@ public class CaveDragonAbilities {
                         AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
                 ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/strong_leather_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/strong_leather_1"), 1),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/strong_leather_2"), 2),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/strong_leather_3"), 3)
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/sturdy_skin_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/sturdy_skin_1"), 1),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/sturdy_skin_2"), 2),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/sturdy_skin_3"), 3)
                 ))
         ));
 
@@ -438,7 +438,6 @@ public class CaveDragonAbilities {
                                 AbilityTargeting.EntityTargetingMode.TARGET_ALL
                         ), true), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(
-                        // TODO:: Needs textures
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/lava_swimming_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/lava_swimming_1"), 1)
                 ))

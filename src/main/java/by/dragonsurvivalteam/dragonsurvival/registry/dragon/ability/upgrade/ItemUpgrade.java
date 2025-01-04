@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 
 import java.util.List;
 
@@ -22,6 +23,10 @@ public record ItemUpgrade(List<HolderSet<Item>> upgradeItems, HolderSet<Item> do
     @Override
     @SuppressWarnings("deprecation") // ignore
     public boolean apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Item input) {
+        if (handleAutoUpgrade(ability, input)) {
+            return true;
+        }
+
         if (ability.level() > DragonAbilityInstance.MIN_LEVEL && downgradeItems.contains(input.builtInRegistryHolder())) {
             ability.setLevel(ability.level() - 1);
             return true;
@@ -32,6 +37,23 @@ public record ItemUpgrade(List<HolderSet<Item>> upgradeItems, HolderSet<Item> do
         }
 
         if (upgradeItems.get(ability.level()).contains(input.builtInRegistryHolder())) {
+            ability.setLevel(ability.level() + 1);
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean handleAutoUpgrade(final DragonAbilityInstance ability, final Item input) {
+        if (input != Items.AIR) {
+            return false;
+        }
+
+        if (ability.level() >= upgradeItems.size()) {
+            return false;
+        }
+
+        if (upgradeItems.get(ability.level()).size() == 0) {
             ability.setLevel(ability.level() + 1);
             return true;
         }

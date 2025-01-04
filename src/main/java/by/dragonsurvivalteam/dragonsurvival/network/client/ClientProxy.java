@@ -173,19 +173,6 @@ public class ClientProxy {
         }
     }
 
-    public static void handleSyncMagicData(final SyncMagicData.Data message) {
-        Player localPlayer = Minecraft.getInstance().player;
-
-        if (localPlayer != null) {
-            Entity entity = localPlayer.level().getEntity(message.playerid());
-
-            if (entity instanceof Player player) {
-                MagicData magicData = MagicData.getData(player);
-                magicData.deserializeNBT(player.registryAccess(), message.nbt());
-            }
-        }
-    }
-
     public static void handleSyncPotionAddedEffect(final SyncVisualEffectAdded.Data message) {
         Player localPlayer = Minecraft.getInstance().player;
 

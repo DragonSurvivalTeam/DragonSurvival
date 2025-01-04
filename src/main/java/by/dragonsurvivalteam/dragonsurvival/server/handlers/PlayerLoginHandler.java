@@ -118,7 +118,7 @@ public class PlayerLoginHandler {
             });
 
             MagicData magicData = MagicData.getData(player);
-            PacketDistributor.sendToPlayer(player, new SyncMagicData.Data(player.getId(), magicData.serializeNBT(player.registryAccess())));
+            PacketDistributor.sendToPlayer(player, new SyncMagicData(magicData.serializeNBT(player.registryAccess())));
 
             syncDataAttachments(player);
         }

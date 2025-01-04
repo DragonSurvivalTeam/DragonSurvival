@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.common.capability;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.GrowthComponent;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.TimeComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.SkinPreset;
 import by.dragonsurvivalteam.dragonsurvival.commands.DragonCommand;
@@ -11,6 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.items.growth.StarHeartItem;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.mixins.EntityAccessor;
 import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncMagicData;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDesiredSize;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncSize;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
@@ -310,33 +311,37 @@ public class DragonStateHandler extends EntityStateHandler {
         return bodyKey().location();
     }
 
-    public void refreshDataOnTypeChange(final Player player) {
+    public void refreshDataOnTypeChange(final ServerPlayer player) {
         PenaltySupply.getData(player).clear();
+        MagicData magic = MagicData.getData(player);
 
         if (!ServerConfig.saveAllAbilities) {
-            MagicData.getData(player).refresh(species(), player);
+            magic.refresh(player, species());
         } else {
-            if (MagicData.getData(player).dataForSpeciesIsEmpty(speciesKey())) {
-                MagicData.getData(player).refresh(species(), player);
+            if (magic.dataForSpeciesIsEmpty(speciesKey())) {
+                magic.refresh(player, species());
             } else {
-                MagicData.getData(player).setCurrentSpecies(speciesKey());
+                magic.setCurrentSpecies(speciesKey());
             }
         }
+
+        PacketDistributor.sendToPlayer(player, new SyncMagicData(magic.serializeNBT(player.registryAccess())));
     }
 
     public void setType(@Nullable final Player player, final Holder<DragonSpecies> species) {
         Holder<DragonSpecies> oldSpecies = dragonSpecies;
         dragonSpecies = species;
 
-        if (player == null) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            // Magic data and attribute modifiers are handled server-side
             return;
         }
 
         if (species != null && (oldSpecies == null || !oldSpecies.is(species))) {
-            DSModifiers.updateTypeModifiers(player, this);
-            refreshDataOnTypeChange(player);
+            DSModifiers.updateTypeModifiers(serverPlayer, this);
+            refreshDataOnTypeChange(serverPlayer);
         } else if (species == null) {
-            DSModifiers.clearModifiers(player);
+            DSModifiers.clearModifiers(serverPlayer);
         }
     }
 
@@ -628,11 +633,11 @@ public class DragonStateHandler extends EntityStateHandler {
         double percentage = Math.clamp(stage.getProgress(getSize()), 0, 1);
         String ageInformation = stage.getTimeToGrowFormattedWithPercentage(percentage, getSize(), isGrowing);
 
-        List<GrowthComponent> growthItems = new ArrayList<>();
+        List<TimeComponent> growthItems = new ArrayList<>();
 
         stage().value().growthItems().forEach(growthItem -> {
             // A bit of wasted processing since not all are shown
-            growthItem.items().forEach(item -> growthItems.add(new GrowthComponent(item.value(), growthItem.growthInTicks())));
+            growthItem.items().forEach(item -> growthItems.add(new TimeComponent(item.value(), growthItem.growthInTicks())));
         });
 
         int scroll = currentScroll;

@@ -15,6 +15,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEmoteSet;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEmoteSets;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.datapacks.AncientDatapack;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.datapacks.UnlockWingsDatapack;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalties;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
@@ -30,6 +31,10 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.data.metadata.PackMetadataGenerator;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -39,14 +44,22 @@ import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.event.AddPackFindersEvent;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public class DataGeneration {
+    private static final String ANCIENT_STAGE_DATAPACK = "ancient_stage";
+    private static final String UNLOCK_WINGS_DATAPACK = "unlock_wings";
+
+    @Translation(comments = "Adds the Ancient dragon stage to Dragon Survival")
+    private static final String ANCIENT_STAGE_DATAPACK_DESCRIPTION = Translation.Type.GUI.wrap("datapack." + ANCIENT_STAGE_DATAPACK);
+
+    @Translation(comments = "Automatically unlocks dragon wings in Dragon Survival")
+    private static final String UNLOCK_WINGS_DATAPACK_DESCRIPTION = Translation.Type.GUI.wrap("datapack." + UNLOCK_WINGS_DATAPACK);
+
     @SubscribeEvent
     public static void generateData(final GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
@@ -78,20 +91,12 @@ public class DataGeneration {
         DatapackBuiltinEntriesProvider datapackProvider = new DatapackBuiltinEntriesProvider(output, lookup, builder, Set.of(DragonSurvival.MODID));
         generator.addProvider(event.includeServer(), datapackProvider);
 
-        // external datapack for ancient dragon stage
-        DataGenerator.PackGenerator ancientFeaturePack = generator.getBuiltinDatapack(true, DragonSurvival.MODID, "ancient_stage");
-        ancientFeaturePack.addProvider(packOutput -> PackMetadataGenerator.forFeaturePack(
-                packOutput,
-                Component.literal("Adds the Ancient dragon stage to Dragon Survival"),
-                FeatureFlagSet.of()
-        ));
-        RegistrySetBuilder ancientBuilder = new RegistrySetBuilder();
-        ancientBuilder.add(DragonStage.REGISTRY, AncientDatapack::register);
-        CompletableFuture<HolderLookup.Provider> finalLookup = lookup;
-        ancientFeaturePack.addProvider(packOutput -> new DatapackBuiltinEntriesProvider(packOutput, finalLookup, ancientBuilder, Set.of(DragonSurvival.MODID)));
-
-        // Update the lookup provider with our datapack entries
+        // Update the lookup provider with our registries
         lookup = datapackProvider.getRegistryProvider();
+
+        // Handle additional datapacks
+        addAncientStageDatapack(generator, lookup);
+        addUnlockWingsDatapack(generator, lookup, /* May not be the correct way to handle this */ lookup.join().lookupOrThrow(DragonAbility.REGISTRY));
 
         BlockTagsProvider blockTagsProvider = new DSBlockTags(output, lookup, helper);
         generator.addProvider(event.includeServer(), blockTagsProvider);
@@ -110,5 +115,50 @@ public class DataGeneration {
 
         // Should run last due to doing weird registry things
         generator.addProvider(event.includeServer(), new DSRecipes(output, lookup));
+    }
+
+    @SubscribeEvent
+    public static void addPackFinders(final AddPackFindersEvent event) {
+        if (event.getPackType() == PackType.CLIENT_RESOURCES) {
+            HashMap<MutableComponent, String> resourcepacks = new HashMap<>();
+            resourcepacks.put(Component.literal("DS - Old Magic Icons"), "resourcepacks/ds_old_magic");
+            resourcepacks.put(Component.literal("DS - Dark GUI"), "resourcepacks/ds_dark_gui");
+
+            for (Map.Entry<MutableComponent, String> entry : resourcepacks.entrySet()) {
+                registerBuiltinResourcePack(event, entry.getKey(), entry.getValue());
+            }
+        } else if (event.getPackType() == PackType.SERVER_DATA) {
+            HashMap<MutableComponent, String> datapacks = new HashMap<>();
+            datapacks.put(Component.literal("DS - Ancient Dragons"), "data/" + DragonSurvival.MODID + "/datapacks/" + ANCIENT_STAGE_DATAPACK);
+            datapacks.put(Component.literal("DS - Unlock Wings"), "data/" + DragonSurvival.MODID + "/datapacks/" + UNLOCK_WINGS_DATAPACK);
+
+            for (Map.Entry<MutableComponent, String> entry : datapacks.entrySet()) {
+                registerBuiltInDataPack(event, entry.getKey(), entry.getValue());
+            }
+        }
+    }
+
+    private static void registerBuiltinResourcePack(final AddPackFindersEvent event, MutableComponent name, String folder) {
+        event.addPackFinders(DragonSurvival.res(folder), PackType.CLIENT_RESOURCES, name, PackSource.BUILT_IN, false, Pack.Position.TOP);
+    }
+
+    private static void registerBuiltInDataPack(AddPackFindersEvent event, MutableComponent name, String folder) {
+        event.addPackFinders(DragonSurvival.res(folder), PackType.SERVER_DATA, name, PackSource.FEATURE, true, Pack.Position.TOP);
+    }
+
+    private static void addAncientStageDatapack(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup) {
+        DataGenerator.PackGenerator datapack = generator.getBuiltinDatapack(true, DragonSurvival.MODID, ANCIENT_STAGE_DATAPACK);
+        datapack.addProvider(output -> PackMetadataGenerator.forFeaturePack(output, Component.translatable(ANCIENT_STAGE_DATAPACK_DESCRIPTION), FeatureFlagSet.of()));
+        RegistrySetBuilder builder = new RegistrySetBuilder();
+        builder.add(DragonStage.REGISTRY, AncientDatapack::register);
+        datapack.addProvider(output -> new DatapackBuiltinEntriesProvider(output, lookup, builder, Set.of(DragonSurvival.MODID)));
+    }
+
+    private static void addUnlockWingsDatapack(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup, final HolderLookup.RegistryLookup<DragonAbility> registryLookup) {
+        DataGenerator.PackGenerator datapack = generator.getBuiltinDatapack(true, DragonSurvival.MODID, UNLOCK_WINGS_DATAPACK);
+        datapack.addProvider(output -> PackMetadataGenerator.forFeaturePack(output, Component.translatable(UNLOCK_WINGS_DATAPACK_DESCRIPTION), FeatureFlagSet.of()));
+        RegistrySetBuilder builder = new RegistrySetBuilder();
+        builder.add(DragonAbility.REGISTRY, context -> UnlockWingsDatapack.register(context, registryLookup));
+        datapack.addProvider(output -> new DatapackBuiltinEntriesProvider(output, lookup, builder, Set.of(DragonSurvival.MODID)));
     }
 }

@@ -37,6 +37,7 @@ import software.bernie.geckolib.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SourceOfMagicBlockEntity extends BaseBlockBlockEntity implements Container, MenuProvider, GeoBlockEntity {
     @Translation(comments = "Source of Magic")
@@ -72,6 +73,22 @@ public class SourceOfMagicBlockEntity extends BaseBlockBlockEntity implements Co
         Map<Item, Integer> map = new HashMap<>();
         consumables.forEach(consumable -> map.put(consumable.item(), consumable.duration()));
         this.consumables = map;
+    }
+
+    public List<SourceOfMagicData.Consumable> getConsumables() {
+        if (consumables == null) {
+            return List.of();
+        }
+
+        return consumables.entrySet().stream().map(entry -> new SourceOfMagicData.Consumable(entry.getKey(), entry.getValue())).collect(Collectors.toList());
+    }
+
+    public int consumableAmount() {
+        if (consumables == null) {
+            return 0;
+        }
+
+        return consumables.size();
     }
 
     public boolean isApplicableFor(final DragonStateHandler handler) {
@@ -154,13 +171,9 @@ public class SourceOfMagicBlockEntity extends BaseBlockBlockEntity implements Co
     @Override
     public void saveAdditional(@NotNull final CompoundTag tag, @NotNull final HolderLookup.Provider provider) {
         ContainerHelper.saveAllItems(tag, inputItem, provider);
-        List<SourceOfMagicData.Consumable> consumables = new ArrayList<>();
+        List<SourceOfMagicData.Consumable> consumables = getConsumables();
         List<ResourceKey<DragonSpecies>> applicableSpecies = new ArrayList<>();
 
-        if (this.consumables != null) {
-            this.consumables.forEach((item, duration) -> consumables.add(new SourceOfMagicData.Consumable(item, duration)));
-        }
-        
         if (this.applicableSpecies != null) {
             applicableSpecies.addAll(this.applicableSpecies);
         }

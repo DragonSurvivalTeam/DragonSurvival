@@ -25,6 +25,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -125,7 +126,10 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
         for (DragonAbilityInstance ability : magic.getAbilities().values()) {
             if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-                ability.value().upgrade().ifPresent(upgrade -> upgrade.attempt(serverPlayer, ability, null));
+                ability.value().upgrade().ifPresent(upgrade -> {
+                    upgrade.attempt(serverPlayer, ability, null);
+                    upgrade.attempt(serverPlayer, ability, Items.AIR);
+                });
             }
 
             ability.tick(event.getEntity());
@@ -323,29 +327,33 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         this.renderAbilities = renderAbilities;
     }
 
-    public void refresh(final Holder<DragonSpecies> type, final Player player) {
+    public void refresh(final ServerPlayer player, final Holder<DragonSpecies> type) {
         if (type == null) {
             return;
         }
 
+        currentSpecies = type.getKey();
+
         // Make sure we remove any passive effects for abilities that are no longer available
-        if (player instanceof ServerPlayer serverPlayer) {
-            for (DragonAbilityInstance instance : getAbilities().values()) {
-                instance.setActive(false, serverPlayer);
-            }
+        for (DragonAbilityInstance instance : getAbilities().values()) {
+            instance.setActive(false, player);
         }
 
-        currentSpecies = type.getKey();
+        InputData levelInput = InputData.experienceLevels(player.experienceLevel);
+        InputData sizeInput = InputData.size((int) DragonStateProvider.getData(player).getSize());
 
         int slot = 0;
 
         for (Holder<DragonAbility> ability : type.value().abilities()) {
+            UpgradeType<?> upgrade = ability.value().upgrade().orElse(null);
             DragonAbilityInstance instance;
 
-            if (ability.value().upgrade().isEmpty()) {
-                instance = new DragonAbilityInstance(ability, 1);
+            if (upgrade == null) {
+                instance = new DragonAbilityInstance(ability, ability.value().getMaxLevel());
             } else {
                 instance = new DragonAbilityInstance(ability, DragonAbilityInstance.MIN_LEVEL);
+                upgrade.attempt(player, instance, levelInput);
+                upgrade.attempt(player, instance, sizeInput);
             }
 
             if (slot < HOTBAR_SLOTS && ability.value().activation().type() != Activation.Type.PASSIVE) {
@@ -354,13 +362,6 @@ public class MagicData implements INBTSerializable<CompoundTag> {
             }
 
             getAbilities().put(ability.getKey(), instance);
-        }
-
-        if (player instanceof ServerPlayer serverPlayer) {
-            InputData levels = InputData.experienceLevels(player.experienceLevel);
-            InputData size = InputData.size((int) DragonStateProvider.getData(player).getSize());
-
-            handleAutoUpgrades(serverPlayer, levels, size);
         }
     }
 
@@ -429,6 +430,9 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
     @Override
     public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag tag) {
+        this.abilities.clear();
+        this.hotbar.clear();
+
         if (tag.contains(ABILITIES)) {
             for (String speciesLocation : tag.getCompound(ABILITIES).getAllKeys()) {
                 ResourceKey<DragonSpecies> speciesKey = ResourceKey.create(DragonSpecies.REGISTRY, ResourceLocation.parse(speciesLocation));
@@ -483,7 +487,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         selectedAbilitySlot = tag.getInt(SELECTED_SLOT);
         renderAbilities = tag.getBoolean(RENDER_ABILITIES);
 
-        if (tag.contains( CURRENT_SPECIES)) {
+        if (tag.contains(CURRENT_SPECIES)) {
             currentSpecies = ResourceKey.create(DragonSpecies.REGISTRY, ResourceLocation.parse(tag.getString(CURRENT_SPECIES)));
 
             if (provider.holder(currentSpecies).isEmpty()) {
