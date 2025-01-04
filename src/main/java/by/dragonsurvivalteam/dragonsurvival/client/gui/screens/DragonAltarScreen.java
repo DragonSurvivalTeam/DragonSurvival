@@ -61,7 +61,7 @@ public class DragonAltarScreen extends Screen {
 
     @Translation(comments = {
             "§6■ Welcome to Dragon Survival!§r",
-            "■ You can choose which §6dragon species§r you want to become. This decision is not permanent, but you may lose progress if you change your mind.§r",
+            "■ You can choose which dragon §6species§r§r you want to become. This decision is not permanent, but you may lose progress if you change your mind.",
             "■§7 Don't forget to read patch notes and delete old configs if you update our mod to avoid bugs! Enjoy the game! :3"
     })
     private static final String HELP = Translation.Type.GUI.wrap("altar.help");

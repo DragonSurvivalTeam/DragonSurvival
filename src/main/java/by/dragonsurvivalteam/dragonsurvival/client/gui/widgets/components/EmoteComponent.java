@@ -29,7 +29,7 @@ public class EmoteComponent {
     @Translation(comments = "Bound to: %s")
     private static final String BOUND_TO = Translation.Type.GUI.wrap("emotes.bound_to");
 
-    @Translation(comments = "Unbound")
+    @Translation(comments = "Set Keybind")
     private static final String UNBOUND = Translation.Type.GUI.wrap("emotes.unbound");
 
     private static final ResourceLocation PLAY_OFF = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/play_off.png");
@@ -73,7 +73,7 @@ public class EmoteComponent {
                 } else {
                     color = getFGColor();
                 }
-                TextRenderUtil.drawCenteredScaledText(guiGraphics, this.getX() + this.width / 2, this.getY() + (this.height - 8) / 2, 0.8f, buttonText.getString(), color);
+                TextRenderUtil.drawScaledText(guiGraphics, this.getX(), this.getY() + (this.height - 8) / 2, 0.8f, buttonText.getString(), color);
             }
         };
         emoteButton.setMessage(emote.name());

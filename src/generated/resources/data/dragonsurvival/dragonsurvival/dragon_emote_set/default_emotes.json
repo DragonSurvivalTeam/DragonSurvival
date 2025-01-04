@@ -37,6 +37,15 @@
       "third_person": false
     },
     {
+      "animation_key": "blend_close_eyes",
+      "blend": true,
+      "can_move": true,
+      "locks_head": false,
+      "locks_tail": false,
+      "loops": true,
+      "third_person": false
+    },
+    {
       "animation_key": "blend_blep",
       "blend": true,
       "can_move": true,
@@ -76,6 +85,19 @@
       "can_move": true,
       "locks_head": false,
       "locks_tail": false,
+      "sound": {
+        "interval": 60,
+        "pitch": 0.1,
+        "sound_event": "minecraft:entity.fox.sniff"
+      },
+      "third_person": false
+    },
+    {
+      "animation_key": "blend_dig",
+      "blend": true,
+      "can_move": true,
+      "locks_head": false,
+      "locks_tail": false,
       "third_person": false
     },
     {
@@ -102,6 +124,14 @@
       "locks_head": false,
       "locks_tail": false,
       "loops": true,
+      "third_person": false
+    },
+    {
+      "animation_key": "eat_item_left",
+      "blend": true,
+      "can_move": true,
+      "locks_head": false,
+      "locks_tail": false,
       "third_person": false
     },
     {
@@ -166,6 +196,248 @@
       "locks_tail": false,
       "loops": true,
       "third_person": false
+    },
+    {
+      "animation_key": "holding_paws_sitting",
+      "blend": false,
+      "can_move": true,
+      "locks_head": false,
+      "locks_tail": false,
+      "loops": true,
+      "third_person": false
+    },
+    {
+      "animation_key": "shy_sitting",
+      "blend": false,
+      "can_move": true,
+      "locks_head": false,
+      "locks_tail": false,
+      "loops": true,
+      "third_person": false
+    },
+    {
+      "animation_key": "resting_leaning_on_wall",
+      "blend": false,
+      "can_move": true,
+      "locks_head": false,
+      "locks_tail": false,
+      "loops": true,
+      "third_person": false
+    },
+    {
+      "animation_key": "resting_covering_with_wing_left",
+      "blend": false,
+      "can_move": true,
+      "locks_head": false,
+      "locks_tail": false,
+      "loops": true,
+      "third_person": false
+    },
+    {
+      "animation_key": "resting_on_back",
+      "blend": false,
+      "can_move": true,
+      "locks_head": false,
+      "locks_tail": false,
+      "loops": true,
+      "third_person": false
+    },
+    {
+      "animation_key": "resting_straight",
+      "blend": false,
+      "can_move": true,
+      "locks_head": false,
+      "locks_tail": false,
+      "loops": true,
+      "third_person": false
+    },
+    {
+      "animation_key": "sleeping_on_side_left",
+      "blend": false,
+      "can_move": true,
+      "locks_head": false,
+      "locks_tail": false,
+      "loops": true,
+      "third_person": false
+    },
+    {
+      "animation_key": "resting_left",
+      "blend": false,
+      "can_move": true,
+      "locks_head": false,
+      "locks_tail": false,
+      "loops": true,
+      "third_person": false
+    },
+    {
+      "animation_key": "sleeping_on_side_straight_left",
+      "blend": false,
+      "can_move": true,
+      "locks_head": false,
+      "locks_tail": false,
+      "loops": true,
+      "third_person": false
+    },
+    {
+      "animation_key": "sleep",
+      "blend": false,
+      "can_move": true,
+      "locks_head": false,
+      "locks_tail": false,
+      "loops": true,
+      "sound": {
+        "interval": 100,
+        "pitch": 0.1,
+        "sound_event": "minecraft:entity.fox.sleep"
+      },
+      "third_person": false
+    },
+    {
+      "animation_key": "shy_lying",
+      "blend": false,
+      "can_move": true,
+      "locks_head": false,
+      "locks_tail": false,
+      "loops": true,
+      "third_person": false
+    },
+    {
+      "animation_key": "rocking_on_back",
+      "blend": false,
+      "can_move": true,
+      "locks_head": false,
+      "locks_tail": false,
+      "loops": true,
+      "third_person": false
+    },
+    {
+      "animation_key": "spinning_on_back",
+      "blend": false,
+      "can_move": true,
+      "locks_head": false,
+      "locks_tail": false,
+      "loops": true,
+      "third_person": false,
+      "translation_override": "spinning_on_back"
+    },
+    {
+      "animation_key": "spinning_on_back",
+      "blend": false,
+      "can_move": true,
+      "locks_head": false,
+      "locks_tail": false,
+      "loops": true,
+      "speed": 2.0,
+      "third_person": false,
+      "translation_override": "spinning_on_back_fast"
+    },
+    {
+      "animation_key": "vibing_sitting",
+      "blend": false,
+      "can_move": true,
+      "locks_head": false,
+      "locks_tail": false,
+      "loops": true,
+      "third_person": false
+    },
+    {
+      "animation_key": "vibing_standing",
+      "blend": false,
+      "can_move": true,
+      "locks_head": false,
+      "locks_tail": false,
+      "loops": true,
+      "third_person": false
+    },
+    {
+      "animation_key": "flapping_wings_standing_biped",
+      "blend": false,
+      "can_move": true,
+      "locks_head": false,
+      "locks_tail": false,
+      "loops": true,
+      "third_person": false
+    },
+    {
+      "animation_key": "flapping_wings_standing",
+      "blend": false,
+      "can_move": true,
+      "locks_head": false,
+      "locks_tail": false,
+      "loops": true,
+      "third_person": false
+    },
+    {
+      "animation_key": "shaking_standing",
+      "blend": false,
+      "can_move": true,
+      "locks_head": false,
+      "locks_tail": false,
+      "sound": {
+        "interval": 23,
+        "pitch": 0.1,
+        "sound_event": "minecraft:entity.wolf.shake"
+      },
+      "third_person": false
+    },
+    {
+      "animation_key": "swim_fast",
+      "blend": false,
+      "can_move": true,
+      "locks_head": false,
+      "locks_tail": false,
+      "loops": true,
+      "third_person": false
+    },
+    {
+      "animation_key": "fly_land",
+      "blend": false,
+      "can_move": true,
+      "locks_head": false,
+      "locks_tail": false,
+      "loops": true,
+      "third_person": false
+    },
+    {
+      "animation_key": "fly_soaring",
+      "blend": false,
+      "can_move": true,
+      "locks_head": false,
+      "locks_tail": false,
+      "loops": true,
+      "third_person": false
+    },
+    {
+      "animation_key": "fly",
+      "blend": false,
+      "can_move": true,
+      "locks_head": false,
+      "locks_tail": false,
+      "loops": true,
+      "third_person": false
+    },
+    {
+      "animation_key": "holding_passenger_standing_biped",
+      "blend": false,
+      "can_move": true,
+      "locks_head": false,
+      "locks_tail": false,
+      "loops": true,
+      "third_person": false
+    },
+    {
+      "animation_key": "head_turn",
+      "blend": true,
+      "can_move": false,
+      "locks_head": false,
+      "locks_tail": false,
+      "sound": {
+        "interval": 100,
+        "pitch": 0.1,
+        "sound_event": "minecraft:entity.ender_dragon.growl"
+      },
+      "third_person": false,
+      "translation_override": "roar"
     }
   ]
 }
