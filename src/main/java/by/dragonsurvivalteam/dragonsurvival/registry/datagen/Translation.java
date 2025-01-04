@@ -62,6 +62,13 @@ public @interface Translation {
 
         DAMAGE_TYPE("damage_type." + DragonSurvival.MODID + ".", ""),
 
+        /** Only has one argument (the player that died) */
+        DEATH("death.attack." + DragonSurvival.MODID + ".", ""),
+        /** Has two arguments (the player that died and the attacking entity) */
+        DEATH_PLAYER("death.attack." + DragonSurvival.MODID + ".", ".player"),
+        /** Has three arguments (the player that died, the attacking entity and used item */
+        DEATH_ITEM("death.attack." + DragonSurvival.MODID + ".", ".item"),
+
         CONFIGURATION(DragonSurvival.MODID + ".configuration.", ".tooltip"),
 
         ABILITY("dragon_ability." + DragonSurvival.MODID + ".", ""),

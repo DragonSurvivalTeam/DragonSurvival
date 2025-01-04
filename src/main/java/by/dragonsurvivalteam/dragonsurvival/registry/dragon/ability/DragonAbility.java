@@ -61,7 +61,7 @@ public record DragonAbility(
     }
 
     public int getMaxLevel() {
-        return upgrade.map(UpgradeType::maxLevel).orElse(DragonAbilityInstance.MIN_LEVEL);
+        return upgrade.map(UpgradeType::maxLevel).orElse(1);
     }
 
     public static void validate(final RegistryAccess access) {

@@ -86,7 +86,7 @@ public class SourceOfMagicScreen extends AbstractContainerScreen<SourceOfMagicCo
     protected void renderBg(@NotNull final GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         guiGraphics.blit(BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
-        boolean hasItem = !blockEntity.getItem(0).isEmpty();
+        boolean hasItem = blockEntity.getCurrentDuration() > 0;
         Block block = blockEntity.getBlockState().getBlock();
 
         ResourceLocation resource = null;
