@@ -16,6 +16,11 @@ import org.jetbrains.annotations.NotNull;
 
 @EventBusSubscriber // Only relevant for Players since the harvest events are only fired for them
 public class HarvestBonuses extends Storage<HarvestBonus.Instance> {
+
+    public static HarvestBonuses getData(final Player player) {
+        return player.getData(DSDataAttachments.HARVEST_BONUSES);
+    }
+
     public int getHarvestBonus(final BlockState state) {
         if (storage == null) {
             return HarvestBonus.NO_BONUS_VALUE;
