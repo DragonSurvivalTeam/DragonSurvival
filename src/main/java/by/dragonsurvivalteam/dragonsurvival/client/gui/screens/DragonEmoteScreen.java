@@ -39,13 +39,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-@EventBusSubscriber(Dist.CLIENT)
 public class DragonEmoteScreen extends Screen {
     @Translation(comments = "Reset all emote keybinds")
     private static final String RESET_ALL_KEYBINDS = Translation.Type.GUI.wrap("emote_screen.reset_all_keybinds");
 
-    @Translation(comments = "Currently binding emote %s")
+    @Translation(comments = "Currently binding emote.")
     private static final String CURRENTLY_BINDING = Translation.Type.GUI.wrap("emote_screen.currently_binding");
+
+    @Translation(comments = "Press escape to cancel.")
+    private static final String PRESS_ESCAPE_TO_CANCEL = Translation.Type.GUI.wrap("emote_screen.press_escape_to_cancel");
 
     @Translation(comments = "Stop all emotes")
     private static final String STOP_ALL_EMOTES = Translation.Type.GUI.wrap("emote_screen.stop_all_emotes");
@@ -135,6 +137,11 @@ public class DragonEmoteScreen extends Screen {
         super.render(graphics, mouseX, mouseY, partialTick);
         int totalPages = (int) Math.ceil((double) DragonStateProvider.getData(minecraft.player).body().value().emotes().value().emotes().size() / PER_PAGE);
         TextRenderUtil.drawCenteredScaledText(graphics, guiLeft + 75, guiTop + 137, 1.0f, (emotePage + 1) + "/" + totalPages, Color.white.getRGB());
+
+        if(currentlyKeybinding != null) {
+            TextRenderUtil.drawCenteredScaledText(graphics, guiLeft + 75, guiTop + 151, 1.0f, Component.translatable(CURRENTLY_BINDING).getString(), Color.red.getRGB());
+            TextRenderUtil.drawCenteredScaledText(graphics, guiLeft + 75, guiTop + 161, 1.0f, Component.translatable(PRESS_ESCAPE_TO_CANCEL).getString(), Color.red.getRGB());
+        }
     }
 
     @Override
@@ -228,7 +235,17 @@ public class DragonEmoteScreen extends Screen {
         PacketDistributor.sendToServer(new SyncEmote(Minecraft.getInstance().player.getId(), emote, false));
     }
 
-    @SubscribeEvent
+    // Prevent the screen from closing when pressing escape to cancel a keybind
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if(keyCode == 256 && currentlyKeybinding != null) {
+            currentlyKeybinding = null;
+            return true;
+        }
+
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
     public static void onKey(InputEvent.Key keyInputEvent) {
         Minecraft instance = Minecraft.getInstance();
         if (instance.player == null || instance.level == null) {

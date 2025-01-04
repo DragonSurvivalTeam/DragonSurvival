@@ -77,7 +77,23 @@ public class EmoteComponent {
             }
         };
         emoteButton.setMessage(emote.name());
-        isPlayingButton = new ExtendedButton(xPos, yPos - 1, 6, 6, Component.empty(), button -> {}){
+        isPlayingButton = new ExtendedButton(xPos, yPos - 1, 6, 6, Component.empty(), button -> {
+            //noinspection DataFlowIssue -> player is present
+            AtomicReference<DragonEntity> atomicDragon = ClientDragonRenderer.playerDragonHashMap.get(Minecraft.getInstance().player.getId());
+
+            if (atomicDragon == null) {
+                return;
+            }
+
+            DragonEntity dragon = atomicDragon.get();
+            if(dragon.isPlayingEmote(emote)) {
+                dragon.stopEmote(emote);
+                PacketDistributor.sendToServer(new SyncEmote(Minecraft.getInstance().player.getId(), emote, true));
+            } else {
+                dragon.beginPlayingEmote(emote);
+                PacketDistributor.sendToServer(new SyncEmote(Minecraft.getInstance().player.getId(), emote, false));
+            }
+        }){
             @Override
             public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 ResourceLocation texture = DragonSurvival.PROXY.isPlayingEmote(Minecraft.getInstance().player.getId(), emote) ? PLAY_ON : PLAY_OFF;
