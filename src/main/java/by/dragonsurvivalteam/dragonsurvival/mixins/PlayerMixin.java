@@ -55,13 +55,6 @@ public abstract class PlayerMixin extends LivingEntity {
             if (data.getCurrentlyCasting() != null && !data.getCurrentlyCasting().canMoveWhileCasting()) {
                 callback.setReturnValue(true);
             }
-
-
-
-            // FIXME ?
-            /*if (!ServerConfig.canMoveInEmote && Arrays.stream(data.getEmoteData().currentEmotes).noneMatch(Objects::nonNull)) {
-                callback.setReturnValue(true);
-            }*/
         }
     }
 
