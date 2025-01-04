@@ -18,16 +18,6 @@ public class FOVHandler {
     @SubscribeEvent
     public static void onFovEvent(ComputeFovModifierEvent event) {
         Player player = event.getPlayer();
-
-        AtomicReference<DragonEntity> atomicDragon = ClientDragonRenderer.playerDragonHashMap.get(player.getId());
-        if (atomicDragon != null) {
-            DragonEntity dragon = atomicDragon.get();
-            if (dragon.isPlayingAnyEmote()) {
-                event.setNewFovModifier(1f);
-                return;
-            }
-        }
-
         DragonAbilityInstance ability = MagicData.getData(player).getCurrentlyCasting();
 
         if (ability != null && ability.getCurrentCastTime() > 0) {
