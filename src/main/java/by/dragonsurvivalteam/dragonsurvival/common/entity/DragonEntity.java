@@ -629,6 +629,12 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         }
         AnimationUtils.setAnimationSpeed(finalAnimationSpeed, state.getAnimationTick(), animationController);
 
+        if(isPlayingAnyEmote()) {
+            // This means we are playing a blend emote; so we want to pass on the head/tail locked state
+            neckLocked = checkAllEmotes(DragonEmote::locksHead);
+            tailLocked = checkAllEmotes(DragonEmote::locksTail);
+        }
+
         return PlayState.CONTINUE;
     }
 
