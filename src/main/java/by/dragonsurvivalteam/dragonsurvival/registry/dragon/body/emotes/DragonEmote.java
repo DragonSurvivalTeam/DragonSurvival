@@ -9,6 +9,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
 import java.util.Optional;
 
@@ -42,6 +45,10 @@ public record DragonEmote(String animationKey, Optional<String> translationOverr
                 Codec.FLOAT.optionalFieldOf("pitch", DEFAULT_PITCH).forGetter(Sound::pitch),
                 Codec.INT.fieldOf("interval").forGetter(Sound::interval)
         ).apply(instance, Sound::new));
+
+        public void playSound(Player player) {
+            player.level().playLocalSound(player.position().x, player.position().y, player.position().z, soundEvent, SoundSource.PLAYERS, volume, pitch, false);
+        }
     }
 
     public Component name() {

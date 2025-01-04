@@ -178,6 +178,13 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
                 } else {
                     animationTickTimer.putAnimation("emote_" + i, animationDuration(getPlayer(), emote.animationKey()));
                 }
+
+                if(emote.sound().isPresent()) {
+                    if(getPlayer() != null) {
+                        emote.sound().get().playSound(getPlayer());
+                    }
+                }
+
                 return;
             }
         }
@@ -350,6 +357,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         Player player = getPlayer();
 
         if (player == null) {
+            state.getController().forceAnimationReset();
             return PlayState.STOP;
         }
 
@@ -366,10 +374,12 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
                 }
             } else {
                 currentlyPlayingEmotes[slot] = null;
+                state.getController().forceAnimationReset();
                 return PlayState.STOP;
             }
         }
 
+        state.getController().forceAnimationReset();
         return PlayState.STOP;
     }
 

@@ -54,7 +54,7 @@ public class EmoteHandler {
                 if(currentlyPlayingEmotes[i].sound().isPresent()) {
                     DragonEmote.Sound sound = currentlyPlayingEmotes[i].sound().get();
                     if(dragon.getTicksForEmote(i) % sound.interval() == 0) {
-                        player.level().playLocalSound(player.position().x, player.position().y, player.position().z, sound.soundEvent(), SoundSource.PLAYERS, sound.volume(), sound.pitch(), false);
+                        sound.playSound(player);
                     }
                 }
 
