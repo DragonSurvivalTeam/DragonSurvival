@@ -65,6 +65,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
     public int magicSource;
     public boolean isOnMagicSource;
+    public boolean markedByEnderDragon;
 
     public boolean refreshBody;
 
@@ -482,6 +483,7 @@ public class DragonStateHandler extends EntityStateHandler {
             tag.putBoolean("destructionEnabled", getDestructionEnabled());
             tag.putBoolean(IS_GROWING, isGrowing);
             tag.putInt(STAR_HEART_STATE, starHeartState.ordinal());
+            tag.putBoolean(MARKED_BY_ENDER_DRAGON, markedByEnderDragon);
         }
 
         if (isSavingForSoul && species() != null) {
@@ -548,6 +550,7 @@ public class DragonStateHandler extends EntityStateHandler {
             setDestructionEnabled(tag.getBoolean("destructionEnabled"));
             isGrowing = !tag.contains(IS_GROWING) || tag.getBoolean(IS_GROWING);
             starHeartState = StarHeartItem.State.values()[tag.getInt(STAR_HEART_STATE)];
+            markedByEnderDragon = tag.getBoolean(MARKED_BY_ENDER_DRAGON);
         }
 
         if (dragonSpecies != null) {
@@ -675,5 +678,6 @@ public class DragonStateHandler extends EntityStateHandler {
     public static final String SAVED_SIZE_SUFFIX = "_saved_size";
 
     public static final String STAR_HEART_STATE = "star_heart_state";
+    public static final String MARKED_BY_ENDER_DRAGON = "marked_by_ender_dragon";
     public static final String IS_GROWING = "is_growing";
 }

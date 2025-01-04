@@ -5,8 +5,9 @@
         "applied_effects": {
           "entity_effect": [
             {
-              "effect_type": "dragonsurvival:flight",
-              "flight_level": 1
+              "effect_type": "dragonsurvival:spin",
+              "spin_level": 1,
+              "swim_spin_fluid": "minecraft:lava"
             }
           ],
           "entity_targeting_mode": "TARGET_ALLIES"
@@ -30,5 +31,22 @@
         "texture_resource": "dragonsurvival:abilities/cave/cave_wings_1"
       }
     ]
+  },
+  "upgrade": {
+    "downgrade_items": [],
+    "items_per_level": [
+      "dragonsurvival:spin_grant"
+    ],
+    "upgrade_type": "dragonsurvival:item_based"
+  },
+  "usage_blocked": {
+    "condition": "minecraft:entity_properties",
+    "entity": "this",
+    "predicate": {
+      "type_specific": {
+        "type": "dragonsurvival:dragon_predicate",
+        "marked_by_ender_dragon": false
+      }
+    }
   }
 }

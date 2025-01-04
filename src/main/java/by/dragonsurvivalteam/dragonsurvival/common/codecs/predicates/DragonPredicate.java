@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.items.growth.StarHeartItem;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.advancements.critereon.EntitySubPredicate;
@@ -26,13 +27,15 @@ public record DragonPredicate(
         Optional<HolderSet<DragonSpecies>> dragonSpecies,
         Optional<DragonStagePredicate> dragonStage,
         Optional<HolderSet<DragonBody>> dragonBody,
-        Optional<StarHeartItem.State> starHeartState
+        Optional<StarHeartItem.State> starHeartState,
+        Optional<Boolean> markedByEnderDragon
 ) implements EntitySubPredicate {
     public static final MapCodec<DragonPredicate> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             RegistryCodecs.homogeneousList(DragonSpecies.REGISTRY).optionalFieldOf("dragon_species").forGetter(DragonPredicate::dragonSpecies),
             DragonStagePredicate.CODEC.optionalFieldOf("stage_specific").forGetter(DragonPredicate::dragonStage),
             RegistryCodecs.homogeneousList(DragonBody.REGISTRY).optionalFieldOf("dragon_body").forGetter(DragonPredicate::dragonBody),
-            StarHeartItem.State.CODEC.optionalFieldOf("star_heart_state").forGetter(DragonPredicate::starHeartState)
+            StarHeartItem.State.CODEC.optionalFieldOf("star_heart_state").forGetter(DragonPredicate::starHeartState),
+            Codec.BOOL.optionalFieldOf("marked_by_ender_dragon").forGetter(DragonPredicate::markedByEnderDragon)
     ).apply(instance, DragonPredicate::new));
 
     @Override
@@ -64,6 +67,10 @@ public record DragonPredicate(
             return false;
         }
 
+        if(markedByEnderDragon().isPresent() && markedByEnderDragon().get() != data.markedByEnderDragon) {
+            return false;
+        }
+
         return true;
     }
 
@@ -78,6 +85,7 @@ public record DragonPredicate(
         private Optional<DragonStagePredicate> dragonStage = Optional.empty();
         private Optional<HolderSet<DragonBody>> dragonBody = Optional.empty();
         private Optional<StarHeartItem.State> starHeartState = Optional.empty();
+        private Optional<Boolean> markedByEnderDragon = Optional.empty();
 
         public static DragonPredicate.Builder dragon() {
             return new DragonPredicate.Builder();
@@ -113,8 +121,13 @@ public record DragonPredicate(
             return this;
         }
 
+        public DragonPredicate.Builder markedByEnderDragon(final boolean markedByEnderDragon) {
+            this.markedByEnderDragon = Optional.of(markedByEnderDragon);
+            return this;
+        }
+
         public DragonPredicate build() {
-            return new DragonPredicate(dragonSpecies, dragonStage, dragonBody, starHeartState);
+            return new DragonPredicate(dragonSpecies, dragonStage, dragonBody, starHeartState, markedByEnderDragon);
         }
     }
 }

@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationLayer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.SimpleAbilityAnimation;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.DragonPredicate;
 import by.dragonsurvivalteam.dragonsurvival.common.conditions.EntityCondition;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.LargeLightningParticleOption;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.SmallLightningParticleOption;
@@ -31,6 +32,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.projectile.ProjectileData;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.Projectiles;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.datafixers.util.Either;
+import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -111,6 +113,12 @@ public class SeaDragonAbilities {
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Sea Wings")
     public static final ResourceKey<DragonAbility> SEA_WINGS = DragonAbilities.key("sea_wings");
+
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
+            "■ You can spin through the air and in water, boosting your speed.\n",
+    })
+    @Translation(type = Translation.Type.ABILITY, comments = "Cave Spin")
+    public static final ResourceKey<DragonAbility> SEA_SPIN = DragonAbilities.key("sea_spin");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
             "■ Sea dragons have an innate immunity to lightning."
@@ -422,10 +430,24 @@ public class SeaDragonAbilities {
 
         context.register(SEA_WINGS, new DragonAbility(
                 Activation.passive(),
-                Optional.of(new ItemUpgrade(List.of(HolderSet.direct(DSItems.WING_GRANT_ITEM), HolderSet.direct(DSItems.SPIN_GRANT_ITEM)), HolderSet.empty())),
+                Optional.empty(),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(new SpinOrFlightEffect(1, 2, NeoForgeMod.LAVA_TYPE)),
+                        List.of(new FlightEffect(1)),
+                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                ), true), LevelBasedValue.constant(1))),
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_wings_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_wings_1"), 1)
+                ))
+        ));
+
+        context.register(SEA_SPIN, new DragonAbility(
+                Activation.passive(),
+                Optional.of(new ItemUpgrade(List.of(HolderSet.direct(DSItems.SPIN_GRANT_ITEM)), HolderSet.empty())),
+                Optional.of(Condition.thisEntity(EntityPredicate.Builder.entity().subPredicate(DragonPredicate.Builder.dragon().markedByEnderDragon(false).build()).build()).build()),
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        List.of(new SpinEffect(1, NeoForgeMod.WATER_TYPE)),
                         AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
                 ), true), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(

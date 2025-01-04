@@ -52,7 +52,8 @@ public interface AbilityEntityEffect {
             event.register(REGISTRY_KEY, DragonSurvival.res("ignite"), () -> IgniteEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("harvest_bonus"), () -> HarvestBonusEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("on_attack"), () -> OnAttackEffect.CODEC);
-            event.register(REGISTRY_KEY, DragonSurvival.res("spin_or_flight"), () -> SpinOrFlightEffect.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("flight"), () -> FlightEffect.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("spin"), () -> SpinEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("item_conversion"), () -> ItemConversionEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("swim"), () -> SwimEffect.CODEC);
         }

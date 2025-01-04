@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationLayer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.SimpleAbilityAnimation;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.DragonPredicate;
 import by.dragonsurvivalteam.dragonsurvival.common.conditions.BlockCondition;
 import by.dragonsurvivalteam.dragonsurvival.common.conditions.EntityCondition;
 import by.dragonsurvivalteam.dragonsurvival.common.conditions.ItemCondition;
@@ -33,6 +34,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.projectile.ProjectileData;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.Projectiles;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.datafixers.util.Either;
+import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -102,6 +104,12 @@ public class ForestDragonAbilities {
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Dragons use §2levitation§r to fly, but are rarely born with that ability. Only one dragon in this world can share their power of flight with you.\n")
     @Translation(type = Translation.Type.ABILITY, comments = "Forest Wings")
     public static final ResourceKey<DragonAbility> FOREST_WINGS = DragonAbilities.key("forest_wings");
+
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
+            "■ You can spin through the air, boosting your speed.\n",
+    })
+    @Translation(type = Translation.Type.ABILITY, comments = "Cave Spin")
+    public static final ResourceKey<DragonAbility> FOREST_SPIN = DragonAbilities.key("forest_spin");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
             "■ Forest dragons have a diamond skeleton, and are composed mostly of predatory plants. Their diet includes raw meat and sweet berries, and most animals fear them.\n",
@@ -419,10 +427,25 @@ public class ForestDragonAbilities {
 
         context.register(FOREST_WINGS, new DragonAbility(
                 Activation.passive(),
-                Optional.of(new ItemUpgrade(List.of(HolderSet.direct(DSItems.WING_GRANT_ITEM), HolderSet.direct(DSItems.SPIN_GRANT_ITEM)), HolderSet.empty())),
+                Optional.empty(),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(new SpinOrFlightEffect(1, 2, NeoForgeMod.WATER_TYPE)),
+                        List.of(new FlightEffect(1)),
+                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                ), true), LevelBasedValue.constant(1))),
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_wings_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_wings_1"), 1)
+                ))
+        ));
+
+        context.register(FOREST_SPIN, new DragonAbility(
+                Activation.passive(),
+                Optional.of(new ItemUpgrade(List.of(HolderSet.direct(DSItems.SPIN_GRANT_ITEM)), HolderSet.empty())),
+                Optional.of(Condition.thisEntity(EntityPredicate.Builder.entity().subPredicate(DragonPredicate.Builder.dragon().markedByEnderDragon(false).build()).build()).build()),
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        // FIXME :: Remove this and make the fluid parameter optional
+                        List.of(new SpinEffect(1, NeoForgeMod.WATER_TYPE)),
                         AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
                 ), true), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(

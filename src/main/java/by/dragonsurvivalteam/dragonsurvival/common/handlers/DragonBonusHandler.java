@@ -25,23 +25,6 @@ public class DragonBonusHandler {
     }
 
     @SubscribeEvent
-    public static void removeLavaFootsteps(PlayLevelSoundEvent.AtEntity event) {
-        if (!(event.getEntity() instanceof Player player)) {
-            return;
-        }
-
-        if (event.getSound() != null) {
-            boolean isRelevant = event.getSound().value().getLocation().getPath().contains(".step");
-
-            /*if (isRelevant && DragonBonusConfig.bonusesEnabled && CaveDragonConfig.caveLavaSwimming) {
-                if (DragonUtils.isType(player, DragonTypes.CAVE) && DragonSizeHandler.getOverridePose(player) == Pose.SWIMMING) {
-                    event.setCanceled(true);
-                }
-            }*/
-        }
-    }
-
-    @SubscribeEvent
     public static void onJump(LivingEvent.LivingJumpEvent jumpEvent) {
         final LivingEntity living = jumpEvent.getEntity();
 

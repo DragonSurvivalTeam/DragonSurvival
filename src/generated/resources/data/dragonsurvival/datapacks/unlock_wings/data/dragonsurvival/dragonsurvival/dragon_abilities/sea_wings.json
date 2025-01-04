@@ -5,10 +5,8 @@
         "applied_effects": {
           "entity_effect": [
             {
-              "effect_type": "dragonsurvival:spin_or_flight",
-              "flight_level": 1,
-              "spin_level": 2,
-              "swim_spin_fluid": "minecraft:lava"
+              "effect_type": "dragonsurvival:flight",
+              "flight_level": 1
             }
           ],
           "entity_targeting_mode": "TARGET_ALLIES"

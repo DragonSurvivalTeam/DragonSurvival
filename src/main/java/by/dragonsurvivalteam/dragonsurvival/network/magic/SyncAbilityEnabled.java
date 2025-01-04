@@ -13,12 +13,13 @@ import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record SyncAbilityEnabled(ResourceKey<DragonAbility> ability, boolean isEnabled) implements CustomPacketPayload {
+public record SyncAbilityEnabled(ResourceKey<DragonAbility> ability, boolean isEnabled, boolean wasDoneManually) implements CustomPacketPayload {
     public static final Type<SyncAbilityEnabled> TYPE = new Type<>(DragonSurvival.res("sync_ability_enabled"));
 
     public static final StreamCodec<FriendlyByteBuf, SyncAbilityEnabled> STREAM_CODEC = StreamCodec.composite(
             ResourceKey.streamCodec(DragonAbility.REGISTRY), SyncAbilityEnabled::ability,
             ByteBufCodecs.BOOL, SyncAbilityEnabled::isEnabled,
+            ByteBufCodecs.BOOL, SyncAbilityEnabled::wasDoneManually,
             SyncAbilityEnabled::new
     );
 
@@ -31,7 +32,7 @@ public record SyncAbilityEnabled(ResourceKey<DragonAbility> ability, boolean isE
                 ability.setActive(false, serverPlayer);
             }
 
-            ability.setEnabled(packet.isEnabled());
+            ability.setEnabled(packet.isEnabled(), packet.wasDoneManually());
         });
     }
 

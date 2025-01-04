@@ -22,12 +22,11 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import java.util.ArrayList;
 import java.util.List;
 
-public record SpinOrFlightEffect(int flightLevel, int spinLevel, Holder<FluidType> swimSpinFluid) implements AbilityEntityEffect {
-    public static final MapCodec<SpinOrFlightEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.INT.fieldOf("flight_level").forGetter(SpinOrFlightEffect::flightLevel),
-            Codec.INT.fieldOf("spin_level").forGetter(SpinOrFlightEffect::spinLevel),
-            NeoForgeRegistries.FLUID_TYPES.holderByNameCodec().fieldOf("swim_spin_fluid").forGetter(SpinOrFlightEffect::swimSpinFluid)
-    ).apply(instance, SpinOrFlightEffect::new));
+public record SpinEffect(int spinLevel, Holder<FluidType> swimSpinFluid) implements AbilityEntityEffect {
+    public static final MapCodec<SpinEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Codec.INT.fieldOf("spin_level").forGetter(SpinEffect::spinLevel),
+            NeoForgeRegistries.FLUID_TYPES.holderByNameCodec().fieldOf("swim_spin_fluid").forGetter(SpinEffect::swimSpinFluid)
+    ).apply(instance, SpinEffect::new));
 
     @Override
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
@@ -36,21 +35,13 @@ public record SpinOrFlightEffect(int flightLevel, int spinLevel, Holder<FluidTyp
         }
 
         FlightData data = FlightData.getData(serverTarget);
-        boolean hadFlight = data.hasFlight;
-        data.hasFlight = ability.level() >= flightLevel;
-
-        if (hadFlight != data.hasFlight) {
-            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverTarget, new FlightStatus(serverTarget.getId(), data.hasFlight));
-        }
 
         boolean hadSpin = data.hasSpin;
-
         if (ability.level() >= spinLevel) {
             data.hasSpin = true;
             data.swimSpinFluid = swimSpinFluid;
         } else {
             data.hasSpin = false;
-            data.swimSpinFluid = null;
         }
 
         if (hadSpin != data.hasSpin) {
@@ -66,16 +57,8 @@ public record SpinOrFlightEffect(int flightLevel, int spinLevel, Holder<FluidTyp
         }
 
         FlightData data = FlightData.getData(serverTarget);
-        boolean hadFlight = data.hasFlight;
-        data.hasFlight = false;
-
-        if (hadFlight != data.hasFlight) {
-            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverTarget, new FlightStatus(serverTarget.getId(), data.hasFlight));
-        }
-
         boolean hadSpin = data.hasSpin;
         data.hasSpin = false;
-        data.swimSpinFluid = null;
 
         if (hadSpin != data.hasSpin) {
             PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverTarget, new SpinStatus(serverTarget.getId(), data.hasSpin, data.swimSpinFluid.getKey()));
@@ -90,11 +73,7 @@ public record SpinOrFlightEffect(int flightLevel, int spinLevel, Holder<FluidTyp
     @Override
     public List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
         List<MutableComponent> components = new ArrayList<>();
-
-        if (ability.level() >= flightLevel) {
-            components.add(Component.translatable(LangKey.ABILITY_FLIGHT));
-        }
-
+        
         if (ability.level() >= spinLevel) {
             components.add(Component.translatable(LangKey.ABILITY_SPIN));
         }

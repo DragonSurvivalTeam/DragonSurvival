@@ -34,6 +34,7 @@ public class DSCommands {
     public static void serverRegisterCommandsEvent(RegisterCommandsEvent event) {
         CommandDispatcher<CommandSourceStack> commandDispatcher = event.getDispatcher();
         ClearModifiersCommand.register(commandDispatcher);
+        ClearMarkCommand.register(commandDispatcher);
         DragonCommand.register(event);
         DragonEditorCommand.register(commandDispatcher);
         DragonAltarCommand.register(commandDispatcher);

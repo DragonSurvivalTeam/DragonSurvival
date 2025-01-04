@@ -33,4 +33,5 @@ public class DSDataAttachments {
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<SummonedEntities>> SUMMONED_ENTITIES = DS_ATTACHMENT_TYPES.register("summoned_entities", () -> AttachmentType.serializable(SummonedEntities::new).build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<SwimData>> SWIM = DS_ATTACHMENT_TYPES.register("swim_data", () -> AttachmentType.builder(SwimData::new).build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<EffectsMaintainedThroughDeath>> EFFECTS_MAINTAINED_THROUGH_DEATH = DS_ATTACHMENT_TYPES.register("effects_maintained_through_death", () -> AttachmentType.serializable(EffectsMaintainedThroughDeath::new).copyOnDeath().build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<EnderDragonDamageHistory>> ENDER_DRAGON_DAMAGE_HISTORY = DS_ATTACHMENT_TYPES.register("ender_dragon_damage_history", () -> AttachmentType.serializable(EnderDragonDamageHistory::new).build());
 }

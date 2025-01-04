@@ -140,8 +140,12 @@ public class AbilityButton extends ExtendedButton {
     @Override
     public void onClick(double mouseX, double mouseY) {
         if (Screen.hasControlDown()) {
-            ability.setEnabled(!ability.isEnabled());
-            PacketDistributor.sendToServer(new SyncAbilityEnabled(ability.key(), ability.isEnabled()));
+            if(ability.isDisabledAutomatically()) {
+                return;
+            }
+
+            ability.setEnabled(!ability.isEnabled(), true);
+            PacketDistributor.sendToServer(new SyncAbilityEnabled(ability.key(), ability.isEnabled(), true));
             return;
         }
 

@@ -5,10 +5,8 @@
         "applied_effects": {
           "entity_effect": [
             {
-              "effect_type": "dragonsurvival:spin_or_flight",
-              "flight_level": 1,
-              "spin_level": 2,
-              "swim_spin_fluid": "minecraft:lava"
+              "effect_type": "dragonsurvival:flight",
+              "flight_level": 1
             }
           ],
           "entity_targeting_mode": "TARGET_ALLIES"
@@ -32,13 +30,5 @@
         "texture_resource": "dragonsurvival:abilities/sea/sea_wings_1"
       }
     ]
-  },
-  "upgrade": {
-    "downgrade_items": [],
-    "items_per_level": [
-      "dragonsurvival:wing_grant",
-      "dragonsurvival:spin_grant"
-    ],
-    "upgrade_type": "dragonsurvival:item_based"
   }
 }

@@ -170,9 +170,11 @@ public class AbilityAndPenaltyTooltipRenderer {
         UpgradeType<?> upgrade = ability.value().upgrade().orElse(null);
 
         if (upgrade != null && ability.level() < upgrade.maxLevel()) {
-            rawDescription = FormattedText.composite(rawDescription, Component.empty().append("\n\n"));
-            MutableComponent upgradeComponent = upgrade.getDescription(ability.level() + 1);
-            rawDescription = FormattedText.composite(rawDescription, upgradeComponent.withColor(Color.GREEN.getColor()));
+            if(!upgrade.getDescription(ability.level() + 1).equals(Component.empty())) {
+                rawDescription = FormattedText.composite(rawDescription, Component.empty().append("\n\n"));
+                MutableComponent upgradeComponent = upgrade.getDescription(ability.level() + 1);
+                rawDescription = FormattedText.composite(rawDescription, upgradeComponent.withColor(Color.GREEN.getColor()));
+            }
         }
 
         if (!info.isEmpty()) {
