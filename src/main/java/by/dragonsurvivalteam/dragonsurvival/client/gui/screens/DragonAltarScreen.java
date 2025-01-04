@@ -10,6 +10,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayerUtils;
 import by.dragonsurvivalteam.dragonsurvival.client.util.TextRenderUtil;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AltarData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
@@ -163,6 +164,9 @@ public class DragonAltarScreen extends Screen {
                     int entity1Scale = 40;
                     if (handler1.isDragon()) {
                         entity1 = FakeClientPlayerUtils.getFakeDragon(0, handler1);
+                        DragonEntity dragon = (DragonEntity) entity1;
+                        dragon.neckLocked = true;
+                        dragon.tailLocked = true;
                         entity1Scale = 20;
                     } else {
                         entity1 = FakeClientPlayerUtils.getFakePlayer(0, handler1);
@@ -171,6 +175,9 @@ public class DragonAltarScreen extends Screen {
                     LivingEntity entity2;
                     if (handler2.isDragon()) {
                         entity2 = FakeClientPlayerUtils.getFakeDragon(1, handler2);
+                        DragonEntity dragon = (DragonEntity) entity2;
+                        dragon.neckLocked = true;
+                        dragon.tailLocked = true;
                     } else {
                         entity2 = FakeClientPlayerUtils.getFakePlayer(1, handler2);
                     }
