@@ -2,9 +2,13 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DurationInstance;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierWithDuration;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DamageModifications;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ModifiersWithDuration;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import ca.weblite.objc.Client;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.UUIDUtil;
@@ -12,11 +16,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.enchantment.LevelBasedValue;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public interface ClientEffectProvider {
     record ClientData(ResourceLocation texture, Component tooltip, Optional<UUID> effectSource) {
@@ -41,6 +43,12 @@ public interface ClientEffectProvider {
         List<ClientEffectProvider> providers = new ArrayList<>();
         providers.addAll(localPlayer.getExistingData(DSDataAttachments.MODIFIERS_WITH_DURATION).map(ModifiersWithDuration::all).orElse(List.of()));
         providers.addAll(localPlayer.getExistingData(DSDataAttachments.DAMAGE_MODIFICATIONS).map(DamageModifications::all).orElse(List.of()));
+
+        FlightData flightData = FlightData.getData(localPlayer);
+        if (flightData.areWingsSpread) {
+            providers.add(DragonAbilities.FLIGHT_INSTANCE);
+        }
+
         providers.removeIf(ClientEffectProvider::isInvisible);
 
         return providers;
