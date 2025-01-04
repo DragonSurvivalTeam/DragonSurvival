@@ -11,6 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.items.growth.StarHeartItem;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.mixins.EntityAccessor;
 import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncMagicData;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDesiredSize;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncSize;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
@@ -310,33 +311,37 @@ public class DragonStateHandler extends EntityStateHandler {
         return bodyKey().location();
     }
 
-    public void refreshDataOnTypeChange(final Player player) {
+    public void refreshDataOnTypeChange(final ServerPlayer player) {
         PenaltySupply.getData(player).clear();
+        MagicData magic = MagicData.getData(player);
 
         if (!ServerConfig.saveAllAbilities) {
-            MagicData.getData(player).refresh(species(), player);
+            magic.refresh(species(), player);
         } else {
-            if (MagicData.getData(player).dataForSpeciesIsEmpty(speciesKey())) {
-                MagicData.getData(player).refresh(species(), player);
+            if (magic.dataForSpeciesIsEmpty(speciesKey())) {
+                magic.refresh(species(), player);
             } else {
-                MagicData.getData(player).setCurrentSpecies(speciesKey());
+                magic.setCurrentSpecies(speciesKey());
             }
         }
+
+        PacketDistributor.sendToPlayer(player, new SyncMagicData(magic.serializeNBT(player.registryAccess())));
     }
 
     public void setType(@Nullable final Player player, final Holder<DragonSpecies> species) {
         Holder<DragonSpecies> oldSpecies = dragonSpecies;
         dragonSpecies = species;
 
-        if (player == null) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            // Magic data and attribute modifiers are handled server-side
             return;
         }
 
         if (species != null && (oldSpecies == null || !oldSpecies.is(species))) {
-            DSModifiers.updateTypeModifiers(player, this);
-            refreshDataOnTypeChange(player);
+            DSModifiers.updateTypeModifiers(serverPlayer, this);
+            refreshDataOnTypeChange(serverPlayer);
         } else if (species == null) {
-            DSModifiers.clearModifiers(player);
+            DSModifiers.clearModifiers(serverPlayer);
         }
     }
 

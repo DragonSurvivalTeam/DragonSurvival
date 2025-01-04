@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects;
 
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.FlightStatus;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SpinStatus;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
@@ -29,13 +30,17 @@ public record SpinOrFlightEffect(int flightLevel, int spinLevel, Holder<FluidTyp
     ).apply(instance, SpinOrFlightEffect::new));
 
     @Override
-    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity) {
-        FlightData data = FlightData.getData(dragon);
+    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
+        if (!(target instanceof ServerPlayer serverTarget) || !DragonStateProvider.isDragon(serverTarget)) {
+            return;
+        }
+
+        FlightData data = FlightData.getData(serverTarget);
         boolean hadFlight = data.hasFlight;
         data.hasFlight = ability.level() >= flightLevel;
 
         if (hadFlight != data.hasFlight) {
-            PacketDistributor.sendToPlayersTrackingEntityAndSelf(dragon, new FlightStatus(dragon.getId(), data.hasFlight));
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverTarget, new FlightStatus(serverTarget.getId(), data.hasFlight));
         }
 
         boolean hadSpin = data.hasSpin;
@@ -49,12 +54,38 @@ public record SpinOrFlightEffect(int flightLevel, int spinLevel, Holder<FluidTyp
         }
 
         if (hadSpin != data.hasSpin) {
-            PacketDistributor.sendToPlayersTrackingEntityAndSelf(dragon, new SpinStatus(dragon.getId(), data.hasSpin, data.swimSpinFluid.getKey()));
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverTarget, new SpinStatus(serverTarget.getId(), data.hasSpin, data.swimSpinFluid.getKey()));
         }
     }
 
     @Override
-    public boolean shouldAppendSelfTargetingToDescription() { return false; }
+    @SuppressWarnings("ConstantValue") // ignore
+    public void remove(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
+        if (!(target instanceof ServerPlayer serverTarget) || !DragonStateProvider.isDragon(serverTarget)) {
+            return;
+        }
+
+        FlightData data = FlightData.getData(serverTarget);
+        boolean hadFlight = data.hasFlight;
+        data.hasFlight = false;
+
+        if (hadFlight != data.hasFlight) {
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverTarget, new FlightStatus(serverTarget.getId(), data.hasFlight));
+        }
+
+        boolean hadSpin = data.hasSpin;
+        data.hasSpin = false;
+        data.swimSpinFluid = null;
+
+        if (hadSpin != data.hasSpin) {
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverTarget, new SpinStatus(serverTarget.getId(), data.hasSpin, data.swimSpinFluid.getKey()));
+        }
+    }
+
+    @Override
+    public boolean shouldAppendSelfTargetingToDescription() {
+        return false;
+    }
 
     @Override
     public List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {

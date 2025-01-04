@@ -55,19 +55,10 @@ public record DamageModification(ResourceLocation id, HolderSet<DamageType> dama
         ClientEffectProvider.ClientData clientData = new ClientEffectProvider.ClientData(ability.getIcon(), /* TODO */ Component.empty(), Optional.of(dragon.getUUID()));
         instance = new Instance(this, clientData, abilityLevel, newDuration);
         data.add(entity, instance);
-
-        if (entity instanceof ServerPlayer player) {
-            PacketDistributor.sendToPlayer(player, new SyncDamageModification(player.getId(), instance, false));
-        }
     }
 
     public void remove(final LivingEntity target) {
         DamageModifications data = target.getData(DSDataAttachments.DAMAGE_MODIFICATIONS);
-
-        if (target instanceof ServerPlayer player) {
-            PacketDistributor.sendToPlayer(player, new SyncDamageModification(player.getId(), data.get(id), true));
-        }
-
         data.remove(target, data.get(id));
     }
 
@@ -102,6 +93,20 @@ public record DamageModification(ResourceLocation id, HolderSet<DamageType> dama
 
         public static @Nullable Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag nbt) {
             return CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), nbt).resultOrPartial(DragonSurvival.LOGGER::error).orElse(null);
+        }
+
+        @Override
+        public void onAddedToStorage(final Entity storageHolder) {
+            if (storageHolder instanceof ServerPlayer player) {
+                PacketDistributor.sendToPlayer(player, new SyncDamageModification(player.getId(), this, false));
+            }
+        }
+
+        @Override
+        public void onRemovalFromStorage(final Entity storageHolder) {
+            if (storageHolder instanceof ServerPlayer player) {
+                PacketDistributor.sendToPlayer(player, new SyncDamageModification(player.getId(), this, true));
+            }
         }
 
         public float calculate(final Holder<DamageType> damageType, float damageAmount) {

@@ -25,6 +25,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -125,7 +126,10 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
         for (DragonAbilityInstance ability : magic.getAbilities().values()) {
             if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-                ability.value().upgrade().ifPresent(upgrade -> upgrade.attempt(serverPlayer, ability, null));
+                ability.value().upgrade().ifPresent(upgrade -> {
+                    upgrade.attempt(serverPlayer, ability, null);
+                    upgrade.attempt(serverPlayer, ability, Items.AIR);
+                });
             }
 
             ability.tick(event.getEntity());
@@ -336,6 +340,8 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         }
 
         currentSpecies = type.getKey();
+        InputData levels = InputData.experienceLevels(player.experienceLevel);
+        InputData size = InputData.size((int) DragonStateProvider.getData(player).getSize());
 
         int slot = 0;
 
@@ -343,7 +349,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
             DragonAbilityInstance instance;
 
             if (ability.value().upgrade().isEmpty()) {
-                instance = new DragonAbilityInstance(ability, 1);
+                instance = new DragonAbilityInstance(ability, ability.value().getMaxLevel());
             } else {
                 instance = new DragonAbilityInstance(ability, DragonAbilityInstance.MIN_LEVEL);
             }
@@ -353,14 +359,14 @@ public class MagicData implements INBTSerializable<CompoundTag> {
                 slot++;
             }
 
+            if (player instanceof ServerPlayer serverPlayer) {
+                ability.value().upgrade().ifPresent(upgrade -> {
+                    upgrade.attempt(serverPlayer, instance, levels);
+                    upgrade.attempt(serverPlayer, instance, size);
+                });
+            }
+
             getAbilities().put(ability.getKey(), instance);
-        }
-
-        if (player instanceof ServerPlayer serverPlayer) {
-            InputData levels = InputData.experienceLevels(player.experienceLevel);
-            InputData size = InputData.size((int) DragonStateProvider.getData(player).getSize());
-
-            handleAutoUpgrades(serverPlayer, levels, size);
         }
     }
 
@@ -429,6 +435,9 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
     @Override
     public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag tag) {
+        this.abilities.clear();
+        this.hotbar.clear();
+
         if (tag.contains(ABILITIES)) {
             for (String speciesLocation : tag.getCompound(ABILITIES).getAllKeys()) {
                 ResourceKey<DragonSpecies> speciesKey = ResourceKey.create(DragonSpecies.REGISTRY, ResourceLocation.parse(speciesLocation));
@@ -483,7 +492,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         selectedAbilitySlot = tag.getInt(SELECTED_SLOT);
         renderAbilities = tag.getBoolean(RENDER_ABILITIES);
 
-        if (tag.contains( CURRENT_SPECIES)) {
+        if (tag.contains(CURRENT_SPECIES)) {
             currentSpecies = ResourceKey.create(DragonSpecies.REGISTRY, ResourceLocation.parse(tag.getString(CURRENT_SPECIES)));
 
             if (provider.holder(currentSpecies).isEmpty()) {

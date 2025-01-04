@@ -12,7 +12,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncDamageModification(int playerId, DamageModification.Instance damageModification, boolean remove) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<SyncDamageModification> TYPE = new CustomPacketPayload.Type<>(DragonSurvival.res("sync_damage_modification"));
+    public static final Type<SyncDamageModification> TYPE = new Type<>(DragonSurvival.res("sync_damage_modification"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncDamageModification> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, SyncDamageModification::playerId,

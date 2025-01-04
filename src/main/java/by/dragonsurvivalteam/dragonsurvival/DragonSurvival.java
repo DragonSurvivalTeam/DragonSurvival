@@ -11,26 +11,18 @@ import by.dragonsurvivalteam.dragonsurvival.util.proxy.ClientProxy;
 import by.dragonsurvivalteam.dragonsurvival.util.proxy.Proxy;
 import by.dragonsurvivalteam.dragonsurvival.util.proxy.ServerProxy;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.repository.Pack;
-import net.minecraft.server.packs.repository.PackSource;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
-import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.HashMap;
-import java.util.Map;
 
 @Mod(DragonSurvival.MODID)
 public class DragonSurvival {
@@ -45,11 +37,9 @@ public class DragonSurvival {
     private static final DeferredHolder<MapCodec<? extends IGlobalLootModifier>, MapCodec<DragonHeartLootModifier>> DRAGON_HEART = DragonSurvival.GLM.register("dragon_heart", DragonHeartLootModifier.CODEC);
     private static final DeferredHolder<MapCodec<? extends IGlobalLootModifier>, MapCodec<AddTableLootExtendedLootModifier>> ADD_TABLE_LOOT_EXTENDED = DragonSurvival.GLM.register("add_table_loot_extended", () -> AddTableLootExtendedLootModifier.CODEC);
 
-    public DragonSurvival(IEventBus bus, ModContainer container) {
+    public DragonSurvival(final IEventBus bus, final ModContainer ignored) {
         PROXY = FMLLoader.getDist().isClient() ? new ClientProxy() : new ServerProxy();
         ConfigHandler.initConfig();
-
-        bus.addListener(this::addPackFinders);
 
         DSDataAttachments.DS_ATTACHMENT_TYPES.register(bus);
         DSDataComponents.REGISTRY.register(bus);
@@ -74,31 +64,6 @@ public class DragonSurvival {
         DSAdvancementTriggers.DS_TRIGGERS.register(bus);
         DSCommands.ARGUMENT_TYPES.register(bus);
         GLM.register(bus);
-    }
-
-    private void addPackFinders(AddPackFindersEvent event) {
-        if (event.getPackType() == PackType.CLIENT_RESOURCES) {
-            HashMap<MutableComponent, String> resourcePacks = new HashMap<>();
-            resourcePacks.put(Component.literal("DS - Old Magic Icons"), "resourcepacks/ds_old_magic");
-            resourcePacks.put(Component.literal("DS - Dark GUI"), "resourcepacks/ds_dark_gui");
-            for (Map.Entry<MutableComponent, String> entry : resourcePacks.entrySet()) {
-                registerBuiltinResourcePack(event, entry.getKey(), entry.getValue());
-            }
-        } else if (event.getPackType() == PackType.SERVER_DATA) {
-            HashMap<MutableComponent, String> dataPacks = new HashMap<>();
-            dataPacks.put(Component.literal("DS - Ancient Dragons"), "data/"+MODID+"/datapacks/ancient_stage");
-            for (Map.Entry<MutableComponent, String> entry : dataPacks.entrySet()) {
-                registerBuiltInDataPack(event, entry.getKey(), entry.getValue());
-            }
-        }
-    }
-
-    private static void registerBuiltinResourcePack(AddPackFindersEvent event, MutableComponent name, String folder) {
-        event.addPackFinders(res(folder), PackType.CLIENT_RESOURCES, name, PackSource.BUILT_IN, false, Pack.Position.TOP);
-    }
-
-    private static void registerBuiltInDataPack(AddPackFindersEvent event, MutableComponent name, String folder) {
-        event.addPackFinders(location(MODID, folder), PackType.SERVER_DATA, name, PackSource.FEATURE, true, Pack.Position.TOP);
     }
 
     /** Creates a {@link ResourceLocation} with the dragon survival namespace */

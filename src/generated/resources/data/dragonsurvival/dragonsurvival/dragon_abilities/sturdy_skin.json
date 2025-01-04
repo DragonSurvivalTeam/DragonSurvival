@@ -13,7 +13,7 @@
                     "base": 1200.0,
                     "per_level_above_first": 1200.0
                   },
-                  "icon": "dragonsurvival:textures/modifiers/strong_leather.png",
+                  "icon": "dragonsurvival:textures/modifiers/sturdy_skin.png",
                   "id": "dragonsurvival:sturdy_skin",
                   "modifiers": [
                     {
@@ -62,19 +62,19 @@
     "texture_entries": [
       {
         "from_level": 0,
-        "texture_resource": "dragonsurvival:abilities/cave/strong_leather_0"
+        "texture_resource": "dragonsurvival:abilities/cave/sturdy_skin_0"
       },
       {
         "from_level": 1,
-        "texture_resource": "dragonsurvival:abilities/cave/strong_leather_1"
+        "texture_resource": "dragonsurvival:abilities/cave/sturdy_skin_1"
       },
       {
         "from_level": 2,
-        "texture_resource": "dragonsurvival:abilities/cave/strong_leather_2"
+        "texture_resource": "dragonsurvival:abilities/cave/sturdy_skin_2"
       },
       {
         "from_level": 3,
-        "texture_resource": "dragonsurvival:abilities/cave/strong_leather_3"
+        "texture_resource": "dragonsurvival:abilities/cave/sturdy_skin_3"
       }
     ]
   },

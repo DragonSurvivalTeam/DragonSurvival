@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.network.magic;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -23,7 +24,11 @@ public record SyncAbilityLevel(ResourceKey<DragonAbility> ability, int level) im
     public static void handleClient(final SyncAbilityLevel packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
             MagicData data = MagicData.getData(context.player());
-            data.getAbilities().get(packet.ability()).setLevel(packet.level());
+            DragonAbilityInstance ability = data.getAbilities().get(packet.ability());
+
+            if (ability != null) {
+                ability.setLevel(packet.level());
+            }
         });
     }
 
