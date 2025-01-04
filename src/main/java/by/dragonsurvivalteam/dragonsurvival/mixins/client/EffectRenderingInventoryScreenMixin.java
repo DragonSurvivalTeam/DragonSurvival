@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
@@ -72,8 +71,7 @@ public class EffectRenderingInventoryScreenMixin {
         int topPos = ((AbstractContainerScreenAccessor) self).dragonSurvival$getTopPos() + initialYOffset;
 
         for (ClientEffectProvider provider : providers) {
-            Component name = Component.translatable(Translation.Type.MODIFIER.wrap(provider.id()));
-            graphics.drawString(((ScreenAccessor) self).dragonSurvival$getFont(), name, renderX + 10 + 18, topPos + 6, DSColors.WHITE);
+            graphics.drawString(((ScreenAccessor) self).dragonSurvival$getFont(), provider.clientData().name(), renderX + 10 + 18, topPos + 6, DSColors.WHITE);
             //noinspection DataFlowIssue -> level is present
             Component duration = dragonSurvival$formatDuration(provider, Minecraft.getInstance().level.tickRateManager().tickrate());
             graphics.drawString(((ScreenAccessor) self).dragonSurvival$getFont(), duration, renderX + 10 + 18, topPos + 6 + 10, 8355711);
@@ -151,7 +149,7 @@ public class EffectRenderingInventoryScreenMixin {
                     List<Component> list = new ArrayList<>();
 
                     if (isCompact) {
-                        list.add(Component.translatable(Translation.Type.MODIFIER.wrap(hovered.id())));
+                        list.add(hovered.clientData().name());
                         //noinspection DataFlowIssue -> level is present
                         list.add(dragonSurvival$formatDuration(hovered, Minecraft.getInstance().level.tickRateManager().tickrate()));
                     }

@@ -1,8 +1,14 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.DurationInstance;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -46,4 +52,31 @@ public class FlightData implements INBTSerializable<CompoundTag> {
     public boolean isWingsSpread() {
         return hasFlight && areWingsSpread;
     }
+
+    public static final ClientEffectProvider FLIGHT_EFFECT = new ClientEffectProvider() {
+        @Translation(type = Translation.Type.MODIFIER, comments = "Wings")
+        private static final ResourceLocation MODIFIER = DragonSurvival.res("wings");
+
+        private static final ClientData DATA = new ClientData(
+                DragonSurvival.res("textures/modifiers/cave_dragon_wings.png"),
+                Component.translatable(Translation.Type.MODIFIER.wrap(MODIFIER)),
+                Component.empty(),
+                Component.empty()
+        );
+
+        @Override
+        public ClientData clientData() {
+            return DATA;
+        }
+
+        @Override
+        public int getDuration() {
+            return DurationInstance.INFINITE_DURATION;
+        }
+
+        @Override
+        public int currentDuration() {
+            return 0;
+        }
+    };
 }

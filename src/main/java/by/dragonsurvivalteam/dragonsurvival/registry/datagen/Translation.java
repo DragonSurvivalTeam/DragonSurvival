@@ -66,13 +66,15 @@ public @interface Translation {
         DEATH("death.attack." + DragonSurvival.MODID + ".", ""),
         /** Has two arguments (the player that died and the attacking entity) */
         DEATH_PLAYER("death.attack." + DragonSurvival.MODID + ".", ".player"),
-        /** Has three arguments (the player that died, the attacking entity and used item */
+        /** Has three arguments (the player that died, the attacking entity and used item) */
         DEATH_ITEM("death.attack." + DragonSurvival.MODID + ".", ".item"),
 
         CONFIGURATION(DragonSurvival.MODID + ".configuration.", ".tooltip"),
 
         ABILITY("dragon_ability." + DragonSurvival.MODID + ".", ""),
         ABILITY_DESCRIPTION("dragon_ability." + DragonSurvival.MODID + ".", ".desc"),
+        // TODO :: adjust / utility method where we add the ability id, so it's like 'dragon_ability.<namespace>.<ability>.effect.<effect> or sth. like that?
+        ABILITY_EFFECT("dragon_ability." + DragonSurvival.MODID + ".", ".effect"),
 
         DRAGON_SPECIES("dragon_species." + DragonSurvival.MODID + ".", ""),
         DRAGON_SPECIES_DESCRIPTION("dragon_species." + DragonSurvival.MODID + ".", ".desc"),

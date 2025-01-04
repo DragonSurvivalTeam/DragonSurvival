@@ -17,8 +17,14 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilit
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.FireEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.*;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.*;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.*;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AbilityTargeting;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AreaTarget;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.DragonBreathTarget;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.SelfTarget;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ExperienceUpgrade;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ItemUpgrade;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.LevelUpgrade;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.SizeUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.ProjectileData;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.Projectiles;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
@@ -112,6 +118,9 @@ public class CaveDragonAbilities {
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Cave Dragon")
     public static final ResourceKey<DragonAbility> FIRE_IMMUNITY = DragonAbilities.key("fire_immunity");
+
+    @Translation(type = Translation.Type.ABILITY_EFFECT, comments = "Fire Immunity")
+    public static final ResourceLocation FIRE_IMMUNITY_EFFECT = DragonSurvival.res("fire_immunity");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
             "■ Cave dragons can swim in lava, but still need to hold their breath when swimming in it.\n",
@@ -420,7 +429,7 @@ public class CaveDragonAbilities {
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         DamageModificationEffect.single(new DamageModification(
-                                DragonSurvival.res("fire_immunity"),
+                                FIRE_IMMUNITY_EFFECT,
                                 context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypeTags.IS_FIRE),
                                 LevelBasedValue.constant(0),
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)

@@ -26,12 +26,6 @@ public class Bolas extends AbstractArrow {
         super(DSEntities.BOLAS_ENTITY.value(), x, y, z, level, pickup, firedFrom);
     }
 
-    // FIXME :: why is this commented out?
-    //@Override
-    //protected Item getDefaultItem(){
-    //	return DSItems.HUNTING_NET.value();
-    //}
-
     @Override
     protected void onHit(@NotNull final HitResult result) {
         super.onHit(result);
@@ -49,13 +43,13 @@ public class Bolas extends AbstractArrow {
         }
 
         if (entity instanceof LivingEntity living) {
-            living.hurt(this.damageSources().arrow(this, getOwner()), 1);
+            living.hurt(damageSources().arrow(this, getOwner()), 1);
             living.addEffect(new MobEffectInstance(DSEffects.TRAPPED, Functions.secondsToTicks(ServerConfig.hunterTrappedDebuffDuration), 0, false, false), getOwner());
         }
     }
 
     @Override
     protected @NotNull ItemStack getDefaultPickupItem() {
-        return new ItemStack(Items.ARROW); // FIXME :: why not implement bolas as proper item and return them here?
+        return new ItemStack(Items.ARROW);
     }
 }
