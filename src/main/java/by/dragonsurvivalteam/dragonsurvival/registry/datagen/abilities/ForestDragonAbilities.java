@@ -39,6 +39,7 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.util.random.WeightedRandomList;
@@ -115,8 +116,11 @@ public class ForestDragonAbilities {
             "■ Forest dragons have a diamond skeleton, and are composed mostly of predatory plants. Their diet includes raw meat and sweet berries, and most animals fear them.\n",
             "■ They have innate §2immunity to thorn bushes and cacti§r§7. They feel best on the surface of the Overworld.",
     })
-    @Translation(type = Translation.Type.ABILITY, comments = "Forest Dragon")
+    @Translation(type = Translation.Type.ABILITY, comments = "Forest Immunity")
     public static final ResourceKey<DragonAbility> FOREST_IMMUNITY = DragonAbilities.key("forest_immunity");
+
+    @Translation(type = Translation.Type.ABILITY_EFFECT, comments = "Forest Immunity")
+    public static final ResourceLocation FOREST_IMMUNITY_EFFECT = DragonSurvival.res("forest_immunity.electric_immunity");
 
     public static void registerAbilities(final BootstrapContext<DragonAbility> context) {
         registerActiveAbilities(context);
@@ -460,7 +464,7 @@ public class ForestDragonAbilities {
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         DamageModificationEffect.single(new DamageModification(
-                                DragonSurvival.res("forest_immunity"),
+                                FOREST_IMMUNITY_EFFECT,
                                 HolderSet.direct(
                                         context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.SWEET_BERRY_BUSH),
                                         context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.CACTUS),

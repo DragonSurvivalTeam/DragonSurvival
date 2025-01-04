@@ -8,7 +8,7 @@
               "effect_type": "dragonsurvival:damage_modification",
               "modifications": [
                 {
-                  "id": "dragonsurvival:electricity_immunity",
+                  "id": "dragonsurvival:electric_immunity.electric_immunity",
                   "multiplier": 0.0,
                   "types": "#dragonsurvival:is_electric"
                 }

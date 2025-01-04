@@ -17,7 +17,8 @@ import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
+import java.util.Objects;
+import javax.annotation.Nullable;
 
 public interface ClientEffectProvider {
     record ClientData(ResourceLocation texture, Component name, Component tooltip, Component effectSource) {
@@ -28,13 +29,13 @@ public interface ClientEffectProvider {
                 ComponentSerialization.CODEC.optionalFieldOf("effect_source", Component.empty()).forGetter(ClientData::effectSource)
         ).apply(instance, ClientData::new));
 
-        public static ClientData from(final ServerPlayer dragon, final DragonAbilityInstance ability, final ResourceLocation id, final Function<Integer, Component> description) {
-            ResourceLocation icon = ability.getIcon().withPrefix("textures/gui/sprites/").withSuffix(".png");
-            return new ClientData(icon, Component.translatable(Translation.Type.ABILITY_EFFECT.wrap(id)), description.apply(ability.level()), dragon.getName());
+        public static ClientData from(final ServerPlayer dragon, final DragonAbilityInstance ability, final ResourceLocation effect, final Component description) {
+            return from(dragon, ability, effect, description, null);
         }
 
-        public static ClientData customIcon(final ClientData data, final ResourceLocation customIcon) {
-            return new ClientData(customIcon, data.name, data.tooltip, data.effectSource);
+        public static ClientData from(final ServerPlayer dragon, final DragonAbilityInstance ability, final ResourceLocation effect, final Component description, @Nullable final ResourceLocation customIcon) {
+            ResourceLocation icon = Objects.requireNonNullElseGet(customIcon, () -> ability.getIcon().withPrefix("textures/gui/sprites/").withSuffix(".png"));
+            return new ClientData(icon, Component.translatable(Translation.Type.ABILITY_EFFECT.wrap(effect)), description, dragon.getName());
         }
     }
 
@@ -60,7 +61,6 @@ public interface ClientEffectProvider {
         }
 
         providers.removeIf(ClientEffectProvider::isInvisible);
-
         return providers;
     }
 

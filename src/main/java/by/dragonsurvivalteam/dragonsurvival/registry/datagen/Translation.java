@@ -73,7 +73,6 @@ public @interface Translation {
 
         ABILITY("dragon_ability." + DragonSurvival.MODID + ".", ""),
         ABILITY_DESCRIPTION("dragon_ability." + DragonSurvival.MODID + ".", ".desc"),
-        // TODO :: adjust / utility method where we add the ability id, so it's like 'dragon_ability.<namespace>.<ability>.effect.<effect> or sth. like that?
         ABILITY_EFFECT("dragon_ability." + DragonSurvival.MODID + ".", ".effect"),
 
         DRAGON_SPECIES("dragon_species." + DragonSurvival.MODID + ".", ""),

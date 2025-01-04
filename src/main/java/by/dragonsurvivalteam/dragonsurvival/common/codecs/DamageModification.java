@@ -57,8 +57,7 @@ public record DamageModification(ResourceLocation id, HolderSet<DamageType> dama
         }
 
         data.remove(entity, instance);
-        instance = new Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, id, this::getDescription), abilityLevel, newDuration);
-        data.add(entity, instance);
+        data.add(entity, new Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, id, getDescription(abilityLevel)), abilityLevel, newDuration));
     }
 
     public void remove(final LivingEntity target) {

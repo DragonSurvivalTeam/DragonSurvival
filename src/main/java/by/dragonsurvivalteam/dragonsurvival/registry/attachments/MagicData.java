@@ -332,6 +332,8 @@ public class MagicData implements INBTSerializable<CompoundTag> {
             return;
         }
 
+        // Make sure we remove any passive effects for abilities that are no longer available
+        abilities.values().forEach(perSpecies -> perSpecies.values().forEach(ability -> ability.setActive(false, player)));;
         currentSpecies = type.getKey();
 
         // Make sure we remove any passive effects for abilities that are no longer available

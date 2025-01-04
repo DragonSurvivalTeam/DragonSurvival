@@ -56,32 +56,13 @@ public record ModifierWithDuration(ResourceLocation id, ResourceLocation icon, L
             return;
         }
 
-        if (instance != null) {
-            data.remove(target, instance);
-        }
-
-        // TODO
-        ClientEffectProvider.ClientData clientData = ClientEffectProvider.ClientData.customIcon(ClientEffectProvider.ClientData.from(dragon, ability, id, level -> Component.empty()), icon);
-        instance = new ModifierWithDuration.Instance(this, clientData, ability.level(), newDuration, new HashMap<>());
-        data.add(target, instance);
-
-        if (target instanceof ServerPlayer serverPlayer) {
-            // TODO :: just sync client data in one generic packet so it can be re-used?
-            PacketDistributor.sendToPlayer(serverPlayer, new SyncModifierWithDuration(serverPlayer.getId(), instance, false));
-        }
+        data.remove(target, instance);
+        data.add(target, new ModifierWithDuration.Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, id, Component.empty(), icon), ability.level(), newDuration, new HashMap<>()));
     }
 
     public void remove(final LivingEntity target) {
         ModifiersWithDuration data = target.getData(DSDataAttachments.MODIFIERS_WITH_DURATION);
-        Instance instance = data.get(id);
-
-        if (instance != null) {
-            data.remove(target, instance);
-
-            if (target instanceof ServerPlayer serverPlayer) {
-                PacketDistributor.sendToPlayer(serverPlayer, new SyncModifierWithDuration(serverPlayer.getId(), instance, true));
-            }
-        }
+        data.remove(target, data.get(id));
     }
 
     public static class Instance extends DurationInstance<ModifierWithDuration> implements AttributeModifierSupplier {
@@ -125,6 +106,10 @@ public record ModifierWithDuration(ResourceLocation id, ResourceLocation icon, L
             }
 
             applyModifiers(livingEntity, type, appliedAbilityLevel());
+
+            if (storageHolder instanceof ServerPlayer player) {
+                PacketDistributor.sendToPlayer(player, new SyncModifierWithDuration(player.getId(), this, false));
+            }
         }
 
         @Override
@@ -134,6 +119,10 @@ public record ModifierWithDuration(ResourceLocation id, ResourceLocation icon, L
             }
 
             removeModifiers(livingEntity);
+
+            if (storageHolder instanceof ServerPlayer player) {
+                PacketDistributor.sendToPlayer(player, new SyncModifierWithDuration(player.getId(), this, true));
+            }
         }
 
         @Override

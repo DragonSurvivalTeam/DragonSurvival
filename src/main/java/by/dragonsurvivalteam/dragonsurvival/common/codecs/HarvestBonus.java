@@ -52,12 +52,8 @@ public record HarvestBonus(ResourceLocation id, Optional<HolderSet<Block>> block
             return;
         }
 
-        if (instance != null) {
-            data.remove(target, instance);
-        }
-
-        instance = new Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, id, /* TODO */ level -> Component.empty()), abilityLevel, newDuration);
-        data.add(target, instance);
+        data.remove(target, instance);
+        data.add(target, new Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, id, Component.empty()), abilityLevel, newDuration));
     }
 
     public void remove(final LivingEntity target) {

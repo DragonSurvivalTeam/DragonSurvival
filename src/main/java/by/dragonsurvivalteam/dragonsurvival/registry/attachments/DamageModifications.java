@@ -6,7 +6,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.damagesource.DamageType;
-import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -87,10 +86,6 @@ public class DamageModifications extends Storage<DamageModification.Instance> {
     @Override
     protected DamageModification.Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag tag) {
         return DamageModification.Instance.load(provider, tag);
-    }
-
-    public static DamageModifications getData(final Entity entity) {
-        return entity.getData(DSDataAttachments.DAMAGE_MODIFICATIONS);
     }
 
     @Override

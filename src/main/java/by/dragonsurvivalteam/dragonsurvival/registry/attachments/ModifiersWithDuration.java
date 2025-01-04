@@ -61,10 +61,6 @@ public class ModifiersWithDuration extends Storage<ModifierWithDuration.Instance
         return ModifierWithDuration.Instance.load(provider, tag);
     }
 
-    public static ModifiersWithDuration getData(final LivingEntity entity) {
-        return entity.getData(DSDataAttachments.MODIFIERS_WITH_DURATION);
-    }
-
     @Override
     public AttachmentType<?> type() {
         return DSDataAttachments.MODIFIERS_WITH_DURATION.get();

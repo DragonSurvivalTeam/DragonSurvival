@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.network.magic;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DamageModification;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DamageModifications;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -24,7 +25,7 @@ public record SyncDamageModification(int playerId, DamageModification.Instance d
     public static void handleClient(final SyncDamageModification packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
-                DamageModifications data = DamageModifications.getData(player);
+                DamageModifications data = player.getData(DSDataAttachments.DAMAGE_MODIFICATIONS);
 
                 if (packet.remove()) {
                     data.remove(player, packet.damageModification());

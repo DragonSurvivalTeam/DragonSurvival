@@ -124,11 +124,11 @@ public class CaveDragonAbilities {
             "■ Cave dragons have a netherite skeleton, and are made mostly of lava.\n",
             "■ They have innate §2immunity to fire§r."
     })
-    @Translation(type = Translation.Type.ABILITY, comments = "Cave Dragon")
+    @Translation(type = Translation.Type.ABILITY, comments = "Fire Immunity")
     public static final ResourceKey<DragonAbility> FIRE_IMMUNITY = DragonAbilities.key("fire_immunity");
 
     @Translation(type = Translation.Type.ABILITY_EFFECT, comments = "Fire Immunity")
-    public static final ResourceLocation FIRE_IMMUNITY_EFFECT = DragonSurvival.res("fire_immunity");
+    public static final ResourceLocation FIRE_IMMUNITY_EFFECT = DragonSurvival.res("fire_immunity.fire_immunity");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
             "■ Cave dragons can swim in lava, but still need to hold their breath when swimming in it.\n",

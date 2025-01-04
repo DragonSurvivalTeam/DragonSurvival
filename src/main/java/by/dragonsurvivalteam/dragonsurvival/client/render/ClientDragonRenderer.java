@@ -17,7 +17,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncDeltaMovement;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDragonMovement;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DamageModifications;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
@@ -477,11 +477,11 @@ public class ClientDragonRenderer {
         }
 
         //noinspection DataFlowIssue -> player is present
-        DamageModifications modifications = DamageModifications.getData(Minecraft.getInstance().player);
-
-        if (modifications.isFireImmune()) {
-            event.setCanceled(true);
-        }
+        Minecraft.getInstance().player.getExistingData(DSDataAttachments.DAMAGE_MODIFICATIONS).ifPresent(data -> {
+            if (data.isFireImmune()) {
+                event.setCanceled(true);
+            }
+        });
     }
 
     @SubscribeEvent
