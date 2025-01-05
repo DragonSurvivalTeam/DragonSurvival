@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.projectile.entity_effects;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.registry.projectile.common_effects.ProjectileParticleEffect;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Registry;
@@ -40,6 +41,7 @@ public interface ProjectileEntityEffect {
             event.register(REGISTRY_KEY, DragonSurvival.res("damage"), () -> ProjectileDamageEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("mob_effect"), () -> ProjectilePotionEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("lightning"), () -> ProjectileLightningEntityEffect.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("particle"), () -> ProjectileParticleEffect.CODEC);
         }
     }
 }

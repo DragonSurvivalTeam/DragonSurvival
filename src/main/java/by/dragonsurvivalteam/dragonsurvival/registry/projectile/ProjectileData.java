@@ -57,6 +57,7 @@ public record ProjectileData(
             List<ProjectileTargeting> onDestroyEffects,
             LevelBasedValue xSize,
             LevelBasedValue ySize,
+            LevelBasedValue maxBounces,
             LevelBasedValue maxLingeringTicks,
             LevelBasedValue maxMoveDistance,
             LevelBasedValue maxLifespan) {
@@ -66,6 +67,7 @@ public record ProjectileData(
                 ProjectileTargeting.CODEC.listOf().optionalFieldOf("on_destroy_effects", List.of()).forGetter(GenericBallData::onDestroyEffects),
                 LevelBasedValue.CODEC.fieldOf("x_size").forGetter(GenericBallData::xSize),
                 LevelBasedValue.CODEC.fieldOf("y_size").forGetter(GenericBallData::ySize),
+                LevelBasedValue.CODEC.optionalFieldOf("max_bounces", LevelBasedValue.constant(0)).forGetter(GenericBallData::maxBounces),
                 LevelBasedValue.CODEC.optionalFieldOf("max_lingering_ticks", LevelBasedValue.constant(0)).forGetter(GenericBallData::maxLingeringTicks),
                 LevelBasedValue.CODEC.fieldOf("max_move_distance").forGetter(GenericBallData::maxMoveDistance),
                 LevelBasedValue.CODEC.fieldOf("max_lifespan").forGetter(GenericBallData::maxLifespan)

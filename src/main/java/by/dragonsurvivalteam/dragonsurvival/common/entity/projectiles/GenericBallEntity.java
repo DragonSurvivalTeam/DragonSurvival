@@ -10,6 +10,8 @@ import by.dragonsurvivalteam.dragonsurvival.registry.projectile.targeting.Projec
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -27,9 +29,12 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -47,6 +52,7 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
     public static final EntityDataAccessor<String> ANIM_LOCATION = SynchedEntityData.defineId(GenericBallEntity.class, EntityDataSerializers.STRING);
     public static final EntityDataAccessor<String> GEO_LOCATION = SynchedEntityData.defineId(GenericBallEntity.class, EntityDataSerializers.STRING);
     public static final EntityDataAccessor<Boolean> LINGERING = SynchedEntityData.defineId(GenericBallEntity.class, EntityDataSerializers.BOOLEAN);
+    public static final EntityDataAccessor<Integer> MAX_BOUNCES = SynchedEntityData.defineId(GenericBallEntity.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Float> DIMENSION_WIDTH = SynchedEntityData.defineId(GenericBallEntity.class, EntityDataSerializers.FLOAT);
     public static final EntityDataAccessor<Float> DIMENSION_HEIGHT = SynchedEntityData.defineId(GenericBallEntity.class, EntityDataSerializers.FLOAT);
 
@@ -66,6 +72,12 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
     protected int lingerTicks;
     private float moveDistance;
     private int lifespan;
+    private int bounces;
+
+    // Not saved, temporary variables
+    private Entity lastEntityHit = null;
+    private BlockPos lastBlockHit = null;
+    private boolean hitWasTriggeredByLifespanOrDistance = false;
 
     public GenericBallEntity(
             ResourceLocation name,
@@ -80,6 +92,7 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
             List<ProjectileBlockEffect> blockHitEffects,
             List<ProjectileTargeting> onDestroyEffects,
             int projectileLevel,
+            int maxBounces,
             int maxLingeringTicks,
             int maxMoveDistance,
             int maxLifespan) {
@@ -88,6 +101,7 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
         setResourceLocations(location);
         setDimensionWidth(dimensions.width());
         setDimensionHeight(dimensions.height());
+        setMaxBounces(maxBounces);
         this.canHitPredicate = canHitPredicate;
         this.trailParticle = trailParticle;
         this.tickingEffects = tickingEffects;
@@ -119,11 +133,12 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
             List<ProjectileBlockEffect> blockHitEffects,
             List<ProjectileTargeting> onDestroyEffects,
             int projectileLevel,
+            int maxBounces,
             int maxLingeringTicks,
             int maxMoveDistance,
             int maxLifespan,
             Vec3 position) {
-        this(name, location, trailParticle, level, dimensions, canHitPredicate, tickingEffects, commonHitEffects, entityHitEffects, blockHitEffects, onDestroyEffects, projectileLevel, maxLingeringTicks, maxMoveDistance, maxLifespan);
+        this(name, location, trailParticle, level, dimensions, canHitPredicate, tickingEffects, commonHitEffects, entityHitEffects, blockHitEffects, onDestroyEffects, projectileLevel, maxBounces, maxLingeringTicks, maxMoveDistance, maxLifespan);
         this.setPos(position.x, position.y, position.z);
         this.reapplyPosition();
     }
@@ -140,6 +155,7 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
             List<ProjectileBlockEffect> blockHitEffects,
             List<ProjectileTargeting> onDestroyEffects,
             int projectileLevel,
+            int maxBounces,
             int maxLingeringTicks,
             int maxMoveDistance,
             int maxLifespan,
@@ -150,6 +166,7 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
         setResourceLocations(location);
         setDimensionWidth(dimensions.width());
         setDimensionHeight(dimensions.height());
+        setMaxBounces(maxBounces);
         this.canHitPredicate = canHitPredicate;
         this.trailParticle = trailParticle;
         this.tickingEffects = tickingEffects;
@@ -193,8 +210,8 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
             ProjectileData.GenericBallResource location,
             Optional<ParticleOptions> trailParticle,
             int projectileLevel,
-            int maxLingeringTicks,
-            int maxMoveDistance,
+            // Need to pack these into a Vec3 as the Codec only allows 16 max entries
+            Vec3 maxBouncesLingeringTicksMoveDistance,
             int maxLifespan,
             // Needs to pack moveDistance here as the Codec only allows 16 max entries
             Vec3 dimensionsPlusMoveDistance,
@@ -204,6 +221,7 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
             List<ProjectileEntityEffect> entityHitEffects,
             List<ProjectileBlockEffect> blockHitEffects,
             List<ProjectileTargeting> onDestroyEffects,
+            int bounces,
             int lingerTicks,
             int lifespan)
     {
@@ -213,8 +231,7 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
                         ProjectileData.GenericBallResource.CODEC.fieldOf("location").forGetter(GenericBallEntityInstance::location),
                         ParticleTypes.CODEC.optionalFieldOf("trail_particle").forGetter(GenericBallEntityInstance::trailParticle),
                         Codec.INT.fieldOf("projectile_level").forGetter(GenericBallEntityInstance::projectileLevel),
-                        Codec.INT.fieldOf("max_lingering_ticks").forGetter(GenericBallEntityInstance::maxLingeringTicks),
-                        Codec.INT.fieldOf("max_move_distance").forGetter(GenericBallEntityInstance::maxMoveDistance),
+                        Vec3.CODEC.fieldOf("max_bounces_lingering_ticks_move_distance").forGetter(GenericBallEntityInstance::maxBouncesLingeringTicksMoveDistance),
                         Codec.INT.fieldOf("max_lifespan").forGetter(GenericBallEntityInstance::maxLifespan),
                         Vec3.CODEC.fieldOf("dimensions").forGetter(GenericBallEntityInstance::dimensionsPlusMoveDistance),
                         EntityPredicate.CODEC.optionalFieldOf("can_hit_predicate").forGetter(GenericBallEntityInstance::canHitPredicate),
@@ -223,6 +240,7 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
                         ProjectileEntityEffect.CODEC.listOf().fieldOf("entity_hit_effects").forGetter(GenericBallEntityInstance::entityHitEffects),
                         ProjectileBlockEffect.CODEC.listOf().fieldOf("block_hit_effects").forGetter(GenericBallEntityInstance::blockHitEffects),
                         ProjectileTargeting.CODEC.listOf().fieldOf("on_destroy_effects").forGetter(GenericBallEntityInstance::onDestroyEffects),
+                        Codec.INT.fieldOf("bounces").forGetter(GenericBallEntityInstance::bounces),
                         Codec.INT.fieldOf("linger_ticks").forGetter(GenericBallEntityInstance::lingerTicks),
                         Codec.INT.fieldOf("lifespan").forGetter(GenericBallEntityInstance::lifespan)
                 ).apply(instance, GenericBallEntityInstance::new)
@@ -241,8 +259,9 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
                     blockHitEffects,
                     onDestroyEffects,
                     projectileLevel,
-                    maxLingeringTicks,
-                    maxMoveDistance,
+                    (int)maxBouncesLingeringTicksMoveDistance.x,
+                    (int)maxBouncesLingeringTicksMoveDistance.y,
+                    (int)maxBouncesLingeringTicksMoveDistance.z,
                     maxLifespan,
                     lifespan,
                     (float) dimensionsPlusMoveDistance.z(),
@@ -256,8 +275,7 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
                     entity.resources,
                     Optional.ofNullable(entity.getTrailParticle()),
                     entity.projectileLevel,
-                    entity.maxLingeringTicks,
-                    entity.maxMoveDistance,
+                    new Vec3(entity.getMaxBounces(), entity.maxLingeringTicks, entity.maxMoveDistance),
                     entity.maxLifespan,
                     new Vec3(entity.getWidth(), entity.getHeight(), entity.moveDistance),
                     entity.canHitPredicate,
@@ -266,6 +284,7 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
                     entity.entityHitEffects,
                     entity.blockHitEffects,
                     entity.onDestroyEffects,
+                    entity.bounces,
                     entity.lingerTicks,
                     entity.lifespan
             );
@@ -342,6 +361,14 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
         this.entityData.set(GEO_LOCATION, texture);
     }
 
+    private int getMaxBounces() {
+        return this.entityData.get(MAX_BOUNCES);
+    }
+
+    private void setMaxBounces(int maxBounces) {
+        this.entityData.set(MAX_BOUNCES, maxBounces);
+    }
+
     private boolean isLingering() {
         return this.entityData.get(LINGERING);
     }
@@ -392,6 +419,7 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
         pBuilder.define(ANIM_LOCATION, ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "generic_ball").toString());
         pBuilder.define(GEO_LOCATION, ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "generic_ball").toString());
         pBuilder.define(LINGERING, false);
+        pBuilder.define(MAX_BOUNCES, 0);
         pBuilder.define(DIMENSION_WIDTH, 0.5F);
         pBuilder.define(DIMENSION_HEIGHT, 0.5F);
     }
@@ -416,6 +444,7 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
             if (moveDistance > maxMoveDistance || lifespan > maxLifespan) {
                 // Call onHitBlock rather than onHit, since calling onHit using the helper function from
                 // vanilla will result in HitResult.Miss from 1.20.6 onwards, causing nothing to happen
+                hitWasTriggeredByLifespanOrDistance = true;
                 this.onHitBlock(new BlockHitResult(this.position(), this.getDirection(), this.blockPosition(), false));
             }
 
@@ -432,9 +461,13 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
         }
     }
 
-
     @Override
     protected void onHitEntity(@NotNull EntityHitResult hitResult) {
+        if(hitResult.getEntity() == lastEntityHit) {
+            return;
+        }
+
+        lastEntityHit = hitResult.getEntity();
         super.onHitEntity(hitResult);
         if (!level().isClientSide) {
             for (ProjectileEntityEffect effect : entityHitEffects) {
@@ -442,11 +475,21 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
             }
         }
 
-        onHitCommon();
+        onHitCommon(hitResult.getEntity().getDirection(), true);
     }
 
     @Override
     protected void onHitBlock(@NotNull BlockHitResult hitResult) {
+        if(hitResult.isInside()) {
+            this.onDestroy();
+            return;
+        }
+
+        if(hitResult.getBlockPos().equals(lastBlockHit)) {
+            return;
+        }
+
+        lastBlockHit = hitResult.getBlockPos();
         super.onHitBlock(hitResult);
         if (!level().isClientSide) {
             for (ProjectileBlockEffect effect : blockHitEffects) {
@@ -454,23 +497,67 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
             }
         }
 
-        onHitCommon();
+        onHitCommon(hitResult.getDirection(), false);
     }
 
-    public void onHitCommon() {
+    private void reflect() {
+        Vec3 motion = getDeltaMovement();
+        setDeltaMovement(-motion.x(), -motion.y(), -motion.z());
+
+        bounces++;
+    }
+
+    private void bounce(Direction direction) {
+        Vec3 motion = getDeltaMovement();
+        double x = motion.x();
+        double y = motion.y();
+        double z = motion.z();
+
+        switch (direction) {
+            case NORTH:
+            case SOUTH:
+                setDeltaMovement(x, y, -z);
+                break;
+            case EAST:
+            case WEST:
+                setDeltaMovement(-x, y, z);
+                break;
+            case UP:
+            case DOWN:
+                setDeltaMovement(x, -y, z);
+                break;
+        }
+
+        if(!level().isClientSide) {
+            System.out.println("Bounce client side: "+bounces+" with direction: "+direction);
+        } else {
+            System.out.println("Bounce server side: "+bounces+" with direction: "+direction);
+        }
+
+        bounces++;
+    }
+
+    public void onHitCommon(Direction direction, boolean wasEntity) {
         if (!level().isClientSide) {
             for (ProjectileTargeting effect : commonHitEffects) {
                 effect.apply(this, projectileLevel);
             }
 
-            if(this.maxLingeringTicks <= 0)
-                this.discard();
+            if(this.maxLingeringTicks <= 0 && bounces >= getMaxBounces()) {
+                this.onDestroy();
+            }
         }
 
-        if (!isLingering()) {
+        if (!isLingering() && (bounces >= getMaxBounces() || hitWasTriggeredByLifespanOrDistance)) {
             setLingering(true);
             // These power variables drive the movement of the entity in the parent tick() function, so we need to zero them out as well.
             setDeltaMovement(Vec3.ZERO);
+        } else if (bounces < getMaxBounces()) {
+            if(wasEntity) {
+                reflect();
+            } else {
+                bounce(direction);
+            }
         }
     }
 

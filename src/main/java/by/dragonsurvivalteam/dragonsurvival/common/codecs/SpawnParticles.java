@@ -43,9 +43,9 @@ public record SpawnParticles(ParticleOptions particle, SpawnParticlesEffect.Posi
         for(int i = 0; i < count; ++i) {
             level.sendParticles(
                     this.particle,
-                    blockPos.getX() + this.horizontalPosition.getCoordinate(0.5D, 0.5D, 0.0F, level.random),
-                    blockPos.getY() + this.verticalPosition.getCoordinate(0.5D, 0.5D, 0.0F, level.random),
-                    blockPos.getZ() + this.horizontalPosition.getCoordinate(0.5D, 0.5D, 0.0F, level.random),
+                    blockPos.getX() + this.horizontalPosition.getCoordinate(0.5D, 0.5D, 1.0F, level.random),
+                    blockPos.getY() + this.verticalPosition.getCoordinate(0.5D, 0.5D, 1.0F, level.random),
+                    blockPos.getZ() + this.horizontalPosition.getCoordinate(0.5D, 0.5D, 1.0F, level.random),
                     1,
                     this.horizontalVelocity.getVelocity(0.0D, level.random),
                     this.verticalVelocity.getVelocity(0.0D, level.random),

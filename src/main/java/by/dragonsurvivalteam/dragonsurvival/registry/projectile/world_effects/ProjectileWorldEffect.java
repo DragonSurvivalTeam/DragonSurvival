@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.projectile.world_effects;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.registry.projectile.common_effects.ProjectileParticleEffect;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Registry;
@@ -38,6 +39,7 @@ public interface ProjectileWorldEffect {
         if (event.getRegistry() == REGISTRY) {
             event.register(REGISTRY_KEY, DragonSurvival.res("explosion"), () -> ProjectileExplosionEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("lightning"), () -> ProjectileLightningWorldEffect.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("particle"), () -> ProjectileParticleEffect.CODEC);
         }
     }
 }

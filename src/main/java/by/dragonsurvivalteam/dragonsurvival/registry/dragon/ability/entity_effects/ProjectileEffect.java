@@ -85,6 +85,7 @@ public record ProjectileEffect(
                         projectileData.blockHitEffects(),
                         data.onDestroyEffects(),
                         ability.level(),
+                        (int) data.maxBounces().calculate(ability.level()),
                         (int) data.maxLingeringTicks().calculate(ability.level()),
                         (int) data.maxMoveDistance().calculate(ability.level()),
                         (int) data.maxLifespan().calculate(ability.level()),

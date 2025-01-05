@@ -34,7 +34,7 @@ public record ProjectileAreaTarget(Either<Either<ProjectileTargeting.BlockTarget
 
     public void apply(final Projectile projectile, final int projectileLevel) {
         if (target.right().isPresent()) {
-            Functions.logOrThrow("Point target must be a world target");
+            Functions.logOrThrow("Area target cannot be a world target");
             return;
         }
 

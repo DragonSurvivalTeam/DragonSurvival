@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.projectile.block_effects;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.registry.projectile.common_effects.ProjectileParticleEffect;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -37,7 +38,7 @@ public interface ProjectileBlockEffect {
     @SubscribeEvent
     static void registerEntries(final RegisterEvent event) {
         if (event.getRegistry() == REGISTRY) {
-            // Fill with entries as we add them
+            event.register(REGISTRY_KEY, DragonSurvival.res("particle"), () -> ProjectileParticleEffect.CODEC);
         }
     }
 }
