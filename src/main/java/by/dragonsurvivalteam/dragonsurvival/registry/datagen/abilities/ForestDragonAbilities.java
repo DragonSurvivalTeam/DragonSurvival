@@ -34,6 +34,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.projectile.ProjectileData;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.Projectiles;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.datafixers.util.Either;
+import net.minecraft.advancements.critereon.EntityFlagsPredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
@@ -237,7 +238,7 @@ public class ForestDragonAbilities {
                         Optional.empty(),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(1))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
-                        true,
+                        false,
                         Activation.Sound.of(null, null, null, SoundEvents.UI_TOAST_IN),
                         Optional.of(new Activation.Animations(
                                 Optional.of(Either.right(new SimpleAbilityAnimation(SimpleAbilityAnimation.CAST_MASS_BUFF, AnimationLayer.BASE, 2, true, true))),
@@ -246,7 +247,7 @@ public class ForestDragonAbilities {
                         ))
                 ),
                 Optional.of(new LevelUpgrade(3, LevelBasedValue.lookup(List.of(0f, 15f, 35f), LevelBasedValue.perLevel(15)))),
-                Optional.empty(),
+                Optional.of(Condition.thisEntity(EntityPredicate.Builder.entity().flags(EntityFlagsPredicate.Builder.flags().setOnGround(false)).build()).build()),
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(
                         PotionEffect.single(LevelBasedValue.perLevel(1), LevelBasedValue.constant(Functions.secondsToTicks(200)), MobEffects.DIG_SPEED),
                         AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
@@ -266,7 +267,7 @@ public class ForestDragonAbilities {
                         Optional.empty(),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(2))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
-                        true,
+                        false,
                         Activation.Sound.of(null, null, null, SoundEvents.UI_TOAST_IN),
                         Optional.of(new Activation.Animations(
                                 Optional.of(Either.right(new SimpleAbilityAnimation(SimpleAbilityAnimation.CAST_SELF_BUFF, AnimationLayer.BASE, 2, true, true))),
@@ -275,7 +276,7 @@ public class ForestDragonAbilities {
                         ))
                 ),
                 Optional.of(new LevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 25f, 35f, 55f), LevelBasedValue.perLevel(15)))),
-                Optional.empty(),
+                Optional.of(Condition.thisEntity(EntityPredicate.Builder.entity().flags(EntityFlagsPredicate.Builder.flags().setOnGround(false)).build()).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         PotionEffect.single(LevelBasedValue.perLevel(1), LevelBasedValue.perLevel(Functions.secondsToTicks(30)), DSEffects.HUNTER),
                         AbilityTargeting.EntityTargetingMode.TARGET_ALLIES

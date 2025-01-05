@@ -88,12 +88,12 @@ public class DragonAbilityInstance {
             if (value().usageBlocked().map(condition -> condition.test(Condition.createContext(serverPlayer))).orElse(false)) {
                 if(isEnabled()) {
                     setEnabled(false, false);
-                    PacketDistributor.sendToServer(new SyncAbilityEnabled(ability.getKey(), false, false));
+                    PacketDistributor.sendToPlayer(serverPlayer, new SyncAbilityEnabled(ability.getKey(), false, false));
                 }
             } else if(!manuallyDisabled) {
                 if(!isEnabled()) {
                     setEnabled(true, false);
-                    PacketDistributor.sendToServer(new SyncAbilityEnabled(ability.getKey(), true, false));
+                    PacketDistributor.sendToPlayer(serverPlayer, new SyncAbilityEnabled(ability.getKey(), true, false));
                 }
             }
         }

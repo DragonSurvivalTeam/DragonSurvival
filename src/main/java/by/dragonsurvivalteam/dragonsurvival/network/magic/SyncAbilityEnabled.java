@@ -36,6 +36,14 @@ public record SyncAbilityEnabled(ResourceKey<DragonAbility> ability, boolean isE
         });
     }
 
+    public static void handleClient(final SyncAbilityEnabled packet, final IPayloadContext context) {
+        context.enqueueWork(() -> {
+            MagicData data = MagicData.getData(context.player());
+            DragonAbilityInstance ability = data.getAbilities().get(packet.ability());
+            ability.setEnabled(packet.isEnabled(), packet.wasDoneManually());
+        });
+    }
+
     @Override
     public @NotNull Type<? extends CustomPacketPayload> type() {
         return TYPE;
