@@ -992,7 +992,7 @@
   "dragonsurvival.gui.message.target_too_small": "The dragon you are riding is too young. To ride a dragon as a human, the dragon must be an adult.",
   "dragonsurvival.gui.skin_screen.help": "■ §6Skin§r is a texture for your dragon. There are two types of skins: built-in and custom. \n■ §6Custom skin§r§f you can draw yourself and upload to our github so that all players can see this texture.\n§7■ If you are interested in how to make your own skin or take a commission, use the buttons on the right.",
   "dragonsurvival.gui.skin_screen.open_editor": "Open Editor",
-  "dragonsurvival.gui.skin_screen.random_info": "■ Shows a randomly selected §6other player§r§f who uploaded a skin.\n■ §7 You §ccan't use§r§f§7 their appearance for yourself! Only look and admire! >:D",
+  "dragonsurvival.gui.skin_screen.random_info": "■ Shows a randomly selected §6other player§r§f who uploaded a skin.\n■§7 You §ccan't use§r§f§7 their skins for yourself! Only look and admire! >:D",
   "dragonsurvival.gui.skin_screen.settings": "Skin Settings",
   "dragonsurvival.gui.skin_screen.show_custom_skin": "Show your custom skin",
   "dragonsurvival.gui.skin_screen.show_other_custom_skins": "Show custom player skins",

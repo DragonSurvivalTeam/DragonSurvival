@@ -28,8 +28,14 @@ public record SyncAbilityEnabled(ResourceKey<DragonAbility> ability, boolean isE
             MagicData data = MagicData.getData(context.player());
             DragonAbilityInstance ability = data.getAbilities().get(packet.ability());
 
-            if (context.player() instanceof ServerPlayer serverPlayer && !packet.isEnabled() && ability.isApplyingEffects()) {
-                ability.setActive(false, serverPlayer);
+            if (!packet.isEnabled() && ability.isApplyingEffects()) {
+                if (data.getCurrentlyCasting() != null && data.getCurrentlyCasting() == ability) {
+                    if(ability.isApplyingEffects()) {
+                        data.stopCasting(context.player(), true);
+                    } else {
+                        data.stopCasting(context.player());
+                    }
+                }
             }
 
             ability.setEnabled(packet.isEnabled(), packet.wasDoneManually());
@@ -40,6 +46,15 @@ public record SyncAbilityEnabled(ResourceKey<DragonAbility> ability, boolean isE
         context.enqueueWork(() -> {
             MagicData data = MagicData.getData(context.player());
             DragonAbilityInstance ability = data.getAbilities().get(packet.ability());
+
+            if (data.getCurrentlyCasting() != null && data.getCurrentlyCasting() == ability) {
+                if(ability.isApplyingEffects()) {
+                    data.stopCasting(context.player(), true);
+                } else {
+                    data.stopCasting(context.player());
+                }
+            }
+
             ability.setEnabled(packet.isEnabled(), packet.wasDoneManually());
         });
     }

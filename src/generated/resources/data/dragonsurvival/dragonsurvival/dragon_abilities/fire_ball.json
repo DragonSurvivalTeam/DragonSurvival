@@ -95,10 +95,10 @@
     "condition": "minecraft:entity_properties",
     "entity": "this",
     "predicate": {
-      "location": {
-        "fluid": {
-          "fluids": "#minecraft:water"
-        }
+      "type_specific": {
+        "type": "dragonsurvival:custom_predicates",
+        "eye_in_fluid": "minecraft:water",
+        "weather_predicate": {}
       }
     }
   }

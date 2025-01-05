@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationLayer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.SimpleAbilityAnimation;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.CustomPredicates;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.DragonPredicate;
 import by.dragonsurvivalteam.dragonsurvival.common.conditions.EntityCondition;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.LargeFireParticleOption;
@@ -160,7 +161,7 @@ public class CaveDragonAbilities {
                         ))
                 ),
                 Optional.of(new LevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 10f, 30f, 50f), LevelBasedValue.perLevel(15)))),
-                Optional.of(Condition.thisEntity(EntityCondition.isInFluid(context.lookup(BuiltInRegistries.FLUID.key()).getOrThrow(FluidTags.WATER))).build()),
+                Optional.of(Condition.thisEntity(EntityPredicate.Builder.entity().subPredicate(CustomPredicates.Builder.start().eyeInFluid(NeoForgeMod.WATER_TYPE).build()).build()).build()),
                 List.of(new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
                                 Condition.thisEntity(EntityCondition.isLiving()).build(),
                                 List.of(
@@ -205,7 +206,7 @@ public class CaveDragonAbilities {
                         ))
                 ),
                 Optional.of(new LevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 20f, 40f, 45f), LevelBasedValue.perLevel(15)))),
-                Optional.of(Condition.thisEntity(EntityCondition.isInFluid(context.lookup(BuiltInRegistries.FLUID.key()).getOrThrow(FluidTags.WATER))).build()),
+                Optional.of(Condition.thisEntity(EntityPredicate.Builder.entity().subPredicate(CustomPredicates.Builder.start().eyeInFluid(NeoForgeMod.WATER_TYPE).build()).build()).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         Condition.thisEntity(EntityCondition.isLiving()).build(),
                         List.of(new ProjectileEffect(
