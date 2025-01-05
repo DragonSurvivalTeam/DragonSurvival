@@ -26,6 +26,7 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
@@ -64,6 +65,7 @@ public class DragonSpeciesScreen extends Screen {
     private DietMenuComponent dietMenu;
     private Holder<DragonStage> dragonStage;
     private HoverButton growthButton;
+    private ExtendedButton speciesBanner;
     private ScrollableComponent crystalBar;
 
     private int guiLeft;
@@ -132,7 +134,16 @@ public class DragonSpeciesScreen extends Screen {
             component.update();
         }
 
-        super.render(graphics, mouseX, mouseY, partialTick);
+        this.renderBackground(graphics, mouseX, mouseY, partialTick);
+
+        // Hack to absolutely ensure the banner is rendered behind everything else
+        speciesBanner.render(graphics, mouseX, mouseY, partialTick);
+
+        for (Renderable renderable : this.renderables) {
+            if(renderable != speciesBanner) {
+                renderable.render(graphics, mouseX, mouseY, partialTick);
+            }
+        }
     }
 
     @Override
@@ -163,7 +174,7 @@ public class DragonSpeciesScreen extends Screen {
         renderables.add(dietMenu);
 
         // Dragon species banner
-        ExtendedButton speciesBanner = new ExtendedButton(startX + 17, startY - 22, 49, 147, Component.empty(), button -> {}){
+        speciesBanner = new ExtendedButton(startX + 17, startY - 22, 49, 147, Component.empty(), button -> {}){
             private boolean isTop(double mouseY) {
                 return mouseY > getY() + 6 && mouseY < getY() + 100;
             }
