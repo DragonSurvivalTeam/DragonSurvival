@@ -88,7 +88,7 @@ public class InventoryScreenHandler {
         if (screen instanceof InventoryScreen) {
             Player player = Minecraft.getInstance().player;
             AltarData data = AltarData.getData(player);
-            if (altarOpenButton == null) {
+            if (altarOpenButton != null) {
                 altarOpenButton.visible = !data.hasUsedAltar;
             }
         }

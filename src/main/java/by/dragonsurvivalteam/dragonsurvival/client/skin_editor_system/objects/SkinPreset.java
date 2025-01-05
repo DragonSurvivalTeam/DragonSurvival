@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects;
 
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DefaultPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
@@ -13,6 +14,7 @@ import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class SkinPreset implements INBTSerializable<CompoundTag> {
     private static final String MODEL = "model";
@@ -21,6 +23,12 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
     private final Lazy<HashMap<ResourceKey<DragonStage>, Lazy<DragonStageCustomization>>> skins = Lazy.of(this::initialize);
     private ResourceKey<DragonSpecies> type;
     private ResourceLocation model = DragonBody.DEFAULT_MODEL;
+
+    public boolean isEmpty() {
+        return skins.get().values().stream().allMatch(
+                dragonStageCustomizationLazy -> dragonStageCustomizationLazy.get().layerSettings.values().stream().allMatch(
+                        layerSettingsLazy -> Objects.equals(layerSettingsLazy.get().partKey, DefaultPartLoader.NO_PART)));
+    }
 
     public void setAllStagesToUseDefaultSkin(boolean defaultSkin) {
         for (ResourceKey<DragonStage> dragonStage : ResourceHelper.keys(null, DragonStage.REGISTRY)) {

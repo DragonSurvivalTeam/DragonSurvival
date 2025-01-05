@@ -102,7 +102,7 @@ public class DragonAltarScreen extends Screen {
         AltarData data = AltarData.getData(player);
         data.isInAltar = false;
 
-        if (data.hasUsedAltar) {
+        if (!data.hasUsedAltar) {
             player.displayClientMessage(Component.translatable(NO_CHOICE), false);
         }
     }
