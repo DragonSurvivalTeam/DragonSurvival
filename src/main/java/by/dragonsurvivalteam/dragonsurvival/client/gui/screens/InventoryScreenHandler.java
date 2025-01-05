@@ -91,6 +91,12 @@ public class InventoryScreenHandler {
             if (altarOpenButton != null) {
                 altarOpenButton.visible = !data.hasUsedAltar;
             }
+
+            if(!DragonStateProvider.isDragon(player)) {
+                if (altarOpenButton != null) {
+                    altarOpenButton.visible = false;
+                }
+            }
         }
     }
 
