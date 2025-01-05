@@ -327,14 +327,15 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         this.renderAbilities = renderAbilities;
     }
 
-    public void refresh(final ServerPlayer player, final Holder<DragonSpecies> type) {
-        if (type == null) {
+    public void refresh(final ServerPlayer player, final Holder<DragonSpecies> currentSpecies) {
+        // Make sure we remove any passive effects for abilities that are no longer available
+        abilities.values().forEach(perSpecies -> perSpecies.values().forEach(ability -> ability.setActive(false, player)));;
+
+        if (currentSpecies == null) {
             return;
         }
 
-        // Make sure we remove any passive effects for abilities that are no longer available
-        abilities.values().forEach(perSpecies -> perSpecies.values().forEach(ability -> ability.setActive(false, player)));;
-        currentSpecies = type.getKey();
+        this.currentSpecies = currentSpecies.getKey();
 
         // Make sure we remove any passive effects for abilities that are no longer available
         for (DragonAbilityInstance instance : getAbilities().values()) {
@@ -346,7 +347,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
         int slot = 0;
 
-        for (Holder<DragonAbility> ability : type.value().abilities()) {
+        for (Holder<DragonAbility> ability : currentSpecies.value().abilities()) {
             UpgradeType<?> upgrade = ability.value().upgrade().orElse(null);
             DragonAbilityInstance instance;
 

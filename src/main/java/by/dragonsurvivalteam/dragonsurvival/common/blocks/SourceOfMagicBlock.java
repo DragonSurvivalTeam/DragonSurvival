@@ -512,15 +512,15 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
     @Override
     public BlockEntity newBlockEntity(@NotNull final BlockPos position, final BlockState state) {
         if (!state.getValue(PRIMARY_BLOCK)) {
-            return DSTileEntities.SOURCE_OF_MAGIC_PLACEHOLDER.get().create(position, state);
+            return DSBlockEntities.SOURCE_OF_MAGIC_PLACEHOLDER.get().create(position, state);
         }
 
-        return DSTileEntities.SOURCE_OF_MAGIC_TILE_ENTITY.get().create(position, state);
+        return DSBlockEntities.SOURCE_OF_MAGIC_TILE_ENTITY.get().create(position, state);
     }
 
     @Override
     public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(final Level level, @NotNull final BlockState state, @NotNull final BlockEntityType<T> type) {
-        return level.isClientSide ? null : BaseEntityBlock.createTickerHelper(type, DSTileEntities.SOURCE_OF_MAGIC_TILE_ENTITY.get(), SourceOfMagicBlockEntity::serverTick);
+        return level.isClientSide ? null : BaseEntityBlock.createTickerHelper(type, DSBlockEntities.SOURCE_OF_MAGIC_TILE_ENTITY.get(), SourceOfMagicBlockEntity::serverTick);
     }
 
     public boolean isMagic(final BlockState state) {

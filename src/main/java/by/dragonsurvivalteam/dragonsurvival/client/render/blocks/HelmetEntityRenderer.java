@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render.blocks;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
-import by.dragonsurvivalteam.dragonsurvival.server.tileentity.HelmetTileEntity;
+import by.dragonsurvivalteam.dragonsurvival.server.tileentity.HelmetBlockEntity;
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
-public class HelmetEntityRenderer implements BlockEntityRenderer<HelmetTileEntity> {
+public class HelmetEntityRenderer implements BlockEntityRenderer<HelmetBlockEntity> {
     private static final Map<Block, ResourceLocation> TEXTURE_BY_TYPE = Util.make(Maps.newHashMap(), resourceLocationHashMap -> {
         resourceLocationHashMap.put(DSBlocks.GRAY_KNIGHT_HELMET.get(), ResourceLocation.fromNamespaceAndPath(MODID, "textures/block/gray_knight_helmet.png"));
         resourceLocationHashMap.put(DSBlocks.GOLDEN_KNIGHT_HELMET.get(), ResourceLocation.fromNamespaceAndPath(MODID, "textures/block/golden_knight_helmet.png"));
@@ -37,7 +37,7 @@ public class HelmetEntityRenderer implements BlockEntityRenderer<HelmetTileEntit
     }
 
     @Override
-    public void render(HelmetTileEntity helmetEntity, float p_225616_2_, PoseStack PoseStack, MultiBufferSource renderTypeBuffer, int p_225616_5_, int p_225616_6_) {
+    public void render(HelmetBlockEntity helmetEntity, float p_225616_2_, PoseStack PoseStack, MultiBufferSource renderTypeBuffer, int p_225616_5_, int p_225616_6_) {
         BlockState blockstate = helmetEntity.getBlockState();
         float f1 = 22.5F * blockstate.getValue(SkullBlock.ROTATION);
         renderHelmet(null, f1, blockstate.getBlock(), 0, PoseStack, renderTypeBuffer, p_225616_5_);

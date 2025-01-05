@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonBeaconData;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.SourceOfMagicData;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.items.*;
@@ -353,6 +354,36 @@ public class DSItems {
                                     new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_HEART.value(), Functions.secondsToTicks(300))
                             ),
                             List.of(BuiltInDragonSpecies.SEA)
+                    ))
+    ));
+
+    public static final Holder<Item> CAVE_DRAGON_BEACON = DS_ITEMS.register("cave_dragon_beacon", () -> new DragonBeaconItem(
+            DSBlocks.CAVE_DRAGON_BEACON.get(),
+            new Item.Properties().rarity(Rarity.EPIC)
+                    .component(DSDataComponents.DRAGON_BEACON, new DragonBeaconData(
+                            DragonBeaconData.createEffects(Functions.secondsToTicks(20), 0, DSEffects.FIRE, DSEffects.STURDY_SKIN),
+                            List.of(BuiltInDragonSpecies.CAVE),
+                            new DragonBeaconData.PaymentData(60, 30, 0)
+                    ))
+    ));
+
+    public static final Holder<Item> FOREST_DRAGON_BEACON = DS_ITEMS.register("forest_dragon_beacon", () -> new DragonBeaconItem(
+            DSBlocks.FOREST_DRAGON_BEACON.get(),
+            new Item.Properties().rarity(Rarity.EPIC)
+                    .component(DSDataComponents.DRAGON_BEACON, new DragonBeaconData(
+                            DragonBeaconData.createEffects(Functions.secondsToTicks(20), 0, DSEffects.PEACE, DSEffects.ANIMAL_PEACE),
+                            List.of(BuiltInDragonSpecies.FOREST),
+                            new DragonBeaconData.PaymentData(60, 30, 0)
+                    ))
+    ));
+
+    public static final Holder<Item> SEA_DRAGON_BEACON = DS_ITEMS.register("sea_dragon_beacon", () -> new DragonBeaconItem(
+            DSBlocks.SEA_DRAGON_BEACON.get(),
+            new Item.Properties().rarity(Rarity.EPIC)
+                    .component(DSDataComponents.DRAGON_BEACON, new DragonBeaconData(
+                            DragonBeaconData.createEffects(Functions.secondsToTicks(20), 0, DSEffects.MAGIC, MobEffects.DIG_SPEED),
+                            List.of(BuiltInDragonSpecies.SEA),
+                            new DragonBeaconData.PaymentData(60, 30, 0)
                     ))
     ));
 

@@ -34,19 +34,15 @@ import com.mojang.datafixers.util.Either;
 import net.minecraft.advancements.critereon.EntityFlagsPredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
-import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.NeoForgeMod;
 
 import java.util.List;
@@ -245,13 +241,7 @@ public class CaveDragonAbilities {
                 Optional.of(new LevelUpgrade(3, LevelBasedValue.lookup(List.of(0f, 15f, 35f), LevelBasedValue.perLevel(15)))),
                 Optional.of(Condition.thisEntity(EntityPredicate.Builder.entity().flags(EntityFlagsPredicate.Builder.flags().setOnGround(false)).build()).build()),
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(
-                        ModifierEffect.single(new ModifierWithDuration(
-                                STURDY_SKIN_MODIFIER,
-                                DragonSurvival.res("textures/modifiers/sturdy_skin.png"),
-                                List.of(new Modifier(Attributes.ARMOR, LevelBasedValue.constant(3), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
-                                LevelBasedValue.perLevel(Functions.secondsToTicks(60)),
-                                false
-                        )),
+                        PotionEffect.single(LevelBasedValue.constant(0), LevelBasedValue.perLevel(Functions.secondsToTicks(60)), DSEffects.STURDY_SKIN),
                         AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
                 ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(

@@ -48,12 +48,15 @@ public class DragonAbilityInstance {
 
     private final Holder<DragonAbility> ability;
     private int level;
+    /** Indicates that the ability is blocked due to the 'usage_blocked' condition */
     private boolean isEnabled;
+    /** Indicates that the player CTRL-clicked the ability in the ability screen */
     private boolean manuallyDisabled;
+    /** Indicates that the ability is able to apply its effects */
+    private boolean isActive;
 
     private int currentTick;
     private int cooldown;
-    private boolean isActive;
 
     public DragonAbilityInstance(final Holder<DragonAbility> ability, int level) {
         this(ability, level, true);
@@ -84,17 +87,16 @@ public class DragonAbilityInstance {
             cooldown = Math.max(NO_COOLDOWN, cooldown - 1);
         }
 
-        if(dragon instanceof ServerPlayer serverPlayer) {
+        if (dragon instanceof ServerPlayer serverPlayer) {
             if (value().usageBlocked().map(condition -> condition.test(Condition.createContext(serverPlayer))).orElse(false)) {
-                if(isEnabled()) {
+                // This is checked separately otherwise abilities will spam-switch between enabled and disabled when jumping e.g.
+                if (isEnabled()) {
                     setEnabled(false, false);
                     PacketDistributor.sendToPlayer(serverPlayer, new SyncAbilityEnabled(ability.getKey(), false, false));
                 }
-            } else if(!manuallyDisabled) {
-                if(!isEnabled()) {
-                    setEnabled(true, false);
-                    PacketDistributor.sendToPlayer(serverPlayer, new SyncAbilityEnabled(ability.getKey(), true, false));
-                }
+            } else if (!manuallyDisabled && !isEnabled()) {
+                setEnabled(true, false);
+                PacketDistributor.sendToPlayer(serverPlayer, new SyncAbilityEnabled(ability.getKey(), true, false));
             }
         }
 
@@ -335,7 +337,8 @@ public class DragonAbilityInstance {
 
     public void setEnabled(boolean isEnabled, boolean manuallyDisabled) {
         this.isEnabled = isEnabled;
-        if(!isEnabled) {
+
+        if (!isEnabled) {
             this.manuallyDisabled = manuallyDisabled;
         } else {
             this.manuallyDisabled = false;

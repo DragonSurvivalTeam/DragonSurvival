@@ -62,7 +62,7 @@ public class DragonBeaconRenderer implements BlockEntityRenderer<DragonBeaconBlo
             }
         }
 
-        float f1 = Mth.sin((dragonBeaconEntity.tick + v) / 20.0F + dragonBeaconEntity.bobOffs) * 0.1F + 0.1F;
+        float f1 = Mth.sin((dragonBeaconEntity.tick + v) / 20.0F + dragonBeaconEntity.bobOffset) * 0.1F + 0.1F;
         PoseStack.translate(0.5, 0.25 + f1 / 2f, 0.5);
         PoseStack.mulPose(Axis.YP.rotationDegrees(dragonBeaconEntity.tick));
         PoseStack.scale(2, 2, 2);

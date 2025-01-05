@@ -9,7 +9,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,14 +27,8 @@ public record SyncAbilityEnabled(ResourceKey<DragonAbility> ability, boolean isE
             MagicData data = MagicData.getData(context.player());
             DragonAbilityInstance ability = data.getAbilities().get(packet.ability());
 
-            if (!packet.isEnabled() && ability.isApplyingEffects()) {
-                if (data.getCurrentlyCasting() != null && data.getCurrentlyCasting() == ability) {
-                    if(ability.isApplyingEffects()) {
-                        data.stopCasting(context.player(), true);
-                    } else {
-                        data.stopCasting(context.player());
-                    }
-                }
+            if (!packet.isEnabled() && ability.isApplyingEffects() && ability == data.getCurrentlyCasting()) {
+                data.stopCasting(context.player(), true);
             }
 
             ability.setEnabled(packet.isEnabled(), packet.wasDoneManually());
@@ -48,7 +41,7 @@ public record SyncAbilityEnabled(ResourceKey<DragonAbility> ability, boolean isE
             DragonAbilityInstance ability = data.getAbilities().get(packet.ability());
 
             if (data.getCurrentlyCasting() != null && data.getCurrentlyCasting() == ability) {
-                if(ability.isApplyingEffects()) {
+                if (ability.isApplyingEffects()) {
                     data.stopCasting(context.player(), true);
                 } else {
                     data.stopCasting(context.player());

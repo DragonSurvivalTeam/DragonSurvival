@@ -19,6 +19,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
@@ -557,26 +558,26 @@ public class DSBlocks {
 
     @Translation(type = Translation.Type.BLOCK, comments = "Forest Dragon Beacon")
     @Translation(type = Translation.Type.DESCRIPTION_ADDITION, comments = "■§7 Gives the effects §2«Forest Magic»§r and §2«Haste»§r. Best for forest dragons. You can buy an effect by pressing the right button in exchange for experience.")
-    public static final DeferredHolder<Block, DragonBeacon> FOREST_DRAGON_BEACON = register(
+    public static final DeferredHolder<Block, DragonBeacon> FOREST_DRAGON_BEACON = DS_BLOCKS.register(
             "forest_dragon_beacon",
             () -> new DragonBeacon(EMPTY_DRAGON_BEACON.get().properties()
-                    .lightLevel(value -> value.getValue(DragonBeacon.LIT) ? 15 : 0))
+                    .lightLevel(value -> value.getValue(BlockStateProperties.LIT) ? 15 : 0))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Sea Dragon Beacon")
     @Translation(type = Translation.Type.DESCRIPTION_ADDITION, comments = "■§7 Gives the effects §2«Sea Peace»§r and §2«Animal Calm»§r. Best for sea dragons. Peaceful animals stop running away from the dragon. You can buy an effect by pressing the right button in exchange for experience.")
-    public static final DeferredHolder<Block, DragonBeacon> SEA_DRAGON_BEACON = register(
+    public static final DeferredHolder<Block, DragonBeacon> SEA_DRAGON_BEACON = DS_BLOCKS.register(
             "sea_dragon_beacon",
             () -> new DragonBeacon(EMPTY_DRAGON_BEACON.get().properties()
-                    .lightLevel(value -> value.getValue(DragonBeacon.LIT) ? 15 : 0))
+                    .lightLevel(value -> value.getValue(BlockStateProperties.LIT) ? 15 : 0))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Cave Dragon Beacon")
     @Translation(type = Translation.Type.DESCRIPTION_ADDITION, comments = "■§7 Gives the effects §2«Cave Fire»§r and §2«Sturdy Skin»§r. Gives extra armor. Best for cave dragons. You can buy an effect by pressing the right button in exchange for experience.")
-    public static final DeferredHolder<Block, DragonBeacon> CAVE_DRAGON_BEACON = register(
+    public static final DeferredHolder<Block, DragonBeacon> CAVE_DRAGON_BEACON = DS_BLOCKS.register(
             "cave_dragon_beacon",
             () -> new DragonBeacon(EMPTY_DRAGON_BEACON.get().properties()
-                    .lightLevel(value -> value.getValue(DragonBeacon.LIT) ? 15 : 0))
+                    .lightLevel(value -> value.getValue(BlockStateProperties.LIT) ? 15 : 0))
     );
 
     // --- Treasures --- //

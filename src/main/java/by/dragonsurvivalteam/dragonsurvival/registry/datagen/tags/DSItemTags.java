@@ -23,11 +23,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.concurrent.CompletableFuture;
 
 public class DSItemTags extends ItemTagsProvider {
-    public static final TagKey<Item> KEEP_EFFECTS = key("keep_effects");
-    public static final TagKey<Item> SEA_DRAGON_HYDRATION = key("sea_dragon_hydration");
     public static final TagKey<Item> LIGHT_ARMOR = key("light_armor");
     public static final TagKey<Item> DARK_ARMOR = key("dark_armor");
+    /** Items that are considered weapons for the claw tool slot */
     public static final TagKey<Item> CLAW_WEAPONS = key("claw_weapons");
+
+    public static final TagKey<Item> TRANSFORM_BEACON_CAVE = key("transform_beacon_cave");
+    public static final TagKey<Item> TRANSFORM_BEACON_FOREST = key("transform_beacon_forest");
+    public static final TagKey<Item> TRANSFORM_BEACON_SEA = key("transform_beacon_sea");
 
     // Used in recipes
     public static final TagKey<Item> DRAGON_ALTARS = key("dragon_altars");
@@ -60,29 +63,21 @@ public class DSItemTags extends ItemTagsProvider {
             }
         });
 
-        // Effects from these items are kept even if they're not the correct food for the dragon
-        tag(KEEP_EFFECTS)
-                .addOptional(ResourceLocation.fromNamespaceAndPath("gothic", "elixir_of_speed"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("gothic", "elixir_of_health"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("gothic", "elixir_of_mental_cleansing"));
-
-        // Additional usable modded items which hydrate the sea dragon
-        tag(SEA_DRAGON_HYDRATION)
-                .addOptional(DragonSurvival.location("immersive_weathering", "icicle"));
-
-        // Items that are considered weapons for the claw tool slot
         tag(CLAW_WEAPONS)
                 .addTag(ItemTags.SWORDS)
                 .addTag(Tags.Items.MELEE_WEAPON_TOOLS);
 
-        // FIXME
-//        tag(CHARRED_FOOD)
-//                .add(DSItems.CHARGED_COAL.value())
-//                .add(DSItems.CHARGED_SOUP.value())
-//                .add(DSItems.CHARRED_MEAT.value())
-//                .add(DSItems.CHARRED_MUSHROOM.value())
-//                .add(DSItems.CHARRED_SEAFOOD.value())
-//                .add(DSItems.CHARRED_VEGETABLE.value());
+        tag(TRANSFORM_BEACON_CAVE).add(Items.NETHERITE_INGOT);
+        tag(TRANSFORM_BEACON_FOREST).add(Items.GOLD_BLOCK);
+        tag(TRANSFORM_BEACON_SEA).add(Items.DIAMOND_BLOCK);
+
+        tag(CHARRED_FOOD)
+                .add(DSItems.CHARGED_COAL.value())
+                .add(DSItems.CHARGED_SOUP.value())
+                .add(DSItems.CHARRED_MEAT.value())
+                .add(DSItems.CHARRED_MUSHROOM.value())
+                .add(DSItems.CHARRED_SEAFOOD.value())
+                .add(DSItems.CHARRED_VEGETABLE.value());
 
         tag(COLD_ITEMS)
                 .add(Items.SNOWBALL)

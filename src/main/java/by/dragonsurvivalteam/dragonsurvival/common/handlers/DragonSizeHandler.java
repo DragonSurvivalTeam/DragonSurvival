@@ -16,6 +16,7 @@ import net.neoforged.neoforge.event.entity.EntityEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -37,7 +38,7 @@ public class DragonSizeHandler {
     }
 
     @SubscribeEvent
-    public static void getDragonSize(EntityEvent.Size event) {
+    public static void getDragonSize(final EntityEvent.Size event) {
         if (!(event.getEntity() instanceof Player player)) {
             return;
         }
@@ -47,26 +48,28 @@ public class DragonSizeHandler {
         }
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
-        if(handler.previousPose == null) {
+
+        if (handler.previousPose == null) {
             handler.previousPose = overridePose(player);
         }
+
         EntityDimensions newDimensions = calculateDimensions(handler, player, handler.previousPose);
         event.setNewSize(new EntityDimensions(newDimensions.width(), newDimensions.height(), newDimensions.eyeHeight(), event.getOldSize().attachments(), event.getOldSize().fixed()));
     }
 
-    public static double calculateDragonHeight(DragonStateHandler handler, Player player) {
+    public static double calculateDragonHeight(final DragonStateHandler handler, final Player player) {
         double scale = player.getAttributeValue(Attributes.SCALE);
         double height = calculateRawDragonHeight(handler.getSize()) * handler.body().value().heightMultiplier();
         return applyPose(height * scale, overridePose(player), handler.body().value().hasExtendedCrouch());
     }
 
-    public static double calculateDragonEyeHeight(DragonStateHandler handler, Player player) {
+    public static double calculateDragonEyeHeight(final DragonStateHandler handler, final Player player) {
         double scale = player.getAttributeValue(Attributes.SCALE);
         double eyeHeight = calculateRawDragonEyeHeight(handler.getSize()) * handler.body().value().heightMultiplier();
         return applyPose(eyeHeight * scale, overridePose(player), handler.body().value().hasExtendedCrouch());
     }
 
-    public static EntityDimensions calculateDimensions(DragonStateHandler handler, Player player, Pose overridePose) {
+    public static EntityDimensions calculateDimensions(final DragonStateHandler handler, final Player player, @Nullable final Pose overridePose) {
         double scale = player.getAttributeValue(Attributes.SCALE);
         double height = calculateRawDragonHeight(handler.getSize()) * handler.body().value().heightMultiplier();
         double eyeHeight = calculateRawDragonEyeHeight(handler.getSize()) * handler.body().value().heightMultiplier();
@@ -90,12 +93,13 @@ public class DragonSizeHandler {
         return (11.0D * size + 54.0D) / 260.0D; // 0.8 -> Config Dragon Max
     }
 
-    public static double applyPose(double height, Pose pose, boolean hasExtendedCrouch) {
+    public static double applyPose(double height, @Nullable final Pose pose, boolean hasExtendedCrouch) {
         if (pose == Pose.CROUCHING) {
             height *= (hasExtendedCrouch ? 3d / 6d : 5d / 6d);
         } else if (pose == Pose.SWIMMING || pose == Pose.FALL_FLYING || pose == Pose.SPIN_ATTACK) {
             height *= 7.0D / 12.0D;
         }
+
         return height;
     }
 
@@ -120,31 +124,34 @@ public class DragonSizeHandler {
     }
 
     public static Pose getOverridePose(final Player player) {
-        if (player != null) {
-            Pose pose;
-            if (ServerFlightHandler.isFlying(player) && !player.isSleeping()) {
-                pose = Pose.FALL_FLYING;
-            } else if (SwimData.getData(player).canSwimIn(player.getMaxHeightFluidType()) && player.isSprinting() && !player.isPassenger()) {
-                pose = Pose.SWIMMING;
-            } else if (player.isAutoSpinAttack()) {
-                pose = Pose.SPIN_ATTACK;
-            } else if (player.isShiftKeyDown()) {
-                pose = Pose.CROUCHING;
-            } else {
-                pose = Pose.STANDING;
-            }
+        if (player == null) {
+            return Pose.STANDING;
+        }
 
-            if (player.isSpectator() || player.isPassenger() || canPoseFit(player, pose)) {
-                return pose;
-            } else if (canPoseFit(player, Pose.CROUCHING)) {
-                return Pose.CROUCHING;
-            }
+        Pose pose;
+
+        if (ServerFlightHandler.isFlying(player) && !player.isSleeping()) {
+            pose = Pose.FALL_FLYING;
+        } else if (SwimData.getData(player).canSwimIn(player.getMaxHeightFluidType()) && player.isSprinting() && !player.isPassenger()) {
+            pose = Pose.SWIMMING;
+        } else if (player.isAutoSpinAttack()) {
+            pose = Pose.SPIN_ATTACK;
+        } else if (player.isShiftKeyDown()) {
+            pose = Pose.CROUCHING;
+        } else {
+            pose = Pose.STANDING;
+        }
+
+        if (player.isSpectator() || player.isPassenger() || canPoseFit(player, pose)) {
+            return pose;
+        } else if (canPoseFit(player, Pose.CROUCHING)) {
+            return Pose.CROUCHING;
         }
 
         return Pose.STANDING;
     }
 
-    public static boolean canPoseFit(final Player player, final Pose pose) {
+    public static boolean canPoseFit(final Player player, @Nullable final Pose pose) {
         return player.level().noCollision(calculateDimensions(DragonStateProvider.getData(player), player, pose).makeBoundingBox(player.position()).deflate(1.0E-7));
     }
 

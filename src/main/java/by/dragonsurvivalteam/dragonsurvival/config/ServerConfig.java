@@ -4,7 +4,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.entity.creatures.AmbusherEnti
 import by.dragonsurvivalteam.dragonsurvival.config.obj.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
@@ -38,10 +37,6 @@ public class ServerConfig {
     })
     @ConfigOption(side = ConfigSide.SERVER, category = "general", key = "sync_claw_render")
     public static Boolean syncClawRender = true;
-
-    @Translation(key = "can_move_while_casting", type = Translation.Type.CONFIGURATION, comments = "If enabled the movement restrictions from casting certain abilities will be ignored")
-    @ConfigOption(side = ConfigSide.SERVER, category = "general", key = "can_move_while_casting")
-    public static Boolean canMoveWhileCasting = false;
 
     @Translation(key = "start_with_dragon_choice", type = Translation.Type.CONFIGURATION, comments = "If enabled players will be given a choice to select a dragon species when first joining the world")
     @ConfigOption(side = ConfigSide.SERVER, category = "general", key = "start_with_dragon_choice")
@@ -150,31 +145,6 @@ public class ServerConfig {
     @ConfigOption(side = ConfigSide.SERVER, category = "source_of_magic", key = "damage_on_wrong_source_of_magic")
     public static Boolean damageWrongSourceOfMagic = true;
 
-    @ConfigRange(min = 1, max = 10_000)
-    @Translation(key = "elder_dragon_dust_time", type = Translation.Type.CONFIGURATION, comments = "Duration (in seconds) of the infinite magic effect when using the elder dragon dust at a source of magic - Note that 10 seconds are spent waiting")
-    @ConfigOption(side = ConfigSide.SERVER, category = "source_of_magic", key = "elder_dragon_dust_time")
-    public static Integer elderDragonDustTime = 20;
-
-    @ConfigRange(min = 1, max = 10_000)
-    @Translation(key = "elder_dragon_bone_time", type = Translation.Type.CONFIGURATION, comments = "Duration (in seconds) of the infinite magic effect when using the elder dragon bone at a source of magic - Note that 10 seconds are spent waiting")
-    @ConfigOption(side = ConfigSide.SERVER, category = "source_of_magic", key = "elder_dragon_bone_time")
-    public static Integer elderDragonBoneTime = 60;
-
-    @ConfigRange(min = 1, max = 10_000)
-    @Translation(key = "weak_heart_shard_time", type = Translation.Type.CONFIGURATION, comments = "Duration (in seconds) of the infinite magic effect when using the weak heart shard at a source of magic - Note that 10 seconds are spent waiting")
-    @ConfigOption(side = ConfigSide.SERVER, category = "source_of_magic", key = "weak_heart_shard_time")
-    public static Integer weakHeartShardTime = 110;
-
-    @ConfigRange(min = 1, max = 10_000)
-    @Translation(key = "weak_dragon_heart_time", type = Translation.Type.CONFIGURATION, comments = "Duration (in seconds) of the infinite magic effect when using the weak dragon heart at a source of magic - Note that 10 seconds are spent waiting")
-    @ConfigOption(side = ConfigSide.SERVER, category = "source_of_magic", key = "weak_dragon_heart_time")
-    public static Integer weakDragonHeartTime = 310;
-
-    @ConfigRange(min = 1, max = 100_00)
-    @Translation(key = "elder_dragon_heart_time", type = Translation.Type.CONFIGURATION, comments = "Duration (in seconds) of the infinite magic effect when using the elder dragon heart at a source of magic - Note that 10 seconds are spent waiting")
-    @ConfigOption(side = ConfigSide.SERVER, category = "source_of_magic", key = "elder_dragon_heart_time")
-    public static Integer elderDragonHeartTime = 1010;
-
     // --- Penalties --- //
 
     @Translation(key = "dragons_are_scary", type = Translation.Type.CONFIGURATION, comments = "If enabled animals will try run away from dragons")
@@ -221,21 +191,12 @@ public class ServerConfig {
     @ConfigOption(side = ConfigSide.SERVER, category = {"magic", "abilities"}, key = "save_all_abilities")
     public static Boolean saveAllAbilities = false;
 
-    @Translation(key = "end_void_teleport", type = Translation.Type.CONFIGURATION, comments = "If enabled the player will be teleported to the overworld when they fall into the void in the end dimension")
-    @ConfigOption(side = ConfigSide.SERVER, category = "general", key = "end_void_teleport")
-    public static Boolean endVoidTeleport = true;
-
     // --- Dragon hunters --- //
 
     @ConfigRange(min = 1, max = 1000)
     @Translation(key = "pillager_experience_gain", type = Translation.Type.CONFIGURATION, comments = "How many experience points are gained when stealing from villagers")
     @ConfigOption(side = ConfigSide.SERVER, category = "dragon_hunters", key = "pillager_experience_gain")
     public static Integer pillageXPGain = 4;
-
-    @ConfigType(EntityType.class) // FIXME :: use tag
-    @Translation(key = "gives_hunter_omen_status", type = Translation.Type.CONFIGURATION, comments = "Determines which entities give the 'Hunter Omen' status when killed (aside from villagers)")
-    @ConfigOption(side = ConfigSide.SERVER, category = "dragon_hunters", key = "gives_hunter_omen_status", validation = Validation.RESOURCE_LOCATION)
-    public static List<String> hunterOmenStatusGivers = List.of("minecraft:iron_golem");
 
     @ConfigRange(min = 10d, max = 100)
     @Translation(key = "knight_health", type = Translation.Type.CONFIGURATION, comments = "Amount of health the knight has")
@@ -394,32 +355,4 @@ public class ServerConfig {
     @Translation(key = "leader_health", type = Translation.Type.CONFIGURATION, comments = "Amount of health the leader has")
     @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "leader"}, key = "leader_health")
     public static Double leaderHealth = 24d;
-
-    // --- Dragon beacons --- //
-
-    @ConfigRange(min = 1, max = 60 * 60)
-    @Translation(key = "beacon_effect_seconds", type = Translation.Type.CONFIGURATION, comments = "The duration (in seconds) of the effects the beacon is constantly applying")
-    @ConfigOption(side = ConfigSide.SERVER, category = "dragon_beacons", key = "beacon_effect_seconds")
-    public static Integer secondsOfBeaconEffect = 20;
-
-    @ConfigRange(min = 1, max = 60 * 2)
-    @Translation(key = "beacon_effect_minutes", type = Translation.Type.CONFIGURATION, comments = "The duration (in minutes) of the effect when exchanging experience points")
-    @ConfigOption(side = ConfigSide.SERVER, category = "dragon_beacons", key = "beacon_effect_minutes")
-    public static Integer minutesOfDragonEffect = 10;
-    // FIXME Please help me to fix this config. It doesn't work for buying in exchange for experience in beacon. My fix doesn't help, so I think the problem is deeper than I can solve it.
-
-    @ConfigType(MobEffect.class) // FIXME :: tag
-    @Translation(key = "forest_dragon_beacon", type = Translation.Type.CONFIGURATION, comments = "The effects which are granted by the forest dragon beacon")
-    @ConfigOption(side = ConfigSide.SERVER, category = "dragon_beacons", key = "forest_dragon_beacon", validation = Validation.RESOURCE_LOCATION)
-    public static List<String> forestDragonBeaconEffects = List.of("dragonsurvival:peace", "dragonsurvival:animal_peace");
-
-    @ConfigType(MobEffect.class) // FIXME :: tag
-    @Translation(key = "sea_dragon_beacon", type = Translation.Type.CONFIGURATION, comments = "The effects which are granted by the sea dragon beacon")
-    @ConfigOption(side = ConfigSide.SERVER, category = "dragon_beacons", key = "sea_dragon_beacon", validation = Validation.RESOURCE_LOCATION)
-    public static List<String> seaDragonBeaconEffects = List.of("dragonsurvival:magic", "minecraft:haste");
-
-    @ConfigType(MobEffect.class) // FIXME :: tag
-    @Translation(key = "fire_beacon_effects", type = Translation.Type.CONFIGURATION, comments = "The effects which are granted by the cave dragon beacon")
-    @ConfigOption(side = ConfigSide.SERVER, category = "dragon_beacons", key = "fire_beacon_effects", validation = Validation.RESOURCE_LOCATION)
-    public static List<String> caveDragonBeaconEffects = List.of("dragonsurvival:fire", "dragonsurvival:strong_leather");
 }

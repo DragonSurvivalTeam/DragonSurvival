@@ -51,7 +51,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.common.NeoForgeMod;
 
 import java.util.List;
 import java.util.Optional;
