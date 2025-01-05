@@ -16,7 +16,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.emotes.StopAllEmotes;
 import by.dragonsurvivalteam.dragonsurvival.network.emotes.SyncEmote;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.*;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.*;
-import by.dragonsurvivalteam.dragonsurvival.network.modifiers.SyncModifierWithDuration;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncModifierWithDuration;
 import by.dragonsurvivalteam.dragonsurvival.network.particle.SyncBreathParticles;
 import by.dragonsurvivalteam.dragonsurvival.network.particle.SyncParticleTrail;
 import by.dragonsurvivalteam.dragonsurvival.network.player.*;
@@ -53,6 +53,7 @@ public class NetworkHandler {
         registrar.playBidirectional(SyncDestructionEnabled.Data.TYPE, SyncDestructionEnabled.Data.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncDestructionEnabled::handleClient, SyncDestructionEnabled::handleServer));
         registrar.playBidirectional(SyncDragonPassengerID.Data.TYPE, SyncDragonPassengerID.Data.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncDragonPassengerID::handleClient, SyncDragonPassengerID::handleServer));
         registrar.playToClient(SyncFlyingPlayerAbility.TYPE, SyncFlyingPlayerAbility.STREAM_CODEC, SyncFlyingPlayerAbility::handleClient);
+        registrar.playToClient(SyncEffectModification.TYPE, SyncEffectModification.STREAM_CODEC, SyncEffectModification::handleClient);
 
         // Status
         registrar.playToClient(SyncGrowthState.Data.TYPE, SyncGrowthState.Data.STREAM_CODEC, SyncGrowthState::handleClient);

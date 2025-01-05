@@ -67,7 +67,7 @@ public class DragonAbilityInstance {
         this.level = level;
         this.isEnabled = isEnabled;
 
-        if (isEnabled && value().activation().type() == Activation.Type.PASSIVE) {
+        if (isEnabled && isPassive()) {
             this.isActive = true;
         }
     }
@@ -94,7 +94,7 @@ public class DragonAbilityInstance {
                     setEnabled(false, false);
                     PacketDistributor.sendToPlayer(serverPlayer, new SyncAbilityEnabled(ability.getKey(), false, false));
                 }
-            } else if (!manuallyDisabled && !isEnabled()) {
+            } else if (!manuallyDisabled && (!isEnabled() || /* Need to make sure to re-activate passive abilities */ !isActive && isPassive())) {
                 setEnabled(true, false);
                 PacketDistributor.sendToPlayer(serverPlayer, new SyncAbilityEnabled(ability.getKey(), true, false));
             }
@@ -243,7 +243,7 @@ public class DragonAbilityInstance {
     public void setActive(boolean isActive, final ServerPlayer player) {
         setActive(isActive);
 
-        if (!isActive && ability.value().activation().type() == Activation.Type.PASSIVE) {
+        if (!isActive && isPassive()) {
             // Also makes sure to remove any affects that are applied by the ability
             ability.value().actions().forEach(action -> action.remove(player, this));
         }
@@ -346,6 +346,8 @@ public class DragonAbilityInstance {
 
         if (!isEnabled) {
             setActive(false);
+        } else if (isPassive()) {
+            setActive(true);
         }
     }
 

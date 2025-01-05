@@ -28,7 +28,6 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -46,7 +45,7 @@ public record DamageModification(ResourceLocation id, HolderSet<DamageType> dama
             Codec.BOOL.optionalFieldOf("is_hidden", false).forGetter(DamageModification::isHidden)
     ).apply(instance, DamageModification::new));
 
-    public void apply(final ServerPlayer dragon, final Entity entity, final DragonAbilityInstance ability) {
+    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity) {
         DamageModifications data = entity.getData(DSDataAttachments.DAMAGE_MODIFICATIONS);
         Instance instance = data.get(id);
 
@@ -61,7 +60,7 @@ public record DamageModification(ResourceLocation id, HolderSet<DamageType> dama
         data.add(entity, new Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, id, getDescription(abilityLevel)), abilityLevel, newDuration));
     }
 
-    public void remove(final LivingEntity target) {
+    public void remove(final Entity target) {
         DamageModifications data = target.getData(DSDataAttachments.DAMAGE_MODIFICATIONS);
         data.remove(target, data.get(id));
     }

@@ -107,7 +107,7 @@ public class DragonBeaconBlockEntity extends BaseBlockBlockEntity {
                 level.playSound(null, position, DSSounds.ACTIVATE_BEACON.get(), SoundSource.BLOCKS, 1, 1);
             }
 
-            if (beacon.data == null) {
+            if (beacon.data == null || level.getGameTime() % 20 != 0) {
                 return;
             }
 
