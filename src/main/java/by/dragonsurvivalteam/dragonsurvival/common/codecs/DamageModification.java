@@ -37,12 +37,13 @@ import org.jetbrains.annotations.NotNull;
 import java.text.NumberFormat;
 import javax.annotation.Nullable;
 
-public record DamageModification(ResourceLocation id, HolderSet<DamageType> damageTypes, LevelBasedValue multiplier, LevelBasedValue duration) {
+public record DamageModification(ResourceLocation id, HolderSet<DamageType> damageTypes, LevelBasedValue multiplier, LevelBasedValue duration, boolean isHidden) {
     public static final Codec<DamageModification> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ResourceLocation.CODEC.fieldOf("id").forGetter(DamageModification::id),
             RegistryCodecs.homogeneousList(Registries.DAMAGE_TYPE).fieldOf("types").forGetter(DamageModification::damageTypes),
             LevelBasedValue.CODEC.fieldOf("multiplier").forGetter(DamageModification::multiplier),
-            LevelBasedValue.CODEC.optionalFieldOf("duration", LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)).forGetter(DamageModification::duration)
+            LevelBasedValue.CODEC.optionalFieldOf("duration", LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)).forGetter(DamageModification::duration),
+            Codec.BOOL.optionalFieldOf("is_hidden", false).forGetter(DamageModification::isHidden)
     ).apply(instance, DamageModification::new));
 
     public void apply(final ServerPlayer dragon, final Entity entity, final DragonAbilityInstance ability) {
@@ -178,7 +179,7 @@ public record DamageModification(ResourceLocation id, HolderSet<DamageType> dama
 
         @Override
         public boolean isInvisible() {
-            return false;
+            return baseData().isHidden();
         }
     }
 }

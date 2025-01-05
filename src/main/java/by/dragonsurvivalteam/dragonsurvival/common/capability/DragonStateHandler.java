@@ -257,8 +257,7 @@ public class DragonStateHandler extends EntityStateHandler {
         return bodyKey().location();
     }
 
-    public void refreshDataOnTypeChange(final ServerPlayer player) {
-        PenaltySupply.getData(player).clear();
+    public void refreshMagicData(final ServerPlayer player) {
         MagicData magic = MagicData.getData(player);
 
         if (!ServerConfig.saveAllAbilities) {
@@ -278,16 +277,20 @@ public class DragonStateHandler extends EntityStateHandler {
         Holder<DragonSpecies> oldSpecies = dragonSpecies;
         dragonSpecies = species;
 
-        if (!(player instanceof ServerPlayer serverPlayer)) {
-            // Magic data and attribute modifiers are handled server-side
+        if (player == null) {
             return;
         }
 
         if (species != null && (oldSpecies == null || !oldSpecies.is(species))) {
-            DSModifiers.updateTypeModifiers(serverPlayer, this);
-            refreshDataOnTypeChange(serverPlayer);
+            PenaltySupply.getData(player).clear();
+            DSModifiers.updateTypeModifiers(player, this);
+
+            if (player instanceof ServerPlayer serverPlayer) {
+                refreshMagicData(serverPlayer);
+            }
         } else if (species == null) {
-            DSModifiers.clearModifiers(serverPlayer);
+            PenaltySupply.getData(player).clear();
+            DSModifiers.clearModifiers(player);
         }
     }
 

@@ -66,9 +66,6 @@ public class CaveDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Sturdy Skin")
     public static final ResourceKey<DragonAbility> STURDY_SKIN = DragonAbilities.key("sturdy_skin");
 
-    @Translation(type = Translation.Type.ABILITY_EFFECT, comments = "Sturdy Skin")
-    public static final ResourceLocation STURDY_SKIN_MODIFIER = DragonSurvival.res("sturdy_skin");
-
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Personal buff: makes lava more §2transparent§r while active.")
     @Translation(type = Translation.Type.ABILITY, comments = "Lava Vision")
     public static final ResourceKey<DragonAbility> LAVA_VISION = DragonAbilities.key("lava_vision");
@@ -127,7 +124,7 @@ public class CaveDragonAbilities {
     public static final ResourceKey<DragonAbility> FIRE_IMMUNITY = DragonAbilities.key("fire_immunity");
 
     @Translation(type = Translation.Type.ABILITY_EFFECT, comments = "Fire Immunity")
-    public static final ResourceLocation FIRE_IMMUNITY_EFFECT = DragonSurvival.res("fire_immunity.fire_immunity");
+    public static final ResourceLocation FIRE_IMMUNITY_EFFECT = DragonSurvival.res("fire_immunity");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
             "■ Cave dragons can swim in lava, but still need to hold their breath when swimming in it.\n",
@@ -447,7 +444,8 @@ public class CaveDragonAbilities {
                                 FIRE_IMMUNITY_EFFECT,
                                 context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypeTags.IS_FIRE),
                                 LevelBasedValue.constant(0),
-                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)
+                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                false
                         )),
                         AbilityTargeting.EntityTargetingMode.TARGET_ALL
                 ), true), LevelBasedValue.constant(1))),

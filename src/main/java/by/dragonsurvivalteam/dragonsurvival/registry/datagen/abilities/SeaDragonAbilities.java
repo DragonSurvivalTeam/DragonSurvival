@@ -128,7 +128,7 @@ public class SeaDragonAbilities {
     public static final ResourceKey<DragonAbility> ELECTRIC_IMMUNITY = DragonAbilities.key("electric_immunity");
 
     @Translation(type = Translation.Type.ABILITY_EFFECT, comments = "Electric Immunity")
-    public static final ResourceLocation ELECTRIC_IMMUNITY_EFFECT = DragonSurvival.res("electric_immunity.electric_immunity");
+    public static final ResourceLocation ELECTRIC_IMMUNITY_EFFECT = DragonSurvival.res("electric_immunity");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
             "■ Sea dragons are amphibious, and do not need to hold their breath underwater. In addition, they can swim much faster than other dragons."
@@ -469,7 +469,8 @@ public class SeaDragonAbilities {
                                 ELECTRIC_IMMUNITY_EFFECT,
                                 context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypeTags.IS_ELECTRIC),
                                 LevelBasedValue.constant(0),
-                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)
+                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                false
                         )),
                         AbilityTargeting.EntityTargetingMode.TARGET_ALL
                 ), true), LevelBasedValue.constant(1))),
