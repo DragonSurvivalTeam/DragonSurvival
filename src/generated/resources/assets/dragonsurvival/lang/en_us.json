@@ -1165,6 +1165,8 @@
   "item.dragonsurvival.sweet_sour_rabbit": "Sweet & Sour Rabbit",
   "item.dragonsurvival.weak_dragon_heart": "Weak Dragon Heart",
   "item.dragonsurvival.wing_grant": "Flight Grant",
+  "modifier.dragonsurvival.ender_dragon_curse": "Ender Dragon's Curse",
+  "modifier.dragonsurvival.ender_dragon_curse.tooltip": "You have been cursed by the ender dragon. You may be unable to use some of your abilities. You can cure this curse by using a Primordial Anchor block after resurrecting the dragon.",
   "modifier.dragonsurvival.revealing_the_soul": "Revealing the Soul",
   "modifier.dragonsurvival.sturdy_skin": "Sturdy Skin",
   "modifier.dragonsurvival.wings": "Wings",

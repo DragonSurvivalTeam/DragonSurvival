@@ -3,13 +3,18 @@ package by.dragonsurvivalteam.dragonsurvival.common.blocks;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.network.status.SyncEnderDragonMark;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSTileEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
+import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonBeaconBlockEntity;
+import by.dragonsurvivalteam.dragonsurvival.server.tileentity.PrimordialAnchorBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.features.EndFeatures;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -23,9 +28,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.RespawnAnchorBlock;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.TheEndGatewayBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -36,17 +42,19 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
 /** Mixture of vanilla implementation from {@link RespawnAnchorBlock} and {@link TheEndGatewayBlockEntity} */
-public class PrimordialAnchorBlock extends Block {
+public class PrimordialAnchorBlock extends Block implements EntityBlock {
     public static final BooleanProperty CHARGED = BooleanProperty.create("charged");
+    public static final BooleanProperty BLOODY = BooleanProperty.create("bloody");
 
     public PrimordialAnchorBlock(final Properties properties) {
         super(properties);
-        registerDefaultState(stateDefinition.any().setValue(CHARGED, false));
+        registerDefaultState(stateDefinition.any().setValue(CHARGED, false).setValue(BLOODY, false));
     }
 
     @Override
@@ -65,6 +73,7 @@ public class PrimordialAnchorBlock extends Block {
     @Override
     protected void createBlockStateDefinition(final StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(CHARGED);
+        builder.add(BLOODY);
     }
 
     @Override
@@ -79,36 +88,40 @@ public class PrimordialAnchorBlock extends Block {
 
     @Override // TODO :: set state here when it is charged (to enable flight and / or wings)?
     protected @NotNull InteractionResult useWithoutItem(final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final BlockHitResult hitResult) {
+        if(state.getValue(BLOODY)) {
+            level.playSound(player, (double) position.getX() + 0.5, (double) position.getY() + 0.5, (double) position.getZ() + 0.5, SoundEvents.SOUL_ESCAPE, SoundSource.BLOCKS, 4, 1);
+            return InteractionResult.PASS;
+        }
+
         if (!state.getValue(CHARGED) || level.dimension() != Level.END) {
+            for (int i = 0; i < 10; i++) {
+                spawnParticles(position, level, ParticleTypes.LARGE_SMOKE);
+            }
+
+            level.playSound(player, (double) position.getX() + 0.5, (double) position.getY() + 0.5, (double) position.getZ() + 0.5, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1, 1);
             return InteractionResult.PASS;
         }
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
-
-        if (!level.isClientSide()) {
-            if (!handler.isDragon()) {
-                level.playSound(null, (double) position.getX() + 0.5, (double) position.getY() + 0.5, (double) position.getZ() + 0.5, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1, 1);
-                player.hurt(level.damageSources().magic(), 1);
-                return InteractionResult.PASS;
-            }
-
-            state.setValue(CHARGED, false);
-
-            if (level instanceof ServerLevel serverLevel) {
-                BlockPos teleportPosition = findOrCreateValidTeleportPos(serverLevel, position).above(5);
-                DimensionTransition transition = new DimensionTransition(serverLevel, teleportPosition.getCenter(), player.getDeltaMovement(), player.getYRot(), player.getXRot(), DimensionTransition.PLAY_PORTAL_SOUND);
-                player.changeDimension(transition);
-            }
-
-            level.playSound(null, (double) position.getX() + 0.5, (double) position.getY() + 0.5, (double) position.getZ() + 0.5, SoundEvents.RESPAWN_ANCHOR_SET_SPAWN, SoundSource.BLOCKS, 1, 1);
-        }
 
         if (!handler.isDragon()) {
             for (int i = 0; i < 10; i++) {
                 spawnParticles(position, level, ParticleTypes.LARGE_SMOKE);
             }
 
+            level.playSound(player, (double) position.getX() + 0.5, (double) position.getY() + 0.5, (double) position.getZ() + 0.5, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 1, 1);
+            player.hurt(level.damageSources().magic(), 1);
             return InteractionResult.PASS;
+        }
+
+        expendCharge(player, level, position, state);
+
+        if (level instanceof ServerLevel serverLevel) {
+            BlockPos teleportPosition = findOrCreateValidTeleportPos(serverLevel, position).above(5);
+            DimensionTransition transition = new DimensionTransition(serverLevel, teleportPosition.getCenter(), player.getDeltaMovement(), player.getYRot(), player.getXRot(), DimensionTransition.PLAY_PORTAL_SOUND);
+            player.changeDimension(transition);
+            handler.markedByEnderDragon = false;
+            PacketDistributor.sendToPlayer((ServerPlayer)player, new SyncEnderDragonMark(false));
         }
 
         return InteractionResult.CONSUME;
@@ -237,11 +250,18 @@ public class PrimordialAnchorBlock extends Block {
         return findTallestBlock(level, spawnPosition, 16, true);
     }
 
-    private void charge(@Nullable final Entity entity, final Level level, final BlockPos position, final BlockState state) {
+    private void charge(@Nullable final Player player, final Level level, final BlockPos position, final BlockState state) {
         BlockState blockstate = state.setValue(CHARGED, true);
         level.setBlock(position, blockstate, 3);
-        level.gameEvent(GameEvent.BLOCK_CHANGE, position, GameEvent.Context.of(entity, blockstate));
-        level.playSound(null, (double)position.getX() + 0.5, (double)position.getY() + 0.5, (double)position.getZ() + 0.5, SoundEvents.RESPAWN_ANCHOR_CHARGE, SoundSource.BLOCKS, 1, 1);
+        level.gameEvent(GameEvent.BLOCK_CHANGE, position, GameEvent.Context.of(player, blockstate));
+        level.playSound(player, (double)position.getX() + 0.5, (double)position.getY() + 0.5, (double)position.getZ() + 0.5, SoundEvents.RESPAWN_ANCHOR_CHARGE, SoundSource.BLOCKS, 1, 1);
+    }
+
+    private void expendCharge(@Nullable final Player player, final Level level, final BlockPos position, final BlockState state) {
+        BlockState blockstate = state.setValue(CHARGED, false);
+        level.setBlock(position, blockstate, 3);
+        level.gameEvent(GameEvent.BLOCK_CHANGE, position, GameEvent.Context.of(player, blockstate));
+        level.playSound(player, (double)position.getX() + 0.5, (double)position.getY() + 0.5, (double)position.getZ() + 0.5, SoundEvents.RESPAWN_ANCHOR_DEPLETE, SoundSource.BLOCKS, 1, 1);
     }
 
     private void spawnParticles(final BlockPos position, final Level level, final SimpleParticleType particle) {
@@ -250,5 +270,15 @@ public class PrimordialAnchorBlock extends Block {
         double z = (double) position.getZ() + 0.5 + (0.5 - level.getRandom().nextDouble());
         double speed = (double) level.getRandom().nextFloat() * 0.04;
         level.addParticle(particle, x, y, z, 0, speed, 0);
+    }
+
+    @Override
+    public BlockEntity newBlockEntity(@NotNull BlockPos position, @NotNull BlockState state) {
+        return DSTileEntities.PRIMORDIAL_ANCHOR.get().create(position, state);
+    }
+
+    @Override
+    @Nullable public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
+        return level.isClientSide ? null : BaseEntityBlock.createTickerHelper(type, DSTileEntities.PRIMORDIAL_ANCHOR.get(), PrimordialAnchorBlockEntity::serverTick);
     }
 }

@@ -1,9 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry;
 
-import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonBeaconBlockEntity;
-import by.dragonsurvivalteam.dragonsurvival.server.tileentity.HelmetTileEntity;
-import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicBlockEntity;
-import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicPlaceholder;
+import by.dragonsurvivalteam.dragonsurvival.common.blocks.PrimordialAnchorBlock;
+import by.dragonsurvivalteam.dragonsurvival.server.tileentity.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -51,6 +49,13 @@ public class DSTileEntities {
                             DSBlocks.FOREST_DRAGON_BEACON.get(),
                             DSBlocks.SEA_DRAGON_BEACON.get(),
                             DSBlocks.CAVE_DRAGON_BEACON.get())
+                    .build(null)
+    );
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PrimordialAnchorBlockEntity>> PRIMORDIAL_ANCHOR = DS_TILE_ENTITIES.register(
+            "primordial_anchor", () -> BlockEntityType.Builder.of(
+                            PrimordialAnchorBlockEntity::new,
+                            DSBlocks.PRIMORDIAL_ANCHOR.get())
                     .build(null)
     );
 }

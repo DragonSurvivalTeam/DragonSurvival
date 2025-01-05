@@ -228,8 +228,7 @@ public class DataBlockStateProvider extends BlockStateProvider {
             } else if (holder.get() instanceof PrimordialAnchorBlock) {
                 getVariantBuilder(holder.get())
                         .forAllStates(state -> {
-                            // FIXME :: Add one for _bloody as well
-                            String suffix = state.getValue(PrimordialAnchorBlock.CHARGED) ? "_charge" : "_empty";
+                            String suffix = state.getValue(PrimordialAnchorBlock.BLOODY) ? "_bloody" : state.getValue(PrimordialAnchorBlock.CHARGED) ? "_charge" : "_empty";
                             BlockModelBuilder builder = models().withExistingParent(holder.getId().getPath() + suffix, ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + "primordial_anchor"))
                                     .texture("1", ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + "primordial_anchor" + suffix ));
 

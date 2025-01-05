@@ -1,7 +1,10 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DurationInstance;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.EnderDragonMarkHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DamageModifications;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
@@ -58,6 +61,11 @@ public interface ClientEffectProvider {
 
         if (flightData.areWingsSpread) {
             providers.add(FlightData.FLIGHT_EFFECT);
+        }
+
+        DragonStateHandler handler = DragonStateProvider.getData(localPlayer);
+        if (handler.isDragon() && handler.markedByEnderDragon) {
+            providers.add(EnderDragonMarkHandler.MARK_EFFECT);
         }
 
         providers.removeIf(ClientEffectProvider::isInvisible);

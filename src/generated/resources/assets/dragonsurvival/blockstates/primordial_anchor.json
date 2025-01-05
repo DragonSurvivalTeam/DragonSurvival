@@ -1,10 +1,16 @@
 {
   "variants": {
-    "charged=false": {
+    "bloody=false,charged=false": {
       "model": "dragonsurvival:block/primordial_anchor_empty"
     },
-    "charged=true": {
+    "bloody=false,charged=true": {
       "model": "dragonsurvival:block/primordial_anchor_charge"
+    },
+    "bloody=true,charged=false": {
+      "model": "dragonsurvival:block/primordial_anchor_bloody"
+    },
+    "bloody=true,charged=true": {
+      "model": "dragonsurvival:block/primordial_anchor_bloody"
     }
   }
 }
