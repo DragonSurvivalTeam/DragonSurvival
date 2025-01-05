@@ -662,8 +662,6 @@
   "dragonsurvival.configuration.leader_health.tooltip": "Amount of health the leader has",
   "dragonsurvival.configuration.leader_speed": "Leader Speed",
   "dragonsurvival.configuration.leader_speed.tooltip": "Speed of the leader",
-  "dragonsurvival.configuration.levitation_after_effect": "Levitation After Effect",
-  "dragonsurvival.configuration.levitation_after_effect.tooltip": "Determines how long wings stay disabled after the levitation effect has ended",
   "dragonsurvival.configuration.limited_riding": "Limited Riding",
   "dragonsurvival.configuration.limited_riding.tooltip": "If enabled dragons will be limited to riding the entities in the entity tag 'dragonsurvival:vehicle_whitelist'",
   "dragonsurvival.configuration.look_at_sky_for_flight": "Look At Sky For Flight",

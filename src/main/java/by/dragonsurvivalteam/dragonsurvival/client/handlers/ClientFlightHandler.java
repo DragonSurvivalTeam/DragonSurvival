@@ -102,7 +102,6 @@ public class ClientFlightHandler {
     static double ax, ay, az;
     static float lastIncrease;
     static float lastZoom = 1f;
-    private static int levitationLeft;
 
     // These are the drag values from vanilla Elytra flying. See isFallFlying() section in LivingEntity#travel()
     private static final Vec3 ELYTRA_FLY_DRAG = new Vec3(0.99, 0.98, 0.99);
@@ -249,17 +248,7 @@ public class ClientFlightHandler {
         LocalPlayer player = minecraft.player;
 
         if (player != null && !player.isPassenger() && !Minecraft.getInstance().isPaused()) {
-            if (player.hasEffect(MobEffects.LEVITATION)) {
-                /* TODO
-                To make fall damage work you'd have to:
-                    - call `player.resetFallDistance()` when the levitation effect is applied (MobEffectEvent.Added)
-                    - add a check in ServerFlightHandler#changeFallDistance
-                */
-                levitationLeft = Functions.secondsToTicks(ServerConfig.levitationAfterEffect);
-            } else if (levitationLeft > 0) {
-                // TODO :: Set to 0 once ground is reached?
-                levitationLeft--;
-            } else {
+            if (!player.hasEffect(MobEffects.LEVITATION)) {
                 DragonStateProvider.getOptional(player).ifPresent(handler -> {
                     if (handler.isDragon()) {
                         Double flightSpeedMultiplier = player.getAttributeValue(DSAttributes.FLIGHT_SPEED);

@@ -422,11 +422,4 @@ public class ServerConfig {
     @Translation(key = "fire_beacon_effects", type = Translation.Type.CONFIGURATION, comments = "The effects which are granted by the cave dragon beacon")
     @ConfigOption(side = ConfigSide.SERVER, category = "dragon_beacons", key = "fire_beacon_effects", validation = Validation.RESOURCE_LOCATION)
     public static List<String> caveDragonBeaconEffects = List.of("dragonsurvival:fire", "dragonsurvival:strong_leather");
-
-    // --- Misc --- //
-
-    @ConfigRange(min = 0, max = 60)
-    @Translation(key = "levitation_after_effect", type = Translation.Type.CONFIGURATION, comments = "Determines how long wings stay disabled after the levitation effect has ended")
-    @ConfigOption(side = ConfigSide.SERVER, category = "wings", key = "levitation_after_effect")
-    public static Integer levitationAfterEffect = 3;
 }

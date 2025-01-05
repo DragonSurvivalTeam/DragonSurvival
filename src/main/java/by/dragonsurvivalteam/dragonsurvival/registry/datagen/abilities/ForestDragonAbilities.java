@@ -431,7 +431,7 @@ public class ForestDragonAbilities {
 
         context.register(FOREST_WINGS, new DragonAbility(
                 Activation.passive(),
-                Optional.empty(),
+                Optional.of(new ItemUpgrade(List.of(HolderSet.direct(DSItems.WING_GRANT_ITEM)), HolderSet.empty())),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         List.of(new FlightEffect(1)),

@@ -30,5 +30,12 @@
         "texture_resource": "dragonsurvival:abilities/sea/sea_wings_1"
       }
     ]
+  },
+  "upgrade": {
+    "downgrade_items": [],
+    "items_per_level": [
+      "dragonsurvival:wing_grant"
+    ],
+    "upgrade_type": "dragonsurvival:item_based"
   }
 }
