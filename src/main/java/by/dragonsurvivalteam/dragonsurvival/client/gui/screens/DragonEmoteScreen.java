@@ -26,6 +26,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.InputEvent;
@@ -38,7 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-@EventBusSubscriber
+@EventBusSubscriber(Dist.CLIENT)
 public class DragonEmoteScreen extends Screen {
     @Translation(comments = "Reset all emote keybinds")
     private static final String RESET_ALL_KEYBINDS = Translation.Type.GUI.wrap("emote_screen.reset_all_keybinds");
