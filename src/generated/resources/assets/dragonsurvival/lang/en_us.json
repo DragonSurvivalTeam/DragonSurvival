@@ -250,6 +250,7 @@
   "dragon_ability.dragonsurvival.general.effect_modifications": "§6■ Effect modifications:§r\n- Duration %s\n- Amplifier %s\n\nAffected effects:\n%s",
   "dragon_ability.dragonsurvival.general.effect_modifications.increased": "increased by %s",
   "dragon_ability.dragonsurvival.general.effect_modifications.reduced": "reduced by %s",
+  "dragon_ability.dragonsurvival.general.effect_modifications.seconds": " %s seconds",
   "dragon_ability.dragonsurvival.general.effect_modifications.unmodified": "is unmodified",
   "dragon_ability.dragonsurvival.general.info": "Info",
   "dragon_ability.dragonsurvival.general.info_shift": "Hold ‘Shift’ for info",

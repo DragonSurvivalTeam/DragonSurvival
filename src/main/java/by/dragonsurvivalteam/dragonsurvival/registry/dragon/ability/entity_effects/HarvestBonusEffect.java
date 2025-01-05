@@ -35,10 +35,6 @@ public record HarvestBonusEffect(List<HarvestBonus> bonuses) implements AbilityE
         }
     }
 
-    public boolean shouldAppendSelfTargetingToDescription() {
-        return false;
-    }
-
     @Override
     public List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
         List<MutableComponent> components = new ArrayList<>();

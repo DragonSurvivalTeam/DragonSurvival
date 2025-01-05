@@ -38,11 +38,6 @@ public record ModifierEffect(List<ModifierWithDuration> modifiers) implements Ab
     }
 
     @Override
-    public boolean shouldAppendSelfTargetingToDescription() {
-        return false;
-    }
-
-    @Override
     public List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
         List<MutableComponent> components = new ArrayList<>();
 

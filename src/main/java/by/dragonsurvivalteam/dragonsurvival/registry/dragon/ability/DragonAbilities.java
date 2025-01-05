@@ -14,6 +14,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.SeaDragon
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.EffectModificationEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AbilityTargeting;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.SelfTarget;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.HolderSet;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
@@ -41,14 +42,24 @@ public class DragonAbilities {
                 Activation.passive(ManaCost.reserved(LevelBasedValue.constant(5))),
                 Optional.empty(),
                 Optional.of(Condition.thisEntity(EntityCondition.isInSunlight(8)).invert().build()),
-                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                List.of(
+                        new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         EffectModificationEffect.single(new EffectModification(
                                 DragonSurvival.res("test"),
                                 HolderSet.direct(DSEffects.FIRE, MobEffects.MOVEMENT_SPEED),
                                 new Modification(Modification.ModificationType.MULTIPLICATIVE, LevelBasedValue.perLevel(1.5f)),
                                 new Modification(Modification.ModificationType.ADDITIVE, LevelBasedValue.perLevel(2)),
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)
-                        )), AbilityTargeting.EntityTargetingMode.TARGET_ALLIES), true), LevelBasedValue.constant(1))),
+                        )), AbilityTargeting.EntityTargetingMode.TARGET_ALLIES), true), LevelBasedValue.constant(1)),
+                        new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                                EffectModificationEffect.single(new EffectModification(
+                                        DragonSurvival.res("test.two"),
+                                        HolderSet.direct(MobEffects.HUNGER, MobEffects.POISON),
+                                        new Modification(Modification.ModificationType.ADDITIVE, LevelBasedValue.perLevel(-Functions.secondsToTicks(10))),
+                                        new Modification(Modification.ModificationType.MULTIPLICATIVE, LevelBasedValue.perLevel(0.2f, -0.05f)),
+                                        LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)
+                                )), AbilityTargeting.EntityTargetingMode.TARGET_ALLIES), true), LevelBasedValue.constant(1))
+                ),
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/test_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/test_1"), 1)

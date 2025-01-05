@@ -67,11 +67,6 @@ public record SpinEffect(int spinLevel, Optional<Holder<FluidType>> swimSpinFlui
     }
 
     @Override
-    public boolean shouldAppendSelfTargetingToDescription() {
-        return false;
-    }
-
-    @Override
     public List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
         List<MutableComponent> components = new ArrayList<>();
         

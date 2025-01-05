@@ -55,11 +55,6 @@ public record FlightEffect(int flightLevel) implements AbilityEntityEffect {
     }
 
     @Override
-    public boolean shouldAppendSelfTargetingToDescription() {
-        return false;
-    }
-
-    @Override
     public List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
         List<MutableComponent> components = new ArrayList<>();
 

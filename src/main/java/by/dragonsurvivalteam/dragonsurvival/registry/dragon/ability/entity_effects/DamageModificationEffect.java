@@ -38,11 +38,6 @@ public record DamageModificationEffect(List<DamageModification> modifications) i
         return components;
     }
 
-    @Override
-    public boolean shouldAppendSelfTargetingToDescription() {
-        return false;
-    }
-
     public static List<AbilityEntityEffect> single(final DamageModification modification) {
         return List.of(new DamageModificationEffect(List.of(modification)));
     }

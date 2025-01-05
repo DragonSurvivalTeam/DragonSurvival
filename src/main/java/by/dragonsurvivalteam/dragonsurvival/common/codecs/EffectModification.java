@@ -51,6 +51,9 @@ public record EffectModification(ResourceLocation id, HolderSet<MobEffect> effec
     @Translation(comments = "is unmodified")
     private static final String UNMODIFIED = Translation.Type.ABILITY.wrap("general.effect_modifications.unmodified");
 
+    @Translation(comments = " %s seconds") // TODO :: make it generic (for global use)?
+    private static final String SECONDS = Translation.Type.ABILITY.wrap("general.effect_modifications.seconds");
+
     public static final Codec<EffectModification> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ResourceLocation.CODEC.fieldOf("id").forGetter(EffectModification::id),
             RegistryCodecs.homogeneousList(Registries.MOB_EFFECT).fieldOf("effects").forGetter(EffectModification::effects),
@@ -122,10 +125,14 @@ public record EffectModification(ResourceLocation id, HolderSet<MobEffect> effec
 
         if (calculated == 0) {
             return Component.translatable(UNMODIFIED);
-        } else if (calculated < 0) {
-            return Component.translatable(REDUCED, DSColors.dynamicValue(isTime ? Functions.ticksToSeconds(value) : value));
+        }
+
+        Component component = isTime ? Component.translatable(SECONDS, DSColors.dynamicValue(Functions.ticksToSeconds(value))) : DSColors.dynamicValue(value);
+
+        if (calculated < 0) {
+            return Component.translatable(REDUCED, component);
         } else {
-            return Component.translatable(REDUCED, DSColors.dynamicValue(isTime ? Functions.ticksToSeconds(value) : value));
+            return Component.translatable(INCREASED, component);
         }
     }
 
