@@ -77,11 +77,6 @@ public record DragonAbility(
 
     public List<Component> getInfo(final Player dragon, final DragonAbilityInstance instance) {
         List<Component> info = new ArrayList<>();
-
-        for (ActionContainer action : actions) {
-            info.addAll(action.effect().getAllEffectDescriptions(dragon, instance));
-        }
-
         int castTime = instance.getCastTime();
 
         if (castTime > 0) {
@@ -96,6 +91,14 @@ public record DragonAbility(
 
         instance.ability().value().activation().initialManaCost().ifPresent(cost -> info.add(Component.translatable(LangKey.ABILITY_INITIAL_MANA_COST, cost.calculate(instance.level()))));
         instance.ability().value().activation().continuousManaCost().ifPresent(cost -> info.add(Component.translatable(LangKey.ABILITY_CONTINUOUS_MANA_COST, cost.manaCost().calculate(instance.level()), DSLanguageProvider.enumValue(cost.manaCostType()))));
+
+        if (!info.isEmpty()) {
+            info.add(Component.literal("\n"));
+        }
+
+        for (ActionContainer action : actions) {
+            info.addAll(action.effect().getAllEffectDescriptions(dragon, instance));
+        }
 
         return info;
     }

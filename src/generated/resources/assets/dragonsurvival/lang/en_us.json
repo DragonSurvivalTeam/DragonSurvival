@@ -247,6 +247,7 @@
   "dragon_ability.dragonsurvival.general.ability.to_target_cone": " to %s in a %s block cone",
   "dragon_ability.dragonsurvival.general.ability.x_seconds": " every %s seconds",
   "dragon_ability.dragonsurvival.general.active": "Active Ability",
+  "dragon_ability.dragonsurvival.general.attribute_modifiers": "§6■ Attribute modifiers:§r",
   "dragon_ability.dragonsurvival.general.effect_modifications": "§6■ Effect modifications:§r\n- Duration %s\n- Amplifier %s\n\nAffected effects:\n%s",
   "dragon_ability.dragonsurvival.general.effect_modifications.increased": "increased by %s",
   "dragon_ability.dragonsurvival.general.effect_modifications.reduced": "reduced by %s",

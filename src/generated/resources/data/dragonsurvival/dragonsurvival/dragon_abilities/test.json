@@ -29,23 +29,7 @@
                     "minecraft:speed"
                   ],
                   "id": "dragonsurvival:test"
-                }
-              ]
-            }
-          ],
-          "entity_targeting_mode": "TARGET_ALLIES"
-        },
-        "target_type": "dragonsurvival:self"
-      },
-      "trigger_rate": 1.0
-    },
-    {
-      "target_selection": {
-        "applied_effects": {
-          "entity_effect": [
-            {
-              "effect_type": "dragonsurvival:effect_modification",
-              "modifications": [
+                },
                 {
                   "amplifier_modification": {
                     "type": "multiplicative",
@@ -68,6 +52,36 @@
                     "minecraft:poison"
                   ],
                   "id": "dragonsurvival:test.two"
+                }
+              ]
+            },
+            {
+              "effect_type": "dragonsurvival:modifier",
+              "modifiers": [
+                {
+                  "icon": "dragonsurvival:test",
+                  "id": "dragonsurvival:test",
+                  "modifiers": [
+                    {
+                      "amount": 0.015,
+                      "attribute": "minecraft:generic.movement_speed",
+                      "operation": "add_multiplied_total"
+                    },
+                    {
+                      "amount": {
+                        "type": "minecraft:linear",
+                        "base": -1.2E-4,
+                        "per_level_above_first": -1.2E-4
+                      },
+                      "attribute": "minecraft:generic.movement_speed",
+                      "operation": "add_value"
+                    },
+                    {
+                      "amount": 5.0,
+                      "attribute": "dragonsurvival:mana",
+                      "operation": "add_value"
+                    }
+                  ]
                 }
               ]
             }

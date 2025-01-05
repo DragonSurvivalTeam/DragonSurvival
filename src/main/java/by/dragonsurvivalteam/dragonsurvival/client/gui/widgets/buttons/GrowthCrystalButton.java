@@ -106,7 +106,7 @@ public class GrowthCrystalButton extends ExtendedButton {
         components.add(Component.translatable(LangKey.GROWTH_MODIFIERS_AT_MAX_SIZE));
 
         for (Modifier modifier : stage.value().modifiers()) {
-            MutableComponent name = modifier.getFormattedDescription((int) stage.value().sizeRange().max());
+            MutableComponent name = modifier.getFormattedDescription((int) stage.value().sizeRange().max(), true);
             components.add(name);
         }
 

@@ -11,10 +11,9 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
-import net.neoforged.neoforge.common.PercentageAttribute;
 
-import java.text.NumberFormat;
 import java.util.Optional;
 
 public record Modifier(Holder<Attribute> attribute, LevelBasedValue amount, AttributeModifier.Operation operation, Optional<ResourceKey<DragonSpecies>> dragonSpecies) {
@@ -45,21 +44,16 @@ public record Modifier(Holder<Attribute> attribute, LevelBasedValue amount, Attr
         return new AttributeModifier(id, amount.calculate((int) level), operation);
     }
 
-    public MutableComponent getFormattedDescription(int level) {
-        MutableComponent name = Component.literal("§6■ ").append(Component.translatable(attribute.value().getDescriptionId()).withColor(DSColors.GOLD));
-        float amount = this.amount.calculate(level);
-        // If the number is negative it will already contain a '-'
-        String number = amount > 0 ? "+" : "";
+    public MutableComponent getFormattedDescription(int level, boolean fancy) {
+        MutableComponent name;
 
-        if (attribute.value() instanceof PercentageAttribute) {
-            number += NumberFormat.getPercentInstance().format(amount);
+        if (fancy) {
+            name = Component.literal("§6■ ").append(Component.translatable(attribute.value().getDescriptionId()).withColor(DSColors.GOLD)).append(Component.literal("§6: "));
         } else {
-            number += String.format("%.2f", amount);
+            name = Component.literal("- ").append(Component.translatable(attribute.value().getDescriptionId())).append(Component.literal(": "));
         }
 
-        Component value = Component.literal("§6: ").append(Component.literal(number).withStyle(attribute.value().getStyle(amount > 0)));
-        name = name.append(value);
-
-        return name;
+        float amount = this.amount.calculate(level);
+        return name.append(attribute.value().toValueComponent(operation, amount, TooltipFlag.NORMAL).withStyle(attribute.value().getStyle(amount > 0)));
     }
 }
