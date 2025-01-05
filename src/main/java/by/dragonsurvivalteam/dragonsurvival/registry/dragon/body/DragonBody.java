@@ -86,4 +86,12 @@ public record DragonBody(List<Modifier> modifiers, double heightMultiplier, bool
         //noinspection DataFlowIssue -> key is present
         return Translation.Type.BODY_WINGS_DESCRIPTION.wrap(holder.getKey().location());
     }
+
+    public static String customModelNameFromResource(ResourceLocation customModel) {
+        return customModel.getPath().substring(customModel.getPath().lastIndexOf("/") + 1, customModel.getPath().indexOf("."));
+    }
+
+    public String customModelName() {
+        return customModelNameFromResource(customModel);
+    }
 }

@@ -71,7 +71,7 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
         }
 
         for (ResourceKey<DragonStage> dragonStage : ResourceHelper.keys(null, DragonStage.REGISTRY)) {
-            skins.get().put(dragonStage, Lazy.of(() -> new DragonStageCustomization(dragonStage, type)));
+            skins.get().put(dragonStage, Lazy.of(() -> new DragonStageCustomization(dragonStage, type, DragonBody.customModelNameFromResource(model == null ? this.model : model))));
         }
     }
 

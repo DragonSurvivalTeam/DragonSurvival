@@ -27,7 +27,7 @@ public class DragonStageCustomization implements INBTSerializable<CompoundTag> {
     public boolean wings = true;
     public boolean defaultSkin;
 
-    public DragonStageCustomization(final ResourceKey<DragonStage> dragonStage, final ResourceKey<DragonSpecies> type) {
+    public DragonStageCustomization(final ResourceKey<DragonStage> dragonStage, final ResourceKey<DragonSpecies> type, final String customModel) {
         this();
 
         for (EnumSkinLayer layer : EnumSkinLayer.values()) {
@@ -37,7 +37,7 @@ public class DragonStageCustomization implements INBTSerializable<CompoundTag> {
 
             if (partMap != null) {
                 List<DragonPart> parts = partMap.get(actualLayer);
-                String partKey = DefaultPartLoader.getDefaultPartKey(type, dragonStage, layer);
+                String partKey = DefaultPartLoader.getDefaultPartKey(type, dragonStage, customModel, layer);
 
                 if (parts != null) {
                     for (DragonPart part : parts) {
