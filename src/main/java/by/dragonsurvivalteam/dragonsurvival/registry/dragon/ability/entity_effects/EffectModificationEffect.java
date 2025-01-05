@@ -42,11 +42,6 @@ public record EffectModificationEffect(List<EffectModification> modifications) i
         return components;
     }
 
-    @Override
-    public boolean shouldAppendSelfTargetingToDescription() {
-        return false;
-    }
-
     public static List<AbilityEntityEffect> single(final EffectModification modification) {
         return List.of(new EffectModificationEffect(List.of(modification)));
     }

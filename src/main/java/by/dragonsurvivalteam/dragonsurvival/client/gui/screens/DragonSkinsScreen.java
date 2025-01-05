@@ -296,16 +296,15 @@ public class DragonSkinsScreen extends Screen {
 
         HoverButton leftArrowButton = new HoverButton(startX - 62, startY + 153, 9, 16, 18, 18, STAGE_ARROW_LEFT_MAIN, STAGE_ARROW_LEFT_HOVER, button -> {
             ResourceKey<DragonStage> nextLevel = dragonStage.getKey();
-            boolean ancientDataPackExists = ResourceHelper.get(Objects.requireNonNull(player).registryAccess(), AncientDatapack.ancient).isPresent();
 
-            if (ancientDataPackExists && dragonStage.is(AncientDatapack.ancient)) {
+            if (dragonStage.is(AncientDatapack.ancient)) {
                 nextLevel = DragonStages.adult;
             } else if (dragonStage.is(DragonStages.adult)) {
                 nextLevel = DragonStages.young;
             } else if (dragonStage.is(DragonStages.young)) {
                 nextLevel = DragonStages.newborn;
             } else if (dragonStage.is(DragonStages.newborn)) {
-                if(ancientDataPackExists) {
+                if (player.registryAccess().holder(AncientDatapack.ancient).isPresent()) {
                     nextLevel = AncientDatapack.ancient;
                 } else {
                     nextLevel = DragonStages.adult;

@@ -164,9 +164,7 @@ public interface AbilityTargeting {
             List<MutableComponent> abilityEffectDescriptions = effect.getDescription(dragon, ability);
 
             if (!effect.getDescription(dragon, ability).isEmpty()) {
-                if (!effect.shouldAppendSelfTargetingToDescription() && this instanceof SelfTarget) {
-                    // Special case where we don't want to append the "self target" for certain effects
-                    // TODO :: why is that the case? this looks kinda clunky atm
+                if (this instanceof SelfTarget) {
                     descriptions.addAll(effect.getDescription(dragon, ability));
                 } else {
                     descriptions.addAll(abilityEffectDescriptions.stream().map(description -> description.append(targetDescription)).toList());

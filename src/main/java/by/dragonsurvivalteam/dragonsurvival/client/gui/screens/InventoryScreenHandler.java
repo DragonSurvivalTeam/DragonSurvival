@@ -83,19 +83,14 @@ public class InventoryScreenHandler {
     }
 
     @SubscribeEvent
-    public static void hideOrShowAltarButton(ScreenEvent.Render.Pre renderEvent) {
-        Screen screen = renderEvent.getScreen();
-        if (screen instanceof InventoryScreen) {
+    public static void hideOrShowAltarButton(final ScreenEvent.Render.Pre event) {
+        if (event.getScreen() instanceof InventoryScreen) {
             Player player = Minecraft.getInstance().player;
+            //noinspection DataFlowIssue -> player is present
             AltarData data = AltarData.getData(player);
-            if (altarOpenButton != null) {
-                altarOpenButton.visible = !data.hasUsedAltar;
-            }
 
-            if(DragonStateProvider.isDragon(player)) {
-                if (altarOpenButton != null) {
-                    altarOpenButton.visible = false;
-                }
+            if (altarOpenButton != null) {
+                altarOpenButton.visible = !data.hasUsedAltar && DragonStateProvider.isDragon(player);
             }
         }
     }
