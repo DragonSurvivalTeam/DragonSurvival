@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SpinDurationAndCooldown;
+import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncFlyingPlayerAbility;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncWingsSpread;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
@@ -167,6 +168,12 @@ public class ServerFlightHandler {
         } else if (isFlying(player)) {
             // Handle fall distance
             player.resetFallDistance();
+        }
+
+        if(!player.level().isClientSide()) {
+            if(DragonStateProvider.isDragon(player)) {
+                PacketDistributor.sendToPlayersTrackingEntity(player, new SyncFlyingPlayerAbility(player.getId(), player.getAbilities().flying));
+            }
         }
     }
 
