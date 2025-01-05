@@ -711,7 +711,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     private static final RawAnimation EAT_ITEM_LEFT = RawAnimation.begin().thenLoop("eat_item_left");
 
     private static final RawAnimation SIT_ON_MAGIC_SOURCE = RawAnimation.begin().thenLoop("sit_on_magic_source");
-    private static final RawAnimation SLEEP = RawAnimation.begin().thenLoop("sleep");
+    private static final RawAnimation SLEEP = RawAnimation.begin().thenLoop("sleep_left");
     private static final RawAnimation SIT = RawAnimation.begin().thenLoop("sit");
     private static final RawAnimation FLY = RawAnimation.begin().thenLoop("fly");
     private static final RawAnimation FLY_SOARING = RawAnimation.begin().thenLoop("fly_soaring");

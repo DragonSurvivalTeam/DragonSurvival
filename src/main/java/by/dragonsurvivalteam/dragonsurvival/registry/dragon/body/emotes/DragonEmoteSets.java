@@ -14,7 +14,7 @@ public class DragonEmoteSets {
 
 
     @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Fix Head")
-    public static final String BLEND_HEAD_LOCKED = "head_turn";
+    public static final String BLEND_HEAD_LOCKED = "empty";
 
     @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Angry")
     public static final String BLEND_ANGRY = "blend_angry";
@@ -58,14 +58,14 @@ public class DragonEmoteSets {
     @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Open Mouth")
     public static final String BLEND_BREATH = "breath";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Wing Hug")
-    public static final String BLEND_WING =  "blend_wing_hug";
-
     @Translation(type = Translation.Type.EMOTE, comments = "§5Sit:§r Just Sit")
     public static final String SIT = "sit";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§5Sit:§r Curled")
-    public static final String SITTING_CURLED = "sitting_curled_tail_left";
+    @Translation(type = Translation.Type.EMOTE, comments = "§5Sit:§r L Curled")
+    public static final String SITTING_CURLED_L = "sitting_curled_tail_left";
+
+    @Translation(type = Translation.Type.EMOTE, comments = "§5Sit:§r R Curled")
+    public static final String SITTING_CURLED_R = "sitting_curled_tail_right";
 
     @Translation(type = Translation.Type.EMOTE, comments = "§5Sit:§r Magic")
     public static final String SITTING_MAGIC = "sit_on_magic_source";
@@ -79,6 +79,9 @@ public class DragonEmoteSets {
     @Translation(type = Translation.Type.EMOTE, comments = "§5Sit:§r Hug")
     public static final String SITTING_HUG = "hugging_sitting";
 
+    @Translation(type = Translation.Type.EMOTE, comments = "§5Sit:§r Hug Alt")
+    public static final String SITTING_HUG_WING = "hugging_sitting_winged";
+
     @Translation(type = Translation.Type.EMOTE, comments = "§5Sit:§r Holding Paws")
     public static final String SITTING_PAWS = "holding_paws_sitting";
 
@@ -88,11 +91,17 @@ public class DragonEmoteSets {
     @Translation(type = Translation.Type.EMOTE, comments = "§5Sit:§r Leaned Back")
     public static final String SITTING_LEANED_BACK = "resting_leaning_on_wall";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§4Rest:§r Lying")
-    public static final String REST_LYING = "resting_left";
+    @Translation(type = Translation.Type.EMOTE, comments = "§4Rest:§r L Lying")
+    public static final String REST_LYING_L = "resting_left";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§4Rest:§r Lying Winged")
-    public static final String REST_LYING_WINGED = "resting_covering_with_wing_left";
+    @Translation(type = Translation.Type.EMOTE, comments = "§4Rest:§r R Lying")
+    public static final String REST_LYING_R = "resting_right";
+
+    @Translation(type = Translation.Type.EMOTE, comments = "§4Rest:§r L Lying Alt")
+    public static final String REST_LYING_WINGED_L = "resting_covering_with_wing_left";
+
+    @Translation(type = Translation.Type.EMOTE, comments = "§4Rest:§r R Lying Alt")
+    public static final String REST_LYING_WINGED_R = "resting_covering_with_wing_right";
 
     @Translation(type = Translation.Type.EMOTE, comments = "§4Rest:§r On Back")
     public static final String REST_ON_BACK = "resting_on_back";
@@ -106,8 +115,11 @@ public class DragonEmoteSets {
     @Translation(type = Translation.Type.EMOTE, comments = "§4Rest:§r Straight On Side")
     public static final String REST_STRAIGHT_ON_SIDE = "sleeping_on_side_straight_left";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§4Rest:§r Sleep")
-    public static final String REST_SLEEP = "sleep";
+    @Translation(type = Translation.Type.EMOTE, comments = "§4Rest:§r L Sleep")
+    public static final String REST_SLEEP_L = "sleep_left";
+
+    @Translation(type = Translation.Type.EMOTE, comments = "§4Rest:§r R Sleep")
+    public static final String REST_SLEEP_R = "sleep_right";
 
     @Translation(type = Translation.Type.EMOTE, comments = "§4Rest:§r Shy")
     public static final String REST_SHY = "shy_lying";
@@ -128,16 +140,16 @@ public class DragonEmoteSets {
     public static final String FUN_DANCE = "vibing_standing";
 
     @Translation(type = Translation.Type.EMOTE, comments = "§3Fun:§r Shaking")
-    public static final String MISC_SHAKING = "shaking_standing";
+    public static final String FUN_SHAKING = "shaking_standing";
 
     @Translation(type = Translation.Type.EMOTE, comments = "§3Fun:§r Flapping Wings")
-    public static final String MISC_WINGS = "flapping_wings_standing";
+    public static final String FUN_WINGS = "flapping_wings_standing";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§3Fun:§r Flapping Wings Biped")
-    public static final String MISC_WINGS_BIPED = "flapping_wings_standing_biped";
+    @Translation(type = Translation.Type.EMOTE, comments = "§3Fun:§r Flapping Wings Alt")
+    public static final String FUN_WINGS_BIPED = "flapping_wings_standing_biped";
 
     @Translation(type = Translation.Type.EMOTE, comments = "§3Fun:§r Hold Passenger (rider)")
-    public static final String MISC_PASSENGER = "holding_passenger_standing_biped";
+    public static final String FUN_PASSENGER = "holding_passenger_standing_biped";
 
     @Translation(type = Translation.Type.EMOTE, comments = "§2Misc:§r Fly")
     public static final String MISC_FLY = "fly";
@@ -193,43 +205,47 @@ public class DragonEmoteSets {
                                 DragonEmote.Builder.of(BLEND_MAW).loops().blend().canMove().build(),
                                 DragonEmote.Builder.of(BLEND_LICKING).blend().canMove().build(),
                                 DragonEmote.Builder.of(BLEND_YAWNING).blend().canMove().build(),
+                                DragonEmote.Builder.of(BLEND_BREATH).loops().loops().blend().canMove().build(),
                                 DragonEmote.Builder.of(BLEND_SNIFFING).blend().sound(SoundEvents.FOX_SNIFF,60,1.0f,0.1f).canMove().build(),
                                 DragonEmote.Builder.of(BLEND_DIG).blend().canMove().build(),
                                 DragonEmote.Builder.of(BLEND_BITE).loops().canMove().blend().build(),
                                 DragonEmote.Builder.of(BLEND_ONE_BITE).blend().canMove().build(),
-                                DragonEmote.Builder.of(BLEND_BREATH).loops().blend().canMove().build(),
-                                DragonEmote.Builder.of(BLEND_TALK).blend().canMove().build(),
-                                DragonEmote.Builder.of(BLEND_WING).loops().blend().canMove().build(),
+                                DragonEmote.Builder.of(BLEND_TALK).loops().blend().canMove().build(),
                                 DragonEmote.Builder.of(SIT).loops().canMove().build(),
-                                DragonEmote.Builder.of(SITTING_CURLED).loops().canMove().build(),
+                                DragonEmote.Builder.of(SITTING_CURLED_L).loops().canMove().build(),
+                                DragonEmote.Builder.of(SITTING_CURLED_R).loops().canMove().build(),
                                 DragonEmote.Builder.of(SITTING_MAGIC).loops().canMove().build(),
                                 DragonEmote.Builder.of(SITTING_ITEM).loops().canMove().build(),
                                 DragonEmote.Builder.of(SITTING_SAD).loops().canMove().build(),
                                 DragonEmote.Builder.of(SITTING_HUG).loops().canMove().build(),
+                                DragonEmote.Builder.of(SITTING_HUG_WING).loops().canMove().build(),
                                 DragonEmote.Builder.of(SITTING_PAWS).loops().canMove().build(),
                                 DragonEmote.Builder.of(SITTING_SHY).loops().canMove().build(),
                                 DragonEmote.Builder.of(SITTING_LEANED_BACK).loops().canMove().build(),
-                                DragonEmote.Builder.of(REST_LYING_WINGED).loops().canMove().build(),
-                                DragonEmote.Builder.of(REST_ON_BACK).loops().canMove().build(),
-                                DragonEmote.Builder.of(REST_STRAIGHT).loops().canMove().build(),
+                                DragonEmote.Builder.of(REST_LYING_L).loops().canMove().build(),
+                                DragonEmote.Builder.of(REST_LYING_R).loops().canMove().build(),
+                                DragonEmote.Builder.of(REST_LYING_WINGED_L).loops().canMove().build(),
+                                DragonEmote.Builder.of(REST_LYING_WINGED_R).loops().canMove().build(),
+                                DragonEmote.Builder.of(REST_SLEEP_L).loops().sound(SoundEvents.FOX_SLEEP,100,1.0f,0.1f).canMove().build(),
+                                DragonEmote.Builder.of(REST_SLEEP_R).loops().sound(SoundEvents.FOX_SLEEP,100,1.0f,0.1f).canMove().build(),
                                 DragonEmote.Builder.of(REST_ON_SIDE).loops().canMove().build(),
-                                DragonEmote.Builder.of(REST_LYING).loops().canMove().build(),
+                                DragonEmote.Builder.of(REST_STRAIGHT).loops().canMove().build(),
+                                DragonEmote.Builder.of(REST_ON_BACK).loops().canMove().build(),
                                 DragonEmote.Builder.of(REST_STRAIGHT_ON_SIDE).loops().canMove().build(),
-                                DragonEmote.Builder.of(REST_SLEEP).loops().sound(SoundEvents.FOX_SLEEP,100,1.0f,0.1f).canMove().build(),
                                 DragonEmote.Builder.of(REST_SHY).loops().canMove().build(),
                                 DragonEmote.Builder.of(FUN_ROCKING).loops().canMove().build(),
                                 DragonEmote.Builder.of(FUN_SPIN, FUN_SPIN).loops().canMove().build(),
                                 DragonEmote.Builder.of(FUN_SPIN, FUN_SPIN_FAST).loops().canMove().speed(2.0).build(),
                                 DragonEmote.Builder.of(FUN_VIBING).loops().canMove().build(),
                                 DragonEmote.Builder.of(FUN_DANCE).loops().canMove().build(),
-                                DragonEmote.Builder.of(MISC_WINGS_BIPED).loops().canMove().build(),
-                                DragonEmote.Builder.of(MISC_WINGS).loops().canMove().build(),
-                                DragonEmote.Builder.of(MISC_SHAKING).canMove().sound(SoundEvents.WOLF_SHAKE,23,1.0f,0.1f).build(),
+                                DragonEmote.Builder.of(FUN_WINGS_BIPED).loops().canMove().build(),
+                                DragonEmote.Builder.of(FUN_WINGS).loops().canMove().build(),
+                                DragonEmote.Builder.of(FUN_PASSENGER).loops().canMove().build(),
+                                DragonEmote.Builder.of(FUN_SHAKING).canMove().sound(SoundEvents.WOLF_SHAKE,60,1.0f,0.1f).build(),
                                 DragonEmote.Builder.of(MISC_SWIM).loops().canMove().build(),
                                 DragonEmote.Builder.of(MISC_LAND).loops().canMove().build(),
                                 DragonEmote.Builder.of(MISC_SOARING).loops().canMove().build(),
                                 DragonEmote.Builder.of(MISC_FLY).loops().canMove().build(),
-                                DragonEmote.Builder.of(MISC_PASSENGER).loops().canMove().build(),
                                 DragonEmote.Builder.of(BLEND_HEAD_LOCKED, SOUND_PURR).sound(SoundEvents.CAT_PURR,160,1.5f,0.8f).blend().build(),
                                 DragonEmote.Builder.of(BLEND_HEAD_LOCKED, SOUND_PURREOW).sound(SoundEvents.CAT_PURREOW,160,2.0f,0.3f).blend().build(),
                                 DragonEmote.Builder.of(BLEND_TALK, SOUND_STRAY_AMBIENT).speed(0.1).sound(SoundEvents.CAT_STRAY_AMBIENT,160,2.0f,0.2f).blend().build(),

@@ -52,13 +52,14 @@ public class DragonEmoteScreen extends Screen {
     @Translation(comments = "Stop all emotes")
     private static final String STOP_ALL_EMOTES = Translation.Type.GUI.wrap("emote_screen.stop_all_emotes");
 
-    @Translation(comments = "This is the emotes menu. " +
-            "\n You can play emotes by clicking on them, or bind them to a key by clicking on the keybind button on the right. " +
-            "\n You can play up to 4 emotes at once. " +
-            "\n Emotes that are not 'Blend' emotes will conflict when played together.")
+    @Translation(comments = {"■ This is the emotes menu.",
+            "- The icon on the right will allow you to §6keybind§r§f and play the emote without entering this menu.",
+            "- Some emotions can be combined with each other. For example, §6Blend§r§f.",
+            "- Flip pages - §6mouse wheel§r§f."
+    })
     private static final String EMOTE_INFO = Translation.Type.GUI.wrap("emote_screen.info");
 
-    @Translation(comments = "■ This is a link to our §6Wiki§r dedicated to making your own emote!§7")
+    @Translation(comments = "■ This is a link to our §6Wiki§r§7 dedicated to making your own emote!§7")
     private static final String WIKI = Translation.Type.GUI.wrap("emote_screen.wiki");
 
     public static final String EMOTE_WIKI_URL = "https://github.com/DragonSurvivalTeam/DragonSurvival/wiki/9.-How-Help-or-Make-Content#-create-a-new-emotion";

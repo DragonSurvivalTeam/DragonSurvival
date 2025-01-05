@@ -62,16 +62,19 @@ public class DragonSkinsScreen extends Screen {
     private static final String WIKI = Translation.Type.GUI.wrap("skin_screen.wiki");
 
     @Translation(comments = {
-            "■ A §6Skin§r is a self-made texture for your dragon. In this tab, you can disable the display of your skin for your dragon at different stages, as well as skins of other players.",
-            "■ Skins are not built in the Dragon Editor, but created using outside tools.",
+            "■ §6Skin§r is a texture for your dragon. There are two types of skins: built-in and custom. ",
+            "■ §6Custom skin§r§f you can draw yourself and upload to our github so that all players can see this texture.",
             "§7■ If you are interested in how to make your own skin or take a commission, use the buttons on the right."
     })
     private static final String HELP = Translation.Type.GUI.wrap("skin_screen.help");
 
-    @Translation(comments = "■ Shows a randomly selected §6other player§r§f who uploaded a skin. You §ccan't use§r§f their appearance for yourself!§7 Only look and admire! >:D")
+    @Translation(comments = {
+            "■ Shows a randomly selected §6other player§r§f who uploaded a skin.",
+            "■§7 You §ccan't use§r§f§7 their skins for yourself! Only look and admire! >:D"
+    })
     private static final String RANDOM_INFO = Translation.Type.GUI.wrap("skin_screen.random_info");
 
-    @Translation(comments = "If you are using a §6texture pack§r to test your custom skin before submitting it, check this box.")
+    @Translation(comments = "If you are using a §6texture pack§r§f to test your custom skin before submitting it, check this box.")
     private static final String DEFAULT_SKIN_INFO = Translation.Type.GUI.wrap("dragon_editor.default_skin_info");
 
     @Translation(comments = "Show custom player skins")

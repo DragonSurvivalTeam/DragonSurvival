@@ -203,7 +203,7 @@ public class DragonEditorScreen extends Screen {
     private final Screen source;
     private int guiLeft;
 
-    private final String[] animations = {"sit_dentist", "sit_animation", "idle_animation", "fly_animation", "swim_animation", "run_animation", "spinning_on_back"};
+    private final String[] animations = {"sit_dentist", "sit", "idle", "fly", "swim", "run", "spinning_on_back"};
 
     private DragonUIRenderComponent dragonRender;
     private ExtendedButton uiButton;
