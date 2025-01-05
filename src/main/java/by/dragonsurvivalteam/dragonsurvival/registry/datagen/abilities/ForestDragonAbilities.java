@@ -82,7 +82,7 @@ public class ForestDragonAbilities {
 
     // --- Passive --- //
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Upgrading this ability increases your maximum mana pool. Forest dragon mana is restored under direct sunlight and on grass.\n")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Upgrading this ability increases your maximum mana pool. Additionally, mana regeneration will be sped up while standing on grass or under direct sunlight.\n")
     @Translation(type = Translation.Type.ABILITY, comments = "Forest Magic")
     public static final ResourceKey<DragonAbility> FOREST_MAGIC = DragonAbilities.key("forest_magic");
 
@@ -106,9 +106,7 @@ public class ForestDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Forest Wings")
     public static final ResourceKey<DragonAbility> FOREST_WINGS = DragonAbilities.key("forest_wings");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ You can spin through the air, boosting your speed.\n",
-    })
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ You can spin through the air, boosting your speed.\n")
     @Translation(type = Translation.Type.ABILITY, comments = "Cave Spin")
     public static final ResourceKey<DragonAbility> FOREST_SPIN = DragonAbilities.key("forest_spin");
 

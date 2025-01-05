@@ -66,26 +66,20 @@ public class SeaDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Ball Lightning")
     public static final ResourceKey<DragonAbility> BALL_LIGHTNING = DragonAbilities.key("ball_lightning");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ Give a buff to yourself and your allies that multiplies the amount of §2experience§r gained from monsters.\n"
-    })
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Give a buff to yourself and your allies that multiplies the amount of §2experience§r gained from monsters.\n")
     @Translation(type = Translation.Type.ABILITY, comments = "Soul Revelation")
     public static final ResourceKey<DragonAbility> SOUL_REVELATION = DragonAbilities.key("soul_revelation");
 
     @Translation(type = Translation.Type.ABILITY_EFFECT, comments = "Revealing the Soul")
     public static final ResourceLocation SOUL_REVELATION_MODIFIER = DragonSurvival.res("revealing_the_soul");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ Give yourself §2Sea Vision§r for a short time.\n"
-    })
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Give yourself §2Sea Vision§r for a short time.\n")
     @Translation(type = Translation.Type.ABILITY, comments = "Sea Vision")
     public static final ResourceKey<DragonAbility> SEA_EYES = DragonAbilities.key("sea_eyes");
 
     // --- Passive --- //
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ Upgrading this ability increases your maximum mana pool. Cave dragon mana is restored by standing on wet blocks.\n",
-    })
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Upgrading this ability increases your maximum mana pool. Additionally, mana regeneration will be sped up while standing on wet blocks.\n")
     @Translation(type = Translation.Type.ABILITY, comments = "Sea Magic")
     public static final ResourceKey<DragonAbility> SEA_MAGIC = DragonAbilities.key("sea_magic");
 
@@ -93,9 +87,7 @@ public class SeaDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Sea Athletics")
     public static final ResourceKey<DragonAbility> SEA_ATHLETICS = DragonAbilities.key("sea_athletics");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ Increases your capacity for hydration while outside of water. Will help you to survive while venturing onto land, or even in the Nether.\n",
-    })
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Increases your capacity for hydration while outside of water. Will help you to survive while venturing onto land, or even in the Nether.\n")
     @Translation(type = Translation.Type.ABILITY, comments = "Hydration")
     public static final ResourceKey<DragonAbility> HYDRATION = DragonAbilities.key("hydration");
 
@@ -103,36 +95,26 @@ public class SeaDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Spectral Impact")
     public static final ResourceKey<DragonAbility> SPECTRAL_IMPACT = DragonAbilities.key("spectral_impact");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ Sea dragons can dig blocks that require shovels without tools. This ability gets stronger as you grow.\n",
-    })
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Sea dragons can dig blocks that require shovels without tools. This ability gets stronger as you grow.\n")
     @Translation(type = Translation.Type.ABILITY, comments = "Claws and Teeth")
     public static final ResourceKey<DragonAbility> SEA_CLAWS_AND_TEETH = DragonAbilities.key("sea_claws_and_teeth");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ Dragons use §2levitation§r to fly, but are rarely born with that ability. Only one dragon in this world can share their power of flight with you.\n",
-    })
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Dragons use §2levitation§r to fly, but are rarely born with that ability. Only one dragon in this world can share their power of flight with you.\n")
     @Translation(type = Translation.Type.ABILITY, comments = "Sea Wings")
     public static final ResourceKey<DragonAbility> SEA_WINGS = DragonAbilities.key("sea_wings");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ You can spin through the air and in water, boosting your speed.\n",
-    })
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ You can spin through the air and in water, boosting your speed.\n")
     @Translation(type = Translation.Type.ABILITY, comments = "Cave Spin")
     public static final ResourceKey<DragonAbility> SEA_SPIN = DragonAbilities.key("sea_spin");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ Sea dragons have an innate immunity to lightning."
-    })
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Sea dragons have an innate immunity to lightning.")
     @Translation(type = Translation.Type.ABILITY, comments = "Electric Immunity")
     public static final ResourceKey<DragonAbility> ELECTRIC_IMMUNITY = DragonAbilities.key("electric_immunity");
 
     @Translation(type = Translation.Type.ABILITY_EFFECT, comments = "Electric Immunity")
     public static final ResourceLocation ELECTRIC_IMMUNITY_EFFECT = DragonSurvival.res("electric_immunity");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ Sea dragons are amphibious, and do not need to hold their breath underwater. In addition, they can swim much faster than other dragons."
-    })
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Sea dragons are amphibious, and do not need to hold their breath underwater. In addition, they can swim much faster than other dragons.")
     @Translation(type = Translation.Type.ABILITY, comments = "Amphibious")
     public static final ResourceKey<DragonAbility> AMPHIBIOUS = DragonAbilities.key("amphibious");
 

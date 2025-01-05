@@ -90,7 +90,7 @@ public class InventoryScreenHandler {
             AltarData data = AltarData.getData(player);
 
             if (altarOpenButton != null) {
-                altarOpenButton.visible = !data.hasUsedAltar && DragonStateProvider.isDragon(player);
+                altarOpenButton.visible = !data.hasUsedAltar && !DragonStateProvider.isDragon(player);
             }
         }
     }

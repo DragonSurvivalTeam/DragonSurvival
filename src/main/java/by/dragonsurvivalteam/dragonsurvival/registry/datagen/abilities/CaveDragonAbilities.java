@@ -72,7 +72,7 @@ public class CaveDragonAbilities {
 
     // --- Passive --- //
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Upgrading this ability increases your maximum mana pool. Cave dragon mana is restored by standing on hot blocks.\n")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Upgrading this ability increases your maximum mana pool. Additionally, mana regeneration will be sped up while standing on hot blocks.\n")
     @Translation(type = Translation.Type.ABILITY, comments = "Cave Magic")
     public static final ResourceKey<DragonAbility> CAVE_MAGIC = DragonAbilities.key("cave_magic");
 

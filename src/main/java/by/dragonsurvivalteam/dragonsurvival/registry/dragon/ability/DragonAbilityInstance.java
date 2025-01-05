@@ -137,11 +137,6 @@ public class DragonAbilityInstance {
             return;
         }
 
-        if (value().usageBlocked().map(condition -> condition.test(Condition.createContext(serverPlayer))).orElse(false)) {
-            stopCasting(serverPlayer);
-            return;
-        }
-
         if (currentTick < castTime) {
             return;
         }
