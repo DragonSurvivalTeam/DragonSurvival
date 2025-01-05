@@ -69,7 +69,7 @@ public class CaveDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Sturdy Skin")
     public static final ResourceKey<DragonAbility> STURDY_SKIN = DragonAbilities.key("sturdy_skin");
 
-    @Translation(type = Translation.Type.MODIFIER, comments = "Sturdy Skin")
+    @Translation(type = Translation.Type.ABILITY_EFFECT, comments = "Sturdy Skin")
     public static final ResourceLocation STURDY_SKIN_MODIFIER = DragonSurvival.res("sturdy_skin");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Personal buff: makes lava more §2transparent§r while active.")

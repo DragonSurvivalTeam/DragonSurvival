@@ -103,9 +103,6 @@ public @interface Translation {
         STAGE("dragon_stage." + DragonSurvival.MODID + ".", ""),
         STAGE_DESCRIPTION("dragon_stage." + DragonSurvival.MODID + ".", ".desc"),
 
-        MODIFIER("modifier." + DragonSurvival.MODID + ".", ""),
-        MODIFIER_TOOLTIP("modifier." + DragonSurvival.MODID + ".", ".tooltip"),
-
         TARGET_MODE("target_mode." + DragonSurvival.MODID + ".", ""),
 
         ENUM("enum.", ""),

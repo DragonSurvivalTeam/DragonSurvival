@@ -56,12 +56,12 @@ public class FlightData implements INBTSerializable<CompoundTag> {
     }
 
     public static final ClientEffectProvider FLIGHT_EFFECT = new ClientEffectProvider() {
-        @Translation(type = Translation.Type.MODIFIER, comments = "Wings")
+        @Translation(type = Translation.Type.GUI, comments = "Wings")
         private static final ResourceLocation MODIFIER = DragonSurvival.res("wings");
 
         private static final ClientData DATA = new ClientData(
                 DragonSurvival.res("textures/modifiers/cave_dragon_wings.png"),
-                Component.translatable(Translation.Type.MODIFIER.wrap(MODIFIER)),
+                Component.translatable(Translation.Type.GUI.wrap(MODIFIER)),
                 Component.empty(),
                 Component.empty()
         );

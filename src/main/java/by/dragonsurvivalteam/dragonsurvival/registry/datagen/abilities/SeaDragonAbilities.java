@@ -72,7 +72,7 @@ public class SeaDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Soul Revelation")
     public static final ResourceKey<DragonAbility> SOUL_REVELATION = DragonAbilities.key("soul_revelation");
 
-    @Translation(type = Translation.Type.MODIFIER, comments = "Revealing the Soul")
+    @Translation(type = Translation.Type.ABILITY_EFFECT, comments = "Revealing the Soul")
     public static final ResourceLocation SOUL_REVELATION_MODIFIER = DragonSurvival.res("revealing_the_soul");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {

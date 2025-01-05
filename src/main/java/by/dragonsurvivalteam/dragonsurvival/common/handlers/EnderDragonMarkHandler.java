@@ -58,15 +58,15 @@ public class EnderDragonMarkHandler {
     }
 
     public static final ClientEffectProvider MARK_EFFECT = new ClientEffectProvider() {
-        @Translation(type = Translation.Type.MODIFIER, comments = "Ender Dragon's Curse")
+        @Translation(type = Translation.Type.GUI, comments = "Ender Dragon's Curse")
         private static final ResourceLocation MODIFIER = DragonSurvival.res("ender_dragon_curse");
 
         @Translation(comments = "You have been cursed by the ender dragon. You may be unable to use some of your abilities. You can cure this curse by using a Primordial Anchor block after resurrecting the dragon.")
-        private static final String DESCRIPTION = Translation.Type.MODIFIER_TOOLTIP.wrap("ender_dragon_curse");
+        private static final String DESCRIPTION = Translation.Type.GUI.wrap("ender_dragon_curse.tooltip");
 
         private static final ClientData DATA = new ClientData(
                 DragonSurvival.res("textures/modifiers/ender_dragon_curse.png"),
-                Component.translatable(Translation.Type.MODIFIER.wrap(MODIFIER)),
+                Component.translatable(Translation.Type.GUI.wrap(MODIFIER)),
                 Component.translatable(DESCRIPTION),
                 Component.empty()
         );
