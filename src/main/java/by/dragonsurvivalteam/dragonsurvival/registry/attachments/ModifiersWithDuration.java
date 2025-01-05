@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierWithDuration;
-import by.dragonsurvivalteam.dragonsurvival.network.modifiers.SyncModifierWithDuration;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncModifierWithDuration;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -10,7 +10,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
@@ -42,13 +42,11 @@ public class ModifiersWithDuration extends Storage<ModifierWithDuration.Instance
         }
     }
 
-    @SubscribeEvent // TODO :: would living death event also work? depends when the player attributes etc. are copied to the new player entity
-    public static void removeModifiers(final PlayerEvent.Clone event) {
+    @SubscribeEvent
+    public static void removeModifiers(final LivingDeathEvent event) {
         // Since the modifiers are applied as permanent they need to be removed on death
         // Otherwise we lose the ability to track them and cannot remove them at all
-        if (event.isWasDeath()) {
-            event.getOriginal().getExistingData(DSDataAttachments.MODIFIERS_WITH_DURATION).ifPresent(data -> data.all().forEach(entry -> entry.onRemovalFromStorage(event.getEntity())));
-        }
+        event.getEntity().getExistingData(DSDataAttachments.MODIFIERS_WITH_DURATION).ifPresent(data -> data.all().forEach(entry -> entry.onRemovalFromStorage(event.getEntity())));
     }
 
     @Override

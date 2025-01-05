@@ -5,25 +5,16 @@
         "applied_effects": {
           "entity_effect": [
             {
-              "effect_type": "dragonsurvival:modifier",
-              "modifiers": [
-                {
-                  "duration": {
-                    "type": "minecraft:linear",
-                    "base": 1200.0,
-                    "per_level_above_first": 1200.0
-                  },
-                  "icon": "dragonsurvival:textures/modifiers/sturdy_skin.png",
-                  "id": "dragonsurvival:sturdy_skin",
-                  "modifiers": [
-                    {
-                      "amount": 3.0,
-                      "attribute": "minecraft:generic.armor",
-                      "operation": "add_value"
-                    }
-                  ]
-                }
-              ]
+              "effect_type": "dragonsurvival:potion",
+              "potion": {
+                "amplifier": 0.0,
+                "duration": {
+                  "type": "minecraft:linear",
+                  "base": 1200.0,
+                  "per_level_above_first": 1200.0
+                },
+                "effects": "dragonsurvival:sturdy_skin"
+              }
             }
           ],
           "entity_targeting_mode": "TARGET_ALLIES"

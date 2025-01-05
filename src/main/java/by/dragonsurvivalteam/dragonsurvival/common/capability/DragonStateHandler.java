@@ -7,10 +7,8 @@ import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.Sk
 import by.dragonsurvivalteam.dragonsurvival.commands.DragonCommand;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.subcapabilities.SkinCap;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.subcapabilities.SubCap;
-import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.items.growth.StarHeartItem;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
-import by.dragonsurvivalteam.dragonsurvival.mixins.EntityAccessor;
 import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncMagicData;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDesiredSize;
@@ -30,7 +28,6 @@ import by.dragonsurvivalteam.dragonsurvival.util.*;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -40,8 +37,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.EntityDimensions;
-import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
@@ -262,8 +257,7 @@ public class DragonStateHandler extends EntityStateHandler {
         return bodyKey().location();
     }
 
-    public void refreshDataOnTypeChange(final ServerPlayer player) {
-        PenaltySupply.getData(player).clear();
+    public void refreshMagicData(final ServerPlayer player) {
         MagicData magic = MagicData.getData(player);
 
         if (!ServerConfig.saveAllAbilities) {
@@ -283,16 +277,20 @@ public class DragonStateHandler extends EntityStateHandler {
         Holder<DragonSpecies> oldSpecies = dragonSpecies;
         dragonSpecies = species;
 
-        if (!(player instanceof ServerPlayer serverPlayer)) {
-            // Magic data and attribute modifiers are handled server-side
+        if (player == null) {
             return;
         }
 
         if (species != null && (oldSpecies == null || !oldSpecies.is(species))) {
-            DSModifiers.updateTypeModifiers(serverPlayer, this);
-            refreshDataOnTypeChange(serverPlayer);
+            PenaltySupply.getData(player).clear();
+            DSModifiers.updateTypeModifiers(player, this);
+
+            if (player instanceof ServerPlayer serverPlayer) {
+                refreshMagicData(serverPlayer);
+            }
         } else if (species == null) {
-            DSModifiers.clearModifiers(serverPlayer);
+            PenaltySupply.getData(player).clear();
+            DSModifiers.clearModifiers(player);
         }
     }
 

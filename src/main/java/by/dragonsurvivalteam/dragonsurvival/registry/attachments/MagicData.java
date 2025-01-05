@@ -4,7 +4,6 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.MagicHUD;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncCooldownState;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
@@ -327,14 +326,15 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         this.renderAbilities = renderAbilities;
     }
 
-    public void refresh(final ServerPlayer player, final Holder<DragonSpecies> type) {
-        if (type == null) {
+    public void refresh(final ServerPlayer player, final Holder<DragonSpecies> currentSpecies) {
+        // Make sure we remove any passive effects for abilities that are no longer available
+        abilities.values().forEach(perSpecies -> perSpecies.values().forEach(ability -> ability.setActive(false, player)));;
+
+        if (currentSpecies == null) {
             return;
         }
 
-        // Make sure we remove any passive effects for abilities that are no longer available
-        abilities.values().forEach(perSpecies -> perSpecies.values().forEach(ability -> ability.setActive(false, player)));;
-        currentSpecies = type.getKey();
+        this.currentSpecies = currentSpecies.getKey();
 
         // Make sure we remove any passive effects for abilities that are no longer available
         for (DragonAbilityInstance instance : getAbilities().values()) {
@@ -346,7 +346,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
         int slot = 0;
 
-        for (Holder<DragonAbility> ability : type.value().abilities()) {
+        for (Holder<DragonAbility> ability : currentSpecies.value().abilities()) {
             UpgradeType<?> upgrade = ability.value().upgrade().orElse(null);
             DragonAbilityInstance instance;
 
@@ -358,7 +358,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
                 upgrade.attempt(player, instance, sizeInput);
             }
 
-            if (slot < HOTBAR_SLOTS && ability.value().activation().type() != Activation.Type.PASSIVE) {
+            if (slot < HOTBAR_SLOTS && !instance.isPassive()) {
                 getHotbar().put(slot, ability.getKey());
                 slot++;
             }
@@ -368,11 +368,11 @@ public class MagicData implements INBTSerializable<CompoundTag> {
     }
 
     public List<DragonAbilityInstance> getActiveAbilities() {
-        return getAbilities().values().stream().filter(instance -> instance.ability().value().activation().type() != Activation.Type.PASSIVE).collect(Collectors.toList());
+        return getAbilities().values().stream().filter(instance -> !instance.isPassive()).collect(Collectors.toList());
     }
 
     public List<DragonAbilityInstance> getPassiveAbilities(final Predicate<Optional<UpgradeType<?>>> predicate) {
-        return getAbilities().values().stream().filter(instance -> instance.ability().value().activation().type() == Activation.Type.PASSIVE && predicate.test(instance.value().upgrade())).collect(Collectors.toList());
+        return getAbilities().values().stream().filter(instance -> instance.isPassive() && predicate.test(instance.value().upgrade())).collect(Collectors.toList());
     }
 
     /** Returns the amount of experience gained / lost when down- or upgrading the ability */

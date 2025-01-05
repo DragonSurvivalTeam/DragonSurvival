@@ -3,14 +3,15 @@ package by.dragonsurvivalteam.dragonsurvival.commands;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerPlayer;
 
 import static net.minecraft.commands.Commands.literal;
 
 public class ClearModifiersCommand {
     public static void register(final CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.getRoot().addChild(literal("clear-modifiers")
-                .requires(source -> source.hasPermission(2))
+        dispatcher.getRoot().addChild(literal("dragon-clear-modifiers")
+                .requires(source -> source.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .executes(context -> runCommand(context.getSource().getPlayerOrException()))
                 .build()
         );

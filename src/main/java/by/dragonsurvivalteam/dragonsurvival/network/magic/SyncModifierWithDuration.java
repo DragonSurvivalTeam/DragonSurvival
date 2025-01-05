@@ -1,4 +1,4 @@
-package by.dragonsurvivalteam.dragonsurvival.network.modifiers;
+package by.dragonsurvivalteam.dragonsurvival.network.magic;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierWithDuration;
@@ -26,7 +26,8 @@ public record SyncModifierWithDuration(int playerId, ModifierWithDuration.Instan
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 ModifiersWithDuration data = player.getData(DSDataAttachments.MODIFIERS_WITH_DURATION);
-                if(packet.remove) {
+
+                if (packet.remove()) {
                     data.remove(player, packet.modifierInstance());
                 } else {
                     data.add(player, packet.modifierInstance());

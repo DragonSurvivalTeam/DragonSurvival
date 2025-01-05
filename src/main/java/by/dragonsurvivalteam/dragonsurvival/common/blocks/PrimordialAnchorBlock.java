@@ -4,7 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.network.status.SyncEnderDragonMark;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSTileEntities;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.PrimordialAnchorBlockEntity;
 import net.minecraft.core.BlockPos;
@@ -271,12 +271,12 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public BlockEntity newBlockEntity(@NotNull BlockPos position, @NotNull BlockState state) {
-        return DSTileEntities.PRIMORDIAL_ANCHOR.get().create(position, state);
+    public BlockEntity newBlockEntity(@NotNull final BlockPos position, @NotNull final BlockState state) {
+        return DSBlockEntities.PRIMORDIAL_ANCHOR.get().create(position, state);
     }
 
     @Override
-    @Nullable public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
-        return level.isClientSide ? null : BaseEntityBlock.createTickerHelper(type, DSTileEntities.PRIMORDIAL_ANCHOR.get(), PrimordialAnchorBlockEntity::serverTick);
+    @Nullable public <T extends BlockEntity> BlockEntityTicker<T> getTicker(final Level level, @NotNull final BlockState state, @NotNull final BlockEntityType<T> type) {
+        return level.isClientSide ? null : BaseEntityBlock.createTickerHelper(type, DSBlockEntities.PRIMORDIAL_ANCHOR.get(), PrimordialAnchorBlockEntity::serverTick);
     }
 }

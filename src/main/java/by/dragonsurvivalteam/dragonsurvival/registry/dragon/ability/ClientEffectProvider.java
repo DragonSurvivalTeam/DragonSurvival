@@ -57,15 +57,18 @@ public interface ClientEffectProvider {
         providers.addAll(localPlayer.getExistingData(DSDataAttachments.MODIFIERS_WITH_DURATION).map(ModifiersWithDuration::all).orElse(List.of()));
         providers.addAll(localPlayer.getExistingData(DSDataAttachments.DAMAGE_MODIFICATIONS).map(DamageModifications::all).orElse(List.of()));
 
-        FlightData flightData = FlightData.getData(localPlayer);
-
-        if (flightData.areWingsSpread) {
-            providers.add(FlightData.FLIGHT_EFFECT);
-        }
-
         DragonStateHandler handler = DragonStateProvider.getData(localPlayer);
-        if (handler.isDragon() && handler.markedByEnderDragon) {
-            providers.add(EnderDragonMarkHandler.MARK_EFFECT);
+
+        if (handler.isDragon()) {
+            FlightData flightData = FlightData.getData(localPlayer);
+
+            if (flightData.areWingsSpread) {
+                providers.add(FlightData.FLIGHT_EFFECT);
+            }
+
+            if (handler.markedByEnderDragon) {
+                providers.add(EnderDragonMarkHandler.MARK_EFFECT);
+            }
         }
 
         providers.removeIf(ClientEffectProvider::isInvisible);

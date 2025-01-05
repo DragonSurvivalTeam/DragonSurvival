@@ -1,4 +1,5 @@
-// 1.21.1	2025-01-02T16:52:24.2611728	Dragon Survival Item tags
+// 1.21.1	2025-01-05T12:44:27.4599174	Dragon Survival Item tags
+98e47e9f5e29dfe7526d64d46c38d29fda2da305 data/dragonsurvival/tags/item/charred_food.json
 19112fadb740b1fb49e6176d2c7aabb51d974df9 data/dragonsurvival/tags/item/claw_weapons.json
 2e41bde741c6c9d625aeead589e829b9a90f90ac data/dragonsurvival/tags/item/cold_items.json
 2249e0faf0f9e98cc5ca4e007600368951da7a02 data/dragonsurvival/tags/item/dark_armor.json
@@ -6,11 +7,12 @@ cc6f21df43aff58278ff2d2b8b8a1900fb202738 data/dragonsurvival/tags/item/dragon_al
 f619ffe1567682777028849930e160e620c521e4 data/dragonsurvival/tags/item/dragon_beacons.json
 33150f07d989f304c1970ffe443e33921b5d63a4 data/dragonsurvival/tags/item/dragon_treasures.json
 a291334c6e7cf2a0595394a0593e82cca559418e data/dragonsurvival/tags/item/enchantable/chest_armor_and_elytra.json
-2df28bd6fa11058002f7d344f897353d061274ef data/dragonsurvival/tags/item/keep_effects.json
 eabca76b62af771e6cabc0523081266beb0aaa40 data/dragonsurvival/tags/item/light_armor.json
 8c4603792263de771b44aee19f8f9239b6210fdb data/dragonsurvival/tags/item/primordial_anchor_fuel.json
-519ef05e74e9249ac14f7330a9adb730808c1eb3 data/dragonsurvival/tags/item/sea_dragon_hydration.json
 1a79a28510fb0238be8159469780f6370707f040 data/dragonsurvival/tags/item/small_wooden_dragon_doors.json
+f7a8c659163fbac23438e07049cc42e0aa39eb9a data/dragonsurvival/tags/item/transform_beacon_cave.json
+6f65945173b470070cc3ffbceeb8614d256b81f3 data/dragonsurvival/tags/item/transform_beacon_forest.json
+54217ed75f4503bd3e4461cef72f1d817a2758fa data/dragonsurvival/tags/item/transform_beacon_sea.json
 8b0d8659326e1f6e12cf4ad7fa75e1044e477f3e data/dragonsurvival/tags/item/wooden_dragon_doors.json
 be816b81dd33590312c171b8eef232d41ef1186a data/minecraft/tags/item/chest_armor.json
 c6c7f843ad5b18794863eb3281edb2c66bb10d60 data/minecraft/tags/item/foot_armor.json

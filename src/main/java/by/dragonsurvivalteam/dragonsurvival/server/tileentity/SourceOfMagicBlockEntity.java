@@ -3,8 +3,8 @@ package by.dragonsurvivalteam.dragonsurvival.server.tileentity;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.SourceOfMagicBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.SourceOfMagicData;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSTileEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.server.containers.SourceOfMagicContainer;
@@ -43,7 +43,7 @@ public class SourceOfMagicBlockEntity extends BaseBlockBlockEntity implements Co
     @Translation(comments = "Source of Magic")
     private static final String DISPLAY_NAME = Translation.Type.GUI.wrap("container.source_of_magic");
 
-    public static final String SOURCE_OF_MAGIC_DATA = "source_of_magic_data";
+    private static final String SOURCE_OF_MAGIC_DATA = "source_of_magic_data";
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     /** List of valid items that can be placed in the container */
@@ -54,7 +54,7 @@ public class SourceOfMagicBlockEntity extends BaseBlockBlockEntity implements Co
     private int ticks;
 
     public SourceOfMagicBlockEntity(final BlockPos position, final BlockState state) {
-        super(DSTileEntities.SOURCE_OF_MAGIC_TILE_ENTITY.get(), position, state);
+        super(DSBlockEntities.SOURCE_OF_MAGIC_TILE_ENTITY.get(), position, state);
     }
 
     public int getCurrentDuration() {

@@ -56,6 +56,7 @@ public interface AbilityEntityEffect {
             event.register(REGISTRY_KEY, DragonSurvival.res("spin"), () -> SpinEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("item_conversion"), () -> ItemConversionEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("swim"), () -> SwimEffect.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("effect_modification"), () -> EffectModificationEffect.CODEC);
         }
     }
 }

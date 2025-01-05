@@ -51,7 +51,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.common.NeoForgeMod;
 
 import java.util.List;
 import java.util.Optional;
@@ -121,7 +120,7 @@ public class ForestDragonAbilities {
     public static final ResourceKey<DragonAbility> FOREST_IMMUNITY = DragonAbilities.key("forest_immunity");
 
     @Translation(type = Translation.Type.ABILITY_EFFECT, comments = "Forest Immunity")
-    public static final ResourceLocation FOREST_IMMUNITY_EFFECT = DragonSurvival.res("forest_immunity.electric_immunity");
+    public static final ResourceLocation FOREST_IMMUNITY_EFFECT = DragonSurvival.res("forest_immunity");
 
     public static void registerAbilities(final BootstrapContext<DragonAbility> context) {
         registerActiveAbilities(context);
@@ -472,7 +471,8 @@ public class ForestDragonAbilities {
                                         context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.POISON_BREATH)
                                 ),
                                 LevelBasedValue.constant(0),
-                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)
+                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                false
                         )),
                         AbilityTargeting.EntityTargetingMode.TARGET_ALL
                 ), true), LevelBasedValue.constant(1))),

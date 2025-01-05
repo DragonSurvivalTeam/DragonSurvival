@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.network.modifiers.SyncModifierWithDuration;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncModifierWithDuration;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ModifiersWithDuration;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.AttributeModifierSupplier;
@@ -36,7 +36,7 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 public record ModifierWithDuration(ResourceLocation id, ResourceLocation icon, List<Modifier> modifiers, LevelBasedValue duration, boolean isHidden) {
-    public static final ResourceLocation DEFAULT_MODIFIER_ICON = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/modifiers/default_modifier.png");
+    public static final ResourceLocation DEFAULT_MODIFIER_ICON = DragonSurvival.res("textures/modifiers/default_modifier.png");
 
     public static final Codec<ModifierWithDuration> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ResourceLocation.CODEC.fieldOf("id").forGetter(ModifierWithDuration::id),

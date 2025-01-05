@@ -20,9 +20,9 @@ import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.DragonRe
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.projectiles.*;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DefaultPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DragonPartLoader;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSTileEntities;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -65,8 +65,8 @@ public class DragonSurvivalClient {
             EntityRenderers.register(DSEntities.BOLAS_ENTITY.get(), BolasEntityRenderer::new);
             EntityRenderers.register(DSEntities.GENERIC_ARROW_ENTITY.get(), GenericArrowRenderer::new);
 
-            BlockEntityRenderers.register(DSTileEntities.HELMET_TILE.get(), HelmetEntityRenderer::new);
-            BlockEntityRenderers.register(DSTileEntities.DRAGON_BEACON.get(), DragonBeaconRenderer::new);
+            BlockEntityRenderers.register(DSBlockEntities.HELMET.get(), HelmetEntityRenderer::new);
+            BlockEntityRenderers.register(DSBlockEntities.DRAGON_BEACON.get(), DragonBeaconRenderer::new);
 
             // GeckoLib renderers
             EntityRenderers.register(DSEntities.GENERIC_BALL_ENTITY.get(), manager -> new GenericBallRenderer(manager, new GenericBallModel()));

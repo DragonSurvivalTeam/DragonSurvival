@@ -8,7 +8,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
-public class DSTileEntities {
+public class DSBlockEntities {
     public static DeferredRegister<BlockEntityType<?>> DS_TILE_ENTITIES = DeferredRegister.create(
             BuiltInRegistries.BLOCK_ENTITY_TYPE,
             MODID
@@ -32,9 +32,9 @@ public class DSTileEntities {
                     .build(null)
     );
 
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HelmetTileEntity>> HELMET_TILE = DS_TILE_ENTITIES.register(
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HelmetBlockEntity>> HELMET = DS_TILE_ENTITIES.register(
             "knight_helmet", () -> BlockEntityType.Builder.of(
-                            HelmetTileEntity::new,
+                            HelmetBlockEntity::new,
                             DSBlocks.GRAY_KNIGHT_HELMET.get(),
                             DSBlocks.GOLDEN_KNIGHT_HELMET.get(),
                             DSBlocks.BLACK_KNIGHT_HELMET.get())

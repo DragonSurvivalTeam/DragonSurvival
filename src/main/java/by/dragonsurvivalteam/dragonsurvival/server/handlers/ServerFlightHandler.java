@@ -42,13 +42,6 @@ public class ServerFlightHandler {
     @ConfigOption(side = ConfigSide.SERVER, category = "wings", key = "flight_speed_multiplier")
     public static Double maxFlightSpeed = 0.3;
 
-    @Translation(key = "start_with_flight", type = Translation.Type.CONFIGURATION, comments = {
-            "If enabled dragons can fly from the start",
-            "If disabled players will have to use the item that grants wings or interact with the ender dragon"
-    })
-    @ConfigOption(side = ConfigSide.SERVER, category = "wings", key = "start_with_flight")
-    public static Boolean startWithFlight = true;
-
     @ConfigRange(min = 0, max = 20)
     @Translation(key = "flight_hunger_threshold", type = Translation.Type.CONFIGURATION, comments = "Determines the required food values to be able to fly")
     @ConfigOption(side = ConfigSide.SERVER, category = "wings", key = "flight_hunger_threshold")
@@ -94,29 +87,23 @@ public class ServerFlightHandler {
     public static boolean enableFlightFallDamage = true;
 
     @SubscribeEvent
-    public static void foldWingsOnLand(LivingFallEvent event) {
-        LivingEntity livingEntity = event.getEntity();
-
-        if (livingEntity.level().isClientSide()) {
+    public static void foldWingsOnLand(final LivingFallEvent event) {
+        if (!(event.getEntity() instanceof Player player) || player.level().isClientSide()) {
             return;
         }
 
-        DragonStateProvider.getOptional(livingEntity).ifPresent(handler -> {
-            if (!foldWingsOnLand || !handler.isDragon()) {
-                return;
-            }
+        DragonStateHandler data = DragonStateProvider.getData(player);
 
-            if (!(livingEntity instanceof Player player)) {
-                return;
-            }
+        if (!foldWingsOnLand || !data.isDragon()) {
+            return;
+        }
 
-            FlightData data = FlightData.getData(player);
+        FlightData flightData = FlightData.getData(player);
 
-            if (data.isWingsSpread()) {
-                FlightData.getData(player).areWingsSpread = false;
-                PacketDistributor.sendToPlayersTrackingEntityAndSelf(livingEntity, new SyncWingsSpread.Data(livingEntity.getId(), false));
-            }
-        });
+        if (flightData.isWingsSpread()) {
+            FlightData.getData(player).areWingsSpread = false;
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncWingsSpread.Data(player.getId(), false));
+        }
     }
 
     /**
@@ -127,21 +114,18 @@ public class ServerFlightHandler {
         LivingEntity livingEntity = event.getEntity();
         double verticalFlightSpeed = livingEntity.getDeltaMovement().y * livingEntity.getDeltaMovement().y;
 
-        if(livingEntity instanceof Player player) {
+        if (livingEntity instanceof Player player) {
             DragonStateProvider.getOptional(livingEntity).ifPresent(handler -> {
                 FlightData data = FlightData.getData(player);
                 // Don't use the helper functions here, as isFlying() will return false if the player is grounded
                 if (handler.isDragon() && data.hasFlight() && data.isWingsSpread() && player.isSprinting()) {
-                    if (!enableFlightFallDamage
-                            || verticalFlightSpeed <= 1
-                            || (livingEntity.isPassenger() && DragonStateProvider.isDragon(livingEntity.getVehicle())))
-                    {
+                    if (!enableFlightFallDamage || verticalFlightSpeed <= 1 || (livingEntity.isPassenger() && DragonStateProvider.isDragon(livingEntity.getVehicle()))) {
                         event.setCanceled(true);
                         return;
                     }
 
                     double damage = verticalFlightSpeed * (handler.getSize() / 20);
-                    damage = Mth.clamp(damage, 0, livingEntity.getHealth() -  1);
+                    damage = Mth.clamp(damage, 0, livingEntity.getHealth() - 1);
 
                     // See Attributes.SAFE_FALL_DISTANCE
                     final float SAFE_FALL_DISTANCE_DEFAULT_VALUE = 3.0f;
@@ -170,10 +154,8 @@ public class ServerFlightHandler {
             player.resetFallDistance();
         }
 
-        if(!player.level().isClientSide()) {
-            if(DragonStateProvider.isDragon(player)) {
-                PacketDistributor.sendToPlayersTrackingEntity(player, new SyncFlyingPlayerAbility(player.getId(), player.getAbilities().flying));
-            }
+        if (!player.level().isClientSide() && handler.isDragon()) {
+            PacketDistributor.sendToPlayersTrackingEntity(player, new SyncFlyingPlayerAbility(player.getId(), player.getAbilities().flying));
         }
     }
 

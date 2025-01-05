@@ -54,7 +54,7 @@ public class DragonSurvival {
         DSParticles.DS_PARTICLES.register(bus);
         DSSounds.DS_SOUNDS.register(bus);
         DSPotions.DS_POTIONS.register(bus);
-        DSTileEntities.DS_TILE_ENTITIES.register(bus);
+        DSBlockEntities.DS_TILE_ENTITIES.register(bus);
         DSEntities.DS_ENTITY_TYPES.register(bus);
         DSMapDecorationTypes.DS_MAP_DECORATIONS.register(bus);
         DSTrades.DS_POI_TYPES.register(bus);

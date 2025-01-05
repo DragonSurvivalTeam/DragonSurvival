@@ -52,6 +52,13 @@ public class DSEffects { // TODO :: add descriptions for the missing N/A marked 
     @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "Protects from the damaging effects of water.")
     public static Holder<MobEffect> FIRE = DS_MOB_EFFECTS.register("cave_fire", () -> new ModifiableMobEffect(MobEffectCategory.BENEFICIAL, 0x0, false));
 
+    @Translation(type = Translation.Type.EFFECT, comments = "Sturdy Skin")
+    @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "Grants additional armor points.")
+    public static Holder<MobEffect> STURDY_SKIN = DS_MOB_EFFECTS.register("sturdy_skin",
+            () -> new ModifiableMobEffect(MobEffectCategory.BENEFICIAL, 0x0, false)
+                    .addAttributeModifier(Attributes.ARMOR, DragonSurvival.res("sturdy_skin"), 3, Operation.ADD_VALUE)
+    );
+
     @Translation(type = Translation.Type.EFFECT, comments = "Animal Peace")
     @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "Animals will not flee from dragons with this effect active.")
     public static Holder<MobEffect> ANIMAL_PEACE = DS_MOB_EFFECTS.register("animal_peace", () -> new ModifiableMobEffect(MobEffectCategory.BENEFICIAL, 0x0, false));
@@ -60,10 +67,6 @@ public class DSEffects { // TODO :: add descriptions for the missing N/A marked 
     @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "Gives the dragon infinite mana to use magic.")
     public static Holder<MobEffect> SOURCE_OF_MAGIC = DS_MOB_EFFECTS.register("source_of_magic", () -> new ModifiableMobEffect(MobEffectCategory.BENEFICIAL, 0x0, false)
             .addAttributeModifier(DSAttributes.MANA_REGENERATION, DragonSurvival.res("source_of_magic"), 10, Operation.ADD_MULTIPLIED_BASE));
-
-    @Translation(type = Translation.Type.EFFECT, comments = "Mana Regeneration")
-    @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "Regenerates dragon mana over time.")
-    public static Holder<MobEffect> MANA_REGENERATION = DS_MOB_EFFECTS.register("mana_regeneration", () -> new ModifiableMobEffect(MobEffectCategory.BENEFICIAL, 0x0, false));
 
     @Translation(type = Translation.Type.EFFECT, comments = "Royal Departure")
     @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "N/A") // TODO
@@ -84,10 +87,6 @@ public class DSEffects { // TODO :: add descriptions for the missing N/A marked 
                     // Same value as vanilla speed effect
                     .addAttributeModifier(Attributes.MOVEMENT_SPEED, DragonSurvival.res("hunter_speed_multiplier"), 0.2f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
     );
-
-    @Translation(type = Translation.Type.EFFECT, comments = "Revealing the Soul")
-    @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "Multiplies the experience gained from mobs.")
-    public static Holder<MobEffect> REVEALING_THE_SOUL = DS_MOB_EFFECTS.register("revealing_the_soul", () -> new ModifiableMobEffect(MobEffectCategory.BENEFICIAL, 0x0, false));
 
     @Translation(type = Translation.Type.EFFECT, comments = "Burn")
     @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "The target takes fire damage. Damage dealt depends on the speed of the target.")

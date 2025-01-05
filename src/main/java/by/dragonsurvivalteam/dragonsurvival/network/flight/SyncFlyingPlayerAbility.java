@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.network.flight;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -9,11 +10,8 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-
-import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
-
 public record SyncFlyingPlayerAbility(int playerId, boolean state) implements CustomPacketPayload {
-    public static final Type<SyncFlyingPlayerAbility> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "sync_flying_player_ability"));
+    public static final Type<SyncFlyingPlayerAbility> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "sync_flying_player_ability"));
 
     public static final StreamCodec<FriendlyByteBuf, SyncFlyingPlayerAbility> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, SyncFlyingPlayerAbility::playerId,

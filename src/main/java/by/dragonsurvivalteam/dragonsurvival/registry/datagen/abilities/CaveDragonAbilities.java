@@ -34,19 +34,15 @@ import com.mojang.datafixers.util.Either;
 import net.minecraft.advancements.critereon.EntityFlagsPredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
-import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.NeoForgeMod;
 
 import java.util.List;
@@ -70,18 +66,13 @@ public class CaveDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Sturdy Skin")
     public static final ResourceKey<DragonAbility> STURDY_SKIN = DragonAbilities.key("sturdy_skin");
 
-    @Translation(type = Translation.Type.ABILITY_EFFECT, comments = "Sturdy Skin")
-    public static final ResourceLocation STURDY_SKIN_MODIFIER = DragonSurvival.res("sturdy_skin");
-
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Personal buff: makes lava more §2transparent§r while active.")
     @Translation(type = Translation.Type.ABILITY, comments = "Lava Vision")
     public static final ResourceKey<DragonAbility> LAVA_VISION = DragonAbilities.key("lava_vision");
 
     // --- Passive --- //
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ Upgrading this ability increases your maximum mana pool. Cave dragon mana is restored by standing on hot blocks.\n",
-    })
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Upgrading this ability increases your maximum mana pool. Cave dragon mana is restored by standing on hot blocks.\n")
     @Translation(type = Translation.Type.ABILITY, comments = "Cave Magic")
     public static final ResourceKey<DragonAbility> CAVE_MAGIC = DragonAbilities.key("cave_magic");
 
@@ -105,21 +96,15 @@ public class CaveDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Burn")
     public static final ResourceKey<DragonAbility> BURN = DragonAbilities.key("burn");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ Cave dragons can mine stone blocks and various ores without tools. This ability gets stronger as you grow.\n"
-    })
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Cave dragons can mine stone blocks and various ores without tools. This ability gets stronger as you grow.\n")
     @Translation(type = Translation.Type.ABILITY, comments = "Claws and Teeth")
     public static final ResourceKey<DragonAbility> CAVE_CLAWS_AND_TEETH = DragonAbilities.key("cave_claws_and_teeth");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ Dragons use §2levitation§r to fly, but are rarely born with that ability. Only one dragon in this world can share their power of flight with you.\n",
-    })
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Dragons use §2levitation§r to fly, but are rarely born with that ability. Only one dragon in this world can share their power of flight with you.\n")
     @Translation(type = Translation.Type.ABILITY, comments = "Cave Wings")
     public static final ResourceKey<DragonAbility> CAVE_WINGS = DragonAbilities.key("cave_wings");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ You can spin through the air and in lava, boosting your speed.\n",
-    })
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ You can spin through the air and in lava, boosting your speed.\n")
     @Translation(type = Translation.Type.ABILITY, comments = "Cave Spin")
     public static final ResourceKey<DragonAbility> CAVE_SPIN = DragonAbilities.key("cave_spin");
 
@@ -131,11 +116,9 @@ public class CaveDragonAbilities {
     public static final ResourceKey<DragonAbility> FIRE_IMMUNITY = DragonAbilities.key("fire_immunity");
 
     @Translation(type = Translation.Type.ABILITY_EFFECT, comments = "Fire Immunity")
-    public static final ResourceLocation FIRE_IMMUNITY_EFFECT = DragonSurvival.res("fire_immunity.fire_immunity");
+    public static final ResourceLocation FIRE_IMMUNITY_EFFECT = DragonSurvival.res("fire_immunity");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ Cave dragons can swim in lava, but still need to hold their breath when swimming in it.\n",
-    })
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Cave dragons can swim in lava, but still need to hold their breath when swimming in it.\n")
     @Translation(type = Translation.Type.ABILITY, comments = "Lava Swimming")
     public static final ResourceKey<DragonAbility> LAVA_SWIMMING = DragonAbilities.key("lava_swimming");
 
@@ -245,13 +228,7 @@ public class CaveDragonAbilities {
                 Optional.of(new LevelUpgrade(3, LevelBasedValue.lookup(List.of(0f, 15f, 35f), LevelBasedValue.perLevel(15)))),
                 Optional.of(Condition.thisEntity(EntityPredicate.Builder.entity().flags(EntityFlagsPredicate.Builder.flags().setOnGround(false)).build()).build()),
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(
-                        ModifierEffect.single(new ModifierWithDuration(
-                                STURDY_SKIN_MODIFIER,
-                                DragonSurvival.res("textures/modifiers/sturdy_skin.png"),
-                                List.of(new Modifier(Attributes.ARMOR, LevelBasedValue.constant(3), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
-                                LevelBasedValue.perLevel(Functions.secondsToTicks(60)),
-                                false
-                        )),
+                        PotionEffect.single(LevelBasedValue.constant(0), LevelBasedValue.perLevel(Functions.secondsToTicks(60)), DSEffects.STURDY_SKIN),
                         AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
                 ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(
@@ -457,7 +434,8 @@ public class CaveDragonAbilities {
                                 FIRE_IMMUNITY_EFFECT,
                                 context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypeTags.IS_FIRE),
                                 LevelBasedValue.constant(0),
-                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)
+                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                false
                         )),
                         AbilityTargeting.EntityTargetingMode.TARGET_ALL
                 ), true), LevelBasedValue.constant(1))),

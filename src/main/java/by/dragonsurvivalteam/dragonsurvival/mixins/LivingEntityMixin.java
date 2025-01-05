@@ -6,9 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonFoodHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.EffectHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonedEntities;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.*;
 import by.dragonsurvivalteam.dragonsurvival.util.ToolUtils;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
@@ -143,11 +141,20 @@ public abstract class LivingEntityMixin extends Entity {
     /** There is no event to actually modify the effect when it's being applied */
     @ModifyVariable(method = "addEffect(Lnet/minecraft/world/effect/MobEffectInstance;Lnet/minecraft/world/entity/Entity;)Z", at = @At("HEAD"), argsOnly = true)
     private MobEffectInstance dragonSurvival$modifyEffect(final MobEffectInstance instance, final @Local(argsOnly = true) Entity applier) {
-        if ((Object) this instanceof Player affected) {
-            return EffectHandler.modifyEffect(affected, instance, applier);
+        LivingEntity self = (LivingEntity) (Object) this;
+        MobEffectInstance newInstance = instance;
+
+        if (self instanceof Player affected) {
+            newInstance = EffectHandler.modifyEffect(affected, instance, applier);
         }
 
-        return instance;
+        EffectModifications data = self.getExistingData(DSDataAttachments.EFFECT_MODIFICATIONS).orElse(null);
+
+        if (data != null) {
+            newInstance = data.modifyEffect(newInstance);
+        }
+
+        return newInstance;
     }
 
     @ModifyReturnValue(method = "canAttack(Lnet/minecraft/world/entity/LivingEntity;)Z", at = @At("RETURN"))

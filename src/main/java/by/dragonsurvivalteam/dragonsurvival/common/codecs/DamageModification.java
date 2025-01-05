@@ -28,7 +28,6 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -37,15 +36,16 @@ import org.jetbrains.annotations.NotNull;
 import java.text.NumberFormat;
 import javax.annotation.Nullable;
 
-public record DamageModification(ResourceLocation id, HolderSet<DamageType> damageTypes, LevelBasedValue multiplier, LevelBasedValue duration) {
+public record DamageModification(ResourceLocation id, HolderSet<DamageType> damageTypes, LevelBasedValue multiplier, LevelBasedValue duration, boolean isHidden) {
     public static final Codec<DamageModification> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ResourceLocation.CODEC.fieldOf("id").forGetter(DamageModification::id),
             RegistryCodecs.homogeneousList(Registries.DAMAGE_TYPE).fieldOf("types").forGetter(DamageModification::damageTypes),
             LevelBasedValue.CODEC.fieldOf("multiplier").forGetter(DamageModification::multiplier),
-            LevelBasedValue.CODEC.optionalFieldOf("duration", LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)).forGetter(DamageModification::duration)
+            LevelBasedValue.CODEC.optionalFieldOf("duration", LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)).forGetter(DamageModification::duration),
+            Codec.BOOL.optionalFieldOf("is_hidden", false).forGetter(DamageModification::isHidden)
     ).apply(instance, DamageModification::new));
 
-    public void apply(final ServerPlayer dragon, final Entity entity, final DragonAbilityInstance ability) {
+    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity) {
         DamageModifications data = entity.getData(DSDataAttachments.DAMAGE_MODIFICATIONS);
         Instance instance = data.get(id);
 
@@ -60,7 +60,7 @@ public record DamageModification(ResourceLocation id, HolderSet<DamageType> dama
         data.add(entity, new Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, id, getDescription(abilityLevel)), abilityLevel, newDuration));
     }
 
-    public void remove(final LivingEntity target) {
+    public void remove(final Entity target) {
         DamageModifications data = target.getData(DSDataAttachments.DAMAGE_MODIFICATIONS);
         data.remove(target, data.get(id));
     }
@@ -178,7 +178,7 @@ public record DamageModification(ResourceLocation id, HolderSet<DamageType> dama
 
         @Override
         public boolean isInvisible() {
-            return false;
+            return baseData().isHidden();
         }
     }
 }
