@@ -17,7 +17,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import static net.neoforged.neoforgespi.ILaunchContext.LOGGER;
 
 @EventBusSubscriber
 public class DSCommands {
@@ -32,14 +31,14 @@ public class DSCommands {
 
     @SubscribeEvent
     public static void serverRegisterCommandsEvent(RegisterCommandsEvent event) {
-        CommandDispatcher<CommandSourceStack> commandDispatcher = event.getDispatcher();
-        RefreshAbilitiesCommand.register(commandDispatcher);
-        ClearModifiersCommand.register(commandDispatcher);
-        ClearMarkCommand.register(commandDispatcher);
+        CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
+        RefreshAbilitiesCommand.register(dispatcher);
+        ClearModifiersCommand.register(dispatcher);
+        ClearMarkCommand.register(dispatcher);
+        DragonEditorCommand.register(dispatcher);
+        DragonAltarCommand.register(dispatcher);
+
         DragonCommand.register(event);
-        DragonEditorCommand.register(commandDispatcher);
-        DragonAltarCommand.register(commandDispatcher);
         DragonSizeCommand.register(event);
-        LOGGER.info("Registered commands");
     }
 }

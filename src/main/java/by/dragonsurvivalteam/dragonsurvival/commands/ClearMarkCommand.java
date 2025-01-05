@@ -1,25 +1,24 @@
 package by.dragonsurvivalteam.dragonsurvival.commands;
 
-import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.tree.LiteralCommandNode;
-import com.mojang.brigadier.tree.RootCommandNode;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerPlayer;
 
 import static net.minecraft.commands.Commands.literal;
 
 public class ClearMarkCommand {
-    public static void register(CommandDispatcher<CommandSourceStack> commandDispatcher) {
-        RootCommandNode<CommandSourceStack> rootCommandNode = commandDispatcher.getRoot();
-        LiteralCommandNode<CommandSourceStack> dragon = literal("clear-mark").requires(commandSource -> commandSource.hasPermission(2)).executes(context -> runCommand(context.getSource().getPlayerOrException())).build();
-        rootCommandNode.addChild(dragon);
+    public static void register(final CommandDispatcher<CommandSourceStack> dispatcher) {
+        dispatcher.getRoot().addChild(literal("dragon-clear-mark")
+                .requires(source -> source.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                .executes(context -> runCommand(context.getSource().getPlayerOrException()))
+                .build()
+        );
     }
 
-    private static int runCommand(ServerPlayer serverPlayer) {
-        DragonStateHandler handler = DragonStateProvider.getData(serverPlayer);
-        handler.markedByEnderDragon = false;
+    private static int runCommand(final ServerPlayer player) {
+        DragonStateProvider.getData(player).markedByEnderDragon = false;
         return 1;
     }
 }

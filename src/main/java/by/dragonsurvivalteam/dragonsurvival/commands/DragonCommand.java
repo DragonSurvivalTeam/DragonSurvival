@@ -12,11 +12,10 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.ArgumentCommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import com.mojang.brigadier.tree.RootCommandNode;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.core.Holder;
@@ -35,11 +34,8 @@ import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 
 public class DragonCommand {
-    public static void register(RegisterCommandsEvent event) {
-        CommandDispatcher<CommandSourceStack> commandDispatcher = event.getDispatcher();
-
-        RootCommandNode<CommandSourceStack> rootCommandNode = commandDispatcher.getRoot();
-        LiteralCommandNode<CommandSourceStack> dragon = literal("dragon").requires(commandSource -> commandSource.hasPermission(2)).executes(context -> {
+    public static LiteralCommandNode<CommandSourceStack> register(final RegisterCommandsEvent event) {
+        LiteralCommandNode<CommandSourceStack> dragon = literal("dragon").requires(commandSource -> commandSource.hasPermission(Commands.LEVEL_GAMEMASTERS)).executes(context -> {
             Holder<DragonSpecies> type = DragonSpeciesArgument.get(context);
             return runCommand(type, null, null, context.getSource().getPlayerOrException());
         }).build();
@@ -75,11 +71,13 @@ public class DragonCommand {
             return 1;
         }).build();
 
-        rootCommandNode.addChild(dragon);
+        event.getDispatcher().getRoot().addChild(dragon);
         dragon.addChild(dragonSpecies);
         dragonSpecies.addChild(dragonBody);
         dragonBody.addChild(dragonStage);
         dragonStage.addChild(target);
+
+        return dragon;
     }
 
     private static int runCommand(Holder<DragonSpecies> type, @Nullable Holder<DragonBody> dragonBody, @Nullable Holder<DragonStage> dragonStage, ServerPlayer player) {
