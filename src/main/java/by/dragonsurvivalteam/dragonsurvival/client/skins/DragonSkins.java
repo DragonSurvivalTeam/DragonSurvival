@@ -3,7 +3,10 @@ package by.dragonsurvivalteam.dragonsurvival.client.skins;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.datapacks.AncientDatapack;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
 import com.mojang.blaze3d.Blaze3D;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.ResourceLocationException;
@@ -17,12 +20,11 @@ import net.minecraft.world.entity.player.Player;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Locale;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
@@ -31,66 +33,62 @@ public class DragonSkins {
     public static NetSkinLoader skinLoader = new GithubSkinLoaderAPI();
     private static final ArrayList<String> hasFailedFetch = new ArrayList<>();
     public static HashMap<ResourceKey<DragonStage>, HashMap<String, SkinObject>> SKIN_USERS = new HashMap<>();
-    public static HashMap<String, ResourceLocation> playerSkinCache = new HashMap<>();
-    public static HashMap<String, ResourceLocation> playerGlowCache = new HashMap<>();
+    public static HashMap<String, CompletableFuture<ResourceLocation>> playerSkinCache = new HashMap<>();
+    public static HashMap<String, CompletableFuture<ResourceLocation>> playerGlowCache = new HashMap<>();
     private static double lastSkinFetchAttemptTime = 0;
     private static int numSkinFetchAttempts = 0;
 
-    public static ResourceLocation getPlayerSkin(String playerName, ResourceKey<DragonStage> dragonStage) {
+    public static @Nullable ResourceLocation getPlayerSkin(String playerName, ResourceKey<DragonStage> dragonStage) {
         String skinKey = playerName + "_" + dragonStage.location().getPath();
 
         if (playerSkinCache.containsKey(skinKey) && playerSkinCache.get(skinKey) != null) {
-            return playerSkinCache.get(skinKey);
+            if(playerSkinCache.get(skinKey).isDone()) {
+                return playerSkinCache.get(skinKey).join();
+            }
         }
 
         if (!hasFailedFetch.contains(skinKey) && !playerSkinCache.containsKey(skinKey)) {
-            ResourceLocation texture = fetchSkinFile(playerName, dragonStage);
+            playerSkinCache.put(skinKey, CompletableFuture.supplyAsync(() -> fetchSkinFile(playerName, dragonStage)));
+        }
 
-            if (texture != null) {
-                playerSkinCache.put(skinKey, texture);
-                return texture;
+        return null;
+    }
+
+    public static @Nullable ResourceLocation getPlayerGlow(String playerName, ResourceKey<DragonStage> dragonStage) {
+        String skinKey = playerName + "_" + dragonStage.location().getPath();
+
+        if (playerGlowCache.containsKey(skinKey) && playerGlowCache.get(skinKey) != null) {
+            if(playerGlowCache.get(skinKey).isDone()) {
+                return playerGlowCache.get(skinKey).join();
+            }
+        } else {
+            playerGlowCache.put(skinKey, CompletableFuture.supplyAsync(() -> fetchSkinFile(playerName, dragonStage, "glow")));
+        }
+
+        return null;
+    }
+
+
+    public static @Nullable ResourceLocation getPlayerSkin(Player player, ResourceKey<DragonStage> dragonStage) {
+        String playerKey = player.getGameProfile().getName() + "_" + dragonStage.location().getPath();
+        boolean renderCustomSkin = DragonStateProvider.getData(player).getSkinData().renderCustomSkin;
+
+        if ((ClientDragonRenderer.renderOtherPlayerSkins || player == DragonSurvival.PROXY.getLocalPlayer()) && renderCustomSkin) {
+            if (playerSkinCache.containsKey(playerKey) && playerSkinCache.get(playerKey) != null) {
+                if(playerSkinCache.get(playerKey).isDone()) {
+                    return playerSkinCache.get(playerKey).join();
+                }
+            }
+
+            if (!hasFailedFetch.contains(playerKey) && !playerSkinCache.containsKey(playerKey)) {
+                playerSkinCache.put(playerKey, CompletableFuture.supplyAsync(() -> fetchSkinFile(player, dragonStage)));
             }
         }
 
         return null;
     }
 
-    public static ResourceLocation getPlayerGlow(String playerName, ResourceKey<DragonStage> dragonStage) {
-        String skinKey = playerName + "_" + dragonStage.location().getPath();
-
-        if (playerGlowCache.containsKey(skinKey)) {
-            return playerGlowCache.get(skinKey);
-        } else {
-            ResourceLocation texture = fetchSkinFile(playerName, dragonStage, "glow");
-            playerGlowCache.put(skinKey, texture);
-            return texture;
-        }
-    }
-
-
-    public static ResourceLocation getPlayerSkin(Player player, ResourceKey<DragonStage> dragonStage) {
-        ResourceLocation texture = null;
-        String playerKey = player.getGameProfile().getName() + "_" + dragonStage.location().getPath();
-        boolean renderCustomSkin = DragonStateProvider.getData(player).getSkinData().renderCustomSkin;
-
-        if ((ClientDragonRenderer.renderOtherPlayerSkins || player == DragonSurvival.PROXY.getLocalPlayer()) && renderCustomSkin) {
-            if (playerSkinCache.containsKey(playerKey) && playerSkinCache.get(playerKey) != null) {
-                return playerSkinCache.get(playerKey);
-            }
-
-            if (!hasFailedFetch.contains(playerKey) && !playerSkinCache.containsKey(playerKey)) {
-                texture = fetchSkinFile(player, dragonStage);
-
-                if (texture != null) {
-                    playerSkinCache.put(playerKey, texture);
-                }
-            }
-        }
-
-        return texture;
-    }
-
-    public static ResourceLocation fetchSkinFile(final String playerName, final ResourceKey<DragonStage> level, final String... extra) {
+    public static @Nullable ResourceLocation fetchSkinFile(final String playerName, final ResourceKey<DragonStage> level, final String... extra) {
         String playerKey = playerName + "_" + level.location().getPath();
         String[] text = ArrayUtils.addAll(new String[]{playerKey}, extra);
 
@@ -132,6 +130,10 @@ public class DragonSkins {
             try (InputStream imageStream = gitHubOld.querySkinImage(skinName, level)) {
                 return readSkin(imageStream, resourceLocation);
             } catch (IOException exception) {
+                if(level.equals(AncientDatapack.ancient)) {
+                    DragonSurvival.LOGGER.warn("Failed to get skin information for ancient stage: [{}]. Falling back to using adult stage.", exception.getMessage());
+                    return fetchSkinFile(playerName, DragonStages.adult, extra);
+                }
                 boolean isNormalSkin = extra == null || extra.length == 0;
                 handleSkinFetchError(playerKey, isNormalSkin);
                 return null;
@@ -145,6 +147,10 @@ public class DragonSkins {
         try (InputStream imageStream = skinLoader.querySkinImage(skin)) {
             return readSkin(imageStream, resourceLocation);
         } catch (IOException exception) {
+            if(level.equals(AncientDatapack.ancient)) {
+                DragonSurvival.LOGGER.warn("Failed to get skin information for ancient stage: [{}]. Falling back to using adult stage.", exception.getMessage());
+                return fetchSkinFile(playerName, DragonStages.adult, extra);
+            }
             boolean isNormalSkin = extra == null || extra.length == 0;
             handleSkinFetchError(playerKey, isNormalSkin);
             return null;
@@ -175,25 +181,21 @@ public class DragonSkins {
         return fetchSkinFile(playerEntity.getGameProfile().getName(), dragonStage, extra);
     }
 
-    public static ResourceLocation getGlowTexture(Player player, ResourceKey<DragonStage> dragonStage) {
-        ResourceLocation texture = null;
+    public static @Nullable ResourceLocation getGlowTexture(Player player, ResourceKey<DragonStage> dragonStage) {
         String playerKey = player.getGameProfile().getName() + "_" + dragonStage.location().getPath();
         boolean renderCustomSkin = DragonStateProvider.getData(player).getSkinData().renderCustomSkin;
 
         if ((ClientDragonRenderer.renderOtherPlayerSkins || player == DragonSurvival.PROXY.getLocalPlayer()) && playerSkinCache.containsKey(playerKey) && renderCustomSkin) {
             if (playerGlowCache.containsKey(playerKey)) {
-                return playerGlowCache.get(playerKey);
-            } else {
-                texture = fetchSkinFile(player, dragonStage, "glow");
-                playerGlowCache.put(playerKey, texture);
-
-                if (texture == null) {
-                    DragonSurvival.LOGGER.info("Custom glow for user {} doesn't exist", player.getGameProfile().getName());
+                if(playerGlowCache.get(playerKey).isDone()) {
+                    return playerGlowCache.get(playerKey).join();
                 }
+            } else {
+                playerGlowCache.put(playerKey, CompletableFuture.supplyAsync(() -> fetchSkinFile(player, dragonStage, "glow")));
             }
         }
 
-        return texture;
+        return null;
     }
 
     public static void init() {
@@ -236,41 +238,61 @@ public class DragonSkins {
         }
     }
 
+    private static void parseSkinObject(SkinObject skin) {
+        boolean isGlow = false;
+        String skinName = skin.name;
+
+        skinName = skin.name.substring(0, skinName.indexOf("."));
+
+        if (skinName.endsWith("_glow")) {
+            isGlow = true;
+            skinName = skin.name.substring(0, skinName.lastIndexOf("_"));
+        }
+
+        if (skinName.contains("_")) {
+            String name = skinName.substring(0, skinName.lastIndexOf("_"));
+
+            if (isGlow) {
+                name += "_glow";
+            }
+
+            ResourceKey<DragonStage> dragonStage = parseResourceKeyFromName(skin.name);
+            if(dragonStage == null) {
+                return;
+            }
+
+            if (!SKIN_USERS.containsKey(dragonStage)) {
+                SKIN_USERS.put(dragonStage, new HashMap<>());
+            }
+
+            skin.short_name = name;
+            skin.glow = isGlow;
+            SKIN_USERS.get(dragonStage).putIfAbsent(name, skin);
+        }
+    }
+
+    public static ResourceKey<DragonStage> parseResourceKeyFromName(String name) {
+        String skinName = name.substring(0, name.indexOf("."));
+
+        if (skinName.endsWith("_glow")) {
+            skinName = name.substring(0, skinName.lastIndexOf("_"));
+        }
+
+        if (skinName.contains("_")) {
+            String level = skinName.substring(skinName.lastIndexOf("_") + 1);
+            try {
+                return ResourceKey.create(DragonStage.REGISTRY, DragonSurvival.res(level));
+            } catch (ResourceLocationException exception) {
+                DragonSurvival.LOGGER.warn("Could not parse dragon stage from the skin [{}] due to [{}]", name, exception.getMessage());
+            }
+        }
+
+        return null;
+    }
+
     public static void parseSkinObjects(Collection<SkinObject> skinObjects) {
         for (SkinObject skin : skinObjects) {
-            boolean isGlow = false;
-            String skinName = skin.name;
-
-            skinName = skin.name.substring(0, skinName.indexOf("."));
-
-            if (skinName.endsWith("_glow")) {
-                isGlow = true;
-                skinName = skin.name.substring(0, skinName.lastIndexOf("_"));
-            }
-
-            if (skinName.contains("_")) {
-                String name = skinName.substring(0, skinName.lastIndexOf("_"));
-
-                if (isGlow) {
-                    name += "_glow";
-                }
-
-                String level = skinName.substring(skinName.lastIndexOf("_") + 1);
-
-                try {
-                    ResourceKey<DragonStage> dragonStage = ResourceKey.create(DragonStage.REGISTRY, DragonSurvival.res(level));
-
-                    if (!SKIN_USERS.containsKey(dragonStage)) {
-                        SKIN_USERS.put(dragonStage, new HashMap<>());
-                    }
-
-                    skin.short_name = name;
-                    skin.glow = isGlow;
-                    SKIN_USERS.get(dragonStage).putIfAbsent(name, skin);
-                } catch (ResourceLocationException exception) {
-                    DragonSurvival.LOGGER.warn("Could not parse dragon stage from the skin [{}] due to [{}]", skin.name, exception.getMessage());
-                }
-            }
+            parseSkinObject(skin);
         }
     }
 

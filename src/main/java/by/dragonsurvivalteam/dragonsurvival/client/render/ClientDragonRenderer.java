@@ -26,6 +26,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilit
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AreaTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.DragonBreathTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.LookingAtTarget;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
@@ -214,7 +215,12 @@ public class ClientDragonRenderer {
             float yaw = player.getViewYRot(partialRenderTick);
 
             Holder<DragonStage> dragonStage = handler.stage();
-            ResourceLocation texture = DragonSkins.getPlayerSkin(player, Objects.requireNonNull(Objects.requireNonNull(dragonStage).getKey()));
+            ResourceLocation customTexture;
+            if(handler.body().value().customModel().equals(DragonBody.DEFAULT_MODEL)) {
+                customTexture = DragonSkins.getPlayerSkin(player, Objects.requireNonNull(Objects.requireNonNull(dragonStage).getKey()));
+            } else {
+                customTexture = null;
+            }
             PoseStack poseStack = renderPlayerEvent.getPoseStack();
 
             try {
@@ -247,7 +253,7 @@ public class ClientDragonRenderer {
                 ((EntityRendererAccessor) renderPlayerEvent.getRenderer()).dragonSurvival$setShadowRadius((float) ((3.0F * size + 62.0F) / 260.0F));
                 DragonEntity playerAsDragon = playerDragonHashMap.get(player.getId()).get(); // What will be rendered in place of the human player model
                 EntityRenderer<? super DragonEntity> dragonRenderer = minecraft.getEntityRenderDispatcher().getRenderer(playerAsDragon);
-                dragonModel.setOverrideTexture(texture);
+                dragonModel.setOverrideTexture(customTexture);
 
                 FlightData flightData = FlightData.getData(player);
                 if (player.isCrouching() && flightData.isWingsSpread() && !player.onGround()) {

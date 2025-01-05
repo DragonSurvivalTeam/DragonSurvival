@@ -20,9 +20,11 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonBodyTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.datapacks.AncientDatapack;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
+import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import com.ibm.icu.impl.Pair;
 import com.mojang.math.Axis;
 import net.minecraft.ChatFormatting;
@@ -191,6 +193,8 @@ public class DragonSkinsScreen extends Screen {
             neckandHead.setHidden(false);
         }
 
+        setTextures();
+
         DragonEntity dragon = FakeClientPlayerUtils.getFakeDragon(0, handler);
         EntityRenderer<? super DragonEntity> dragonRenderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(dragon);
 
@@ -268,7 +272,6 @@ public class DragonSkinsScreen extends Screen {
         handler.setStage(null, dragonStage);
         handler.setCurrentStageCustomization(DragonStateProvider.getData(player).getCustomizationForStage(dragonStage.getKey()));
         handler.getCurrentSkinPreset().setAllStagesToUseDefaultSkin(false);
-        setTextures();
 
         TabButton.addTabButtonsToScreen(this, startX + 138, startY - 26, TabButton.Type.SKINS_TAB);
 
@@ -293,13 +296,20 @@ public class DragonSkinsScreen extends Screen {
 
         HoverButton leftArrowButton = new HoverButton(startX - 62, startY + 153, 9, 16, 18, 18, STAGE_ARROW_LEFT_MAIN, STAGE_ARROW_LEFT_HOVER, button -> {
             ResourceKey<DragonStage> nextLevel = dragonStage.getKey();
+            boolean ancientDataPackExists = ResourceHelper.get(Objects.requireNonNull(player).registryAccess(), AncientDatapack.ancient).isPresent();
 
-            if (dragonStage.is(DragonStages.adult)) {
+            if (ancientDataPackExists && dragonStage.is(AncientDatapack.ancient)) {
+                nextLevel = DragonStages.adult;
+            } else if (dragonStage.is(DragonStages.adult)) {
                 nextLevel = DragonStages.young;
             } else if (dragonStage.is(DragonStages.young)) {
                 nextLevel = DragonStages.newborn;
             } else if (dragonStage.is(DragonStages.newborn)) {
-                nextLevel = DragonStages.adult;
+                if(ancientDataPackExists) {
+                    nextLevel = AncientDatapack.ancient;
+                } else {
+                    nextLevel = DragonStages.adult;
+                }
             }
 
             boolean alreadyUsingDefaults = handler.getCurrentSkinPreset().isStageUsingDefaultSkin(dragonStage.getKey());
@@ -307,20 +317,25 @@ public class DragonSkinsScreen extends Screen {
             handler.setStage(null, dragonStage);
             handler.setCurrentStageCustomization(DragonStateProvider.getData(player).getCustomizationForStage(dragonStage.getKey()));
             handler.getCurrentSkinPreset().setAllStagesToUseDefaultSkin(alreadyUsingDefaults);
-
-            setTextures();
         });
         addRenderableWidget(leftArrowButton);
 
         HoverButton rightArrowButton = new HoverButton(startX + 92, startY + 153, 9, 16, 18, 18, STAGE_ARROW_RIGHT_MAIN, STAGE_ARROW_RIGHT_HOVER, button -> {
             ResourceKey<DragonStage> nextLevel = dragonStage.getKey();
+            boolean ancientDataPackExists = ResourceHelper.get(Objects.requireNonNull(player).registryAccess(), AncientDatapack.ancient).isPresent();
 
-            if (dragonStage.is(DragonStages.newborn)) {
+            if(ancientDataPackExists && dragonStage.is(AncientDatapack.ancient)) {
+                nextLevel = DragonStages.newborn;
+            } else if (dragonStage.is(DragonStages.newborn)) {
                 nextLevel = DragonStages.young;
             } else if (dragonStage.is(DragonStages.young)) {
                 nextLevel = DragonStages.adult;
             } else if (dragonStage.is(DragonStages.adult)) {
-                nextLevel = DragonStages.newborn;
+                if(ancientDataPackExists) {
+                    nextLevel = AncientDatapack.ancient;
+                } else {
+                    nextLevel = DragonStages.newborn;
+                }
             }
 
             boolean alreadyUsingDefaults = handler.getCurrentSkinPreset().isStageUsingDefaultSkin(dragonStage.getKey());
@@ -328,8 +343,6 @@ public class DragonSkinsScreen extends Screen {
             handler.setStage(null, dragonStage);
             handler.setCurrentStageCustomization(DragonStateProvider.getData(player).getCustomizationForStage(dragonStage.getKey()));
             handler.getCurrentSkinPreset().setAllStagesToUseDefaultSkin(alreadyUsingDefaults);
-
-            setTextures();
         });
         addRenderableWidget(rightArrowButton);
 
@@ -339,7 +352,6 @@ public class DragonSkinsScreen extends Screen {
             handler.getSkinData().renderCustomSkin = !handler.getSkinData().renderCustomSkin;
             ConfigHandler.updateConfigValue("render_custom_skin", handler.getSkinData().renderCustomSkin);
             PacketDistributor.sendToServer(new SyncDragonSkinSettings(player.getId(), handler.getSkinData().renderCustomSkin));
-            setTextures();
         }){
             @Override
             public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
@@ -355,7 +367,6 @@ public class DragonSkinsScreen extends Screen {
         HoverButton toggleRenderingOtherSkins = new HoverButton(startX + 128, startY + 26 + 26, 165, 22, 165, 22, BUTTON_BACKGROUND_BLACK, BUTTON_BACKGROUND_BLACK, button -> {
             ClientDragonRenderer.renderOtherPlayerSkins = !ClientDragonRenderer.renderOtherPlayerSkins;
             ConfigHandler.updateConfigValue("render_other_players_custom_skins", ClientDragonRenderer.renderOtherPlayerSkins);
-            setTextures();
         }){
             @Override
             public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
@@ -368,7 +379,6 @@ public class DragonSkinsScreen extends Screen {
 
         HoverButton resetSkinButton = new HoverButton(startX + 20, startY + 128, 22, 21, 22, 21, RESET_SKIN_MAIN, RESET_SKIN_HOVER, button -> {
             playerName = Objects.requireNonNull(player).getGameProfile().getName();
-            setTextures();
         });
         addRenderableWidget(resetSkinButton);
 
@@ -400,8 +410,6 @@ public class DragonSkinsScreen extends Screen {
                     if (SEEN_SKINS.size() >= users.size() / 2) {
                         SEEN_SKINS.removeFirst();
                     }
-
-                    setTextures();
                 }
             }
         });
@@ -445,7 +453,7 @@ public class DragonSkinsScreen extends Screen {
         return new DragonBodyButton(this, x, y, 35, 35, dragonBody, false, button -> handler.setBody(null, dragonBody), true, true);
     }
 
-    public void setTextures() {
+    private void setTextures() {
         loading = true;
 
         ResourceLocation skinTexture = DragonSkins.getPlayerSkin(playerName, Objects.requireNonNull(dragonStage.getKey()));

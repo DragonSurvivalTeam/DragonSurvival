@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.skins.DragonSkins;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
@@ -49,26 +50,31 @@ public class DragonGlowLayerRenderer extends GeoRenderLayer<DragonEntity> {
         SkinPreset preset = handler.getCurrentSkinPreset();
 
         DragonStageCustomization customization = preset.get(handler.stageKey()).get();
-        ResourceLocation glowTexture = DragonSkins.getGlowTexture(player, handler.stageKey());
+        ResourceLocation customGlowTexture;
+        if(handler.body().value().customModel().equals(DragonBody.DEFAULT_MODEL)) {
+            customGlowTexture = DragonSkins.getGlowTexture(player, handler.stageKey());
+        } else {
+            customGlowTexture = null;
+        }
 
-        if (glowTexture == null || glowTexture.getPath().contains("/" + handler.speciesId().getPath() + "_")) {
+        if (customGlowTexture == null || customGlowTexture.getPath().contains("/" + handler.speciesId().getPath() + "_")) {
             if (dragonRenderer.glowTexture != null) {
-                glowTexture = dragonRenderer.glowTexture;
+                customGlowTexture = dragonRenderer.glowTexture;
             }
         }
 
-        if (glowTexture == null && handler.getCurrentStageCustomization().defaultSkin) {
+        if (customGlowTexture == null && handler.getCurrentStageCustomization().defaultSkin) {
             ResourceLocation location = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/dragon/" + handler.speciesId().getPath() + "_" + handler.stageId().getPath() + "_glow.png");
 
             if (Minecraft.getInstance().getResourceManager().getResource(location).isPresent()) {
-                glowTexture = location;
+                customGlowTexture = location;
             }
         }
 
         dragonRenderer.isRenderLayers = true;
 
-        if (glowTexture != null) {
-            RenderType type = RenderType.EYES.apply(glowTexture, RenderType.LIGHTNING_TRANSPARENCY);
+        if (customGlowTexture != null) {
+            RenderType type = RenderType.EYES.apply(customGlowTexture, RenderType.LIGHTNING_TRANSPARENCY);
             VertexConsumer vertexConsumer = bufferSource.getBuffer(type);
             dragonRenderer.actuallyRender(poseStack, animatable, bakedModel, type, bufferSource, vertexConsumer, true, partialTick, packedLight, OverlayTexture.NO_OVERLAY, renderer.getRenderColor(animatable, partialTick, packedLight).getColor());
         } else {
