@@ -101,7 +101,14 @@ public class DragonStateHandler extends EntityStateHandler {
         if(boundedSize == dragonStage.value().sizeRange().min()) {
             boundedSize += 0.0001f; // Ties go to the lower stage, so we need to be slightly above the minimum size
         }
-        setDesiredSize(player, boundedSize);
+
+        // If the stage is null, immediately set the size to the desired size
+        if (stage() == null) {
+            setDesiredSize(player, boundedSize);
+            setSize(player, desiredSize);
+        } else {
+            setDesiredSize(player, boundedSize);
+        }
     }
 
     /**
