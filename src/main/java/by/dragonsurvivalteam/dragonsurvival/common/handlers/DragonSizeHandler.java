@@ -47,8 +47,10 @@ public class DragonSizeHandler {
         }
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
-        Pose overridePose = overridePose(player);
-        EntityDimensions newDimensions = calculateDimensions(handler, player, overridePose);
+        if(handler.previousPose == null) {
+            handler.previousPose = overridePose(player);
+        }
+        EntityDimensions newDimensions = calculateDimensions(handler, player, handler.previousPose);
         event.setNewSize(new EntityDimensions(newDimensions.width(), newDimensions.height(), newDimensions.eyeHeight(), event.getOldSize().attachments(), event.getOldSize().fixed()));
     }
 
@@ -112,34 +114,42 @@ public class DragonSizeHandler {
             }
         }
 
+        DragonStateHandler data = DragonStateProvider.getData(player);
+        data.previousPose = overridePose;
         return overridePose;
     }
 
     public static Pose getOverridePose(final Player player) {
         if (player != null) {
-            boolean swimming = (player.isInWaterOrBubble() || SwimData.getData(player).canSwimIn(player.getMaxHeightFluidType())) && player.isSprinting() && !player.isPassenger();
-            boolean flying = ServerFlightHandler.isFlying(player);
-            boolean spinning = player.isAutoSpinAttack();
-            boolean crouching = player.isShiftKeyDown();
-            if (flying && !player.isSleeping()) {
-                return Pose.FALL_FLYING;
-            } else if (swimming || (player.isInWaterOrBubble() || player.isInLava()) && !canPoseFit(player, Pose.STANDING) && canPoseFit(player, Pose.SWIMMING)) {
-                return Pose.SWIMMING;
-            } else if (spinning) {
-                return Pose.SPIN_ATTACK;
-            } else if (crouching || !canPoseFit(player, Pose.STANDING) && canPoseFit(player, Pose.CROUCHING)) {
+            Pose pose;
+            if (ServerFlightHandler.isFlying(player) && !player.isSleeping()) {
+                pose = Pose.FALL_FLYING;
+            } else if (SwimData.getData(player).canSwimIn(player.getMaxHeightFluidType()) && player.isSprinting() && !player.isPassenger()) {
+                pose = Pose.SWIMMING;
+            } else if (player.isAutoSpinAttack()) {
+                pose = Pose.SPIN_ATTACK;
+            } else if (player.isShiftKeyDown()) {
+                pose = Pose.CROUCHING;
+            } else {
+                pose = Pose.STANDING;
+            }
+
+            if (player.isSpectator() || player.isPassenger() || canPoseFit(player, pose)) {
+                return pose;
+            } else if (canPoseFit(player, Pose.CROUCHING)) {
                 return Pose.CROUCHING;
             }
         }
+
         return Pose.STANDING;
     }
 
     public static boolean canPoseFit(final Player player, final Pose pose) {
-        return player.level().noCollision(calculateDimensions(DragonStateProvider.getData(player), player, pose).makeBoundingBox(player.position()));
+        return player.level().noCollision(calculateDimensions(DragonStateProvider.getData(player), player, pose).makeBoundingBox(player.position()).deflate(1.0E-7));
     }
 
     @SubscribeEvent
-    public static void handlePoseFromSizeChangesAndLerpSize(final PlayerTickEvent.Pre event) {
+    public static void handleLerpSize(final PlayerTickEvent.Pre event) {
         Player player = event.getEntity();
         DragonStateHandler data = DragonStateProvider.getData(player);
 
@@ -151,7 +161,6 @@ public class DragonSizeHandler {
             player.refreshDimensions();
         } else if (isDragon) {
             data.lerpSize(player);
-            overridePose(player);
         }
     }
 

@@ -1,14 +1,17 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
@@ -167,6 +170,35 @@ public abstract class EntityMixin {
         }
 
         return maxAirSupply;
+    }
+
+    // This two functions below prevent the player from clipping into geometry if their growth would cause them to do so
+
+    // We need to override the dimensions for the getDimensions() call, as getDimensions from the player returns dimensions that are not actually valid for the dragon player.
+    @ModifyExpressionValue(method = "fudgePositionAfterSizeChange", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getDimensions(Lnet/minecraft/world/entity/Pose;)Lnet/minecraft/world/entity/EntityDimensions;"))
+    private EntityDimensions dragonSurvival$modifyFudgePositionAfterSizeChange(EntityDimensions original) {
+        Entity self = (Entity) (Object) this;
+
+        if(self instanceof Player) {
+            if (DragonStateProvider.isDragon(self)) {
+                return ((EntityAccessor)self).dragonSurvival$getDimensions();
+            }
+        }
+
+        return original;
+    }
+
+    // After a size refresh, vanilla normally prevents fudgePosition from being called. So we force it to be called, then *only* override the pose after all position fudging has completed
+    // to prevent a pose change from triggering based on an incorrect position (which would cause stuttering otherwise).
+    @Inject(method = "refreshDimensions", at = @At("TAIL"))
+    private void dragonSurvival$refreshDimensions(CallbackInfo callback, @Local(ordinal = 0) EntityDimensions entitydimensions) {
+        Entity self = (Entity) (Object) this;
+        if(self instanceof Player player) {
+            if (DragonStateProvider.isDragon(self)) {
+                self.fudgePositionAfterSizeChange(entitydimensions);
+                DragonSizeHandler.overridePose(player);
+            }
+        }
     }
 
     @Shadow public abstract double getX();

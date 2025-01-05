@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.Sk
 import by.dragonsurvivalteam.dragonsurvival.commands.DragonCommand;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.subcapabilities.SkinCap;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.subcapabilities.SubCap;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.items.growth.StarHeartItem;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.mixins.EntityAccessor;
@@ -39,6 +40,9 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.level.block.state.BlockState;
@@ -54,7 +58,7 @@ import javax.annotation.Nullable;
 public class DragonStateHandler extends EntityStateHandler {
     public static final double NO_SIZE = -1;
     public static final double SIZE_LERP_SPEED = 0.1; // 10% per tick
-    private static final double SIZE_EPSILON = 0.001;
+    private static final double SIZE_EPSILON = 0.01;
 
     @SuppressWarnings("unchecked")
     public final Supplier<SubCap>[] caps = new Supplier[]{this::getSkinData};
@@ -84,6 +88,8 @@ public class DragonStateHandler extends EntityStateHandler {
     private double desiredSize = NO_SIZE;
 
     private boolean destructionEnabled;
+
+    public Pose previousPose;
 
     // Needed to calculate collision damage correctly when flying. See ServerFlightHandler.
     public Vec3 preCollisionDeltaMovement = Vec3.ZERO;
@@ -148,62 +154,6 @@ public class DragonStateHandler extends EntityStateHandler {
         }
 
         player.refreshDimensions();
-        double sizeDifference = this.size - oldSize;
-
-        if (sizeDifference > 0) {
-            // Push the player away from a block they might collide with due to the size change (to avoid getting stuck on said block)
-            double pushForce = sizeDifference * 0.03;
-            Vec3 push = Vec3.ZERO;
-
-            // We don't want to accumulate pushes in the same direction from different blocks
-            // Therefor we track the positions the player will be pushed to
-            boolean negativeXPushed = false;
-            boolean negativeZPushed = false;
-            boolean positiveXPushed = false;
-            boolean positiveZPushed = false;
-
-            for (BlockPos position : BlockPosHelper.betweenClosed(player.getBoundingBox())) {
-                if (player.isColliding(position, player.level().getBlockState(position))) {
-                    // Calculate the nearest face of the block to the player
-                    Vec3 center = Vec3.atCenterOf(position);
-                    double directionX = player.getX() - center.x();
-                    double directionZ = player.getZ() - center.z();
-
-                    Vec3 nearestFace;
-
-                    if (Math.abs(directionX) > Math.abs(directionZ)) {
-                        nearestFace = new Vec3(Math.signum(directionX), 0, 0);
-                    } else {
-                        nearestFace = new Vec3(0, 0, Math.signum(directionZ));
-                    }
-
-                    // Determine the push direction
-                    if (!negativeXPushed && nearestFace.x() < 0) {
-                        push = push.add(nearestFace);
-                        negativeXPushed = true;
-                    } else if (!positiveXPushed && nearestFace.x() > 0) {
-                        push = push.add(nearestFace);
-                        positiveXPushed = true;
-                    } else if (!negativeZPushed && nearestFace.z() < 0) {
-                        push = push.add(nearestFace);
-                        negativeZPushed = true;
-                    } else if (!positiveZPushed && nearestFace.z() > 0) {
-                        push = push.add(nearestFace);
-                        positiveZPushed = true;
-                    }
-                }
-
-                if (negativeXPushed && positiveXPushed && negativeZPushed && positiveZPushed) {
-                    break;
-                }
-            }
-
-            if (pushForce > 0 && push.length() > 0) {
-                player.moveTo(player.position().add(push.normalize().scale(pushForce)));
-            }
-        }
-
-        ((EntityAccessor) player).dragonSurvival$reapplyPosition();
 
         if (player instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncSize(serverPlayer.getId(), getSize()));
