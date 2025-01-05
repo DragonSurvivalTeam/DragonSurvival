@@ -287,6 +287,9 @@ public class DragonStateHandler extends EntityStateHandler {
 
             if (player instanceof ServerPlayer serverPlayer) {
                 refreshMagicData(serverPlayer);
+                if(skinData.skinPresets.get().get(dragonSpecies.getKey()).isEmpty()) {
+                    refreshSkinPresetForSpecies(dragonSpecies.getKey());
+                }
             }
         } else if (species == null) {
             PenaltySupply.getData(player).clear();
@@ -304,9 +307,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
             // If the model has changed, just override the skin preset with the default one as a failsafe
             if (oldBody != null && this.dragonBody.value().customModel() != oldBody.value().customModel()) {
-                SkinPreset freshPreset = new SkinPreset();
-                freshPreset.initDefaults(dragonSpecies.getKey(), this.dragonBody.value().customModel());
-                skinData.skinPresets.get().put(speciesKey(), freshPreset);
+                refreshSkinPresetForSpecies(dragonSpecies.getKey());
             }
         }
 
@@ -398,6 +399,12 @@ public class DragonStateHandler extends EntityStateHandler {
 
     public SkinPreset getCurrentSkinPreset() {
         return skinData.skinPresets.get().get(dragonSpecies.getKey());
+    }
+
+    public void refreshSkinPresetForSpecies(ResourceKey<DragonSpecies> dragonSpecies) {
+        SkinPreset freshSkinPreset = new SkinPreset();
+        freshSkinPreset.initDefaults(dragonSpecies, dragonBody != null ? dragonBody.value().customModel() : DragonBody.DEFAULT_MODEL);
+        skinData.skinPresets.get().put(dragonSpecies, freshSkinPreset);
     }
 
     public SkinPreset getSkinPresetForSpecies(ResourceKey<DragonSpecies> dragonSpecies) {
