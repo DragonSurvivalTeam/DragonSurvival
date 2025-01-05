@@ -267,7 +267,7 @@ public class ServerFlightHandler {
 
     public static boolean canSwimSpin(Player player){
         FlightData data = FlightData.getData(player);
-        return data.swimSpinFluid != null && player.isEyeInFluidType(data.swimSpinFluid.value()) && data.hasFlight() && !player.onGround();
+        return data.swimSpinFluid.isPresent() && player.isEyeInFluidType(data.swimSpinFluid.get().value()) && data.hasFlight() && !player.onGround();
     }
 
     @SubscribeEvent

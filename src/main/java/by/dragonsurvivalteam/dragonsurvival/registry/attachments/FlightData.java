@@ -14,11 +14,13 @@ import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
+
 public class FlightData implements INBTSerializable<CompoundTag> {
     public static final String COOLDOWN = "cooldown";
     public static final String DURATION = "duration";
 
-    public Holder<FluidType> swimSpinFluid;
+    public Optional<Holder<FluidType>> swimSpinFluid = Optional.empty();
     public boolean hasFlight;
     public boolean hasSpin;
     public boolean areWingsSpread;

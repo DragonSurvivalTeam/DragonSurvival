@@ -32,6 +32,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.extensions.IHolderExtension;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -155,7 +156,7 @@ public class ClientProxy {
         if (localPlayer.level().getEntity(packet.playerId()) instanceof Player player) {
             FlightData spin = FlightData.getData(player);
             spin.hasSpin = packet.hasSpin();
-            spin.swimSpinFluid = player.registryAccess().holderOrThrow(packet.swimSpinFluid());
+            spin.swimSpinFluid = packet.swimSpinFluid().map(fluidTypeResourceKey -> player.registryAccess().holderOrThrow(fluidTypeResourceKey));
             ClientFlightHandler.lastSync = player.tickCount;
         }
     }

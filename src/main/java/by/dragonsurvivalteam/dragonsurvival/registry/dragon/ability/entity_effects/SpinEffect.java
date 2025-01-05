@@ -11,20 +11,23 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.common.extensions.IHolderExtension;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-public record SpinEffect(int spinLevel, Holder<FluidType> swimSpinFluid) implements AbilityEntityEffect {
+public record SpinEffect(int spinLevel, Optional<Holder<FluidType>> swimSpinFluid) implements AbilityEntityEffect {
     public static final MapCodec<SpinEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.INT.fieldOf("spin_level").forGetter(SpinEffect::spinLevel),
-            NeoForgeRegistries.FLUID_TYPES.holderByNameCodec().fieldOf("swim_spin_fluid").forGetter(SpinEffect::swimSpinFluid)
+            NeoForgeRegistries.FLUID_TYPES.holderByNameCodec().optionalFieldOf("swim_spin_fluid").forGetter(SpinEffect::swimSpinFluid)
     ).apply(instance, SpinEffect::new));
 
     @Override
@@ -44,7 +47,7 @@ public record SpinEffect(int spinLevel, Holder<FluidType> swimSpinFluid) impleme
         }
 
         if (hadSpin != data.hasSpin) {
-            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverTarget, new SpinStatus(serverTarget.getId(), data.hasSpin, data.swimSpinFluid.getKey()));
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverTarget, new SpinStatus(serverTarget.getId(), data.hasSpin, data.swimSpinFluid.map(IHolderExtension::getKey)));
         }
     }
 
@@ -60,7 +63,7 @@ public record SpinEffect(int spinLevel, Holder<FluidType> swimSpinFluid) impleme
         data.hasSpin = false;
 
         if (hadSpin != data.hasSpin) {
-            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverTarget, new SpinStatus(serverTarget.getId(), data.hasSpin, data.swimSpinFluid.getKey()));
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverTarget, new SpinStatus(serverTarget.getId(), data.hasSpin, data.swimSpinFluid.map(IHolderExtension::getKey)));
         }
     }
 

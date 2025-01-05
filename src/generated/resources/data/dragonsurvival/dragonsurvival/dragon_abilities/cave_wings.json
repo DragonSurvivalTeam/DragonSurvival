@@ -44,7 +44,7 @@
     "predicate": {
       "type_specific": {
         "type": "dragonsurvival:dragon_predicate",
-        "marked_by_ender_dragon": false
+        "marked_by_ender_dragon": true
       }
     }
   }

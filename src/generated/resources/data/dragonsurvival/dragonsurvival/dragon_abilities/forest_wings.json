@@ -37,5 +37,15 @@
       "dragonsurvival:wing_grant"
     ],
     "upgrade_type": "dragonsurvival:item_based"
+  },
+  "usage_blocked": {
+    "condition": "minecraft:entity_properties",
+    "entity": "this",
+    "predicate": {
+      "type_specific": {
+        "type": "dragonsurvival:dragon_predicate",
+        "marked_by_ender_dragon": true
+      }
+    }
   }
 }

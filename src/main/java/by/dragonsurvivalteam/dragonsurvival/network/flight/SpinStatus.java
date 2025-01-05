@@ -15,15 +15,17 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
+
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
-public record SpinStatus(int playerId, boolean hasSpin, ResourceKey<FluidType> swimSpinFluid) implements CustomPacketPayload {
+public record SpinStatus(int playerId, boolean hasSpin, Optional<ResourceKey<FluidType>> swimSpinFluid) implements CustomPacketPayload {
     public static final Type<SpinStatus> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "spin_status"));
 
     public static final StreamCodec<FriendlyByteBuf, SpinStatus> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, SpinStatus::playerId,
             ByteBufCodecs.BOOL, SpinStatus::hasSpin,
-            ResourceKey.streamCodec(NeoForgeRegistries.FLUID_TYPES.key()), SpinStatus::swimSpinFluid,
+            ByteBufCodecs.optional(ResourceKey.streamCodec(NeoForgeRegistries.FLUID_TYPES.key())), SpinStatus::swimSpinFluid,
             SpinStatus::new
     );
 
@@ -42,7 +44,11 @@ public record SpinStatus(int playerId, boolean hasSpin, ResourceKey<FluidType> s
         context.enqueueWork(() -> {
                 FlightData spin = FlightData.getData(sender);
                 spin.hasSpin = packet.hasSpin();
-                spin.swimSpinFluid = sender.registryAccess().holderOrThrow(packet.swimSpinFluid());
+                if(packet.swimSpinFluid().isPresent()) {
+                    spin.swimSpinFluid = Optional.of(sender.registryAccess().holderOrThrow(packet.swimSpinFluid().get()));
+                } else {
+                    spin.swimSpinFluid = Optional.empty();
+                }
         }).thenRun(() -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(sender, packet));
     }
 }

@@ -422,7 +422,7 @@ public class CaveDragonAbilities {
         context.register(CAVE_WINGS, new DragonAbility(
                 Activation.passive(),
                 Optional.of(new ItemUpgrade(List.of(HolderSet.direct(DSItems.WING_GRANT_ITEM)), HolderSet.empty())),
-                Optional.of(Condition.thisEntity(EntityPredicate.Builder.entity().subPredicate(DragonPredicate.Builder.dragon().markedByEnderDragon(false).build()).build()).build()),
+                Optional.of(Condition.thisEntity(EntityPredicate.Builder.entity().subPredicate(DragonPredicate.Builder.dragon().markedByEnderDragon(true).build()).build()).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         List.of(new FlightEffect(1)),
                         AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
@@ -436,9 +436,9 @@ public class CaveDragonAbilities {
         context.register(CAVE_SPIN, new DragonAbility(
                 Activation.passive(),
                 Optional.of(new ItemUpgrade(List.of(HolderSet.direct(DSItems.SPIN_GRANT_ITEM)), HolderSet.empty())),
-                Optional.of(Condition.thisEntity(EntityPredicate.Builder.entity().subPredicate(DragonPredicate.Builder.dragon().markedByEnderDragon(false).build()).build()).build()),
+                Optional.of(Condition.thisEntity(EntityPredicate.Builder.entity().subPredicate(DragonPredicate.Builder.dragon().markedByEnderDragon(true).build()).build()).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(new SpinEffect(1, NeoForgeMod.LAVA_TYPE)),
+                        List.of(new SpinEffect(1, Optional.of(NeoForgeMod.LAVA_TYPE))),
                         AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
                 ), true), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(
