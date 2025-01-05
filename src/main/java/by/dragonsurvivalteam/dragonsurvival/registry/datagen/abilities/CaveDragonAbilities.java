@@ -419,8 +419,8 @@ public class CaveDragonAbilities {
 
         context.register(CAVE_WINGS, new DragonAbility(
                 Activation.passive(),
-                Optional.empty(),
-                Optional.empty(),
+                Optional.of(new ItemUpgrade(List.of(HolderSet.empty(), HolderSet.direct(DSItems.WING_GRANT_ITEM)), HolderSet.empty())),
+                Optional.of(Condition.thisEntity(EntityPredicate.Builder.entity().subPredicate(DragonPredicate.Builder.dragon().markedByEnderDragon(false).build()).build()).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         List.of(new FlightEffect(1)),
                         AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
