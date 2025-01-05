@@ -2,9 +2,11 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effec
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.ParticleEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.SummonEntityEffect;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
@@ -53,6 +55,7 @@ public interface AbilityBlockEffect {
             event.register(REGISTRY_KEY, DragonSurvival.res("fire"), () -> FireEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("area_cloud"), () -> AreaCloudEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("block_break"), () -> BlockBreakEffect.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("particle"), () -> ParticleEffect.CODEC);
         }
     }
 }

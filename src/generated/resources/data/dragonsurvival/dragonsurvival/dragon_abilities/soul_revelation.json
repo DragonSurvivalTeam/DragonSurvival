@@ -28,6 +28,28 @@
                   ]
                 }
               ]
+            },
+            {
+              "effect_type": "dragonsurvival:particle",
+              "particle_count": 20.0,
+              "particle_data": {
+                "horizontal_position": {
+                  "type": "in_bounding_box"
+                },
+                "horizontal_velocity": {
+                  "base": 0.05
+                },
+                "particle": {
+                  "type": "minecraft:soul"
+                },
+                "speed": 0.05,
+                "vertical_position": {
+                  "type": "in_bounding_box"
+                },
+                "vertical_velocity": {
+                  "base": 0.05
+                }
+              }
             }
           ],
           "entity_targeting_mode": "TARGET_ALLIES"
