@@ -16,6 +16,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -309,7 +310,7 @@ public class ServerFlightHandler {
 
     public static boolean isGliding(Player player) {
         boolean hasFood = player.getFoodData().getFoodLevel() > flightHungerThreshold || player.isCreative();
-        return hasFood && player.isSprinting() && isFlying(player);
+        return hasFood && player.isSprinting() && isFlying(player) && !player.hasEffect(MobEffects.LEVITATION);
     }
 
     public static double distanceFromGround(Player player) {
