@@ -906,7 +906,7 @@
   "dragonsurvival.gui.container.source_of_magic": "Source of Magic",
   "dragonsurvival.gui.creative_tab": "Dragon Survival",
   "dragonsurvival.gui.datapack.ancient_stage": "Adds the Ancient dragon stage to Dragon Survival",
-  "dragonsurvival.gui.datapack.unlock_wings": "Automatically unlocks dragon wings in Dragon Survival",
+  "dragonsurvival.gui.datapack.unlock_wings": "Automatically unlocks dragon wings and prevents the ender dragon from disabling them in Dragon Survival",
   "dragonsurvival.gui.destruction.disabled": "Destruction mode disabled",
   "dragonsurvival.gui.destruction.enabled": "Destruction mode enabled",
   "dragonsurvival.gui.diet_menu.no_custom_diet": "There is no custom dragon diet",

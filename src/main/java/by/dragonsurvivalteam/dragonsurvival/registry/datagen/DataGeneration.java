@@ -57,7 +57,7 @@ public class DataGeneration {
     @Translation(comments = "Adds the Ancient dragon stage to Dragon Survival")
     private static final String ANCIENT_STAGE_DATAPACK_DESCRIPTION = Translation.Type.GUI.wrap("datapack." + ANCIENT_STAGE_DATAPACK);
 
-    @Translation(comments = "Automatically unlocks dragon wings in Dragon Survival")
+    @Translation(comments = "Automatically unlocks dragon wings and prevents the ender dragon from disabling them in Dragon Survival")
     private static final String UNLOCK_WINGS_DATAPACK_DESCRIPTION = Translation.Type.GUI.wrap("datapack." + UNLOCK_WINGS_DATAPACK);
 
     @SubscribeEvent
