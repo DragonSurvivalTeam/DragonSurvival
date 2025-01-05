@@ -30,13 +30,5 @@
         "texture_resource": "dragonsurvival:abilities/forest/forest_wings_0"
       }
     ]
-  },
-  "upgrade": {
-    "downgrade_items": [],
-    "items_per_level": [
-      [],
-      "dragonsurvival:spin_grant"
-    ],
-    "upgrade_type": "dragonsurvival:item_based"
   }
 }
