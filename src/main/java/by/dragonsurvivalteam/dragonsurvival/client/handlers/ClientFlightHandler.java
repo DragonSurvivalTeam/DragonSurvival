@@ -56,7 +56,7 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 /** Used in pair with {@link ServerFlightHandler} */
 @EventBusSubscriber(Dist.CLIENT)
 public class ClientFlightHandler {
-    @Translation(comments = "You have §cno levitation skill§r. You need to talk to the Ender dragon, or use the Flight Grant special item.")
+    @Translation(comments = "You have §cno levitation skill§r. Go to The End to learn this skill.")
     private static final String NO_WINGS = Translation.Type.GUI.wrap("message.no_wings");
 
     @Translation(key = "jump_to_fly", type = Translation.Type.CONFIGURATION, comments = "If enabled flight will be activated when jumping in the air")

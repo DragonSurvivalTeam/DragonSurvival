@@ -31,34 +31,34 @@ import java.util.Optional;
 public class DragonPenalties {
     @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
             "■ Cave dragons slowly take §cdamage§r while in snow or rain due to their fiery nature.\n",
-            "■ The skill §2«Contrast Shower»§r could make your life easier.\n",
+            "■ The skill §2«Contrast Shower»§r§f could make your life easier.\n",
     })
     @Translation(type = Translation.Type.PENALTY, comments = "Snow and Rain Weakness")
     public static final ResourceKey<DragonPenalty> SNOW_AND_RAIN_WEAKNESS = DragonPenalties.key("snow_and_rain_weakness");
 
     @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
-            "■ Cave dragons quickly take §cdamage§r from water due to their fiery nature.\n",
-            "■ The effect §2«Cave Fire»§r could make your life easier.\n",
+            "■ Cave dragons quickly take §cdamage§r from water.\n",
+            "■ The effect §2«Cave Fire»§r§f could make your life easier.\n",
     })
     @Translation(type = Translation.Type.PENALTY, comments = "Water Weakness")
     public static final ResourceKey<DragonPenalty> WATER_WEAKNESS = DragonPenalties.key("water_weakness");
 
     @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
-            "■ Drying out under the harsh sun is a major concern for sea dragons. If they are outside of the water for too long, they will dehydrate and suffer damage. Being in rain, ice or snow or drinking water bottles rehydrates you.\n",
-            "■ The skill §2«Hydration Capacity»§r could make your life easier.\n",
+            "■ If sea dragon are outside of the water for too long, they will dehydrate and suffer damage. Being in rain, ice or snow or drinking water bottles rehydrates you.\n",
+            "■ The skill §2«Hydration Capacity»§r§f could make your life easier.\n",
     })
     @Translation(type = Translation.Type.PENALTY, comments = "Thin Skin")
     public static final ResourceKey<DragonPenalty> THIN_SKIN = DragonPenalties.key("thin_skin");
 
     @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
-            "■ Dragons are unable to wield or equip certain items.\n",
+            "■ Dragons are unable to wield or equip certain items. Such as bows, shields, and tridents.\n",
     })
     @Translation(type = Translation.Type.PENALTY, comments = "Item Blacklist")
     public static final ResourceKey<DragonPenalty> ITEM_BLACKLIST = DragonPenalties.key("item_blacklist");
 
     @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
             "■ The predatory plants in your body dislike §dDarkness§r. If the light level around you is lower than 4, you may receive the §c«Stress»§r effect, rapidly draining your food gauge.\n",
-            "■ The skill §2«Light the Dark»§r and effect §2«Forest Magic»§r could make your life easier.",
+            "■ The skill §2«Light the Dark»§r§f and effect §2«Forest Magic»§r§f could make your life easier.",
     })
     @Translation(type = Translation.Type.PENALTY, comments = "Fear of Darkness")
     public static final ResourceKey<DragonPenalty> FEAR_OF_DARKNESS = DragonPenalties.key("fear_of_darkness");

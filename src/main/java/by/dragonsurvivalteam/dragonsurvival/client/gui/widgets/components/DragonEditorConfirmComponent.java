@@ -23,13 +23,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class DragonEditorConfirmComponent extends AbstractContainerEventHandler implements Renderable {
-    @Translation(comments = "\nWith your current config settings all progress will be lost when changing species.\n\nWould you still like to continue?")
+    @Translation(comments = "\nWith your current config settings §4all progress will be lost§r§f when changing species.\n\nWould you still like to continue?")
     private final static String CONFIRM_LOSE_ALL = Translation.Type.GUI.wrap("dragon_editor.confirm.all");
 
-    @Translation(comments = "\nWith your current config settings your growth progress will be lost when changing species or body types.\n\nWould you still like to continue?")
+    @Translation(comments = "\nWith your current config settings §4your growth progress will be lost§r§f when changing species or body types.\n\nWould you still like to continue?")
     private final static String CONFIRM_LOSE_GROWTH = Translation.Type.GUI.wrap("dragon_editor.confirm.growth");
 
-    @Translation(comments = "\nWith your current config settings your ability progress will be lost when changing species.\n\nWould you still like to continue?")
+    @Translation(comments = "\nWith your current config settings §4your ability progress will be lost§r§f when changing species.\n\nWould you still like to continue?")
     private final static String CONFIRM_LOSE_ABILITIES = Translation.Type.GUI.wrap("dragon_editor.confirm.abilities");
 
     private static final ResourceLocation WARNING_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/warning_main.png");

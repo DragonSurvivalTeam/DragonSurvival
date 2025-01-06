@@ -18,13 +18,13 @@ import java.util.Locale;
 
 public class TabButton extends Button {
     public enum Type {
-        @Translation(type = Translation.Type.GUI, comments = "Inventory")
+        @Translation(type = Translation.Type.GUI, comments = "Dragon Inventory")
         INVENTORY_TAB,
-        @Translation(type = Translation.Type.GUI, comments = "Abilities")
+        @Translation(type = Translation.Type.GUI, comments = "Abilities Info")
         ABILITY_TAB,
         @Translation(type = Translation.Type.GUI, comments = "Species Info")
         SPECIES_TAB,
-        @Translation(type = Translation.Type.GUI, comments = "Skin customization")
+        @Translation(type = Translation.Type.GUI, comments = "Skin Info")
         SKINS_TAB,
         @Translation(type = Translation.Type.GUI, comments = "Emotes")
         EMOTES_TAB
