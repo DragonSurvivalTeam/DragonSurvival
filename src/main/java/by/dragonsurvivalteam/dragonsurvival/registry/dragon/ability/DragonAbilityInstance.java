@@ -88,13 +88,12 @@ public class DragonAbilityInstance {
         }
 
         if (dragon instanceof ServerPlayer serverPlayer) {
-            boolean wasDisabled = this.isAutomaticallyDisabled;
-            isAutomaticallyDisabled = value().usageBlocked().map(condition -> condition.test(Condition.createContext(serverPlayer))).orElse(false);
+            boolean isAutomaticallyDisabled = value().usageBlocked().map(condition -> condition.test(Condition.createContext(serverPlayer))).orElse(false);
 
-            if (!wasDisabled && isAutomaticallyDisabled) {
+            if (isAutomaticallyDisabled && !this.isAutomaticallyDisabled) {
                 setDisabled(serverPlayer, true, false);
                 PacketDistributor.sendToPlayer(serverPlayer, new SyncDisableAbility(ability.getKey(), true, false));
-            } else if (wasDisabled && !isAutomaticallyDisabled) {
+            } else if (!isAutomaticallyDisabled && this.isAutomaticallyDisabled) {
                 setDisabled(serverPlayer, false, false);
                 PacketDistributor.sendToPlayer(serverPlayer, new SyncDisableAbility(ability.getKey(), false, false));
             }
