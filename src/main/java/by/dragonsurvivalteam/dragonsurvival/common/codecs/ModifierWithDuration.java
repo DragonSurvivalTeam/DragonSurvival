@@ -163,11 +163,6 @@ public record ModifierWithDuration(ResourceLocation id, ResourceLocation icon, L
         }
 
         @Override
-        public int getDuration() {
-            return (int) baseData().duration().calculate(appliedAbilityLevel());
-        }
-
-        @Override
         public List<Modifier> modifiers() {
             return baseData().modifiers();
         }
@@ -190,6 +185,11 @@ public record ModifierWithDuration(ResourceLocation id, ResourceLocation icon, L
         @Override
         public ResourceLocation id() {
             return baseData().id();
+        }
+
+        @Override
+        public int getDuration() {
+            return (int) baseData().duration().calculate(appliedAbilityLevel());
         }
 
         @Override

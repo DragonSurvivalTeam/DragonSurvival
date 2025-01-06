@@ -53,13 +53,16 @@ public class DragonAbilities {
                                         HolderSet.direct(DSEffects.FIRE, MobEffects.MOVEMENT_SPEED),
                                         new Modification(Modification.ModificationType.MULTIPLICATIVE, LevelBasedValue.perLevel(1.5f)),
                                         new Modification(Modification.ModificationType.ADDITIVE, LevelBasedValue.perLevel(2)),
-                                        LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)),
+                                        LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                        false
+                                ),
                                 new EffectModification(
                                         DragonSurvival.res("test.two"),
                                         HolderSet.direct(MobEffects.HUNGER, MobEffects.POISON),
                                         new Modification(Modification.ModificationType.ADDITIVE, LevelBasedValue.perLevel(-Functions.secondsToTicks(10))),
                                         new Modification(Modification.ModificationType.MULTIPLICATIVE, LevelBasedValue.perLevel(0.2f, -0.05f)),
-                                        LevelBasedValue.constant(DurationInstance.INFINITE_DURATION))
+                                        LevelBasedValue.constant(DurationInstance.INFINITE_DURATION), false
+                                )
                         )),
                         new ModifierEffect(List.of(new ModifierWithDuration(
                                 DragonSurvival.res("test"),

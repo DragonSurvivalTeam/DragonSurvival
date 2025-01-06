@@ -33,7 +33,7 @@ import java.text.NumberFormat;
 import java.util.Optional;
 import javax.annotation.Nullable;
 
-public record HarvestBonus(ResourceLocation id, Optional<HolderSet<Block>> blocks, LevelBasedValue harvestBonus, LevelBasedValue breakSpeedMultiplier, LevelBasedValue duration) {
+public record HarvestBonus(ResourceLocation id, Optional<HolderSet<Block>> blocks, LevelBasedValue harvestBonus, LevelBasedValue breakSpeedMultiplier, LevelBasedValue duration, boolean isHidden) {
     @Translation(comments = {
             "§6■ Harvest Bonus:§r",
             " - Harvest level: %s",
@@ -49,7 +49,8 @@ public record HarvestBonus(ResourceLocation id, Optional<HolderSet<Block>> block
             RegistryCodecs.homogeneousList(Registries.BLOCK).optionalFieldOf("blocks").forGetter(HarvestBonus::blocks),
             LevelBasedValue.CODEC.optionalFieldOf("harvest_bonus", NO_BONUS).forGetter(HarvestBonus::harvestBonus),
             LevelBasedValue.CODEC.optionalFieldOf("break_speed_multiplier", NO_BONUS).forGetter(HarvestBonus::breakSpeedMultiplier),
-            LevelBasedValue.CODEC.optionalFieldOf("duration", LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)).forGetter(HarvestBonus::duration)
+            LevelBasedValue.CODEC.optionalFieldOf("duration", LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)).forGetter(HarvestBonus::duration),
+            Codec.BOOL.optionalFieldOf("is_hidden", false).forGetter(HarvestBonus::isHidden)
     ).apply(instance, HarvestBonus::new));
 
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final LivingEntity target) {
@@ -136,6 +137,11 @@ public record HarvestBonus(ResourceLocation id, Optional<HolderSet<Block>> block
         @Override
         public int getDuration() {
             return (int) baseData().duration().calculate(appliedAbilityLevel());
+        }
+
+        @Override
+        public boolean isInvisible() {
+            return baseData().isHidden();
         }
     }
 }

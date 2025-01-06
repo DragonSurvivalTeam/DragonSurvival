@@ -79,7 +79,6 @@ public @interface Translation {
         // May be used externally
         ABILITY("dragon_ability." + DragonSurvival.MODID + ".", ""),
         ABILITY_DESCRIPTION("dragon_ability." + DragonSurvival.MODID + ".", ".desc"),
-        ABILITY_EFFECT("dragon_ability." + DragonSurvival.MODID + ".", ".effect"),
 
         DRAGON_SPECIES("dragon_species." + DragonSurvival.MODID + ".", ""),
         DRAGON_SPECIES_DESCRIPTION("dragon_species." + DragonSurvival.MODID + ".", ".desc"),
