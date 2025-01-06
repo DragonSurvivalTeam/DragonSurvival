@@ -450,8 +450,8 @@ public class ForestDragonAbilities {
                         AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
                 ), true), LevelBasedValue.constant(1))),
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_wings_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_wings_1"), 1)
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_spin_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_spin_1"), 1)
                 ))
         ));
 

@@ -24,11 +24,11 @@
     "texture_entries": [
       {
         "from_level": 0,
-        "texture_resource": "dragonsurvival:abilities/sea/sea_wings_0"
+        "texture_resource": "dragonsurvival:abilities/sea/sea_spin_0"
       },
       {
         "from_level": 1,
-        "texture_resource": "dragonsurvival:abilities/sea/sea_wings_1"
+        "texture_resource": "dragonsurvival:abilities/sea/sea_spin_1"
       }
     ]
   },

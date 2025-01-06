@@ -67,7 +67,7 @@ public class DragonPenalties {
 
     public static void registerPenalties(final BootstrapContext<DragonPenalty> context) {
         context.register(SNOW_AND_RAIN_WEAKNESS, new DragonPenalty(
-                DragonSurvival.res("abilities/cave/burn_1"),
+                DragonSurvival.res("abilities/cave/snow_and_rain_weakness"),
                 Optional.of(AnyOfCondition.anyOf(
                         Condition.thisEntity(EntityCondition.isInRain()),
                         Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_WET)),

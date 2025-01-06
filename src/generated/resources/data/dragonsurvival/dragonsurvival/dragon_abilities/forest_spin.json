@@ -23,11 +23,11 @@
     "texture_entries": [
       {
         "from_level": 0,
-        "texture_resource": "dragonsurvival:abilities/forest/forest_wings_0"
+        "texture_resource": "dragonsurvival:abilities/forest/forest_spin_0"
       },
       {
         "from_level": 1,
-        "texture_resource": "dragonsurvival:abilities/forest/forest_wings_1"
+        "texture_resource": "dragonsurvival:abilities/forest/forest_spin_1"
       }
     ]
   },

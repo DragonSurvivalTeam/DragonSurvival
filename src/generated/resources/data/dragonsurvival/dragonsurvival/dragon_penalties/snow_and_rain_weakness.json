@@ -63,7 +63,7 @@
     "amount": 1.0,
     "penalty_type": "dragonsurvival:take_damage"
   },
-  "icon": "dragonsurvival:abilities/cave/burn_1",
+  "icon": "dragonsurvival:abilities/cave/snow_and_rain_weakness",
   "trigger": {
     "id": "rain_supply",
     "penalty_trigger": "dragonsurvival:supply",
