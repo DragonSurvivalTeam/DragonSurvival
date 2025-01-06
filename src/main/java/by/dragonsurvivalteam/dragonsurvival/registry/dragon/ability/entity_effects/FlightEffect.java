@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effe
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.FlightStatus;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public record FlightEffect(int flightLevel) implements AbilityEntityEffect {
+    @Translation(comments = "§6■ Can use flight")
+    private static final String FLIGHT = Translation.Type.GUI.wrap("flight_effect.flight");
+
     public static final MapCodec<FlightEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.INT.fieldOf("flight_level").forGetter(FlightEffect::flightLevel)
     ).apply(instance, FlightEffect::new));
@@ -59,7 +62,7 @@ public record FlightEffect(int flightLevel) implements AbilityEntityEffect {
         List<MutableComponent> components = new ArrayList<>();
 
         if (ability.level() >= flightLevel) {
-            components.add(Component.translatable(LangKey.ABILITY_FLIGHT));
+            components.add(Component.translatable(FLIGHT));
         }
 
         return components;

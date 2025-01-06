@@ -574,6 +574,8 @@ public class ClientFlightHandler {
         }
 
         if (data.isWingsSpread()) return WingsToggleResult.ALREADY_ENABLED;
+
+        // TODO :: check these in usage_blocked of the ability
         if (hasWingDisablingEffect(player)) return WingsToggleResult.WINGS_DISABLED;
 
         // Non-creative players need enough food to start flying
@@ -659,7 +661,7 @@ public class ClientFlightHandler {
     }
 
     private static boolean hasWingDisablingEffect(LivingEntity entity) {
-        return entity.hasEffect(DSEffects.TRAPPED) || entity.hasEffect(DSEffects.WINGS_BROKEN);
+        return entity.hasEffect(DSEffects.TRAPPED) || entity.hasEffect(DSEffects.BROKEN_WINGS);
     }
 
     private static boolean hasEnoughFoodToStartFlight(Player player) {

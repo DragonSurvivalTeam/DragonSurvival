@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting;
 
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.datafixers.util.Either;
@@ -18,6 +18,12 @@ import net.minecraft.world.phys.AABB;
 
 // TODO :: provide boolean to only target exposed blocks / visible entities (isVisible)
 public record AreaTarget(Either<BlockTargeting, EntityTargeting> target, LevelBasedValue radius) implements AbilityTargeting {
+    @Translation(comments = " in a %s block radius")
+    private static final String AREA_TARGET_BLOCK = Translation.Type.GUI.wrap("ability_target.area_target.block");
+
+    @Translation(comments = " to %s in a %s block radius")
+    public static final String AREA_TARGET_ENTITY = Translation.Type.GUI.wrap("ability_target.area_target.entity");
+
     public static final MapCodec<AreaTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> AbilityTargeting.codecStart(instance)
             .and(LevelBasedValue.CODEC.fieldOf("radius").forGetter(AreaTarget::radius)).apply(instance, AreaTarget::new)
     );
@@ -44,9 +50,9 @@ public record AreaTarget(Either<BlockTargeting, EntityTargeting> target, LevelBa
         Component targetingComponent = target.map(block -> null, entity -> entity.targetingMode().translation());
 
         if (targetingComponent == null) {
-            return Component.translatable(LangKey.ABILITY_AREA, DSColors.dynamicValue(getArea(ability)));
+            return Component.translatable(AREA_TARGET_BLOCK, DSColors.dynamicValue(getArea(ability)));
         } else {
-            return Component.translatable(LangKey.ABILITY_TO_TARGET_AREA, DSColors.dynamicValue(targetingComponent), DSColors.dynamicValue(getArea(ability)));
+            return Component.translatable(AREA_TARGET_ENTITY, DSColors.dynamicValue(targetingComponent), DSColors.dynamicValue(getArea(ability)));
         }
     }
 

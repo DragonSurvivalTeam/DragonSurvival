@@ -37,6 +37,15 @@ import java.text.NumberFormat;
 import javax.annotation.Nullable;
 
 public record DamageModification(ResourceLocation id, HolderSet<DamageType> damageTypes, LevelBasedValue multiplier, LevelBasedValue duration, boolean isHidden) {
+    @Translation(comments = "§6■ Immune§r to ")
+    private static final String ABILITY_IMMUNITY = Translation.Type.GUI.wrap("damage_modification.immunity");
+
+    @Translation(comments = "§6■ %s% §r reduced damage taken from ")
+    private static final String ABILITY_DAMAGE_REDUCTION = Translation.Type.GUI.wrap("damage_modification.damage_reduction");
+
+    @Translation(comments = "§6■ %s% §r increased damage taken from ")
+    private static final String ABILITY_DAMAGE_INCREASE = Translation.Type.GUI.wrap("damage_modification.damage_increase");
+
     public static final Codec<DamageModification> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ResourceLocation.CODEC.fieldOf("id").forGetter(DamageModification::id),
             RegistryCodecs.homogeneousList(Registries.DAMAGE_TYPE).fieldOf("types").forGetter(DamageModification::damageTypes),
@@ -57,7 +66,7 @@ public record DamageModification(ResourceLocation id, HolderSet<DamageType> dama
         }
 
         data.remove(entity, instance);
-        data.add(entity, new Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, id, getDescription(abilityLevel)), abilityLevel, newDuration));
+        data.add(entity, new Instance(this, ClientEffectProvider.ClientData.from(dragon, ability), abilityLevel, newDuration));
     }
 
     public void remove(final Entity target) {
@@ -83,18 +92,18 @@ public record DamageModification(ResourceLocation id, HolderSet<DamageType> dama
         return false;
     }
 
-    public @NotNull MutableComponent getDescription(int abilityLevel) {
+    public MutableComponent getDescription(int abilityLevel) {
         float amount = multiplier.calculate(abilityLevel);
         String difference = NumberFormat.getPercentInstance().format(Math.abs(amount - 1));
 
         MutableComponent name;
 
         if (amount == 0) {
-            name = Component.translatable(LangKey.ABILITY_IMMUNITY);
+            name = Component.translatable(ABILITY_IMMUNITY);
         } else if (amount < 1) {
-            name = Component.translatable(LangKey.ABILITY_DAMAGE_REDUCTION, DSColors.dynamicValue(difference));
+            name = Component.translatable(ABILITY_DAMAGE_REDUCTION, DSColors.dynamicValue(difference));
         } else {
-            name = Component.translatable(LangKey.ABILITY_DAMAGE_INCREASE, DSColors.dynamicValue(difference));
+            name = Component.translatable(ABILITY_DAMAGE_INCREASE, DSColors.dynamicValue(difference));
         }
 
         if (damageTypes instanceof HolderSet.Named<DamageType> named) {
@@ -130,12 +139,31 @@ public record DamageModification(ResourceLocation id, HolderSet<DamageType> dama
             super(baseData, clientData, appliedAbilityLevel, currentDuration);
         }
 
+        public float calculate(final Holder<DamageType> damageType, float damageAmount) {
+            float modification = 1;
+
+            if (baseData().damageTypes().contains(damageType)) {
+                modification = Math.max(0, baseData().multiplier().calculate(appliedAbilityLevel()));
+            }
+
+            return damageAmount * modification;
+        }
+
+        public boolean isFireImmune() {
+            return baseData().isFireImmune(appliedAbilityLevel());
+        }
+
         public Tag save(@NotNull final HolderLookup.Provider provider) {
             return CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), this).getOrThrow();
         }
 
         public static @Nullable Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag nbt) {
             return CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), nbt).resultOrPartial(DragonSurvival.LOGGER::error).orElse(null);
+        }
+
+        @Override
+        public Component getDescription() {
+            return baseData().getDescription(appliedAbilityLevel());
         }
 
         @Override
@@ -150,20 +178,6 @@ public record DamageModification(ResourceLocation id, HolderSet<DamageType> dama
             if (storageHolder instanceof ServerPlayer player) {
                 PacketDistributor.sendToPlayer(player, new SyncDamageModification(player.getId(), this, true));
             }
-        }
-
-        public float calculate(final Holder<DamageType> damageType, float damageAmount) {
-            float modification = 1;
-
-            if (baseData().damageTypes().contains(damageType)) {
-                modification = Math.max(0, baseData().multiplier().calculate(appliedAbilityLevel()));
-            }
-
-            return damageAmount * modification;
-        }
-
-        public boolean isFireImmune() {
-            return baseData().isFireImmune(appliedAbilityLevel());
         }
 
         @Override

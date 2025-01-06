@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
@@ -7,11 +8,14 @@ import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -22,7 +26,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 @Mixin(EffectRenderingInventoryScreen.class)
 public class EffectRenderingInventoryScreenMixin {
@@ -79,12 +86,13 @@ public class EffectRenderingInventoryScreenMixin {
         }
     }
 
+    // Duration text is added because the width-difference looks weird otherwise when a tooltip description is present
     @Unique private static Component dragonSurvival$formatDuration(final ClientEffectProvider effect, float ticksPerSecond) {
         if (effect.isInfiniteDuration()) {
-            return Component.translatable("effect.duration.infinite");
+            return Component.translatable(LangKey.DURATION, DSColors.dynamicValue(Component.translatable("effect.duration.infinite")));
         } else {
             int duration = Mth.floor((float) effect.currentDuration());
-            return Component.literal(StringUtil.formatTickDuration(duration, ticksPerSecond));
+            return Component.translatable(LangKey.DURATION, DSColors.dynamicValue(StringUtil.formatTickDuration(duration, ticksPerSecond)));
         }
     }
 
@@ -146,19 +154,22 @@ public class EffectRenderingInventoryScreenMixin {
                 }
 
                 if (hovered != null) {
-                    List<Component> list = new ArrayList<>();
+                    MutableComponent tooltip = Component.empty();
 
                     if (isCompact) {
-                        list.add(hovered.clientData().name());
+                        tooltip.append(hovered.clientData().name());
                         //noinspection DataFlowIssue -> level is present
-                        list.add(dragonSurvival$formatDuration(hovered, Minecraft.getInstance().level.tickRateManager().tickrate()));
+                        tooltip.append(Component.literal("\n")).append(dragonSurvival$formatDuration(hovered, Minecraft.getInstance().level.tickRateManager().tickrate()));
                     }
 
-                    if (!Objects.equals(hovered.clientData().tooltip(), Component.empty())) {
-                        list.add(hovered.clientData().tooltip());
+                    Component description = hovered.getDescription();
+
+                    if (description.getContents() != PlainTextContents.EMPTY) {
+                        tooltip.append(Component.literal("\n\n")).append(description);
                     }
 
-                    graphics.renderTooltip(((ScreenAccessor) self).dragonSurvival$getFont(), list, Optional.empty(), mouseX, mouseY);
+                    Font font = ((ScreenAccessor) self).dragonSurvival$getFont();
+                    graphics.renderTooltip(font, font.split(tooltip, /* Tooltip#MAX_WIDTH */ 170), mouseX, mouseY);
                 }
             }
         }

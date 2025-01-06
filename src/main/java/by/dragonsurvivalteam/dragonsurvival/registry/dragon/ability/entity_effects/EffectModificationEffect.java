@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.EffectModification;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -37,8 +38,13 @@ public record EffectModificationEffect(List<EffectModification> modifications) i
         List<MutableComponent> components = new ArrayList<>();
 
         for (EffectModification modification : modifications) {
+            if (!components.isEmpty()) {
+                components.add(Component.empty());
+            }
+
             components.add(modification.getDescription(ability.level()));
         }
+
         return components;
     }
 

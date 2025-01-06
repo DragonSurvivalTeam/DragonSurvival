@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effe
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.TargetDirection;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.projectiles.GenericArrowEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.projectiles.GenericBallEntity;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.ProjectileData;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.block_effects.ProjectileBlockEffect;
@@ -29,13 +29,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-public record ProjectileEffect(
-        Holder<ProjectileData> projectileData,
-        TargetDirection targetDirection,
-        LevelBasedValue numberOfProjectiles,
-        LevelBasedValue projectileSpread,
-        LevelBasedValue speed
-) implements AbilityEntityEffect {
+public record ProjectileEffect(Holder<ProjectileData> projectileData, TargetDirection targetDirection, LevelBasedValue numberOfProjectiles, LevelBasedValue projectileSpread, LevelBasedValue speed) implements AbilityEntityEffect {
+    @Translation(comments = "§6■ Number of projectiles:§r %s")
+    private static final String ABILITY_PROJECTILE_COUNT = Translation.Type.GUI.wrap("projectile.count");
+
+    @Translation(comments = "§6■ Projectile Speed:§r %s")
+    private static final String ABILITY_PROJECTILE_SPEED = Translation.Type.GUI.wrap("projectile.speed");
+
+    @Translation(comments = "§6■ Projectile Spread:§r %s")
+    private static final String ABILITY_PROJECTILE_SPREAD = Translation.Type.GUI.wrap("projectile.spread");
+
     public static final MapCodec<ProjectileEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             ProjectileData.CODEC.fieldOf("projectile_data").forGetter(ProjectileEffect::projectileData),
             TargetDirection.CODEC.fieldOf("target_direction").forGetter(ProjectileEffect::targetDirection),
@@ -179,15 +182,15 @@ public record ProjectileEffect(
             }
         }
 
-        if(numberOfProjectiles.calculate(ability.level()) > 1) {
-            components.add(Component.translatable(LangKey.ABILITY_PROJECTILE_COUNT, numberOfProjectiles.calculate(ability.level())));
+        if (numberOfProjectiles.calculate(ability.level()) > 1) {
+            components.add(Component.translatable(ABILITY_PROJECTILE_COUNT, numberOfProjectiles.calculate(ability.level())));
         }
 
-        if(projectileSpread.calculate(ability.level()) > 0) {
-            components.add(Component.translatable(LangKey.ABILITY_PROJECTILE_SPREAD, projectileSpread.calculate(ability.level())));
+        if (projectileSpread.calculate(ability.level()) > 0) {
+            components.add(Component.translatable(ABILITY_PROJECTILE_SPREAD, projectileSpread.calculate(ability.level())));
         }
 
-        components.add(Component.translatable(LangKey.ABILITY_PROJECTILE_SPEED, speed.calculate(ability.level())));
+        components.add(Component.translatable(ABILITY_PROJECTILE_SPEED, speed.calculate(ability.level())));
 
         return components;
     }

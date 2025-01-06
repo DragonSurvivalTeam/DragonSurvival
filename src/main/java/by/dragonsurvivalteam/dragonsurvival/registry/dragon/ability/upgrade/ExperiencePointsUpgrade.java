@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade;
 
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.ExperienceUtils;
 import com.mojang.serialization.MapCodec;
@@ -11,13 +11,16 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 
-public record ExperienceUpgrade(int maxLevel, LevelBasedValue experienceCost) implements UpgradeType<ExperienceUpgrade.Type> {
-    public static final MapCodec<ExperienceUpgrade> CODEC = RecordCodecBuilder.mapCodec(instance -> UpgradeType.codecStart(instance)
-            .and(LevelBasedValue.CODEC.fieldOf("experience_cost").forGetter(ExperienceUpgrade::experienceCost)).apply(instance, ExperienceUpgrade::new)
+public record ExperiencePointsUpgrade(int maxLevel, LevelBasedValue experienceCost) implements UpgradeType<ExperiencePointsUpgrade.Type> {
+    @Translation(comments = "Next level requires %s experience points (level %s)")
+    private static final String EXPERIENCE_POINTS_UPGRADE = Translation.Type.GUI.wrap("ability_upgrade.experience_points_upgrade");
+
+    public static final MapCodec<ExperiencePointsUpgrade> CODEC = RecordCodecBuilder.mapCodec(instance -> UpgradeType.codecStart(instance)
+            .and(LevelBasedValue.CODEC.fieldOf("experience_cost").forGetter(ExperiencePointsUpgrade::experienceCost)).apply(instance, ExperiencePointsUpgrade::new)
     );
 
     @Override
-    public boolean apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final ExperienceUpgrade.Type type) {
+    public boolean apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final ExperiencePointsUpgrade.Type type) {
         if (type == Type.UPGRADE && !canUpgrade(dragon, ability)) {
             return false;
         } else if (type == Type.DOWNGRADE && !canDowngrade(dragon, ability)) {
@@ -32,7 +35,7 @@ public record ExperienceUpgrade(int maxLevel, LevelBasedValue experienceCost) im
     @Override
     public MutableComponent getDescription(final int abilityLevel) {
         int experiencePoints = (int) experienceCost.calculate(abilityLevel);
-        return Component.translatable(LangKey.ABILITY_LEVEL_MANUAL_UPGRADE, experiencePoints, ExperienceUtils.getLevel(experiencePoints));
+        return Component.translatable(EXPERIENCE_POINTS_UPGRADE, experiencePoints, ExperienceUtils.getLevel(experiencePoints));
     }
 
     @Override

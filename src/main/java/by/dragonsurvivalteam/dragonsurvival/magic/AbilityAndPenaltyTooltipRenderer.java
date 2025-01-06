@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.magic;
 
 import by.dragonsurvivalteam.dragonsurvival.client.gui.AbilityTooltipPositioner;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.UpgradeType;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
@@ -28,23 +29,11 @@ import java.util.List;
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class AbilityAndPenaltyTooltipRenderer {
-    @Translation(comments = "Active Ability")
-    private static final String ACTIVE = Translation.Type.ABILITY.wrap("general.active");
-
-    @Translation(comments = "Passive Ability")
-    private static final String PASSIVE = Translation.Type.ABILITY.wrap("general.passive");
-
-    @Translation(comments = "Penalty")
-    private static final String PENALTY = Translation.Type.ABILITY.wrap("general.innate");
-
-    @Translation(comments = "Info")
-    private static final String INFO = Translation.Type.ABILITY.wrap("general.info");
-
-    @Translation(comments = "Hold ‘Shift’ for info")
-    private static final String INFO_SHIFT = Translation.Type.ABILITY.wrap("general.info_shift");
+    @Translation(comments = "Hold 'Shift' for info")
+    private static final String INFO_SHIFT = Translation.Type.GUI.wrap("general.info_shift");
 
     @Translation(comments = "§4Manually disabled§r")
-    private static final String MANUALLY_DISABLED = Translation.Type.ABILITY.wrap("general.manually_disabled");
+    private static final String MANUALLY_DISABLED = Translation.Type.GUI.wrap("general.manually_disabled");
 
     private static final ResourceLocation BARS = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/widget_bars.png");
 
@@ -107,7 +96,7 @@ public class AbilityAndPenaltyTooltipRenderer {
             graphics.blitWithBorder(BARS, trueX - (Screen.hasShiftDown() ? maxLineWidth : 10) + 3, trueY + 9, colorXPos, colorYPos, Screen.hasShiftDown() ? maxLineWidth : 15, 20, 20, 20, 3);
 
             if (Screen.hasShiftDown()) {
-                graphics.drawString(Minecraft.getInstance().font, Component.translatable(INFO), trueX - maxLineWidth + 10, trueY + 15, -1);
+                graphics.drawString(Minecraft.getInstance().font, Component.translatable(LangKey.INFO), trueX - maxLineWidth + 10, trueY + 15, -1);
 
                 for (int line = 0; line < shownLines.size(); line++) {
                     graphics.drawString(Minecraft.getInstance().font, shownLines.get(line), trueX - maxLineWidth + 5, trueY + 5 + 28 + line * 9, DSColors.GRAY);
@@ -194,7 +183,7 @@ public class AbilityAndPenaltyTooltipRenderer {
 
         List<FormattedCharSequence> description = Minecraft.getInstance().font.split(rawDescription, 150 - 7);
         Color color = ability.isPassive() ? new Color(DSColors.withAlpha(DSColors.PASSIVE_BACKGROUND, 1f)) : new Color(DSColors.withAlpha(DSColors.ACTIVE_BACKGROUND, 1f));
-        drawTooltip(guiGraphics, x, y, info, description, colorXPos, colorYPos, ability.isPassive() ? PASSIVE : ACTIVE, ability.getName(), color, ability.getMaxLevel(), ability.level(), ability.getIcon(), scrollAmount);
+        drawTooltip(guiGraphics, x, y, info, description, colorXPos, colorYPos, ability.isPassive() ? LangKey.PASSIVE_ABILITY : LangKey.ACTIVE_ABILITY, ability.getName(), color, ability.getMaxLevel(), ability.level(), ability.getIcon(), scrollAmount);
     }
 
     public static void drawPenaltyTooltip(@NotNull final GuiGraphics guiGraphics, int x, int y, final Holder<DragonPenalty> penalty) {
@@ -219,6 +208,6 @@ public class AbilityAndPenaltyTooltipRenderer {
 
         List<FormattedCharSequence> formattedDescription = Minecraft.getInstance().font.split(description, 150 - 7);
         Component name = Component.translatable(Translation.Type.PENALTY.wrap(penalty.getKey().location()));
-        drawTooltip(guiGraphics, x, y, components, formattedDescription, colorXPos, colorYPos, PENALTY, name, Color.ofRGB(145, 46, 46), -1, -1, penalty.value().icon(), 0);
+        drawTooltip(guiGraphics, x, y, components, formattedDescription, colorXPos, colorYPos, LangKey.PENALTY, name, Color.ofRGB(145, 46, 46), -1, -1, penalty.value().icon(), 0);
     }
 }

@@ -34,7 +34,7 @@ public interface UpgradeType<T> {
 
     Codec<UpgradeType<?>> CODEC = REGISTRY.byNameCodec().dispatch("upgrade_type", UpgradeType::codec, Function.identity());
 
-    Predicate<Optional<UpgradeType<?>>> IS_MANUAL = optional -> optional.isPresent() && optional.get() instanceof ExperienceUpgrade;
+    Predicate<Optional<UpgradeType<?>>> IS_MANUAL = optional -> optional.isPresent() && optional.get() instanceof ExperiencePointsUpgrade;
 
     @SubscribeEvent
     static void register(final NewRegistryEvent event) {
@@ -44,9 +44,9 @@ public interface UpgradeType<T> {
     @SubscribeEvent
     static void registerEntries(final RegisterEvent event) {
         if (event.getRegistry() == REGISTRY) {
-            event.register(REGISTRY_KEY, DragonSurvival.res("experience_points"), () -> ExperienceUpgrade.CODEC);
-            event.register(REGISTRY_KEY, DragonSurvival.res("experience_levels"), () -> LevelUpgrade.CODEC);
-            event.register(REGISTRY_KEY, DragonSurvival.res("dragon_size"), () -> SizeUpgrade.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("experience_points"), () -> ExperiencePointsUpgrade.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("experience_levels"), () -> ExperienceLevelUpgrade.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("dragon_size"), () -> DragonSizeUpgrade.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("item_based"), () -> ItemUpgrade.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("condition_based"), () -> ConditionUpgrade.CODEC);
         }

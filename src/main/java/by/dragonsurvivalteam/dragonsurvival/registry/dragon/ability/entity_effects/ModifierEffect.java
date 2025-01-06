@@ -16,7 +16,7 @@ import java.util.List;
 
 public record ModifierEffect(List<ModifierWithDuration> modifiers) implements AbilityEntityEffect {
     @Translation(comments = "§6■ Attribute modifiers:§r")
-    public static final String ATTRIBUTE_MODIFIERS = Translation.Type.ABILITY.wrap("general.attribute_modifiers");
+    public static final String ATTRIBUTE_MODIFIERS = Translation.Type.GUI.wrap("general.attribute_modifiers");
 
     public static final MapCodec<ModifierEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             ModifierWithDuration.CODEC.listOf().fieldOf("modifiers").forGetter(ModifierEffect::modifiers)

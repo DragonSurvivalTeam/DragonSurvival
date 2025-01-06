@@ -95,7 +95,8 @@ public record DragonAbility(
         instance.ability().value().activation().continuousManaCost().ifPresent(cost -> info.add(Component.translatable(LangKey.ABILITY_CONTINUOUS_MANA_COST, cost.manaCost().calculate(instance.level()), DSLanguageProvider.enumValue(cost.manaCostType()))));
 
         if (!info.isEmpty()) {
-            info.add(Component.literal("\n"));
+            // Newline separator between generic info and ability effects
+            info.add(Component.empty());
         }
 
         for (ActionContainer action : actions) {

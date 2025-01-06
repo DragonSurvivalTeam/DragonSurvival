@@ -48,6 +48,13 @@ import java.util.List;
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class DragonSpeciesScreen extends Screen {
+    @Translation(comments = {
+            "In order to allow other players to mount you, you must crouch and they can right click on you to mount.",
+            "\n§6Human players can ride you at size %s§r§7",
+            "\n§6Dragon players can ride you below or equal to size %s§r§7"
+    })
+    private static final String RIDING_INFO = Translation.Type.GUI.wrap("dragon_species_screen.riding_info");
+
     private static final ResourceLocation BACKGROUND_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/species_background.png");
     private static final ResourceLocation RIDING_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/riding_hover.png");
     private static final ResourceLocation RIDING_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/riding_main.png");
@@ -180,12 +187,13 @@ public class DragonSpeciesScreen extends Screen {
             }
 
             @Override
-            public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-                guiGraphics.blit(data.species().value().miscResources().altarBanner(), getX(), getY(), 0, 0, 49, 147, 49, 294);
-                if(isHovered() && isTop(mouseY)) {
+            public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+                graphics.blit(data.species().value().miscResources().altarBanner(), getX(), getY(), 0, 0, 49, 147, 49, 294);
+
+                if (isHovered() && isTop(mouseY)) {
                     List<Either<FormattedText, TooltipComponent>> components = new ArrayList<>();
                     components.addFirst(Either.left(Component.translatable(Translation.Type.DRAGON_SPECIES_DESCRIPTION_NO_DIET.wrap(dragonSpecies.getKey().location()))));
-                    guiGraphics.renderComponentTooltipFromElements(Minecraft.getInstance().font, components, mouseX, mouseY, ItemStack.EMPTY);
+                    graphics.renderComponentTooltipFromElements(Minecraft.getInstance().font, components, mouseX, mouseY, ItemStack.EMPTY);
                 }
             }
         };
@@ -246,7 +254,7 @@ public class DragonSpeciesScreen extends Screen {
 
         // Riding button
         HoverButton ridingButton = new HoverButton(startX + 186, startY - 18, 16, RIDING_MAIN, RIDING_HOVER);
-        ridingButton.setTooltip(Tooltip.create(Component.translatable(LangKey.RIDING_INFO, DragonRidingHandler.PLAYER_RIDING_SIZE, (int) (data.getSize() / 2))));
+        ridingButton.setTooltip(Tooltip.create(Component.translatable(RIDING_INFO, DragonRidingHandler.PLAYER_RIDING_SIZE, (int) (data.getSize() / 2))));
         addRenderableWidget(ridingButton);
 
         // Body type button

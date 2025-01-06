@@ -62,15 +62,7 @@ public record ModifierWithDuration(ResourceLocation id, ResourceLocation icon, L
         }
 
         data.remove(target, instance);
-        MutableComponent description = getDescription(ability.level());
-
-        if (description == null) {
-            description = Component.empty();
-        } else {
-            description = Component.translatable(ModifierEffect.ATTRIBUTE_MODIFIERS).append(description);
-        }
-
-        data.add(target, new ModifierWithDuration.Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, id, description, icon), ability.level(), newDuration, new HashMap<>()));
+        data.add(target, new ModifierWithDuration.Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, icon), ability.level(), newDuration, new HashMap<>()));
     }
 
     public void remove(final LivingEntity target) {
@@ -125,6 +117,17 @@ public record ModifierWithDuration(ResourceLocation id, ResourceLocation icon, L
 
         public static @Nullable Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag nbt) {
             return CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), nbt).resultOrPartial(DragonSurvival.LOGGER::error).orElse(null);
+        }
+
+        @Override
+        public Component getDescription() {
+            MutableComponent description = baseData().getDescription(appliedAbilityLevel());
+
+            if (description == null) {
+                return Component.empty();
+            } else {
+                return Component.translatable(ModifierEffect.ATTRIBUTE_MODIFIERS).append(description);
+            }
         }
 
         @Override

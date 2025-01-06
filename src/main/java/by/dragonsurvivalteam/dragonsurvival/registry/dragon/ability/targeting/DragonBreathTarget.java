@@ -2,7 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.datafixers.util.Either;
@@ -24,6 +24,12 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 
 // TODO :: add sub entity predicate for easy is ally / team check (and tamable animals) / spectator
 public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target, LevelBasedValue rangeMultiplier) implements AbilityTargeting {
+    @Translation(comments = " in a %s block cone")
+    private static final String CONE_TARGET_BLOCK = Translation.Type.GUI.wrap("ability_target.cone_target.block");
+
+    @Translation(comments = " to %s in a %s block cone")
+    private static final String CONE_TARGET_ENTITY = Translation.Type.GUI.wrap("ability_target.cone_target.entity");
+
     public static final MapCodec<DragonBreathTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> AbilityTargeting.codecStart(instance)
             .and(LevelBasedValue.CODEC.fieldOf("range_multiplier").forGetter(DragonBreathTarget::rangeMultiplier)).apply(instance, DragonBreathTarget::new)
     );
@@ -54,9 +60,9 @@ public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target,
         Component targetingComponent = target.map(block -> null, entity -> entity.targetingMode().translation());
 
         if (targetingComponent == null) {
-            return Component.translatable(LangKey.ABILITY_CONE, DSColors.dynamicValue(getRange(dragon, ability)));
+            return Component.translatable(CONE_TARGET_BLOCK, DSColors.dynamicValue(getRange(dragon, ability)));
         } else {
-            return Component.translatable(LangKey.ABILITY_TO_TARGET_CONE, DSColors.dynamicValue(targetingComponent), DSColors.dynamicValue(getRange(dragon, ability)));
+            return Component.translatable(CONE_TARGET_ENTITY, DSColors.dynamicValue(targetingComponent), DSColors.dynamicValue(getRange(dragon, ability)));
         }
     }
 

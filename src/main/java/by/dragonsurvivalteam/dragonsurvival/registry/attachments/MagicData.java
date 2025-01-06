@@ -9,7 +9,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ExperienceUpgrade;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ExperiencePointsUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.InputData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.UpgradeType;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
@@ -373,12 +373,12 @@ public class MagicData implements INBTSerializable<CompoundTag> {
     }
 
     /** Returns the amount of experience gained / lost when down- or upgrading the ability */
-    public int getCost(final Player dragon, final ResourceKey<DragonAbility> key, ExperienceUpgrade.Type type) {
+    public int getCost(final Player dragon, final ResourceKey<DragonAbility> key, ExperiencePointsUpgrade.Type type) {
         DragonAbilityInstance ability = getAbilities().get(key);
 
         return ability.value().upgrade().map(upgrade -> {
-            if (upgrade instanceof ExperienceUpgrade experienceUpgrade) {
-                return experienceUpgrade.getExperience(dragon, ability, type);
+            if (upgrade instanceof ExperiencePointsUpgrade experiencePointsUpgrade) {
+                return experiencePointsUpgrade.getExperience(dragon, ability, type);
             }
 
             return 0;
