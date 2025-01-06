@@ -155,7 +155,11 @@ public class EffectRenderingInventoryScreenMixin {
                 if (hovered != null) {
                     MutableComponent tooltip = Component.empty();
                     tooltip.append(hovered.clientData().name());
-                    tooltip.append(Component.literal("\n")).append(Component.translatable(LangKey.APPLIED_BY, DSColors.dynamicValue(hovered.clientData().effectSource())));
+
+                    if (hovered.clientData().effectSource().getContents() != PlainTextContents.EMPTY) {
+                        tooltip.append(Component.literal("\n")).append(Component.translatable(LangKey.APPLIED_BY, DSColors.dynamicValue(hovered.clientData().effectSource())));
+                    }
+
                     //noinspection DataFlowIssue -> level is present
                     tooltip.append(Component.literal("\n")).append(dragonSurvival$formatDuration(hovered, Minecraft.getInstance().level.tickRateManager().tickrate()));
 
