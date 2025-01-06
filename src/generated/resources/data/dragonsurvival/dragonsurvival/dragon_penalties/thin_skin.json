@@ -40,6 +40,17 @@
               }
             }
           }
+        },
+        {
+          "condition": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "location": {
+              "block": {
+                "blocks": "#dragonsurvival:is_wet"
+              }
+            }
+          }
         }
       ]
     }

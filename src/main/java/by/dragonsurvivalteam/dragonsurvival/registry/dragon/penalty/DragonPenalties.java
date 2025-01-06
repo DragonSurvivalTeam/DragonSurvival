@@ -90,7 +90,8 @@ public class DragonPenalties {
                 Optional.of(AnyOfCondition.anyOf(
                         Condition.thisEntity(EntityCondition.isInFluid(context.lookup(BuiltInRegistries.FLUID.key()).getOrThrow(FluidTags.WATER))),
                         Condition.thisEntity(EntityCondition.isInRain()),
-                        Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_WET))
+                        Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_WET)),
+                        Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_WET))
                 ).invert().build()),
                 new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.DEHYDRATION), 1),
                 new SupplyTrigger(
