@@ -16,6 +16,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.RegistryFixedCodec;
@@ -94,13 +95,16 @@ public record DragonAbility(
         instance.ability().value().activation().initialManaCost().ifPresent(cost -> info.add(Component.translatable(LangKey.ABILITY_INITIAL_MANA_COST, cost.calculate(instance.level()))));
         instance.ability().value().activation().continuousManaCost().ifPresent(cost -> info.add(Component.translatable(LangKey.ABILITY_CONTINUOUS_MANA_COST, cost.manaCost().calculate(instance.level()), DSLanguageProvider.enumValue(cost.manaCostType()))));
 
-        if (!info.isEmpty()) {
-            // Newline separator between generic info and ability effects
-            info.add(Component.empty());
-        }
-
         for (ActionContainer action : actions) {
-            info.addAll(action.effect().getAllEffectDescriptions(dragon, instance));
+            List<MutableComponent> descriptions = action.effect().getAllEffectDescriptions(dragon, instance);
+
+            for (MutableComponent description : descriptions) {
+                if (!info.isEmpty()) {
+                    info.add(Component.empty());
+                }
+
+                info.add(description);
+            }
         }
 
         return info;

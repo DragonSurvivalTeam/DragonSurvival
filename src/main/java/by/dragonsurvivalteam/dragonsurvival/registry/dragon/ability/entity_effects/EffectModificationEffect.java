@@ -38,10 +38,6 @@ public record EffectModificationEffect(List<EffectModification> modifications) i
         List<MutableComponent> components = new ArrayList<>();
 
         for (EffectModification modification : modifications) {
-            if (!components.isEmpty()) {
-                components.add(Component.empty());
-            }
-
             components.add(modification.getDescription(ability.level()));
         }
 
