@@ -38,14 +38,14 @@ public class DragonPenalties {
 
     @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
             "■ Cave dragons quickly take §cdamage§r from water due to their fiery nature.\n",
-            "■ The skill effect §2«Cave Fire»§r could make your life easier.\n",
+            "■ The effect §2«Cave Fire»§r could make your life easier.\n",
     })
     @Translation(type = Translation.Type.PENALTY, comments = "Water Weakness")
     public static final ResourceKey<DragonPenalty> WATER_WEAKNESS = DragonPenalties.key("water_weakness");
 
     @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
-            "■ Drying out under the harsh sun is a major concern for sea dragons. If they are outside of the water for too long, they will dehydrate and suffer damage.\n",
-            "■ The skill §2«Hydration Capacity»§r, being in rain, ice or snow and water bottles could make your life easier.\n",
+            "■ Drying out under the harsh sun is a major concern for sea dragons. If they are outside of the water for too long, they will dehydrate and suffer damage. Being in rain, ice or snow or drinking water bottles rehydrates you.\n",
+            "■ The skill §2«Hydration Capacity»§r could make your life easier.\n",
     })
     @Translation(type = Translation.Type.PENALTY, comments = "Thin Skin")
     public static final ResourceKey<DragonPenalty> THIN_SKIN = DragonPenalties.key("thin_skin");
