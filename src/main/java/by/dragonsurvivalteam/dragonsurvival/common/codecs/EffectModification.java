@@ -38,7 +38,7 @@ public record EffectModification(ResourceLocation id, HolderSet<MobEffect> effec
             "§6■ Effect modifications:§r",
             "- Duration %s",
             "- Amplifier %s",
-            "\nAffected effects:\n%s"
+            "\nAffected effects:"
     })
     private static final String EFFECT_MODIFICATIONS = Translation.Type.ABILITY.wrap("general.effect_modifications");
 
@@ -73,7 +73,7 @@ public record EffectModification(ResourceLocation id, HolderSet<MobEffect> effec
         }
 
         data.remove(target, instance);
-        data.add(target, new Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, id, Component.empty()), ability.level(), newDuration));
+        data.add(target, new Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, id, getDescription(ability.level())), ability.level(), newDuration));
     }
 
     public void remove(final LivingEntity target) {
@@ -81,29 +81,17 @@ public record EffectModification(ResourceLocation id, HolderSet<MobEffect> effec
         data.remove(target, data.get(id));
     }
 
-    public @NotNull MutableComponent getDescription(int abilityLevel) {
+    public MutableComponent getDescription(int abilityLevel) {
         Component duration = getModificationDescription(durationModification, abilityLevel, true);
         Component amplifier = getModificationDescription(amplifierModification, abilityLevel, false);
-
-        MutableComponent effects = null;
+        MutableComponent description = Component.translatable(EFFECT_MODIFICATIONS, duration, amplifier);
 
         for (Holder<MobEffect> effect : this.effects) {
-            Component effectDescription = DSColors.dynamicValue(Component.translatable(effect.value().getDescriptionId()));
-
-            if (effects == null) {
-                effects = Component.literal("- ").append(effectDescription);
-            } else {
-                effects.append(Component.literal("\n- ").append(effectDescription));
-            }
+            description.append(Component.literal("\n- ").append(DSColors.dynamicValue(Component.translatable(effect.value().getDescriptionId()))));
         }
 
-        if (effects == null) {
-            effects = Component.empty();
-        } else {
-            effects.append(Component.literal("\n"));
-        }
-
-        return Component.translatable(EFFECT_MODIFICATIONS, duration, amplifier, effects);
+        description.append(Component.literal("\n"));
+        return description;
     }
 
     private Component getModificationDescription(final Modification modification, final int abilityLevel, boolean isTime) {

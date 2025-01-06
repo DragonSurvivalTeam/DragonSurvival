@@ -11,6 +11,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.fluids.FluidType;
 
 public class EntityCondition {
     public static EntityPredicate defaultNaturalGrowthBlocker() {
@@ -43,6 +44,10 @@ public class EntityCondition {
         return EntityPredicate.Builder.entity().located(LocationPredicate.Builder.location().setFluid(FluidPredicate.Builder.fluid().of(fluids))).build();
     }
 
+    public static EntityPredicate isEyeInFluid(final Holder<FluidType> fluid) {
+        return EntityPredicate.Builder.entity().subPredicate(CustomPredicates.Builder.start().eyeInFluid(fluid).build()).build();
+    }
+
     public static EntityPredicate isInRain() {
         return EntityPredicate.Builder.entity()
                 .located(LocationPredicate.Builder.location().setCanSeeSky(true))
@@ -55,6 +60,14 @@ public class EntityCondition {
 
     public static EntityPredicate isInLight(int lightLevel) {
         return EntityPredicate.Builder.entity().located(LocationPredicate.Builder.location().setLight(LightPredicate.Builder.light().setComposite(MinMaxBounds.Ints.atLeast(lightLevel)))).build();
+    }
+
+    public static EntityPredicate isOnGround(boolean isOnGround) {
+        return EntityPredicate.Builder.entity().flags(EntityFlagsPredicate.Builder.flags().setOnGround(isOnGround)).build();
+    }
+
+    public static EntityPredicate isMarked(boolean isMarked) {
+        return EntityPredicate.Builder.entity().subPredicate(DragonPredicate.Builder.dragon().markedByEnderDragon(isMarked).build()).build();
     }
 
     @SafeVarargs

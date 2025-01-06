@@ -38,7 +38,7 @@ public record DamageModificationEffect(List<DamageModification> modifications) i
         return components;
     }
 
-    public static List<AbilityEntityEffect> single(final DamageModification modification) {
+    public static List<AbilityEntityEffect> only(final DamageModification modification) {
         return List.of(new DamageModificationEffect(List.of(modification)));
     }
 

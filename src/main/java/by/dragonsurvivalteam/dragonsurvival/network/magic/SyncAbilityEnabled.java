@@ -12,12 +12,12 @@ import net.minecraft.resources.ResourceKey;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record SyncAbilityEnabled(ResourceKey<DragonAbility> ability, boolean isEnabled, boolean wasDoneManually) implements CustomPacketPayload {
+public record SyncAbilityEnabled(ResourceKey<DragonAbility> ability, boolean newStatus, boolean wasDoneManually) implements CustomPacketPayload {
     public static final Type<SyncAbilityEnabled> TYPE = new Type<>(DragonSurvival.res("sync_ability_enabled"));
 
     public static final StreamCodec<FriendlyByteBuf, SyncAbilityEnabled> STREAM_CODEC = StreamCodec.composite(
             ResourceKey.streamCodec(DragonAbility.REGISTRY), SyncAbilityEnabled::ability,
-            ByteBufCodecs.BOOL, SyncAbilityEnabled::isEnabled,
+            ByteBufCodecs.BOOL, SyncAbilityEnabled::newStatus,
             ByteBufCodecs.BOOL, SyncAbilityEnabled::wasDoneManually,
             SyncAbilityEnabled::new
     );
@@ -27,11 +27,11 @@ public record SyncAbilityEnabled(ResourceKey<DragonAbility> ability, boolean isE
             MagicData data = MagicData.getData(context.player());
             DragonAbilityInstance ability = data.getAbilities().get(packet.ability());
 
-            if (!packet.isEnabled() && ability.isApplyingEffects() && ability == data.getCurrentlyCasting()) {
+            if (!packet.newStatus() && ability.isApplyingEffects() && ability == data.getCurrentlyCasting()) {
                 data.stopCasting(context.player(), true);
             }
 
-            ability.setEnabled(packet.isEnabled(), packet.wasDoneManually());
+            ability.setDisabled(context.player(), packet.newStatus(), packet.wasDoneManually());
         });
     }
 
@@ -48,7 +48,7 @@ public record SyncAbilityEnabled(ResourceKey<DragonAbility> ability, boolean isE
                 }
             }
 
-            ability.setEnabled(packet.isEnabled(), packet.wasDoneManually());
+            ability.setDisabled(context.player(), packet.newStatus(), packet.wasDoneManually());
         });
     }
 

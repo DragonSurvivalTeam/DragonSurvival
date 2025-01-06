@@ -48,7 +48,7 @@ public record HarvestBonusEffect(List<HarvestBonus> bonuses) implements AbilityE
         return components;
     }
 
-    public static List<AbilityEntityEffect> single(final HarvestBonus bonus) {
+    public static List<AbilityEntityEffect> only(final HarvestBonus bonus) {
         return List.of(new HarvestBonusEffect(List.of(bonus)));
     }
 

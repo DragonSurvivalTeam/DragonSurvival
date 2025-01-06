@@ -39,6 +39,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -665,12 +666,13 @@ public class ClientFlightHandler {
         return player.getFoodData().getFoodLevel() > ServerFlightHandler.flightHungerThreshold;
     }
 
-    public static Vec3 getInputVector(Vec3 movement, float fricSpeed, float yRot) {
-        double d0 = movement.lengthSqr();
-        if (d0 < 1.0E-7D) {
+    public static Vec3 getInputVector(final Vec3 movement, float frictionSpeed, float yRot) {
+        double movementStrength = movement.lengthSqr();
+
+        if (movementStrength < Shapes.EPSILON) {
             return Vec3.ZERO;
         } else {
-            Vec3 vector3d = (d0 > 1.0D ? movement.normalize() : movement).scale(fricSpeed);
+            Vec3 vector3d = (movementStrength > 1 ? movement.normalize() : movement).scale(frictionSpeed);
             float f = Mth.sin(yRot * ((float) Math.PI / 180F));
             float f1 = Mth.cos(yRot * ((float) Math.PI / 180F));
             return new Vec3(vector3d.x * (double) f1 - vector3d.z * (double) f, vector3d.y, vector3d.z * (double) f1 + vector3d.x * (double) f);

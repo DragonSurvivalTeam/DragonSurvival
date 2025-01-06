@@ -24,7 +24,10 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBodies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
-import by.dragonsurvivalteam.dragonsurvival.util.*;
+import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
+import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
+import by.dragonsurvivalteam.dragonsurvival.util.ToolUtils;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.ChatFormatting;
@@ -42,6 +45,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
@@ -98,12 +102,14 @@ public class DragonStateHandler extends EntityStateHandler {
         }
 
         double boundedSize = dragonStage.value().getBoundedSize(size);
-        if(boundedSize == dragonStage.value().sizeRange().min()) {
-            boundedSize += 0.0001f; // Ties go to the lower stage, so we need to be slightly above the minimum size
+
+        if (boundedSize == dragonStage.value().sizeRange().min()) {
+            // Ties go to the lower stage, so we need to be slightly above the minimum size
+            boundedSize += Shapes.EPSILON;
         }
 
         // If the stage is null, immediately set the size to the desired size
-        if (stage() == null) {
+        if (this.dragonStage == null) {
             setDesiredSize(player, boundedSize);
             setSize(player, desiredSize);
         } else {

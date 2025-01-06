@@ -33,7 +33,7 @@ public class AbilityButton extends ExtendedButton {
     private static final int ORNAMENTATION_SIZE = 38;
 
     private final DragonAbilityScreen screen;
-    private DragonAbilityInstance ability;
+    private @Nullable DragonAbilityInstance ability;
     private @Nullable LevelButton leftLevelButton;
     private @Nullable LevelButton rightLevelButton;
     private Vec3 offset = Vec3.ZERO;
@@ -140,13 +140,14 @@ public class AbilityButton extends ExtendedButton {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        if (Screen.hasControlDown()) {
-            if(ability.isDisabledAutomatically()) {
-                return;
-            }
+        if (ability == null) {
+            super.onClick(mouseX, mouseY);
+        }
 
-            ability.setEnabled(!ability.isEnabled(), true);
-            PacketDistributor.sendToServer(new SyncAbilityEnabled(ability.key(), ability.isEnabled(), true));
+        if (ability.value().canBeManuallyDisabled() && Screen.hasControlDown()) {
+            boolean newStatus = !ability.isDisabled(true);
+            ability.setDisabled(Minecraft.getInstance().player, newStatus, true);
+            PacketDistributor.sendToServer(new SyncAbilityEnabled(ability.key(), newStatus, true));
             return;
         }
 
@@ -225,7 +226,7 @@ public class AbilityButton extends ExtendedButton {
             return;
         }
 
-        if(!ability.isEnabled()) {
+        if (!ability.isEnabled()) {
             blit(graphics, DISABLED_BACKGROUND, getX() - 2, getY() - 2, ORNAMENTATION_SIZE);
         } else {
             if (ability.isPassive()) {
@@ -299,7 +300,7 @@ public class AbilityButton extends ExtendedButton {
             return false;
         }
 
-        if (!ability.isPassive()) {
+        if (ability != null && !ability.isPassive()) {
             for (Renderable renderable : screen.renderables) {
                 if (renderable instanceof AbilityButton button && button.isDragging) {
                     return false;

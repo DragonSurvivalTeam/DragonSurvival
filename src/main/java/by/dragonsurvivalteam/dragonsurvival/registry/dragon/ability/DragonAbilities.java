@@ -73,6 +73,7 @@ public class DragonAbilities {
                                 false
                         )))
                 ), AbilityTargeting.EntityTargetingMode.TARGET_ALLIES), true), LevelBasedValue.constant(1))),
+                true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/test_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/test_1"), 1)

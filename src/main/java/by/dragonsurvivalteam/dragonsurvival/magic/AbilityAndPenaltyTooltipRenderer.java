@@ -43,6 +43,9 @@ public class AbilityAndPenaltyTooltipRenderer {
     @Translation(comments = "Hold ‘Shift’ for info")
     private static final String INFO_SHIFT = Translation.Type.ABILITY.wrap("general.info_shift");
 
+    @Translation(comments = "§4Manually disabled§r")
+    private static final String MANUALLY_DISABLED = Translation.Type.ABILITY.wrap("general.manually_disabled");
+
     private static final ResourceLocation BARS = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/widget_bars.png");
 
     private static final int MAX_SHOWN_LINES = 15;
@@ -164,16 +167,24 @@ public class AbilityAndPenaltyTooltipRenderer {
         int colorXPos = 0;
         int colorYPos = !ability.isPassive() ? 20 : 0;
 
-        FormattedText rawDescription = Component.translatable(Translation.Type.ABILITY_DESCRIPTION.wrap(ability.location()));
-        List<Component> info = ability.value().getInfo(Minecraft.getInstance().player, ability);
+        Component abilityDescription = Component.translatable(Translation.Type.ABILITY_DESCRIPTION.wrap(ability.location()));
+        FormattedText rawDescription;
 
+        if (!ability.isEnabled() && ability.isDisabled(true)) {
+            rawDescription = Component.translatable(MANUALLY_DISABLED).append("\n\n").append(abilityDescription);
+        } else {
+            rawDescription = abilityDescription;
+        }
+
+        List<Component> info = ability.value().getInfo(Minecraft.getInstance().player, ability);
         UpgradeType<?> upgrade = ability.value().upgrade().orElse(null);
 
         if (upgrade != null && ability.level() < upgrade.maxLevel()) {
-            if(!upgrade.getDescription(ability.level() + 1).equals(Component.empty())) {
+            MutableComponent upgradeDescription = upgrade.getDescription(ability.level() + 1);
+
+            if (upgradeDescription.getContents() != PlainTextContents.EMPTY) {
                 rawDescription = FormattedText.composite(rawDescription, Component.empty().append("\n\n"));
-                MutableComponent upgradeComponent = upgrade.getDescription(ability.level() + 1);
-                rawDescription = FormattedText.composite(rawDescription, upgradeComponent.withColor(Color.GREEN.getColor()));
+                rawDescription = FormattedText.composite(rawDescription, upgradeDescription.withColor(Color.GREEN.getColor()));
             }
         }
 

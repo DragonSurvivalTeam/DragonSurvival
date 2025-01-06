@@ -36,12 +36,6 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class DragonAbilityScreen extends Screen {
     @Translation(comments = {
-            "■ §6Active skills§r§f are used in combat. Skill power scales off your current experience level. The higher your EXP level, the stronger your active skills. §9Experience or mana§r§f points are used to cast spells.",
-            "■ §aPassive skills§r§f are upgraded by spending experience levels.",
-            "- §9Controls§r - check in-game Minecraft control settings!"
-    })
-
-    @Translation(comments = {
             "■ §6Active skills§r are used in combat.",
             "- §9Skill power§r scales off your current experience level. The higher your EXP level, the stronger your active skills.",
             "- §9Experience or mana§r points are used to cast spells.",

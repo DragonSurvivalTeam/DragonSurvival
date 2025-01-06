@@ -37,6 +37,7 @@ public record DragonAbility(
         Optional<UpgradeType<?>> upgrade,
         Optional<LootItemCondition> usageBlocked,
         List<ActionContainer> actions,
+        boolean canBeManuallyDisabled,
         LevelBasedResource icon
 ) {
     public static final ResourceKey<Registry<DragonAbility>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_abilities"));
@@ -46,6 +47,7 @@ public record DragonAbility(
             UpgradeType.CODEC.optionalFieldOf("upgrade").forGetter(DragonAbility::upgrade),
             LootItemCondition.DIRECT_CODEC.optionalFieldOf("usage_blocked").forGetter(DragonAbility::usageBlocked),
             ActionContainer.CODEC.listOf().optionalFieldOf("actions", List.of()).forGetter(DragonAbility::actions),
+            Codec.BOOL.optionalFieldOf("can_be_manually_disabled", true).forGetter(DragonAbility::canBeManuallyDisabled),
             LevelBasedResource.CODEC.fieldOf("icon").forGetter(DragonAbility::icon)
     ).apply(instance, instance.stable(DragonAbility::new)));
 

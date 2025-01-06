@@ -35,12 +35,12 @@ public record PotionEffect(PotionData potion) implements AbilityEntityEffect {
     }
 
     @SafeVarargs
-    public static List<AbilityEntityEffect> single(final LevelBasedValue amplifier, final LevelBasedValue duration, final Holder<MobEffect>... effects) {
-        return single(amplifier, duration, LevelBasedValue.constant(1), effects);
+    public static List<AbilityEntityEffect> only(final LevelBasedValue amplifier, final LevelBasedValue duration, final Holder<MobEffect>... effects) {
+        return only(amplifier, duration, LevelBasedValue.constant(1), effects);
     }
 
     @SafeVarargs
-    public static List<AbilityEntityEffect> single(final LevelBasedValue amplifier, final LevelBasedValue duration, final LevelBasedValue probability, final Holder<MobEffect>... effects) {
+    public static List<AbilityEntityEffect> only(final LevelBasedValue amplifier, final LevelBasedValue duration, final LevelBasedValue probability, final Holder<MobEffect>... effects) {
         return List.of(new PotionEffect(PotionData.of(amplifier, duration, probability, effects)));
     }
 

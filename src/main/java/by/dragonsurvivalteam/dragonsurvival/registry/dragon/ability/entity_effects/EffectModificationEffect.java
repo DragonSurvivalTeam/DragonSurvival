@@ -42,7 +42,7 @@ public record EffectModificationEffect(List<EffectModification> modifications) i
         return components;
     }
 
-    public static List<AbilityEntityEffect> single(final EffectModification modification) {
+    public static List<AbilityEntityEffect> only(final EffectModification modification) {
         return List.of(new EffectModificationEffect(List.of(modification)));
     }
 

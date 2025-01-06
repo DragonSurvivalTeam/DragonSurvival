@@ -4,11 +4,15 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncModifierWithDuration;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ModifiersWithDuration;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.AttributeModifierSupplier;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.ModifierEffect;
+import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -19,6 +23,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -57,12 +62,41 @@ public record ModifierWithDuration(ResourceLocation id, ResourceLocation icon, L
         }
 
         data.remove(target, instance);
-        data.add(target, new ModifierWithDuration.Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, id, Component.empty(), icon), ability.level(), newDuration, new HashMap<>()));
+        MutableComponent description = getDescription(ability.level());
+
+        if (description == null) {
+            description = Component.empty();
+        } else {
+            description = Component.translatable(ModifierEffect.ATTRIBUTE_MODIFIERS).append(description);
+        }
+
+        data.add(target, new ModifierWithDuration.Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, id, description, icon), ability.level(), newDuration, new HashMap<>()));
     }
 
     public void remove(final LivingEntity target) {
         ModifiersWithDuration data = target.getData(DSDataAttachments.MODIFIERS_WITH_DURATION);
         data.remove(target, data.get(id));
+    }
+
+    public @Nullable MutableComponent getDescription(final int abilityLevel) {
+        MutableComponent description = null;
+        double duration = Functions.ticksToSeconds((int) this.duration.calculate(abilityLevel));
+
+        for (Modifier modifier : modifiers) {
+            MutableComponent name = modifier.getFormattedDescription(abilityLevel, false);
+
+            if (duration > 0) {
+                name.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.dynamicValue(duration)));
+            }
+
+            if (description == null) {
+                description = Component.literal("\n").append(name);
+            } else {
+                description.append(Component.literal("\n")).append(name);
+            }
+        }
+
+        return description;
     }
 
     public static class Instance extends DurationInstance<ModifierWithDuration> implements AttributeModifierSupplier {
