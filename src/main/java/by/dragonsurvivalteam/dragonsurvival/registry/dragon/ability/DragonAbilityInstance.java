@@ -224,10 +224,6 @@ public class DragonAbilityInstance {
     }
 
     public ResourceLocation getIcon() {
-        if (!isEnabled) {
-            return value().icon().get(0);
-        }
-
         return ability.value().icon().get(level);
     }
 

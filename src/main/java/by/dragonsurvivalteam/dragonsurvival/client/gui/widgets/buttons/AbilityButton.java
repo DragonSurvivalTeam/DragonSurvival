@@ -26,6 +26,7 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 public class AbilityButton extends ExtendedButton {
     public static final ResourceLocation ACTIVE_BACKGROUND = ResourceLocation.fromNamespaceAndPath(MODID, "ability_screen/skill_main");
     public static final ResourceLocation PASSIVE_BACKGROUND = ResourceLocation.fromNamespaceAndPath(MODID, "ability_screen/skill_other");
+    public static final ResourceLocation DISABLED_BACKGROUND = ResourceLocation.fromNamespaceAndPath(MODID, "ability_screen/skill_disabled");
     public static final ResourceLocation AUTO_UPGRADE_ORNAMENTATION = ResourceLocation.fromNamespaceAndPath(MODID, "ability_screen/skill_autoupgrade");
 
     private static final int SIZE = 34;
@@ -224,10 +225,14 @@ public class AbilityButton extends ExtendedButton {
             return;
         }
 
-        if (ability.isPassive()) {
-            blit(graphics, PASSIVE_BACKGROUND, getX() - 2, getY() - 2, ORNAMENTATION_SIZE);
+        if(!ability.isEnabled()) {
+            blit(graphics, DISABLED_BACKGROUND, getX() - 2, getY() - 2, ORNAMENTATION_SIZE);
         } else {
-            blit(graphics, ACTIVE_BACKGROUND, getX() - 2, getY() - 2, ORNAMENTATION_SIZE);
+            if (ability.isPassive()) {
+                blit(graphics, PASSIVE_BACKGROUND, getX() - 2, getY() - 2, ORNAMENTATION_SIZE);
+            } else {
+                blit(graphics, ACTIVE_BACKGROUND, getX() - 2, getY() - 2, ORNAMENTATION_SIZE);
+            }
         }
 
         // TODO :: abilities without any upgrade also get this ornament at the moment

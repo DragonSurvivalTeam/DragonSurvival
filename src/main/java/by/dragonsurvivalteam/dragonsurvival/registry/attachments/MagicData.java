@@ -81,6 +81,10 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         return selectedAbilitySlot;
     }
 
+    public DragonAbilityInstance getSelectedAbility() {
+        return fromSlot(selectedAbilitySlot);
+    }
+
     public int getClientCastTimer() {
         return castTimer;
     }

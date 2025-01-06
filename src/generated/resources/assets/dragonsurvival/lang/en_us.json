@@ -658,6 +658,8 @@
   "dragonsurvival.configuration.mana_bar_x_offset.tooltip": "Offset for the x position of the mana bar",
   "dragonsurvival.configuration.mana_bar_y_offset": "Mana Bar Y Offset",
   "dragonsurvival.configuration.mana_bar_y_offset.tooltip": "Offset for the y position of the mana bar",
+  "dragonsurvival.configuration.mark_disabled_abilities_red_in_hotbar": "Mark Disabled Abilities Red In Hotbar",
+  "dragonsurvival.configuration.mark_disabled_abilities_red_in_hotbar.tooltip": "Mark disabled abilities red in the hotbar",
   "dragonsurvival.configuration.max_animation_speed": "Max Animation Speed",
   "dragonsurvival.configuration.max_animation_speed.tooltip": "The maximum animation speed allowed for dragons.",
   "dragonsurvival.configuration.max_animation_speed_factor": "Max Animation Speed Factor",

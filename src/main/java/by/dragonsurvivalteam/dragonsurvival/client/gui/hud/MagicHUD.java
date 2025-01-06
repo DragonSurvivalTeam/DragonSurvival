@@ -50,6 +50,10 @@ public class MagicHUD {
     @Translation(comments = "§fThis skill cannot be used §r§cwhile flying§r§f!§f")
     public static final String FLYING = Translation.Type.GUI.wrap("ability.flying");
 
+    @Translation(key = "mark_disabled_abilities_red_in_hotbar", type = Translation.Type.CONFIGURATION, comments = "Mark disabled abilities red in the hotbar")
+    @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "magic"}, key = "mark_disabled_abilities_red_in_hotbar")
+    public static boolean markDisabledAbilitiesRedInHotbar = true;
+
     @ConfigRange(min = -1000, max = 1000)
     @Translation(key = "cast_bar_x_offset", type = Translation.Type.CONFIGURATION, comments = "Offset for the x position of the cast bar")
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "magic"}, key = "cast_bar_x_offset")
@@ -188,13 +192,20 @@ public class MagicHUD {
         MagicData magic = MagicData.getData(player);
 
         if (magic.shouldRenderAbilities()) {
-            graphics.blit(VANILLA_WIDGETS, posX, posY - 2, 0, 0, 0, 41, 22, 256, 256);
-            graphics.blit(VANILLA_WIDGETS, posX + 41, posY - 2, 0, 141, 0, 41, 22, 256, 256);
+            graphics.setColor(1, 0, 0, 1);
+            graphics.setColor(1, 1, 1, 1);
 
             for (int x = 0; x < MagicData.HOTBAR_SLOTS; x++) {
                 DragonAbilityInstance ability = magic.fromSlot(x);
-
                 if (ability != null) {
+                    if(!ability.isEnabled() && markDisabledAbilitiesRedInHotbar) {
+                        graphics.setColor(1.f, 0.f, 0.f, 1.f);
+                    }
+                    graphics.blit(VANILLA_WIDGETS, posX + x * 20, posY - 2, -50, x * 20, 0, 21, 22, 256, 256);
+                    if(!ability.isEnabled() && markDisabledAbilitiesRedInHotbar) {
+                        graphics.setColor(1.f, 1.f, 1.f, 1.f);
+                    }
+
                     graphics.blitSprite(ability.getIcon(), posX + x * sizeX + 3, posY + 1, 0, 16, 16);
 
                     float skillCooldown = ability.value().getCooldown(ability.level());
@@ -208,10 +219,18 @@ public class MagicHUD {
                         int color = errorTicks > 0 ? DSColors.withAlpha(DSColors.RED, 0.75f) : DSColors.withAlpha(DSColors.DARK_GRAY, 0.75f);
                         graphics.fill(boxX, boxY, boxX + 16, boxY + offset, color);
                     }
+                } else {
+                    graphics.blit(VANILLA_WIDGETS, posX + x * 20, posY - 2, -50, x * 20, 0, 21, 22, 256, 256);
                 }
             }
 
+            if(magic.getSelectedAbility() != null && !magic.getSelectedAbility().isEnabled() && markDisabledAbilitiesRedInHotbar) {
+                graphics.setColor(1.f, 0.f, 0.f, 1.f);
+            }
             graphics.blit(VANILLA_WIDGETS, posX + sizeX * magic.getSelectedAbilitySlot() - 1, posY - 3, 2, 0, 22, 24, 24, 256, 256);
+            if(magic.getSelectedAbility() != null && !magic.getSelectedAbility().isEnabled() && markDisabledAbilitiesRedInHotbar) {
+                graphics.setColor(1.f, 1.f, 1.f, 1.f);
+            }
 
             // Don't render more than two rows (1 icon = 1 mana point)
             // This makes the mana bars also stop just before the emote button when the chat window is open
