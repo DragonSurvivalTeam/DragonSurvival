@@ -137,8 +137,7 @@ public class EffectRenderingInventoryScreenMixin {
             dragonSurvival$renderAbilityIcons(graphics, offset, yOffset, initialYOffset, dragonSurvival$providers, isCompact);
 
             if (!isCompact) {
-                // TODO: Potentially render extra tooltip data anyways?
-                this.dragonSurvival$renderAbilityLabels(graphics, offset, yOffset, initialYOffset, dragonSurvival$providers);
+                dragonSurvival$renderAbilityLabels(graphics, offset, yOffset, initialYOffset, dragonSurvival$providers);
             }
 
             if (mouseX >= offset && mouseX <= offset + (isCompact ? 32 : 120)) {
@@ -155,12 +154,10 @@ public class EffectRenderingInventoryScreenMixin {
 
                 if (hovered != null) {
                     MutableComponent tooltip = Component.empty();
-
-                    if (isCompact) {
-                        tooltip.append(hovered.clientData().name());
-                        //noinspection DataFlowIssue -> level is present
-                        tooltip.append(Component.literal("\n")).append(dragonSurvival$formatDuration(hovered, Minecraft.getInstance().level.tickRateManager().tickrate()));
-                    }
+                    tooltip.append(hovered.clientData().name());
+                    tooltip.append(Component.literal("\n")).append(Component.translatable(LangKey.APPLIED_BY, DSColors.dynamicValue(hovered.clientData().effectSource())));
+                    //noinspection DataFlowIssue -> level is present
+                    tooltip.append(Component.literal("\n")).append(dragonSurvival$formatDuration(hovered, Minecraft.getInstance().level.tickRateManager().tickrate()));
 
                     Component description = hovered.getDescription();
 
@@ -168,6 +165,7 @@ public class EffectRenderingInventoryScreenMixin {
                         tooltip.append(Component.literal("\n\n")).append(description);
                     }
 
+                    // This way of rendering is required to properly handle newlines
                     Font font = ((ScreenAccessor) self).dragonSurvival$getFont();
                     graphics.renderTooltip(font, font.split(tooltip, /* Tooltip#MAX_WIDTH */ 170), mouseX, mouseY);
                 }

@@ -22,6 +22,9 @@ public class LangKey {
     @Translation(comments = "Duration: %s")
     public static final String DURATION = Translation.Type.GUI.wrap("general.duration");
 
+    @Translation(comments = "Applied by: %s")
+    public static final String APPLIED_BY = Translation.Type.GUI.wrap("general.applied_by");
+
     // --- GUI --- //
 
     @Translation(comments = "Cancel")

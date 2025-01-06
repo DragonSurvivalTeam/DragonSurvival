@@ -910,6 +910,7 @@
   "dragonsurvival.gui.ender_dragon_curse.tooltip": "You have been cursed by the ender dragon. You may be unable to use some of your abilities. You can cure this curse by using a Primordial Anchor block after resurrecting the dragon.",
   "dragonsurvival.gui.flight_effect.flight": "§6■ Can use flight",
   "dragonsurvival.gui.general.active_ability": "Active Ability",
+  "dragonsurvival.gui.general.applied_by": "Applied by: %s",
   "dragonsurvival.gui.general.attribute_modifiers": "§6■ Attribute modifiers:§r",
   "dragonsurvival.gui.general.cancel": "Cancel",
   "dragonsurvival.gui.general.confirm": "Confirm",
