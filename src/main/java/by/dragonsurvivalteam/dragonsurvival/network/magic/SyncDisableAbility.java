@@ -12,30 +12,30 @@ import net.minecraft.resources.ResourceKey;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record SyncAbilityEnabled(ResourceKey<DragonAbility> ability, boolean newStatus, boolean wasDoneManually) implements CustomPacketPayload {
-    public static final Type<SyncAbilityEnabled> TYPE = new Type<>(DragonSurvival.res("sync_ability_enabled"));
+public record SyncDisableAbility(ResourceKey<DragonAbility> ability, boolean isDisabled, boolean isManual) implements CustomPacketPayload {
+    public static final Type<SyncDisableAbility> TYPE = new Type<>(DragonSurvival.res("sync_ability_enabled"));
 
-    public static final StreamCodec<FriendlyByteBuf, SyncAbilityEnabled> STREAM_CODEC = StreamCodec.composite(
-            ResourceKey.streamCodec(DragonAbility.REGISTRY), SyncAbilityEnabled::ability,
-            ByteBufCodecs.BOOL, SyncAbilityEnabled::newStatus,
-            ByteBufCodecs.BOOL, SyncAbilityEnabled::wasDoneManually,
-            SyncAbilityEnabled::new
+    public static final StreamCodec<FriendlyByteBuf, SyncDisableAbility> STREAM_CODEC = StreamCodec.composite(
+            ResourceKey.streamCodec(DragonAbility.REGISTRY), SyncDisableAbility::ability,
+            ByteBufCodecs.BOOL, SyncDisableAbility::isDisabled,
+            ByteBufCodecs.BOOL, SyncDisableAbility::isManual,
+            SyncDisableAbility::new
     );
 
-    public static void handleServer(final SyncAbilityEnabled packet, final IPayloadContext context) {
+    public static void handleServer(final SyncDisableAbility packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
             MagicData data = MagicData.getData(context.player());
             DragonAbilityInstance ability = data.getAbilities().get(packet.ability());
 
-            if (!packet.newStatus() && ability.isApplyingEffects() && ability == data.getCurrentlyCasting()) {
+            if (packet.isDisabled() && ability.isApplyingEffects() && ability == data.getCurrentlyCasting()) {
                 data.stopCasting(context.player(), true);
             }
 
-            ability.setDisabled(context.player(), packet.newStatus(), packet.wasDoneManually());
+            ability.setDisabled(context.player(), packet.isDisabled(), packet.isManual());
         });
     }
 
-    public static void handleClient(final SyncAbilityEnabled packet, final IPayloadContext context) {
+    public static void handleClient(final SyncDisableAbility packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
             MagicData data = MagicData.getData(context.player());
             DragonAbilityInstance ability = data.getAbilities().get(packet.ability());
@@ -48,7 +48,7 @@ public record SyncAbilityEnabled(ResourceKey<DragonAbility> ability, boolean new
                 }
             }
 
-            ability.setDisabled(context.player(), packet.newStatus(), packet.wasDoneManually());
+            ability.setDisabled(context.player(), packet.isDisabled(), packet.isManual());
         });
     }
 

@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAbilityScreen;
 import by.dragonsurvivalteam.dragonsurvival.magic.AbilityAndPenaltyTooltipRenderer;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
-import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncAbilityEnabled;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncDisableAbility;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncSlotAssignment;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
@@ -145,9 +145,9 @@ public class AbilityButton extends ExtendedButton {
         }
 
         if (ability.value().canBeManuallyDisabled() && Screen.hasControlDown()) {
-            boolean newStatus = !ability.isDisabled(true);
-            ability.setDisabled(Minecraft.getInstance().player, newStatus, true);
-            PacketDistributor.sendToServer(new SyncAbilityEnabled(ability.key(), newStatus, true));
+            boolean isDisabled = !ability.isDisabled(true);
+            ability.setDisabled(Minecraft.getInstance().player, isDisabled, true);
+            PacketDistributor.sendToServer(new SyncDisableAbility(ability.key(), isDisabled, true));
             return;
         }
 

@@ -6,7 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
-import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncAbilityEnabled;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncDisableAbility;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncStopCast;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
@@ -93,10 +93,10 @@ public class DragonAbilityInstance {
 
             if (!wasDisabled && isAutomaticallyDisabled) {
                 setDisabled(serverPlayer, true, false);
-                PacketDistributor.sendToPlayer(serverPlayer, new SyncAbilityEnabled(ability.getKey(), true, false));
+                PacketDistributor.sendToPlayer(serverPlayer, new SyncDisableAbility(ability.getKey(), true, false));
             } else if (wasDisabled && !isAutomaticallyDisabled) {
                 setDisabled(serverPlayer, false, false);
-                PacketDistributor.sendToPlayer(serverPlayer, new SyncAbilityEnabled(ability.getKey(), false, false));
+                PacketDistributor.sendToPlayer(serverPlayer, new SyncDisableAbility(ability.getKey(), false, false));
             }
         }
 
@@ -329,13 +329,13 @@ public class DragonAbilityInstance {
      * <br>
      * Afterward its active status will be updated
      */
-    public void setDisabled(final Player player, boolean newStatus, boolean isManual) {
+    public void setDisabled(final Player player, boolean isDisabled, boolean isManual) {
         boolean wasEnabled = isEnabled();
 
         if (isManual) {
-            this.isManuallyDisabled = newStatus;
+            this.isManuallyDisabled = isDisabled;
         } else {
-            this.isAutomaticallyDisabled = newStatus;
+            this.isAutomaticallyDisabled = isDisabled;
         }
 
         if (wasEnabled == isEnabled()) {
