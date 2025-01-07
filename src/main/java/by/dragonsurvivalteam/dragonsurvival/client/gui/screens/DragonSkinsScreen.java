@@ -142,7 +142,6 @@ public class DragonSkinsScreen extends Screen {
     private static String playerName;
     private static String lastPlayerName;
     private static boolean noSkin;
-    private static boolean loading;
 
     public final DragonStateHandler handler = new DragonStateHandler();
     public Screen sourceScreen;
@@ -208,7 +207,7 @@ public class DragonSkinsScreen extends Screen {
 
         float scale = zoom;
 
-        if (!loading) {
+        if (dragonStage != null && !DragonSkins.playerSkinOrGlowFetchingInProgress(playerName, dragonStage.getKey())) {
             DragonStateHandler playerData = DragonStateProvider.getData(minecraft.player);
 
             if (!DragonUtils.isType(handler.species(), playerData.species())) {
@@ -453,8 +452,6 @@ public class DragonSkinsScreen extends Screen {
     }
 
     private void setTextures() {
-        loading = true;
-
         ResourceLocation skinTexture = DragonSkins.getPlayerSkin(playerName, Objects.requireNonNull(dragonStage.getKey()));
         ResourceLocation glowTexture = null;
         boolean defaultSkin = false;
@@ -476,7 +473,6 @@ public class DragonSkinsScreen extends Screen {
         }
 
         noSkin = defaultSkin;
-        loading = false;
         lastPlayerName = playerName;
     }
 

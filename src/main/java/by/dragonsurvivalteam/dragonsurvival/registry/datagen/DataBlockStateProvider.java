@@ -230,7 +230,7 @@ public class DataBlockStateProvider extends BlockStateProvider {
                         .forAllStates(state -> {
                             String suffix = state.getValue(PrimordialAnchorBlock.BLOODY) ? "_bloody" : state.getValue(PrimordialAnchorBlock.CHARGED) ? "_charge" : "_empty";
                             BlockModelBuilder builder = models().withExistingParent(holder.getId().getPath() + suffix, ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + "primordial_anchor"))
-                                    .texture("1", ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + "primordial_anchor" + suffix ));
+                                    .texture("2", ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + "primordial_anchor" + suffix ));
 
                             return ConfiguredModel.builder().modelFile(builder).build();
                         });

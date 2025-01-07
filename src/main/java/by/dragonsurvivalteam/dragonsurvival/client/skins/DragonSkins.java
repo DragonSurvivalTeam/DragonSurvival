@@ -40,6 +40,16 @@ public class DragonSkins {
     private static double lastSkinFetchAttemptTime = 0;
     private static int numSkinFetchAttempts = 0;
 
+    public static boolean playerSkinFailedToFetch(String playerName, ResourceKey<DragonStage> stage) {
+        String playerKey = playerName + "_" + stage.location().getPath();
+        return hasFailedFetch.contains(playerKey);
+    }
+
+    public static boolean playerSkinOrGlowFetchingInProgress(String playerName, ResourceKey<DragonStage> stage) {
+        String playerKey = playerName + "_" + stage.location().getPath();
+        return playerSkinCache.containsKey(playerKey) && !playerSkinCache.get(playerKey).isDone() || playerGlowCache.containsKey(playerKey) && !playerGlowCache.get(playerKey).isDone();
+    }
+
     public static @Nullable ResourceLocation getPlayerSkin(String playerName, ResourceKey<DragonStage> dragonStage) {
         String skinKey = playerName + "_" + dragonStage.location().getPath();
 

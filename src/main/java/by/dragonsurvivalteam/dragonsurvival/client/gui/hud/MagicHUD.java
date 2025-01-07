@@ -13,6 +13,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
+import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.blaze3d.platform.Window;
@@ -29,6 +30,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import software.bernie.geckolib.util.Color;
 
+import java.util.HashMap;
 import java.util.Objects;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
@@ -50,9 +52,15 @@ public class MagicHUD {
     @Translation(comments = "§fThis skill cannot be used §r§cwhile flying§r§f!§f")
     public static final String FLYING = Translation.Type.GUI.wrap("ability.flying");
 
-    @Translation(key = "mark_disabled_abilities_red_in_hotbar", type = Translation.Type.CONFIGURATION, comments = "Mark disabled abilities red in the hotbar")
-    @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "magic"}, key = "mark_disabled_abilities_red_in_hotbar")
-    public static boolean markDisabledAbilitiesRedInHotbar = true;
+    @ConfigRange(min = 0, max = 1)
+    @Translation(key = "mark_disabled_abilities_red_lerp_speed", type = Translation.Type.CONFIGURATION, comments = "How fast the lerp speed is for marking disabled abilities red.")
+    @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "magic"}, key = "mark_disabled_abilities_red_lerp_speed")
+    public static double markDisabledAbilitiesRedLerpSpeed = 0.05;
+
+    @ConfigRange(min = 0, max = 20)
+    @Translation(key = "mark_disabled_abilities_red_delay", type = Translation.Type.CONFIGURATION, comments = "How long until the red overlay activates if an ability is disabled.")
+    @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "magic"}, key = "mark_disabled_abilities_red_delay")
+    public static double markDisabledAbilitiesRedDelay = 2;
 
     @ConfigRange(min = -1000, max = 1000)
     @Translation(key = "cast_bar_x_offset", type = Translation.Type.CONFIGURATION, comments = "Offset for the x position of the cast bar")
@@ -83,6 +91,21 @@ public class MagicHUD {
     @Translation(key = "mana_bar_y_offset", type = Translation.Type.CONFIGURATION, comments = "Offset for the y position of the mana bar")
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "magic"}, key = "mana_bar_y_offset")
     public static Integer manabarYOffset = 0;
+
+    public static class OutlineColorData {
+        private Color color;
+        private double delay;
+        private boolean pastDelay;
+
+        public OutlineColorData(Color color, double delay, boolean pastDelay) {
+            this.color = color;
+            this.delay = delay;
+            this.pastDelay = pastDelay;
+        }
+    }
+
+    private static boolean initializedDisabledAbilitiesColor = false;
+    private static final OutlineColorData[] disabledAbilitiesColor = new OutlineColorData[MagicData.HOTBAR_SLOTS];
 
     public static boolean renderExperienceBar(GuiGraphics guiGraphics, int screenWidth) {
         Player localPlayer = DragonSurvival.PROXY.getLocalPlayer();
@@ -162,9 +185,35 @@ public class MagicHUD {
     private static float deltaCounter;
     private static boolean reverseCounter;
 
+    private static void lerpToColor(int slot, Color color) {
+        disabledAbilitiesColor[slot].delay -= AnimationUtils.getDeltaSeconds();
+        if(disabledAbilitiesColor[slot].delay <= 0) {
+            disabledAbilitiesColor[slot].pastDelay = true;
+        }
+
+        if(!disabledAbilitiesColor[slot].pastDelay) {
+            return;
+        }
+
+        Color currentColor = disabledAbilitiesColor[slot].color;
+        float lerpSpeed = (float) markDisabledAbilitiesRedLerpSpeed;
+        float red = Mth.lerp(lerpSpeed, currentColor.getRedFloat(), color.getRedFloat());
+        float green = Mth.lerp(lerpSpeed, currentColor.getGreenFloat(), color.getGreenFloat());
+        float blue = Mth.lerp(lerpSpeed, currentColor.getBlueFloat(), color.getBlueFloat());
+        float alpha = Mth.lerp(lerpSpeed, currentColor.getAlphaFloat(), color.getAlphaFloat());
+        disabledAbilitiesColor[slot].color = Color.ofRGBA(red, green, blue, alpha);
+    }
+
     public static void renderAbilityHUD(final Player player, final GuiGraphics graphics, int width, int height) {
         if (player == null || player.isSpectator()) {
             return;
+        }
+
+        if(!initializedDisabledAbilitiesColor) {
+            for (int i = 0; i < MagicData.HOTBAR_SLOTS; i++) {
+                disabledAbilitiesColor[i] = new OutlineColorData(Color.ofRGBA(1.f, 1.f, 1.f, 1.f), markDisabledAbilitiesRedDelay, false);
+            }
+            initializedDisabledAbilitiesColor = true;
         }
 
         // Blinking speed
@@ -198,13 +247,21 @@ public class MagicHUD {
             for (int x = 0; x < MagicData.HOTBAR_SLOTS; x++) {
                 DragonAbilityInstance ability = magic.fromSlot(x);
                 if (ability != null) {
-                    if(!ability.isEnabled() && markDisabledAbilitiesRedInHotbar) {
-                        graphics.setColor(1.f, 0.f, 0.f, 1.f);
+                    if(!ability.isEnabled()) {
+                        if(disabledAbilitiesColor[x].pastDelay && disabledAbilitiesColor[x].color.equals(Color.ofOpaque(-2314))) {
+                            disabledAbilitiesColor[x].delay = markDisabledAbilitiesRedDelay;
+                            disabledAbilitiesColor[x].pastDelay = false;
+                        }
+                        lerpToColor(x, Color.RED);
+                    } else {
+                        disabledAbilitiesColor[x].pastDelay = true;
+                        disabledAbilitiesColor[x].delay = 0;
+                        lerpToColor(x, Color.WHITE);
                     }
+                    Color outlineColor = disabledAbilitiesColor[x].color;
+                    graphics.setColor(outlineColor.getRedFloat(), outlineColor.getGreenFloat(), outlineColor.getBlueFloat(), outlineColor.getAlphaFloat());
                     graphics.blit(VANILLA_WIDGETS, posX + x * 20, posY - 2, -50, x * 20, 0, 21, 22, 256, 256);
-                    if(!ability.isEnabled() && markDisabledAbilitiesRedInHotbar) {
-                        graphics.setColor(1.f, 1.f, 1.f, 1.f);
-                    }
+                    graphics.setColor(1.f, 1.f, 1.f, 1.f);
 
                     graphics.blitSprite(ability.getIcon(), posX + x * sizeX + 3, posY + 1, 0, 16, 16);
 
@@ -224,13 +281,12 @@ public class MagicHUD {
                 }
             }
 
-            if(magic.getSelectedAbility() != null && !magic.getSelectedAbility().isEnabled() && markDisabledAbilitiesRedInHotbar) {
-                graphics.setColor(1.f, 0.f, 0.f, 1.f);
+            if(magic.getSelectedAbility() != null) {
+                Color outlineColor = disabledAbilitiesColor[magic.getSelectedAbilitySlot()].color;
+                graphics.setColor(outlineColor.getRedFloat(), outlineColor.getGreenFloat(), outlineColor.getBlueFloat(), outlineColor.getAlphaFloat());
             }
             graphics.blit(VANILLA_WIDGETS, posX + sizeX * magic.getSelectedAbilitySlot() - 1, posY - 3, 2, 0, 22, 24, 24, 256, 256);
-            if(magic.getSelectedAbility() != null && !magic.getSelectedAbility().isEnabled() && markDisabledAbilitiesRedInHotbar) {
-                graphics.setColor(1.f, 1.f, 1.f, 1.f);
-            }
+            graphics.setColor(1.f, 1.f, 1.f, 1.f);
 
             // Don't render more than two rows (1 icon = 1 mana point)
             // This makes the mana bars also stop just before the emote button when the chat window is open

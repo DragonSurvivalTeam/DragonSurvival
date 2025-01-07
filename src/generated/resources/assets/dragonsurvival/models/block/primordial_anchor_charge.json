@@ -1,6 +1,6 @@
 {
   "parent": "dragonsurvival:block/primordial_anchor",
   "textures": {
-    "1": "dragonsurvival:block/primordial_anchor_charge"
+    "2": "dragonsurvival:block/primordial_anchor_charge"
   }
 }

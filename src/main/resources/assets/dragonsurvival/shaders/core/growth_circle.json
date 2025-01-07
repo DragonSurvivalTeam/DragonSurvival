@@ -10,7 +10,6 @@
     { "name": "ProjMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
     { "name": "Sides", "type": "int", "count": 1, "values": [ 0 ] },
     { "name": "Time", "type": "float", "count": 1, "values": [ 0 ] },
-    { "name": "Agitation", "type": "float", "count": 1, "values": [ 0 ] },
     { "name": "LineWidth", "type": "float", "count": 1, "values": [ 0.0 ] },
     { "name": "Percent", "type": "float", "count": 1, "values": [ 0.0 ] },
     { "name": "TargetPercent", "type": "float", "count": 1, "values":  [ 0.0 ] },
