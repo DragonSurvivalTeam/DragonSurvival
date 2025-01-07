@@ -9,29 +9,31 @@
   "common_hit_effects": [
     {
       "type": "dragonsurvival:point",
-      "target": {
-        "world_effects": [
+      "general_data": {
+        "effects": [
           {
-            "type": "dragonsurvival:particle",
-            "particle_count": 10.0,
-            "particle_data": {
-              "horizontal_position": {
-                "type": "in_bounding_box"
-              },
-              "horizontal_velocity": {
-                "base": 0.05
-              },
-              "particle": {
-                "type": "dragonsurvival:lightning",
-                "duration": 37.0,
-                "swirls": true
-              },
-              "speed": 0.1,
-              "vertical_position": {
-                "type": "in_bounding_box"
-              },
-              "vertical_velocity": {
-                "base": 0.05
+            "effect": {
+              "type": "dragonsurvival:particle",
+              "particle_count": 10.0,
+              "particle_data": {
+                "horizontal_position": {
+                  "type": "in_bounding_box"
+                },
+                "horizontal_velocity": {
+                  "base": 0.05
+                },
+                "particle": {
+                  "type": "dragonsurvival:lightning",
+                  "duration": 37.0,
+                  "swirls": true
+                },
+                "speed": 0.1,
+                "vertical_position": {
+                  "type": "in_bounding_box"
+                },
+                "vertical_velocity": {
+                  "base": 0.05
+                }
               }
             }
           }
@@ -59,19 +61,21 @@
     "on_destroy_effects": [
       {
         "type": "dragonsurvival:point",
-        "target": {
-          "world_effects": [
+        "general_data": {
+          "effects": [
             {
-              "type": "dragonsurvival:explosion",
-              "break_blocks": true,
-              "can_damage_self": false,
-              "damage_type": "dragonsurvival:ball_lightning",
-              "explosion_power": {
-                "type": "minecraft:linear",
-                "base": 2.0,
-                "per_level_above_first": 1.0
-              },
-              "fire": false
+              "effect": {
+                "type": "dragonsurvival:explosion",
+                "break_blocks": true,
+                "can_damage_self": false,
+                "damage_type": "dragonsurvival:ball_lightning",
+                "explosion_power": {
+                  "type": "minecraft:linear",
+                  "base": 2.0,
+                  "per_level_above_first": 1.0
+                },
+                "fire": false
+              }
             }
           ]
         }
@@ -83,70 +87,109 @@
   "ticking_effects": [
     {
       "type": "dragonsurvival:area",
+      "general_data": {
+        "effects": [
+          {
+            "condition": {
+              "condition": "minecraft:entity_properties",
+              "entity": "this",
+              "predicate": {
+                "type_specific": {
+                  "type": "dragonsurvival:entity_check_predicate",
+                  "check_for": "living_entity"
+                }
+              }
+            },
+            "effect": {
+              "type": "dragonsurvival:damage",
+              "amount": {
+                "type": "minecraft:linear",
+                "base": 4.0,
+                "per_level_above_first": 4.0
+              },
+              "damage_type": "dragonsurvival:ball_lightning"
+            }
+          },
+          {
+            "condition": {
+              "condition": "minecraft:entity_properties",
+              "entity": "this",
+              "predicate": {
+                "type_specific": {
+                  "type": "dragonsurvival:entity_check_predicate",
+                  "check_for": "living_entity"
+                }
+              }
+            },
+            "effect": {
+              "type": "dragonsurvival:mob_effect",
+              "potion": {
+                "amplifier": 0.0,
+                "duration": 100.0,
+                "effects": "dragonsurvival:charged",
+                "probability": 0.5
+              }
+            }
+          }
+        ],
+        "tick_rate": 5
+      },
       "particle_trail": {
         "type": "dragonsurvival:large_lightning",
         "duration": 37.0,
         "swirls": false
       },
-      "radius": 4.0,
-      "target": {
-        "entity_effects": [
-          {
-            "type": "dragonsurvival:damage",
-            "amount": {
-              "type": "minecraft:linear",
-              "base": 4.0,
-              "per_level_above_first": 4.0
-            },
-            "damage_type": "dragonsurvival:ball_lightning"
-          },
-          {
-            "type": "dragonsurvival:mob_effect",
-            "potion": {
-              "amplifier": 0.0,
-              "duration": 100.0,
-              "effects": "dragonsurvival:charged",
-              "probability": 0.5
-            }
-          }
-        ],
-        "target_conditions": {
-          "type_specific": {
-            "type": "dragonsurvival:entity_check_predicate",
-            "check_for": "living_entity"
-          }
-        },
-        "tick_rate": 5
-      }
+      "radius": 4.0
     },
     {
       "type": "dragonsurvival:area",
-      "radius": 4.0,
-      "target": {
+      "general_data": {
         "chance": 0.1,
-        "entity_effects": [
+        "effects": [
           {
-            "type": "dragonsurvival:lightning",
-            "data": {
-              "can_hurt_self": false,
-              "ignores_items_and_experience": true,
-              "spawns_fire": true
+            "condition": {
+              "condition": "minecraft:all_of",
+              "terms": [
+                {
+                  "condition": "minecraft:entity_properties",
+                  "entity": "this",
+                  "predicate": {
+                    "type_specific": {
+                      "type": "dragonsurvival:entity_check_predicate",
+                      "check_for": "living_entity"
+                    }
+                  }
+                },
+                {
+                  "condition": "minecraft:entity_properties",
+                  "entity": "this",
+                  "predicate": {
+                    "location": {
+                      "can_see_sky": true
+                    },
+                    "type_specific": {
+                      "type": "dragonsurvival:custom_predicates",
+                      "weather_predicate": {
+                        "is_raining": true
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "effect": {
+              "type": "dragonsurvival:lightning",
+              "data": {
+                "can_hurt_self": false,
+                "ignores_items_and_experience": true,
+                "spawns_fire": true
+              }
             }
           }
         ],
-        "target_conditions": {
-          "location": {
-            "can_see_sky": true
-          },
-          "type_specific": {
-            "type": "dragonsurvival:custom_predicates",
-            "weather_predicate": {
-              "is_raining": true
-            }
-          }
-        },
         "tick_rate": 10
-      }
+      },
+      "radius": 4.0
     }
   ]
 }

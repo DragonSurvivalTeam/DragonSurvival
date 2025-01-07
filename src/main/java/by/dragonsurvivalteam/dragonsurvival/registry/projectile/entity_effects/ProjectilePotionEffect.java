@@ -17,11 +17,11 @@ public record ProjectilePotionEffect(PotionData potion) implements ProjectileEnt
     ).apply(instance, ProjectilePotionEffect::new));
 
     @Override
-    public void apply(Projectile projectile, Entity target, int projectileLevel) {
-        if(projectile.getOwner() instanceof ServerPlayer) {
-            potion.apply((ServerPlayer) projectile.getOwner(), projectileLevel, target);
+    public void apply(final Projectile projectile, final Entity target, final int level) {
+        if (projectile.getOwner() instanceof ServerPlayer serverPlayer) {
+            potion.apply(serverPlayer, level, target);
         } else {
-            potion.apply(null, projectileLevel, target);
+            potion.apply(null, level, target);
         }
     }
 
@@ -31,7 +31,7 @@ public record ProjectilePotionEffect(PotionData potion) implements ProjectileEnt
     }
 
     @Override
-    public MapCodec<? extends ProjectileEntityEffect> entityCodec() {
+    public MapCodec<? extends ProjectileEntityEffect> codec() {
         return CODEC;
     }
 }

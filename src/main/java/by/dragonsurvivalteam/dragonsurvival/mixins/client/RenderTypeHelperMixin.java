@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public abstract class RenderTypeHelperMixin {
     @ModifyReturnValue(method = "getFallbackItemRenderType", at = @At("RETURN"))
     private static RenderType dragonSurvival$getTranslucentRenderType(final RenderType renderType, @Local(argsOnly = true) boolean cull) {
-        if (HunterHandler.itemTranslucency != -1  && HunterHandler.itemTranslucency != 1 && renderType == Sheets.cutoutBlockSheet()) {
+        if (HunterHandler.itemTranslucency != HunterHandler.UNMODIFIED && HunterHandler.itemTranslucency != HunterHandler.NON_TRANSPARENT && renderType == Sheets.cutoutBlockSheet()) {
             return getEntityRenderType(RenderType.translucent(), cull);
         }
 

@@ -39,7 +39,7 @@ public record ProjectileDamageEffect(Holder<DamageType> damageType, LevelBasedVa
     }
 
     @Override
-    public MapCodec<? extends ProjectileEntityEffect> entityCodec() {
+    public MapCodec<? extends ProjectileEntityEffect> codec() {
         return CODEC;
     }
 }

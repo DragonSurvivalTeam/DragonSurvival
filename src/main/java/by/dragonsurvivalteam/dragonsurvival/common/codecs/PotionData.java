@@ -43,8 +43,8 @@ public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier
         }
     }
 
-    public void apply(@Nullable final ServerPlayer dragon, final int level, final Entity entity) {
-        if (entity instanceof LivingEntity livingEntity) {
+    public void apply(@Nullable final ServerPlayer dragon, final int level, final Entity target) {
+        if (target instanceof LivingEntity livingEntity) {
             effects().forEach(effect -> {
                 MobEffectInstance instance = livingEntity.getEffect(effect);
                 Calculated calculated = Calculated.from(this, level);

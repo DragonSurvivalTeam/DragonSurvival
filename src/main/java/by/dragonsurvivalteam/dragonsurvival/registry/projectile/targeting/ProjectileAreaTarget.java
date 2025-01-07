@@ -5,8 +5,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AbilityTargeting;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AreaTarget;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
-import com.mojang.datafixers.util.Either;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
@@ -19,81 +17,87 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
-import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Optional;
 
-public record ProjectileAreaTarget(Either<Either<ProjectileTargeting.BlockTargeting, ProjectileTargeting.EntityTargeting>, ProjectileTargeting.WorldTargeting> target, LevelBasedValue radius, Optional<ParticleOptions> particleTrail) implements ProjectileTargeting {
-    public static final MapCodec<ProjectileAreaTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.either(Codec.either(BlockTargeting.CODEC, EntityTargeting.CODEC), WorldTargeting.CODEC).fieldOf("target").forGetter(ProjectileAreaTarget::target),
-            LevelBasedValue.CODEC.fieldOf("radius").forGetter(ProjectileAreaTarget::radius),
-            ParticleTypes.CODEC.optionalFieldOf("particle_trail").forGetter(ProjectileAreaTarget::particleTrail)
-    ).apply(instance, ProjectileAreaTarget::new));
+public record ProjectileAreaTarget(GeneralData generalData, LevelBasedValue radius, Optional<ParticleOptions> particleTrail) implements ProjectileTargeting {
+    public static final MapCodec<ProjectileAreaTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> ProjectileTargeting.codecStart(instance)
+            .and(LevelBasedValue.CODEC.fieldOf("radius").forGetter(ProjectileAreaTarget::radius))
+            .and(ParticleTypes.CODEC.optionalFieldOf("particle_trail").forGetter(ProjectileAreaTarget::particleTrail))
+            .apply(instance, ProjectileAreaTarget::new)
+    );
 
-    public void apply(final Projectile projectile, final int projectileLevel) {
-        if (target.right().isPresent()) {
-            Functions.logOrThrow("Area target cannot be a world target");
+    public void apply(final Projectile projectile, final int level) {
+        if (generalData.effects().isEmpty()) {
             return;
         }
 
-        double radius = radius().calculate(projectileLevel);
-        ServerLevel level = (ServerLevel) projectile.level();
-        Vec3 position = projectile.position();
+        if (projectile.level().getGameTime() % generalData.tickRate() != 0 || generalData.chance() < projectile.getRandom().nextDouble()) {
+            return;
+        }
 
-        target().ifLeft(blockOrEntityTarget -> {
-            blockOrEntityTarget.ifLeft(blockTarget -> {
-                if (level.getGameTime() % blockTarget.tickRate() == 0 && blockTarget.chance() >= level.random.nextDouble()) {
-                    BlockPos.betweenClosedStream(AABB.ofSize(position, radius * 2, radius * 2, radius * 2)).forEach(blockPos -> {
-                        if (blockTarget.targetConditions().isEmpty() || blockTarget.targetConditions().get().matches(level, blockPos)
-                                && blockTarget.weatherConditions().isEmpty() || blockTarget.weatherConditions().get().matches(level, position)) {
-                            blockTarget.effects().forEach(effect -> effect.apply(projectile, blockPos, projectileLevel));
-                            if (particleTrail().isPresent()) {
-                                Vec3 trailMidpoint = blockPos.getCenter().subtract(position).scale(0.5).add(position);
-                                PacketDistributor.sendToPlayersNear(
-                                        level,
-                                        null,
-                                        trailMidpoint.x,
-                                        trailMidpoint.y,
-                                        trailMidpoint.z,
-                                        64,
-                                        new SyncParticleTrail(position.toVector3f(), blockPos.getCenter().toVector3f(), particleTrail().get()));
-                            }
-                        }
-                    });
+        double radius = this.radius.calculate(level);
+        ServerLevel serverLevel = (ServerLevel) projectile.level();
+
+        BlockPos.betweenClosedStream(AABB.ofSize(projectile.position(), radius * 2, radius * 2, radius * 2)).forEach(position -> {
+            boolean appliedEffect = false;
+
+            for (ConditionalEffect effect : generalData.effects()) {
+                if (effect.apply(serverLevel, projectile, position, level)) {
+                    appliedEffect = true;
                 }
-            }).ifRight(entityTarget -> {
-                        if (level.getGameTime() % entityTarget.tickRate() == 0 && entityTarget.chance() >= level.random.nextDouble()) {
-                            level.getEntities(EntityTypeTest.forClass(Entity.class), AABB.ofSize(position, radius * 2, radius * 2, radius * 2),
-                                    entity -> entityTarget.targetConditions().isEmpty() || entityTarget.targetConditions().get().matches(level, position, entity)).forEach(entity -> {
-                                entityTarget.effects().forEach(effect -> effect.apply(projectile, entity, projectileLevel));
-                                if (particleTrail().isPresent()) {
-                                    Vec3 entityMidpoint = entity.position().add(0, entity.getEyeHeight() / 2, 0);
-                                    Vec3 trailMidpoint = entityMidpoint.subtract(position).scale(0.5).add(position);
-                                    PacketDistributor.sendToPlayersNear(
-                                            level,
-                                            null,
-                                            trailMidpoint.x,
-                                            trailMidpoint.y,
-                                            trailMidpoint.z,
-                                            64,
-                                            new SyncParticleTrail(position.toVector3f(), entityMidpoint.toVector3f(), particleTrail().get()));
-                                }
-                            });
-                        }
-                    }
-            );
+            }
+
+            if (appliedEffect) {
+                handleParticleTrail(projectile, position, serverLevel);
+            }
         });
+
+        serverLevel.getEntities(projectile, AABB.ofSize(projectile.position(), radius * 2, radius * 2, radius * 2)).forEach(entity -> {
+            boolean appliedEffect = false;
+
+            for (ConditionalEffect effect : generalData.effects()) {
+                if (effect.apply(serverLevel, projectile, entity, level)) {
+                    appliedEffect = true;
+                }
+            }
+
+            if (appliedEffect) {
+                handleParticleTrail(projectile, entity, serverLevel);
+            }
+        });
+    }
+
+    private void handleParticleTrail(final Projectile projectile, final BlockPos position, final ServerLevel level) {
+        if (particleTrail().isEmpty()) {
+            return;
+        }
+
+        Vec3 trailMidpoint = position.getCenter().subtract(projectile.position()).scale(0.5).add(projectile.position());
+        SyncParticleTrail packet = new SyncParticleTrail(projectile.position().toVector3f(), position.getCenter().toVector3f(), particleTrail().get());
+        PacketDistributor.sendToPlayersNear(level, null, trailMidpoint.x, trailMidpoint.y, trailMidpoint.z, 64, packet);
+    }
+
+    private void handleParticleTrail(final Projectile projectile, final Entity entity, final ServerLevel level) {
+        if (particleTrail().isEmpty()) {
+            return;
+        }
+
+        Vec3 entityMidpoint = entity.position().add(0, entity.getEyeHeight() / 2, 0);
+        Vec3 trailMidpoint = entityMidpoint.subtract(projectile.position()).scale(0.5).add(projectile.position());
+        SyncParticleTrail packet = new SyncParticleTrail(projectile.position().toVector3f(), entityMidpoint.toVector3f(), particleTrail().get());
+        PacketDistributor.sendToPlayersNear(level, null, trailMidpoint.x, trailMidpoint.y, trailMidpoint.z, 64, packet);
     }
 
     @Override
     public MutableComponent getDescription(final Player dragon, int level) {
         MutableComponent description = Component.translatable(AreaTarget.AREA_TARGET_ENTITY, AbilityTargeting.EntityTargetingMode.TARGET_ALL.translation(), radius().calculate(level));
 
-        if (tickRate() > 1) {
-            description.append(Component.translatable(LangKey.ABILITY_X_SECONDS, tickRate() / 20f));
+        if (generalData.tickRate() > 1) {
+            description.append(Component.translatable(LangKey.ABILITY_X_SECONDS, Functions.ticksToSeconds(generalData.tickRate())));
         }
 
         return description;

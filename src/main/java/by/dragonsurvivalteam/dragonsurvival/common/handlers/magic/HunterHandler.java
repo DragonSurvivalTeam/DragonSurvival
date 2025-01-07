@@ -59,11 +59,14 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
     @ConfigOption(side = ConfigSide.CLIENT, category = {"effects", "hunter"}, key = "hunter_fix_translucency", /* Otherwise the game might crash */ requiresRestart = true)
     public static boolean FIX_TRANSLUCENCY = true;
 
+    public static final int UNMODIFIED = -1;
+    public static final int NON_TRANSPARENT = 1;
+
     // Lower values starts to just be invisible (vanilla uses ~0.15)
     public static final float MIN_ALPHA = 0.2f;
 
     // When first or third person held items are actually being rendered there is not enough context to determine this value
-    public static float itemTranslucency = -1;
+    public static float itemTranslucency = UNMODIFIED;
 
     @SubscribeEvent
     public static void modifyHunterStacks(final PlayerTickEvent.Post event) {

@@ -35,12 +35,12 @@ public abstract class ItemRendererMixin { // FIXME :: doesn't work with sodium s
             }
         }
 
-        HunterHandler.itemTranslucency = -1;
+        HunterHandler.itemTranslucency = HunterHandler.UNMODIFIED;
     }
 
     @ModifyArg(method = "renderQuadList", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/VertexConsumer;putBulkData(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lnet/minecraft/client/renderer/block/model/BakedQuad;FFFFIIZ)V"), index = 5)
     private float dragonSurvival$modifyAlpha(float alpha) {
-        if (HunterHandler.itemTranslucency != -1) {
+        if (HunterHandler.itemTranslucency != HunterHandler.UNMODIFIED) {
             return HunterHandler.itemTranslucency;
         }
 
@@ -49,7 +49,7 @@ public abstract class ItemRendererMixin { // FIXME :: doesn't work with sodium s
 
     @Inject(method = "render", at = @At("RETURN"))
     private void dragonSurvival$clearItemTranslucency(final CallbackInfo callback) {
-        HunterHandler.itemTranslucency = -1;
+        HunterHandler.itemTranslucency = HunterHandler.UNMODIFIED;
     }
 
     @Unique private static boolean dragonSurvival$isThirdPerson(final ItemDisplayContext context) {

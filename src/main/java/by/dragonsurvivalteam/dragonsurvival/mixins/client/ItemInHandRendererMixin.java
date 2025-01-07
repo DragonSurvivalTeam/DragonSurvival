@@ -58,6 +58,6 @@ public class ItemInHandRendererMixin {
     /** Don't render the actual hand ('RenderHandEvent' cannot be used since it would also hide the item) */
     @ModifyExpressionValue(method = "renderTwoHandedMap", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isInvisible()Z"))
     private boolean dragonSurvival$skipRenderWhenHoldingMaps(boolean original) {
-        return DragonStateProvider.isDragon(minecraft.player) || original;
+        return original || DragonStateProvider.isDragon(minecraft.player);
     }
 }

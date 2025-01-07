@@ -10,25 +10,25 @@ import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.projectile.Projectile;
 
 public record ProjectileLightningWorldEffect(LightningHandler.Data data) implements ProjectileWorldEffect {
-
     public static final MapCodec<ProjectileLightningWorldEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-                    LightningHandler.Data.CODEC.fieldOf("data").forGetter(ProjectileLightningWorldEffect::data)
-            ).apply(instance, ProjectileLightningWorldEffect::new)
-    );
+            LightningHandler.Data.CODEC.fieldOf("data").forGetter(ProjectileLightningWorldEffect::data)
+    ).apply(instance, ProjectileLightningWorldEffect::new));
 
     @Override
-    public void apply(Projectile projectile, int projectileLevel) {
-        LightningBolt lightningboltentity = EntityType.LIGHTNING_BOLT.create(projectile.level());
-        lightningboltentity.moveTo(projectile.position());
-        if(projectile.getOwner() instanceof ServerPlayer serverPlayer) {
-            lightningboltentity.setCause(serverPlayer);
+    public void apply(final Projectile projectile, final Void target, final int level) {
+        LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(projectile.level());
+        bolt.moveTo(projectile.position());
+
+        if (projectile.getOwner() instanceof ServerPlayer serverPlayer) {
+            bolt.setCause(serverPlayer);
         }
-        lightningboltentity.setData(DSDataAttachments.LIGHTNING_BOLT, LightningHandler.fromData(data));
-        projectile.level().addFreshEntity(lightningboltentity);
+
+        bolt.setData(DSDataAttachments.LIGHTNING_BOLT, LightningHandler.fromData(data));
+        projectile.level().addFreshEntity(bolt);
     }
 
     @Override
-    public MapCodec<? extends ProjectileWorldEffect> worldCodec() {
+    public MapCodec<? extends ProjectileWorldEffect> codec() {
         return CODEC;
     }
 }

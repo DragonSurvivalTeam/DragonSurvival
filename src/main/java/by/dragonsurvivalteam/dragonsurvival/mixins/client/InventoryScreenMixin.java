@@ -30,12 +30,12 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Mixin(InventoryScreen.class)
 public abstract class InventoryScreenMixin extends EffectRenderingInventoryScreen<InventoryMenu> implements RecipeUpdateListener {
+    @Unique private static float dragon_survival$storedXAngle = 0;
+    @Unique private static float dragon_survival$storedYAngle = 0;
+
     public InventoryScreenMixin(InventoryMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
     }
-
-    @Unique private static float dragon_survival$storedXAngle = 0;
-    @Unique private static float dragon_survival$storedYAngle = 0;
 
     // This is to angle the dragon entity (including its head) to correctly follow the angle specified when rendering.
     @Redirect(method = "renderEntityInInventory", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;runAsFancy(Ljava/lang/Runnable;)V"))

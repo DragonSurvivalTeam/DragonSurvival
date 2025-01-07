@@ -25,8 +25,9 @@ public record ProjectileExplosionEffect(Holder<DamageType> damageType, LevelBase
             Codec.BOOL.fieldOf("can_damage_self").forGetter(ProjectileExplosionEffect::canDamageSelf)
     ).apply(instance, ProjectileExplosionEffect::new));
 
-    public void apply(final Projectile projectile, final int projectileLevel) {
+    public void apply(final Projectile projectile, final Void target, final int level) {
         DamageSource source;
+
         if (projectile.getOwner() == null) {
             source = new DamageSource(damageType, projectile, projectile);
         } else {
@@ -38,7 +39,7 @@ public record ProjectileExplosionEffect(Holder<DamageType> damageType, LevelBase
                 source,
                 null,
                 projectile.position().x(), projectile.position().y(), projectile.position().z(),
-                explosionPower.calculate(projectileLevel),
+                explosionPower.calculate(level),
                 fire,
                 breakBlocks ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE);
     }
@@ -48,7 +49,7 @@ public record ProjectileExplosionEffect(Holder<DamageType> damageType, LevelBase
         return List.of(Component.translatable(LangKey.ABILITY_EXPLOSION_POWER, Component.translatable(LangKey.ABILITY_PROJECTILE), explosionPower().calculate(level)));
     }
 
-    public MapCodec<? extends ProjectileWorldEffect> worldCodec() {
+    public MapCodec<? extends ProjectileWorldEffect> codec() {
         return CODEC;
     }
 }
