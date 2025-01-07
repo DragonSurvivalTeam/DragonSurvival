@@ -19,7 +19,7 @@ public interface ProjectileWorldEffect extends ProjectileEffect<Void> {
     ResourceKey<Registry<MapCodec<? extends ProjectileWorldEffect>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("projectile_world_effects"));
     Registry<MapCodec<? extends ProjectileWorldEffect>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();
 
-    Codec<ProjectileWorldEffect> CODEC = REGISTRY.byNameCodec().dispatch(ProjectileWorldEffect::codec, Function.identity());
+    Codec<ProjectileWorldEffect> CODEC = REGISTRY.byNameCodec().dispatch("world_effect", ProjectileWorldEffect::codec, Function.identity());
     MapCodec<? extends ProjectileWorldEffect> codec();
 
     @SubscribeEvent

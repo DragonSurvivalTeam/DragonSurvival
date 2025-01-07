@@ -14,13 +14,13 @@
     },
     "entity_hit_effects": [
       {
-        "type": "dragonsurvival:damage",
         "amount": {
           "type": "minecraft:linear",
           "base": 10.0,
           "per_level_above_first": 9.0
         },
-        "damage_type": "minecraft:fireball"
+        "damage_type": "minecraft:fireball",
+        "entity_effect": "dragonsurvival:damage"
       }
     ],
     "name": "dragonsurvival:fireball",
@@ -35,12 +35,10 @@
     },
     "on_destroy_effects": [
       {
-        "type": "dragonsurvival:point",
         "general_data": {
           "effects": [
             {
               "effect": {
-                "type": "dragonsurvival:explosion",
                 "break_blocks": true,
                 "can_damage_self": false,
                 "damage_type": "minecraft:fireball",
@@ -49,11 +47,13 @@
                   "base": 1.0,
                   "per_level_above_first": 1.0
                 },
-                "fire": true
+                "fire": true,
+                "world_effect": "dragonsurvival:explosion"
               }
             }
           ]
-        }
+        },
+        "target_type": "dragonsurvival:point"
       }
     ],
     "resources": {

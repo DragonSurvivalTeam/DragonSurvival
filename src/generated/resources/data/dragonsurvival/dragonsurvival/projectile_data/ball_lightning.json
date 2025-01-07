@@ -16,7 +16,6 @@
     "name": "dragonsurvival:ball_lightning",
     "ticking_effects": [
       {
-        "type": "dragonsurvival:area",
         "general_data": {
           "effects": [
             {
@@ -31,13 +30,13 @@
                 }
               },
               "effect": {
-                "type": "dragonsurvival:damage",
                 "amount": {
                   "type": "minecraft:linear",
                   "base": 4.0,
                   "per_level_above_first": 4.0
                 },
-                "damage_type": "dragonsurvival:ball_lightning"
+                "damage_type": "dragonsurvival:ball_lightning",
+                "entity_effect": "dragonsurvival:damage"
               }
             },
             {
@@ -52,7 +51,7 @@
                 }
               },
               "effect": {
-                "type": "dragonsurvival:mob_effect",
+                "entity_effect": "dragonsurvival:mob_effect",
                 "potion": {
                   "amplifier": 0.0,
                   "duration": 100.0,
@@ -69,10 +68,10 @@
           "duration": 37.0,
           "swirls": false
         },
-        "radius": 4.0
+        "radius": 4.0,
+        "target_type": "dragonsurvival:area"
       },
       {
-        "type": "dragonsurvival:area",
         "general_data": {
           "chance": 0.1,
           "effects": [
@@ -108,18 +107,19 @@
                 ]
               },
               "effect": {
-                "type": "dragonsurvival:lightning",
                 "data": {
                   "can_hurt_self": false,
                   "ignores_items_and_experience": true,
                   "spawns_fire": true
-                }
+                },
+                "entity_effect": "dragonsurvival:lightning"
               }
             }
           ],
           "tick_rate": 10
         },
-        "radius": 4.0
+        "radius": 4.0,
+        "target_type": "dragonsurvival:area"
       }
     ]
   },
@@ -133,12 +133,10 @@
     },
     "on_destroy_effects": [
       {
-        "type": "dragonsurvival:point",
         "general_data": {
           "effects": [
             {
               "effect": {
-                "type": "dragonsurvival:explosion",
                 "break_blocks": true,
                 "can_damage_self": false,
                 "damage_type": "dragonsurvival:ball_lightning",
@@ -147,11 +145,13 @@
                   "base": 2.0,
                   "per_level_above_first": 1.0
                 },
-                "fire": false
+                "fire": false,
+                "world_effect": "dragonsurvival:explosion"
               }
             }
           ]
-        }
+        },
+        "target_type": "dragonsurvival:point"
       }
     ],
     "resources": {

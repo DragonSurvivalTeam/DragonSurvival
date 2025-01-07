@@ -32,7 +32,7 @@ public interface ProjectileTargeting {
     ResourceKey<Registry<MapCodec<? extends ProjectileTargeting>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("projectile_targeting"));
     Registry<MapCodec<? extends ProjectileTargeting>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();
 
-    Codec<ProjectileTargeting> CODEC = REGISTRY.byNameCodec().dispatch(ProjectileTargeting::codec, Function.identity());
+    Codec<ProjectileTargeting> CODEC = REGISTRY.byNameCodec().dispatch("target_type", ProjectileTargeting::codec, Function.identity());
 
     record GeneralData(List<ConditionalEffect> effects, int tickRate, double chance) {
         public static final Codec<GeneralData> CODEC = RecordCodecBuilder.create(instance -> instance.group(

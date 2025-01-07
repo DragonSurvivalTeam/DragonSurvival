@@ -44,7 +44,6 @@ public record ProjectileData(GeneralData generalData, Either<GenericBallData, Ge
         event.dataPackRegistry(REGISTRY, DIRECT_CODEC, DIRECT_CODEC);
     }
 
-
     public record GeneralData(
             ResourceLocation name,
             Optional<LootItemCondition> entityHitCondition,
