@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.IMessage;
 import by.dragonsurvivalteam.dragonsurvival.network.RequestClientData;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSModifiers;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PenaltySupply;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
@@ -50,6 +51,14 @@ public class SyncComplete implements IMessage<SyncComplete.Data> {
                     DragonStateHandler handler = DragonStateProvider.getData(context.player());
                     Holder<DragonSpecies> previousType = handler.species();
                     handler.deserializeNBT(context.player().registryAccess(), message.nbt);
+                    handleDragonSync(context.player());
+
+                    if(!handler.isDragon()) {
+                        handler.refreshMagicData((ServerPlayer)context.player());
+                        PenaltySupply.getData(context.player()).clear();
+                        DSModifiers.clearModifiers(context.player());
+                        return;
+                    }
 
                     // When we are sending a complete sync to the client, the client has requested it. This happens in two cases:
                     // 1. When the player changes dragon species in the dragon selection screen
@@ -59,8 +68,6 @@ public class SyncComplete implements IMessage<SyncComplete.Data> {
                     if (context.player() instanceof ServerPlayer serverPlayer && (previousType == null || !previousType.is(handler.species()))) {
                         handler.refreshMagicData(serverPlayer);
                     }
-
-                    handleDragonSync(context.player());
                 })
                 .thenRun(() -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(context.player(), message))
                 .thenAccept(v -> context.reply(RequestClientData.INSTANCE));

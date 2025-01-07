@@ -113,7 +113,7 @@ public class EndPortalBlockMixin {
     private void spawnDragonPlatform(ServerLevelAccessor serverLevelAccessor, BlockPos blockPos, boolean dropBlocks, Operation<Void> original, @Local(argsOnly = true) Entity entity) {
         if(entity instanceof Player player) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
-            if(handler.isDragon() && handler.species().is(DSDragonSpeciesTags.CAVE) || handler.species().is(DSDragonSpeciesTags.SEA) || handler.species().is(DSDragonSpeciesTags.FOREST)) {
+            if(handler.isDragon() && (handler.species().is(DSDragonSpeciesTags.CAVE) || handler.species().is(DSDragonSpeciesTags.SEA) || handler.species().is(DSDragonSpeciesTags.FOREST))) {
                 // Construct a different platform for the dragon to spawn on by getting structure data
                 ServerLevel level = serverLevelAccessor.getLevel();
                 Vec3i structureSize = level.getStructureManager().get(dragonSurvival$getDragonSpawnPlatformStructure(player)).get().getSize();

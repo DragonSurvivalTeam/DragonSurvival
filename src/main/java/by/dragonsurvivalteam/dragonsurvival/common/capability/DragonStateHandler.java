@@ -480,26 +480,38 @@ public class DragonStateHandler extends EntityStateHandler {
         String storedDragonSpecies = tag.getString(DRAGON_SPECIES);
 
         if (!storedDragonSpecies.isEmpty()) {
-            provider.holder(BuiltInDragonSpecies.key(ResourceLocation.parse(storedDragonSpecies)))
-                    .ifPresentOrElse(realDragonSpecies -> this.dragonSpecies = realDragonSpecies,
-                            () -> DragonSurvival.LOGGER.warn("Cannot set dragon species [{}] while deserializing NBT of [{}] due to the dragon type not existing", storedDragonSpecies, tag));
+            if(storedDragonSpecies.equals("none")) {
+                dragonSpecies = null;
+            } else {
+                provider.holder(BuiltInDragonSpecies.key(ResourceLocation.parse(storedDragonSpecies)))
+                        .ifPresentOrElse(realDragonSpecies -> this.dragonSpecies = realDragonSpecies,
+                                () -> DragonSurvival.LOGGER.warn("Cannot set dragon species [{}] while deserializing NBT of [{}] due to the dragon type not existing", storedDragonSpecies, tag));
+            }
         }
 
 
         String storedDragonBody = tag.getString(DRAGON_BODY);
 
         if (!storedDragonBody.isEmpty()) {
-            provider.holder(DragonBodies.key(ResourceLocation.parse(storedDragonBody)))
-                    .ifPresentOrElse(dragonBody -> this.dragonBody = dragonBody,
-                            () -> DragonSurvival.LOGGER.warn("Cannot set dragon body [{}] while deserializing NBT of [{}] due to the dragon body not existing", storedDragonBody, tag));
+            if(storedDragonBody.equals("none")) {
+                dragonBody = null;
+            } else {
+                provider.holder(DragonBodies.key(ResourceLocation.parse(storedDragonBody)))
+                        .ifPresentOrElse(dragonBody -> this.dragonBody = dragonBody,
+                                () -> DragonSurvival.LOGGER.warn("Cannot set dragon body [{}] while deserializing NBT of [{}] due to the dragon body not existing", storedDragonBody, tag));
+            }
         }
 
         String storedDragonStage = tag.getString(DRAGON_STAGE);
 
         if (!storedDragonStage.isEmpty()) {
-            provider.holder(DragonStages.key(ResourceLocation.parse(storedDragonStage)))
-                    .ifPresentOrElse(dragonStage -> this.dragonStage = dragonStage,
-                            () -> DragonSurvival.LOGGER.warn("Cannot set dragon stage [{}] while deserializing NBT of [{}] due to the dragon stage not existing", dragonStage, tag));
+            if(storedDragonStage.equals("none")) {
+                dragonStage = null;
+            } else {
+                provider.holder(DragonStages.key(ResourceLocation.parse(storedDragonStage)))
+                        .ifPresentOrElse(dragonStage -> this.dragonStage = dragonStage,
+                                () -> DragonSurvival.LOGGER.warn("Cannot set dragon stage [{}] while deserializing NBT of [{}] due to the dragon stage not existing", dragonStage, tag));
+            }
         }
 
         if (dragonSpecies != null) {
