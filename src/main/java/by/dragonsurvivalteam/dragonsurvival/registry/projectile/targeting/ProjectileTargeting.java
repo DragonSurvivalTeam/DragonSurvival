@@ -49,6 +49,14 @@ public interface ProjectileTargeting {
         ).apply(instance, ConditionalEffect::new));
 
         public boolean apply(final ServerLevel serverLevel, final Projectile projectile, final Object target, final int level) {
+            if (this.condition.map(condition -> condition.test(getContext(serverLevel, projectile, target))).orElse(true)) {
+                return effect.applyGeneric(projectile, target, level);
+            }
+
+            return false;
+        }
+
+        private static LootContext getContext(final ServerLevel serverLevel, final Projectile projectile, final Object target) {
             LootContext context;
 
             if (target instanceof BlockPos position) {
@@ -59,11 +67,7 @@ public interface ProjectileTargeting {
                 context = ProjectileEffect.positionContext(serverLevel, projectile, projectile.position());
             }
 
-            if (this.condition.map(condition -> condition.test(context)).orElse(true)) {
-                return effect.applyGeneric(projectile, target, level);
-            }
-
-            return false;
+            return context;
         }
     }
 

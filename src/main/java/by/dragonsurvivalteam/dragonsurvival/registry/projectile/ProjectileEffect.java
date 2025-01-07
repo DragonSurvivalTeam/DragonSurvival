@@ -57,7 +57,7 @@ public interface ProjectileEffect<T> {
                                     return DataResult.success(Either.right(Either.right(worldEffect)));
                                 }
 
-                                return DataResult.error(() -> "Invalid ProjectileEffect type");
+                                return DataResult.error(() -> "Invalid ProjectileEffect type: [" + effect.getClass().getName() + "]");
                             }
                     );
 
