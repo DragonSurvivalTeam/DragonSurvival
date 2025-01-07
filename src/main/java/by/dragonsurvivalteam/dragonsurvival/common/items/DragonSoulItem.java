@@ -33,7 +33,6 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Optional;
 
 public class DragonSoulItem extends Item {
     @Translation(comments = "Empty Dragon Soul")
@@ -76,16 +75,13 @@ public class DragonSoulItem extends Item {
 
     private static int getCustomModelData(@NotNull final HolderLookup.Provider provider, final CompoundTag tag) {
         ResourceKey<DragonSpecies> species = ResourceHelper.decodeKey(provider, DragonSpecies.REGISTRY, tag, SPECIES);
-        if(species == null) {
+
+        if (species == null) {
             return 0;
         }
 
-        Optional<Holder.Reference<DragonSpecies>> optionalDragonSpeciesReference = ResourceHelper.get(provider, species);
-        if(optionalDragonSpeciesReference.isEmpty()) {
-            return 0;
-        }
+        Holder<DragonSpecies> dragonSpecies = provider.holderOrThrow(species);
 
-        Holder<DragonSpecies> dragonSpecies = optionalDragonSpeciesReference.get();
         if (dragonSpecies.is(DSDragonSpeciesTags.FOREST)) {
             return 1;
         } else if (dragonSpecies.is(DSDragonSpeciesTags.CAVE)) {
@@ -135,7 +131,7 @@ public class DragonSoulItem extends Item {
 
         level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ENDER_DRAGON_GROWL, entity.getSoundSource(), 1.0F, 1.0F);
 
-        for (int i = 0; i < 10; i++) { // TODO :: use other generic particle (custom particle and color it using the primary / secondary color)?
+        for (int i = 0; i < 10; i++) {
             level.addParticle(ParticleTypes.SOUL, entity.getX() + (level.random.nextDouble() - 0.5D) * 0.5D, entity.getY() + (level.random.nextDouble() - 0.5D) * 0.5D, entity.getZ() + (level.random.nextDouble() - 0.5D) * 0.5D, (level.random.nextDouble() - 0.5D) * 0.5D, level.random.nextDouble() * 0.5D, (level.random.nextDouble() - 0.5D) * 0.5D);
         }
 
@@ -176,7 +172,7 @@ public class DragonSoulItem extends Item {
                 name = Component.translatable(INVALID_DRAGON_TYPE);
             }
 
-            double size = tag.getDouble(SIZE); // TODO :: should it store the stage as well?
+            double size = tag.getDouble(SIZE);
             Holder<DragonStage> stage = DragonStage.get(provider, size);
 
             //noinspection DataFlowIssue -> key is present
@@ -196,7 +192,7 @@ public class DragonSoulItem extends Item {
 
     @Override
     public void onUseTick(@NotNull final Level level, @NotNull final LivingEntity entity, @NotNull final ItemStack soul, int remainingUseDuration) {
-        super.onUseTick(level, entity, soul, remainingUseDuration); // TODO :: use other generic sound?
+        super.onUseTick(level, entity, soul, remainingUseDuration);
         entity.playSound(SoundEvents.SOUL_ESCAPE.value(), (float) (0.3 + 0.3 * entity.getRandom().nextInt(2)), entity.getRandom().nextFloat() - entity.getRandom().nextFloat() * 0.2f + 1.0f);
     }
 

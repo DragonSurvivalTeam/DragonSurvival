@@ -7,6 +7,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.neoforge.common.CommonHooks;
@@ -43,7 +44,17 @@ public class ResourceHelper {
         return registry.listElementIds().toList();
     }
 
+    /**
+     * Returns either the key stored in the tag or 'null' if: <br>
+     * - The key is not present in the tag <br>
+     * - Or the read value is not present in the registry <br>
+     * - Or no registry access is available
+     */
     public static @Nullable <T> ResourceKey<T> decodeKey(@Nullable final HolderLookup.Provider provider, final ResourceKey<Registry<T>> registryKey, final CompoundTag tag, final String key) {
+        if (!tag.contains(key)) {
+            return null;
+        }
+
         HolderLookup.Provider actualProvider = provider != null ? provider : DragonSurvival.PROXY.getAccess();
 
         if (actualProvider == null) {
@@ -57,23 +68,27 @@ public class ResourceHelper {
         });
     }
 
-    public static @Nullable <T> Tag encodeKey(@Nullable final HolderLookup.Provider provider, final ResourceKey<Registry<T>> registryKey, final ResourceKey<T> value) {
-        HolderLookup.Provider actualProvider = provider != null ? provider : DragonSurvival.PROXY.getAccess();
-
-        if (actualProvider == null) {
-            DragonSurvival.LOGGER.error("Context was not available to serialize the value [{}]", value);
+    /**
+     * Returns either the tag (normally {@link StringTag}) or 'null' if: <br>
+     * - The key is null <br>
+     * - Or the key is not present in the registry <br>
+     * - Or no registry access is available
+     */
+    public static @Nullable <T> Tag encodeKey(@Nullable final HolderLookup.Provider provider, final ResourceKey<T> key) {
+        if (key == null) {
             return null;
         }
 
-        return ResourceKey.codec(registryKey).encodeStart(actualProvider.createSerializationContext(NbtOps.INSTANCE), value).mapOrElse(Function.identity(),error -> {
+        HolderLookup.Provider actualProvider = provider != null ? provider : DragonSurvival.PROXY.getAccess();
+
+        if (actualProvider == null) {
+            DragonSurvival.LOGGER.error("Context was not available to serialize the value [{}]", key);
+            return null;
+        }
+
+        return ResourceKey.codec(key.registryKey()).encodeStart(actualProvider.createSerializationContext(NbtOps.INSTANCE), key).mapOrElse(Function.identity(),error -> {
             DragonSurvival.LOGGER.error(error.message());
             return null;
         });
-    }
-
-    public static <T> String getNameLowercase(final Holder<T> holder) {
-        String rawPath = holder.getKey().location().getPath();
-        // Get the last part of the path
-        return rawPath.substring(rawPath.lastIndexOf("/") + 1).toLowerCase();
     }
 }

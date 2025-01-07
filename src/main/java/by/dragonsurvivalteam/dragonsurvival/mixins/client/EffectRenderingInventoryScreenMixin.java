@@ -162,7 +162,6 @@ public class EffectRenderingInventoryScreenMixin {
 
                     //noinspection DataFlowIssue -> level is present
                     tooltip.append(Component.literal("\n")).append(dragonSurvival$formatDuration(hovered, Minecraft.getInstance().level.tickRateManager().tickrate()));
-
                     Component description = hovered.getDescription();
 
                     if (description.getContents() != PlainTextContents.EMPTY) {

@@ -30,7 +30,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import software.bernie.geckolib.util.Color;
 
-import java.util.HashMap;
 import java.util.Objects;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;

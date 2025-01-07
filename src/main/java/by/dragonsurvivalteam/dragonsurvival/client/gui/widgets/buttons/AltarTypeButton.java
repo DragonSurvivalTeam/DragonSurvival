@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAltarScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.DragonEditorScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.DietComponent;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
@@ -133,25 +134,24 @@ public class AltarTypeButton extends Button {
         return mouseY > getY() + 6 && mouseY < getY() + 26;
     }
 
-    private void initiateDragonForm(Holder<DragonSpecies> type) {
+    private void initiateDragonForm(final Holder<DragonSpecies> species) {
         LocalPlayer player = Minecraft.getInstance().player;
 
         if (player == null) {
             return;
         }
 
-        if (type == null) {
+        if (species == null) {
             Minecraft.getInstance().player.sendSystemMessage(Component.translatable(CHOICE_HUMAN));
+            player.level().playSound(player, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 1, 0.7f);
 
-            DragonStateProvider.getOptional(player).ifPresent(cap -> {
-                player.level().playSound(player, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 1, 0.7f);
-                cap.revertToHumanForm(player, false);
-                PacketDistributor.sendToServer(new SyncComplete.Data(player.getId(), cap.serializeNBT(player.registryAccess())));
-            });
+            DragonStateHandler data = DragonStateProvider.getData(player);
+            data.revertToHumanForm(player, false);
+            PacketDistributor.sendToServer(new SyncComplete.Data(player.getId(), data.serializeNBT(player.registryAccess())));
 
             player.closeContainer();
         } else {
-            Minecraft.getInstance().setScreen(new DragonEditorScreen(parent, type));
+            Minecraft.getInstance().setScreen(new DragonEditorScreen(parent, species));
         }
     }
 }

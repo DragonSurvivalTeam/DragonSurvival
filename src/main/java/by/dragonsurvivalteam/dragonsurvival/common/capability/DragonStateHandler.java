@@ -17,10 +17,8 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSModifiers;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.InputData;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBodies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
@@ -97,7 +95,7 @@ public class DragonStateHandler extends EntityStateHandler {
     public void setStage(@Nullable final Player player, final Holder<DragonStage> dragonStage) {
         if (!dragonSpecies.value().getStages(player != null ? player.registryAccess() : null).contains(dragonStage)) {
             //noinspection DataFlowIssue -> key is present
-            Functions.logOrThrow("The dragon stage [" + dragonStage.getKey().location() + "] is not valid for the dragon species [" + dragonSpecies.getKey().location() + "]");
+            Functions.logOrThrow("The dragon stage [" + dragonStage.getKey().location() + "] is not valid for the dragon species [" + speciesId() + "]");
             return;
         }
 
@@ -108,8 +106,8 @@ public class DragonStateHandler extends EntityStateHandler {
             boundedSize += Shapes.EPSILON;
         }
 
-        // If the stage is null, immediately set the size to the desired size
         if (this.dragonStage == null) {
+            // No reason to slowly adjust to the size in this case
             setDesiredSize(player, boundedSize);
             setSize(player, desiredSize);
         } else {
@@ -300,8 +298,9 @@ public class DragonStateHandler extends EntityStateHandler {
 
             if (player instanceof ServerPlayer serverPlayer) {
                 refreshMagicData(serverPlayer);
-                if(skinData.skinPresets.get().get(dragonSpecies.getKey()).isEmpty()) {
-                    refreshSkinPresetForSpecies(dragonSpecies.getKey());
+
+                if (skinData.skinPresets.get().get(speciesKey()).isEmpty()) {
+                    refreshSkinPresetForSpecies(speciesKey());
                 }
             }
         } else if (species == null) {
@@ -320,7 +319,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
             // If the model has changed, just override the skin preset with the default one as a failsafe
             if (oldBody != null && this.dragonBody.value().customModel() != oldBody.value().customModel()) {
-                refreshSkinPresetForSpecies(dragonSpecies.getKey());
+                refreshSkinPresetForSpecies(speciesKey());
             }
         }
 
@@ -397,26 +396,26 @@ public class DragonStateHandler extends EntityStateHandler {
         return customModelPath.substring(customModelPath.lastIndexOf("/") + 1, customModelPath.indexOf("."));
     }
 
-    public void setSkinPresetForType(ResourceKey<DragonSpecies> dragonSpecies, SkinPreset preset) {
+    public void setSkinPresetForType(final ResourceKey<DragonSpecies> dragonSpecies, SkinPreset preset) {
         skinData.skinPresets.get().put(dragonSpecies, preset);
     }
 
-    public void setCurrentSkinPreset(SkinPreset preset) {
-        skinData.skinPresets.get().put(dragonSpecies.getKey(), preset);
+    public void setCurrentSkinPreset(final SkinPreset preset) {
+        skinData.skinPresets.get().put(speciesKey(), preset);
         recompileCurrentSkin();
     }
 
     public SkinPreset getCurrentSkinPreset() {
-        return skinData.skinPresets.get().get(dragonSpecies.getKey());
+        return skinData.skinPresets.get().get(speciesKey());
     }
 
-    public void refreshSkinPresetForSpecies(ResourceKey<DragonSpecies> dragonSpecies) {
+    public void refreshSkinPresetForSpecies(final ResourceKey<DragonSpecies> dragonSpecies) {
         SkinPreset freshSkinPreset = new SkinPreset();
         freshSkinPreset.initDefaults(dragonSpecies, dragonBody != null ? dragonBody.value().customModel() : DragonBody.DEFAULT_MODEL);
         skinData.skinPresets.get().put(dragonSpecies, freshSkinPreset);
     }
 
-    public SkinPreset getSkinPresetForSpecies(ResourceKey<DragonSpecies> dragonSpecies) {
+    public SkinPreset getSkinPresetForSpecies(final ResourceKey<DragonSpecies> dragonSpecies) {
         return skinData.skinPresets.get().get(dragonSpecies);
     }
 
@@ -424,40 +423,41 @@ public class DragonStateHandler extends EntityStateHandler {
         skinData.compileSkin(dragonStage);
     }
 
-    public void setCurrentStageCustomization(DragonStageCustomization customization) {
-        skinData.skinPresets.get().get(dragonSpecies.getKey()).put(dragonStage.getKey(), Lazy.of(() -> customization));
+    public void setCurrentStageCustomization(final DragonStageCustomization customization) {
+        skinData.skinPresets.get().get(speciesKey()).put(stageKey(), Lazy.of(() -> customization));
     }
 
     public DragonStageCustomization getCurrentStageCustomization() {
-        return skinData.get(dragonSpecies.getKey(), dragonStage.getKey()).get();
+        return skinData.get(speciesKey(), stageKey()).get();
     }
 
-    public DragonStageCustomization getCustomizationForStage(ResourceKey<DragonStage> stage) {
-        return skinData.get(dragonSpecies.getKey(), stage).get();
+    public DragonStageCustomization getCustomizationForStage(final ResourceKey<DragonStage> stage) {
+        return skinData.get(speciesKey(), stage).get();
     }
 
-    public CompoundTag serializeNBT(HolderLookup.Provider provider, boolean isSavingForSoul) {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider, boolean isDragonSoul) {
         CompoundTag tag = new CompoundTag();
-        tag.putString(DRAGON_BODY, dragonBody != null ? Objects.requireNonNull(dragonBody.getKey()).location().toString() : "none");
-        tag.putString(DRAGON_STAGE, dragonStage != null ? Objects.requireNonNull(dragonStage.getKey()).location().toString() : "none");
-        tag.putString(DRAGON_SPECIES, dragonSpecies != null ? Objects.requireNonNull(dragonSpecies.getKey()).location().toString() : "none");
 
         if (isDragon()) {
-            tag.putDouble("size", getSize());
-            tag.putBoolean("destructionEnabled", getDestructionEnabled());
-            tag.putBoolean(IS_GROWING, isGrowing);
+            tag.putString(DRAGON_SPECIES, speciesId().toString());
+            tag.putString(DRAGON_BODY, bodyId().toString());
+            tag.putString(DRAGON_STAGE, stageId().toString());
+            tag.putDouble(SIZE, size);
             tag.putInt(STAR_HEART_STATE, starHeartState.ordinal());
+            tag.putBoolean(IS_GROWING, isGrowing);
+            tag.putBoolean(DESTRUCTION_ENABLED, destructionEnabled);
             tag.putBoolean(MARKED_BY_ENDER_DRAGON, markedByEnderDragon);
         }
 
-        if (isSavingForSoul && species() != null) {
+        if (isDragonSoul && dragonSpecies != null) {
             // Only store the size of the dragon the player is currently in if we are saving for the soul
-            storeSavedSize(speciesKey(), tag);
-        } else if (!isSavingForSoul) {
+            storeSavedSize(speciesId(), tag);
+        } else if (!isDragonSoul) {
             for (ResourceKey<DragonSpecies> type : ResourceHelper.keys(provider, DragonSpecies.REGISTRY)) {
                 boolean hasSavedSize = savedSizes.containsKey(type);
-                if(hasSavedSize) {
-                    storeSavedSize(type, tag);
+
+                if (hasSavedSize) {
+                    storeSavedSize(type.location(), tag);
                 }
             }
         }
@@ -467,7 +467,6 @@ public class DragonStateHandler extends EntityStateHandler {
         }
 
         tag.put(ENTITY_STATE, super.serializeNBT(provider));
-
         return tag;
     }
 
@@ -476,42 +475,29 @@ public class DragonStateHandler extends EntityStateHandler {
         return serializeNBT(provider, false);
     }
 
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag, boolean isLoadingForSoul) { // TODO :: make a different method for soul
-        String storedDragonSpecies = tag.getString(DRAGON_SPECIES);
+    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, final CompoundTag tag, boolean isDragonSoul) {
+        ResourceKey<DragonSpecies> species = ResourceHelper.decodeKey(provider, DragonSpecies.REGISTRY, tag, DRAGON_SPECIES);
 
-        if (!storedDragonSpecies.isEmpty()) {
-            if(storedDragonSpecies.equals("none")) {
-                dragonSpecies = null;
-            } else {
-                provider.holder(BuiltInDragonSpecies.key(ResourceLocation.parse(storedDragonSpecies)))
-                        .ifPresentOrElse(realDragonSpecies -> this.dragonSpecies = realDragonSpecies,
-                                () -> DragonSurvival.LOGGER.warn("Cannot set dragon species [{}] while deserializing NBT of [{}] due to the dragon type not existing", storedDragonSpecies, tag));
-            }
+        if (species != null) {
+            dragonSpecies = provider.holderOrThrow(species);
+        } else {
+            dragonSpecies = null;
         }
 
+        ResourceKey<DragonBody> body = ResourceHelper.decodeKey(provider, DragonBody.REGISTRY, tag, DRAGON_BODY);
 
-        String storedDragonBody = tag.getString(DRAGON_BODY);
-
-        if (!storedDragonBody.isEmpty()) {
-            if(storedDragonBody.equals("none")) {
-                dragonBody = null;
-            } else {
-                provider.holder(DragonBodies.key(ResourceLocation.parse(storedDragonBody)))
-                        .ifPresentOrElse(dragonBody -> this.dragonBody = dragonBody,
-                                () -> DragonSurvival.LOGGER.warn("Cannot set dragon body [{}] while deserializing NBT of [{}] due to the dragon body not existing", storedDragonBody, tag));
-            }
+        if (body != null) {
+            dragonBody = provider.holderOrThrow(body);
+        } else {
+            dragonBody = null;
         }
 
-        String storedDragonStage = tag.getString(DRAGON_STAGE);
+        ResourceKey<DragonStage> stage = ResourceHelper.decodeKey(provider, DragonStage.REGISTRY, tag, DRAGON_STAGE);
 
-        if (!storedDragonStage.isEmpty()) {
-            if(storedDragonStage.equals("none")) {
-                dragonStage = null;
-            } else {
-                provider.holder(DragonStages.key(ResourceLocation.parse(storedDragonStage)))
-                        .ifPresentOrElse(dragonStage -> this.dragonStage = dragonStage,
-                                () -> DragonSurvival.LOGGER.warn("Cannot set dragon stage [{}] while deserializing NBT of [{}] due to the dragon stage not existing", dragonStage, tag));
-            }
+        if (stage != null) {
+            dragonStage = provider.holderOrThrow(stage);
+        } else {
+            dragonStage = null;
         }
 
         if (dragonSpecies != null) {
@@ -523,20 +509,20 @@ public class DragonStateHandler extends EntityStateHandler {
             // Makes sure that the set size matches the previously set stage
             setSize(null, tag.getDouble(SIZE));
             desiredSize = size;
-            setDestructionEnabled(tag.getBoolean("destructionEnabled"));
+            destructionEnabled = tag.getBoolean(DESTRUCTION_ENABLED);
             isGrowing = !tag.contains(IS_GROWING) || tag.getBoolean(IS_GROWING);
             starHeartState = StarHeartItem.State.values()[tag.getInt(STAR_HEART_STATE)];
             markedByEnderDragon = tag.getBoolean(MARKED_BY_ENDER_DRAGON);
         }
 
         if (dragonSpecies != null) {
-            if (isLoadingForSoul) {
+            if (isDragonSoul) {
                 // Only load the size of the dragon the player is currently in if we are loading for the soul
-                //noinspection DataFlowIssue -> key is present
-                savedSizes.put(dragonSpecies.getKey(), loadSavedStage(provider, dragonSpecies.getKey(), tag));
+                savedSizes.put(speciesKey(), loadSavedStage(provider, speciesKey(), tag));
             } else {
                 for (ResourceKey<DragonSpecies> type : ResourceHelper.keys(provider, DragonSpecies.REGISTRY)) {
-                    CompoundTag compound = tag.getCompound(dragonSpecies.toString() + SAVED_SIZE_SUFFIX);
+                    CompoundTag compound = tag.getCompound(speciesId() + SAVED_SIZE_SUFFIX);
+
                     if (!compound.isEmpty()) {
                         savedSizes.put(type, loadSavedStage(provider, type, tag));
                     }
@@ -559,7 +545,7 @@ public class DragonStateHandler extends EntityStateHandler {
     }
 
     private double loadSavedStage(@NotNull final HolderLookup.Provider provider, final ResourceKey<DragonSpecies> dragonSpecies, final CompoundTag tag) {
-        CompoundTag compound = tag.getCompound(dragonSpecies.toString() + SAVED_SIZE_SUFFIX);
+        CompoundTag compound = tag.getCompound(dragonSpecies.location() + SAVED_SIZE_SUFFIX);
 
         if (compound.isEmpty()) {
             Optional<Holder.Reference<DragonSpecies>> optional = ResourceHelper.get(provider, dragonSpecies);
@@ -575,11 +561,10 @@ public class DragonStateHandler extends EntityStateHandler {
         return compound.getDouble(SIZE);
     }
 
-    private void storeSavedSize(final ResourceKey<DragonSpecies> type, final CompoundTag tag) {
+    private void storeSavedSize(final ResourceLocation dragonSpecies, final CompoundTag tag) {
         CompoundTag savedSizeTag = new CompoundTag();
         savedSizeTag.putDouble(SIZE, size);
-
-        tag.put(type.toString() + SAVED_SIZE_SUFFIX, savedSizeTag);
+        tag.put(dragonSpecies + SAVED_SIZE_SUFFIX, savedSizeTag);
     }
 
     @Override
@@ -587,10 +572,10 @@ public class DragonStateHandler extends EntityStateHandler {
         deserializeNBT(provider, tag, false);
     }
 
-    public void revertToHumanForm(final Player player, boolean isRevertingFromSoul) {
+    public void revertToHumanForm(final Player player, boolean isDragonSoul) {
         // Don't set the saved dragon size if we are reverting from a soul, as we already are storing the size of the dragon in the soul
-        if (ServerConfig.saveGrowthStage && !isRevertingFromSoul && dragonSpecies != null) {
-            savedSizes.put(dragonSpecies.getKey(), getSize());
+        if (ServerConfig.saveGrowthStage && !isDragonSoul && dragonSpecies != null) {
+            savedSizes.put(speciesKey(), getSize());
         }
 
         // Drop everything in your claw slots
@@ -644,16 +629,17 @@ public class DragonStateHandler extends EntityStateHandler {
 
         return Pair.of(components, scroll);
     }
+    
+    private static final String DRAGON_SPECIES = "dragon_species";
+    private static final String DRAGON_BODY = "dragon_body";
+    private static final String DRAGON_STAGE = "dragon_stage";
+    private static final String ENTITY_STATE = "entity_state";
 
-    public static final String DRAGON_SPECIES = "dragon_species";
-    public static final String DRAGON_BODY = "dragon_body";
-    public static final String DRAGON_STAGE = "dragon_stage";
-    public static final String ENTITY_STATE = "entity_state";
+    private static final String SIZE = "size";
+    private static final String SAVED_SIZE_SUFFIX = "_saved_size";
 
-    public static final String SIZE = "size";
-    public static final String SAVED_SIZE_SUFFIX = "_saved_size";
-
-    public static final String STAR_HEART_STATE = "star_heart_state";
-    public static final String MARKED_BY_ENDER_DRAGON = "marked_by_ender_dragon";
-    public static final String IS_GROWING = "is_growing";
+    private static final String STAR_HEART_STATE = "star_heart_state";
+    private static final String MARKED_BY_ENDER_DRAGON = "marked_by_ender_dragon";
+    private static final String IS_GROWING = "is_growing";
+    private static final String DESTRUCTION_ENABLED = "destruction_enabled";
 }
