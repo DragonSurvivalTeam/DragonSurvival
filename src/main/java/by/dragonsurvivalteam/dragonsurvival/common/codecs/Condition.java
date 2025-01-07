@@ -14,6 +14,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -41,6 +42,12 @@ public class Condition {
             .required(LootContextParams.BLOCK_STATE)
             .required(LootContextParams.ORIGIN)
             .optional(LootContextParams.BLOCK_ENTITY)
+            .build();
+
+    private static final LootContextParamSet PROJECTILE_CONTEXT = new LootContextParamSet.Builder()
+            .required(LootContextParams.ATTACKING_ENTITY)
+            .required(LootContextParams.THIS_ENTITY)
+            .required(LootContextParams.ORIGIN)
             .build();
 
     private static final LootContextParamSet ITEM_CONTEXT = new LootContextParamSet.Builder().required(LootContextParams.TOOL).build();
@@ -76,6 +83,15 @@ public class Condition {
                 .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(position))
                 .withOptionalParameter(LootContextParams.BLOCK_ENTITY, dragon.serverLevel().getBlockEntity(position))
                 .create(BLOCK_CONTEXT);
+        return new LootContext.Builder(parameters).create(Optional.empty());
+    }
+
+    public static LootContext projectileContext(final ServerLevel level, final Projectile projectile, final Entity target) {
+        LootParams parameters = new LootParams.Builder(level)
+                .withParameter(LootContextParams.ATTACKING_ENTITY, projectile)
+                .withParameter(LootContextParams.THIS_ENTITY, target)
+                .withParameter(LootContextParams.ORIGIN, target.position())
+                .create(PROJECTILE_CONTEXT);
         return new LootContext.Builder(parameters).create(Optional.empty());
     }
 

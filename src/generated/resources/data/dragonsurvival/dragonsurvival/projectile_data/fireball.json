@@ -1,37 +1,38 @@
 {
-  "block_hit_effects": [],
-  "can_hit_predicate": {
-    "type_specific": {
-      "type": "dragonsurvival:entity_check_predicate",
-      "check_for": "living_entity"
-    }
-  },
-  "common_hit_effects": [],
-  "entity_hit_effects": [
-    {
-      "type": "dragonsurvival:damage",
-      "amount": {
-        "type": "minecraft:linear",
-        "base": 10.0,
-        "per_level_above_first": 9.0
-      },
-      "damage_type": "minecraft:fireball"
-    }
-  ],
-  "name": "dragonsurvival:fireball",
-  "specific_projectile_data": {
-    "ball_resources": {
-      "resource": {
-        "texture_entries": [
-          {
-            "from_level": 1,
-            "texture_resource": "dragonsurvival:fireball"
-          }
-        ]
+  "general_data": {
+    "block_hit_effects": [],
+    "common_hit_effects": [],
+    "entity_hit_condition": {
+      "condition": "minecraft:entity_properties",
+      "entity": "this",
+      "predicate": {
+        "type_specific": {
+          "type": "dragonsurvival:entity_check_predicate",
+          "check_for": "living_entity"
+        }
       }
     },
-    "max_lifespan": 100.0,
-    "max_move_distance": 32.0,
+    "entity_hit_effects": [
+      {
+        "type": "dragonsurvival:damage",
+        "amount": {
+          "type": "minecraft:linear",
+          "base": 10.0,
+          "per_level_above_first": 9.0
+        },
+        "damage_type": "minecraft:fireball"
+      }
+    ],
+    "name": "dragonsurvival:fireball",
+    "ticking_effects": []
+  },
+  "type_data": {
+    "behaviour_data": {
+      "height": 1.0,
+      "max_lifespan": 100.0,
+      "max_movement_distance": 32.0,
+      "width": 1.0
+    },
     "on_destroy_effects": [
       {
         "type": "dragonsurvival:point",
@@ -55,11 +56,16 @@
         }
       }
     ],
+    "resources": {
+      "texture_entries": [
+        {
+          "from_level": 1,
+          "texture_resource": "dragonsurvival:fireball"
+        }
+      ]
+    },
     "trail_particle": {
       "type": "minecraft:large_smoke"
-    },
-    "x_size": 1.0,
-    "y_size": 1.0
-  },
-  "ticking_effects": []
+    }
+  }
 }

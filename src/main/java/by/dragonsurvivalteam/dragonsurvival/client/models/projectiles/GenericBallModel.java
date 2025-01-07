@@ -6,17 +6,20 @@ import software.bernie.geckolib.model.GeoModel;
 
 public class GenericBallModel extends GeoModel<GenericBallEntity> {
     @Override
-    public ResourceLocation getModelResource(GenericBallEntity animatable) {
-        return ResourceLocation.fromNamespaceAndPath(animatable.getGeoLocation().getNamespace(), "geo/projectiles/" + animatable.getGeoLocation().getPath() + ".geo.json");
+    public ResourceLocation getModelResource(final GenericBallEntity animatable) {
+        ResourceLocation resource = animatable.getModelResource();
+        return ResourceLocation.fromNamespaceAndPath(resource.getNamespace(), "geo/projectiles/" + resource.getPath() + ".geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureResource(GenericBallEntity animatable) {
-        return ResourceLocation.fromNamespaceAndPath(animatable.getTextureLocation().getNamespace(), "textures/entity/projectiles/" + animatable.getTextureLocation().getPath() + ".png");
+    public ResourceLocation getTextureResource(final GenericBallEntity animatable) {
+        ResourceLocation resource = animatable.getTextureResource();
+        return ResourceLocation.fromNamespaceAndPath(resource.getNamespace(), "textures/entity/projectiles/" + resource.getPath() + ".png");
     }
 
     @Override
-    public ResourceLocation getAnimationResource(GenericBallEntity animatable) {
-        return ResourceLocation.fromNamespaceAndPath(animatable.getAnimLocation().getNamespace(), "animations/projectiles/" + animatable.getAnimLocation().getPath() + ".animation.json");
+    public ResourceLocation getAnimationResource(final GenericBallEntity animatable) {
+        ResourceLocation resource = animatable.getAnimationResource();
+        return ResourceLocation.fromNamespaceAndPath(resource.getNamespace(), "animations/projectiles/" + resource.getPath() + ".animation.json");
     }
 }

@@ -1,25 +1,23 @@
 package by.dragonsurvivalteam.dragonsurvival.common.entity.projectiles;
 
-import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.projectile.ProjectileData;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.block_effects.ProjectileBlockEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.entity_effects.ProjectileDamageEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.entity_effects.ProjectileEntityEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.targeting.ProjectileTargeting;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -37,299 +35,223 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-import java.util.Optional;
 import javax.annotation.Nullable;
 
-public class GenericArrowEntity extends AbstractArrow {
+public class GenericArrowEntity extends AbstractArrow implements IEntityWithComplexSpawn {
+    private ProjectileData.GeneralData generalData;
+    private ProjectileData.GenericArrowData typeData;
     private int projectileLevel;
-    public static final EntityDataAccessor<String> NAME = SynchedEntityData.defineId(GenericArrowEntity.class, EntityDataSerializers.STRING);
-    public static final EntityDataAccessor<String> RES_LOCATION = SynchedEntityData.defineId(GenericArrowEntity.class, EntityDataSerializers.STRING);
-    private Optional<EntityPredicate> canHitPredicate;
-    private List<ProjectileTargeting> tickingEffects;
-    private List<ProjectileTargeting> commonHitEffects;
-    private List<ProjectileEntityEffect> entityHitEffects;
-    private List<ProjectileBlockEffect> blockHitEffects;
 
     // Copied from AbstractArrow.java
     @Nullable private IntOpenHashSet piercingIgnoreEntityIds;
-
     // Copied from AbstractArrow.java
     @Nullable private Entity lastDeflectedBy;
 
-    public GenericArrowEntity(
-            ResourceLocation name,
-            ResourceLocation location,
-            Optional<EntityPredicate> canHitPredicate,
-            List<ProjectileTargeting> tickingEffects,
-            List<ProjectileTargeting> commonHitEffects,
-            List<ProjectileEntityEffect> entityHitEffects,
-            List<ProjectileBlockEffect> blockHitEffects,
-            Level level,
-            int projectileLevel,
-            int piercingLevel) {
+    public GenericArrowEntity(final ProjectileData.GeneralData generalData, final ProjectileData.GenericArrowData typeData, final int projectileLevel, final Vec3 position, final Level level) {
         super(DSEntities.GENERIC_ARROW_ENTITY.get(), level);
-        this.setName(name);
-        this.setResourceLocation(location);
-        this.canHitPredicate = canHitPredicate;
-        this.tickingEffects = tickingEffects;
-        this.commonHitEffects = commonHitEffects;
-        this.entityHitEffects = entityHitEffects;
-        this.blockHitEffects = blockHitEffects;
+        this.generalData = generalData;
+        this.typeData = typeData;
         this.projectileLevel = projectileLevel;
-        this.setPierceLevel((byte)piercingLevel);
+
+        setPierceLevel((byte) typeData.piercingLevel().calculate(projectileLevel));
+        setPos(position.x, position.y, position.z);
+        reapplyPosition();
     }
 
-    public GenericArrowEntity(
-            ResourceLocation name,
-            ResourceLocation location,
-            Optional<EntityPredicate> canHitPredicate,
-            List<ProjectileTargeting> tickingEffects,
-            List<ProjectileTargeting> commonHitEffects,
-            List<ProjectileEntityEffect> entityHitEffects,
-            List<ProjectileBlockEffect> blockHitEffects,
-            Level level,
-            int projectileLevel,
-            int piercingLevel,
-            Vec3 position) {
-        this(name, location, canHitPredicate, tickingEffects, commonHitEffects, entityHitEffects, blockHitEffects, level, projectileLevel, piercingLevel);
-        this.setPos(position.x, position.y, position.z);
-        this.reapplyPosition();
-    }
-
-    public GenericArrowEntity(EntityType<? extends AbstractArrow> type, Level level) {
+    public GenericArrowEntity(final EntityType<? extends AbstractArrow> type, final Level level) {
         super(type, level);
-        this.projectileLevel = 0;
-        this.canHitPredicate = Optional.empty();
-        this.tickingEffects = List.of();
-        this.commonHitEffects = List.of();
-        this.entityHitEffects = List.of();
-        this.blockHitEffects = List.of();
     }
 
-    private record GenericArrowEntityInstance(
-            ResourceLocation name,
-            ResourceLocation texture,
-            Optional<EntityPredicate> canHitPredicate,
-            List<ProjectileTargeting> tickingEffects,
-            List<ProjectileTargeting> commonHitEffects,
-            List<ProjectileEntityEffect> entityHitEffects,
-            List<ProjectileBlockEffect> blockHitEffects,
-            int projectileLevel,
-            int piercingLevel)
-    {
-        public static final Codec<GenericArrowEntityInstance> CODEC = RecordCodecBuilder.create(
-                instance -> instance.group(
-                        ResourceLocation.CODEC.fieldOf("name").forGetter(GenericArrowEntityInstance::name),
-                        ResourceLocation.CODEC.fieldOf("texture").forGetter(GenericArrowEntityInstance::texture),
-                        EntityPredicate.CODEC.optionalFieldOf("can_hit_predicate").forGetter(GenericArrowEntityInstance::canHitPredicate),
-                        ProjectileTargeting.CODEC.listOf().fieldOf("ticking_effects").forGetter(GenericArrowEntityInstance::tickingEffects),
-                        ProjectileTargeting.CODEC.listOf().fieldOf("common_hit_effects").forGetter(GenericArrowEntityInstance::commonHitEffects),
-                        ProjectileEntityEffect.CODEC.listOf().fieldOf("entity_hit_effects").forGetter(GenericArrowEntityInstance::entityHitEffects),
-                        ProjectileBlockEffect.CODEC.listOf().fieldOf("block_hit_effects").forGetter(GenericArrowEntityInstance::blockHitEffects),
-                        Codec.INT.fieldOf("projectile_level").forGetter(GenericArrowEntityInstance::projectileLevel),
-                        Codec.INT.fieldOf("piercing_level").forGetter(GenericArrowEntityInstance::piercingLevel)
-                ).apply(instance, GenericArrowEntityInstance::new)
-        );
+    @Override
+    public void writeSpawnData(@NotNull final RegistryFriendlyByteBuf buffer) {
+        ByteBufCodecs.fromCodecWithRegistries(ProjectileData.GeneralData.CODEC).encode(buffer, generalData);
+        ByteBufCodecs.fromCodecWithRegistries(ProjectileData.GenericArrowData.CODEC).encode(buffer, typeData);
+        buffer.writeVarInt(projectileLevel);
+    }
 
-        public void load(GenericArrowEntity entity) {
-            entity.setName(name);
-            entity.setResourceLocation(texture);
-            entity.canHitPredicate = canHitPredicate;
-            entity.tickingEffects = tickingEffects;
-            entity.commonHitEffects = commonHitEffects;
-            entity.entityHitEffects = entityHitEffects;
-            entity.blockHitEffects = blockHitEffects;
-            entity.projectileLevel = projectileLevel;
-            entity.setPierceLevel((byte)piercingLevel);
+    @Override
+    public void readSpawnData(@NotNull final RegistryFriendlyByteBuf buffer) {
+        generalData = ByteBufCodecs.fromCodecWithRegistries(ProjectileData.GeneralData.CODEC).decode(buffer);
+        typeData = ByteBufCodecs.fromCodecWithRegistries(ProjectileData.GenericArrowData.CODEC).decode(buffer);
+        projectileLevel = buffer.readVarInt();
+    }
+
+    @Override
+    public void addAdditionalSaveData(@NotNull final CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+
+        RegistryOps<Tag> context = level().registryAccess().createSerializationContext(NbtOps.INSTANCE);
+        ProjectileData.GeneralData.CODEC.encodeStart(context, generalData).ifSuccess(data -> tag.put(GENERAL_DATA, data));
+        ProjectileData.GenericArrowData.CODEC.encodeStart(context, typeData).ifSuccess(data -> tag.put(TYPE_DATA, data));
+
+        tag.putInt(PROJECTILE_LEVEL, projectileLevel);
+    }
+
+    @Override
+    public void readAdditionalSaveData(@NotNull final CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        RegistryOps<Tag> context = level().registryAccess().createSerializationContext(NbtOps.INSTANCE);
+
+        if (tag.contains(GENERAL_DATA)) {
+            ProjectileData.GeneralData.CODEC.parse(context, tag.get(GENERAL_DATA)).result().ifPresent(data -> generalData = data);
         }
 
-        public static GenericArrowEntityInstance fromEntity(GenericArrowEntity entity) {
-            return new GenericArrowEntityInstance(
-                    ResourceLocation.read(entity.entityData.get(NAME)).getOrThrow(),
-                    entity.getResourceLocation(),
-                    entity.canHitPredicate,
-                    entity.tickingEffects,
-                    entity.commonHitEffects,
-                    entity.entityHitEffects,
-                    entity.blockHitEffects,
-                    entity.projectileLevel,
-                    entity.getPierceLevel()
-            );
+        if (tag.contains(TYPE_DATA)) {
+            ProjectileData.GenericArrowData.CODEC.parse(context, tag.get(TYPE_DATA)).result().ifPresent(data -> typeData = data);
         }
-    }
 
-    private void setName(ResourceLocation name) {
-        this.entityData.set(NAME, name.toString());
-    }
-
-    @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag compound) {
-        super.addAdditionalSaveData(compound);
-        Tag data = GenericArrowEntityInstance.CODEC.encodeStart(level().registryAccess().createSerializationContext(NbtOps.INSTANCE), GenericArrowEntityInstance.fromEntity(this)).getOrThrow();
-        compound.put("generic_arrow_entity_instance", data);
-    }
-
-    @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
-        GenericArrowEntityInstance.CODEC.parse(level().registryAccess().createSerializationContext(NbtOps.INSTANCE), compound.get("generic_arrow_entity_instance")).getOrThrow().load(this);
-    }
-
-    @Override
-    public byte getPierceLevel() {
-        if(!level().isClientSide) {
-            return super.getPierceLevel();
-        } else {
-            // If we don't lie and return 0, the client will hang in a loop checking for deflects
-            return 0;
-        }
-    }
-
-    private void setResourceLocation(ResourceLocation location) {
-        this.entityData.set(RES_LOCATION, location.toString());
-    }
-
-    public ResourceLocation getResourceLocation() {
-        return ResourceLocation.read(this.entityData.get(RES_LOCATION)).getOrThrow();
-    }
-
-    @Override
-    protected void defineSynchedData(SynchedEntityData.@NotNull Builder pBuilder) {
-        super.defineSynchedData(pBuilder);
-        pBuilder.define(NAME, ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "generic_arrow").toString());
-        pBuilder.define(RES_LOCATION,  ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "generic_arrow").toString());
+        projectileLevel = tag.getInt(PROJECTILE_LEVEL);
     }
 
     @Override
     protected @NotNull Component getTypeName() {
-        Optional<ResourceLocation> name = ResourceLocation.read(entityData.get(NAME)).result();
-        if(name.isEmpty()) {
-            return super.getTypeName();
-        }
-        return Component.translatable(Translation.Type.PROJECTILE.wrap(name.get()));
+        return Component.translatable(Translation.Type.PROJECTILE.wrap(generalData.name()));
     }
 
     @Override
-    protected boolean canHitEntity(@NotNull Entity target) {
-        boolean canHit = super.canHitEntity(target) && (this.piercingIgnoreEntityIds == null || !this.piercingIgnoreEntityIds.contains(target.getId()));
-        if(canHitPredicate.isPresent() && level() instanceof ServerLevel serverLevel){
-            canHit = canHit && canHitPredicate.get().matches(serverLevel, position(), target);
+    protected boolean canHitEntity(@NotNull final Entity target) {
+        if (!(super.canHitEntity(target) && (this.piercingIgnoreEntityIds == null || !this.piercingIgnoreEntityIds.contains(target.getId())))) {
+            return false;
         }
-        return canHit;
+
+        if (level() instanceof ServerLevel serverLevel && generalData.entityHitCondition().isPresent()) {
+            return generalData.entityHitCondition().get().test(Condition.projectileContext(serverLevel, this, target));
+        }
+
+        return true;
     }
 
     private void onHitCommon() {
-        if (!level().isClientSide) {
-            for (ProjectileTargeting effect : commonHitEffects) {
-                effect.apply(this, projectileLevel);
-            }
+        if (level().isClientSide()) {
+            return;
+        }
+
+        for (ProjectileTargeting effect : generalData.commonHitEffects()) {
+            effect.apply(this, projectileLevel);
         }
     }
 
     @Override
-    protected void onHitBlock(BlockHitResult result) {
+    protected void onHitBlock(@NotNull final BlockHitResult result) {
         super.onHitBlock(result);
-        if (!level().isClientSide) {
-            for (ProjectileBlockEffect effect : blockHitEffects) {
-                effect.apply(this, result.getBlockPos(), projectileLevel);
-            }
-            onHitCommon();
+
+        if (level().isClientSide()) {
+            return;
         }
+
+        for (ProjectileBlockEffect effect : generalData.blockHitEffects()) {
+            effect.apply(this, result.getBlockPos(), projectileLevel);
+        }
+
+        onHitCommon();
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult result) {
+    protected void onHitEntity(@NotNull final EntityHitResult result) {
         Entity target = result.getEntity();
-        Entity attacker = getOwner();
-        if(!level().isClientSide)
-        {
-            boolean targetIsInvulnerableToDamageType = false;
-            boolean considerImmunityFrames = true;
-            for(ProjectileEntityEffect effect : entityHitEffects)
-            {
-                if(effect instanceof ProjectileDamageEffect damageEffect)
-                {
-                    if(damageEffect.damageType().is(DamageTypeTags.BYPASSES_COOLDOWN))
-                    {
-                        considerImmunityFrames = false;
-                    }
 
-                    DamageSource source = new DamageSource(damageEffect.damageType(), attacker);
-                    if(target.isInvulnerableTo(source))
-                    {
-                        targetIsInvulnerableToDamageType = true;
-                    }
-                }
+        if (getPierceLevel() > 0) {
+            if (piercingIgnoreEntityIds == null) {
+                piercingIgnoreEntityIds = new IntOpenHashSet(5);
             }
 
-            boolean targetIsInImmunityFrames = target.invulnerableTime > 10.0F;
-            boolean targetIsInvulnerable = considerImmunityFrames ? targetIsInImmunityFrames && targetIsInvulnerableToDamageType : targetIsInvulnerableToDamageType;
+            if (piercingIgnoreEntityIds.size() >= getPierceLevel() + 1) {
+                discard();
+                return;
+            }
 
-            ProjectileDeflection deflection = target.deflection(this);
-            if (target != this.lastDeflectedBy
-                    && deflection != ProjectileDeflection.NONE
-                    && this.piercingIgnoreEntityIds.size() >= this.getPierceLevel() + 1
-                    && targetIsInvulnerable
-                    // Short-circuit eval will prevent this from being called in situations where we don't want it
-                    && this.deflect(ProjectileDeflection.REVERSE, this.getOwner(), target, target instanceof Player)) {
-                this.lastDeflectedBy = target;
-            } else {
-                if(!targetIsInvulnerable) {
-                    for (ProjectileEntityEffect effect : entityHitEffects) {
-                        effect.apply(this, result.getEntity(), projectileLevel);
-                    }
+            piercingIgnoreEntityIds.add(target.getId());
+        }
 
-                    if (attacker instanceof ServerPlayer serverPlayer && !isSilent()) {
-                        serverPlayer.connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
-                    }
+        if (level().isClientSide()) {
+            return;
+        }
+
+        Entity owner = getOwner();
+
+        boolean targetIsImmune = false;
+        boolean considerImmunityFrames = true;
+
+        for (ProjectileEntityEffect effect : generalData.entityHitEffects()) {
+            if (effect instanceof ProjectileDamageEffect damageEffect) {
+                if (damageEffect.damageType().is(DamageTypeTags.BYPASSES_COOLDOWN)) {
+                    considerImmunityFrames = false;
                 }
 
-                // Copied from AbstractArrow.java
-                if (this.getPierceLevel() > 0) {
-                    if (this.piercingIgnoreEntityIds == null) {
-                        this.piercingIgnoreEntityIds = new IntOpenHashSet(5);
-                    }
-
-                    if (this.piercingIgnoreEntityIds.size() >= this.getPierceLevel() + 1) {
-                        this.discard();
-                        return;
-                    }
-
-                    this.piercingIgnoreEntityIds.add(target.getId());
-                } else {
-                    this.discard();
+                if (target.isInvulnerableTo(new DamageSource(damageEffect.damageType(), owner))) {
+                    // TODO :: do we really cancel all damage effects because the target has immunity for one of them?
+                    targetIsImmune = true;
                 }
             }
-            onHitCommon();
+        }
+
+        boolean hasImmunityFrames = target.invulnerableTime > 10;
+        boolean isImmune = considerImmunityFrames ? hasImmunityFrames && targetIsImmune : targetIsImmune;
+        ProjectileDeflection deflection = target.deflection(this);
+
+        if (target != lastDeflectedBy
+                && deflection != ProjectileDeflection.NONE
+                && piercingIgnoreEntityIds != null && piercingIgnoreEntityIds.size() >= getPierceLevel() + 1
+                && isImmune
+                // Short-circuit eval will prevent this from being called in situations where we don't want it
+                && deflect(ProjectileDeflection.REVERSE, getOwner(), target, target instanceof Player)) {
+            lastDeflectedBy = target;
+        } else if (!isImmune) {
+            // TODO :: immunity to a single damage type skips all entity effects here
+            for (ProjectileEntityEffect effect : generalData.entityHitEffects()) {
+                effect.apply(this, result.getEntity(), projectileLevel);
+            }
+
+            if (owner instanceof Player && target instanceof ServerPlayer serverPlayer && !isSilent()) {
+                serverPlayer.connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0));
+            }
+        }
+
+        onHitCommon();
+
+        if (getPierceLevel() == 0) {
+            discard();
         }
     }
 
     @Override
     public void tick() {
         super.tick();
-        if (!level().isClientSide && !inGround) {
-            for (ProjectileTargeting effect : tickingEffects) {
-                effect.apply(this, projectileLevel);
-            }
+
+        if (level().isClientSide() || inGround) {
+            return;
         }
+
+        for (ProjectileTargeting effect : generalData.tickingEffects()) {
+            effect.apply(this, projectileLevel);
+        }
+    }
+
+    public ResourceLocation getResource() {
+        return typeData.texture().get(projectileLevel);
     }
 
     @Override
     protected @NotNull ItemStack getPickupItem() {
-        // Can't return empty stack or we get an encoding error (player will never be able to pick this up anyways)
-        ItemStack pickUpItem = new ItemStack(Items.STONE, 1);
-        pickUpItem.set(DataComponents.INTANGIBLE_PROJECTILE, Unit.INSTANCE);
-        return pickUpItem;
+        // Empty item stack will cause encoding issues
+        ItemStack stack = Items.ARROW.getDefaultInstance();
+        stack.set(DataComponents.INTANGIBLE_PROJECTILE, Unit.INSTANCE);
+        return stack;
     }
 
     @Override
     protected @NotNull ItemStack getDefaultPickupItem() {
-        // Can't return empty stack or we get an encoding error (player will never be able to pick this up anyways)
-        ItemStack pickUpItem = new ItemStack(Items.STONE, 1);
-        pickUpItem.set(DataComponents.INTANGIBLE_PROJECTILE, Unit.INSTANCE);
-        return pickUpItem;
+        // Empty item stack will cause encoding issues
+        ItemStack stack = Items.ARROW.getDefaultInstance();
+        stack.set(DataComponents.INTANGIBLE_PROJECTILE, Unit.INSTANCE);
+        return stack;
     }
+
+    private static final String GENERAL_DATA = "general_data";
+    private static final String TYPE_DATA = "type_data";
+
+    private static final String PROJECTILE_LEVEL = "projectile_level";
 }

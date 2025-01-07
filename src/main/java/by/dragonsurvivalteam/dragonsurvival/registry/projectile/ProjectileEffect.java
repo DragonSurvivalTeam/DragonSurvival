@@ -26,6 +26,7 @@ public interface ProjectileEffect<T> {
     LootContextParamSet POSITION_CONTEXT = new LootContextParamSet.Builder()
             .required(LootContextParams.THIS_ENTITY)
             .required(LootContextParams.ORIGIN)
+            .required(LootContextParams.BLOCK_STATE)
             .build();
 
     LootContextParamSet ENTITY_CONTEXT = new LootContextParamSet.Builder()
@@ -60,6 +61,7 @@ public interface ProjectileEffect<T> {
         LootParams parameters = new LootParams.Builder(level)
                 .withParameter(LootContextParams.THIS_ENTITY, projectile)
                 .withParameter(LootContextParams.ORIGIN, origin)
+                .withParameter(LootContextParams.BLOCK_STATE, level.getBlockState(BlockPos.containing(origin)))
                 .create(POSITION_CONTEXT);
         return new LootContext.Builder(parameters).create(Optional.empty());
     }

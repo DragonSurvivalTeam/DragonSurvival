@@ -20,7 +20,7 @@ public class GenericBallRenderer extends GeoEntityRenderer<GenericBallEntity> {
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull final GenericBallEntity entity) {
-        ResourceLocation resource = animatable.getTextureLocation();
+        ResourceLocation resource = animatable.getTextureResource();
         return ResourceLocation.fromNamespaceAndPath(resource.getNamespace(), "textures/entity/projectiles/" + resource.getPath() + ".png");
     }
 }
