@@ -44,8 +44,6 @@ public record ProjectileData(GeneralData generalData, Either<GenericBallData, Ge
         event.dataPackRegistry(REGISTRY, DIRECT_CODEC, DIRECT_CODEC);
     }
 
-//    public static final GeneralData EMPTY_GENERAL = new GeneralData(DragonSurvival.res("empty"), Optional.empty(), List.of(), List.of(), List.of(), List.of());
-//    public static final GenericBallData EMPTY_BALL = new GenericBallData(new LevelBasedResource(List.of(new LevelBasedResource.TextureEntry(DragonSurvival.res()))))
 
     public record GeneralData(
             ResourceLocation name,
