@@ -34,32 +34,27 @@ public interface ProjectileEffect<T> {
             .required(LootContextParams.ORIGIN)
             .build();
 
-    Codec<ProjectileEffect<?>> GENERIC_CODEC =
-            Codec.either(ProjectileBlockEffect.CODEC, Codec.either(ProjectileEntityEffect.CODEC, ProjectileWorldEffect.CODEC))
-                    .flatXmap(
-                            either -> either.map(
-                                    DataResult::success,
-                                    other -> other.map(
-                                            DataResult::success,
-                                            DataResult::success
-                                    )
-                            ),
-                            effect -> {
-                                if (effect instanceof ProjectileBlockEffect blockEffect) {
-                                    return DataResult.success(Either.left(blockEffect));
-                                }
+    Codec<ProjectileEffect<?>> GENERIC_CODEC = Codec.either(
+                    ProjectileBlockEffect.CODEC,
+                    Codec.either(ProjectileEntityEffect.CODEC, ProjectileWorldEffect.CODEC))
+            .flatXmap(
+                    either -> either.map(
+                            DataResult::success, other -> other.map(DataResult::success, DataResult::success)),
+                    effect -> {
+                        if (effect instanceof ProjectileBlockEffect blockEffect) {
+                            return DataResult.success(Either.left(blockEffect));
+                        }
 
-                                if (effect instanceof ProjectileEntityEffect entityEffect) {
-                                    return DataResult.success(Either.right(Either.left(entityEffect)));
-                                }
+                        if (effect instanceof ProjectileEntityEffect entityEffect) {
+                            return DataResult.success(Either.right(Either.left(entityEffect)));
+                        }
 
-                                if (effect instanceof ProjectileWorldEffect worldEffect) {
-                                    return DataResult.success(Either.right(Either.right(worldEffect)));
-                                }
+                        if (effect instanceof ProjectileWorldEffect worldEffect) {
+                            return DataResult.success(Either.right(Either.right(worldEffect)));
+                        }
 
-                                return DataResult.error(() -> "Invalid ProjectileEffect type: [" + effect.getClass().getName() + "]");
-                            }
-                    );
+                        return DataResult.error(() -> "Invalid ProjectileEffect type: [" + effect.getClass().getName() + "]");
+                    });
 
     static LootContext positionContext(final ServerLevel level, final Projectile projectile, final Vec3 origin) {
         LootParams parameters = new LootParams.Builder(level)
@@ -79,21 +74,23 @@ public interface ProjectileEffect<T> {
     }
 
     default boolean applyGeneric(final Projectile projectile, final Object target, final int level) {
-        return switch (this) {
-            case ProjectileBlockEffect blockEffect when target instanceof BlockPos position -> {
-                blockEffect.apply(projectile, position, level);
-                yield true;
-            }
-            case ProjectileEntityEffect entityEffect when target instanceof Entity entity -> {
-                entityEffect.apply(projectile, entity, level);
-                yield true;
-            }
-            case ProjectileWorldEffect worldEffect when target == null -> {
-                worldEffect.apply(projectile, null, level);
-                yield true;
-            }
-            default -> false;
-        };
+        //noinspection IfCanBeSwitch -> spotless is too stupid to handle this
+        if (this instanceof ProjectileBlockEffect blockEffect && target instanceof BlockPos position) {
+            blockEffect.apply(projectile, position, level);
+            return true;
+        }
+
+        if (this instanceof ProjectileEntityEffect entityEffect && target instanceof Entity entity) {
+            entityEffect.apply(projectile, entity, level);
+            return true;
+        }
+
+        if (this instanceof ProjectileWorldEffect worldEffect && target == null) {
+            worldEffect.apply(projectile, null, level);
+            return true;
+        }
+
+        return false;
     }
 
     default List<MutableComponent> getDescription(final Player dragon, final int level) { return List.of(); }

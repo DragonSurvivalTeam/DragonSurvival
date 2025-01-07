@@ -1,10 +1,11 @@
+//file:noinspection GroovyAssignabilityCheck -> ignore
 plugins {
 	id 'eclipse'
 	id 'idea'
 	id 'maven-publish'
 	id "org.jetbrains.gradle.plugin.idea-ext" version "1.1.7"
 	id 'net.neoforged.gradle.userdev' version '7.0.165'
-	id 'com.diffplug.spotless' version "7.0.0.BETA4"
+	id 'com.diffplug.spotless' version "7.0.0"
 }
 
 version = minecraft_version + "-v" + mod_version + "-" + new Date().format("dd.MM.yyyy")
@@ -80,10 +81,10 @@ dependencies {
 	runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
 
 	// Test
-	implementation "curse.maven:jade-324717:5846105" // 15.8.2
+	implementation "curse.maven:jade-324717:6011258" // 15.9.2
 
-//	implementation "maven.modrinth:sodium:mc1.21-0.6.0-beta.2-neoforge"
-//	implementation "curse.maven:irisshaders-455508:5765375" // 1.8 Beta 5
+//	implementation "maven.modrinth:sodium:mc1.21.1-0.6.5-neoforge"
+//	implementation "curse.maven:irisshaders-455508:5957827" // 1.8.1
 
 //	implementation "curse.maven:apothic-attributes-898963:5751458" // 2.4.0
 //	implementation "curse.maven:placebo-283644:5869769" // 9.5.4
@@ -148,7 +149,7 @@ spotless {
 
 		// define the steps to apply to those files
 		trimTrailingWhitespace()
-		indentWithTabs() // or spaces. Takes an integer argument if you don't like 4
+		leadingSpacesToTabs()
 		endWithNewline()
 	}
 
@@ -157,14 +158,9 @@ spotless {
 
 		// note: '' is for all other imports \\# is a prefix for static
 		// There's an empty line between all groups; use | to join without empty lines
-		importOrder(
-				'',
-				'java|javax',
-				'\\#'
-		)
-
+		importOrder('', 'java|javax', '\\#')
 		removeUnusedImports()
 		formatAnnotations()
-		indentWithSpaces()
+		leadingTabsToSpaces()
 	}
 }
