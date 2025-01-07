@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncEffectModification
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.EffectModifications;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
@@ -33,33 +34,31 @@ import org.jetbrains.annotations.NotNull;
 import java.text.NumberFormat;
 import javax.annotation.Nullable;
 
-public record EffectModification(ResourceLocation id, HolderSet<MobEffect> effects, Modification durationModification, Modification amplifierModification, LevelBasedValue duration) {
+public record EffectModification(ResourceLocation id, HolderSet<MobEffect> effects, Modification durationModification, Modification amplifierModification, LevelBasedValue duration, boolean isHidden) {
     @Translation(comments = {
             "§6■ Effect modifications:§r",
             "- Duration %s",
             "- Amplifier %s",
-            "\nAffected effects:\n%s"
+            "\nAffected effects:"
     })
-    private static final String EFFECT_MODIFICATIONS = Translation.Type.ABILITY.wrap("general.effect_modifications");
+    private static final String EFFECT_MODIFICATIONS = Translation.Type.GUI.wrap("effect_modification");
 
     @Translation(comments = "increased by %s")
-    private static final String INCREASED = Translation.Type.ABILITY.wrap("general.effect_modifications.increased");
+    private static final String INCREASED = Translation.Type.GUI.wrap("effect_modification.increased");
 
     @Translation(comments = "reduced by %s")
-    private static final String REDUCED = Translation.Type.ABILITY.wrap("general.effect_modifications.reduced");
+    private static final String REDUCED = Translation.Type.GUI.wrap("effect_modification.reduced");
 
     @Translation(comments = "is unmodified")
-    private static final String UNMODIFIED = Translation.Type.ABILITY.wrap("general.effect_modifications.unmodified");
-
-    @Translation(comments = " %s seconds") // TODO :: make it generic (for global use)?
-    private static final String SECONDS = Translation.Type.ABILITY.wrap("general.effect_modifications.seconds");
+    private static final String UNMODIFIED = Translation.Type.GUI.wrap("effect_modification.unmodified");
 
     public static final Codec<EffectModification> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ResourceLocation.CODEC.fieldOf("id").forGetter(EffectModification::id),
             RegistryCodecs.homogeneousList(Registries.MOB_EFFECT).fieldOf("effects").forGetter(EffectModification::effects),
             Modification.CODEC.fieldOf("duration_modification").forGetter(EffectModification::durationModification),
             Modification.CODEC.fieldOf("amplifier_modification").forGetter(EffectModification::amplifierModification),
-            LevelBasedValue.CODEC.optionalFieldOf("duration", LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)).forGetter(EffectModification::duration)
+            LevelBasedValue.CODEC.optionalFieldOf("duration", LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)).forGetter(EffectModification::duration),
+            Codec.BOOL.optionalFieldOf("is_hidden", false).forGetter(EffectModification::isHidden)
     ).apply(instance, EffectModification::new));
 
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final LivingEntity target) {
@@ -73,7 +72,7 @@ public record EffectModification(ResourceLocation id, HolderSet<MobEffect> effec
         }
 
         data.remove(target, instance);
-        data.add(target, new Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, id, Component.empty()), ability.level(), newDuration));
+        data.add(target, new Instance(this, ClientEffectProvider.ClientData.from(dragon, ability), ability.level(), newDuration));
     }
 
     public void remove(final LivingEntity target) {
@@ -81,29 +80,16 @@ public record EffectModification(ResourceLocation id, HolderSet<MobEffect> effec
         data.remove(target, data.get(id));
     }
 
-    public @NotNull MutableComponent getDescription(int abilityLevel) {
+    public MutableComponent getDescription(int abilityLevel) {
         Component duration = getModificationDescription(durationModification, abilityLevel, true);
         Component amplifier = getModificationDescription(amplifierModification, abilityLevel, false);
-
-        MutableComponent effects = null;
+        MutableComponent description = Component.translatable(EFFECT_MODIFICATIONS, duration, amplifier);
 
         for (Holder<MobEffect> effect : this.effects) {
-            Component effectDescription = DSColors.dynamicValue(Component.translatable(effect.value().getDescriptionId()));
-
-            if (effects == null) {
-                effects = Component.literal("- ").append(effectDescription);
-            } else {
-                effects.append(Component.literal("\n- ").append(effectDescription));
-            }
+            description.append(Component.literal("\n- ").append(DSColors.dynamicValue(Component.translatable(effect.value().getDescriptionId()))));
         }
 
-        if (effects == null) {
-            effects = Component.empty();
-        } else {
-            effects.append(Component.literal("\n"));
-        }
-
-        return Component.translatable(EFFECT_MODIFICATIONS, duration, amplifier, effects);
+        return description;
     }
 
     private Component getModificationDescription(final Modification modification, final int abilityLevel, boolean isTime) {
@@ -127,7 +113,7 @@ public record EffectModification(ResourceLocation id, HolderSet<MobEffect> effec
             return Component.translatable(UNMODIFIED);
         }
 
-        Component component = isTime ? Component.translatable(SECONDS, DSColors.dynamicValue(Functions.ticksToSeconds(value))) : DSColors.dynamicValue(value);
+        Component component = isTime ? Component.translatable(LangKey.SECONDS, DSColors.dynamicValue(Functions.ticksToSeconds(value))) : DSColors.dynamicValue(value);
 
         if (calculated < 0) {
             return Component.translatable(REDUCED, component);
@@ -166,6 +152,11 @@ public record EffectModification(ResourceLocation id, HolderSet<MobEffect> effec
         }
 
         @Override
+        public Component getDescription() {
+            return baseData().getDescription(appliedAbilityLevel());
+        }
+
+        @Override
         public void onAddedToStorage(final Entity storageHolder) {
             if (storageHolder instanceof ServerPlayer player) {
                 PacketDistributor.sendToPlayer(player, new SyncEffectModification(player.getId(), this, false));
@@ -180,13 +171,18 @@ public record EffectModification(ResourceLocation id, HolderSet<MobEffect> effec
         }
 
         @Override
+        public ResourceLocation id() {
+            return baseData().id();
+        }
+
+        @Override
         public int getDuration() {
             return (int) baseData().duration().calculate(appliedAbilityLevel());
         }
 
         @Override
-        public ResourceLocation id() {
-            return baseData().id();
+        public boolean isInvisible() {
+            return baseData().isHidden();
         }
     }
 }

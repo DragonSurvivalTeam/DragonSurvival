@@ -1,18 +1,14 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.HarvestBonus;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
-import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,15 +36,13 @@ public record HarvestBonusEffect(List<HarvestBonus> bonuses) implements AbilityE
         List<MutableComponent> components = new ArrayList<>();
 
         for (HarvestBonus bonus : bonuses) {
-            int harvestBonus = (int) bonus.harvestBonus().calculate(ability.level());
-            String breakSpeedMultiplier = NumberFormat.getPercentInstance().format(1 + bonus.breakSpeedMultiplier().calculate(ability.level()));
-            components.add(Component.translatable(LangKey.ABILITY_HARVEST_LEVEL_BONUS, DSColors.dynamicValue(harvestBonus), DSColors.dynamicValue(breakSpeedMultiplier)));
+            components.add(bonus.getDescription(ability.level()));
         }
 
         return components;
     }
 
-    public static List<AbilityEntityEffect> single(final HarvestBonus bonus) {
+    public static List<AbilityEntityEffect> only(final HarvestBonus bonus) {
         return List.of(new HarvestBonusEffect(List.of(bonus)));
     }
 

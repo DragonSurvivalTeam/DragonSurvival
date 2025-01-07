@@ -1,7 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.projectile.entity_effects;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -18,6 +17,9 @@ import net.minecraft.world.item.enchantment.LevelBasedValue;
 import java.util.List;
 
 public record ProjectileDamageEffect(Holder<DamageType> damageType, LevelBasedValue amount) implements ProjectileEntityEffect {
+    @Translation(comments = "§6■ %s §6Projectile Damage:§r %s")
+    private static final String ABILITY_PROJECTILE_DAMAGE = Translation.Type.GUI.wrap("projectile.damage_effect");
+
     public static final MapCodec<ProjectileDamageEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             DamageType.CODEC.fieldOf("damage_type").forGetter(ProjectileDamageEffect::damageType),
             LevelBasedValue.CODEC.fieldOf("amount").forGetter(ProjectileDamageEffect::amount)
@@ -33,7 +35,7 @@ public record ProjectileDamageEffect(Holder<DamageType> damageType, LevelBasedVa
     public List<MutableComponent> getDescription(final Player dragon, final int level) {
         //noinspection DataFlowIssue -> key is present
         MutableComponent translation = Component.translatable(Translation.Type.DAMAGE_TYPE.wrap(damageType.getKey().location()));
-        return List.of(Component.translatable(LangKey.ABILITY_PROJECTILE_DAMAGE, translation.withColor(DSColors.GOLD), amount.calculate(level)));
+        return List.of(Component.translatable(ABILITY_PROJECTILE_DAMAGE, translation.withColor(DSColors.GOLD), amount.calculate(level)));
     }
 
     @Override

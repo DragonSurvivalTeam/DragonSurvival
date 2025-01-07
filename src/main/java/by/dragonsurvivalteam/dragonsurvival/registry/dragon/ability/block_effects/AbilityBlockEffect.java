@@ -6,7 +6,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effec
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.SummonEntityEffect;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.client.particle.Particle;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
@@ -24,11 +23,6 @@ import java.util.List;
 import java.util.function.Function;
 import javax.annotation.Nullable;
 
-/*
-- destroy block
-- explode block
-- do something with falling block entities to make blocks explode and move around but not actually destroy them through that?
-*/
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public interface AbilityBlockEffect {
     ResourceKey<Registry<MapCodec<? extends AbilityBlockEffect>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("ability_block_effects"));

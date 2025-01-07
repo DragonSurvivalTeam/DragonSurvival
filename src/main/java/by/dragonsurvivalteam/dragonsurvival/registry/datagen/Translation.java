@@ -56,12 +56,6 @@ public @interface Translation {
         EFFECT_DESCRIPTION("effect." + DragonSurvival.MODID + ".", ".desc"),
         ENCHANTMENT("enchantment." + DragonSurvival.MODID + ".", ""),
         ENCHANTMENT_DESCRIPTION("enchantment." + DragonSurvival.MODID + ".", ".desc"),
-
-        DESCRIPTION(DragonSurvival.MODID + ".description.", ""),
-        DESCRIPTION_ADDITION(DragonSurvival.MODID + ".description.addition.", ""),
-
-        DAMAGE_TYPE("damage_type." + DragonSurvival.MODID + ".", ""),
-
         /** Only has one argument (the player that died) */
         DEATH("death.attack." + DragonSurvival.MODID + ".", ""),
         /** Has two arguments (the player that died and the attacking entity) */
@@ -69,11 +63,22 @@ public @interface Translation {
         /** Has three arguments (the player that died, the attacking entity and used item) */
         DEATH_ITEM("death.attack." + DragonSurvival.MODID + ".", ".item"),
 
+        DAMAGE_TYPE("damage_type." + DragonSurvival.MODID + ".", ""),
+
+        // Internal
+        DESCRIPTION(DragonSurvival.MODID + ".description.", ""),
+        DESCRIPTION_ADDITION(DragonSurvival.MODID + ".description.addition.", ""),
+        GUI(DragonSurvival.MODID + ".gui.", ""),
+        KEYBIND(DragonSurvival.MODID + ".keybind.", ""),
+
+        ADVANCEMENT(DragonSurvival.MODID + ".advancement.", ""),
+        ADVANCEMENT_DESCRIPTION(DragonSurvival.MODID + ".advancement.", ".desc"),
+
         CONFIGURATION(DragonSurvival.MODID + ".configuration.", ".tooltip"),
 
+        // May be used externally
         ABILITY("dragon_ability." + DragonSurvival.MODID + ".", ""),
         ABILITY_DESCRIPTION("dragon_ability." + DragonSurvival.MODID + ".", ".desc"),
-        ABILITY_EFFECT("dragon_ability." + DragonSurvival.MODID + ".", ".effect"),
 
         DRAGON_SPECIES("dragon_species." + DragonSurvival.MODID + ".", ""),
         DRAGON_SPECIES_DESCRIPTION("dragon_species." + DragonSurvival.MODID + ".", ".desc"),
@@ -84,16 +89,9 @@ public @interface Translation {
 
         PROJECTILE("projectile." + DragonSurvival.MODID + ".", ""),
 
-        ADVANCEMENT(DragonSurvival.MODID + ".advancement.", ""),
-        ADVANCEMENT_DESCRIPTION(DragonSurvival.MODID + ".advancement.", ".desc"),
-
         SKIN_PART("skin_part." + DragonSurvival.MODID + ".", ""),
 
-        GUI(DragonSurvival.MODID + ".gui.", ""),
-
-        KEYBIND(DragonSurvival.MODID + ".keybind.", ""),
-
-        EMOTE(DragonSurvival.MODID + ".emote.", ""),
+        EMOTE("dragon_emote." + DragonSurvival.MODID + ".", ""),
 
         BODY("dragon_body." + DragonSurvival.MODID + ".", ""),
         BODY_DESCRIPTION("dragon_body." + DragonSurvival.MODID + ".", ".desc"),
@@ -103,8 +101,7 @@ public @interface Translation {
         STAGE("dragon_stage." + DragonSurvival.MODID + ".", ""),
         STAGE_DESCRIPTION("dragon_stage." + DragonSurvival.MODID + ".", ".desc"),
 
-        TARGET_MODE("target_mode." + DragonSurvival.MODID + ".", ""),
-
+        // Misc.
         ENUM("enum.", ""),
 
         /**

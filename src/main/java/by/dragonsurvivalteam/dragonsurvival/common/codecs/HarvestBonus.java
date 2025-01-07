@@ -4,8 +4,10 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncHarvestBonus;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HarvestBonuses;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
+import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
@@ -16,6 +18,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -26,10 +29,18 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
+import java.text.NumberFormat;
 import java.util.Optional;
 import javax.annotation.Nullable;
 
-public record HarvestBonus(ResourceLocation id, Optional<HolderSet<Block>> blocks, LevelBasedValue harvestBonus, LevelBasedValue breakSpeedMultiplier, LevelBasedValue duration) {
+public record HarvestBonus(ResourceLocation id, Optional<HolderSet<Block>> blocks, LevelBasedValue harvestBonus, LevelBasedValue breakSpeedMultiplier, LevelBasedValue duration, boolean isHidden) {
+    @Translation(comments = {
+            "§6■ Harvest Bonus:§r",
+            " - Harvest level: %s",
+            " - Break speed: %s"
+    })
+    private static final String HARVEST_BONUS = Translation.Type.GUI.wrap("harvest_bonus");
+
     public static int NO_BONUS_VALUE = 0;
     public static final LevelBasedValue NO_BONUS = LevelBasedValue.constant(NO_BONUS_VALUE);
 
@@ -38,7 +49,8 @@ public record HarvestBonus(ResourceLocation id, Optional<HolderSet<Block>> block
             RegistryCodecs.homogeneousList(Registries.BLOCK).optionalFieldOf("blocks").forGetter(HarvestBonus::blocks),
             LevelBasedValue.CODEC.optionalFieldOf("harvest_bonus", NO_BONUS).forGetter(HarvestBonus::harvestBonus),
             LevelBasedValue.CODEC.optionalFieldOf("break_speed_multiplier", NO_BONUS).forGetter(HarvestBonus::breakSpeedMultiplier),
-            LevelBasedValue.CODEC.optionalFieldOf("duration", LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)).forGetter(HarvestBonus::duration)
+            LevelBasedValue.CODEC.optionalFieldOf("duration", LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)).forGetter(HarvestBonus::duration),
+            Codec.BOOL.optionalFieldOf("is_hidden", false).forGetter(HarvestBonus::isHidden)
     ).apply(instance, HarvestBonus::new));
 
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final LivingEntity target) {
@@ -53,12 +65,18 @@ public record HarvestBonus(ResourceLocation id, Optional<HolderSet<Block>> block
         }
 
         data.remove(target, instance);
-        data.add(target, new Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, id, Component.empty()), abilityLevel, newDuration));
+        data.add(target, new Instance(this, ClientEffectProvider.ClientData.from(dragon, ability), abilityLevel, newDuration));
     }
 
     public void remove(final LivingEntity target) {
         HarvestBonuses data = target.getData(DSDataAttachments.HARVEST_BONUSES);
         data.remove(target, data.get(id));
+    }
+
+    public MutableComponent getDescription(final int abilityLevel) {
+        int harvestBonus = (int) this.harvestBonus.calculate(abilityLevel);
+        String breakSpeedMultiplier = NumberFormat.getPercentInstance().format(1 + this.breakSpeedMultiplier.calculate(abilityLevel));
+        return Component.translatable(HARVEST_BONUS, DSColors.dynamicValue(harvestBonus), DSColors.dynamicValue(breakSpeedMultiplier));
     }
 
     public static class Instance extends DurationInstance<HarvestBonus> {
@@ -74,6 +92,11 @@ public record HarvestBonus(ResourceLocation id, Optional<HolderSet<Block>> block
 
         public static @Nullable HarvestBonus.Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag nbt) {
             return CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), nbt).resultOrPartial(DragonSurvival.LOGGER::error).orElse(null);
+        }
+
+        @Override
+        public Component getDescription() {
+            return baseData().getDescription(appliedAbilityLevel());
         }
 
         @Override
@@ -114,6 +137,11 @@ public record HarvestBonus(ResourceLocation id, Optional<HolderSet<Block>> block
         @Override
         public int getDuration() {
             return (int) baseData().duration().calculate(appliedAbilityLevel());
+        }
+
+        @Override
+        public boolean isInvisible() {
+            return baseData().isHidden();
         }
     }
 }

@@ -6,7 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.C
 import by.dragonsurvivalteam.dragonsurvival.network.magic.AttemptManualUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ExperienceUpgrade;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ExperiencePointsUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.UpgradeType;
 import by.dragonsurvivalteam.dragonsurvival.util.ExperienceUtils;
 import net.minecraft.client.Minecraft;
@@ -57,8 +57,8 @@ public class LevelButton extends ClickHoverButton {
     public LevelButton(final Type type, final DragonAbilityInstance ability, int xPos, int yPos) {
         super(xPos, yPos, WIDTH, HEIGHT, 0, 0, 16, 16, Component.empty(), button -> {
             switch (type) {
-                case DOWNGRADE -> PacketDistributor.sendToServer(new AttemptManualUpgrade(ability.key(), ExperienceUpgrade.Type.DOWNGRADE));
-                case UPGRADE -> PacketDistributor.sendToServer(new AttemptManualUpgrade(ability.key(), ExperienceUpgrade.Type.UPGRADE));
+                case DOWNGRADE -> PacketDistributor.sendToServer(new AttemptManualUpgrade(ability.key(), ExperiencePointsUpgrade.Type.DOWNGRADE));
+                case UPGRADE -> PacketDistributor.sendToServer(new AttemptManualUpgrade(ability.key(), ExperiencePointsUpgrade.Type.UPGRADE));
             }
         }, type.click, type.hover, type.main);
 
@@ -68,7 +68,7 @@ public class LevelButton extends ClickHoverButton {
 
     @SuppressWarnings("DataFlowIssue") // player is present
     public int getExperienceModification() {
-        ExperienceUpgrade.Type upgradeType = type == Type.UPGRADE ? ExperienceUpgrade.Type.UPGRADE : ExperienceUpgrade.Type.DOWNGRADE;
+        ExperiencePointsUpgrade.Type upgradeType = type == Type.UPGRADE ? ExperiencePointsUpgrade.Type.UPGRADE : ExperiencePointsUpgrade.Type.DOWNGRADE;
         return MagicData.getData(Minecraft.getInstance().player).getCost(Minecraft.getInstance().player, ability.key(), upgradeType);
     }
 
@@ -94,7 +94,7 @@ public class LevelButton extends ClickHoverButton {
         }
 
         LocalPlayer player = Objects.requireNonNull(Minecraft.getInstance().player);
-        return ExperienceUtils.getTotalExperience(Minecraft.getInstance().player) >= Math.abs(MagicData.getData(player).getCost(player, ability.key(), ExperienceUpgrade.Type.UPGRADE));
+        return ExperienceUtils.getTotalExperience(Minecraft.getInstance().player) >= Math.abs(MagicData.getData(player).getCost(player, ability.key(), ExperiencePointsUpgrade.Type.UPGRADE));
     }
 
     @Override

@@ -16,6 +16,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.RegistryFixedCodec;
@@ -37,6 +38,7 @@ public record DragonAbility(
         Optional<UpgradeType<?>> upgrade,
         Optional<LootItemCondition> usageBlocked,
         List<ActionContainer> actions,
+        boolean canBeManuallyDisabled,
         LevelBasedResource icon
 ) {
     public static final ResourceKey<Registry<DragonAbility>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_abilities"));
@@ -46,6 +48,7 @@ public record DragonAbility(
             UpgradeType.CODEC.optionalFieldOf("upgrade").forGetter(DragonAbility::upgrade),
             LootItemCondition.DIRECT_CODEC.optionalFieldOf("usage_blocked").forGetter(DragonAbility::usageBlocked),
             ActionContainer.CODEC.listOf().optionalFieldOf("actions", List.of()).forGetter(DragonAbility::actions),
+            Codec.BOOL.optionalFieldOf("can_be_manually_disabled", true).forGetter(DragonAbility::canBeManuallyDisabled),
             LevelBasedResource.CODEC.fieldOf("icon").forGetter(DragonAbility::icon)
     ).apply(instance, instance.stable(DragonAbility::new)));
 
@@ -92,12 +95,16 @@ public record DragonAbility(
         instance.ability().value().activation().initialManaCost().ifPresent(cost -> info.add(Component.translatable(LangKey.ABILITY_INITIAL_MANA_COST, cost.calculate(instance.level()))));
         instance.ability().value().activation().continuousManaCost().ifPresent(cost -> info.add(Component.translatable(LangKey.ABILITY_CONTINUOUS_MANA_COST, cost.manaCost().calculate(instance.level()), DSLanguageProvider.enumValue(cost.manaCostType()))));
 
-        if (!info.isEmpty()) {
-            info.add(Component.literal("\n"));
-        }
-
         for (ActionContainer action : actions) {
-            info.addAll(action.effect().getAllEffectDescriptions(dragon, instance));
+            List<MutableComponent> descriptions = action.effect().getAllEffectDescriptions(dragon, instance);
+
+            for (MutableComponent description : descriptions) {
+                if (!info.isEmpty()) {
+                    info.add(Component.empty());
+                }
+
+                info.add(description);
+            }
         }
 
         return info;

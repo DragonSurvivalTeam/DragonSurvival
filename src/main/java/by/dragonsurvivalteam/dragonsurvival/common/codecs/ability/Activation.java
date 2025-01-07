@@ -207,6 +207,10 @@ public record Activation(
                 BuiltInRegistries.SOUND_EVENT.byNameCodec().optionalFieldOf("end").forGetter(Sound::end)
         ).apply(instance, Sound::new));
 
+        public static Optional<Sound> end(final SoundEvent end) {
+            return of(null, null, null, end);
+        }
+
         public static Optional<Sound> of(final SoundEvent start, final SoundEvent charging, final SoundEvent looping, final SoundEvent end) {
             return Optional.of(new Sound(Optional.ofNullable(start), Optional.ofNullable(charging), Optional.ofNullable(looping), Optional.ofNullable(end)));
         }

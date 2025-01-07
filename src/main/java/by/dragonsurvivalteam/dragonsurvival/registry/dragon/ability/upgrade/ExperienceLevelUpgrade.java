@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade;
 
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -9,21 +9,24 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 
-public record SizeUpgrade(int maxLevel, LevelBasedValue sizeRequirement) implements UpgradeType<InputData> {
-    public static final MapCodec<SizeUpgrade> CODEC = RecordCodecBuilder.mapCodec(instance -> UpgradeType.codecStart(instance)
-            .and(LevelBasedValue.CODEC.fieldOf("size_requirement").forGetter(SizeUpgrade::sizeRequirement)).apply(instance, SizeUpgrade::new)
+public record ExperienceLevelUpgrade(int maxLevel, LevelBasedValue levelRequirement) implements UpgradeType<InputData> {
+    @Translation(comments = "Next level will be unlocked at experience level %s")
+    private static final String EXPERIENCE_LEVEL_UPGRADE = Translation.Type.GUI.wrap("ability_upgrade.experience_level_upgrade");
+
+    public static final MapCodec<ExperienceLevelUpgrade> CODEC = RecordCodecBuilder.mapCodec(instance -> UpgradeType.codecStart(instance)
+            .and(LevelBasedValue.CODEC.fieldOf("level_requirement").forGetter(ExperienceLevelUpgrade::levelRequirement)).apply(instance, ExperienceLevelUpgrade::new)
     );
 
     @Override
     public boolean apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final InputData data) {
-        if (data.type() != InputData.Type.SIZE) {
+        if (data.type() != InputData.Type.EXPERIENCE_LEVELS) {
             return false;
         }
 
         int newLevel = 0;
 
         for (int level = DragonAbilityInstance.MIN_LEVEL_FOR_CALCULATIONS; level <= maxLevel(); level++) {
-            if (data.input() < sizeRequirement.calculate(level)) {
+            if (data.input() < levelRequirement.calculate(level)) {
                 break;
             }
 
@@ -40,7 +43,7 @@ public record SizeUpgrade(int maxLevel, LevelBasedValue sizeRequirement) impleme
 
     @Override
     public MutableComponent getDescription(final int abilityLevel) {
-        return Component.translatable(LangKey.ABILITY_GROWTH_AUTO_UPGRADE, (int) sizeRequirement.calculate(abilityLevel));
+        return Component.translatable(EXPERIENCE_LEVEL_UPGRADE, (int) levelRequirement.calculate(abilityLevel));
     }
 
     @Override

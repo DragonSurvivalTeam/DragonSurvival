@@ -39,6 +39,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -56,7 +57,7 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 /** Used in pair with {@link ServerFlightHandler} */
 @EventBusSubscriber(Dist.CLIENT)
 public class ClientFlightHandler {
-    @Translation(comments = "You have §cno levitation skill§r. You need to talk to the Ender dragon, or use the Flight Grant special item.")
+    @Translation(comments = "You have §cno levitation skill§r. Go to The End to learn this skill.")
     private static final String NO_WINGS = Translation.Type.GUI.wrap("message.no_wings");
 
     @Translation(key = "jump_to_fly", type = Translation.Type.CONFIGURATION, comments = "If enabled flight will be activated when jumping in the air")
@@ -573,6 +574,8 @@ public class ClientFlightHandler {
         }
 
         if (data.isWingsSpread()) return WingsToggleResult.ALREADY_ENABLED;
+
+        // TODO :: check these in usage_blocked of the ability
         if (hasWingDisablingEffect(player)) return WingsToggleResult.WINGS_DISABLED;
 
         // Non-creative players need enough food to start flying
@@ -658,19 +661,20 @@ public class ClientFlightHandler {
     }
 
     private static boolean hasWingDisablingEffect(LivingEntity entity) {
-        return entity.hasEffect(DSEffects.TRAPPED) || entity.hasEffect(DSEffects.WINGS_BROKEN);
+        return entity.hasEffect(DSEffects.TRAPPED) || entity.hasEffect(DSEffects.BROKEN_WINGS);
     }
 
     private static boolean hasEnoughFoodToStartFlight(Player player) {
         return player.getFoodData().getFoodLevel() > ServerFlightHandler.flightHungerThreshold;
     }
 
-    public static Vec3 getInputVector(Vec3 movement, float fricSpeed, float yRot) {
-        double d0 = movement.lengthSqr();
-        if (d0 < 1.0E-7D) {
+    public static Vec3 getInputVector(final Vec3 movement, float frictionSpeed, float yRot) {
+        double movementStrength = movement.lengthSqr();
+
+        if (movementStrength < Shapes.EPSILON) {
             return Vec3.ZERO;
         } else {
-            Vec3 vector3d = (d0 > 1.0D ? movement.normalize() : movement).scale(fricSpeed);
+            Vec3 vector3d = (movementStrength > 1 ? movement.normalize() : movement).scale(frictionSpeed);
             float f = Mth.sin(yRot * ((float) Math.PI / 180F));
             float f1 = Mth.cos(yRot * ((float) Math.PI / 180F));
             return new Vec3(vector3d.x * (double) f1 - vector3d.z * (double) f, vector3d.y, vector3d.z * (double) f1 + vector3d.x * (double) f);

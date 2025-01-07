@@ -57,7 +57,7 @@ public class ServerFlightHandler {
     public static Boolean foldWingsOnLand = false;
 
     @ConfigRange(min = 0, max = /* 1 hour */ 3600)
-    @Translation(key = "flight_spin_cooldown", type = Translation.Type.CONFIGURATION, comments = "Cooldown (in seconds) of the spin attack during flifght")
+    @Translation(key = "flight_spin_cooldown", type = Translation.Type.CONFIGURATION, comments = "Cooldown (in seconds) of the spin attack during flight")
     @ConfigOption(side = ConfigSide.SERVER, category = "wings", key = "flight_spin_cooldown")
     public static Integer flightSpinCooldown = 5;
 

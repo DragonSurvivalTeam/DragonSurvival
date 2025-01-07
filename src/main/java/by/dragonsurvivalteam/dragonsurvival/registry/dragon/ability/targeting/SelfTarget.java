@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting;
 
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
@@ -12,6 +12,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
 public record SelfTarget(Either<BlockTargeting, EntityTargeting> target, boolean removeAutomatically) implements AbilityTargeting {
+    @Translation(comments = "to self")
+    private static final String SELF_TARGET = Translation.Type.GUI.wrap("ability_target.self_target");
+
     public static final MapCodec<SelfTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> AbilityTargeting.codecStart(instance)
             .and(Codec.BOOL.optionalFieldOf("remove_automatically", true).forGetter(SelfTarget::removeAutomatically)).apply(instance, SelfTarget::new)
     );
@@ -38,7 +41,7 @@ public record SelfTarget(Either<BlockTargeting, EntityTargeting> target, boolean
 
     @Override
     public MutableComponent getDescription(final Player dragon, final DragonAbilityInstance ability) {
-        return Component.translatable(LangKey.ABILITY_TO_TARGET, Component.translatable(LangKey.ABILITY_TARGET_SELF));
+        return Component.translatable(SELF_TARGET);
     }
 
     @Override

@@ -39,21 +39,6 @@ public class DragonAbilityScreen extends Screen {
             "■ §6Active skills§r are used in combat.",
             "- §9Skill power§r scales off your current experience level. The higher your EXP level, the stronger your active skills.",
             "- §9Experience or mana§r points are used to cast spells.",
-            "- §9Controls§r - check in-game Minecraft control settings! You can drag and drop skill icons around."
-    })
-    private static final String HELP_ACTIVE = Translation.Type.GUI.wrap("help.active_abilities");
-
-    @Translation(comments = {
-            "■ §aPassive skills§r are upgraded by spending experience levels.",
-            "- §9Mana§r - do not forget use the Source of Magic and Dragons Treats for an infinite supply of mana!",
-            "- §9More information§r can be found on our Wiki and in our Discord. Check the Curseforge mod page."
-    })
-    private static final String HELP_PASSIVE = Translation.Type.GUI.wrap("help.passive_abilities");
-
-    @Translation(comments = {
-            "■ §6Active skills§r are used in combat.",
-            "- §9Skill power§r scales off your current experience level. The higher your EXP level, the stronger your active skills.",
-            "- §9Experience or mana§r points are used to cast spells.",
             "- §9Controls§r - check in-game Minecraft control settings! You can drag and drop skill icons around.",
             "",
             "■ §aPassive skills§r are upgraded by spending experience levels.",

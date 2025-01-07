@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting;
 
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.datafixers.util.Either;
@@ -20,6 +20,12 @@ import net.minecraft.world.phys.HitResult;
 import java.util.function.Predicate;
 
 public record LookingAtTarget(Either<BlockTargeting, EntityTargeting> target, LevelBasedValue range) implements AbilityTargeting {
+    @Translation(comments = " to a block that you are looking at within a range of %s blocks")
+    private static final String LOOKING_AT_TARGET_BLOCK = Translation.Type.GUI.wrap("ability_target.looking_at.block");
+
+    @Translation(comments = " to %s that you are looking at within a range of %s blocks")
+    private static final String LOOKING_AT_TARGET_ENTITY = Translation.Type.GUI.wrap("ability_target.looking_at.entity");
+
     public static final MapCodec<LookingAtTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> AbilityTargeting.codecStart(instance)
             .and(LevelBasedValue.CODEC.fieldOf("range").forGetter(LookingAtTarget::range)).apply(instance, LookingAtTarget::new)
     );
@@ -55,9 +61,9 @@ public record LookingAtTarget(Either<BlockTargeting, EntityTargeting> target, Le
         Component targetingComponent = target.map(block -> null, entity -> entity.targetingMode().translation());
 
         if (targetingComponent == null) {
-            return Component.translatable(LangKey.ABILITY_LOOK_AT, DSColors.dynamicValue(range.calculate(ability.level())));
+            return Component.translatable(LOOKING_AT_TARGET_BLOCK, DSColors.dynamicValue(range.calculate(ability.level())));
         } else {
-            return Component.translatable(LangKey.ABILITY_LOOK_AT_TARGET, DSColors.dynamicValue(targetingComponent), DSColors.dynamicValue(range.calculate(ability.level())));
+            return Component.translatable(LOOKING_AT_TARGET_ENTITY, DSColors.dynamicValue(targetingComponent), DSColors.dynamicValue(range.calculate(ability.level())));
         }
     }
 

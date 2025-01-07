@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAbilityScreen;
 import by.dragonsurvivalteam.dragonsurvival.magic.AbilityAndPenaltyTooltipRenderer;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
-import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncAbilityEnabled;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncDisableAbility;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncSlotAssignment;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
@@ -33,7 +33,7 @@ public class AbilityButton extends ExtendedButton {
     private static final int ORNAMENTATION_SIZE = 38;
 
     private final DragonAbilityScreen screen;
-    private DragonAbilityInstance ability;
+    private @Nullable DragonAbilityInstance ability;
     private @Nullable LevelButton leftLevelButton;
     private @Nullable LevelButton rightLevelButton;
     private Vec3 offset = Vec3.ZERO;
@@ -140,13 +140,10 @@ public class AbilityButton extends ExtendedButton {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        if (Screen.hasControlDown()) {
-            if(ability.isDisabledAutomatically()) {
-                return;
-            }
-
-            ability.setEnabled(!ability.isEnabled(), true);
-            PacketDistributor.sendToServer(new SyncAbilityEnabled(ability.key(), ability.isEnabled(), true));
+        if (!isHotbar && ability != null && ability.value().canBeManuallyDisabled() && Screen.hasControlDown()) {
+            boolean isDisabled = !ability.isDisabled(true);
+            ability.setDisabled(Minecraft.getInstance().player, isDisabled, true);
+            PacketDistributor.sendToServer(new SyncDisableAbility(ability.key(), isDisabled, true));
             return;
         }
 
@@ -225,7 +222,7 @@ public class AbilityButton extends ExtendedButton {
             return;
         }
 
-        if(!ability.isEnabled()) {
+        if (!ability.isEnabled()) {
             blit(graphics, DISABLED_BACKGROUND, getX() - 2, getY() - 2, ORNAMENTATION_SIZE);
         } else {
             if (ability.isPassive()) {
@@ -299,7 +296,7 @@ public class AbilityButton extends ExtendedButton {
             return false;
         }
 
-        if (!ability.isPassive()) {
+        if (ability != null && !ability.isPassive()) {
             for (Renderable renderable : screen.renderables) {
                 if (renderable instanceof AbilityButton button && button.isDragging) {
                     return false;

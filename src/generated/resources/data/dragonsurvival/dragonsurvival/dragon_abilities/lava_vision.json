@@ -92,12 +92,31 @@
     "upgrade_type": "dragonsurvival:experience_levels"
   },
   "usage_blocked": {
-    "condition": "minecraft:entity_properties",
-    "entity": "this",
-    "predicate": {
-      "flags": {
-        "is_on_ground": false
+    "condition": "minecraft:all_of",
+    "terms": [
+      {
+        "condition": "minecraft:entity_properties",
+        "entity": "this",
+        "predicate": {
+          "flags": {
+            "is_on_ground": false
+          }
+        }
+      },
+      {
+        "condition": "minecraft:inverted",
+        "term": {
+          "condition": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "location": {
+              "fluid": {
+                "fluids": "#minecraft:lava"
+              }
+            }
+          }
+        }
       }
-    }
+    ]
   }
 }

@@ -19,13 +19,6 @@ public interface ScreenAccessor {
     @Accessor("children")
     List<GuiEventListener> dragonSurvival$children();
 
-    @Invoker("removeWidget")
-    void dragonSurvival$removeWidget(final GuiEventListener listener);
-
     @Invoker("addRenderableWidget")
-    @SuppressWarnings("UnusedReturnValue") // ignore
     <T extends GuiEventListener & Renderable & NarratableEntry> T dragonSurvival$addRenderableWidget(final T widget);
-
-    @Invoker("addRenderableOnly")
-    <T extends Renderable> T dragonSurvival$addRenderableOnly(T renderable);
 }

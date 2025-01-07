@@ -22,7 +22,7 @@ public record SyncBeginCast(int playerId, int abilitySlot) implements CustomPack
         context.enqueueWork(() -> {
             MagicData magic = MagicData.getData(context.player());
             // The server can deny the cast if the player doesn't meet the entity predicate for the casting
-            if (!magic.attemptCast(packet.abilitySlot, context.player())) {
+            if (!magic.attemptCast(context.player(), packet.abilitySlot())) {
                 context.reply(new SyncStopCast(packet.playerId(), true, false));
             }
         });

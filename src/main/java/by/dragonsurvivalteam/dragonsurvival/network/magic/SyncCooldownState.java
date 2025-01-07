@@ -23,7 +23,7 @@ public record SyncCooldownState(int playerId, int slot, int cooldown) implements
     public static void handleClient(final SyncCooldownState packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId) instanceof Player player) {
-                MagicData.getData(player).setClientCooldown(packet.slot(), packet.cooldown());
+                MagicData.getData(player).setClientCooldown(player, packet.slot(), packet.cooldown());
             }
         });
     }

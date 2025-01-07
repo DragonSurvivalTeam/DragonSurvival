@@ -6,7 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
-import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncAbilityEnabled;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncDisableAbility;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncStopCast;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
@@ -43,15 +43,15 @@ public class DragonAbilityInstance {
     public static Codec<DragonAbilityInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             DragonAbility.CODEC.fieldOf("ability").forGetter(DragonAbilityInstance::ability),
             Codec.INT.fieldOf("level").forGetter(DragonAbilityInstance::level),
-            Codec.BOOL.optionalFieldOf("is_enabled", true).forGetter(DragonAbilityInstance::isEnabled)
+            Codec.BOOL.optionalFieldOf("is_manually_disabled", false).forGetter(ability -> ability.isManuallyDisabled)
     ).apply(instance, DragonAbilityInstance::new));
 
     private final Holder<DragonAbility> ability;
     private int level;
-    /** Indicates that the ability is blocked due to the 'usage_blocked' condition */
-    private boolean isEnabled;
     /** Indicates that the player CTRL-clicked the ability in the ability screen */
-    private boolean manuallyDisabled;
+    private boolean isManuallyDisabled;
+    /** Indicates that the ability is blocked due to the 'usage_blocked' condition */
+    private boolean isAutomaticallyDisabled;
     /** Indicates that the ability is able to apply its effects */
     private boolean isActive;
 
@@ -59,15 +59,15 @@ public class DragonAbilityInstance {
     private int cooldown;
 
     public DragonAbilityInstance(final Holder<DragonAbility> ability, int level) {
-        this(ability, level, true);
+        this(ability, level, false);
     }
 
-    public DragonAbilityInstance(final Holder<DragonAbility> ability, int level, boolean isEnabled) {
+    public DragonAbilityInstance(final Holder<DragonAbility> ability, int level, boolean isManuallyDisabled) {
         this.ability = ability;
         this.level = level;
-        this.isEnabled = isEnabled;
+        this.isManuallyDisabled = isManuallyDisabled;
 
-        if (isEnabled && isPassive()) {
+        if (isEnabled() && isPassive()) {
             this.isActive = true;
         }
     }
@@ -88,15 +88,14 @@ public class DragonAbilityInstance {
         }
 
         if (dragon instanceof ServerPlayer serverPlayer) {
-            if (value().usageBlocked().map(condition -> condition.test(Condition.createContext(serverPlayer))).orElse(false)) {
-                // This is checked separately otherwise abilities will spam-switch between enabled and disabled when jumping e.g.
-                if (isEnabled()) {
-                    setEnabled(false, false);
-                    PacketDistributor.sendToPlayer(serverPlayer, new SyncAbilityEnabled(ability.getKey(), false, false));
-                }
-            } else if (!manuallyDisabled && (!isEnabled() || /* Need to make sure to re-activate passive abilities */ !isActive && isPassive())) {
-                setEnabled(true, false);
-                PacketDistributor.sendToPlayer(serverPlayer, new SyncAbilityEnabled(ability.getKey(), true, false));
+            boolean isAutomaticallyDisabled = value().usageBlocked().map(condition -> condition.test(Condition.createContext(serverPlayer))).orElse(false);
+
+            if (isAutomaticallyDisabled && !this.isAutomaticallyDisabled) {
+                setDisabled(serverPlayer, true, false);
+                PacketDistributor.sendToPlayer(serverPlayer, new SyncDisableAbility(ability.getKey(), true, false));
+            } else if (!isAutomaticallyDisabled && this.isAutomaticallyDisabled) {
+                setDisabled(serverPlayer, false, false);
+                PacketDistributor.sendToPlayer(serverPlayer, new SyncDisableAbility(ability.getKey(), false, false));
             }
         }
 
@@ -227,16 +226,12 @@ public class DragonAbilityInstance {
         return ability.value().icon().get(level);
     }
 
-    public void setActive(boolean isActive) {
+    public void setActive(final Player player, boolean isActive) {
         this.isActive = isActive;
-    }
 
-    public void setActive(boolean isActive, final ServerPlayer player) {
-        setActive(isActive);
-
-        if (!isActive && isPassive()) {
+        if (player instanceof ServerPlayer serverPlayer && !isActive && isPassive()) {
             // Also makes sure to remove any affects that are applied by the ability
-            ability.value().actions().forEach(action -> action.remove(player, this));
+            ability.value().actions().forEach(action -> action.remove(serverPlayer, this));
         }
     }
 
@@ -281,7 +276,7 @@ public class DragonAbilityInstance {
     }
 
     public boolean isUsable() {
-        return isEnabled && level > 0;
+        return isEnabled() && level > 0;
     }
 
     public void setCooldown(int cooldown) {
@@ -326,29 +321,43 @@ public class DragonAbilityInstance {
         return level;
     }
 
-    public void setEnabled(boolean isEnabled, boolean manuallyDisabled) {
-        this.isEnabled = isEnabled;
+    /**
+     * Depending on the 'isManual' value it will either modify: <br>
+     * - {@link DragonAbilityInstance#isManuallyDisabled} <br>
+     * - {@link DragonAbilityInstance#isAutomaticallyDisabled} <br>
+     * <br>
+     * Afterward its active status will be updated
+     */
+    public void setDisabled(final Player player, boolean isDisabled, boolean isManual) {
+        boolean wasEnabled = isEnabled();
 
-        if (!isEnabled) {
-            this.manuallyDisabled = manuallyDisabled;
+        if (isManual) {
+            this.isManuallyDisabled = isDisabled;
         } else {
-            this.manuallyDisabled = false;
+            this.isAutomaticallyDisabled = isDisabled;
         }
 
-        if (!isEnabled) {
-            setActive(false);
-        } else if (isPassive()) {
-            setActive(true);
+        if (wasEnabled == isEnabled()) {
+            return;
+        }
+
+        if (!isEnabled()) {
+            setActive(player, false);
+        } if (isPassive()) {
+            // Passive abilities need to be re-activated automatically
+            setActive(player, true);
         }
     }
 
-    /** If the ability is disabled automatically, we want to prevent the user from just clicking to re-enable it */
-    public boolean isDisabledAutomatically() {
-        return !isEnabled && !manuallyDisabled;
+    public boolean isDisabled(boolean isManual) {
+        if (isManual) {
+            return isManuallyDisabled;
+        } else {
+            return isAutomaticallyDisabled;
+        }
     }
 
-    /** Returns the field in an unmodified way (also used by the codec) */
     public boolean isEnabled() {
-        return isEnabled;
+        return !isManuallyDisabled && !isAutomaticallyDisabled;
     }
 }

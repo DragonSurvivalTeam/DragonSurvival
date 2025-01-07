@@ -12,7 +12,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBlockTags;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
@@ -31,34 +30,34 @@ import java.util.Optional;
 public class DragonPenalties {
     @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
             "■ Cave dragons slowly take §cdamage§r while in snow or rain due to their fiery nature.\n",
-            "■ The skill §2«Contrast Shower»§r could make your life easier.\n",
+            "■ The skill §2«Contrast Shower»§r§f could make your life easier.\n",
     })
     @Translation(type = Translation.Type.PENALTY, comments = "Snow and Rain Weakness")
     public static final ResourceKey<DragonPenalty> SNOW_AND_RAIN_WEAKNESS = DragonPenalties.key("snow_and_rain_weakness");
 
     @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
-            "■ Cave dragons quickly take §cdamage§r from water due to their fiery nature.\n",
-            "■ The effect §2«Cave Fire»§r could make your life easier.\n",
+            "■ Cave dragons quickly take §cdamage§r from water.\n",
+            "■ The effect §2«Cave Fire»§r§f could make your life easier.\n",
     })
     @Translation(type = Translation.Type.PENALTY, comments = "Water Weakness")
     public static final ResourceKey<DragonPenalty> WATER_WEAKNESS = DragonPenalties.key("water_weakness");
 
     @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
-            "■ Drying out under the harsh sun is a major concern for sea dragons. If they are outside of the water for too long, they will dehydrate and suffer damage. Being in rain, ice or snow or drinking water bottles rehydrates you.\n",
-            "■ The skill §2«Hydration Capacity»§r could make your life easier.\n",
+            "■ If sea dragon are outside of the water for too long, they will dehydrate and suffer damage. Being in rain, ice or snow or drinking water bottles rehydrates you.\n",
+            "■ The skill §2«Hydration Capacity»§r§f could make your life easier.\n",
     })
     @Translation(type = Translation.Type.PENALTY, comments = "Thin Skin")
     public static final ResourceKey<DragonPenalty> THIN_SKIN = DragonPenalties.key("thin_skin");
 
     @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
-            "■ Dragons are unable to wield or equip certain items.\n",
+            "■ Dragons are unable to wield or equip certain items. Such as bows, shields, and tridents.\n",
     })
     @Translation(type = Translation.Type.PENALTY, comments = "Item Blacklist")
     public static final ResourceKey<DragonPenalty> ITEM_BLACKLIST = DragonPenalties.key("item_blacklist");
 
     @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
             "■ The predatory plants in your body dislike §dDarkness§r. If the light level around you is lower than 4, you may receive the §c«Stress»§r effect, rapidly draining your food gauge.\n",
-            "■ The skill §2«Light the Dark»§r and effect §2«Forest Magic»§r could make your life easier.",
+            "■ The skill §2«Light the Dark»§r§f and effect §2«Forest Magic»§r§f could make your life easier.",
     })
     @Translation(type = Translation.Type.PENALTY, comments = "Fear of Darkness")
     public static final ResourceKey<DragonPenalty> FEAR_OF_DARKNESS = DragonPenalties.key("fear_of_darkness");
@@ -68,6 +67,7 @@ public class DragonPenalties {
     public static void registerPenalties(final BootstrapContext<DragonPenalty> context) {
         context.register(SNOW_AND_RAIN_WEAKNESS, new DragonPenalty(
                 DragonSurvival.res("abilities/cave/snow_and_rain_weakness"),
+                // Enable when in rain or on (or within) said block tag (except when affected by the 'FIRE' effect)
                 Optional.of(AnyOfCondition.anyOf(
                         Condition.thisEntity(EntityCondition.isInRain()),
                         Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_WET)),
@@ -79,7 +79,8 @@ public class DragonPenalties {
 
         context.register(WATER_WEAKNESS, new DragonPenalty(
                 DragonSurvival.res("abilities/cave/water_weakness"),
-                Optional.of(Condition.thisEntity(EntityCondition.isInFluid(context.lookup(BuiltInRegistries.FLUID.key()).getOrThrow(FluidTags.WATER)))
+                // Enable when water (except when affected by the 'FIRE' effect)
+                Optional.of(Condition.thisEntity(EntityCondition.isInFluid(context.lookup(Registries.FLUID).getOrThrow(FluidTags.WATER)))
                         .and(Condition.thisEntity(EntityCondition.hasEffect(DSEffects.FIRE)).invert()).build()),
                 new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.WATER_BURN), 1),
                 new InstantTrigger(10)
@@ -87,8 +88,9 @@ public class DragonPenalties {
 
         context.register(THIN_SKIN, new DragonPenalty(
                 DragonSurvival.res("abilities/sea/thin_skin"),
+                // Enable when in water, in rain or on (or within) said block tag
                 Optional.of(AnyOfCondition.anyOf(
-                        Condition.thisEntity(EntityCondition.isInFluid(context.lookup(BuiltInRegistries.FLUID.key()).getOrThrow(FluidTags.WATER))),
+                        Condition.thisEntity(EntityCondition.isInFluid(context.lookup(Registries.FLUID).getOrThrow(FluidTags.WATER))),
                         Condition.thisEntity(EntityCondition.isInRain()),
                         Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_WET)),
                         Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_WET))
@@ -120,6 +122,7 @@ public class DragonPenalties {
 
         context.register(FEAR_OF_DARKNESS, new DragonPenalty(
                 DragonSurvival.res("abilities/cave/fear_of_darkness"),
+                // Disable when within a light strength of at least 3 or when affected by the 'MAGIC' or 'GLOWING' effects
                 Optional.of(AnyOfCondition.anyOf(
                         Condition.thisEntity(EntityCondition.isInLight(3)),
                         Condition.thisEntity(EntityCondition.hasEffect(DSEffects.MAGIC)),

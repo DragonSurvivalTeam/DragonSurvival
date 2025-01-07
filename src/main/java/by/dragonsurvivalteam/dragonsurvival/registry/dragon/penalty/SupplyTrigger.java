@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PenaltySupply;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.serialization.Codec;
@@ -25,6 +25,12 @@ import net.minecraft.world.item.alchemy.Potion;
 import java.util.List;
 
 public record SupplyTrigger(String id, Holder<Attribute> attributeToUseAsBase, int triggerRate, float reductionRateMultiplier, float regenerationRate, List<RecoveryItems> recoveryItems, boolean displayLikeHungerBar) implements PenaltyTrigger {
+    @Translation(comments = " after %s seconds")
+    private static final String PENALTY_SUPPLY_TRIGGER = Translation.Type.GUI.wrap("penalty.supply_trigger");
+
+    @Translation(comments = " on every game tick")
+    private static final String PENALTY_SUPPLY_TRIGGER_CONSTANT = Translation.Type.GUI.wrap("penalty.supply_trigger.constant");
+
     public static final MapCodec<SupplyTrigger> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.STRING.fieldOf("id").forGetter(SupplyTrigger::id),
             Attribute.CODEC.optionalFieldOf("attribute", DSAttributes.PENALTY_RESISTANCE_TIME).forGetter(SupplyTrigger::attributeToUseAsBase),
@@ -70,9 +76,9 @@ public record SupplyTrigger(String id, Holder<Attribute> attributeToUseAsBase, i
             double seconds = Functions.ticksToSeconds((int) attribute.getValue());
 
             if (seconds == 0) {
-                return Component.translatable(LangKey.PENALTY_SUPPLY_TRIGGER_CONSTANT);
+                return Component.translatable(PENALTY_SUPPLY_TRIGGER_CONSTANT);
             } else {
-                return Component.translatable(LangKey.PENALTY_SUPPLY_TRIGGER, DSColors.dynamicValue(String.format("%.1f", seconds)));
+                return Component.translatable(PENALTY_SUPPLY_TRIGGER, DSColors.dynamicValue(String.format("%.1f", seconds)));
             }
         }
     }

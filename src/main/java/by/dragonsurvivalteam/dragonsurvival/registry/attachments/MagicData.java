@@ -9,7 +9,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ExperienceUpgrade;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ExperiencePointsUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.InputData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.UpgradeType;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
@@ -198,9 +198,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         return isCasting ? fromSlot(getSelectedAbilitySlot()) : null;
     }
 
-    // TODO :: wait for some server response before showing the casting hud?
-    //  otherwise it will flicker if the usage_blocked condition on the server prevents the cast
-    public boolean attemptCast(int slot, Player player) {
+    public boolean attemptCast(final Player player, int slot) {
         if (slot < 0 || slot >= getAbilities().size()) {
             return false;
         }
@@ -229,7 +227,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         }
 
         setSelectedAbilitySlot(slot);
-        beginCasting();
+        beginCasting(player);
 
         return true;
     }
@@ -258,7 +256,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
                 currentlyCasting.releaseWithoutCooldown();
             }
 
-            currentlyCasting.setActive(false);
+            currentlyCasting.setActive(player, false);
 
             if (player instanceof ServerPlayer serverPlayer) {
                 PacketDistributor.sendToPlayer(serverPlayer, new SyncCooldownState(player.getId(), getSelectedAbilitySlot(), currentlyCasting.getCooldown()));
@@ -273,12 +271,12 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         stopCasting(player, currentlyCasting != null && currentlyCasting.isApplyingEffects());
     }
 
-    public void setClientCooldown(int slot, int cooldown) {
+    public void setClientCooldown(final Player player, int slot, int cooldown) {
         DragonAbilityInstance ability = fromSlot(slot);
 
         if (ability != null) {
             ability.setCooldown(cooldown);
-            ability.setActive(false);
+            ability.setActive(player, false);
         }
     }
 
@@ -290,7 +288,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         this.errorMessageSent = errorMessageSent;
     }
 
-    private void beginCasting() {
+    private void beginCasting(final Player player) {
         DragonAbilityInstance instance = fromSlot(getSelectedAbilitySlot());
 
         if (instance == null) {
@@ -299,7 +297,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
         isCasting = true;
         castTimer = instance.value().getChargeTime(instance.level());
-        instance.setActive(true);
+        instance.setActive(player, true);
     }
 
     public boolean isCasting() {
@@ -332,18 +330,13 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
     public void refresh(final ServerPlayer player, final Holder<DragonSpecies> currentSpecies) {
         // Make sure we remove any passive effects for abilities that are no longer available
-        abilities.values().forEach(perSpecies -> perSpecies.values().forEach(ability -> ability.setActive(false, player)));;
+        abilities.values().forEach(perSpecies -> perSpecies.values().forEach(ability -> ability.setActive(player, false)));
 
         if (currentSpecies == null) {
             return;
         }
 
         this.currentSpecies = currentSpecies.getKey();
-
-        // Make sure we remove any passive effects for abilities that are no longer available
-        for (DragonAbilityInstance instance : getAbilities().values()) {
-            instance.setActive(false, player);
-        }
 
         InputData levelInput = InputData.experienceLevels(player.experienceLevel);
         InputData sizeInput = InputData.size((int) DragonStateProvider.getData(player).getSize());
@@ -380,12 +373,12 @@ public class MagicData implements INBTSerializable<CompoundTag> {
     }
 
     /** Returns the amount of experience gained / lost when down- or upgrading the ability */
-    public int getCost(final Player dragon, final ResourceKey<DragonAbility> key, ExperienceUpgrade.Type type) {
+    public int getCost(final Player dragon, final ResourceKey<DragonAbility> key, ExperiencePointsUpgrade.Type type) {
         DragonAbilityInstance ability = getAbilities().get(key);
 
         return ability.value().upgrade().map(upgrade -> {
-            if (upgrade instanceof ExperienceUpgrade experienceUpgrade) {
-                return experienceUpgrade.getExperience(dragon, ability, type);
+            if (upgrade instanceof ExperiencePointsUpgrade experiencePointsUpgrade) {
+                return experiencePointsUpgrade.getExperience(dragon, ability, type);
             }
 
             return 0;

@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.AbilityBlockEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.AbilityEntityEffect;
@@ -30,7 +31,6 @@ import net.neoforged.neoforge.registries.RegistryBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -42,15 +42,15 @@ public interface AbilityTargeting {
     Codec<AbilityTargeting> CODEC = REGISTRY.byNameCodec().dispatch("target_type", AbilityTargeting::codec, Function.identity());
 
     enum EntityTargetingMode {
-        @Translation(type = Translation.Type.TARGET_MODE, comments = "all entities")
+        @Translation(type = Translation.Type.ENUM, comments = "all entities")
         TARGET_ALL,
-        @Translation(type = Translation.Type.TARGET_MODE, comments = "enemies")
+        @Translation(type = Translation.Type.ENUM, comments = "enemies")
         TARGET_ENEMIES,
-        @Translation(type = Translation.Type.TARGET_MODE, comments = "allies")
+        @Translation(type = Translation.Type.ENUM, comments = "allies")
         TARGET_ALLIES;
 
         public Component translation() {
-            return Component.translatable(Translation.Type.TARGET_MODE.wrap(toString().toLowerCase(Locale.ENGLISH)));
+            return DSLanguageProvider.enumValue(this);
         }
     }
 
@@ -144,9 +144,6 @@ public interface AbilityTargeting {
     }
 
     default List<MutableComponent> getAllEffectDescriptions(final Player dragon, final DragonAbilityInstance ability) {
-        // Don't try to generate a description for an ability that is disabled; it will be level 0, which causes LevelBasedValues to throw an exception when using a lookup table
-        // TODO :: we could add a mixin to the lookup method to return 0 if it would otherwise cause an exception
-        //  we wouldn't exactly modify anyone's behaviour since the alternative would be a crash
         if (!ability.isUsable()) {
             return List.of();
         }

@@ -29,15 +29,15 @@ public class DSEffects { // TODO :: add descriptions for the missing N/A marked 
 
     /** Some effects are handled in {@link by.dragonsurvivalteam.dragonsurvival.client.handlers.ClientFlightHandler} */
     @Translation(type = Translation.Type.EFFECT, comments = "Broken Wings")
-    @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "N/A") // TODO
-    public static Holder<MobEffect> WINGS_BROKEN = DS_MOB_EFFECTS.register("broken_wings", () -> new WingDisablingEffect(MobEffectCategory.HARMFUL, 0x0, true));
+    @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "Your wings are broken and you can no longer fly. You have to wait for regeneration.") // TODO
+    public static Holder<MobEffect> BROKEN_WINGS = DS_MOB_EFFECTS.register("broken_wings", () -> new WingDisablingEffect(MobEffectCategory.HARMFUL, 0x0, true));
 
     @Translation(type = Translation.Type.EFFECT, comments = "Magic Disabled")
-    @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "N/A") // TODO
+    @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "The knight has forbidden you to cast magic here.")
     public static Holder<MobEffect> MAGIC_DISABLED = DS_MOB_EFFECTS.register("magic_disabled", () -> new ModifiableMobEffect(MobEffectCategory.HARMFUL, 0x0, false));
 
     @Translation(type = Translation.Type.EFFECT, comments = "Hunter Omen")
-    @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "N/A") // TODO
+    @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "You've been too aggressive. Be careful. There is a bounty on your head.")
     public static Holder<MobEffect> HUNTER_OMEN = DS_MOB_EFFECTS.register("hunter_omen", () -> new ModifiableMobEffect(MobEffectCategory.NEUTRAL, 0x0, true));
 
     @Translation(type = Translation.Type.EFFECT, comments = "Sea Peace")
@@ -67,10 +67,6 @@ public class DSEffects { // TODO :: add descriptions for the missing N/A marked 
     @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "Gives the dragon infinite mana to use magic.")
     public static Holder<MobEffect> SOURCE_OF_MAGIC = DS_MOB_EFFECTS.register("source_of_magic", () -> new ModifiableMobEffect(MobEffectCategory.BENEFICIAL, 0x0, false)
             .addAttributeModifier(DSAttributes.MANA_REGENERATION, DragonSurvival.res("source_of_magic"), 10, Operation.ADD_MULTIPLIED_BASE));
-
-    @Translation(type = Translation.Type.EFFECT, comments = "Royal Departure")
-    @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "N/A") // TODO
-    public static Holder<MobEffect> ROYAL_DEPARTURE = DS_MOB_EFFECTS.register("royal_departure", () -> new TradeEffect(MobEffectCategory.HARMFUL, -3407617));
 
     @Translation(type = Translation.Type.EFFECT, comments = "Water Vision")
     @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "Improves underwater visibility.")

@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effe
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SpinStatus;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -24,6 +24,9 @@ import java.util.List;
 import java.util.Optional;
 
 public record SpinEffect(int spinLevel, Optional<Holder<FluidType>> swimSpinFluid) implements AbilityEntityEffect {
+    @Translation(comments = "§6■ Can use spin")
+    private static final String SPIN = Translation.Type.GUI.wrap("spin_effect.spin");
+
     public static final MapCodec<SpinEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.INT.fieldOf("spin_level").forGetter(SpinEffect::spinLevel),
             NeoForgeRegistries.FLUID_TYPES.holderByNameCodec().optionalFieldOf("swim_spin_fluid").forGetter(SpinEffect::swimSpinFluid)
@@ -71,7 +74,7 @@ public record SpinEffect(int spinLevel, Optional<Holder<FluidType>> swimSpinFlui
         List<MutableComponent> components = new ArrayList<>();
         
         if (ability.level() >= spinLevel) {
-            components.add(Component.translatable(LangKey.ABILITY_SPIN));
+            components.add(Component.translatable(SPIN));
         }
 
         return components;

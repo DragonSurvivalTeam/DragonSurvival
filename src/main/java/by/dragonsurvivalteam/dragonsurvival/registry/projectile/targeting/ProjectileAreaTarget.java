@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.projectile.targeting;
 import by.dragonsurvivalteam.dragonsurvival.network.particle.SyncParticleTrail;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AbilityTargeting;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AreaTarget;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
@@ -89,7 +90,7 @@ public record ProjectileAreaTarget(Either<Either<ProjectileTargeting.BlockTarget
 
     @Override
     public MutableComponent getDescription(final Player dragon, int level) {
-        MutableComponent description = Component.translatable(LangKey.ABILITY_TO_TARGET_AREA, AbilityTargeting.EntityTargetingMode.TARGET_ALL.translation(), radius().calculate(level));
+        MutableComponent description = Component.translatable(AreaTarget.AREA_TARGET_ENTITY, AbilityTargeting.EntityTargetingMode.TARGET_ALL.translation(), radius().calculate(level));
 
         if (tickRate() > 1) {
             description.append(Component.translatable(LangKey.ABILITY_X_SECONDS, tickRate() / 20f));

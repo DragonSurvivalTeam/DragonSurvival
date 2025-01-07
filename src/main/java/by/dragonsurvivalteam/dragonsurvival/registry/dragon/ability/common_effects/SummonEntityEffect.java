@@ -8,6 +8,7 @@ import by.dragonsurvivalteam.dragonsurvival.mixins.PrimedTntAccess;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncSummonedEntity;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonedEntities;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
@@ -58,6 +59,12 @@ public record SummonEntityEffect(
         List<AttributeScale> attributeScales,
         boolean shouldSetAllied
 ) implements AbilityBlockEffect, AbilityEntityEffect {
+    @Translation(comments = "§6■ Can summon up to§r %s §6entities:§r")
+    private static final String ABILITY_SUMMON = Translation.Type.GUI.wrap("summon_entity_effect.summon");
+
+    @Translation(comments = "\n- %s (%s)")
+    private static final String ABILITY_SUMMON_CHANCE = Translation.Type.GUI.wrap("summon_entity_effect.summon_chance");
+
     public static final MapCodec<SummonEntityEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                     SimpleWeightedRandomList.wrappedCodec(BuiltInRegistries.ENTITY_TYPE.byNameCodec()).fieldOf("entities").forGetter(SummonEntityEffect::entities),
                     ResourceLocation.CODEC.fieldOf("id").forGetter(SummonEntityEffect::id),
@@ -90,13 +97,13 @@ public record SummonEntityEffect(
 
     @Override
     public List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
-        MutableComponent component = Component.translatable(LangKey.ABILITY_SUMMON, DSColors.dynamicValue(maxSummons.calculate(ability.level())));
+        MutableComponent component = Component.translatable(ABILITY_SUMMON, DSColors.dynamicValue(maxSummons.calculate(ability.level())));
         int totalWeight = WeightedRandom.getTotalWeight(entities.unwrap());
 
         entities.unwrap().forEach(wrapper -> {
             Component entityName = DSColors.dynamicValue(wrapper.data().getDescription());
             double chance = (double) wrapper.getWeight().asInt() / totalWeight;
-            component.append(Component.translatable(LangKey.ABILITY_SUMMON_CHANCE, DSColors.dynamicValue(entityName), DSColors.dynamicValue(NumberFormat.getPercentInstance().format(chance))));
+            component.append(Component.translatable(ABILITY_SUMMON_CHANCE, DSColors.dynamicValue(entityName), DSColors.dynamicValue(NumberFormat.getPercentInstance().format(chance))));
         });
 
         if (!entities.isEmpty()) {
@@ -245,6 +252,11 @@ public record SummonEntityEffect(
 
         public static @Nullable SummonEntityEffect.Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag nbt) {
             return CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), nbt).resultOrPartial(DragonSurvival.LOGGER::error).orElse(null);
+        }
+
+        @Override
+        public Component getDescription() {
+            return Component.empty(); // TODO
         }
 
         @Override

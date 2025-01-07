@@ -35,7 +35,7 @@ public class DragonAltarBlock extends Block {
     @Translation(comments = "The altar is on cooldown for: %s")
     private static final String ALTAR_COOLDOWN = Translation.Type.GUI.wrap("message.altar_cooldown");
 
-    @Translation(comments = "■§7 An altar that allows you to turn into a dragon.")
+    @Translation(comments = "■§7 An altar that allows you to turn into a dragon and edit skin.")
     private static final String ALTAR = Translation.Type.DESCRIPTION.wrap("dragon_altar");
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
