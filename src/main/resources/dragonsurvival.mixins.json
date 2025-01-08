@@ -64,6 +64,7 @@
     "client.LocalPlayerMixin",
     "client.MinecraftMixin",
     "client.PlayerRendererMixin",
+    "client.RenderTypeAccessor",
     "client.RenderTypeHelperMixin",
     "client.ScreenAccessor",
     "client.SmithingScreenMixin",
