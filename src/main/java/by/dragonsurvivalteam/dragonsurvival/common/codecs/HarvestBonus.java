@@ -26,20 +26,28 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
 import java.text.NumberFormat;
 import java.util.Optional;
-import javax.annotation.Nullable;
 
 public record HarvestBonus(ResourceLocation id, Optional<HolderSet<Block>> blocks, LevelBasedValue harvestBonus, LevelBasedValue breakSpeedMultiplier, LevelBasedValue duration, boolean isHidden) {
     @Translation(comments = {
             "§6■ Harvest Bonus:§r",
             " - Harvest level: %s",
-            " - Break speed: %s"
+            " - Break speed: %s",
+            " - Applies to: %s"
     })
     private static final String HARVEST_BONUS = Translation.Type.GUI.wrap("harvest_bonus");
+
+    @Translation(comments = "All blocks")
+    private static final String ALL_BLOCKS = Translation.Type.GUI.wrap("harvest_bonus.all_blocks");
+
+    @Translation(comments = "Various Blocks")
+    private static final String VARIOUS_BLOCKS = Translation.Type.GUI.wrap("harvest_bonus.various_blocks");
 
     public static int NO_BONUS_VALUE = 0;
     public static final LevelBasedValue NO_BONUS = LevelBasedValue.constant(NO_BONUS_VALUE);
@@ -76,7 +84,19 @@ public record HarvestBonus(ResourceLocation id, Optional<HolderSet<Block>> block
     public MutableComponent getDescription(final int abilityLevel) {
         int harvestBonus = (int) this.harvestBonus.calculate(abilityLevel);
         String breakSpeedMultiplier = NumberFormat.getPercentInstance().format(1 + this.breakSpeedMultiplier.calculate(abilityLevel));
-        return Component.translatable(HARVEST_BONUS, DSColors.dynamicValue(harvestBonus), DSColors.dynamicValue(breakSpeedMultiplier));
+        Component appliesTo;
+
+        if (blocks.isEmpty()) {
+            appliesTo = Component.translatable(ALL_BLOCKS);
+        } else {
+            if (blocks.get() instanceof HolderSet.Named<Block> named) {
+                appliesTo = DSColors.dynamicValue(Component.translatable(Tags.getTagTranslationKey(named.key())));
+            } else {
+                appliesTo = Component.translatable(VARIOUS_BLOCKS);
+            }
+        }
+
+        return Component.translatable(HARVEST_BONUS, DSColors.dynamicValue(harvestBonus), DSColors.dynamicValue(breakSpeedMultiplier), appliesTo);
     }
 
     public static class Instance extends DurationInstance<HarvestBonus> {

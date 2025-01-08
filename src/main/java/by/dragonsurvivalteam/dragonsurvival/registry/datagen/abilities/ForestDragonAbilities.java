@@ -35,6 +35,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.util.random.WeightedRandomList;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -100,7 +101,7 @@ public class ForestDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Forest Wings")
     public static final ResourceKey<DragonAbility> FOREST_WINGS = DragonAbilities.key("forest_wings");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ You can spin through the air, boosting your speed. Head to §2the End§r§f to learn this skill. You can find this knowledge in The End.\n")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ You can spin through the air, boosting your speed. Head to §2the End§r §7to learn this skill. You can find this knowledge in The End.\n")
     @Translation(type = Translation.Type.ABILITY, comments = "Cave Spin")
     public static final ResourceKey<DragonAbility> FOREST_SPIN = DragonAbilities.key("forest_spin");
 
@@ -304,8 +305,8 @@ public class ForestDragonAbilities {
                         ), true), LevelBasedValue.constant(1)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 // Enable when on (or within) said block tag or when under sunlight with a strength of at least 10
-                                Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.REGENERATES_FOREST_DRAGON_MANA))
-                                        .or(Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.REGENERATES_FOREST_DRAGON_MANA)))
+                                Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_GRASSY))
+                                        .or(Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_GRASSY)))
                                         .or(Condition.thisEntity(EntityCondition.isInSunlight(10))).build(),
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DragonAbilities.GOOD_MANA_CONDITION,
@@ -415,7 +416,7 @@ public class ForestDragonAbilities {
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         HarvestBonusEffect.only(new HarvestBonus(
                                 DragonSurvival.res("forest_claws_and_teeth"),
-                                Optional.of(context.lookup(Registries.BLOCK).getOrThrow(DSBlockTags.FOREST_DRAGON_HARVESTABLE)),
+                                Optional.of(context.lookup(Registries.BLOCK).getOrThrow(BlockTags.MINEABLE_WITH_AXE)),
                                 LevelBasedValue.perLevel(1, 0.5f),
                                 LevelBasedValue.perLevel(0.5f),
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),

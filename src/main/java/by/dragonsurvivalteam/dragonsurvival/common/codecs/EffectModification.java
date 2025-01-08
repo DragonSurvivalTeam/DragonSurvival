@@ -37,8 +37,8 @@ import javax.annotation.Nullable;
 public record EffectModification(ResourceLocation id, HolderSet<MobEffect> effects, Modification durationModification, Modification amplifierModification, LevelBasedValue duration, boolean isHidden) {
     @Translation(comments = {
             "§6■ Effect modifications:§r",
-            "- Duration %s",
-            "- Amplifier %s",
+            " - Duration %s",
+            " - Amplifier %s",
             "\nAffected effects:"
     })
     private static final String EFFECT_MODIFICATIONS = Translation.Type.GUI.wrap("effect_modification");

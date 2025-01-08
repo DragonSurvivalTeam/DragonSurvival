@@ -122,7 +122,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
 
     private static Optional<ResourceLocation> constructTrimmedDragonArmorTexture(final Player player) {
         String armorUUID = buildUniqueArmorUUID(player);
-        // Since this is an internal (dynamically created) resource we can keep it in the DS namespace
+        // Since this is an internal (dynamically created) resource, so we can keep it in the DS namespace
         ResourceLocation imageResource = DragonSurvival.res("armor_" + armorUUID);
 
         if (armorTextures.containsKey(imageResource)) {
@@ -309,7 +309,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
     /**
      * Appends the following elements together to create an id <br>
      * - {@link DragonBody#model} (e.g. dragonsurvival.dragon_model <br>
-     * - {@link ItemStack#getDescriptionId()} of each equipped armor slot <br>
+     * - {@link ResourceLocation#toLanguageKey()} of each equipped armor item <br>
      * - {@link DataComponents#TRIM} of each equipped armor slot <br>
      * - {@link DataComponents#DYED_COLOR} of each equipped armor slot <br> <br>
      */

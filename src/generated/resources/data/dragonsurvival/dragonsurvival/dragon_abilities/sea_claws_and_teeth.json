@@ -7,7 +7,7 @@
             {
               "bonuses": [
                 {
-                  "blocks": "#dragonsurvival:sea_dragon_harvestable",
+                  "blocks": "#minecraft:mineable/shovel",
                   "break_speed_multiplier": {
                     "type": "minecraft:linear",
                     "base": 0.5,

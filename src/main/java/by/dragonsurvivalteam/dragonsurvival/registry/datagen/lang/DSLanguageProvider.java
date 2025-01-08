@@ -11,6 +11,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
@@ -56,18 +57,22 @@ public class DSLanguageProvider extends LanguageProvider {
 
         handleTranslationAnnotations(annotationDataSet);
         handleConfigCategories(annotationDataSet);
-        handleDamageTypes();
+        handleVanilla();
 
         handleParts();
     }
 
-    private void handleDamageTypes() {
+    private void handleVanilla() {
         for (ResourceKey<DamageType> damageType : ResourceHelper.keys(lookup.join(), Registries.DAMAGE_TYPE)) {
             add(Translation.Type.DAMAGE_TYPE.wrap(damageType.location()), capitalize(damageType.location().getPath()));
         }
 
         // Tags are not available during data generation
         add(Tags.getTagTranslationKey(DamageTypeTags.IS_FIRE), "Fire");
+
+        add(Tags.getTagTranslationKey(BlockTags.MINEABLE_WITH_PICKAXE), "Mineable with Pickaxe");
+        add(Tags.getTagTranslationKey(BlockTags.MINEABLE_WITH_AXE), "Mineable with Axe");
+        add(Tags.getTagTranslationKey(BlockTags.MINEABLE_WITH_SHOVEL), "Mineable with Shovel");
     }
 
     private void handleTranslationAnnotations(final Set<ModFileScanData.AnnotationData> annotationDataSet) {

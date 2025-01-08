@@ -34,6 +34,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.world.effect.MobEffects;
@@ -96,7 +97,7 @@ public class SeaDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Sea Wings")
     public static final ResourceKey<DragonAbility> SEA_WINGS = DragonAbilities.key("sea_wings");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ You can spin through the air and in water, boosting your speed. Head to §2the End§r§f to learn this skill.\n")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ You can spin through the air and in water, boosting your speed. Head to §2the End§r §7to learn this skill.\n")
     @Translation(type = Translation.Type.ABILITY, comments = "Cave Spin")
     public static final ResourceKey<DragonAbility> SEA_SPIN = DragonAbilities.key("sea_spin");
 
@@ -406,7 +407,7 @@ public class SeaDragonAbilities {
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         HarvestBonusEffect.only(new HarvestBonus(
                                 DragonSurvival.res("sea_claws_and_teeth"),
-                                Optional.of(context.lookup(Registries.BLOCK).getOrThrow(DSBlockTags.SEA_DRAGON_HARVESTABLE)),
+                                Optional.of(context.lookup(Registries.BLOCK).getOrThrow(BlockTags.MINEABLE_WITH_SHOVEL)),
                                 LevelBasedValue.perLevel(1, 0.5f),
                                 LevelBasedValue.perLevel(0.5f),
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),

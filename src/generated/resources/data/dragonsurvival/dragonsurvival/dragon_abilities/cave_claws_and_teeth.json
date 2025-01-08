@@ -7,7 +7,7 @@
             {
               "bonuses": [
                 {
-                  "blocks": "#dragonsurvival:cave_dragon_harvestable",
+                  "blocks": "#minecraft:mineable/pickaxe",
                   "break_speed_multiplier": {
                     "type": "minecraft:linear",
                     "base": 0.5,

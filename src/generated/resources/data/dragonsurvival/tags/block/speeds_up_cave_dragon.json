@@ -8,7 +8,7 @@
     "#c:cobblestones",
     "#c:stones",
     "#c:ores",
-    "#dragonsurvival:regenerates_cave_dragon_mana",
+    "#dragonsurvival:warm_blocks",
     {
       "id": "#immersive_weathering:charred_blocks",
       "required": false

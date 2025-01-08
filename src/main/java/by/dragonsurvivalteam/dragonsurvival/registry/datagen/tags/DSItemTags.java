@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.DarkDragonArmorItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.LightDragonArmorItem;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
@@ -23,26 +24,40 @@ import org.jetbrains.annotations.Nullable;
 import java.util.concurrent.CompletableFuture;
 
 public class DSItemTags extends ItemTagsProvider {
+    @Translation(comments = "Light Armor")
     public static final TagKey<Item> LIGHT_ARMOR = key("light_armor");
+    @Translation(comments = "Dark Armor")
     public static final TagKey<Item> DARK_ARMOR = key("dark_armor");
     /** Items that are considered weapons for the claw tool slot */
+    @Translation(comments = "Dragon Claw Weapons")
     public static final TagKey<Item> CLAW_WEAPONS = key("claw_weapons");
 
+    @Translation(comments = "Transforms empty beacon into Cave Dragon beacon")
     public static final TagKey<Item> TRANSFORM_BEACON_CAVE = key("transform_beacon_cave");
+    @Translation(comments = "Transforms empty beacon into Forest Dragon beacon")
     public static final TagKey<Item> TRANSFORM_BEACON_FOREST = key("transform_beacon_forest");
+    @Translation(comments = "Transforms empty beacon into Sea Dragon beacon")
     public static final TagKey<Item> TRANSFORM_BEACON_SEA = key("transform_beacon_sea");
 
     // Used in recipes
+    @Translation(comments = "Dragon Altars")
     public static final TagKey<Item> DRAGON_ALTARS = key("dragon_altars");
+    @Translation(comments = "Dragon Treasures")
     public static final TagKey<Item> DRAGON_TREASURES = key("dragon_treasures");
+    @Translation(comments = "Dragon Beacons")
     public static final TagKey<Item> DRAGON_BEACONS = key("dragon_beacons");
 
+    @Translation(comments = "Wooden Dragon Doors")
     public static final TagKey<Item> WOODEN_DRAGON_DOORS = key("wooden_dragon_doors");
+    @Translation(comments = "Small Wooden Dragon Doors")
     public static final TagKey<Item> SMALL_WOODEN_DRAGON_DOORS = key("small_wooden_dragon_doors");
 
+    @Translation(comments = "Charred Food")
     public static final TagKey<Item> CHARRED_FOOD = key("charred_food");
+    @Translation(comments = "Cold Items")
     public static final TagKey<Item> COLD_ITEMS = key("cold_items");
 
+    @Translation(comments = "Primordial Anchor Fuel")
     public static final TagKey<Item> PRIMORDIAL_ANCHOR_FUEL = key("primordial_anchor_fuel");
 
     public DSItemTags(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, CompletableFuture<TagLookup<Block>> blockTags, @Nullable ExistingFileHelper helper) {

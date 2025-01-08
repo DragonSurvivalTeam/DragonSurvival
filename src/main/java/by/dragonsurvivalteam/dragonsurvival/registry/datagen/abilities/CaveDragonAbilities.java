@@ -30,6 +30,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.effect.MobEffects;
@@ -96,7 +97,7 @@ public class CaveDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Cave Wings")
     public static final ResourceKey<DragonAbility> CAVE_WINGS = DragonAbilities.key("cave_wings");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ You can spin through the air and in lava, boosting your speed. Head to §2the End§r§f to learn this skill.\n")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ You can spin through the air and in lava, boosting your speed. Head to §2the End§r §7to learn this skill.\n")
     @Translation(type = Translation.Type.ABILITY, comments = "Cave Spin")
     public static final ResourceKey<DragonAbility> CAVE_SPIN = DragonAbilities.key("cave_spin");
 
@@ -286,8 +287,8 @@ public class CaveDragonAbilities {
                         ), true), LevelBasedValue.constant(1)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 // Enable when on (or within) said block tag
-                                Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.REGENERATES_CAVE_DRAGON_MANA))
-                                        .or(Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.REGENERATES_CAVE_DRAGON_MANA))).build(),
+                                Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_WARM))
+                                        .or(Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_WARM))).build(),
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DragonAbilities.GOOD_MANA_CONDITION,
                                         ModifierWithDuration.DEFAULT_MODIFIER_ICON,
@@ -385,7 +386,7 @@ public class CaveDragonAbilities {
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         HarvestBonusEffect.only(new HarvestBonus(
                                 DragonSurvival.res("cave_claws_and_teeth"),
-                                Optional.of(context.lookup(Registries.BLOCK).getOrThrow(DSBlockTags.CAVE_DRAGON_HARVESTABLE)),
+                                Optional.of(context.lookup(Registries.BLOCK).getOrThrow(BlockTags.MINEABLE_WITH_PICKAXE)),
                                 LevelBasedValue.perLevel(1, 0.5f),
                                 LevelBasedValue.perLevel(0.5f),
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
