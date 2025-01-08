@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.ConfirmableScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.DragonEditorScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.util.TextRenderUtil;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
@@ -47,7 +48,7 @@ public class DragonEditorConfirmComponent extends AbstractContainerEventHandler 
     private final int xSize;
     private final int ySize;
 
-    public DragonEditorConfirmComponent(DragonEditorScreen screen, int x, int y, int xSize, int ySize) {
+    public DragonEditorConfirmComponent(ConfirmableScreen screen, int x, int y, int xSize, int ySize) {
         this.x = x;
         this.y = y;
         this.xSize = xSize;
@@ -82,8 +83,7 @@ public class DragonEditorConfirmComponent extends AbstractContainerEventHandler 
 
             @Override
             public void onPress() {
-                screen.confirmation = false;
-                screen.showUi = true;
+                screen.cancel();
             }
         };
     }

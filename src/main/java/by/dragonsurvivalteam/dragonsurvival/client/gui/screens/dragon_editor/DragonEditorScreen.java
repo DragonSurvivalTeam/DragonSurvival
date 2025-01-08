@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.ConfirmableScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAltarScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.buttons.BackgroundColorButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.buttons.DragonBodyButton;
@@ -79,7 +80,7 @@ import java.util.function.Function;
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 @EventBusSubscriber(Dist.CLIENT)
-public class DragonEditorScreen extends Screen {
+public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     @Translation(comments = "Randomize")
     private static final String RANDOMIZE = Translation.Type.GUI.wrap("dragon_editor.randomize");
 
@@ -1037,6 +1038,11 @@ public class DragonEditorScreen extends Screen {
         dragonRender.yOffset = yOffset;
 
         ((ScreenAccessor) this).dragonSurvival$children().addFirst(dragonRender);
+    }
+
+    public void cancel() {
+        confirmation = false;
+        showUi = true;
     }
 
     public void confirm() {

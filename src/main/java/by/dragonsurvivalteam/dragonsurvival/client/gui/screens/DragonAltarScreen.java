@@ -4,13 +4,17 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.DragonEditorScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.AltarTypeButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverButton;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverDisableable;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.BarComponent;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.DragonEditorConfirmComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.ScrollableComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayerUtils;
 import by.dragonsurvivalteam.dragonsurvival.client.util.TextRenderUtil;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
+import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
+import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AltarData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
@@ -28,6 +32,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
@@ -36,6 +41,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.DyeColor;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
@@ -47,10 +54,11 @@ import org.joml.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
-public class DragonAltarScreen extends Screen {
+public class DragonAltarScreen extends Screen implements ConfirmableScreen {
     @Translation(comments = "Choose a Dragon Species")
     private static final String CHOOSE_SPECIES = Translation.Type.GUI.wrap("altar.choose_species");
 
@@ -90,6 +98,11 @@ public class DragonAltarScreen extends Screen {
     private int animation2 = 0;
     private int tick;
 
+    private DragonEditorConfirmComponent confirmComponent;
+    private AltarTypeButton humanButton;
+    private Renderable renderButton;
+    private boolean confirmation;
+
     public DragonAltarScreen() {
         super(Component.translatable(CHOOSE_SPECIES));
     }
@@ -114,6 +127,45 @@ public class DragonAltarScreen extends Screen {
         }
 
         return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if(confirmComponent != null && confirmation) {
+            for (GuiEventListener guieventlistener : confirmComponent.children()) {
+                if (guieventlistener.mouseClicked(mouseX, mouseY, button)) {
+                    this.setFocused(guieventlistener);
+                    if (button == 0) {
+                        this.setDragging(true);
+                    }
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        for (GuiEventListener guieventlistener : this.children()) {
+            if (guieventlistener.mouseClicked(mouseX, mouseY, button)) {
+                this.setFocused(guieventlistener);
+                if (button == 0) {
+                    this.setDragging(true);
+                }
+
+                if(confirmComponent != null && confirmation) {
+                    for (GuiEventListener guieventlistener2 : this.children()) {
+                        if(guieventlistener2 instanceof HoverDisableable hoverDisableable) {
+                            hoverDisableable.disableHover();
+                        }
+                    }
+                }
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override
@@ -144,6 +196,11 @@ public class DragonAltarScreen extends Screen {
             if (animation2 >= animations.length) {
                 animation2 = 0;
             }
+        }
+
+        if(!confirmation) {
+            children().removeIf(s -> s == confirmComponent);
+            renderables.removeIf(s -> s == renderButton);
         }
 
         for (Renderable btn : renderables) {
@@ -189,6 +246,12 @@ public class DragonAltarScreen extends Screen {
                     Quaternionf quaternion2 = Axis.ZP.rotationDegrees(180.0F);
                     quaternion2.rotateY((float) Math.toRadians(210));
                     InventoryScreen.renderEntityInInventory(guiGraphics, (float) width / 2 - 170, button.getY() + button.getHeight(), 40, new Vector3f(), quaternion2, null, entity2);
+                }
+            }
+
+            if(!confirmation) {
+                if(btn instanceof HoverDisableable hoverDisableable) {
+                    hoverDisableable.enableHover();
                 }
             }
         }
@@ -267,7 +330,55 @@ public class DragonAltarScreen extends Screen {
 
         RegistryAccess access = Objects.requireNonNull(DragonSurvival.PROXY.getAccess());
         List<AbstractWidget> altarButtons = new ArrayList<>(ResourceHelper.keys(access, DragonSpecies.REGISTRY).stream().map(typeKey -> (AbstractWidget) new AltarTypeButton(this, access.holderOrThrow(typeKey), 0, 0)).toList());
-        altarButtons.add(new AltarTypeButton(this, null, 0, 0));
+        humanButton = new AltarTypeButton(this, null, 0, 0){
+            boolean toggled;
+
+            @Override
+            public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
+                super.renderWidget(guiGraphics, mouseX, mouseY, partial);
+                if (toggled && (!visible || !confirmation)) {
+                    toggled = false;
+                    Screen screen = Minecraft.getInstance().screen;
+                    Objects.requireNonNull(screen).children().removeIf(s -> s == confirmComponent);
+                    screen.renderables.removeIf(s -> s == renderButton);
+                }
+            }
+
+            @Override
+            public void onPress() {
+                DragonStateHandler handler = DragonStateProvider.getData(minecraft.player);
+                boolean dragonDataIsPreserved = ServerConfig.saveAllAbilities && ServerConfig.saveGrowthStage;
+                if (handler.isDragon() && !dragonDataIsPreserved) {
+                    confirmation = true;
+                }
+
+                if(confirmation) {
+                    if (!toggled) {
+                        renderButton = new ExtendedButton(0, 0, 0, 0, Component.empty(), b -> {
+                        }) {
+                            @Override
+                            public void renderWidget(@NotNull final GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+                                if (confirmComponent != null && confirmation) {
+                                    confirmComponent.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
+                                }
+
+                                super.renderWidget(guiGraphics, pMouseX, pMouseY, pPartialTick);
+                            }
+                        };
+                        ((ScreenAccessor) DragonAltarScreen.this).dragonSurvival$children().add(confirmComponent);
+                        renderables.add(renderButton);
+                        confirmation = true;
+                    } else {
+                        confirmation = false;
+                    }
+                } else {
+                    initiateDragonForm(null);
+                }
+
+                toggled = !toggled;
+            }
+        };
+        altarButtons.add(humanButton);
 
         scrollableComponents.add(new BarComponent(this,
                 xPos, guiTop + 30, 4,
@@ -282,5 +393,18 @@ public class DragonAltarScreen extends Screen {
                 super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
             }
         });
+
+        confirmComponent = new DragonEditorConfirmComponent(this, width / 2 - 130 / 2, height / 2 - 181 / 2, 130, 154);
+        confirmation = false;
+    }
+
+    @Override
+    public void confirm() {
+        humanButton.initiateDragonForm(null);
+    }
+
+    @Override
+    public void cancel() {
+        confirmation = false;
     }
 }

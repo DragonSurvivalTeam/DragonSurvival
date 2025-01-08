@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAltarScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.DragonEditorScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.DietComponent;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverDisableable;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
@@ -33,7 +34,7 @@ import java.util.List;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
-public class AltarTypeButton extends Button {
+public class AltarTypeButton extends Button implements HoverDisableable {
     private static final ResourceLocation HUMAN_ALTAR_ICON = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/custom/altar/human/altar_icon.png");
 
     @Translation(comments = "You have awakened from your sleep, and become a human.")
@@ -50,6 +51,7 @@ public class AltarTypeButton extends Button {
     public Holder<DragonSpecies> type;
     private final DragonAltarScreen parent;
 
+    private boolean disableHover;
     private static final int MAX_SHOWN = 5;
     private int scroll;
     private boolean resetScroll;
@@ -119,14 +121,14 @@ public class AltarTypeButton extends Button {
         graphics.renderOutline(getX() - 1, getY() - 1, width + 2, height + 2, Color.black.getRGB());
 
         if (type != null) {
-            graphics.blit(type.value().miscResources().altarBanner(), getX(), getY(), 0, isHovered ? 0 : 147, 49, 147, 49, 294);
+            graphics.blit(type.value().miscResources().altarBanner(), getX(), getY(), 0, isHovered() ? 0 : 147, 49, 147, 49, 294);
             if(isHovered() && isTop(mouseY)) {
                 graphics.blit(type.value().miscResources().growthIcons().getFirst().hoverIcon(), getX() + 1, getY() + 1, 0, 0, 18, 18, 18, 18);
             } else {
                 graphics.blit(type.value().miscResources().growthIcons().getFirst().icon(), getX() + 1, getY() + 1, 0, 0, 18, 18, 18, 18);
             }
         } else {
-            graphics.blit(HUMAN_ALTAR_ICON, getX(), getY(), 0, isHovered ? 0 : 147, 49, 147, 49, 294);
+            graphics.blit(HUMAN_ALTAR_ICON, getX(), getY(), 0, isHovered() ? 0 : 147, 49, 147, 49, 294);
         }
     }
 
@@ -134,7 +136,7 @@ public class AltarTypeButton extends Button {
         return mouseY > getY() + 6 && mouseY < getY() + 26;
     }
 
-    private void initiateDragonForm(final Holder<DragonSpecies> species) {
+    public void initiateDragonForm(final Holder<DragonSpecies> species) {
         LocalPlayer player = Minecraft.getInstance().player;
 
         if (player == null) {
@@ -153,5 +155,23 @@ public class AltarTypeButton extends Button {
         } else {
             Minecraft.getInstance().setScreen(new DragonEditorScreen(parent, species));
         }
+    }
+
+    @Override
+    public boolean isHovered() {
+        return !disableHover && super.isHovered();
+    }
+
+    @Override
+    public boolean isFocused() {
+        return !disableHover && super.isFocused();
+    }
+
+    public void disableHover() {
+        this.disableHover = true;
+    }
+
+    public void enableHover() {
+        this.disableHover = false;
     }
 }
