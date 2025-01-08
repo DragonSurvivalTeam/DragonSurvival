@@ -928,7 +928,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             SkinPreset preset = new SkinPreset();
 
             preset.deserializeNBT(access, this.preset.serializeNBT(access));
-            preset.put(dragonStage.getKey(), Lazy.of(() -> new DragonStageCustomization(dragonStage.getKey(), dragonSpecies.getKey(), data.body().value().model())));
+            preset.put(dragonStage.getKey(), Lazy.of(() -> new DragonStageCustomization(dragonStage.getKey(), dragonSpecies.getKey(), data.getModel())));
             actionHistory.add(new EditorAction<>(setSkinPresetAction, preset.serializeNBT(access)));
         });
         resetButton.setTooltip(Tooltip.create(Component.translatable(RESET)));

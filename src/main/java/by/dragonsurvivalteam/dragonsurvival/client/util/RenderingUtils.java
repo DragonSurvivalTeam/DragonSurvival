@@ -176,8 +176,8 @@ public class RenderingUtils {
                 Minecraft.getInstance().getTextureManager().register(key, layer);
                 image.close();
             }
-        } catch (Exception e) {
-            DragonSurvival.LOGGER.error(e);
+        } catch (Exception exception) {
+            DragonSurvival.LOGGER.error("Failed to upload a texture: ", exception);
         }
     }
 
