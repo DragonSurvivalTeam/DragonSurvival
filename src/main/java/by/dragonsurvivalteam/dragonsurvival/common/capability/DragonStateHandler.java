@@ -275,6 +275,8 @@ public class DragonStateHandler extends EntityStateHandler {
 
         if (!ServerConfig.saveAllAbilities) {
             magic.refresh(player, species());
+            flightWasGranted = false;
+            spinWasGranted = false;
         } else {
             if (magic.dataForSpeciesIsEmpty(speciesKey())) {
                 magic.refresh(player, species());
