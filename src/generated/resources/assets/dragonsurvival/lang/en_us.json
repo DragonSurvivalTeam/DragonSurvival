@@ -805,8 +805,6 @@
   "dragonsurvival.description.dragon_rider_workbench": "■§7 A work station for a villager who sells useful dragon enchantments. Knows the secrets to getting into the draconic vaults.",
   "dragonsurvival.description.dragon_soul": "■§7 This vessel holds the dragon's soul. Use it to become a dragon. Replaces your current stats if you are a dragon.\n",
   "dragonsurvival.description.dragon_soul.empty": "■§7 An empty dragon's soul. With this item, you can store all your dragon's characteristics. After using it, you become human.",
-  "dragonsurvival.description.dragon_soul.has_flight": "§6■ Can Fly§r",
-  "dragonsurvival.description.dragon_soul.has_spin": "§6■ Can Spin§r",
   "dragonsurvival.description.dragon_soul.info": "§6■ Species:§r %s\n§6■ Growth Stage:§r %s\n§6■ Size:§r %s\n",
   "dragonsurvival.description.dragon_soul.invalid_type": "Invalid dragon type",
   "dragonsurvival.description.dragon_soul.soul": " Soul",
