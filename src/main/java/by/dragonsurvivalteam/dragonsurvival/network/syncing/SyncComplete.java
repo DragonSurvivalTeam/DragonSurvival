@@ -37,31 +37,34 @@ public class SyncComplete implements IMessage<SyncComplete.Data> {
         }
     }
 
-    public static void handleDragonSync(final Player player, boolean refreshMagicData) {
+    public static void handleDragonSync(final ServerPlayer player, boolean refreshMagicData) {
         DSModifiers.updateAllModifiers(player);
         player.refreshDimensions();
 
-        if(refreshMagicData) {
-            DragonStateHandler handler = DragonStateProvider.getData(player);
-            handler.refreshMagicData((ServerPlayer)player, true);
+        DragonStateHandler handler = DragonStateProvider.getData(player);
+
+        if (refreshMagicData) {
+            handler.refreshMagicData(player, true);
         }
 
-        if (player instanceof ServerPlayer serverPlayer && DragonStateProvider.isDragon(player)) {
-            DSAdvancementTriggers.BE_DRAGON.get().trigger(serverPlayer);
+        if (handler.isDragon()) {
+            DSAdvancementTriggers.BE_DRAGON.get().trigger(player);
         }
     }
 
     public static void handleServer(final Data message, final IPayloadContext context) {
         context.enqueueWork(() -> {
-                    DragonStateHandler handler = DragonStateProvider.getData(context.player());
+                    ServerPlayer player = (ServerPlayer) context.player();
+
+                    DragonStateHandler handler = DragonStateProvider.getData(player);
                     Holder<DragonSpecies> previousType = handler.species();
-                    handler.deserializeNBT(context.player().registryAccess(), message.nbt);
-                    handleDragonSync(context.player(), false);
+                    handler.deserializeNBT(player.registryAccess(), message.nbt);
+                    handleDragonSync(player, false);
 
                     if (!handler.isDragon()) {
-                        PenaltySupply.getData(context.player()).clear();
-                        DSModifiers.clearModifiers(context.player());
-                        handler.refreshMagicData((ServerPlayer) context.player(), false);
+                        PenaltySupply.getData(player).clear();
+                        DSModifiers.clearModifiers(player);
+                        handler.refreshMagicData(player, false);
                         return;
                     }
 
@@ -70,8 +73,8 @@ public class SyncComplete implements IMessage<SyncComplete.Data> {
                     // 2. When the player reverts to human in the dragon altar screen
                     // In both of these cases, we want to make sure to refresh the magic data and penalty supply if the server isn't set to save it
 
-                    if (context.player() instanceof ServerPlayer serverPlayer && (previousType == null || !previousType.is(handler.species()))) {
-                        handler.refreshMagicData(serverPlayer, false);
+                    if (previousType == null || !previousType.is(handler.species())) {
+                        handler.refreshMagicData(player, false);
                     }
                 })
                 .thenRun(() -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(context.player(), message))

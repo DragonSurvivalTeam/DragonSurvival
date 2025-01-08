@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.entity.projectiles;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
@@ -96,11 +97,21 @@ public class GenericArrowEntity extends AbstractArrow implements IEntityWithComp
         RegistryOps<Tag> context = level().registryAccess().createSerializationContext(NbtOps.INSTANCE);
 
         if (tag.contains(GENERAL_DATA)) {
-            ProjectileData.GeneralData.CODEC.parse(context, tag.get(GENERAL_DATA)).result().ifPresent(data -> generalData = data);
+            ProjectileData.GeneralData.CODEC.parse(context, tag.get(GENERAL_DATA))
+                    .resultOrPartial(DragonSurvival.LOGGER::error)
+                    .map(data -> generalData = data);
         }
 
         if (tag.contains(TYPE_DATA)) {
-            ProjectileData.GenericArrowData.CODEC.parse(context, tag.get(TYPE_DATA)).result().ifPresent(data -> typeData = data);
+            ProjectileData.GenericArrowData.CODEC.parse(context, tag.get(TYPE_DATA))
+                    .resultOrPartial(DragonSurvival.LOGGER::error)
+                    .map(data -> typeData = data);
+        }
+
+        if (generalData == null || typeData == null) {
+            // The data structure was changed too much, no need to keep the projectile
+            discard();
+            return;
         }
 
         projectileLevel = tag.getInt(PROJECTILE_LEVEL);

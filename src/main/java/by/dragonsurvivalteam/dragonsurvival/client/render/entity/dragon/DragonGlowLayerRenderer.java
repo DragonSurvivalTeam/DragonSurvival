@@ -51,7 +51,8 @@ public class DragonGlowLayerRenderer extends GeoRenderLayer<DragonEntity> {
 
         DragonStageCustomization customization = preset.get(handler.stageKey()).get();
         ResourceLocation customGlowTexture;
-        if(handler.body().value().customModel().equals(DragonBody.DEFAULT_MODEL)) {
+
+        if (handler.body().value().customModel().equals(DragonBody.DEFAULT_MODEL)) {
             customGlowTexture = DragonSkins.getGlowTexture(player, handler.stageKey());
         } else {
             customGlowTexture = null;

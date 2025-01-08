@@ -2,14 +2,14 @@ package by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
-import by.dragonsurvivalteam.dragonsurvival.client.render.util.iris_compat.InnerWrappedRenderType;
-import by.dragonsurvivalteam.dragonsurvival.client.render.util.iris_compat.LayeringStates;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.DarkDragonArmorItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.LightDragonArmorItem;
+import by.dragonsurvivalteam.dragonsurvival.compat.iris.InnerWrappedRenderType;
+import by.dragonsurvivalteam.dragonsurvival.compat.iris.LayeringStates;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -83,16 +83,14 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
     @Override
     public void render(final PoseStack poseStack, final DragonEntity animatable, final BakedGeoModel bakedModel, final RenderType renderType, final MultiBufferSource bufferSource, final VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
         Player player = animatable.getPlayer();
+
         if (player == null) {
             return;
         }
 
-        if (player.isSpectator()) {
-            return;
-        }
-
         DragonStateHandler handler = DragonStateProvider.getData(player);
-        if(!armorMasksPerModel.containsKey(handler.getCurrentCustomModel())) {
+
+        if (!armorMasksPerModel.containsKey(handler.getCurrentCustomModel())) {
             initArmorMasks(handler.getCustomModelName(), handler.getCurrentCustomModel());
         }
 

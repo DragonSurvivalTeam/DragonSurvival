@@ -82,15 +82,16 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
     public void actuallyRender(final PoseStack poseStack, final DragonEntity animatable, final BakedGeoModel model, final RenderType renderType, final MultiBufferSource bufferSource, final VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int color) {
         Player player = animatable.getPlayer();
 
-        if (player == null) {
+        //noinspection DataFlowIssue -> player is present
+        if (player == null || player.isSpectator() || player.isInvisibleTo(Minecraft.getInstance().player)) {
             return;
         }
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
         boolean hasWings = !handler.body().value().canHideWings() || handler.getCurrentStageCustomization().wings;
 
-        if(handler.body() != null) {
-            for(String boneName : handler.body().value().bonesToHideForToggle()) {
+        if (handler.body() != null) {
+            for (String boneName : handler.body().value().bonesToHideForToggle()) {
                 GeoBone bone = ClientDragonRenderer.dragonModel.getAnimationProcessor().getBone(boneName);
 
                 if (bone != null) {

@@ -89,20 +89,22 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         return castTimer;
     }
 
-    public void setCurrentSpecies(Player player, @Nullable final ResourceKey<DragonSpecies> currentSpecies) {
-        // Make sure we remove any passive effects for abilities that are no longer available (only set active to false for the current species)
-        abilities.get(this.currentSpecies).values().forEach(ability -> {
-                ability.setActive(player, false);
-        });
+    public void setCurrentSpecies(final Player player, @Nullable final ResourceKey<DragonSpecies> currentSpecies) {
+        // Disable any active effects (important for passive abilities)
+        if (this.currentSpecies != null && abilities.containsKey(this.currentSpecies)) {
+            abilities.get(this.currentSpecies).values().forEach(ability -> ability.setActive(player, false));
+        }
 
         this.currentSpecies = currentSpecies;
 
-        // And vice versa, make sure we add passive effects for abilities that are now available
-        abilities.get(currentSpecies).values().forEach(ability -> {
-            if(ability.isPassive()) {
-                ability.setActive(player, true);
-            }
-        });
+        // Since passive abilities need to be activated manually
+        if (currentSpecies != null && abilities.containsKey(currentSpecies)) {
+            abilities.get(currentSpecies).values().forEach(ability -> {
+                if (ability.isPassive()) {
+                    ability.setActive(player, true);
+                }
+            });
+        }
     }
 
     public boolean dataForSpeciesIsEmpty(final ResourceKey<DragonSpecies> species) {

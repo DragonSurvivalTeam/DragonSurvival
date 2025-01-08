@@ -10,7 +10,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
@@ -53,11 +52,6 @@ public class ClawsAndTeethRenderLayer extends GeoRenderLayer<DragonEntity> {
     @Override
     public void render(final PoseStack poseStack, final DragonEntity animatable, final BakedGeoModel bakedModel, final RenderType renderType, final MultiBufferSource bufferSource, final VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
         if (!((DragonRenderer) renderer).shouldRenderLayers) {
-            return;
-        }
-
-        // TODO :: should this check if the entity is on the same team / is visible to the player (= not full invisibility)?
-        if (animatable.hasEffect(MobEffects.INVISIBILITY)) {
             return;
         }
 

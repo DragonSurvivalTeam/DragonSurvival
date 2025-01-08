@@ -1,15 +1,16 @@
-package by.dragonsurvivalteam.dragonsurvival.client.render.util.iris_compat;
+package by.dragonsurvivalteam.dragonsurvival.compat.iris;
 
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.RenderTypeAccessor;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.Optional;
 
 // This is from Iris, Licensed under LGPL-3.0
-public class InnerWrappedRenderType extends RenderType implements WrappableRenderType, BlendingStateHolder {
+public class InnerWrappedRenderType extends RenderType {
     private final RenderStateShard extra;
     private final RenderType wrapped;
 
@@ -19,14 +20,6 @@ public class InnerWrappedRenderType extends RenderType implements WrappableRende
 
         this.extra = extra;
         this.wrapped = wrapped;
-    }
-
-    public static InnerWrappedRenderType wrapExactlyOnce(String name, RenderType wrapped, RenderStateShard extra) {
-        if (wrapped instanceof InnerWrappedRenderType) {
-            wrapped = ((InnerWrappedRenderType) wrapped).unwrap();
-        }
-
-        return new InnerWrappedRenderType(name, wrapped, extra);
     }
 
     private static boolean shouldSortOnUpload(RenderType type) {
@@ -48,12 +41,7 @@ public class InnerWrappedRenderType extends RenderType implements WrappableRende
     }
 
     @Override
-    public RenderType unwrap() {
-        return this.wrapped;
-    }
-
-    @Override
-    public Optional<RenderType> outline() {
+    public @NotNull Optional<RenderType> outline() {
         return this.wrapped.outline();
     }
 
@@ -85,17 +73,7 @@ public class InnerWrappedRenderType extends RenderType implements WrappableRende
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "iris_wrapped:" + this.wrapped.toString();
-    }
-
-    @Override
-    public TransparencyType getTransparencyType() {
-        return ((BlendingStateHolder) wrapped).getTransparencyType();
-    }
-
-    @Override
-    public void setTransparencyType(TransparencyType transparencyType) {
-        ((BlendingStateHolder) wrapped).setTransparencyType(transparencyType);
     }
 }

@@ -274,12 +274,12 @@ public class DragonStateHandler extends EntityStateHandler {
         MagicData magic = MagicData.getData(player);
 
         if (!ServerConfig.saveAllAbilities && !forceRetainMagicData) {
-            magic.refresh(player, species());
+            magic.refresh(player, dragonSpecies);
             flightWasGranted = false;
             spinWasGranted = false;
         } else {
             if (dragonSpecies == null || magic.dataForSpeciesIsEmpty(speciesKey())) {
-                magic.refresh(player, species());
+                magic.refresh(player, dragonSpecies);
             } else {
                 magic.setCurrentSpecies(player, speciesKey());
             }
