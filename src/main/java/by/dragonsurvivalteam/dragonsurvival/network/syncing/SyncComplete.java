@@ -37,9 +37,14 @@ public class SyncComplete implements IMessage<SyncComplete.Data> {
         }
     }
 
-    public static void handleDragonSync(final Player player) {
+    public static void handleDragonSync(final Player player, boolean refreshMagicData) {
         DSModifiers.updateAllModifiers(player);
         player.refreshDimensions();
+
+        if(refreshMagicData) {
+            DragonStateHandler handler = DragonStateProvider.getData(player);
+            handler.refreshMagicData((ServerPlayer)player, true);
+        }
 
         if (player instanceof ServerPlayer serverPlayer && DragonStateProvider.isDragon(player)) {
             DSAdvancementTriggers.BE_DRAGON.get().trigger(serverPlayer);
@@ -51,22 +56,21 @@ public class SyncComplete implements IMessage<SyncComplete.Data> {
                     DragonStateHandler handler = DragonStateProvider.getData(context.player());
                     Holder<DragonSpecies> previousType = handler.species();
                     handler.deserializeNBT(context.player().registryAccess(), message.nbt);
-                    handleDragonSync(context.player());
+                    handleDragonSync(context.player(), false);
 
                     if (!handler.isDragon()) {
-                        handler.refreshMagicData((ServerPlayer) context.player());
                         PenaltySupply.getData(context.player()).clear();
                         DSModifiers.clearModifiers(context.player());
                         return;
                     }
 
-                    // When we are sending a complete sync to the client, the client has requested it. This happens in two cases:
+                    // When we are processing a complete sync on the server, the client has requested it. This happens in two cases:
                     // 1. When the player changes dragon species in the dragon selection screen
                     // 2. When the player reverts to human in the dragon altar screen
                     // In both of these cases, we want to make sure to refresh the magic data and penalty supply if the server isn't set to save it
 
                     if (context.player() instanceof ServerPlayer serverPlayer && (previousType == null || !previousType.is(handler.species()))) {
-                        handler.refreshMagicData(serverPlayer);
+                        handler.refreshMagicData(serverPlayer, false);
                     }
                 })
                 .thenRun(() -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(context.player(), message))

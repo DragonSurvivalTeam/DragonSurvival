@@ -270,10 +270,10 @@ public class DragonStateHandler extends EntityStateHandler {
         return bodyKey().location();
     }
 
-    public void refreshMagicData(final ServerPlayer player) {
+    public void refreshMagicData(final ServerPlayer player, boolean forceRetainMagicData) {
         MagicData magic = MagicData.getData(player);
 
-        if (!ServerConfig.saveAllAbilities) {
+        if (!ServerConfig.saveAllAbilities && !forceRetainMagicData) {
             magic.refresh(player, species());
             flightWasGranted = false;
             spinWasGranted = false;
@@ -281,7 +281,7 @@ public class DragonStateHandler extends EntityStateHandler {
             if (magic.dataForSpeciesIsEmpty(speciesKey())) {
                 magic.refresh(player, species());
             } else {
-                magic.setCurrentSpecies(speciesKey());
+                magic.setCurrentSpecies(player, speciesKey());
             }
         }
 
@@ -301,7 +301,7 @@ public class DragonStateHandler extends EntityStateHandler {
             DSModifiers.updateTypeModifiers(player, this);
 
             if (player instanceof ServerPlayer serverPlayer) {
-                refreshMagicData(serverPlayer);
+                refreshMagicData(serverPlayer, false);
 
                 if (skinData.skinPresets.get().get(speciesKey()).isEmpty()) {
                     refreshSkinPresetForSpecies(speciesKey());

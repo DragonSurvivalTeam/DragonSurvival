@@ -23,15 +23,6 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 @EventBusSubscriber
 public class PlayerLoginHandler {
-    public static void syncDragonData(final Entity entity) {
-        if (entity instanceof ServerPlayer player) {
-            DragonStateProvider.getOptional(player).ifPresent(dragonStateHandler -> {
-                SyncComplete.handleDragonSync(player);
-                PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncComplete.Data(player.getId(), dragonStateHandler.serializeNBT(player.registryAccess())));
-            });
-        }
-    }
-
     // TODO: Do we need to start up any existing ticking sounds when a player starts getting tracked? e.g. moves into render distance while casting.
     // Do we even care enough to account for this edge case?
     @SubscribeEvent
@@ -104,7 +95,7 @@ public class PlayerLoginHandler {
         }
     }
 
-    private static void syncComplete(final Entity entity) {
+    public static void syncComplete(final Entity entity) {
         if (entity instanceof ServerPlayer player) {
             DragonStateProvider.getOptional(player).ifPresent(handler -> {
                 if (handler.species() != null && handler.body() == null) {
@@ -113,12 +104,9 @@ public class PlayerLoginHandler {
                     DragonSurvival.LOGGER.error("Player {} was a dragon but had no dragon body", player);
                 }
 
-                SyncComplete.handleDragonSync(player);
+                SyncComplete.handleDragonSync(player, true);
                 PacketDistributor.sendToPlayer(player, new SyncComplete.Data(player.getId(), handler.serializeNBT(player.registryAccess())));
             });
-
-            MagicData magicData = MagicData.getData(player);
-            PacketDistributor.sendToPlayer(player, new SyncMagicData(magicData.serializeNBT(player.registryAccess())));
 
             syncDataAttachments(player);
         }

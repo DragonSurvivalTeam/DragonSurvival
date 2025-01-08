@@ -107,9 +107,8 @@ public class DragonCommand {
         data.setPassengerId(DragonRidingHandler.NO_PASSENGER);
         data.isGrowing = true;
 
-        SyncComplete.handleDragonSync(player);
+        SyncComplete.handleDragonSync(player, false);
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncComplete.Data(player.getId(), data.serializeNBT(player.registryAccess())));
-
         return 1;
     }
 

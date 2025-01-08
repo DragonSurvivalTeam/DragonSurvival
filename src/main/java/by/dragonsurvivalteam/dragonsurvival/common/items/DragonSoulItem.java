@@ -47,12 +47,6 @@ public class DragonSoulItem extends Item {
     @Translation(comments = "§6■ Species:§r %s\n§6■ Growth Stage:§r %s\n§6■ Size:§r %s\n")
     private static final String INFO = Translation.Type.DESCRIPTION.wrap("dragon_soul.info");
 
-    @Translation(comments = "§6■ Can Spin§r")
-    private static final String HAS_SPIN = Translation.Type.DESCRIPTION.wrap("dragon_soul.has_spin");
-
-    @Translation(comments = "§6■ Can Fly§r")
-    private static final String HAS_FLIGHT = Translation.Type.DESCRIPTION.wrap("dragon_soul.has_flight");
-
     @Translation(comments = "■§7 An empty dragon's soul. With this item, you can store all your dragon's characteristics. After using it, you become human.")
     private static final String IS_EMPTY = Translation.Type.DESCRIPTION.wrap("dragon_soul.empty");
 
@@ -113,11 +107,11 @@ public class DragonSoulItem extends Item {
                 handler.deserializeNBT(level.registryAccess(), storedDragonData, true);
                 stack.set(DataComponents.CUSTOM_DATA, CustomData.of(currentDragonData));
                 stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(getCustomModelData(level.registryAccess(), currentDragonData)));
-                PlayerLoginHandler.syncDragonData(player);
+                PlayerLoginHandler.syncComplete(player);
             } else {
                 CompoundTag tag = stack.get(DataComponents.CUSTOM_DATA).copyTag();
                 handler.deserializeNBT(level.registryAccess(), tag, true);
-                PlayerLoginHandler.syncDragonData(player);
+                PlayerLoginHandler.syncComplete(player);
                 stack.set(DataComponents.CUSTOM_DATA, null);
                 stack.set(DataComponents.CUSTOM_MODEL_DATA, null);
             }
@@ -126,7 +120,7 @@ public class DragonSoulItem extends Item {
             stack.set(DataComponents.CUSTOM_DATA, CustomData.of(currentDragonData));
             stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(getCustomModelData(level.registryAccess(), currentDragonData)));
             handler.revertToHumanForm(player, true);
-            PlayerLoginHandler.syncDragonData(player);
+            PlayerLoginHandler.syncComplete(player);
         }
 
         level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ENDER_DRAGON_GROWL, entity.getSoundSource(), 1.0F, 1.0F);
@@ -177,14 +171,6 @@ public class DragonSoulItem extends Item {
 
             //noinspection DataFlowIssue -> key is present
             tooltips.add(Component.translatable(INFO, name, DragonStage.translatableName(stage.getKey()), String.format("%.0f", size)));
-
-            if (tag.getBoolean(IS_SPIN_LEARNED)) {
-                tooltips.add(Component.translatable(HAS_SPIN));
-            }
-
-            if (tag.getBoolean(IS_FLIGHT_LEARNED)) {
-                tooltips.add(Component.translatable(HAS_FLIGHT));
-            }
         } else {
             tooltips.add(Component.translatable(IS_EMPTY));
         }
@@ -217,6 +203,4 @@ public class DragonSoulItem extends Item {
 
     public static final String SPECIES = "dragon_species";
     public static final String SIZE = "size";
-    public static final String IS_SPIN_LEARNED = "is_spin_learned";
-    public static final String IS_FLIGHT_LEARNED = "is_flight_learned";
 }
