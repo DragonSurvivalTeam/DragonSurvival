@@ -18,6 +18,10 @@ import java.util.*;
 public class DragonPartLoader extends SimpleJsonResourceReloadListener {
     public static final Map<ResourceKey<DragonSpecies>, Map<EnumSkinLayer, List<DragonPart>>> DRAGON_PARTS = new HashMap<>();
 
+    private static final int NAMESPACE = 0;
+    private static final int SPECIES = 1;
+    private static final int PART = 2;
+
     public DragonPartLoader() {
         super(new Gson(), "skin/parts");
     }
@@ -25,12 +29,15 @@ public class DragonPartLoader extends SimpleJsonResourceReloadListener {
     @Override
     protected void apply(final @NotNull Map<ResourceLocation, JsonElement> map, @NotNull final ResourceManager manager, @NotNull final ProfilerFiller profiler) {
         map.forEach((location, value) -> value.getAsJsonArray().forEach(element -> {
-            // Location path is without the specified directory
-            // The format is expected to be '<dragon_species>/<part>.json'
             String[] elements = location.getPath().split("/");
 
-            ResourceKey<DragonSpecies> dragonSpecies = ResourceKey.create(DragonSpecies.REGISTRY, DragonSurvival.location(location.getNamespace(), elements[0]));
-            EnumSkinLayer layer = EnumSkinLayer.valueOf(elements[1].toUpperCase(Locale.ENGLISH));
+            if (elements.length != 3) {
+                DragonSurvival.LOGGER.error("The parts need to be stored as '<namespace>/<species>/*.json' - [{}] is invalid", location);
+                return;
+            }
+
+            ResourceKey<DragonSpecies> dragonSpecies = ResourceKey.create(DragonSpecies.REGISTRY, DragonSurvival.location(elements[NAMESPACE], elements[SPECIES]));
+            EnumSkinLayer layer = EnumSkinLayer.valueOf(elements[PART].toUpperCase(Locale.ENGLISH));
 
             DRAGON_PARTS.computeIfAbsent(dragonSpecies, key -> new HashMap<>()).computeIfAbsent(layer, key -> new ArrayList<>()).add(DragonPart.load(element.getAsJsonObject()));
         }));

@@ -27,17 +27,17 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
-public record DragonBody(List<Modifier> modifiers, double heightMultiplier, boolean hasExtendedCrouch, boolean canHideWings, ResourceLocation customModel, List<String> bonesToHideForToggle, Holder<DragonEmoteSet> emotes) implements AttributeModifierSupplier {
+public record DragonBody(List<Modifier> modifiers, double heightMultiplier, boolean hasExtendedCrouch, boolean canHideWings, ResourceLocation model, List<String> bonesToHideForToggle, Holder<DragonEmoteSet> emotes) implements AttributeModifierSupplier {
     public static final ResourceKey<Registry<DragonBody>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_bodies"));
 
-    public static final ResourceLocation DEFAULT_MODEL = DragonSurvival.res("geo/dragon_model.geo.json");
+    public static final ResourceLocation DEFAULT_MODEL = DragonSurvival.res("dragon_model");
 
     public static final Codec<DragonBody> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Modifier.CODEC.listOf().fieldOf("modifiers").forGetter(DragonBody::modifiers),
             Codec.DOUBLE.optionalFieldOf("height_multiplier", 1.0).forGetter(DragonBody::heightMultiplier),
             Codec.BOOL.optionalFieldOf("has_extended_crouch", false).forGetter(DragonBody::hasExtendedCrouch),
             Codec.BOOL.optionalFieldOf("can_hide_wings", true).forGetter(DragonBody::canHideWings),
-            ResourceLocation.CODEC.optionalFieldOf("custom_model", DEFAULT_MODEL).forGetter(DragonBody::customModel),
+            ResourceLocation.CODEC.optionalFieldOf("model", DEFAULT_MODEL).forGetter(DragonBody::model),
             Codec.STRING.listOf().optionalFieldOf("bones_to_hide_for_toggle", List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight")).forGetter(DragonBody::bonesToHideForToggle),
             DragonEmoteSet.CODEC.fieldOf("emotes").forGetter(DragonBody::emotes)
     ).apply(instance, instance.stable(DragonBody::new)));
@@ -85,13 +85,5 @@ public record DragonBody(List<Modifier> modifiers, double heightMultiplier, bool
     public static String getWingButtonDescription(final Holder<DragonBody> holder) {
         //noinspection DataFlowIssue -> key is present
         return Translation.Type.BODY_WINGS_DESCRIPTION.wrap(holder.getKey().location());
-    }
-
-    public static String customModelNameFromResource(ResourceLocation customModel) {
-        return customModel.getPath().substring(customModel.getPath().lastIndexOf("/") + 1, customModel.getPath().indexOf("."));
-    }
-
-    public String customModelName() {
-        return customModelNameFromResource(customModel);
     }
 }

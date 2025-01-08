@@ -49,7 +49,7 @@ public class CustomizationFileHandler {
         public SavedCustomization() {}
 
         public static SavedCustomization fromHandler(DragonStateHandler handler) {
-            return new SavedCustomization(handler.getCurrentStageCustomization(), handler.speciesKey(), handler.body().value().customModel());
+            return new SavedCustomization(handler.getCurrentStageCustomization(), handler.speciesKey(), handler.body().value().model());
         }
 
         public static SavedCustomization fromNbt(HolderLookup.Provider provider, CompoundTag nbt) {

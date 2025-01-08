@@ -53,13 +53,13 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         this.renderer = renderer;
     }
 
-    private void initArmorMasks(final String modelName, final ResourceLocation modelResource) {
+    private void initArmorMasks(final ResourceLocation model, final ResourceLocation modelResource) {
         armorMasksPerModel.computeIfAbsent(modelResource, resourceLocation -> {
             HashMap<EquipmentSlot, NativeImage> masks = new HashMap<>();
 
             for (EquipmentSlot slot : EquipmentSlot.values()) {
                 if (slot.isArmor()) {
-                    String texture = "textures/armor/" + modelName + "/armor_trims/masks/" + slot.getName() + "_mask.png";
+                    String texture = "textures/armor/" + /* FIXME */ model.getPath() + "/armor_trims/masks/" + slot.getName() + "_mask.png";
                     Optional<Resource> armorFile = Minecraft.getInstance().getResourceManager().getResource(res(texture));
 
                     if (armorFile.isEmpty()) {
@@ -90,8 +90,8 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
 
-        if (!armorMasksPerModel.containsKey(handler.getCurrentCustomModel())) {
-            initArmorMasks(handler.getCustomModelName(), handler.getCurrentCustomModel());
+        if (!armorMasksPerModel.containsKey(handler.getModel())) {
+            initArmorMasks(handler.body().value().model(), handler.getModel());
         }
 
         if (hasAnyArmorEquipped(player)) {
@@ -158,7 +158,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
     private static NativeImage compileArmorTexture(final Player player) throws IOException {
         NativeImage image = new NativeImage(512, 512, true);
         DragonStateHandler handler = DragonStateProvider.getData(player);
-        ResourceLocation currentDragonModel = handler.getCurrentCustomModel();
+        ResourceLocation currentDragonModel = handler.getModel();
         if(!armorMasksPerModel.containsKey(currentDragonModel)) {
             return image;
         }
@@ -228,7 +228,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
                 NativeImage trimImage = null;
                 if (hasTrim) {
                     String patternPath = trim.pattern().value().assetId().getPath();
-                    trimImage = RenderingUtils.getImageFromResource(res("textures/armor/" + handler.getCustomModelName() + "/armor_trims/" + patternPath + ".png"));
+                    trimImage = RenderingUtils.getImageFromResource(res("textures/armor/" + handler.getModel() + "/armor_trims/" + patternPath + ".png"));
                 }
 
                 for (int x = 0; x < armorImage.getWidth(); x++) {
@@ -306,7 +306,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
     private static String buildUniqueArmorUUID(Player player) {
         StringBuilder armorTotal = new StringBuilder();
         DragonStateHandler handler = DragonStateProvider.getData(player);
-        ResourceLocation currentDragonModel = handler.getCurrentCustomModel();
+        ResourceLocation currentDragonModel = handler.getModel();
         armorTotal.append(currentDragonModel.toString());
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             if (!slot.isArmor())
@@ -330,14 +330,14 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
     private static ResourceLocation generateArmorTextureResourceLocation(Player player, EquipmentSlot equipmentSlot) {
         Item item = player.getItemBySlot(equipmentSlot).getItem();
         DragonStateHandler handler = DragonStateProvider.getData(player);
-        ResourceLocation resourceLocation = itemToArmorResLoc(handler.getCustomModelName(), item);
+        ResourceLocation resourceLocation = toArmorResource(handler.getModel(), item);
         if (resourceLocation != null) {
             if (Minecraft.getInstance().getResourceManager().getResource(resourceLocation).isPresent()) {
                 return resourceLocation;
             }
         }
 
-        String texture = "textures/armor/" + handler.getCustomModelName() + "/";
+        String texture = "textures/armor/" + /* FIXME */ handler.getModel().getPath() + "/";
         if (item instanceof ArmorItem armorItem) {
             Holder<ArmorMaterial> armorMaterial = armorItem.getMaterial();
             boolean isVanillaArmor = false;
@@ -395,14 +395,14 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         return res("textures/armor/empty_armor.png");
     }
 
-    private static ResourceLocation itemToArmorResLoc(final String customModelName, final Item item) {
+    private static ResourceLocation toArmorResource(final ResourceLocation model, final Item item) {
         if (item == Items.AIR) {
             return null;
         }
 
         //noinspection deprecation,DataFlowIssue -> ignore deprecated / key is present
         ResourceLocation location = item.builtInRegistryHolder().getKey().location();
-        return ResourceLocation.parse(DragonSurvival.MODID + ":" + "textures/armor/" + customModelName + "/" + location.getNamespace() + "/" + location.getPath() + ".png");
+        return ResourceLocation.parse(DragonSurvival.MODID + ":" + "textures/armor/" + /* FIXME */ model.getPath() + "/" + location.getNamespace() + "/" + location.getPath() + ".png");
     }
 
     private static String stripInvalidPathChars(String loc) {

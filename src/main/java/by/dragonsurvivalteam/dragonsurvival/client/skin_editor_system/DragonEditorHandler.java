@@ -106,7 +106,8 @@ public class DragonEditorHandler {
         List<DragonPart> parts = DragonPartLoader.DRAGON_PARTS.get(type.getKey()).get(layer);
 
         for (DragonPart part : parts) {
-            if ((part.bodies() == null && body.value().customModel() == DragonBody.DEFAULT_MODEL) || (part.bodies() != null && part.bodies().contains(Objects.requireNonNull(body.getKey()).location().toString()))) {
+            //noinspection DataFlowIssue -> key is present
+            if ((part.bodies() == null && body.value().model() == DragonBody.DEFAULT_MODEL) || (part.bodies() != null && part.bodies().contains(body.getKey().location().toString()))) {
                 keys.add(part.key());
             }
         }

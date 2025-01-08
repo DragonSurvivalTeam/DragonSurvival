@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.EnumSkinLayer;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
@@ -18,8 +19,13 @@ import java.util.Locale;
 import java.util.Map;
 
 public class DefaultPartLoader extends SimpleJsonResourceReloadListener {
-    public static final Map<String, Map<ResourceKey<DragonSpecies>, Map<ResourceKey<DragonStage>, HashMap<EnumSkinLayer, String>>>> DEFAULT_PARTS = new HashMap<>();
+    public static final Map</* Model */ ResourceLocation, Map<ResourceKey<DragonSpecies>, Map<ResourceKey<DragonStage>, HashMap<EnumSkinLayer, /* Part key */ String>>>> DEFAULT_PARTS = new HashMap<>();
     public static final String NO_PART = "none";
+
+    private static final int MODEL_NAMESPACE = 0;
+    private static final int MODEL = 1;
+    private static final int SPECIES_NAMESPACE = 2;
+    private static final int SPECIES = 3;
 
     public DefaultPartLoader() {
         super(new Gson(), "skin/default_parts");
@@ -28,11 +34,16 @@ public class DefaultPartLoader extends SimpleJsonResourceReloadListener {
     @Override
     protected void apply(@NotNull final Map<ResourceLocation, JsonElement> map, @NotNull final ResourceManager manager, @NotNull final ProfilerFiller profiler) {
         map.forEach((location, value) -> {
-            // Location path is without the specified directory
-            String path = location.getPath();
-            // Strip _<modelname> from the path
-            ResourceLocation species = ResourceLocation.fromNamespaceAndPath(location.getNamespace(), path.substring(0, path.indexOf('_')));
-            String model = path.substring(path.indexOf('_') + 1);
+            String[] elements = location.getPath().split("/");
+
+            if (elements.length != 4) {
+                DragonSurvival.LOGGER.error("The default parts need to be stored as '<namespace>/<model>/<namespace>/<species>.json' - [{}] is invalid", location);
+                return;
+            }
+
+            ResourceLocation model = ResourceLocation.fromNamespaceAndPath(elements[MODEL_NAMESPACE], elements[MODEL]);
+            ResourceLocation species = ResourceLocation.fromNamespaceAndPath(elements[SPECIES_NAMESPACE], elements[SPECIES]);
+
             ResourceKey<DragonSpecies> dragonSpecies = ResourceKey.create(DragonSpecies.REGISTRY, species);
             JsonObject dragonStageMap = value.getAsJsonObject();
 
@@ -50,8 +61,8 @@ public class DefaultPartLoader extends SimpleJsonResourceReloadListener {
         });
     }
 
-    public static String getDefaultPartKey(final ResourceKey<DragonSpecies> type, final ResourceKey<DragonStage> stage, final String customModel, final EnumSkinLayer layer) {
-        if(!DEFAULT_PARTS.containsKey(customModel)) {
+    public static String getDefaultPartKey(final ResourceKey<DragonSpecies> type, final ResourceKey<DragonStage> stage, final ResourceLocation customModel, final EnumSkinLayer layer) {
+        if (!DEFAULT_PARTS.containsKey(customModel)) {
             return NO_PART;
         }
 

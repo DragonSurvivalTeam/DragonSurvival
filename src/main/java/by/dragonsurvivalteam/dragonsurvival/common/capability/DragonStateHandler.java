@@ -322,7 +322,7 @@ public class DragonStateHandler extends EntityStateHandler {
             refreshBody = true;
 
             // If the model has changed, just override the skin preset with the default one as a failsafe
-            if (oldBody != null && this.dragonBody.value().customModel() != oldBody.value().customModel()) {
+            if (oldBody != null && this.dragonBody.value().model() != oldBody.value().model()) {
                 refreshSkinPresetForSpecies(speciesKey());
             }
         }
@@ -391,13 +391,8 @@ public class DragonStateHandler extends EntityStateHandler {
         return skinData;
     }
 
-    public ResourceLocation getCurrentCustomModel() {
-        return dragonBody.value().customModel();
-    }
-
-    public String getCustomModelName() {
-        String customModelPath = getCurrentCustomModel().getPath();
-        return customModelPath.substring(customModelPath.lastIndexOf("/") + 1, customModelPath.indexOf("."));
+    public ResourceLocation getModel() {
+        return dragonBody.value().model();
     }
 
     public void setSkinPresetForType(final ResourceKey<DragonSpecies> dragonSpecies, SkinPreset preset) {
@@ -415,7 +410,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
     public void refreshSkinPresetForSpecies(final ResourceKey<DragonSpecies> dragonSpecies) {
         SkinPreset freshSkinPreset = new SkinPreset();
-        freshSkinPreset.initDefaults(dragonSpecies, dragonBody != null ? dragonBody.value().customModel() : DragonBody.DEFAULT_MODEL);
+        freshSkinPreset.initDefaults(dragonSpecies, dragonBody != null ? dragonBody.value().model() : DragonBody.DEFAULT_MODEL);
         skinData.skinPresets.get().put(dragonSpecies, freshSkinPreset);
     }
 

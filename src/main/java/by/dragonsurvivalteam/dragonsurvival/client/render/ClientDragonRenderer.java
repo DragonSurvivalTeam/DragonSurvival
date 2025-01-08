@@ -43,7 +43,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.ParrotOnShoulderLayer;
-import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Tuple;
@@ -62,7 +61,6 @@ import org.joml.Vector3f;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.util.RenderUtil;
 
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -214,13 +212,14 @@ public class ClientDragonRenderer {
             float partialRenderTick = renderPlayerEvent.getPartialTick();
             float yaw = player.getViewYRot(partialRenderTick);
 
-            Holder<DragonStage> dragonStage = handler.stage();
             ResourceLocation customTexture;
-            if(handler.body().value().customModel().equals(DragonBody.DEFAULT_MODEL)) {
-                customTexture = DragonSkins.getPlayerSkin(player, Objects.requireNonNull(Objects.requireNonNull(dragonStage).getKey()));
+
+            if (handler.getModel().equals(DragonBody.DEFAULT_MODEL)) {
+                customTexture = DragonSkins.getPlayerSkin(player, handler.stageKey());
             } else {
                 customTexture = null;
             }
+
             PoseStack poseStack = renderPlayerEvent.getPoseStack();
 
             try {

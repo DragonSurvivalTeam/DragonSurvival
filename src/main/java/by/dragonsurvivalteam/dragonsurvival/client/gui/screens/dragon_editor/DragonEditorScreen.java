@@ -622,7 +622,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         HANDLER.setDesiredSize(null, dragonStage.value().sizeRange().min());
         HANDLER.setBody(null, dragonBody);
         SkinPreset skinPreset = localHandler.getSkinPresetForSpecies(dragonSpecies.getKey());
-        if(skinPreset.getModel().equals(dragonBody.value().customModel())) {
+        if(skinPreset.getModel().equals(dragonBody.value().model())) {
             HANDLER.setCurrentSkinPreset(skinPreset);
         } else {
             HANDLER.refreshSkinPresetForSpecies(dragonSpecies.getKey());
@@ -928,7 +928,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             SkinPreset preset = new SkinPreset();
 
             preset.deserializeNBT(access, this.preset.serializeNBT(access));
-            preset.put(dragonStage.getKey(), Lazy.of(() -> new DragonStageCustomization(dragonStage.getKey(), dragonSpecies.getKey(), data.getCustomModelName())));
+            preset.put(dragonStage.getKey(), Lazy.of(() -> new DragonStageCustomization(dragonStage.getKey(), dragonSpecies.getKey(), data.body().value().model())));
             actionHistory.add(new EditorAction<>(setSkinPresetAction, preset.serializeNBT(access)));
         });
         resetButton.setTooltip(Tooltip.create(Component.translatable(RESET)));
@@ -959,7 +959,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
                 return;
             }
 
-            if (!savedCustomization.getDragonModel().equals(dragonBody.value().customModel())) {
+            if (!savedCustomization.getDragonModel().equals(dragonBody.value().model())) {
                 slotDisplayMessage = SlotDisplayMessage.INVALID_FOR_MODEL;
                 tickWhenSlotDisplayMessageSet = tick;
                 return;
@@ -990,7 +990,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         return new DragonBodyButton(this, x, y, 25, 25, dragonBody, isEditor, button -> {
             if (!((DragonBodyButton) button).isLocked()) {
                 if(dragonBody.value() != this.dragonBody.value()) {
-                    if(dragonBody.value().customModel() != this.dragonBody.value().customModel()) {
+                    if(dragonBody.value().model() != this.dragonBody.value().model()) {
                         // We don't support undo-redo behavior when swapping between body types that have different custom models
                         actionHistory.clear();
                     } else {

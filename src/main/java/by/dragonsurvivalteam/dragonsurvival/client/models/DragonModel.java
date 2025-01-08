@@ -170,11 +170,15 @@ public class DragonModel extends GeoModel<DragonEntity> {
 
     @Override
     public ResourceLocation getModelResource(final DragonEntity dragon) {
+        ResourceLocation model;
+
         if (dragon.getPlayer() == null) {
-            return DragonBody.DEFAULT_MODEL;
+            model = DragonBody.DEFAULT_MODEL;
         } else {
-            return DragonStateProvider.getData(dragon.getPlayer()).body().value().customModel();
+            model = DragonStateProvider.getData(dragon.getPlayer()).getModel();
         }
+
+        return model.withPrefix("geo/").withSuffix(".geo.json");
     }
 
     @Override
