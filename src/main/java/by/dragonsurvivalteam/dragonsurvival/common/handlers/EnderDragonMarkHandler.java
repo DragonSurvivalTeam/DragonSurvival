@@ -4,6 +4,8 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DurationInstance;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.network.status.SyncEnderDragonMark;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.EnderDragonDamageHistory;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
@@ -21,6 +23,9 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 @EventBusSubscriber
 public class EnderDragonMarkHandler {
+    @Translation(key = "ender_dragon_curses_you", type = Translation.Type.CONFIGURATION, comments = "If enabled, the ender dragon will curse you with an effect that prevents you from using some of your abilities when killed.")
+    @ConfigOption(side = ConfigSide.SERVER, category = "ender_dragon", key = "ender_dragon_curses_you")
+    public static Boolean enderDragonCursesYou = true;
 
     @SubscribeEvent
     public static void onEnderDragonHealthChanged(LivingDamageEvent.Post event) {
@@ -49,9 +54,10 @@ public class EnderDragonMarkHandler {
             for(Player player : data.getPlayers(event.getEntity().level())) {
                 DragonStateHandler handler = DragonStateProvider.getData(player);
                 if(handler.isDragon()) {
-                    handler.markedByEnderDragon = true;
-
-                    PacketDistributor.sendToPlayer((ServerPlayer)player, new SyncEnderDragonMark(true));
+                    if(enderDragonCursesYou) {
+                        handler.markedByEnderDragon = true;
+                        PacketDistributor.sendToPlayer((ServerPlayer)player, new SyncEnderDragonMark(true));
+                    }
                 }
             }
         }

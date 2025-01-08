@@ -15,6 +15,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.features.EndFeatures;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -57,6 +58,15 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
     @Translation(key = "primordial_anchor_gives_spin_grant_state", type = Translation.Type.CONFIGURATION, comments = "If enabled, the primordial anchor will give the spin grant state.")
     @ConfigOption(side = ConfigSide.SERVER, category = "primordial_anchor", key = "primordial_anchor_gives_spin_grant_state")
     public static Boolean anchorGivesSpinGrantState = false;
+
+    @Translation(comments = "The ender dragon has blessed you with the ability to fly.")
+    private static final String PRIMORDIAL_ANCHOR_GRANTED_FLIGHT = Translation.Type.GUI.wrap("primordial_anchor.spin_grant_gained");
+
+    @Translation(comments = "The ender dragon has blessed you with the ability to spin through the air.")
+    private static final String PRIMORDIAL_ANCHOR_GRANTED_SPIN = Translation.Type.GUI.wrap("primordial_anchor.flight_grant_gained");
+
+    @Translation(comments = "The ender dragon has blessed you with the ability to fly and spin through the air.")
+    private static final String PRIMORDIAL_ANCHOR_GRANTED_FLIGHT_SPIN = Translation.Type.GUI.wrap("primordial_anchor.flight_spin_grant_gained");
 
     public static final BooleanProperty CHARGED = BooleanProperty.create("charged");
     public static final BooleanProperty BLOODY = BooleanProperty.create("bloody");
@@ -130,12 +140,25 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
             DimensionTransition transition = new DimensionTransition(serverLevel, teleportPosition.getCenter(), player.getDeltaMovement(), player.getYRot(), player.getXRot(), DimensionTransition.PLAY_PORTAL_SOUND);
             player.changeDimension(transition);
             handler.markedByEnderDragon = false;
+            boolean flightWasActuallyGranted = false;
+            boolean spinWasActuallyGranted = false;
             if(anchorGivesFlightGrantState) {
+                flightWasActuallyGranted = true;
                 handler.flightWasGranted = true;
             }
             if(anchorGivesSpinGrantState) {
+                spinWasActuallyGranted = true;
                 handler.spinWasGranted = true;
             }
+
+            if(flightWasActuallyGranted && spinWasActuallyGranted) {
+                player.sendSystemMessage(Component.translatable(PRIMORDIAL_ANCHOR_GRANTED_FLIGHT_SPIN));
+            } else if(flightWasActuallyGranted) {
+                player.sendSystemMessage(Component.translatable(PRIMORDIAL_ANCHOR_GRANTED_FLIGHT));
+            } else if(spinWasActuallyGranted) {
+                player.sendSystemMessage(Component.translatable(PRIMORDIAL_ANCHOR_GRANTED_SPIN));
+            }
+
             PacketDistributor.sendToPlayer((ServerPlayer)player, new SyncEnderDragonMark(false));
         }
 
