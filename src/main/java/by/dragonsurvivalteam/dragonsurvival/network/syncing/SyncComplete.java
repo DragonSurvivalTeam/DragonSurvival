@@ -61,6 +61,7 @@ public class SyncComplete implements IMessage<SyncComplete.Data> {
                     if (!handler.isDragon()) {
                         PenaltySupply.getData(context.player()).clear();
                         DSModifiers.clearModifiers(context.player());
+                        handler.refreshMagicData((ServerPlayer) context.player(), false);
                         return;
                     }
 
