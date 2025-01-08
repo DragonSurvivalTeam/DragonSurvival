@@ -3,8 +3,11 @@ package by.dragonsurvivalteam.dragonsurvival.common.blocks;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.network.status.SyncEnderDragonMark;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.PrimordialAnchorBlockEntity;
 import net.minecraft.core.BlockPos;
@@ -47,6 +50,14 @@ import javax.annotation.Nullable;
 
 /** Mixture of vanilla implementation from {@link RespawnAnchorBlock} and {@link TheEndGatewayBlockEntity} */
 public class PrimordialAnchorBlock extends Block implements EntityBlock {
+    @Translation(key = "primordial_anchor_gives_flight_grant_state", type = Translation.Type.CONFIGURATION, comments = "If enabled, the primordial anchor will give the flight grant state.")
+    @ConfigOption(side = ConfigSide.SERVER, category = "primordial_anchor", key = "primordial_anchor_gives_flight_grant_state")
+    public static Boolean anchorGivesFlightGrantState = true;
+
+    @Translation(key = "primordial_anchor_gives_spin_grant_state", type = Translation.Type.CONFIGURATION, comments = "If enabled, the primordial anchor will give the spin grant state.")
+    @ConfigOption(side = ConfigSide.SERVER, category = "primordial_anchor", key = "primordial_anchor_gives_spin_grant_state")
+    public static Boolean anchorGivesSpinGrantState = false;
+
     public static final BooleanProperty CHARGED = BooleanProperty.create("charged");
     public static final BooleanProperty BLOODY = BooleanProperty.create("bloody");
 
@@ -119,8 +130,12 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
             DimensionTransition transition = new DimensionTransition(serverLevel, teleportPosition.getCenter(), player.getDeltaMovement(), player.getYRot(), player.getXRot(), DimensionTransition.PLAY_PORTAL_SOUND);
             player.changeDimension(transition);
             handler.markedByEnderDragon = false;
-            handler.flightWasGranted = true;
-            handler.spinWasGranted = true;
+            if(anchorGivesFlightGrantState) {
+                handler.flightWasGranted = true;
+            }
+            if(anchorGivesSpinGrantState) {
+                handler.spinWasGranted = true;
+            }
             PacketDistributor.sendToPlayer((ServerPlayer)player, new SyncEnderDragonMark(false));
         }
 

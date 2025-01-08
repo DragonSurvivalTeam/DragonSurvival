@@ -418,6 +418,10 @@ public class DragonStateHandler extends EntityStateHandler {
     }
 
     public SkinPreset getSkinPresetForSpecies(final ResourceKey<DragonSpecies> dragonSpecies) {
+        SkinPreset skinPreset = skinData.skinPresets.get().get(dragonSpecies);
+        if(skinPreset.isEmpty()) {
+            refreshSkinPresetForSpecies(dragonSpecies);
+        }
         return skinData.skinPresets.get().get(dragonSpecies);
     }
 

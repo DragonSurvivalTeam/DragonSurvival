@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.blocks;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -28,6 +29,9 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 public class SkeletonPieceBlock extends Block implements SimpleWaterloggedBlock {
+    @Translation(comments = "Dragon Bones")
+    public static final String DRAGON_BONES = "item.dragonsurvival.dragon_bone";
+
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     private final SkeletonPieceBlock.Type type;
@@ -149,6 +153,6 @@ public class SkeletonPieceBlock extends Block implements SimpleWaterloggedBlock 
 
     @Override
     public @NotNull String getDescriptionId() {
-        return "item.dragonsurvival.dragon_bone";
+        return DRAGON_BONES;
     }
 }

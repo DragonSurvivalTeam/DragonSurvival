@@ -621,7 +621,7 @@ public class DragonEditorScreen extends Screen {
         HANDLER.setDesiredSize(null, dragonStage.value().sizeRange().min());
         HANDLER.setBody(null, dragonBody);
         SkinPreset skinPreset = localHandler.getSkinPresetForSpecies(dragonSpecies.getKey());
-        if(skinPreset.getModel() == dragonBody.value().customModel()) {
+        if(skinPreset.getModel().equals(dragonBody.value().customModel())) {
             HANDLER.setCurrentSkinPreset(skinPreset);
         } else {
             HANDLER.refreshSkinPresetForSpecies(dragonSpecies.getKey());
