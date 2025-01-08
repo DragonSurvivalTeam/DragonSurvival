@@ -37,7 +37,7 @@ public record FlightEffect(int flightLevel) implements AbilityEntityEffect {
         data.hasFlight = ability.level() >= flightLevel;
 
         if (hadFlight != data.hasFlight) {
-            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverTarget, new FlightStatus(serverTarget.getId(), data.hasFlight));
+             PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverTarget, new FlightStatus(serverTarget.getId(), data.hasFlight));
         }
     }
 

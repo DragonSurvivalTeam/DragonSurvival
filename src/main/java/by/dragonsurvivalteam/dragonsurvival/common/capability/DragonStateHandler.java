@@ -67,6 +67,8 @@ public class DragonStateHandler extends EntityStateHandler {
     public int magicSource;
     public boolean isOnMagicSource;
     public boolean markedByEnderDragon;
+    public boolean flightWasGranted;
+    public boolean spinWasGranted;
 
     public boolean refreshBody;
 
@@ -447,6 +449,8 @@ public class DragonStateHandler extends EntityStateHandler {
             tag.putBoolean(IS_GROWING, isGrowing);
             tag.putBoolean(DESTRUCTION_ENABLED, destructionEnabled);
             tag.putBoolean(MARKED_BY_ENDER_DRAGON, markedByEnderDragon);
+            tag.putBoolean(WINGS_WAS_GRANTED, flightWasGranted);
+            tag.putBoolean(SPIN_WAS_GRANTED, spinWasGranted);
         }
 
         if (isDragonSoul && dragonSpecies != null) {
@@ -513,6 +517,8 @@ public class DragonStateHandler extends EntityStateHandler {
             isGrowing = !tag.contains(IS_GROWING) || tag.getBoolean(IS_GROWING);
             starHeartState = StarHeartItem.State.values()[tag.getInt(STAR_HEART_STATE)];
             markedByEnderDragon = tag.getBoolean(MARKED_BY_ENDER_DRAGON);
+            flightWasGranted = tag.getBoolean(WINGS_WAS_GRANTED);
+            spinWasGranted = tag.getBoolean(SPIN_WAS_GRANTED);
         }
 
         if (dragonSpecies != null) {
@@ -640,6 +646,8 @@ public class DragonStateHandler extends EntityStateHandler {
 
     private static final String STAR_HEART_STATE = "star_heart_state";
     private static final String MARKED_BY_ENDER_DRAGON = "marked_by_ender_dragon";
+    private static final String SPIN_WAS_GRANTED = "spin_was_granted";
+    private static final String WINGS_WAS_GRANTED = "wings_was_granted";
     private static final String IS_GROWING = "is_growing";
     private static final String DESTRUCTION_ENABLED = "destruction_enabled";
 }

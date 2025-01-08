@@ -389,14 +389,6 @@ public class DSItems {
 
     // --- Misc --- //
 
-    @Translation(type = Translation.Type.ITEM, comments = "Flight Grant")
-    @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 This item gives your dragon the ability to fly. Consumed on use. Can also be used to remove flight.")
-    public static final Holder<Item> WING_GRANT_ITEM = DS_ITEMS.register("wing_grant", location -> new TooltipItem(new Properties(), location.getPath()));
-
-    @Translation(type = Translation.Type.ITEM, comments = "Spin Grant")
-    @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 This item gives your dragon the ability to spin while flying. Consumed on use. Can be used again to remove the ability.")
-    public static final Holder<Item> SPIN_GRANT_ITEM = DS_ITEMS.register("spin_grant", location -> new TooltipItem(new Properties(), location.getPath()));
-
     @Translation(type = Translation.Type.ITEM, comments = "Dragon Soul")
     public static final Holder<Item> DRAGON_SOUL = DS_ITEMS.register("dragon_soul", () -> new DragonSoulItem(new Properties().rarity(Rarity.EPIC)));
 
@@ -433,6 +425,14 @@ public class DSItems {
     @Translation(type = Translation.Type.ITEM, comments = "Spearman Promotion")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■ §7Use on a Hunter Spearman to turn him into a Hunter Leader.")
     public static final Holder<Item> SPEARMAN_PROMOTION = DS_ITEMS.register("spearman_promotion", location -> new TooltipItem(new Properties().rarity(Rarity.COMMON), location.getPath()));
+
+    @Translation(type = Translation.Type.ITEM, comments = "Flight Grant")
+    @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 This item gives your dragon the ability to fly. Consumed on use. Can also be used to remove flight.")
+    public static final Holder<Item> FLIGHT_GRANT_ITEM = DS_ITEMS.register("wing_grant", location -> new FlightGrantItem(new Properties(), location.getPath()));
+
+    @Translation(type = Translation.Type.ITEM, comments = "Spin Grant")
+    @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 This item gives your dragon the ability to spin while flying. Consumed on use. Can be used again to remove the ability.")
+    public static final Holder<Item> SPIN_GRANT_ITEM = DS_ITEMS.register("spin_grant", location -> new SpinGrantItem(new Properties(), location.getPath()));
 
     // --- Spawn eggs --- //
 

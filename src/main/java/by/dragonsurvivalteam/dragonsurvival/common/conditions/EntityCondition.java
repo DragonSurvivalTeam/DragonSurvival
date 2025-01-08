@@ -70,6 +70,14 @@ public class EntityCondition {
         return EntityPredicate.Builder.entity().subPredicate(DragonPredicate.Builder.dragon().markedByEnderDragon(isMarked).build()).build();
     }
 
+    public static EntityPredicate flightWasGranted(boolean flightWasGranted) {
+        return EntityPredicate.Builder.entity().subPredicate(DragonPredicate.Builder.dragon().flightWasGranted(flightWasGranted).build()).build();
+    }
+
+    public static EntityPredicate spinWasGranted(boolean spinWasGranted) {
+        return EntityPredicate.Builder.entity().subPredicate(DragonPredicate.Builder.dragon().spinWasGranted(spinWasGranted).build()).build();
+    }
+
     @SafeVarargs
     public static EntityPredicate hasEffect(final Holder<MobEffect>... effects) {
         MobEffectsPredicate.Builder builder = MobEffectsPredicate.Builder.effects();

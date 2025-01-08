@@ -28,14 +28,18 @@ public record DragonPredicate(
         Optional<DragonStagePredicate> dragonStage,
         Optional<HolderSet<DragonBody>> dragonBody,
         Optional<StarHeartItem.State> starHeartState,
-        Optional<Boolean> markedByEnderDragon
+        Optional<Boolean> markedByEnderDragon,
+        Optional<Boolean> flightWasGranted,
+        Optional<Boolean> spinWasGranted
 ) implements EntitySubPredicate {
     public static final MapCodec<DragonPredicate> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             RegistryCodecs.homogeneousList(DragonSpecies.REGISTRY).optionalFieldOf("dragon_species").forGetter(DragonPredicate::dragonSpecies),
             DragonStagePredicate.CODEC.optionalFieldOf("stage_specific").forGetter(DragonPredicate::dragonStage),
             RegistryCodecs.homogeneousList(DragonBody.REGISTRY).optionalFieldOf("dragon_body").forGetter(DragonPredicate::dragonBody),
             StarHeartItem.State.CODEC.optionalFieldOf("star_heart_state").forGetter(DragonPredicate::starHeartState),
-            Codec.BOOL.optionalFieldOf("marked_by_ender_dragon").forGetter(DragonPredicate::markedByEnderDragon)
+            Codec.BOOL.optionalFieldOf("marked_by_ender_dragon").forGetter(DragonPredicate::markedByEnderDragon),
+            Codec.BOOL.optionalFieldOf("flight_was_granted").forGetter(DragonPredicate::flightWasGranted),
+            Codec.BOOL.optionalFieldOf("spin_was_granted").forGetter(DragonPredicate::spinWasGranted)
     ).apply(instance, DragonPredicate::new));
 
     @Override
@@ -71,6 +75,14 @@ public record DragonPredicate(
             return false;
         }
 
+        if(flightWasGranted().isPresent() && flightWasGranted().get() != data.flightWasGranted) {
+            return false;
+        }
+
+        if(spinWasGranted().isPresent() && spinWasGranted().get() != data.spinWasGranted) {
+            return false;
+        }
+
         return true;
     }
 
@@ -86,6 +98,8 @@ public record DragonPredicate(
         private Optional<HolderSet<DragonBody>> dragonBody = Optional.empty();
         private Optional<StarHeartItem.State> starHeartState = Optional.empty();
         private Optional<Boolean> markedByEnderDragon = Optional.empty();
+        private Optional<Boolean> flightWasGranted = Optional.empty();
+        private Optional<Boolean> spinWasGranted = Optional.empty();
 
         public static DragonPredicate.Builder dragon() {
             return new DragonPredicate.Builder();
@@ -126,8 +140,18 @@ public record DragonPredicate(
             return this;
         }
 
+        public DragonPredicate.Builder flightWasGranted(final boolean flightWasGranted) {
+            this.flightWasGranted = Optional.of(flightWasGranted);
+            return this;
+        }
+
+        public DragonPredicate.Builder spinWasGranted(final boolean spinWasGranted) {
+            this.spinWasGranted = Optional.of(spinWasGranted);
+            return this;
+        }
+
         public DragonPredicate build() {
-            return new DragonPredicate(dragonSpecies, dragonStage, dragonBody, starHeartState, markedByEnderDragon);
+            return new DragonPredicate(dragonSpecies, dragonStage, dragonBody, starHeartState, markedByEnderDragon, flightWasGranted, spinWasGranted);
         }
     }
 }

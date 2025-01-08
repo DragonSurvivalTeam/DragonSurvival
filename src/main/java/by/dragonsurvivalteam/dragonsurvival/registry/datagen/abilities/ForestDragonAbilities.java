@@ -25,10 +25,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.Ab
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AreaTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.DragonBreathTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.SelfTarget;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.DragonSizeUpgrade;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ExperienceLevelUpgrade;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ExperiencePointsUpgrade;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ItemUpgrade;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.ProjectileData;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.Projectiles;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
@@ -437,7 +434,7 @@ public class ForestDragonAbilities {
 
         context.register(FOREST_WINGS, new DragonAbility(
                 Activation.passive(),
-                Optional.of(new ItemUpgrade(List.of(HolderSet.direct(DSItems.WING_GRANT_ITEM)), HolderSet.empty())),
+                Optional.of(new ConditionUpgrade(List.of(Condition.thisEntity(EntityCondition.flightWasGranted(true)).build()), false)),
                 // Disable when marked by the ender dragon
                 Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -453,7 +450,7 @@ public class ForestDragonAbilities {
 
         context.register(FOREST_SPIN, new DragonAbility(
                 Activation.passive(),
-                Optional.of(new ItemUpgrade(List.of(HolderSet.direct(DSItems.SPIN_GRANT_ITEM)), HolderSet.empty())),
+                Optional.of(new ConditionUpgrade(List.of(Condition.thisEntity(EntityCondition.spinWasGranted(true)).build()), false)),
                 // Disable when marked by the ender dragon
                 Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(

@@ -33,11 +33,20 @@
     ]
   },
   "upgrade": {
-    "downgrade_items": [],
-    "items_per_level": [
-      "dragonsurvival:spin_grant"
+    "conditions": [
+      {
+        "condition": "minecraft:entity_properties",
+        "entity": "this",
+        "predicate": {
+          "type_specific": {
+            "type": "dragonsurvival:dragon_predicate",
+            "spin_was_granted": true
+          }
+        }
+      }
     ],
-    "upgrade_type": "dragonsurvival:item_based"
+    "require_previous": false,
+    "upgrade_type": "dragonsurvival:condition_based"
   },
   "usage_blocked": {
     "condition": "minecraft:entity_properties",

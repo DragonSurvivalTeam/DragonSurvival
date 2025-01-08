@@ -131,5 +131,6 @@ public class PlayerLoginHandler {
         player.getExistingData(DSDataAttachments.HARVEST_BONUSES).ifPresent(data -> data.sync(player));
         player.getExistingData(DSDataAttachments.SUMMONED_ENTITIES).ifPresent(data -> data.sync(player));
         player.getExistingData(DSDataAttachments.EFFECT_MODIFICATIONS).ifPresent(data -> data.sync(player));
+        player.getExistingData(DSDataAttachments.SPIN).ifPresent(data -> data.sync(player));
     }
 }

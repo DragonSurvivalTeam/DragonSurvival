@@ -119,6 +119,8 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
             DimensionTransition transition = new DimensionTransition(serverLevel, teleportPosition.getCenter(), player.getDeltaMovement(), player.getYRot(), player.getXRot(), DimensionTransition.PLAY_PORTAL_SOUND);
             player.changeDimension(transition);
             handler.markedByEnderDragon = false;
+            handler.flightWasGranted = true;
+            handler.spinWasGranted = true;
             PacketDistributor.sendToPlayer((ServerPlayer)player, new SyncEnderDragonMark(false));
         }
 
