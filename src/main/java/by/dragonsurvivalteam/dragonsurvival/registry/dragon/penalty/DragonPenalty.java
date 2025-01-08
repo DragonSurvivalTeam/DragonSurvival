@@ -45,9 +45,9 @@ public record DragonPenalty(ResourceLocation icon, Optional<LootItemCondition> c
             AttributeInstance resistance = dragon.getAttribute(supplyTrigger.attributeToUseAsBase());
             int resistanceTime = resistance != null ? (int) resistance.getValue() : 0;
 
-            if (penaltySupply.getMaxSupply(supplyTrigger.id()) != resistanceTime) {
-                penaltySupply.initialize(supplyTrigger.id(), resistanceTime, supplyTrigger.reductionRateMultiplier(), supplyTrigger.regenerationRate());
-                PacketDistributor.sendToPlayer(dragon, new SyncAddPenaltySupply(supplyTrigger.id(), resistanceTime, supplyTrigger.reductionRateMultiplier(), supplyTrigger.regenerationRate()));
+            if (penaltySupply.getMaxSupply(supplyTrigger.supplyType()) != resistanceTime) {
+                penaltySupply.initialize(supplyTrigger.supplyType(), resistanceTime, supplyTrigger.reductionRateMultiplier(), supplyTrigger.regenerationRate());
+                PacketDistributor.sendToPlayer(dragon, new SyncAddPenaltySupply(supplyTrigger.supplyType(), resistanceTime, supplyTrigger.reductionRateMultiplier(), supplyTrigger.regenerationRate()));
             }
         }
 
@@ -60,8 +60,8 @@ public record DragonPenalty(ResourceLocation icon, Optional<LootItemCondition> c
         PenaltySupply supply = dragon.getData(DSDataAttachments.PENALTY_SUPPLY);
 
         if (trigger instanceof SupplyTrigger supplyTrigger) {
-            supply.remove(supplyTrigger.id());
-            PacketDistributor.sendToPlayer(dragon, new SyncRemovePenaltySupply(supplyTrigger.id()));
+            supply.remove(supplyTrigger.supplyType());
+            PacketDistributor.sendToPlayer(dragon, new SyncRemovePenaltySupply(supplyTrigger.supplyType()));
         }
     }
 

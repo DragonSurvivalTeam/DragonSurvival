@@ -62,7 +62,7 @@ public class SyncComplete implements IMessage<SyncComplete.Data> {
                     handleDragonSync(player, false);
 
                     if (!handler.isDragon()) {
-                        PenaltySupply.getData(player).clear();
+                        PenaltySupply.clear(player);
                         DSModifiers.clearModifiers(player);
                         handler.refreshMagicData(player, false);
                         return;
@@ -74,6 +74,7 @@ public class SyncComplete implements IMessage<SyncComplete.Data> {
                     // In both of these cases, we want to make sure to refresh the magic data and penalty supply if the server isn't set to save it
 
                     if (previousType == null || !previousType.is(handler.species())) {
+                        PenaltySupply.clear(player);
                         handler.refreshMagicData(player, false);
                     }
                 })

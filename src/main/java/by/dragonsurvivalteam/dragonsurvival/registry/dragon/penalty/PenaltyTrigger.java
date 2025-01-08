@@ -26,8 +26,7 @@ public interface PenaltyTrigger {
 
     /** If this returns 'false' it will be applied per player tick */
     default boolean hasCustomTrigger() { return false; }
-    default MutableComponent getDescription(Player player) { return Component.empty(); }
-    default String id() { return ""; }
+    default MutableComponent getDescription(final Player player) { return Component.empty(); }
 
     MapCodec<? extends PenaltyTrigger> codec();
     boolean matches(final ServerPlayer dragon, boolean conditionMatched);

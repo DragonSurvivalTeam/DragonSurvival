@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.server.handlers;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.network.container.OpenDragonAltar;
@@ -11,7 +12,9 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachmen
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.SupplyTrigger;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -40,6 +43,17 @@ public class PlayerLoginHandler {
 
     @SubscribeEvent
     public static void onLogin(final PlayerEvent.PlayerLoggedInEvent event) {
+        // Remove any existing penalty supplies that may no longer be relevant (due to datapack changes)
+        event.getEntity().getExistingData(DSDataAttachments.PENALTY_SUPPLY).ifPresent(data -> {
+            DragonStateHandler handler = DragonStateProvider.getData(event.getEntity());
+
+            for (ResourceLocation supplyType : data.getSupplyTypes()) {
+                if (handler.species().value().penalties().stream().noneMatch(penalty -> penalty.value().trigger() instanceof SupplyTrigger supplyTrigger && supplyTrigger.supplyType().equals(supplyType))) {
+                    data.remove(supplyType);
+                }
+            }
+        });
+
         syncComplete(event.getEntity());
     }
 

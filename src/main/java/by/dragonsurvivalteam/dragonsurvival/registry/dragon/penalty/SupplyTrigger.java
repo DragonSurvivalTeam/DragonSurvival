@@ -15,6 +15,7 @@ import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -24,7 +25,7 @@ import net.minecraft.world.item.alchemy.Potion;
 
 import java.util.List;
 
-public record SupplyTrigger(String id, Holder<Attribute> attributeToUseAsBase, int triggerRate, float reductionRateMultiplier, float regenerationRate, List<RecoveryItems> recoveryItems, boolean displayLikeHungerBar) implements PenaltyTrigger {
+public record SupplyTrigger(ResourceLocation supplyType, Holder<Attribute> attributeToUseAsBase, int triggerRate, float reductionRateMultiplier, float regenerationRate, List<RecoveryItems> recoveryItems, boolean displayLikeHungerBar) implements PenaltyTrigger {
     @Translation(comments = " after %s seconds")
     private static final String PENALTY_SUPPLY_TRIGGER = Translation.Type.GUI.wrap("penalty.supply_trigger");
 
@@ -32,7 +33,7 @@ public record SupplyTrigger(String id, Holder<Attribute> attributeToUseAsBase, i
     private static final String PENALTY_SUPPLY_TRIGGER_CONSTANT = Translation.Type.GUI.wrap("penalty.supply_trigger.constant");
 
     public static final MapCodec<SupplyTrigger> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.STRING.fieldOf("id").forGetter(SupplyTrigger::id),
+            ResourceLocation.CODEC.fieldOf("supply_type").forGetter(SupplyTrigger::supplyType),
             Attribute.CODEC.optionalFieldOf("attribute", DSAttributes.PENALTY_RESISTANCE_TIME).forGetter(SupplyTrigger::attributeToUseAsBase),
             Codec.INT.fieldOf("trigger_rate").forGetter(SupplyTrigger::triggerRate),
             Codec.FLOAT.fieldOf("reduction_rate").forGetter(SupplyTrigger::reductionRateMultiplier),
@@ -53,14 +54,14 @@ public record SupplyTrigger(String id, Holder<Attribute> attributeToUseAsBase, i
         PenaltySupply penaltySupply = dragon.getData(DSDataAttachments.PENALTY_SUPPLY);
 
         if (conditionMatched) {
-            penaltySupply.reduce(dragon, id);
+            penaltySupply.reduce(dragon, supplyType);
         } else {
-            penaltySupply.regenerate(dragon, id);
+            penaltySupply.regenerate(dragon, supplyType);
             return false;
         }
 
         if (dragon.level().getGameTime() % triggerRate() == 0) {
-            return !penaltySupply.hasSupply(id);
+            return !penaltySupply.hasSupply(supplyType);
         } else {
             return false;
         }

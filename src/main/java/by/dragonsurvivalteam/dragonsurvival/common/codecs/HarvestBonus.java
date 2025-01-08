@@ -30,9 +30,9 @@ import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.text.NumberFormat;
 import java.util.Optional;
+import javax.annotation.Nullable;
 
 public record HarvestBonus(ResourceLocation id, Optional<HolderSet<Block>> blocks, LevelBasedValue harvestBonus, LevelBasedValue breakSpeedMultiplier, LevelBasedValue duration, boolean isHidden) {
     @Translation(comments = {
@@ -46,8 +46,11 @@ public record HarvestBonus(ResourceLocation id, Optional<HolderSet<Block>> block
     @Translation(comments = "All blocks")
     private static final String ALL_BLOCKS = Translation.Type.GUI.wrap("harvest_bonus.all_blocks");
 
-    @Translation(comments = "Various Blocks")
+    @Translation(comments = "Various Blocks (%s)")
     private static final String VARIOUS_BLOCKS = Translation.Type.GUI.wrap("harvest_bonus.various_blocks");
+
+    @Translation(comments = "None")
+    private static final String NONE = Translation.Type.GUI.wrap("harvest_bonus.none");
 
     public static int NO_BONUS_VALUE = 0;
     public static final LevelBasedValue NO_BONUS = LevelBasedValue.constant(NO_BONUS_VALUE);
@@ -88,15 +91,15 @@ public record HarvestBonus(ResourceLocation id, Optional<HolderSet<Block>> block
 
         if (blocks.isEmpty()) {
             appliesTo = Component.translatable(ALL_BLOCKS);
+        } else if (blocks.get() instanceof HolderSet.Named<Block> named) {
+            appliesTo = Component.translatable(Tags.getTagTranslationKey(named.key()));
+        } else if (blocks.get().size() > 0) {
+            appliesTo = Component.translatable(VARIOUS_BLOCKS, blocks.get().size());
         } else {
-            if (blocks.get() instanceof HolderSet.Named<Block> named) {
-                appliesTo = DSColors.dynamicValue(Component.translatable(Tags.getTagTranslationKey(named.key())));
-            } else {
-                appliesTo = Component.translatable(VARIOUS_BLOCKS);
-            }
+            appliesTo = Component.translatable(NONE);
         }
 
-        return Component.translatable(HARVEST_BONUS, DSColors.dynamicValue(harvestBonus), DSColors.dynamicValue(breakSpeedMultiplier), appliesTo);
+        return Component.translatable(HARVEST_BONUS, DSColors.dynamicValue(harvestBonus), DSColors.dynamicValue(breakSpeedMultiplier), DSColors.dynamicValue(appliesTo));
     }
 
     public static class Instance extends DurationInstance<HarvestBonus> {

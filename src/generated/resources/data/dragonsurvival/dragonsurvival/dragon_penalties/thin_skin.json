@@ -63,7 +63,6 @@
   "icon": "dragonsurvival:abilities/sea/thin_skin",
   "trigger": {
     "display_like_hunger_bar": true,
-    "id": "water_supply",
     "penalty_trigger": "dragonsurvival:supply",
     "recovery_items": [
       {
@@ -77,6 +76,7 @@
     ],
     "reduction_rate": 1.0,
     "regeneration_rate": 0.013,
+    "supply_type": "dragonsurvival:water_supply",
     "trigger_rate": 40
   }
 }

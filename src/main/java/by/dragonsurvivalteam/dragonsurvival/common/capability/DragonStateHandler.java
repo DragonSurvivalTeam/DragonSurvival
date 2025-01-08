@@ -297,7 +297,7 @@ public class DragonStateHandler extends EntityStateHandler {
         }
 
         if (species != null && (oldSpecies == null || !oldSpecies.is(species))) {
-            PenaltySupply.getData(player).clear();
+            PenaltySupply.clear(player);
             DSModifiers.updateTypeModifiers(player, this);
 
             if (player instanceof ServerPlayer serverPlayer) {
@@ -308,7 +308,7 @@ public class DragonStateHandler extends EntityStateHandler {
                 }
             }
         } else if (species == null) {
-            PenaltySupply.getData(player).clear();
+            PenaltySupply.clear(player);
             DSModifiers.clearModifiers(player);
         }
     }

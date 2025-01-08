@@ -74,7 +74,7 @@ public class DragonPenalties {
                         Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_WET))
                 ).and(Condition.thisEntity(EntityCondition.hasEffect(DSEffects.FIRE)).invert()).build()),
                 new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.RAIN_BURN), 1),
-                new SupplyTrigger("rain_supply", DSAttributes.PENALTY_RESISTANCE_TIME, Functions.secondsToTicks(2), 1, 0.013f, List.of(), false)
+                new SupplyTrigger(DragonSurvival.res("rain_supply"), DSAttributes.PENALTY_RESISTANCE_TIME, Functions.secondsToTicks(2), 1, 0.013f, List.of(), false)
         ));
 
         context.register(WATER_WEAKNESS, new DragonPenalty(
@@ -97,7 +97,7 @@ public class DragonPenalties {
                 ).invert().build()),
                 new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.DEHYDRATION), 1),
                 new SupplyTrigger(
-                        "water_supply",
+                        DragonSurvival.res("water_supply"),
                         DSAttributes.PENALTY_RESISTANCE_TIME,
                         Functions.secondsToTicks(2),
                         1,
@@ -129,7 +129,7 @@ public class DragonPenalties {
                         Condition.thisEntity(EntityCondition.hasEffect(MobEffects.GLOWING))
                 ).invert().build()),
                 new MobEffectPenalty(HolderSet.direct(DSEffects.STRESS), 0, Functions.secondsToTicks(10)),
-                new SupplyTrigger("stress_supply", DSAttributes.PENALTY_RESISTANCE_TIME, Functions.secondsToTicks(2), 1, 0.013f, List.of(), false)
+                new SupplyTrigger(DragonSurvival.res("stress_supply"), DSAttributes.PENALTY_RESISTANCE_TIME, Functions.secondsToTicks(2), 1, 0.013f, List.of(), false)
         ));
 
         // FIXME :: test
