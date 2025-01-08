@@ -39,6 +39,7 @@ public interface PenaltyEffect {
             event.register(REGISTRY_KEY, DragonSurvival.res("take_damage"), () -> DamagePenalty.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("mob_effect"), () -> MobEffectPenalty.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("item_blacklist"), () -> ItemBlacklistPenalty.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("damage_modification"), () -> DamageModificationPenalty.CODEC);
         }
     }
 }
