@@ -33,7 +33,7 @@ runs {
 	client_static {
 		runType 'client'
 		// The UUID is the one that will get assigned in multiplayer based on the name 'Dev'
-		arguments '--username', 'BlackAures', "--uuid", "380df991-f603-344c-a090-369bad2a924a"
+		arguments '--username', 'Dev', "--uuid", "380df991-f603-344c-a090-369bad2a924a"
 	}
 
 	server {
