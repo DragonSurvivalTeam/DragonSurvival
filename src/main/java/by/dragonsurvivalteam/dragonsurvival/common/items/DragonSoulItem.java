@@ -104,13 +104,23 @@ public class DragonSoulItem extends Item {
                 // Swap the player's dragon data with the item's NBT
                 CompoundTag storedDragonData = stack.get(DataComponents.CUSTOM_DATA).copyTag();
                 CompoundTag currentDragonData = handler.serializeNBT(level.registryAccess(), true);
+                // Preserve spin/flight grant state
+                boolean flightGranted = handler.flightWasGranted;
+                boolean spinGranted = handler.spinWasGranted;
                 handler.deserializeNBT(level.registryAccess(), storedDragonData, true);
+                handler.flightWasGranted = flightGranted;
+                handler.spinWasGranted = spinGranted;
                 stack.set(DataComponents.CUSTOM_DATA, CustomData.of(currentDragonData));
                 stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(getCustomModelData(level.registryAccess(), currentDragonData)));
                 PlayerLoginHandler.syncComplete(player);
             } else {
                 CompoundTag tag = stack.get(DataComponents.CUSTOM_DATA).copyTag();
+                // Preserve spin/flight grant state
+                boolean flightGranted = handler.flightWasGranted;
+                boolean spinGranted = handler.spinWasGranted;
                 handler.deserializeNBT(level.registryAccess(), tag, true);
+                handler.flightWasGranted = flightGranted;
+                handler.spinWasGranted = spinGranted;
                 PlayerLoginHandler.syncComplete(player);
                 stack.set(DataComponents.CUSTOM_DATA, null);
                 stack.set(DataComponents.CUSTOM_MODEL_DATA, null);
