@@ -1,0 +1,43 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1.0,
+                "max": 1.0,
+                "type": "minecraft:uniform"
+              }
+            }
+          ],
+          "name": "dragonsurvival:wing_grant"
+        }
+      ]
+    },
+	{
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1.0,
+                "max": 1.0,
+                "type": "minecraft:uniform"
+              }
+            }
+          ],
+          "name": "dragonsurvival:spin_grant"
+        }
+      ]
+    }
+  ]
+}

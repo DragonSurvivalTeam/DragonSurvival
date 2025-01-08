@@ -44,6 +44,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.block.Blocks;
+import net.neoforged.neoforge.common.NeoForgeMod;
 
 import java.util.List;
 import java.util.Optional;
@@ -95,11 +96,11 @@ public class ForestDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Claws and Teeth")
     public static final ResourceKey<DragonAbility> FOREST_CLAWS_AND_TEETH = DragonAbilities.key("forest_claws_and_teeth");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Dragons use §2levitation§r to fly, but are rarely born with that ability. Only one dragon in this world can share their power of flight with you.\n")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Dragons use §2levitation§r to fly, but are rarely born with that ability.\n")
     @Translation(type = Translation.Type.ABILITY, comments = "Forest Wings")
     public static final ResourceKey<DragonAbility> FOREST_WINGS = DragonAbilities.key("forest_wings");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ You can spin through the air, boosting your speed.\n")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ You can spin through the air, boosting your speed. Head to §2the End§r§f to learn this skill. You can find this knowledge in The End.\n")
     @Translation(type = Translation.Type.ABILITY, comments = "Cave Spin")
     public static final ResourceKey<DragonAbility> FOREST_SPIN = DragonAbilities.key("forest_spin");
 
@@ -454,7 +455,7 @@ public class ForestDragonAbilities {
                 // Disable when marked by the ender dragon
                 Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(new SpinEffect(1, Optional.empty())),
+                        List.of(new SpinEffect(1, Optional.of(NeoForgeMod.WATER_TYPE))),
                         AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
                 ), true), LevelBasedValue.constant(1))),
                 true,

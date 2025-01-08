@@ -93,11 +93,11 @@ public class SeaDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Claws and Teeth")
     public static final ResourceKey<DragonAbility> SEA_CLAWS_AND_TEETH = DragonAbilities.key("sea_claws_and_teeth");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Dragons use §2levitation§r to fly, but are rarely born with that ability. Only one dragon in this world can share their power of flight with you.\n")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Dragons use §2levitation§r to fly, but are rarely born with that ability.\n")
     @Translation(type = Translation.Type.ABILITY, comments = "Sea Wings")
     public static final ResourceKey<DragonAbility> SEA_WINGS = DragonAbilities.key("sea_wings");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ You can spin through the air and in water, boosting your speed.\n")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ You can spin through the air and in water, boosting your speed. Head to §2the End§r§f to learn this skill.\n")
     @Translation(type = Translation.Type.ABILITY, comments = "Cave Spin")
     public static final ResourceKey<DragonAbility> SEA_SPIN = DragonAbilities.key("sea_spin");
 

@@ -5,9 +5,18 @@
 	{	
       "weight": 1,
       "element": {
-        "location": "dragonsurvival:treasure_end/treasure_end",
+        "location": "dragonsurvival:treasure_end/treasure_end_spin",
         "processors": "dragonsurvival:obsidian_replace_forest",
 		"projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "location": "dragonsurvival:treasure_end/treasure_end_soul",
+        "processors": "dragonsurvival:end_replace",
+        "projection": "rigid",
         "element_type": "minecraft:single_pool_element"
       }
     }

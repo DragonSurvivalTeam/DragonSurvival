@@ -35,9 +35,9 @@ import java.util.List;
 @Mixin(EndPortalBlock.class)
 public class EndPortalBlockMixin {
 
-    @Unique private static final BlockPos END_CAVE_DRAGON_SPAWN_POINT = new BlockPos(-100, 50, 0);
-    @Unique private static final BlockPos END_SEA_DRAGON_SPAWN_POINT = new BlockPos(0, 50, 100);
-    @Unique private static final BlockPos END_FOREST_DRAGON_SPAWN_POINT = new BlockPos(0, 50, -100);
+    @Unique private static final BlockPos END_CAVE_DRAGON_SPAWN_POINT = new BlockPos(-200, 50, 0);
+    @Unique private static final BlockPos END_SEA_DRAGON_SPAWN_POINT = new BlockPos(0, 50, 200);
+    @Unique private static final BlockPos END_FOREST_DRAGON_SPAWN_POINT = new BlockPos(0, 50, -200);
 
     @ModifyVariable(method = "getPortalDestination", at = @At(value = "STORE"), ordinal = 1)
     private BlockPos modifyBlockPosForEndSpawnPoint(BlockPos original, @Local(argsOnly = true) Entity entity, @Local(argsOnly = true) ServerLevel level) {

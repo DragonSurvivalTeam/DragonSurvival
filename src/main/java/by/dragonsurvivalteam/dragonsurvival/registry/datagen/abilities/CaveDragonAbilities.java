@@ -94,11 +94,11 @@ public class CaveDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Claws and Teeth")
     public static final ResourceKey<DragonAbility> CAVE_CLAWS_AND_TEETH = DragonAbilities.key("cave_claws_and_teeth");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Dragons use §2levitation§r to fly, but are rarely born with that ability. Only one dragon in this world can share their power of flight with you.\n")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Dragons use §2levitation§r to fly, but are rarely born with that ability.\n")
     @Translation(type = Translation.Type.ABILITY, comments = "Cave Wings")
     public static final ResourceKey<DragonAbility> CAVE_WINGS = DragonAbilities.key("cave_wings");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ You can spin through the air and in lava, boosting your speed.\n")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ You can spin through the air and in lava, boosting your speed. Head to §2the End§r§f to learn this skill.\n")
     @Translation(type = Translation.Type.ABILITY, comments = "Cave Spin")
     public static final ResourceKey<DragonAbility> CAVE_SPIN = DragonAbilities.key("cave_spin");
 

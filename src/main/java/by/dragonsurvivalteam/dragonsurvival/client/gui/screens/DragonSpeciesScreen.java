@@ -258,7 +258,7 @@ public class DragonSpeciesScreen extends Screen {
         addRenderableWidget(ridingButton);
 
         // Body type button
-        DragonBodyButton bodyTypeButton = new DragonBodyButton(this, startX + 29, startY + 92, 25, 25, data.body(), false, button -> {});
+        DragonBodyButton bodyTypeButton = new DragonBodyButton(this, startX + 29, startY + 101, 25, 25, data.body(), false, button -> {});
         addRenderableWidget(bodyTypeButton);
 
         // Penalties bar

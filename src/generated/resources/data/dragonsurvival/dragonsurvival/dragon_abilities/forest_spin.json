@@ -6,7 +6,8 @@
           "entity_effect": [
             {
               "effect_type": "dragonsurvival:spin",
-              "spin_level": 1
+              "spin_level": 1,
+              "swim_spin_fluid": "minecraft:water"
             }
           ],
           "entity_targeting_mode": "TARGET_ALLIES"
