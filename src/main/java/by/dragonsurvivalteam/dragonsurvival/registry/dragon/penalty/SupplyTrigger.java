@@ -12,11 +12,17 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
@@ -24,8 +30,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.alchemy.Potion;
 
 import java.util.List;
+import java.util.Optional;
 
-public record SupplyTrigger(ResourceLocation supplyType, Holder<Attribute> attributeToUseAsBase, int triggerRate, float reductionRateMultiplier, float regenerationRate, List<RecoveryItems> recoveryItems, boolean displayLikeHungerBar) implements PenaltyTrigger {
+public record SupplyTrigger(ResourceLocation supplyType, Holder<Attribute> attributeToUseAsBase, int triggerRate, float reductionRateMultiplier, float regenerationRate, List<RecoveryItems> recoveryItems, boolean displayLikeHungerBar, Optional<ParticleOptions> particlesOnTrigger) implements PenaltyTrigger {
     @Translation(comments = " after %s seconds")
     private static final String PENALTY_SUPPLY_TRIGGER = Translation.Type.GUI.wrap("penalty.supply_trigger");
 
@@ -39,7 +46,8 @@ public record SupplyTrigger(ResourceLocation supplyType, Holder<Attribute> attri
             Codec.FLOAT.fieldOf("reduction_rate").forGetter(SupplyTrigger::reductionRateMultiplier),
             Codec.FLOAT.fieldOf("regeneration_rate").forGetter(SupplyTrigger::regenerationRate),
             RecoveryItems.CODEC.codec().listOf().fieldOf("recovery_items").forGetter(SupplyTrigger::recoveryItems),
-            Codec.BOOL.optionalFieldOf("display_like_hunger_bar", false).forGetter(SupplyTrigger::displayLikeHungerBar)
+            Codec.BOOL.optionalFieldOf("display_like_hunger_bar", false).forGetter(SupplyTrigger::displayLikeHungerBar),
+            ParticleTypes.CODEC.optionalFieldOf("particles_on_trigger").forGetter(SupplyTrigger::particlesOnTrigger)
     ).apply(instance, SupplyTrigger::new));
 
     public record RecoveryItems(HolderSet<Item> items, HolderSet<Potion> potions, float percentRestored) {
@@ -61,6 +69,11 @@ public record SupplyTrigger(ResourceLocation supplyType, Holder<Attribute> attri
         }
 
         if (dragon.level().getGameTime() % triggerRate() == 0) {
+            particlesOnTrigger.ifPresent(particle -> {
+                for (int i = 0; i < 2; i++) {
+                    ((ServerLevel)dragon.level()).sendParticles(particle, dragon.getX() + (dragon.getRandom().nextDouble() - 0.5D) * 0.5D, dragon.getEyeY() +  (dragon.getRandom().nextDouble() - 0.5D) * 0.5D, dragon.getZ() + (dragon.getRandom().nextDouble() - 0.5D) * 0.5D, 1, 0, -dragon.getRandom().nextDouble() * 0.25D, 0, 0.025F);
+                }
+            });
             return !penaltySupply.hasSupply(supplyType);
         } else {
             return false;

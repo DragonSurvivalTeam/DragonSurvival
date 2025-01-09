@@ -65,6 +65,9 @@
   },
   "icon": "dragonsurvival:abilities/cave/snow_and_rain_weakness",
   "trigger": {
+    "particles_on_trigger": {
+      "type": "minecraft:smoke"
+    },
     "penalty_trigger": "dragonsurvival:supply",
     "recovery_items": [],
     "reduction_rate": 1.0,
