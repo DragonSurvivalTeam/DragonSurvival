@@ -13,11 +13,6 @@
       "operation": "add_multiplied_total"
     },
     {
-      "amount": 1.0,
-      "attribute": "minecraft:generic.step_height",
-      "operation": "add_value"
-    },
-    {
       "amount": -0.3,
       "attribute": "neoforge:swim_speed",
       "operation": "add_value"

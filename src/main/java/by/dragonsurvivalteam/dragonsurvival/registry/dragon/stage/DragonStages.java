@@ -79,7 +79,6 @@ public class DragonStages {
                 List.of(
                         /* Constant */
                         Modifier.constant(Attributes.SUBMERGED_MINING_SPEED, 2, AttributeModifier.Operation.ADD_VALUE, BuiltInDragonSpecies.SEA),
-                        Modifier.constant(Attributes.STEP_HEIGHT, 0.25f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.constant(Attributes.ATTACK_DAMAGE, 2, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.constant(Attributes.JUMP_STRENGTH, 0.05f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 0.5f, AttributeModifier.Operation.ADD_VALUE),

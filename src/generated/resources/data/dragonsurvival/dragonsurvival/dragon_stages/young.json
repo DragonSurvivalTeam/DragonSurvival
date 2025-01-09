@@ -28,11 +28,6 @@
       "operation": "add_value"
     },
     {
-      "amount": 0.25,
-      "attribute": "minecraft:generic.step_height",
-      "operation": "add_value"
-    },
-    {
       "amount": 2.0,
       "attribute": "minecraft:generic.attack_damage",
       "operation": "add_value"
