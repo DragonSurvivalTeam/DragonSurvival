@@ -52,7 +52,7 @@ public record DragonPenalty(Optional<ResourceLocation> icon, Optional<LootItemCo
             }
         }
 
-        if (trigger.matches(dragon, condition.map(condition -> condition.test(Condition.createContext(dragon))).orElse(true))) {
+        if (trigger.matches(dragon, condition.map(condition -> condition.test(Condition.penaltyContext(dragon))).orElse(true))) {
             effect.apply(dragon);
         }
     }

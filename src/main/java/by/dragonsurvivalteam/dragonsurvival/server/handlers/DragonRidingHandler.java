@@ -72,38 +72,37 @@ public class DragonRidingHandler {
 
     /** Mounting a dragon */
     @SubscribeEvent
-    public static void onRideAttempt(PlayerInteractEvent.EntityInteractSpecific event) { // TODO :: check
-        Entity entity = event.getTarget();
-
-        if (event.getHand() != InteractionHand.MAIN_HAND) {
+    public static void onRideAttempt(final PlayerInteractEvent.EntityInteractSpecific event) {
+        if (!(event.getTarget() instanceof ServerPlayer target)) {
             return;
         }
 
-        if (entity instanceof ServerPlayer target) {
-            Player self = event.getEntity();
+        if (event.getHand() != InteractionHand.MAIN_HAND || !event.getItemStack().isEmpty()) {
+            return;
+        }
 
-            DragonRideAttemptResult result = playerCanRideDragon(self, target);
+        Player self = event.getEntity();
+        DragonRideAttemptResult result = playerCanRideDragon(self, target);
 
-            if (result == DragonRideAttemptResult.SUCCESS && !target.isVehicle()) {
-                self.startRiding(target);
-                target.connection.send(new ClientboundSetPassengersPacket(target));
+        if (result == DragonRideAttemptResult.SUCCESS && !target.isVehicle()) {
+            self.startRiding(target);
+            target.connection.send(new ClientboundSetPassengersPacket(target));
 
-                DragonStateProvider.getData(target).setPassengerId(self.getId());
-                PacketDistributor.sendToPlayersTrackingEntityAndSelf(target, new SyncDragonPassengerID.Data(target.getId(), self.getId()));
+            DragonStateProvider.getData(target).setPassengerId(self.getId());
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(target, new SyncDragonPassengerID.Data(target.getId(), self.getId()));
 
-                event.setCancellationResult(InteractionResult.SUCCESS);
-                event.setCanceled(true);
-            } else {
-                if (result == DragonRideAttemptResult.MOUNT_TOO_SMALL_HUMAN) {
-                    self.sendSystemMessage(Component.translatable(TARGET_TOO_SMALL));
-                } else if (result == DragonRideAttemptResult.SELF_TOO_BIG) {
-                    DragonStateHandler targetData = DragonStateProvider.getData(target);
-                    DragonStateHandler selfData = DragonStateProvider.getData(self);
+            event.setCancellationResult(InteractionResult.SUCCESS);
+            event.setCanceled(true);
+        } else {
+            if (result == DragonRideAttemptResult.MOUNT_TOO_SMALL_HUMAN) {
+                self.sendSystemMessage(Component.translatable(TARGET_TOO_SMALL));
+            } else if (result == DragonRideAttemptResult.SELF_TOO_BIG) {
+                DragonStateHandler targetData = DragonStateProvider.getData(target);
+                DragonStateHandler selfData = DragonStateProvider.getData(self);
 
-                    self.sendSystemMessage(Component.translatable(SELF_TOO_BIG, String.format("%.0f", selfData.getSize()), String.format("%.0f", targetData.getSize())));
-                } else if (result == DragonRideAttemptResult.NOT_CROUCHING) {
-                    self.sendSystemMessage(Component.translatable(NOT_CROUCHING));
-                }
+                self.sendSystemMessage(Component.translatable(SELF_TOO_BIG, String.format("%.0f", selfData.getSize()), String.format("%.0f", targetData.getSize())));
+            } else if (result == DragonRideAttemptResult.NOT_CROUCHING) {
+                self.sendSystemMessage(Component.translatable(NOT_CROUCHING));
             }
         }
     }

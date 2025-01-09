@@ -88,7 +88,7 @@ public class DragonAbilityInstance {
         }
 
         if (dragon instanceof ServerPlayer serverPlayer) {
-            boolean isAutomaticallyDisabled = value().usageBlocked().map(condition -> condition.test(Condition.createContext(serverPlayer))).orElse(false);
+            boolean isAutomaticallyDisabled = value().usageBlocked().map(condition -> condition.test(Condition.abilityContext(serverPlayer))).orElse(false);
 
             if (isAutomaticallyDisabled && !this.isAutomaticallyDisabled) {
                 setDisabled(serverPlayer, true, false);

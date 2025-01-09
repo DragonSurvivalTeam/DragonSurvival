@@ -2,23 +2,19 @@ package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PenaltySupply;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.HitByProjectileTrigger;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.ItemUsedTrigger;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.SupplyTrigger;
 import by.dragonsurvivalteam.dragonsurvival.server.containers.slots.ClawToolSlot;
-import by.dragonsurvivalteam.dragonsurvival.util.PotionUtils;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ArmorSlot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.phys.EntityHitResult;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.ItemStackedOnOtherEvent;
@@ -64,26 +60,15 @@ public class DragonPenaltyHandler {
 
         for (Holder<DragonPenalty> penalty : handler.species().value().penalties()) {
             //noinspection DeconstructionCanBeUsed -> spotless is too stupid to handle this
-            if (penalty.value().trigger() instanceof ItemUsedTrigger trigger) {
-                PotionUtils.getPotion(event.getItem()).ifPresentOrElse(potion -> {
-                        for (Holder<Potion> potions : trigger.potions()) {
-                            if (potions.value() == potion) {
-                                penalty.value().apply(serverPlayer);
-                                break;
-                            }
-                        }
-                    }, () -> {
-                        if (trigger.items().contains(event.getItem().getItemHolder())) {
-                            penalty.value().apply(serverPlayer);
-                        }
-                });
+            if (penalty.value().trigger() instanceof ItemUsedTrigger trigger && trigger.predicate().test(event.getItem())) {
+                penalty.value().apply(serverPlayer);
             }
         }
     }
 
     @SubscribeEvent
     public static void applyHitByProjectilePenalties(final ProjectileImpactEvent event) {
-        if (!(event.getEntity() instanceof ServerPlayer serverPlayer)) {
+        if (!(event.getRayTraceResult() instanceof EntityHitResult hitResult && hitResult.getEntity() instanceof ServerPlayer serverPlayer)) {
             return;
         }
 
@@ -94,8 +79,8 @@ public class DragonPenaltyHandler {
         }
 
         for (Holder<DragonPenalty> penalty : handler.species().value().penalties()) {
-            //noinspection DeconstructionCanBeUsed -> spotless
-            if (penalty.value().trigger() instanceof HitByProjectileTrigger trigger && trigger.projectileType().is(HolderSet.direct(event.getProjectile().getType().builtInRegistryHolder()))) {
+            //noinspection DeconstructionCanBeUsed -> spotless is too stupid to handle this
+            if (penalty.value().trigger() instanceof HitByProjectileTrigger trigger && trigger.projectile() == event.getProjectile().getType()) {
                 penalty.value().apply(serverPlayer);
             }
         }

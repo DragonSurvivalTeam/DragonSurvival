@@ -2,8 +2,10 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons;
 
 import by.dragonsurvivalteam.dragonsurvival.magic.AbilityAndPenaltyTooltipRenderer;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -18,12 +20,18 @@ public class PenaltyButton extends ExtendedButton  {
     public PenaltyButton(int xPos, int yPos, final Holder<DragonPenalty> penalty) {
         super(xPos, yPos, SIZE, SIZE, Component.empty(), action -> { /* Nothing to do */ });
         this.penalty = penalty;
+
+        if (penalty.value().icon().isEmpty()) {
+            //noinspection DataFlowIssue -> key is present
+            Functions.logOrThrow("Penalties with no icon should not be added as button - [" + penalty.getKey().location() + "] is invalid");
+        }
     }
 
     @Override
     public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         graphics.fill(getX() - 1, getY() - 1, getX() + SIZE + 1, getY() + SIZE + 1, 0xFF000000);
-        blit(graphics, penalty.value().icon().get(), getX(), getY(), SIZE);
+        ResourceLocation icon = penalty.value().icon().orElse(MissingTextureAtlasSprite.getLocation());
+        blit(graphics, icon, getX(), getY(), SIZE);
 
         if (isHovered()) {
             graphics.pose().pushPose();
@@ -34,6 +42,7 @@ public class PenaltyButton extends ExtendedButton  {
         }
     }
 
+    // TODO :: add in generic helper method
     private void blit(final GuiGraphics graphics, final ResourceLocation texture, int x, int y, int size) {
         graphics.blit(x, y, 0, size, size, Minecraft.getInstance().getGuiSprites().getSprite(texture), 1, 1, 1, alpha);
     }

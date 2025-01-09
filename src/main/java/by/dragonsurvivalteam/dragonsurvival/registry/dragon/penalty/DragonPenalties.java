@@ -17,9 +17,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Items;
@@ -142,7 +140,7 @@ public class DragonPenalties {
                 Optional.empty(),
                 Optional.empty(),
                 new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.WATER_BURN), 2),
-                new ItemUsedTrigger(HolderSet.empty(), HolderSet.direct(Potions.WATER))
+                new ItemUsedTrigger(ItemCondition.hasPotion(Potions.WATER))
         ));
 
         context.register(WATER_SPLASH_POTION_WEAKNESS, new DragonPenalty(

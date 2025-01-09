@@ -6,9 +6,9 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
 
-public record HitByProjectileTrigger(EntityType<?> projectileType) implements PenaltyTrigger {
+public record HitByProjectileTrigger(EntityType<?> projectile) implements PenaltyTrigger {
     public static final MapCodec<HitByProjectileTrigger> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            BuiltInRegistries.ENTITY_TYPE.byNameCodec().fieldOf("projectileType").forGetter(HitByProjectileTrigger::projectileType)
+            BuiltInRegistries.ENTITY_TYPE.byNameCodec().fieldOf("projectile").forGetter(HitByProjectileTrigger::projectile)
     ).apply(instance, HitByProjectileTrigger::new));
 
     @Override
