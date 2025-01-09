@@ -108,7 +108,12 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
     @Override // TODO :: set state here when it is charged (to enable flight and / or wings)?
     protected @NotNull InteractionResult useWithoutItem(final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final BlockHitResult hitResult) {
         if(state.getValue(BLOODY)) {
+            for (int i = 0; i < 10; i++) {
+                spawnParticles(position, level, ParticleTypes.SOUL);
+            }
+
             level.playSound(player, (double) position.getX() + 0.5, (double) position.getY() + 0.5, (double) position.getZ() + 0.5, SoundEvents.SOUL_ESCAPE, SoundSource.BLOCKS, 4, 1);
+            player.hurt(level.damageSources().magic(), 1);
             return InteractionResult.PASS;
         }
 
