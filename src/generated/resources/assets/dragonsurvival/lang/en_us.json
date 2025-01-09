@@ -962,6 +962,7 @@
   "dragonsurvival.gui.inventory.toggle_wiki": "Open the wiki",
   "dragonsurvival.gui.inventory_tab": "Dragon Inventory",
   "dragonsurvival.gui.message.altar_cooldown": "The altar is on cooldown for: %s",
+  "dragonsurvival.gui.message.anchor": "§8I'll get you to the islands with Ender Dragon magic if you feed me a pearl.",
   "dragonsurvival.gui.message.no_hunger": "Hunger has exhausted you, and you can't fly.",
   "dragonsurvival.gui.message.no_wings": "You have §cno levitation skill§r. Go to The End to learn this skill.",
   "dragonsurvival.gui.message.not_crouching": "The dragon you are trying to ride must be crouching for you to mount them.",

@@ -582,10 +582,10 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             // Don't add any animation
         } else if (!player.onGround() && dragonsJumpingTicks.getOrDefault(this.playerId, 0) > 0) {
             state.setAnimation(AnimationUtils.createAnimation(builder, JUMP));
-            animationController.transitionLength(1);
+            animationController.transitionLength(2);
         } else if (!player.onGround()) {
             state.setAnimation(AnimationUtils.createAnimation(builder, FALL_LOOP));
-            animationController.transitionLength(6);
+            animationController.transitionLength(3);
         } else if (player.isShiftKeyDown() || !DragonSizeHandler.canPoseFit(player, Pose.STANDING) && DragonSizeHandler.canPoseFit(player, Pose.CROUCHING)) {
             // Player is Sneaking
             if (movement.isMoving()) {
@@ -604,7 +604,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             useDynamicScaling = true;
             baseSpeed = DEFAULT_SPRINT_SPEED;
             state.setAnimation(AnimationUtils.createAnimation(builder, RUN));
-            animationController.transitionLength(2);
+            animationController.transitionLength(4);
         } else if (movement.isMoving()) {
             useDynamicScaling = true;
             state.setAnimation(AnimationUtils.createAnimation(builder, WALK));

@@ -36,7 +36,7 @@ public class DragonBonusHandler {
         DragonStateProvider.getOptional(living).ifPresent(dragonStateHandler -> {
             if (dragonStateHandler.isDragon()) {
                 if (living instanceof ServerPlayer) {
-                    PacketDistributor.sendToAllPlayers(new SyncPlayerJump.Data(living.getId(), 10));
+                    PacketDistributor.sendToAllPlayers(new SyncPlayerJump.Data(living.getId(), 18));
                 }
             }
         });
