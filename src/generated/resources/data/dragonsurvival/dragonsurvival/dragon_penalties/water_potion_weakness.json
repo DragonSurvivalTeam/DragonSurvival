@@ -5,8 +5,11 @@
     "penalty_type": "dragonsurvival:take_damage"
   },
   "trigger": {
-    "items": [],
     "penalty_trigger": "dragonsurvival:item_used",
-    "potions": "minecraft:water"
+    "predicate": {
+      "predicates": {
+        "minecraft:potion_contents": "minecraft:water"
+      }
+    }
   }
 }

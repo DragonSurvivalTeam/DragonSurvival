@@ -34,9 +34,11 @@ public class SkinCap extends SubCap {
 
     public HashMap<ResourceKey<DragonSpecies>, SkinPreset> initialize() {
         HashMap<ResourceKey<DragonSpecies>, SkinPreset> presets = new HashMap<>();
+
         for (ResourceKey<DragonSpecies> dragonSpecies : ResourceHelper.keys(null, DragonSpecies.REGISTRY)) {
             presets.put(dragonSpecies, new SkinPreset());
         }
+
         return presets;
     }
 
@@ -49,23 +51,27 @@ public class SkinCap extends SubCap {
     }
 
     @Override
-    public CompoundTag serializeNBT(@NotNull HolderLookup.Provider provider) {
+    public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
         tag.putBoolean(RENDER_CUSTOM_SKIN, renderCustomSkin);
-        for(Map.Entry<ResourceKey<DragonSpecies>, SkinPreset> entry : skinPresets.get().entrySet()) {
+
+        for (Map.Entry<ResourceKey<DragonSpecies>, SkinPreset> entry : skinPresets.get().entrySet()) {
             tag.put(entry.getKey().location().toString(), entry.getValue().serializeNBT(provider));
         }
+
         return tag;
     }
 
     @Override
-    public void deserializeNBT(@NotNull HolderLookup.Provider provider, CompoundTag tag) {
+    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, final CompoundTag tag) {
         renderCustomSkin = tag.getBoolean(RENDER_CUSTOM_SKIN);
-        for(String key : tag.getAllKeys()) {
-            SkinPreset preset = new SkinPreset();
-            preset.deserializeNBT(provider, tag.getCompound(key));
+
+        for (String key : tag.getAllKeys()) {
             ResourceKey<DragonSpecies> dragonSpecies = ResourceKey.create(DragonSpecies.REGISTRY, ResourceLocation.parse(key));
-            if(provider.lookup(DragonSpecies.REGISTRY).flatMap(lookup -> lookup.get(dragonSpecies)).isPresent()) {
+
+            if (provider.lookup(DragonSpecies.REGISTRY).flatMap(lookup -> lookup.get(dragonSpecies)).isPresent()) {
+                SkinPreset preset = new SkinPreset();
+                preset.deserializeNBT(provider, tag.getCompound(key));
                 skinPresets.get().put(dragonSpecies, preset);
             }
         }

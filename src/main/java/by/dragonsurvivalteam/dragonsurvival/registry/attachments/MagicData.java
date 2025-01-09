@@ -327,7 +327,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         }
 
         if (dragon instanceof ServerPlayer serverPlayer) {
-            return instance.ability().value().usageBlocked().map(condition -> condition.test(Condition.createContext(serverPlayer))).orElse(false);
+            return instance.ability().value().usageBlocked().map(condition -> condition.test(Condition.abilityContext(serverPlayer))).orElse(false);
         } else {
             return castWasDenied;
         }

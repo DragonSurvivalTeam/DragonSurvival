@@ -5,7 +5,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.HitByWaterPotionTrigger;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.ItemUsedTrigger;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -23,17 +22,17 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 import java.util.function.Predicate;
 
+/** Handles the {@link HitByWaterPotionTrigger} penalty */
 @Mixin(ThrownPotion.class)
 public class ThrownPotionMixin {
-
     @ModifyArg(method = "applyWater", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;getEntitiesOfClass(Ljava/lang/Class;Lnet/minecraft/world/phys/AABB;Ljava/util/function/Predicate;)Ljava/util/List;"))
-    private Predicate<LivingEntity> considerDragonsInApplyWater(Predicate<LivingEntity> predicate) {
+    private Predicate<LivingEntity> dragonSurvival$considerDragons(final Predicate<LivingEntity> predicate) {
         return predicate.or(DragonStateProvider::isDragon);
     }
 
     @ModifyExpressionValue(method = "applyWater", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isSensitiveToWater()Z"))
-    private boolean allowEffectApplyToDragonsWithWeaknessToIt(boolean original, @Local LivingEntity instance, @Share("penaltyLocalRef") LocalRef<DragonPenalty> penaltyLocalRef) {
-        if(instance instanceof ServerPlayer player) {
+    private boolean dragonSurvival$storePenalty(boolean original, @Local final LivingEntity instance, @Share("penaltyReference") final LocalRef<DragonPenalty> penaltyReference) {
+        if (instance instanceof ServerPlayer player) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
 
             if (!handler.isDragon()) {
@@ -41,9 +40,8 @@ public class ThrownPotionMixin {
             }
 
             for (Holder<DragonPenalty> penalty : handler.species().value().penalties()) {
-                //noinspection DeconstructionCanBeUsed -> spotless is too stupid to handle this
-                if (penalty.value().trigger() instanceof HitByWaterPotionTrigger && penalty.value().condition().map(condition -> condition.test(Condition.createContext(player))).orElse(true)) {
-                    penaltyLocalRef.set(penalty.value());
+                if (penalty.value().trigger() instanceof HitByWaterPotionTrigger && penalty.value().condition().map(condition -> condition.test(Condition.penaltyContext(player))).orElse(true)) {
+                    penaltyReference.set(penalty.value());
                     return true;
                 }
             }
@@ -53,12 +51,16 @@ public class ThrownPotionMixin {
     }
 
     @WrapOperation(method = "applyWater", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
-    private boolean applyEffectToDragonsWithWeaknessToIt(LivingEntity instance, DamageSource damageSource, float amount, Operation<Boolean> original, @Share("penaltyLocalRef") LocalRef<DragonPenalty> penaltyLocalRef) {
-        if(penaltyLocalRef.get() != null) {
-            penaltyLocalRef.get().apply((ServerPlayer) instance);
-            return false;
-        } else {
-            return original.call(instance, damageSource, amount);
+    private boolean dragonSurvival$applyPenalty(final LivingEntity instance, final DamageSource damageSource, float amount, final Operation<Boolean> original, @Share("penaltyReference") final LocalRef<DragonPenalty> penaltyReference) {
+        if (instance instanceof ServerPlayer serverPlayer) {
+            DragonPenalty penalty = penaltyReference.get();
+
+            if (penalty != null) {
+                penalty.apply(serverPlayer);
+                return false;
+            }
         }
+
+        return original.call(instance, damageSource, amount);
     }
 }

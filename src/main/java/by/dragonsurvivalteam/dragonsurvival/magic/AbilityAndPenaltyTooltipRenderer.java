@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
@@ -208,6 +209,7 @@ public class AbilityAndPenaltyTooltipRenderer {
 
         List<FormattedCharSequence> formattedDescription = Minecraft.getInstance().font.split(description, 150 - 7);
         Component name = Component.translatable(Translation.Type.PENALTY.wrap(penalty.getKey().location()));
-        drawTooltip(guiGraphics, x, y, components, formattedDescription, colorXPos, colorYPos, LangKey.PENALTY, name, Color.ofRGB(145, 46, 46), -1, -1, penalty.value().icon().get(), 0);
+        ResourceLocation icon = penalty.value().icon().orElse(MissingTextureAtlasSprite.getLocation());
+        drawTooltip(guiGraphics, x, y, components, formattedDescription, colorXPos, colorYPos, LangKey.PENALTY, name, Color.ofRGB(145, 46, 46), -1, -1, icon, 0);
     }
 }

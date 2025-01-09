@@ -29,7 +29,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.Optional;
 
 public class Condition {
-    private static final LootContextParamSet PLAYER_CONTEXT = new LootContextParamSet.Builder()
+    private static final LootContextParamSet ABILITY_CONTEXT = new LootContextParamSet.Builder()
             .required(LootContextParams.ATTACKING_ENTITY)
             .required(LootContextParams.THIS_ENTITY)
             .required(LootContextParams.ORIGIN)
@@ -44,6 +44,12 @@ public class Condition {
             .optional(LootContextParams.BLOCK_ENTITY)
             .build();
 
+    private static final LootContextParamSet PENALTY_CONTEXT = new LootContextParamSet.Builder()
+            .required(LootContextParams.THIS_ENTITY)
+            .required(LootContextParams.ORIGIN)
+            .required(LootContextParams.TOOL)
+            .build();
+
     private static final LootContextParamSet PROJECTILE_CONTEXT = new LootContextParamSet.Builder()
             .required(LootContextParams.ATTACKING_ENTITY)
             .required(LootContextParams.THIS_ENTITY)
@@ -52,22 +58,31 @@ public class Condition {
 
     private static final LootContextParamSet ITEM_CONTEXT = new LootContextParamSet.Builder().required(LootContextParams.TOOL).build();
 
-    public static LootContext createContext(final ServerLevel level, final ItemStack stack) {
+    public static LootContext itemContext(final ServerLevel level, final ItemStack stack) {
         LootParams parameters = new LootParams.Builder(level).withParameter(LootContextParams.TOOL, stack).create(ITEM_CONTEXT);
         return new LootContext.Builder(parameters).create(Optional.empty());
     }
 
-    public static LootContext createContext(final ServerPlayer dragon) {
-        return playerContext(dragon, dragon, dragon.position());
+    public static LootContext penaltyContext(final ServerPlayer dragon) {
+        LootParams parameters = new LootParams.Builder(dragon.serverLevel())
+                .withParameter(LootContextParams.THIS_ENTITY, dragon)
+                .withParameter(LootContextParams.ORIGIN, dragon.position())
+                .withParameter(LootContextParams.TOOL, dragon.getMainHandItem())
+                .create(PENALTY_CONTEXT);
+        return new LootContext.Builder(parameters).create(Optional.empty());
     }
 
-    public static LootContext playerContext(final ServerPlayer attacker, final Entity entity, final Vec3 origin) {
+    public static LootContext abilityContext(final ServerPlayer dragon) {
+        return abilityContext(dragon, dragon, dragon.position());
+    }
+
+    public static LootContext abilityContext(final ServerPlayer attacker, final Entity entity, final Vec3 origin) {
         LootParams parameters = new LootParams.Builder(attacker.serverLevel())
                 .withParameter(LootContextParams.ATTACKING_ENTITY, attacker)
                 .withParameter(LootContextParams.THIS_ENTITY, entity)
                 .withParameter(LootContextParams.ORIGIN, origin)
                 .withParameter(LootContextParams.TOOL, entity instanceof LivingEntity livingEntity ? livingEntity.getMainHandItem() : ItemStack.EMPTY)
-                .create(PLAYER_CONTEXT);
+                .create(ABILITY_CONTEXT);
         return new LootContext.Builder(parameters).create(Optional.empty());
     }
 

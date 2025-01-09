@@ -89,7 +89,7 @@ public interface AbilityTargeting {
         ).apply(instance, EntityTargeting::new));
 
         public boolean matches(final ServerPlayer dragon, final Entity entity, final Vec3 position) {
-            return targetConditions.map(condition -> condition.test(Condition.playerContext(dragon, entity, position))).orElse(true);
+            return targetConditions.map(condition -> condition.test(Condition.abilityContext(dragon, entity, position))).orElse(true);
         }
     }
 

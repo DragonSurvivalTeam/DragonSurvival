@@ -6,6 +6,6 @@
   },
   "trigger": {
     "penalty_trigger": "dragonsurvival:hit_by_projectile",
-    "projectileType": "minecraft:snowball"
+    "projectile": "minecraft:snowball"
   }
 }
