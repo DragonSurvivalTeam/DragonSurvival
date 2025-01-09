@@ -96,8 +96,8 @@ public class ClawsAndTeethRenderLayer extends GeoRenderLayer<DragonEntity> {
     }
 
     public String constructClaws(final Player player) {
-        String texturePath = "textures/armor/";
         DragonStateHandler handler = DragonStateProvider.getData(player);
+        String texturePath = "textures/armor/" + handler.body().value().model().getPath() + "/";
         if (handler.species() == null) {
             return null;
         }
@@ -115,7 +115,7 @@ public class ClawsAndTeethRenderLayer extends GeoRenderLayer<DragonEntity> {
     }
 
     public String constructTeethTexture(final Player player) {
-        String texturePath = "textures/armor/";
+        String texturePath = "textures/armor/" + DragonStateProvider.getData(player).body().value().model().getPath() + "/";
         ItemStack swordItem = ClawInventoryData.getData(player).getContainer().getItem(0);
 
         if (!swordItem.isEmpty()) {
