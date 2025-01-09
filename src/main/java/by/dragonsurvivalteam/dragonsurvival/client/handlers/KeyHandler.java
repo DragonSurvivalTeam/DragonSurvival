@@ -8,6 +8,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachmen
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -34,7 +35,7 @@ public class KeyHandler {
 
     @SubscribeEvent
     public static void toggleSummonBehaviour(final InputEvent.Key event) {
-        Pair<Player, DragonStateHandler> data = checkAndGet(event, Keybind.TOGGLE_SUMMON_BEHAVIOUR);
+        Pair<Player, DragonStateHandler> data = checkAndGet(event, Keybind.TOGGLE_SUMMON_BEHAVIOUR, true);
 
         if (data == null) {
             return;
@@ -49,7 +50,6 @@ public class KeyHandler {
                 data.getFirst().displayClientMessage(cycledEnum(summonData.attackBehaviour), true);
             }
 
-            Keybind.TOGGLE_SUMMON_BEHAVIOUR.consumeClick();
             PacketDistributor.sendToServer(new SyncSummonedEntitiesBehaviour(summonData.attackBehaviour, summonData.movementBehaviour));
         });
     }
@@ -57,12 +57,12 @@ public class KeyHandler {
     /**
      * Returns 'null' if: <br>
      * - The player has a screen open <br>
-     * - They key is not {@link Keybind#KEY_PRESSED} <br>
+     * - They key is not {@link InputConstants#PRESS} <br>
      * - The pressed key does not match the passed keybind <br>
      * - The player is null or the player is not a dragon
      */
-    public static @Nullable Pair<Player, DragonStateHandler> checkAndGet(final InputEvent.Key event, final Keybind keybind) {
-        if (Minecraft.getInstance().screen != null || event.getAction() != Keybind.KEY_PRESSED || !keybind.isKey(event.getKey())) {
+    public static @Nullable Pair<Player, DragonStateHandler> checkAndGet(final InputEvent.Key event, final Keybind keybind, boolean dragonOnly) {
+        if (Minecraft.getInstance().screen != null || event.getAction() != InputConstants.PRESS || !keybind.consumeClick()) {
             return null;
         }
 
@@ -74,7 +74,7 @@ public class KeyHandler {
 
         DragonStateHandler data = DragonStateProvider.getData(player);
 
-        if (!data.isDragon()) {
+        if (dragonOnly && !data.isDragon()) {
             return null;
         }
 

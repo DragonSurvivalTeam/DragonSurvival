@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.EnumSkinLayer;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.SkinLayer;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import com.google.gson.Gson;
@@ -19,7 +19,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class DefaultPartLoader extends SimpleJsonResourceReloadListener {
-    public static final Map</* Model */ ResourceLocation, Map<ResourceKey<DragonSpecies>, Map<ResourceKey<DragonStage>, HashMap<EnumSkinLayer, /* Part key */ String>>>> DEFAULT_PARTS = new HashMap<>();
+    public static final Map</* Model */ ResourceLocation, Map<ResourceKey<DragonSpecies>, Map<ResourceKey<DragonStage>, HashMap<SkinLayer, /* Part key */ String>>>> DEFAULT_PARTS = new HashMap<>();
     public static final String NO_PART = "none";
 
     private static final int MODEL_NAMESPACE = 0;
@@ -55,21 +55,21 @@ public class DefaultPartLoader extends SimpleJsonResourceReloadListener {
                     DEFAULT_PARTS.computeIfAbsent(model, key -> new HashMap<>())
                             .computeIfAbsent(dragonSpecies, key -> new HashMap<>())
                             .computeIfAbsent(dragonStage, key -> new HashMap<>())
-                            .put(EnumSkinLayer.valueOf(part.toUpperCase(Locale.ENGLISH)), partMap.get(part).getAsString());
+                            .put(SkinLayer.valueOf(part.toUpperCase(Locale.ENGLISH)), partMap.get(part).getAsString());
                 }
             }
         });
     }
 
-    public static String getDefaultPartKey(final ResourceKey<DragonSpecies> type, final ResourceKey<DragonStage> stage, final ResourceLocation customModel, final EnumSkinLayer layer) {
+    public static String getDefaultPartKey(final ResourceKey<DragonSpecies> type, final ResourceKey<DragonStage> stage, final ResourceLocation customModel, final SkinLayer layer) {
         if (!DEFAULT_PARTS.containsKey(customModel)) {
             return NO_PART;
         }
 
-        HashMap<EnumSkinLayer, String> partMap = DEFAULT_PARTS.get(customModel).get(type).get(stage);
+        HashMap<SkinLayer, String> partMap = DEFAULT_PARTS.get(customModel).get(type).get(stage);
         String partKey = partMap != null ? partMap.getOrDefault(layer, NO_PART) : NO_PART;
 
-        if (layer == EnumSkinLayer.BASE && partKey.equals(NO_PART)) {
+        if (layer == SkinLayer.BASE && partKey.equals(NO_PART)) {
             // Without a base the dragon will be invisible
             return DragonPartLoader.DRAGON_PARTS.get(type).get(layer).getFirst().key();
         }

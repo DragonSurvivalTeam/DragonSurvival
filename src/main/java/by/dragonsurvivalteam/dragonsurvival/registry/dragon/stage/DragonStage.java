@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.GrowthItem;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierType;
@@ -39,7 +40,7 @@ public record DragonStage(
         MiscCodecs.Bounds sizeRange,
         int ticksUntilGrown,
         List<Modifier> modifiers,
-        List<MiscCodecs.GrowthItem> growthItems,
+        List<GrowthItem> growthItems,
         Optional<EntityPredicate> isNaturalGrowthStopped,
         Optional<EntityPredicate> growIntoRequirements,
         Optional<MiscCodecs.DestructionData> destructionData
@@ -51,7 +52,7 @@ public record DragonStage(
             MiscCodecs.bounds().fieldOf("size_range").forGetter(DragonStage::sizeRange),
             ExtraCodecs.intRange(20, Functions.daysToTicks(365)).fieldOf("ticks_until_grown").forGetter(DragonStage::ticksUntilGrown),
             Modifier.CODEC.listOf().optionalFieldOf("modifiers", List.of()).forGetter(DragonStage::modifiers),
-            MiscCodecs.GrowthItem.CODEC.listOf().optionalFieldOf("growth_items", List.of()).forGetter(DragonStage::growthItems),
+            GrowthItem.CODEC.listOf().optionalFieldOf("growth_items", List.of()).forGetter(DragonStage::growthItems),
             EntityPredicate.CODEC.optionalFieldOf("is_natural_growth_stopped").forGetter(DragonStage::isNaturalGrowthStopped),
             EntityPredicate.CODEC.optionalFieldOf("grow_into_requirements").forGetter(DragonStage::growIntoRequirements),
             MiscCodecs.DestructionData.CODEC.optionalFieldOf("destruction_data").forGetter(DragonStage::destructionData)

@@ -16,6 +16,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.player.SyncSize;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSModifiers;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.*;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.InputData;
@@ -54,8 +55,12 @@ import javax.annotation.Nullable;
 
 public class DragonStateHandler extends EntityStateHandler {
     public static final double NO_SIZE = -1;
-    public static final double SIZE_LERP_SPEED = 0.1; // 10% per tick
+
+    private static final double SIZE_LERP_SPEED = 0.1; // 10% per tick
     private static final double SIZE_EPSILON = 0.01;
+
+    public MultiMining multiMining = MultiMining.ENABLED;
+    public LargeDragonDestruction largeDragonDestruction = LargeDragonDestruction.ENABLED;
 
     @SuppressWarnings("unchecked")
     public final Supplier<SubCap>[] caps = new Supplier[]{this::getSkinData};
@@ -87,7 +92,6 @@ public class DragonStateHandler extends EntityStateHandler {
     private double desiredSize = NO_SIZE;
 
     private boolean destructionEnabled;
-    private boolean multiblockEnabled;
 
     public Pose previousPose;
 
@@ -447,13 +451,19 @@ public class DragonStateHandler extends EntityStateHandler {
             tag.putString(DRAGON_BODY, bodyId().toString());
             tag.putString(DRAGON_STAGE, stageId().toString());
             tag.putDouble(SIZE, size);
-            tag.putInt(STAR_HEART_STATE, starHeartState.ordinal());
+            tag.putString(STAR_HEART_STATE, starHeartState.name());
             tag.putBoolean(IS_GROWING, isGrowing);
             tag.putBoolean(DESTRUCTION_ENABLED, destructionEnabled);
             tag.putBoolean(MARKED_BY_ENDER_DRAGON, markedByEnderDragon);
             tag.putBoolean(WINGS_WAS_GRANTED, flightWasGranted);
             tag.putBoolean(SPIN_WAS_GRANTED, spinWasGranted);
         }
+
+        // TODO :: these probably shouldn't be applied to other players (dragon soul)?
+        //  but a player re-using the should keep them
+        //  -> store entity uuid in dragon soul and have separate loading method for dragon soul data with entity context
+        tag.putString(MULTI_MINING, multiMining.name());
+        tag.putString(GIANT_DRAGON_DESTRUCTION, largeDragonDestruction.name());
 
         if (isDragonSoul && dragonSpecies != null) {
             // Only store the size of the dragon the player is currently in if we are saving for the soul
@@ -506,6 +516,9 @@ public class DragonStateHandler extends EntityStateHandler {
             dragonStage = null;
         }
 
+        multiMining = Functions.getEnum(MultiMining.class, tag.getString(MULTI_MINING));
+        largeDragonDestruction = Functions.getEnum(LargeDragonDestruction.class, tag.getString(GIANT_DRAGON_DESTRUCTION));
+
         if (dragonSpecies != null) {
             if (dragonBody == null) {
                 // This can happen if a dragon body gets removed
@@ -517,7 +530,7 @@ public class DragonStateHandler extends EntityStateHandler {
             desiredSize = size;
             destructionEnabled = tag.getBoolean(DESTRUCTION_ENABLED);
             isGrowing = !tag.contains(IS_GROWING) || tag.getBoolean(IS_GROWING);
-            starHeartState = StarHeartItem.State.values()[tag.getInt(STAR_HEART_STATE)];
+            starHeartState = Functions.getEnum(StarHeartItem.State.class, tag.getString(STAR_HEART_STATE));
             markedByEnderDragon = tag.getBoolean(MARKED_BY_ENDER_DRAGON);
             flightWasGranted = tag.getBoolean(WINGS_WAS_GRANTED);
             spinWasGranted = tag.getBoolean(SPIN_WAS_GRANTED);
@@ -637,6 +650,22 @@ public class DragonStateHandler extends EntityStateHandler {
 
         return Pair.of(components, scroll);
     }
+
+    @Translation(comments = "Multi Mining")
+    public enum MultiMining {
+        @Translation(comments = "Enabled")
+        ENABLED,
+        @Translation(comments = "Disabled")
+        DISABLED
+    }
+
+    @Translation(comments = "Large Dragon Destruction")
+    public enum LargeDragonDestruction {
+        @Translation(comments = "Enabled")
+        ENABLED,
+        @Translation(comments = "Disabled")
+        DISABLED
+    }
     
     private static final String DRAGON_SPECIES = "dragon_species";
     private static final String DRAGON_BODY = "dragon_body";
@@ -645,6 +674,9 @@ public class DragonStateHandler extends EntityStateHandler {
 
     private static final String SIZE = "size";
     private static final String SAVED_SIZE_SUFFIX = "_saved_size";
+
+    private static final String MULTI_MINING = "multi_mining";
+    private static final String GIANT_DRAGON_DESTRUCTION = "giant_dragon_destruction";
 
     private static final String STAR_HEART_STATE = "star_heart_state";
     private static final String MARKED_BY_ENDER_DRAGON = "marked_by_ender_dragon";

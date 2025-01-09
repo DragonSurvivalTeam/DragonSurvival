@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.EnumSkinLayer;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.SkinLayer;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonPart;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import com.google.gson.Gson;
@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class DragonPartLoader extends SimpleJsonResourceReloadListener {
-    public static final Map<ResourceKey<DragonSpecies>, Map<EnumSkinLayer, List<DragonPart>>> DRAGON_PARTS = new HashMap<>();
+    public static final Map<ResourceKey<DragonSpecies>, Map<SkinLayer, List<DragonPart>>> DRAGON_PARTS = new HashMap<>();
 
     private static final int NAMESPACE = 0;
     private static final int SPECIES = 1;
@@ -37,7 +37,7 @@ public class DragonPartLoader extends SimpleJsonResourceReloadListener {
             }
 
             ResourceKey<DragonSpecies> dragonSpecies = ResourceKey.create(DragonSpecies.REGISTRY, DragonSurvival.location(elements[NAMESPACE], elements[SPECIES]));
-            EnumSkinLayer layer = EnumSkinLayer.valueOf(elements[PART].toUpperCase(Locale.ENGLISH));
+            SkinLayer layer = SkinLayer.valueOf(elements[PART].toUpperCase(Locale.ENGLISH));
 
             DRAGON_PARTS.computeIfAbsent(dragonSpecies, key -> new HashMap<>()).computeIfAbsent(layer, key -> new ArrayList<>()).add(DragonPart.load(element.getAsJsonObject()));
         }));

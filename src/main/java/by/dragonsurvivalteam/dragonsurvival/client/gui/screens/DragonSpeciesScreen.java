@@ -173,7 +173,7 @@ public class DragonSpeciesScreen extends Screen {
         int startX = guiLeft + 13;
         int startY = guiTop + 17;
 
-        TabButton.addTabButtonsToScreen(this, startX + 17, startY - 56, TabButton.Type.SPECIES_TAB);
+        TabButton.addTabButtonsToScreen(this, startX + 17, startY - 56, TabButton.TabButtonType.SPECIES_TAB);
         DragonStateHandler data = DragonStateProvider.getData(minecraft.player);
 
         dietMenu = new DietMenuComponent(dragonSpecies, startX + 78, startY + 10);

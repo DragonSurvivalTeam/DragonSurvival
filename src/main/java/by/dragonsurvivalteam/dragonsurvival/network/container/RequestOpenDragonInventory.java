@@ -1,71 +1,35 @@
 package by.dragonsurvivalteam.dragonsurvival.network.container;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonInventoryScreen;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.network.IMessage;
-import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawsMenuToggle;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import by.dragonsurvivalteam.dragonsurvival.server.containers.DragonContainer;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.SimpleMenuProvider;
-import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
-import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
+public class RequestOpenDragonInventory implements CustomPacketPayload {
+    public static final Type<RequestOpenDragonInventory> TYPE = new Type<>(DragonSurvival.res("open_dragon_inventory"));
+    public static final RequestOpenDragonInventory INSTANCE = new RequestOpenDragonInventory();
+    public static final StreamCodec<ByteBuf, RequestOpenDragonInventory> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
-public class RequestOpenDragonInventory implements IMessage<RequestOpenDragonInventory.Data> {
+    public static void handleServer(final RequestOpenDragonInventory ignored, final IPayloadContext context) {
+        context.enqueueWork(() -> {
+            DragonStateHandler handler = DragonStateProvider.getData(context.player());
 
-    // TODO: This randomly fails rarely (about 1 in 20 times) and I have no idea why.
-    // This is needed since an OpenInventory message normally resets the cursor back to the center of the screen.
-    // This is disruptive when navigating between various dragon menus, so we set the cursor back to prevent this behavior in that case.
-    public static void SendOpenDragonInventoryAndMaintainCursorPosition() {
-        DragonInventoryScreen.mouseX = Minecraft.getInstance().mouseHandler.xpos();
-        DragonInventoryScreen.mouseY = Minecraft.getInstance().mouseHandler.ypos();
-        PacketDistributor.sendToServer(new RequestOpenDragonInventory.Data());
-        ClawInventoryData data = ClawInventoryData.getData(DragonSurvival.PROXY.getLocalPlayer());
-        PacketDistributor.sendToServer(new SyncDragonClawsMenuToggle.Data(data.isMenuOpen()));
-        data.setMenuOpen(data.isMenuOpen());
+            if (handler.isDragon()) {
+                context.player().containerMenu.removed(context.player());
+                context.player().openMenu(new SimpleMenuProvider((containerId, inventory, player) -> new DragonContainer(containerId, inventory), Component.empty()));
+            }
+        });
     }
 
-    public static void handleServer(final RequestOpenDragonInventory.Data message, final IPayloadContext context) {
-        Player sender = context.player();
-        context.enqueueWork(
-                () -> DragonStateProvider.getOptional(sender).ifPresent(handler -> {
-                    if (handler.isDragon()) {
-                        context.enqueueWork(() -> {
-                            sender.containerMenu.removed(sender);
-                            sender.openMenu(new SimpleMenuProvider((containerId, inventory, player) -> new DragonContainer(containerId, inventory), Component.empty()));
-                        });
-                    }
-                })
-        );
-    }
-
-    public record Data() implements CustomPacketPayload {
-
-        public static final Type<RequestOpenDragonInventory.Data> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "open_dragon_inventory"));
-
-        public static final StreamCodec<ByteBuf, RequestOpenDragonInventory.Data> STREAM_CODEC = new StreamCodec<>() {
-            @Override
-            public void encode(ByteBuf pBuffer, RequestOpenDragonInventory.Data pValue) {
-            }
-
-            @Override
-            public RequestOpenDragonInventory.Data decode(ByteBuf pBuffer) {
-                return new RequestOpenDragonInventory.Data();
-            }
-        };
-
-        @Override
-        public Type<? extends CustomPacketPayload> type() {
-            return TYPE;
-        }
+    @Override
+    public @NotNull Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

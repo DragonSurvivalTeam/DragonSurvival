@@ -4,7 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 
 import java.util.Locale;
 
-public enum EnumSkinLayer {
+public enum SkinLayer {
     // The translation is empty because currently the text is shown behind the dropdown elements for the skin part selections
     @Translation(type = Translation.Type.SKIN_PART, comments = "")
     BASE("Base", true),
@@ -35,7 +35,7 @@ public enum EnumSkinLayer {
     public final String name;
     public final boolean base;
 
-    EnumSkinLayer(final String name, boolean base) {
+    SkinLayer(final String name, boolean base) {
         this.name = name;
         this.base = base;
     }

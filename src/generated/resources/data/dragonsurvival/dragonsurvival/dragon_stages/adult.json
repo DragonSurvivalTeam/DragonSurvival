@@ -49,34 +49,6 @@
       "operation": "add_value"
     },
     {
-      "amount": -2.0,
-      "attribute": "minecraft:player.entity_interaction_range",
-      "operation": "add_value"
-    },
-    {
-      "amount": -2.0,
-      "attribute": "minecraft:player.block_interaction_range",
-      "operation": "add_value"
-    },
-    {
-      "amount": {
-        "type": "minecraft:linear",
-        "base": 0.05,
-        "per_level_above_first": 0.05
-      },
-      "attribute": "minecraft:player.entity_interaction_range",
-      "operation": "add_value"
-    },
-    {
-      "amount": {
-        "type": "minecraft:linear",
-        "base": 0.05,
-        "per_level_above_first": 0.05
-      },
-      "attribute": "minecraft:player.block_interaction_range",
-      "operation": "add_value"
-    },
-    {
       "amount": {
         "type": "minecraft:linear",
         "base": 0.5,
@@ -92,6 +64,24 @@
         "per_level_above_first": 0.05
       },
       "attribute": "dragonsurvival:dragon_breath_range",
+      "operation": "add_value"
+    },
+    {
+      "amount": {
+        "type": "minecraft:linear",
+        "base": -1.95,
+        "per_level_above_first": 0.05
+      },
+      "attribute": "minecraft:player.entity_interaction_range",
+      "operation": "add_value"
+    },
+    {
+      "amount": {
+        "type": "minecraft:linear",
+        "base": -1.95,
+        "per_level_above_first": 0.05
+      },
+      "attribute": "minecraft:player.block_interaction_range",
       "operation": "add_value"
     }
   ],

@@ -163,7 +163,7 @@ public class DragonEmoteScreen extends Screen {
         int startX = guiLeft - 15;
         int startY = guiTop + 30;
 
-        TabButton.addTabButtonsToScreen(this, startX + 17, startY - 56, TabButton.Type.EMOTES_TAB);
+        TabButton.addTabButtonsToScreen(this, startX + 17, startY - 56, TabButton.TabButtonType.EMOTES_TAB);
         reinitializeEmoteComponents();
 
         HoverButton resetEmotesButton = new HoverButton(startX + 19, startY - 26, 14, 14, 14, 14, RESET_EMOTES_MAIN, RESET_EMOTES_HOVER, button -> {

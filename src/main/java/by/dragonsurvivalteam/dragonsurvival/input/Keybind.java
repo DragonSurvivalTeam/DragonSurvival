@@ -9,7 +9,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.settings.IKeyConflictContext;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
-import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.client.settings.KeyModifier;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
@@ -31,7 +31,7 @@ public enum Keybind {
     NEXT_ABILITY(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_R),
 
     @Translation(type = Translation.Type.KEYBIND, comments = "Previous ability")
-    PREVIOUS_ABILITY(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_F),
+    PREVIOUS_ABILITY(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_R, KeyModifier.SHIFT),
 
     @Translation(type = Translation.Type.KEYBIND, comments = "Skill #1")
     ABILITY1(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_KP_1),
@@ -52,25 +52,25 @@ public enum Keybind {
     FREE_LOOK(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_LEFT_ALT),
 
     @Translation(type = Translation.Type.KEYBIND, comments = "Toggle large dragon destruction")
-    TOGGLE_DESTRUCTION(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_RIGHT_ALT),
+    TOGGLE_LARGE_DRAGON_DESTRUCTION(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_UNKNOWN),
 
-    @Translation(type = Translation.Type.KEYBIND, comments = "Toggle large dragon multiblock mining")
-    TOGGLE_MULTIBLOCK_MINING(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_RIGHT_BRACKET),
+    @Translation(type = Translation.Type.KEYBIND, comments = "Toggle multi mining")
+    TOGGLE_MULTI_MINING(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_UNKNOWN),
 
-    @Translation(type = Translation.Type.KEYBIND, comments = "Open dragon inventory")
-    OPEN_DRAGON_INVENTORY(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_UNKNOWN),
+    @Translation(type = Translation.Type.KEYBIND, comments = "Dragon inventory")
+    DRAGON_INVENTORY(KeyConflictContext.UNIVERSAL, GLFW.GLFW_KEY_UNKNOWN),
 
-    @Translation(type = Translation.Type.KEYBIND, comments = "Open ability menu")
-    OPEN_ABILITY_MENU(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_UNKNOWN),
+    @Translation(type = Translation.Type.KEYBIND, comments = "Ability menu")
+    ABILITY_MENU(KeyConflictContext.UNIVERSAL, GLFW.GLFW_KEY_UNKNOWN),
 
-    @Translation(type = Translation.Type.KEYBIND, comments = "Open species menu")
-    OPEN_SPECIES_MENU(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_UNKNOWN),
+    @Translation(type = Translation.Type.KEYBIND, comments = "Species menu")
+    SPECIES_MENU(KeyConflictContext.UNIVERSAL, GLFW.GLFW_KEY_UNKNOWN),
 
-    @Translation(type = Translation.Type.KEYBIND, comments = "Open emote menu")
-    OPEN_EMOTE_MENU(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_UNKNOWN),
+    @Translation(type = Translation.Type.KEYBIND, comments = "Emote menu")
+    EMOTE_MENU(KeyConflictContext.UNIVERSAL, GLFW.GLFW_KEY_UNKNOWN),
 
-    @Translation(type = Translation.Type.KEYBIND, comments = "Open skins menu")
-    OPEN_SKINS_MENU(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_UNKNOWN),
+    @Translation(type = Translation.Type.KEYBIND, comments = "Skins menu")
+    SKINS_MENU(KeyConflictContext.UNIVERSAL, GLFW.GLFW_KEY_UNKNOWN),
 
     @Translation(type = Translation.Type.KEYBIND, comments = "Toggle summon behaviour (+ SHIFT)")
     TOGGLE_SUMMON_BEHAVIOUR(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_UNKNOWN);
@@ -78,18 +78,20 @@ public enum Keybind {
     @Translation(comments = "Dragon Survival")
     private static final String CATEGORY = Translation.Type.KEYBIND.wrap("category");
 
-    public static final int KEY_RELEASED = 0;
-    public static final int KEY_PRESSED = 1;
-    public static final int KEY_HELD = 2;
-
     private final IKeyConflictContext keyConflictContext;
+    private final KeyModifier defaultModifier;
     private final int defaultKey;
 
-    private @Nullable Lazy<KeyMapping> keyMapping;
+    private @Nullable KeyMapping keyMapping;
 
     Keybind(final IKeyConflictContext keyConflictContext, int defaultKey) {
+        this(keyConflictContext, defaultKey, null);
+    }
+
+    Keybind(final IKeyConflictContext keyConflictContext, int defaultKey, KeyModifier defaultModifier) {
         this.keyConflictContext = keyConflictContext;
         this.defaultKey = defaultKey;
+        this.defaultModifier = defaultModifier;
     }
 
     @SubscribeEvent
@@ -101,44 +103,28 @@ public enum Keybind {
 
     public KeyMapping get() {
         if (keyMapping == null) {
-            // Initialize here due to needing access to the category
-            keyMapping = Lazy.of(() -> new KeyMapping(Translation.Type.KEYBIND.wrap(toString().toLowerCase(Locale.ENGLISH)), keyConflictContext, InputConstants.Type.KEYSYM, defaultKey, CATEGORY));
+            String translationKey = Translation.Type.KEYBIND.wrap(toString().toLowerCase(Locale.ENGLISH));
+
+            if (defaultModifier == null) {
+                keyMapping = new KeyMapping(translationKey, keyConflictContext, InputConstants.Type.KEYSYM, defaultKey, CATEGORY);
+            } else {
+                keyMapping = new KeyMapping(translationKey, keyConflictContext, defaultModifier, InputConstants.Type.KEYSYM, defaultKey, CATEGORY);
+            }
         }
 
-        return keyMapping.get();
+        return keyMapping;
     }
 
-    /**
-     * Mirror for {@link KeyMapping#consumeClick()}
-     * Tries to consume a click triggered by {@link KeyMapping#click(InputConstants.Key)}.
-     *
-     * @return True if a click was consumed. False if the key has no clicks to consume.
-     */
     public boolean consumeClick() {
         return get().consumeClick();
     }
 
-    /**
-     * Mirror for {@link KeyMapping#isDown()}
-     *
-     * @return True if the key is down (in the current KeyConflictContext).
-     */
-    public boolean isDown() {
-        return get().isDown();
+    public boolean isActiveInGui(final InputConstants.Key input) {
+        return isActive(input, KeyConflictContext.GUI);
     }
 
-    /**
-     * Mirror for {@link KeyMapping#getKey()}
-     *
-     * @return Key for this KeyMapping.
-     */
-    public InputConstants.Key getKey() {
-        return get().getKey();
-    }
-
-    /** Checks if the supplied key code (see {@link InputConstants}) matches the key */
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted") // ignore
-    public boolean isKey(int keyCode) {
-        return getKey().getValue() == keyCode;
+    public boolean isActive(final InputConstants.Key input, final KeyConflictContext context) {
+        KeyMapping key = get();
+        return key.getKey().equals(input) && key.getKeyModifier().isActive(context);
     }
 }

@@ -9,12 +9,10 @@ import net.minecraft.tags.TagKey;
 import net.neoforged.neoforge.common.Tags;
 
 import java.lang.annotation.*;
-import java.util.Locale;
 
 /**
  * The following field types have special behaviour when no {@link Translation#key()} is supplied: <br>
- * - {@link Enum} will use {@link Enum#toString()} -> {@link String#toLowerCase(Locale)} to determine the wrapped value <br>
- * - {@link Enum} will add {@link DSLanguageProvider#enumClassKey(Enum)} as prefix if the type is {@link Translation.Type#ENUM} <br>
+ * - {@link Enum} will use {@link DSLanguageProvider#enumClassKey(Class)} and {@link DSLanguageProvider#enumValue(Enum)} <br>
  * - {@link String} annotated with the type {@link Type#NONE} will use its stored value, not wrapping anything <br>
  * - {@link String} annotated with the type {@link Type#EMOTE} will use its stored value, wrapped with emote <br>
  * - {@link Holder} will use {@link Holder#getKey()} -> {@link ResourceKey#location()} -> {@link ResourceLocation#getPath()} to determine the wrapped value <br>
@@ -100,9 +98,6 @@ public @interface Translation {
 
         STAGE("dragon_stage." + DragonSurvival.MODID + ".", ""),
         STAGE_DESCRIPTION("dragon_stage." + DragonSurvival.MODID + ".", ".desc"),
-
-        // Misc.
-        ENUM("enum.", ""),
 
         /**
          * When used on {@link String} and no specified key it's expected that the string contains the translation key <br>

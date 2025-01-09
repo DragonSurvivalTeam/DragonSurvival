@@ -22,9 +22,9 @@ public record ManaCost(ManaCostType manaCostType, LevelBasedValue manaCost) {
     }
 
     public enum ManaCostType implements StringRepresentable {
-        @Translation(type = Translation.Type.ENUM, comments = "Ticking")
+        @Translation(comments = "Ticking")
         TICKING("ticking"),
-        @Translation(type = Translation.Type.ENUM, comments = "Reserved")
+        @Translation(comments = "Reserved")
         RESERVED("reserved");
 
         public static final Codec<ManaCostType> CODEC = StringRepresentable.fromEnum(ManaCostType::values);

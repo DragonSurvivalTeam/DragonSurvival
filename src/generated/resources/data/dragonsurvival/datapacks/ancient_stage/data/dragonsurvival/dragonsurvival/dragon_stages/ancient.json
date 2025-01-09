@@ -49,36 +49,8 @@
       "operation": "add_value"
     },
     {
-      "amount": -0.4,
-      "attribute": "minecraft:generic.step_height",
-      "operation": "add_value"
-    },
-    {
-      "amount": -2.0,
-      "attribute": "minecraft:player.entity_interaction_range",
-      "operation": "add_value"
-    },
-    {
-      "amount": -2.0,
-      "attribute": "minecraft:player.block_interaction_range",
-      "operation": "add_value"
-    },
-    {
-      "amount": {
-        "type": "minecraft:linear",
-        "base": 0.05,
-        "per_level_above_first": 0.05
-      },
-      "attribute": "minecraft:player.entity_interaction_range",
-      "operation": "add_value"
-    },
-    {
-      "amount": {
-        "type": "minecraft:linear",
-        "base": 0.05,
-        "per_level_above_first": 0.05
-      },
-      "attribute": "minecraft:player.block_interaction_range",
+      "amount": 0.02,
+      "attribute": "minecraft:generic.movement_speed",
       "operation": "add_value"
     },
     {
@@ -97,20 +69,6 @@
         "per_level_above_first": 0.05
       },
       "attribute": "dragonsurvival:dragon_breath_range",
-      "operation": "add_value"
-    },
-    {
-      "amount": 0.02,
-      "attribute": "minecraft:generic.movement_speed",
-      "operation": "add_value"
-    },
-    {
-      "amount": {
-        "type": "minecraft:linear",
-        "base": 0.015,
-        "per_level_above_first": 0.015
-      },
-      "attribute": "minecraft:generic.step_height",
       "operation": "add_value"
     },
     {
@@ -147,6 +105,33 @@
         "per_level_above_first": 0.01
       },
       "attribute": "dragonsurvival:block_break_radius",
+      "operation": "add_value"
+    },
+    {
+      "amount": {
+        "type": "minecraft:linear",
+        "base": -1.95,
+        "per_level_above_first": 0.05
+      },
+      "attribute": "minecraft:player.entity_interaction_range",
+      "operation": "add_value"
+    },
+    {
+      "amount": {
+        "type": "minecraft:linear",
+        "base": -1.95,
+        "per_level_above_first": 0.05
+      },
+      "attribute": "minecraft:player.block_interaction_range",
+      "operation": "add_value"
+    },
+    {
+      "amount": {
+        "type": "minecraft:linear",
+        "base": -0.38500002,
+        "per_level_above_first": 0.015
+      },
+      "attribute": "minecraft:generic.step_height",
       "operation": "add_value"
     }
   ],

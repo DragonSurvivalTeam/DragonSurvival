@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects;
 
-import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.EnumSkinLayer;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.SkinLayer;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DefaultPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DragonPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
@@ -23,7 +23,7 @@ public class DragonStageCustomization implements INBTSerializable<CompoundTag> {
     public static final String IS_DEFAULT_SKIN = "defaultSkin";
 
     // The field names currently affect the result of the 'saved_customizations.json' file
-    public HashMap<EnumSkinLayer, Lazy<LayerSettings>> layerSettings = new HashMap<>();
+    public HashMap<SkinLayer, Lazy<LayerSettings>> layerSettings = new HashMap<>();
 
     public boolean wings = true;
     public boolean defaultSkin;
@@ -31,10 +31,10 @@ public class DragonStageCustomization implements INBTSerializable<CompoundTag> {
     public DragonStageCustomization(final ResourceKey<DragonStage> dragonStage, final ResourceKey<DragonSpecies> type, final ResourceLocation customModel) {
         this();
 
-        for (EnumSkinLayer layer : EnumSkinLayer.values()) {
+        for (SkinLayer layer : SkinLayer.values()) {
             // Convert the numbered 'EXTRA' layer to the generic 'EXTRA' layer
-            EnumSkinLayer actualLayer = EnumSkinLayer.valueOf(layer.getNameUpperCase());
-            Map<EnumSkinLayer, List<DragonPart>> partMap = DragonPartLoader.DRAGON_PARTS.get(type);
+            SkinLayer actualLayer = SkinLayer.valueOf(layer.getNameUpperCase());
+            Map<SkinLayer, List<DragonPart>> partMap = DragonPartLoader.DRAGON_PARTS.get(type);
 
             if (partMap != null) {
                 List<DragonPart> parts = partMap.get(actualLayer);
@@ -57,7 +57,7 @@ public class DragonStageCustomization implements INBTSerializable<CompoundTag> {
     }
 
     public DragonStageCustomization() {
-        for (EnumSkinLayer layer : EnumSkinLayer.values()) {
+        for (SkinLayer layer : SkinLayer.values()) {
             layerSettings.computeIfAbsent(layer, key -> Lazy.of(LayerSettings::new));
         }
     }
@@ -68,7 +68,7 @@ public class DragonStageCustomization implements INBTSerializable<CompoundTag> {
         layerData.putBoolean(HAS_WINGS, wings);
         layerData.putBoolean(IS_DEFAULT_SKIN, defaultSkin);
 
-        for (EnumSkinLayer layer : EnumSkinLayer.values()) {
+        for (SkinLayer layer : SkinLayer.values()) {
             layerData.put(layer.name(), layerSettings.getOrDefault(layer, Lazy.of(LayerSettings::new)).get().serializeNBT(provider));
         }
 
@@ -80,7 +80,7 @@ public class DragonStageCustomization implements INBTSerializable<CompoundTag> {
         wings = tag.getBoolean(HAS_WINGS);
         defaultSkin = tag.getBoolean(IS_DEFAULT_SKIN);
 
-        for (EnumSkinLayer layer : EnumSkinLayer.values()) {
+        for (SkinLayer layer : SkinLayer.values()) {
             layerSettings.put(layer, Lazy.of(() -> {
                 LayerSettings settings = new LayerSettings();
                 CompoundTag layerData = tag.getCompound(layer.name());

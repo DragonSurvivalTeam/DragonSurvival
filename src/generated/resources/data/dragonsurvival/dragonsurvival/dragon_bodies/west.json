@@ -8,12 +8,17 @@
       "operation": "add_value"
     },
     {
-      "amount": -0.3,
+      "amount": 0.15,
+      "attribute": "minecraft:generic.knockback_resistance",
+      "operation": "add_value"
+    },
+    {
+      "amount": -0.15,
       "attribute": "minecraft:generic.movement_speed",
       "operation": "add_multiplied_total"
     },
     {
-      "amount": -0.3,
+      "amount": -0.2,
       "attribute": "neoforge:swim_speed",
       "operation": "add_value"
     },

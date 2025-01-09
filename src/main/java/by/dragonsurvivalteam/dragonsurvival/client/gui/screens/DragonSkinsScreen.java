@@ -272,7 +272,7 @@ public class DragonSkinsScreen extends Screen {
         handler.setCurrentStageCustomization(DragonStateProvider.getData(player).getCustomizationForStage(dragonStage.getKey()));
         handler.getCurrentSkinPreset().setAllStagesToUseDefaultSkin(false);
 
-        TabButton.addTabButtonsToScreen(this, startX + 138, startY - 26, TabButton.Type.SKINS_TAB);
+        TabButton.addTabButtonsToScreen(this, startX + 138, startY - 26, TabButton.TabButtonType.SKINS_TAB);
 
         // Add scrollable list of dragon bodies
         List<AbstractWidget> dragonBodyWidgets = new ArrayList<>();

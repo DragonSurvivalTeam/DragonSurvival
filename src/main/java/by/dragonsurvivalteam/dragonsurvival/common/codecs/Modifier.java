@@ -25,19 +25,35 @@ public record Modifier(Holder<Attribute> attribute, LevelBasedValue amount, Attr
     ).apply(instance, Modifier::new));
 
     public static Modifier constant(final Holder<Attribute> attribute, float amount, final AttributeModifier.Operation operation) {
-        return new Modifier(attribute, LevelBasedValue.constant(amount), operation, Optional.empty());
+        return constant(attribute, amount, operation, null);
     }
 
     public static Modifier constant(final Holder<Attribute> attribute, float amount, final AttributeModifier.Operation operation, final ResourceKey<DragonSpecies> dragonSpecies) {
-        return new Modifier(attribute, LevelBasedValue.constant(amount), operation, Optional.of(dragonSpecies));
+        return new Modifier(attribute, LevelBasedValue.constant(amount), operation, Optional.ofNullable(dragonSpecies));
     }
 
     public static Modifier per(final Holder<Attribute> attribute, float amount, final AttributeModifier.Operation operation) {
-        return new Modifier(attribute, LevelBasedValue.perLevel(amount), operation, Optional.empty());
+        return per(attribute, amount, operation, null);
     }
 
     public static Modifier per(final Holder<Attribute> attribute, float amount, final AttributeModifier.Operation operation, final ResourceKey<DragonSpecies> dragonSpecies) {
-        return new Modifier(attribute, LevelBasedValue.perLevel(amount), operation, Optional.of(dragonSpecies));
+        return new Modifier(attribute, LevelBasedValue.perLevel(amount), operation, Optional.ofNullable(dragonSpecies));
+    }
+
+    /** See {@link Modifier#perWithBase(Holder, float, float, AttributeModifier.Operation, ResourceKey)} */
+    public static Modifier perWithBase(final Holder<Attribute> attribute, float base, float amount, final AttributeModifier.Operation operation) {
+        return perWithBase(attribute, base, amount, operation, null);
+    }
+
+    /**
+     * The base will be treated as a separate 'ADD', meaning the amount will be added to it <br>
+     * This results in the amount also being properly applied at the first level - example: <br>
+     * Base is -5 and the amount is 0.05 -> first level is -4.95 <br>
+     * (Since this is done using {@link Math#abs(int)} on both values it will be consistent)
+     */
+    public static Modifier perWithBase(final Holder<Attribute> attribute, float base, float amount, final AttributeModifier.Operation operation, final ResourceKey<DragonSpecies> dragonSpecies) {
+        float actualBase = Math.abs(base) - Math.abs(amount);
+        return new Modifier(attribute, LevelBasedValue.perLevel(base < 0 ? -actualBase : actualBase, amount), operation, Optional.ofNullable(dragonSpecies));
     }
 
     public AttributeModifier getModifier(final ResourceLocation id, double level) {

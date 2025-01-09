@@ -33,21 +33,21 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
     public static final String MOVEMENT_BEHAVIOUR = "movement_behaviour";
     public static final String ATTACK_BEHAVIOUR = "attack_behaviour";
 
-    @Translation(type = Translation.Type.ENUM, comments = "Movement Behaviour")
+    @Translation(comments = "Movement Behaviour")
     public enum MovementBehaviour {
-        @Translation(type = Translation.Type.ENUM, comments = "Default")
+        @Translation(comments = "Default")
         DEFAULT,
-        @Translation(type = Translation.Type.ENUM, comments = "Follow")
+        @Translation(comments = "Follow")
         FOLLOW
     }
 
-    @Translation(type = Translation.Type.ENUM, comments = "Attack Behaviour")
+    @Translation(comments = "Attack Behaviour")
     public enum AttackBehaviour {
-        @Translation(type = Translation.Type.ENUM, comments = "Default")
+        @Translation(comments = "Default")
         DEFAULT,
-        @Translation(type = Translation.Type.ENUM, comments = "Defensive")
+        @Translation(comments = "Defensive")
         DEFENSIVE,
-        @Translation(type = Translation.Type.ENUM, comments = "Aggressive")
+        @Translation(comments = "Aggressive")
         AGGRESSIVE
     }
 

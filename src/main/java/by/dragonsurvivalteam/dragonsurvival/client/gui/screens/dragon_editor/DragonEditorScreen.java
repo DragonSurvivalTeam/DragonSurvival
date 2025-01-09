@@ -17,7 +17,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.Scroll
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.CustomizationFileHandler;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.DragonEditorHandler;
-import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.EnumSkinLayer;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.SkinLayer;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DefaultPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonPart;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
@@ -215,7 +215,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     private BarComponent dragonBodyBar;
 
     private final List<ScrollableComponent> scrollableComponents = new ArrayList<>();
-    private final Map<EnumSkinLayer, EditorPartComponent> partComponents = new HashMap<>();
+    private final Map<SkinLayer, EditorPartComponent> partComponents = new HashMap<>();
 
     private float tick;
     private int curAnimation;
@@ -296,8 +296,8 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     public final Function<CompoundTag, CompoundTag> setSkinPresetAction = tag -> {
         CompoundTag prevTag = HANDLER.getCurrentSkinPreset().serializeNBT(Objects.requireNonNull(Minecraft.getInstance().player).registryAccess());
         HANDLER.getCurrentSkinPreset().deserializeNBT(Minecraft.getInstance().player.registryAccess(), tag);
-        HashMap<EnumSkinLayer, Lazy<LayerSettings>> layerSettingsMap = HANDLER.getCurrentStageCustomization().layerSettings;
-        for(EnumSkinLayer layer : layerSettingsMap.keySet()) {
+        HashMap<SkinLayer, Lazy<LayerSettings>> layerSettingsMap = HANDLER.getCurrentStageCustomization().layerSettings;
+        for(SkinLayer layer : layerSettingsMap.keySet()) {
             partComponents.get(layer).setSelectedPart(layerSettingsMap.get(layer).get().partKey);
         }
         HANDLER.recompileCurrentSkin();
@@ -312,14 +312,14 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         return previousBody;
     };
 
-    public List<String> getPartsFromLayer(EnumSkinLayer layer) {
+    public List<String> getPartsFromLayer(SkinLayer layer) {
         return DragonEditorHandler.getDragonPartKeys(dragonSpecies, dragonBody, layer);
     }
 
-    public final Function<Pair<EnumSkinLayer, String>, Pair<EnumSkinLayer, String>> dragonPartSelectAction = pair -> {
-        Pair<EnumSkinLayer, String> previousPair = new Pair<>(pair.getFirst(), preset.get(Objects.requireNonNull(dragonStage.getKey())).get().layerSettings.get(pair.getFirst()).get().partKey);
+    public final Function<Pair<SkinLayer, String>, Pair<SkinLayer, String>> dragonPartSelectAction = pair -> {
+        Pair<SkinLayer, String> previousPair = new Pair<>(pair.getFirst(), preset.get(Objects.requireNonNull(dragonStage.getKey())).get().layerSettings.get(pair.getFirst()).get().partKey);
 
-        EnumSkinLayer layer = pair.getFirst();
+        SkinLayer layer = pair.getFirst();
         String value = pair.getSecond();
         partComponents.get(layer).setSelectedPart(value);
         preset.get(dragonStage.getKey()).get().layerSettings.get(layer).get().partKey = value;
@@ -694,16 +694,16 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
         int maxWidth = -1;
 
-        for (EnumSkinLayer layer : EnumSkinLayer.values()) {
+        for (SkinLayer layer : SkinLayer.values()) {
             String name = layer.getNameUpperCase().charAt(0) + layer.getNameLowerCase().substring(1).replace("_", " ");
             maxWidth = (int) Math.max(maxWidth, font.width(name) * 1.45F);
         }
 
         int row = 0;
-        for (EnumSkinLayer layer : EnumSkinLayer.values()) {
+        for (SkinLayer layer : SkinLayer.values()) {
             ArrayList<String> valueList = DragonEditorHandler.getDragonPartKeys(dragonSpecies, dragonBody, layer);
 
-            if (layer != EnumSkinLayer.BASE) {
+            if (layer != SkinLayer.BASE) {
                 valueList.addFirst(DefaultPartLoader.NO_PART);
             }
 
@@ -799,10 +799,10 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         RegistryAccess access = Objects.requireNonNull(Minecraft.getInstance().player).registryAccess();
 
         HoverButton randomButton = new HoverButton(width / 2 - 8, 40, 16, 17, 20, 20, RANDOM_MAIN, RANDOM_HOVER, btn -> {
-            ArrayList<String> extraKeys = DragonEditorHandler.getDragonPartKeys(FakeClientPlayerUtils.getFakePlayer(0, HANDLER), EnumSkinLayer.EXTRA);
+            ArrayList<String> extraKeys = DragonEditorHandler.getDragonPartKeys(FakeClientPlayerUtils.getFakePlayer(0, HANDLER), SkinLayer.EXTRA);
 
             extraKeys.removeIf(partKey -> {
-                DragonPart text = DragonEditorHandler.getDragonPart(EnumSkinLayer.EXTRA, partKey, dragonSpecies.getKey());
+                DragonPart text = DragonEditorHandler.getDragonPart(SkinLayer.EXTRA, partKey, dragonSpecies.getKey());
                 if (text == null) {
                     DragonSurvival.LOGGER.error("Key {} not found!", partKey);
                     return true;
@@ -814,14 +814,14 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             SkinPreset preset = new SkinPreset();
             preset.deserializeNBT(access, this.preset.serializeNBT(access));
 
-            for (EnumSkinLayer layer : EnumSkinLayer.values()) {
+            for (SkinLayer layer : SkinLayer.values()) {
                 ArrayList<String> keys = DragonEditorHandler.getDragonPartKeys(FakeClientPlayerUtils.getFakePlayer(0, HANDLER), layer);
 
                 if (Objects.equals(layer.name, "Extra")) {
                     keys = extraKeys;
                 }
 
-                if (layer != EnumSkinLayer.BASE) {
+                if (layer != SkinLayer.BASE) {
                     keys.add(DefaultPartLoader.NO_PART);
                 }
 

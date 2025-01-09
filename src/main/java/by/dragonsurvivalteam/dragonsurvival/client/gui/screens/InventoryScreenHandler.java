@@ -1,14 +1,18 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.screens;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.input.Keybind;
+import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawsMenuToggle;
 import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
 import by.dragonsurvivalteam.dragonsurvival.network.container.RequestOpenDragonInventory;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AltarData;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
@@ -28,8 +32,7 @@ import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
-import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
-import static by.dragonsurvivalteam.dragonsurvival.network.container.RequestOpenDragonInventory.SendOpenDragonInventoryAndMaintainCursorPosition;
+import java.util.Objects;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class InventoryScreenHandler {
@@ -47,8 +50,8 @@ public class InventoryScreenHandler {
     @ConfigOption(side = ConfigSide.CLIENT, category = "inventory", key = "inventory_toggle")
     public static Boolean inventoryToggle = true;
 
-    private static final ResourceLocation DS_LOGO = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ds_logo.png");
-    public static final ResourceLocation INVENTORY_TOGGLE_BUTTON = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory_button.png");
+    private static final ResourceLocation DS_LOGO = DragonSurvival.res("textures/gui/ds_logo.png");
+    public static final ResourceLocation INVENTORY_TOGGLE_BUTTON = DragonSurvival.res("textures/gui/inventory_button.png");
 
     private static ExtendedButton altarOpenButton;
     private static ExtendedButton creativeModeDragonInventoryButton;
@@ -69,7 +72,7 @@ public class InventoryScreenHandler {
 
         if (openEvent.getScreen() instanceof InventoryScreen) {
             openEvent.setCanceled(true);
-            PacketDistributor.sendToServer(new RequestOpenDragonInventory.Data());
+            PacketDistributor.sendToServer(RequestOpenDragonInventory.INSTANCE);
         }
     }
 
@@ -122,7 +125,7 @@ public class InventoryScreenHandler {
         if (sc instanceof InventoryScreen screen) {
             if (inventoryToggle) {
                 ExtendedButton inventoryToggle = new ExtendedButton(screen.getGuiLeft() + 128, screen.height / 2 - 22, 20, 18, Component.empty(), p_onPress_1_ -> {
-                    SendOpenDragonInventoryAndMaintainCursorPosition();
+                    openDragonInventory();
                 }) {
                     @Override
                     public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
@@ -139,7 +142,7 @@ public class InventoryScreenHandler {
         if (sc instanceof CreativeModeInventoryScreen screen) {
             if (inventoryToggle) {
                 creativeModeDragonInventoryButton = new ExtendedButton(screen.getGuiLeft() + 128 + 20, screen.height / 2 - 50, 20, 18, Component.empty(), p_onPress_1_ -> {
-                    SendOpenDragonInventoryAndMaintainCursorPosition();
+                    openDragonInventory();
                 }) {
                     @Override
                     public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
@@ -156,42 +159,84 @@ public class InventoryScreenHandler {
 
     @SubscribeEvent
     public static void handleKey(final InputEvent.Key event) {
-        if (event.getAction() != Keybind.KEY_PRESSED) {
+        if (event.getAction() != InputConstants.PRESS) {
             return;
         }
 
-        LocalPlayer player = Minecraft.getInstance().player;
-
-        if (!DragonStateProvider.isDragon(player)) {
+        if (!DragonStateProvider.isDragon(Minecraft.getInstance().player)) {
             return;
         }
 
         Screen screen = Minecraft.getInstance().screen;
 
-        boolean anyScreenKeybindWasPressed =
-                Keybind.OPEN_DRAGON_INVENTORY.isKey(event.getKey())
-                || Keybind.OPEN_ABILITY_MENU.isKey(event.getKey())
-                || Keybind.OPEN_SPECIES_MENU.isKey(event.getKey())
-                || Keybind.OPEN_SKINS_MENU.isKey(event.getKey())
-                || Keybind.OPEN_EMOTE_MENU.isKey(event.getKey());
+        if (screen == null) {
+            if (Keybind.DRAGON_INVENTORY.consumeClick()) {
+                PacketDistributor.sendToServer(RequestOpenDragonInventory.INSTANCE);
+            } else if (Keybind.SKINS_MENU.consumeClick()) {
+                Minecraft.getInstance().setScreen(new DragonSkinsScreen());
+            } else if (Keybind.ABILITY_MENU.consumeClick()) {
+                Minecraft.getInstance().setScreen(new DragonAbilityScreen());
+            } else if (Keybind.SPECIES_MENU.consumeClick()) {
+                Minecraft.getInstance().setScreen(new DragonSpeciesScreen());
+            } else if (Keybind.EMOTE_MENU.consumeClick()) {
+                Minecraft.getInstance().setScreen(new DragonEmoteScreen());
+            }
+        } else if (isInventoryTab(screen)) {
+            switchOrClose(event, screen);
+        }
+    }
 
+    private static void switchOrClose(final InputEvent.Key event, final Screen screen) {
+        InputConstants.Key input = InputConstants.getKey(event.getKey(), event.getScanCode());
+        LocalPlayer player = Objects.requireNonNull(Minecraft.getInstance().player);
 
-        if(anyScreenKeybindWasPressed) {
-            if (screen == null) {
-                if(Keybind.OPEN_DRAGON_INVENTORY.isKey(event.getKey())) {
-                    PacketDistributor.sendToServer(new RequestOpenDragonInventory.Data());
-                } else if (Keybind.OPEN_SKINS_MENU.isKey(event.getKey())) {
-                    Minecraft.getInstance().setScreen(new DragonSkinsScreen());
-                } else if (Keybind.OPEN_ABILITY_MENU.isKey(event.getKey())) {
-                    Minecraft.getInstance().setScreen(new DragonAbilityScreen());
-                } else if (Keybind.OPEN_SPECIES_MENU.isKey(event.getKey())) {
-                    Minecraft.getInstance().setScreen(new DragonSpeciesScreen());
-                } else if (Keybind.OPEN_EMOTE_MENU.isKey(event.getKey())) {
-                    Minecraft.getInstance().setScreen(new DragonEmoteScreen());
-                }
-            } else if (screen instanceof DragonInventoryScreen || screen instanceof DragonAbilityScreen || screen instanceof DragonSkinsScreen || screen instanceof DragonSpeciesScreen || screen instanceof DragonEmoteScreen) {
+        if (Keybind.DRAGON_INVENTORY.isActiveInGui(input)) {
+            if (screen instanceof DragonInventoryScreen) {
                 player.closeContainer();
+            } else {
+                PacketDistributor.sendToServer(RequestOpenDragonInventory.INSTANCE);
+            }
+        } else if (Keybind.ABILITY_MENU.isActiveInGui(input)) {
+            if (screen instanceof DragonAbilityScreen) {
+                player.closeContainer();
+            } else {
+                Minecraft.getInstance().setScreen(new DragonAbilityScreen());
+            }
+        } else if (Keybind.SPECIES_MENU.isActiveInGui(input)) {
+            if (screen instanceof DragonSpeciesScreen) {
+                player.closeContainer();
+            } else {
+                Minecraft.getInstance().setScreen(new DragonSpeciesScreen());
+            }
+        } else if (Keybind.SKINS_MENU.isActiveInGui(input)) {
+            if (screen instanceof DragonSkinsScreen) {
+                player.closeContainer();
+            } else {
+                Minecraft.getInstance().setScreen(new DragonSkinsScreen());
+            }
+        } else if (Keybind.EMOTE_MENU.isActiveInGui(input)) {
+            if (screen instanceof DragonEmoteScreen) {
+                player.closeContainer();
+            } else {
+                Minecraft.getInstance().setScreen(new DragonEmoteScreen());
             }
         }
+    }
+
+    /** Maintains the cursor position (since the inventory normally resets the position to the screen) */
+    public static void openDragonInventory() {
+        DragonInventoryScreen.mouseX = Minecraft.getInstance().mouseHandler.xpos();
+        DragonInventoryScreen.mouseY = Minecraft.getInstance().mouseHandler.ypos();
+
+        PacketDistributor.sendToServer(RequestOpenDragonInventory.INSTANCE);
+        //noinspection DataFlowIssue -> player is present
+        ClawInventoryData data = ClawInventoryData.getData(Minecraft.getInstance().player);
+
+        PacketDistributor.sendToServer(new SyncDragonClawsMenuToggle.Data(data.isMenuOpen()));
+        data.setMenuOpen(data.isMenuOpen());
+    }
+
+    private static boolean isInventoryTab(final Screen screen) {
+        return screen instanceof DragonInventoryScreen || screen instanceof DragonAbilityScreen || screen instanceof DragonSkinsScreen || screen instanceof DragonSpeciesScreen || screen instanceof DragonEmoteScreen;
     }
 }

@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.datapacks;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.GrowthItem;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
 import by.dragonsurvivalteam.dragonsurvival.common.conditions.EntityCondition;
@@ -38,25 +39,21 @@ public class AncientDatapack {
                         Modifier.constant(Attributes.JUMP_STRENGTH, 0.1f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 1, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.constant(DSAttributes.DRAGON_BREATH_RANGE, 4, AttributeModifier.Operation.ADD_VALUE),
-                        // To offset the per size modifier
-                        Modifier.constant(Attributes.STEP_HEIGHT, -0.4f, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.constant(Attributes.ENTITY_INTERACTION_RANGE, -2.0f, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.constant(Attributes.BLOCK_INTERACTION_RANGE, -2.0f, AttributeModifier.Operation.ADD_VALUE),
+                        Modifier.constant(Attributes.MOVEMENT_SPEED, 0.02f, AttributeModifier.Operation.ADD_VALUE),
                         /* Per size */
-                        Modifier.per(Attributes.ENTITY_INTERACTION_RANGE, 0.05f, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.per(Attributes.BLOCK_INTERACTION_RANGE, 0.05f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.per(Attributes.MAX_HEALTH, 0.5f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.per(DSAttributes.DRAGON_BREATH_RANGE, 0.05f, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.constant(Attributes.MOVEMENT_SPEED, 0.02f, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.per(Attributes.STEP_HEIGHT, 0.015f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.per(Attributes.ATTACK_DAMAGE, 0.05f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.per(Attributes.JUMP_STRENGTH, 0.0015f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.per(Attributes.SAFE_FALL_DISTANCE, 0.015f, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.per(DSAttributes.BLOCK_BREAK_RADIUS, 0.01f, AttributeModifier.Operation.ADD_VALUE)
+                        Modifier.per(DSAttributes.BLOCK_BREAK_RADIUS, 0.01f, AttributeModifier.Operation.ADD_VALUE),
+                        Modifier.perWithBase(Attributes.ENTITY_INTERACTION_RANGE, -2, 0.05f, AttributeModifier.Operation.ADD_VALUE),
+                        Modifier.perWithBase(Attributes.BLOCK_INTERACTION_RANGE, -2, 0.05f, AttributeModifier.Operation.ADD_VALUE),
+                        Modifier.perWithBase(Attributes.STEP_HEIGHT, -0.4f, 0.015f, AttributeModifier.Operation.ADD_VALUE)
                         ),
                 List.of(
-                        MiscCodecs.GrowthItem.create(Functions.hoursToTicks(1), DSItems.ELDER_DRAGON_HEART.value()),
-                        MiscCodecs.GrowthItem.create(Functions.hoursToTicks(-1), DSItems.STAR_BONE.value())
+                        GrowthItem.create(Functions.hoursToTicks(1), DSItems.ELDER_DRAGON_HEART.value()),
+                        GrowthItem.create(Functions.hoursToTicks(-1), DSItems.STAR_BONE.value())
                 ),
                 Optional.of(EntityCondition.defaultNaturalGrowthBlocker()),
                 Optional.empty(),

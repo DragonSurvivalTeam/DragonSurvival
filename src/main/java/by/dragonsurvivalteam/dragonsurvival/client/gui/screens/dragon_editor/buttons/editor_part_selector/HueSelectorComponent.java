@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.bu
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.DragonEditorScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverButton;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.DragonEditorHandler;
-import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.EnumSkinLayer;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.SkinLayer;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonPart;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.LayerSettings;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
@@ -62,7 +62,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
         return dragonPart != null && (Float.compare(Math.round(settingsSupplier.get().hue * 360), Math.round(dragonPart.averageHue() * 360)) != 0 || !(Math.abs(settingsSupplier.get().saturation - 0.5f) < 0.05) || !(Math.abs(settingsSupplier.get().brightness - 0.5f) < 0.05));
     }
 
-    public HueSelectorComponent(DragonEditorScreen screen, int x, int y, int xSize, int ySize, EnumSkinLayer layer) {
+    public HueSelectorComponent(DragonEditorScreen screen, int x, int y, int xSize, int ySize, SkinLayer layer) {
         this.x = x;
         this.y = y;
         this.xSize = xSize;

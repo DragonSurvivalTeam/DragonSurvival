@@ -5,15 +5,15 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.input.Keybind;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.LevelRendererAccess;
-import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDestructionEnabled;
-import by.dragonsurvivalteam.dragonsurvival.network.status.SyncMultiblockMiningEnabled;
+import by.dragonsurvivalteam.dragonsurvival.network.player.SyncLargeDragonDestruction;
+import by.dragonsurvivalteam.dragonsurvival.network.status.SyncMultiMining;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MultiblockMiningToggled;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Camera;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -22,7 +22,6 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.BlockDestructionProgress;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
@@ -34,7 +33,6 @@ import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.network.PacketDistributor;
-import org.checkerframework.checker.units.qual.C;
 import org.joml.Matrix4f;
 
 import java.util.SortedSet;
@@ -66,9 +64,20 @@ public class DragonDestructionHandler {
     public static void renderAdditionalBreakProgress(final RenderLevelStageEvent event) {
         if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) {
             LocalPlayer player = Minecraft.getInstance().player;
-            int radius = (int)player.getAttributeValue(DSAttributes.BLOCK_BREAK_RADIUS);
 
-            if (radius < 1 || player.isCrouching() || !player.getData(DSDataAttachments.MULTIBLOCK_MINING_TOGGLED).enabled) {
+            if (player.isCrouching()) {
+                return;
+            }
+
+            int radius = (int) player.getAttributeValue(DSAttributes.BLOCK_BREAK_RADIUS);
+
+            if (radius < 1) {
+                return;
+            }
+
+            DragonStateHandler handler = DragonStateProvider.getData(player);
+
+            if (handler.multiMining == DragonStateHandler.MultiMining.DISABLED) {
                 return;
             }
 
@@ -104,54 +113,43 @@ public class DragonDestructionHandler {
 
     @SubscribeEvent
     public static void toggleDestructionMode(final InputEvent.Key event) {
-        if (Minecraft.getInstance().screen != null || event.getAction() != Keybind.KEY_PRESSED || !Keybind.TOGGLE_DESTRUCTION.isKey(event.getKey())) {
+        Pair<Player, DragonStateHandler> data = KeyHandler.checkAndGet(event, Keybind.TOGGLE_LARGE_DRAGON_DESTRUCTION, true);
+
+        if (data == null) {
             return;
         }
 
-        Player player = Minecraft.getInstance().player;
+        DragonStateHandler handler = data.getSecond();
+        MiscCodecs.DestructionData destructionData = handler.stage().value().destructionData().orElse(null);
 
-        if (player == null) {
+        if (destructionData == null || !destructionData.isDestructionAllowed(handler.getSize())) {
             return;
         }
 
-        DragonStateHandler data = DragonStateProvider.getData(player);
+        handler.largeDragonDestruction = Functions.cycleEnum(handler.largeDragonDestruction);
+        data.getFirst().displayClientMessage(KeyHandler.cycledEnum(handler.largeDragonDestruction), true);
 
-        if (!data.isDragon()) {
-            return;
-        }
-
-        MiscCodecs.DestructionData destructionData = data.stage().value().destructionData().orElse(null);
-
-        if (destructionData == null || !destructionData.isDestructionAllowed(data.getSize())) {
-            return;
-        }
-
-        Keybind.TOGGLE_DESTRUCTION.consumeClick();
-        data.setDestructionEnabled(!data.getDestructionEnabled());
-        PacketDistributor.sendToServer(new SyncDestructionEnabled.Data(player.getId(), data.getDestructionEnabled()));
-        player.displayClientMessage(Component.translatable(data.getDestructionEnabled() ? ENABLED : DISABLED), true);
+        PacketDistributor.sendToServer(new SyncLargeDragonDestruction(handler.largeDragonDestruction));
+        Keybind.TOGGLE_LARGE_DRAGON_DESTRUCTION.consumeClick();
     }
 
     @SubscribeEvent
-    public static void toggleMultiblockMining(final InputEvent.Key event) {
-        if (Minecraft.getInstance().screen != null || event.getAction() != Keybind.KEY_PRESSED || !Keybind.TOGGLE_MULTIBLOCK_MINING.isKey(event.getKey())) {
+    public static void toggleMultiMining(final InputEvent.Key event) {
+        Pair<Player, DragonStateHandler> data = KeyHandler.checkAndGet(event, Keybind.TOGGLE_MULTI_MINING, false);
+
+        if (data == null) {
             return;
         }
 
-        Player player = Minecraft.getInstance().player;
-
-        if (player == null) {
+        if (data.getFirst().getAttributeValue(DSAttributes.BLOCK_BREAK_RADIUS) < 1) {
             return;
         }
 
-        if (player.getAttributeValue(DSAttributes.BLOCK_BREAK_RADIUS) < 1) {
-            return;
-        }
+        DragonStateHandler handler = data.getSecond();
+        handler.multiMining = Functions.cycleEnum(handler.multiMining);
+        data.getFirst().displayClientMessage(KeyHandler.cycledEnum(handler.multiMining), true);
 
-        MultiblockMiningToggled data = player.getData(DSDataAttachments.MULTIBLOCK_MINING_TOGGLED);
-        Keybind.TOGGLE_MULTIBLOCK_MINING.consumeClick();
-        data.enabled = !data.enabled;
-        PacketDistributor.sendToServer(new SyncMultiblockMiningEnabled(data.enabled));
-        player.displayClientMessage(Component.translatable(data.enabled ? MULTIBLOCK_MINING_ENABLED : MULTIBLOCK_MINING_DISABLED), true);
+        PacketDistributor.sendToServer(new SyncMultiMining(handler.multiMining));
+        Keybind.TOGGLE_MULTI_MINING.consumeClick();
     }
 }

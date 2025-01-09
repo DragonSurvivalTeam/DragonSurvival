@@ -453,7 +453,7 @@ public class ClientDragonRenderer {
             Input input = player.input;
             MovementData movement = MovementData.getData(player);
             movement.setFirstPerson(Minecraft.getInstance().options.getCameraType().isFirstPerson());
-            movement.setFreeLook(Keybind.FREE_LOOK.isDown());
+            movement.setFreeLook(Keybind.FREE_LOOK.consumeClick());
             movement.setDesiredMoveVec(new Vec2(input.leftImpulse, input.forwardImpulse));
             if (player.isPassenger()) {
                 // Prevent animation jank while we are riding an entity

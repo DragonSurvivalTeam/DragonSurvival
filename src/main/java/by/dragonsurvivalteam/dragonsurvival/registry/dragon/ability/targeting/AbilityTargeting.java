@@ -42,11 +42,11 @@ public interface AbilityTargeting {
     Codec<AbilityTargeting> CODEC = REGISTRY.byNameCodec().dispatch("target_type", AbilityTargeting::codec, Function.identity());
 
     enum EntityTargetingMode {
-        @Translation(type = Translation.Type.ENUM, comments = "all entities")
+        @Translation(comments = "all entities")
         TARGET_ALL,
-        @Translation(type = Translation.Type.ENUM, comments = "enemies")
+        @Translation(comments = "enemies")
         TARGET_ENEMIES,
-        @Translation(type = Translation.Type.ENUM, comments = "allies")
+        @Translation(comments = "allies")
         TARGET_ALLIES;
 
         public Component translation() {

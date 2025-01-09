@@ -4,7 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.DragonEditorScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.ScrollableComponent;
-import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.EnumSkinLayer;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.SkinLayer;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DefaultPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
 import com.mojang.datafixers.util.Pair;
@@ -24,10 +24,10 @@ public class EditorPartComponent implements ScrollableComponent {
     private final HoverButton partButton;
     private final ColorSelectorButton colorSelectorButton;
 
-    private final EnumSkinLayer skinLayer;
+    private final SkinLayer skinLayer;
     private String selectedPart;
 
-    public EditorPartComponent(final DragonEditorScreen screen, int xPos, int yPos, final String partKey, final EnumSkinLayer skinLayer, boolean isLeft, boolean isTop) {
+    public EditorPartComponent(final DragonEditorScreen screen, int xPos, int yPos, final String partKey, final SkinLayer skinLayer, boolean isLeft, boolean isTop) {
         this.screen = screen;
         this.selectedPart = partKey;
         this.skinLayer = skinLayer;
@@ -35,7 +35,7 @@ public class EditorPartComponent implements ScrollableComponent {
         partButton = new HoverButton(xPos, yPos, 110, 19, 149, 22, DROPDOWN_BUTTON_BACKGROUND, DROPDOWN_BUTTON_BACKGROUND, button -> { /* Nothing to do*/ }){
             @Override
             public boolean isValidClickButton(int button) {
-                return button == 1 && skinLayer != EnumSkinLayer.BASE;
+                return button == 1 && skinLayer != SkinLayer.BASE;
             }
 
             @Override
@@ -55,7 +55,7 @@ public class EditorPartComponent implements ScrollableComponent {
                 setSelectedPartInternal(partsFromLayer.getLast());
             } else {
                 if (currentPart - 1 < 0) {
-                    if (skinLayer != EnumSkinLayer.BASE) {
+                    if (skinLayer != SkinLayer.BASE) {
                         setSelectedPartInternal(DefaultPartLoader.NO_PART);
                     } else {
                         setSelectedPartInternal(partsFromLayer.getLast());
@@ -75,7 +75,7 @@ public class EditorPartComponent implements ScrollableComponent {
                 setSelectedPartInternal(partsFromLayer.getFirst());
             } else {
                 if (currentPart + 1 >= partsFromLayer.size()) {
-                    if (skinLayer != EnumSkinLayer.BASE) {
+                    if (skinLayer != SkinLayer.BASE) {
                         setSelectedPartInternal(DefaultPartLoader.NO_PART);
                     } else {
                         setSelectedPartInternal(partsFromLayer.getFirst());

@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.bu
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.DragonEditorScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.DragonEditorHandler;
-import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.EnumSkinLayer;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.SkinLayer;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DefaultPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonPart;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.LayerSettings;
@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 public class ColorSelectorButton extends ExtendedButton {
-    public final EnumSkinLayer layer;
+    public final SkinLayer layer;
 
     private final DragonEditorScreen screen;
     private HueSelectorComponent hueComponent;
@@ -33,7 +33,7 @@ public class ColorSelectorButton extends ExtendedButton {
     private static final ResourceLocation BUTTON_HUE_UNCHANGED = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/hue_unchanged.png");
     private static final ResourceLocation BUTTON_HUE_CHANGED = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/hue_changed.png");
 
-    public ColorSelectorButton(DragonEditorScreen screen, EnumSkinLayer layer, int x, int y, int xSize, int ySize, boolean opensRight, boolean opensUp) {
+    public ColorSelectorButton(DragonEditorScreen screen, SkinLayer layer, int x, int y, int xSize, int ySize, boolean opensRight, boolean opensUp) {
         super(x, y, xSize, ySize, Component.empty(), action -> { /* Nothing to do */ });
         this.xSize = xSize;
         this.ySize = ySize;

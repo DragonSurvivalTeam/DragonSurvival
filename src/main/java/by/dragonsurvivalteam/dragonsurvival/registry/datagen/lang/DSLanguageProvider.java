@@ -39,15 +39,21 @@ public class DSLanguageProvider extends LanguageProvider {
     }
 
     public static Component enumClass(final Enum<?> enumValue) {
-        return Component.translatable(Translation.Type.ENUM.wrap(enumClassKey(enumValue)));
-    }
-
-    private static String enumClassKey(final Enum<?> enumValue) {
-        return enumValue.getClass().getSimpleName().replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase(Locale.ENGLISH);
+        return Component.translatable(enumClassKey(enumValue));
     }
 
     public static Component enumValue(final Enum<?> enumValue) {
-        return Component.translatable(Translation.Type.ENUM.wrap(enumClassKey(enumValue) + "." + enumValue.toString().toLowerCase(Locale.ENGLISH)));
+        return Component.translatable(enumClassKey(enumValue) + "." + enumValue.toString().toLowerCase(Locale.ENGLISH));
+    }
+
+    /** See {@link DSLanguageProvider#enumClassKey(Class)} */
+    private static String enumClassKey(final Enum<?> enumValue) {
+        return enumClassKey(enumValue.getClass());
+    }
+
+    /** Replace 'SomeDefinedClass' with 'enum.some_defined_class' for the translation key */
+    private static String enumClassKey(final Class<?> classType) {
+        return "enum." + classType.getSimpleName().replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase(Locale.ENGLISH);
     }
 
     @Override
@@ -150,9 +156,10 @@ public class DSLanguageProvider extends LanguageProvider {
                     if (field.getType().isEnum()) {
                         Enum<?> value = (Enum<?>) field.get(null);
 
-                        if (type == Translation.Type.ENUM) {
-                            add(type.wrap(enumClassKey(value) + "." + value.toString().toLowerCase(Locale.ENGLISH)), format(comments));
+                        if (type == Translation.Type.NONE) {
+                            add(enumClassKey(value) + "." + value.toString().toLowerCase(Locale.ENGLISH), format(comments));
                         } else {
+                            // If special handling is needed (e.g. keybind)
                             add(type.wrap(value.toString().toLowerCase(Locale.ENGLISH)), format(comments));
                         }
 
@@ -168,8 +175,7 @@ public class DSLanguageProvider extends LanguageProvider {
                     Class<?> classType = Class.forName(annotationData.memberName());
 
                     if (classType.isEnum()) {
-                        // Replace 'SomeDefinedClass' with 'some_defined_class' for the translation key
-                        add(type.wrap(classType.getSimpleName().replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase(Locale.ENGLISH)), format(comments));
+                        add(enumClassKey(classType), format(comments));
                         continue;
                     }
                 } catch (ReflectiveOperationException exception) {

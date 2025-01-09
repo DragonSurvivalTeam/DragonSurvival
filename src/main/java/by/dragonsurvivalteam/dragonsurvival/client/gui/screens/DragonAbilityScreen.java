@@ -203,7 +203,7 @@ public class DragonAbilityScreen extends Screen {
         int startY = guiTop + 2;
 
         //Inventory
-        TabButton.addTabButtonsToScreen(this, startX + 17, startY - 56, TabButton.Type.ABILITY_TAB);
+        TabButton.addTabButtonsToScreen(this, startX + 17, startY - 56, TabButton.TabButtonType.ABILITY_TAB);
 
         //noinspection DataFlowIssue -> player is present
         MagicData data = MagicData.getData(minecraft.player);

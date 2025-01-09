@@ -147,7 +147,7 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
         clawsMenu = clawInventory.isMenuOpen();
         PacketDistributor.sendToServer(new SyncDragonClawsMenuToggle.Data(clawsMenu));
 
-        TabButton.addTabButtonsToScreen(this, leftPos + 5, topPos - 26, TabButton.Type.INVENTORY_TAB);
+        TabButton.addTabButtonsToScreen(this, leftPos + 5, topPos - 26, TabButton.TabButtonType.INVENTORY_TAB);
 
         ClickHoverButton clawMenuArrow = new ClickHoverButton(leftPos - 8, topPos + 73, 10, 18, 0, 0, 18, 18, Component.empty(), button -> {
             clawsMenu = !clawsMenu;
@@ -264,7 +264,7 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         InputConstants.Key mouseKey = InputConstants.getKey(keyCode, scanCode);
 
-        if (Keybind.OPEN_DRAGON_INVENTORY.get().isActiveAndMatches(mouseKey)) {
+        if (Keybind.DRAGON_INVENTORY.get().isActiveAndMatches(mouseKey)) {
             onClose();
             return true;
         }

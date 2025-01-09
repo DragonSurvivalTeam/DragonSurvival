@@ -58,7 +58,7 @@ public class DragonPenalties {
 
     @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
             "■ The predatory plants in your body dislike §dDarkness§r. If the light level around you is lower than 4, you may receive the §c«Stress»§r effect, rapidly draining your food gauge.\n",
-            "■ The skill §2«Light the Dark»§r§f and effect §2«Forest Magic»§r §7could make your life easier.",
+            "■ The skill §2«Light the Dark» §7and effect §2«Forest Magic» §7could make your life easier.",
     })
     @Translation(type = Translation.Type.PENALTY, comments = "Fear of Darkness")
     public static final ResourceKey<DragonPenalty> FEAR_OF_DARKNESS = DragonPenalties.key("fear_of_darkness");

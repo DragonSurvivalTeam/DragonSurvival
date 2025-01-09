@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.GrowthItem;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncGrowthState;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
@@ -61,7 +61,7 @@ public class DragonGrowthHandler {
     public static double getGrowth(final Holder<DragonStage> dragonStage, final Item item) {
         int growth = 0;
 
-        for (MiscCodecs.GrowthItem growthItem : dragonStage.value().growthItems()) {
+        for (GrowthItem growthItem : dragonStage.value().growthItems()) {
             // Select the largest number (independent on positive / negative)
             if ((growth == 0 || Math.abs(growthItem.growthInTicks()) > Math.abs(growth)) && growthItem.items().contains(item.builtInRegistryHolder())) {
                 growth = growthItem.growthInTicks();

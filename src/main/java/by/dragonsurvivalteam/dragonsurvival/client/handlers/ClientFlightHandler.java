@@ -22,6 +22,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.EnchantmentUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.TickedCooldown;
 import com.mojang.blaze3d.platform.Window;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.Input;
@@ -43,10 +44,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.CalculateDetachedCameraDistanceEvent;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
-import net.neoforged.neoforge.client.event.ViewportEvent;
+import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -449,42 +447,64 @@ public class ClientFlightHandler {
         }
     }
 
-    /// endregion
-
     @SubscribeEvent
-    public static void onClientTick(ClientTickEvent.Post event) {
-        Minecraft minecraft = Minecraft.getInstance();
-        LocalPlayer player = minecraft.player;
-        if (player == null) return;
+    public static void toggleWings(final InputEvent.Key event) {
+        Pair<Player, DragonStateHandler> data = KeyHandler.checkAndGet(event, Keybind.TOGGLE_FLIGHT, true);
 
-        DragonStateHandler handler = DragonStateProvider.getData(player);
-        if (!handler.isDragon()) return; // handler should never be null
-
-        FlightData data = FlightData.getData(player);
-        while (Keybind.TOGGLE_FLIGHT.consumeClick()) {
-            toggleWingsManual(player, data);
+        if (data == null) {
+            return;
         }
 
-        jumpFlyCooldown.tick();
-        boolean isJumping = minecraft.options.keyJump.isDown();
-        if (isJumping && !lastJumpInputState) {
-            // Cooldown already running - was a double jump
-            if (!jumpFlyCooldown.trySet()) {
-                tryJumpToFly(player, data);
-            }
-        }
-        lastJumpInputState = isJumping;
-
-        while (Keybind.SPIN_ABILITY.consumeClick()) {
-            doSpin(player);
-        }
+        toggleWingsManual(data.getFirst());
     }
 
-    private static void doSpin(LocalPlayer player) {
-        if (ServerFlightHandler.isSpin(player)) return;
+    @SubscribeEvent
+    public static void triggerSpin(final InputEvent.Key event) {
+        Pair<Player, DragonStateHandler> data = KeyHandler.checkAndGet(event, Keybind.SPIN_ABILITY, true);
+
+        if (data == null) {
+            return;
+        }
+
+        doSpin(data.getFirst());
+    }
+
+    @SubscribeEvent
+    public static void onClientTick(final ClientTickEvent.Post event) {
+        LocalPlayer player = Minecraft.getInstance().player;
+
+        if (player == null) {
+            return;
+        }
+
+        DragonStateHandler handler = DragonStateProvider.getData(player);
+
+        if (!handler.isDragon()) {
+            return;
+        }
+
+        FlightData data = FlightData.getData(player);
+
+        jumpFlyCooldown.tick();
+        boolean isJumping = Minecraft.getInstance().options.keyJump.isDown();
+
+        if (isJumping && !lastJumpInputState && /* Check for double jump */ !jumpFlyCooldown.trySet()) {
+            tryJumpToFly(player, data);
+        }
+
+        lastJumpInputState = isJumping;
+    }
+
+    private static void doSpin(final Player player) {
+        if (ServerFlightHandler.isSpin(player)) {
+            return;
+        }
+
         FlightData spin = FlightData.getData(player);
-        if (spin.cooldown > 0) return;
-        if (!spin.hasSpin) return;
+
+        if (!spin.hasSpin || spin.cooldown > 0) {
+            return;
+        }
 
         if (ServerFlightHandler.isFlying(player) || ServerFlightHandler.canSwimSpin(player)) {
             spin.duration = ServerFlightHandler.SPIN_DURATION;
@@ -506,16 +526,11 @@ public class ClientFlightHandler {
         }
     }
 
-    /**
-     * Enables or disables wings. Sends error messages if unsuccessful.
-     *
-     * @param player  Target player.
-     * @param data The player's flight data. Redundant, used for caching. Expected to be the handler of the player.
-     * @return True if wings were toggled successfully
-     */
     @SuppressWarnings({"DuplicateBranchesInSwitch", "UnusedReturnValue"})
-    private static boolean toggleWingsManual(LocalPlayer player, FlightData data) {
-        WingsToggleResult result = data.isWingsSpread() ? disableWings(player, data) : enableWings(player, data);
+    private static boolean toggleWingsManual(final Player player) {
+        FlightData flight = FlightData.getData(player);
+        WingsToggleResult result = flight.isWingsSpread() ? disableWings(player, flight) : enableWings(player, flight);
+
         switch (result) {
             case SUCCESS_ENABLED, SUCCESS_DISABLED -> {
                 return true;
@@ -549,15 +564,11 @@ public class ClientFlightHandler {
     }
 
     /**
-     * Tries to enable wings. Returns the result of the attempt.
-     * <br/>
-     * Requires the player to have flight, and either be in creative, or have enough food.
-     * Won't trigger if wings are already enabled.
-     * <br/>
+     * Tries to enable wings. Returns the result of the attempt. <br>
+     * Requires the player to have flight, and either be in creative, or have enough food. <br>
+     * Won't trigger if wings are already enabled. <br>
      * Does not send error messages - use the return value to handle that.
      *
-     * @param player  Target player.
-     * @param data The player's flight data. Redundant, used for caching. Expected to be the data of the player.
      * @return Result of the attempt. One of:
      * <ul>
      *     <li>{@link WingsToggleResult#NO_WINGS NO_WINGS}</li>
@@ -567,7 +578,7 @@ public class ClientFlightHandler {
      *     <li>{@link WingsToggleResult#SUCCESS_ENABLED SUCCESS_ENABLED}</li>
      * </ul>
      */
-    private static WingsToggleResult enableWings(LocalPlayer player, FlightData data) {
+    private static WingsToggleResult enableWings(final Player player, final FlightData data) {
         if (!data.hasFlight()) {
             // Could technically trigger if the player somehow has wings spread but has no flight
             return WingsToggleResult.NO_WINGS;
@@ -588,14 +599,10 @@ public class ClientFlightHandler {
     }
 
     /**
-     * Disables wings. Works every time if the player has flight.
-     * <br/>
-     * Won't trigger if wings are already disabled.
-     * <br/>
+     * Disables wings. Works every time if the player has flight. <br>
+     * Won't trigger if wings are already disabled. <br>
      * Does not send error messages - use the return value to handle that.
      *
-     * @param player  Target player.
-     * @param data The player's flight data. Redundant, used for caching. Expected to be the handler of the player.
      * @return Result of the attempt. One of:
      * <ul>
      *     <li>{@link WingsToggleResult#NO_WINGS NO_WINGS}</li>
@@ -603,7 +610,7 @@ public class ClientFlightHandler {
      *     <li>{@link WingsToggleResult#SUCCESS_DISABLED SUCCESS_DISABLED}</li>
      * </ul>
      */
-    private static WingsToggleResult disableWings(LocalPlayer player, FlightData data) {
+    private static WingsToggleResult disableWings(final Player player, final FlightData data) {
         if (!data.hasFlight()) {
             // Could technically trigger if the player somehow has wings spread but has no flight
             return WingsToggleResult.NO_WINGS;
@@ -617,12 +624,9 @@ public class ClientFlightHandler {
     }
 
     /**
-     * Checks the conditions for jumping to start flight, and tries to enable wings if successful.
-     * <br/>
+     * Checks the conditions for jumping to start flight, and tries to enable wings if successful. <br>
      * Handles error messages.
      *
-     * @param player  The player to check.
-     * @param data The player's flight data. Redundant, used for caching. Expected to be the data of the player.
      * @return True if wings were enabled.
      */
     @SuppressWarnings("UnusedReturnValue")

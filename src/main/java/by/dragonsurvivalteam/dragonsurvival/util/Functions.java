@@ -295,6 +295,15 @@ public class Functions {
         }
     }
 
+    /** Makes sure to return an enum value (instead of an exception) */
+    public static <T extends Enum<T>> T getEnum(final Class<T> type, final String name) {
+        try {
+            return Enum.valueOf(type, name);
+        } catch (NullPointerException | IllegalArgumentException ignored) {
+            return type.getEnumConstants()[0];
+        }
+    }
+
     public static <T extends Enum<T>> T cycleEnum(final T type) {
         int ordinal = type.ordinal();
 

@@ -30,4 +30,8 @@ public class BlockPosHelper {
     public static Iterable<BlockPos> betweenClosed(final AABB aabb) {
         return BlockPos.betweenClosed(Mth.floor(aabb.minX), Mth.floor(aabb.minY), Mth.floor(aabb.minZ), Mth.floor(aabb.maxX), Mth.floor(aabb.maxY), Mth.floor(aabb.maxZ));
     }
+
+    public static Iterable<BlockPos> betweenClosedCeil(final AABB aabb) {
+        return BlockPos.betweenClosed(Mth.ceil(aabb.minX), Mth.ceil(aabb.minY), Mth.ceil(aabb.minZ), Mth.ceil(aabb.maxX), Mth.ceil(aabb.maxY), Mth.ceil(aabb.maxZ));
+    }
 }

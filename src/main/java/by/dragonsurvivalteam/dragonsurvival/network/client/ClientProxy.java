@@ -239,20 +239,6 @@ public class ClientProxy {
         }
     }
 
-    public static void handleSyncDestructionEnabled(final SyncDestructionEnabled.Data message) {
-        Player localPlayer = Minecraft.getInstance().player;
-
-        if (localPlayer != null) {
-            Entity entity = localPlayer.level().getEntity(message.playerId());
-
-            if (entity instanceof Player player) {
-                DragonStateProvider.getOptional(player).ifPresent(handler -> {
-                    handler.setDestructionEnabled(message.destructionEnabled());
-                });
-            }
-        }
-    }
-
     public static void handlePlayerJumpSync(final SyncPlayerJump.Data message) {
         Entity entity = Minecraft.getInstance().level.getEntity(message.playerId());
 
