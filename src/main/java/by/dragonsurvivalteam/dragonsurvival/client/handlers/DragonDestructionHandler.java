@@ -6,7 +6,10 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.input.Keybind;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.LevelRendererAccess;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDestructionEnabled;
+import by.dragonsurvivalteam.dragonsurvival.network.status.SyncMultiblockMiningEnabled;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MultiblockMiningToggled;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
@@ -31,6 +34,7 @@ import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.checkerframework.checker.units.qual.C;
 import org.joml.Matrix4f;
 
 import java.util.SortedSet;
@@ -44,6 +48,12 @@ public class DragonDestructionHandler {
     @Translation(comments = "Destruction mode disabled")
     private static final String DISABLED = Translation.Type.GUI.wrap("destruction.disabled");
 
+    @Translation(comments = "Multiblock mining enabled")
+    private static final String MULTIBLOCK_MINING_ENABLED = Translation.Type.GUI.wrap("multiblock_mining.enabled");
+
+    @Translation(comments = "Multiblock mining disabled")
+    private static final String MULTIBLOCK_MINING_DISABLED = Translation.Type.GUI.wrap("multiblock_mining.disabled");
+
     /** Currently this is only tracked for the local player */
     public static BlockPos centerOfDestruction = BlockPos.ZERO;
 
@@ -56,9 +66,9 @@ public class DragonDestructionHandler {
     public static void renderAdditionalBreakProgress(final RenderLevelStageEvent event) {
         if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) {
             LocalPlayer player = Minecraft.getInstance().player;
-            double radius = player.getAttributeValue(DSAttributes.BLOCK_BREAK_RADIUS);
+            int radius = (int)player.getAttributeValue(DSAttributes.BLOCK_BREAK_RADIUS);
 
-            if (radius <= 0 || player.isCrouching()) {
+            if (radius < 1 || player.isCrouching() || !player.getData(DSDataAttachments.MULTIBLOCK_MINING_TOGGLED).enabled) {
                 return;
             }
 
@@ -120,5 +130,28 @@ public class DragonDestructionHandler {
         data.setDestructionEnabled(!data.getDestructionEnabled());
         PacketDistributor.sendToServer(new SyncDestructionEnabled.Data(player.getId(), data.getDestructionEnabled()));
         player.displayClientMessage(Component.translatable(data.getDestructionEnabled() ? ENABLED : DISABLED), true);
+    }
+
+    @SubscribeEvent
+    public static void toggleMultiblockMining(final InputEvent.Key event) {
+        if (Minecraft.getInstance().screen != null || event.getAction() != Keybind.KEY_PRESSED || !Keybind.TOGGLE_MULTIBLOCK_MINING.isKey(event.getKey())) {
+            return;
+        }
+
+        Player player = Minecraft.getInstance().player;
+
+        if (player == null) {
+            return;
+        }
+
+        if (player.getAttributeValue(DSAttributes.BLOCK_BREAK_RADIUS) < 1) {
+            return;
+        }
+
+        MultiblockMiningToggled data = player.getData(DSDataAttachments.MULTIBLOCK_MINING_TOGGLED);
+        Keybind.TOGGLE_MULTIBLOCK_MINING.consumeClick();
+        data.enabled = !data.enabled;
+        PacketDistributor.sendToServer(new SyncMultiblockMiningEnabled(data.enabled));
+        player.displayClientMessage(Component.translatable(data.enabled ? MULTIBLOCK_MINING_ENABLED : MULTIBLOCK_MINING_DISABLED), true);
     }
 }

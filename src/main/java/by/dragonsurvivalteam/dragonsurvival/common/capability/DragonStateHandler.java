@@ -87,6 +87,7 @@ public class DragonStateHandler extends EntityStateHandler {
     private double desiredSize = NO_SIZE;
 
     private boolean destructionEnabled;
+    private boolean multiblockEnabled;
 
     public Pose previousPose;
 

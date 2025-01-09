@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBlockTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import net.minecraft.core.BlockPos;
@@ -98,13 +99,13 @@ public class DragonDestructionHandler {
 
     @SubscribeEvent
     public static void destroyBlocksInRadius(BlockEvent.BreakEvent event) {
-        if (!(event.getPlayer() instanceof ServerPlayer player) || player.isCrouching()) {
+        if (!(event.getPlayer() instanceof ServerPlayer player) || player.isCrouching() || !player.getData(DSDataAttachments.MULTIBLOCK_MINING_TOGGLED).enabled) {
             return;
         }
 
-        double radius = event.getPlayer().getAttributeValue(DSAttributes.BLOCK_BREAK_RADIUS);
+        int radius = (int)event.getPlayer().getAttributeValue(DSAttributes.BLOCK_BREAK_RADIUS);
 
-        if (isBreakingMultipleBlocks || radius <= 0) {
+        if (isBreakingMultipleBlocks || radius < 1) {
             return;
         }
 

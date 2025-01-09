@@ -62,6 +62,7 @@ public class NetworkHandler {
         registrar.playToClient(RequestOpenDragonEditor.Data.TYPE, RequestOpenDragonEditor.Data.STREAM_CODEC, RequestOpenDragonEditor::handleClient);
         registrar.playBidirectional(SyncResting.TYPE, SyncResting.STREAM_CODEC, SyncResting::handleClient);
         registrar.playToClient(SyncEnderDragonMark.TYPE, SyncEnderDragonMark.STREAM_CODEC, SyncEnderDragonMark::handleClient);
+        registrar.playToServer(SyncMultiblockMiningEnabled.TYPE, SyncMultiblockMiningEnabled.STREAM_CODEC, SyncMultiblockMiningEnabled::handleServer);
 
         // Flight
         registrar.playBidirectional(SyncWingsSpread.Data.TYPE, SyncWingsSpread.Data.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncWingsSpread::handleClient, SyncWingsSpread::handleServer));

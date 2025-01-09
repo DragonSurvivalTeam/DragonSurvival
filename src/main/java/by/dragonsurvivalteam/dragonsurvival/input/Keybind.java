@@ -54,6 +54,9 @@ public enum Keybind {
     @Translation(type = Translation.Type.KEYBIND, comments = "Toggle large dragon destruction")
     TOGGLE_DESTRUCTION(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_RIGHT_ALT),
 
+    @Translation(type = Translation.Type.KEYBIND, comments = "Toggle large dragon multiblock mining")
+    TOGGLE_MULTIBLOCK_MINING(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_RIGHT_BRACKET),
+
     @Translation(type = Translation.Type.KEYBIND, comments = "Open dragon inventory")
     OPEN_DRAGON_INVENTORY(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_UNKNOWN),
 
