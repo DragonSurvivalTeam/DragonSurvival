@@ -113,6 +113,12 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
         data.isInAltar = false;
 
         if (!data.hasUsedAltar) {
+            // In case the altar was closed without making a choice
+            // But the player is already somehow a dragon
+            data.hasUsedAltar = DragonStateProvider.isDragon(player);
+        }
+
+        if (!data.hasUsedAltar) {
             player.displayClientMessage(Component.translatable(NO_CHOICE), false);
         }
     }

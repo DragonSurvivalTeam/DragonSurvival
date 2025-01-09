@@ -1077,7 +1077,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             altarData.hasUsedAltar = true;
             altarData.isInAltar = false;
 
-            PacketDistributor.sendToServer(new SyncAltarCooldown.Data(minecraft.player.getId(), altarData.altarCooldown));
+            PacketDistributor.sendToServer(new SyncAltarCooldown(altarData.altarCooldown));
             PacketDistributor.sendToServer(new SyncComplete.Data(minecraft.player.getId(), data.serializeNBT(minecraft.player.registryAccess())));
         } else {
             data.setCurrentSkinPreset(preset);

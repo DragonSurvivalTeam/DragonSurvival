@@ -63,24 +63,24 @@ public class DragonAltarBlock extends Block {
     }
 
     @Override
-    public @NotNull InteractionResult useWithoutItem(@NotNull BlockState pState, @NotNull Level pLevel, @NotNull BlockPos pPos, @NotNull Player player, @NotNull BlockHitResult pHitResult) {
+    public @NotNull InteractionResult useWithoutItem(@NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final BlockHitResult hitResult) {
         AltarData data = AltarData.getData(player);
 
-        if (!pLevel.isClientSide()) {
-            if (ServerConfig.altarUsageCooldown > 0 && data.altarCooldown > 0) {
-                Functions.Time time = Functions.Time.fromTicks(data.altarCooldown);
-                player.sendSystemMessage(Component.translatable(ALTAR_COOLDOWN, time.format()));
-                return InteractionResult.FAIL;
-            } else {
-                PacketDistributor.sendToPlayer((ServerPlayer) player, OpenDragonAltar.INSTANCE);
-                data.altarCooldown = Functions.secondsToTicks(ServerConfig.altarUsageCooldown);
-                data.hasUsedAltar = true;
-                data.isInAltar = true;
-                return InteractionResult.CONSUME;
-            }
-        }
+        if (ServerConfig.altarUsageCooldown > 0 && data.altarCooldown > 0) {
+            Functions.Time time = Functions.Time.fromTicks(data.altarCooldown);
+            player.sendSystemMessage(Component.translatable(ALTAR_COOLDOWN, time.format()));
+            return InteractionResult.FAIL;
+        } else {
+            data.altarCooldown = Functions.secondsToTicks(ServerConfig.altarUsageCooldown);
+            data.hasUsedAltar = true;
+            data.isInAltar = true;
 
-        return InteractionResult.SUCCESS;
+            if (player instanceof ServerPlayer serverPlayer) {
+                PacketDistributor.sendToPlayer(serverPlayer, OpenDragonAltar.INSTANCE);
+            }
+
+            return InteractionResult.sidedSuccess(level.isClientSide());
+        }
     }
 
     @Override

@@ -258,21 +258,6 @@ public class ClientProxy {
         }
     }
 
-    public static void handleSyncAltarCooldown(final SyncAltarCooldown.Data message) {
-        Player localPlayer = Minecraft.getInstance().player;
-
-        if (localPlayer != null) {
-            Entity entity = localPlayer.level().getEntity(message.playerId());
-
-            if (entity instanceof Player player) {
-                AltarData data = AltarData.getData(player);
-                data.altarCooldown = message.cooldown();
-                data.hasUsedAltar = true;
-                data.isInAltar = false;
-            }
-        }
-    }
-
     public static void handleSyncParticleTrail(SyncParticleTrail message) {
             // Creates a trail of particles between the entity and target(s)
             Vec3 source = new Vec3(message.source().x(), message.source().y(), message.source().z());
