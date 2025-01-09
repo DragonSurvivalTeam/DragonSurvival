@@ -970,6 +970,7 @@
   "dragonsurvival.gui.message.star_heart_active": "Star heart state is §2active§r",
   "dragonsurvival.gui.message.star_heart_inactive": "Star heart state is §cinactive§r",
   "dragonsurvival.gui.message.target_too_small": "The dragon you are riding is too young. To ride a dragon as a human, the dragon must be an adult.",
+  "dragonsurvival.gui.penalty.damage_modification.name": "Damage Modification Penalty",
   "dragonsurvival.gui.penalty.supply_trigger": " after %s seconds",
   "dragonsurvival.gui.penalty.supply_trigger.constant": " on every game tick",
   "dragonsurvival.gui.primordial_anchor.flight_grant_gained": "The ender dragon has blessed you with the ability to spin through the air.",
