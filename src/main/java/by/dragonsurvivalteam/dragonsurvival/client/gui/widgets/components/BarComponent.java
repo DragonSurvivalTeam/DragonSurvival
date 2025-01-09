@@ -36,9 +36,9 @@ public class BarComponent implements ScrollableComponent {
         if (widgets.size() > 3) {
             int oddOffset = widgets.size() % 2 == 0 ? 0 : 1;
             centerIndex = widgets.size() / 2 - 1 + oddOffset;
-        } else if (widgets.size() == 3) {
+        } else if (widgets.size() >= 2) {
             centerIndex = 1;
-        } else if (widgets.size() > 1) {
+        } else {
             centerIndex = 0;
         }
 

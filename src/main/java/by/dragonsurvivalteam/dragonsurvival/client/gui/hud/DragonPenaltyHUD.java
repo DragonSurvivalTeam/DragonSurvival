@@ -54,7 +54,7 @@ public class DragonPenaltyHUD {
                     for (int i = 0; i < 10; ++i) {
                         // See renderFood for more info
                         int offset = 0;
-                        if (player.tickCount % (foodLevel * 3 + 1) == 0) {
+                        if (player.tickCount % (foodLevel * 3 + 1) == 0 && supplyPercentage < 1) {
                             offset = player.level().random.nextInt(3) - 1;
                         }
 
