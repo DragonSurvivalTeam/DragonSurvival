@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record SyncAddPenaltySupply(ResourceLocation id, float maximumSupply, float reductionRateMultiplier, float regenerationRate) implements CustomPacketPayload {
+public record SyncAddPenaltySupply(ResourceLocation id, float maximumSupply, float reductionRateMultiplier, float regenerationRate, float currentSupply) implements CustomPacketPayload {
     public static final Type<SyncAddPenaltySupply> TYPE = new CustomPacketPayload.Type<>(DragonSurvival.res("sync_add_penalty_supply"));
 
     public static final StreamCodec<FriendlyByteBuf, SyncAddPenaltySupply> STREAM_CODEC = StreamCodec.composite(
@@ -19,13 +19,14 @@ public record SyncAddPenaltySupply(ResourceLocation id, float maximumSupply, flo
         ByteBufCodecs.FLOAT, SyncAddPenaltySupply::maximumSupply,
         ByteBufCodecs.FLOAT, SyncAddPenaltySupply::reductionRateMultiplier,
         ByteBufCodecs.FLOAT, SyncAddPenaltySupply::regenerationRate,
+        ByteBufCodecs.FLOAT, SyncAddPenaltySupply::currentSupply,
         SyncAddPenaltySupply::new
     );
 
     public static void handleClient(final SyncAddPenaltySupply packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
             PenaltySupply penaltySupply = context.player().getData(DSDataAttachments.PENALTY_SUPPLY);
-            penaltySupply.initialize(packet.id(), packet.maximumSupply(), packet.reductionRateMultiplier(), packet.regenerationRate());
+            penaltySupply.initialize(packet.id(), packet.maximumSupply(), packet.reductionRateMultiplier(), packet.regenerationRate(), packet.currentSupply());
         });
     }
 

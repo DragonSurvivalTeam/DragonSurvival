@@ -58,6 +58,16 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
         return (data.getSupply() / data.getMaximumSupply());
     }
 
+    public float getRawSupply(final ResourceLocation supplyType) {
+        Data data = supplyData.get(supplyType);
+
+        if (data == null) {
+            return 0;
+        }
+
+        return data.getSupply();
+    }
+
     public int getMaxSupply(final ResourceLocation supplyType) {
         Data data = supplyData.get(supplyType);
 
@@ -105,8 +115,8 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
         return Optional.empty();
     }
 
-    public void initialize(final ResourceLocation supplyType, float maximumSupply, float reductionRate, float regenerationRate) {
-        supplyData.put(supplyType, new Data(maximumSupply, maximumSupply, reductionRate, regenerationRate));
+    public void initialize(final ResourceLocation supplyType, float maximumSupply, float reductionRate, float regenerationRate, float currentSupply) {
+        supplyData.put(supplyType, new Data(maximumSupply, Math.min(currentSupply, maximumSupply), reductionRate, regenerationRate));
     }
 
     public void sync(final ServerPlayer player) {
