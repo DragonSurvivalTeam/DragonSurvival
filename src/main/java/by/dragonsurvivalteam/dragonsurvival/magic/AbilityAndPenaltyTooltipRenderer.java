@@ -208,6 +208,6 @@ public class AbilityAndPenaltyTooltipRenderer {
 
         List<FormattedCharSequence> formattedDescription = Minecraft.getInstance().font.split(description, 150 - 7);
         Component name = Component.translatable(Translation.Type.PENALTY.wrap(penalty.getKey().location()));
-        drawTooltip(guiGraphics, x, y, components, formattedDescription, colorXPos, colorYPos, LangKey.PENALTY, name, Color.ofRGB(145, 46, 46), -1, -1, penalty.value().icon(), 0);
+        drawTooltip(guiGraphics, x, y, components, formattedDescription, colorXPos, colorYPos, LangKey.PENALTY, name, Color.ofRGB(145, 46, 46), -1, -1, penalty.value().icon().get(), 0);
     }
 }

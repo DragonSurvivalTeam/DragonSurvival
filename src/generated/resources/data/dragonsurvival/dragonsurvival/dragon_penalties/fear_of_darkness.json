@@ -44,7 +44,7 @@
     "effects": "dragonsurvival:stress",
     "penalty_type": "dragonsurvival:mob_effect"
   },
-  "icon": "dragonsurvival:abilities/cave/fear_of_darkness",
+  "icon": "dragonsurvival:abilities/forest/fear_of_darkness",
   "trigger": {
     "penalty_trigger": "dragonsurvival:supply",
     "recovery_items": [],

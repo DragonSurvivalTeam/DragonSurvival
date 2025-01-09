@@ -365,6 +365,8 @@
     "dragonsurvival:snow_and_rain_weakness",
     "dragonsurvival:water_weakness",
     "dragonsurvival:item_blacklist",
-    "dragonsurvival:test_item_used"
+    "dragonsurvival:water_potion_weakness",
+    "dragonsurvival:snowball_weakness",
+    "dragonsurvival:water_splash_potion_weakness"
   ]
 }

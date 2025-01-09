@@ -19,6 +19,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.storage.loot.predicates.AnyOfCondition;
@@ -62,11 +63,13 @@ public class DragonPenalties {
     @Translation(type = Translation.Type.PENALTY, comments = "Fear of Darkness")
     public static final ResourceKey<DragonPenalty> FEAR_OF_DARKNESS = DragonPenalties.key("fear_of_darkness");
 
-    public static final ResourceKey<DragonPenalty> TEST_ITEM_USED = DragonPenalties.key("test_item_used");
+    public static final ResourceKey<DragonPenalty> WATER_POTION_WEAKNESS = DragonPenalties.key("water_potion_weakness");
+    public static final ResourceKey<DragonPenalty> WATER_SPLASH_POTION_WEAKNESS = DragonPenalties.key("water_splash_potion_weakness");
+    public static final ResourceKey<DragonPenalty> SNOWBALL_WEAKNESS = DragonPenalties.key("snowball_weakness");
 
     public static void registerPenalties(final BootstrapContext<DragonPenalty> context) {
         context.register(SNOW_AND_RAIN_WEAKNESS, new DragonPenalty(
-                DragonSurvival.res("abilities/cave/snow_and_rain_weakness"),
+                Optional.of(DragonSurvival.res("abilities/cave/snow_and_rain_weakness")),
                 // Enable when in rain or on (or within) said block tag (except when affected by the 'FIRE' effect)
                 Optional.of(AnyOfCondition.anyOf(
                         Condition.thisEntity(EntityCondition.isInRain()),
@@ -78,7 +81,7 @@ public class DragonPenalties {
         ));
 
         context.register(WATER_WEAKNESS, new DragonPenalty(
-                DragonSurvival.res("abilities/cave/water_weakness"),
+                Optional.of(DragonSurvival.res("abilities/cave/water_weakness")),
                 // Enable when water (except when affected by the 'FIRE' effect)
                 Optional.of(Condition.thisEntity(EntityCondition.isInFluid(context.lookup(Registries.FLUID).getOrThrow(FluidTags.WATER)))
                         .and(Condition.thisEntity(EntityCondition.hasEffect(DSEffects.FIRE)).invert()).build()),
@@ -87,7 +90,7 @@ public class DragonPenalties {
         ));
 
         context.register(THIN_SKIN, new DragonPenalty(
-                DragonSurvival.res("abilities/sea/thin_skin"),
+                Optional.of(DragonSurvival.res("abilities/sea/thin_skin")),
                 // Enable when in water, in rain or on (or within) said block tag
                 Optional.of(AnyOfCondition.anyOf(
                         Condition.thisEntity(EntityCondition.isInFluid(context.lookup(Registries.FLUID).getOrThrow(FluidTags.WATER))),
@@ -114,14 +117,14 @@ public class DragonPenalties {
         ));
 
         context.register(ITEM_BLACKLIST, new DragonPenalty(
-                DragonSurvival.res("abilities/cave/item_blacklist"),
+                Optional.of(DragonSurvival.res("abilities/cave/item_blacklist")),
                 Optional.empty(),
                 new ItemBlacklistPenalty(DEFAULT_COMMON_BLACKLIST),
                 PenaltyTrigger.instant()
         ));
 
         context.register(FEAR_OF_DARKNESS, new DragonPenalty(
-                DragonSurvival.res("abilities/cave/fear_of_darkness"),
+                Optional.of(DragonSurvival.res("abilities/forest/fear_of_darkness")),
                 // Disable when within a light strength of at least 3 or when affected by the 'MAGIC' or 'GLOWING' effects
                 Optional.of(AnyOfCondition.anyOf(
                         Condition.thisEntity(EntityCondition.isInLight(3)),
@@ -132,12 +135,25 @@ public class DragonPenalties {
                 new SupplyTrigger(DragonSurvival.res("stress_supply"), DSAttributes.PENALTY_RESISTANCE_TIME, Functions.secondsToTicks(2), 1, 0.013f, List.of(), false)
         ));
 
-        // FIXME :: test
-        context.register(TEST_ITEM_USED, new DragonPenalty(
-                DragonSurvival.res("none"),
+        context.register(WATER_POTION_WEAKNESS, new DragonPenalty(
                 Optional.empty(),
-                new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.STING), 2),
-                new ItemUsedTrigger(Condition.tool(ItemCondition.hasPotion(Potions.WATER)).build())
+                Optional.empty(),
+                new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.WATER_BURN), 2),
+                new ItemUsedTrigger(HolderSet.empty(), HolderSet.direct(Potions.WATER))
+        ));
+
+        context.register(WATER_SPLASH_POTION_WEAKNESS, new DragonPenalty(
+                Optional.empty(),
+                Optional.empty(),
+                new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.WATER_BURN), 2),
+                new HitByWaterPotionTrigger()
+        ));
+
+        context.register(SNOWBALL_WEAKNESS, new DragonPenalty(
+                Optional.empty(),
+                Optional.empty(),
+                new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.WATER_BURN), 2),
+                new HitByProjectileTrigger(EntityType.SNOWBALL)
         ));
     }
 

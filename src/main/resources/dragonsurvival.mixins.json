@@ -32,6 +32,7 @@
     "ServerPlayerMixin",
     "SleepStatusMixin",
     "SwellGoalMixin",
+    "ThrownPotionMixin",
     "VaultBlockEntityServerMixin",
     "VillagerHostilesSensorMixin",
     "VillagerMixin",

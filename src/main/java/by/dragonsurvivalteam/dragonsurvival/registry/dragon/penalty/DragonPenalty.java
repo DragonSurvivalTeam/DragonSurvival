@@ -27,9 +27,9 @@ import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import java.util.Optional;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
-public record DragonPenalty(ResourceLocation icon, Optional<LootItemCondition> condition, PenaltyEffect effect, PenaltyTrigger trigger) {
+public record DragonPenalty(Optional<ResourceLocation> icon, Optional<LootItemCondition> condition, PenaltyEffect effect, PenaltyTrigger trigger) {
     public static final Codec<DragonPenalty> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ResourceLocation.CODEC.fieldOf("icon").forGetter(DragonPenalty::icon),
+            ResourceLocation.CODEC.optionalFieldOf("icon").forGetter(DragonPenalty::icon),
             LootItemCondition.DIRECT_CODEC.optionalFieldOf("condition").forGetter(DragonPenalty::condition),
             PenaltyEffect.CODEC.fieldOf("effect").forGetter(DragonPenalty::effect),
             PenaltyTrigger.CODEC.fieldOf("trigger").forGetter(DragonPenalty::trigger)

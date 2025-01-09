@@ -46,6 +46,8 @@ public interface PenaltyTrigger {
             event.register(REGISTRY_KEY, DragonSurvival.res("supply"), () -> SupplyTrigger.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("instant"), () -> InstantTrigger.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("item_used"), () -> ItemUsedTrigger.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("hit_by_projectile"), () -> HitByProjectileTrigger.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("hit_by_water_potion"), () -> HitByWaterPotionTrigger.CODEC);
         }
     }
 }

@@ -7,16 +7,22 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PenaltySupply;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.HitByProjectileTrigger;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.ItemUsedTrigger;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.SupplyTrigger;
 import by.dragonsurvivalteam.dragonsurvival.server.containers.slots.ClawToolSlot;
+import by.dragonsurvivalteam.dragonsurvival.util.PotionUtils;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ArmorSlot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.alchemy.Potion;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.ItemStackedOnOtherEvent;
+import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
@@ -58,7 +64,38 @@ public class DragonPenaltyHandler {
 
         for (Holder<DragonPenalty> penalty : handler.species().value().penalties()) {
             //noinspection DeconstructionCanBeUsed -> spotless is too stupid to handle this
-            if (penalty.value().trigger() instanceof ItemUsedTrigger trigger && trigger.condition().test(Condition.createContext(serverPlayer.serverLevel(), event.getItem()))) {
+            if (penalty.value().trigger() instanceof ItemUsedTrigger trigger) {
+                PotionUtils.getPotion(event.getItem()).ifPresentOrElse(potion -> {
+                        for (Holder<Potion> potions : trigger.potions()) {
+                            if (potions.value() == potion) {
+                                penalty.value().apply(serverPlayer);
+                                break;
+                            }
+                        }
+                    }, () -> {
+                        if (trigger.items().contains(event.getItem().getItemHolder())) {
+                            penalty.value().apply(serverPlayer);
+                        }
+                });
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void applyHitByProjectilePenalties(final ProjectileImpactEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+
+        DragonStateHandler handler = DragonStateProvider.getData(serverPlayer);
+
+        if (!handler.isDragon()) {
+            return;
+        }
+
+        for (Holder<DragonPenalty> penalty : handler.species().value().penalties()) {
+            //noinspection DeconstructionCanBeUsed -> spotless
+            if (penalty.value().trigger() instanceof HitByProjectileTrigger trigger && trigger.projectileType().is(HolderSet.direct(event.getProjectile().getType().builtInRegistryHolder()))) {
                 penalty.value().apply(serverPlayer);
             }
         }

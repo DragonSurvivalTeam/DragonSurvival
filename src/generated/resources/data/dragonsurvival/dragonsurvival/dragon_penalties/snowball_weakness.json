@@ -1,0 +1,11 @@
+{
+  "effect": {
+    "type": "dragonsurvival:water_burn",
+    "amount": 2.0,
+    "penalty_type": "dragonsurvival:take_damage"
+  },
+  "trigger": {
+    "penalty_trigger": "dragonsurvival:hit_by_projectile",
+    "projectileType": "minecraft:snowball"
+  }
+}

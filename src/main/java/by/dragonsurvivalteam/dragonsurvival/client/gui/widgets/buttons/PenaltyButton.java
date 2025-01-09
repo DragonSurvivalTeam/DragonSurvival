@@ -23,7 +23,7 @@ public class PenaltyButton extends ExtendedButton  {
     @Override
     public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         graphics.fill(getX() - 1, getY() - 1, getX() + SIZE + 1, getY() + SIZE + 1, 0xFF000000);
-        blit(graphics, penalty.value().icon(), getX(), getY(), SIZE);
+        blit(graphics, penalty.value().icon().get(), getX(), getY(), SIZE);
 
         if (isHovered()) {
             graphics.pose().pushPose();

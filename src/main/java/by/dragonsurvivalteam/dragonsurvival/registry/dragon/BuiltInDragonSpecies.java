@@ -105,8 +105,9 @@ public class BuiltInDragonSpecies {
                         context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.SNOW_AND_RAIN_WEAKNESS),
                         context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.WATER_WEAKNESS),
                         context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.ITEM_BLACKLIST),
-                        // FIXME :: test
-                        context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.TEST_ITEM_USED)
+                        context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.WATER_POTION_WEAKNESS),
+                        context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.SNOWBALL_WEAKNESS),
+                        context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.WATER_SPLASH_POTION_WEAKNESS)
                 ),
                 List.of(),
                 List.of(

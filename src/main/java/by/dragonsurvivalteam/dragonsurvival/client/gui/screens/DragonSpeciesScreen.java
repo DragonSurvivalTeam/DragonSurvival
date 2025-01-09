@@ -262,7 +262,7 @@ public class DragonSpeciesScreen extends Screen {
         addRenderableWidget(bodyTypeButton);
 
         // Penalties bar
-        List<AbstractWidget> penalties = data.species().value().penalties().stream().map(penalty -> (AbstractWidget) new PenaltyButton(0, 0, penalty)).toList();
+        List<AbstractWidget> penalties = data.species().value().penalties().stream().filter(penalty -> penalty.value().icon().isPresent()).map(penalty -> (AbstractWidget) new PenaltyButton(0, 0, penalty)).toList();
         scrollableComponents.add(new BarComponent(this,
                 startX + 85, startY + 85, 3,
                 penalties, 40,

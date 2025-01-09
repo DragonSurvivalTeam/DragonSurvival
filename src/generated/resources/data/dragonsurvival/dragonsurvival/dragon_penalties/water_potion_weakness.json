@@ -1,0 +1,12 @@
+{
+  "effect": {
+    "type": "dragonsurvival:water_burn",
+    "amount": 2.0,
+    "penalty_type": "dragonsurvival:take_damage"
+  },
+  "trigger": {
+    "items": [],
+    "penalty_trigger": "dragonsurvival:item_used",
+    "potions": "minecraft:water"
+  }
+}
