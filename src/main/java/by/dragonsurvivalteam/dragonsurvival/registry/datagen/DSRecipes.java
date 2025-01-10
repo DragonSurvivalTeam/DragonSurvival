@@ -17,6 +17,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.CompletableFuture;
@@ -52,37 +53,36 @@ public class DSRecipes extends RecipeProvider {
                 .unlockedBy(getHasName(DSItems.WEAK_DRAGON_HEART.value()), has(DSItems.WEAK_DRAGON_HEART.value()))
                 .save(output);
 
-        // FIXME
-//        ShapedRecipeBuilder.shaped(RecipeCategory.FOOD, DSItems.CAVE_DRAGON_TREAT.value())
-//                .pattern("DDD")
-//                .pattern("DCD")
-//                .pattern("DDD")
-//                .define('D', DSItems.ELDER_DRAGON_DUST.value())
-//                .define('C', DSItemTags.CHARRED_FOOD)
-//                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
-//                .save(output);
-//
-//        ShapedRecipeBuilder.shaped(RecipeCategory.FOOD, DSItems.CHARGED_COAL.value())
-//                .pattern("RRR")
-//                .pattern("CCR")
-//                .pattern("CCR")
-//                .define('R', Tags.Items.DUSTS_REDSTONE)
-//                .define('C', ItemTags.COALS)
-//                .unlockedBy("has_redstone_dust", has(Tags.Items.DUSTS_REDSTONE))
-//                .save(output, DragonSurvival.res("charged_coal_from_dust"));
-//
-//        // --- Mod support --- //
-//
-//        ProxyItem proxyItem = new ProxyItem("regions_unexplored", "redstone_bulb");
-//
-//        ShapedRecipeBuilder.shaped(RecipeCategory.FOOD, DSItems.CHARGED_COAL.value())
-//                .pattern("RRR")
-//                .pattern("CCR")
-//                .pattern("CCR")
-//                .define('R', proxyItem)
-//                .define('C', ItemTags.COALS)
-//                .unlockedBy("has_redstone_bulb", has(proxyItem))
-//                .save(output.withConditions(new ModLoadedCondition("regions_unexplored")), DragonSurvival.res("charged_coal_from_bulb"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.FOOD, DSItems.CAVE_DRAGON_TREAT.value())
+                .pattern("DDD")
+                .pattern("DCD")
+                .pattern("DDD")
+                .define('D', DSItems.ELDER_DRAGON_DUST.value())
+                .define('C', DSItemTags.CHARRED_FOOD)
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
+                .save(output);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.FOOD, DSItems.CHARGED_COAL.value())
+                .pattern("RRR")
+                .pattern("CCR")
+                .pattern("CCR")
+                .define('R', Tags.Items.DUSTS_REDSTONE)
+                .define('C', ItemTags.COALS)
+                .unlockedBy("has_redstone_dust", has(Tags.Items.DUSTS_REDSTONE))
+                .save(output, DragonSurvival.res("charged_coal_from_dust"));
+
+        // --- Mod support --- //
+
+        ProxyItem proxyItem = new ProxyItem("regions_unexplored", "redstone_bulb");
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.FOOD, DSItems.CHARGED_COAL.value())
+                .pattern("RRR")
+                .pattern("CCR")
+                .pattern("CCR")
+                .define('R', proxyItem)
+                .define('C', ItemTags.COALS)
+                .unlockedBy("has_redstone_bulb", has(proxyItem))
+                .save(output.withConditions(new ModLoadedCondition("regions_unexplored")), DragonSurvival.res("charged_coal_from_bulb"));
     }
 
     private void buildShapeless(final RecipeOutput output, final HolderLookup.Provider lookup) {
