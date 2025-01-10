@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.Sk
 import by.dragonsurvivalteam.dragonsurvival.commands.DragonCommand;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.subcapabilities.SkinCap;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.subcapabilities.SubCap;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.items.growth.StarHeartItem;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
@@ -142,6 +143,7 @@ public class DragonStateHandler extends EntityStateHandler {
         } else {
             if (Math.abs(size - desiredSize) < SIZE_EPSILON) {
                 setSize(player, desiredSize);
+                DragonSizeHandler.overridePose(player);
             } else {
                 setSize(player, Mth.lerp(SIZE_LERP_SPEED, size, desiredSize));
             }
