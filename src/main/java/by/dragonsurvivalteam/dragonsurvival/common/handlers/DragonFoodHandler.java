@@ -26,6 +26,11 @@ public class DragonFoodHandler {
     @ConfigOption(side = ConfigSide.SERVER, category = "food", key = "dragon_food_is_required")
     public static Boolean requireDragonFood = true;
 
+    @ConfigRange(min = 0, max = 1)
+    @Translation(key = "bad_food_poison_chance", type = Translation.Type.CONFIGURATION, comments = "Chance of getting poisoned from eating non-dragon food")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"food"}, key = "bad_food_poison_chance")
+    public static Float badFoodPoisonChance = 0.5F;
+
     @ConfigRange(min = 0, max = 10_000)
     @Translation(key = "charged_soup_effect_duration", type = Translation.Type.CONFIGURATION, comments = "Determines the duration of the fire effect from eating charged soup - disabled if set to 0")
     @ConfigOption(side = ConfigSide.SERVER, category = {"food"}, key = "charged_soup_effect_duration")
@@ -93,7 +98,7 @@ public class DragonFoodHandler {
     private static FoodProperties getBadFoodProperties() {
         FoodProperties.Builder builder = new FoodProperties.Builder();
         builder.effect(() -> new MobEffectInstance(MobEffects.HUNGER, 600, 0), 1.0F);
-        builder.effect(() -> new MobEffectInstance(MobEffects.POISON, 600, 0), 0.5F);
+        builder.effect(() -> new MobEffectInstance(MobEffects.POISON, 600, 0), badFoodPoisonChance);
         builder.nutrition(1);
         return builder.build();
     }

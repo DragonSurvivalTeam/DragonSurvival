@@ -46,7 +46,7 @@ public record DragonPenalty(Optional<ResourceLocation> icon, Optional<LootItemCo
             int resistanceTime = resistance != null ? (int) resistance.getValue() : 0;
 
             if (penaltySupply.getMaxSupply(supplyTrigger.supplyType()) != resistanceTime) {
-                float currentSupply = penaltySupply.getRawSupply(supplyTrigger.supplyType());
+                float currentSupply = penaltySupply.hasSupply(supplyTrigger.supplyType()) ? penaltySupply.getRawSupply(supplyTrigger.supplyType()) : resistanceTime;
                 penaltySupply.initialize(supplyTrigger.supplyType(), resistanceTime, supplyTrigger.reductionRateMultiplier(), supplyTrigger.regenerationRate(), currentSupply);
                 PacketDistributor.sendToPlayer(dragon, new SyncAddPenaltySupply(supplyTrigger.supplyType(), resistanceTime, supplyTrigger.reductionRateMultiplier(), supplyTrigger.regenerationRate(), currentSupply));
             }

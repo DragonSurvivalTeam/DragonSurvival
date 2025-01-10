@@ -51,23 +51,14 @@ public class EffectRenderingInventoryScreenMixin {
         storedEvent.set(event);
     }
 
-    @Unique private void dragonSurvival$renderAbilityBackgrounds(final GuiGraphics graphics, int renderX, int yOffset, int initialYOffset, int providerAmount, boolean isCompact) {
+    @Unique private void dragonSurvival$renderAbilityBackgroundsAndIcons(final GuiGraphics graphics, int renderX, int yOffset, int initialYOffset, final List<ClientEffectProvider> providers, boolean isCompact) {
         EffectRenderingInventoryScreen<?> self = (EffectRenderingInventoryScreen<?>) (Object) this;
         int topPos = ((AbstractContainerScreenAccessor) self).dragonSurvival$getTopPos() + initialYOffset;
         int width = isCompact ? 32 : 120;
 
-        for (int i = 0; i < providerAmount; i++) {
+        for (ClientEffectProvider provider : providers) {
             graphics.blitSprite(isCompact ? ((EffectRenderingInventoryScreenAccessor) self).dragonSurvival$getEffectBackgroundSmallSprite() : ((EffectRenderingInventoryScreenAccessor) self).dragonSurvival$getEffectBackgroundLargeSprite(), renderX, topPos, width, 32);
             dragonSurvival$areasBlockedByModifierUIForJEI.add(new Rect2i(renderX, topPos, width, 32));
-            topPos += yOffset;
-        }
-    }
-
-    @Unique private void dragonSurvival$renderAbilityIcons(final GuiGraphics graphics, int renderX, int yOffset, int initialYOffset, final List<ClientEffectProvider> providers, boolean isCompact) {
-        EffectRenderingInventoryScreen<?> self = (EffectRenderingInventoryScreen<?>) (Object) this;
-        int topPos = ((AbstractContainerScreenAccessor) self).dragonSurvival$getTopPos() + initialYOffset;
-
-        for (ClientEffectProvider provider : providers) {
             graphics.blit(provider.clientData().texture(), renderX + (isCompact ? 6 : 7), topPos + 7, 0, 0, 0, 18, 18, 18, 18);
             topPos += yOffset;
         }
@@ -133,8 +124,7 @@ public class EffectRenderingInventoryScreenMixin {
             int renderedElements = mobEffects.stream().filter(net.neoforged.neoforge.client.ClientHooks::shouldRenderEffect).sorted().toList().size();
             int initialYOffset = yOffset * renderedElements;
 
-            dragonSurvival$renderAbilityBackgrounds(graphics, offset, yOffset, initialYOffset, dragonSurvival$providers.size(), isCompact);
-            dragonSurvival$renderAbilityIcons(graphics, offset, yOffset, initialYOffset, dragonSurvival$providers, isCompact);
+            dragonSurvival$renderAbilityBackgroundsAndIcons(graphics, offset, yOffset, initialYOffset, dragonSurvival$providers, isCompact);
 
             if (!isCompact) {
                 dragonSurvival$renderAbilityLabels(graphics, offset, yOffset, initialYOffset, dragonSurvival$providers);
