@@ -64,7 +64,11 @@ public class SwimData {
 
             if (event.canBreathe()) {
                 if (data.canSwimIn(currentFluid)) {
-                    event.setRefillAirAmount(data.getMaxOxygen(currentFluid));
+                    if(data.getMaxOxygen(currentFluid) == UNLIMITED_OXYGEN && event.getEntity().getAirSupply() < Entity.TOTAL_AIR_SUPPLY) {
+                        event.setRefillAirAmount(Entity.TOTAL_AIR_SUPPLY);
+                    } else {
+                        event.setRefillAirAmount(data.getMaxOxygen(currentFluid));
+                    }
                 } else if (isAir(currentFluid) && data.previousFluid != null) {
                     // Vanilla: max. of 300, refill 4 -> ~ 1.5%
                     // TODO :: make the rate configurable?
