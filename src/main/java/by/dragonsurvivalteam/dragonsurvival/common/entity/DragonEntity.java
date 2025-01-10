@@ -29,7 +29,9 @@ import net.minecraft.world.scores.PlayerTeam;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
+import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -493,7 +495,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         }
 
         MovementData movement = MovementData.getData(player);
-        boolean isInSwimmableFluid = (player.isInWaterOrBubble() || SwimData.getData(player).canSwimIn(player.getMaxHeightFluidType())) && !player.isPassenger();
+        boolean isInSwimmableFluid = (player.isInWaterOrBubble() || SwimData.getData(player).canSwimIn(player.getMaxHeightFluidType())) && !player.isPassenger() && !(player.onGround() && player.getEyeInFluidType() != NeoForgeMod.EMPTY_TYPE);
 
         // TODO: The transition length of animations doesn't work correctly when the framerate varies too much from 60 FPS
         if (!movement.isMoving() && handler.isOnMagicSource) {

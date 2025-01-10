@@ -2,10 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.commands.*;
-import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonBodyArgument;
-import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonSizeArgument;
-import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonSpeciesArgument;
-import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonStageArgument;
+import by.dragonsurvivalteam.dragonsurvival.commands.arguments.*;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
@@ -27,12 +24,13 @@ public class DSCommands {
         ARGUMENT_TYPES.register(DragonStageArgument.ID, () -> ArgumentTypeInfos.registerByClass(DragonStageArgument.class, SingletonArgumentInfo.contextAware(DragonStageArgument::new)));
         ARGUMENT_TYPES.register(DragonSizeArgument.ID, () -> ArgumentTypeInfos.registerByClass(DragonSizeArgument.class, SingletonArgumentInfo.contextAware(DragonSizeArgument::new)));
         ARGUMENT_TYPES.register(DragonSpeciesArgument.ID, () -> ArgumentTypeInfos.registerByClass(DragonSpeciesArgument.class, SingletonArgumentInfo.contextAware(DragonSpeciesArgument::new)));
+        ARGUMENT_TYPES.register(DragonAbilityArgument.ID, () -> ArgumentTypeInfos.registerByClass(DragonAbilityArgument.class, SingletonArgumentInfo.contextAware(DragonAbilityArgument::new)));
     }
 
     @SubscribeEvent
     public static void serverRegisterCommandsEvent(RegisterCommandsEvent event) {
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
-        RefreshAbilitiesCommand.register(dispatcher);
+        DragonAbilityCommand.register(event);
         ClearModifiersCommand.register(dispatcher);
         ClearMarkCommand.register(dispatcher);
         DragonEditorCommand.register(dispatcher);

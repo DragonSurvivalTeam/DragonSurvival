@@ -341,6 +341,49 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         this.renderAbilities = renderAbilities;
     }
 
+    public int clear(final ServerPlayer player) {
+        int count = abilities.values().stream().mapToInt(perSpecies -> perSpecies.values().size()).sum();
+        abilities.values().forEach(perSpecies -> perSpecies.values().forEach(ability -> ability.setActive(player, false)));
+        abilities.clear();
+        hotbar.clear();
+        return count;
+    }
+
+    public void removeAbility(final ResourceKey<DragonAbility> key) {
+        Map<ResourceKey<DragonAbility>, DragonAbilityInstance> abilities = getAbilities();
+        abilities.remove(key);
+        int slot = slotFromAbility(key);
+        if (slot != NO_SLOT) {
+            getHotbar().remove(slot);
+        }
+    }
+
+    public void addAbility(final ServerPlayer player, final Holder<DragonAbility> ability) {
+        UpgradeType<?> upgrade = ability.value().upgrade().orElse(null);
+        DragonAbilityInstance instance;
+
+        InputData levelInput = InputData.experienceLevels(player.experienceLevel);
+        InputData sizeInput = InputData.size((int) DragonStateProvider.getData(player).getSize());
+
+        if (upgrade == null) {
+            instance = new DragonAbilityInstance(ability, ability.value().getMaxLevel());
+        } else {
+            instance = new DragonAbilityInstance(ability, DragonAbilityInstance.MIN_LEVEL);
+            upgrade.attempt(player, instance, levelInput);
+            upgrade.attempt(player, instance, sizeInput);
+        }
+
+
+        for(int i = 0; i < HOTBAR_SLOTS; i++) {
+            if (!getHotbar().containsKey(i)) {
+                getHotbar().put(i, ability.getKey());
+                break;
+            }
+        }
+
+        getAbilities().put(ability.getKey(), instance);
+    }
+
     public void refresh(final ServerPlayer player, final Holder<DragonSpecies> currentSpecies) {
         // Make sure we remove any passive effects for abilities that are no longer available
         abilities.values().forEach(perSpecies -> perSpecies.values().forEach(ability -> ability.setActive(player, false)));

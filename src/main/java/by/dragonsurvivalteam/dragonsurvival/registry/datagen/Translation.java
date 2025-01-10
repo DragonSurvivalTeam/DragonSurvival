@@ -99,6 +99,8 @@ public @interface Translation {
         STAGE("dragon_stage." + DragonSurvival.MODID + ".", ""),
         STAGE_DESCRIPTION("dragon_stage." + DragonSurvival.MODID + ".", ".desc"),
 
+        COMMAND("command." + DragonSurvival.MODID + ".", ""),
+
         /**
          * When used on {@link String} and no specified key it's expected that the string contains the translation key <br>
          * Otherwise it generally means the key is being handled in a special way / no prefix is required <br>
