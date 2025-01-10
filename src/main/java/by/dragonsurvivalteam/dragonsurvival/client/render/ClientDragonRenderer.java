@@ -23,9 +23,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AreaTarget;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.DragonBreathTarget;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.LookingAtTarget;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
@@ -109,61 +107,66 @@ public class ClientDragonRenderer {
     @ConfigOption(side = ConfigSide.CLIENT, category = "rendering", key = "dragon_name_tags")
     public static Boolean dragonNameTags = false;
 
-    /** Show ability hitboxes when hitboxes are being rendered */
     @SubscribeEvent
-    public static void renderAbilityHitboxes(final RenderLevelStageEvent event) {
+    public static void renderAbilityHitbox(final RenderLevelStageEvent event) {
         if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_SOLID_BLOCKS && Minecraft.getInstance().getEntityRenderDispatcher().shouldRenderHitBoxes()) {
-            LocalPlayer localPlayer = Minecraft.getInstance().player;
+            LocalPlayer player = Minecraft.getInstance().player;
 
-            if (localPlayer == null) {
+            if (player == null) {
                 return;
             }
 
-            if (!DragonStateProvider.isDragon(localPlayer)) {
+            if (!DragonStateProvider.isDragon(player)) {
                 return;
             }
 
-            MagicData magicData = MagicData.getData(localPlayer);
+            MagicData magicData = MagicData.getData(player);
             DragonAbilityInstance ability = magicData.fromSlot(magicData.getSelectedAbilitySlot());
-            if(ability == null) {
+
+            if (ability == null) {
                 return;
             }
 
             VertexConsumer buffer = Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.LINES);
             Vec3 camera = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
 
-            PoseStack poseStack = event.getPoseStack();
-            poseStack.pushPose();
-            poseStack.translate(-camera.x(), -camera.y(), -camera.z());
-
+            PoseStack pose = event.getPoseStack();
+            pose.pushPose();
+            pose.translate(-camera.x(), -camera.y(), -camera.z());
 
             for (ActionContainer action : ability.value().actions()) {
-                var abilityTargeting = action.effect();
-                if(abilityTargeting instanceof DragonBreathTarget breathTarget) {
-                    LevelRenderer.renderLineBox(poseStack, buffer, breathTarget.calculateBreathArea(localPlayer, ability), 1, 0, 0, 1);
-                } else if (abilityTargeting instanceof LookingAtTarget lookingAtTarget) {
+                AbilityTargeting targeting = action.effect();
+
+                if (targeting instanceof DragonBreathTarget breathTarget) {
+                    LevelRenderer.renderLineBox(pose, buffer, breathTarget.calculateBreathArea(player, ability), 1, 0, 0, 1);
+                } else if (targeting instanceof LookingAtTarget lookingAtTarget) {
                     HitResult result;
-                    if(lookingAtTarget.target().left().isPresent()) {
-                        result = lookingAtTarget.getBlockHitResult(localPlayer, ability);
-                    } else if(lookingAtTarget.target().right().isPresent()) {
-                        result = lookingAtTarget.getEntityHitResult(localPlayer, entity -> true, ability);
+
+                    if (lookingAtTarget.target().left().isPresent()) {
+                        result = lookingAtTarget.getBlockHitResult(player, ability);
+                    } else if (lookingAtTarget.target().right().isPresent()) {
+                        result = lookingAtTarget.getEntityHitResult(player, entity -> true, ability);
                     } else {
                         continue;
                     }
 
-                    if(result.getType() == HitResult.Type.BLOCK) {
+                    if (result.getType() == HitResult.Type.BLOCK) {
                         BlockHitResult blockResult = (BlockHitResult) result;
-                        LevelRenderer.renderLineBox(poseStack, buffer, new AABB(blockResult.getBlockPos()), 0, 1, 0, 1);
-                    } else if(result.getType() == HitResult.Type.ENTITY) {
+                        LevelRenderer.renderLineBox(pose, buffer, new AABB(blockResult.getBlockPos()), 0, 1, 0, 1);
+                    } else if (result.getType() == HitResult.Type.ENTITY) {
                         EntityHitResult entityResult = (EntityHitResult) result;
-                        LevelRenderer.renderLineBox(poseStack, buffer, entityResult.getEntity().getBoundingBox().inflate(1.5), 0, 1, 0, 1);
+                        LevelRenderer.renderLineBox(pose, buffer, entityResult.getEntity().getBoundingBox().inflate(1.5), 0, 1, 0, 1);
                     }
-                } else if (abilityTargeting instanceof AreaTarget areaTarget) {
-                    LevelRenderer.renderLineBox(poseStack, buffer, areaTarget.calculateAffectedArea(localPlayer, ability), 0, 0, 1, 1);
+                } else if (targeting instanceof AreaTarget areaTarget) {
+                    LevelRenderer.renderLineBox(pose, buffer, areaTarget.calculateAffectedArea(player, ability), 0, 0, 1, 1);
+                } else if (targeting instanceof DiscTarget discTarget) {
+                    int radius = (int) discTarget.radius().calculate(ability.level());
+                    int height = (int) discTarget.height().calculate(ability.level());
+                    LevelRenderer.renderLineBox(pose, buffer, discTarget.calculateAffectedArea(player.position(), radius, height), 0, 1, 0, 1);
                 }
             }
 
-            poseStack.popPose();
+            pose.popPose();
         }
     }
 

@@ -9,18 +9,16 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.CollisionContext;
 
 // TODO :: add sub entity predicate for easy is ally / team check (and tamable animals) / spectator
 public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target, LevelBasedValue rangeMultiplier) implements AbilityTargeting {
@@ -38,12 +36,13 @@ public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target,
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability) {
         target().ifLeft(blockTarget -> {
             AABB breathArea = calculateBreathArea(dragon, ability);
+            // Used by 'BlockGetter#clip' to determine the direction
+            // 'Entity#pick' -> from: 'getEyePosition' / to: 'getEyePosition + getViewVector'
+            Direction direction = Direction.getNearest(dragon.getEyePosition());
 
             BlockPos.betweenClosedStream(breathArea).forEach(position -> {
                 if (blockTarget.matches(dragon, position)) {
-                    // TODO :: Is this too expensive to calculate for each block?
-                    BlockHitResult blockHitResult = getBlockHitResult(dragon, ability);
-                    blockTarget.effect().forEach(target -> target.apply(dragon, ability, position, blockHitResult.getDirection()));
+                    blockTarget.effect().forEach(target -> target.apply(dragon, ability, position, direction));
                 }
             });
         }).ifRight(entityTarget -> {
@@ -64,11 +63,6 @@ public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target,
         } else {
             return Component.translatable(CONE_TARGET_ENTITY, DSColors.dynamicValue(targetingComponent), DSColors.dynamicValue(getRange(dragon, ability)));
         }
-    }
-
-    public BlockHitResult getBlockHitResult(final Player dragon, final DragonAbilityInstance ability) {
-        Vec3 viewVector = dragon.getLookAngle().scale(rangeMultiplier.calculate(ability.level()) * dragon.getAttributeValue(DSAttributes.DRAGON_BREATH_RANGE));
-        return dragon.level().clip(new ClipContext(viewVector, viewVector, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty()));
     }
 
     public AABB calculateBreathArea(final Player dragon, final DragonAbilityInstance ability) {

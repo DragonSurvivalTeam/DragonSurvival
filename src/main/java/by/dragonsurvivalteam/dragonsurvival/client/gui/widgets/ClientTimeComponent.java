@@ -1,8 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets;
 
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
-import by.dragonsurvivalteam.dragonsurvival.util.Functions;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -13,9 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 
 public class ClientTimeComponent implements ClientTooltipComponent {
-    @Translation(comments = "%s %s:%s:%s")
-    private static final String TIME = Translation.Type.GUI.wrap("growth.time");
-
     private static final int ICON_SIZE = 20;
 
     private final TimeComponent component;
@@ -23,12 +17,7 @@ public class ClientTimeComponent implements ClientTooltipComponent {
 
     public ClientTimeComponent(final TimeComponent component) {
         this.component = component;
-        this.tooltip = Component.translatable(component.item().getDescriptionId()).append(": ").append(time(component.ticks()));
-    }
-
-    private Component time(int ticks) {
-        Functions.Time time = Functions.Time.fromTicks(ticks);
-        return Component.translatable(TIME, ticks > 0 ? "+" : "-", time.format(time.hours()), time.format(time.minutes()), time.format(time.seconds())).withStyle(ticks > 0 ? ChatFormatting.GREEN : ChatFormatting.RED);
+        this.tooltip = component.description().apply(component.item(), component.ticks());
     }
 
     @Override

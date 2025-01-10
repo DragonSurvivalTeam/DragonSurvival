@@ -109,6 +109,7 @@ public interface AbilityTargeting {
             event.register(REGISTRY_KEY, DragonSurvival.res("dragon_breath"), () -> DragonBreathTarget.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("looking_at"), () -> LookingAtTarget.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("self"), () -> SelfTarget.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("disc"), () -> DiscTarget.CODEC);
         }
     }
 

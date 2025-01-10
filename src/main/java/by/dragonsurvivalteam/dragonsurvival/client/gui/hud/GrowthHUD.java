@@ -64,7 +64,7 @@ public class GrowthHUD {
         float progressDiff = Math.abs(currentProgress - desiredProgress);
         boolean progressDiffIsSmall = progressDiff < 0.01;
 
-        if (progressDiffIsSmall && (handler.getSize() == nextSize || dragonStage.value().growthItems().stream().noneMatch(item -> item.items().contains(stack.getItemHolder())))) {
+        if (progressDiffIsSmall && (handler.getSize() == nextSize || dragonStage.value().growthItems().stream().noneMatch(growthItem -> growthItem.canBeUsed(handler, stack.getItem())))) {
             return;
         }
 
@@ -80,7 +80,7 @@ public class GrowthHUD {
         float targetProgress;
 
         if (progressDiffIsSmall) {
-            targetProgress = (float) dragonStage.value().getProgress(handler.getSize() + DragonGrowthHandler.getGrowth(dragonStage, stack.getItem()));
+            targetProgress = (float) dragonStage.value().getProgress(handler.getSize() + DragonGrowthHandler.getGrowth(handler, stack.getItem()));
         } else {
             targetProgress = desiredProgress;
         }

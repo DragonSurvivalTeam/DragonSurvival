@@ -60,10 +60,13 @@ public record SummonEntityEffect(
         boolean shouldSetAllied
 ) implements AbilityBlockEffect, AbilityEntityEffect {
     @Translation(comments = "§6■ Can summon up to§r %s §6entities:§r")
-    private static final String ABILITY_SUMMON = Translation.Type.GUI.wrap("summon_entity_effect.summon");
+    private static final String SUMMON = Translation.Type.GUI.wrap("summon_entity_effect.summon");
 
     @Translation(comments = "\n- %s (%s)")
-    private static final String ABILITY_SUMMON_CHANCE = Translation.Type.GUI.wrap("summon_entity_effect.summon_chance");
+    private static final String SUMMON_CHANCE = Translation.Type.GUI.wrap("summon_entity_effect.summon_chance");
+
+    @Translation(comments = "Currently summoned: %s / %s")
+    private static final String CURRENT_AMOUNT = Translation.Type.GUI.wrap("summon_entity_effect.current_amount");
 
     public static final MapCodec<SummonEntityEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                     SimpleWeightedRandomList.wrappedCodec(BuiltInRegistries.ENTITY_TYPE.byNameCodec()).fieldOf("entities").forGetter(SummonEntityEffect::entities),
@@ -97,13 +100,13 @@ public record SummonEntityEffect(
 
     @Override
     public List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
-        MutableComponent component = Component.translatable(ABILITY_SUMMON, DSColors.dynamicValue(maxSummons.calculate(ability.level())));
+        MutableComponent component = Component.translatable(SUMMON, DSColors.dynamicValue(maxSummons.calculate(ability.level())));
         int totalWeight = WeightedRandom.getTotalWeight(entities.unwrap());
 
         entities.unwrap().forEach(wrapper -> {
             Component entityName = DSColors.dynamicValue(wrapper.data().getDescription());
             double chance = (double) wrapper.getWeight().asInt() / totalWeight;
-            component.append(Component.translatable(ABILITY_SUMMON_CHANCE, DSColors.dynamicValue(entityName), DSColors.dynamicValue(NumberFormat.getPercentInstance().format(chance))));
+            component.append(Component.translatable(SUMMON_CHANCE, DSColors.dynamicValue(entityName), DSColors.dynamicValue(NumberFormat.getPercentInstance().format(chance))));
         });
 
         if (!entities.isEmpty()) {
@@ -256,7 +259,9 @@ public record SummonEntityEffect(
 
         @Override
         public Component getDescription() {
-            return Component.empty(); // TODO
+            Component current = DSColors.dynamicValue(summonedAmount);
+            Component max = DSColors.dynamicValue((int) baseData().maxSummons().calculate(appliedAbilityLevel()));
+            return Component.translatable(CURRENT_AMOUNT, current, max);
         }
 
         @Override

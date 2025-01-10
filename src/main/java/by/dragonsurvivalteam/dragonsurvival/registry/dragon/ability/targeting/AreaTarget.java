@@ -28,6 +28,11 @@ public record AreaTarget(Either<BlockTargeting, EntityTargeting> target, LevelBa
             .and(LevelBasedValue.CODEC.fieldOf("radius").forGetter(AreaTarget::radius)).apply(instance, AreaTarget::new)
     );
 
+    // TODO :: not sure if some sort of 'only visible blocks / entities' check is realistic
+    //  using clip() would be unreliable because there might be a proper path / open area for the position
+    //  but clip() fails because there is a single block between the clip start and the targeted position
+    //  same case for the targeted entity
+
     @Override
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability) {
         target().ifLeft(blockTarget -> {
@@ -37,8 +42,6 @@ public record AreaTarget(Either<BlockTargeting, EntityTargeting> target, LevelBa
                 }
             });
         }).ifRight(entityTarget -> {
-            // TODO :: add field 'visible' and check using ProjectileUtil.getHitResultOnViewVector()
-            //  maybe need to differentiate between behind blocks and below player (under blocks)?
             dragon.serverLevel().getEntities(EntityTypeTest.forClass(Entity.class), calculateAffectedArea(dragon, ability),
                     entity -> isEntityRelevant(dragon, entityTarget, entity) && entityTarget.matches(dragon, entity, entity.position())
             ).forEach(entity -> entityTarget.effects().forEach(target -> target.apply(dragon, ability, entity)));

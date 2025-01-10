@@ -5,8 +5,6 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.TimeComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.SkinPreset;
 import by.dragonsurvivalteam.dragonsurvival.commands.DragonCommand;
-import by.dragonsurvivalteam.dragonsurvival.common.capability.subcapabilities.SkinCap;
-import by.dragonsurvivalteam.dragonsurvival.common.capability.subcapabilities.SubCap;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.items.growth.StarHeartItem;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
@@ -24,6 +22,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.Inpu
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
+import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
@@ -33,6 +32,7 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
@@ -43,6 +43,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -51,7 +53,6 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
 public class DragonStateHandler extends EntityStateHandler {
@@ -63,9 +64,7 @@ public class DragonStateHandler extends EntityStateHandler {
     public MultiMining multiMining = MultiMining.ENABLED;
     public LargeDragonDestruction largeDragonDestruction = LargeDragonDestruction.ENABLED;
 
-    @SuppressWarnings("unchecked")
-    public final Supplier<SubCap>[] caps = new Supplier[]{this::getSkinData};
-    private final Map<ResourceKey<DragonSpecies>, Double> savedSizes = new HashMap<>();
+    public Map<Item, Integer> usedGrowthItems = new HashMap<>();
 
     public StarHeartItem.State starHeartState = StarHeartItem.State.INACTIVE;
     public boolean isGrowing = true;
@@ -80,13 +79,15 @@ public class DragonStateHandler extends EntityStateHandler {
 
     /** Last timestamp the server synchronized the player */
     public int lastSync;
-    private final SkinCap skinData = new SkinCap(this);
+
+    private final Map<ResourceKey<DragonSpecies>, Double> savedSizes = new HashMap<>();
+    private SkinData skinData = new SkinData();
 
     private Holder<DragonSpecies> dragonSpecies;
     private Holder<DragonBody> dragonBody;
     private Holder<DragonStage> dragonStage;
 
-    private int passengerId = -1;
+    private int passengerId = DragonRidingHandler.NO_PASSENGER;
     private double size = NO_SIZE;
     private double visualSize = NO_SIZE;
     private double visualSizeLastTick = NO_SIZE;
@@ -218,6 +219,11 @@ public class DragonStateHandler extends EntityStateHandler {
 
         dragonStage = dragonSpecies != null ? DragonStage.getStage(dragonSpecies.value().getStages(provider), size) : null;
         this.size = boundSize(provider, size);
+
+        if (this.desiredSize == DragonStage.getBounds().min()) {
+            // Allow the player to re-use growth items if their growth is reset
+            usedGrowthItems.clear();
+        }
     }
 
     public List<Holder<DragonStage>> getStagesSortedByProgression(@Nullable final HolderLookup.Provider provider) {
@@ -361,10 +367,6 @@ public class DragonStateHandler extends EntityStateHandler {
         this.passengerId = passengerId;
     }
 
-    public void setDestructionEnabled(boolean destructionEnabled) {
-        this.destructionEnabled = destructionEnabled;
-    }
-
     public double getVisualSize(float partialTick) {
         if (!DragonSurvival.PROXY.isOnRenderThread()) {
             Functions.logOrThrow("Visual size should only be retrieved for rendering-purposes");
@@ -382,10 +384,6 @@ public class DragonStateHandler extends EntityStateHandler {
         return desiredSize;
     }
 
-    public boolean getDestructionEnabled() {
-        return destructionEnabled;
-    }
-
     public boolean isDragon() {
         return dragonSpecies != null && dragonBody != null && dragonStage != null;
     }
@@ -394,7 +392,7 @@ public class DragonStateHandler extends EntityStateHandler {
         return passengerId;
     }
 
-    public SkinCap getSkinData() {
+    public SkinData getSkinData() {
         return skinData;
     }
 
@@ -480,11 +478,17 @@ public class DragonStateHandler extends EntityStateHandler {
             }
         }
 
-        for (int i = 0; i < caps.length; i++) {
-            tag.put("cap_" + i, caps[i].get().serializeNBT(provider));
-        }
+        CompoundTag usedGrowthItems = new CompoundTag();
 
+        this.usedGrowthItems.forEach((item, count) -> {
+            //noinspection deprecation,DataFlowIssue -> ignore / key is present
+            usedGrowthItems.putInt(item.builtInRegistryHolder().getKey().location().toString(), count);
+        });
+
+        tag.put(USED_GROWTH_ITEMS, usedGrowthItems);
+        tag.put(SKIN_DATA, skinData.serializeNBT(provider));
         tag.put(ENTITY_STATE, super.serializeNBT(provider));
+
         return tag;
     }
 
@@ -553,12 +557,19 @@ public class DragonStateHandler extends EntityStateHandler {
             }
         }
 
-        for (int i = 0; i < caps.length; i++) {
-            if (tag.contains("cap_" + i)) {
-                caps[i].get().deserializeNBT(provider, (CompoundTag) tag.get("cap_" + i));
-            }
-        }
+        this.usedGrowthItems.clear();
 
+        CompoundTag usedGrowthItems = tag.getCompound(USED_GROWTH_ITEMS);
+        usedGrowthItems.getAllKeys().forEach(key -> {
+            Item item = BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(key));
+
+            if (item != Items.AIR) {
+                this.usedGrowthItems.put(item, usedGrowthItems.getInt(key));
+            }
+        });
+
+        skinData = new SkinData();
+        skinData.deserializeNBT(provider, tag.getCompound(SKIN_DATA));
         super.deserializeNBT(provider, tag.getCompound(ENTITY_STATE));
 
         if (isDragon()) {
@@ -628,7 +639,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
         stage().value().growthItems().forEach(growthItem -> {
             // A bit of wasted processing since not all are shown
-            growthItem.items().forEach(item -> growthItems.add(new TimeComponent(item.value(), growthItem.growthInTicks())));
+            growthItem.items().forEach(item -> growthItems.add(new TimeComponent(item.value(), growthItem.growthInTicks(), TimeComponent.GROWTH)));
         });
 
         int scroll = currentScroll;
@@ -672,7 +683,9 @@ public class DragonStateHandler extends EntityStateHandler {
     private static final String DRAGON_SPECIES = "dragon_species";
     private static final String DRAGON_BODY = "dragon_body";
     private static final String DRAGON_STAGE = "dragon_stage";
+
     private static final String ENTITY_STATE = "entity_state";
+    private static final String SKIN_DATA = "skin_data";
 
     private static final String SIZE = "size";
     private static final String SAVED_SIZE_SUFFIX = "_saved_size";
@@ -686,4 +699,5 @@ public class DragonStateHandler extends EntityStateHandler {
     private static final String WINGS_WAS_GRANTED = "wings_was_granted";
     private static final String IS_GROWING = "is_growing";
     private static final String DESTRUCTION_ENABLED = "destruction_enabled";
+    private static final String USED_GROWTH_ITEMS = "used_growth_items";
 }
