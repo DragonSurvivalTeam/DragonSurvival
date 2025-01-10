@@ -862,7 +862,6 @@
   "dragonsurvival.gui.ability.effect_chance_of_x": " with a %s chance",
   "dragonsurvival.gui.ability.every_x_seconds": " every %s seconds",
   "dragonsurvival.gui.ability.explosion_power": "§6■%s§6Explosion Power:§r %s",
-  "dragonsurvival.gui.ability.flying": "§fThis skill cannot be used §r§cwhile flying§r§f!§f",
   "dragonsurvival.gui.ability.initial_mana_cost_of_x": "§6■ Initial mana cost:§r %s",
   "dragonsurvival.gui.ability.no_mana": "§fNot enough§r §cmana or experience§r!",
   "dragonsurvival.gui.ability.on_hit": " on hit",

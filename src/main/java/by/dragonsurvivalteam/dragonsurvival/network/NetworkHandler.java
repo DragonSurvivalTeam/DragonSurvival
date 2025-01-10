@@ -28,13 +28,10 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.DirectionalPayloadHandler;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public class NetworkHandler {
     private static final String PROTOCOL_VERSION = "3";
-    private static final Logger log = LoggerFactory.getLogger(NetworkHandler.class);
 
     @SubscribeEvent
     public static void register(final RegisterPayloadHandlersEvent event) {

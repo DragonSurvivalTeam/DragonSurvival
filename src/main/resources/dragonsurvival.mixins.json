@@ -15,6 +15,7 @@
     "FireworkRocketItemMixin",
     "Holder$ReferenceAccess",
     "HolderSet$NamedAccess",
+    "HolderSetCodecMixin",
     "IItemExtensionMixin",
     "ILivingEntityExtensionMixin",
     "ItemEntityMixin",

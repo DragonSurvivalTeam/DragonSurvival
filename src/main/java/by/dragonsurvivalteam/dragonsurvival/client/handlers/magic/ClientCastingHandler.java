@@ -25,7 +25,7 @@ public class ClientCastingHandler {
     };
 
     @SubscribeEvent
-    private static void handleCastingInputs(InputEvent.Key event) {
+    private static void handleCastingInputs(final InputEvent.Key event) {
         Minecraft instance = Minecraft.getInstance();
 
         if (instance.screen != null || instance.player == null || instance.level == null) {
@@ -38,84 +38,73 @@ public class ClientCastingHandler {
             return;
         }
 
+        InputConstants.Key key = InputConstants.getKey(event.getKey(), event.getScanCode());
+
         if (event.getAction() == InputConstants.PRESS) {
-            handleVisibilityToggle(event, player);
-            handleSlotSelection(event, player);
-            handleCastingKey(event, player);
+            handleVisibilityToggle(player, key);
+            handleSlotSelection(player, key);
+            beginCast(player, key);
         } else if (event.getAction() == InputConstants.RELEASE) {
-            handleCastingKeyRelease(event, player);
+            stopCast(player);
         }
     }
 
-    private static void handleVisibilityToggle(InputEvent.Key event, Player player) {
+    private static void handleVisibilityToggle(final Player player, final InputConstants.Key key) {
         MagicData magicData = MagicData.getData(player);
         // Toggle HUD visibility
-        if (Keybind.TOGGLE_ABILITIES.get().getKey().getValue() == event.getKey()) {
+        if (Keybind.TOGGLE_ABILITIES.isDown(key)) {
             magicData.setRenderAbilities(!magicData.shouldRenderAbilities());
         }
     }
 
-    private static void handleSlotSelection(InputEvent.Key event, Player player) {
+    private static void handleSlotSelection(final Player player, final InputConstants.Key key) {
         MagicData magicData = MagicData.getData(player);
 
-        // Check ability key
         int lastSelectedSlot = magicData.getSelectedAbilitySlot();
-        // Check for slot selection
         int selectedSlot = lastSelectedSlot;
-        // Check for prev/next keys first
-        if (Keybind.NEXT_ABILITY.get().getKey().getValue() == event.getKey()) {
+
+        if (Keybind.NEXT_ABILITY.isDown(key)) {
             selectedSlot = (selectedSlot + 1) % slotKeybinds.length;
-        } else if (Keybind.PREVIOUS_ABILITY.get().getKey().getValue() == event.getKey()) {
+        } else if (Keybind.PREVIOUS_ABILITY.isDown(key)) {
             // Add length because % can return a negative remainder
             selectedSlot = (selectedSlot - 1 + slotKeybinds.length) % slotKeybinds.length;
         }
 
-        // Select the slot of the most recently pressed ability key, check for new keypresses
-        // (This overrides the prev/next keypress)
+        // (This overrides the previous / next key press)
         for (int i = 0; i < slotKeybinds.length; i++) {
-            if (slotKeybinds[i].consumeClick()) {
+            if (slotKeybinds[i].isDown(key)) {
                 selectedSlot = i;
+                break;
             }
         }
-        // Was selected slot changed?
+
         if (selectedSlot != lastSelectedSlot) {
-            // Cancel casting if in progress
             if (magicData.isCasting()) {
                 magicData.stopCasting(player);
                 PacketDistributor.sendToServer(new SyncStopCast(player.getId(), false, false));
             }
 
-            // Update slot
             magicData.setSelectedAbilitySlot(selectedSlot);
         }
     }
 
-    private static boolean isAbilityKey(int keyCode, int selectedSlot) {
-        boolean isAbilityKey;
-        if (!ClientConfig.alternateCastMode) {
-            isAbilityKey = Keybind.USE_ABILITY.get().getKey().getValue() == keyCode;
-        } else {
-            isAbilityKey = slotKeybinds.length > selectedSlot && slotKeybinds[selectedSlot].get().getKey().getValue() == keyCode;
-        }
-
-        return isAbilityKey;
-    }
-
-    private static void handleCastingKey(InputEvent.Key event, Player player) {
+    /** Starts the cast if the relevant key is pressed */
+    private static void beginCast(final Player player, final InputConstants.Key key) {
         MagicData magicData = MagicData.getData(player);
         int selectedSlot = magicData.getSelectedAbilitySlot();
 
         // Proceed with casting (ignore anything blocking the cast from happening; we'll let the server deny the client later)
-        if (isAbilityKey(event.getKey(), magicData.getSelectedAbilitySlot()) && !magicData.isCasting() && magicData.attemptCast(player, selectedSlot)) {
+        if (getKey(magicData.getSelectedAbilitySlot()).isDown(key) && !magicData.isCasting() && magicData.attemptCast(player, selectedSlot)) {
             PacketDistributor.sendToServer(new SyncBeginCast(player.getId(), selectedSlot));
         }
     }
 
-    private static void handleCastingKeyRelease(InputEvent.Key event, Player player) {
+    /** Stops the cast if the relevant key is released */
+    private static void stopCast(final Player player) {
         MagicData magicData = MagicData.getData(player);
 
         // Released the ability key, stop casting
-        if (isAbilityKey(event.getKey(), magicData.getSelectedAbilitySlot())) {
+        if (!getKey(magicData.getSelectedAbilitySlot()).isDown()) {
             if (magicData.isCasting()) {
                 magicData.stopCasting(player);
                 PacketDistributor.sendToServer(new SyncStopCast(player.getId(), false, false));
@@ -124,6 +113,14 @@ public class ClientCastingHandler {
             // Now that the player has released the ability key, we can allow them to attempt to cast again and reset the error message
             magicData.setCastWasDenied(false);
             magicData.setErrorMessageSent(false);
+        }
+    }
+
+    private static Keybind getKey(int selectedSlot) {
+        if (ClientConfig.alternateCastMode) {
+            return slotKeybinds[selectedSlot];
+        } else {
+            return Keybind.USE_ABILITY;
         }
     }
 }

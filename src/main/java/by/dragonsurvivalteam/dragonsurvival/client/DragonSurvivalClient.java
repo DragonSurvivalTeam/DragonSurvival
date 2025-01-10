@@ -2,6 +2,9 @@ package by.dragonsurvivalteam.dragonsurvival.client;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.extensions.ShakeWhenUsedExtension;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.DragonPenaltyHUD;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.GrowthHUD;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.MagicHUD;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.ClientDietComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.ClientTimeComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.DietComponent;
@@ -17,7 +20,9 @@ import by.dragonsurvivalteam.dragonsurvival.client.render.blocks.DragonBeaconRen
 import by.dragonsurvivalteam.dragonsurvival.client.render.blocks.HelmetEntityRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.creatures.*;
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.DragonRenderer;
-import by.dragonsurvivalteam.dragonsurvival.client.render.entity.projectiles.*;
+import by.dragonsurvivalteam.dragonsurvival.client.render.entity.projectiles.BolasEntityRenderer;
+import by.dragonsurvivalteam.dragonsurvival.client.render.entity.projectiles.GenericArrowRenderer;
+import by.dragonsurvivalteam.dragonsurvival.client.render.entity.projectiles.GenericBallRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DefaultPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DragonPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
@@ -38,10 +43,12 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
+import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.GeckoLibClient;
 
@@ -50,14 +57,15 @@ import java.util.Map;
 
 @Mod(value = DragonSurvival.MODID, dist = Dist.CLIENT)
 public class DragonSurvivalClient {
-    public DragonSurvivalClient(IEventBus bus, ModContainer container) {
+    public DragonSurvivalClient(final IEventBus bus, final ModContainer container) {
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
         GeckoLibClient.init();
 
         bus.addListener(this::setup);
-        bus.addListener(this::registerItemExtensions);
-        bus.addListener(this::registerTooltips);
         bus.addListener(this::addReloadListeners);
+        bus.addListener(this::registerGuiLayers);
+        bus.addListener(this::registerTooltips);
+        bus.addListener(this::registerItemExtensions);
     }
 
     private void setup(final FMLClientSetupEvent event) {
@@ -84,6 +92,12 @@ public class DragonSurvivalClient {
     private void addReloadListeners(final RegisterClientReloadListenersEvent event) {
         event.registerReloadListener(new DragonPartLoader());
         event.registerReloadListener(new DefaultPartLoader());
+    }
+
+    private void registerGuiLayers(final RegisterGuiLayersEvent event) {
+        event.registerAbove(VanillaGuiLayers.AIR_LEVEL, DragonPenaltyHUD.ID, DragonPenaltyHUD::render);
+        event.registerAbove(DragonPenaltyHUD.ID, MagicHUD.ID, MagicHUD::render);
+        event.registerAbove(MagicHUD.ID, GrowthHUD.ID, GrowthHUD::render);
     }
 
     private void registerTooltips(final RegisterClientTooltipComponentFactoriesEvent event) {

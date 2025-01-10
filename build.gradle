@@ -19,6 +19,8 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 runs {
 	configureEach {
+		systemProperties 'dragonsurvival.data_generation': 'false'
+
 		systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
 		systemProperty 'neoforge.logging.markers', 'REGISTRIES'
 		systemProperty 'neoforge.logging.console.level', 'debug'
@@ -43,6 +45,7 @@ runs {
 	gameTestServer {}
 
 	data {
+		systemProperties 'dragonsurvival.data_generation': 'true'
 		arguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
 	}
 

@@ -342,7 +342,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
     }
 
     public int clear(final ServerPlayer player) {
-        int count = abilities.values().stream().mapToInt(perSpecies -> perSpecies.values().size()).sum();
+        int count = abilities.values().stream().mapToInt(Map::size).sum();
         abilities.values().forEach(perSpecies -> perSpecies.values().forEach(ability -> ability.setActive(player, false)));
         abilities.clear();
         hotbar.clear();

@@ -300,11 +300,10 @@ public class SeaDragonAbilities {
                                 AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
                         ), true), LevelBasedValue.constant(1)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                                // Enable when on (or within) said block tag
+                                // Enable when on (or within) said block tag or when in water
                                 Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_WET))
                                         .or(Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_WET)))
-                                        // FIXME :: This currently crashes datagen due to an error that conflicts with the advancement datagen
-                                        /*.or(Condition.thisEntity(EntityCondition.isInFluid(context.lookup(Registries.FLUID).getOrThrow(FluidTags.WATER))))*/.build(),
+                                        .or(Condition.thisEntity(EntityCondition.isInFluid(context.lookup(Registries.FLUID).getOrThrow(FluidTags.WATER)))).build(),
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DragonAbilities.GOOD_MANA_CONDITION,
                                         ModifierWithDuration.DEFAULT_MODIFIER_ICON,

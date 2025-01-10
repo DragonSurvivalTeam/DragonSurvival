@@ -1,11 +1,10 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.hud;
 
-import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
-import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonFoodHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
@@ -25,7 +24,7 @@ public class HUDHandler {
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "hud"}, key = "show_vanilla_experience_bar")
     public static Boolean vanillaExperienceBar = false;
 
-    @SubscribeEvent(receiveCanceled = true)
+    @SubscribeEvent(receiveCanceled = true) // TODO :: should probably register experience + food as well and cancel those here depending on the config
     public static void onRenderOverlay(final RenderGuiLayerEvent.Pre event) {
         Minecraft minecraft = Minecraft.getInstance();
 
@@ -50,19 +49,12 @@ public class HUDHandler {
                 event.setCanceled(true);
             }
         } else if (id == VanillaGuiLayers.AIR_LEVEL) {
-            //noinspection DataFlowIssue -> player should be present
-            DragonStateHandler handler = DragonStateProvider.getData(minecraft.player);
+            //noinspection DataFlowIssue -> player is present
+            SwimData data = SwimData.getData(minecraft.player);
 
-            if (!handler.isDragon()) {
-                return;
+            if (data.getMaxOxygen(minecraft.player.getEyeInFluidType()) == SwimData.UNLIMITED_OXYGEN) {
+                event.setCanceled(true);
             }
-
-            // Render dragon specific hud elements (e.g. time in rain for cave dragons or time without water for sea dragons)
-            DragonPenaltyHUD.renderDragonPenaltyHUD(Minecraft.getInstance().gui, event.getGuiGraphics());
-            // Renders the abilities
-            MagicHUD.renderAbilityHUD(minecraft.player, event.getGuiGraphics(), screenWidth, screenHeight);
-            // Renders the growth icon above the experience bar when an item is selected which grants growth
-            GrowthHUD.renderGrowthHUD(handler, event.getGuiGraphics(), screenWidth, screenHeight);
         }
     }
 }

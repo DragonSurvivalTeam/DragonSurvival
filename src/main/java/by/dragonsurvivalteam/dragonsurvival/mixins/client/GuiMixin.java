@@ -108,15 +108,6 @@ public abstract class GuiMixin {
         return null;
     }
 
-    @Inject(method = "renderAirLevel", at = @At("HEAD"), cancellable = true)
-    private void cancelAirLevelRenderingIfAirLevelIsInfinite(GuiGraphics guiGraphics, CallbackInfo ci) {
-        Player player = Minecraft.getInstance().player;
-        SwimData data = SwimData.getData(player);
-        if (data.getMaxOxygen(player.getEyeInFluidType()) == SwimData.UNLIMITED_OXYGEN) {
-            ci.cancel();
-        }
-    }
-
     @ModifyArg(method = "renderAirLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lnet/minecraft/resources/ResourceLocation;IIII)V", ordinal = 0))
     private ResourceLocation dragonSurvival$modifyAirSprite(ResourceLocation sprite) {
         ResourceLocation replacementSprite = dragonSurvival$getSpriteForAirBubble(false);

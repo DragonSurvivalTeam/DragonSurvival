@@ -1,16 +1,20 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.hud;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonGrowthHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -19,6 +23,8 @@ import java.awt.*;
 
 /** HUD that is shown when the dragon is holding an item that can change its growth */
 public class GrowthHUD {
+    public static final ResourceLocation ID = DragonSurvival.res("growth_hud");
+
     private static final Color CENTER_COLOR = new Color(125, 125, 125);
     private static final Color OUTLINE_COLOR = new Color(125, 125, 125);
     private static final Color ADD_COLOR = new Color(0, 200, 0);
@@ -34,14 +40,21 @@ public class GrowthHUD {
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "growth"}, key = "growth_y_offset")
     public static Integer growthYOffset = 0;
 
-    public static void renderGrowthHUD(final DragonStateHandler handler, @NotNull final GuiGraphics graphics, int width, int height) {
-        Player localPlayer = Minecraft.getInstance().player;
+    /** Renders the growth icon above the experience bar when an item is selected which grants growth */
+    public static void render(@NotNull final GuiGraphics graphics, @NotNull final DeltaTracker tracker) {
+        Player player = Minecraft.getInstance().player;
 
-        if (localPlayer == null || localPlayer.isSpectator()) {
+        if (player == null || player.isSpectator()) {
             return;
         }
 
-        ItemStack stack = localPlayer.getMainHandItem();
+        DragonStateHandler handler = DragonStateProvider.getData(player);
+
+        if (!handler.isDragon()) {
+            return;
+        }
+
+        ItemStack stack = player.getMainHandItem();
 
         Holder<DragonStage> dragonStage = handler.stage();
         double nextSize = dragonStage.value().sizeRange().max();
@@ -58,8 +71,8 @@ public class GrowthHUD {
         currentProgress = Math.min(1, currentProgress);
 
         int radius = 17;
-        int circleX = width / 2 - radius;
-        int circleY = height - 90;
+        int circleX = graphics.guiWidth() / 2 - radius;
+        int circleY = graphics.guiHeight() - 90;
 
         circleX += growthXOffset;
         circleY += growthYOffset;

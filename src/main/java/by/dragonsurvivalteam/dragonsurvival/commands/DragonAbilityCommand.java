@@ -12,6 +12,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -48,57 +49,49 @@ public class DragonAbilityCommand {
 
 
     public static void register(final RegisterCommandsEvent event) {
-        event.getDispatcher().register(
-                Commands.literal("dragon-ability")
-                        .requires(sourceStack -> sourceStack.hasPermission(2))
-                        .then(
-                                Commands.literal("remove")
-                                        .then(
-                                                Commands.argument("targets", EntityArgument.players())
-                                                        .executes(sourceStackCommandContext -> clearAbilities(sourceStackCommandContext.getSource(), EntityArgument.getPlayers(sourceStackCommandContext, "targets")))
-                                                        .then(
-                                                                argument(DragonAbilityArgument.ID, new DragonAbilityArgument(event.getBuildContext()))
-                                                                        .executes(sourceStackCommandContext -> removeAbility(sourceStackCommandContext.getSource(), EntityArgument.getPlayers(sourceStackCommandContext, "targets"), DragonAbilityArgument.get(sourceStackCommandContext)))
-                                                        )
-                                                        .then(
-                                                                Commands.literal("all")
-                                                                        .executes(sourceStackCommandContext -> clearAbilities(sourceStackCommandContext.getSource(), ImmutableList.of(sourceStackCommandContext.getSource().getPlayerOrException())))
-                                                        )
+        event.getDispatcher().register(Commands.literal("dragon-ability")
+                .requires(sourceStack -> sourceStack.hasPermission(2))
+                .then(Commands.literal("remove")
+                        .then(Commands.argument("targets", EntityArgument.players())
+                                .executes(sourceStackCommandContext -> clearAbilities(sourceStackCommandContext.getSource(), EntityArgument.getPlayers(sourceStackCommandContext, "targets")))
+                                .then(argument(DragonAbilityArgument.ID, new DragonAbilityArgument(event.getBuildContext()))
+                                        .executes(sourceStackCommandContext -> removeAbility(sourceStackCommandContext.getSource(), EntityArgument.getPlayers(sourceStackCommandContext, "targets"), DragonAbilityArgument.get(sourceStackCommandContext)))
+                                )
+                                .then(Commands.literal("all")
+                                        .executes(sourceStackCommandContext -> clearAbilities(sourceStackCommandContext.getSource(), ImmutableList.of(sourceStackCommandContext.getSource().getPlayerOrException())))
+                                )
                         ))
-                        .then(
-                                Commands.literal("add")
-                                        .then(
-                                                Commands.argument("targets", EntityArgument.players())
-                                                        .then(
-                                                                argument(DragonAbilityArgument.ID, new DragonAbilityArgument(event.getBuildContext()))
-                                                                        .executes(sourceStackCommandContext -> addAbility(sourceStackCommandContext.getSource(), EntityArgument.getPlayers(sourceStackCommandContext, "targets"), DragonAbilityArgument.get(sourceStackCommandContext)))
-                                                        )
-                                        )
+                .then(Commands.literal("add")
+                        .then(Commands.argument("targets", EntityArgument.players())
+                                .then(argument(DragonAbilityArgument.ID, new DragonAbilityArgument(event.getBuildContext()))
+                                        .executes(sourceStackCommandContext -> addAbility(sourceStackCommandContext.getSource(), EntityArgument.getPlayers(sourceStackCommandContext, "targets"), DragonAbilityArgument.get(sourceStackCommandContext)))
+                                )
                         )
-                        .then(
-                                Commands.literal("refresh")
-                                          .executes(sourceStackCommandContext -> clearAbilities(sourceStackCommandContext.getSource(), ImmutableList.of(sourceStackCommandContext.getSource().getPlayerOrException())))
-                                          .then(
-                                                 argument("targets", EntityArgument.players())
-                                                          .executes(sourceStackCommandContext -> refreshAbilities(sourceStackCommandContext.getSource(), EntityArgument.getPlayers(sourceStackCommandContext, "targets")))
-                                           )
+                )
+                .then(Commands.literal("refresh")
+                        .executes(sourceStackCommandContext -> clearAbilities(sourceStackCommandContext.getSource(), ImmutableList.of(sourceStackCommandContext.getSource().getPlayerOrException())))
+                        .then(argument("targets", EntityArgument.players())
+                                .executes(sourceStackCommandContext -> refreshAbilities(sourceStackCommandContext.getSource(), EntityArgument.getPlayers(sourceStackCommandContext, "targets")))
                         )
+                )
         );
     }
 
-    private static int clearAbilities(CommandSourceStack source, Collection<? extends Player> targets) {
+    private static int clearAbilities(final CommandSourceStack source, final Collection<? extends Player> targets) {
         int count = 0;
+
         for (Player target : targets) {
-            if(target instanceof ServerPlayer player) {
-                MagicData data = MagicData.getData(player);
-                count = data.clear(player);
-                PacketDistributor.sendToPlayer(player, new SyncMagicData(data.serializeNBT(player.registryAccess())));
+            if (target instanceof ServerPlayer player) {
+                MagicData data = MagicData.getData(target);
+                count += data.clear(player);
+                PacketDistributor.sendToPlayer(player, new SyncMagicData(data.serializeNBT(target.registryAccess())));
             }
         }
 
         int finalCount = count;
+
         if (targets.size() == 1) {
-            source.sendSuccess(() -> Component.translatable(CLEAR_FROM_SINGLE_PLAYER, finalCount, targets.stream().findFirst().get().getDisplayName()), true);
+            source.sendSuccess(() -> Component.translatable(CLEAR_FROM_SINGLE_PLAYER, finalCount, targets.iterator().next().getDisplayName()), true);
         } else {
             source.sendSuccess(() -> Component.translatable(CLEAR_FROM_PLAYERS, finalCount, targets.size()), true);
         }
@@ -106,45 +99,51 @@ public class DragonAbilityCommand {
         return 1;
     }
 
-    private static int removeAbility(CommandSourceStack source, Collection<? extends Player> targets, Holder<DragonAbility> ability) {
+    private static int removeAbility(final CommandSourceStack source, final Collection<? extends Player> targets, final Holder<DragonAbility> ability) {
         for (Player target : targets) {
-            if(target instanceof ServerPlayer player) {
+            if (target instanceof ServerPlayer player) {
                 MagicData data = MagicData.getData(player);
                 data.removeAbility(ability.getKey());
                 PacketDistributor.sendToPlayer(player, new SyncMagicData(data.serializeNBT(player.registryAccess())));
             }
         }
 
+        //noinspection DataFlowIssue -> key is present
+        MutableComponent abilityTranslation = Component.translatable(Translation.Type.ABILITY.wrap(ability.getKey().location()));
+
         if (targets.size() == 1) {
-            source.sendSuccess(() -> Component.translatable(REMOVED_FROM_SINGLE_PLAYER, Component.translatable(Translation.Type.ABILITY.wrap(ability.getKey().location())), targets.stream().findFirst().get().getDisplayName()), true);
+            source.sendSuccess(() -> Component.translatable(REMOVED_FROM_SINGLE_PLAYER, abilityTranslation, targets.iterator().next().getDisplayName()), true);
         } else {
-            source.sendSuccess(() -> Component.translatable(REMOVED_FROM_PLAYERS, Component.translatable(Translation.Type.ABILITY.wrap(ability.getKey().location())), targets.size()), true);
+            source.sendSuccess(() -> Component.translatable(REMOVED_FROM_PLAYERS, abilityTranslation, targets.size()), true);
         }
 
         return 1;
     }
 
-    private static int addAbility(CommandSourceStack source, Collection<? extends Player> targets, Holder<DragonAbility> ability) {
+    private static int addAbility(final CommandSourceStack source, final Collection<? extends Player> targets, final Holder<DragonAbility> ability) {
         for (Player target : targets) {
-            if(target instanceof ServerPlayer player) {
+            if (target instanceof ServerPlayer player) {
                 MagicData data = MagicData.getData(player);
                 data.addAbility(player, ability);
                 PacketDistributor.sendToPlayer(player, new SyncMagicData(data.serializeNBT(player.registryAccess())));
             }
         }
 
+        //noinspection DataFlowIssue -> key is present
+        MutableComponent abilityTranslation = Component.translatable(Translation.Type.ABILITY.wrap(ability.getKey().location()));
+
         if (targets.size() == 1) {
-            source.sendSuccess(() -> Component.translatable(ADDED_TO_SINGLE_PLAYER, Component.translatable(Translation.Type.ABILITY.wrap(ability.getKey().location())), targets.stream().findFirst().get().getDisplayName()), true);
+            source.sendSuccess(() -> Component.translatable(ADDED_TO_SINGLE_PLAYER, abilityTranslation, targets.iterator().next().getDisplayName()), true);
         } else {
-            source.sendSuccess(() -> Component.translatable(ADDED_TO_PLAYERS, Component.translatable(Translation.Type.ABILITY.wrap(ability.getKey().location())), targets.size()), true);
+            source.sendSuccess(() -> Component.translatable(ADDED_TO_PLAYERS, abilityTranslation, targets.size()), true);
         }
 
         return 1;
     }
 
-    private static int refreshAbilities(CommandSourceStack source, Collection<? extends Player> targets) {
+    private static int refreshAbilities(final CommandSourceStack source, final Collection<? extends Player> targets) {
         for (Player target : targets) {
-            if(target instanceof ServerPlayer player) {
+            if (target instanceof ServerPlayer player) {
                 MagicData data = MagicData.getData(player);
                 data.refresh(player, DragonStateProvider.getData(player).species());
                 PacketDistributor.sendToPlayer(player, new SyncMagicData(data.serializeNBT(player.registryAccess())));
@@ -152,7 +151,7 @@ public class DragonAbilityCommand {
         }
 
         if (targets.size() == 1) {
-            source.sendSuccess(() -> Component.translatable(REFRESHED_SINGLE_PLAYER, targets.stream().findFirst().get().getDisplayName()), true);
+            source.sendSuccess(() -> Component.translatable(REFRESHED_SINGLE_PLAYER, targets.iterator().next().getDisplayName()), true);
         } else {
             source.sendSuccess(() -> Component.translatable(REFRESHED_PLAYERS, targets.size()), true);
         }
