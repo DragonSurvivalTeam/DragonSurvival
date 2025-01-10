@@ -36,20 +36,6 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
     private static final Color RENDER_COLOR = Color.ofRGB(255, 255, 255);
     private static final Color TRANSPARENT_RENDER_COLOR = Color.ofRGBA(1, 1, 1, HunterHandler.MIN_ALPHA);
 
-    private static final HashSet<String> magicAnimations = new HashSet<>();
-
-    static {
-        magicAnimations.add(SimpleAbilityAnimation.CAST_MASS_BUFF);
-        magicAnimations.add(SimpleAbilityAnimation.MASS_BUFF);
-        magicAnimations.add(SimpleAbilityAnimation.CAST_SELF_BUFF);
-        magicAnimations.add(SimpleAbilityAnimation.SELF_BUFF);
-        magicAnimations.add("fly_head_locked_magic");
-        magicAnimations.add("flapping_wings_standing");
-        magicAnimations.add("fly_head_locked");
-        magicAnimations.add("sit_on_magic_source");
-        magicAnimations.add("sit_dentist");
-    }
-
     public DragonRenderer(final EntityRendererProvider.Context context, final GeoModel<DragonEntity> model) {
         super(context, model);
 
@@ -97,22 +83,6 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
                 if (bone != null) {
                     bone.setHidden(!hasWings);
                 }
-            }
-        }
-
-        // Hide the magic bones if we aren't using an animation that requires it - prevents issues during animation transitions
-        List<String> animations = getAnimations(animatable);
-
-        if (!animations.isEmpty()) {
-            GeoBone magic = ClientDragonRenderer.dragonModel.getAnimationProcessor().getBone("Magic");
-            GeoBone magicCircle = ClientDragonRenderer.dragonModel.getAnimationProcessor().getBone("MagicCircle");
-
-            if (animations.stream().noneMatch(magicAnimations::contains)) {
-                magic.setHidden(true);
-                magicCircle.setHidden(true);
-            } else {
-                magic.setHidden(false);
-                magicCircle.setHidden(false);
             }
         }
 
