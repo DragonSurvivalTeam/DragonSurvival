@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationLayer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.SimpleAbilityAnimation;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.CustomPredicates;
 import by.dragonsurvivalteam.dragonsurvival.common.conditions.EntityCondition;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.LargeFireParticleOption;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.SmallFireParticleOption;
@@ -288,7 +289,8 @@ public class CaveDragonAbilities {
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 // Enable when on (or within) said block tag
                                 Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_WARM))
-                                        .or(Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_WARM))).build(),
+                                        .or(Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_WARM)))
+                                        .or(Condition.thisEntity(EntityCondition.isEyeInFluid(NeoForgeMod.LAVA_TYPE))).build(),
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DragonAbilities.GOOD_MANA_CONDITION,
                                         ModifierWithDuration.DEFAULT_MODIFIER_ICON,

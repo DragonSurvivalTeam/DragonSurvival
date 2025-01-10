@@ -302,7 +302,8 @@ public class SeaDragonAbilities {
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 // Enable when on (or within) said block tag
                                 Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_WET))
-                                        .or(Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_WET))).build(),
+                                        .or(Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_WET)))
+                                        .or(Condition.thisEntity(EntityCondition.isEyeInFluid(NeoForgeMod.WATER_TYPE))).build(),
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DragonAbilities.GOOD_MANA_CONDITION,
                                         ModifierWithDuration.DEFAULT_MODIFIER_ICON,
