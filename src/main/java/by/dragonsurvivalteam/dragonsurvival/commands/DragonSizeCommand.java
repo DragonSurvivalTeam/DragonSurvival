@@ -4,7 +4,6 @@ import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonSizeArgumen
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
-import com.mojang.brigadier.arguments.DoubleArgumentType;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;

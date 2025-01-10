@@ -1,6 +1,5 @@
-package by.dragonsurvivalteam.dragonsurvival.client.particles.dragon.SeaDragon;
+package by.dragonsurvivalteam.dragonsurvival.client.particles.dragon;
 
-import by.dragonsurvivalteam.dragonsurvival.client.particles.dragon.DragonParticle;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.LargeLightningParticleOption;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;

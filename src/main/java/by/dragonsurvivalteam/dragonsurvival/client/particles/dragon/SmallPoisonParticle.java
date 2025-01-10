@@ -1,6 +1,5 @@
-package by.dragonsurvivalteam.dragonsurvival.client.particles.dragon.ForestDragon;
+package by.dragonsurvivalteam.dragonsurvival.client.particles.dragon;
 
-import by.dragonsurvivalteam.dragonsurvival.client.particles.dragon.DragonParticle;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.SmallPoisonParticleOption;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
