@@ -53,12 +53,14 @@ public record SyncBreathParticles(int playerId, float spread, float speedPerSize
 
             for (int i = 0; i < packet.numParticles(); i++) {
                 Vec3 velocity = calculateParticleVelocity((float) (yaw + packet.spread() * 2 * (random.nextDouble() * 2 - 1) * 2.f * Math.PI), (float) (pitch + packet.spread() * (random.nextDouble() * 2 - 1) * 2.f * Math.PI), speed);
+                velocity = velocity.add(player.getDeltaMovement());
                 // Get the dragon model and place the particles at the mouth of the dragon
                 player.level().addParticle(packet.secondaryParticle(), position.x, position.y, position.z, velocity.x, velocity.y, velocity.z);
             }
 
             for (int i = 0; i <  packet.numParticles() / 2; i++) {
                 Vec3 velocity = calculateParticleVelocity((float) (yaw + packet.spread() * 2 * (random.nextDouble() * 2 - 1) * 2.f * Math.PI), (float) (pitch + packet.spread() * (random.nextDouble() * 2 - 1) * 2.f * Math.PI), speed);
+                velocity = velocity.add(player.getDeltaMovement());
                 player.level().addParticle(packet.mainParticle(), position.x, position.y, position.z, velocity.x, velocity.y, velocity.z);
             }
         });
