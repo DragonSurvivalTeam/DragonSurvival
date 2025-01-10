@@ -334,8 +334,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
     }
 
     public boolean shouldRenderAbilities() {
-        // TODO: Bother with this later
-        return true;
+        return renderAbilities;
     }
 
     public void setRenderAbilities(boolean renderAbilities) {

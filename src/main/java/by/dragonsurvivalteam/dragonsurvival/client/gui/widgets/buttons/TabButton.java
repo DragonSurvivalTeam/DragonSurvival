@@ -2,7 +2,9 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons;
 
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.MagicHUD;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.*;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
 import net.minecraft.client.Minecraft;
@@ -82,13 +84,40 @@ public class TabButton extends Button {
     }
 
     public static void addTabButtonsToScreen(final Screen screen, int offsetX, int offsetY, final TabButtonType selectedButton) {
-        for(int i = 0; i < TabButtonType.values().length; i++) {
-            TabButtonType tabButton = TabButtonType.values()[i];
+        boolean ignoreAbilityTab = false;
 
-            if (tabButton == selectedButton) {
-                ((ScreenAccessor)screen).dragonSurvival$addRenderableWidget(new TabButton(offsetX + 1 + (i * 28), offsetY - 2, tabButton, screen));
-            } else {
-                ((ScreenAccessor)screen).dragonSurvival$addRenderableWidget(new TabButton(offsetX + (i * 28), offsetY, tabButton, screen));
+        if(Minecraft.getInstance().player.getData(DSDataAttachments.MAGIC).getAbilities().isEmpty()) {
+            ignoreAbilityTab = true;
+        }
+
+        if(ignoreAbilityTab) {
+            for(int i = 0; i < TabButtonType.values().length; i++) {
+                TabButtonType tabButton = TabButtonType.values()[i];
+
+                if(tabButton == TabButtonType.ABILITY_TAB) {
+                    continue;
+                }
+
+                int additionalOffset = 0;
+                if(tabButton.ordinal() > TabButtonType.ABILITY_TAB.ordinal()) {
+                    additionalOffset = -28;
+                }
+
+                if(tabButton == selectedButton) {
+                    ((ScreenAccessor)screen).dragonSurvival$addRenderableWidget(new TabButton(offsetX + additionalOffset + 1 + (i * 28), offsetY - 2, tabButton, screen));
+                } else {
+                    ((ScreenAccessor)screen).dragonSurvival$addRenderableWidget(new TabButton(offsetX + additionalOffset + (i * 28), offsetY, tabButton, screen));
+                }
+            }
+        } else {
+            for(int i = 0; i < TabButtonType.values().length; i++) {
+                TabButtonType tabButton = TabButtonType.values()[i];
+
+                if(tabButton == selectedButton) {
+                    ((ScreenAccessor)screen).dragonSurvival$addRenderableWidget(new TabButton(offsetX + 1 + (i * 28), offsetY - 2, tabButton, screen));
+                } else {
+                    ((ScreenAccessor)screen).dragonSurvival$addRenderableWidget(new TabButton(offsetX + (i * 28), offsetY, tabButton, screen));
+                }
             }
         }
     }

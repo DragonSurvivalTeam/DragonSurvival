@@ -100,7 +100,7 @@ public class DragonAbilityScreen extends Screen {
         int startX = guiLeft + 8;
         int startY = guiTop - 28;
 
-        if (leftWindowOpen) {
+        if (leftWindowOpen && !leftWindowWidgets.isEmpty()) {
             graphics.blit(BACKGROUND_SIDE, startX - 50, startY, 0, 0, 48, 203);
         }
 
@@ -226,29 +226,39 @@ public class DragonAbilityScreen extends Screen {
             constantPassives.sort(comparator);
         });
 
-        scrollableComponents.add(new AbilityColumnsComponent(this, guiLeft + 35, guiTop, 40, 20, 0.8f, 0.5f, actives));
-        scrollableComponents.add(new AbilityColumnsComponent(this, guiLeft + 111, guiTop, 40, 20, 0.8f, 0.5f, upgradablePassives));
-        scrollableComponents.add(new AbilityColumnsComponent(this,guiLeft + 186, guiTop, 40, 20, 0.8f, 0.5f, constantPassives));
-
-        // Left panel (hotbar)
-        for (int i = 0; i < MagicData.HOTBAR_SLOTS; i++) {
-            AbstractWidget widget = new AbilityButton(guiLeft - 35, guiTop + i * 40, data.fromSlot(i), this, true, i);
-            addRenderableWidget(widget);
-            leftWindowWidgets.add(widget);
-            widget.visible = leftWindowOpen;
+        if(!actives.isEmpty()) {
+            scrollableComponents.add(new AbilityColumnsComponent(this, guiLeft + 35, guiTop, 40, 20, 0.8f, 0.5f, actives));
         }
 
-        AbstractWidget leftHelpButton = new HelpButton(guiLeft - 24, startY - 25, 13, 13, HELP_ABILITY_ASSIGNMENT, INFO_MAIN, INFO_HOVER);
-        addRenderableWidget(leftHelpButton);
-        leftWindowWidgets.add(leftHelpButton);
-        leftHelpButton.visible = leftWindowOpen;
+        if(!upgradablePassives.isEmpty()) {
+            scrollableComponents.add(new AbilityColumnsComponent(this, guiLeft + 111, guiTop, 40, 20, 0.8f, 0.5f, upgradablePassives));
+        }
 
-        addRenderableWidget(new ClickHoverButton(guiLeft, guiTop + 69, 10, 17, 0, 1, 18, 18, Component.empty(), button -> {
-            leftWindowOpen = !leftWindowOpen;
-            for(AbstractWidget widget : leftWindowWidgets) {
+        if(!constantPassives.isEmpty()) {
+            scrollableComponents.add(new AbilityColumnsComponent(this, guiLeft + 186, guiTop, 40, 20, 0.8f, 0.5f, constantPassives));
+        }
+
+        // Left panel (hotbar)
+        if(!actives.isEmpty()) {
+            for (int i = 0; i < MagicData.HOTBAR_SLOTS; i++) {
+                AbstractWidget widget = new AbilityButton(guiLeft - 35, guiTop + i * 40, data.fromSlot(i), this, true, i);
+                addRenderableWidget(widget);
+                leftWindowWidgets.add(widget);
                 widget.visible = leftWindowOpen;
             }
-        }, LEFT_PANEL_ARROW_CLICK, LEFT_PANEL_ARROW_HOVER, LEFT_PANEL_ARROW_MAIN));
+
+            AbstractWidget leftHelpButton = new HelpButton(guiLeft - 24, startY - 25, 13, 13, HELP_ABILITY_ASSIGNMENT, INFO_MAIN, INFO_HOVER);
+            addRenderableWidget(leftHelpButton);
+            leftWindowWidgets.add(leftHelpButton);
+            leftHelpButton.visible = leftWindowOpen;
+
+            addRenderableWidget(new ClickHoverButton(guiLeft, guiTop + 69, 10, 17, 0, 1, 18, 18, Component.empty(), button -> {
+                leftWindowOpen = !leftWindowOpen;
+                for(AbstractWidget widget : leftWindowWidgets) {
+                    widget.visible = leftWindowOpen;
+                }
+            }, LEFT_PANEL_ARROW_CLICK, LEFT_PANEL_ARROW_HOVER, LEFT_PANEL_ARROW_MAIN));
+        }
 
         addRenderableWidget(new HelpButton(guiLeft + 122, startY + 263 / 2 + 25, 12, 12, HELP_PASSIVE_ACTIVE));
     }

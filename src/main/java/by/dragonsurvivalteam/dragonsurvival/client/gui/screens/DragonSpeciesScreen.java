@@ -8,6 +8,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.H
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.BarComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.DietMenuComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.ScrollableComponent;
+import by.dragonsurvivalteam.dragonsurvival.client.util.TextRenderUtil;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.GrowthIcon;
@@ -31,6 +32,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.MutableComponent;
@@ -54,6 +56,12 @@ public class DragonSpeciesScreen extends Screen {
             "\n§6Dragon players can ride you below or equal to size %s§r§7"
     })
     private static final String RIDING_INFO = Translation.Type.GUI.wrap("dragon_species_screen.riding_info");
+
+    @Translation(comments = "This species has no penalties.")
+    private static final String NO_PENALTIES = Translation.Type.GUI.wrap("dragon_species_screen.no_penalties");
+
+    @Translation(comments = "This species has no special diet.")
+    private static final String NO_DIET = Translation.Type.GUI.wrap("dragon_species_screen.no_diet");
 
     private static final ResourceLocation BACKGROUND_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/species_background.png");
     private static final ResourceLocation RIDING_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/riding_hover.png");
@@ -106,7 +114,7 @@ public class DragonSpeciesScreen extends Screen {
 
     @Override
     public boolean keyPressed(final int keyCode, final int scanCode, final int modifiers) {
-        if (dietMenu.getHovered() != null && Compat.isModLoaded(Compat.JEI)) {
+        if (dietMenu != null && dietMenu.getHovered() != null && Compat.isModLoaded(Compat.JEI)) {
             return JEIPlugin.handleKeyPress(InputConstants.getKey(keyCode, scanCode), dietMenu.getHovered());
         }
 
@@ -176,9 +184,21 @@ public class DragonSpeciesScreen extends Screen {
         TabButton.addTabButtonsToScreen(this, startX + 17, startY - 56, TabButton.TabButtonType.SPECIES_TAB);
         DragonStateHandler data = DragonStateProvider.getData(minecraft.player);
 
-        dietMenu = new DietMenuComponent(dragonSpecies, startX + 78, startY + 10);
-        scrollableComponents.add(dietMenu);
-        renderables.add(dietMenu);
+        if(!dragonSpecies.value().diet().isEmpty()) {
+            ExtendedButton noDietText = new ExtendedButton(startX + 77, startY + 30, 140, 20, Component.empty(), button -> {}){
+                @Override
+                public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+                    final FormattedText buttonText = Minecraft.getInstance().font.ellipsize(this.getMessage(), this.width + 26); // Remove 6 pixels so that the text is always contained within the button's borders
+                    TextRenderUtil.drawScaledText(graphics, this.getX(), this.getY() + (this.height - 8) / 2, 0.8f, buttonText.getString(), getFGColor());
+                }
+            };
+            noDietText.setMessage(Component.translatable(NO_DIET));
+            addRenderableOnly(noDietText);
+        } else {
+            dietMenu = new DietMenuComponent(dragonSpecies, startX + 78, startY + 10);
+            scrollableComponents.add(dietMenu);
+            renderables.add(dietMenu);
+        }
 
         // Dragon species banner
         speciesBanner = new ExtendedButton(startX + 17, startY - 22, 49, 147, Component.empty(), button -> {}){
@@ -263,11 +283,23 @@ public class DragonSpeciesScreen extends Screen {
 
         // Penalties bar
         List<AbstractWidget> penalties = data.species().value().penalties().stream().filter(penalty -> penalty.value().icon().isPresent()).map(penalty -> (AbstractWidget) new PenaltyButton(0, 0, penalty)).toList();
-        scrollableComponents.add(new BarComponent(this,
-                startX + 85, startY + 85, 3,
-                penalties, 40,
-                -10, 116, 10, 9, 16, 20, 20,
-                PENALTIES_LEFT_ARROW_HOVER, PENALTIES_LEFT_ARROW_MAIN, PENALTIES_RIGHT_ARROW_HOVER, PENALTIES_RIGHT_ARROW_MAIN, false));
+        if(!penalties.isEmpty()) {
+            scrollableComponents.add(new BarComponent(this,
+                    startX + 85, startY + 85, 3,
+                    penalties, 40,
+                    -10, 116, 10, 9, 16, 20, 20,
+                    PENALTIES_LEFT_ARROW_HOVER, PENALTIES_LEFT_ARROW_MAIN, PENALTIES_RIGHT_ARROW_HOVER, PENALTIES_RIGHT_ARROW_MAIN, false));
+        } else {
+            ExtendedButton noPenaltiesText = new ExtendedButton(startX + 82, startY + 100, 140, 10, Component.empty(), button -> {}){
+                @Override
+                public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+                    final FormattedText buttonText = Minecraft.getInstance().font.ellipsize(this.getMessage(), this.width + 26); // Remove 6 pixels so that the text is always contained within the button's borders
+                    TextRenderUtil.drawScaledText(graphics, this.getX(), this.getY() + (this.height - 8) / 2, 0.8f, buttonText.getString(), getFGColor());
+                }
+            };
+            noPenaltiesText.setMessage(Component.translatable(NO_PENALTIES));
+            addRenderableOnly(noPenaltiesText);
+        }
     }
 
 

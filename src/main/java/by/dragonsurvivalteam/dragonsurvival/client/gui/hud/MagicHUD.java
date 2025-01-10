@@ -119,11 +119,7 @@ public class MagicHUD {
             return false;
         }
 
-        /*ActiveDragonAbility ability = handler.getMagicData().getAbilityFromSlot(handler.getMagicData().getSelectedAbilitySlot());
 
-        if (ability == null || ability.canConsumeMana(localPlayer)) {
-            return false;
-        }*/
 
         Window window = Minecraft.getInstance().getWindow();
         int guiScaledWidth = window.getGuiScaledWidth();
@@ -208,6 +204,11 @@ public class MagicHUD {
             return;
         }
 
+        MagicData magic = MagicData.getData(player);
+        if(magic.getAbilities().isEmpty()) {
+            return;
+        }
+
         if(!initializedDisabledAbilitiesColor) {
             for (int i = 0; i < MagicData.HOTBAR_SLOTS; i++) {
                 disabledAbilitiesColor[i] = new OutlineColorData(Color.ofRGBA(1.f, 1.f, 1.f, 1.f), markDisabledAbilitiesRedDelay, false);
@@ -237,55 +238,55 @@ public class MagicHUD {
         posX += skillbarXOffset;
         posY += skillbarYOffset;
 
-        MagicData magic = MagicData.getData(player);
-
         if (magic.shouldRenderAbilities()) {
-            graphics.setColor(1, 0, 0, 1);
-            graphics.setColor(1, 1, 1, 1);
+            if(!magic.getActiveAbilities().isEmpty()) {
+                graphics.setColor(1, 0, 0, 1);
+                graphics.setColor(1, 1, 1, 1);
 
-            for (int x = 0; x < MagicData.HOTBAR_SLOTS; x++) {
-                DragonAbilityInstance ability = magic.fromSlot(x);
-                if (ability != null) {
-                    if(!ability.isEnabled()) {
-                        if(disabledAbilitiesColor[x].pastDelay && disabledAbilitiesColor[x].color.equals(Color.ofOpaque(-2314))) {
-                            disabledAbilitiesColor[x].delay = markDisabledAbilitiesRedDelay;
-                            disabledAbilitiesColor[x].pastDelay = false;
+                for (int x = 0; x < MagicData.HOTBAR_SLOTS; x++) {
+                    DragonAbilityInstance ability = magic.fromSlot(x);
+                    if (ability != null) {
+                        if(!ability.isEnabled()) {
+                            if(disabledAbilitiesColor[x].pastDelay && disabledAbilitiesColor[x].color.equals(Color.ofOpaque(-2314))) {
+                                disabledAbilitiesColor[x].delay = markDisabledAbilitiesRedDelay;
+                                disabledAbilitiesColor[x].pastDelay = false;
+                            }
+                            lerpToColor(x, Color.RED);
+                        } else {
+                            disabledAbilitiesColor[x].pastDelay = true;
+                            disabledAbilitiesColor[x].delay = 0;
+                            lerpToColor(x, Color.WHITE);
                         }
-                        lerpToColor(x, Color.RED);
+                        Color outlineColor = disabledAbilitiesColor[x].color;
+                        graphics.setColor(outlineColor.getRedFloat(), outlineColor.getGreenFloat(), outlineColor.getBlueFloat(), outlineColor.getAlphaFloat());
+                        graphics.blit(VANILLA_WIDGETS, posX + x * 20, posY - 2, -50, x * 20, 0, 21, 22, 256, 256);
+                        graphics.setColor(1.f, 1.f, 1.f, 1.f);
+
+                        graphics.blitSprite(ability.getIcon(), posX + x * sizeX + 3, posY + 1, 0, 16, 16);
+
+                        float skillCooldown = ability.value().getCooldown(ability.level());
+                        float currentCooldown = ability.getCooldown() - Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
+
+                        if (skillCooldown > 0 && currentCooldown > 0 && skillCooldown != currentCooldown) {
+                            float cooldown = Mth.clamp(currentCooldown / skillCooldown, 0, 1);
+                            int boxX = posX + x * sizeX + 3;
+                            int boxY = posY + 1;
+                            int offset = 16 - (int)(16 - (cooldown * 16));
+                            int color = errorTicks > 0 ? DSColors.withAlpha(DSColors.RED, 0.75f) : DSColors.withAlpha(DSColors.DARK_GRAY, 0.75f);
+                            graphics.fill(boxX, boxY, boxX + 16, boxY + offset, color);
+                        }
                     } else {
-                        disabledAbilitiesColor[x].pastDelay = true;
-                        disabledAbilitiesColor[x].delay = 0;
-                        lerpToColor(x, Color.WHITE);
+                        graphics.blit(VANILLA_WIDGETS, posX + x * 20, posY - 2, -50, x * 20, 0, 21, 22, 256, 256);
                     }
-                    Color outlineColor = disabledAbilitiesColor[x].color;
-                    graphics.setColor(outlineColor.getRedFloat(), outlineColor.getGreenFloat(), outlineColor.getBlueFloat(), outlineColor.getAlphaFloat());
-                    graphics.blit(VANILLA_WIDGETS, posX + x * 20, posY - 2, -50, x * 20, 0, 21, 22, 256, 256);
-                    graphics.setColor(1.f, 1.f, 1.f, 1.f);
-
-                    graphics.blitSprite(ability.getIcon(), posX + x * sizeX + 3, posY + 1, 0, 16, 16);
-
-                    float skillCooldown = ability.value().getCooldown(ability.level());
-                    float currentCooldown = ability.getCooldown() - Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
-
-                    if (skillCooldown > 0 && currentCooldown > 0 && skillCooldown != currentCooldown) {
-                        float cooldown = Mth.clamp(currentCooldown / skillCooldown, 0, 1);
-                        int boxX = posX + x * sizeX + 3;
-                        int boxY = posY + 1;
-                        int offset = 16 - (int)(16 - (cooldown * 16));
-                        int color = errorTicks > 0 ? DSColors.withAlpha(DSColors.RED, 0.75f) : DSColors.withAlpha(DSColors.DARK_GRAY, 0.75f);
-                        graphics.fill(boxX, boxY, boxX + 16, boxY + offset, color);
-                    }
-                } else {
-                    graphics.blit(VANILLA_WIDGETS, posX + x * 20, posY - 2, -50, x * 20, 0, 21, 22, 256, 256);
                 }
-            }
 
-            if(magic.getSelectedAbility() != null) {
-                Color outlineColor = disabledAbilitiesColor[magic.getSelectedAbilitySlot()].color;
-                graphics.setColor(outlineColor.getRedFloat(), outlineColor.getGreenFloat(), outlineColor.getBlueFloat(), outlineColor.getAlphaFloat());
+                if(magic.getSelectedAbility() != null) {
+                    Color outlineColor = disabledAbilitiesColor[magic.getSelectedAbilitySlot()].color;
+                    graphics.setColor(outlineColor.getRedFloat(), outlineColor.getGreenFloat(), outlineColor.getBlueFloat(), outlineColor.getAlphaFloat());
+                }
+                graphics.blit(VANILLA_WIDGETS, posX + sizeX * magic.getSelectedAbilitySlot() - 1, posY - 3, 2, 0, 22, 24, 24, 256, 256);
+                graphics.setColor(1.f, 1.f, 1.f, 1.f);
             }
-            graphics.blit(VANILLA_WIDGETS, posX + sizeX * magic.getSelectedAbilitySlot() - 1, posY - 3, 2, 0, 22, 24, 24, 256, 256);
-            graphics.setColor(1.f, 1.f, 1.f, 1.f);
 
             // Don't render more than two rows (1 icon = 1 mana point)
             // This makes the mana bars also stop just before the emote button when the chat window is open
@@ -298,6 +299,10 @@ public class MagicHUD {
 
             manaX += manabarXOffset;
             manaY += manabarYOffset;
+            if(magic.getActiveAbilities().isEmpty()) {
+                // Move the bar down a bit if there are no abilities to show
+                manaY += 20;
+            }
 
             MiscDragonTextures.ManaSprites manaSprites = DragonStateProvider.getData(player).species().value().miscResources().manaSprites();
             int perRow = 9;
