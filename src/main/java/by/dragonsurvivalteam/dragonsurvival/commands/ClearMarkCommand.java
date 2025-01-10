@@ -10,6 +10,7 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.Collection;
 
@@ -17,11 +18,11 @@ import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 
 public class ClearMarkCommand {
-    @Translation(comments = "Mark cleared from %s entities.")
-    private static final String FROM_ENTITES = Translation.Type.COMMAND.wrap("clear_mark.from_entities");
+    @Translation(comments = "Mark cleared from %s players.")
+    private static final String FROM_PLAYERS = Translation.Type.COMMAND.wrap("clear_mark.from_players");
 
     @Translation(comments = "Mark cleared from %s.")
-    private static final String FROM_SINGLE_ENTITY = Translation.Type.COMMAND.wrap("clear_mark.from_single_entity");
+    private static final String FROM_SINGLE_PLAYER = Translation.Type.COMMAND.wrap("clear_mark.from_single_player");
 
 
     public static void register(final CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -29,16 +30,16 @@ public class ClearMarkCommand {
                 .requires(commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(
                         literal("clear")
-                                .executes(commandSourceStack -> clearMark(commandSourceStack.getSource(), ImmutableList.of(commandSourceStack.getSource().getEntityOrException())))
+                                .executes(commandSourceStack -> clearMark(commandSourceStack.getSource(), ImmutableList.of(commandSourceStack.getSource().getPlayerOrException())))
                                 .then(
-                                        argument("targets", EntityArgument.entities())
-                                                .executes(commandSourceStack -> clearMark(commandSourceStack.getSource(), EntityArgument.getEntities(commandSourceStack, "targets")))
+                                        argument("targets", EntityArgument.players())
+                                                .executes(commandSourceStack -> clearMark(commandSourceStack.getSource(), EntityArgument.getPlayers(commandSourceStack, "targets")))
                                 )
                 )
         );
     }
 
-    private static int clearMark(CommandSourceStack source, Collection<? extends Entity> targets) {
+    private static int clearMark(CommandSourceStack source, Collection<? extends Player> targets) {
         for (Entity target : targets) {
             if (target instanceof ServerPlayer) {
                 DragonStateProvider.getData((ServerPlayer) target).markedByEnderDragon = false;
@@ -46,9 +47,9 @@ public class ClearMarkCommand {
         }
 
         if (targets.size() == 1) {
-            source.sendSuccess(() -> Component.translatable(FROM_SINGLE_ENTITY, targets.stream().findFirst().get().getDisplayName()), true);
+            source.sendSuccess(() -> Component.translatable(FROM_SINGLE_PLAYER, targets.stream().findFirst().get().getDisplayName()), true);
         } else {
-            source.sendSuccess(() -> Component.translatable(FROM_ENTITES, targets.size()), true);
+            source.sendSuccess(() -> Component.translatable(FROM_PLAYERS, targets.size()), true);
         }
 
         return 1;
