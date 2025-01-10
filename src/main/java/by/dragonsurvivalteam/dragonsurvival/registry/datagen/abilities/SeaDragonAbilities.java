@@ -29,6 +29,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.projectile.ProjectileData;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.Projectiles;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.datafixers.util.Either;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -41,6 +42,8 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.neoforged.neoforge.common.NeoForgeMod;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.fluids.FluidType;
 
 import java.util.List;
 import java.util.Optional;
@@ -303,7 +306,8 @@ public class SeaDragonAbilities {
                                 // Enable when on (or within) said block tag
                                 Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_WET))
                                         .or(Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_WET)))
-                                        .or(Condition.thisEntity(EntityCondition.isEyeInFluid(NeoForgeMod.WATER_TYPE))).build(),
+                                        // FIXME :: This currently crashes datagen due to an error that conflicts with the advancement datagen
+                                        /*.or(Condition.thisEntity(EntityCondition.isInFluid(context.lookup(Registries.FLUID).getOrThrow(FluidTags.WATER))))*/.build(),
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DragonAbilities.GOOD_MANA_CONDITION,
                                         ModifierWithDuration.DEFAULT_MODIFIER_ICON,

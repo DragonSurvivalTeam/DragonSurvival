@@ -81,17 +81,6 @@
                     }
                   }
                 }
-              },
-              {
-                "condition": "minecraft:entity_properties",
-                "entity": "this",
-                "predicate": {
-                  "type_specific": {
-                    "type": "dragonsurvival:custom_predicates",
-                    "eye_in_fluid": "minecraft:lava",
-                    "weather_predicate": {}
-                  }
-                }
               }
             ]
           }

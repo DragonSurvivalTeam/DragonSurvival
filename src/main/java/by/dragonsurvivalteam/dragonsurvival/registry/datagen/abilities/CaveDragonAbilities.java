@@ -290,7 +290,8 @@ public class CaveDragonAbilities {
                                 // Enable when on (or within) said block tag
                                 Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_WARM))
                                         .or(Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_WARM)))
-                                        .or(Condition.thisEntity(EntityCondition.isEyeInFluid(NeoForgeMod.LAVA_TYPE))).build(),
+                                        // FIXME :: This currently crashes datagen due to an error that conflicts with the advancement datagen
+                                        /*.or(Condition.thisEntity(EntityCondition.isInFluid(context.lookup(Registries.FLUID).getOrThrow(FluidTags.LAVA))))*/.build(),
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DragonAbilities.GOOD_MANA_CONDITION,
                                         ModifierWithDuration.DEFAULT_MODIFIER_ICON,
