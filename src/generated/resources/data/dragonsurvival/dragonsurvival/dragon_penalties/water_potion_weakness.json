@@ -6,10 +6,15 @@
   },
   "trigger": {
     "penalty_trigger": "dragonsurvival:item_used",
-    "predicate": {
-      "predicates": {
-        "minecraft:potion_contents": "minecraft:water"
+    "predicates": [
+      {
+        "predicates": {
+          "minecraft:potion_contents": "minecraft:water"
+        }
+      },
+      {
+        "items": "minecraft:milk_bucket"
       }
-    }
+    ]
   }
 }

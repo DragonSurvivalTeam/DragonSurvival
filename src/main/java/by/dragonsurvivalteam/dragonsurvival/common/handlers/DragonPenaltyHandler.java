@@ -59,8 +59,7 @@ public class DragonPenaltyHandler {
         }
 
         for (Holder<DragonPenalty> penalty : handler.species().value().penalties()) {
-            //noinspection DeconstructionCanBeUsed -> spotless is too stupid to handle this
-            if (penalty.value().trigger() instanceof ItemUsedTrigger trigger && trigger.predicate().test(event.getItem())) {
+            if (penalty.value().trigger() instanceof ItemUsedTrigger trigger && trigger.test(event.getItem())) {
                 penalty.value().apply(serverPlayer);
             }
         }

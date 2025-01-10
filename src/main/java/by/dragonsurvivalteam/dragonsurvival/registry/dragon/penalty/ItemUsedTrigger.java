@@ -4,10 +4,13 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 
-public record ItemUsedTrigger(ItemPredicate predicate) implements PenaltyTrigger {
+import java.util.List;
+
+public record ItemUsedTrigger(List<ItemPredicate> predicates) implements PenaltyTrigger {
     public static final MapCodec<ItemUsedTrigger> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            ItemPredicate.CODEC.fieldOf("predicate").forGetter(ItemUsedTrigger::predicate)
+            ItemPredicate.CODEC.listOf().fieldOf("predicates").forGetter(ItemUsedTrigger::predicates)
     ).apply(instance, ItemUsedTrigger::new));
 
     @Override
@@ -18,6 +21,16 @@ public record ItemUsedTrigger(ItemPredicate predicate) implements PenaltyTrigger
     @Override
     public boolean hasCustomTrigger() {
         return true;
+    }
+
+    public boolean test(final ItemStack item) {
+        for (ItemPredicate predicate : predicates) {
+            if (predicate.test(item)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override

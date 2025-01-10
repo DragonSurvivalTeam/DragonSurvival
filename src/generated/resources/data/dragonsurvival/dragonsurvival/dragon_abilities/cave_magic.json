@@ -92,6 +92,62 @@
                     }
                   }
                 }
+              },
+              {
+                "condition": "minecraft:entity_properties",
+                "entity": "this",
+                "predicate": {
+                  "stepping_on": {
+                    "block": {
+                      "blocks": "#minecraft:campfires",
+                      "state": {
+                        "lit": "true"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "condition": "minecraft:entity_properties",
+                "entity": "this",
+                "predicate": {
+                  "stepping_on": {
+                    "block": {
+                      "blocks": "#c:player_workstations/furnaces",
+                      "state": {
+                        "lit": "true"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "condition": "minecraft:entity_properties",
+                "entity": "this",
+                "predicate": {
+                  "stepping_on": {
+                    "block": {
+                      "blocks": "minecraft:smoker",
+                      "state": {
+                        "lit": "true"
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "condition": "minecraft:entity_properties",
+                "entity": "this",
+                "predicate": {
+                  "stepping_on": {
+                    "block": {
+                      "blocks": "minecraft:blast_furnace",
+                      "state": {
+                        "lit": "true"
+                      }
+                    }
+                  }
+                }
               }
             ]
           }

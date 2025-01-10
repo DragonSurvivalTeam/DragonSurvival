@@ -140,14 +140,17 @@ public class DragonPenalties {
                 Optional.empty(),
                 Optional.empty(),
                 new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.WATER_BURN), 2),
-                new ItemUsedTrigger(ItemCondition.hasPotion(Potions.WATER))
+                new ItemUsedTrigger(List.of(
+                        ItemCondition.hasPotion(Potions.WATER),
+                        ItemCondition.is(Items.MILK_BUCKET)
+                ))
         ));
 
         context.register(WATER_SPLASH_POTION_WEAKNESS, new DragonPenalty(
                 Optional.empty(),
                 Optional.empty(),
                 new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.WATER_BURN), 2),
-                new HitByWaterPotionTrigger()
+                HitByWaterPotionTrigger.INSTANCE
         ));
 
         context.register(SNOWBALL_WEAKNESS, new DragonPenalty(
