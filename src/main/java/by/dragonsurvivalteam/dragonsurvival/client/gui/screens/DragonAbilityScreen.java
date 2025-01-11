@@ -226,6 +226,27 @@ public class DragonAbilityScreen extends Screen {
             constantPassives.sort(comparator);
         });
 
+        if(actives.size() % 4 != 0) {
+            int size = 4 - actives.size() % 4;
+            for(int i = 0; i < size; i++) {
+                actives.add(null);
+            }
+        }
+
+        if(upgradablePassives.size() % 4 != 0) {
+            int size = 4 - upgradablePassives.size() % 4;
+            for(int i = 0; i < size; i++) {
+                upgradablePassives.add(null);
+            }
+        }
+
+        if(constantPassives.size() % 4 != 0) {
+            int size = 4 - constantPassives.size() % 4;
+            for(int i = 0; i < size; i++) {
+                constantPassives.add(null);
+            }
+        }
+
         if(!actives.isEmpty()) {
             scrollableComponents.add(new AbilityColumnsComponent(this, guiLeft + 35, guiTop, 40, 20, 0.8f, 0.5f, actives));
         }

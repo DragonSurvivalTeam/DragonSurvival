@@ -219,6 +219,7 @@ public class AbilityButton extends ExtendedButton {
 
         if (ability == null) {
             blit(graphics, PASSIVE_BACKGROUND, getX() - 2, getY() - 2, ORNAMENTATION_SIZE);
+            graphics.pose().popPose();
             return;
         }
 
