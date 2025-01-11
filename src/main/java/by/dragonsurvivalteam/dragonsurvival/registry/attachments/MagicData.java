@@ -395,7 +395,6 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         }
 
         this.currentSpecies = currentSpecies.getKey();
-
         InputData sizeInput = InputData.size((int) DragonStateProvider.getData(player).getSize());
 
         int slot = 0;

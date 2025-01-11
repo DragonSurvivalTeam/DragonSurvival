@@ -9,7 +9,7 @@
               "flight_level": 1
             }
           ],
-          "entity_targeting_mode": "TARGET_ALLIES"
+          "targeting_mode": "allies_and_self"
         },
         "target_type": "dragonsurvival:self"
       },

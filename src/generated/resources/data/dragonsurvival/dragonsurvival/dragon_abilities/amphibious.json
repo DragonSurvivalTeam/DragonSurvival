@@ -10,7 +10,7 @@
               "max_oxygen": -1.0
             }
           ],
-          "entity_targeting_mode": "TARGET_ALL"
+          "targeting_mode": "all"
         },
         "target_type": "dragonsurvival:self"
       },
@@ -37,7 +37,7 @@
               ]
             }
           ],
-          "entity_targeting_mode": "TARGET_ALL"
+          "targeting_mode": "all"
         },
         "target_type": "dragonsurvival:self"
       },

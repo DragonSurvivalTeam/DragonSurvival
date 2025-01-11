@@ -15,7 +15,7 @@ public class DSDataAttachments {
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<EntityStateHandler>> ENTITY_HANDLER = DS_ATTACHMENT_TYPES.register("entity_handler", () -> AttachmentType.serializable(EntityStateHandler::new).build());
     // TODO :: does this need a custom copy handle for entering the end portal?
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<DragonStateHandler>> DRAGON_HANDLER = DS_ATTACHMENT_TYPES.register("dragon_handler", () -> AttachmentType.serializable(DragonStateHandler::new).copyOnDeath().build());
-    // TODO :: copy on death?
+
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<LightningHandler>> LIGHTNING_BOLT = DS_ATTACHMENT_TYPES.register("lightning_bolt_data", () -> AttachmentType.serializable(LightningHandler::new).build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<MovementData>> MOVEMENT = DS_ATTACHMENT_TYPES.register("movement_data", () -> AttachmentType.builder(MovementData::new).build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<FlightData>> SPIN = DS_ATTACHMENT_TYPES.register("spin_data", () -> AttachmentType.serializable(FlightData::new).copyOnDeath().build());
@@ -35,4 +35,5 @@ public class DSDataAttachments {
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<OnAttackEffects>> ON_ATTACK_EFFECTS = DS_ATTACHMENT_TYPES.register("on_attack_effects", () -> AttachmentType.builder(OnAttackEffects::new).build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<SummonedEntities>> SUMMONED_ENTITIES = DS_ATTACHMENT_TYPES.register("summoned_entities", () -> AttachmentType.serializable(SummonedEntities::new).build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<SwimData>> SWIM = DS_ATTACHMENT_TYPES.register("swim_data", () -> AttachmentType.builder(SwimData::new).build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<GlowData>> GLOW = DS_ATTACHMENT_TYPES.register("glow_data", () -> AttachmentType.builder(GlowData::new).build());
 }

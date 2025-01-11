@@ -45,6 +45,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.Ab
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AreaTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.DragonBreathTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.SelfTarget;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.TargetingMode;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ConditionUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.DragonSizeUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ExperienceLevelUpgrade;
@@ -162,7 +163,7 @@ public class SeaDragonAbilities {
                                         new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.LIGHTNING_BREATH), LevelBasedValue.perLevel(1)),
                                         PotionEffect.only(LevelBasedValue.constant(0), LevelBasedValue.constant(Functions.secondsToTicks(30)), LevelBasedValue.constant(0.5f), DSEffects.CHARGED).getFirst()
                                 ),
-                                AbilityTargeting.EntityTargetingMode.TARGET_ENEMIES
+                                TargetingMode.NON_ALLIES
                         ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.block(
                                 List.of(new AreaCloudEffect(
@@ -179,7 +180,7 @@ public class SeaDragonAbilities {
                                         new SmallLightningParticleOption(37, true),
                                         new LargeLightningParticleOption(37, false)
                                 )),
-                                AbilityTargeting.EntityTargetingMode.TARGET_ALL
+                                TargetingMode.ALL
                         ), true), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -213,7 +214,7 @@ public class SeaDragonAbilities {
                                 LevelBasedValue.constant(0),
                                 LevelBasedValue.constant(1)
                         )),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALL
+                        TargetingMode.ALL
                 ), true), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(
@@ -262,7 +263,7 @@ public class SeaDragonAbilities {
                                 new SpawnParticles(ParticleTypes.SOUL, SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), ConstantFloat.of(0.05f)),
                                 LevelBasedValue.constant(20)
                         )),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                        TargetingMode.ALLIES_AND_SELF
                 ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -294,7 +295,7 @@ public class SeaDragonAbilities {
                         .and(Condition.thisEntity(EntityCondition.isInFluid(context.lookup(Registries.FLUID).getOrThrow(FluidTags.WATER))).invert()).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         PotionEffect.only(LevelBasedValue.constant(0), LevelBasedValue.perLevel(Functions.secondsToTicks(30)), DSEffects.WATER_VISION),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                        TargetingMode.ALLIES_AND_SELF
                 ), true), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -321,7 +322,7 @@ public class SeaDragonAbilities {
                                         LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
                                         true
                                 )),
-                                AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                                TargetingMode.ALLIES_AND_SELF
                         ), true), LevelBasedValue.constant(1)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 // Enable when on (or within) said block tag or when in water
@@ -335,7 +336,7 @@ public class SeaDragonAbilities {
                                         LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
                                         true
                                 )),
-                                AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                                TargetingMode.ALLIES_AND_SELF
                         ), true), LevelBasedValue.constant(1))
                 ),
                 true,
@@ -362,7 +363,7 @@ public class SeaDragonAbilities {
                         // Enable when on said block tag
                         Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.SPEEDS_UP_SEA_DRAGON)).build(),
                         PotionEffect.only(LevelBasedValue.perLevel(1), LevelBasedValue.perLevel(Functions.secondsToTicks(5)), MobEffects.MOVEMENT_SPEED),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                        TargetingMode.ALLIES_AND_SELF
                 ), false), LevelBasedValue.constant(Functions.secondsToTicks(1)))),
                 true,
                 new LevelBasedResource(List.of(
@@ -387,7 +388,7 @@ public class SeaDragonAbilities {
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
                                 true
                         )),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                        TargetingMode.ALLIES_AND_SELF
                 ), true), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -414,7 +415,7 @@ public class SeaDragonAbilities {
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
                                 true
                         )),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                        TargetingMode.ALLIES_AND_SELF
                 ), true), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -438,7 +439,7 @@ public class SeaDragonAbilities {
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
                                 false
                         )),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                        TargetingMode.ALLIES_AND_SELF
                 ), true), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -457,7 +458,7 @@ public class SeaDragonAbilities {
                 Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         List.of(new FlightEffect(1)),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                        TargetingMode.ALLIES_AND_SELF
                 ), true), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -473,7 +474,7 @@ public class SeaDragonAbilities {
                 Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         List.of(new SpinEffect(1, Optional.of(NeoForgeMod.WATER_TYPE))),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                        TargetingMode.ALLIES_AND_SELF
                 ), true), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -494,7 +495,7 @@ public class SeaDragonAbilities {
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
                                 false
                         )),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALL
+                        TargetingMode.ALL
                 ), true), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -510,8 +511,8 @@ public class SeaDragonAbilities {
                 List.of(
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 List.of(new SwimEffect(LevelBasedValue.constant(SwimData.UNLIMITED_OXYGEN), NeoForgeMod.WATER_TYPE)),
-                                AbilityTargeting.EntityTargetingMode.TARGET_ALL), true), LevelBasedValue.constant(1)
-                        ),
+                                TargetingMode.ALL
+                        ), true), LevelBasedValue.constant(1)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DragonSurvival.res("amphibious"),
@@ -520,8 +521,8 @@ public class SeaDragonAbilities {
                                         LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
                                         true
                                 )),
-                                AbilityTargeting.EntityTargetingMode.TARGET_ALL), true), LevelBasedValue.constant(1)
-                        )
+                                TargetingMode.ALL
+                        ), true), LevelBasedValue.constant(1))
                 ),
                 true,
                 new LevelBasedResource(List.of(

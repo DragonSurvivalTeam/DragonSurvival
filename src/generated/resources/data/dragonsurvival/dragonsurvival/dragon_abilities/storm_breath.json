@@ -23,7 +23,6 @@
               }
             }
           ],
-          "entity_targeting_mode": "TARGET_ENEMIES",
           "target_conditions": {
             "condition": "minecraft:entity_properties",
             "entity": "this",
@@ -33,7 +32,8 @@
                 "check_for": "living_entity"
               }
             }
-          }
+          },
+          "targeting_mode": "non_allies"
         },
         "range_multiplier": 1.0,
         "target_type": "dragonsurvival:dragon_breath"
@@ -86,7 +86,7 @@
               "spread": 0.04
             }
           ],
-          "entity_targeting_mode": "TARGET_ALL"
+          "targeting_mode": "all"
         },
         "target_type": "dragonsurvival:self"
       },

@@ -39,6 +39,7 @@ public class EnderDragonMarkHandler {
 
             // If the dragon is healed, reverse progress for all the players
             if(event.getNewDamage() < 0) {
+                // TODO :: shouldn't the dealt damage be reduced by a % of their contribution?
                 EnderDragonDamageHistory data = EnderDragonDamageHistory.getData(enderDragon);
                 data.addDamageAll(event.getNewDamage());
             }

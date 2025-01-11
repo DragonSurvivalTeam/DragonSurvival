@@ -45,7 +45,7 @@ public record LookingAtTarget(Either<BlockTargeting, EntityTargeting> target, Le
 
             blockTarget.effect().forEach(target -> target.apply(dragon, ability, blockHitResult.getBlockPos(), blockHitResult.getDirection()));
         }).ifRight(entityTarget -> {
-            Predicate<Entity> filter = entity -> isEntityRelevant(dragon, entityTarget, entity) && entityTarget.matches(dragon, entity, entity.position());
+            Predicate<Entity> filter = entity -> entityTarget.targetingMode().isEntityRelevant(dragon, entity) && entityTarget.matches(dragon, entity, entity.position());
             HitResult result = getEntityHitResult(dragon, filter, ability);
 
             if (result.getType() == HitResult.Type.MISS || !(result instanceof EntityHitResult entityHitResult)) {

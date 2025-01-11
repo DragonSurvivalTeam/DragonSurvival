@@ -2,8 +2,6 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.AbilityBlockEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.AbilityEntityEffect;
@@ -14,12 +12,10 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.phys.Vec3;
@@ -41,19 +37,6 @@ public interface AbilityTargeting {
 
     Codec<AbilityTargeting> CODEC = REGISTRY.byNameCodec().dispatch("target_type", AbilityTargeting::codec, Function.identity());
 
-    enum EntityTargetingMode {
-        @Translation(comments = "all entities")
-        TARGET_ALL,
-        @Translation(comments = "enemies")
-        TARGET_ENEMIES,
-        @Translation(comments = "allies")
-        TARGET_ALLIES;
-
-        public Component translation() {
-            return DSLanguageProvider.enumValue(this);
-        }
-    }
-
     static Either<BlockTargeting, EntityTargeting> block(final List<AbilityBlockEffect> effects) {
         return block(null, effects);
     }
@@ -62,11 +45,11 @@ public interface AbilityTargeting {
         return Either.left(new BlockTargeting(Optional.ofNullable(targetConditions), effects));
     }
 
-    static Either<BlockTargeting, EntityTargeting> entity(final List<AbilityEntityEffect> effects, final EntityTargetingMode targetingMode) {
+    static Either<BlockTargeting, EntityTargeting> entity(final List<AbilityEntityEffect> effects, final TargetingMode targetingMode) {
         return entity(null, effects, targetingMode);
     }
 
-    static Either<BlockTargeting, EntityTargeting> entity(final LootItemCondition targetConditions, final List<AbilityEntityEffect> effects, final EntityTargetingMode targetingMode) {
+    static Either<BlockTargeting, EntityTargeting> entity(final LootItemCondition targetConditions, final List<AbilityEntityEffect> effects, final TargetingMode targetingMode) {
         return Either.right(new EntityTargeting(Optional.ofNullable(targetConditions), effects, targetingMode));
     }
 
@@ -81,11 +64,11 @@ public interface AbilityTargeting {
         }
     }
 
-    record EntityTargeting(Optional<LootItemCondition> targetConditions, List<AbilityEntityEffect> effects, EntityTargetingMode targetingMode) {
+    record EntityTargeting(Optional<LootItemCondition> targetConditions, List<AbilityEntityEffect> effects, TargetingMode targetingMode) {
         public static final Codec<EntityTargeting> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 LootItemCondition.DIRECT_CODEC.optionalFieldOf("target_conditions").forGetter(EntityTargeting::targetConditions),
                 AbilityEntityEffect.CODEC.listOf().fieldOf("entity_effect").forGetter(EntityTargeting::effects),
-                Codec.STRING.xmap(EntityTargetingMode::valueOf, EntityTargetingMode::name).fieldOf("entity_targeting_mode").forGetter(EntityTargeting::targetingMode)
+                TargetingMode.CODEC.fieldOf("targeting_mode").forGetter(EntityTargeting::targetingMode)
         ).apply(instance, EntityTargeting::new));
 
         public boolean matches(final ServerPlayer dragon, final Entity entity, final Vec3 position) {
@@ -111,37 +94,6 @@ public interface AbilityTargeting {
             event.register(REGISTRY_KEY, DragonSurvival.res("self"), () -> SelfTarget.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("disc"), () -> DiscTarget.CODEC);
         }
-    }
-
-    @SuppressWarnings("RedundantIfStatement") // ignore for clarity
-    default boolean isEntityRelevant(final ServerPlayer dragon, final EntityTargeting targeting, final Entity entity) {
-        if (targeting.targetingMode == EntityTargetingMode.TARGET_ALL) {
-            return true;
-        }
-
-        if (targeting.targetingMode == EntityTargetingMode.TARGET_ENEMIES && (dragon == entity || isFriendly(dragon, entity))) {
-            return false;
-        }
-
-        if (targeting.targetingMode == EntityTargetingMode.TARGET_ALLIES && !(dragon == entity || isFriendly(dragon, entity))) {
-            return false;
-        }
-
-        return true;
-    }
-
-    @SuppressWarnings("RedundantIfStatement") // ignore for clarity
-    private boolean isFriendly(final ServerPlayer dragon, final Entity entity) {
-        if (entity instanceof Player otherPlayer && !dragon.canHarmPlayer(otherPlayer)) {
-            return true;
-        }
-
-        if (entity instanceof TamableAnimal tamable && tamable.getOwner() instanceof Player otherPlayer && (dragon == otherPlayer || !dragon.canHarmPlayer(otherPlayer))) {
-            return true;
-        }
-
-        // TODO :: 'canHarmPlayer' returns true if friendly fire is enabled - do we want this behaviour?
-        return false;
     }
 
     default List<MutableComponent> getAllEffectDescriptions(final Player dragon, final DragonAbilityInstance ability) {

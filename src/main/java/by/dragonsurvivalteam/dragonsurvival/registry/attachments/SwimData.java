@@ -52,6 +52,7 @@ public class SwimData {
         return swimData.containsKey(fluid);
     }
 
+    // TODO :: remove?
     public static SwimData getData(final Player player) {
         return player.getData(DSDataAttachments.SWIM);
     }
@@ -84,6 +85,10 @@ public class SwimData {
         }
     }
 
+    public static boolean isAir(final FluidType fluid) {
+        return key(fluid) == NeoForgeMod.EMPTY_TYPE.getKey();
+    }
+
     public static @Nullable ResourceLocation getAirSprite(final FluidType fluid) {
         ResourceLocation resource = NeoForgeRegistries.FLUID_TYPES.getKey(fluid);
 
@@ -108,9 +113,5 @@ public class SwimData {
 
     public static @Nullable ResourceKey<FluidType> key(final FluidType fluid) {
         return NeoForgeRegistries.FLUID_TYPES.getResourceKey(fluid).orElse(null);
-    }
-
-    public static boolean isAir(final FluidType fluid) {
-        return key(fluid) == NeoForgeMod.EMPTY_TYPE.getKey();
     }
 }

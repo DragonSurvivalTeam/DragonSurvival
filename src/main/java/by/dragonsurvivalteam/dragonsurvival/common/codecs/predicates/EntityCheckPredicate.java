@@ -9,6 +9,7 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Enemy;
@@ -50,7 +51,7 @@ public record EntityCheckPredicate(Optional<Type> checkFor) implements EntitySub
         if (checkFor().isPresent()) {
             boolean isValid = switch (checkFor().get()) {
                 case LIVING_ENTITY -> entity instanceof LivingEntity;
-                case ENEMY -> entity instanceof Enemy;
+                case ENEMY -> entity instanceof Enemy || entity.getType().getCategory() == MobCategory.MONSTER;
                 case TAMED -> entity instanceof TamableAnimal tamable && tamable.isTame();
                 case ITEM -> entity instanceof ItemEntity;
                 case EXPERIENCE_ORB -> entity instanceof ExperienceOrb;

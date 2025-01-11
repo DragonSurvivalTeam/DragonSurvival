@@ -8,16 +8,18 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
-public record SyncData(ResourceLocation attachmentType, CompoundTag tag) implements CustomPacketPayload {
+public record SyncData(int targetEntityId, ResourceLocation attachmentType, CompoundTag tag) implements CustomPacketPayload {
     public static final Type<SyncData> TYPE = new Type<>(DragonSurvival.res("sync_data"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncData> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, SyncData::targetEntityId,
             ResourceLocation.STREAM_CODEC, SyncData::attachmentType,
             ByteBufCodecs.COMPOUND_TAG, SyncData::tag,
             SyncData::new
@@ -28,9 +30,9 @@ public record SyncData(ResourceLocation attachmentType, CompoundTag tag) impleme
             try {
                 AttachmentType<?> type = NeoForgeRegistries.ATTACHMENT_TYPES.get(packet.attachmentType());
 
-                if (type != null) {
+                if (type != null && context.player().level().getEntity(packet.targetEntityId()) instanceof Entity entity) {
                     //noinspection unchecked -> it's handled
-                    INBTSerializable<CompoundTag> data = (INBTSerializable<CompoundTag>) context.player().getData(type);
+                    INBTSerializable<CompoundTag> data = (INBTSerializable<CompoundTag>) entity.getData(type);
                     data.deserializeNBT(context.player().registryAccess(), packet.tag());
                     return;
                 }

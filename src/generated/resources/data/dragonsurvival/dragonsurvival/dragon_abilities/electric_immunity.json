@@ -15,7 +15,7 @@
               ]
             }
           ],
-          "entity_targeting_mode": "TARGET_ALL"
+          "targeting_mode": "all"
         },
         "target_type": "dragonsurvival:self"
       },

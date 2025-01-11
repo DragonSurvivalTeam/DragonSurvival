@@ -58,7 +58,7 @@ public record DiscTarget(Either<BlockTargeting, EntityTargeting> target, LevelBa
             });
         }).ifRight(entityTarget -> {
             dragon.serverLevel().getEntities(EntityTypeTest.forClass(Entity.class), calculateAffectedArea(dragon.position(), radius, height),
-                    entity -> isEntityRelevant(dragon, entityTarget, entity) && entityTarget.matches(dragon, entity, entity.position())
+                    entity -> entityTarget.targetingMode().isEntityRelevant(dragon, entity) && entityTarget.matches(dragon, entity, entity.position())
             ).forEach(entity -> entityTarget.effects().forEach(target -> target.apply(dragon, ability, entity)));
         });
     }

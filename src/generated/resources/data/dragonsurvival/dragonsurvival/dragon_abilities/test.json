@@ -1,0 +1,57 @@
+{
+  "actions": [
+    {
+      "target_selection": {
+        "applied_effects": {
+          "entity_effect": [
+            {
+              "effect_type": "dragonsurvival:glow",
+              "glows": [
+                {
+                  "color": "gold",
+                  "duration": 2400.0,
+                  "id": "dragonsurvival:one"
+                },
+                {
+                  "color": "dark_purple",
+                  "duration": 2400.0,
+                  "id": "dragonsurvival:two"
+                },
+                {
+                  "color": "green",
+                  "duration": 2400.0,
+                  "id": "dragonsurvival:three"
+                },
+                {
+                  "color": "red",
+                  "duration": 2400.0,
+                  "id": "dragonsurvival:four"
+                },
+                {
+                  "color": "blue",
+                  "duration": 2400.0,
+                  "id": "dragonsurvival:five"
+                }
+              ]
+            }
+          ],
+          "targeting_mode": "allies_and_self"
+        },
+        "radius": 10.0,
+        "target_type": "dragonsurvival:area"
+      },
+      "trigger_rate": 1.0
+    }
+  ],
+  "activation": {
+    "type": "passive"
+  },
+  "icon": {
+    "texture_entries": [
+      {
+        "from_level": 0,
+        "texture_resource": "dragonsurvival:test"
+      }
+    ]
+  }
+}

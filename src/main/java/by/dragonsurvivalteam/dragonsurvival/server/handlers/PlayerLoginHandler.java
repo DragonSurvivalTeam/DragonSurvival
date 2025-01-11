@@ -17,6 +17,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -29,14 +30,14 @@ public class PlayerLoginHandler {
     // Do we even care enough to account for this edge case?
     @SubscribeEvent
     public static void onTrackingStart(final PlayerEvent.StartTracking event) {
-        Entity tracker = event.getEntity();
+        Player tracker = event.getEntity();
         Entity tracked = event.getTarget();
         syncDragonData(tracker, tracked);
     }
 
     @SubscribeEvent
     public static void onTrackingEnd(final PlayerEvent.StopTracking event) {
-        Entity tracker = event.getEntity();
+        Player tracker = event.getEntity();
         Entity tracked = event.getTarget();
         stopTickingSounds(tracker, tracked);
     }
@@ -100,7 +101,7 @@ public class PlayerLoginHandler {
         }
     }
 
-    private static void syncDragonData(final Entity syncTo, final Entity syncFrom) {
+    private static void syncDragonData(final Player syncTo, final Entity syncFrom) {
         if (syncTo instanceof ServerPlayer target && syncFrom instanceof ServerPlayer) {
             DragonStateProvider.getOptional(syncFrom).ifPresent(dragonStateHandler -> {
                 PacketDistributor.sendToPlayer(target, new SyncComplete.Data(syncFrom.getId(), dragonStateHandler.serializeNBT(syncFrom.registryAccess())));
@@ -133,5 +134,6 @@ public class PlayerLoginHandler {
         player.getExistingData(DSDataAttachments.SUMMONED_ENTITIES).ifPresent(data -> data.sync(player));
         player.getExistingData(DSDataAttachments.EFFECT_MODIFICATIONS).ifPresent(data -> data.sync(player));
         player.getExistingData(DSDataAttachments.SPIN).ifPresent(data -> data.sync(player));
+        player.getExistingData(DSDataAttachments.GLOW).ifPresent(data -> data.sync(player));
     }
 }

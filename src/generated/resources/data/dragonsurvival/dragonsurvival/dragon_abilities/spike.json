@@ -19,7 +19,6 @@
               }
             }
           ],
-          "entity_targeting_mode": "TARGET_ALL",
           "target_conditions": {
             "condition": "minecraft:entity_properties",
             "entity": "this",
@@ -29,7 +28,8 @@
                 "check_for": "living_entity"
               }
             }
-          }
+          },
+          "targeting_mode": "all"
         },
         "target_type": "dragonsurvival:self"
       },

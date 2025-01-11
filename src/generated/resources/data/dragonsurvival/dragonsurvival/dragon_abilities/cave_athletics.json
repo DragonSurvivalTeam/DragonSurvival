@@ -21,7 +21,6 @@
               }
             }
           ],
-          "entity_targeting_mode": "TARGET_ALLIES",
           "target_conditions": {
             "condition": "minecraft:entity_properties",
             "entity": "this",
@@ -32,7 +31,8 @@
                 }
               }
             }
-          }
+          },
+          "targeting_mode": "allies_and_self"
         },
         "remove_automatically": false,
         "target_type": "dragonsurvival:self"

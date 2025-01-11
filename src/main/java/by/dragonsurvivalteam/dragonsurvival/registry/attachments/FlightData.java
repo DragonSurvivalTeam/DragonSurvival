@@ -77,7 +77,7 @@ public class FlightData implements INBTSerializable<CompoundTag> {
     }
 
     public void sync(final ServerPlayer player) {
-        player.getExistingData(type()).ifPresent(data -> PacketDistributor.sendToPlayer(player, new SyncData(NeoForgeRegistries.ATTACHMENT_TYPES.getKey(type()), serializeNBT(player.registryAccess()))));
+        player.getExistingData(type()).ifPresent(data -> PacketDistributor.sendToPlayer(player, new SyncData(player.getId(), NeoForgeRegistries.ATTACHMENT_TYPES.getKey(type()), serializeNBT(player.registryAccess()))));
     }
 
     public boolean hasFlight() {

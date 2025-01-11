@@ -44,6 +44,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.Ab
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AreaTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.DragonBreathTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.SelfTarget;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.TargetingMode;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ConditionUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.DragonSizeUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ExperienceLevelUpgrade;
@@ -165,7 +166,7 @@ public class ForestDragonAbilities {
                                         new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.POISON_BREATH), LevelBasedValue.perLevel(2)),
                                         PotionEffect.only(LevelBasedValue.constant(0), LevelBasedValue.constant(Functions.secondsToTicks(10)), LevelBasedValue.constant(0.3f), DSEffects.DRAIN).getFirst()
                                 ),
-                                AbilityTargeting.EntityTargetingMode.TARGET_ENEMIES
+                                TargetingMode.NON_ALLIES
                         ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
                                 Condition.thisEntity(EntityCondition.isItem()).build(),
@@ -173,7 +174,7 @@ public class ForestDragonAbilities {
                                         List.of(new ItemConversionEffect.ItemConversionData(ItemCondition.is(Items.POTATO), WeightedRandomList.create(ItemConversionEffect.ItemTo.of(Items.POISONOUS_POTATO)))),
                                         LevelBasedValue.constant(0.5f)
                                 )),
-                                AbilityTargeting.EntityTargetingMode.TARGET_ALL
+                                TargetingMode.ALL
                         ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.block(
                                 List.of(
@@ -197,7 +198,7 @@ public class ForestDragonAbilities {
                                         new SmallPoisonParticleOption(37, true),
                                         new LargePoisonParticleOption(37, false)
                                 )),
-                                AbilityTargeting.EntityTargetingMode.TARGET_ALL
+                                TargetingMode.ALL
                         ), true), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -231,7 +232,7 @@ public class ForestDragonAbilities {
                                 LevelBasedValue.constant(1.5f),
                                 LevelBasedValue.constant(1)
                         )),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALL
+                        TargetingMode.ALL
                 ), true), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(
@@ -265,7 +266,7 @@ public class ForestDragonAbilities {
                 Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false)).build()),
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(
                         PotionEffect.only(LevelBasedValue.perLevel(1), LevelBasedValue.constant(Functions.secondsToTicks(200)), MobEffects.DIG_SPEED),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                        TargetingMode.ALLIES_AND_SELF
                 ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -296,7 +297,7 @@ public class ForestDragonAbilities {
                 Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false)).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         PotionEffect.only(LevelBasedValue.perLevel(1), LevelBasedValue.perLevel(Functions.secondsToTicks(30)), DSEffects.HUNTER),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                        TargetingMode.ALLIES_AND_SELF
                 ), true), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -323,7 +324,7 @@ public class ForestDragonAbilities {
                                         LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
                                         true
                                 )),
-                                AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                                TargetingMode.ALLIES_AND_SELF
                         ), true), LevelBasedValue.constant(1)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 // Enable when on (or within) said block tag or when under sunlight with a strength of at least 10
@@ -337,7 +338,7 @@ public class ForestDragonAbilities {
                                         LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
                                         true
                                 )),
-                                AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                                TargetingMode.ALLIES_AND_SELF
                         ), true), LevelBasedValue.constant(1))
                 ),
                 true,
@@ -364,7 +365,7 @@ public class ForestDragonAbilities {
                         // Enable when on said block tag
                         Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.SPEEDS_UP_FOREST_DRAGON)).build(),
                         PotionEffect.only(LevelBasedValue.perLevel(1), LevelBasedValue.perLevel(Functions.secondsToTicks(5)), MobEffects.MOVEMENT_SPEED),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                        TargetingMode.ALLIES_AND_SELF
                 ), false), LevelBasedValue.constant(Functions.secondsToTicks(1)))),
                 true,
                 new LevelBasedResource(List.of(
@@ -389,7 +390,7 @@ public class ForestDragonAbilities {
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
                                 true
                         )),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                        TargetingMode.ALLIES_AND_SELF
                 ), true), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -417,7 +418,7 @@ public class ForestDragonAbilities {
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
                                 true
                         )),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                        TargetingMode.ALLIES_AND_SELF
                 ), true), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -444,7 +445,7 @@ public class ForestDragonAbilities {
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
                                 false
                         )),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                        TargetingMode.ALLIES_AND_SELF
                 ), true), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -463,7 +464,7 @@ public class ForestDragonAbilities {
                 Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         List.of(new FlightEffect(1)),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                        TargetingMode.ALLIES_AND_SELF
                 ), true), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -479,7 +480,7 @@ public class ForestDragonAbilities {
                 Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         List.of(new SpinEffect(1, Optional.of(NeoForgeMod.WATER_TYPE))),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                        TargetingMode.ALLIES_AND_SELF
                 ), true), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -505,7 +506,7 @@ public class ForestDragonAbilities {
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
                                 false
                         )),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALL
+                        TargetingMode.ALL
                 ), true), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(

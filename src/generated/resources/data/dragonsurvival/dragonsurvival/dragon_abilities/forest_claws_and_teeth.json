@@ -24,7 +24,7 @@
               "effect_type": "dragonsurvival:harvest_bonus"
             }
           ],
-          "entity_targeting_mode": "TARGET_ALLIES"
+          "targeting_mode": "allies_and_self"
         },
         "target_type": "dragonsurvival:self"
       },

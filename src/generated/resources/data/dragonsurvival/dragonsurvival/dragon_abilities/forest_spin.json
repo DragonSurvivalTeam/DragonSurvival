@@ -10,7 +10,7 @@
               "swim_spin_fluid": "minecraft:water"
             }
           ],
-          "entity_targeting_mode": "TARGET_ALLIES"
+          "targeting_mode": "allies_and_self"
         },
         "target_type": "dragonsurvival:self"
       },

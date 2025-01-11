@@ -43,6 +43,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.Ab
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AreaTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.DragonBreathTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.SelfTarget;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.TargetingMode;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ConditionUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.DragonSizeUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ExperienceLevelUpgrade;
@@ -171,7 +172,7 @@ public class CaveDragonAbilities {
                                         new IgniteEffect(LevelBasedValue.perLevel(Functions.secondsToTicks(5))),
                                         PotionEffect.only(LevelBasedValue.constant(0), LevelBasedValue.constant(Functions.secondsToTicks(10)), LevelBasedValue.constant(0.3f), DSEffects.BURN).getFirst()
                                 ),
-                                AbilityTargeting.EntityTargetingMode.TARGET_ENEMIES
+                                TargetingMode.NON_ALLIES
                         ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.block(List.of(new FireEffect(LevelBasedValue.constant(0.05f)))), LevelBasedValue.constant(1)), LevelBasedValue.constant(1)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -181,7 +182,7 @@ public class CaveDragonAbilities {
                                         new SmallFireParticleOption(37, true),
                                         new LargeFireParticleOption(37, false)
                                 )),
-                                AbilityTargeting.EntityTargetingMode.TARGET_ALL
+                                TargetingMode.ALL
                         ), true), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -220,7 +221,7 @@ public class CaveDragonAbilities {
                                 LevelBasedValue.constant(0),
                                 LevelBasedValue.constant(1)
                         )),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALL
+                        TargetingMode.ALL
                 ), true), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -252,7 +253,7 @@ public class CaveDragonAbilities {
                 Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false)).build()),
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(
                         PotionEffect.only(LevelBasedValue.constant(0), LevelBasedValue.perLevel(Functions.secondsToTicks(60)), DSEffects.STURDY_SKIN),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                        TargetingMode.ALLIES_AND_SELF
                 ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -284,7 +285,7 @@ public class CaveDragonAbilities {
                         .and(Condition.thisEntity(EntityCondition.isInFluid(context.lookup(Registries.FLUID).getOrThrow(FluidTags.LAVA))).invert()).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         PotionEffect.only(LevelBasedValue.constant(0), LevelBasedValue.perLevel(Functions.secondsToTicks(30)), DSEffects.LAVA_VISION),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                        TargetingMode.ALLIES_AND_SELF
                 ), true), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -311,7 +312,7 @@ public class CaveDragonAbilities {
                                         LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
                                         true
                                 )),
-                                AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                                TargetingMode.ALLIES_AND_SELF
                         ), true), LevelBasedValue.constant(1)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 // Enable when on (or within) said block tag, when in lava or when on certain lit blocks
@@ -330,7 +331,7 @@ public class CaveDragonAbilities {
                                         LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
                                         true
                                 )),
-                                AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                                TargetingMode.ALLIES_AND_SELF
                         ), true), LevelBasedValue.constant(1))
                 ),
                 true,
@@ -357,7 +358,7 @@ public class CaveDragonAbilities {
                         // Enable when on said block tag
                         Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.SPEEDS_UP_CAVE_DRAGON)).build(),
                         PotionEffect.only(LevelBasedValue.perLevel(1), LevelBasedValue.perLevel(Functions.secondsToTicks(5)), MobEffects.MOVEMENT_SPEED),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                        TargetingMode.ALLIES_AND_SELF
                 ), false), LevelBasedValue.constant(Functions.secondsToTicks(1)))),
                 true,
                 new LevelBasedResource(List.of(
@@ -382,7 +383,7 @@ public class CaveDragonAbilities {
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
                                 true
                         )),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                        TargetingMode.ALLIES_AND_SELF
                 ), true), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -401,7 +402,7 @@ public class CaveDragonAbilities {
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         List.of(new OnAttackEffect(PotionData.of(LevelBasedValue.constant(0), LevelBasedValue.perLevel(Functions.secondsToTicks(5)), LevelBasedValue.perLevel(0.15f), DSEffects.BURN))),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALL
+                        TargetingMode.ALL
                 ), true), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -426,7 +427,7 @@ public class CaveDragonAbilities {
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
                                 false
                         )),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                        TargetingMode.ALLIES_AND_SELF
                 ), true), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -445,7 +446,7 @@ public class CaveDragonAbilities {
                 Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         List.of(new FlightEffect(1)),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                        TargetingMode.ALLIES_AND_SELF
                 ), true), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -461,7 +462,7 @@ public class CaveDragonAbilities {
                 Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         List.of(new SpinEffect(1, Optional.of(NeoForgeMod.LAVA_TYPE))),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
+                        TargetingMode.ALLIES_AND_SELF
                 ), true), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -482,7 +483,7 @@ public class CaveDragonAbilities {
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
                                 false
                         )),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALL
+                        TargetingMode.ALLIES_AND_SELF
                 ), true), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -497,7 +498,7 @@ public class CaveDragonAbilities {
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         List.of(new SwimEffect(LevelBasedValue.perLevel(Functions.secondsToTicks(180), Functions.secondsToTicks(60)), NeoForgeMod.LAVA_TYPE)),
-                        AbilityTargeting.EntityTargetingMode.TARGET_ALL
+                        TargetingMode.ALLIES_AND_SELF
                 ), true), LevelBasedValue.constant(1))),
                 false, // To prevent regaining oxygen
                 new LevelBasedResource(List.of(

@@ -28,7 +28,7 @@ public abstract class Storage<T extends StorageEntry> implements INBTSerializabl
     @Nullable protected Map<ResourceLocation, T> storage;
 
     public void sync(final ServerPlayer player) {
-        player.getExistingData(type()).ifPresent(data -> PacketDistributor.sendToPlayer(player, new SyncData(NeoForgeRegistries.ATTACHMENT_TYPES.getKey(type()), serializeNBT(player.registryAccess()))));
+        player.getExistingData(type()).ifPresent(data -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncData(player.getId(), NeoForgeRegistries.ATTACHMENT_TYPES.getKey(type()), serializeNBT(player.registryAccess()))));
     }
 
     public void tick(final Entity storageHolder) {
