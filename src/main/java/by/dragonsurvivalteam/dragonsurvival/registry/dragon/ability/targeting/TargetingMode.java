@@ -6,6 +6,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
@@ -47,10 +48,10 @@ public enum TargetingMode implements StringRepresentable {
         }
 
         if (isFriendly(player, entity)) {
-            return this == TargetingMode.ALLIES;
+            return this == TargetingMode.ALLIES_AND_SELF || this == TargetingMode.ALLIES;
         }
 
-        if (entity instanceof Enemy || entity.getType().getCategory() == MobCategory.MONSTER) {
+        if (entity instanceof Enemy || entity.getType().getCategory() == MobCategory.MONSTER || entity instanceof Mob mob && mob.getTarget() == player) {
             return this == TargetingMode.ENEMIES || this == TargetingMode.NON_ALLIES;
         }
 
@@ -58,7 +59,8 @@ public enum TargetingMode implements StringRepresentable {
     }
 
     private boolean isFriendly(final Player player, final Entity entity) {
-        if (player.isAlliedTo(entity)) {
+        // The order of the check is important since certain entities may have a more complex logic to check for allies
+        if (entity.isAlliedTo(player)) {
             return true;
         }
 

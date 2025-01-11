@@ -85,8 +85,9 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
             return;
         }
 
-        data.reduce();
-        PacketDistributor.sendToPlayer(player, new SyncPenaltySupplyAmount(supplyType, data.getSupply()));
+        if (data.reduce()) {
+            PacketDistributor.sendToPlayer(player, new SyncPenaltySupplyAmount(supplyType, data.getSupply()));
+        }
     }
 
     public void regenerate(final ServerPlayer player, final ResourceLocation supplyType) {
@@ -96,8 +97,9 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
             return;
         }
 
-        data.regenerate();
-        PacketDistributor.sendToPlayer(player, new SyncPenaltySupplyAmount(supplyType, data.getSupply()));
+        if (data.regenerate()) {
+            PacketDistributor.sendToPlayer(player, new SyncPenaltySupplyAmount(supplyType, data.getSupply()));
+        }
     }
 
     public Optional<Holder<DragonPenalty>> getMatchingPenalty(final ResourceLocation supplyType, final DragonStateHandler handler) {
@@ -249,12 +251,16 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
             return maximumSupply;
         }
 
-        public void reduce() {
+        public boolean reduce() {
+            float oldSupply = currentSupply;
             currentSupply = Math.max(0, currentSupply - reductionRateMultiplier);
+            return oldSupply != currentSupply;
         }
 
-        public void regenerate() {
+        public boolean regenerate() {
+            float oldSupply = currentSupply;
             currentSupply = Math.min(maximumSupply, currentSupply + maximumSupply * regenerationRate);
+            return oldSupply != currentSupply;
         }
 
         public void regeneratePercentage(final float amount) {

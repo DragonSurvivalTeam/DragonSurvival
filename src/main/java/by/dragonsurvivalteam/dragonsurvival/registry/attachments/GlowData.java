@@ -49,10 +49,10 @@ public class GlowData extends Storage<Glow.Instance> {
         float indexedTimer = (colors.size() - 1) * timer;
         int colorIndex = (int) Math.floor(indexedTimer);
 
-        int firstColor = DSColors.withAlpha(colors.get(colorIndex), 255);
-        int secondColor = DSColors.withAlpha(colors.get(colorIndex + 1), 255);
+        int color = DSColors.withAlpha(colors.get(colorIndex), 255);
+        int nextColor = DSColors.withAlpha(colors.get(colorIndex + 1), 255);
 
-        return FastColor.ARGB32.lerp(indexedTimer - colorIndex, firstColor, secondColor);
+        return FastColor.ARGB32.lerp(indexedTimer - colorIndex, color, nextColor);
     }
 
     public void tickTimer() {
