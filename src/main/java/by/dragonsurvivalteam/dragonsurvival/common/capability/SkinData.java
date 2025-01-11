@@ -1,8 +1,7 @@
-package by.dragonsurvivalteam.dragonsurvival.common.capability.subcapabilities;
+package by.dragonsurvivalteam.dragonsurvival.common.capability;
 
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.SkinPreset;
-import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
@@ -11,13 +10,14 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class SkinCap extends SubCap {
+public class SkinData implements INBTSerializable<CompoundTag> {
     public static final String RENDER_CUSTOM_SKIN = "render_custom_skin";
 
     public Map<ResourceKey<DragonStage>, Boolean> recompileSkin = new HashMap<>();
@@ -27,10 +27,6 @@ public class SkinCap extends SubCap {
 
     public boolean renderCustomSkin;
     public boolean blankSkin;
-
-    public SkinCap(DragonStateHandler handler) {
-        super(handler);
-    }
 
     public HashMap<ResourceKey<DragonSpecies>, SkinPreset> initialize() {
         HashMap<ResourceKey<DragonSpecies>, SkinPreset> presets = new HashMap<>();

@@ -8,8 +8,10 @@ import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidType;
 
@@ -34,6 +36,54 @@ public class EntityCondition {
 
     public static EntityPredicate isOnBlock(final Block... blocks) {
         return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(BlockPredicate.Builder.block().of(blocks))).build();
+    }
+
+    public static EntityPredicate isOnBlock(final TagKey<Block> block, final Property<?> property, final String value) {
+        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(
+                BlockPredicate.Builder.block().of(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, value))
+        )).build();
+    }
+
+    public static EntityPredicate isOnBlock(final TagKey<Block> block, final Property<Integer> property, final int value) {
+        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(
+                BlockPredicate.Builder.block().of(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, value))
+        )).build();
+    }
+
+    public static EntityPredicate isOnBlock(final TagKey<Block> block, final Property<Boolean> property, final boolean value) {
+        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(
+                BlockPredicate.Builder.block().of(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, value))
+        )).build();
+    }
+
+    public static <T extends Comparable<T> & StringRepresentable> EntityPredicate isOnBlock(final TagKey<Block> block, final Property<T> property, final T value) {
+        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(
+                BlockPredicate.Builder.block().of(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, value))
+        )).build();
+    }
+
+    public static EntityPredicate isOnBlock(final Block block, final Property<?> property, final String value) {
+        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(
+                BlockPredicate.Builder.block().of(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, value))
+        )).build();
+    }
+
+    public static EntityPredicate isOnBlock(final Block block, final Property<Integer> property, final int value) {
+        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(
+                BlockPredicate.Builder.block().of(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, value))
+        )).build();
+    }
+
+    public static EntityPredicate isOnBlock(final Block block, final Property<Boolean> property, final boolean value) {
+        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(
+                BlockPredicate.Builder.block().of(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, value))
+        )).build();
+    }
+
+    public static <T extends Comparable<T> & StringRepresentable> EntityPredicate isOnBlock(final Block block, final Property<T> property, final T value) {
+        return EntityPredicate.Builder.entity().steppingOn(LocationPredicate.Builder.location().setBlock(
+                BlockPredicate.Builder.block().of(block).setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(property, value))
+        )).build();
     }
 
     public static EntityPredicate isInBlock(final TagKey<Block> tag) {

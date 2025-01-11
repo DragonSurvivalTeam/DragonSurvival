@@ -165,53 +165,57 @@ public class InventoryScreenHandler {
         }
 
         Screen screen = Minecraft.getInstance().screen;
+        InputConstants.Key key = InputConstants.getKey(event.getKey(), event.getScanCode());
 
         if (screen == null) {
-            if (Keybind.DRAGON_INVENTORY.consumeClick()) {
+            if (Keybind.DRAGON_INVENTORY.isDown(key)) {
+                // FIXME :: if the key is held down the inventory will close after a second
+                //  This is not called multiple times, the open packet is only send once
+                //  The inventory is also not replaced or closed, at least not in this class
+                //  (This problem only applies to the dragon inventory)
                 PacketDistributor.sendToServer(RequestOpenDragonInventory.INSTANCE);
-            } else if (Keybind.SKINS_MENU.consumeClick()) {
+            } else if (Keybind.SKINS_MENU.isDown(key)) {
                 Minecraft.getInstance().setScreen(new DragonSkinsScreen());
-            } else if (Keybind.ABILITY_MENU.consumeClick()) {
+            } else if (Keybind.ABILITY_MENU.isDown(key)) {
                 Minecraft.getInstance().setScreen(new DragonAbilityScreen());
-            } else if (Keybind.SPECIES_MENU.consumeClick()) {
+            } else if (Keybind.SPECIES_MENU.isDown(key)) {
                 Minecraft.getInstance().setScreen(new DragonSpeciesScreen());
-            } else if (Keybind.EMOTE_MENU.consumeClick()) {
+            } else if (Keybind.EMOTE_MENU.isDown(key)) {
                 Minecraft.getInstance().setScreen(new DragonEmoteScreen());
             }
         } else if (isInventoryTab(screen)) {
-            switchOrClose(event, screen);
+            switchOrClose(key, screen);
         }
     }
 
-    private static void switchOrClose(final InputEvent.Key event, final Screen screen) {
-        InputConstants.Key input = InputConstants.getKey(event.getKey(), event.getScanCode());
+    private static void switchOrClose(final InputConstants.Key key, final Screen screen) {
         LocalPlayer player = Objects.requireNonNull(Minecraft.getInstance().player);
 
-        if (Keybind.DRAGON_INVENTORY.isActiveInGui(input)) {
+        if (Keybind.DRAGON_INVENTORY.isDown(key)) {
             if (screen instanceof DragonInventoryScreen) {
                 player.closeContainer();
             } else {
                 PacketDistributor.sendToServer(RequestOpenDragonInventory.INSTANCE);
             }
-        } else if (Keybind.ABILITY_MENU.isActiveInGui(input)) {
+        } else if (Keybind.ABILITY_MENU.isDown(key)) {
             if (screen instanceof DragonAbilityScreen) {
                 player.closeContainer();
             } else {
                 Minecraft.getInstance().setScreen(new DragonAbilityScreen());
             }
-        } else if (Keybind.SPECIES_MENU.isActiveInGui(input)) {
+        } else if (Keybind.SPECIES_MENU.isDown(key)) {
             if (screen instanceof DragonSpeciesScreen) {
                 player.closeContainer();
             } else {
                 Minecraft.getInstance().setScreen(new DragonSpeciesScreen());
             }
-        } else if (Keybind.SKINS_MENU.isActiveInGui(input)) {
+        } else if (Keybind.SKINS_MENU.isDown(key)) {
             if (screen instanceof DragonSkinsScreen) {
                 player.closeContainer();
             } else {
                 Minecraft.getInstance().setScreen(new DragonSkinsScreen());
             }
-        } else if (Keybind.EMOTE_MENU.isActiveInGui(input)) {
+        } else if (Keybind.EMOTE_MENU.isDown(key)) {
             if (screen instanceof DragonEmoteScreen) {
                 player.closeContainer();
             } else {

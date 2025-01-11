@@ -1,17 +1,14 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.CustomPredicates;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.DragonPredicate;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.DragonStagePredicate;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -27,7 +24,6 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.MatchTool;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.fluids.FluidType;
 
 import java.util.Optional;
 
@@ -137,31 +133,9 @@ public class Condition {
         return EntityPredicate.Builder.entity().subPredicate(DragonPredicate.Builder.dragon().stage(dragonStage).build());
     }
 
-    public static EntityPredicate.Builder dragonBody(final Holder<DragonBody> dragonBody) {
-        return EntityPredicate.Builder.entity().subPredicate(DragonPredicate.Builder.dragon().body(dragonBody).build());
-    }
-
-    public static EntityPredicate.Builder dragonSizeBetween(double min, double max) {
-        return EntityPredicate.Builder.entity().subPredicate(
-                DragonPredicate.Builder.dragon().stage(DragonStagePredicate.Builder.start().sizeBetween(min, max).build()).build()
-        );
-    }
-
     public static EntityPredicate.Builder dragonSizeAtLeast(double min) {
         return EntityPredicate.Builder.entity().subPredicate(
                 DragonPredicate.Builder.dragon().stage(DragonStagePredicate.Builder.start().sizeAtLeast(min).build()).build()
-        );
-    }
-
-    public static EntityPredicate.Builder dragonSizeAtMost(double max) {
-        return EntityPredicate.Builder.entity().subPredicate(
-                DragonPredicate.Builder.dragon().stage(DragonStagePredicate.Builder.start().sizeAtMost(max).build()).build()
-        );
-    }
-
-    public static EntityPredicate.Builder isEyeInFluid(HolderSet<FluidType> fluids) {
-        return EntityPredicate.Builder.entity().subPredicate(
-                CustomPredicates.Builder.start().eyeInFluid(fluids).build()
         );
     }
 }

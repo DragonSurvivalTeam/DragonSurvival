@@ -115,16 +115,26 @@ public enum Keybind {
         return keyMapping;
     }
 
+    /**
+     * This cannot be used to check if the key was pressed <br>
+     * Since the click count will increase when the key is held down <br>
+     */
     public boolean consumeClick() {
         return get().consumeClick();
     }
 
-    public boolean isActiveInGui(final InputConstants.Key input) {
-        return isActive(input, KeyConflictContext.GUI);
+    public boolean isDown() {
+        return get().isDown();
     }
 
-    public boolean isActive(final InputConstants.Key input, final KeyConflictContext context) {
-        KeyMapping key = get();
-        return key.getKey().equals(input) && key.getKeyModifier().isActive(context);
+    /** Also checks if the key (and modifier) matches */
+    public boolean isDown(final InputConstants.Key input) {
+        KeyMapping mapping = get();
+
+        if (mapping.getKey().equals(input) && mapping.getKeyModifier().isActive(mapping.getKeyConflictContext())) {
+            return mapping.isDown();
+        } else {
+            return false;
+        }
     }
 }

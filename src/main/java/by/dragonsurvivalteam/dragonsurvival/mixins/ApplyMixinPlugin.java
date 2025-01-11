@@ -46,9 +46,13 @@ public class ApplyMixinPlugin implements IMixinConfigPlugin {
             return isPresent;
         }
 
-        if (mixinClassName.equals("by.dragonsurvivalteam.dragonsurvival.mixins.client.MinecraftMixin")) {
+        if (mixinClassName.equals(PREFIX + "client.MinecraftMixin")) {
             // Iris doesn't properly work with Fabulous! mode (the translucency sorting feature) (it causes particles to be invisible)
             return LoadingModList.get().getModFileById("iris") == null || LoadingModList.get().getModFileById(ALIAS.get("iris")) == null;
+        }
+
+        if (mixinClassName.equals(PREFIX + "HolderSetCodecMixin")) {
+            return System.getProperty("dragonsurvival.data_generation").equals("true");
         }
 
         return true;

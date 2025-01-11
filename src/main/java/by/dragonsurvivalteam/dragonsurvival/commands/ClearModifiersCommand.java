@@ -27,21 +27,20 @@ public class ClearModifiersCommand {
     public static void register(final CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(literal("dragon-modifiers")
                 .requires(commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
-                .then(
-                        literal("clear")
-                                .executes(commandSourceStack -> clearModifiers(commandSourceStack.getSource(), ImmutableList.of(commandSourceStack.getSource().getEntityOrException())))
-                                .then(
-                                        argument("targets", EntityArgument.entities())
-                                                .executes(commandSourceStack -> clearModifiers(commandSourceStack.getSource(), EntityArgument.getEntities(commandSourceStack, "targets")))
-                                )
+                .then(literal("clear")
+                        .executes(commandSourceStack -> clearModifiers(commandSourceStack.getSource(), ImmutableList.of(commandSourceStack.getSource().getEntityOrException())))
+                        .then(argument("targets", EntityArgument.entities())
+                                .executes(commandSourceStack -> clearModifiers(commandSourceStack.getSource(), EntityArgument.getEntities(commandSourceStack, "targets")))
+                        )
                 )
         );
     }
 
-    private static int clearModifiers(CommandSourceStack source, Collection<? extends Entity> targets) {
+    private static int clearModifiers(final CommandSourceStack source, final Collection<? extends Entity> targets) {
         AtomicInteger totalRemoved = new AtomicInteger();
-        for(Entity target : targets) {
-            if(target instanceof LivingEntity) {
+
+        for (Entity target : targets) {
+            if (target instanceof LivingEntity) {
                 target.getExistingData(DSDataAttachments.MODIFIERS_WITH_DURATION).ifPresent(data -> {
                     data.all().forEach(entry -> entry.onRemovalFromStorage(target));
                     target.removeData(DSDataAttachments.MODIFIERS_WITH_DURATION);
@@ -63,7 +62,7 @@ public class ClearModifiersCommand {
         }
 
         if (targets.size() == 1) {
-            source.sendSuccess(() -> Component.translatable(FROM_SINGLE_ENTITY, totalRemoved.get(), targets.stream().findFirst().get().getDisplayName()), true);
+            source.sendSuccess(() -> Component.translatable(FROM_SINGLE_ENTITY, totalRemoved.get(), targets.iterator().next().getDisplayName()), true);
         } else {
             source.sendSuccess(() -> Component.translatable(FROM_ENTITES, totalRemoved.get(), targets.size()), true);
         }

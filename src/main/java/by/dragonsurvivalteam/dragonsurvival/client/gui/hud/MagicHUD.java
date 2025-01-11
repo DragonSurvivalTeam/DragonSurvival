@@ -17,6 +17,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.blaze3d.platform.Window;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -28,6 +29,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.util.Color;
 
 import java.util.Objects;
@@ -36,20 +38,11 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 @EventBusSubscriber(value = Dist.CLIENT)
 public class MagicHUD {
-    // 1.20.6 moved a bunch of widgets around, so to keep compatibility with older versions, we need to use the old widgets texture
-    public static final ResourceLocation WIDGET_TEXTURES = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/widgets.png");
-
-    private static final ResourceLocation VANILLA_WIDGETS = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/pre-1.20.1-widgets.png");
-    private static final ResourceLocation CAST_BAR_FILL = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/cast_bar_fill.png");
-
     @Translation(comments = "§fNot enough§r §cmana or experience§r!")
     public static final String NO_MANA = Translation.Type.GUI.wrap("ability.no_mana");
 
     @Translation(comments = "§fThis ability is §r§cnot ready§r§f yet!§r (%s)")
     public static final String COOLDOWN = Translation.Type.GUI.wrap("ability.cooldown");
-
-    @Translation(comments = "§fThis skill cannot be used §r§cwhile flying§r§f!§f")
-    public static final String FLYING = Translation.Type.GUI.wrap("ability.flying");
 
     @ConfigRange(min = 0, max = 1)
     @Translation(key = "mark_disabled_abilities_red_lerp_speed", type = Translation.Type.CONFIGURATION, comments = "How fast the lerp speed is for marking disabled abilities red.")
@@ -90,6 +83,14 @@ public class MagicHUD {
     @Translation(key = "mana_bar_y_offset", type = Translation.Type.CONFIGURATION, comments = "Offset for the y position of the mana bar")
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "magic"}, key = "mana_bar_y_offset")
     public static Integer manabarYOffset = 0;
+
+    public static final ResourceLocation ID = DragonSurvival.res("magic_hud");
+
+    // 1.20.6 moved a bunch of widgets around, so to keep compatibility with older versions, we need to use the old widgets texture
+    public static final ResourceLocation WIDGET_TEXTURES = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/widgets.png");
+
+    private static final ResourceLocation VANILLA_WIDGETS = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/pre-1.20.1-widgets.png");
+    private static final ResourceLocation CAST_BAR_FILL = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/cast_bar_fill.png");
 
     public static class OutlineColorData {
         private Color color;
@@ -199,20 +200,28 @@ public class MagicHUD {
         disabledAbilitiesColor[slot].color = Color.ofRGBA(red, green, blue, alpha);
     }
 
-    public static void renderAbilityHUD(final Player player, final GuiGraphics graphics, int width, int height) {
+    public static void render(@NotNull final GuiGraphics graphics, @NotNull final DeltaTracker tracker) {
+        Player player = Minecraft.getInstance().player;
+
         if (player == null || player.isSpectator()) {
             return;
         }
 
-        MagicData magic = MagicData.getData(player);
-        if(magic.getAbilities().isEmpty()) {
+        if (!DragonStateProvider.isDragon(player)) {
             return;
         }
 
-        if(!initializedDisabledAbilitiesColor) {
+        MagicData magic = MagicData.getData(player);
+
+        if (magic.getAbilities().isEmpty()) {
+            return;
+        }
+
+        if (!initializedDisabledAbilitiesColor) {
             for (int i = 0; i < MagicData.HOTBAR_SLOTS; i++) {
                 disabledAbilitiesColor[i] = new OutlineColorData(Color.ofRGBA(1.f, 1.f, 1.f, 1.f), markDisabledAbilitiesRedDelay, false);
             }
+
             initializedDisabledAbilitiesColor = true;
         }
 
@@ -231,9 +240,9 @@ public class MagicHUD {
         int sizeX = 20;
         int sizeY = 20;
 
-        int i1 = width - sizeX * MagicData.HOTBAR_SLOTS - 20;
+        int i1 = graphics.guiWidth() - sizeX * MagicData.HOTBAR_SLOTS - 20;
         int posX = i1;
-        int posY = height - sizeY;
+        int posY = graphics.guiHeight() - sizeY;
 
         posX += skillbarXOffset;
         posY += skillbarYOffset;
@@ -295,7 +304,7 @@ public class MagicHUD {
             float currentMana = Math.min(maxMana, ManaHandler.getCurrentMana(player));
 
             int manaX = i1;
-            int manaY = height - sizeY;
+            int manaY = graphics.guiHeight() - sizeY;
 
             manaX += manabarXOffset;
             manaY += manabarYOffset;
@@ -347,8 +356,8 @@ public class MagicHUD {
                 graphics.pose().pushPose();
                 graphics.pose().scale(0.5F, 0.5F, 0);
 
-                int startX = width / 2 - 49 + castbarXOffset;
-                int startY = height - 96 + castbarYOffset;
+                int startX = graphics.guiWidth() / 2 - 49 + castbarXOffset;
+                int startY = graphics.guiHeight() - 96 + castbarYOffset;
                 float percentage = Math.clamp(1 - currentCastTime / (float) skillCastTime, 0, 1);
 
                 graphics.pose().translate(startX, startY, 0);
@@ -368,7 +377,7 @@ public class MagicHUD {
         }
 
         if (errorTicks > 0) {
-            graphics.drawString(Minecraft.getInstance().font, errorMessage.getVisualOrderText(), (int) (width / 2f - Minecraft.getInstance().font.width(errorMessage) / 2f), height - 70, 0);
+            graphics.drawString(Minecraft.getInstance().font, errorMessage.getVisualOrderText(), (int) (graphics.guiWidth() / 2f - Minecraft.getInstance().font.width(errorMessage) / 2f), graphics.guiHeight() - 70, 0);
         }
     }
 

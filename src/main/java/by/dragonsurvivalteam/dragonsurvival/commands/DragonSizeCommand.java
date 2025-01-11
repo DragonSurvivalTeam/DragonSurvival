@@ -7,7 +7,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
@@ -24,41 +23,41 @@ public class DragonSizeCommand {
     private static final String FAILED_TO_SET_SIZE = Translation.Type.COMMAND.wrap("size.failed_to_set_size");
 
     public static void register(final RegisterCommandsEvent event) {
-        event.getDispatcher().register(
-                Commands.literal("dragon-size")
-                        .requires(sourceStack -> sourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
-                        .then(
-                                Commands.argument("targets", EntityArgument.players())
-                                        .then(Commands.argument(DragonSizeArgument.ID, new DragonSizeArgument(event.getBuildContext()))
-                                                        .executes(sourceStackCommandContext -> {
-                                                            Collection<? extends Player> players = EntityArgument.getPlayers(sourceStackCommandContext, "targets");
-                                                            double size = DragonSizeArgument.get(sourceStackCommandContext);
-                                                            int count = 0;
-                                                            for(Player player : players) {
-                                                                ServerPlayer serverPlayer = (ServerPlayer) player;
-                                                                DragonStateHandler handler = DragonStateProvider.getData(serverPlayer);
+        event.getDispatcher().register(Commands.literal("dragon-size")
+                .requires(sourceStack -> sourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                .then(Commands.argument("targets", EntityArgument.players())
+                        .then(Commands.argument(DragonSizeArgument.ID, new DragonSizeArgument(event.getBuildContext()))
+                                .executes(source -> {
+                                    Collection<? extends Player> players = EntityArgument.getPlayers(source, "targets");
+                                    double size = DragonSizeArgument.get(source);
 
-                                                                if (handler.isDragon()) {
-                                                                    handler.setDesiredSize(serverPlayer, size);
-                                                                    count++;
-                                                                }
-                                                            }
+                                    int count = 0;
 
-                                                            int finalCount = count;
-                                                            if (players.size() == 1) {
-                                                                if(count == 0) {
-                                                                    sourceStackCommandContext.getSource().sendFailure(Component.translatable(FAILED_TO_SET_SIZE));
-                                                                } else {
-                                                                    sourceStackCommandContext.getSource().sendSuccess(() -> Component.translatable(SET_SIZE_TO_PLAYER, size, players.stream().findFirst().get().getDisplayName()), true);
-                                                                }
-                                                            } else {
-                                                                sourceStackCommandContext.getSource().sendSuccess(() -> Component.translatable(SET_SIZE_TO_PLAYERS, size, finalCount), true);
-                                                            }
+                                    for (Player player : players) {
+                                        DragonStateHandler handler = DragonStateProvider.getData(player);
 
-                                                            return 1;
-                                                        })
-                                        )
+                                        if (handler.isDragon()) {
+                                            handler.setDesiredSize(player, size);
+                                            count++;
+                                        }
+                                    }
+
+                                    int finalCount = count;
+
+                                    if (players.size() == 1) {
+                                        if (count == 0) {
+                                            source.getSource().sendFailure(Component.translatable(FAILED_TO_SET_SIZE));
+                                        } else {
+                                            source.getSource().sendSuccess(() -> Component.translatable(SET_SIZE_TO_PLAYER, size, players.iterator().next().getDisplayName()), true);
+                                        }
+                                    } else {
+                                        source.getSource().sendSuccess(() -> Component.translatable(SET_SIZE_TO_PLAYERS, size, finalCount), true);
+                                    }
+
+                                    return 1;
+                                })
                         )
+                )
         );
     }
 }

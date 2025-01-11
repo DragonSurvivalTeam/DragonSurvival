@@ -116,7 +116,7 @@ public class SourceOfMagicScreen extends AbstractContainerScreen<SourceOfMagicCo
             }
 
             SourceOfMagicData.Consumable consumable = consumables.get(i);
-            tooltip.add(Either.right(new TimeComponent(consumable.item(), consumable.duration())));
+            tooltip.add(Either.right(new TimeComponent(consumable.item(), consumable.duration(), TimeComponent.DEFAULT)));
         }
 
         tooltip.addFirst(Either.left(Component.translatable(HELP)));
