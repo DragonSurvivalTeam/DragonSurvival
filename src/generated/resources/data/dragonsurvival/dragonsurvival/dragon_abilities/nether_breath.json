@@ -99,6 +99,13 @@
         "locks_neck": false,
         "locks_tail": false,
         "transition_length": 5
+      },
+      "start_and_charging": {
+        "animation_key": "spell_charge",
+        "layer": "BREATH",
+        "locks_neck": false,
+        "locks_tail": false,
+        "transition_length": 5
       }
     },
     "cast_time": 20.0,

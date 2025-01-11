@@ -137,7 +137,7 @@ public class CaveDragonAbilities {
                         true,
                         Optional.of(new Activation.Sound(Optional.of(DSSounds.FIRE_BREATH_START.get()), Optional.empty(), Optional.of(DSSounds.FIRE_BREATH_LOOP.get()), Optional.of(DSSounds.FIRE_BREATH_END.get()))),
                         Optional.of(new Activation.Animations(
-                                Optional.empty(),
+                                Optional.of(Either.right(new SimpleAbilityAnimation("spell_charge", AnimationLayer.BREATH, 5, false, false))),
                                 Optional.of(new SimpleAbilityAnimation("breath", AnimationLayer.BREATH, 5, false, false)),
                                 Optional.empty()
                         ))
