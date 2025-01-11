@@ -27,7 +27,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.StructureTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
@@ -38,6 +37,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.levelgen.structure.BuiltinStructures;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -53,6 +53,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+@SuppressWarnings("deprecation") // ignore
 public class DSAdvancements implements AdvancementProvider.AdvancementGenerator {
     private HolderLookup.Provider registries;
     private Consumer<AdvancementHolder> saver;
@@ -235,17 +236,18 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         createWithToast(diamondsInLava, LangKey.CAVE_GO_HOME, Items.NETHER_BRICK_STAIRS, location(
                 Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.CAVE))
-                        .located(dimension(Level.NETHER).setFluid(fluid(FluidTags.LAVA)))
-                        .effects(effect(DSEffects.LAVA_VISION))
+                        .located(inDimension(Level.NETHER).setFluid(fluid(FluidTags.LAVA)))
+                        .effects(hasEffect(DSEffects.LAVA_VISION))
         ), 20);
     }
 
     private void buildBeSeaDragonChildren(final AdvancementHolder parent) {
         // --- Parent: sea/be_dragon --- //
 
-        // TODO :: have either chat or toast notification for this one?
-        // TODO :: previously checked if all loot tables were looted -> might be better to check if all shipwreck (variants) have been visited?
-        AdvancementHolder lootShipwreck = create(parent, LangKey.SEA_LOOT_SHIPWRECK, Items.HEART_OF_THE_SEA, location(Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.SEA)).located(structure(StructureTags.SHIPWRECK))), 20);
+        AdvancementHolder lootShipwreck = create(parent, LangKey.SEA_LOOT_SHIPWRECK, Items.HEART_OF_THE_SEA, List.of(
+                location(Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.SEA)).located(inStructure(registries.holderOrThrow(BuiltinStructures.SHIPWRECK)))),
+                location(Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.SEA)).located(inStructure(registries.holderOrThrow(BuiltinStructures.SHIPWRECK_BEACHED))))
+        ), 20);
 
         AdvancementHolder rainDancing = create(parent, LangKey.SEA_RAIN_DANCING, Items.WATER_BUCKET, List.of(
                 location(ContextAwarePredicate.create(entityCondition(Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.SEA)).build()), WeatherCheck.weather().setRaining(true).build())),
@@ -266,15 +268,15 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         // --- Parent: sea/rain_dancing --- //
 
         AdvancementHolder placeSnowInNether = create(rainDancing, LangKey.SEA_PLACE_SNOW_IN_NETHER, Items.SNOW_BLOCK, placeBlockAsDragon(
-                Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.SEA)).located(dimension(Level.NETHER)), Blocks.SNOW_BLOCK
+                Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.SEA)).located(inDimension(Level.NETHER)), Blocks.SNOW_BLOCK
         ), 16);
 
         // --- Parent: sea/place_snow_in_nether --- //
 
         create(placeSnowInNether, LangKey.SEA_PEACE_IN_NETHER, Items.CAULDRON, location(
                 Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.SEA))
-                        .effects(effect(DSEffects.PEACE))
-                        .located(dimension(Level.NETHER))
+                        .effects(hasEffect(DSEffects.PEACE))
+                        .located(inDimension(Level.NETHER))
         ), 0);
     }
 
@@ -308,7 +310,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         // --- Parent: forest/meat_eater --- //
 
         create(meatEater, LangKey.FOREST_TRANSPLANT_CHORUS_FRUIT, DSItems.DIAMOND_CHORUS.value(), placeBlockAsDragon(
-                Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.FOREST)).located(dimension(Level.OVERWORLD)), Blocks.CHORUS_FLOWER
+                Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.FOREST)).located(inDimension(Level.OVERWORLD)), Blocks.CHORUS_FLOWER
         ), 90);
     }
 
@@ -332,7 +334,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         buildSleepOnTreasureChildren(sleepOnTreasure);
 
         TagKey<Structure> tag = TagKey.create(Registries.STRUCTURE, DragonSurvival.res("dragon_skeletons")); // FIXME :: use tag from data generation
-        createWithToast(parent, LangKey.FIND_BONES, DSItems.STAR_BONE.value(), PlayerTrigger.TriggerInstance.located(structure(tag)), 12);
+        createWithToast(parent, LangKey.FIND_BONES, DSItems.STAR_BONE.value(), PlayerTrigger.TriggerInstance.located(inStructure(tag)), 12);
 
         AdvancementHolder useMemoryBlock = createWithToast(parent, LangKey.USE_MEMORY_BLOCK, DSBlocks.DRAGON_MEMORY_BLOCK.value(), itemUsedOnBlock(DSBlocks.DRAGON_MEMORY_BLOCK.value(), DSItemTags.DRAGON_BEACONS), 10);
         buildUseMemoryBlockChildren(useMemoryBlock);
@@ -467,8 +469,12 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         return RecipeCraftedTrigger.TriggerInstance.craftedItem(item.asItem().builtInRegistryHolder().key().location());
     }
 
+    private LootItemCondition entityCondition(final EntityPredicate predicate) {
+        return LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS, predicate).build();
+    }
+
     @SafeVarargs
-    private MobEffectsPredicate.Builder effect(final Holder<MobEffect>... effects) {
+    private MobEffectsPredicate.Builder hasEffect(final Holder<MobEffect>... effects) {
         MobEffectsPredicate.Builder builder = MobEffectsPredicate.Builder.effects();
 
         for (Holder<MobEffect> effect : effects) {
@@ -478,17 +484,21 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         return builder;
     }
 
-    private LocationPredicate.Builder dimension(final ResourceKey<Level> dimension) {
+    private LocationPredicate.Builder inDimension(final ResourceKey<Level> dimension) {
         return LocationPredicate.Builder.inDimension(dimension);
     }
 
-    private LocationPredicate.Builder structure(final TagKey<Structure> tag) {
+    private LocationPredicate.Builder inStructure(final TagKey<Structure> tag) {
         HolderSet.Named<Structure> set = registries.lookupOrThrow(Registries.STRUCTURE).getOrThrow(tag);
         return LocationPredicate.Builder.location().setStructures(set);
     }
 
-    private LootItemCondition entityCondition(final EntityPredicate predicate) {
-        return LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS, predicate).build();
+    private LocationPredicate.Builder inStructure(final Holder<Structure> structure) {
+        return LocationPredicate.Builder.inStructure(structure);
+    }
+
+    private LocationPredicate.Builder isInFluid(final TagKey<Fluid> fluids) {
+        return LocationPredicate.Builder.location().setFluid(fluid(fluids));
     }
 
     private Optional<ContextAwarePredicate> caveDragonInLava() {
@@ -499,10 +509,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         return FluidPredicate.Builder.fluid().of(registries.lookupOrThrow(Registries.FLUID).getOrThrow(fluids));
     }
 
-    private LocationPredicate.Builder isInFluid(final TagKey<Fluid> fluids) {
-        return LocationPredicate.Builder.location().setFluid(fluid(fluids));
-    }
-
+    @SuppressWarnings("SameParameterValue") // ignore
     private LocationPredicate.Builder block(final Block block) {
         return LocationPredicate.Builder.location().setBlock(BlockPredicate.Builder.block().of(block));
     }

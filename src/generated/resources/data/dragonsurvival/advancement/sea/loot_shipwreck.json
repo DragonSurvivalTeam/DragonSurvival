@@ -9,7 +9,27 @@
             "entity": "this",
             "predicate": {
               "location": {
-                "structures": "#minecraft:shipwreck"
+                "structures": "minecraft:shipwreck"
+              },
+              "type_specific": {
+                "type": "dragonsurvival:dragon_predicate",
+                "dragon_species": "dragonsurvival:sea"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    },
+    "criterion_1": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structures": "minecraft:shipwreck_beached"
               },
               "type_specific": {
                 "type": "dragonsurvival:dragon_predicate",
@@ -39,6 +59,9 @@
   "requirements": [
     [
       "criterion_0"
+    ],
+    [
+      "criterion_1"
     ]
   ],
   "rewards": {

@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation;
 
-import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import software.bernie.geckolib.animation.Animation;
