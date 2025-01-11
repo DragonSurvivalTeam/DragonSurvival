@@ -1,4 +1,4 @@
-// 1.21.1	2025-01-02T18:23:55.078047	Advancements
+// 1.21.1	2025-01-10T19:07:34.4037408	Advancements
 1a7d4520fc656360fe5fccecd785f600641927d3 data/dragonsurvival/advancement/be_adult_dragon.json
 550afd5ed2eeeeefe5bfaff761df685a793a5978 data/dragonsurvival/advancement/be_dragon.json
 a52fbc87e18b5cfd6830774af942373c963d546f data/dragonsurvival/advancement/be_young_dragon.json
@@ -43,7 +43,7 @@ d39c3c92792a8d381181aab8e76738cf38e6a339 data/dragonsurvival/advancement/path_ch
 46f4259e4c69669d673386545f7d1f33d24fbe31 data/dragonsurvival/advancement/sea/be_dragon.json
 65bc1de69a4e8c1c7559eab229c49efaa7578744 data/dragonsurvival/advancement/sea/be_old_dragon.json
 637d460a9f695eb5260e37900e17f5baca49c197 data/dragonsurvival/advancement/sea/fish_eater.json
-7f8039f82aa8b0d56f97a68605fd6aa882107938 data/dragonsurvival/advancement/sea/loot_shipwreck.json
+32e4373ceb1baee5c843d205eb5bc49746bc79b8 data/dragonsurvival/advancement/sea/loot_shipwreck.json
 755474c68ae16ddee503ead5289f7c0670e66aab data/dragonsurvival/advancement/sea/master_all_passives.json
 b5fb9e1a4796a4d3c29dc1852369199114ad88c7 data/dragonsurvival/advancement/sea/peace_in_nether.json
 68ae2039f25802a8cc7fc335ebe21772ff921cc8 data/dragonsurvival/advancement/sea/place_snow_in_nether.json

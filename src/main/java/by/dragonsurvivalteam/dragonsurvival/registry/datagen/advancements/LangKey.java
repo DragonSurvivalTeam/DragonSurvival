@@ -136,7 +136,7 @@ public class LangKey {
     protected static final String SEA_BE_DRAGON = "sea/be_dragon";
 
     @Translation(type = Translation.Type.ADVANCEMENT, comments = "Ocean Reclaimer")
-    @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Claim salvage from all three types of chests in a shipwreck.")
+    @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Discover and claim the loot of unfortunate shipwrecks.")
     protected static final String SEA_LOOT_SHIPWRECK = "sea/loot_shipwreck";
 
     @Translation(type = Translation.Type.ADVANCEMENT, comments = "Dancing in the Rain")

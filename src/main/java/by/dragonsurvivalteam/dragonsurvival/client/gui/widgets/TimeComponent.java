@@ -27,7 +27,7 @@ public record TimeComponent(Item item, int ticks, BiFunction<Item, Integer, Comp
         //noinspection DataFlowIssue -> player is expected to be present
         DragonStateHandler handler = DragonStateProvider.getData(player);
 
-        //noinspection deprecation,OptionalGetWithoutIsPresent -> ignore / the item is expected to be part of the entries at this point,deprecation
+        //noinspection deprecation,OptionalGetWithoutIsPresent -> ignore / the item is expected to be part of the entries at this point
         GrowthItem growthItem = handler.stage().value().growthItems().stream().filter(entry -> entry.items().contains(item.builtInRegistryHolder())).findFirst().get();
 
         if (growthItem.maximumUsages() == GrowthItem.INFINITE_USAGES) {

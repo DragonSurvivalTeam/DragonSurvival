@@ -35,20 +35,17 @@ public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target,
     @Override
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability) {
         target().ifLeft(blockTarget -> {
-            AABB breathArea = calculateBreathArea(dragon, ability);
             // Used by 'BlockGetter#clip' to determine the direction
             // 'Entity#pick' -> from: 'getEyePosition' / to: 'getEyePosition + getViewVector'
             Direction direction = Direction.getNearest(dragon.getEyePosition());
 
-            BlockPos.betweenClosedStream(breathArea).forEach(position -> {
+            BlockPos.betweenClosedStream(calculateBreathArea(dragon, ability)).forEach(position -> {
                 if (blockTarget.matches(dragon, position)) {
                     blockTarget.effect().forEach(target -> target.apply(dragon, ability, position, direction));
                 }
             });
         }).ifRight(entityTarget -> {
-            AABB breathArea = calculateBreathArea(dragon, ability);
-
-            dragon.serverLevel().getEntities(EntityTypeTest.forClass(Entity.class), breathArea,
+            dragon.serverLevel().getEntities(EntityTypeTest.forClass(Entity.class), calculateBreathArea(dragon, ability),
                     entity -> isEntityRelevant(dragon, entityTarget, entity) && entityTarget.matches(dragon, entity, entity.position())
             ).forEach(entity -> entityTarget.effects().forEach(target -> target.apply(dragon, ability, entity)));
         });
