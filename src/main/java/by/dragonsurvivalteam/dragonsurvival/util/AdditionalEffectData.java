@@ -3,8 +3,8 @@ package by.dragonsurvivalteam.dragonsurvival.util;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 
-import java.util.UUID;
 import javax.annotation.Nullable;
+import java.util.UUID;
 
 public interface AdditionalEffectData {
     void dragonSurvival$setApplier(final Entity applier);

@@ -20,10 +20,14 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import org.jetbrains.annotations.NotNull;
-import software.bernie.geckolib.animation.*;
+import software.bernie.geckolib.animation.AnimatableManager;
+import software.bernie.geckolib.animation.AnimationController;
+import software.bernie.geckolib.animation.AnimationState;
+import software.bernie.geckolib.animation.PlayState;
+import software.bernie.geckolib.animation.RawAnimation;
 
-import java.util.List;
 import javax.annotation.Nullable;
+import java.util.List;
 
 public class KnightEntity extends Hunter {
     public KnightEntity(final EntityType<? extends PathfinderMob> type, final Level level) {

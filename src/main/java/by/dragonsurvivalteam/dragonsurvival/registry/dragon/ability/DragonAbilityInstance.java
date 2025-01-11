@@ -30,8 +30,8 @@ import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 public class DragonAbilityInstance {
     public static final int MIN_LEVEL = 0;

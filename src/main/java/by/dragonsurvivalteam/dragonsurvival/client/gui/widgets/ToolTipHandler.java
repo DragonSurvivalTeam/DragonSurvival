@@ -84,9 +84,15 @@ public class ToolTipHandler {
         }
 
         Item item = event.getItemStack().getItem();
-        Holder<DragonSpecies> playerSpecies = event.getEntity() != null ? DragonStateProvider.getData(event.getEntity()).species() : null;
+        Holder<DragonSpecies> playerSpecies;
 
-        if (playerSpecies != null && TOOLTIP_STYLE != TooltipStyle.ALL_SHIFT) {
+        if (TOOLTIP_STYLE != TooltipStyle.ALL_SHIFT && event.getEntity() != null) {
+            playerSpecies = DragonStateProvider.getData(event.getEntity()).species();
+        } else {
+            playerSpecies = null;
+        }
+
+        if (playerSpecies != null) {
             MutableComponent tooltip = getTooltip(playerSpecies, item);
 
             if (tooltip != null) {
@@ -101,7 +107,7 @@ public class ToolTipHandler {
         List<Component> dragonFoodTooltips = new ArrayList<>();
 
         provider.lookupOrThrow(DragonSpecies.REGISTRY).listElements().forEach(species -> {
-            if (TOOLTIP_STYLE != TooltipStyle.ALL_SHIFT && playerSpecies != null && species.is(playerSpecies)) {
+            if (playerSpecies != null && species.is(playerSpecies)) {
                 return;
             }
 

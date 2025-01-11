@@ -16,9 +16,9 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animation.AnimationController;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 import java.util.function.Supplier;
-import javax.annotation.Nullable;
 
 public class FakeClientPlayer extends AbstractClientPlayer {
     public DragonStateHandler handler = new DragonStateHandler();

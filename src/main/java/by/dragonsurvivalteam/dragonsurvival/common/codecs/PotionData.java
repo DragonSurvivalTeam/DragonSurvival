@@ -21,11 +21,11 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 
+import javax.annotation.Nullable;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import javax.annotation.Nullable;
 
 public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier, LevelBasedValue duration, LevelBasedValue probability) {
     public static final LevelBasedValue DEFAULT_PROBABILITY = LevelBasedValue.constant(1);

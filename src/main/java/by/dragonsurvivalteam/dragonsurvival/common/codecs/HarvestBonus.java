@@ -30,9 +30,9 @@ import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
 import java.text.NumberFormat;
 import java.util.Optional;
-import javax.annotation.Nullable;
 
 public record HarvestBonus(ResourceLocation id, Optional<HolderSet<Block>> blocks, LevelBasedValue harvestBonus, LevelBasedValue breakSpeedMultiplier, LevelBasedValue duration, boolean isHidden) {
     @Translation(comments = {

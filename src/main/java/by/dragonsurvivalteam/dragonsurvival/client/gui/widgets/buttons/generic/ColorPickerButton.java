@@ -8,7 +8,7 @@ import net.minecraft.util.Mth;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.function.Consumer;
 
 public class ColorPickerButton extends ExtendedButton {

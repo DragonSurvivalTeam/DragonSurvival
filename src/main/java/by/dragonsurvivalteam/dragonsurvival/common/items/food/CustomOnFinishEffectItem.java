@@ -8,8 +8,8 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Consumer;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.function.Consumer;
 
 @ParametersAreNonnullByDefault
 public class CustomOnFinishEffectItem extends TooltipItem {

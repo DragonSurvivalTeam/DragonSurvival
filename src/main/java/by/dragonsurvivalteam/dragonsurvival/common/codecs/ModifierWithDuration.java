@@ -34,11 +34,11 @@ import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nullable;
 
 public record ModifierWithDuration(ResourceLocation id, ResourceLocation icon, List<Modifier> modifiers, LevelBasedValue duration, boolean isHidden) {
     public static final ResourceLocation DEFAULT_MODIFIER_ICON = DragonSurvival.res("textures/modifiers/default_modifier.png");

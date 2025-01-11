@@ -12,7 +12,7 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.List;
 
 public class BackgroundColorSelectorComponent extends AbstractContainerEventHandler implements Renderable {

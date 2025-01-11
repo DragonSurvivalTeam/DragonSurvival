@@ -5,7 +5,16 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEnchantments;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.advancements.DSAdvancements;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.*;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBlockTags;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDamageTypeTags;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonAbilityTags;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonBodyTags;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonSpeciesTags;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEffectTags;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEnchantmentTags;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSPoiTypeTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
@@ -46,7 +55,11 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)

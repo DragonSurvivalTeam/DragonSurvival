@@ -14,7 +14,11 @@ import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDesiredSize;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncSize;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSModifiers;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.*;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AltarData;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HarvestBonuses;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PenaltySupply;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
@@ -52,8 +56,13 @@ import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class DragonStateHandler extends EntityStateHandler {
     public static final double NO_SIZE = -1;

@@ -33,8 +33,8 @@ import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
-import java.text.NumberFormat;
 import javax.annotation.Nullable;
+import java.text.NumberFormat;
 
 public record DamageModification(ResourceLocation id, HolderSet<DamageType> damageTypes, LevelBasedValue multiplier, LevelBasedValue duration, boolean isHidden) {
     @Translation(comments = "§6■ Immune§r to ")

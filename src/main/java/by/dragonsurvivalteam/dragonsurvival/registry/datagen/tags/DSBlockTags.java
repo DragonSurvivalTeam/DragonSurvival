@@ -61,8 +61,8 @@ public class DSBlockTags extends BlockTagsProvider {
     @Override
     protected void addTags(@NotNull final HolderLookup.Provider provider) {
         addToVanillaTags();
-        addToDragonSpeedUpBlocks();
-        tagTypeBlocks();
+        addToDragonSpeedUpTags();
+        addToTypeTags();
 
         DSBlocks.DS_BLOCKS.getEntries().forEach(holder -> {
             Block block = holder.value();
@@ -126,7 +126,7 @@ public class DSBlockTags extends BlockTagsProvider {
                 .add(Blocks.SMALL_DRIPLEAF);
     }
 
-    private void tagTypeBlocks() {
+    private void addToTypeTags() {
         tag(IS_WARM)
                 .addTag(BlockTags.FIRE)
                 .add(Blocks.MAGMA_BLOCK)
@@ -201,7 +201,7 @@ public class DSBlockTags extends BlockTagsProvider {
     }
 
     /** These blocks grant a speed bonus when the corresponding dragon species stands on them */
-    private void addToDragonSpeedUpBlocks() {
+    private void addToDragonSpeedUpTags() {
         tag(SPEEDS_UP_CAVE_DRAGON)
                 .addTag(BlockTags.BASE_STONE_OVERWORLD)
                 .addTag(BlockTags.BEACON_BASE_BLOCKS)
@@ -211,8 +211,7 @@ public class DSBlockTags extends BlockTagsProvider {
                 .addTag(Tags.Blocks.COBBLESTONES)
                 .addTag(Tags.Blocks.STONES)
                 .addTag(Tags.Blocks.ORES)
-                .addTag(IS_WARM)
-                .addOptionalTag(DragonSurvival.location("immersive_weathering", "charred_blocks"));
+                .addTag(IS_WARM);
 
         tag(SPEEDS_UP_SEA_DRAGON)
                 .addTag(BlockTags.CORAL_BLOCKS)

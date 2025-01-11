@@ -1,8 +1,18 @@
 package by.dragonsurvivalteam.dragonsurvival.registry;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.commands.*;
-import by.dragonsurvivalteam.dragonsurvival.commands.arguments.*;
+import by.dragonsurvivalteam.dragonsurvival.commands.ClearMarkCommand;
+import by.dragonsurvivalteam.dragonsurvival.commands.ClearModifiersCommand;
+import by.dragonsurvivalteam.dragonsurvival.commands.DragonAbilityCommand;
+import by.dragonsurvivalteam.dragonsurvival.commands.DragonAltarCommand;
+import by.dragonsurvivalteam.dragonsurvival.commands.DragonCommand;
+import by.dragonsurvivalteam.dragonsurvival.commands.DragonEditorCommand;
+import by.dragonsurvivalteam.dragonsurvival.commands.DragonSizeCommand;
+import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonAbilityArgument;
+import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonBodyArgument;
+import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonSizeArgument;
+import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonSpeciesArgument;
+import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonStageArgument;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;

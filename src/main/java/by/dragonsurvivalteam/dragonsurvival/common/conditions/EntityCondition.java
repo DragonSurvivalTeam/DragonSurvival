@@ -4,7 +4,15 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.CustomPredi
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.DragonPredicate;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.EntityCheckPredicate;
 import by.dragonsurvivalteam.dragonsurvival.common.items.growth.StarHeartItem;
-import net.minecraft.advancements.critereon.*;
+import net.minecraft.advancements.critereon.BlockPredicate;
+import net.minecraft.advancements.critereon.EntityFlagsPredicate;
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.critereon.FluidPredicate;
+import net.minecraft.advancements.critereon.LightPredicate;
+import net.minecraft.advancements.critereon.LocationPredicate;
+import net.minecraft.advancements.critereon.MinMaxBounds;
+import net.minecraft.advancements.critereon.MobEffectsPredicate;
+import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.tags.TagKey;

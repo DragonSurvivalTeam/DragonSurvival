@@ -1,7 +1,24 @@
 package by.dragonsurvivalteam.dragonsurvival;
 
 import by.dragonsurvivalteam.dragonsurvival.config.ConfigHandler;
-import by.dragonsurvivalteam.dragonsurvival.registry.*;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSCommands;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSContainers;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSCreativeTabs;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSEquipment;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSMapDecorationTypes;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSParticles;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSPotions;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSSounds;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSStructurePlacementTypes;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSSubPredicates;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSTrades;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataComponents;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.loot.AddTableLootExtendedLootModifier;

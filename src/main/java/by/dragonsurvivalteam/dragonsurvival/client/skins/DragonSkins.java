@@ -19,6 +19,7 @@ import net.minecraft.world.entity.player.Player;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -26,7 +27,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
-import javax.annotation.Nullable;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 

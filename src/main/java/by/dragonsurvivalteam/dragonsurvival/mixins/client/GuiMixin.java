@@ -23,8 +23,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.List;
 import javax.annotation.Nullable;
+import java.util.List;
 
 @Mixin(Gui.class)
 public abstract class GuiMixin {

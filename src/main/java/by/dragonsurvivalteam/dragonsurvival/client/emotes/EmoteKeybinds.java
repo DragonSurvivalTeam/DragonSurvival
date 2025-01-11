@@ -2,9 +2,9 @@ package by.dragonsurvivalteam.dragonsurvival.client.emotes;
 
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonEmoteScreen;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Nullable;
 
 public class EmoteKeybinds {
     private final Map<Integer, String> emoteKeybinds = new HashMap<>();

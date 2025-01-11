@@ -42,8 +42,9 @@ import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 
-import java.util.*;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 @EventBusSubscriber
 public class HunterOmenHandler {

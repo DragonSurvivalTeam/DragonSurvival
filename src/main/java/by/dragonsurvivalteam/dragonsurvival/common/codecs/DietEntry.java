@@ -9,7 +9,11 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 public record DietEntry(List<String> items, Optional<FoodProperties> properties) {
     // Copied from FoodProperties.java. Trying to AT this didn't work out well.

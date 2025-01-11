@@ -25,8 +25,8 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
 import javax.annotation.Nullable;
+import java.util.Map;
 
 public class SkeletonPieceBlock extends Block implements SimpleWaterloggedBlock {
     @Translation(comments = "Dragon Bones")

@@ -14,11 +14,11 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import javax.annotation.Nullable;
 
 public class DragonStageArgument implements ArgumentType<Holder<DragonStage>> {
     public static final String ID = "dragon_stage";

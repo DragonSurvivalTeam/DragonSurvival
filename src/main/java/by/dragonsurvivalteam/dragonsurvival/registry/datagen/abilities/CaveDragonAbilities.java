@@ -1,7 +1,15 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.*;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.DamageModification;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.DurationInstance;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.HarvestBonus;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierWithDuration;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.PotionData;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.TargetDirection;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
@@ -19,7 +27,18 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBlockTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.FireEffect;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.*;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.BreathParticlesEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.DamageEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.DamageModificationEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.FlightEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.HarvestBonusEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.IgniteEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.ModifierEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.OnAttackEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.PotionEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.ProjectileEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.SpinEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.SwimEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AbilityTargeting;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AreaTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.DragonBreathTarget;
@@ -295,7 +314,7 @@ public class CaveDragonAbilities {
                                 AbilityTargeting.EntityTargetingMode.TARGET_ALLIES
                         ), true), LevelBasedValue.constant(1)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                                // Enable when on (or within) said block tag or when in lava
+                                // Enable when on (or within) said block tag, when in lava or when on certain lit blocks
                                 Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_WARM))
                                         .or(Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_WARM)))
                                         .or(Condition.thisEntity(EntityCondition.isInFluid(context.lookup(Registries.FLUID).getOrThrow(FluidTags.LAVA))))

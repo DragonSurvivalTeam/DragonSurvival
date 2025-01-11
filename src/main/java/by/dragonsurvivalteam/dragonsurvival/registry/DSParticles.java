@@ -10,7 +10,14 @@ import by.dragonsurvivalteam.dragonsurvival.client.particles.dragon.LargePoisonP
 import by.dragonsurvivalteam.dragonsurvival.client.particles.dragon.SmallFireParticle;
 import by.dragonsurvivalteam.dragonsurvival.client.particles.dragon.SmallLightningParticle;
 import by.dragonsurvivalteam.dragonsurvival.client.particles.dragon.SmallPoisonParticle;
-import by.dragonsurvivalteam.dragonsurvival.common.particles.*;
+import by.dragonsurvivalteam.dragonsurvival.common.particles.LargeFireParticleOption;
+import by.dragonsurvivalteam.dragonsurvival.common.particles.LargeLightningParticleOption;
+import by.dragonsurvivalteam.dragonsurvival.common.particles.LargePoisonParticleOption;
+import by.dragonsurvivalteam.dragonsurvival.common.particles.SeaSweepParticleOption;
+import by.dragonsurvivalteam.dragonsurvival.common.particles.SmallFireParticleOption;
+import by.dragonsurvivalteam.dragonsurvival.common.particles.SmallLightningParticleOption;
+import by.dragonsurvivalteam.dragonsurvival.common.particles.SmallPoisonParticleOption;
+import by.dragonsurvivalteam.dragonsurvival.common.particles.TreasureParticleOption;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;

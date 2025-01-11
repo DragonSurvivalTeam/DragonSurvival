@@ -2,7 +2,11 @@ package by.dragonsurvivalteam.dragonsurvival.client.particles;
 
 import by.dragonsurvivalteam.dragonsurvival.common.particles.SeaSweepParticleOption;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.*;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.particle.TextureSheetParticle;
 import org.jetbrains.annotations.NotNull;
 
 public class SeaSweepParticle extends TextureSheetParticle {

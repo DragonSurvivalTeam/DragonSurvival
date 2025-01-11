@@ -1,6 +1,10 @@
 package by.dragonsurvivalteam.dragonsurvival.registry;
 
-import by.dragonsurvivalteam.dragonsurvival.server.tileentity.*;
+import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonBeaconBlockEntity;
+import by.dragonsurvivalteam.dragonsurvival.server.tileentity.HelmetBlockEntity;
+import by.dragonsurvivalteam.dragonsurvival.server.tileentity.PrimordialAnchorBlockEntity;
+import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicBlockEntity;
+import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicPlaceholder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.registries.DeferredHolder;

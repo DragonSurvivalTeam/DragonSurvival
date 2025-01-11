@@ -1,6 +1,11 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen;
 
-import by.dragonsurvivalteam.dragonsurvival.common.blocks.*;
+import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonBeacon;
+import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonDoor;
+import by.dragonsurvivalteam.dragonsurvival.common.blocks.PrimordialAnchorBlock;
+import by.dragonsurvivalteam.dragonsurvival.common.blocks.SkeletonPieceBlock;
+import by.dragonsurvivalteam.dragonsurvival.common.blocks.SourceOfMagicBlock;
+import by.dragonsurvivalteam.dragonsurvival.common.blocks.TreasureBlock;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;

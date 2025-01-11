@@ -43,9 +43,9 @@ import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
-import javax.annotation.Nullable;
 
 @EventBusSubscriber
 public class DSTrades {

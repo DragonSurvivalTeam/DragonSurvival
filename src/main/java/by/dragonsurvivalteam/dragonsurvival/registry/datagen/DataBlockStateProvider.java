@@ -1,7 +1,17 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.blocks.*;
+import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonAltarBlock;
+import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonBeacon;
+import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonDoor;
+import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonPressurePlates;
+import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonRiderWorkbenchBlock;
+import by.dragonsurvivalteam.dragonsurvival.common.blocks.HelmetBlock;
+import by.dragonsurvivalteam.dragonsurvival.common.blocks.PrimordialAnchorBlock;
+import by.dragonsurvivalteam.dragonsurvival.common.blocks.SkeletonPieceBlock;
+import by.dragonsurvivalteam.dragonsurvival.common.blocks.SmallDragonDoor;
+import by.dragonsurvivalteam.dragonsurvival.common.blocks.SourceOfMagicBlock;
+import by.dragonsurvivalteam.dragonsurvival.common.blocks.TreasureBlock;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;

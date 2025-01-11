@@ -14,8 +14,13 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
 import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public abstract class Storage<T extends StorageEntry> implements INBTSerializable<CompoundTag> {
     public static final String STORAGE = "storage";

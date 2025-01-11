@@ -12,10 +12,10 @@ import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.HolderLookup;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import javax.annotation.Nullable;
 
 public class DragonSizeArgument implements ArgumentType<Double> {
     public static final String ID = "dragon_size";

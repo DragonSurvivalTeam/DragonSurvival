@@ -2,7 +2,11 @@ package by.dragonsurvivalteam.dragonsurvival.config;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ResourceLocationWrapper;
-import by.dragonsurvivalteam.dragonsurvival.config.obj.*;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigType;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.IgnoreConfigCheck;
 import by.dragonsurvivalteam.dragonsurvival.config.types.CustomConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
@@ -42,7 +46,14 @@ import java.lang.annotation.ElementType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

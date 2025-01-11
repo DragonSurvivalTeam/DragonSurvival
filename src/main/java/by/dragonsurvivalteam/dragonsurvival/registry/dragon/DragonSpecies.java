@@ -1,7 +1,11 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.*;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.DietEntry;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.GrowthIcon;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscDragonTextures;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierType;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DataReloadHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
@@ -11,7 +15,11 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.*;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryCodecs;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;

@@ -1,7 +1,13 @@
 package by.dragonsurvivalteam.dragonsurvival.registry;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.criteria.*;
+import by.dragonsurvivalteam.dragonsurvival.common.criteria.BeDragonTrigger;
+import by.dragonsurvivalteam.dragonsurvival.common.criteria.ConvertItemFromAbility;
+import by.dragonsurvivalteam.dragonsurvival.common.criteria.MineBlockUnderLavaTrigger;
+import by.dragonsurvivalteam.dragonsurvival.common.criteria.SleepOnTreasureTrigger;
+import by.dragonsurvivalteam.dragonsurvival.common.criteria.UpgradeAbilityTrigger;
+import by.dragonsurvivalteam.dragonsurvival.common.criteria.UseDragonSoulTrigger;
+import by.dragonsurvivalteam.dragonsurvival.common.criteria.UseStarHeartTrigger;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.core.registries.Registries;

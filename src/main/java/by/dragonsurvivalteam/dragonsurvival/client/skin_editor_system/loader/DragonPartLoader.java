@@ -13,7 +13,11 @@ import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class DragonPartLoader extends SimpleJsonResourceReloadListener {
     public static final Map<ResourceKey<DragonSpecies>, Map<SkinLayer, List<DragonPart>>> DRAGON_PARTS = new HashMap<>();

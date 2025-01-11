@@ -4,12 +4,16 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 
 @ParametersAreNonnullByDefault
 public class DragonHunterWeapon extends SwordItem implements PermanentEnchantmentItem {

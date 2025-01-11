@@ -14,8 +14,8 @@ import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 
-import java.util.EnumSet;
 import javax.annotation.Nullable;
+import java.util.EnumSet;
 
 public class FollowSummonerGoal extends Goal {
     private final Mob mob;
