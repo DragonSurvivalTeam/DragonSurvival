@@ -122,7 +122,7 @@ public class DSItems {
     public static final Holder<Item> CHARRED_MUSHROOM = DS_ITEMS.register("charred_mushroom", location -> new TooltipItem(new Properties(), location.getPath()));
 
     @Translation(type = Translation.Type.ITEM, comments = "Charred Seafood")
-    @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 Stories speak of a time when someone tried to feed a cave dragon fish. This is what they got back!")
+    @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 Dry!")
     public static final Holder<Item> CHARRED_SEAFOOD = DS_ITEMS.register("charred_seafood", location -> new TooltipItem(new Properties(), location.getPath()));
 
     @Translation(type = Translation.Type.ITEM, comments = "Hot Dragon Rod")

@@ -8,10 +8,6 @@
     "#c:cobblestones",
     "#c:stones",
     "#c:ores",
-    "#dragonsurvival:warm_blocks",
-    {
-      "id": "#immersive_weathering:charred_blocks",
-      "required": false
-    }
+    "#dragonsurvival:warm_blocks"
   ]
 }
