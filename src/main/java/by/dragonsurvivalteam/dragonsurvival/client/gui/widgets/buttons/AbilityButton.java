@@ -233,8 +233,7 @@ public class AbilityButton extends ExtendedButton {
             }
         }
 
-        // TODO :: abilities without any upgrade also get this ornament at the moment
-        if (UpgradeType.IS_MANUAL.negate().test(ability.value().upgrade())) {
+        if (ability.value().upgrade().isPresent() && UpgradeType.IS_MANUAL.negate().test(ability.value().upgrade())) {
             blit(graphics, AUTO_UPGRADE_ORNAMENTATION, getX() - 2, getY() - 2, ORNAMENTATION_SIZE);
         }
 
