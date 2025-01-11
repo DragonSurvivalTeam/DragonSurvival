@@ -1,0 +1,428 @@
+{
+  "values": [
+    {
+      "id": "#c:foods/raw_meat",
+      "required": false
+    },
+    {
+      "id": "#c:foods/berry",
+      "required": false
+    },
+    {
+      "id": "#c:mushrooms",
+      "required": false
+    },
+    {
+      "id": "minecraft:rotten_flesh",
+      "required": false
+    },
+    {
+      "id": "minecraft:spider_eye",
+      "required": false
+    },
+    {
+      "id": "minecraft:rabbit",
+      "required": false
+    },
+    {
+      "id": "minecraft:poisonous_potato",
+      "required": false
+    },
+    {
+      "id": "minecraft:chorus_fruit",
+      "required": false
+    },
+    {
+      "id": "minecraft:brown_mushroom",
+      "required": false
+    },
+    {
+      "id": "minecraft:red_mushroom",
+      "required": false
+    },
+    {
+      "id": "minecraft:honey_bottle",
+      "required": false
+    },
+    {
+      "id": "minecraft:warped_fungus",
+      "required": false
+    },
+    {
+      "id": "minecraft:crimson_fungus",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:forest_dragon_treat",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:meat_chorus_mix",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:meat_wild_berries",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:smelly_meat_porridge",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:diamond_chorus",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:luminous_ointment",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:sweet_sour_rabbit",
+      "required": false
+    },
+    {
+      "id": "additionaldragons:cursed_marrow",
+      "required": false
+    },
+    {
+      "id": "aquaculture:turtle_soup",
+      "required": false
+    },
+    {
+      "id": "netherdepthsupgrade:wither_bonefish",
+      "required": false
+    },
+    {
+      "id": "netherdepthsupgrade:bonefish",
+      "required": false
+    },
+    {
+      "id": "phantasm:chorus_fruit_salad",
+      "required": false
+    },
+    {
+      "id": "aoa3:fiery_chops",
+      "required": false
+    },
+    {
+      "id": "aoa3:raw_chimera_chop",
+      "required": false
+    },
+    {
+      "id": "aoa3:raw_furlion_chop",
+      "required": false
+    },
+    {
+      "id": "aoa3:raw_halycon_beef",
+      "required": false
+    },
+    {
+      "id": "aoa3:raw_charger_shank",
+      "required": false
+    },
+    {
+      "id": "aoa3:trilliad_leaves",
+      "required": false
+    },
+    {
+      "id": "pamhc2foodextended:rawtofabbititem",
+      "required": false
+    },
+    {
+      "id": "pamhc2foodextended:rawtofickenitem",
+      "required": false
+    },
+    {
+      "id": "quark:golden_frog_leg",
+      "required": false
+    },
+    {
+      "id": "pamhc2foodextended:rawtofuttonitem",
+      "required": false
+    },
+    {
+      "id": "alexsmobs:kangaroo_meat",
+      "required": false
+    },
+    {
+      "id": "alexsmobs:moose_ribs",
+      "required": false
+    },
+    {
+      "id": "simplefarming:raw_horse_meat",
+      "required": false
+    },
+    {
+      "id": "simplefarming:raw_bacon",
+      "required": false
+    },
+    {
+      "id": "simplefarming:raw_chicken_wings",
+      "required": false
+    },
+    {
+      "id": "simplefarming:raw_sausage",
+      "required": false
+    },
+    {
+      "id": "xenoclustwo:raw_tortice",
+      "required": false
+    },
+    {
+      "id": "unnamedanimalmod:musk_ox_shank",
+      "required": false
+    },
+    {
+      "id": "unnamedanimalmod:frog_legs",
+      "required": false
+    },
+    {
+      "id": "unnamedanimalmod:mangrove_fruit",
+      "required": false
+    },
+    {
+      "id": "betteranimalsplus:venisonraw",
+      "required": false
+    },
+    {
+      "id": "born_in_chaos_v1:corpse_maggot",
+      "required": false
+    },
+    {
+      "id": "born_in_chaos_v1:monster_flesh",
+      "required": false
+    },
+    {
+      "id": "betteranimalsplus:pheasantraw",
+      "required": false
+    },
+    {
+      "id": "betteranimalsplus:turkey_leg_raw",
+      "required": false
+    },
+    {
+      "id": "infernalexp:raw_hogchop",
+      "required": false
+    },
+    {
+      "id": "infernalexp:cured_jerky",
+      "required": false
+    },
+    {
+      "id": "rats:raw_rat",
+      "required": false
+    },
+    {
+      "id": "aquaculture:frog",
+      "required": false
+    },
+    {
+      "id": "aquaculture:frog_legs_raw",
+      "required": false
+    },
+    {
+      "id": "aquaculture:box_turtle",
+      "required": false
+    },
+    {
+      "id": "aquaculture:arrau_turtle",
+      "required": false
+    },
+    {
+      "id": "aquaculture:starshell_turtle",
+      "required": false
+    },
+    {
+      "id": "undergarden:raw_gloomper_leg",
+      "required": false
+    },
+    {
+      "id": "undergarden:raw_dweller_meat",
+      "required": false
+    },
+    {
+      "id": "farmersdelight:chicken_cuts",
+      "required": false
+    },
+    {
+      "id": "farmersdelight:bacon",
+      "required": false
+    },
+    {
+      "id": "farmersdelight:ham",
+      "required": false
+    },
+    {
+      "id": "farmersdelight:minced_beef",
+      "required": false
+    },
+    {
+      "id": "farmersdelight:mutton_chops",
+      "required": false
+    },
+    {
+      "id": "abnormals_delight:duck_fillet",
+      "required": false
+    },
+    {
+      "id": "abnormals_delight:venison_shanks",
+      "required": false
+    },
+    {
+      "id": "autumnity:foul_berries",
+      "required": false
+    },
+    {
+      "id": "autumnity:turkey",
+      "required": false
+    },
+    {
+      "id": "autumnity:turkey_piece",
+      "required": false
+    },
+    {
+      "id": "autumnity:foul_soup",
+      "required": false
+    },
+    {
+      "id": "endergetic:bolloom_fruit",
+      "required": false
+    },
+    {
+      "id": "quark:frog_leg",
+      "required": false
+    },
+    {
+      "id": "nethers_delight:hoglin_loin",
+      "required": false
+    },
+    {
+      "id": "nethers_delight:raw_stuffed_hoglin",
+      "required": false
+    },
+    {
+      "id": "xreliquary:zombie_heart",
+      "required": false
+    },
+    {
+      "id": "xreliquary:bat_wing",
+      "required": false
+    },
+    {
+      "id": "eidolon:zombie_heart",
+      "required": false
+    },
+    {
+      "id": "forbidden_arcanus:bat_wing",
+      "required": false
+    },
+    {
+      "id": "twilightforest:raw_venison",
+      "required": false
+    },
+    {
+      "id": "twilightforest:raw_meef",
+      "required": false
+    },
+    {
+      "id": "twilightforest:hydra_chop",
+      "required": false
+    },
+    {
+      "id": "cyclic:chorus_flight",
+      "required": false
+    },
+    {
+      "id": "cyclic:chorus_spectral",
+      "required": false
+    },
+    {
+      "id": "cyclic:toxic_carrot",
+      "required": false
+    },
+    {
+      "id": "artifacts:everlasting_beef",
+      "required": false
+    },
+    {
+      "id": "byg:soul_shroom",
+      "required": false
+    },
+    {
+      "id": "byg:death_cap",
+      "required": false
+    },
+    {
+      "id": "minecolonies:chorus_bread",
+      "required": false
+    },
+    {
+      "id": "wyrmroost:raw_lowtier_meat",
+      "required": false
+    },
+    {
+      "id": "wyrmroost:raw_common_meat",
+      "required": false
+    },
+    {
+      "id": "wyrmroost:raw_apex_meat",
+      "required": false
+    },
+    {
+      "id": "wyrmroost:raw_behemoth_meat",
+      "required": false
+    },
+    {
+      "id": "wyrmroost:desert_wyrm",
+      "required": false
+    },
+    {
+      "id": "eanimod:rawchicken_darkbig",
+      "required": false
+    },
+    {
+      "id": "eanimod:rawchicken_dark",
+      "required": false
+    },
+    {
+      "id": "eanimod:rawchicken_darksmall",
+      "required": false
+    },
+    {
+      "id": "eanimod:rawchicken_pale",
+      "required": false
+    },
+    {
+      "id": "eanimod:rawchicken_palesmall",
+      "required": false
+    },
+    {
+      "id": "eanimod:rawrabbit_small",
+      "required": false
+    },
+    {
+      "id": "environmental:duck",
+      "required": false
+    },
+    {
+      "id": "environmental:venison",
+      "required": false
+    },
+    {
+      "id": "cnb:lizard_item_jungle",
+      "required": false
+    },
+    {
+      "id": "cnb:lizard_item_mushroom",
+      "required": false
+    },
+    {
+      "id": "cnb:lizard_item_jungle_2",
+      "required": false
+    },
+    {
+      "id": "cnb:lizard_item_desert_2",
+      "required": false
+    }
+  ]
+}

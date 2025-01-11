@@ -25,8 +25,8 @@ import java.util.concurrent.CompletableFuture;
 public class DSBlockTags extends BlockTagsProvider {
     @Translation(comments = "Enables Hunter Effect")
     public static final TagKey<Block> ENABLES_HUNTER_EFFECT = key("enables_hunter_effect");
-    @Translation(comments = "Destructible by Giant Dragons")
-    public static final TagKey<Block> GIANT_DRAGON_DESTRUCTIBLE = key("giant_dragon_destructible");
+    @Translation(comments = "Destructible by Large Dragons")
+    public static final TagKey<Block> LARGE_DRAGON_DESTRUCTIBLE = key("large_dragon_destructible");
 
     @Translation(comments = "Speeds up Cave Dragons")
     public static final TagKey<Block> SPEEDS_UP_CAVE_DRAGON = key("speeds_up_cave_dragon");
@@ -38,7 +38,7 @@ public class DSBlockTags extends BlockTagsProvider {
     @Translation(comments = "Is Warm")
     public static final TagKey<Block> IS_WARM = key("warm_blocks");
     @Translation(comments = "Is Grassy")
-    public static final TagKey<Block> IS_GRASSY = key("regenerates_forest_dragon_mana");
+    public static final TagKey<Block> IS_GRASSY = key("is_grassy");
     @Translation(comments = "Is Wet")
     public static final TagKey<Block> IS_WET = key("is_wet");
 
@@ -77,7 +77,7 @@ public class DSBlockTags extends BlockTagsProvider {
         });
 
         // Destructible blocks for very large dragon sizes
-        tag(GIANT_DRAGON_DESTRUCTIBLE)
+        tag(LARGE_DRAGON_DESTRUCTIBLE)
                 .addTag(BlockTags.LEAVES)
                 .addTag(BlockTags.MINEABLE_WITH_AXE)
                 .addTag(BlockTags.FLOWERS)

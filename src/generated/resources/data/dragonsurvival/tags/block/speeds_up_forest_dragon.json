@@ -4,7 +4,7 @@
     "#minecraft:planks",
     "#minecraft:logs",
     "#minecraft:dirt",
-    "#dragonsurvival:regenerates_forest_dragon_mana",
+    "#dragonsurvival:is_grassy",
     "minecraft:grass_block"
   ]
 }

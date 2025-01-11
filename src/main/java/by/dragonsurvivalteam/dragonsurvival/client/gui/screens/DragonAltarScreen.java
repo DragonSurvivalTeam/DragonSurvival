@@ -209,10 +209,10 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
         for (Renderable btn : renderables) {
             if (btn instanceof AltarTypeButton button) {
                 if (button.isHoveredOrFocused()) {
-                    handler1.setType(null, button.type);
-                    handler2.setType(null, button.type);
+                    handler1.setType(null, button.species);
+                    handler2.setType(null, button.species);
 
-                    if (button.type != null) {
+                    if (button.species != null) {
                         initializeHandler(handler1);
                         initializeHandler(handler2);
                     }

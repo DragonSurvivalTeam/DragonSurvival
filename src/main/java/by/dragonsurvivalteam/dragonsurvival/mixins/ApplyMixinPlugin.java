@@ -51,7 +51,7 @@ public class ApplyMixinPlugin implements IMixinConfigPlugin {
             return LoadingModList.get().getModFileById("iris") == null || LoadingModList.get().getModFileById(ALIAS.get("iris")) == null;
         }
 
-        if (mixinClassName.equals(PREFIX + "HolderSetCodecMixin")) {
+        if (mixinClassName.equals(PREFIX + "HolderSetCodecMixin") || mixinClassName.equals(PREFIX + "Holder$ReferenceAccess")) {
             return System.getProperty("dragonsurvival.data_generation").equals("true");
         }
 

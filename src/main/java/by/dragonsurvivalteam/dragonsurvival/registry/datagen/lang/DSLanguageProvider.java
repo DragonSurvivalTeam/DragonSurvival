@@ -3,6 +3,8 @@ package by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -66,6 +68,12 @@ public class DSLanguageProvider extends LanguageProvider {
         handleVanilla();
 
         handleParts();
+
+        // It seems only built-in registries are present (which excludes dragon species)
+        // Therefor we have to handle these manually (because the tags are dynamically created)
+        add(Tags.getTagTranslationKey(DSItemTags.key(LangKey.DRAGON_FOOD.apply(BuiltInDragonSpecies.CAVE.location()))), "Cave Dragon Food");
+        add(Tags.getTagTranslationKey(DSItemTags.key(LangKey.DRAGON_FOOD.apply(BuiltInDragonSpecies.FOREST.location()))), "Forest Dragon Food");
+        add(Tags.getTagTranslationKey(DSItemTags.key(LangKey.DRAGON_FOOD.apply(BuiltInDragonSpecies.SEA.location()))), "Sea Dragon Food");
     }
 
     private void handleVanilla() {

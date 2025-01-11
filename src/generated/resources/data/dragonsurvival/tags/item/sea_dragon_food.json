@@ -1,0 +1,644 @@
+{
+  "values": [
+    {
+      "id": "#minecraft:fishes",
+      "required": false
+    },
+    {
+      "id": "minecraft:kelp",
+      "required": false
+    },
+    {
+      "id": "minecraft:pufferfish",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:sea_dragon_treat",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:seasoned_fish",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:golden_coral_pufferfish",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:frozen_raw_fish",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:golden_turtle_egg",
+      "required": false
+    },
+    {
+      "id": "additionaldragons:slippery_sushi",
+      "required": false
+    },
+    {
+      "id": "aoa3:raw_candlefish",
+      "required": false
+    },
+    {
+      "id": "aoa3:raw_crimson_skipper",
+      "required": false
+    },
+    {
+      "id": "aoa3:raw_fingerfish",
+      "required": false
+    },
+    {
+      "id": "aoa3:raw_pearl_stripefish",
+      "required": false
+    },
+    {
+      "id": "aoa3:raw_limefish",
+      "required": false
+    },
+    {
+      "id": "aoa3:raw_sailback",
+      "required": false
+    },
+    {
+      "id": "netherdepthsupgrade:soulsucker",
+      "required": false
+    },
+    {
+      "id": "netherdepthsupgrade:obsidianfish",
+      "required": false
+    },
+    {
+      "id": "netherdepthsupgrade:lava_pufferfish",
+      "required": false
+    },
+    {
+      "id": "netherdepthsupgrade:searing_cod",
+      "required": false
+    },
+    {
+      "id": "netherdepthsupgrade:glowdine",
+      "required": false
+    },
+    {
+      "id": "netherdepthsupgrade:warped_kelp",
+      "required": false
+    },
+    {
+      "id": "netherdepthsupgrade:lava_pufferfish_slice",
+      "required": false
+    },
+    {
+      "id": "netherdepthsupgrade:glowdine_slice",
+      "required": false
+    },
+    {
+      "id": "netherdepthsupgrade:soulsucker_slice",
+      "required": false
+    },
+    {
+      "id": "netherdepthsupgrade:obsidianfish_slice",
+      "required": false
+    },
+    {
+      "id": "netherdepthsupgrade:searing_cod_slice",
+      "required": false
+    },
+    {
+      "id": "crittersandcompanions:clam",
+      "required": false
+    },
+    {
+      "id": "aoa3:raw_golden_gullfish",
+      "required": false
+    },
+    {
+      "id": "aoa3:raw_turquoise_stripefish",
+      "required": false
+    },
+    {
+      "id": "aoa3:raw_violet_skipper",
+      "required": false
+    },
+    {
+      "id": "aoa3:raw_rocketfish",
+      "required": false
+    },
+    {
+      "id": "aoa3:raw_crimson_stripefish",
+      "required": false
+    },
+    {
+      "id": "aoa3:raw_sapphire_strider",
+      "required": false
+    },
+    {
+      "id": "aoa3:raw_dark_hatchetfish",
+      "required": false
+    },
+    {
+      "id": "aoa3:raw_ironback",
+      "required": false
+    },
+    {
+      "id": "aoa3:raw_rainbowfish",
+      "required": false
+    },
+    {
+      "id": "aoa3:raw_razorfish",
+      "required": false
+    },
+    {
+      "id": "alexsmobs:lobster_tail",
+      "required": false
+    },
+    {
+      "id": "alexsmobs:blobfish",
+      "required": false
+    },
+    {
+      "id": "oddwatermobs:raw_ghost_shark",
+      "required": false
+    },
+    {
+      "id": "oddwatermobs:raw_isopod",
+      "required": false
+    },
+    {
+      "id": "oddwatermobs:raw_mudskipper",
+      "required": false
+    },
+    {
+      "id": "oddwatermobs:raw_coelacanth",
+      "required": false
+    },
+    {
+      "id": "oddwatermobs:raw_anglerfish",
+      "required": false
+    },
+    {
+      "id": "oddwatermobs:deep_sea_fish",
+      "required": false
+    },
+    {
+      "id": "oddwatermobs:crab_leg",
+      "required": false
+    },
+    {
+      "id": "simplefarming:raw_calamari",
+      "required": false
+    },
+    {
+      "id": "unnamedanimalmod:elephantnose_fish",
+      "required": false
+    },
+    {
+      "id": "unnamedanimalmod:flashlight_fish",
+      "required": false
+    },
+    {
+      "id": "born_in_chaos_v1:sea_terror_eye",
+      "required": false
+    },
+    {
+      "id": "born_in_chaos_v1:rotten_fish",
+      "required": false
+    },
+    {
+      "id": "unnamedanimalmod:rocket_killifish",
+      "required": false
+    },
+    {
+      "id": "unnamedanimalmod:leafy_seadragon",
+      "required": false
+    },
+    {
+      "id": "unnamedanimalmod:elephantnose_fish",
+      "required": false
+    },
+    {
+      "id": "betteranimalsplus:eel_meat_raw",
+      "required": false
+    },
+    {
+      "id": "betteranimalsplus:calamari_raw",
+      "required": false
+    },
+    {
+      "id": "betteranimalsplus:crab_meat_raw",
+      "required": false
+    },
+    {
+      "id": "aquaculture:fish_fillet_raw",
+      "required": false
+    },
+    {
+      "id": "aquaculture:goldfish",
+      "required": false
+    },
+    {
+      "id": "aquaculture:algae",
+      "required": false
+    },
+    {
+      "id": "betterendforge:end_fish_raw",
+      "required": false
+    },
+    {
+      "id": "betterendforge:hydralux_petal",
+      "required": false
+    },
+    {
+      "id": "betterendforge:charnia_green",
+      "required": false
+    },
+    {
+      "id": "shroomed:raw_shroomfin",
+      "required": false
+    },
+    {
+      "id": "undergarden:raw_gwibling",
+      "required": false
+    },
+    {
+      "id": "bettas:betta_fish",
+      "required": false
+    },
+    {
+      "id": "quark:crab_leg",
+      "required": false
+    },
+    {
+      "id": "pamhc2foodextended:rawtofishitem",
+      "required": false
+    },
+    {
+      "id": "fins:banded_redback_shrimp",
+      "required": false
+    },
+    {
+      "id": "fins:night_light_squid",
+      "required": false
+    },
+    {
+      "id": "fins:night_light_squid_tentacle",
+      "required": false
+    },
+    {
+      "id": "fins:emerald_spindly_gem_crab",
+      "required": false
+    },
+    {
+      "id": "fins:amber_spindly_gem_crab",
+      "required": false
+    },
+    {
+      "id": "fins:rubby_spindly_gem_crab",
+      "required": false
+    },
+    {
+      "id": "fins:sapphire_spindly_gem_crab",
+      "required": false
+    },
+    {
+      "id": "fins:pearl_spindly_gem_crab",
+      "required": false
+    },
+    {
+      "id": "fins:papa_wee",
+      "required": false
+    },
+    {
+      "id": "fins:bugmeat",
+      "required": false
+    },
+    {
+      "id": "fins:raw_golden_river_ray_wing",
+      "required": false
+    },
+    {
+      "id": "fins:red_bull_crab_claw",
+      "required": false
+    },
+    {
+      "id": "fins:white_bull_crab_claw",
+      "required": false
+    },
+    {
+      "id": "fins:wherble_fin",
+      "required": false
+    },
+    {
+      "id": "forbidden_arcanus:tentacle",
+      "required": false
+    },
+    {
+      "id": "pneumaticcraft:raw_salmon_tempura",
+      "required": false
+    },
+    {
+      "id": "rats:ratfish",
+      "required": false
+    },
+    {
+      "id": "upgrade_aquatic:purple_pickerelweed",
+      "required": false
+    },
+    {
+      "id": "upgrade_aquatic:blue_pickerelweed",
+      "required": false
+    },
+    {
+      "id": "upgrade_aquatic:polar_kelp",
+      "required": false
+    },
+    {
+      "id": "upgrade_aquatic:tongue_kelp",
+      "required": false
+    },
+    {
+      "id": "upgrade_aquatic:thorny_kelp",
+      "required": false
+    },
+    {
+      "id": "upgrade_aquatic:ochre_kelp",
+      "required": false
+    },
+    {
+      "id": "upgrade_aquatic:lionfish",
+      "required": false
+    },
+    {
+      "id": "aquaculture:sushi",
+      "required": false
+    },
+    {
+      "id": "freshwarriors:fresh_soup",
+      "required": false
+    },
+    {
+      "id": "freshwarriors:beluga_caviar",
+      "required": false
+    },
+    {
+      "id": "freshwarriors:piranha",
+      "required": false
+    },
+    {
+      "id": "freshwarriors:tilapia",
+      "required": false
+    },
+    {
+      "id": "freshwarriors:stuffed_piranha",
+      "required": false
+    },
+    {
+      "id": "freshwarriors:tigerfish",
+      "required": false
+    },
+    {
+      "id": "freshwarriors:toe_biter_leg",
+      "required": false
+    },
+    {
+      "id": "mysticalworld:raw_squid",
+      "required": false
+    },
+    {
+      "id": "aquafina:fresh_soup",
+      "required": false
+    },
+    {
+      "id": "aquafina:beluga_caviar",
+      "required": false
+    },
+    {
+      "id": "aquafina:raw_piranha",
+      "required": false
+    },
+    {
+      "id": "aquafina:raw_tilapia",
+      "required": false
+    },
+    {
+      "id": "aquafina:stuffed_piranha",
+      "required": false
+    },
+    {
+      "id": "aquafina:tigerfish",
+      "required": false
+    },
+    {
+      "id": "aquafina:toe_biter_leg",
+      "required": false
+    },
+    {
+      "id": "aquafina:raw_angelfish",
+      "required": false
+    },
+    {
+      "id": "aquafina:raw_football_fish",
+      "required": false
+    },
+    {
+      "id": "aquafina:raw_foxface_fish",
+      "required": false
+    },
+    {
+      "id": "aquafina:raw_royal_gramma",
+      "required": false
+    },
+    {
+      "id": "aquafina:raw_starfish",
+      "required": false
+    },
+    {
+      "id": "aquafina:spider_crab_leg",
+      "required": false
+    },
+    {
+      "id": "aquafina:raw_stingray_slice",
+      "required": false
+    },
+    {
+      "id": "prehistoricfauna:raw_ceratodus",
+      "required": false
+    },
+    {
+      "id": "prehistoricfauna:raw_cyclurus",
+      "required": false
+    },
+    {
+      "id": "prehistoricfauna:raw_potamoceratodus",
+      "required": false
+    },
+    {
+      "id": "prehistoricfauna:raw_myledaphus",
+      "required": false
+    },
+    {
+      "id": "prehistoricfauna:raw_gar",
+      "required": false
+    },
+    {
+      "id": "prehistoricfauna:raw_oyster",
+      "required": false
+    },
+    {
+      "id": "prehistoric_delight:prehistoric_fillet",
+      "required": false
+    },
+    {
+      "id": "seadwellers:rainbow_trout",
+      "required": false
+    },
+    {
+      "id": "crittersandcompanions:koi_fish",
+      "required": false
+    },
+    {
+      "id": "aquamirae:elodea",
+      "required": false
+    },
+    {
+      "id": "croptopia:clam",
+      "required": false
+    },
+    {
+      "id": "croptopia:calamari",
+      "required": false
+    },
+    {
+      "id": "croptopia:anchovy",
+      "required": false
+    },
+    {
+      "id": "croptopia:crab",
+      "required": false
+    },
+    {
+      "id": "croptopia:glowing_calamari",
+      "required": false
+    },
+    {
+      "id": "croptopia:oyster",
+      "required": false
+    },
+    {
+      "id": "croptopia:roe",
+      "required": false
+    },
+    {
+      "id": "croptopia:shrimp",
+      "required": false
+    },
+    {
+      "id": "croptopia:tuna",
+      "required": false
+    },
+    {
+      "id": "aquamirae:spinefish",
+      "required": false
+    },
+    {
+      "id": "alexsmobs:flying_fish",
+      "required": false
+    },
+    {
+      "id": "netherdepthsupgrade:eyeball",
+      "required": false
+    },
+    {
+      "id": "netherdepthsupgrade:eyeball_fish",
+      "required": false
+    },
+    {
+      "id": "oceansdelight:guardian",
+      "required": false
+    },
+    {
+      "id": "oceansdelight:guardian_tail",
+      "required": false
+    },
+    {
+      "id": "oceansdelight:cut_tentacles",
+      "required": false
+    },
+    {
+      "id": "oceansdelight:tentacles",
+      "required": false
+    },
+    {
+      "id": "oceansdelight:tentacle_on_a_stick",
+      "required": false
+    },
+    {
+      "id": "oceansdelight:fugu_slice",
+      "required": false
+    },
+    {
+      "id": "oceansdelight:elder_guardian_slice",
+      "required": false
+    },
+    {
+      "id": "oceansdelight:elder_guardian_slab",
+      "required": false
+    },
+    {
+      "id": "upgrade_aquatic:elder_eye",
+      "required": false
+    },
+    {
+      "id": "unusualprehistory:golden_scau",
+      "required": false
+    },
+    {
+      "id": "unusualprehistory:raw_scau",
+      "required": false
+    },
+    {
+      "id": "unusualprehistory:raw_stetha",
+      "required": false
+    },
+    {
+      "id": "unusualprehistory:stetha_eggs",
+      "required": false
+    },
+    {
+      "id": "unusualprehistory:beelze_eggs",
+      "required": false
+    },
+    {
+      "id": "unusualprehistory:scau_eggs",
+      "required": false
+    },
+    {
+      "id": "unusualprehistory:ammon_eggs",
+      "required": false
+    },
+    {
+      "id": "unusualprehistory:dunk_eggs",
+      "required": false
+    },
+    {
+      "id": "netherdepthsupgrade:crimson_seagrass",
+      "required": false
+    },
+    {
+      "id": "netherdepthsupgrade:crimson_kelp",
+      "required": false
+    },
+    {
+      "id": "netherdepthsupgrade:warped_seagrass",
+      "required": false
+    },
+    {
+      "id": "undergarden:glitterkelp",
+      "required": false
+    },
+    {
+      "id": "enlightened_end:raw_stalker",
+      "required": false
+    }
+  ]
+}

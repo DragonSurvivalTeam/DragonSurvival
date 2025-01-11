@@ -40,7 +40,7 @@ public class DragonDestructionHandler {
         BlockPosHelper.betweenClosedCeil(boundingBox).forEach(position -> {
             BlockState state = event.getEntity().level().getBlockState(position);
 
-            if (state.isAir() || !state.is(DSBlockTags.GIANT_DRAGON_DESTRUCTIBLE)) {
+            if (state.isAir() || !state.is(DSBlockTags.LARGE_DRAGON_DESTRUCTIBLE)) {
                 return;
             }
 

@@ -13,10 +13,12 @@ import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -36,7 +38,11 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderTooltipEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2ic;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class ToolTipHandler {
@@ -48,49 +54,103 @@ public class ToolTipHandler {
     @ConfigOption(side = ConfigSide.CLIENT, category = "tooltips", key = "enchantment_descriptions")
     public static Boolean ENCHANTMENT_DESCRIPTIONS = true;
 
+    @Translation(key = "food_tooltip_style", type = Translation.Type.CONFIGURATION, comments = {
+            "Determines how dragon food tooltip is handled",
+            "none: no food tooltip / default: always show current and others when shift is pressed / only_current: never show others / all_shift: show current and others only when shift is pressed"
+    })
+    @ConfigOption(side = ConfigSide.CLIENT, category = "tooltips", key = "food_tooltip_style")
+    public static TooltipStyle TOOLTIP_STYLE = TooltipStyle.DEFAULT;
+
+    @Translation(comments = "■ %s food: %s")
+    private static final String TOOLTIP_TEXT = Translation.Type.GUI.wrap("tooltip.dragon_food");
+
+    @Translation(comments = "Dragon Food - press 'SHIFT' for more info")
+    private static final String PRESS_SHIFT = Translation.Type.GUI.wrap("tooltip.dragon_food.shift");
+
     private static final ResourceLocation TOOLTIP_BLINKING = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/magic_tips_1.png");
     private static final ResourceLocation TOOLTIP = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/magic_tips_0.png");
 
     private static boolean isBlinking;
     private static int tick;
 
+    public enum TooltipStyle {NONE, DEFAULT, ONLY_CURRENT, ALL_SHIFT}
+
     @SubscribeEvent
     public static void addDragonFoodTooltip(final ItemTooltipEvent event) {
-        if (event.getEntity() != null) {
-            DragonStateHandler data = DragonStateProvider.getData(event.getEntity());
+        HolderLookup.Provider provider = event.getContext().registries();
 
-            if (!data.isDragon()) {
+        if (provider == null || TOOLTIP_STYLE == TooltipStyle.NONE) {
+            return;
+        }
+
+        Item item = event.getItemStack().getItem();
+        Holder<DragonSpecies> playerSpecies = event.getEntity() != null ? DragonStateProvider.getData(event.getEntity()).species() : null;
+
+        if (playerSpecies != null && TOOLTIP_STYLE != TooltipStyle.ALL_SHIFT) {
+            MutableComponent tooltip = getTooltip(playerSpecies, item);
+
+            if (tooltip != null) {
+                event.getToolTip().add(tooltip);
+            }
+        }
+
+        if (TOOLTIP_STYLE == TooltipStyle.ONLY_CURRENT) {
+            return;
+        }
+
+        List<Component> dragonFoodTooltips = new ArrayList<>();
+
+        provider.lookupOrThrow(DragonSpecies.REGISTRY).listElements().forEach(species -> {
+            if (TOOLTIP_STYLE != TooltipStyle.ALL_SHIFT && playerSpecies != null && species.is(playerSpecies)) {
                 return;
             }
 
-            MutableComponent foodData = getFoodTooltipData(event.getItemStack().getItem(), data.species());
+            MutableComponent tooltip = getTooltip(species, item);
 
-            if (foodData.getContents() != PlainTextContents.EMPTY) {
-                event.getToolTip().add(foodData);
+            if (tooltip != null) {
+                dragonFoodTooltips.add(tooltip);
             }
+        });
+
+        if (dragonFoodTooltips.isEmpty()) {
+            return;
+        }
+
+        if (Screen.hasShiftDown()) {
+            dragonFoodTooltips.forEach(tooltip -> event.getToolTip().add(tooltip));
+        } else {
+            event.getToolTip().add(Component.translatable(PRESS_SHIFT).withStyle(ChatFormatting.DARK_GRAY));
         }
     }
 
-    /** Returns a tooltip component in the format of '1.0 nutrition_icon / 0.5 saturation_icon' (color and icon depend on the dragon type) */
-    public static MutableComponent getFoodTooltipData(final Item item, final Holder<DragonSpecies> type) {
-        if (type == null) {
-            return Component.empty();
+    private static @Nullable MutableComponent getTooltip(final Holder<DragonSpecies> species, final Item item) {
+        MutableComponent foodData = getFoodTooltipData(species, item);
+
+        if (foodData.getContents() != PlainTextContents.EMPTY) {
+            //noinspection DataFlowIssue -> key is present
+            MutableComponent speciesTranslation = Component.translatable(Translation.Type.DRAGON_SPECIES.wrap(species.getKey().location()));
+            return Component.translatable(TOOLTIP_TEXT, speciesTranslation.withStyle(foodData.getStyle()), foodData).withStyle(foodData.getStyle());
         }
 
-        FoodProperties properties = type.value().getDiet(item);
+        return null;
+    }
+
+    /** Returns a tooltip component in the format of '1.0 nutrition_icon / 0.5 saturation_icon' (color and icon depend on the dragon species) */
+    public static MutableComponent getFoodTooltipData(final Holder<DragonSpecies> species, final Item item) {
+        FoodProperties properties = species.value().getDiet(item);
 
         if (properties == null) {
             return Component.empty();
         }
 
-        ResourceLocation font = type.value().miscResources().foodTooltip().font();
-        String nutritionIcon = type.value().miscResources().foodTooltip().nutritionIcon();
-        String saturationIcon = type.value().miscResources().foodTooltip().saturationIcon();
+        ResourceLocation font = species.value().miscResources().foodTooltip().font();
+        String nutritionIcon = species.value().miscResources().foodTooltip().nutritionIcon();
+        String saturationIcon = species.value().miscResources().foodTooltip().saturationIcon();
 
         // 1 Icon = 2 points (e.g. 10 nutrition icons for a maximum food level of 20)
         String nutrition = String.format("%.1f", properties.nutrition() / 2f);
         String saturation = String.format("%.1f", properties.saturation() / 2f);
-        int color = type.value().miscResources().foodTooltip().color().map(TextColor::getValue).orElse(type.value().miscResources().primaryColor().getValue());
+        int color = species.value().miscResources().foodTooltip().color().map(TextColor::getValue).orElse(species.value().miscResources().primaryColor().getValue());
 
         MutableComponent nutritionComponent = Component.literal(nutrition + " ").withStyle(Style.EMPTY.withColor(color));
         MutableComponent saturationComponent = Component.literal(" / " + saturation + " ").withStyle(Style.EMPTY.withColor(color));

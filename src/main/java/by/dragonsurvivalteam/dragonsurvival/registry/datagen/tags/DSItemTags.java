@@ -1,10 +1,13 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.DietEntry;
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.DarkDragonArmorItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.LightDragonArmorItem;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
@@ -67,6 +70,7 @@ public class DSItemTags extends ItemTagsProvider {
     @Override
     protected void addTags(@NotNull final HolderLookup.Provider provider) {
         addToVanillaTags();
+        tagDragonSpeciesFood(provider);
 
         DSItems.DS_ITEMS.getEntries().forEach(holder -> {
             Item item = holder.value();
@@ -118,6 +122,23 @@ public class DSItemTags extends ItemTagsProvider {
         copy(DSBlockTags.WOODEN_DRAGON_DOORS, WOODEN_DRAGON_DOORS);
     }
 
+    private void tagDragonSpeciesFood(@NotNull final HolderLookup.Provider provider) {
+        provider.lookupOrThrow(DragonSpecies.REGISTRY).listElements().forEach(species -> {
+            //noinspection DataFlowIssue -> key is present
+            TagKey<Item> dragonFood = key(LangKey.DRAGON_FOOD.apply(species.getKey().location()));
+
+            for (DietEntry diet : species.value().diet()) {
+                for (String resource : diet.items()) {
+                    if (resource.startsWith("#")) {
+                        tag(dragonFood).addOptionalTag(ResourceLocation.parse(resource.substring(1)));
+                    } else {
+                        tag(dragonFood).addOptional(ResourceLocation.parse(resource));
+                    }
+                }
+            }
+        });
+    }
+
     private void addToVanillaTags() {
         DSItems.DS_ITEMS.getEntries().forEach(holder -> {
             Item item = holder.value();
@@ -135,7 +156,7 @@ public class DSItemTags extends ItemTagsProvider {
         });
     }
 
-    private static TagKey<Item> key(@NotNull final String name) {
+    public static TagKey<Item> key(@NotNull final String name) {
         return ItemTags.create(DragonSurvival.res(name));
     }
 

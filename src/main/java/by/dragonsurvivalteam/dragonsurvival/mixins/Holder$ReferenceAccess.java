@@ -1,10 +1,11 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.DSRecipes;
 import net.minecraft.resources.ResourceKey;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-/** Only used during data generation */
+/** Only used during data generation for {@link DSRecipes.ProxyItem}*/
 @Mixin(targets = "net.minecraft.core.Holder$Reference")
 public interface Holder$ReferenceAccess {
     @Invoker("bindKey")

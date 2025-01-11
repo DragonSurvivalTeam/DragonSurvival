@@ -86,6 +86,8 @@ dependencies {
 	// Test
 	implementation "curse.maven:jade-324717:6011258" // 15.9.2
 
+//	implementation "curse.maven:emi-580555:6075440" // 1.1.19
+
 //	implementation "maven.modrinth:sodium:mc1.21.1-0.6.5-neoforge"
 //	implementation "curse.maven:irisshaders-455508:5957827" // 1.8.1
 

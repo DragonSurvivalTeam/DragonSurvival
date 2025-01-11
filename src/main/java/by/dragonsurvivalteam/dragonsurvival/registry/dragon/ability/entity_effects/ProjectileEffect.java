@@ -75,7 +75,9 @@ public record ProjectileEffect(Holder<ProjectileData> projectileData, TargetDire
                 }
 
                 GenericBallEntity projectile = new GenericBallEntity(projectileData.generalData(), data, ability.level(), launchPosition, dragon.serverLevel());
+                projectile.setOwner(entity);
                 projectile.accelerationPower = 0;
+
                 float spread = count * projectileSpread.calculate(ability.level());
                 shootLogic.accept(projectile, spread);
                 entity.level().addFreshEntity(projectile);

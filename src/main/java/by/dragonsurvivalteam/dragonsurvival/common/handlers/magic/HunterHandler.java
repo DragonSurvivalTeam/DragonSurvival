@@ -231,6 +231,9 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
 
     private static void clearHunterStacks(final Entity entity) {
         entity.getData(DSDataAttachments.HUNTER).clearHunterStacks();
-        PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new SyncHunterStacksRemoval(entity.getId()));
+
+        if (!entity.level().isClientSide()) {
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new SyncHunterStacksRemoval(entity.getId()));
+        }
     }
 }

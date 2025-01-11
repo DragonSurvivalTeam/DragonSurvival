@@ -30,7 +30,6 @@
     "PrimedTntAccess",
     "ServerGamePacketListenerImplMixin",
     "ServerPlayerGameModeMixin",
-    "ServerPlayerMixin",
     "SleepStatusMixin",
     "SwellGoalMixin",
     "ThrownPotionMixin",

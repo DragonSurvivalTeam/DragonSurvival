@@ -34,7 +34,6 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
 
 import java.text.NumberFormat;
 import java.util.HashMap;
@@ -140,12 +139,17 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         }
 
         MagicData magic = optional.get();
+        InputData experienceLevels = InputData.experienceLevels(event.getEntity().experienceLevel);
 
         for (DragonAbilityInstance ability : magic.getAbilities().values()) {
             if (event.getEntity() instanceof ServerPlayer serverPlayer) {
                 ability.value().upgrade().ifPresent(upgrade -> {
+                    // Handle input type 'Void' (e.g. condition based)
                     upgrade.attempt(serverPlayer, ability, null);
+                    // Handle auto upgrades for the item based upgrade
                     upgrade.attempt(serverPlayer, ability, Items.AIR);
+                    // There are too many ways the experience level field could be modified
+                    upgrade.attempt(serverPlayer, ability, experienceLevels);
                 });
             }
 
@@ -362,14 +366,12 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         UpgradeType<?> upgrade = ability.value().upgrade().orElse(null);
         DragonAbilityInstance instance;
 
-        InputData levelInput = InputData.experienceLevels(player.experienceLevel);
         InputData sizeInput = InputData.size((int) DragonStateProvider.getData(player).getSize());
 
         if (upgrade == null) {
             instance = new DragonAbilityInstance(ability, ability.value().getMaxLevel());
         } else {
             instance = new DragonAbilityInstance(ability, DragonAbilityInstance.MIN_LEVEL);
-            upgrade.attempt(player, instance, levelInput);
             upgrade.attempt(player, instance, sizeInput);
         }
 
@@ -394,7 +396,6 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
         this.currentSpecies = currentSpecies.getKey();
 
-        InputData levelInput = InputData.experienceLevels(player.experienceLevel);
         InputData sizeInput = InputData.size((int) DragonStateProvider.getData(player).getSize());
 
         int slot = 0;
@@ -407,7 +408,6 @@ public class MagicData implements INBTSerializable<CompoundTag> {
                 instance = new DragonAbilityInstance(ability, ability.value().getMaxLevel());
             } else {
                 instance = new DragonAbilityInstance(ability, DragonAbilityInstance.MIN_LEVEL);
-                upgrade.attempt(player, instance, levelInput);
                 upgrade.attempt(player, instance, sizeInput);
             }
 
@@ -453,7 +453,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
     }
 
     @Override
-    public @UnknownNullability CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
+    public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
 
         CompoundTag allAbilities = new CompoundTag();

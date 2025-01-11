@@ -48,7 +48,7 @@ public class AltarTypeButton extends Button implements HoverDisableable {
     })
     private static final String HUMAN = Translation.Type.GUI.wrap("altar.info.human");
 
-    public Holder<DragonSpecies> type;
+    public Holder<DragonSpecies> species;
     private final DragonAltarScreen parent;
 
     private boolean disableHover;
@@ -56,17 +56,17 @@ public class AltarTypeButton extends Button implements HoverDisableable {
     private int scroll;
     private boolean resetScroll;
 
-    public AltarTypeButton(DragonAltarScreen parent, Holder<DragonSpecies> type, int x, int y) {
+    public AltarTypeButton(final DragonAltarScreen parent, final Holder<DragonSpecies> species, int x, int y) {
         super(x, y, 49, 147, Component.empty(), Button::onPress, DEFAULT_NARRATION);
         this.parent = parent;
-        this.type = type;
+        this.species = species;
 
         scroll = 0;
     }
 
     @Override
     public void onPress() {
-        initiateDragonForm(type);
+        initiateDragonForm(species);
     }
 
     @Override
@@ -89,8 +89,8 @@ public class AltarTypeButton extends Button implements HoverDisableable {
 
             List<Either<FormattedText, TooltipComponent>> components = new ArrayList<>();
 
-            if (type != null) {
-                List<Item> diet = type.value().getDietItems();
+            if (species != null) {
+                List<Item> diet = species.value().getDietItems();
 
                 if (diet.size() <= MAX_SHOWN) {
                     scroll = 0;
@@ -103,10 +103,10 @@ public class AltarTypeButton extends Button implements HoverDisableable {
                 // Using the color codes in the translation doesn't seem to apply the color to the entire text - therefor we create the [shown / max_items] tooltip part here
                 MutableComponent shownFoods = Component.literal(" [" + Math.min(diet.size(), scroll + MAX_SHOWN) + " / " + diet.size() + "]").withStyle(ChatFormatting.DARK_GRAY);
                 //noinspection DataFlowIssue -> key is present
-                components.addFirst(Either.left(Component.translatable(Translation.Type.DRAGON_SPECIES_DESCRIPTION.wrap(type.getKey().location())).append(shownFoods)));
+                components.addFirst(Either.left(Component.translatable(Translation.Type.DRAGON_SPECIES_DESCRIPTION.wrap(species.getKey().location())).append(shownFoods)));
 
                 for (int i = scroll; i < max; i++) {
-                    components.add(Either.right(new DietComponent(type, diet.get(i))));
+                    components.add(Either.right(new DietComponent(species, diet.get(i))));
                 }
 
                 graphics.renderComponentTooltipFromElements(Minecraft.getInstance().font, components, mouseX, mouseY, ItemStack.EMPTY);
@@ -120,12 +120,12 @@ public class AltarTypeButton extends Button implements HoverDisableable {
 
         graphics.renderOutline(getX() - 1, getY() - 1, width + 2, height + 2, Color.black.getRGB());
 
-        if (type != null) {
-            graphics.blit(type.value().miscResources().altarBanner(), getX(), getY(), 0, isHovered() ? 0 : 147, 49, 147, 49, 294);
+        if (species != null) {
+            graphics.blit(species.value().miscResources().altarBanner(), getX(), getY(), 0, isHovered() ? 0 : 147, 49, 147, 49, 294);
             if(isHovered() && isTop(mouseY)) {
-                graphics.blit(type.value().miscResources().growthIcons().getFirst().hoverIcon(), getX() + 1, getY() + 1, 0, 0, 18, 18, 18, 18);
+                graphics.blit(species.value().miscResources().growthIcons().getFirst().hoverIcon(), getX() + 1, getY() + 1, 0, 0, 18, 18, 18, 18);
             } else {
-                graphics.blit(type.value().miscResources().growthIcons().getFirst().icon(), getX() + 1, getY() + 1, 0, 0, 18, 18, 18, 18);
+                graphics.blit(species.value().miscResources().growthIcons().getFirst().icon(), getX() + 1, getY() + 1, 0, 0, 18, 18, 18, 18);
             }
         } else {
             graphics.blit(HUMAN_ALTAR_ICON, getX(), getY(), 0, isHovered() ? 0 : 147, 49, 147, 49, 294);

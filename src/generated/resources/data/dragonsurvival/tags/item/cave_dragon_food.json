@@ -1,0 +1,132 @@
+{
+  "values": [
+    {
+      "id": "#minecraft:coals",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:charged_coal",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:charred_meat",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:cave_dragon_treat",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:charred_seafood",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:charred_vegetable",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:charred_mushroom",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:charged_soup",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:hot_dragon_rod",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:explosive_copper",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:double_quartz",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:quartz_explosive_copper",
+      "required": false
+    },
+    {
+      "id": "netherdepthsupgrade:blazefish",
+      "required": false
+    },
+    {
+      "id": "netherdepthsupgrade:cooked_magmacubefish_slice",
+      "required": false
+    },
+    {
+      "id": "netherdepthsupgrade:blazefish_slice",
+      "required": false
+    },
+    {
+      "id": "netherdepthsupgrade:magmacubefish",
+      "required": false
+    },
+    {
+      "id": "netherdepthsupgrade:fortress_grouper",
+      "required": false
+    },
+    {
+      "id": "desolation:cinder_fruit",
+      "required": false
+    },
+    {
+      "id": "desolation:powered_cinder_fruit",
+      "required": false
+    },
+    {
+      "id": "desolation:activatedcharcoal",
+      "required": false
+    },
+    {
+      "id": "desolation:infused_powder",
+      "required": false
+    },
+    {
+      "id": "desolation:primed_ash",
+      "required": false
+    },
+    {
+      "id": "undergarden:ditchbulb",
+      "required": false
+    },
+    {
+      "id": "xreliquary:molten_core",
+      "required": false
+    },
+    {
+      "id": "mekanism:dust_coal",
+      "required": false
+    },
+    {
+      "id": "mekanism:dust_charcoal",
+      "required": false
+    },
+    {
+      "id": "thermal:coal_coke",
+      "required": false
+    },
+    {
+      "id": "thermal:basalz_rod",
+      "required": false
+    },
+    {
+      "id": "thermal:basalz_powder",
+      "required": false
+    },
+    {
+      "id": "create:blaze_cake",
+      "required": false
+    },
+    {
+      "id": "create:creative_blaze_cake",
+      "required": false
+    },
+    {
+      "id": "nethersdelight:nether_skewer",
+      "required": false
+    }
+  ]
+}

@@ -1,11 +1,17 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import net.minecraft.resources.ResourceLocation;
+
+import java.util.function.Function;
 
 /** Translation keys which are used in multiple places */
 public class LangKey {
     /** This is not assigned to one element but rather used at two places which dynamically create the translation key / translation */
     public static final String CATEGORY_PREFIX = Translation.Type.CONFIGURATION.prefix + "category.";
+
+    /** Needed since the tags (and therefor their translations) are dynamically created */
+    public static final Function<ResourceLocation, String> DRAGON_FOOD = id -> id.getPath() + "_dragon_food";
 
     @Translation(comments = "%s seconds")
     public static final String SECONDS = Translation.Type.GUI.wrap("general.seconds");

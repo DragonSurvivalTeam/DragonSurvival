@@ -31,11 +31,6 @@ public class DragonFoodHandler {
     @ConfigOption(side = ConfigSide.SERVER, category = {"food"}, key = "bad_food_poison_chance")
     public static Float badFoodPoisonChance = 0.5F;
 
-    @ConfigRange(min = 0, max = 10_000)
-    @Translation(key = "charged_soup_effect_duration", type = Translation.Type.CONFIGURATION, comments = "Determines the duration of the fire effect from eating charged soup - disabled if set to 0")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"food"}, key = "charged_soup_effect_duration")
-    public static Integer chargedSoupBuffDuration = 300;
-
     public static @Nullable FoodProperties getDragonFoodProperties(final Item item, final Holder<DragonSpecies> type) {
         return getDragonFoodProperties(item.getDefaultInstance(), type);
     }

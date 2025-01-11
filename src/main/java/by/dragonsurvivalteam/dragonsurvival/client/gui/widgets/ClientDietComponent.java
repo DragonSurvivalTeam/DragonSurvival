@@ -17,7 +17,7 @@ public class ClientDietComponent implements ClientTooltipComponent {
 
     public ClientDietComponent(final DietComponent component) {
         this.component = component;
-        this.tooltip = Component.translatable(component.item().getDescriptionId()).append(": ").append(ToolTipHandler.getFoodTooltipData(component.item(), component.type()));
+        this.tooltip = Component.translatable(component.item().getDescriptionId()).append(": ").append(ToolTipHandler.getFoodTooltipData(component.species(), component.item()));
     }
 
     @Override
