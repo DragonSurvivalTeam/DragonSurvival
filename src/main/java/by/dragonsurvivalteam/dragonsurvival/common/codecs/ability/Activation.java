@@ -165,9 +165,10 @@ public record Activation(
                         simple -> simple,
                         compound -> compound
                 );
-                DragonSurvival.PROXY.setCurrentAbilityAnimation(dragon.getId(), new Pair<>(abilityAnimation, AnimationType.PLAY_AND_HOLD));
+                // If it is simple, we just loop. If it is compound, then we ignore the AnimationType anyways, and go from a single play of start into looping charging.
+                DragonSurvival.PROXY.setCurrentAbilityAnimation(dragon.getId(), new Pair<>(abilityAnimation, AnimationType.LOOPING));
             } else {
-                PacketDistributor.sendToPlayersTrackingEntity(dragon, new SyncAbilityAnimation(dragon.getId(), AnimationType.PLAY_AND_HOLD, startAndCharging));
+                PacketDistributor.sendToPlayersTrackingEntity(dragon, new SyncAbilityAnimation(dragon.getId(), AnimationType.LOOPING, startAndCharging));
             }
         });
     }

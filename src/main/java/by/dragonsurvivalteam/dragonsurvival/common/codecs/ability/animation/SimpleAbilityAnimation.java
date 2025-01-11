@@ -23,11 +23,19 @@ public record SimpleAbilityAnimation(String animationKey, AnimationLayer layer, 
     ).apply(instance, SimpleAbilityAnimation::new));
 
     @Override
-    public void play(final AnimationState<?> state, final DragonEntity dragon, final AnimationType animationType) {
-        dragon.tailLocked = locksTail;
-        dragon.neckLocked = locksNeck;
+    public void play(final AnimationState<?> state, final AnimationType animationType) {
         state.getController().transitionLength(transitionLength);
         state.setAndContinue(getRawAnimation(animationType));
+    }
+
+    @Override
+    public boolean locksHead() {
+        return locksNeck;
+    }
+
+    @Override
+    public boolean locksTail() {
+        return locksTail;
     }
 
     @Override

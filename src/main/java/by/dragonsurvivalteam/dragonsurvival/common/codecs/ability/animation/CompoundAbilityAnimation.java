@@ -21,11 +21,14 @@ public record CompoundAbilityAnimation(String startingAnimationKey, String loopi
     ).apply(instance, CompoundAbilityAnimation::new));
 
     @Override
-    public void play(AnimationState<?> state, DragonEntity entity, AnimationType animationType) {
-        entity.tailLocked = locksTail;
-        entity.neckLocked = locksNeck;
+    public void play(AnimationState<?> state, AnimationType animationType) {
         state.getController().transitionLength(transitionLength);
         state.setAndContinue(getRawAnimation());
+    }
+
+    @Override
+    public boolean locksHead() {
+        return locksNeck;
     }
 
     @Override

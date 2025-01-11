@@ -231,7 +231,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         if (!begunPlayingAbilityAnimation && isNotPlayingCurrentAbilityAnimation) {
             begunPlayingAbilityAnimation = true;
             state.getController().setAnimationSpeed(1.0);
-            currentAbilityAnimation.getFirst().play(state, this, currentAbilityAnimation.getSecond());
+            currentAbilityAnimation.getFirst().play(state, currentAbilityAnimation.getSecond());
             if(currentAbilityAnimation.getSecond() == AnimationType.PLAY_ONCE) {
                 // Only trigger use a timer for PLAY_ONCE animations, as the others are intended to await a future packet to stop them
                 animationTickTimer.putAnimation(currentAbilityAnimation.getFirst().getName(), animationDuration(getPlayer(), currentAbilityAnimation.getFirst().getName()));
@@ -634,6 +634,11 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             // This means we are playing a blend emote; so we want to pass on the head/tail locked state
             neckLocked = checkAllEmotes(DragonEmote::locksHead);
             tailLocked = checkAllEmotes(DragonEmote::locksTail);
+        }
+
+        if (currentAbilityAnimation != null) {
+            neckLocked = currentAbilityAnimation.getFirst().locksHead();
+            tailLocked = currentAbilityAnimation.getFirst().locksTail();
         }
 
         return PlayState.CONTINUE;
