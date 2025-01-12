@@ -40,7 +40,7 @@ public record OxygenBonus(ResourceLocation id, Optional<ResourceKey<FluidType>> 
     ).apply(instance, OxygenBonus::new));
 
     public static float NO_BONUS_VALUE = 0.f;
-    public static final LevelBasedValue NO_BONUS = LevelBasedValue.constant(NO_BONUS_VALUE);
+    public static float INFINITE_VALUE = -1.f;
 
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final LivingEntity target) {
         int newDuration = (int) duration.calculate(ability.level());

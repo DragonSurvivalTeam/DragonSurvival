@@ -53,6 +53,10 @@ public class SwimData {
 
         float oxygenBonusForFluid = player.getExistingData(DSDataAttachments.OXYGEN_BONUSES).map(data -> data.getOxygenBonus(key)).orElse(OxygenBonus.NO_BONUS_VALUE);
 
+        if(oxygenBonusForFluid == OxygenBonus.INFINITE_VALUE) {
+            return UNLIMITED_OXYGEN;
+        }
+
         return Math.max(0, (int) (baseMaxOxygen + oxygenBonusForFluid));
     }
 

@@ -23,6 +23,9 @@ public class OxygenBonuses extends Storage<OxygenBonus.Instance> {
         float bonus = OxygenBonus.NO_BONUS_VALUE;
 
         for (OxygenBonus.Instance instance : storage.values()) {
+            if(instance.getOxygenBonus(fluidTypeKey) == OxygenBonus.INFINITE_VALUE) {
+                return OxygenBonus.INFINITE_VALUE;
+            }
             bonus += instance.getOxygenBonus(fluidTypeKey);
         }
 
