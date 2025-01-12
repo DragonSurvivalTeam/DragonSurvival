@@ -29,7 +29,7 @@ public interface ILivingEntityExtensionMixin {
             SwimData data = SwimData.getData(player);
 
             if (data.canSwimIn(fluid)) {
-                return data.getMaxOxygen(fluid) != SwimData.UNLIMITED_OXYGEN;
+                return data.getMaxOxygen(player, fluid) != SwimData.UNLIMITED_OXYGEN;
             }
         }
 

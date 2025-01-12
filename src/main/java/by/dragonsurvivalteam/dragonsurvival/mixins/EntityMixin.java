@@ -164,7 +164,7 @@ public abstract class EntityMixin {
 
         if (self instanceof Player player) {
             SwimData swimData = SwimData.getData(player);
-            int newMaxAirSupply = swimData.getMaxOxygen(self.getEyeInFluidType());
+            int newMaxAirSupply = swimData.getMaxOxygen(player, self.getEyeInFluidType());
 
             if (newMaxAirSupply == SwimData.UNLIMITED_OXYGEN) {
                 // Unlimited oxygen is handled in the 'ILivingEntityExtensionMixin'

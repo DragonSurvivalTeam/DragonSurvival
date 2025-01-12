@@ -52,7 +52,7 @@ public class HUDHandler {
             //noinspection DataFlowIssue -> player is present
             SwimData data = SwimData.getData(minecraft.player);
 
-            if (data.getMaxOxygen(minecraft.player.getEyeInFluidType()) == SwimData.UNLIMITED_OXYGEN) {
+            if (data.getMaxOxygen(minecraft.player, minecraft.player.getEyeInFluidType()) == SwimData.UNLIMITED_OXYGEN) {
                 event.setCanceled(true);
             }
         }

@@ -6,12 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DurationInstance;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.EnderDragonMarkHandler;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DamageModifications;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.EffectModifications;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HarvestBonuses;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ModifiersWithDuration;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
 import com.mojang.serialization.Codec;
@@ -78,6 +73,7 @@ public interface ClientEffectProvider {
         providers.addAll(player.getExistingData(DSDataAttachments.DAMAGE_MODIFICATIONS).map(DamageModifications::all).orElse(List.of()));
         providers.addAll(player.getExistingData(DSDataAttachments.HARVEST_BONUSES).map(HarvestBonuses::all).orElse(List.of()));
         providers.addAll(player.getExistingData(DSDataAttachments.EFFECT_MODIFICATIONS).map(EffectModifications::all).orElse(List.of()));
+        providers.addAll(player.getExistingData(DSDataAttachments.OXYGEN_BONUSES).map(OxygenBonuses::all).orElse(List.of()));
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
 

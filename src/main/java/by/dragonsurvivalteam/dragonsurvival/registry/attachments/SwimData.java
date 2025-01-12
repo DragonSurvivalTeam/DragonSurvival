@@ -1,11 +1,13 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.OxygenBonus;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -34,14 +36,24 @@ public class SwimData {
         swimData.remove(fluid.getKey());
     }
 
-    public int getMaxOxygen(final FluidType fluid) {
+    public int getMaxOxygen(final Player player, final FluidType fluid) {
         ResourceKey<FluidType> key = key(fluid);
 
+        // Query OxygenBonuses to modify the max oxygen value
+        float baseMaxOxygen;
         if (key == NeoForgeMod.EMPTY_TYPE.getKey()) {
-            return getMaxOxygen(previousFluid);
+            baseMaxOxygen = getMaxOxygen(player, previousFluid);
+        } else {
+            baseMaxOxygen = swimData.getOrDefault(key, Entity.TOTAL_AIR_SUPPLY);
         }
 
-        return swimData.getOrDefault(key, Entity.TOTAL_AIR_SUPPLY);
+        if(baseMaxOxygen == UNLIMITED_OXYGEN) {
+            return UNLIMITED_OXYGEN;
+        }
+
+        float oxygenBonusForFluid = player.getExistingData(DSDataAttachments.OXYGEN_BONUSES).map(data -> data.getOxygenBonus(key)).orElse(OxygenBonus.NO_BONUS_VALUE);
+
+        return Math.max(0, (int) (baseMaxOxygen + oxygenBonusForFluid));
     }
 
     public boolean canSwimIn(final FluidType fluid) {
@@ -65,17 +77,17 @@ public class SwimData {
 
             if (event.canBreathe()) {
                 if (data.canSwimIn(currentFluid)) {
-                    event.setRefillAirAmount(data.getMaxOxygen(currentFluid));
+                    event.setRefillAirAmount(data.getMaxOxygen(player, currentFluid));
                 } else if (isAir(currentFluid) && data.previousFluid != null) {
                     // Vanilla: max. of 300, refill 4 -> ~ 1.5%
                     // TODO :: make the rate configurable?
-                    event.setRefillAirAmount((int) (data.getMaxOxygen(data.previousFluid) * 0.015));
+                    event.setRefillAirAmount((int) (data.getMaxOxygen(player, data.previousFluid) * 0.015));
                 }
             }
 
             if (!isAir(currentFluid) && data.previousFluid != currentFluid) {
-                int maxAirSupply = data.getMaxOxygen(data.previousFluid);
-                int newMaxAirSupply = data.getMaxOxygen(player.getEyeInFluidType());
+                int maxAirSupply = data.getMaxOxygen(player, data.previousFluid);
+                int newMaxAirSupply = data.getMaxOxygen(player, player.getEyeInFluidType());
 
                 float airSupplyRatio = (float) newMaxAirSupply / (float) maxAirSupply;
                 player.setAirSupply((int) Math.min(newMaxAirSupply, Math.ceil(player.getAirSupply() * airSupplyRatio)));
