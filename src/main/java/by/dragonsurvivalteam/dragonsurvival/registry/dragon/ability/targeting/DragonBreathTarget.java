@@ -82,7 +82,8 @@ public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target,
         double zMax = (dragon.getLookAngle().z() > 0 ? zOffset : defaultRadius);
         Vec3 max = new Vec3(Math.abs(xMax), Math.abs(yMax), Math.abs(zMax));
 
-        return new AABB(dragon.position().subtract(min), dragon.position().add(max));
+        Vec3 startPosition = dragon.getEyePosition().subtract(0, (dragon.getEyeHeight() / 2), 0);
+        return new AABB(startPosition.subtract(min), startPosition.add(max));
     }
 
     private float getRange(final Player dragon, final DragonAbilityInstance ability) {
