@@ -69,7 +69,7 @@ public class DragonOreLootModifier extends LootModifier {
                                     }
 
                                     if(context.getRandom().nextDouble() < ServerConfig.dragonOreBoneChance){
-                                        generatedLoot.add(new ItemStack(DSItems.elderDragonDust, fortuneRoll));
+                                        generatedLoot.add(new ItemStack(DSItems.elderDragonBone, fortuneRoll));
                                     }
                                 } else {
                                     if(context.getRandom().nextDouble() < ServerConfig.humanOreDustChance){
@@ -77,7 +77,7 @@ public class DragonOreLootModifier extends LootModifier {
                                     }
 
                                     if(context.getRandom().nextDouble() < ServerConfig.humanOreBoneChance){
-                                        generatedLoot.add(new ItemStack(DSItems.elderDragonDust, fortuneRoll));
+                                        generatedLoot.add(new ItemStack(DSItems.elderDragonBone, fortuneRoll));
                                     }
                                 }
                             }
