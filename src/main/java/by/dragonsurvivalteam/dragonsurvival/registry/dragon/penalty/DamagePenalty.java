@@ -20,7 +20,7 @@ public record DamagePenalty(Holder<DamageType> damageType, float damage) impleme
     ).apply(instance, DamagePenalty::new));
 
     @Override
-    public void apply(final ServerPlayer player) {
+    public void apply(final ServerPlayer player, final Holder<DragonPenalty> penalty) {
         player.hurt(new DamageSource(damageType, player), damage);
     }
 

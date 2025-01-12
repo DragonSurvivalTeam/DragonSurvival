@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -25,7 +26,7 @@ public interface PenaltyEffect {
 
     default MutableComponent getDescription() { return Component.empty(); }
 
-    void apply(final ServerPlayer player);
+    void apply(final ServerPlayer player, final Holder<DragonPenalty> penalty);
     MapCodec<? extends PenaltyEffect> codec();
 
     @SubscribeEvent

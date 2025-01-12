@@ -89,10 +89,10 @@ public class FlightData implements INBTSerializable<CompoundTag> {
     }
 
     public static final ClientEffectProvider FLIGHT_EFFECT = new ClientEffectProvider() {
-        @Translation(type = Translation.Type.GUI, comments = "Wings")
-        private static final ResourceLocation MODIFIER = DragonSurvival.res("wings");
+        @Translation(type = Translation.Type.GUI, comments = "Dragon Wings")
+        private static final ResourceLocation NAME = DragonSurvival.res("dragon_wings");
 
-        private static final ClientData DATA = new ClientData(DragonSurvival.res("textures/modifiers/cave_dragon_wings.png"), Component.translatable(Translation.Type.GUI.wrap(MODIFIER)), Component.empty());
+        private static final ClientData DATA = new ClientData(DragonSurvival.res("textures/ability_effect/dragon_wings.png"), Component.translatable(Translation.Type.GUI.wrap(NAME)), Component.empty());
 
         @Override
         public Component getDescription() {

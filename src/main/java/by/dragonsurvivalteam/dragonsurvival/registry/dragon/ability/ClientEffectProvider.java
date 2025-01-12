@@ -5,25 +5,21 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DurationInstance;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.EnderDragonMarkHandler;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DamageModifications;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.EffectModifications;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HarvestBonuses;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ModifiersWithDuration;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 
 public interface ClientEffectProvider {
     record ClientData(ResourceLocation texture, Component name, Component effectSource) {
@@ -34,14 +30,27 @@ public interface ClientEffectProvider {
         ).apply(instance, ClientData::new));
 
         public static ClientData from(final ServerPlayer dragon, final DragonAbilityInstance ability) {
-            return from(dragon, ability, null);
+            return from(dragon, ability, Optional.empty());
         }
 
-        public static ClientData from(final ServerPlayer dragon, final DragonAbilityInstance ability, @Nullable final ResourceLocation customIcon) {
-            ResourceLocation icon = Objects.requireNonNullElseGet(customIcon, () -> ability.getIcon().withPrefix("textures/gui/sprites/").withSuffix(".png"));
+        @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // ignore
+        public static ClientData from(final ServerPlayer dragon, final DragonAbilityInstance ability, final Optional<ResourceLocation> customIcon) {
+            ResourceLocation icon = customIcon.orElse(ability.getIcon().withPrefix("textures/gui/sprites/").withSuffix(".png"));
             return new ClientData(icon, Component.translatable(Translation.Type.ABILITY.wrap(ability.location())), dragon.getName());
         }
+
+        public static ClientData from(final Holder<DragonPenalty> penalty) {
+            return from(penalty, Optional.empty());
+        }
+
+        @SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "DataFlowIssue"}) // ignore
+        public static ClientData from(final Holder<DragonPenalty> penalty, final Optional<ResourceLocation> customIcon) {
+            ResourceLocation icon = customIcon.orElse(penalty.value().icon().orElse(UNKNOWN_ICON));
+            return new ClientData(icon, Component.translatable(Translation.Type.PENALTY.wrap(penalty.getKey().location())), Component.empty());
+        }
     }
+
+    ResourceLocation UNKNOWN_ICON = DragonSurvival.res("textures/gui/ability_effect/generic_icons/unknown.png");
 
     /** See {@link net.minecraft.client.renderer.texture.MissingTextureAtlasSprite#MISSING_TEXTURE_LOCATION} */
     ResourceLocation MISSING_TEXTURE = ResourceLocation.withDefaultNamespace("missingno");

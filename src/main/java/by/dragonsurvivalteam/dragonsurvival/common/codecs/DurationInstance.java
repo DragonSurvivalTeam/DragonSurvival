@@ -12,7 +12,6 @@ public abstract class DurationInstance<B> implements ClientEffectProvider, Stora
     public static final int INFINITE_DURATION = -1;
 
     private final B baseData;
-    // TODO :: this might need to be changeable (e.g. summon entity effect - display entity amount)
     private final ClientEffectProvider.ClientData clientData;
     private final int appliedAbilityLevel;
 

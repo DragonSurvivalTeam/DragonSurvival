@@ -34,7 +34,7 @@ import javax.annotation.Nullable;
 import java.text.NumberFormat;
 import java.util.Optional;
 
-public record HarvestBonus(ResourceLocation id, Optional<HolderSet<Block>> blocks, LevelBasedValue harvestBonus, LevelBasedValue breakSpeedMultiplier, LevelBasedValue duration, boolean isHidden) {
+public record HarvestBonus(ResourceLocation id, Optional<HolderSet<Block>> blocks, LevelBasedValue harvestBonus, LevelBasedValue breakSpeedMultiplier, LevelBasedValue duration, Optional<ResourceLocation> customIcon, boolean isHidden) {
     @Translation(comments = {
             "§6■ Harvest Bonus:§r",
             " - Harvest level: %s",
@@ -61,22 +61,22 @@ public record HarvestBonus(ResourceLocation id, Optional<HolderSet<Block>> block
             LevelBasedValue.CODEC.optionalFieldOf("harvest_bonus", NO_BONUS).forGetter(HarvestBonus::harvestBonus),
             LevelBasedValue.CODEC.optionalFieldOf("break_speed_multiplier", NO_BONUS).forGetter(HarvestBonus::breakSpeedMultiplier),
             LevelBasedValue.CODEC.optionalFieldOf("duration", LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)).forGetter(HarvestBonus::duration),
+            ResourceLocation.CODEC.optionalFieldOf("custom_icon").forGetter(HarvestBonus::customIcon),
             Codec.BOOL.optionalFieldOf("is_hidden", false).forGetter(HarvestBonus::isHidden)
     ).apply(instance, HarvestBonus::new));
 
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final LivingEntity target) {
-        int abilityLevel = ability.level();
-        int newDuration = (int) duration().calculate(abilityLevel);
+        int newDuration = (int) duration.calculate(ability.level());
 
         HarvestBonuses data = target.getData(DSDataAttachments.HARVEST_BONUSES);
         Instance instance = data.get(id);
 
-        if (instance != null && instance.currentDuration() == newDuration && instance.appliedAbilityLevel() == abilityLevel) {
+        if (instance != null && instance.appliedAbilityLevel() == ability.level() && instance.currentDuration() == newDuration) {
             return;
         }
 
         data.remove(target, instance);
-        data.add(target, new Instance(this, ClientEffectProvider.ClientData.from(dragon, ability), abilityLevel, newDuration));
+        data.add(target, new Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, customIcon), ability.level(), newDuration));
     }
 
     public void remove(final LivingEntity target) {

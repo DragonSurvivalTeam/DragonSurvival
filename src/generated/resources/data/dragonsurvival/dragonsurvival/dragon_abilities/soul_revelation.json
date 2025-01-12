@@ -8,12 +8,12 @@
               "effect_type": "dragonsurvival:modifier",
               "modifiers": [
                 {
+                  "custom_icon": "dragonsurvival:textures/ability_effect/revealing_the_soul.png",
                   "duration": {
                     "type": "minecraft:linear",
                     "base": 1200.0,
                     "per_level_above_first": 1200.0
                   },
-                  "icon": "dragonsurvival:textures/modifiers/revealing_the_soul.png",
                   "id": "dragonsurvival:revealing_the_soul",
                   "modifiers": [
                     {

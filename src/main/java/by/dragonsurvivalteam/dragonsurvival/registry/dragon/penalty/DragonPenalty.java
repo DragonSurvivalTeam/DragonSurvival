@@ -38,7 +38,7 @@ public record DragonPenalty(Optional<ResourceLocation> icon, Optional<LootItemCo
     public static final ResourceKey<Registry<DragonPenalty>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_penalties"));
     public static final Codec<Holder<DragonPenalty>> CODEC = RegistryFixedCodec.create(REGISTRY);
 
-    public void apply(final ServerPlayer dragon) {
+    public void apply(final ServerPlayer dragon, final Holder<DragonPenalty> penalty) {
         PenaltySupply penaltySupply = dragon.getData(DSDataAttachments.PENALTY_SUPPLY);
 
         if (trigger instanceof SupplyTrigger supplyTrigger) {
@@ -53,7 +53,7 @@ public record DragonPenalty(Optional<ResourceLocation> icon, Optional<LootItemCo
         }
 
         if (trigger.matches(dragon, condition.map(condition -> condition.test(Condition.penaltyContext(dragon))).orElse(true))) {
-            effect.apply(dragon);
+            effect.apply(dragon, penalty);
         }
     }
 

@@ -33,8 +33,9 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.text.NumberFormat;
+import java.util.Optional;
 
-public record EffectModification(ResourceLocation id, HolderSet<MobEffect> effects, Modification durationModification, Modification amplifierModification, LevelBasedValue duration, boolean isHidden) {
+public record EffectModification(ResourceLocation id, HolderSet<MobEffect> effects, Modification durationModification, Modification amplifierModification, LevelBasedValue duration, Optional<ResourceLocation> customIcon, boolean isHidden) {
     @Translation(comments = {
             "§6■ Effect modifications:§r",
             " - Duration %s",
@@ -58,6 +59,7 @@ public record EffectModification(ResourceLocation id, HolderSet<MobEffect> effec
             Modification.CODEC.fieldOf("duration_modification").forGetter(EffectModification::durationModification),
             Modification.CODEC.fieldOf("amplifier_modification").forGetter(EffectModification::amplifierModification),
             LevelBasedValue.CODEC.optionalFieldOf("duration", LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)).forGetter(EffectModification::duration),
+            ResourceLocation.CODEC.optionalFieldOf("custom_icon").forGetter(EffectModification::customIcon),
             Codec.BOOL.optionalFieldOf("is_hidden", false).forGetter(EffectModification::isHidden)
     ).apply(instance, EffectModification::new));
 
@@ -72,7 +74,7 @@ public record EffectModification(ResourceLocation id, HolderSet<MobEffect> effec
         }
 
         data.remove(target, instance);
-        data.add(target, new Instance(this, ClientEffectProvider.ClientData.from(dragon, ability), ability.level(), newDuration));
+        data.add(target, new Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, customIcon), ability.level(), newDuration));
     }
 
     public void remove(final LivingEntity target) {

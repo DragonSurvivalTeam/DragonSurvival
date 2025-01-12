@@ -31,7 +31,7 @@ public class ThrownPotionMixin {
     }
 
     @ModifyExpressionValue(method = "applyWater", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isSensitiveToWater()Z"))
-    private boolean dragonSurvival$storePenalty(boolean original, @Local final LivingEntity instance, @Share("penaltyReference") final LocalRef<DragonPenalty> penaltyReference) {
+    private boolean dragonSurvival$storePenalty(boolean original, @Local final LivingEntity instance, @Share("penaltyReference") final LocalRef<Holder<DragonPenalty>> penaltyReference) {
         if (instance instanceof ServerPlayer player) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
 
@@ -41,7 +41,7 @@ public class ThrownPotionMixin {
 
             for (Holder<DragonPenalty> penalty : handler.species().value().penalties()) {
                 if (penalty.value().trigger() instanceof HitByWaterPotionTrigger && penalty.value().condition().map(condition -> condition.test(Condition.penaltyContext(player))).orElse(true)) {
-                    penaltyReference.set(penalty.value());
+                    penaltyReference.set(penalty);
                     return true;
                 }
             }
@@ -51,12 +51,12 @@ public class ThrownPotionMixin {
     }
 
     @WrapOperation(method = "applyWater", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hurt(Lnet/minecraft/world/damagesource/DamageSource;F)Z"))
-    private boolean dragonSurvival$applyPenalty(final LivingEntity instance, final DamageSource damageSource, float amount, final Operation<Boolean> original, @Share("penaltyReference") final LocalRef<DragonPenalty> penaltyReference) {
+    private boolean dragonSurvival$applyPenalty(final LivingEntity instance, final DamageSource damageSource, float amount, final Operation<Boolean> original, @Share("penaltyReference") final LocalRef<Holder<DragonPenalty>> penaltyReference) {
         if (instance instanceof ServerPlayer serverPlayer) {
-            DragonPenalty penalty = penaltyReference.get();
+            Holder<DragonPenalty> penalty = penaltyReference.get();
 
             if (penalty != null) {
-                penalty.apply(serverPlayer);
+                penalty.value().apply(serverPlayer, penalty);
                 return false;
             }
         }

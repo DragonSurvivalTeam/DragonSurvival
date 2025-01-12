@@ -35,8 +35,9 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.text.NumberFormat;
+import java.util.Optional;
 
-public record DamageModification(ResourceLocation id, HolderSet<DamageType> damageTypes, LevelBasedValue multiplier, LevelBasedValue duration, boolean isHidden) {
+public record DamageModification(ResourceLocation id, HolderSet<DamageType> damageTypes, LevelBasedValue multiplier, LevelBasedValue duration, Optional<ResourceLocation> customIcon, boolean isHidden) {
     @Translation(comments = "§6■ Immune§r to ")
     private static final String ABILITY_IMMUNITY = Translation.Type.GUI.wrap("damage_modification.immunity");
 
@@ -51,22 +52,22 @@ public record DamageModification(ResourceLocation id, HolderSet<DamageType> dama
             RegistryCodecs.homogeneousList(Registries.DAMAGE_TYPE).fieldOf("types").forGetter(DamageModification::damageTypes),
             LevelBasedValue.CODEC.fieldOf("multiplier").forGetter(DamageModification::multiplier),
             LevelBasedValue.CODEC.optionalFieldOf("duration", LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)).forGetter(DamageModification::duration),
+            ResourceLocation.CODEC.optionalFieldOf("custom_icon").forGetter(DamageModification::customIcon),
             Codec.BOOL.optionalFieldOf("is_hidden", false).forGetter(DamageModification::isHidden)
     ).apply(instance, DamageModification::new));
 
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity) {
+        int newDuration = (int) duration.calculate(ability.level());
+
         DamageModifications data = entity.getData(DSDataAttachments.DAMAGE_MODIFICATIONS);
         Instance instance = data.get(id);
 
-        int abilityLevel = ability.level();
-        int newDuration = (int) duration().calculate(abilityLevel);
-
-        if (instance != null && instance.currentDuration() == newDuration && instance.appliedAbilityLevel() == abilityLevel) {
+        if (instance != null && instance.appliedAbilityLevel() == ability.level() && instance.currentDuration() == newDuration) {
             return;
         }
 
         data.remove(entity, instance);
-        data.add(entity, new Instance(this, ClientEffectProvider.ClientData.from(dragon, ability), abilityLevel, newDuration));
+        data.add(entity, new Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, customIcon), ability.level(), newDuration));
     }
 
     public void remove(final Entity target) {

@@ -35,19 +35,14 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public record ModifierWithDuration(ResourceLocation id, ResourceLocation icon, List<Modifier> modifiers, LevelBasedValue duration, boolean isHidden) {
-    public static final ResourceLocation DEFAULT_MODIFIER_ICON = DragonSurvival.res("textures/modifiers/default_modifier.png");
-
+public record ModifierWithDuration(ResourceLocation id, List<Modifier> modifiers, LevelBasedValue duration, Optional<ResourceLocation> customIcon, boolean isHidden) {
     public static final Codec<ModifierWithDuration> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ResourceLocation.CODEC.fieldOf("id").forGetter(ModifierWithDuration::id),
-            ResourceLocation.CODEC.optionalFieldOf("icon", DEFAULT_MODIFIER_ICON).forGetter(ModifierWithDuration::icon),
             Modifier.CODEC.listOf().fieldOf("modifiers").forGetter(ModifierWithDuration::modifiers),
             LevelBasedValue.CODEC.optionalFieldOf("duration", LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)).forGetter(ModifierWithDuration::duration),
+            ResourceLocation.CODEC.optionalFieldOf("custom_icon").forGetter(ModifierWithDuration::customIcon),
             Codec.BOOL.optionalFieldOf("is_hidden", false).forGetter(ModifierWithDuration::isHidden)
     ).apply(instance, ModifierWithDuration::new));
 
@@ -62,7 +57,7 @@ public record ModifierWithDuration(ResourceLocation id, ResourceLocation icon, L
         }
 
         data.remove(target, instance);
-        data.add(target, new ModifierWithDuration.Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, icon), ability.level(), newDuration, new HashMap<>()));
+        data.add(target, new ModifierWithDuration.Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, customIcon), ability.level(), newDuration, new HashMap<>()));
     }
 
     public void remove(final LivingEntity target) {
@@ -71,8 +66,8 @@ public record ModifierWithDuration(ResourceLocation id, ResourceLocation icon, L
     }
 
     public @Nullable MutableComponent getDescription(final int abilityLevel) {
-        MutableComponent description = null;
         double duration = Functions.ticksToSeconds((int) this.duration.calculate(abilityLevel));
+        MutableComponent description = null;
 
         for (Modifier modifier : modifiers) {
             MutableComponent name = modifier.getFormattedDescription(abilityLevel, false);

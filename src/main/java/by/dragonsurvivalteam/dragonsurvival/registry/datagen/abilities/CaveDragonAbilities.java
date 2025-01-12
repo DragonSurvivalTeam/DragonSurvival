@@ -165,7 +165,8 @@ public class CaveDragonAbilities {
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 10f, 30f, 50f), LevelBasedValue.perLevel(15)))),
                 // Disable underwater
                 Optional.of(Condition.thisEntity(EntityCondition.isEyeInFluid(NeoForgeMod.WATER_TYPE)).build()),
-                List.of(new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
+                List.of(
+                        new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
                                 Condition.thisEntity(EntityCondition.isLiving()).build(),
                                 List.of(
                                         new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FIRE_BREATH), LevelBasedValue.perLevel(3)),
@@ -307,9 +308,9 @@ public class CaveDragonAbilities {
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DragonSurvival.res("cave_magic"),
-                                        ModifierWithDuration.DEFAULT_MODIFIER_ICON,
                                         List.of(new Modifier(DSAttributes.MANA, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
                                         LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                        Optional.empty(),
                                         true
                                 )),
                                 TargetingMode.ALLIES_AND_SELF
@@ -326,9 +327,9 @@ public class CaveDragonAbilities {
                                         .build(),
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DragonSurvival.res("good_mana_condition"),
-                                        ModifierWithDuration.DEFAULT_MODIFIER_ICON,
                                         List.of(new Modifier(DSAttributes.MANA_REGENERATION, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_MULTIPLIED_BASE, Optional.empty())),
                                         LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                        Optional.empty(),
                                         true
                                 )),
                                 TargetingMode.ALLIES_AND_SELF
@@ -378,9 +379,9 @@ public class CaveDragonAbilities {
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         ModifierEffect.only(new ModifierWithDuration(
                                 DragonSurvival.res("contrast_shower"),
-                                ModifierWithDuration.DEFAULT_MODIFIER_ICON,
                                 List.of(new Modifier(DSAttributes.PENALTY_RESISTANCE_TIME, LevelBasedValue.perLevel(Functions.secondsToTicks(30)), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                Optional.empty(),
                                 true
                         )),
                         TargetingMode.ALLIES_AND_SELF
@@ -425,6 +426,7 @@ public class CaveDragonAbilities {
                                 LevelBasedValue.perLevel(1, 0.5f),
                                 LevelBasedValue.perLevel(0.5f),
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                Optional.empty(),
                                 false
                         )),
                         TargetingMode.ALLIES_AND_SELF
@@ -481,6 +483,7 @@ public class CaveDragonAbilities {
                                 context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypeTags.IS_FIRE),
                                 LevelBasedValue.constant(0),
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                Optional.empty(),
                                 false
                         )),
                         TargetingMode.ALLIES_AND_SELF

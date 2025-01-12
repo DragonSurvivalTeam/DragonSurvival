@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.handlers.DataReloadHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -32,7 +33,7 @@ public class ItemBlacklistPenalty implements PenaltyEffect {
     }
 
     @Override
-    public void apply(final ServerPlayer player) {
+    public void apply(final ServerPlayer player, final Holder<DragonPenalty> penalty) {
         dropAllItemsInList(player, player.getInventory().armor);
         dropAllItemsInList(player, player.getInventory().offhand);
 

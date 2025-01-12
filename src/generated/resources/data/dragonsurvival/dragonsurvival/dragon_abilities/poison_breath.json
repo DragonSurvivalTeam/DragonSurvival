@@ -147,6 +147,21 @@
               "valid_blocks": {
                 "blocks": "minecraft:potatoes"
               }
+            },
+            {
+              "duration": 40.0,
+              "effect_type": "dragonsurvival:area_cloud",
+              "particle": {
+                "type": "dragonsurvival:large_poison",
+                "duration": 37.0,
+                "swirls": false
+              },
+              "potion": {
+                "amplifier": 0.0,
+                "duration": 600.0,
+                "effects": "dragonsurvival:drain"
+              },
+              "probability": 0.3
             }
           ]
         },

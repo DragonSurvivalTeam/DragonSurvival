@@ -22,7 +22,6 @@ import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
-import net.neoforged.neoforge.event.entity.player.CriticalHitEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -145,20 +144,23 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
     }
 
     @SubscribeEvent
-    public static void handleCriticalBonus(final CriticalHitEvent event) {
-        MobEffectInstance hunterEffect = event.getEntity().getEffect(DSEffects.HUNTER);
+    public static void handleCriticalBonus(final LivingDamageEvent.Pre event) {
+        if (!(event.getSource().getEntity() instanceof LivingEntity attacker)) {
+            return;
+        }
+
+        MobEffectInstance hunterEffect = attacker.getEffect(DSEffects.HUNTER);
 
         if (hunterEffect == null) {
             return;
         }
 
-        HunterData data = event.getEntity().getData(DSDataAttachments.HUNTER);
+        HunterData data = attacker.getData(DSDataAttachments.HUNTER);
         float multiplier = (float) (1 + hunterEffect.getAmplifier() * DAMAGE_PER_LEVEL);
         multiplier = multiplier * ((float) data.getHunterStacks() / getMaxStacks());
 
-        event.setCriticalHit(true);
-        event.setDamageMultiplier(event.getDamageMultiplier() + multiplier);
-        event.getEntity().removeEffect(DSEffects.HUNTER);
+        event.setNewDamage(event.getNewDamage() * (1 + multiplier));
+        attacker.removeEffect(DSEffects.HUNTER);
     }
 
     public static int getMaxStacks() {

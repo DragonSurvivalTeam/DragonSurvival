@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -23,7 +24,7 @@ public record MobEffectPenalty(HolderSet<MobEffect> effects, int amplifier, int 
     ).apply(instance, MobEffectPenalty::new));
 
     @Override
-    public void apply(final ServerPlayer player) {
+    public void apply(final ServerPlayer player, final Holder<DragonPenalty> penalty) {
         effects.forEach(effect -> player.addEffect(new MobEffectInstance(effect, duration, amplifier)));
     }
 
