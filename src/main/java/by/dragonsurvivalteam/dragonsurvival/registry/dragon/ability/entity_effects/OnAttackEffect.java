@@ -36,7 +36,9 @@ public record OnAttackEffect(PotionData potionData) implements AbilityEntityEffe
     @Override
     public List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
         List<MutableComponent> description = potionData.getDescription(ability.level());
-        description.add(Component.translatable(LangKey.ABILITY_ON_HIT));
+        for(MutableComponent component : description) {
+            component.append(Component.translatable(LangKey.ABILITY_ON_HIT));
+        }
         return description;
     }
 
