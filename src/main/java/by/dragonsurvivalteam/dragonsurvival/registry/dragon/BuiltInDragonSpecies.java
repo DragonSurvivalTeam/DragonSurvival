@@ -11,7 +11,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.CaveDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.ForestDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.SeaDragonAbilities;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.datapacks.AncientDatapack;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalties;
@@ -86,8 +85,9 @@ public class BuiltInDragonSpecies {
                         // Active
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.NETHER_BREATH),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.FIRE_BALL),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.LAVA_VISION),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.STURDY_SKIN),
+                        context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.LAVA_VISION),
+                        context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.FRIENDLY_FIRE),
                         // Passive
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.CAVE_ATHLETICS),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.BURN),
@@ -97,9 +97,7 @@ public class BuiltInDragonSpecies {
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.CAVE_WINGS),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.CAVE_SPIN),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.CAVE_CLAWS_AND_TEETH),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.LAVA_SWIMMING),
-                        // FIXME :: test
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(DragonAbilities.TEST)
+                        context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.LAVA_SWIMMING)
                 ),
                 HolderSet.direct(
                         context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.SNOW_AND_RAIN_WEAKNESS),
@@ -446,7 +444,7 @@ public class BuiltInDragonSpecies {
                 HolderSet.direct(
                         // Active
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.SPIKE),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.POISON_BREATH),
+                        context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.FERTILIZER_BREATH),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.HUNTER),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.INSPIRATION),
                         // Passive

@@ -45,7 +45,7 @@ public class DSDamageTypeTags extends DamageTypeTagsProvider {
         tag(DRAGON_MAGIC)
                 .add(DSDamageTypes.FIRE_BREATH)
                 .add(DSDamageTypes.BURN)
-                .add(DSDamageTypes.POISON_BREATH)
+                .add(DSDamageTypes.FERTILIZER_BREATH)
                 .add(DSDamageTypes.DRAIN)
                 .add(DSDamageTypes.LIGHTNING_BREATH)
                 .add(DSDamageTypes.BALL_LIGHTNING)

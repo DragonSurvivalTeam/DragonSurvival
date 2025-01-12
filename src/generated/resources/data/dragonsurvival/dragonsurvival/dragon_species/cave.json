@@ -2,8 +2,9 @@
   "abilities": [
     "dragonsurvival:nether_breath",
     "dragonsurvival:fire_ball",
-    "dragonsurvival:lava_vision",
     "dragonsurvival:sturdy_skin",
+    "dragonsurvival:lava_vision",
+    "dragonsurvival:friendly_fire",
     "dragonsurvival:cave_athletics",
     "dragonsurvival:burn",
     "dragonsurvival:cave_magic",
@@ -12,8 +13,7 @@
     "dragonsurvival:cave_wings",
     "dragonsurvival:cave_spin",
     "dragonsurvival:cave_claws_and_teeth",
-    "dragonsurvival:lava_swimming",
-    "dragonsurvival:test"
+    "dragonsurvival:lava_swimming"
   ],
   "diet": [
     {

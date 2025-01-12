@@ -71,60 +71,67 @@ public class ForestDragonAbilities {
     // --- Active --- //
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ Elemental breath: a toxic gas that creates a §c«Drain»§r area of effect, which is deadly for creatures, but helps plants grow faster.\n",
-            "■ Range depends on the age of the dragon. Cannot be used while affected by §c«Stress»§r.",
+            "■ §fElemental breath:§r§7 a toxic gas that creates a §c«Drain»§r area of effect, which is deadly for creatures, but helps §2plants grow faster§r§7.\n",
+            "■ §fRange§r§7 depends on age of the dragon.\n",
+            "■ §8Cannot be used while affected by «Stress».§r"
     })
-    @Translation(type = Translation.Type.ABILITY, comments = "Poison Breath")
-    public static final ResourceKey<DragonAbility> POISON_BREATH = DragonAbilities.key("poison_breath");
+    @Translation(type = Translation.Type.ABILITY, comments = "Fertilizer Breath")
+    public static final ResourceKey<DragonAbility> FERTILIZER_BREATH = DragonAbilities.key("fertilizer_breath");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Shoot out sharp §cdarts§r, which fly a large distance to pierce your target. Less effective underwater.")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
+            "■ §fRanged attack:§r§7 Shoot out sharp §cdarts§r, which fly a large distance to pierce your target.\n",
+            "■ §8Less effective underwater."
+    })
     @Translation(type = Translation.Type.ABILITY, comments = "Spike")
     public static final ResourceKey<DragonAbility> SPIKE = DragonAbilities.key("spike");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Provides §2Haste§r to all nearby creatures, increasing your block harvesting speed.\n")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ §fMass buff:§r§7 Provides §2Haste§r to all nearby creatures, increasing your block harvesting speed.")
     @Translation(type = Translation.Type.ABILITY, comments = "Inspiration")
     public static final ResourceKey<DragonAbility> INSPIRATION = DragonAbilities.key("inspiration");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ Activates the §2Hunter§r effect, which allows you to become invisible on grassy ground. Your first melee strike will remove this effect and cause a critical hit with a  %-based damage bonus.\n",
-            "■ Effect does not stack. Cannot be used in flight. Will be removed early if you take damage, or attack a target.",
+            "■ §fMass buff:§r§7 Cover yourself and allies in a thick carpet of herbs and can walk in the grass §2Invisible§r§7.\n",
+            "■ §fFirst§r§7 melee strike cause a critical hit with a §c%-based damage§r§7 bonus.\n",
+            "■ §8Effect does not stack. Will be removed early if you take damage, or attack a target.§r",
     })
-    @Translation(type = Translation.Type.ABILITY, comments = "Hunter")
+    @Translation(type = Translation.Type.ABILITY, comments = "Hunters")
     public static final ResourceKey<DragonAbility> HUNTER = DragonAbilities.key("hunter");
 
     // --- Passive --- //
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Upgrading this ability increases your maximum mana pool. Additionally, mana regeneration will be sped up while standing on grass or under direct sunlight.\n")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
+            "■ Upgrading this ability increases your §2maximum mana pool§r§7 and allows to restore mana by standing on §fgrass§r§7 or under direct §fsunlight§r§7.\n",
+            "■ §8The more levels you have, the more mana you get automatically."
+    })
     @Translation(type = Translation.Type.ABILITY, comments = "Forest Magic")
     public static final ResourceKey<DragonAbility> FOREST_MAGIC = DragonAbilities.key("forest_magic");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Standing on grassy or wooden surfaces will increase your movement speed.")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Standing on §fgrassy§r§7 or §fwooden§r§7 surfaces will increase your §2movement speed§r§7.")
     @Translation(type = Translation.Type.ABILITY, comments = "Forest Athletics")
     public static final ResourceKey<DragonAbility> FOREST_ATHLETICS = DragonAbilities.key("forest_athletics");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Allows you to stay longer in dark areas.")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Allows you to §2stay longer§r§7 in §fdark§r§7 areas.")
     @Translation(type = Translation.Type.ABILITY, comments = "Light the Dark")
     public static final ResourceKey<DragonAbility> LIGHT_IN_DARKNESS = DragonAbilities.key("light_in_darkness");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "Your landing becomes much softer.")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Forest dragons are very light. Your landing becomes much softer.")
     @Translation(type = Translation.Type.ABILITY, comments = "Cliffhanger")
     public static final ResourceKey<DragonAbility> CLIFFHANGER = DragonAbilities.key("cliffhanger");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Forest dragons can chop trees without tools. This ability gets stronger as you grow.\n")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Forest dragons can §2fast chop§7 trees §fwithout tools§r§7. This ability gets stronger as you grow.")
     @Translation(type = Translation.Type.ABILITY, comments = "Claws and Teeth")
     public static final ResourceKey<DragonAbility> FOREST_CLAWS_AND_TEETH = DragonAbilities.key("forest_claws_and_teeth");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Dragons use §2levitation§r to fly, but are rarely born with that ability.\n")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Dragons use §flevitation§r§7 to §2fly§r§7, but are rarely born with that ability.")
     @Translation(type = Translation.Type.ABILITY, comments = "Forest Wings")
     public static final ResourceKey<DragonAbility> FOREST_WINGS = DragonAbilities.key("forest_wings");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ You can spin through the air, boosting your speed. Head to §2the End§r §7to learn this skill. You can find this knowledge in The End.\n")
-    @Translation(type = Translation.Type.ABILITY, comments = "Cave Spin")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ You can §2spin§r§7 through the §fair§r§7 and in §fwater§r§7, boosting your speed. Head to §fthe End§r §7to learn this skill.")
+    @Translation(type = Translation.Type.ABILITY, comments = "Forest Spin")
     public static final ResourceKey<DragonAbility> FOREST_SPIN = DragonAbilities.key("forest_spin");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ Forest dragons have a diamond skeleton, and are composed mostly of predatory plants. Their diet includes raw meat and sweet berries, and most animals fear them.\n",
-            "■ They have innate §2immunity to thorn bushes and cacti§r§7. They feel best on the surface of the Overworld.",
+            "The skin of forest dragons is covered with §ffoliage§r§7 that give you §2immunity to thorn bushes and cacti§r§7."
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Forest Immunity")
     public static final ResourceKey<DragonAbility> FOREST_IMMUNITY = DragonAbilities.key("forest_immunity");
@@ -135,7 +142,7 @@ public class ForestDragonAbilities {
     }
 
     private static void registerActiveAbilities(final BootstrapContext<DragonAbility> context) {
-        context.register(POISON_BREATH, new DragonAbility(
+        context.register(FERTILIZER_BREATH, new DragonAbility(
                 new Activation(
                         Activation.Type.ACTIVE_CHANNELED,
                         Optional.empty(),
@@ -157,7 +164,7 @@ public class ForestDragonAbilities {
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
                                 Condition.thisEntity(EntityCondition.isLiving()).build(),
                                 List.of(
-                                        new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.POISON_BREATH), LevelBasedValue.perLevel(2)),
+                                        new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FERTILIZER_BREATH), LevelBasedValue.perLevel(2)),
                                         PotionEffect.only(LevelBasedValue.constant(0), LevelBasedValue.constant(Functions.secondsToTicks(10)), LevelBasedValue.constant(0.3f), DSEffects.DRAIN).getFirst()
                                 ),
                                 TargetingMode.NON_ALLIES
@@ -251,7 +258,7 @@ public class ForestDragonAbilities {
                         Activation.Type.ACTIVE_SIMPLE,
                         Optional.of(LevelBasedValue.constant(1)),
                         Optional.empty(),
-                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(1))),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(4))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
                         false,
                         Activation.Sound.end(SoundEvents.UI_TOAST_IN),
@@ -282,23 +289,23 @@ public class ForestDragonAbilities {
                         Activation.Type.ACTIVE_SIMPLE,
                         Optional.of(LevelBasedValue.constant(1)),
                         Optional.empty(),
-                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(2))),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(4))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
                         false,
                         Activation.Sound.end(SoundEvents.UI_TOAST_IN),
                         Optional.of(new Activation.Animations(
-                                Optional.of(Either.right(new SimpleAbilityAnimation(SimpleAbilityAnimation.CAST_SELF_BUFF, AnimationLayer.BASE, 2, true, true))),
+                                Optional.of(Either.right(new SimpleAbilityAnimation(SimpleAbilityAnimation.CAST_MASS_BUFF, AnimationLayer.BASE, 2, true, true))),
                                 Optional.empty(),
-                                Optional.of(new SimpleAbilityAnimation(SimpleAbilityAnimation.SELF_BUFF, AnimationLayer.BASE, 0, true, true))
+                                Optional.of(new SimpleAbilityAnimation(SimpleAbilityAnimation.MASS_BUFF, AnimationLayer.BASE, 0, true, true))
                         ))
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 25f, 35f, 55f), LevelBasedValue.perLevel(15)))),
                 // Disable when not on ground
                 Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false)).build()),
-                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(
                         PotionEffect.only(LevelBasedValue.perLevel(1), LevelBasedValue.perLevel(Functions.secondsToTicks(30)), DSEffects.HUNTER),
                         TargetingMode.ALLIES_AND_SELF
-                ), true), LevelBasedValue.constant(1))),
+                ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/hunter_0"), 0),
@@ -443,7 +450,7 @@ public class ForestDragonAbilities {
                                 LevelBasedValue.perLevel(1, 0.5f),
                                 LevelBasedValue.perLevel(0.5f),
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
-                                Optional.empty(),
+                                Optional.of(DragonSurvival.res("textures/ability_effect/forest_claw.png")),
                                 false
                         )),
                         TargetingMode.ALLIES_AND_SELF
@@ -501,11 +508,11 @@ public class ForestDragonAbilities {
                                         context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.SWEET_BERRY_BUSH),
                                         context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.CACTUS),
                                         context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.DRAIN),
-                                        context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.POISON_BREATH)
+                                        context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FERTILIZER_BREATH)
                                 ),
                                 LevelBasedValue.constant(0),
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
-                                Optional.empty(),
+                                Optional.of(DragonSurvival.res("textures/ability_effect/drain_immunity.png")),
                                 false
                         )),
                         TargetingMode.ALL

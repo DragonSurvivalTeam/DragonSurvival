@@ -10,17 +10,19 @@
     "dragonsurvival:hydration",
     "dragonsurvival:sea_claws_and_teeth",
     "dragonsurvival:sea_wings",
+    "dragonsurvival:sea_spin",
     "dragonsurvival:electric_immunity",
-    "dragonsurvival:amphibious"
+    "dragonsurvival:amphibious",
+    "dragonsurvival:diver"
   ],
   "diet": [
     {
       "items": [
-        "#minecraft:fishes"
+        "#c:foods/raw_fish"
       ],
       "properties": {
-        "nutrition": 6,
-        "saturation": 4.0
+        "nutrition": 4,
+        "saturation": 2.0
       }
     },
     {
@@ -28,6 +30,7 @@
         "minecraft:kelp"
       ],
       "properties": {
+        "eat_seconds": 2.0,
         "nutrition": 1,
         "saturation": 1.0
       }
@@ -74,8 +77,8 @@
       ],
       "properties": {
         "can_always_eat": true,
-        "nutrition": 2,
-        "saturation": 1.0
+        "nutrition": 6,
+        "saturation": 2.0
       }
     },
     {
@@ -94,60 +97,6 @@
       "properties": {
         "nutrition": 10,
         "saturation": 8.0
-      }
-    },
-    {
-      "items": [
-        "aoa3:raw_candlefish"
-      ],
-      "properties": {
-        "nutrition": 9,
-        "saturation": 9.0
-      }
-    },
-    {
-      "items": [
-        "aoa3:raw_crimson_skipper"
-      ],
-      "properties": {
-        "nutrition": 8,
-        "saturation": 8.0
-      }
-    },
-    {
-      "items": [
-        "aoa3:raw_fingerfish"
-      ],
-      "properties": {
-        "nutrition": 4,
-        "saturation": 4.0
-      }
-    },
-    {
-      "items": [
-        "aoa3:raw_pearl_stripefish"
-      ],
-      "properties": {
-        "nutrition": 5,
-        "saturation": 4.0
-      }
-    },
-    {
-      "items": [
-        "aoa3:raw_limefish"
-      ],
-      "properties": {
-        "nutrition": 5,
-        "saturation": 5.0
-      }
-    },
-    {
-      "items": [
-        "aoa3:raw_sailback"
-      ],
-      "properties": {
-        "nutrition": 6,
-        "saturation": 5.0
       }
     },
     {

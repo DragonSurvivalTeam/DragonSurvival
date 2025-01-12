@@ -1,4 +1,4 @@
-// 1.21.1	2025-01-12T13:05:06.5815703	Advancements
+// 1.21.1	2025-01-12T14:04:58.8659605	Advancements
 1a7d4520fc656360fe5fccecd785f600641927d3 data/dragonsurvival/advancement/be_adult_dragon.json
 550afd5ed2eeeeefe5bfaff761df685a793a5978 data/dragonsurvival/advancement/be_dragon.json
 a52fbc87e18b5cfd6830774af942373c963d546f data/dragonsurvival/advancement/be_young_dragon.json
@@ -6,7 +6,7 @@ a52fbc87e18b5cfd6830774af942373c963d546f data/dragonsurvival/advancement/be_youn
 cc1f35e39eb577c84091cdc4976dbbd931d5effd data/dragonsurvival/advancement/cave/be_old_dragon.json
 ce5285f9f08385f7072d1b367fb6a9d153cb7f73 data/dragonsurvival/advancement/cave/diamonds_in_lava.json
 1139dd64b908bb082017d06d0f9fffa16618a46e data/dragonsurvival/advancement/cave/go_home.json
-45b93de3833369e37d3b9e83a9f5aaa822a39e61 data/dragonsurvival/advancement/cave/master_all_passives.json
+b1a29206ccd568af43818681a98c378ef84dd602 data/dragonsurvival/advancement/cave/master_all_passives.json
 dfe999cda0b66f1f0ab33f787d67e1364a9770bb data/dragonsurvival/advancement/cave/rock_eater.json
 d1354fb059fa3ca8329e89b35983cfcdfdf04171 data/dragonsurvival/advancement/cave/swim_in_lava.json
 3d514da285635248457cd8e5cf88945c517c4ffd data/dragonsurvival/advancement/cave/water_safety.json

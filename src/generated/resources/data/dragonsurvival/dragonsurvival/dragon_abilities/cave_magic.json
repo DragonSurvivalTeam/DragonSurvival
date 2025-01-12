@@ -140,6 +140,17 @@
                 "predicate": {
                   "stepping_on": {
                     "block": {
+                      "blocks": "minecraft:fire"
+                    }
+                  }
+                }
+              },
+              {
+                "condition": "minecraft:entity_properties",
+                "entity": "this",
+                "predicate": {
+                  "stepping_on": {
+                    "block": {
                       "blocks": "minecraft:blast_furnace",
                       "state": {
                         "lit": "true"

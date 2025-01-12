@@ -9,13 +9,13 @@
               "potion": {
                 "amplifier": {
                   "type": "minecraft:linear",
-                  "base": 1.0,
-                  "per_level_above_first": 1.0
+                  "base": 0.2,
+                  "per_level_above_first": 0.2
                 },
                 "duration": {
                   "type": "minecraft:linear",
-                  "base": 100.0,
-                  "per_level_above_first": 100.0
+                  "base": 20.0,
+                  "per_level_above_first": 20.0
                 },
                 "effects": "minecraft:speed"
               }
@@ -74,8 +74,8 @@
   "upgrade": {
     "experience_cost": {
       "type": "minecraft:linear",
-      "base": 15.0,
-      "per_level_above_first": 15.0
+      "base": 25.0,
+      "per_level_above_first": 25.0
     },
     "maximum_level": 5,
     "upgrade_type": "dragonsurvival:experience_points"

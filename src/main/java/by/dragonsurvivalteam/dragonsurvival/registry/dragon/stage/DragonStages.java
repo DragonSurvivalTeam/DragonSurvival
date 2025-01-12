@@ -8,7 +8,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.conditions.EntityCondition;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
@@ -50,7 +49,6 @@ public class DragonStages {
                 Functions.hoursToTicks(3),
                 List.of(
                         /* Constant */
-                        Modifier.constant(Attributes.SUBMERGED_MINING_SPEED, 1, AttributeModifier.Operation.ADD_VALUE, BuiltInDragonSpecies.SEA),
                         Modifier.constant(Attributes.ATTACK_DAMAGE, 1, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.constant(Attributes.JUMP_STRENGTH, 0.025f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 0.25f, AttributeModifier.Operation.ADD_VALUE),
@@ -78,7 +76,6 @@ public class DragonStages {
                 Functions.hoursToTicks(6),
                 List.of(
                         /* Constant */
-                        Modifier.constant(Attributes.SUBMERGED_MINING_SPEED, 2, AttributeModifier.Operation.ADD_VALUE, BuiltInDragonSpecies.SEA),
                         Modifier.constant(Attributes.ATTACK_DAMAGE, 2, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.constant(Attributes.JUMP_STRENGTH, 0.05f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 0.5f, AttributeModifier.Operation.ADD_VALUE),
@@ -105,7 +102,6 @@ public class DragonStages {
                 Functions.hoursToTicks(24),
                 List.of(
                         /* Constant */
-                        Modifier.constant(Attributes.SUBMERGED_MINING_SPEED, 3, AttributeModifier.Operation.ADD_VALUE, BuiltInDragonSpecies.SEA),
                         Modifier.constant(Attributes.STEP_HEIGHT, 0.5f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.constant(Attributes.ATTACK_DAMAGE, 3, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.constant(Attributes.JUMP_STRENGTH, 0.1f, AttributeModifier.Operation.ADD_VALUE),

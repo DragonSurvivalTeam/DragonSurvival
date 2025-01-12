@@ -41,7 +41,7 @@ public class DSDragonAbilityTags extends TagsProvider<DragonAbility> {
                 .add(CaveDragonAbilities.FIRE_IMMUNITY)
                 .add(CaveDragonAbilities.LAVA_SWIMMING)
                 // Forest :: active
-                .add(ForestDragonAbilities.POISON_BREATH)
+                .add(ForestDragonAbilities.FERTILIZER_BREATH)
                 .add(ForestDragonAbilities.SPIKE)
                 .add(ForestDragonAbilities.INSPIRATION)
                 .add(ForestDragonAbilities.HUNTER)

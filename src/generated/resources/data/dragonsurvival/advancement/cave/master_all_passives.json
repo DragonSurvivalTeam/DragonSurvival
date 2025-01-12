@@ -18,7 +18,7 @@
     "criterion_2": {
       "conditions": {
         "ability": "dragonsurvival:contrast_shower",
-        "level": 5
+        "level": 8
       },
       "trigger": "dragonsurvival:upgrade_ability"
     },

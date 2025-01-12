@@ -1,15 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.DamageModification;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.DurationInstance;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.HarvestBonus;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierWithDuration;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.PotionData;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.TargetDirection;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.*;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
@@ -74,70 +66,79 @@ public class CaveDragonAbilities {
     // --- Active --- //
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ Elemental breath: a stream of fire that ignites enemies and blocks. Range depends on age of the dragon.",
-            "■ Is able to destroy some blocks. Cannot be used under water, and during rain."
+            "■ §fElemental breath:§r§7 a stream of fire that §cignites§r§7 enemies, items and blocks. Is able to §cdestroy§r§7 some blocks.\n",
+            "■ §fRange§r§7 depends on age of the dragon.\n",
+            "■ §8Cannot be used under water, and during rain.§r"
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Nether breath")
     public static final ResourceKey<DragonAbility> NETHER_BREATH = DragonAbilities.key("nether_breath");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Ranged attack: shoots out a fireball that §cexplodes§r and sets the area on fire.")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ §fRanged attack:§r§7 shoots out a fireball that §cexplodes§r and sets the area on §cfire§r.")
     @Translation(type = Translation.Type.ABILITY, comments = "Fireball")
     public static final ResourceKey<DragonAbility> FIRE_BALL = DragonAbilities.key("fire_ball");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "Grants additional armor points to all entities in an area around the dragon.")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ §fMass buff:§r§7 Grants additional §2armor points§r§7 to all entities in an area around the dragon.")
     @Translation(type = Translation.Type.ABILITY, comments = "Sturdy Skin")
     public static final ResourceKey<DragonAbility> STURDY_SKIN = DragonAbilities.key("sturdy_skin");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Personal buff: makes lava more §2transparent§r while active.")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ §fPersonal buff:§r§7 makes lava more §2transparent§r while active.")
     @Translation(type = Translation.Type.ABILITY, comments = "Lava Vision")
     public static final ResourceKey<DragonAbility> LAVA_VISION = DragonAbilities.key("lava_vision");
 
     // --- Passive --- //
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Upgrading this ability increases your maximum mana pool. Additionally, mana regeneration will be sped up while standing on hot blocks.\n")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
+            "■ Upgrading this ability increases your §2maximum mana pool§r§7 and allows to restore mana by standing on §fhot blocks§r§7.",
+            "■ §8The more levels you have, the more mana you get automatically."
+    })
     @Translation(type = Translation.Type.ABILITY, comments = "Cave Magic")
     public static final ResourceKey<DragonAbility> CAVE_MAGIC = DragonAbilities.key("cave_magic");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Standing on stone surfaces will increase your movement speed.")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Standing on §fstone§7 surfaces will increase your §2movement speed§7.")
     @Translation(type = Translation.Type.ABILITY, comments = "Cave Athletics")
     public static final ResourceKey<DragonAbility> CAVE_ATHLETICS = DragonAbilities.key("cave_athletics");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ You can increase your resistance to rain, snow and snowfall by upgrading this ability\n",
-            "■ Water, potions and snowballs are still dangerous"
+            "■ You can increase your §2resistance§r§7 to §frain§r§7, §fsnow§r§7 and §fsnowfall§r§7 by upgrading this ability.\n",
+            "■ §8Water, potions and snowballs are still dangerous."
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Contrast Shower")
     public static final ResourceKey<DragonAbility> CONTRAST_SHOWER = DragonAbilities.key("contrast_shower");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
             "■ Your target has a chance to receive the §c«Burned»§r effect from your attacks.\n",
-            "The effect deals damage when the target moves.\n",
-            "The faster the movement, the more damage is done.\n",
-            "■ Creatures with fire resistance are immune to this effect."
+            "■ The effect deals damage when the target §fmoves§r§7. The faster the movement, the §fmore damage§r§7 is done.\n",
+            "■ §8Creatures with fire resistance are immune to this effect.§r"
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Burn")
     public static final ResourceKey<DragonAbility> BURN = DragonAbilities.key("burn");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Cave dragons can mine stone blocks and various ores without tools. This ability gets stronger as you grow.\n")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Cave dragons can §2mine stone blocks§r§7 and various ores §fwithout tools§r§7. This ability gets stronger as you grow.")
     @Translation(type = Translation.Type.ABILITY, comments = "Claws and Teeth")
     public static final ResourceKey<DragonAbility> CAVE_CLAWS_AND_TEETH = DragonAbilities.key("cave_claws_and_teeth");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Dragons use §2levitation§r to fly, but are rarely born with that ability.\n")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Dragons use §flevitation§r§7 to §2fly§r§7, but are rarely born with that ability.")
     @Translation(type = Translation.Type.ABILITY, comments = "Cave Wings")
     public static final ResourceKey<DragonAbility> CAVE_WINGS = DragonAbilities.key("cave_wings");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ You can spin through the air and in lava, boosting your speed. Head to §2the End§r §7to learn this skill.\n")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ You can §2spin§r§7 through the §fair§r§7 and in §flava§r§7, boosting your speed. Head to §fthe End§r §7to learn this skill.")
     @Translation(type = Translation.Type.ABILITY, comments = "Cave Spin")
     public static final ResourceKey<DragonAbility> CAVE_SPIN = DragonAbilities.key("cave_spin");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ Cave dragons have a netherite skeleton, and are made mostly of lava.\n",
-            "■ They have innate §2immunity to fire§r."
+            "■ Cave dragons have a §fnetherite skeleton§r§7, and are made mostly of lava. They have innate §2immunity to fire§r."
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Fire Immunity")
     public static final ResourceKey<DragonAbility> FIRE_IMMUNITY = DragonAbilities.key("fire_immunity");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Cave dragons can swim in lava, but still need to hold their breath when swimming in it.\n")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
+            "■ §fMass buff:§r§7 Coat your allies with §fprotective dust§r§7 and they get the §2Fire Resistance§r effect.\n",
+            "■ Your pets will stop dying by your §ffire§r§7 and your friends will be able to bathe in §flava§r§7. For a while."
+    })
+    @Translation(type = Translation.Type.ABILITY, comments = "Friendly Fire")
+    public static final ResourceKey<DragonAbility> FRIENDLY_FIRE = DragonAbilities.key("friendly_fire");
+
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Cave dragons can §2swim in lava§r§7, but they can't stay here too long because the §ftemperature§r§7 is too high.")
     @Translation(type = Translation.Type.ABILITY, comments = "Lava Swimming")
     public static final ResourceKey<DragonAbility> LAVA_SWIMMING = DragonAbilities.key("lava_swimming");
 
@@ -265,6 +266,37 @@ public class CaveDragonAbilities {
                 ))
         ));
 
+        context.register(FRIENDLY_FIRE, new DragonAbility(
+                new Activation(
+                        Activation.Type.ACTIVE_SIMPLE,
+                        Optional.of(LevelBasedValue.constant(1)),
+                        Optional.empty(),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(6))),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
+                        false,
+                        Activation.Sound.end(SoundEvents.UI_TOAST_IN),
+                        Optional.of(new Activation.Animations(
+                                Optional.of(Either.right(new SimpleAbilityAnimation(SimpleAbilityAnimation.CAST_MASS_BUFF, AnimationLayer.BASE, 2, true, true))),
+                                Optional.empty(),
+                                Optional.of(new SimpleAbilityAnimation(SimpleAbilityAnimation.MASS_BUFF, AnimationLayer.BASE, 0, true, true))
+                        ))
+                ),
+                Optional.of(new ExperienceLevelUpgrade(3, LevelBasedValue.lookup(List.of(35f, 45f, 60f), LevelBasedValue.perLevel(120)))),
+                // Disable when not on ground
+                Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false)).build()),
+                List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(
+                        PotionEffect.only(LevelBasedValue.perLevel(1), LevelBasedValue.constant(Functions.secondsToTicks(200)), MobEffects.FIRE_RESISTANCE),
+                        TargetingMode.ALLIES_AND_SELF
+                ), LevelBasedValue.constant(25)), LevelBasedValue.constant(1))),
+                true,
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/friendly_fire_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/friendly_fire_1"), 1),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/friendly_fire_2"), 2),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/friendly_fire_3"), 3)
+                ))
+        ));
+
         context.register(LAVA_VISION, new DragonAbility(
                 new Activation(
                         Activation.Type.ACTIVE_SIMPLE,
@@ -323,6 +355,7 @@ public class CaveDragonAbilities {
                                         .or(Condition.thisEntity(EntityCondition.isOnBlock(BlockTags.CAMPFIRES, BlockStateProperties.LIT, true)))
                                         .or(Condition.thisEntity(EntityCondition.isOnBlock(Tags.Blocks.PLAYER_WORKSTATIONS_FURNACES, BlockStateProperties.LIT, true)))
                                         .or(Condition.thisEntity(EntityCondition.isOnBlock(Blocks.SMOKER, BlockStateProperties.LIT, true)))
+                                        .or(Condition.thisEntity(EntityCondition.isOnBlock(Blocks.FIRE)))
                                         .or(Condition.thisEntity(EntityCondition.isOnBlock(Blocks.BLAST_FURNACE, BlockStateProperties.LIT, true)))
                                         .build(),
                                 ModifierEffect.only(new ModifierWithDuration(
@@ -374,7 +407,7 @@ public class CaveDragonAbilities {
 
         context.register(CONTRAST_SHOWER, new DragonAbility(
                 Activation.passive(),
-                Optional.of(new ExperiencePointsUpgrade(5, LevelBasedValue.perLevel(15))),
+                Optional.of(new ExperiencePointsUpgrade(8, LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         ModifierEffect.only(new ModifierWithDuration(
@@ -393,7 +426,10 @@ public class CaveDragonAbilities {
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/contrast_shower_2"), 2),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/contrast_shower_3"), 3),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/contrast_shower_4"), 4),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/contrast_shower_5"), 5)
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/contrast_shower_5"), 5),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/contrast_shower_6"), 6),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/contrast_shower_7"), 7),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/contrast_shower_8"), 8)
                 ))
         ));
 
@@ -426,7 +462,7 @@ public class CaveDragonAbilities {
                                 LevelBasedValue.perLevel(1, 0.5f),
                                 LevelBasedValue.perLevel(0.5f),
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
-                                Optional.empty(),
+                                Optional.of(DragonSurvival.res("textures/ability_effect/cave_claw.png")),
                                 false
                         )),
                         TargetingMode.ALLIES_AND_SELF
@@ -483,7 +519,7 @@ public class CaveDragonAbilities {
                                 context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypeTags.IS_FIRE),
                                 LevelBasedValue.constant(0),
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
-                                Optional.empty(),
+                                Optional.of(DragonSurvival.res("textures/ability_effect/fire_immunity.png")),
                                 false
                         )),
                         TargetingMode.ALLIES_AND_SELF

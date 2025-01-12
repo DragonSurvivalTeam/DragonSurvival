@@ -10,7 +10,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 
 public record DragonSizeUpgrade(int maxLevel, LevelBasedValue sizeRequirement) implements UpgradeType<InputData> {
-    @Translation(comments = "Next level will be unlocked at size %s")
+    @Translation(comments = "■ Next level will be unlocked at size %s")
     private static final String DRAGON_SIZE_UPGRADE = Translation.Type.GUI.wrap("ability_upgrade.dragon_size_upgrade");
 
     public static final MapCodec<DragonSizeUpgrade> CODEC = RecordCodecBuilder.mapCodec(instance -> UpgradeType.codecStart(instance)

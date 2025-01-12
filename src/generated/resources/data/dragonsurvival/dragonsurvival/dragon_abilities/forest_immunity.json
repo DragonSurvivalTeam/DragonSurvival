@@ -8,13 +8,14 @@
               "effect_type": "dragonsurvival:damage_modification",
               "modifications": [
                 {
+                  "custom_icon": "dragonsurvival:textures/ability_effect/drain_immunity.png",
                   "id": "dragonsurvival:forest_immunity",
                   "multiplier": 0.0,
                   "types": [
                     "minecraft:sweet_berry_bush",
                     "minecraft:cactus",
                     "dragonsurvival:drain",
-                    "dragonsurvival:poison_breath"
+                    "dragonsurvival:fertilizer_breath"
                   ]
                 }
               ]

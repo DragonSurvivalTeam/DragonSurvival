@@ -60,6 +60,18 @@
       {
         "from_level": 5,
         "texture_resource": "dragonsurvival:abilities/cave/contrast_shower_5"
+      },
+      {
+        "from_level": 6,
+        "texture_resource": "dragonsurvival:abilities/cave/contrast_shower_6"
+      },
+      {
+        "from_level": 7,
+        "texture_resource": "dragonsurvival:abilities/cave/contrast_shower_7"
+      },
+      {
+        "from_level": 8,
+        "texture_resource": "dragonsurvival:abilities/cave/contrast_shower_8"
       }
     ]
   },
@@ -69,7 +81,7 @@
       "base": 15.0,
       "per_level_above_first": 15.0
     },
-    "maximum_level": 5,
+    "maximum_level": 8,
     "upgrade_type": "dragonsurvival:experience_points"
   }
 }

@@ -36,20 +36,19 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class DragonAbilityScreen extends Screen {
     @Translation(comments = {
-            "■ §6Active skills§r are used in combat.",
-            "- §9Skill power§r scales off your current experience level. The higher your EXP level, the stronger your active skills.",
-            "- §9Experience or mana§r points are used to cast spells.",
-            "- §9Controls§r - check in-game Minecraft control settings! You can drag and drop skill icons around.",
+            "§f■ §6Active skills§r§f are used in combat or to apply buffs.",
+            "§f- §9Skill power§r§8 scales off your current experience level.",
+            "§f- §9Experience or mana§r§8 points are used to cast spells.",
             "",
-            "■ §aPassive skills§r are upgraded by spending experience levels.",
-            "- §9Mana§r - do not forget use the Source of Magic and Dragons Treats for an infinite supply of mana!",
-            "- §9More information§r can be found on our Wiki and in our Discord. Check the Curseforge mod page."
+            "§f■ §aPassive skills§r§f are upgraded by spending experience levels or just give bonuses.",
+            "§f- §9More information§r§8 can be found on Curseforge mod page."
     })
     private static final String HELP_PASSIVE_ACTIVE = Translation.Type.GUI.wrap("help.passive_active_abilities");
 
     @Translation(comments = {
-            "■ §dAbility assignment§r - drag and drop §6Active skills§r to the §9hotbar§r.",
-            "- The §9hotbar§r is used to quickly access your active skills."
+            "■ §dAbility assignment§r§f - drag and drop §6Active skills§r to the §9hotbar§r.",
+            "§f- §9Hotbar§r§8 is used to quickly access your active skills.",
+            "§f- §8Check in-game Minecraft §r§9control§r§8 settings!"
     })
     private static final String HELP_ABILITY_ASSIGNMENT = Translation.Type.GUI.wrap("help.ability_assignment");
 

@@ -5,7 +5,7 @@
         "applied_effects": {
           "entity_effect": [
             {
-              "type": "dragonsurvival:poison_breath",
+              "type": "dragonsurvival:fertilizer_breath",
               "amount": {
                 "type": "minecraft:linear",
                 "base": 2.0,

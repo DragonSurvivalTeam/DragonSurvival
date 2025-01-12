@@ -18,6 +18,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBlockTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDamageTypeTags;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.AreaCloudEffect;
@@ -42,6 +43,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.neoforged.neoforge.common.NeoForgeMod;
 
@@ -101,7 +103,7 @@ public class SeaDragonAbilities {
     public static final ResourceKey<DragonAbility> SEA_WINGS = DragonAbilities.key("sea_wings");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ You can spin through the air and in water, boosting your speed. Head to §2the End§r §7to learn this skill.\n")
-    @Translation(type = Translation.Type.ABILITY, comments = "Cave Spin")
+    @Translation(type = Translation.Type.ABILITY, comments = "Sea Spin")
     public static final ResourceKey<DragonAbility> SEA_SPIN = DragonAbilities.key("sea_spin");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Sea dragons have an innate immunity to lightning.")
@@ -111,6 +113,10 @@ public class SeaDragonAbilities {
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Sea dragons are amphibious, and do not need to hold their breath underwater. In addition, they can swim much faster than other dragons.")
     @Translation(type = Translation.Type.ABILITY, comments = "Amphibious")
     public static final ResourceKey<DragonAbility> AMPHIBIOUS = DragonAbilities.key("amphibious");
+
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Dexterity in water allows sea dragons to mine resources underwater without penalty.")
+    @Translation(type = Translation.Type.ABILITY, comments = "Diver")
+    public static final ResourceKey<DragonAbility> DIVER = DragonAbilities.key("diver");
 
     public static void registerAbilities(final BootstrapContext<DragonAbility> context) {
         registerActiveAbilities(context);
@@ -336,12 +342,12 @@ public class SeaDragonAbilities {
 
         context.register(SEA_ATHLETICS, new DragonAbility(
                 Activation.passive(),
-                Optional.of(new ExperiencePointsUpgrade(5, LevelBasedValue.perLevel(15))),
+                Optional.of(new ExperiencePointsUpgrade(5, LevelBasedValue.perLevel(25))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         // Enable when on said block tag
                         Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.SPEEDS_UP_SEA_DRAGON)).build(),
-                        PotionEffect.only(LevelBasedValue.perLevel(1), LevelBasedValue.perLevel(Functions.secondsToTicks(5)), MobEffects.MOVEMENT_SPEED),
+                        PotionEffect.only(LevelBasedValue.perLevel(0.2f), LevelBasedValue.perLevel(Functions.secondsToTicks(1)), MobEffects.MOVEMENT_SPEED),
                         TargetingMode.ALLIES_AND_SELF
                 ), false), LevelBasedValue.constant(Functions.secondsToTicks(1)))),
                 true,
@@ -416,7 +422,7 @@ public class SeaDragonAbilities {
                                 LevelBasedValue.perLevel(1, 0.5f),
                                 LevelBasedValue.perLevel(0.5f),
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
-                                Optional.empty(),
+                                Optional.of(DragonSurvival.res("textures/ability_effect/sea_claw.png")),
                                 false
                         )),
                         TargetingMode.ALLIES_AND_SELF
@@ -473,7 +479,7 @@ public class SeaDragonAbilities {
                                 context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypeTags.IS_ELECTRIC),
                                 LevelBasedValue.constant(0),
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
-                                Optional.empty(),
+                                Optional.of(DragonSurvival.res("textures/ability_effect/electric_immunity.png")),
                                 false
                         )),
                         TargetingMode.ALL
@@ -509,6 +515,29 @@ public class SeaDragonAbilities {
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/amphibian_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/amphibian_1"), 1)
+                ))
+        ));
+
+        context.register(DIVER, new DragonAbility(
+                Activation.passive(),
+                Optional.empty(),
+                Optional.empty(),
+                List.of(
+                        new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                                ModifierEffect.only(new ModifierWithDuration(
+                                        DragonSurvival.res("diver"),
+                                        List.of(new Modifier(Attributes.SUBMERGED_MINING_SPEED, LevelBasedValue.constant(0.8f), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
+                                        LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                        Optional.empty(),
+                                        true
+                                )),
+                                TargetingMode.ALL
+                        ), true), LevelBasedValue.constant(1))
+                ),
+                true,
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/diver_0"), 0),
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/diver_1"), 1)
                 ))
         ));
     }

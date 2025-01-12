@@ -37,7 +37,7 @@ public class ClientConfig {
     @ConfigRange(min = 0.0, max = 10.0) // FIXME :: rework comment (unclear what this exactly does / what changing animation speed results in)
     @Translation(key = "max_animation_speed_factor", type = Translation.Type.CONFIGURATION, comments = "The maximum value that the speed factor can add to the base animation speed.")
     @ConfigOption(side = ConfigSide.CLIENT, category = "animation", key = "max_animation_speed_factor")
-    public static Double maxAnimationSpeedFactor = 5.0;
+    public static Double maxAnimationSpeedFactor = 3.0;
 
     @ConfigRange(min = 1.0, max = 5.0) // FIXME :: rework comment (unclear what this exactly does / what changing animation speed results in)
     @Translation(key = "max_animation_speed", type = Translation.Type.CONFIGURATION, comments = "The maximum animation speed allowed for dragons.")

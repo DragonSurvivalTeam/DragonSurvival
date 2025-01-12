@@ -37,7 +37,7 @@ public class DragonPenalties {
     public static final ResourceKey<DragonPenalty> SNOW_AND_RAIN_WEAKNESS = DragonPenalties.key("snow_and_rain_weakness");
 
     @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
-            "■ Cave dragons quickly take §cdamage§r from water.\n",
+            "■ Cave dragons quickly take §cdamage§r from water. Explosive water potions and snowballs also deal damage.\n",
             "■ The effect §2«Cave Fire»§r §7could make your life easier.\n",
     })
     @Translation(type = Translation.Type.PENALTY, comments = "Water Weakness")

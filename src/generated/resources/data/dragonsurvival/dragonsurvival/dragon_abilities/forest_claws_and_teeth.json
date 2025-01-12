@@ -13,6 +13,7 @@
                     "base": 0.5,
                     "per_level_above_first": 0.5
                   },
+                  "custom_icon": "dragonsurvival:textures/ability_effect/forest_claw.png",
                   "harvest_bonus": {
                     "type": "minecraft:linear",
                     "base": 1.0,

@@ -50,6 +50,9 @@ public class LangKey {
     @Translation(comments = "Hunger has exhausted you, and you can't fly.")
     public static final String MESSAGE_NO_HUNGER = Translation.Type.GUI.wrap("message.no_hunger");
 
+    @Translation(comments = "§8I'll get you to the islands with Ender Dragon magic if you feed me a pearl.")
+    public static final String MESSAGE_ANCHOR = Translation.Type.GUI.wrap("message.anchor");
+
     @Translation(comments = "■ Join our §6discord server§r!§7 Read the Rules, FAQ and Wiki before you ask anything.")
     public static final String DISCORD = Translation.Type.GUI.wrap("general.discord");
 

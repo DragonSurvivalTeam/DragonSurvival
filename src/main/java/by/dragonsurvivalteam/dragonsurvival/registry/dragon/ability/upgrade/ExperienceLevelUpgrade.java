@@ -10,7 +10,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 
 public record ExperienceLevelUpgrade(int maxLevel, LevelBasedValue levelRequirement) implements UpgradeType<InputData> {
-    @Translation(comments = "Next level will be unlocked at experience level %s")
+    @Translation(comments = "§6■ Next level will be unlocked at experience level %s")
     private static final String EXPERIENCE_LEVEL_UPGRADE = Translation.Type.GUI.wrap("ability_upgrade.experience_level_upgrade");
 
     public static final MapCodec<ExperienceLevelUpgrade> CODEC = RecordCodecBuilder.mapCodec(instance -> UpgradeType.codecStart(instance)

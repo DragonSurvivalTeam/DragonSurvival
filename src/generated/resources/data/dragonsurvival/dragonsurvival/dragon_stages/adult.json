@@ -18,12 +18,6 @@
   },
   "modifiers": [
     {
-      "amount": 3.0,
-      "attribute": "minecraft:player.submerged_mining_speed",
-      "dragon_species": "dragonsurvival:sea",
-      "operation": "add_value"
-    },
-    {
       "amount": 0.5,
       "attribute": "minecraft:generic.step_height",
       "operation": "add_value"
