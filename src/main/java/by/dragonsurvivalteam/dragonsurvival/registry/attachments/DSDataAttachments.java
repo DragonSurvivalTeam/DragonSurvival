@@ -37,4 +37,5 @@ public class DSDataAttachments {
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<SwimData>> SWIM = DS_ATTACHMENT_TYPES.register("swim_data", () -> AttachmentType.builder(SwimData::new).build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<GlowData>> GLOW = DS_ATTACHMENT_TYPES.register("glow_data", () -> AttachmentType.builder(GlowData::new).build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<OxygenBonuses>> OXYGEN_BONUSES = DS_ATTACHMENT_TYPES.register("oxygen_bonuses", () -> AttachmentType.serializable(OxygenBonuses::new).build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<BlockVisionData>> BLOCK_VISION = DS_ATTACHMENT_TYPES.register("block_vision_data", () -> AttachmentType.builder(BlockVisionData::new).build());
 }
