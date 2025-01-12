@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.DisplayType;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DurationInstance;
@@ -56,7 +57,11 @@ public interface ClientEffectProvider {
     ResourceLocation MISSING_TEXTURE = ResourceLocation.withDefaultNamespace("missingno");
     ClientData NONE = new ClientData(MISSING_TEXTURE, Component.literal("N/A"), Component.empty());
 
-    static List<ClientEffectProvider> getProviders() {
+    static List<ClientEffectProvider> getProviders(boolean isInventory) {
+        if (!DisplayType.isVisible(isInventory)) {
+            return List.of();
+        }
+
         Player player = DragonSurvival.PROXY.getLocalPlayer();
 
         if (player == null) {
@@ -83,7 +88,7 @@ public interface ClientEffectProvider {
             }
         }
 
-        providers.removeIf(ClientEffectProvider::isInvisible);
+        providers.removeIf(ClientEffectProvider::isHidden);
         return providers;
     }
 
@@ -91,7 +96,7 @@ public interface ClientEffectProvider {
         return getDuration() == DurationInstance.INFINITE_DURATION;
     }
 
-    default boolean isInvisible() {
+    default boolean isHidden() {
         return false;
     }
 

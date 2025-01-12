@@ -96,10 +96,5 @@ public record Glow(ResourceLocation id, TextColor color, LevelBasedValue duratio
         public int getDuration() {
             return (int) baseData().duration().calculate(appliedAbilityLevel());
         }
-
-        @Override
-        public boolean isInvisible() {
-            return true;
-        }
     }
 }

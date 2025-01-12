@@ -286,7 +286,7 @@ public class CaveDragonAbilities {
                 Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false)).build()),
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(
                         PotionEffect.only(LevelBasedValue.perLevel(1), LevelBasedValue.constant(Functions.secondsToTicks(200)), MobEffects.FIRE_RESISTANCE),
-                        TargetingMode.ALLIES_AND_SELF
+                        TargetingMode.ALLIES
                 ), LevelBasedValue.constant(25)), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(

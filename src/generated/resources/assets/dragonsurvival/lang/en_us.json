@@ -481,6 +481,8 @@
   "dragonsurvival.advancement.use_memory_block.desc": "Place any Dragon Beacon on top of the Memory Block.",
   "dragonsurvival.advancement.use_star_heart": "Forever Young",
   "dragonsurvival.advancement.use_star_heart.desc": "Use a Star Heart to stop your growth.",
+  "dragonsurvival.configuration.ability_effect_display_type": "Ability Effect Display Type",
+  "dragonsurvival.configuration.ability_effect_display_type.tooltip": "Determines how (or whether) ability effects should be displayed",
   "dragonsurvival.configuration.allow_dragon_choice_from_inventory": "Allow Dragon Choice From Inventory",
   "dragonsurvival.configuration.allow_dragon_choice_from_inventory.tooltip": "If enabled players that have not yet chosen a dragon species will be able to do so from the vanilla inventory",
   "dragonsurvival.configuration.altar_cooldown": "Altar Cooldown",

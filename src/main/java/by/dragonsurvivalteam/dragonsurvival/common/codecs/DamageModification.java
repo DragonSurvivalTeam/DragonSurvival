@@ -192,7 +192,7 @@ public record DamageModification(ResourceLocation id, HolderSet<DamageType> dama
         }
 
         @Override
-        public boolean isInvisible() {
+        public boolean isHidden() {
             return baseData().isHidden();
         }
     }

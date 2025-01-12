@@ -183,7 +183,7 @@ public record EffectModification(ResourceLocation id, HolderSet<MobEffect> effec
         }
 
         @Override
-        public boolean isInvisible() {
+        public boolean isHidden() {
             return baseData().isHidden();
         }
     }

@@ -17,7 +17,7 @@
               }
             }
           ],
-          "targeting_mode": "allies_and_self"
+          "targeting_mode": "allies"
         },
         "radius": 25.0,
         "target_type": "dragonsurvival:area"

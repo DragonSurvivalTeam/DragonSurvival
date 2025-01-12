@@ -32,7 +32,7 @@ public abstract class GuiMixin {
 
     @Inject(method = "renderEffects", at = @At("HEAD"))
     private void dragonSurvival$storeProviders(final GuiGraphics graphics, final DeltaTracker deltaTracker, final CallbackInfo callback) {
-        dragonSurvival$providers = ClientEffectProvider.getProviders();
+        dragonSurvival$providers = ClientEffectProvider.getProviders(false);
     }
 
     @ModifyExpressionValue(method = "renderEffects", at = @At(value = "INVOKE", target = "Ljava/util/Collection;isEmpty()Z"))

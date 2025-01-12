@@ -163,7 +163,7 @@ public record HarvestBonus(ResourceLocation id, Optional<HolderSet<Block>> block
         }
 
         @Override
-        public boolean isInvisible() {
+        public boolean isHidden() {
             return baseData().isHidden();
         }
     }

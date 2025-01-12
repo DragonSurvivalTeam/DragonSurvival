@@ -188,7 +188,7 @@ public record ModifierWithDuration(ResourceLocation id, List<Modifier> modifiers
         }
 
         @Override
-        public boolean isInvisible() {
+        public boolean isHidden() {
             return baseData().isHidden();
         }
     }

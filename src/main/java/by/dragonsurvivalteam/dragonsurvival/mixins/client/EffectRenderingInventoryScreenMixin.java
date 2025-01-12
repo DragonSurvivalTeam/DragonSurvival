@@ -38,7 +38,7 @@ public class EffectRenderingInventoryScreenMixin {
 
     @Inject(method = "renderEffects", at = @At("HEAD"))
     private void dragonSurvival$storeProviders(final GuiGraphics graphics, int mouseX, int mouseY, final CallbackInfo callback) {
-        dragonSurvival$providers = ClientEffectProvider.getProviders();
+        dragonSurvival$providers = ClientEffectProvider.getProviders(true);
     }
 
     @ModifyExpressionValue(method = "renderEffects", at = @At(value = "INVOKE", target = "Ljava/util/Collection;size()I"))
