@@ -139,7 +139,11 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     }
 
     public int getTicksForEmote(int slot) {
-        return (int) animationTickTimer.getDuration("emote_" + slot);
+        if(animationTickTimer.isPresent("emote_" + slot)) {
+            return (int) Math.ceil(animationTickTimer.getDuration("emote_" + slot));
+        }
+
+        return -1;
     }
 
     public void stopEmote(int slot) {

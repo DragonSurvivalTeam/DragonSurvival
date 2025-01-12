@@ -27,6 +27,10 @@ public class EmoteHandler {
 
     @SubscribeEvent
     public static void playerTick(final PlayerTickEvent.Post event) {
+        if(!event.getEntity().level().isClientSide()) {
+            return;
+        }
+
         Player player = event.getEntity();
         AtomicReference<DragonEntity> atomicDragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(player.getId());
         if(atomicDragon == null) {
@@ -52,7 +56,7 @@ public class EmoteHandler {
 
                 if(currentlyPlayingEmotes[i].sound().isPresent()) {
                     DragonEmote.Sound sound = currentlyPlayingEmotes[i].sound().get();
-                    if(dragon.getTicksForEmote(i) % sound.interval() == 0) {
+                    if(dragon.getTicksForEmote(i) % sound.interval() == 0 && dragon.getTicksForEmote(i) != -1) {
                         sound.playSound(player);
                     }
                 }
@@ -75,6 +79,10 @@ public class EmoteHandler {
 
     @SubscribeEvent
     public static void playerAttacked(final LivingIncomingDamageEvent event) {
+        if(!event.getEntity().level().isClientSide()) {
+            return;
+        }
+
         if (event.getEntity() instanceof Player player && DragonStateProvider.isDragon(player)) {
             AtomicReference<DragonEntity> atomicDragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(player.getId());
             if(atomicDragon == null) {

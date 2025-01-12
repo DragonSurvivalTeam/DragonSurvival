@@ -30,6 +30,10 @@ public class AnimationTickTimer {
         }
     }
 
+    public boolean isPresent(final String animation) {
+        return animationTimes.containsKey(animation);
+    }
+
     public double getDuration(final String animation) {
         return animationTimes.getOrDefault(animation, 0d);
     }
