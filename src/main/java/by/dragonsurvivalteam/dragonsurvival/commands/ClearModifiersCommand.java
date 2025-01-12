@@ -58,6 +58,18 @@ public class ClearModifiersCommand {
                     target.removeData(DSDataAttachments.HARVEST_BONUSES);
                     totalRemoved.getAndIncrement();
                 });
+
+                target.getExistingData(DSDataAttachments.OXYGEN_BONUSES).ifPresent(data -> {
+                    data.all().forEach(entry -> entry.onRemovalFromStorage(target));
+                    target.removeData(DSDataAttachments.OXYGEN_BONUSES);
+                    totalRemoved.getAndIncrement();
+                });
+
+                target.getExistingData(DSDataAttachments.BLOCK_VISION).ifPresent(data -> {
+                    data.all().forEach(entry -> entry.onRemovalFromStorage(target));
+                    target.removeData(DSDataAttachments.BLOCK_VISION);
+                    totalRemoved.getAndIncrement();
+                });
             }
         }
 

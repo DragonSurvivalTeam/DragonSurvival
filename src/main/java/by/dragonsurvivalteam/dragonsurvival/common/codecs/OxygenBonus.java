@@ -4,6 +4,8 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncOxygenBonus;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.OxygenBonuses;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.serialization.Codec;
@@ -62,8 +64,21 @@ public record OxygenBonus(ResourceLocation id, Optional<ResourceKey<FluidType>> 
     }
 
     public MutableComponent getDescription(final int abilityLevel) {
-        // FIXME :: Implement this
-        return Component.empty();
+        MutableComponent description;
+        MutableComponent fluids = fluidType().map(ResourceKey::location).map(Translation.Type.FLUID::wrap).map(Component::translatable).orElse(Component.translatable(LangKey.ABILITY_ALL_FLUIDS));
+        float bonus = oxygenBonus.calculate(abilityLevel);
+
+        if(bonus == INFINITE_VALUE) {
+            description = Component.translatable(LangKey.ABILITY_BREATHE_INDEFINITELY, fluids);
+        } else {
+            description = Component.translatable(LangKey.ABILITY_BREATHE, fluids, (int) bonus);
+        }
+
+        if(duration().calculate(abilityLevel) != DurationInstance.INFINITE_DURATION) {
+            description.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, (int) duration().calculate(abilityLevel)));
+        }
+
+        return description;
     }
 
     public static class Instance extends DurationInstance<OxygenBonus> {
