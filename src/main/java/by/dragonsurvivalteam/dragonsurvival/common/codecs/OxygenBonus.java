@@ -62,6 +62,7 @@ public record OxygenBonus(ResourceLocation id, Optional<ResourceKey<FluidType>> 
     }
 
     public MutableComponent getDescription(final int abilityLevel) {
+        // FIXME :: Implement this
         return Component.empty();
     }
 
