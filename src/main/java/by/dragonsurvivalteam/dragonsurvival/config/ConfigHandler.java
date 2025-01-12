@@ -181,7 +181,7 @@ public class ConfigHandler {
         try {
             field.set(null, convertToFieldValue(field, configKey));
         } catch (IllegalAccessException exception) {
-            DragonSurvival.LOGGER.error("Failed to update the field [" + field.getName() + "] with the default config value", exception);
+            DragonSurvival.LOGGER.error("Failed to update the field [{}] with the default config value", field.getName(), exception);
         }
     }
 
@@ -265,23 +265,7 @@ public class ConfigHandler {
                             if (CustomConfig.class.isAssignableFrom(customConfigType)) {
                                 //noinspection unchecked -> ignore, type is safe
                                 List<CustomConfig> customList = (List<CustomConfig>) list;
-
-                                configList = builder.defineList(
-                                        List.of(configOption.key()),
-                                        () -> customList.stream().map(CustomConfig::convert).toList(),
-                                        () -> getDefaultListValueForConfig(configOption.key()),
-                                        configValue -> {
-                                            if (field.isAnnotationPresent(IgnoreConfigCheck.class) || CustomConfig.validate(customConfigType, configValue)) {
-                                                return true;
-                                            }
-
-                                            // To figure out which entry in the list has problems
-                                            DragonSurvival.LOGGER.debug("Config entry [{}] of config [{}] was invalid", configValue, configOption.key());
-                                            return false;
-                                        },
-                                        sizeRange
-                                );
-
+                                configList = buildList(builder, configOption, field, sizeRange, customList);
                                 handledList = true;
                             }
                         } catch (ClassNotFoundException exception) {
@@ -290,21 +274,7 @@ public class ConfigHandler {
                     }
 
                     if (!handledList) {
-                        configList = builder.defineList(
-                                List.of(configOption.key()),
-                                () -> list,
-                                () -> getDefaultListValueForConfig(configOption.key()),
-                                configValue -> {
-                                    if (field.isAnnotationPresent(IgnoreConfigCheck.class) || checkConfig(configOption, configValue)) {
-                                        return true;
-                                    }
-
-                                    // To figure out which entry in the list has problems
-                                    DragonSurvival.LOGGER.debug("Config entry [{}] of config [{}] was invalid", configValue, configOption.key());
-                                    return false;
-                                },
-                                sizeRange
-                        );
+                        configList = buildList(builder, configOption, field, sizeRange, list);
                     }
 
                     CONFIG_VALUES.put(key, configList);
@@ -325,6 +295,24 @@ public class ConfigHandler {
                 builder.pop();
             }
         }
+    }
+
+    private static ModConfigSpec.ConfigValue<List<?>> buildList(final ModConfigSpec.Builder builder, final ConfigOption config, final Field field, final ModConfigSpec.Range<Integer> sizeRange, final List<?> defaultValues) {
+        return builder.defineList(
+                List.of(config.key()),
+                () -> defaultValues,
+                () -> getDefaultListValueForConfig(config.key()),
+                configValue -> {
+                    if (field.isAnnotationPresent(IgnoreConfigCheck.class) || checkConfig(config, configValue)) {
+                        return true;
+                    }
+
+                    // To figure out which entry in the list has problems
+                    DragonSurvival.LOGGER.debug("Config entry [{}] of config [{}] was invalid", configValue, config.key());
+                    return false;
+                },
+                sizeRange
+        );
     }
 
     private static boolean checkConfig(final ConfigOption configOption, final Object configValue) {
@@ -722,7 +710,7 @@ public class ConfigHandler {
      * Said value will then be converted to match the class field <br>
      * See {@link ConfigHandler#convertToFieldValue(Field, Object, Class)} for more information
      */
-    private static @Nullable Object convertToFieldValue(final Field field, final String configKey) throws IllegalAccessException {
+    private static @Nullable Object convertToFieldValue(final Field field, final String configKey) {
         Object configValue = CONFIG_VALUES.get(configKey).get();
         ConfigType configType = CONFIG_TYPES.get(configKey);
         Class<?> registryType = configType != null ? configType.value() : null;

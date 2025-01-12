@@ -17,7 +17,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-public class DSEffects { // TODO :: add descriptions for the missing N/A marked effects
+public class DSEffects {
     public static final DeferredRegister<MobEffect> DS_MOB_EFFECTS = DeferredRegister.create(BuiltInRegistries.MOB_EFFECT, DragonSurvival.MODID);
 
     @Translation(type = Translation.Type.EFFECT, comments = "Stress")
@@ -102,10 +102,10 @@ public class DSEffects { // TODO :: add descriptions for the missing N/A marked 
     public static Holder<MobEffect> DRAIN = DS_MOB_EFFECTS.register("drain", () -> new DrainEffect(MobEffectCategory.HARMFUL, 0x0, false));
 
     @Translation(type = Translation.Type.EFFECT, comments = "Blood Siphon")
-    @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "N/A") // TODO
+    @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "Entities with this effect will restore life by 1% of the damage dealt (per amplifier) to the attacker")
     public static Holder<MobEffect> BLOOD_SIPHON = DS_MOB_EFFECTS.register("blood_siphon", () -> new ModifiableMobEffect(MobEffectCategory.HARMFUL, 0x0, false));
 
     @Translation(type = Translation.Type.EFFECT, comments = "Regeneration Delay")
-    @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "N/A") // TODO
+    @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "N/A") // TODO :: effect not implemented
     public static Holder<MobEffect> REGENERATION_DELAY = DS_MOB_EFFECTS.register("regeneration_delay", () -> new ModifiableMobEffect(MobEffectCategory.HARMFUL, 0x0, true));
 }

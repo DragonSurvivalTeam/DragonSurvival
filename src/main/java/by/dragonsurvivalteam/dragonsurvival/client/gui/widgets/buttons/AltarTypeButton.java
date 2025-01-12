@@ -48,7 +48,7 @@ public class AltarTypeButton extends Button implements HoverDisableable {
     })
     private static final String HUMAN = Translation.Type.GUI.wrap("altar.info.human");
 
-    public Holder<DragonSpecies> species;
+    public final Holder<DragonSpecies> species;
     private final DragonAltarScreen parent;
 
     private boolean disableHover;

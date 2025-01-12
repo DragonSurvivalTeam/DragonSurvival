@@ -12,7 +12,7 @@ import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.NotNull;
 
 public record LargePoisonParticleOption(float duration, boolean swirls) implements ParticleOptions {
-    public static MapCodec<LargePoisonParticleOption> CODEC = RecordCodecBuilder.mapCodec(codecBuilder -> codecBuilder.group(
+    public static final MapCodec<LargePoisonParticleOption> CODEC = RecordCodecBuilder.mapCodec(codecBuilder -> codecBuilder.group(
             Codec.FLOAT.fieldOf("duration").forGetter(LargePoisonParticleOption::duration),
             Codec.BOOL.fieldOf("swirls").forGetter(LargePoisonParticleOption::swirls)
     ).apply(codecBuilder, LargePoisonParticleOption::new));

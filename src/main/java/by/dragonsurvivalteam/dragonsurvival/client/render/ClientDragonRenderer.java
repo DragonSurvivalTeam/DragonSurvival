@@ -87,7 +87,7 @@ public class ClientDragonRenderer {
     public static boolean isOverridingMovementData = false;
 
     /** Instances used for rendering third-person dragon models */
-    public static ConcurrentHashMap<Integer, AtomicReference<DragonEntity>> playerDragonHashMap = new ConcurrentHashMap<>(20);
+    public static final ConcurrentHashMap<Integer, AtomicReference<DragonEntity>> PLAYER_DRAGON_MAP = new ConcurrentHashMap<>();
 
     @Translation(key = "render_dragon_in_first_person", type = Translation.Type.CONFIGURATION, comments = "If enabled the dragon body will be visible in first person")
     @ConfigOption(side = ConfigSide.CLIENT, category = "rendering", key = "render_dragon_in_first_person")
@@ -210,11 +210,11 @@ public class ClientDragonRenderer {
         Minecraft minecraft = Minecraft.getInstance();
         DragonStateHandler handler = DragonStateProvider.getData(player);
 
-        if (!playerDragonHashMap.containsKey(player.getId())) {
+        if (!PLAYER_DRAGON_MAP.containsKey(player.getId())) {
             DragonEntity dummyDragon = DSEntities.DRAGON.get().create(player.level());
             //noinspection DataFlowIssue -> dragon should not be null
             dummyDragon.playerId = player.getId();
-            playerDragonHashMap.put(player.getId(), new AtomicReference<>(dummyDragon));
+            PLAYER_DRAGON_MAP.put(player.getId(), new AtomicReference<>(dummyDragon));
         }
 
         if (handler.isDragon()) {
@@ -267,7 +267,7 @@ public class ClientDragonRenderer {
                 poseStack.scale(scale, scale, scale);
 
                 ((EntityRendererAccessor) renderPlayerEvent.getRenderer()).dragonSurvival$setShadowRadius((float) ((3.0F * size + 62.0F) / 260.0F));
-                DragonEntity playerAsDragon = playerDragonHashMap.get(player.getId()).get(); // What will be rendered in place of the human player model
+                DragonEntity playerAsDragon = PLAYER_DRAGON_MAP.get(player.getId()).get(); // What will be rendered in place of the human player model
                 EntityRenderer<? super DragonEntity> dragonRenderer = minecraft.getEntityRenderDispatcher().getRenderer(playerAsDragon);
                 dragonModel.setOverrideTexture(customTexture);
 
@@ -508,7 +508,7 @@ public class ClientDragonRenderer {
 
     @SubscribeEvent
     public static void clearDragonReferences(final LevelEvent.Unload worldEvent) {
-        playerDragonHashMap.clear();
+        PLAYER_DRAGON_MAP.clear();
     }
 
     private record BodyAngles(double bodyYaw, double headPitch, double headYaw) {

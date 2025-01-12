@@ -71,7 +71,7 @@ public class ClientProxy implements Proxy {
 
     @Override
     public void setCurrentAbilityAnimation(int playerId, final Pair<AbilityAnimation, AnimationType> animation) {
-        AtomicReference<DragonEntity> dragonEntity = ClientDragonRenderer.playerDragonHashMap.get(playerId);
+        AtomicReference<DragonEntity> dragonEntity = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(playerId);
 
         if (dragonEntity == null) {
             return;
@@ -82,7 +82,7 @@ public class ClientProxy implements Proxy {
 
     @Override
     public void stopEmote(int playerId, final DragonEmote emote) {
-        AtomicReference<DragonEntity> dragonEntity = ClientDragonRenderer.playerDragonHashMap.get(playerId);
+        AtomicReference<DragonEntity> dragonEntity = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(playerId);
 
         if (dragonEntity == null) {
             return;
@@ -93,7 +93,7 @@ public class ClientProxy implements Proxy {
 
     @Override
     public void beginPlayingEmote(int playerId, final DragonEmote emote) {
-        AtomicReference<DragonEntity> dragonEntity = ClientDragonRenderer.playerDragonHashMap.get(playerId);
+        AtomicReference<DragonEntity> dragonEntity = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(playerId);
 
         if (dragonEntity == null) {
             return;
@@ -104,7 +104,7 @@ public class ClientProxy implements Proxy {
 
     @Override
     public void stopAllEmotes(int playerId) {
-        AtomicReference<DragonEntity> dragonEntity = ClientDragonRenderer.playerDragonHashMap.get(playerId);
+        AtomicReference<DragonEntity> dragonEntity = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(playerId);
 
         if (dragonEntity == null) {
             return;
@@ -115,7 +115,7 @@ public class ClientProxy implements Proxy {
 
     @Override
     public boolean isPlayingEmote(int playerId, final DragonEmote emote) {
-        AtomicReference<DragonEntity> dragonEntity = ClientDragonRenderer.playerDragonHashMap.get(playerId);
+        AtomicReference<DragonEntity> dragonEntity = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(playerId);
 
         if (dragonEntity == null) {
             return false;

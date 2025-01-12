@@ -20,13 +20,13 @@ import java.util.Optional;
 
 public class DragonStages {
     @Translation(type = Translation.Type.STAGE, comments = "Newborn")
-    public static ResourceKey<DragonStage> newborn = key("newborn");
+    public static final ResourceKey<DragonStage> newborn = key("newborn");
 
     @Translation(type = Translation.Type.STAGE, comments = "Young")
-    public static ResourceKey<DragonStage> young = key("young");
+    public static final ResourceKey<DragonStage> young = key("young");
 
     @Translation(type = Translation.Type.STAGE, comments = "Adult")
-    public static ResourceKey<DragonStage> adult = key("adult");
+    public static final ResourceKey<DragonStage> adult = key("adult");
 
     public static ResourceKey<DragonStage> key(final ResourceLocation location) {
         return ResourceKey.create(DragonStage.REGISTRY, location);

@@ -22,8 +22,7 @@ public class DragonStageCustomization implements INBTSerializable<CompoundTag> {
     public static final String HAS_WINGS = "wings";
     public static final String IS_DEFAULT_SKIN = "defaultSkin";
 
-    // The field names currently affect the result of the 'saved_customizations.json' file
-    public HashMap<SkinLayer, Lazy<LayerSettings>> layerSettings = new HashMap<>();
+    public final HashMap<SkinLayer, Lazy<LayerSettings>> layerSettings = new HashMap<>();
 
     public boolean wings = true;
     public boolean defaultSkin;

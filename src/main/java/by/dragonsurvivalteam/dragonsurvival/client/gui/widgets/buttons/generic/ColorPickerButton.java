@@ -12,8 +12,8 @@ import java.awt.Color;
 import java.util.function.Consumer;
 
 public class ColorPickerButton extends ExtendedButton {
-    public Color defaultColor;
-    public Consumer<Color> colorConsumer;
+    public final Color defaultColor;
+    public final Consumer<Color> colorConsumer;
     double selectorX;
     double selectorY;
 

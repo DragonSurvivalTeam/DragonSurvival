@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 public enum DisplayType {
     HIDDEN, INVENTORY, GAME, INVENTORY_AND_GAME;
 
+    @SuppressWarnings("NonFinalFieldInEnum") // final fields cause issues with the config handler
     @Translation(key = "ability_effect_display_type", type = Translation.Type.CONFIGURATION, comments = "Determines how (or whether) ability effects should be displayed")
     @ConfigOption(side = ConfigSide.CLIENT, category = "ui", key = "ability_effect_display_type")
     public static DisplayType DISPLAY_TYPE = INVENTORY_AND_GAME;

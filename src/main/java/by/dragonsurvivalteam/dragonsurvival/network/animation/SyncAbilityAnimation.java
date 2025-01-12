@@ -40,7 +40,7 @@ public record SyncAbilityAnimation(int playerId, AnimationType animationType, Ei
                 return;
             }
 
-            AtomicReference<DragonEntity> dragonEntity = ClientDragonRenderer.playerDragonHashMap.get(player.getId());
+            AtomicReference<DragonEntity> dragonEntity = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(player.getId());
             if(dragonEntity == null) {
                 return;
             }

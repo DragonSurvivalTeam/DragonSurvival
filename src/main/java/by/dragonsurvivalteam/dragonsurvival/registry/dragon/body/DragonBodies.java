@@ -24,7 +24,7 @@ public class DragonBodies {
     @Translation(type = Translation.Type.BODY, comments = "Center")
     @Translation(type = Translation.Type.BODY_WINGS, comments = "Show wings")
     @Translation(type = Translation.Type.BODY_WINGS_DESCRIPTION, comments = "Show wings")
-    public static ResourceKey<DragonBody> center = key("center");
+    public static final ResourceKey<DragonBody> center = key("center");
 
     @Translation(type = Translation.Type.BODY_DESCRIPTION, comments = {
             "§6■ Eastern Type§r",
@@ -33,7 +33,7 @@ public class DragonBodies {
     @Translation(type = Translation.Type.BODY, comments = "East")
     @Translation(type = Translation.Type.BODY_WINGS, comments = "Show wings")
     @Translation(type = Translation.Type.BODY_WINGS_DESCRIPTION, comments = "Show wings")
-    public static ResourceKey<DragonBody> east = key("east");
+    public static final ResourceKey<DragonBody> east = key("east");
 
     @Translation(type = Translation.Type.BODY_DESCRIPTION, comments = {
             "§6■ Northern Type§r",
@@ -42,7 +42,7 @@ public class DragonBodies {
     @Translation(type = Translation.Type.BODY, comments = "North")
     @Translation(type = Translation.Type.BODY_WINGS, comments = "Show wings")
     @Translation(type = Translation.Type.BODY_WINGS_DESCRIPTION, comments = "Show wings")
-    public static ResourceKey<DragonBody> north = key("north");
+    public static final ResourceKey<DragonBody> north = key("north");
 
     @Translation(type = Translation.Type.BODY_DESCRIPTION, comments = {
             "§6■ Southern Type§r",
@@ -51,7 +51,7 @@ public class DragonBodies {
     @Translation(type = Translation.Type.BODY, comments = "South")
     @Translation(type = Translation.Type.BODY_WINGS, comments = "Show wings")
     @Translation(type = Translation.Type.BODY_WINGS_DESCRIPTION, comments = "Show wings")
-    public static ResourceKey<DragonBody> south = key("south");
+    public static final ResourceKey<DragonBody> south = key("south");
 
     @Translation(type = Translation.Type.BODY_DESCRIPTION, comments = {
             "§6■ Western Type§r",
@@ -60,7 +60,7 @@ public class DragonBodies {
     @Translation(type = Translation.Type.BODY, comments = "West")
     @Translation(type = Translation.Type.BODY_WINGS, comments = "Show wings")
     @Translation(type = Translation.Type.BODY_WINGS_DESCRIPTION, comments = "Show wings")
-    public static ResourceKey<DragonBody> west = key("west");
+    public static final ResourceKey<DragonBody> west = key("west");
 
     public static void registerBodies(final BootstrapContext<DragonBody> context) {
         context.register(center, new DragonBody(List.of(

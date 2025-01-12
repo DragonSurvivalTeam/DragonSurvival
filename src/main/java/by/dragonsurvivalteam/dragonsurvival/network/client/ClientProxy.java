@@ -251,7 +251,7 @@ public class ClientProxy {
         Entity entity = Minecraft.getInstance().level.getEntity(message.playerId());
 
         if (entity instanceof Player player) {
-            DragonEntity.dragonsJumpingTicks.put(player.getId(), message.ticks());
+            DragonEntity.DRAGON_JUMP_TICKS.put(player.getId(), message.ticks());
         }
     }
 
@@ -262,7 +262,7 @@ public class ClientProxy {
         if (entity instanceof Player player) {
             DragonEntity dragon = DSEntities.DRAGON.get().create(localPlayer.level());
             dragon.playerId = player.getId();
-            ClientDragonRenderer.playerDragonHashMap.computeIfAbsent(player.getId(), integer -> new AtomicReference<>(dragon)).getAndSet(dragon);
+            ClientDragonRenderer.PLAYER_DRAGON_MAP.computeIfAbsent(player.getId(), integer -> new AtomicReference<>(dragon)).getAndSet(dragon);
         }
     }
 

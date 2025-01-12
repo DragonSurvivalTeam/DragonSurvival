@@ -21,7 +21,7 @@ import java.util.Optional;
 
 public class AncientDatapack {
     @Translation(type = Translation.Type.STAGE, comments = "Ancient")
-    public static ResourceKey<DragonStage> ancient = DragonStages.key("ancient");
+    public static final ResourceKey<DragonStage> ancient = DragonStages.key("ancient");
 
     public static void register(final BootstrapContext<DragonStage> context) {
         context.register(ancient, ancient());

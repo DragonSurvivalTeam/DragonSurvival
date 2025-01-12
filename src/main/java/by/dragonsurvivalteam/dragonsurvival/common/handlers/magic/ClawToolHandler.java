@@ -10,8 +10,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachmen
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HarvestBonuses;
 import by.dragonsurvivalteam.dragonsurvival.util.ToolUtils;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -22,10 +20,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
@@ -46,35 +42,38 @@ import java.util.ArrayList;
 @EventBusSubscriber
 public class ClawToolHandler {
     @SubscribeEvent
-    public static void experiencePickup(PlayerXpEvent.PickupXp event) {
+    public static void experiencePickup(final PlayerXpEvent.PickupXp event) {
         Player player = event.getEntity();
 
-        if(DragonStateProvider.isDragon(player)) {
-            ArrayList<ItemStack> stacks = new ArrayList<>();
-            SimpleContainer clawInventory = ClawInventoryData.getData(player).getContainer();
-            for (int i = 0; i < ClawInventoryData.Slot.size(); i++) {
-                ItemStack clawStack = clawInventory.getItem(i);
-                Holder<Enchantment> mending = event.getEntity().level().registryAccess().registry(Registries.ENCHANTMENT).get().getHolderOrThrow(Enchantments.MENDING);
-                int mendingLevel = clawStack.getEnchantmentLevel(mending);
-
-                if (mendingLevel > 0 && clawStack.isDamaged()) {
-                    stacks.add(clawStack);
-                }
-            }
-
-            if (!stacks.isEmpty()) {
-                ItemStack repairTime = stacks.get(player.getRandom().nextInt(stacks.size()));
-                if (!repairTime.isEmpty() && repairTime.isDamaged()) {
-
-                    int i = Math.min((int) (event.getOrb().value * repairTime.getXpRepairRatio()), repairTime.getDamageValue());
-                    event.getOrb().value -= i * 2;
-                    repairTime.setDamageValue(repairTime.getDamageValue() - i);
-                }
-            }
-
-            event.getOrb().value = Math.max(0, event.getOrb().value);
-            player.detectEquipmentUpdates();
+        if (!DragonStateProvider.isDragon(player)) {
+            return;
         }
+
+        ArrayList<ItemStack> stacks = new ArrayList<>();
+        SimpleContainer clawInventory = ClawInventoryData.getData(player).getContainer();
+
+        for (int i = 0; i < ClawInventoryData.Slot.size(); i++) {
+            ItemStack clawStack = clawInventory.getItem(i);
+
+            if (clawStack.isDamaged() && EnchantmentHelper.has(clawStack, EnchantmentEffectComponents.REPAIR_WITH_XP)) {
+                stacks.add(clawStack);
+            }
+        }
+
+        if (stacks.isEmpty()) {
+            return;
+        }
+
+        ItemStack repairTime = stacks.get(player.getRandom().nextInt(stacks.size()));
+
+        if (!repairTime.isEmpty() && repairTime.isDamaged()) {
+            int i = Math.min((int) (event.getOrb().value * repairTime.getXpRepairRatio()), repairTime.getDamageValue());
+            event.getOrb().value -= i * 2;
+            repairTime.setDamageValue(repairTime.getDamageValue() - i);
+        }
+
+        event.getOrb().value = Math.max(0, event.getOrb().value);
+        player.detectEquipmentUpdates();
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST) // In order to add the drops early for other mods (e.g. grave mods)

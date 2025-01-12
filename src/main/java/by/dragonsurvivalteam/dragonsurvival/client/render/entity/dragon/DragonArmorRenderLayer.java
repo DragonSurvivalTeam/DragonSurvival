@@ -137,15 +137,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
                 return Optional.of(imageResource);
             }
         } else {
-            CompletableFuture<NativeImage> imageCompilationStep = CompletableFuture.supplyAsync(() -> {
-                try {
-                    return compileArmorTexture(player);
-                } catch (IOException exception) {
-                    DragonSurvival.LOGGER.error("An error occurred while compiling the dragon armor texture", exception);
-                }
-
-                return new NativeImage(0, 0, true);
-            });
+            CompletableFuture<NativeImage> imageCompilationStep = CompletableFuture.supplyAsync(() -> compileArmorTexture(player));
 
             CompletableFuture<Void> uploadStep = imageCompilationStep.thenRunAsync(() -> {
                 try {
@@ -161,7 +153,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         return Optional.empty();
     }
 
-    private static NativeImage compileArmorTexture(final Player player) throws IOException {
+    private static NativeImage compileArmorTexture(final Player player) {
         NativeImage image = new NativeImage(512, 512, true);
         DragonStateHandler handler = DragonStateProvider.getData(player);
         ResourceLocation currentDragonModel = handler.getModel();

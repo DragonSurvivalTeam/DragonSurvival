@@ -38,10 +38,10 @@ public class DragonContainer extends AbstractContainerMenu {
     public final Player player;
 
     // Used for JEI integration
-    public List<Slot> craftingSlots = new ArrayList<>();
-    public List<Slot> inventorySlots = new ArrayList<>();
+    public final List<Slot> craftingSlots = new ArrayList<>();
+    public final List<Slot> inventorySlots = new ArrayList<>();
 
-    public Inventory playerInventory;
+    public final Inventory playerInventory;
     public int menuStatus;
 
     private static final EquipmentSlot[] VALID_EQUIPMENT_SLOTS = {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
@@ -242,14 +242,12 @@ public class DragonContainer extends AbstractContainerMenu {
         clearContainer(player, craftMatrix);
     }
 
-    /**
-     * Callback for when the crafting matrix is changed
-     */
+    /** Callback for when the crafting matrix is changed */
     @Override
     public void slotsChanged(@NotNull final Container inventory) {
         if (player instanceof ServerPlayer serverPlayer) {
             ItemStack itemStack = ItemStack.EMPTY;
-            Optional<RecipeHolder<CraftingRecipe>> recipeOptional = serverPlayer.level().getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftMatrix.asCraftInput(), serverPlayer.level());
+            Optional<RecipeHolder<CraftingRecipe>> recipeOptional = serverPlayer.serverLevel().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftMatrix.asCraftInput(), serverPlayer.level());
 
             if (recipeOptional.isPresent()) {
                 RecipeHolder<CraftingRecipe> recipe = recipeOptional.get();

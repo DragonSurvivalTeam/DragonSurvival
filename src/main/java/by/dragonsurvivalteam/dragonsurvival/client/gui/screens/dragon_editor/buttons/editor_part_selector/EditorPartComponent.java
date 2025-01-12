@@ -100,36 +100,38 @@ public class EditorPartComponent implements ScrollableComponent {
 
     @Override
     public void scroll(double mouseX, double mouseY, double scrollX, double scrollY) {
-        // TODO :: Weird things happen with collision, where you can end up scrolling multiple buttons at once
-       /*List<String> partsFromLayer = screen.getPartsFromLayer(skinLayer);
-        int currentPart = partsFromLayer.indexOf(this.selectedPart);
-        if(partButton.isMouseOver(mouseX, mouseY)) {
-            if (scrollY < 0) {
-                if(currentPart < 0) {
-                    setSelectedPartInternal(partsFromLayer.getLast());
-                } else if(currentPart - 1 < 0) {
-                    if(skinLayer != EnumSkinLayer.BASE) {
-                        setSelectedPartInternal(DefaultPartLoader.NO_PART);
-                    } else {
-                        setSelectedPartInternal(partsFromLayer.getLast());
-                    }
+        if (!partButton.isMouseOver(mouseX, mouseY)) {
+            return;
+        }
+
+        List<String> parts = screen.getPartsFromLayer(skinLayer);
+        int currentPart = parts.indexOf(selectedPart);
+
+        if (scrollY < 0) {
+            if (currentPart < 0) {
+                setSelectedPartInternal(parts.getLast());
+            } else if (currentPart - 1 < 0) {
+                if (skinLayer != SkinLayer.BASE) {
+                    setSelectedPartInternal(DefaultPartLoader.NO_PART);
                 } else {
-                    setSelectedPartInternal(partsFromLayer.get(currentPart - 1));
+                    setSelectedPartInternal(parts.getLast());
                 }
-            } else if (scrollY > 0) {
-                if(currentPart < 0) {
-                    setSelectedPartInternal(partsFromLayer.getFirst());
-                } else if(currentPart + 1 >= partsFromLayer.size()) {
-                    if(skinLayer != EnumSkinLayer.BASE) {
-                        setSelectedPartInternal(DefaultPartLoader.NO_PART);
-                    } else {
-                        setSelectedPartInternal(partsFromLayer.getFirst());
-                    }
-                } else {
-                    setSelectedPartInternal(partsFromLayer.get(currentPart + 1));
-                }
+            } else {
+                setSelectedPartInternal(parts.get(currentPart - 1));
             }
-        }*/
+        } else if (scrollY > 0) {
+            if (currentPart < 0) {
+                setSelectedPartInternal(parts.getFirst());
+            } else if (currentPart + 1 >= parts.size()) {
+                if (skinLayer != SkinLayer.BASE) {
+                    setSelectedPartInternal(DefaultPartLoader.NO_PART);
+                } else {
+                    setSelectedPartInternal(parts.getFirst());
+                }
+            } else {
+                setSelectedPartInternal(parts.get(currentPart + 1));
+            }
+        }
     }
 
     public void setSelectedPart(final String partKey) {

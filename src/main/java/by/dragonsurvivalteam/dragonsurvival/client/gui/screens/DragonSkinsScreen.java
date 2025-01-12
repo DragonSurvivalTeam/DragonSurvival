@@ -150,21 +150,10 @@ public class DragonSkinsScreen extends Screen {
     private static boolean noSkin;
 
     public final DragonStateHandler handler = new DragonStateHandler();
-    public Screen sourceScreen;
-
-    /**
-     * Widgets which belong to the dragon body logic <br>
-     * (they are stored to properly reference (and remove) them when using the arrow buttons to navigate through the bodies)
-     */
-    private final List<AbstractWidget> dragonBodyWidgets = new ArrayList<>();
-    private int dragonBodySelectionOffset;
 
     private HoverButton playerNameDisplay;
     private HoverButton playerStageDisplay;
-    private BarComponent dragonBodyBar;
 
-    private final int imageWidth = 164;
-    private final int imageHeight = 128;
     private int guiLeft;
     private int guiTop;
     private float yRot = -3;
@@ -240,7 +229,7 @@ public class DragonSkinsScreen extends Screen {
         ((DragonRenderer) dragonRenderer).glowTexture = null;
 
         guiGraphics.blit(BACKGROUND_TEXTURE, startX + 128, startY, 0, 0, 164, 256);
-        drawNonShadowString(guiGraphics, minecraft.font, Component.translatable(SETTINGS).withStyle(ChatFormatting.BLACK), startX + 128 + imageWidth / 2, startY + 7, -1);
+        drawNonShadowString(guiGraphics, minecraft.font, Component.translatable(SETTINGS).withStyle(ChatFormatting.BLACK), startX + 128 + /* image width */ 164 / 2, startY + 7, -1);
         playerNameDisplay.setMessage(Component.literal(playerName));
         playerStageDisplay.setMessage(DragonStage.translatableName(dragonStage.getKey()));
 
@@ -282,10 +271,12 @@ public class DragonSkinsScreen extends Screen {
 
         // Add scrollable list of dragon bodies
         List<AbstractWidget> dragonBodyWidgets = new ArrayList<>();
+
         for(Holder<DragonBody> dragonBodyHolder : DSDragonBodyTags.getOrdered(null)) {
             dragonBodyWidgets.add(createButton(dragonBodyHolder, 0, 0));
         }
-        dragonBodyBar = new BarComponent(this,
+
+        new BarComponent(this,
                 startX + 128 + 4, height / 2 + 14, 4,
                 dragonBodyWidgets, 40,
                 -15, 160, 7, 18, 20, 20, 20,
@@ -391,7 +382,7 @@ public class DragonSkinsScreen extends Screen {
             HashSet<String> users = new HashSet<>();
             Random random = new Random();
 
-            for (Map.Entry<ResourceKey<DragonStage>, HashMap<String, SkinObject>> ent : DragonSkins.SKIN_USERS.entrySet()) {
+            for (Map.Entry<ResourceKey<DragonStage>, HashMap<String, SkinObject>> ent : DragonSkins.USER_SKINS.entrySet()) {
                 for (Map.Entry<String, SkinObject> user : ent.getValue().entrySet()) {
                     if (!user.getValue().glow) {
                         skins.add(Pair.of(ent.getKey(), user.getKey()));

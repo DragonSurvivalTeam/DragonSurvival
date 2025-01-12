@@ -14,7 +14,7 @@ import net.neoforged.neoforge.items.wrapper.InvWrapper;
 import javax.annotation.Nonnull;
 
 public class SourceOfMagicContainer extends AbstractContainerMenu {
-    public SourceOfMagicBlockEntity blockEntity;
+    public final SourceOfMagicBlockEntity blockEntity;
 
     public SourceOfMagicContainer(int windowId, final Inventory inventory, final FriendlyByteBuf buffer) {
         super(DSContainers.SOURCE_OF_MAGIC_CONTAINER.value(), windowId);

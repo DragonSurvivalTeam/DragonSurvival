@@ -14,25 +14,19 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class SyncDragonClawsMenuToggle implements IMessage<SyncDragonClawsMenuToggle.Data> {
-
     public static void handleClient(final SyncDragonClawsMenuToggle.Data message, final IPayloadContext context) {
-        Player sender = context.player();
-        context.enqueueWork(() -> {
-            handleCommon(message, sender);
-        });
+        context.enqueueWork(() -> handleCommon(message, context.player()));
     }
 
     public static void handleServer(final SyncDragonClawsMenuToggle.Data message, final IPayloadContext context) {
-        Player sender = context.player();
-        context.enqueueWork(() -> {
-            handleCommon(message, sender);
-        });
+        context.enqueueWork(() -> handleCommon(message, context.player()));
     }
 
     private static void handleCommon(final SyncDragonClawsMenuToggle.Data message, final Player sender) {
         ClawInventoryData data = ClawInventoryData.getData(sender);
         data.setMenuOpen(message.state);
-        if(sender.containerMenu instanceof DragonContainer container) {
+
+        if (sender.containerMenu instanceof DragonContainer container) {
             container.update();
         }
     }

@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class GrowthCrystalButton extends ExtendedButton {
-    public static int MAX_LINES_SHOWN = 10;
+    public static final int MAX_LINES_SHOWN = 10;
 
     private final Holder<DragonStage> stage;
     private List<FormattedCharSequence> tooltip = List.of();

@@ -73,7 +73,7 @@ public class DragonStateHandler extends EntityStateHandler {
     public MultiMining multiMining = MultiMining.ENABLED;
     public LargeDragonDestruction largeDragonDestruction = LargeDragonDestruction.ENABLED;
 
-    public Map<Item, Integer> usedGrowthItems = new HashMap<>();
+    public final Map<Item, Integer> usedGrowthItems = new HashMap<>();
 
     public StarHeartItem.State starHeartState = StarHeartItem.State.INACTIVE;
     public boolean isGrowing = true;

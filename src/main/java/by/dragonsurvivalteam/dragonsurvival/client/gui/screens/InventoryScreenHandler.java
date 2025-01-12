@@ -101,7 +101,7 @@ public class InventoryScreenHandler {
 
         if (sc instanceof InventoryScreen screen) {
             if (ServerConfig.allowDragonChoiceFromInventory) {
-                altarOpenButton = new ExtendedButton(screen.getGuiLeft() + 138, screen.height / 2 - 32, 32, 32, Component.empty(), p_onPress_1_ -> {
+                altarOpenButton = new ExtendedButton(screen.getGuiLeft() + 138, screen.height / 2 - 32, 32, 32, Component.empty(), button -> {
                     ClientProxy.handleOpenDragonAltar();
                 }) {
                     @Override

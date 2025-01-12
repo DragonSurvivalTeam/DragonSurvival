@@ -5,7 +5,6 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.TabButton
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.ClickHoverButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.BarComponent;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.ScrollableComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
@@ -92,8 +91,6 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
     private static final ResourceLocation VANILLA_INVENTORY_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/vanilla_inventory_hover.png");
     private static final ResourceLocation VANILLA_INVENTORY_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/vanilla_inventory_main.png");
 
-    private static final ResourceLocation SORTING_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/sorting_hover.png");
-
     private static final String WIKI_URL = "https://github.com/DragonSurvivalTeam/DragonSurvival/wiki";
 
 
@@ -101,7 +98,6 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
     public static double mouseY = -1;
 
     private HoverButton growthButton;
-    private ScrollableComponent crystalBar;
     private int growthTooltipScroll;
 
     private boolean clawsMenu;
@@ -115,7 +111,6 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
         imageWidth = 203;
         imageHeight = 166;
     }
-
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
@@ -194,7 +189,7 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
             List<AbstractWidget> crystals = stages.stream().map(stage -> (AbstractWidget) new GrowthCrystalButton(0, 0, stage)).toList();
             MiscDragonTextures textures = data.species().value().miscResources();
 
-            crystalBar = new BarComponent(this,
+            new BarComponent(this,
                     leftPos + 145, topPos + 6, 4,
                     crystals, 10,
                     -11, 39, 1, 12, 16, 12, 16,

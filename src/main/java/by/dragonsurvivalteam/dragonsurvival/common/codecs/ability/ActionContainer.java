@@ -8,7 +8,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 
 public record ActionContainer(AbilityTargeting effect, LevelBasedValue triggerRate) {
-    public static Codec<ActionContainer> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final Codec<ActionContainer> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             AbilityTargeting.CODEC.fieldOf("target_selection").forGetter(ActionContainer::effect),
             LevelBasedValue.CODEC.fieldOf("trigger_rate").forGetter(ActionContainer::triggerRate)
     ).apply(instance, ActionContainer::new));

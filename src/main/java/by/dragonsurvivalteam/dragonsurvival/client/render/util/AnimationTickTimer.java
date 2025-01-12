@@ -10,27 +10,28 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 @EventBusSubscriber
 public class AnimationTickTimer {
-    public static CopyOnWriteArrayList<AnimationTickTimer> timers = new CopyOnWriteArrayList<>();
-    protected ConcurrentHashMap<String, Double> animationTimes = new ConcurrentHashMap<>();
+    public static final CopyOnWriteArrayList<AnimationTickTimer> TIMERS = new CopyOnWriteArrayList<>();
+    protected final ConcurrentHashMap<String, Double> animationTimes = new ConcurrentHashMap<>();
 
     @SubscribeEvent
     public static void onTick(final ClientTickEvent.Pre event) {
-        for (AnimationTickTimer timer : timers) {
+        for (AnimationTickTimer timer : TIMERS) {
             timer.animationTimes.keySet().forEach(key -> {
                 timer.animationTimes.computeIfPresent(key, (animation, tick) -> tick - 1);
+
                 if (timer.animationTimes.get(key) <= 0) {
                     timer.animationTimes.remove(key);
                 }
             });
 
             if (timer.animationTimes.isEmpty()) {
-                timers.remove(timer);
+                TIMERS.remove(timer);
             }
         }
     }
 
     public double getDuration(final String animation) {
-        return animationTimes.getOrDefault(animation, 0.0);
+        return animationTimes.getOrDefault(animation, 0d);
     }
 
     /**
@@ -43,8 +44,8 @@ public class AnimationTickTimer {
     public void putAnimation(final String animation, final Double ticks) {
         putDuration(animation, ticks);
 
-        if (!timers.contains(this)) {
-            timers.add(this);
+        if (!TIMERS.contains(this)) {
+            TIMERS.add(this);
         }
     }
 
@@ -54,8 +55,8 @@ public class AnimationTickTimer {
     public void putAnimation(final RawAnimation animation, final Double ticks) {
         putDuration(animation.getAnimationStages().getFirst().animationName(), ticks);
 
-        if (!timers.contains(this)) {
-            timers.add(this);
+        if (!TIMERS.contains(this)) {
+            TIMERS.add(this);
         }
     }
 

@@ -74,8 +74,11 @@ public class EffectHandler {
     public static void livingHurt(final LivingIncomingDamageEvent event) {
         if (event.getEntity() instanceof LivingEntity target) {
             if (event.getSource().getEntity() instanceof LivingEntity attacker) {
-                if (target.hasEffect(DSEffects.BLOOD_SIPHON)) {
-                    attacker.heal(event.getAmount() * 0.1f);
+                MobEffectInstance siphon = target.getEffect(DSEffects.BLOOD_SIPHON);
+
+                if (siphon != null) {
+                    float percentage = 0.01f * (siphon.getAmplifier() + 1);
+                    attacker.heal(event.getAmount() * percentage);
                 }
 
                 if (event.getEntity().level().registryAccess().registry(Registries.ENCHANTMENT).isPresent()) {

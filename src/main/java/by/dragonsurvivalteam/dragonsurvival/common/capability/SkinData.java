@@ -20,10 +20,9 @@ import java.util.Map;
 public class SkinData implements INBTSerializable<CompoundTag> {
     public static final String RENDER_CUSTOM_SKIN = "render_custom_skin";
 
-    public Map<ResourceKey<DragonStage>, Boolean> recompileSkin = new HashMap<>();
-    public Map<ResourceKey<DragonStage>, Boolean> isCompiled = new HashMap<>();
-
-    public Lazy<HashMap<ResourceKey<DragonSpecies>, SkinPreset>> skinPresets = Lazy.of(this::initialize);
+    public final Map<ResourceKey<DragonStage>, Boolean> recompileSkin = new HashMap<>();
+    public final Map<ResourceKey<DragonStage>, Boolean> isCompiled = new HashMap<>();
+    public final Lazy<HashMap<ResourceKey<DragonSpecies>, SkinPreset>> skinPresets = Lazy.of(this::initialize);
 
     public boolean renderCustomSkin;
     public boolean blankSkin;

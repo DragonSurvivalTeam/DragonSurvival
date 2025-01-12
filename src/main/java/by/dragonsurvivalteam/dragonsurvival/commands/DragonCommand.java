@@ -34,8 +34,8 @@ import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 
 public class DragonCommand {
-    public static LiteralCommandNode<CommandSourceStack> register(final RegisterCommandsEvent event) {
-        LiteralCommandNode<CommandSourceStack> dragon = literal("dragon").requires(commandSource -> commandSource.hasPermission(Commands.LEVEL_GAMEMASTERS)).executes(context -> {
+    public static void register(final RegisterCommandsEvent event) {
+        LiteralCommandNode<CommandSourceStack> dragon = literal("dragon").requires(source -> source.hasPermission(Commands.LEVEL_GAMEMASTERS)).executes(context -> {
             Holder<DragonSpecies> type = DragonSpeciesArgument.get(context);
             return runCommand(type, null, null, context.getSource().getPlayerOrException());
         }).build();
@@ -76,8 +76,6 @@ public class DragonCommand {
         dragonSpecies.addChild(dragonBody);
         dragonBody.addChild(dragonStage);
         dragonStage.addChild(target);
-
-        return dragon;
     }
 
     private static int runCommand(Holder<DragonSpecies> type, @Nullable Holder<DragonBody> dragonBody, @Nullable Holder<DragonStage> dragonStage, ServerPlayer player) {

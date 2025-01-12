@@ -12,7 +12,7 @@ import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.NotNull;
 
 public record SmallLightningParticleOption(float duration, boolean swirls) implements ParticleOptions {
-    public static MapCodec<SmallLightningParticleOption> CODEC = RecordCodecBuilder.mapCodec(codecBuilder -> codecBuilder.group(
+    public static final MapCodec<SmallLightningParticleOption> CODEC = RecordCodecBuilder.mapCodec(codecBuilder -> codecBuilder.group(
             Codec.FLOAT.fieldOf("duration").forGetter(SmallLightningParticleOption::duration),
             Codec.BOOL.fieldOf("swirls").forGetter(SmallLightningParticleOption::swirls)
     ).apply(codecBuilder, SmallLightningParticleOption::new));

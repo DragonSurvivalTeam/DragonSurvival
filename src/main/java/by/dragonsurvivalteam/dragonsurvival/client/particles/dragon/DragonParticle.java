@@ -11,9 +11,9 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 public class DragonParticle extends TextureSheetParticle {
-    private final float spread;
     private final SpriteSet sprites;
-    boolean swirls;
+    private final float spread;
+    private final boolean swirls;
     private int swirlTick;
 
     protected DragonParticle(ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed, double duration, boolean swirls, SpriteSet sprite) {

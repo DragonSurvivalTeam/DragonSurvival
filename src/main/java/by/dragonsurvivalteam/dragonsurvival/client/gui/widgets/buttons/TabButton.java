@@ -88,39 +88,37 @@ public class TabButton extends Button {
     }
 
     public static void addTabButtonsToScreen(final Screen screen, int offsetX, int offsetY, final TabButtonType selectedButton) {
-        boolean ignoreAbilityTab = false;
+        //noinspection DataFlowIssue -> player is present
+        boolean ignoreAbilityTab = Minecraft.getInstance().player.getData(DSDataAttachments.MAGIC).getAbilities().isEmpty();
 
-        if(Minecraft.getInstance().player.getData(DSDataAttachments.MAGIC).getAbilities().isEmpty()) {
-            ignoreAbilityTab = true;
-        }
-
-        if(ignoreAbilityTab) {
-            for(int i = 0; i < TabButtonType.values().length; i++) {
+        if (ignoreAbilityTab) {
+            for (int i = 0; i < TabButtonType.values().length; i++) {
                 TabButtonType tabButton = TabButtonType.values()[i];
 
-                if(tabButton == TabButtonType.ABILITY_TAB) {
+                if (tabButton == TabButtonType.ABILITY_TAB) {
                     continue;
                 }
 
                 int additionalOffset = 0;
-                if(tabButton.ordinal() > TabButtonType.ABILITY_TAB.ordinal()) {
+
+                if (tabButton.ordinal() > TabButtonType.ABILITY_TAB.ordinal()) {
                     additionalOffset = -28;
                 }
 
-                if(tabButton == selectedButton) {
-                    ((ScreenAccessor)screen).dragonSurvival$addRenderableWidget(new TabButton(offsetX + additionalOffset + 1 + (i * 28), offsetY - 2, tabButton, screen));
+                if (tabButton == selectedButton) {
+                    ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(new TabButton(offsetX + additionalOffset + 1 + (i * 28), offsetY - 2, tabButton, screen));
                 } else {
-                    ((ScreenAccessor)screen).dragonSurvival$addRenderableWidget(new TabButton(offsetX + additionalOffset + (i * 28), offsetY, tabButton, screen));
+                    ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(new TabButton(offsetX + additionalOffset + (i * 28), offsetY, tabButton, screen));
                 }
             }
         } else {
-            for(int i = 0; i < TabButtonType.values().length; i++) {
+            for (int i = 0; i < TabButtonType.values().length; i++) {
                 TabButtonType tabButton = TabButtonType.values()[i];
 
-                if(tabButton == selectedButton) {
-                    ((ScreenAccessor)screen).dragonSurvival$addRenderableWidget(new TabButton(offsetX + 1 + (i * 28), offsetY - 2, tabButton, screen));
+                if (tabButton == selectedButton) {
+                    ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(new TabButton(offsetX + 1 + (i * 28), offsetY - 2, tabButton, screen));
                 } else {
-                    ((ScreenAccessor)screen).dragonSurvival$addRenderableWidget(new TabButton(offsetX + (i * 28), offsetY, tabButton, screen));
+                    ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(new TabButton(offsetX + (i * 28), offsetY, tabButton, screen));
                 }
             }
         }

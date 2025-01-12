@@ -195,10 +195,11 @@ public class RenderingUtils {
 
     @Nullable public static NativeImage getImageFromResource(ResourceLocation location) {
         NativeImage image = null;
+
         try {
             image = NativeImage.read(Minecraft.getInstance().getResourceManager().getResource(location).get().open());
-        } catch (Exception e) {
-            DragonSurvival.LOGGER.error(String.format("Texture resource %s not found!", location.getPath()), e);
+        } catch (Exception exception) {
+            DragonSurvival.LOGGER.error("Texture resource {} not found!", location.getPath(), exception);
         }
 
         return image;

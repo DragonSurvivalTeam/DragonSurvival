@@ -52,8 +52,4 @@ public class ClientConfig {
     @Translation(key = "force_cpu_skin_generation", type = Translation.Type.CONFIGURATION, comments = {"If enabled the skin generation will occur on the CPU instead of GPU", "Should only be needed if there are issues with your current graphics driver / graphics card"})
     @ConfigOption(side = ConfigSide.CLIENT, category = "misc", key = "force_cpu_skin_generation")
     public static Boolean forceCPUSkinGeneration = false;
-
-    @Translation(key = "particles_on_dragons", type = Translation.Type.CONFIGURATION, comments = "If enabled particles (from dragon effects) will be rendered when dragons are affected from said effects")
-    @ConfigOption(side = ConfigSide.CLIENT, category = "rendering", key = "particles_on_dragons")
-    public static Boolean particlesOnDragons = false;
 }

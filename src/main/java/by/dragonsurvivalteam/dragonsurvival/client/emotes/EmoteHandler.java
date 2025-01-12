@@ -28,7 +28,7 @@ public class EmoteHandler {
     @SubscribeEvent
     public static void playerTick(final PlayerTickEvent.Post event) {
         Player player = event.getEntity();
-        AtomicReference<DragonEntity> atomicDragon = ClientDragonRenderer.playerDragonHashMap.get(player.getId());
+        AtomicReference<DragonEntity> atomicDragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(player.getId());
         if(atomicDragon == null) {
             return;
         }
@@ -76,12 +76,12 @@ public class EmoteHandler {
     @SubscribeEvent
     public static void playerAttacked(final LivingIncomingDamageEvent event) {
         if (event.getEntity() instanceof Player player && DragonStateProvider.isDragon(player)) {
-            AtomicReference<DragonEntity> atomicDragon = ClientDragonRenderer.playerDragonHashMap.get(player.getId());
+            AtomicReference<DragonEntity> atomicDragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(player.getId());
             if(atomicDragon == null) {
                 return;
             }
 
-            DragonEntity dragon = ClientDragonRenderer.playerDragonHashMap.get(player.getId()).get();
+            DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(player.getId()).get();
             dragon.stopAllEmotes();
             PacketDistributor.sendToServer(new StopAllEmotes(player.getId()));
         }

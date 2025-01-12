@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 public class DSDataComponents {
     public static final DeferredRegister.DataComponents REGISTRY = DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, DragonSurvival.MODID);
 
-    public static Supplier<DataComponentType<Vector3f>> TARGET_POSITION = REGISTRY.registerComponentType("target_position", builder -> builder.persistent(ExtraCodecs.VECTOR3F).networkSynchronized(ByteBufCodecs.VECTOR3F));
-    public static Supplier<DataComponentType<SourceOfMagicData>> SOURCE_OF_MAGIC = REGISTRY.registerComponentType("source_of_magic", builder -> builder.persistent(SourceOfMagicData.CODEC).networkSynchronized(SourceOfMagicData.STREAM_CODEC));
-    public static Supplier<DataComponentType<DragonBeaconData>> DRAGON_BEACON = REGISTRY.registerComponentType("dragon_beacon_data", builder -> builder.persistent(DragonBeaconData.CODEC));
+    public static final Supplier<DataComponentType<Vector3f>> TARGET_POSITION = REGISTRY.registerComponentType("target_position", builder -> builder.persistent(ExtraCodecs.VECTOR3F).networkSynchronized(ByteBufCodecs.VECTOR3F));
+    public static final Supplier<DataComponentType<SourceOfMagicData>> SOURCE_OF_MAGIC = REGISTRY.registerComponentType("source_of_magic", builder -> builder.persistent(SourceOfMagicData.CODEC).networkSynchronized(SourceOfMagicData.STREAM_CODEC));
+    public static final Supplier<DataComponentType<DragonBeaconData>> DRAGON_BEACON = REGISTRY.registerComponentType("dragon_beacon_data", builder -> builder.persistent(DragonBeaconData.CODEC));
 }

@@ -177,16 +177,6 @@ public class DragonSurvivalClient {
                 return createModel(entity, defaultModel, false, false, false, true);
             }
         }, DSItems.DARK_DRAGON_BOOTS.value());
-
-        // TODO: This is part of the way to get the helmet block to render in hand correctly, not sure how to fix some of the other issues though
-        /* event.registerItem(new IClientItemExtensions(){
-            private final HelmetStackTileEntityRenderer renderer = new HelmetStackTileEntityRenderer();
-
-            @Override
-            public @NotNull HelmetStackTileEntityRenderer getCustomRenderer() {
-                return renderer;
-            }
-        }, DSBlocks.HELMET_BLOCK_1_ITEM.get(), DSBlocks.HELMET_BLOCK_2_ITEM.get(), DSBlocks.HELMET_BLOCK_3_ITEM.get());*/
     }
 
     private HumanoidModel<?> createModel(final LivingEntity entity, final HumanoidModel<?> defaultModel, boolean head, boolean body, boolean leggings, boolean boots) {

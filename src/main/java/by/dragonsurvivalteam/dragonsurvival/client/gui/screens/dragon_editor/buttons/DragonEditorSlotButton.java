@@ -15,11 +15,10 @@ import java.util.function.Function;
 public class DragonEditorSlotButton extends Button {
     private static final ResourceLocation SLOT_NUMBER_BACKGROUND = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/editor/slot_number_background.png");
 
-    public int slot;
-
     private final DragonEditorScreen screen;
     private final Function<Integer, Integer> setDragonSlotAction;
     private final Runnable action;
+    private final int slot;
 
     public DragonEditorSlotButton(int x, int y, int slot, final DragonEditorScreen screen, final Runnable action) {
         super(x, y, 12, 12, Component.empty(), button -> { /* Nothing to do */ }, DEFAULT_NARRATION);

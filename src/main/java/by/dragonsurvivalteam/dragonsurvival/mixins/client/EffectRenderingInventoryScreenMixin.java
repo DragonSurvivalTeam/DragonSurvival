@@ -34,11 +34,15 @@ import java.util.Objects;
 @Mixin(EffectRenderingInventoryScreen.class)
 public class EffectRenderingInventoryScreenMixin {
     @Unique private List<ClientEffectProvider> dragonSurvival$providers = List.of();
-    @Unique private List<Rect2i> dragonSurvival$areasBlockedByModifierUIForJEI = new ArrayList<>();
+
+    /** Interacted with through {@link EffectRenderingInventoryScreenAccessor} */
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+    @Unique private final List<Rect2i> dragonSurvival$areasBlockedByModifierUIForJEI = new ArrayList<>();
 
     @Inject(method = "renderEffects", at = @At("HEAD"))
     private void dragonSurvival$storeProviders(final GuiGraphics graphics, int mouseX, int mouseY, final CallbackInfo callback) {
         dragonSurvival$providers = ClientEffectProvider.getProviders(true);
+        dragonSurvival$areasBlockedByModifierUIForJEI.clear();
     }
 
     @ModifyExpressionValue(method = "renderEffects", at = @At(value = "INVOKE", target = "Ljava/util/Collection;size()I"))
@@ -57,8 +61,8 @@ public class EffectRenderingInventoryScreenMixin {
         int width = isCompact ? 32 : 120;
 
         for (ClientEffectProvider provider : providers) {
-            graphics.blitSprite(isCompact ? ((EffectRenderingInventoryScreenAccessor) self).dragonSurvival$getEffectBackgroundSmallSprite() : ((EffectRenderingInventoryScreenAccessor) self).dragonSurvival$getEffectBackgroundLargeSprite(), renderX, topPos, width, 32);
             dragonSurvival$areasBlockedByModifierUIForJEI.add(new Rect2i(renderX, topPos, width, 32));
+            graphics.blitSprite(isCompact ? ((EffectRenderingInventoryScreenAccessor) self).dragonSurvival$getEffectBackgroundSmallSprite() : ((EffectRenderingInventoryScreenAccessor) self).dragonSurvival$getEffectBackgroundLargeSprite(), renderX, topPos, width, 32);
             graphics.blit(provider.clientData().texture(), renderX + (isCompact ? 6 : 7), topPos + 7, 0, 0, 0, 18, 18, 18, 18);
             topPos += yOffset;
         }
@@ -94,7 +98,6 @@ public class EffectRenderingInventoryScreenMixin {
         int width = self.width;
 
         LocalPlayer player = Objects.requireNonNull(Minecraft.getInstance().player);
-        dragonSurvival$areasBlockedByModifierUIForJEI.clear();
 
         if (!dragonSurvival$providers.isEmpty() && width >= 32) {
             boolean isCompact = width < 120;

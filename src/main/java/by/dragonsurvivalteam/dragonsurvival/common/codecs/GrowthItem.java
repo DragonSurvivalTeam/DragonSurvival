@@ -15,7 +15,7 @@ import java.util.Arrays;
 public record GrowthItem(HolderSet<Item> items, int growthInTicks, int maximumUsages) {
     public static final int INFINITE_USAGES = -1;
 
-    public static Codec<GrowthItem> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final Codec<GrowthItem> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             RegistryCodecs.homogeneousList(Registries.ITEM).fieldOf("items").forGetter(GrowthItem::items),
             Codec.INT.fieldOf("growth_in_ticks").forGetter(GrowthItem::growthInTicks),
             Codec.INT.optionalFieldOf("maximum_usages", INFINITE_USAGES).forGetter(GrowthItem::maximumUsages)

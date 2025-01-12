@@ -19,7 +19,6 @@ import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.util.Color;
 
-
 public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
     public ResourceLocation glowTexture = null;
 

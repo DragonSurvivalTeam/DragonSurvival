@@ -13,11 +13,13 @@ public class BarComponent implements ScrollableComponent {
     private final List<AbstractWidget> widgets = new ArrayList<>();
     private final HoverButton leftArrow;
     private final HoverButton rightArrow;
-    private int centerIndex = 0;
+
     private final int numberOfElementsToDisplay;
+    private final int elementSpacing;
     private final int xPos;
     private final int yPos;
-    private final int elementSpacing;
+
+    private int centerIndex;
 
     public BarComponent(Screen parentScreen, int xPos, int yPos, int numberOfElementsToDisplay, List<AbstractWidget> widgets, int elementSpacing, int arrowLeftX, int arrowRightX, int arrowY, int arrowWidth, int arrowHeight, int arrowTextureWidth, int arrowTextureHeight, ResourceLocation leftArrowHover, ResourceLocation leftArrowMain, ResourceLocation rightArrowHover, ResourceLocation rightArrowMain, boolean replaceButtonsWithArrowsWhenOversize) {
         this.xPos = xPos;
@@ -120,7 +122,7 @@ public class BarComponent implements ScrollableComponent {
         forceSetButtonPositions();
     }
 
-    private boolean isAnIndexBeingDisplayed(int index) {
+    private boolean isVisibleElement(int index) {
         return index >= centerIndex - getNumberOfElementsLeftOfCenter() && index <= centerIndex + getNumberOfElementsRightOfCenter();
     }
 
@@ -134,22 +136,23 @@ public class BarComponent implements ScrollableComponent {
     }
 
     private void forceSetButtonPositions() {
-        for (int i = 0; i < widgets.size(); i++) {
-            if (!isAnIndexBeingDisplayed(i)) {
-                widgets.get(i).visible = false;
-            } else {
-                int centerAlignment = i - centerIndex + 1;
-                widgets.get(i).setX(xPos + centerAlignment * elementSpacing);
-                widgets.get(i).setY(yPos);
-                widgets.get(i).visible = true;
+        for (int index = 0; index < widgets.size(); index++) {
+            AbstractWidget widget = widgets.get(index);
+            widget.visible = isVisibleElement(index);
+
+            if (widget.visible) {
+                int centerAlignment = index - centerIndex + 1;
+                widget.setX(xPos + centerAlignment * elementSpacing);
+                widget.setY(yPos);
             }
         }
     }
 
     public List<AbstractWidget> currentlyHiddenWidgets() {
         List<AbstractWidget> hiddenWidgets = new ArrayList<>();
+
         for (int i = 0; i < widgets.size(); i++) {
-            if (!isAnIndexBeingDisplayed(i)) {
+            if (!isVisibleElement(i)) {
                 hiddenWidgets.add(widgets.get(i));
             }
         }

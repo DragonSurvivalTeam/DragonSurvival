@@ -188,7 +188,7 @@ public class DragonSpeciesScreen extends Screen {
                 @Override
                 public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
                     final FormattedText buttonText = Minecraft.getInstance().font.ellipsize(this.getMessage(), this.width + 26); // Remove 6 pixels so that the text is always contained within the button's borders
-                    TextRenderUtil.drawScaledText(graphics, this.getX(), this.getY() + (this.height - 8) / 2, 0.8f, buttonText.getString(), getFGColor());
+                    TextRenderUtil.drawScaledText(graphics, this.getX(), this.getY() + (float) (this.height - 8) / 2, 0.8f, buttonText.getString(), getFGColor());
                 }
             };
             noDietText.setMessage(Component.translatable(NO_DIET));
@@ -293,7 +293,7 @@ public class DragonSpeciesScreen extends Screen {
                 @Override
                 public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
                     final FormattedText buttonText = Minecraft.getInstance().font.ellipsize(this.getMessage(), this.width + 26); // Remove 6 pixels so that the text is always contained within the button's borders
-                    TextRenderUtil.drawScaledText(graphics, this.getX(), this.getY() + (this.height - 8) / 2, 0.8f, buttonText.getString(), getFGColor());
+                    TextRenderUtil.drawScaledText(graphics, this.getX(), this.getY() + (float) (this.height - 8) / 2, 0.8f, buttonText.getString(), getFGColor());
                 }
             };
             noPenaltiesText.setMessage(Component.translatable(NO_PENALTIES));

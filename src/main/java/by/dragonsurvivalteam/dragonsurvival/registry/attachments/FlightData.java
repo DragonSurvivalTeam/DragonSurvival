@@ -64,10 +64,11 @@ public class FlightData implements INBTSerializable<CompoundTag> {
         duration = tag.getInt(DURATION);
         if (tag.contains(SWIM_SPIN_FLUID)) {
             Optional<Holder.Reference<FluidType>> fluidType = provider.holder(ResourceKey.create(NeoForgeRegistries.FLUID_TYPES.key(), ResourceLocation.parse(tag.getString(SWIM_SPIN_FLUID))));
-            if(fluidType.isPresent()) {
+
+            if (fluidType.isPresent()) {
                 swimSpinFluid = Optional.of(fluidType.get());
             } else {
-                DragonSurvival.LOGGER.warn("Fluid type not found for key: " + tag.getString(SWIM_SPIN_FLUID) + " in FlightData");
+                DragonSurvival.LOGGER.warn("Fluid type not found for key: [{}] in FlightData", tag.getString(SWIM_SPIN_FLUID));
             }
         }
     }

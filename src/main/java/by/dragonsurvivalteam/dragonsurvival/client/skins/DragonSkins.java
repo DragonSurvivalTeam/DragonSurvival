@@ -31,36 +31,33 @@ import java.util.concurrent.CompletableFuture;
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class DragonSkins {
-    protected static boolean initialized = false;
-    public static NetSkinLoader skinLoader = new GithubSkinLoaderAPI();
-    private static final ArrayList<String> hasFailedFetch = new ArrayList<>();
-    public static HashMap<ResourceKey<DragonStage>, HashMap<String, SkinObject>> SKIN_USERS = new HashMap<>();
-    public static HashMap<String, CompletableFuture<ResourceLocation>> playerSkinCache = new HashMap<>();
-    public static HashMap<String, CompletableFuture<ResourceLocation>> playerGlowCache = new HashMap<>();
-    private static double lastSkinFetchAttemptTime = 0;
-    private static int numSkinFetchAttempts = 0;
+    public static final HashMap<ResourceKey<DragonStage>, HashMap<String, SkinObject>> USER_SKINS = new HashMap<>();
+    public static final HashMap<String, CompletableFuture<ResourceLocation>> SKIN_CACHE = new HashMap<>();
+    public static final HashMap<String, CompletableFuture<ResourceLocation>> GLOW_CACHE = new HashMap<>();
 
-    public static boolean playerSkinFailedToFetch(String playerName, ResourceKey<DragonStage> stage) {
-        String playerKey = playerName + "_" + stage.location().getPath();
-        return hasFailedFetch.contains(playerKey);
-    }
+    public static NetSkinLoader skinLoader = new GithubSkinLoaderAPI();
+
+    private static final ArrayList<String> hasFailedFetch = new ArrayList<>();
+    private static double lastSkinFetchAttemptTime;
+    private static int numSkinFetchAttempts;
+    private static boolean initialized;
 
     public static boolean playerSkinOrGlowFetchingInProgress(String playerName, ResourceKey<DragonStage> stage) {
         String playerKey = playerName + "_" + stage.location().getPath();
-        return playerSkinCache.containsKey(playerKey) && !playerSkinCache.get(playerKey).isDone() || playerGlowCache.containsKey(playerKey) && !playerGlowCache.get(playerKey).isDone();
+        return SKIN_CACHE.containsKey(playerKey) && !SKIN_CACHE.get(playerKey).isDone() || GLOW_CACHE.containsKey(playerKey) && !GLOW_CACHE.get(playerKey).isDone();
     }
 
     public static @Nullable ResourceLocation getPlayerSkin(String playerName, ResourceKey<DragonStage> dragonStage) {
         String skinKey = playerName + "_" + dragonStage.location().getPath();
 
-        if (playerSkinCache.containsKey(skinKey) && playerSkinCache.get(skinKey) != null) {
-            if(playerSkinCache.get(skinKey).isDone()) {
-                return playerSkinCache.get(skinKey).join();
+        if (SKIN_CACHE.containsKey(skinKey) && SKIN_CACHE.get(skinKey) != null) {
+            if(SKIN_CACHE.get(skinKey).isDone()) {
+                return SKIN_CACHE.get(skinKey).join();
             }
         }
 
-        if (!hasFailedFetch.contains(skinKey) && !playerSkinCache.containsKey(skinKey)) {
-            playerSkinCache.put(skinKey, CompletableFuture.supplyAsync(() -> fetchSkinFile(playerName, dragonStage)));
+        if (!hasFailedFetch.contains(skinKey) && !SKIN_CACHE.containsKey(skinKey)) {
+            SKIN_CACHE.put(skinKey, CompletableFuture.supplyAsync(() -> fetchSkinFile(playerName, dragonStage)));
         }
 
         return null;
@@ -69,12 +66,12 @@ public class DragonSkins {
     public static @Nullable ResourceLocation getPlayerGlow(String playerName, ResourceKey<DragonStage> dragonStage) {
         String skinKey = playerName + "_" + dragonStage.location().getPath();
 
-        if (playerGlowCache.containsKey(skinKey) && playerGlowCache.get(skinKey) != null) {
-            if(playerGlowCache.get(skinKey).isDone()) {
-                return playerGlowCache.get(skinKey).join();
+        if (GLOW_CACHE.containsKey(skinKey) && GLOW_CACHE.get(skinKey) != null) {
+            if(GLOW_CACHE.get(skinKey).isDone()) {
+                return GLOW_CACHE.get(skinKey).join();
             }
         } else {
-            playerGlowCache.put(skinKey, CompletableFuture.supplyAsync(() -> fetchSkinFile(playerName, dragonStage, "glow")));
+            GLOW_CACHE.put(skinKey, CompletableFuture.supplyAsync(() -> fetchSkinFile(playerName, dragonStage, "glow")));
         }
 
         return null;
@@ -86,14 +83,14 @@ public class DragonSkins {
         boolean renderCustomSkin = DragonStateProvider.getData(player).getSkinData().renderCustomSkin;
 
         if ((ClientDragonRenderer.renderOtherPlayerSkins || player == DragonSurvival.PROXY.getLocalPlayer()) && renderCustomSkin) {
-            if (playerSkinCache.containsKey(playerKey) && playerSkinCache.get(playerKey) != null) {
-                if(playerSkinCache.get(playerKey).isDone()) {
-                    return playerSkinCache.get(playerKey).join();
+            if (SKIN_CACHE.containsKey(playerKey) && SKIN_CACHE.get(playerKey) != null) {
+                if(SKIN_CACHE.get(playerKey).isDone()) {
+                    return SKIN_CACHE.get(playerKey).join();
                 }
             }
 
-            if (!hasFailedFetch.contains(playerKey) && !playerSkinCache.containsKey(playerKey)) {
-                playerSkinCache.put(playerKey, CompletableFuture.supplyAsync(() -> fetchSkinFile(player, dragonStage)));
+            if (!hasFailedFetch.contains(playerKey) && !SKIN_CACHE.containsKey(playerKey)) {
+                SKIN_CACHE.put(playerKey, CompletableFuture.supplyAsync(() -> fetchSkinFile(player, dragonStage)));
             }
         }
 
@@ -113,7 +110,7 @@ public class DragonSkins {
             }
         }
 
-        HashMap<String, SkinObject> playerSkinMap = SKIN_USERS.getOrDefault(stage, null);
+        HashMap<String, SkinObject> playerSkinMap = USER_SKINS.getOrDefault(stage, null);
 
         // Wait an increasing amount of time depending on the number of failed attempts
         if (playerSkinMap == null && lastSkinFetchAttemptTime + numSkinFetchAttempts < Blaze3D.getTime() && numSkinFetchAttempts < 10) {
@@ -123,7 +120,7 @@ public class DragonSkins {
             numSkinFetchAttempts++;
             lastSkinFetchAttemptTime = Blaze3D.getTime();
 
-            playerSkinMap = SKIN_USERS.getOrDefault(stage, null);
+            playerSkinMap = USER_SKINS.getOrDefault(stage, null);
 
             if (playerSkinMap == null) {
                 DragonSurvival.LOGGER.error("Custom skins could not be fetched");
@@ -196,13 +193,13 @@ public class DragonSkins {
         String playerKey = player.getGameProfile().getName() + "_" + dragonStage.location().getPath();
         boolean renderCustomSkin = DragonStateProvider.getData(player).getSkinData().renderCustomSkin;
 
-        if ((ClientDragonRenderer.renderOtherPlayerSkins || player == DragonSurvival.PROXY.getLocalPlayer()) && playerSkinCache.containsKey(playerKey) && renderCustomSkin) {
-            if (playerGlowCache.containsKey(playerKey)) {
-                if(playerGlowCache.get(playerKey).isDone()) {
-                    return playerGlowCache.get(playerKey).join();
+        if ((ClientDragonRenderer.renderOtherPlayerSkins || player == DragonSurvival.PROXY.getLocalPlayer()) && SKIN_CACHE.containsKey(playerKey) && renderCustomSkin) {
+            if (GLOW_CACHE.containsKey(playerKey)) {
+                if(GLOW_CACHE.get(playerKey).isDone()) {
+                    return GLOW_CACHE.get(playerKey).join();
                 }
             } else {
-                playerGlowCache.put(playerKey, CompletableFuture.supplyAsync(() -> fetchSkinFile(player, dragonStage, "glow")));
+                GLOW_CACHE.put(playerKey, CompletableFuture.supplyAsync(() -> fetchSkinFile(player, dragonStage, "glow")));
             }
         }
 
@@ -272,13 +269,13 @@ public class DragonSkins {
                 return;
             }
 
-            if (!SKIN_USERS.containsKey(dragonStage)) {
-                SKIN_USERS.put(dragonStage, new HashMap<>());
+            if (!USER_SKINS.containsKey(dragonStage)) {
+                USER_SKINS.put(dragonStage, new HashMap<>());
             }
 
             skin.short_name = name;
             skin.glow = isGlow;
-            SKIN_USERS.get(dragonStage).putIfAbsent(name, skin);
+            USER_SKINS.get(dragonStage).putIfAbsent(name, skin);
         }
     }
 
@@ -308,9 +305,9 @@ public class DragonSkins {
     }
 
     private static void invalidateSkins() {
-        SKIN_USERS.clear();
-        playerSkinCache.clear();
-        playerGlowCache.clear();
+        USER_SKINS.clear();
+        SKIN_CACHE.clear();
+        GLOW_CACHE.clear();
         hasFailedFetch.clear();
     }
 

@@ -21,11 +21,12 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 public class FakeClientPlayer extends AbstractClientPlayer {
+    public final int number;
+
     public DragonStateHandler handler = new DragonStateHandler();
     public Supplier<String> animationSupplier = null;
     public AnimationController<DragonEntity> animationController = null;
     public Long lastAccessed;
-    public int number;
 
     public FakeClientPlayer(int number) {
         //noinspection DataFlowIssue -> level is expected to be present

@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.GrowthItem;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
@@ -215,7 +216,9 @@ public record DragonStage(
     }
 
     public static double getStartingSize(final HolderSet<DragonStage> stages) {
-        return stages.stream().filter(stage -> stage.value().isDefault()).min(Comparator.comparingDouble(stage -> stage.value().sizeRange().min())).get().value().sizeRange().min();
+        return stages.stream().filter(stage -> stage.value().isDefault())
+                .min(Comparator.comparingDouble(stage -> stage.value().sizeRange().min()))
+                .map(stage -> stage.value().sizeRange().min()).orElse(DragonStateHandler.NO_SIZE);
     }
 
     public static Holder<DragonStage> get(@Nullable final HolderLookup.Provider provider, double size) {

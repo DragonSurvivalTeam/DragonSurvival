@@ -23,9 +23,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-/**
- * <a href="https://github.com/TelepathicGrunt/RepurposedStructures/blob/1.21-Arch/common/src/main/java/com/telepathicgrunt/repurposedstructures/world/structures/placements/AdvancedRandomSpread.java">Source</a>
- */
+/** <a href="https://github.com/TelepathicGrunt/RepurposedStructures/blob/1.21-Arch/common/src/main/java/com/telepathicgrunt/repurposedstructures/world/structures/placements/AdvancedRandomSpread.java">Source</a> */
+@SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "deprecation"}) // ignore
 public class AdvancedRandomSpread extends RandomSpreadStructurePlacement {
     public static final MapCodec<AdvancedRandomSpread> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
             Vec3i.offsetCodec(16).optionalFieldOf("locate_offset", Vec3i.ZERO).forGetter(AdvancedRandomSpread::locateOffset),

@@ -35,7 +35,11 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public record ModifierWithDuration(ResourceLocation id, List<Modifier> modifiers, LevelBasedValue duration, Optional<ResourceLocation> customIcon, boolean isHidden) {
     public static final Codec<ModifierWithDuration> CODEC = RecordCodecBuilder.create(instance -> instance.group(

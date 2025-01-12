@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 public record FlightStatus(int playerId, boolean hasFlight) implements CustomPacketPayload {
     public static final Type<FlightStatus> TYPE = new Type<>(DragonSurvival.res("sync_wing_status"));
 
-    public static StreamCodec<RegistryFriendlyByteBuf, FlightStatus> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<RegistryFriendlyByteBuf, FlightStatus> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.INT, FlightStatus::playerId,
             ByteBufCodecs.BOOL, FlightStatus::hasFlight,
             FlightStatus::new

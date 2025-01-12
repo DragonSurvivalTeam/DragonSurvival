@@ -224,7 +224,6 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
     private float tick;
     private int curAnimation;
-    private int lastSelected;
     private int selectedDragonStage;
     private boolean hasInit;
     private boolean isEditor;
@@ -845,17 +844,13 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
                         settings.hue = minecraft.player.getRandom().nextFloat();
                         settings.saturation = 0.25f + minecraft.player.getRandom().nextFloat() * 0.5f;
                         settings.brightness = 0.3f + minecraft.player.getRandom().nextFloat() * 0.3f;
-                        settings.modifiedColor = true;
                     } else {
-                        if (text != null) {
-                            settings.hue = text.averageHue();
-                        } else {
-                            settings.hue = 0.0f;
-                        }
+                        settings.hue = text != null ? text.averageHue() : 0;
                         settings.saturation = 0.5f;
                         settings.brightness = 0.5f;
-                        settings.modifiedColor = true;
                     }
+
+                    settings.modifiedColor = true;
                 }
             }
 
@@ -1015,7 +1010,6 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         HANDLER.setCurrentSkinPreset(preset);
         HANDLER.setDesiredSize(null, dragonStage.value().sizeRange().min());
 
-        lastSelected = selectedSaveSlot;
     }
 
     private void initDragonRender() {

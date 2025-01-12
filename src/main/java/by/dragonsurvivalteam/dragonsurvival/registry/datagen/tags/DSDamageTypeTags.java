@@ -20,13 +20,13 @@ import java.util.concurrent.CompletableFuture;
 
 public class DSDamageTypeTags extends DamageTypeTagsProvider {
     @Translation(comments = "Dragon Breath")
-    public static TagKey<DamageType> DRAGON_BREATH = key("dragon_breath");
+    public static final TagKey<DamageType> DRAGON_BREATH = key("dragon_breath");
 
     @Translation(comments = "Dragon Magic")
-    public static TagKey<DamageType> DRAGON_MAGIC = key("dragon_magic");
+    public static final TagKey<DamageType> DRAGON_MAGIC = key("dragon_magic");
 
     @Translation(comments = "Electric")
-    public static TagKey<DamageType> IS_ELECTRIC = key("is_electric");
+    public static final TagKey<DamageType> IS_ELECTRIC = key("is_electric");
 
     public DSDamageTypeTags(final PackOutput output, final CompletableFuture<HolderLookup.Provider> provider, @Nullable final ExistingFileHelper helper) {
         super(output, provider, DragonSurvival.MODID, helper);

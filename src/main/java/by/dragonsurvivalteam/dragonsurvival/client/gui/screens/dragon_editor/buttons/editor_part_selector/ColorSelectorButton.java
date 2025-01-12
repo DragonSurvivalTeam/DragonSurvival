@@ -25,7 +25,6 @@ public class ColorSelectorButton extends ExtendedButton {
     private Renderable renderButton;
 
     private final int xSize;
-    private final int ySize;
     public boolean toggled;
     private final boolean opensRight;
     private final boolean opensUp;
@@ -36,7 +35,6 @@ public class ColorSelectorButton extends ExtendedButton {
     public ColorSelectorButton(DragonEditorScreen screen, SkinLayer layer, int x, int y, int xSize, int ySize, boolean opensRight, boolean opensUp) {
         super(x, y, xSize, ySize, Component.empty(), action -> { /* Nothing to do */ });
         this.xSize = xSize;
-        this.ySize = ySize;
         this.screen = screen;
         this.layer = layer;
         this.opensRight = opensRight;

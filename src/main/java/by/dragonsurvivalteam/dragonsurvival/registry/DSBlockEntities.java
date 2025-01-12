@@ -12,11 +12,9 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
+@SuppressWarnings("DataFlowIssue") // null parameter in 'build' does not cause issues
 public class DSBlockEntities {
-    public static DeferredRegister<BlockEntityType<?>> DS_TILE_ENTITIES = DeferredRegister.create(
-            BuiltInRegistries.BLOCK_ENTITY_TYPE,
-            MODID
-    );
+    public static final DeferredRegister<BlockEntityType<?>> DS_TILE_ENTITIES = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, MODID);
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SourceOfMagicBlockEntity>> SOURCE_OF_MAGIC_TILE_ENTITY = DS_TILE_ENTITIES.register(
             "dragon_nest", () -> BlockEntityType.Builder.of(

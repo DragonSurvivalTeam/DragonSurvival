@@ -13,7 +13,7 @@ import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
 public record TreasureParticleOption(float red, float green, float blue, float scale) implements ParticleOptions {
-    public static MapCodec<TreasureParticleOption> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+    public static final MapCodec<TreasureParticleOption> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.FLOAT.fieldOf("red").forGetter(TreasureParticleOption::red),
             Codec.FLOAT.fieldOf("green").forGetter(TreasureParticleOption::green),
             Codec.FLOAT.fieldOf("blue").forGetter(TreasureParticleOption::blue),

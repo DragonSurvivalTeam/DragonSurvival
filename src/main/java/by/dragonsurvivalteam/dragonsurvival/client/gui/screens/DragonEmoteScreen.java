@@ -53,7 +53,8 @@ public class DragonEmoteScreen extends Screen {
     @Translation(comments = "Stop all emotes")
     private static final String STOP_ALL_EMOTES = Translation.Type.GUI.wrap("emote_screen.stop_all_emotes");
 
-    @Translation(comments = {"■ This is the emotes menu.",
+    @Translation(comments = {
+            "■ This is the emotes menu.",
             "- The icon on the right will allow you to §6keybind§r§f and play the emote without entering this menu.",
             "- Some emotions can be combined with each other. For example, §6Blend§r§f.",
             "- Flip pages - §6mouse wheel§r§f."
@@ -69,9 +70,9 @@ public class DragonEmoteScreen extends Screen {
     public static final int REMOVE_KEY = 256;
     private static final int PER_PAGE = 9;
 
-    private int emotePage = 0;
-    public String currentlyKeybinding = null;
-    private List<EmoteComponent> emoteComponents = new ArrayList<>();
+    private final List<EmoteComponent> emoteComponents = new ArrayList<>();
+    public String currentlyKeybinding;
+    private int emotePage;
     private int guiLeft;
     private int guiTop;
 
@@ -153,7 +154,6 @@ public class DragonEmoteScreen extends Screen {
 
     @Override
     public void init() {
-        //noinspection DataFlowIssue -> player is present
         int xSize = 256;
         int ySize = 256;
 
@@ -168,7 +168,7 @@ public class DragonEmoteScreen extends Screen {
 
         HoverButton resetEmotesButton = new HoverButton(startX + 19, startY - 26, 14, 14, 14, 14, RESET_EMOTES_MAIN, RESET_EMOTES_HOVER, button -> {
             //noinspection DataFlowIssue -> player is present
-            AtomicReference<DragonEntity> atomicDragon = ClientDragonRenderer.playerDragonHashMap.get(Minecraft.getInstance().player.getId());
+            AtomicReference<DragonEntity> atomicDragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(Minecraft.getInstance().player.getId());
 
             if (atomicDragon == null) {
                 return;
@@ -224,7 +224,7 @@ public class DragonEmoteScreen extends Screen {
 
     public static void addEmote(String key) {
         //noinspection DataFlowIssue -> player is present
-        AtomicReference<DragonEntity> atomicDragon = ClientDragonRenderer.playerDragonHashMap.get(Minecraft.getInstance().player.getId());
+        AtomicReference<DragonEntity> atomicDragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(Minecraft.getInstance().player.getId());
 
         if (atomicDragon == null) {
             return;

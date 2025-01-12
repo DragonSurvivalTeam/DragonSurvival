@@ -48,7 +48,7 @@ public class EmoteComponent {
         this.emote = emote;
         emoteButton = new ExtendedButton(xPos + 10, yPos - 3, 115, 12, Component.empty(), button -> {
             //noinspection DataFlowIssue -> player is present
-            AtomicReference<DragonEntity> atomicDragon = ClientDragonRenderer.playerDragonHashMap.get(Minecraft.getInstance().player.getId());
+            AtomicReference<DragonEntity> atomicDragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(Minecraft.getInstance().player.getId());
 
             if (atomicDragon == null) {
                 return;
@@ -73,13 +73,13 @@ public class EmoteComponent {
                 } else {
                     color = getFGColor();
                 }
-                TextRenderUtil.drawScaledText(guiGraphics, this.getX(), this.getY() + (this.height - 8) / 2, 0.8f, buttonText.getString(), color);
+                TextRenderUtil.drawScaledText(guiGraphics, this.getX(), this.getY() + (float) (this.height - 8) / 2, 0.8f, buttonText.getString(), color);
             }
         };
         emoteButton.setMessage(emote.name());
         isPlayingButton = new ExtendedButton(xPos, yPos - 1, 6, 6, Component.empty(), button -> {
             //noinspection DataFlowIssue -> player is present
-            AtomicReference<DragonEntity> atomicDragon = ClientDragonRenderer.playerDragonHashMap.get(Minecraft.getInstance().player.getId());
+            AtomicReference<DragonEntity> atomicDragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(Minecraft.getInstance().player.getId());
 
             if (atomicDragon == null) {
                 return;
@@ -105,7 +105,7 @@ public class EmoteComponent {
         }){
             @Override
             public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-                ResourceLocation texture = screen.currentlyKeybinding == emote.key() ? KEYBIND_ON : KEYBIND_OFF;
+                ResourceLocation texture = emote.key().equals(screen.currentlyKeybinding) ? KEYBIND_ON : KEYBIND_OFF;
                 guiGraphics.blit(texture, getX(), getY(), 0, 0, 6, 6, 14, 14);
             }
         };

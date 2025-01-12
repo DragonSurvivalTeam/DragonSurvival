@@ -38,7 +38,7 @@ public class MiscCodecs {
     }
 
     public record Bounds(double min, double max) {
-        public static Codec<Bounds> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+        public static final Codec<Bounds> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.DOUBLE.fieldOf("min").forGetter(Bounds::min),
                 Codec.DOUBLE.fieldOf("max").forGetter(Bounds::max)
         ).apply(instance, instance.stable(Bounds::new)));
@@ -59,7 +59,7 @@ public class MiscCodecs {
     }
 
     public record DestructionData(double crushingSize, double blockDestructionSize, double crushingDamageScalar) {
-        public static Codec<DestructionData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+        public static final Codec<DestructionData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.DOUBLE.fieldOf("crushing_size").forGetter(DestructionData::crushingSize),
                 Codec.DOUBLE.fieldOf("block_destruction_size").forGetter(DestructionData::blockDestructionSize),
                 Codec.DOUBLE.fieldOf("crushing_damage_scalar").forGetter(DestructionData::crushingDamageScalar)

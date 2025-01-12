@@ -25,7 +25,7 @@ import java.io.InputStreamReader;
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class DSEmoteKeybindings {
     public static EmoteKeybinds EMOTE_KEYBINDS = new EmoteKeybinds();
-    private static final String EMOTE_BINDINGS = "emote_bindings.json";
+    private static final String FILE_NAME = "emote_bindings.json";
     private static boolean hasInitialized;
 
     @SubscribeEvent
@@ -39,11 +39,16 @@ public class DSEmoteKeybindings {
         }
 
         File directory = new File(FMLPaths.GAMEDIR.get().toFile(), CustomizationFileHandler.DIRECTORY);
-        if (!directory.exists()) {
-            directory.mkdirs();
+
+        if (!directory.exists() && !directory.mkdirs()) {
+            DragonSurvival.LOGGER.error("Could not create directory [{}] to read the emote keybinds", directory.getPath());
+            EMOTE_KEYBINDS = new EmoteKeybinds();
+            hasInitialized = true;
+            return;
         }
 
-        File savedFile = new File(directory, EMOTE_BINDINGS + ".json");
+        File savedFile = new File(directory, FILE_NAME + ".json");
+
         if (savedFile.exists()) {
             try {
                 Gson gson = GsonFactory.getDefault();
@@ -51,11 +56,13 @@ public class DSEmoteKeybindings {
 
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {
                     EMOTE_KEYBINDS = gson.fromJson(reader, EmoteKeybinds.class);
+
                     if (EMOTE_KEYBINDS == null) {
-                        throw new IOException("Emote keybinds file could not be read");
+                        DragonSurvival.LOGGER.warn("Emote keybinds file could not be read");
+                        EMOTE_KEYBINDS = new EmoteKeybinds();
                     }
                 } catch (IOException | JsonSyntaxException exception) {
-                    DragonSurvival.LOGGER.warn("An error occurred while processing the [" + EMOTE_BINDINGS + "] file", exception);
+                    DragonSurvival.LOGGER.warn("An error occurred while processing the [" + FILE_NAME + "] file", exception);
                 }
             } catch (FileNotFoundException exception) {
                 DragonSurvival.LOGGER.error("Emote keybinds file could not be found", exception);
@@ -72,11 +79,13 @@ public class DSEmoteKeybindings {
 
         try {
             File directory = new File(FMLPaths.GAMEDIR.get().toFile(), CustomizationFileHandler.DIRECTORY);
-            if (!directory.exists()) {
-                directory.mkdirs();
+
+            if (!directory.exists() && !directory.mkdirs()) {
+                DragonSurvival.LOGGER.error("Could not create directory [{}] to store the emote keybinds", directory.getPath());
+                return;
             }
 
-            File savedFile = new File(directory, EMOTE_BINDINGS + ".json");
+            File savedFile = new File(directory, FILE_NAME + ".json");
             Gson gson = GsonFactory.newBuilder().setPrettyPrinting().create();
             FileWriter writer = new FileWriter(savedFile);
             gson.toJson(savedFile, writer);

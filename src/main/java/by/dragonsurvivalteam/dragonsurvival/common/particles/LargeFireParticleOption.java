@@ -12,7 +12,7 @@ import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.NotNull;
 
 public record LargeFireParticleOption(float duration, boolean swirls) implements ParticleOptions {
-    public static MapCodec<LargeFireParticleOption> CODEC = RecordCodecBuilder.mapCodec(codecBuilder -> codecBuilder.group(
+    public static final MapCodec<LargeFireParticleOption> CODEC = RecordCodecBuilder.mapCodec(codecBuilder -> codecBuilder.group(
             Codec.FLOAT.fieldOf("duration").forGetter(LargeFireParticleOption::duration),
             Codec.BOOL.fieldOf("swirls").forGetter(LargeFireParticleOption::swirls)
     ).apply(codecBuilder, LargeFireParticleOption::new));
