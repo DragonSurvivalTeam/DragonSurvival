@@ -31,6 +31,10 @@ public class EmoteHandler {
         Player player = event.getEntity();
         DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(player.getId());
 
+        if (dragon == null) {
+            return;
+        }
+
         if (player.isCrouching() || player.swinging) {
             dragon.stopAllEmotes();
             PacketDistributor.sendToServer(new StopAllEmotes(player.getId()));

@@ -1021,7 +1021,7 @@
   "dragonsurvival.gui.summon_entity_effect.summon_chance": "\n- %s (%s)",
   "dragonsurvival.gui.system.reached_largest": "You have reached the largest size",
   "dragonsurvival.gui.system.reached_smallest": "You have reached the smallest size",
-  "dragonsurvival.gui.time_of": "%s %s:%s:%s",
+  "dragonsurvival.gui.time_of": "%s %s",
   "dragonsurvival.gui.tooltip.dragon_food": "■ %s food: %s",
   "dragonsurvival.gui.tooltip.dragon_food.shift": "Dragon Food - press 'SHIFT' for more info",
   "dragonsurvival.keybind.ability1": "Skill #1",

@@ -17,7 +17,7 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 
 public record TimeComponent(Item item, int ticks, BiFunction<Item, Integer, Component> description) implements TooltipComponent {
-    @Translation(comments = "%s %s:%s:%s")
+    @Translation(comments = "%s %s")
     private static final String TIME = Translation.Type.GUI.wrap("time_of");
 
     public static final BiFunction<Item, Integer, Component> DEFAULT = (item, ticks) -> Component.translatable(item.getDescriptionId()).append(": ").append(translateTime(ticks));
@@ -45,7 +45,6 @@ public record TimeComponent(Item item, int ticks, BiFunction<Item, Integer, Comp
     };
 
     private static Component translateTime(int ticks) {
-        Functions.Time time = Functions.Time.fromTicks(ticks);
-        return Component.translatable(TIME, ticks > 0 ? "+" : "-", time.format(time.hours()), time.format(time.minutes()), time.format(time.seconds())).withStyle(ticks > 0 ? ChatFormatting.GREEN : ChatFormatting.RED);
+        return Component.translatable(TIME, ticks > 0 ? "+" : "-", Functions.Time.fromTicks(ticks).format()).withStyle(ticks > 0 ? ChatFormatting.GREEN : ChatFormatting.RED);
     }
 }

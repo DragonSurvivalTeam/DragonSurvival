@@ -62,11 +62,11 @@ public class Functions {
         }
 
         public boolean hasTime() {
-            return hours() != 0 || minutes() != 0 || seconds() != 0;
+            return hours != 0 || minutes != 0 || seconds != 0;
         }
 
         public String format() {
-            return format(hours()) + ":" + format(minutes()) + ":" + format(seconds());
+            return format(hours) + ":" + format(minutes) + ":" + format(seconds);
         }
 
         public String format(int number) {
