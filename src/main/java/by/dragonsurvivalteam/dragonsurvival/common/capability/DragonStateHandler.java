@@ -310,7 +310,7 @@ public class DragonStateHandler extends EntityStateHandler {
         PacketDistributor.sendToPlayer(player, new SyncMagicData(magic.serializeNBT(player.registryAccess())));
     }
 
-    public void setType(@Nullable final Player player, final Holder<DragonSpecies> species) {
+    public void setSpecies(@Nullable final Player player, final Holder<DragonSpecies> species) {
         Holder<DragonSpecies> oldSpecies = dragonSpecies;
         dragonSpecies = species;
 
@@ -624,7 +624,7 @@ public class DragonStateHandler extends EntityStateHandler {
         // Drop everything in your claw slots
         DragonCommand.reInsertClawTools(player);
 
-        setType(player, null);
+        setSpecies(player, null);
         setBody(player, null);
         setDesiredSize(player, NO_SIZE);
 

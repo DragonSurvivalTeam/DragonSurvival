@@ -93,7 +93,7 @@ public class DragonCommand {
             reInsertClawTools(player);
         }
 
-        data.setType(player, type);
+        data.setSpecies(player, type);
         data.setBody(player, dragonBody);
 
         if (dragonStage != null) {

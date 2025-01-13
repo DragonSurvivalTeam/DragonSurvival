@@ -213,8 +213,8 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
         for (Renderable btn : renderables) {
             if (btn instanceof AltarTypeButton button) {
                 if (button.isHoveredOrFocused()) {
-                    handler1.setType(null, button.species);
-                    handler2.setType(null, button.species);
+                    handler1.setSpecies(null, button.species);
+                    handler2.setSpecies(null, button.species);
 
                     if (button.species != null) {
                         initializeHandler(handler1);
@@ -385,15 +385,23 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                 toggled = !toggled;
             }
         };
-        altarButtons.add(humanButton);
+
+        if(!ServerConfig.noHumansAllowed) {
+            altarButtons.add(humanButton);
+        }
+
+        int extraOffset = 0;
+        if(altarButtons.size() == 3) {
+            extraOffset += 27;
+        }
 
         scrollableComponents.add(new BarComponent(this,
-                xPos, guiTop + 30, 4,
+                xPos + extraOffset, guiTop + 30, 4,
                 altarButtons, 55,
                 -13, 215, 60, 12, 19, 12, 19,
                 ALTAR_ARROW_LEFT_HOVER, ALTAR_ARROW_LEFT_MAIN, ALTAR_ARROW_RIGHT_HOVER, ALTAR_ARROW_RIGHT_MAIN, false));
 
-        addRenderableWidget(new ExtendedButton(width / 2 - 75, height - 25, 150, 20, Component.translatable(LangKey.GUI_DRAGON_EDITOR), action -> Minecraft.getInstance().setScreen(new DragonEditorScreen(Minecraft.getInstance().screen))) {
+        addRenderableWidget(new ExtendedButton(xPos + 32, height - 25, 150, 20, Component.translatable(LangKey.GUI_DRAGON_EDITOR), action -> Minecraft.getInstance().setScreen(new DragonEditorScreen(Minecraft.getInstance().screen))) {
             @Override
             public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 visible = DragonStateProvider.isDragon(Objects.requireNonNull(minecraft).player);

@@ -46,6 +46,10 @@ public class ServerConfig {
     @ConfigOption(side = ConfigSide.SERVER, category = "general", key = "start_with_dragon_choice")
     public static Boolean startWithDragonChoice = true;
 
+    @Translation(key = "no_humans_allowed", type = Translation.Type.CONFIGURATION, comments = "If enabled, players will start as a dragon and will never be allowed to be a human.")
+    @ConfigOption(side = ConfigSide.SERVER, category = "general", key = "no_humans_allowed")
+    public static Boolean noHumansAllowed = false;
+
     @Translation(key = "allow_dragon_choice_from_inventory", type = Translation.Type.CONFIGURATION, comments = "If enabled players that have not yet chosen a dragon species will be able to do so from the vanilla inventory")
     @ConfigOption(side = ConfigSide.SERVER, category = "general", key = "allow_dragon_choice_from_inventory")
     public static Boolean allowDragonChoiceFromInventory = true;

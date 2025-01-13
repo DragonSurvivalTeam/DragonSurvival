@@ -625,7 +625,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             return;
         }
 
-        HANDLER.setType(null, dragonSpecies);
+        HANDLER.setSpecies(null, dragonSpecies);
         HANDLER.setDesiredSize(null, dragonStage.value().sizeRange().min());
         HANDLER.setBody(null, dragonBody);
         SkinPreset skinPreset = localHandler.getSkinPresetForSpecies(dragonSpecies.getKey());
@@ -1006,7 +1006,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
     public void update() {
         if (dragonSpecies != null) {
-            HANDLER.setType(null, dragonSpecies);
+            HANDLER.setSpecies(null, dragonSpecies);
         }
 
         HANDLER.setBody(null, dragonBody);
@@ -1059,7 +1059,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             }
 
             data.setBody(minecraft.player, dragonBody);
-            data.setType(minecraft.player, dragonSpecies);
+            data.setSpecies(minecraft.player, dragonSpecies);
 
             double savedSize = data.getSavedDragonSize(data.speciesKey());
             if (!ServerConfig.saveGrowthStage || savedSize == DragonStateHandler.NO_SIZE) {

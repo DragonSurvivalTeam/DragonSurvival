@@ -62,7 +62,7 @@ public class TestUtils {
         DragonStateHandler data = DragonStateProvider.getData(player);
 
         Holder<DragonSpecies> species = player.level().registryAccess().holderOrThrow(dragonSpecies);
-        data.setType(player, species);
+        data.setSpecies(player, species);
         helper.assertTrue(data.species().is(dragonSpecies), String.format("Dragon species was [%s] - expected [%s]", data.species(), species));
 
         Holder<DragonBody> body = player.registryAccess().holderOrThrow(dragonBody);

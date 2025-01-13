@@ -10,9 +10,11 @@ import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AltarData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.SupplyTrigger;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -54,6 +56,13 @@ public class PlayerLoginHandler {
                 }
             }
         });
+
+        DragonStateHandler handler = DragonStateProvider.getData(event.getEntity());
+        if(ServerConfig.noHumansAllowed && !handler.isDragon()) {
+            handler.setSpecies(event.getEntity(), DragonSpecies.random(event.getEntity().registryAccess()));
+            handler.setBody(event.getEntity(), DragonBody.random(event.getEntity().registryAccess(), handler.species()));
+            handler.setSize(event.getEntity(), event.getEntity().registryAccess().holderOrThrow(DragonStages.newborn).value().sizeRange().min());
+        }
 
         syncComplete(event.getEntity());
     }
