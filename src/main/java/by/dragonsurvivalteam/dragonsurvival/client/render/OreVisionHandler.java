@@ -49,12 +49,9 @@ public class OreVisionHandler {
 
     private static final List<Data> RENDER_DATA = new ArrayList<>();
     private static final List<Data> SEARCH_RESULT = new ArrayList<>();
-
     private static final List<BlockPos> REMOVAL = new ArrayList<>();
-    private static final List<Data> EXTRA_RENDERING = new ArrayList<>();
 
-    private static ChunkPos lastPosition;
-    private static float lastHeight;
+    private static Vec3 lastPosition;
 
     private static boolean isSearching;
     private static boolean hasPendingUpdate;
@@ -77,10 +74,12 @@ public class OreVisionHandler {
         }
 
         if (oldState.getBlock() == newState.getBlock()) {
+            // There is no block state property support
             return;
         }
 
-        if (player.getEyePosition().distanceToSqr(position.getX() + 0.5, position.getY() + 0.5, position.getZ() + 0.5) - EXTENDED_SEARCH_RANGE * EXTENDED_SEARCH_RANGE > visibleRange * visibleRange) {
+        // Subtract extended range so that they are considered part of the buffered data
+        if (lastPosition != null && player.position().distanceToSqr(lastPosition) - EXTENDED_SEARCH_RANGE * EXTENDED_SEARCH_RANGE > visibleRange * visibleRange) {
             return;
         }
 
@@ -91,7 +90,7 @@ public class OreVisionHandler {
         int color = getColor(newState);
 
         if (color != NO_COLOR) {
-            EXTRA_RENDERING.add(new Data(position.getX(), position.getY(), position.getZ(), FULL_DRAW, color));
+            RENDER_DATA.add(new Data(position.getX(), position.getY(), position.getZ(), FULL_DRAW, color));
         }
     }
 
@@ -100,9 +99,7 @@ public class OreVisionHandler {
         if (event.getEntity() == Minecraft.getInstance().player) {
             RENDER_DATA.clear();
             SEARCH_RESULT.clear();
-
             REMOVAL.clear();
-            EXTRA_RENDERING.clear();
 
             lastPosition = null;
             isSearching = false;
@@ -125,26 +122,18 @@ public class OreVisionHandler {
             SEARCH_RESULT.clear();
 
             REMOVAL.clear();
-            EXTRA_RENDERING.clear();
-
             hasPendingUpdate = false;
         }
 
         if (!isSearching && isOutsideRange(visibleRange)) {
-            lastPosition = player.chunkPosition();
-            lastHeight = player.getEyeHeight();
+            lastPosition = player.position();
+            isSearching = true;
 
             Util.backgroundExecutor().submit(() -> {
-                isSearching = true;
                 collect(player, visibleRange + EXTENDED_SEARCH_RANGE);
                 isSearching = false;
                 hasPendingUpdate = true;
             });
-        }
-
-        if (!EXTRA_RENDERING.isEmpty()) {
-            RENDER_DATA.addAll(EXTRA_RENDERING);
-            EXTRA_RENDERING.clear();
         }
 
         if (RENDER_DATA.isEmpty()) {
@@ -167,6 +156,8 @@ public class OreVisionHandler {
             Data data = RENDER_DATA.get(index);
 
             if (wasRemoved(data)) {
+                // It's more efficient to remove these here (than iterating through all current entries)
+                // Since this list would usually be rather small
                 RENDER_DATA.remove(index);
                 index--;
                 continue;
@@ -235,6 +226,9 @@ public class OreVisionHandler {
                             // TODO :: this logic doesn't exactly work anymore due to the buffer range
                             //  previously it was supposed to close the shape
                             //  removing blocks also causes the not rendered lines to now look bad
+                            //  maybe possible if you calculate the sides / directions that are now missing lines?
+                            //  would require additional checks around the removed block
+                            //  generally this logic may just take up too much performance
 //                            boolean[] renderSides = new boolean[Direction.values().length];
 //
 //                            for (Direction direction : Direction.values()) {
@@ -322,11 +316,11 @@ public class OreVisionHandler {
     }
 
     private static boolean wasRemoved(final Data data) {
-        for (int removalIndex = 0; removalIndex < REMOVAL.size(); removalIndex++) {
-            BlockPos position = REMOVAL.get(removalIndex);
+        for (int i = 0; i < REMOVAL.size(); i++) {
+            BlockPos position = REMOVAL.get(i);
 
             if (position.getX() == data.x() && position.getY() == data.y() && position.getZ() == data.z()) {
-                REMOVAL.remove(removalIndex);
+                REMOVAL.remove(i);
                 return true;
             }
         }
@@ -339,31 +333,16 @@ public class OreVisionHandler {
      * away from the last position that was used as the search origin for the block data
      */
     private static boolean isOutsideRange(int visibleRange) {
-        Player player = Minecraft.getInstance().player;
-        //noinspection DataFlowIssue -> player is present
-        ChunkPos playerPosition = player.chunkPosition();
-
-        float halfRange = visibleRange / 2f;
-        int halfChunkRange = (int) Math.ceil(halfRange / 16f);
-
         if (lastPosition == null) {
             return true;
         }
 
-        if (halfChunkRange < 1) {
-            // The visible range is smaller than 2 chunks
-            int x = SectionPos.sectionToBlockCoord(lastPosition.x);
-            int z = SectionPos.sectionToBlockCoord(lastPosition.z);
+        Player player = Minecraft.getInstance().player;
+        //noinspection DataFlowIssue -> player is present
+        Vec3 currentPosition = player.position();
 
-            if (player.position().x() > x + halfRange || player.position().x() < x - halfRange || player.position().z() > z + halfRange || player.position().z() < z - halfRange) {
-                return true;
-            }
-        } else if (playerPosition.x > lastPosition.x + halfChunkRange || playerPosition.x < lastPosition.x - halfChunkRange || playerPosition.z > lastPosition.z + halfChunkRange || playerPosition.z < lastPosition.z - halfChunkRange) {
-            // Max. check is 1 chunk
-            return true;
-        }
-
-        return player.getEyeHeight() > lastHeight + halfRange || player.getEyeHeight() < lastHeight - halfRange;
+        float halfRange = visibleRange / 2f;
+        return currentPosition.distanceToSqr(lastPosition) > halfRange * halfRange;
     }
 
     private static void drawLines(final VertexConsumer buffer, final PoseStack.Pose pose, final float minX, final float minY, final float minZ, final float maxX, final float maxY, final float maxZ, final boolean[] renderSides, final int color) {
