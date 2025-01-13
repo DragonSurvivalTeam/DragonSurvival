@@ -84,7 +84,8 @@ public @interface Translation {
         ABILITY_DESCRIPTION("dragon_ability." + DragonSurvival.MODID + ".", ".desc"),
 
         DRAGON_SPECIES("dragon_species." + DragonSurvival.MODID + ".", ""),
-        DRAGON_SPECIES_DESCRIPTION("dragon_species." + DragonSurvival.MODID + ".", ".desc"),
+        DRAGON_SPECIES_ALTAR_DESCRIPTION("dragon_species." + DragonSurvival.MODID + ".", ".altar.desc"),
+        DRAGON_SPECIES_INVENTORY_DESCRIPTION("dragon_species." + DragonSurvival.MODID + ".", ".banner.desc"),
 
         PENALTY("dragon_penalty." + DragonSurvival.MODID + ".", ""),
         PENALTY_DESCRIPTION("dragon_penalty." + DragonSurvival.MODID + ".", ".desc"),

@@ -48,9 +48,6 @@ public class AltarTypeButton extends Button implements HoverDisableable {
     })
     private static final String HUMAN = Translation.Type.GUI.wrap("altar.info.human");
 
-    @Translation(comments = "§6■ Diet:§r %s")
-    private static final String DIET = Translation.Type.GUI.wrap("altar.info.diet");
-
     private static final ResourceLocation HUMAN_ALTAR_ICON = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/custom/altar/human/altar_icon.png");
 
     public final Holder<DragonSpecies> species;
@@ -107,9 +104,8 @@ public class AltarTypeButton extends Button implements HoverDisableable {
 
                 // Using the color codes in the translation doesn't seem to apply the color to the entire text - therefor we create the [shown / max_items] tooltip part here
                 MutableComponent shownFoods = Component.literal("[" + Math.min(diet.size(), scroll + MAX_SHOWN) + " / " + diet.size() + "]").withStyle(ChatFormatting.DARK_GRAY);
-                components.addFirst(Either.left(Component.translatable(DIET, shownFoods)));
                 //noinspection DataFlowIssue -> key is present
-                components.addFirst(Either.left(Component.translatable(Translation.Type.DRAGON_SPECIES_DESCRIPTION.wrap(species.getKey().location()))));
+                components.addFirst(Either.left(Component.translatable(Translation.Type.DRAGON_SPECIES_ALTAR_DESCRIPTION.wrap(species.getKey().location()), shownFoods)));
 
                 for (int i = scroll; i < max; i++) {
                     components.add(Either.right(new DietComponent(species, diet.get(i))));

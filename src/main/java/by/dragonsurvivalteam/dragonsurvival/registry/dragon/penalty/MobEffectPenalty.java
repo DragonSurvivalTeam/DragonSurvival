@@ -1,14 +1,9 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.PotionData;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
-import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
-import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
-import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 

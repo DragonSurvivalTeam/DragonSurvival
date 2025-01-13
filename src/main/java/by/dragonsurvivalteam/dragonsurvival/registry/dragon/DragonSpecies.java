@@ -26,12 +26,10 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,7 +37,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // ignore
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
@@ -61,7 +58,6 @@ public class DragonSpecies implements AttributeModifierSupplier {
 
     public static final Codec<Holder<DragonSpecies>> CODEC = RegistryFixedCodec.create(REGISTRY);
     public static final StreamCodec<RegistryFriendlyByteBuf, Holder<DragonSpecies>> STREAM_CODEC = ByteBufCodecs.holderRegistry(REGISTRY);
-    private static final RandomSource RANDOM = RandomSource.create();
 
     private final Optional<Double> startingSize;
     private final Optional<HolderSet<DragonStage>> customStageProgression;
@@ -104,25 +100,6 @@ public class DragonSpecies implements AttributeModifierSupplier {
         if (!areTypesValid.get()) {
             throw new IllegalStateException(validationError.toString());
         }
-    }
-
-    public static Holder<DragonSpecies> random(@Nullable final HolderLookup.Provider provider) {
-        HolderLookup.RegistryLookup<DragonSpecies> registry;
-
-        if (provider == null) {
-            registry = CommonHooks.resolveLookup(REGISTRY);
-        } else {
-            registry = provider.lookupOrThrow(REGISTRY);
-        }
-
-        //noinspection DataFlowIssue -> registry expected to be present
-        List<Holder<DragonSpecies>> species = registry.listElements().collect(Collectors.toUnmodifiableList());
-
-        if (species.isEmpty()) {
-            throw new IllegalStateException("There are no registered dragon species");
-        }
-
-        return species.get(RANDOM.nextInt(species.size()));
     }
 
     @SubscribeEvent

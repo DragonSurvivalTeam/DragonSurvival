@@ -10,38 +10,28 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.RandomSource;
 import net.neoforged.neoforge.common.CommonHooks;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
 public class ResourceHelper {
+    private static final RandomSource RANDOM = RandomSource.create();
+
     public static <T> Optional<Holder.Reference<T>> get(@Nullable final HolderLookup.Provider provider, final ResourceKey<T> key) {
-        HolderLookup.RegistryLookup<T> registry;
-
-        if (provider == null) {
-            registry = CommonHooks.resolveLookup(key.registryKey());
-        } else {
-            registry = provider.lookupOrThrow(key.registryKey());
-        }
-
-        return Objects.requireNonNull(registry).get(key);
+        return getRegistry(provider, key.registryKey()).get(key);
     }
 
-    public static <T> List<ResourceKey<T>> keys(@Nullable final HolderLookup.Provider provider, ResourceKey<Registry<T>> registryKey) {
-        HolderLookup.RegistryLookup<T> registry;
+    public static <T> List<ResourceKey<T>> keys(@Nullable final HolderLookup.Provider provider, final ResourceKey<Registry<T>> key) {
+        return getRegistry(provider, key).listElementIds().toList();
+    }
 
-        if (provider == null) {
-            registry = CommonHooks.resolveLookup(registryKey);
-        } else {
-            registry = provider.lookupOrThrow(registryKey);
-        }
-
-        //noinspection DataFlowIssue -> registry is expected to be present
-        return registry.listElementIds().toList();
+    public static <T> Holder<T> random(@Nullable final HolderLookup.Provider provider, final ResourceKey<Registry<T>> key) {
+        List<Holder.Reference<T>> elements = getRegistry(provider, key).listElements().toList();
+        return elements.get(RANDOM.nextInt(elements.size()));
     }
 
     /**
@@ -90,5 +80,17 @@ public class ResourceHelper {
             DragonSurvival.LOGGER.error(error.message());
             return null;
         });
+    }
+
+    private static <T> HolderLookup.RegistryLookup<T> getRegistry(@Nullable final HolderLookup.Provider provider, final ResourceKey<Registry<T>> key) {
+        HolderLookup.RegistryLookup<T> registry;
+
+        if (provider == null) {
+            registry = CommonHooks.resolveLookup(key);
+        } else {
+            registry = provider.lookupOrThrow(key);
+        }
+
+        return registry;
     }
 }

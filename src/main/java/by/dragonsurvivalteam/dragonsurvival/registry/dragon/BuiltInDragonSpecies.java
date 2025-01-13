@@ -34,7 +34,13 @@ import java.util.List;
 import java.util.Optional;
 
 public class BuiltInDragonSpecies {
-    @Translation(type = Translation.Type.DRAGON_SPECIES_DESCRIPTION, comments = {
+    @Translation(type = Translation.Type.DRAGON_SPECIES_ALTAR_DESCRIPTION, comments = {
+            "§c■ Cave dragon.§r",
+            "§2■ Features:§f§r fire resistance, pickaxe claws, fire magic, faster movement on stone and magma blocks.",
+            "§4■ Weakness:§r water.",
+            "§6■ Diet:§r %s"
+    })
+    @Translation(type = Translation.Type.DRAGON_SPECIES_INVENTORY_DESCRIPTION, comments = {
             "§c■ Cave dragon.§r",
             "§2■ Features:§f§r fire resistance, pickaxe claws, fire magic, faster movement on stone and magma blocks.",
             "§4■ Weakness:§r water.",
@@ -42,7 +48,13 @@ public class BuiltInDragonSpecies {
     @Translation(type = Translation.Type.DRAGON_SPECIES, comments = "Cave Dragon")
     public static final ResourceKey<DragonSpecies> CAVE = key("cave");
 
-    @Translation(type = Translation.Type.DRAGON_SPECIES_DESCRIPTION, comments = {
+    @Translation(type = Translation.Type.DRAGON_SPECIES_ALTAR_DESCRIPTION, comments = {
+            "§a■ Forest dragon.§r",
+            "§2■ Features:§f§r soft fall, axe claws, poison magic, faster movement on wooden and grass blocks.",
+            "§4■ Weakness:§r dark caves.",
+            "§6■ Diet:§r %s"
+    })
+    @Translation(type = Translation.Type.DRAGON_SPECIES_INVENTORY_DESCRIPTION, comments = {
             "§a■ Forest dragon.§r",
             "§2■ Features:§f§r soft fall, axe claws, poison magic, faster movement on wooden and grass blocks.",
             "§4■ Weakness:§r dark caves.",
@@ -50,7 +62,13 @@ public class BuiltInDragonSpecies {
     @Translation(type = Translation.Type.DRAGON_SPECIES, comments = "Forest Dragon")
     public static final ResourceKey<DragonSpecies> FOREST = key("forest");
 
-    @Translation(type = Translation.Type.DRAGON_SPECIES_DESCRIPTION, comments = {
+    @Translation(type = Translation.Type.DRAGON_SPECIES_ALTAR_DESCRIPTION, comments = {
+            "§3■ Sea dragon.§r",
+            "§2■ Features:§f§r underwater breathing, shovel claws, electric magic, faster movement on ice and beach blocks.",
+            "§4■ Weakness:§r dehydration.",
+            "§6■ Diet:§r %s"
+    })
+    @Translation(type = Translation.Type.DRAGON_SPECIES_INVENTORY_DESCRIPTION, comments = {
             "§3■ Sea dragon.§r",
             "§2■ Features:§f§r underwater breathing, shovel claws, electric magic, faster movement on ice and beach blocks.",
             "§4■ Weakness:§r dehydration.",

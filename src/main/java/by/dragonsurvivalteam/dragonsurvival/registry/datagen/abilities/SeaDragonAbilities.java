@@ -464,7 +464,7 @@ public class SeaDragonAbilities {
                 // Disable when marked by the ender dragon
                 Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(new FlightEffect(1, DragonSurvival.res("textures/ability_effect/forest_dragon_wings.png"))),
+                        List.of(new FlightEffect(1, DragonSurvival.res("textures/ability_effect/sea_dragon_wings.png"))),
                         TargetingMode.ALLIES_AND_SELF
                 ), true), LevelBasedValue.constant(1))),
                 true,

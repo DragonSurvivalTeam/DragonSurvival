@@ -7,7 +7,7 @@
             {
               "effect_type": "dragonsurvival:flight",
               "flight_level": 1,
-              "icon": "dragonsurvival:textures/ability_effect/sea_dragon_wings.png"
+              "icon": "dragonsurvival:textures/ability_effect/forest_dragon_wings.png"
             }
           ],
           "targeting_mode": "allies_and_self"

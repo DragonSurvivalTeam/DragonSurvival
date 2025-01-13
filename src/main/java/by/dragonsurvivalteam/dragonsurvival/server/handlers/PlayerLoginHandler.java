@@ -18,6 +18,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.SupplyTrigger;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
+import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -60,8 +61,9 @@ public class PlayerLoginHandler {
         });
 
         DragonStateHandler handler = DragonStateProvider.getData(event.getEntity());
-        if(ServerConfig.noHumansAllowed && !handler.isDragon()) {
-            handler.setSpecies(event.getEntity(), DragonSpecies.random(event.getEntity().registryAccess()));
+
+        if (ServerConfig.noHumansAllowed && !handler.isDragon()) {
+            handler.setSpecies(event.getEntity(), ResourceHelper.random(event.getEntity().registryAccess(), DragonSpecies.REGISTRY));
             handler.setBody(event.getEntity(), DragonBody.random(event.getEntity().registryAccess(), handler.species()));
             handler.setSize(event.getEntity(), event.getEntity().registryAccess().holderOrThrow(DragonStages.newborn).value().sizeRange().min());
         }
