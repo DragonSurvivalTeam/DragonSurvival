@@ -1,11 +1,14 @@
 package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.network.status.SyncPlayerJump;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
+import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -27,7 +30,13 @@ public class DragonBonusHandler {
         }
 
         if (entity instanceof ServerPlayer serverPlayer && DragonStateProvider.isDragon(serverPlayer)) {
-            PacketDistributor.sendToAllPlayers(new SyncPlayerJump.Data(entity.getId(), 18));
+            PacketDistributor.sendToPlayersTrackingEntity(serverPlayer, new SyncPlayerJump.Data(entity.getId(), 18));
+        } else if(entity instanceof Player player && DragonStateProvider.isDragon(player)) {
+            if(player.level().isClientSide()) {
+                if(Minecraft.getInstance().player == player) {
+                    DragonEntity.DRAGON_JUMP_TICKS.put(player.getId(), 18);
+                }
+            }
         }
     }
 
