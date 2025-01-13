@@ -320,11 +320,11 @@ public class MagicHUD {
                 for (int point = 0; point < perRow; point++) {
                     int slot = row * perRow + point;
 
-                    if (slot > currentMana) {
+                    if (slot + 0.5 > currentMana) {
                         int x = manaX + point * 9;
                         int y = manaY - 13 - row * 10;
 
-                        if (maxMana > 0 && maxMana >= slot) {
+                        if (maxMana > 0 && maxMana >= slot + 0.5) {
                             if (magic.isCasting()) {
                                 // No mana regeneration
                                 blit(graphics, manaSprites.empty(), x, y, 9, 1);
@@ -336,7 +336,7 @@ public class MagicHUD {
                                 blit(graphics, manaSprites.empty(), x, y, 9, 1);
                                 blit(graphics, manaSprites.recovery(), x, y, 9, deltaCounter);
                             }
-                        } else if (reservedMana > 0 && reservedMana >= slot - maxMana) {
+                        } else if (reservedMana > 0 && reservedMana >= slot + 0.5 - maxMana) {
                             // Reserved mana
                             blit(graphics, manaSprites.reserved(), x, y, 9, 1);
                         }
