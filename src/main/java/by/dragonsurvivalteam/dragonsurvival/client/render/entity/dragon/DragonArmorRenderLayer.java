@@ -357,7 +357,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         if (item instanceof ArmorItem armorItem) {
             Holder<ArmorMaterial> armorMaterial = armorItem.getMaterial();
             boolean isVanillaArmor = false;
-
+            boolean isDyeable = false;
             if (armorMaterial == ArmorMaterials.NETHERITE) {
                 isVanillaArmor = true;
                 texture += "netherite_";
@@ -369,6 +369,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
                 texture += "iron_";
             } else if (armorMaterial == ArmorMaterials.LEATHER) {
                 isVanillaArmor = true;
+                isDyeable = true;
                 texture += "leather_";
             } else if (armorMaterial == ArmorMaterials.GOLD) {
                 isVanillaArmor = true;
@@ -395,6 +396,11 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
                     case CHEST -> texture += "chestplate";
                     case LEGS -> texture += "leggings";
                     case FEET -> texture += "boots";
+                }
+
+                // TODO :: Do we really have to make a special case for this? Do items not have a way to signify "can be dyed?"
+                if(isDyeable && player.getItemBySlot(equipmentSlot).get(DataComponents.DYED_COLOR) == null) {
+                    texture += "_undyed";
                 }
 
                 texture += ".png";
