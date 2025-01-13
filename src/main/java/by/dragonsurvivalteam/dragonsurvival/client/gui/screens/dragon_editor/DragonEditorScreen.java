@@ -673,18 +673,20 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             hasInit = true;
         }
 
-        selectedDragonStage = DragonStage.allStages(minecraft.player.registryAccess()).indexOf(dragonStage);
+        // TODO :: use tag to order the species? otherwise it might not be consistent
+        //noinspection SuspiciousMethodCalls -> type matches
+        selectedDragonStage = ResourceHelper.all(minecraft.player.registryAccess(), DragonStage.REGISTRY).indexOf(dragonStage);
         HoverButton leftArrow = new HoverButton(width / 2 - 100, 10, 18, 20, 20, 20, LEFT_ARROW_MAIN, LEFT_ARROW_HOVER, button -> {
-            List<Holder<DragonStage>> allStages = DragonStage.allStages(minecraft.player.registryAccess());
-            selectedDragonStage = Functions.wrap(selectedDragonStage - 1, 0, allStages.size() - 1);
-            actionHistory.add(new EditorAction<>(selectStageAction, allStages.get(selectedDragonStage)));
+            List<Holder.Reference<DragonStage>> all = ResourceHelper.all(minecraft.player.registryAccess(), DragonStage.REGISTRY);
+            selectedDragonStage = Functions.wrap(selectedDragonStage - 1, 0, all.size() - 1);
+            actionHistory.add(new EditorAction<>(selectStageAction, all.get(selectedDragonStage)));
         });
         addRenderableWidget(leftArrow);
 
         HoverButton rightArrow = new HoverButton(width / 2 + 83, 10, 18, 20, 20, 20, RIGHT_ARROW_MAIN, RIGHT_ARROW_HOVER, button -> {
-            List<Holder<DragonStage>> allStages = DragonStage.allStages(minecraft.player.registryAccess());
-            selectedDragonStage = Functions.wrap(selectedDragonStage + 1, 0, allStages.size() - 1);
-            actionHistory.add(new EditorAction<>(selectStageAction, allStages.get(selectedDragonStage)));
+            List<Holder.Reference<DragonStage>> all = ResourceHelper.all(minecraft.player.registryAccess(), DragonStage.REGISTRY);
+            selectedDragonStage = Functions.wrap(selectedDragonStage + 1, 0, all.size() - 1);
+            actionHistory.add(new EditorAction<>(selectStageAction, all.get(selectedDragonStage)));
         });
         addRenderableWidget(rightArrow);
 
@@ -876,7 +878,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             Lazy<DragonStageCustomization> lazy = preset.get(Objects.requireNonNull(dragonStage.getKey()));
             CompoundTag storedPresetData = lazy.get().serializeNBT(access);
 
-            for (Holder<DragonStage> stage : DragonStage.allStages(access)) {
+            for (Holder<DragonStage> stage : ResourceHelper.all(access, DragonStage.REGISTRY)) {
                 this.preset.put(Objects.requireNonNull(stage.getKey()), Lazy.of(() -> {
                     DragonStageCustomization customization = new DragonStageCustomization();
                     customization.deserializeNBT(access, storedPresetData);

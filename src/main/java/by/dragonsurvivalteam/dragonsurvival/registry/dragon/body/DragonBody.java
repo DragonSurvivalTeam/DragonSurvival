@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.AttributeModifierSupplier;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEmoteSet;
+import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
@@ -21,12 +22,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public record DragonBody(boolean isDefault, List<Modifier> modifiers, double heightMultiplier, boolean hasExtendedCrouch, boolean canHideWings, ResourceLocation model, List<String> bonesToHideForToggle, Holder<DragonEmoteSet> emotes) implements AttributeModifierSupplier {
@@ -55,30 +54,16 @@ public record DragonBody(boolean isDefault, List<Modifier> modifiers, double hei
         event.dataPackRegistry(REGISTRY, DIRECT_CODEC, DIRECT_CODEC);
     }
 
-    public static Holder<DragonBody> random(@Nullable final HolderLookup.Provider provider, @Nullable Holder<DragonSpecies> speciesHolder) {
-        HolderLookup.RegistryLookup<DragonBody> registry;
+    public static Holder<DragonBody> random(@Nullable final HolderLookup.Provider provider, @Nullable final Holder<DragonSpecies> species) {
+        List<Holder.Reference<DragonBody>> all = ResourceHelper.all(provider, REGISTRY);
 
-        if (provider == null) {
-            registry = CommonHooks.resolveLookup(REGISTRY);
+        if (species == null || species.value().bodies().size() == 0) {
+            all = all.stream().filter(body -> body.value().isDefault()).toList();
         } else {
-            registry = provider.lookupOrThrow(REGISTRY);
+            all = all.stream().filter(body -> species.value().bodies().contains(body)).toList();
         }
 
-        //noinspection DataFlowIssue -> registry expected to be present
-        List<Holder<DragonBody>> bodies = registry.listElements().collect(Collectors.toUnmodifiableList());
-
-        if (bodies.isEmpty()) {
-            throw new IllegalStateException("There are no registered dragon bodies");
-        }
-
-        List<Holder<DragonBody>> filteredBodies;
-        if(speciesHolder == null || speciesHolder.value().bodies().size() == 0) {
-            filteredBodies = bodies.stream().filter(body -> body.value().isDefault()).toList();
-        } else {
-            filteredBodies = bodies.stream().filter(body -> speciesHolder.value().bodies().contains(body)).toList();
-        }
-
-        return filteredBodies.get(RANDOM.nextInt(bodies.size()));
+        return all.get(RANDOM.nextInt(all.size()));
     }
 
     @Override

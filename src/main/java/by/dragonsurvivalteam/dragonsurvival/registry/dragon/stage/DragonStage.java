@@ -28,14 +28,12 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ExtraCodecs;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 
 import javax.annotation.Nullable;
 import java.text.NumberFormat;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -121,7 +119,7 @@ public record DragonStage(
         // Sort the default stages by size range
         HolderSet<DragonStage> sortedDefaultStages = HolderSet.direct(defaultStages.stream().sorted(Comparator.comparingDouble(stage -> stage.value().sizeRange().min())).toList());
 
-        if (!stagesHaveContinousSizeRange(sortedDefaultStages, validationError, true)) {
+        if (!stagesHaveContinuousSizeRange(sortedDefaultStages, validationError, true)) {
             areStagesValid.set(false);
         }
 
@@ -131,7 +129,7 @@ public record DragonStage(
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted") // ignore for clarity
-    public static boolean stagesHaveContinousSizeRange(final HolderSet<DragonStage> sortedStages, final StringBuilder error, boolean isForDefaultStages) {
+    public static boolean stagesHaveContinuousSizeRange(final HolderSet<DragonStage> sortedStages, final StringBuilder error, boolean isForDefaultStages) {
         for (int i = 0; i < sortedStages.size() - 1; i++) {
             if (sortedStages.get(i).value().sizeRange().max() != sortedStages.get(i + 1).value().sizeRange().min()) {
                 error.append(isForDefaultStages ? "\n- Default stages [" : "\n- Stages [").append(sortedStages.get(i).getRegisteredName()).append("] and [").append(sortedStages.get(i + 1).getRegisteredName()).append("] are not connected");
@@ -166,10 +164,6 @@ public record DragonStage(
         event.dataPackRegistry(REGISTRY, DIRECT_CODEC, DIRECT_CODEC);
     }
 
-    public static List<Holder<DragonStage>> allStages(@Nullable final HolderLookup.Provider provider) {
-        return ResourceHelper.keys(provider, REGISTRY).stream().map(key -> ResourceHelper.get(provider, key).orElseThrow().getDelegate()).toList();
-    }
-
     public static Component translatableName(final ResourceKey<DragonStage> dragonStage) {
         return Component.translatable(Translation.Type.STAGE.wrap(dragonStage.location()));
     }
@@ -188,12 +182,22 @@ public record DragonStage(
         return new MiscCodecs.Bounds(smallest.sizeRange().min(), largest.sizeRange().max());
     }
 
-    public static Holder<DragonStage> getStage(final HolderSet<DragonStage> stages, double size) {
+    public static double getStartingSize(final HolderSet<DragonStage> stages) {
+        return stages.stream().filter(stage -> stage.value().isDefault())
+                .min(Comparator.comparingDouble(stage -> stage.value().sizeRange().min()))
+                .map(stage -> stage.value().sizeRange().min()).orElse(DragonStateHandler.NO_SIZE);
+    }
+
+    /**
+     * Returns a stage from the provided set whose size range matches the provided size <br>
+     * It is not a match if the size equals to the max. size of the stage <br>
+     * (This is because if we provide such a size we usually want the next stage, not the current stage at max. size)
+     */
+    public static Holder<DragonStage> get(final HolderSet<DragonStage> stages, double size) {
         Holder<DragonStage> smallest = null;
         Holder<DragonStage> largest = null;
 
         for (Holder<DragonStage> stage : stages) {
-            // Don't consider it a match if it is equal to the max size of the stage; we want to prefer the smaller stage always
             if (stage.value().sizeRange().matches(size) && stage.value().sizeRange().max() != size) {
                 return stage;
             }
@@ -215,26 +219,16 @@ public record DragonStage(
         return largest;
     }
 
-    public static double getStartingSize(final HolderSet<DragonStage> stages) {
-        return stages.stream().filter(stage -> stage.value().isDefault())
-                .min(Comparator.comparingDouble(stage -> stage.value().sizeRange().min()))
-                .map(stage -> stage.value().sizeRange().min()).orElse(DragonStateHandler.NO_SIZE);
-    }
-
+    /** TODO :: is this even usable? it could select a stage that is not valid for the current species
+     * Tries to retrieve a valid stage for the provided size <br>
+     * If no size range matches either the smallest or largest stage will be returned <br>
+     * (Depending on whose min. size is closer to the provided size)
+     */
     public static Holder<DragonStage> get(@Nullable final HolderLookup.Provider provider, double size) {
-        HolderLookup.RegistryLookup<DragonStage> registry;
-
-        if (provider == null) {
-            registry = CommonHooks.resolveLookup(REGISTRY);
-        } else {
-            registry = provider.lookupOrThrow(REGISTRY);
-        }
-
         double fallbackDifference = Double.MAX_VALUE;
         Holder<DragonStage> fallback = null;
 
-        //noinspection DataFlowIssue -> registry is expected to be present
-        for (Holder.Reference<DragonStage> level : registry.listElements().toList()) {
+        for (Holder.Reference<DragonStage> level : ResourceHelper.all(provider, REGISTRY)) {
             if (level.value().sizeRange().matches(size)) {
                 return level;
             }
@@ -256,18 +250,10 @@ public record DragonStage(
     }
 
     private static Pair<DragonStage, DragonStage> getSizes(@Nullable final HolderLookup.Provider provider) {
-        HolderLookup.RegistryLookup<DragonStage> registry;
-
-        if (provider == null) {
-            registry = CommonHooks.resolveLookup(REGISTRY);
-        } else {
-            registry = provider.lookupOrThrow(REGISTRY);
-        }
-
         DragonStage smallest = null;
         DragonStage largest = null;
 
-        for (Holder.Reference<DragonStage> level : Objects.requireNonNull(registry).listElements().toList()) {
+        for (Holder.Reference<DragonStage> level : ResourceHelper.all(provider, REGISTRY)) {
             if (smallest == null || level.value().sizeRange().min() < smallest.sizeRange().min()) {
                 smallest = level.value();
             }
@@ -281,7 +267,7 @@ public record DragonStage(
     }
 
     public static HolderSet<DragonStage> getDefaultStages(@Nullable final HolderLookup.Provider provider) {
-        return HolderSet.direct(allStages(provider).stream().filter(stage -> stage.value().isDefault()).toList());
+        return HolderSet.direct(ResourceHelper.all(provider, REGISTRY).stream().filter(stage -> stage.value().isDefault()).toList());
     }
 
     public String getTimeToGrowFormattedWithPercentage(double percentage, double size, boolean isGrowing) {

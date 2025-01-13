@@ -91,7 +91,7 @@ public class DragonSpecies implements AttributeModifierSupplier {
             Holder.Reference<DragonSpecies> type = ResourceHelper.get(provider, key).get();
 
             if (type.value().stages().isPresent()) {
-                if (!DragonStage.stagesHaveContinousSizeRange(type.value().stages().get(), validationError, false)) {
+                if (!DragonStage.stagesHaveContinuousSizeRange(type.value().stages().get(), validationError, false)) {
                     areTypesValid.set(false);
                 }
             }

@@ -25,13 +25,17 @@ public class ResourceHelper {
         return getRegistry(provider, key.registryKey()).get(key);
     }
 
-    public static <T> List<ResourceKey<T>> keys(@Nullable final HolderLookup.Provider provider, final ResourceKey<Registry<T>> key) {
-        return getRegistry(provider, key).listElementIds().toList();
+    public static <T> List<Holder.Reference<T>> all(@Nullable final HolderLookup.Provider provider, final ResourceKey<Registry<T>> key) {
+        return getRegistry(provider, key).listElements().toList();
     }
 
     public static <T> Holder<T> random(@Nullable final HolderLookup.Provider provider, final ResourceKey<Registry<T>> key) {
         List<Holder.Reference<T>> elements = getRegistry(provider, key).listElements().toList();
         return elements.get(RANDOM.nextInt(elements.size()));
+    }
+
+    public static <T> List<ResourceKey<T>> keys(@Nullable final HolderLookup.Provider provider, final ResourceKey<Registry<T>> key) {
+        return getRegistry(provider, key).listElementIds().toList();
     }
 
     /**

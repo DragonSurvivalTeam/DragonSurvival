@@ -213,7 +213,7 @@ public class DragonStateHandler extends EntityStateHandler {
             return newSize;
         }
 
-        Holder<DragonStage> stageToUseForSizeBounds = DragonStage.getStage(dragonSpecies.value().getStages(provider), newSize);
+        Holder<DragonStage> stageToUseForSizeBounds = DragonStage.get(dragonSpecies.value().getStages(provider), newSize);
         newSize = stageToUseForSizeBounds.value().getBoundedSize(newSize);
         return newSize;
     }
@@ -226,7 +226,7 @@ public class DragonStateHandler extends EntityStateHandler {
             return;
         }
 
-        dragonStage = dragonSpecies != null ? DragonStage.getStage(dragonSpecies.value().getStages(provider), size) : null;
+        dragonStage = dragonSpecies != null ? DragonStage.get(dragonSpecies.value().getStages(provider), size) : null;
         this.size = boundSize(provider, size);
 
         if (this.desiredSize == DragonStage.getBounds().min()) {
