@@ -121,7 +121,8 @@ public class Projectiles {
                                                                 HolderSet.direct(DSEffects.CHARGED),
                                                                 LevelBasedValue.constant(0),
                                                                 LevelBasedValue.constant(Functions.secondsToTicks(5)),
-                                                                LevelBasedValue.constant(0.5f)
+                                                                LevelBasedValue.constant(0.5f),
+                                                                false
                                                         )),
                                                         Optional.of(Condition.thisEntity(EntityCondition.isLiving()).build())
                                                 )
@@ -189,7 +190,8 @@ public class Projectiles {
                                                                 HolderSet.direct(DSEffects.CHARGED),
                                                                 LevelBasedValue.constant(0),
                                                                 LevelBasedValue.constant(Functions.secondsToTicks(5)),
-                                                                LevelBasedValue.constant(0.5f)
+                                                                LevelBasedValue.constant(0.5f),
+                                                                false
                                                         )),
                                                         Optional.of(Condition.thisEntity(EntityCondition.isLiving()).build())
                                                 )

@@ -135,7 +135,7 @@ public class ChargedEffect extends ModifiableMobEffect {
                 targetData.chainCount = sourceData.chainCount + 1;
 
                 if ((targetData.chainCount < maxChain || maxChain == INFINITE_CHAINS) && Functions.chance(target.getRandom(), 40)) {
-                    target.addEffect(new MobEffectInstance(DSEffects.CHARGED, Functions.secondsToTicks(10), 0, false, true), effectApplier);
+                    target.addEffect(new MobEffectInstance(DSEffects.CHARGED, Functions.secondsToTicks(10), 0, false, false), effectApplier);
                 }
             }
         }

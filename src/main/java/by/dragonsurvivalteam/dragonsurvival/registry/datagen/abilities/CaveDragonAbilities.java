@@ -180,7 +180,7 @@ public class CaveDragonAbilities {
                                 List.of(
                                         new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FIRE_BREATH), LevelBasedValue.perLevel(3)),
                                         new IgniteEffect(LevelBasedValue.perLevel(Functions.secondsToTicks(5))),
-                                        PotionEffect.only(LevelBasedValue.constant(0), LevelBasedValue.constant(Functions.secondsToTicks(10)), LevelBasedValue.constant(0.3f), DSEffects.BURN).getFirst()
+                                        PotionEffect.only(LevelBasedValue.constant(0), LevelBasedValue.constant(Functions.secondsToTicks(10)), LevelBasedValue.constant(0.3f), false, DSEffects.BURN).getFirst()
                                 ),
                                 TargetingMode.NON_ALLIES
                         ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
@@ -262,7 +262,7 @@ public class CaveDragonAbilities {
                 // Disable when not on ground
                 Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false)).build()),
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(
-                        PotionEffect.only(LevelBasedValue.constant(0), LevelBasedValue.perLevel(Functions.secondsToTicks(60)), DSEffects.STURDY_SKIN),
+                        PotionEffect.only(LevelBasedValue.constant(0), LevelBasedValue.perLevel(Functions.secondsToTicks(60)), false, DSEffects.STURDY_SKIN),
                         TargetingMode.ALLIES_AND_SELF
                 ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 true,
@@ -293,7 +293,7 @@ public class CaveDragonAbilities {
                 // Disable when not on ground
                 Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false)).build()),
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(
-                        PotionEffect.only(LevelBasedValue.perLevel(1), LevelBasedValue.constant(Functions.secondsToTicks(200)), MobEffects.FIRE_RESISTANCE),
+                        PotionEffect.only(LevelBasedValue.perLevel(1), LevelBasedValue.constant(Functions.secondsToTicks(200)), false, MobEffects.FIRE_RESISTANCE),
                         TargetingMode.ALLIES
                 ), LevelBasedValue.constant(25)), LevelBasedValue.constant(1))),
                 true,
@@ -325,7 +325,7 @@ public class CaveDragonAbilities {
                 Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false))
                         .and(Condition.thisEntity(EntityCondition.isInFluid(context.lookup(Registries.FLUID).getOrThrow(FluidTags.LAVA))).invert()).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        PotionEffect.only(LevelBasedValue.constant(0), LevelBasedValue.perLevel(Functions.secondsToTicks(30)), DSEffects.LAVA_VISION),
+                        PotionEffect.only(LevelBasedValue.constant(0), LevelBasedValue.perLevel(Functions.secondsToTicks(30)), false, DSEffects.LAVA_VISION),
                         TargetingMode.ALLIES_AND_SELF
                 ), true), LevelBasedValue.constant(1))),
                 true,
@@ -399,7 +399,7 @@ public class CaveDragonAbilities {
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         // Enable when on said block tag
                         Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.SPEEDS_UP_CAVE_DRAGON)).build(),
-                        PotionEffect.only(LevelBasedValue.perLevel(1), LevelBasedValue.perLevel(Functions.secondsToTicks(5)), MobEffects.MOVEMENT_SPEED),
+                        PotionEffect.only(LevelBasedValue.perLevel(1), LevelBasedValue.perLevel(Functions.secondsToTicks(5)), false, MobEffects.MOVEMENT_SPEED),
                         TargetingMode.ALLIES_AND_SELF
                 ), false), LevelBasedValue.constant(Functions.secondsToTicks(1)))),
                 true,
@@ -446,7 +446,7 @@ public class CaveDragonAbilities {
                 Optional.of(new ExperiencePointsUpgrade(4, LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(new OnAttackEffect(PotionData.of(LevelBasedValue.constant(0), LevelBasedValue.perLevel(Functions.secondsToTicks(5)), LevelBasedValue.perLevel(0.15f), DSEffects.BURN))),
+                        List.of(new OnAttackEffect(PotionData.of(LevelBasedValue.constant(0), LevelBasedValue.perLevel(Functions.secondsToTicks(5)), LevelBasedValue.perLevel(0.15f), false, DSEffects.BURN))),
                         TargetingMode.ALL
                 ), true), LevelBasedValue.constant(1))),
                 true,

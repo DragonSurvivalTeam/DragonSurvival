@@ -173,7 +173,7 @@ public class ForestDragonAbilities {
                                 Condition.thisEntity(EntityCondition.isLiving()).build(),
                                 List.of(
                                         new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FERTILIZER_BREATH), LevelBasedValue.perLevel(2)),
-                                        PotionEffect.only(LevelBasedValue.constant(0), LevelBasedValue.constant(Functions.secondsToTicks(10)), LevelBasedValue.constant(0.3f), DSEffects.DRAIN).getFirst()
+                                        PotionEffect.only(LevelBasedValue.constant(0), LevelBasedValue.constant(Functions.secondsToTicks(10)), LevelBasedValue.constant(0.3f), false, DSEffects.DRAIN).getFirst()
                                 ),
                                 TargetingMode.NON_ALLIES
                         ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
@@ -199,7 +199,7 @@ public class ForestDragonAbilities {
                                         ), LevelBasedValue.constant(0.2f)),
                                         new BlockBreakEffect(BlockCondition.blocks(Blocks.POTATOES), LevelBasedValue.constant(0.2f)),
                                         new AreaCloudEffect(
-                                                PotionData.of(LevelBasedValue.constant(0), LevelBasedValue.constant(Functions.secondsToTicks(30)), DSEffects.DRAIN),
+                                                PotionData.of(LevelBasedValue.constant(0), LevelBasedValue.constant(Functions.secondsToTicks(30)), false, DSEffects.DRAIN),
                                                 LevelBasedValue.constant(Functions.secondsToTicks(2)),
                                                 0.3,
                                                 new LargePoisonParticleOption(37, false)
@@ -280,7 +280,7 @@ public class ForestDragonAbilities {
                 // Disable when not on ground
                 Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false)).build()),
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(
-                        PotionEffect.only(LevelBasedValue.perLevel(1), LevelBasedValue.constant(Functions.secondsToTicks(200)), MobEffects.DIG_SPEED),
+                        PotionEffect.only(LevelBasedValue.perLevel(1), LevelBasedValue.constant(Functions.secondsToTicks(200)), false, MobEffects.DIG_SPEED),
                         TargetingMode.ALLIES_AND_SELF
                 ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 true,
@@ -311,7 +311,7 @@ public class ForestDragonAbilities {
                 // Disable when not on ground
                 Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false)).build()),
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(
-                        PotionEffect.only(LevelBasedValue.perLevel(1), LevelBasedValue.perLevel(Functions.secondsToTicks(30)), DSEffects.HUNTER),
+                        PotionEffect.only(LevelBasedValue.perLevel(1), LevelBasedValue.perLevel(Functions.secondsToTicks(30)), false, DSEffects.HUNTER),
                         TargetingMode.ALLIES_AND_SELF
                 ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 true,
@@ -379,7 +379,7 @@ public class ForestDragonAbilities {
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         // Enable when on said block tag
                         Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.SPEEDS_UP_FOREST_DRAGON)).build(),
-                        PotionEffect.only(LevelBasedValue.perLevel(1), LevelBasedValue.perLevel(Functions.secondsToTicks(5)), MobEffects.MOVEMENT_SPEED),
+                        PotionEffect.only(LevelBasedValue.perLevel(1), LevelBasedValue.perLevel(Functions.secondsToTicks(5)), false, MobEffects.MOVEMENT_SPEED),
                         TargetingMode.ALLIES_AND_SELF
                 ), false), LevelBasedValue.constant(Functions.secondsToTicks(1)))),
                 true,
