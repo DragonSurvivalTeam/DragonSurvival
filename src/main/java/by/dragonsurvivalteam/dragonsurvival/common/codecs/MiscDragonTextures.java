@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public record MiscDragonTextures(
+        Optional<ResourceLocation> wingIcon,
         ResourceLocation foodSprites,
         ManaSprites manaSprites,
         ResourceLocation altarBanner,
@@ -25,6 +26,7 @@ public record MiscDragonTextures(
         TextColor secondaryColor
 ) {
     public static final Codec<MiscDragonTextures> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            ResourceLocation.CODEC.optionalFieldOf("wing_icon").forGetter(MiscDragonTextures::wingIcon),
             ResourceLocation.CODEC.fieldOf("food_sprites").forGetter(MiscDragonTextures::foodSprites), // TODO :: use vanilla food bar by default or have it optional and render vanilla bar if missing
             ManaSprites.CODEC.fieldOf("mana_sprites").forGetter(MiscDragonTextures::manaSprites), // TODO :: can have default texture (gray and color with primary color)
             ResourceLocation.CODEC.fieldOf("altar_banner").forGetter(MiscDragonTextures::altarBanner),

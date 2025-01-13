@@ -143,6 +143,7 @@ public class BuiltInDragonSpecies {
                         DietEntry.from("nethersdelight:nether_skewer", new FoodProperties(6, 8, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of()))
                 ),
                 new MiscDragonTextures(
+                        Optional.of(DragonSurvival.res("textures/ability_effect/cave_dragon_wings.png")),
                         DragonSurvival.res("textures/gui/custom/food_icons/cave_food_icons.png"),
                         new MiscDragonTextures.ManaSprites(
                                 DragonSurvival.res("textures/gui/custom/mana_icons/cave/full.png"),
@@ -388,6 +389,7 @@ public class BuiltInDragonSpecies {
                         DietEntry.from("enlightened_end:raw_stalker", new FoodProperties(10, 4, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of()))
                 ),
                 new MiscDragonTextures(
+                        Optional.of(DragonSurvival.res("textures/ability_effect/sea_dragon_wings.png")),
                         DragonSurvival.res("textures/gui/custom/food_icons/sea_food_icons.png"),
                         new MiscDragonTextures.ManaSprites(
                                 DragonSurvival.res("textures/gui/custom/mana_icons/sea/full.png"),
@@ -570,6 +572,7 @@ public class BuiltInDragonSpecies {
                         DietEntry.from("cnb:lizard_item_desert_2", new FoodProperties(4, 4, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of()))
                 ),
                 new MiscDragonTextures(
+                        Optional.of(DragonSurvival.res("textures/ability_effect/forest_dragon_wings.png")),
                         DragonSurvival.res("textures/gui/custom/food_icons/forest_food_icons.png"),
                         new MiscDragonTextures.ManaSprites(
                                 DragonSurvival.res("textures/gui/custom/mana_icons/forest/full.png"),

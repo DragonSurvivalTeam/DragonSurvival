@@ -359,7 +359,8 @@
       "reserved": "dragonsurvival:textures/gui/custom/mana_icons/cave/reserved.png"
     },
     "primary_color": "#E84141",
-    "secondary_color": "#730B0B"
+    "secondary_color": "#730B0B",
+    "wing_icon": "dragonsurvival:textures/ability_effect/cave_dragon_wings.png"
   },
   "penalties": [
     "dragonsurvival:snow_and_rain_weakness",

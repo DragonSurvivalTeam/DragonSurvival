@@ -1,10 +1,13 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DurationInstance;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -93,8 +96,6 @@ public class FlightData implements INBTSerializable<CompoundTag> {
         @Translation(type = Translation.Type.GUI, comments = "Dragon Wings")
         private static final ResourceLocation NAME = DragonSurvival.res("dragon_wings");
 
-        private static final ClientData DATA = new ClientData(DragonSurvival.res("textures/ability_effect/dragon_wings.png"), Component.translatable(Translation.Type.GUI.wrap(NAME)), Component.empty());
-
         @Override
         public Component getDescription() {
             return Component.empty();
@@ -102,7 +103,9 @@ public class FlightData implements INBTSerializable<CompoundTag> {
 
         @Override
         public ClientData clientData() {
-            return DATA;
+            DragonStateHandler handler = DragonStateProvider.getData(Minecraft.getInstance().player);
+            ResourceLocation icon = handler.isDragon() && handler.species().value().miscResources().wingIcon().isPresent() ? handler.species().value().miscResources().wingIcon().get() : DragonSurvival.res("textures/ability_effect/dragon_wings.png");
+            return new ClientData(icon, Component.translatable(Translation.Type.GUI.wrap(NAME)), Component.empty());
         }
 
         @Override
