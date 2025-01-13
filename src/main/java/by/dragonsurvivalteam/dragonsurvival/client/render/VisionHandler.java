@@ -11,16 +11,14 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 
-/**
- * Handles wate, lava, and block vision effects
- */
+/** Handles water, lava, and block vision effects */
 @EventBusSubscriber(Dist.CLIENT)
 public class VisionHandler {
     private static boolean hadLavaVision;
     private static boolean hadWaterVision;
 
     @SubscribeEvent
-    public static void onRenderFog(ViewportEvent.RenderFog event) {
+    public static void onRenderFog(final ViewportEvent.RenderFog event) {
         if (hasLavaVision() && event.getCamera().getFluidInCamera() == FogType.LAVA) {
             event.setNearPlaneDistance(0);
             event.setFarPlaneDistance(event.getRenderer().getRenderDistance() * 0.5f);
@@ -28,11 +26,9 @@ public class VisionHandler {
         }
     }
 
-    /**
-     * The alpha change in {@link LiquidBlockRendererMixin} requires the drawn blocks to be uncached and be re-rendered
-     */
+    /** The alpha change in {@link LiquidBlockRendererMixin} requires the drawn blocks to be uncached and be re-rendered */
     @SubscribeEvent
-    public static void markChangedIfVisionStateChanged(RenderLevelStageEvent event) {
+    public static void markChangedIfVisionStateChanged(final RenderLevelStageEvent event) {
         if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES) {
             return;
         }
@@ -49,15 +45,6 @@ public class VisionHandler {
         if (shouldUpdate) {
             event.getLevelRenderer().allChanged();
         }
-    }
-
-    @SubscribeEvent
-    public static void renderBlockOutlines(RenderLevelStageEvent event) {
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL) {
-            return;
-        }
-
-        // TODO Implement
     }
 
     public static boolean hasLavaVision() {

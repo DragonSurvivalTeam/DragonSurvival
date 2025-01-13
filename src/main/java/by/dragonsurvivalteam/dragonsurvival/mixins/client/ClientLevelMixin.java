@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
 import by.dragonsurvivalteam.dragonsurvival.client.handlers.DragonDestructionHandler;
+import by.dragonsurvivalteam.dragonsurvival.client.render.OreVisionHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.SourceOfMagicBlock;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicPlaceholder;
 import net.minecraft.client.Minecraft;
@@ -55,5 +56,11 @@ public abstract class ClientLevelMixin extends Level {
         }
 
         return position;
+    }
+
+    /** Update the ore vision handler while a search is pending or not scheduled */
+    @Inject(method = "sendBlockUpdated", at = @At("HEAD"))
+    private void dragonSurvival$updateOreVision(final BlockPos position, final BlockState oldState, final BlockState newState, final int flags, final CallbackInfo callback) {
+        OreVisionHandler.updateEntry(position, oldState, newState);
     }
 }
