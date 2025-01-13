@@ -92,6 +92,7 @@
   "command.dragonsurvival.ability.added_to_single_player": "Added %s to %s.",
   "command.dragonsurvival.ability.clear_from_players": "%s abilities cleared from %s players.",
   "command.dragonsurvival.ability.clear_from_single_player": "%s abilities cleared from %s.",
+  "command.dragonsurvival.ability.failed_non_dragon": "Failed to use ability command on non-dragon player %s.",
   "command.dragonsurvival.ability.refreshed_players": "Refreshed abilities for %s players.",
   "command.dragonsurvival.ability.refreshed_single_player": "Refreshed abilities for %s.",
   "command.dragonsurvival.ability.removed_from_players": "Removed %s from %s players.",
