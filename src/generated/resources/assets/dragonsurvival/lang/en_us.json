@@ -708,6 +708,8 @@
   "dragonsurvival.configuration.movement_animation_speed_factor.tooltip": "The amount by which the movement animation speed factor is multiplied. 1.0 represents the animation speed accurately reflecting the speed of your movement.",
   "dragonsurvival.configuration.nearby_treasure_rate_reduction": "Nearby Treasure Rate Reduction",
   "dragonsurvival.configuration.nearby_treasure_rate_reduction.tooltip": "The amount of ticks (20 ticks = 1 second) each nearby treasure reduces the health regeneration time by",
+  "dragonsurvival.configuration.no_humans_allowed": "No Humans Allowed",
+  "dragonsurvival.configuration.no_humans_allowed.tooltip": "If enabled, players will start as a dragon and will never be allowed to be a human.",
   "dragonsurvival.configuration.pillager_experience_gain": "Pillager Experience Gain",
   "dragonsurvival.configuration.pillager_experience_gain.tooltip": "How many experience points are gained when stealing from villagers",
   "dragonsurvival.configuration.primordial_anchor_gives_flight_grant_state": "Primordial Anchor Gives Flight Grant State",
