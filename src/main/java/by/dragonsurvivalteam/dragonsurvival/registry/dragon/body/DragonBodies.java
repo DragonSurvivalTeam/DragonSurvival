@@ -63,11 +63,11 @@ public class DragonBodies {
     public static final ResourceKey<DragonBody> west = key("west");
 
     public static void registerBodies(final BootstrapContext<DragonBody> context) {
-        context.register(center, new DragonBody(List.of(
+        context.register(center, new DragonBody(true, List.of(
                 Modifier.constant(DSAttributes.FLIGHT_SPEED, 0.2f, AttributeModifier.Operation.ADD_VALUE)
         ), 1, false, false, DragonBody.DEFAULT_MODEL, List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"), context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES)));
 
-        context.register(east, new DragonBody(List.of(
+        context.register(east, new DragonBody(true, List.of(
                 Modifier.constant(Attributes.ARMOR, 2, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(Attributes.ATTACK_DAMAGE, -1, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(Attributes.ATTACK_KNOCKBACK, -1, AttributeModifier.Operation.ADD_VALUE),
@@ -80,7 +80,7 @@ public class DragonBodies {
                 Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, -0.2f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
         ), 1, false, true, DragonBody.DEFAULT_MODEL, List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"), context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES)));
 
-        context.register(north, new DragonBody(List.of(
+        context.register(north, new DragonBody(true, List.of(
                 Modifier.constant(Attributes.ATTACK_DAMAGE, -0.2f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
                 Modifier.constant(Attributes.ATTACK_KNOCKBACK, -0.5f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(Attributes.MOVEMENT_SPEED, -0.3f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
@@ -89,7 +89,7 @@ public class DragonBodies {
                 Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, -0.1f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
         ), 0.55, true, true, DragonBody.DEFAULT_MODEL, List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"), context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES)));
 
-        context.register(south, new DragonBody(List.of(
+        context.register(south, new DragonBody(true, List.of(
                 Modifier.constant(Attributes.ATTACK_DAMAGE, 0.5f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(Attributes.GRAVITY, 0.2f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
                 Modifier.constant(Attributes.JUMP_STRENGTH, 0.2f, AttributeModifier.Operation.ADD_VALUE),
@@ -99,7 +99,7 @@ public class DragonBodies {
                 Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, -0.5f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
         ), 1, false, true, DragonBody.DEFAULT_MODEL, List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"), context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES)));
 
-        context.register(west, new DragonBody(List.of(
+        context.register(west, new DragonBody(true, List.of(
                 Modifier.constant(Attributes.ATTACK_KNOCKBACK, 0.5f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(Attributes.KNOCKBACK_RESISTANCE, 0.15f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(Attributes.MOVEMENT_SPEED, -0.15f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),

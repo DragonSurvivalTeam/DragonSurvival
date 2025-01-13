@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierType;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.AttributeModifierSupplier;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEmoteSet;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -25,14 +26,16 @@ import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
-public record DragonBody(List<Modifier> modifiers, double heightMultiplier, boolean hasExtendedCrouch, boolean canHideWings, ResourceLocation model, List<String> bonesToHideForToggle, Holder<DragonEmoteSet> emotes) implements AttributeModifierSupplier {
+public record DragonBody(boolean isDefault, List<Modifier> modifiers, double heightMultiplier, boolean hasExtendedCrouch, boolean canHideWings, ResourceLocation model, List<String> bonesToHideForToggle, Holder<DragonEmoteSet> emotes) implements AttributeModifierSupplier {
     public static final ResourceKey<Registry<DragonBody>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_bodies"));
 
     public static final ResourceLocation DEFAULT_MODEL = DragonSurvival.res("dragon_model");
 
     public static final Codec<DragonBody> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.BOOL.optionalFieldOf("is_default", false).forGetter(DragonBody::isDefault),
             Modifier.CODEC.listOf().fieldOf("modifiers").forGetter(DragonBody::modifiers),
             Codec.DOUBLE.optionalFieldOf("height_multiplier", 1.0).forGetter(DragonBody::heightMultiplier),
             Codec.BOOL.optionalFieldOf("has_extended_crouch", false).forGetter(DragonBody::hasExtendedCrouch),
@@ -52,7 +55,7 @@ public record DragonBody(List<Modifier> modifiers, double heightMultiplier, bool
         event.dataPackRegistry(REGISTRY, DIRECT_CODEC, DIRECT_CODEC);
     }
 
-    public static Holder<DragonBody> random(@Nullable final HolderLookup.Provider provider) {
+    public static Holder<DragonBody> random(@Nullable final HolderLookup.Provider provider, @Nullable Holder<DragonSpecies> speciesHolder) {
         HolderLookup.RegistryLookup<DragonBody> registry;
 
         if (provider == null) {
@@ -62,14 +65,20 @@ public record DragonBody(List<Modifier> modifiers, double heightMultiplier, bool
         }
 
         //noinspection DataFlowIssue -> registry expected to be present
-        Object[] bodies = registry.listElements().toArray();
+        List<Holder<DragonBody>> bodies = registry.listElements().collect(Collectors.toUnmodifiableList());
 
-        if (bodies.length == 0) {
+        if (bodies.isEmpty()) {
             throw new IllegalStateException("There are no registered dragon bodies");
         }
 
-        //noinspection unchecked -> cast is okay
-        return (Holder<DragonBody>) bodies[RANDOM.nextInt(bodies.length)];
+        List<Holder<DragonBody>> filteredBodies;
+        if(speciesHolder == null || speciesHolder.value().bodies().size() == 0) {
+            filteredBodies = bodies.stream().filter(body -> body.value().isDefault()).toList();
+        } else {
+            filteredBodies = bodies.stream().filter(body -> speciesHolder.value().bodies().contains(body)).toList();
+        }
+
+        return filteredBodies.get(RANDOM.nextInt(bodies.size()));
     }
 
     @Override

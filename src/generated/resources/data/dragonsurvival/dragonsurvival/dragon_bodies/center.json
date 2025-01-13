@@ -1,6 +1,7 @@
 {
   "can_hide_wings": false,
   "emotes": "dragonsurvival:default_emotes",
+  "is_default": true,
   "modifiers": [
     {
       "amount": 0.2,

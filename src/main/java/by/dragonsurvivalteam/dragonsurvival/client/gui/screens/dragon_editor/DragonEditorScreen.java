@@ -615,8 +615,11 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
                 dragonStage = ResourceHelper.get(null, DragonStages.newborn).orElseThrow();
             }
 
-            if (dragonBody == null) {
-                dragonBody = DragonBody.random(null);
+            // body is null, or we are not a dragon, or the body is not valid for the species (is not default and species has bodies, or body is not in species' bodies)
+            if (dragonBody == null && (!localHandler.isDragon() || !((dragonSpecies.value().bodies().size() == 0 && localHandler.body().value().isDefault()) || dragonSpecies.value().bodies().contains(localHandler.body())))) {
+                dragonBody = DragonBody.random(null, dragonSpecies);
+            } else {
+                dragonBody = localHandler.body();
             }
         } else {
             return;

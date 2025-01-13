@@ -82,7 +82,7 @@ public class DragonCommand {
         DragonStateHandler data = DragonStateProvider.getData(player);
 
         if (type != null && dragonBody == null) {
-            dragonBody = DragonBody.random(player.registryAccess());
+            dragonBody = DragonBody.random(player.registryAccess(), type);
         }
 
         if (type != null && dragonStage == null) {

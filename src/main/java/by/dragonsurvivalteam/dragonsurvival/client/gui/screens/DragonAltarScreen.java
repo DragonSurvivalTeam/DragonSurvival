@@ -190,11 +190,11 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
             animation2++;
 
             if (handler1.body() == null) {
-                handler1.setBody(null, DragonBody.random(null));
+                handler1.setBody(null, DragonBody.random(null, handler1.species()));
             }
 
             handler2.setBody(null, handler1.body());
-            handler1.setBody(null, DragonBody.random(null));
+            handler1.setBody(null, DragonBody.random(null, handler1.species()));
 
             if (animation1 >= animations.length) {
                 animation1 = 0;
@@ -272,7 +272,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
 
     private void initializeHandler(final DragonStateHandler handler) {
         if (handler.body() == null) {
-            handler.setBody(null, DragonBody.random(null));
+            handler.setBody(null, DragonBody.random(null, handler.species()));
         }
 
         //noinspection DataFlowIssue -> registry is expected to be present

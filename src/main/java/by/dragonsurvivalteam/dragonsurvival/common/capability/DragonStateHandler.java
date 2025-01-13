@@ -537,7 +537,7 @@ public class DragonStateHandler extends EntityStateHandler {
         if (dragonSpecies != null) {
             if (dragonBody == null) {
                 // This can happen if a dragon body gets removed
-                dragonBody = DragonBody.random(provider);
+                dragonBody = DragonBody.random(provider, dragonSpecies);
             }
 
             // Makes sure that the set size matches the previously set stage

@@ -114,7 +114,7 @@ public class PlayerLoginHandler {
             DragonStateProvider.getOptional(player).ifPresent(handler -> {
                 if (handler.species() != null && handler.body() == null) {
                     // Otherwise players won't be able to join the world
-                    handler.setBody(player, DragonBody.random(player.registryAccess()));
+                    handler.setBody(player, DragonBody.random(player.registryAccess(), handler.species()));
                     DragonSurvival.LOGGER.error("Player {} was a dragon but had no dragon body", player);
                 }
 
