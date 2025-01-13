@@ -10,8 +10,10 @@
     "dragonsurvival:hydration",
     "dragonsurvival:sea_claws_and_teeth",
     "dragonsurvival:sea_wings",
+    "dragonsurvival:sea_spin",
     "dragonsurvival:electric_immunity",
-    "dragonsurvival:amphibious"
+    "dragonsurvival:amphibious",
+    "dragonsurvival:diver"
   ],
   "diet": [
     {
