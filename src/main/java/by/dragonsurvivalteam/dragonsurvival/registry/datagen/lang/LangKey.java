@@ -69,8 +69,8 @@ public class LangKey {
 
     @Translation(comments = {
             "\n■ All dragons will gradually grow as time passes, improving their attributes. At certain growth stages, your appearance will change, and your growth will slow.§r",
-            "§7■ A Star Bone will revert your growth slightly, and a Star Heart will completely stop you from growing. The biggest dragons can take other players for a ride!§r",
-            "§7■ Growth items:§r"
+            "§7■ Certain items can speed up or reduce your growth.\n§r",
+            "■ §6Growth items§r§7:§r"
     })
     public static final String GROWTH_INFO = Translation.Type.GUI.wrap("handler.growth_info");
 

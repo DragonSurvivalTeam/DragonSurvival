@@ -25,7 +25,7 @@ import java.util.Objects;
 
 public class DragonBodyButton extends ExtendedButton implements HoverDisableable {
 
-    @Translation(comments = "Can only change body type at the dragon altar")
+    @Translation(comments = "You can only change the body type in the altar when changing the dragon's species.")
     private static final String UNAVAILABLE = Translation.Type.GUI.wrap("dragon_body_button.unavailable");
 
     private static final String LOCATION_PREFIX = "textures/gui/custom/body/";

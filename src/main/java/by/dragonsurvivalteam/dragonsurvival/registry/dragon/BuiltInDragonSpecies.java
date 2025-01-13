@@ -35,43 +35,40 @@ import java.util.Optional;
 
 public class BuiltInDragonSpecies {
     @Translation(type = Translation.Type.DRAGON_SPECIES_ALTAR_DESCRIPTION, comments = {
-            "§c■ Cave dragon.§r",
-            "§2■ Features:§f§r fire resistance, pickaxe claws, fire magic, faster movement on stone and magma blocks.",
+            "§7■ §6Cave Dragons§r§7 are the spawn of §ffire§r§7. They have little in common with living creatures. Their skeleton is made of §fnetherite§r§7, blood is §flava§r§7, and skin is §frocks§r§7.\n",
+            "§2■ Features:§f§r§7 fire resistance, pickaxe claws, lava magic, faster movement on stone and hot blocks.",
             "§4■ Weakness:§r water.",
-            "§6■ Diet:§r %s"
+            "§6■ Diet:§r"
     })
     @Translation(type = Translation.Type.DRAGON_SPECIES_INVENTORY_DESCRIPTION, comments = {
-            "§c■ Cave dragon.§r",
-            "§2■ Features:§f§r fire resistance, pickaxe claws, fire magic, faster movement on stone and magma blocks.",
-            "§4■ Weakness:§r water.",
+            "§7■ §6Cave Dragon§r§7 are the spawn of §ffire§r§7. You have little in common with living creatures. Your skeleton is made of §fnetherite§r§7, your blood is §flava§r§7, and your skin is §frocks§r§7.\n",
+            "§7■ To “live” you must §ffeed§r§7 on energy to keep you warm. §cWater§r§7 as a chemical element is not compatible with you.",
     })
     @Translation(type = Translation.Type.DRAGON_SPECIES, comments = "Cave Dragon")
     public static final ResourceKey<DragonSpecies> CAVE = key("cave");
 
     @Translation(type = Translation.Type.DRAGON_SPECIES_ALTAR_DESCRIPTION, comments = {
-            "§a■ Forest dragon.§r",
-            "§2■ Features:§f§r soft fall, axe claws, poison magic, faster movement on wooden and grass blocks.",
-            "§4■ Weakness:§r dark caves.",
-            "§6■ Diet:§r %s"
+            "§7■ §6Forest Dragons§r§7 is a §fdiamond§r§7 elementals covered in a multitude of §fplants§r§7. They are excellent §fhunters§r§7 and §ffarmers§r§7.\n",
+            "§2■ Features:§f§r§7 soft fall, axe claws, drain and growth magic, faster movement on wooden and grass blocks.",
+            "§4■ Weakness:§r§7 dark caves.",
+            "§6■ Diet:§r"
     })
     @Translation(type = Translation.Type.DRAGON_SPECIES_INVENTORY_DESCRIPTION, comments = {
-            "§a■ Forest dragon.§r",
-            "§2■ Features:§f§r soft fall, axe claws, poison magic, faster movement on wooden and grass blocks.",
-            "§4■ Weakness:§r dark caves.",
+            "§7■ §6Forest Dragon§r§7 is a §fdiamond§r§7 elemental covered in a multitude of §fplants§r§7. You are excellent §fhunter§r§7 and §ffarmer§r§7.\n",
+            "§7■ §fRaw meat§r§7, §fpoisonous potatoes§r§7, and certain types of §fthorny shrubs§r§7 are your favorite foods and fertilizer for your plants that hate the §cdarkness§r§7 of caves."
     })
     @Translation(type = Translation.Type.DRAGON_SPECIES, comments = "Forest Dragon")
     public static final ResourceKey<DragonSpecies> FOREST = key("forest");
 
     @Translation(type = Translation.Type.DRAGON_SPECIES_ALTAR_DESCRIPTION, comments = {
-            "§3■ Sea dragon.§r",
-            "§2■ Features:§f§r underwater breathing, shovel claws, electric magic, faster movement on ice and beach blocks.",
-            "§4■ Weakness:§r dehydration.",
-            "§6■ Diet:§r %s"
+            "§7■ §6Sea Dragons§r§7 are fragile but ferocious §fcreatures§r§7. Their skeletons are made of §fgold§r§7 and conducts §felectricity§r§7 well.\n",
+            "§2■ Features:§f§r§7 underwater breathing, shovel claws, electric magic, faster movement on wet and beach blocks.",
+            "§4■ Weakness:§r§7 dehydration.",
+            "§6■ Diet:§r"
     })
     @Translation(type = Translation.Type.DRAGON_SPECIES_INVENTORY_DESCRIPTION, comments = {
-            "§3■ Sea dragon.§r",
-            "§2■ Features:§f§r underwater breathing, shovel claws, electric magic, faster movement on ice and beach blocks.",
-            "§4■ Weakness:§r dehydration.",
+            "§7■ §6Sea Dragons§r§7 are fragile but ferocious §fcreatures§r§7. Their skeletons are made of §fgold§r§7 and conducts §felectricity§r§7 well.\n",
+            "§7■ You have ideally mastered §faquaculture§r§7 and love §fseafood§r§7. You would live forever in the §fwater§r§7, but for the sake of resources you have to leave this cozy world and be exposed to §cdryness§r§7."
     })
     @Translation(type = Translation.Type.DRAGON_SPECIES, comments = "Sea Dragon")
     public static final ResourceKey<DragonSpecies> SEA = key("sea");
@@ -444,7 +441,7 @@ public class BuiltInDragonSpecies {
                 HolderSet.direct(
                         // Active
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.SPIKE),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.FERTILIZER_BREATH),
+                        context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.FOREST_BREATH),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.HUNTER),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.INSPIRATION),
                         // Passive
@@ -452,6 +449,7 @@ public class BuiltInDragonSpecies {
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.FOREST_MAGIC),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.FOREST_CLAWS_AND_TEETH),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.FOREST_WINGS),
+                        context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.FOREST_SPIN),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.FOREST_ATHLETICS),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.CLIFFHANGER),
                         context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.LIGHT_IN_DARKNESS)

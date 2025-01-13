@@ -42,9 +42,9 @@ public class AltarTypeButton extends Button implements HoverDisableable {
     private static final String CHOICE_HUMAN = Translation.Type.GUI.wrap("altar.choice.human");
 
     @Translation(comments = {
-            "■ §nHuman.§r",
-            "■ Homo sapiens.§r",
-            "Travelers, builders, and creators."
+            "§7■ §6Humans§r§f are the builders, travelers, and dreamers of this world.",
+            "§2■ Features:§f§r§7 standard gameplay, varied diet, all items available for use.",
+            "§4■ Weakness:§r§7 no flight, no progressive increase in HP, no magic.",
     })
     private static final String HUMAN = Translation.Type.GUI.wrap("altar.info.human");
 

@@ -253,7 +253,7 @@ public class SeaDragonAbilities {
                                 Optional.of(new SimpleAbilityAnimation(SimpleAbilityAnimation.MASS_BUFF, AnimationLayer.BASE, 0, true, true))
                         ))
                 ),
-                Optional.of(new ExperienceLevelUpgrade(3, LevelBasedValue.lookup(List.of(0f, 15f, 35f), LevelBasedValue.perLevel(15)))),
+                Optional.of(new ExperienceLevelUpgrade(3, LevelBasedValue.lookup(List.of(7f, 15f, 35f), LevelBasedValue.perLevel(15)))),
                 // Disable when not on ground
                 Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false)).build()),
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(

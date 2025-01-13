@@ -79,12 +79,12 @@ public class ForestDragonAbilities {
     // --- Active --- //
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ §fElemental breath:§r§7 a toxic gas that creates a §c«Drain»§r area of effect, which is deadly for creatures, but helps §2plants grow faster§r§7.\n",
+            "■ §fElemental breath:§r§7 a toxic gas that creates a §c«Drain»§r area of effect, which is deadly for creatures, but helps §2plants grow faster§r§7. Turns §fdirt§r§7 into other blocks with a small chance.\n",
             "■ §fRange§r§7 depends on age of the dragon.\n",
             "■ §8Cannot be used while affected by «Stress».§r"
     })
-    @Translation(type = Translation.Type.ABILITY, comments = "Fertilizer Breath")
-    public static final ResourceKey<DragonAbility> FERTILIZER_BREATH = DragonAbilities.key("fertilizer_breath");
+    @Translation(type = Translation.Type.ABILITY, comments = "Forest Breath")
+    public static final ResourceKey<DragonAbility> FOREST_BREATH = DragonAbilities.key("forest_breath");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
             "■ §fRanged attack:§r§7 Shoot out sharp §cdarts§r, which fly a large distance to pierce your target.\n",
@@ -98,7 +98,7 @@ public class ForestDragonAbilities {
     public static final ResourceKey<DragonAbility> INSPIRATION = DragonAbilities.key("inspiration");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ §fMass buff:§r§7 Cover yourself and allies in a thick carpet of herbs and can walk in the grass §2Invisible§r§7.\n",
+            "■ §fMass buff:§r§7 Cover yourself and allies in a thick carpet of herbs and can §ffast§r§7 walk in the grass §2Invisible§r§7.\n",
             "■ §fFirst§r§7 melee strike cause a critical hit with a §c%-based damage§r§7 bonus.\n",
             "■ §8Effect does not stack. Will be removed early if you take damage, or attack a target.§r",
     })
@@ -122,7 +122,7 @@ public class ForestDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Light the Dark")
     public static final ResourceKey<DragonAbility> LIGHT_IN_DARKNESS = DragonAbilities.key("light_in_darkness");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Forest dragons are very light. Your landing becomes much softer.")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Forest dragons are very §flight§r§7. Your landing becomes much §2softer§r§7.")
     @Translation(type = Translation.Type.ABILITY, comments = "Cliffhanger")
     public static final ResourceKey<DragonAbility> CLIFFHANGER = DragonAbilities.key("cliffhanger");
 
@@ -150,7 +150,7 @@ public class ForestDragonAbilities {
     }
 
     private static void registerActiveAbilities(final BootstrapContext<DragonAbility> context) {
-        context.register(FERTILIZER_BREATH, new DragonAbility(
+        context.register(FOREST_BREATH, new DragonAbility(
                 new Activation(
                         Activation.Type.ACTIVE_CHANNELED,
                         Optional.empty(),
@@ -172,7 +172,7 @@ public class ForestDragonAbilities {
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
                                 Condition.thisEntity(EntityCondition.isLiving()).build(),
                                 List.of(
-                                        new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FERTILIZER_BREATH), LevelBasedValue.perLevel(2)),
+                                        new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FOREST_BREATH), LevelBasedValue.perLevel(2)),
                                         PotionEffect.only(LevelBasedValue.constant(0), LevelBasedValue.constant(Functions.secondsToTicks(10)), LevelBasedValue.constant(0.3f), false, DSEffects.DRAIN).getFirst()
                                 ),
                                 TargetingMode.NON_ALLIES
@@ -187,7 +187,7 @@ public class ForestDragonAbilities {
                         ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.block(
                                 List.of(
-                                        new BonemealEffect(LevelBasedValue.constant(2), LevelBasedValue.perLevel(0.01f)),
+                                        new BonemealEffect(LevelBasedValue.constant(2), LevelBasedValue.perLevel(0.1f)),
                                         new BlockConversionEffect(List.of(new BlockConversionEffect.BlockConversionData(
                                                 BlockCondition.blocks(Blocks.DIRT, Blocks.COARSE_DIRT),
                                                 SimpleWeightedRandomList.create(
@@ -516,7 +516,7 @@ public class ForestDragonAbilities {
                                         context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.SWEET_BERRY_BUSH),
                                         context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.CACTUS),
                                         context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.DRAIN),
-                                        context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FERTILIZER_BREATH)
+                                        context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FOREST_BREATH)
                                 ),
                                 LevelBasedValue.constant(0),
                                 LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),

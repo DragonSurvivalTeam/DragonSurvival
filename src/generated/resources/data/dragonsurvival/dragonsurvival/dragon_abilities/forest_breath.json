@@ -5,7 +5,7 @@
         "applied_effects": {
           "entity_effect": [
             {
-              "type": "dragonsurvival:fertilizer_breath",
+              "type": "dragonsurvival:forest_breath",
               "amount": {
                 "type": "minecraft:linear",
                 "base": 2.0,
@@ -88,8 +88,8 @@
               "effect_type": "dragonsurvival:bonemeal",
               "probability": {
                 "type": "minecraft:linear",
-                "base": 0.01,
-                "per_level_above_first": 0.01
+                "base": 0.1,
+                "per_level_above_first": 0.1
               }
             },
             {

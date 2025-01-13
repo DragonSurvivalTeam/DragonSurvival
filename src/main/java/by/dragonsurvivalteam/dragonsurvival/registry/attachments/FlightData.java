@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 public class FlightData implements INBTSerializable<CompoundTag> {
-    public static final ResourceLocation DEFAULT_ICON = DragonSurvival.res("textures/ability_effect/dragon_wings.png");
+    public static final ResourceLocation DEFAULT_ICON = DragonSurvival.res("textures/ability_effect/generic_icons/dragon_wings.png");
 
     public ResourceLocation icon = DEFAULT_ICON;
     public @Nullable Holder<FluidType> swimSpinFluid;

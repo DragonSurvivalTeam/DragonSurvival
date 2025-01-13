@@ -78,7 +78,7 @@ public class CaveDragonAbilities {
             "■ §fRange§r§7 depends on age of the dragon.\n",
             "■ §8Cannot be used under water, and during rain.§r"
     })
-    @Translation(type = Translation.Type.ABILITY, comments = "Nether breath")
+    @Translation(type = Translation.Type.ABILITY, comments = "Nether Breath")
     public static final ResourceKey<DragonAbility> NETHER_BREATH = DragonAbilities.key("nether_breath");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ §fRanged attack:§r§7 shoots out a fireball that §cexplodes§r and sets the area on §cfire§r.")
@@ -140,7 +140,7 @@ public class CaveDragonAbilities {
     public static final ResourceKey<DragonAbility> FIRE_IMMUNITY = DragonAbilities.key("fire_immunity");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ §fMass buff:§r§7 Coat your allies with §fprotective dust§r§7 and they get the §2Fire Resistance§r effect.\n",
+            "■ §fMass buff:§r§7 Coat your allies with §fprotective dust§r§7 and they get the §2Fire Resistance§r§7 effect.\n",
             "■ Your pets will stop dying by your §ffire§r§7 and your friends will be able to bathe in §flava§r§7. For a while."
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Friendly Fire")

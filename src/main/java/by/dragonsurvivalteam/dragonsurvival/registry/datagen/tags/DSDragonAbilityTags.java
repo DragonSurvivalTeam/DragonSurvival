@@ -28,20 +28,22 @@ public class DSDragonAbilityTags extends TagsProvider<DragonAbility> {
                 // Cave :: active
                 .add(CaveDragonAbilities.NETHER_BREATH)
                 .add(CaveDragonAbilities.FIRE_BALL)
-                .add(CaveDragonAbilities.STURDY_SKIN)
                 .add(CaveDragonAbilities.LAVA_VISION)
+                .add(CaveDragonAbilities.STURDY_SKIN)
+                .add(CaveDragonAbilities.FRIENDLY_FIRE)
                 // Cave :: passive (manual leveling)
                 .add(CaveDragonAbilities.CAVE_MAGIC)
                 .add(CaveDragonAbilities.CAVE_ATHLETICS)
                 .add(CaveDragonAbilities.CONTRAST_SHOWER)
                 .add(CaveDragonAbilities.BURN)
                 // Cave :: passive
-                .add(CaveDragonAbilities.CAVE_CLAWS_AND_TEETH)
-                .add(CaveDragonAbilities.CAVE_WINGS)
                 .add(CaveDragonAbilities.FIRE_IMMUNITY)
                 .add(CaveDragonAbilities.LAVA_SWIMMING)
+                .add(CaveDragonAbilities.CAVE_CLAWS_AND_TEETH)
+                .add(CaveDragonAbilities.CAVE_WINGS)
+                .add(CaveDragonAbilities.CAVE_SPIN)
                 // Forest :: active
-                .add(ForestDragonAbilities.FERTILIZER_BREATH)
+                .add(ForestDragonAbilities.FOREST_BREATH)
                 .add(ForestDragonAbilities.SPIKE)
                 .add(ForestDragonAbilities.INSPIRATION)
                 .add(ForestDragonAbilities.HUNTER)
@@ -51,24 +53,27 @@ public class DSDragonAbilityTags extends TagsProvider<DragonAbility> {
                 .add(ForestDragonAbilities.LIGHT_IN_DARKNESS)
                 .add(ForestDragonAbilities.CLIFFHANGER)
                 // Forest :: passive
+                .add(ForestDragonAbilities.FOREST_IMMUNITY)
                 .add(ForestDragonAbilities.FOREST_CLAWS_AND_TEETH)
                 .add(ForestDragonAbilities.FOREST_WINGS)
-                .add(ForestDragonAbilities.FOREST_IMMUNITY)
+                .add(ForestDragonAbilities.FOREST_SPIN)
                 // Sea :: active
                 .add(SeaDragonAbilities.STORM_BREATH)
                 .add(SeaDragonAbilities.BALL_LIGHTNING)
-                .add(SeaDragonAbilities.SOUL_REVELATION)
                 .add(SeaDragonAbilities.SEA_EYES)
+                .add(SeaDragonAbilities.SOUL_REVELATION)
                 // Sea :: passive (manual leveling)
                 .add(SeaDragonAbilities.SEA_MAGIC)
                 .add(SeaDragonAbilities.SEA_ATHLETICS)
                 .add(SeaDragonAbilities.HYDRATION)
                 .add(SeaDragonAbilities.SPECTRAL_IMPACT)
                 // Sea :: passive
-                .add(SeaDragonAbilities.SEA_CLAWS_AND_TEETH)
-                .add(SeaDragonAbilities.SEA_WINGS)
                 .add(SeaDragonAbilities.ELECTRIC_IMMUNITY)
-                .add(SeaDragonAbilities.AMPHIBIOUS);
+                .add(SeaDragonAbilities.SEA_CLAWS_AND_TEETH)
+                .add(SeaDragonAbilities.AMPHIBIOUS)
+                .add(SeaDragonAbilities.DIVER)
+                .add(SeaDragonAbilities.SEA_WINGS)
+                .add(SeaDragonAbilities.SEA_SPIN);
     }
 
     public static TagKey<DragonAbility> key(final String path) {

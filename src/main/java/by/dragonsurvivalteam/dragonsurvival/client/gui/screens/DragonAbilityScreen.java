@@ -39,6 +39,7 @@ public class DragonAbilityScreen extends Screen {
             "§f■ §6Active skills§r§f are used in combat or to apply buffs.",
             "§f- §9Skill power§r§8 scales off your current experience level.",
             "§f- §9Experience or mana§r§8 points are used to cast spells.",
+            "§f- §9Disable§r§8 the skill by ctrl+right click.",
             "",
             "§f■ §aPassive skills§r§f are upgraded by spending experience levels or just give bonuses.",
             "§f- §9More information§r§8 can be found on Curseforge mod page."
