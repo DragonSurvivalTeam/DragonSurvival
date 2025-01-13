@@ -22,8 +22,6 @@ import net.neoforged.fml.loading.modscan.ModAnnotation;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.LanguageProvider;
-import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.neoforged.neoforgespi.language.ModFileScanData;
 import org.apache.commons.lang3.text.WordUtils;
 import org.objectweb.asm.Type;

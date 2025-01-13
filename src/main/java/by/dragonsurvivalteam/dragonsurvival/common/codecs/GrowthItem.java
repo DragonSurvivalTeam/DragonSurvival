@@ -25,7 +25,7 @@ public record GrowthItem(HolderSet<Item> items, int growthInTicks, int maximumUs
         //noinspection deprecation -> ignore
         if (items.contains(item.builtInRegistryHolder())) {
             Integer used = handler.usedGrowthItems.get(item);
-            return used == null || used < maximumUsages;
+            return used == null || maximumUsages == INFINITE_USAGES || used < maximumUsages;
         }
 
         return false;

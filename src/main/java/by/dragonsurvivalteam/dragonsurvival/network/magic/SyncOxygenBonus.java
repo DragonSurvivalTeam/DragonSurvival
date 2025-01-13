@@ -1,10 +1,8 @@
 package by.dragonsurvivalteam.dragonsurvival.network.magic;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.HarvestBonus;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.OxygenBonus;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HarvestBonuses;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.OxygenBonuses;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
