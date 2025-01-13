@@ -19,6 +19,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SkullBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -33,14 +34,13 @@ public class HelmetEntityRenderer implements BlockEntityRenderer<HelmetBlockEnti
     });
     static SkullModel humanoidHeadModel = new SkullModel(Minecraft.getInstance().getEntityModels().bakeLayer(ModelLayers.PLAYER_HEAD));
 
-    public HelmetEntityRenderer(BlockEntityRendererProvider.Context pContext) {
-    }
+    public HelmetEntityRenderer(BlockEntityRendererProvider.Context context) { /* Nothing to do */ }
 
     @Override
-    public void render(HelmetBlockEntity helmetEntity, float p_225616_2_, PoseStack PoseStack, MultiBufferSource renderTypeBuffer, int p_225616_5_, int p_225616_6_) {
+    public void render(HelmetBlockEntity helmetEntity, float partialTick, @NotNull PoseStack PoseStack, @NotNull MultiBufferSource renderTypeBuffer, int packedLight, int packedOverlay) {
         BlockState blockstate = helmetEntity.getBlockState();
         float f1 = 22.5F * blockstate.getValue(SkullBlock.ROTATION);
-        renderHelmet(null, f1, blockstate.getBlock(), 0, PoseStack, renderTypeBuffer, p_225616_5_);
+        renderHelmet(null, f1, blockstate.getBlock(), 0, PoseStack, renderTypeBuffer, packedLight);
     }
 
     public static void renderHelmet(

@@ -25,13 +25,15 @@ public class MovementData {
 
     public Vec2 desiredMoveVec = Vec2.ZERO;
 
-    public boolean isFirstPerson = false;
-    public boolean isFreeLook = false;
-    public boolean wasFreeLook = false;
+    public boolean isFirstPerson;
+    public boolean isFreeLook;
+    public boolean wasFreeLook;
 
-    //TODO: Biting is not correctly synced, since we are setting it inside of the clientside animation code after it is received from other players over the server
-    public boolean bite = false;
-    public boolean dig = false;
+    //TODO: Biting is not correctly synced,
+    // since we are setting it inside of the clientside animation
+    // (code after it is received from other players over the server)
+    public boolean bite;
+    public boolean dig;
 
     public boolean isMoving() {
         return desiredMoveVec.lengthSquared() > INPUT_EPSILON * INPUT_EPSILON;

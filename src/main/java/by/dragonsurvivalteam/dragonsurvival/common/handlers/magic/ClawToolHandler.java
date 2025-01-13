@@ -233,7 +233,7 @@ public class ClawToolHandler {
                 if (clawInventory.switchedTool || clawInventory.switchedWeapon) {
                     player.level().playSound(null, player.blockPosition(), SoundEvents.ITEM_BREAK, SoundSource.PLAYERS, 1, 1);
                     player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
-                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncBrokenTool.Data(player.getId(), clawInventory.switchedTool ? clawInventory.switchedToolSlot : ClawInventoryData.Slot.SWORD.ordinal()));
+                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncBrokenTool(player.getId(), clawInventory.switchedTool ? clawInventory.switchedToolSlot : ClawInventoryData.Slot.SWORD.ordinal()));
                 }
             }
         }

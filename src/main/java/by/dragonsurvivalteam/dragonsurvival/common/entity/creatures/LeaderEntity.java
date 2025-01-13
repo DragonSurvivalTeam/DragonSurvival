@@ -43,7 +43,7 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 
-public class LeaderEntity extends Villager implements DragonHunter, GeoEntity {
+public class LeaderEntity extends Villager implements GeoEntity {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     private static final EntityDataAccessor<Integer> RESTOCK_TIMER = SynchedEntityData.defineId(LeaderEntity.class, EntityDataSerializers.INT);
     private static final int TOTAL_RESTOCK_TIME = Functions.minutesToTicks(10);
@@ -118,9 +118,9 @@ public class LeaderEntity extends Villager implements DragonHunter, GeoEntity {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
-        super.defineSynchedData(pBuilder);
-        pBuilder.define(RESTOCK_TIMER, TOTAL_RESTOCK_TIME);
+    protected void defineSynchedData(@NotNull final SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(RESTOCK_TIMER, TOTAL_RESTOCK_TIME);
     }
 
     private void setRestockTimer(int time) {
@@ -187,15 +187,13 @@ public class LeaderEntity extends Villager implements DragonHunter, GeoEntity {
         return null;
     }
 
-    // TODO: Custom sounds?
-    @Override
-    protected SoundEvent getHurtSound(@NotNull DamageSource pDamageSource) {
+    @Override // TODO: Custom sounds?
+    protected @NotNull SoundEvent getHurtSound(@NotNull DamageSource pDamageSource) {
         return SoundEvents.VILLAGER_HURT;
     }
 
-    // TODO: Custom sounds?
-    @Override
-    protected SoundEvent getDeathSound() {
+    @Override // TODO: Custom sounds?
+    protected @NotNull SoundEvent getDeathSound() {
         return SoundEvents.VILLAGER_DEATH;
     }
 

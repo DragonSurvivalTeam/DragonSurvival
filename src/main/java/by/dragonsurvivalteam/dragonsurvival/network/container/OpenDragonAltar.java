@@ -11,12 +11,13 @@ import org.jetbrains.annotations.NotNull;
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public record OpenDragonAltar() implements CustomPacketPayload {
-    public static final OpenDragonAltar INSTANCE = new OpenDragonAltar();
-    public static final StreamCodec<ByteBuf, OpenDragonAltar> STREAM_CODEC = StreamCodec.unit(INSTANCE);
     public static final Type<OpenDragonAltar> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "open_dragon_altar"));
 
+    public static final OpenDragonAltar INSTANCE = new OpenDragonAltar();
+    public static final StreamCodec<ByteBuf, OpenDragonAltar> STREAM_CODEC = StreamCodec.unit(INSTANCE);
+
     public static void handleClient(final OpenDragonAltar ignored, final IPayloadContext context) {
-        context.enqueueWork(ClientProxy::handleOpenDragonAltar);
+        context.enqueueWork(ClientProxy::openDragonAltar);
     }
 
     @Override

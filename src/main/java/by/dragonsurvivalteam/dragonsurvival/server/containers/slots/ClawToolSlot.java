@@ -22,6 +22,7 @@ public class ClawToolSlot extends Slot {
     static final ResourceLocation PICKAXE_TEXTURE = ResourceLocation.fromNamespaceAndPath(MODID, "gui/dragon_claws_pickaxe");
     static final ResourceLocation SHOVEL_TEXTURE = ResourceLocation.fromNamespaceAndPath(MODID, "gui/dragon_claws_shovel");
     static final ResourceLocation SWORD_TEXTURE = ResourceLocation.fromNamespaceAndPath(MODID, "gui/dragon_claws_sword");
+
     private final DragonContainer dragonContainer;
     private final int clawSlot;
 
@@ -67,7 +68,8 @@ public class ClawToolSlot extends Slot {
     private void syncSlots() {
         if (!dragonContainer.player.level().isClientSide()) {
             ClawInventoryData data = ClawInventoryData.getData(dragonContainer.player);
-            PacketDistributor.sendToPlayersTrackingEntityAndSelf(dragonContainer.player, new SyncDragonClawsMenu.Data(dragonContainer.player.getId(), data.isMenuOpen(), data.serializeNBT(dragonContainer.player.registryAccess())));
+            // TODO :: do other players need to know about this data?
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(dragonContainer.player, new SyncDragonClawsMenu(dragonContainer.player.getId(), data.isMenuOpen(), data.serializeNBT(dragonContainer.player.registryAccess())));
         }
     }
 }

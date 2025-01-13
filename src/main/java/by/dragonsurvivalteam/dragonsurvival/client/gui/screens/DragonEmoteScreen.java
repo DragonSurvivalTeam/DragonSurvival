@@ -37,7 +37,6 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class DragonEmoteScreen extends Screen {
@@ -100,6 +99,7 @@ public class DragonEmoteScreen extends Screen {
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         if (scrollY < 0) {
+            //noinspection DataFlowIssue -> player is present
             if (emotePage < (int) Math.ceil((double) DragonStateProvider.getData(minecraft.player).body().value().emotes().value().emotes().size() / PER_PAGE) - 1) {
                 emotePage++;
                 reinitializeEmoteComponents();
@@ -168,13 +168,12 @@ public class DragonEmoteScreen extends Screen {
 
         HoverButton resetEmotesButton = new HoverButton(startX + 19, startY - 26, 14, 14, 14, 14, RESET_EMOTES_MAIN, RESET_EMOTES_HOVER, button -> {
             //noinspection DataFlowIssue -> player is present
-            AtomicReference<DragonEntity> atomicDragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(Minecraft.getInstance().player.getId());
+            DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(Minecraft.getInstance().player.getId());
 
-            if (atomicDragon == null) {
+            if (dragon == null) {
                 return;
             }
 
-            DragonEntity dragon = atomicDragon.get();
             dragon.stopAllEmotes();
         });
         resetEmotesButton.setTooltip(Tooltip.create(Component.translatable(STOP_ALL_EMOTES)));
@@ -224,13 +223,12 @@ public class DragonEmoteScreen extends Screen {
 
     public static void addEmote(String key) {
         //noinspection DataFlowIssue -> player is present
-        AtomicReference<DragonEntity> atomicDragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(Minecraft.getInstance().player.getId());
+        DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(Minecraft.getInstance().player.getId());
 
-        if (atomicDragon == null) {
+        if (dragon == null) {
             return;
         }
 
-        DragonEntity dragon = atomicDragon.get();
         DragonStateHandler handler = DragonStateProvider.getData(Minecraft.getInstance().player);
         DragonEmote emote = handler.body().value().emotes().value().getEmote(key);
         dragon.beginPlayingEmote(emote);

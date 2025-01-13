@@ -18,7 +18,7 @@ public class ColorPickerButton extends ExtendedButton {
     double selectorY;
 
     public ColorPickerButton(int xPos, int yPos, int width, int height, Color defaultColor, Consumer<Color> colorConsumer) {
-        super(xPos, yPos, width, height, Component.empty(), null);
+        super(xPos, yPos, width, height, Component.empty(), button -> { /* Nothing to do */ });
         this.defaultColor = defaultColor;
         this.colorConsumer = colorConsumer;
 

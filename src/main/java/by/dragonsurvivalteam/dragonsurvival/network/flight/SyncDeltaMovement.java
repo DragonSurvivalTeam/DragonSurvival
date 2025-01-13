@@ -1,48 +1,48 @@
 package by.dragonsurvivalteam.dragonsurvival.network.flight;
 
-import by.dragonsurvivalteam.dragonsurvival.network.IMessage;
-import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
-import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
+public record SyncDeltaMovement(int playerId, Vec3 movement) implements CustomPacketPayload {
+    public static final Type<SyncDeltaMovement> TYPE = new Type<>(DragonSurvival.res("sync_delta_movement"));
 
-public class SyncDeltaMovement implements IMessage<SyncDeltaMovement.Data> {
-    public static void handleClient(final SyncDeltaMovement.Data message, final IPayloadContext context) {
-        context.enqueueWork(() -> ClientProxy.handleSyncDeltaMovement(message));
+    public static final StreamCodec<FriendlyByteBuf, SyncDeltaMovement> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, SyncDeltaMovement::playerId,
+            MiscCodecs.VEC3_STREAM_CODEC, SyncDeltaMovement::movement,
+            SyncDeltaMovement::new
+    );
+
+    public static void handleClient(final SyncDeltaMovement packet, final IPayloadContext context) {
+        context.enqueueWork(() -> {
+            // Local player already has the correct values of themselves
+            if (context.player().level().getEntity(packet.playerId()) instanceof Player player && player != DragonSurvival.PROXY.getLocalPlayer()) {
+                player.setDeltaMovement(packet.movement());
+            }
+        });
     }
 
-    public static void handleServer(final SyncDeltaMovement.Data message, final IPayloadContext context) {
-        Player sender = context.player();
-        // This needs to be set so that it can be read back in some server side logic that uses deltamovement (e.g. DragonDestructionHandler)
-        sender.setDeltaMovement(message.speedX(), message.speedY(), message.speedZ());
-        PacketDistributor.sendToPlayersTrackingEntity(sender, new SyncDeltaMovement.Data(sender.getId(), message.speedX(), message.speedY(), message.speedZ()));
+    public static void handleServer(final SyncDeltaMovement packet, final IPayloadContext context) {
+        context.enqueueWork(() -> {
+            if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
+                player.setDeltaMovement(packet.movement());
+            }
+        }).thenRun(() -> {
+            // Update whoever is tracking this entity
+            PacketDistributor.sendToPlayersTrackingEntity(context.player(), new SyncDeltaMovement(context.player().getId(), packet.movement()));
+        });
     }
 
-    public record Data(int playerId, double speedX, double speedY, double speedZ) implements CustomPacketPayload {
-        public static final Type<Data> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "flight_speed"));
-
-        public static final StreamCodec<FriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
-                ByteBufCodecs.VAR_INT,
-                Data::playerId,
-                ByteBufCodecs.DOUBLE,
-                Data::speedX,
-                ByteBufCodecs.DOUBLE,
-                Data::speedY,
-                ByteBufCodecs.DOUBLE,
-                Data::speedZ,
-                Data::new
-        );
-
-        @Override
-        public Type<? extends CustomPacketPayload> type() {
-            return TYPE;
-        }
+    @Override
+    public @NotNull Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

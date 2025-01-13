@@ -44,11 +44,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.CalculateDetachedCameraDistanceEvent;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.InputEvent;
-import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
-import net.neoforged.neoforge.client.event.ViewportEvent;
+import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -531,28 +527,23 @@ public class ClientFlightHandler {
     }
 
     @SuppressWarnings({"DuplicateBranchesInSwitch", "UnusedReturnValue"})
-    private static boolean toggleWingsManual(final Player player) {
+    private static void toggleWingsManual(final Player player) {
         FlightData flight = FlightData.getData(player);
         WingsToggleResult result = flight.isWingsSpread() ? disableWings(player, flight) : enableWings(player, flight);
 
         switch (result) {
-            case SUCCESS_ENABLED, SUCCESS_DISABLED -> {
-                return true;
-            }
-            case ALREADY_ENABLED, ALREADY_DISABLED -> {
-                return false;
-            }
+            case SUCCESS_ENABLED -> flight.areWingsSpread = true;
+            case SUCCESS_DISABLED -> flight.areWingsSpread = false;
+            case ALREADY_ENABLED, ALREADY_DISABLED -> { /* Nothing to do */ }
             case NO_WINGS -> {
                 player.sendSystemMessage(Component.translatable(NO_WINGS));
-                return false;
+                flight.areWingsSpread = false;
             }
             case NO_HUNGER -> {
                 player.sendSystemMessage(Component.translatable(LangKey.MESSAGE_NO_HUNGER));
-                return false;
+                flight.areWingsSpread = false;
             }
-            case WINGS_DISABLED -> {
-                return false;
-            }
+            case WINGS_DISABLED -> flight.areWingsSpread = false;
             default -> throw new IllegalStateException("Unexpected value: " + result);
         }
     }
@@ -598,7 +589,7 @@ public class ClientFlightHandler {
             return WingsToggleResult.NO_HUNGER;
         }
 
-        PacketDistributor.sendToServer(new SyncWingsSpread.Data(player.getId(), true));
+        PacketDistributor.sendToServer(new SyncWingsSpread(player.getId(), true));
         return WingsToggleResult.SUCCESS_ENABLED;
     }
 
@@ -623,7 +614,7 @@ public class ClientFlightHandler {
         if (!data.isWingsSpread()) return WingsToggleResult.ALREADY_DISABLED;
 
         // Always allow disabling wings (if the player has flight)
-        PacketDistributor.sendToServer(new SyncWingsSpread.Data(player.getId(), false));
+        PacketDistributor.sendToServer(new SyncWingsSpread(player.getId(), false));
         return WingsToggleResult.SUCCESS_DISABLED;
     }
 

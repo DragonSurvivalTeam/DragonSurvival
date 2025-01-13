@@ -6,6 +6,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import org.jetbrains.annotations.NotNull;
 
 public class DragonRiderWorkbenchBlock extends HorizontalDirectionalBlock {
     public static final MapCodec<DragonRiderWorkbenchBlock> CODEC = simpleCodec(DragonRiderWorkbenchBlock::new);
@@ -15,7 +16,7 @@ public class DragonRiderWorkbenchBlock extends HorizontalDirectionalBlock {
     }
 
     @Override
-    public MapCodec<DragonRiderWorkbenchBlock> codec() {
+    public @NotNull MapCodec<DragonRiderWorkbenchBlock> codec() {
         return CODEC;
     }
 

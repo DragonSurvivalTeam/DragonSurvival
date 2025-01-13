@@ -762,6 +762,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
             @Override
             public void onPress() {
+                //noinspection DataFlowIssue -> player is present
                 DragonStateHandler handler = DragonStateProvider.getData(minecraft.player);
                 minecraft.player.level().playSound(minecraft.player, minecraft.player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 1, 0.7f);
                 boolean dragonDataIsPreserved = ServerConfig.saveAllAbilities && ServerConfig.saveGrowthStage;
@@ -1080,7 +1081,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             altarData.isInAltar = false;
 
             PacketDistributor.sendToServer(new SyncAltarCooldown(altarData.altarCooldown));
-            PacketDistributor.sendToServer(new SyncComplete.Data(minecraft.player.getId(), data.serializeNBT(minecraft.player.registryAccess())));
+            PacketDistributor.sendToServer(new SyncComplete(minecraft.player.getId(), data.serializeNBT(minecraft.player.registryAccess())));
         } else {
             data.setCurrentSkinPreset(preset);
             PacketDistributor.sendToServer(new SyncPlayerSkinPreset(minecraft.player.getId(), HANDLER.speciesKey(), HANDLER.getCurrentSkinPreset().serializeNBT(minecraft.player.registryAccess())));

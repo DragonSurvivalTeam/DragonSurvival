@@ -25,7 +25,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class ClientProxy implements Proxy {
     private final Map<ResourceLocation, TickableSoundInstance> soundInstances = new HashMap<>();
@@ -71,57 +70,57 @@ public class ClientProxy implements Proxy {
 
     @Override
     public void setCurrentAbilityAnimation(int playerId, final Pair<AbilityAnimation, AnimationType> animation) {
-        AtomicReference<DragonEntity> dragonEntity = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(playerId);
+        DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(playerId);
 
-        if (dragonEntity == null) {
+        if (dragon == null) {
             return;
         }
 
-        dragonEntity.get().setCurrentAbilityAnimation(animation);
+        dragon.setCurrentAbilityAnimation(animation);
     }
 
     @Override
     public void stopEmote(int playerId, final DragonEmote emote) {
-        AtomicReference<DragonEntity> dragonEntity = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(playerId);
+        DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(playerId);
 
-        if (dragonEntity == null) {
+        if (dragon == null) {
             return;
         }
 
-        dragonEntity.get().stopEmote(emote);
+        dragon.stopEmote(emote);
     }
 
     @Override
     public void beginPlayingEmote(int playerId, final DragonEmote emote) {
-        AtomicReference<DragonEntity> dragonEntity = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(playerId);
+        DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(playerId);
 
-        if (dragonEntity == null) {
+        if (dragon == null) {
             return;
         }
 
-        dragonEntity.get().beginPlayingEmote(emote);
+        dragon.beginPlayingEmote(emote);
     }
 
     @Override
     public void stopAllEmotes(int playerId) {
-        AtomicReference<DragonEntity> dragonEntity = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(playerId);
+        DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(playerId);
 
-        if (dragonEntity == null) {
+        if (dragon == null) {
             return;
         }
 
-        dragonEntity.get().stopAllEmotes();
+        dragon.stopAllEmotes();
     }
 
     @Override
     public boolean isPlayingEmote(int playerId, final DragonEmote emote) {
-        AtomicReference<DragonEntity> dragonEntity = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(playerId);
+        DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(playerId);
 
-        if (dragonEntity == null) {
+        if (dragon == null) {
             return false;
         }
 
-        return dragonEntity.get().isPlayingEmote(emote);
+        return dragon.isPlayingEmote(emote);
     }
 
     @Override

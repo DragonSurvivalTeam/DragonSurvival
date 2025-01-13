@@ -16,13 +16,14 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 
-public abstract class Hunter extends PathfinderMob implements GeoEntity, DragonHunter {
+public abstract class Hunter extends PathfinderMob implements GeoEntity {
     private static final EntityDataAccessor<Boolean> IS_AGGRO = SynchedEntityData.defineId(Hunter.class, EntityDataSerializers.BOOLEAN);
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
@@ -49,9 +50,9 @@ public abstract class Hunter extends PathfinderMob implements GeoEntity, DragonH
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
-        super.defineSynchedData(pBuilder);
-        pBuilder.define(IS_AGGRO, false);
+    protected void defineSynchedData(@NotNull final SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(IS_AGGRO, false);
     }
 
     @Override

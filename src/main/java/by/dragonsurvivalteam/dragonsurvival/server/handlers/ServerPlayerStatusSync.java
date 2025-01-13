@@ -31,7 +31,7 @@ public class ServerPlayerStatusSync {
 
         if (data.isDragon() && player.tickCount >= data.lastSync + SYNC_RATE) {
             data.lastSync = player.tickCount;
-            PacketDistributor.sendToPlayersTrackingEntity(player, new SyncComplete.Data(player.getId(), data.serializeNBT(player.registryAccess())));
+            PacketDistributor.sendToPlayersTrackingEntity(player, new SyncComplete(player.getId(), data.serializeNBT(player.registryAccess())));
         }
     }
 }

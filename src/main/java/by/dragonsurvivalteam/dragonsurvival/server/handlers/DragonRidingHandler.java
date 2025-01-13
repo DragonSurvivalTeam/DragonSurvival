@@ -89,7 +89,7 @@ public class DragonRidingHandler {
             target.connection.send(new ClientboundSetPassengersPacket(target));
 
             DragonStateProvider.getData(target).setPassengerId(self.getId());
-            PacketDistributor.sendToPlayersTrackingEntityAndSelf(target, new SyncDragonPassengerID.Data(target.getId(), self.getId()));
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(target, new SyncDragonPassengerID(target.getId(), self.getId()));
 
             event.setCancellationResult(InteractionResult.SUCCESS);
             event.setCanceled(true);
@@ -120,7 +120,7 @@ public class DragonRidingHandler {
                 // Check for any way that riding could have been interrupted and update our internal state tracking
                 if (passenger == null || !player.hasPassenger(passenger) || passenger.getRootVehicle() != player.getRootVehicle() || !player.isVehicle()) {
                     dragonStateHandler.setPassengerId(NO_PASSENGER);
-                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncDragonPassengerID.Data(player.getId(), NO_PASSENGER));
+                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncDragonPassengerID(player.getId(), NO_PASSENGER));
                     return;
                 }
 
@@ -132,7 +132,7 @@ public class DragonRidingHandler {
                     }
 
                     dragonStateHandler.setPassengerId(NO_PASSENGER);
-                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncDragonPassengerID.Data(player.getId(), NO_PASSENGER));
+                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncDragonPassengerID(player.getId(), NO_PASSENGER));
                     passenger.stopRiding();
                     player.connection.send(new ClientboundSetPassengersPacket(player));
                 }
@@ -147,7 +147,7 @@ public class DragonRidingHandler {
                 player.stopRiding();
                 vehicle.connection.send(new ClientboundSetPassengersPacket(vehicle));
                 handler.setPassengerId(NO_PASSENGER);
-                PacketDistributor.sendToPlayersTrackingEntityAndSelf(vehicle, new SyncDragonPassengerID.Data(vehicle.getId(), NO_PASSENGER));
+                PacketDistributor.sendToPlayersTrackingEntityAndSelf(vehicle, new SyncDragonPassengerID(vehicle.getId(), NO_PASSENGER));
             });
         }
     }

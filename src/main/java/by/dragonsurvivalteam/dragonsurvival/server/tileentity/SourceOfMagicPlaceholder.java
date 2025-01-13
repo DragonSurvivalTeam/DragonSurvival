@@ -4,10 +4,11 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
-public class SourceOfMagicPlaceholder extends BaseBlockBlockEntity {
+public class SourceOfMagicPlaceholder extends BlockEntity {
     public BlockPos rootPos = BlockPos.ZERO;
 
     public SourceOfMagicPlaceholder(final BlockPos position, final BlockState state) {
@@ -17,11 +18,12 @@ public class SourceOfMagicPlaceholder extends BaseBlockBlockEntity {
     @Override
     public void loadAdditional(@NotNull final CompoundTag tag, @NotNull final HolderLookup.Provider provider) {
         super.loadAdditional(tag, provider);
-        rootPos = BlockPos.of(tag.getLong("Root"));
+        rootPos = BlockPos.of(tag.getLong("root"));
     }
 
     @Override
-    protected void saveAdditional(final CompoundTag tag, @NotNull final HolderLookup.Provider provider) {
-        tag.putLong("Root", rootPos.asLong());
+    protected void saveAdditional(@NotNull final CompoundTag tag, @NotNull final HolderLookup.Provider provider) {
+        super.saveAdditional(tag, provider);
+        tag.putLong("root", rootPos.asLong());
     }
 }

@@ -95,11 +95,11 @@ public class DragonGrowthHandler {
             if (oldSize == data.getDesiredSize() || dragonStage.isNaturalGrowthStopped().map(condition -> condition.matches(serverPlayer.serverLevel(), serverPlayer.position(), serverPlayer)).orElse(false)) {
                 if (data.isGrowing) {
                     data.isGrowing = false;
-                    PacketDistributor.sendToPlayer(serverPlayer, new SyncGrowthState.Data(false));
+                    PacketDistributor.sendToPlayer(serverPlayer, new SyncGrowthState(false));
                 }
             } else if (!data.isGrowing) {
                 data.isGrowing = true;
-                PacketDistributor.sendToPlayer(serverPlayer, new SyncGrowthState.Data(true));
+                PacketDistributor.sendToPlayer(serverPlayer, new SyncGrowthState(true));
             }
         }
     }

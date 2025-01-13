@@ -16,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import java.util.List;
 
 // TODO :: shouldn't this have the option to add a duration (to have the ability to apply said effect)
+//  Add option to stack the effect?
 public record OnAttackEffect(PotionData potionData) implements AbilityEntityEffect {
     public static final MapCodec<OnAttackEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             PotionData.CODEC.fieldOf("potion").forGetter(OnAttackEffect::potionData)
@@ -36,9 +37,12 @@ public record OnAttackEffect(PotionData potionData) implements AbilityEntityEffe
     @Override
     public List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
         List<MutableComponent> description = potionData.getDescription(ability.level());
-        for(MutableComponent component : description) {
+
+        for (MutableComponent component : description) {
+            // Append the info per applied effect
             component.append(Component.translatable(LangKey.ABILITY_ON_HIT));
         }
+
         return description;
     }
 

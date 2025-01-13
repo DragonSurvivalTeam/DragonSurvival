@@ -1,33 +1,31 @@
 package by.dragonsurvivalteam.dragonsurvival.network.player;
 
-import by.dragonsurvivalteam.dragonsurvival.network.IMessage;
-import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
-import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
+public record SyncGrowthState(boolean isGrowing) implements CustomPacketPayload {
+    public static final Type<SyncGrowthState> TYPE = new Type<>(DragonSurvival.res("sync_growth_state"));
 
-public class SyncGrowthState implements IMessage<SyncGrowthState.Data> {
-    public static void handleClient(final SyncGrowthState.Data message, final IPayloadContext context) {
-        context.enqueueWork(() -> ClientProxy.handleSyncGrowthState(message));
+    public static final StreamCodec<FriendlyByteBuf, SyncGrowthState> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.BOOL, SyncGrowthState::isGrowing,
+            SyncGrowthState::new
+    );
+
+    public static void handleClient(final SyncGrowthState packet, final IPayloadContext context) {
+        context.enqueueWork(() -> {
+            DragonStateProvider.getData(context.player()).isGrowing = packet.isGrowing();
+        });
     }
 
-    public record Data(boolean growing) implements CustomPacketPayload {
-        public static final Type<Data> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "growth_state"));
 
-        public static final StreamCodec<FriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
-                ByteBufCodecs.BOOL,
-                Data::growing,
-                Data::new
-        );
-
-        @Override
-        public Type<? extends CustomPacketPayload> type() {
-            return TYPE;
-        }
+    @Override
+    public @NotNull Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

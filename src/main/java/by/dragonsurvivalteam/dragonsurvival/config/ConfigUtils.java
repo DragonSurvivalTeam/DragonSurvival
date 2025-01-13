@@ -118,17 +118,18 @@ public class ConfigUtils {
         }
     }
 
+    @SuppressWarnings("deprecation") // ignore
     public static String location(final Object object) {
         if (object instanceof TagKey<?> tag) {
             return "#" + tag.location();
         }
 
         if (object instanceof Block block) {
-            return location(block.builtInRegistryHolder().key());
+            return location(block.builtInRegistryHolder().getRegisteredName());
         }
 
         if (object instanceof Item item) {
-            return location(item.builtInRegistryHolder().key());
+            return location(item.builtInRegistryHolder().getRegisteredName());
         }
 
         if (object instanceof ResourceKey<?> key) {
@@ -136,7 +137,7 @@ public class ConfigUtils {
         }
 
         if (object instanceof Holder<?> holder) {
-            return location(holder.getKey());
+            return holder.getRegisteredName();
         }
 
         if (object instanceof ResourceLocation location) {

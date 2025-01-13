@@ -13,7 +13,8 @@ import static net.minecraft.commands.Commands.literal;
 public class DragonEditorCommand {
     public static void register(final CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.getRoot().addChild(literal("dragon-editor")
-                .requires(source -> source.hasPermission(Commands.LEVEL_GAMEMASTERS)) // TODO :: should this be allowed with lower permissions?
+                // TODO :: should this be allowed with lower permissions?
+                .requires(source -> source.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .executes(context -> runCommand(context.getSource().getPlayerOrException()))
                 .build()
         );
@@ -21,7 +22,7 @@ public class DragonEditorCommand {
 
     private static int runCommand(final ServerPlayer player) {
         if (DragonStateProvider.isDragon(player)) {
-            PacketDistributor.sendToPlayer(player, new RequestOpenDragonEditor.Data());
+            PacketDistributor.sendToPlayer(player, RequestOpenDragonEditor.INSTANCE);
         }
 
         return 1;

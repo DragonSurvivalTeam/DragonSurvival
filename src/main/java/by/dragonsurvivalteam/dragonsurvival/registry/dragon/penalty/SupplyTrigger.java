@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Optional;
 
 public record SupplyTrigger(ResourceLocation supplyType, Holder<Attribute> attributeToUseAsBase, int triggerRate, float reductionRateMultiplier, float regenerationRate, List<RecoveryItems> recoveryItems, boolean displayLikeHungerBar, Optional<ParticleOptions> particlesOnTrigger) implements PenaltyTrigger {
-    @Translation(comments = " after %s seconds")
+    @Translation(comments = " every %s seconds")
     private static final String PENALTY_SUPPLY_TRIGGER = Translation.Type.GUI.wrap("penalty.supply_trigger");
 
     @Translation(comments = " on every game tick")

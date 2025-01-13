@@ -22,7 +22,7 @@ public class WingDisablingEffect extends ModifiableMobEffect {
             if (handler.isDragon()) {
                 FlightData data = FlightData.getData(player);
                 data.areWingsSpread = false;
-                PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncWingsSpread.Data(player.getId(), false));
+                PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncWingsSpread(player.getId(), false));
             }
         }
     }

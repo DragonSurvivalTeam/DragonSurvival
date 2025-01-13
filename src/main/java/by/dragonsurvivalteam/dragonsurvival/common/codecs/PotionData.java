@@ -86,21 +86,23 @@ public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier
         Calculated calculated = Calculated.from(this, level);
 
         for (Holder<MobEffect> effect : effects) {
-            MutableComponent name = Component.literal("§6■ ").append(Component.translatable(LangKey.ABILITY_APPLIES).append(Component.translatable(effect.value().getDescriptionId())).withColor(DSColors.GOLD));
+            MutableComponent name = Component.translatable(effect.value().getDescriptionId());
 
             if (calculated.amplifier() > 0) {
-                name.append(CommonComponents.SPACE).append(Component.translatable("enchantment.level." + (calculated.amplifier() + 1))).withColor(DSColors.GOLD);
+                name.append(CommonComponents.SPACE).append(Component.translatable("enchantment.level." + (calculated.amplifier() + 1)));
             }
 
+            MutableComponent applies = Component.translatable(LangKey.ABILITY_APPLIES, DSColors.dynamicValue(name));
+
             if (calculated.duration() != DurationInstance.INFINITE_DURATION) {
-                name.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.dynamicValue(Functions.ticksToSeconds(calculated.duration()))));
+                applies.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.dynamicValue(Functions.ticksToSeconds(calculated.duration()))));
             }
 
             if (calculated.probability() < 1) {
-                name.append(Component.translatable(LangKey.ABILITY_EFFECT_CHANCE, DSColors.dynamicValue(NumberFormat.getPercentInstance().format(calculated.probability()))));
+                applies.append(Component.translatable(LangKey.ABILITY_EFFECT_CHANCE, DSColors.dynamicValue(NumberFormat.getPercentInstance().format(calculated.probability()))));
             }
 
-            components.add(name);
+            components.add(applies);
         }
 
         return components;

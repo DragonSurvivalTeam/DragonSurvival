@@ -353,6 +353,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
 
             @Override
             public void onPress() {
+                //noinspection DataFlowIssue -> player is present
                 DragonStateHandler handler = DragonStateProvider.getData(minecraft.player);
                 boolean dragonDataIsPreserved = ServerConfig.saveAllAbilities && ServerConfig.saveGrowthStage;
                 if (handler.isDragon() && !dragonDataIsPreserved) {
@@ -361,8 +362,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
 
                 if(confirmation) {
                     if (!toggled) {
-                        renderButton = new ExtendedButton(0, 0, 0, 0, Component.empty(), b -> {
-                        }) {
+                        renderButton = new ExtendedButton(0, 0, 0, 0, Component.empty(), button -> { /* Nothing to do */ }) {
                             @Override
                             public void renderWidget(@NotNull final GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
                                 if (confirmComponent != null && confirmation) {

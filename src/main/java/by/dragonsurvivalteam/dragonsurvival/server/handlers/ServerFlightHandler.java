@@ -102,7 +102,7 @@ public class ServerFlightHandler {
 
         if (flightData.isWingsSpread()) {
             FlightData.getData(player).areWingsSpread = false;
-            PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncWingsSpread.Data(player.getId(), false));
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncWingsSpread(player.getId(), false));
         }
     }
 
@@ -178,7 +178,7 @@ public class ServerFlightHandler {
                 player.playSound(player.getFallDamageSound((int) damage), 1, 1);
                 player.hurt(player.damageSources().flyIntoWall(), damage);
                 FlightData.getData(player).areWingsSpread = false;
-                PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncWingsSpread.Data(player.getId(), false));
+                PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncWingsSpread(player.getId(), false));
             }
         }
     }
@@ -256,7 +256,7 @@ public class ServerFlightHandler {
 
     public static boolean canSwimSpin(Player player){
         FlightData data = FlightData.getData(player);
-        return data.swimSpinFluid.isPresent() && player.isEyeInFluidType(data.swimSpinFluid.get().value()) && data.hasFlight() && !player.onGround();
+        return data.swimSpinFluid != null && player.isEyeInFluidType(data.swimSpinFluid.value()) && data.hasFlight() && !player.onGround();
     }
 
     @SubscribeEvent
@@ -273,7 +273,7 @@ public class ServerFlightHandler {
                             if (player.getFoodData().getFoodLevel() <= foldWingsThreshold && !player.isCreative()) {
                                 player.sendSystemMessage(Component.translatable(LangKey.MESSAGE_NO_HUNGER));
                                 FlightData.getData(player).areWingsSpread = false;
-                                PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncWingsSpread.Data(player.getId(), false));
+                                PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncWingsSpread(player.getId(), false));
                                 return;
                             }
                         }

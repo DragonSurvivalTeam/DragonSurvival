@@ -2,8 +2,8 @@ package by.dragonsurvivalteam.dragonsurvival.network.dragon_editor;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.SkinPreset;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -14,9 +14,11 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
+
 
 public record SyncPlayerSkinPreset(int playerId, ResourceKey<DragonSpecies> dragonSpecies, CompoundTag preset) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<SyncPlayerSkinPreset> TYPE = new CustomPacketPayload.Type<>(DragonSurvival.res("sync_player_skin_preset"));
+    public static final Type<SyncPlayerSkinPreset> TYPE = new Type<>(DragonSurvival.res("sync_player_skin_preset"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncPlayerSkinPreset> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, SyncPlayerSkinPreset::playerId,
@@ -25,24 +27,31 @@ public record SyncPlayerSkinPreset(int playerId, ResourceKey<DragonSpecies> drag
             SyncPlayerSkinPreset::new
     );
 
-    public static void handleClient(final SyncPlayerSkinPreset message, final IPayloadContext context) {
-        context.enqueueWork(() -> ClientProxy.handleSyncPlayerSkinPreset(message, context.player().registryAccess()));
+    public static void handleClient(final SyncPlayerSkinPreset packet, final IPayloadContext context) {
+        context.enqueueWork(() -> {
+            if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
+                SkinPreset newPreset = new SkinPreset();
+                newPreset.deserializeNBT(player.registryAccess(), packet.preset());
+
+                DragonStateHandler handler = DragonStateProvider.getData(player);
+                handler.setSkinPresetForType(packet.dragonSpecies(), newPreset);
+                handler.recompileCurrentSkin();
+            }
+        });
     }
 
-    public static void handleServer(final SyncPlayerSkinPreset message, final IPayloadContext context) {
-        Player sender = context.player();
-
+    public static void handleServer(final SyncPlayerSkinPreset packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
-            DragonStateProvider.getOptional(sender).ifPresent(handler -> {
+            if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 SkinPreset newPreset = new SkinPreset();
-                newPreset.deserializeNBT(sender.registryAccess(), message.preset());
-                handler.setSkinPresetForType(message.dragonSpecies, newPreset);
-            });
-        }).thenRun(() -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(sender, message));
+                newPreset.deserializeNBT(player.registryAccess(), packet.preset());
+                DragonStateProvider.getData(player).setSkinPresetForType(packet.dragonSpecies(), newPreset);
+            }
+        }).thenRun(() -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(context.player(), packet));
     }
 
     @Override
-    public Type<? extends CustomPacketPayload> type() {
+    public @NotNull Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 }

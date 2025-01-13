@@ -6,7 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.input.Keybind;
-import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawsMenuToggle;
+import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawMenuToggle;
 import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
 import by.dragonsurvivalteam.dragonsurvival.network.container.RequestOpenDragonInventory;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AltarData;
@@ -102,7 +102,7 @@ public class InventoryScreenHandler {
         if (sc instanceof InventoryScreen screen) {
             if (ServerConfig.allowDragonChoiceFromInventory) {
                 altarOpenButton = new ExtendedButton(screen.getGuiLeft() + 138, screen.height / 2 - 32, 32, 32, Component.empty(), button -> {
-                    ClientProxy.handleOpenDragonAltar();
+                    ClientProxy.openDragonAltar();
                 }) {
                     @Override
                     public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
@@ -232,9 +232,7 @@ public class InventoryScreenHandler {
         PacketDistributor.sendToServer(RequestOpenDragonInventory.INSTANCE);
         //noinspection DataFlowIssue -> player is present
         ClawInventoryData data = ClawInventoryData.getData(Minecraft.getInstance().player);
-
-        PacketDistributor.sendToServer(new SyncDragonClawsMenuToggle.Data(data.isMenuOpen()));
-        data.setMenuOpen(data.isMenuOpen());
+        PacketDistributor.sendToServer(new SyncDragonClawMenuToggle(data.isMenuOpen()));
     }
 
     private static boolean isInventoryTab(final Screen screen) {

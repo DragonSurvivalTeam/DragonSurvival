@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class RequestOpenDragonInventory implements CustomPacketPayload {
     public static final Type<RequestOpenDragonInventory> TYPE = new Type<>(DragonSurvival.res("open_dragon_inventory"));
+
     public static final RequestOpenDragonInventory INSTANCE = new RequestOpenDragonInventory();
     public static final StreamCodec<ByteBuf, RequestOpenDragonInventory> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 

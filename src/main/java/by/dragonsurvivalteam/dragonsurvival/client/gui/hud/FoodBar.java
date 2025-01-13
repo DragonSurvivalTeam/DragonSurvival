@@ -19,6 +19,7 @@ public class FoodBar {
     public static boolean render(final Gui gui, final GuiGraphics graphics, int width, int height) {
         Player localPlayer = DragonSurvival.PROXY.getLocalPlayer();
 
+        //noinspection DataFlowIssue -> instance is present
         if (localPlayer == null || !Minecraft.getInstance().gameMode.canHurtPlayer()) {
             return false;
         }

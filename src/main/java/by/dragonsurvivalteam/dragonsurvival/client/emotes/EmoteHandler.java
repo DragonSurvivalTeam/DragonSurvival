@@ -16,13 +16,10 @@ import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-import java.util.concurrent.atomic.AtomicReference;
-
 import static net.minecraft.client.CameraType.THIRD_PERSON_BACK;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class EmoteHandler {
-
     private static final double EMOTE_MOVEMENT_EPSILON = 0.01;
 
     @SubscribeEvent
@@ -32,12 +29,8 @@ public class EmoteHandler {
         }
 
         Player player = event.getEntity();
-        AtomicReference<DragonEntity> atomicDragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(player.getId());
-        if(atomicDragon == null) {
-            return;
-        }
+        DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(player.getId());
 
-        DragonEntity dragon = atomicDragon.get();
         if (player.isCrouching() || player.swinging) {
             dragon.stopAllEmotes();
             PacketDistributor.sendToServer(new StopAllEmotes(player.getId()));
@@ -84,12 +77,12 @@ public class EmoteHandler {
         }
 
         if (event.getEntity() instanceof Player player && DragonStateProvider.isDragon(player)) {
-            AtomicReference<DragonEntity> atomicDragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(player.getId());
-            if(atomicDragon == null) {
+            DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(player.getId());
+
+            if (dragon == null) {
                 return;
             }
 
-            DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(player.getId()).get();
             dragon.stopAllEmotes();
             PacketDistributor.sendToServer(new StopAllEmotes(player.getId()));
         }

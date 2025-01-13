@@ -1,47 +1,34 @@
 package by.dragonsurvivalteam.dragonsurvival.network.player;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.network.IMessage;
-import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
-import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
+public record SyncDragonPassengerID(int playerId, int passengerId) implements CustomPacketPayload {
+    public static final Type<SyncDragonPassengerID> TYPE = new Type<>(DragonSurvival.res("sync_dragon_passenger_id"));
 
-public class SyncDragonPassengerID implements IMessage<SyncDragonPassengerID.Data> {
-    public static void handleClient(final Data message, final IPayloadContext context) {
-        context.enqueueWork(() -> ClientProxy.handleSyncPassengerID(message));
-    }
+    public static final StreamCodec<FriendlyByteBuf, SyncDragonPassengerID> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, SyncDragonPassengerID::playerId,
+            ByteBufCodecs.VAR_INT, SyncDragonPassengerID::passengerId,
+            SyncDragonPassengerID::new
+    );
 
-    public static void handleServer(final Data message, final IPayloadContext context) {
-        Entity entity = context.player();
+    public static void handleClient(final SyncDragonPassengerID packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
-            DragonStateProvider.getOptional(entity).ifPresent(handler -> {
-                handler.setPassengerId(message.passengerId);
-            });
-        }).thenRun(() -> PacketDistributor.sendToPlayersTrackingEntity(entity, message));
+            if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
+                DragonStateProvider.getData(player).setPassengerId(packet.passengerId());
+            }
+        });
     }
 
-    public record Data(int playerId, int passengerId) implements CustomPacketPayload {
-        public static final Type<Data> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "dragon_passenger_id"));
-
-        public static final StreamCodec<FriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
-                ByteBufCodecs.VAR_INT,
-                Data::playerId,
-                ByteBufCodecs.VAR_INT,
-                Data::passengerId,
-                Data::new
-        );
-
-        @Override
-        public Type<? extends CustomPacketPayload> type() {
-            return TYPE;
-        }
+    @Override
+    public @NotNull Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

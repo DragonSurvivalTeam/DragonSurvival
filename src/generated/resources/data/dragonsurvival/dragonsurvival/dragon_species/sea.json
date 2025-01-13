@@ -1506,8 +1506,7 @@
       "reserved": "dragonsurvival:textures/gui/custom/mana_icons/sea/reserved.png"
     },
     "primary_color": "#2DA5E0",
-    "secondary_color": "#1D7099",
-    "wing_icon": "dragonsurvival:textures/ability_effect/sea_dragon_wings.png"
+    "secondary_color": "#1D7099"
   },
   "modifiers": [
     {

@@ -31,18 +31,15 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class AltarTypeButton extends Button implements HoverDisableable {
-    private static final ResourceLocation HUMAN_ALTAR_ICON = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/custom/altar/human/altar_icon.png");
-
     @Translation(comments = "You have awakened from your sleep, and become a human.")
     private static final String CHOICE_HUMAN = Translation.Type.GUI.wrap("altar.choice.human");
-    // TODO :: add message for dragons (dragon species would be a parameter)?
 
     @Translation(comments = {
             "■ §nHuman.§r",
@@ -50,6 +47,11 @@ public class AltarTypeButton extends Button implements HoverDisableable {
             "Travelers, builders, and creators."
     })
     private static final String HUMAN = Translation.Type.GUI.wrap("altar.info.human");
+
+    @Translation(comments = "§6■ Diet:§r %s")
+    private static final String DIET = Translation.Type.GUI.wrap("altar.info.diet");
+
+    private static final ResourceLocation HUMAN_ALTAR_ICON = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/custom/altar/human/altar_icon.png");
 
     public final Holder<DragonSpecies> species;
     private final DragonAltarScreen parent;
@@ -104,9 +106,10 @@ public class AltarTypeButton extends Button implements HoverDisableable {
                 int max = Math.min(diet.size(), scroll + MAX_SHOWN);
 
                 // Using the color codes in the translation doesn't seem to apply the color to the entire text - therefor we create the [shown / max_items] tooltip part here
-                MutableComponent shownFoods = Component.literal(" [" + Math.min(diet.size(), scroll + MAX_SHOWN) + " / " + diet.size() + "]").withStyle(ChatFormatting.DARK_GRAY);
+                MutableComponent shownFoods = Component.literal("[" + Math.min(diet.size(), scroll + MAX_SHOWN) + " / " + diet.size() + "]").withStyle(ChatFormatting.DARK_GRAY);
+                components.addFirst(Either.left(Component.translatable(DIET, shownFoods)));
                 //noinspection DataFlowIssue -> key is present
-                components.addFirst(Either.left(Component.translatable(Translation.Type.DRAGON_SPECIES_DESCRIPTION.wrap(species.getKey().location())).append(shownFoods)));
+                components.addFirst(Either.left(Component.translatable(Translation.Type.DRAGON_SPECIES_DESCRIPTION.wrap(species.getKey().location()))));
 
                 for (int i = scroll; i < max; i++) {
                     components.add(Either.right(new DietComponent(species, diet.get(i))));
@@ -153,7 +156,7 @@ public class AltarTypeButton extends Button implements HoverDisableable {
             DragonStateHandler data = DragonStateProvider.getData(player);
             data.revertToHumanForm(player, false);
             PacketDistributor.sendToServer(new SyncAltarCooldown(Functions.secondsToTicks(ServerConfig.altarUsageCooldown)));
-            PacketDistributor.sendToServer(new SyncComplete.Data(player.getId(), data.serializeNBT(player.registryAccess())));
+            PacketDistributor.sendToServer(new SyncComplete(player.getId(), data.serializeNBT(player.registryAccess())));
 
             player.closeContainer();
         } else {

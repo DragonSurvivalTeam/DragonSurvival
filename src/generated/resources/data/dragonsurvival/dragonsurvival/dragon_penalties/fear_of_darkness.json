@@ -39,10 +39,13 @@
     }
   },
   "effect": {
-    "amplifier": 0,
-    "duration": 200,
-    "effects": "dragonsurvival:stress",
-    "penalty_type": "dragonsurvival:mob_effect"
+    "penalty_type": "dragonsurvival:mob_effect",
+    "potion": {
+      "amplifier": 0.0,
+      "duration": 200.0,
+      "effect_particles": true,
+      "effects": "dragonsurvival:stress"
+    }
   },
   "icon": "dragonsurvival:abilities/forest/fear_of_darkness",
   "trigger": {

@@ -1,10 +1,9 @@
 package by.dragonsurvivalteam.dragonsurvival.server.handlers;
 
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncVisualEffectAdded;
-import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncVisualEffectRemoved;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncVisualEffectRemoval;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -44,7 +43,7 @@ public class VisualEffectSync {
             return;
         }
 
-        PacketDistributor.sendToPlayersTrackingEntity(entity, new SyncVisualEffectAdded.Data(entity.getId(), BuiltInRegistries.MOB_EFFECT.getId(instance.getEffect().value()), instance.getDuration(), instance.getAmplifier()));
+        PacketDistributor.sendToPlayersTrackingEntity(entity, new SyncVisualEffectAdded(entity.getId(), instance));
     }
 
     @SubscribeEvent
@@ -67,6 +66,6 @@ public class VisualEffectSync {
             return;
         }
 
-        PacketDistributor.sendToPlayersTrackingEntity(entity, new SyncVisualEffectRemoved.Data(entity.getId(), BuiltInRegistries.MOB_EFFECT.getId(instance.getEffect().value())));
+        PacketDistributor.sendToPlayersTrackingEntity(entity, new SyncVisualEffectRemoval(entity.getId(), instance.getEffect()));
     }
 }

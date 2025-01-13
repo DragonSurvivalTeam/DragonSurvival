@@ -6,7 +6,8 @@
           "entity_effect": [
             {
               "effect_type": "dragonsurvival:flight",
-              "flight_level": 1
+              "flight_level": 1,
+              "icon": "dragonsurvival:textures/ability_effect/cave_dragon_wings.png"
             }
           ],
           "targeting_mode": "allies_and_self"

@@ -90,9 +90,9 @@ public class GriffinEntity extends Hunter {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
-        super.defineSynchedData(pBuilder);
-        pBuilder.define(CURRENT_ATTACK, 0);
+    protected void defineSynchedData(@NotNull final SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(CURRENT_ATTACK, 0);
     }
 
     private void setCurrentAttack(GriffinAttackTypes attackType) {

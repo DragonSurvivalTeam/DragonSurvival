@@ -11,7 +11,6 @@ import by.dragonsurvivalteam.dragonsurvival.util.EnchantmentUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -30,8 +29,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MapItem;
 import net.minecraft.world.item.component.MapDecorations;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
@@ -195,14 +192,17 @@ public class HunterOmenHandler {
         }
 
         if (attacked.getType().is(DSEntityTypeTags.APPLIES_HUNTER_OMEN)) {
+            MobEffectInstance effect = attacker.getEffect(DSEffects.HUNTER_OMEN);
             int duration = 0;
-            if (attacker.hasEffect(DSEffects.HUNTER_OMEN)) {
-                duration = attacker.getEffect(DSEffects.HUNTER_OMEN).getDuration();
+
+            if (effect != null) {
+                duration = effect.getDuration();
             }
 
-            Holder<Enchantment> kindness = EnchantmentUtils.getHolder(DSEnchantments.CURSE_OF_KINDNESS);
-            if (kindness != null && EnchantmentHelper.getEnchantmentLevel(kindness, attacker) > 0) {
-                attackEntityEvent.setAmount(attackEntityEvent.getAmount() * ((float) Math.pow(EnchantmentHelper.getEnchantmentLevel(kindness, attacker), 0.7f)));
+            int enchantmentLevel = EnchantmentUtils.getLevel(attacker, DSEnchantments.CURSE_OF_KINDNESS);
+
+            if (enchantmentLevel > 0) {
+                attackEntityEvent.setAmount(attackEntityEvent.getAmount() * ((float) Math.pow(enchantmentLevel, 0.7f)));
             } else {
                 attacker.addEffect(new MobEffectInstance(DSEffects.HUNTER_OMEN, duration + Functions.secondsToTicks(5), 0, false, false, true));
             }

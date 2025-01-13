@@ -437,7 +437,11 @@ public class DragonStateHandler extends EntityStateHandler {
     }
 
     public void recompileCurrentSkin() {
-        skinData.compileSkin(dragonStage);
+        if (!isDragon()) {
+            return;
+        }
+
+        skinData.compileSkin(stageKey());
     }
 
     public void setCurrentStageCustomization(final DragonStageCustomization customization) {
@@ -583,7 +587,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
         if (isDragon()) {
             refreshBody = true;
-            getSkinData().compileSkin(stage());
+            getSkinData().compileSkin(stageKey());
         }
     }
 

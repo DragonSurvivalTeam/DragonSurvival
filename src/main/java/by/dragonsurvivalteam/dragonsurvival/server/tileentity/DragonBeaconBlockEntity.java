@@ -16,13 +16,14 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class DragonBeaconBlockEntity extends BaseBlockBlockEntity {
+public class DragonBeaconBlockEntity extends BlockEntity {
     private static final String DRAGON_BEACON_DATA = "dragon_beacon_data";
     private static final String TYPE = "type";
 

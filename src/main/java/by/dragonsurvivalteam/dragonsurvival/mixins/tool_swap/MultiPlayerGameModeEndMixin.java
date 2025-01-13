@@ -16,6 +16,7 @@ public class MultiPlayerGameModeEndMixin {
     @Inject(method = {"startDestroyBlock", "continueDestroyBlock"}, at = @At("RETURN"))
     private void finishSwap(final BlockPos blockPosition, final Direction directionFacing, final CallbackInfoReturnable<Boolean> callback) {
         Player player = Minecraft.getInstance().player;
+        //noinspection DataFlowIssue -> player is present
         ClawInventoryData.getData(player).swapFinish(player);
     }
 }

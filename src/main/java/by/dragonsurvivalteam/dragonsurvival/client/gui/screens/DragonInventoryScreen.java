@@ -11,9 +11,9 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.GrowthIcon;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscDragonTextures;
 import by.dragonsurvivalteam.dragonsurvival.input.Keybind;
+import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawMenuToggle;
 import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawRender;
-import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawsMenuToggle;
-import by.dragonsurvivalteam.dragonsurvival.network.container.RequestOpenInventory;
+import by.dragonsurvivalteam.dragonsurvival.network.container.RequestOpenVanillaInventory;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
@@ -140,13 +140,13 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
         ClawInventoryData clawInventory = ClawInventoryData.getData(player);
 
         clawsMenu = clawInventory.isMenuOpen();
-        PacketDistributor.sendToServer(new SyncDragonClawsMenuToggle.Data(clawsMenu));
+        PacketDistributor.sendToServer(new SyncDragonClawMenuToggle(clawsMenu));
 
         TabButton.addTabButtonsToScreen(this, leftPos + 5, topPos - 26, TabButton.TabButtonType.INVENTORY_TAB);
 
         ClickHoverButton clawMenuArrow = new ClickHoverButton(leftPos - 8, topPos + 73, 10, 18, 0, 0, 18, 18, Component.empty(), button -> {
             clawsMenu = !clawsMenu;
-            PacketDistributor.sendToServer(new SyncDragonClawsMenuToggle.Data(clawsMenu));
+            PacketDistributor.sendToServer(new SyncDragonClawMenuToggle(clawsMenu));
         }, CLAW_ARROW_CLICK, CLAW_ARROW_HOVER, CLAW_ARROW_MAIN);
         addRenderableWidget(clawMenuArrow);
 
@@ -159,7 +159,7 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
         // Button to enable / disable the rendering of claws (extra x and y offset is the location of the button in the texture)
         ExtendedButton clawRenderButton = new ExtendedButton(leftPos - 30 + 7, topPos + 120 + 27, 10, 10, Component.translatable(TOGGLE_CLAWS), button -> {
             ClientDragonRenderer.renderDragonClaws = !ClientDragonRenderer.renderDragonClaws;
-            PacketDistributor.sendToServer(new SyncDragonClawRender.Data(player.getId(), ClientDragonRenderer.renderDragonClaws));
+            PacketDistributor.sendToServer(new SyncDragonClawRender(player.getId(), ClientDragonRenderer.renderDragonClaws));
         }) {
             @Override
             public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) { /* Texture is rendered separately */ }
@@ -199,7 +199,7 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
         // Vanilla inventory
         HoverButton vanillaInventoryButton = new HoverButton(leftPos + 177, topPos + 84, 18, 16, 18, 18, VANILLA_INVENTORY_MAIN, VANILLA_INVENTORY_HOVER, button -> {
             Minecraft.getInstance().setScreen(new InventoryScreen(player));
-            PacketDistributor.sendToServer(new RequestOpenInventory.Data());
+            PacketDistributor.sendToServer(RequestOpenVanillaInventory.INSTANCE);
         });
         vanillaInventoryButton.setTooltip(Tooltip.create(Component.translatable(TOGGLE_VANILLA_INVENTORY)));
         addRenderableWidget(vanillaInventoryButton);

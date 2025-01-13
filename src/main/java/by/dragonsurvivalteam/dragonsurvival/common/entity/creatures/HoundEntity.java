@@ -61,10 +61,10 @@ public class HoundEntity extends Hunter {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
-        super.defineSynchedData(pBuilder);
-        pBuilder.define(VARIETY, 0);
-        pBuilder.define(DID_SLOWDOWN_ATTACK, false);
+    protected void defineSynchedData(@NotNull final SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(VARIETY, 0);
+        builder.define(DID_SLOWDOWN_ATTACK, false);
     }
 
     public int getVariety() {
@@ -72,13 +72,13 @@ public class HoundEntity extends Hunter {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compoundNBT) {
+    public void addAdditionalSaveData(@NotNull CompoundTag compoundNBT) {
         super.addAdditionalSaveData(compoundNBT);
         compoundNBT.putInt("Variety", entityData.get(VARIETY));
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compoundNBT) {
+    public void readAdditionalSaveData(@NotNull CompoundTag compoundNBT) {
         super.readAdditionalSaveData(compoundNBT);
         entityData.set(VARIETY, compoundNBT.getInt("Variety"));
     }

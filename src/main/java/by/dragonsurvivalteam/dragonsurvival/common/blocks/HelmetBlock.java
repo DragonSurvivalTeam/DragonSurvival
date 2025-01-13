@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class HelmetBlock extends Block implements EntityBlock {
@@ -29,22 +30,22 @@ public class HelmetBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public boolean isPathfindable(BlockState pState, PathComputationType pPathComputationType) {
+    public boolean isPathfindable(@NotNull BlockState pState, @NotNull PathComputationType pPathComputationType) {
         return false;
     }
 
     @Override
-    public BlockState rotate(BlockState blockState, Rotation rotation) {
+    public @NotNull BlockState rotate(BlockState blockState, Rotation rotation) {
         return blockState.setValue(ROTATION, rotation.rotate(blockState.getValue(ROTATION), 16));
     }
 
     @Override
-    public BlockState mirror(BlockState blockState, Mirror mirror) {
+    public @NotNull BlockState mirror(BlockState blockState, Mirror mirror) {
         return blockState.setValue(ROTATION, mirror.mirror(blockState.getValue(ROTATION), 16));
     }
 
     @Override
-    public VoxelShape getShape(BlockState p_220053_1_, BlockGetter p_220053_2_, BlockPos p_220053_3_, CollisionContext p_220053_4_) {
+    public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos position, @NotNull CollisionContext context) {
         return SHAPE;
     }
 
@@ -59,7 +60,7 @@ public class HelmetBlock extends Block implements EntityBlock {
     }
 
     @Nullable @Override
-    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
+    public BlockEntity newBlockEntity(@NotNull BlockPos pPos, @NotNull BlockState pState) {
         return DSBlockEntities.HELMET.value().create(pPos, pState);
     }
 }

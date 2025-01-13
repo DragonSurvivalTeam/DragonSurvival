@@ -1,38 +1,38 @@
 package by.dragonsurvivalteam.dragonsurvival.network.claw;
 
-import by.dragonsurvivalteam.dragonsurvival.network.IMessage;
-import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
-import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
+public record SyncDragonClawsMenu(int playerId, boolean isOpen, CompoundTag data) implements CustomPacketPayload {
+    public static final Type<SyncDragonClawsMenu> TYPE = new Type<>(DragonSurvival.res("sync_dragon_claws_menu"));
 
-public class SyncDragonClawsMenu implements IMessage<SyncDragonClawsMenu.Data> {
-    public static void handleClient(final SyncDragonClawsMenu.Data message, final IPayloadContext context) {
-        context.enqueueWork(() -> ClientProxy.handleSyncDragonClawsMenu(message, context.player().registryAccess()));
+    public static final StreamCodec<FriendlyByteBuf, SyncDragonClawsMenu> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, SyncDragonClawsMenu::playerId,
+            ByteBufCodecs.BOOL, SyncDragonClawsMenu::isOpen,
+            ByteBufCodecs.COMPOUND_TAG, SyncDragonClawsMenu::data,
+            SyncDragonClawsMenu::new
+    );
+
+    public static void handleClient(final SyncDragonClawsMenu packet, final IPayloadContext context) {
+        context.enqueueWork(() -> {
+            if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
+                ClawInventoryData data = ClawInventoryData.getData(player);
+                data.setMenuOpen(packet.isOpen());
+                data.deserializeNBT(player.registryAccess(), packet.data());
+            }
+        });
     }
 
-    public record Data(int playerId, boolean state, CompoundTag clawInventory) implements CustomPacketPayload {
-        public static final Type<Data> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "dragon_claws_menu"));
-
-        public static final StreamCodec<FriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
-                ByteBufCodecs.VAR_INT,
-                Data::playerId,
-                ByteBufCodecs.BOOL,
-                Data::state,
-                ByteBufCodecs.COMPOUND_TAG,
-                Data::clawInventory,
-                Data::new
-        );
-
-        @Override
-        public Type<? extends CustomPacketPayload> type() {
-            return TYPE;
-        }
+    @Override
+    public @NotNull Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

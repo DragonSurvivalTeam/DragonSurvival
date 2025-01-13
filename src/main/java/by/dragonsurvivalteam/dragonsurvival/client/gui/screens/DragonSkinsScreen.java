@@ -202,6 +202,7 @@ public class DragonSkinsScreen extends Screen {
 
         float scale = zoom;
 
+        //noinspection DataFlowIssue -> key is present
         if (dragonStage != null && !DragonSkins.playerSkinOrGlowFetchingInProgress(playerName, dragonStage.getKey())) {
             DragonStateHandler playerData = DragonStateProvider.getData(minecraft.player);
 
@@ -231,6 +232,7 @@ public class DragonSkinsScreen extends Screen {
         guiGraphics.blit(BACKGROUND_TEXTURE, startX + 128, startY, 0, 0, 164, 256);
         drawNonShadowString(guiGraphics, minecraft.font, Component.translatable(SETTINGS).withStyle(ChatFormatting.BLACK), startX + 128 + /* image width */ 164 / 2, startY + 7, -1);
         playerNameDisplay.setMessage(Component.literal(playerName));
+        //noinspection DataFlowIssue -> key is present
         playerStageDisplay.setMessage(DragonStage.translatableName(dragonStage.getKey()));
 
         super.render(guiGraphics, mouseX, mouseY, partialTick);
@@ -262,6 +264,7 @@ public class DragonSkinsScreen extends Screen {
             playerName = Objects.requireNonNull(player).getGameProfile().getName();
         }
 
+        //noinspection DataFlowIssue -> player is present
         handler.deserializeNBT(minecraft.player.registryAccess(), DragonStateProvider.getData(minecraft.player).serializeNBT(minecraft.player.registryAccess()));
         handler.setStage(null, dragonStage);
         handler.setCurrentStageCustomization(DragonStateProvider.getData(player).getCustomizationForStage(dragonStage.getKey()));
@@ -287,6 +290,7 @@ public class DragonSkinsScreen extends Screen {
         addRenderableOnly(playerNameDisplay);
 
         playerStageDisplay = new HoverButton(startX - 55, startY + 150, 149, 22, 149, 22, STAGE_BACKGROUND, STAGE_BACKGROUND, button -> {});
+        //noinspection DataFlowIssue -> key is present
         playerStageDisplay.setMessage(DragonStage.translatableName(dragonStage.getKey()));
         addRenderableOnly(playerStageDisplay);
 

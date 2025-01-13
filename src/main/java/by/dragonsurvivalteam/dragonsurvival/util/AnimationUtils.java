@@ -26,7 +26,7 @@ public class AnimationUtils {
 
     // TODO: This is a hack since GeckoLib's state.isCurrentAnimation() doesn't work. If they ever fix that, we can remove this.
     public static boolean isAnimationPlaying(AnimationController<?> controller, RawAnimation animation) {
-        String animationName = animation.getAnimationStages().get(0).animationName();
+        String animationName = animation.getAnimationStages().getFirst().animationName();
         return controller.getCurrentAnimation() != null && controller.getCurrentAnimation().animation().name().equals(animationName);
     }
 
@@ -36,10 +36,12 @@ public class AnimationUtils {
 
     public static float getDeltaTickFor60FPS() {
         float deltaTick = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks();
+        //noinspection DataFlowIssue -> level is present
         return deltaTick / (MS_FOR_60FPS / Minecraft.getInstance().level.tickRateManager().millisecondsPerTick());
     }
 
     public static float getDeltaSeconds() {
-        return (Minecraft.getInstance().getTimer().getRealtimeDeltaTicks() * Minecraft.getInstance().level.tickRateManager().millisecondsPerTick()) / 1000.f;
+        //noinspection DataFlowIssue -> level is present
+        return (Minecraft.getInstance().getTimer().getRealtimeDeltaTicks() * Minecraft.getInstance().level.tickRateManager().millisecondsPerTick()) / 1000f;
     }
 }

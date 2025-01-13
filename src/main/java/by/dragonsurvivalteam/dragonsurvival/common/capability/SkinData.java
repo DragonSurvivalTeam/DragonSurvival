@@ -5,7 +5,6 @@ import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.Sk
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
@@ -37,8 +36,8 @@ public class SkinData implements INBTSerializable<CompoundTag> {
         return presets;
     }
 
-    public void compileSkin(final Holder<DragonStage> dragonStage) {
-        recompileSkin.put(dragonStage.getKey(), true);
+    public void compileSkin(final ResourceKey<DragonStage> dragonStage) {
+        recompileSkin.put(dragonStage, true);
     }
 
     public Lazy<DragonStageCustomization> get(final ResourceKey<DragonSpecies> dragonSpecies, final ResourceKey<DragonStage> dragonStage) {

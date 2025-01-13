@@ -1,49 +1,46 @@
 package by.dragonsurvivalteam.dragonsurvival.network.claw;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
-import by.dragonsurvivalteam.dragonsurvival.network.IMessage;
-import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
-import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
+public record SyncDragonClawRender(int playerId, boolean shouldRender) implements CustomPacketPayload {
+    public static final Type<SyncDragonClawRender> TYPE = new Type<>(DragonSurvival.res("sync_dragon_claw_render"));
 
-public class SyncDragonClawRender implements IMessage<SyncDragonClawRender.Data> {
+    public static final StreamCodec<FriendlyByteBuf, SyncDragonClawRender> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, SyncDragonClawRender::playerId,
+            ByteBufCodecs.BOOL, SyncDragonClawRender::shouldRender,
+            SyncDragonClawRender::new
+    );
 
-    public static void handleClient(final SyncDragonClawRender.Data message, final IPayloadContext context) {
-        context.enqueueWork(() -> ClientProxy.handleSyncDragonClawRender(message));
+    public static void handleClient(final SyncDragonClawRender packet, final IPayloadContext context) {
+        context.enqueueWork(() -> {
+            if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
+                ClawInventoryData.getData(player).shouldRenderClaws = packet.shouldRender();
+            }
+        });
     }
 
-    public static void handleServer(final SyncDragonClawRender.Data message, final IPayloadContext context) {
+    public static void handleServer(final SyncDragonClawRender packet, final IPayloadContext context) {
         if (ServerConfig.syncClawRender) {
-            Player sender = context.player();
-            context.enqueueWork(() ->
-                    ClawInventoryData.getData(sender).shouldRenderClaws = message.state
-            ).thenRun(() -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(sender, message));
+            context.enqueueWork(() -> {
+                if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
+                    ClawInventoryData.getData(player).shouldRenderClaws = packet.shouldRender();
+                }
+            }).thenRun(() -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(context.player(), packet));
         }
     }
 
-    public record Data(int playerId, boolean state) implements CustomPacketPayload {
-        public static final Type<SyncDragonClawRender.Data> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "dragon_claw_render"));
-
-        public static final StreamCodec<FriendlyByteBuf, SyncDragonClawRender.Data> STREAM_CODEC = StreamCodec.composite(
-                ByteBufCodecs.VAR_INT,
-                Data::playerId,
-                ByteBufCodecs.BOOL,
-                Data::state,
-                Data::new
-        );
-
-        @Override
-        public Type<? extends CustomPacketPayload> type() {
-            return TYPE;
-        }
+    @Override
+    public @NotNull Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

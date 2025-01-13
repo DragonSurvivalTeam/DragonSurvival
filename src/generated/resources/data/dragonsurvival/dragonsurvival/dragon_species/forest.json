@@ -1021,8 +1021,7 @@
       "reserved": "dragonsurvival:textures/gui/custom/mana_icons/forest/reserved.png"
     },
     "primary_color": "#41CC48",
-    "secondary_color": "#117816",
-    "wing_icon": "dragonsurvival:textures/ability_effect/forest_dragon_wings.png"
+    "secondary_color": "#117816"
   },
   "penalties": [
     "dragonsurvival:fear_of_darkness",

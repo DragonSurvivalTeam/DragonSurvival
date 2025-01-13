@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
@@ -17,11 +18,18 @@ import org.jetbrains.annotations.Nullable;
 import java.util.concurrent.CompletableFuture;
 
 public class DSEntityTypeTags extends EntityTypeTagsProvider {
+    @Translation(comments = "Animal Avoid Blacklist for Dragons")
     public static final TagKey<EntityType<?>> ANIMAL_AVOID_BLACKLIST = key("animal_avoid_blacklist");
+    @Translation(comments = "Vehicle Whitelist for Dragons")
     public static final TagKey<EntityType<?>> VEHICLE_WHITELIST = key("vehicle_whitelist");
+    @Translation(comments = "Hunter Targets")
     public static final TagKey<EntityType<?>> HUNTER_TARGETS = key("hunter_targets");
+    @Translation(comments = "Charged Effect Spread Blacklist")
     public static final TagKey<EntityType<?>> CHARGED_SPREAD_BLACKLIST = key("charged_spread_blacklist");
+    @Translation(comments = "Applies Hunter Omen")
     public static final TagKey<EntityType<?>> APPLIES_HUNTER_OMEN = key("applies_hunter_omen");
+    @Translation(comments = "hunter_faction")
+    public static final TagKey<EntityType<?>> HUNTER_FACTION = key("hunter_faction");
 
     public DSEntityTypeTags(final PackOutput output, final CompletableFuture<HolderLookup.Provider> provider, @Nullable final ExistingFileHelper helper) {
         super(output, provider, DragonSurvival.MODID, helper);
@@ -79,8 +87,7 @@ public class DSEntityTypeTags extends EntityTypeTagsProvider {
                 .addOptional(ResourceLocation.fromNamespaceAndPath("upgrade_aquatic", "great_thrasher"));
 
         // Used in 'curse_of_kindness' enchantment
-        TagKey<EntityType<?>> hunterFaction = key("hunter_faction");
-        tag(hunterFaction)
+        tag(HUNTER_FACTION)
                 .add(EntityType.VILLAGER)
                 .add(DSEntities.HUNTER_AMBUSHER.value())
                 .add(DSEntities.HUNTER_GRIFFIN.value())
@@ -90,7 +97,7 @@ public class DSEntityTypeTags extends EntityTypeTagsProvider {
                 .add(DSEntities.HUNTER_SPEARMAN.value());
 
         tag(APPLIES_HUNTER_OMEN)
-                .addTag(hunterFaction)
+                .addTag(HUNTER_FACTION)
                 .add(EntityType.IRON_GOLEM);
 
         // TODO :: currently unused

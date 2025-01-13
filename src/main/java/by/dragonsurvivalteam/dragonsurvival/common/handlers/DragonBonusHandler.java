@@ -13,7 +13,6 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
-import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.level.BlockDropsEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -32,7 +31,7 @@ public class DragonBonusHandler {
         }
 
         if (entity instanceof ServerPlayer serverPlayer && DragonStateProvider.isDragon(serverPlayer)) {
-            PacketDistributor.sendToPlayersTrackingEntity(serverPlayer, new SyncPlayerJump.Data(entity.getId(), 18));
+            PacketDistributor.sendToPlayersTrackingEntity(serverPlayer, new SyncPlayerJump(entity.getId(), 18));
         } else if(entity instanceof Player player && DragonStateProvider.isDragon(player)) {
             if(player.level().isClientSide()) {
                 if(Minecraft.getInstance().player == player) {
@@ -48,7 +47,7 @@ public class DragonBonusHandler {
 
         if (entity instanceof ServerPlayer serverPlayer && DragonStateProvider.isDragon(serverPlayer)) {
             if(serverPlayer.onGround()) {
-                PacketDistributor.sendToPlayersTrackingEntity(serverPlayer, new SyncPlayerJump.Data(entity.getId(), 0));
+                PacketDistributor.sendToPlayersTrackingEntity(serverPlayer, new SyncPlayerJump(entity.getId(), 0));
             }
         } else if(entity instanceof Player player && DragonStateProvider.isDragon(player)) {
             if(player.level().isClientSide() && player.onGround()) {

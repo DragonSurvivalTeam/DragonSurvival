@@ -114,10 +114,9 @@ public class PlayerLoginHandler {
     }
 
     private static void syncDragonData(final Player syncTo, final Entity syncFrom) {
-        if (syncTo instanceof ServerPlayer target && syncFrom instanceof ServerPlayer) {
-            DragonStateProvider.getOptional(syncFrom).ifPresent(dragonStateHandler -> {
-                PacketDistributor.sendToPlayer(target, new SyncComplete.Data(syncFrom.getId(), dragonStateHandler.serializeNBT(syncFrom.registryAccess())));
-            });
+        if (syncTo instanceof ServerPlayer target && syncFrom instanceof ServerPlayer source) {
+            DragonStateHandler handler = DragonStateProvider.getData(source);
+            PacketDistributor.sendToPlayer(target, new SyncComplete(syncFrom.getId(), handler.serializeNBT(syncFrom.registryAccess())));
         }
     }
 
@@ -131,7 +130,7 @@ public class PlayerLoginHandler {
                 }
 
                 SyncComplete.handleDragonSync(player, true);
-                PacketDistributor.sendToPlayer(player, new SyncComplete.Data(player.getId(), handler.serializeNBT(player.registryAccess())));
+                PacketDistributor.sendToPlayer(player, new SyncComplete(player.getId(), handler.serializeNBT(player.registryAccess())));
             });
 
             syncDataAttachments(player);

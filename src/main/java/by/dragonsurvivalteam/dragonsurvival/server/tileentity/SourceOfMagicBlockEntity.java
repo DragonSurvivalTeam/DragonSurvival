@@ -28,6 +28,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -43,7 +44,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class SourceOfMagicBlockEntity extends BaseBlockBlockEntity implements Container, MenuProvider, GeoBlockEntity {
+public class SourceOfMagicBlockEntity extends BlockEntity implements Container, MenuProvider, GeoBlockEntity {
     @Translation(comments = "Source of Magic")
     private static final String DISPLAY_NAME = Translation.Type.GUI.wrap("container.source_of_magic");
 
@@ -160,6 +161,8 @@ public class SourceOfMagicBlockEntity extends BaseBlockBlockEntity implements Co
 
     @Override
     public void loadAdditional(@NotNull final CompoundTag tag, @NotNull final HolderLookup.Provider provider) {
+        super.loadAdditional(tag, provider);
+
         inputItem = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
         ContainerHelper.loadAllItems(tag, inputItem, provider);
 
@@ -174,6 +177,8 @@ public class SourceOfMagicBlockEntity extends BaseBlockBlockEntity implements Co
 
     @Override
     public void saveAdditional(@NotNull final CompoundTag tag, @NotNull final HolderLookup.Provider provider) {
+        super.saveAdditional(tag, provider);
+
         ContainerHelper.saveAllItems(tag, inputItem, provider);
         List<SourceOfMagicData.Consumable> consumables = getConsumables();
         List<ResourceKey<DragonSpecies>> applicableSpecies = new ArrayList<>();

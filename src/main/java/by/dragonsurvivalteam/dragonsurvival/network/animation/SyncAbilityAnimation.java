@@ -19,7 +19,6 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.concurrent.atomic.AtomicReference;
 
 public record SyncAbilityAnimation(int playerId, AnimationType animationType, Either<CompoundAbilityAnimation, SimpleAbilityAnimation> animation) implements CustomPacketPayload {
 
@@ -40,8 +39,9 @@ public record SyncAbilityAnimation(int playerId, AnimationType animationType, Ei
                 return;
             }
 
-            AtomicReference<DragonEntity> dragonEntity = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(player.getId());
-            if(dragonEntity == null) {
+            DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(player.getId());
+
+            if (dragon == null) {
                 return;
             }
 
@@ -50,7 +50,7 @@ public record SyncAbilityAnimation(int playerId, AnimationType animationType, Ei
                     compound -> compound
             );
 
-            dragonEntity.get().setCurrentAbilityAnimation(new Pair<>(abilityAnimation, packet.animationType));
+            dragon.setCurrentAbilityAnimation(new Pair<>(abilityAnimation, packet.animationType));
         });
     }
 

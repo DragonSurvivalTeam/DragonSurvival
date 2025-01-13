@@ -38,12 +38,6 @@ public class BuiltInDragonSpecies {
             "§c■ Cave dragon.§r",
             "§2■ Features:§f§r fire resistance, pickaxe claws, fire magic, faster movement on stone and magma blocks.",
             "§4■ Weakness:§r water.",
-            "§6■ Diet:§r"
-    })
-    @Translation(type = Translation.Type.DRAGON_SPECIES_DESCRIPTION_NO_DIET, comments = {
-            "§c■ Cave dragon.§r",
-            "§2■ Features:§f§r fire resistance, pickaxe claws, fire magic, faster movement on stone and magma blocks.",
-            "§4■ Weakness:§r water.",
     })
     @Translation(type = Translation.Type.DRAGON_SPECIES, comments = "Cave Dragon")
     public static final ResourceKey<DragonSpecies> CAVE = key("cave");
@@ -52,12 +46,6 @@ public class BuiltInDragonSpecies {
             "§a■ Forest dragon.§r",
             "§2■ Features:§f§r soft fall, axe claws, poison magic, faster movement on wooden and grass blocks.",
             "§4■ Weakness:§r dark caves.",
-            "§6■ Diet:§r"
-    })
-    @Translation(type = Translation.Type.DRAGON_SPECIES_DESCRIPTION_NO_DIET, comments = {
-            "§a■ Forest dragon.§r",
-            "§2■ Features:§f§r soft fall, axe claws, poison magic, faster movement on wooden and grass blocks.",
-            "§4■ Weakness:§r dark caves."
     })
     @Translation(type = Translation.Type.DRAGON_SPECIES, comments = "Forest Dragon")
     public static final ResourceKey<DragonSpecies> FOREST = key("forest");
@@ -66,12 +54,6 @@ public class BuiltInDragonSpecies {
             "§3■ Sea dragon.§r",
             "§2■ Features:§f§r underwater breathing, shovel claws, electric magic, faster movement on ice and beach blocks.",
             "§4■ Weakness:§r dehydration.",
-            "§6■ Diet:§r"
-    })
-    @Translation(type = Translation.Type.DRAGON_SPECIES_DESCRIPTION_NO_DIET, comments = {
-            "§3■ Sea dragon.§r",
-            "§2■ Features:§f§r underwater breathing, shovel claws, electric magic, faster movement on ice and beach blocks.",
-            "§4■ Weakness:§r dehydration."
     })
     @Translation(type = Translation.Type.DRAGON_SPECIES, comments = "Sea Dragon")
     public static final ResourceKey<DragonSpecies> SEA = key("sea");
@@ -143,7 +125,6 @@ public class BuiltInDragonSpecies {
                         DietEntry.from("nethersdelight:nether_skewer", new FoodProperties(6, 8, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of()))
                 ),
                 new MiscDragonTextures(
-                        Optional.of(DragonSurvival.res("textures/ability_effect/cave_dragon_wings.png")),
                         DragonSurvival.res("textures/gui/custom/food_icons/cave_food_icons.png"),
                         new MiscDragonTextures.ManaSprites(
                                 DragonSurvival.res("textures/gui/custom/mana_icons/cave/full.png"),
@@ -389,7 +370,6 @@ public class BuiltInDragonSpecies {
                         DietEntry.from("enlightened_end:raw_stalker", new FoodProperties(10, 4, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of()))
                 ),
                 new MiscDragonTextures(
-                        Optional.of(DragonSurvival.res("textures/ability_effect/sea_dragon_wings.png")),
                         DragonSurvival.res("textures/gui/custom/food_icons/sea_food_icons.png"),
                         new MiscDragonTextures.ManaSprites(
                                 DragonSurvival.res("textures/gui/custom/mana_icons/sea/full.png"),
@@ -572,7 +552,6 @@ public class BuiltInDragonSpecies {
                         DietEntry.from("cnb:lizard_item_desert_2", new FoodProperties(4, 4, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of()))
                 ),
                 new MiscDragonTextures(
-                        Optional.of(DragonSurvival.res("textures/ability_effect/forest_dragon_wings.png")),
                         DragonSurvival.res("textures/gui/custom/food_icons/forest_food_icons.png"),
                         new MiscDragonTextures.ManaSprites(
                                 DragonSurvival.res("textures/gui/custom/mana_icons/forest/full.png"),

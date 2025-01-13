@@ -23,7 +23,6 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class EmoteComponent {
     @Translation(comments = "Bound to: %s")
@@ -48,21 +47,20 @@ public class EmoteComponent {
         this.emote = emote;
         emoteButton = new ExtendedButton(xPos + 10, yPos - 3, 115, 12, Component.empty(), button -> {
             //noinspection DataFlowIssue -> player is present
-            AtomicReference<DragonEntity> atomicDragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(Minecraft.getInstance().player.getId());
+            DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(Minecraft.getInstance().player.getId());
 
-            if (atomicDragon == null) {
+            if (dragon == null) {
                 return;
             }
 
-            DragonEntity dragon = atomicDragon.get();
-            if(dragon.isPlayingEmote(emote)) {
+            if (dragon.isPlayingEmote(emote)) {
                 dragon.stopEmote(emote);
                 PacketDistributor.sendToServer(new SyncEmote(Minecraft.getInstance().player.getId(), emote, true));
             } else {
                 dragon.beginPlayingEmote(emote);
                 PacketDistributor.sendToServer(new SyncEmote(Minecraft.getInstance().player.getId(), emote, false));
             }
-        }){
+        }) {
             @Override
             public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 // Copied from ExtendedButton#renderWidget, we only want to render the text for this one
@@ -79,14 +77,13 @@ public class EmoteComponent {
         emoteButton.setMessage(emote.name());
         isPlayingButton = new ExtendedButton(xPos, yPos - 1, 6, 6, Component.empty(), button -> {
             //noinspection DataFlowIssue -> player is present
-            AtomicReference<DragonEntity> atomicDragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(Minecraft.getInstance().player.getId());
+            DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(Minecraft.getInstance().player.getId());
 
-            if (atomicDragon == null) {
+            if (dragon == null) {
                 return;
             }
 
-            DragonEntity dragon = atomicDragon.get();
-            if(dragon.isPlayingEmote(emote)) {
+            if (dragon.isPlayingEmote(emote)) {
                 dragon.stopEmote(emote);
                 PacketDistributor.sendToServer(new SyncEmote(Minecraft.getInstance().player.getId(), emote, true));
             } else {
@@ -96,6 +93,7 @@ public class EmoteComponent {
         }){
             @Override
             public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+                //noinspection DataFlowIssue -> player is present
                 ResourceLocation texture = DragonSurvival.PROXY.isPlayingEmote(Minecraft.getInstance().player.getId(), emote) ? PLAY_ON : PLAY_OFF;
                 guiGraphics.blit(texture, getX(), getY(), 0, 0, 6, 6, 14, 14);
             }

@@ -110,6 +110,7 @@ public class MagicHUD {
     public static boolean renderExperienceBar(GuiGraphics guiGraphics, int screenWidth) {
         Player localPlayer = DragonSurvival.PROXY.getLocalPlayer();
 
+        //noinspection DataFlowIssue -> instance is present
         if (localPlayer == null || !Minecraft.getInstance().gameMode.canHurtPlayer() || !Minecraft.getInstance().gameMode.hasExperience()) {
             return false;
         }

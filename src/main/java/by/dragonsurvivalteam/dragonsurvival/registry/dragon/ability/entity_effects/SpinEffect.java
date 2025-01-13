@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.network.flight.SpinStatus;
+import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncSpinStatus;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
@@ -14,7 +14,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.common.extensions.IHolderExtension;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -41,15 +40,16 @@ public record SpinEffect(int spinLevel, Optional<Holder<FluidType>> swimSpinFlui
         FlightData data = FlightData.getData(serverTarget);
 
         boolean hadSpin = data.hasSpin;
+
         if (ability.level() >= spinLevel) {
             data.hasSpin = true;
-            data.swimSpinFluid = swimSpinFluid;
+            data.swimSpinFluid = swimSpinFluid.orElse(null);
         } else {
             data.hasSpin = false;
         }
 
         if (hadSpin != data.hasSpin) {
-            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverTarget, new SpinStatus(serverTarget.getId(), data.hasSpin, data.swimSpinFluid.map(IHolderExtension::getKey)));
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverTarget, new SyncSpinStatus(serverTarget.getId(), data.hasSpin, Optional.ofNullable(data.swimSpinFluid)));
         }
     }
 
@@ -62,10 +62,11 @@ public record SpinEffect(int spinLevel, Optional<Holder<FluidType>> swimSpinFlui
 
         FlightData data = FlightData.getData(serverTarget);
         boolean hadSpin = data.hasSpin;
+
         data.hasSpin = false;
 
         if (hadSpin != data.hasSpin) {
-            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverTarget, new SpinStatus(serverTarget.getId(), data.hasSpin, data.swimSpinFluid.map(IHolderExtension::getKey)));
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverTarget, new SyncSpinStatus(serverTarget.getId(), data.hasSpin, Optional.ofNullable(data.swimSpinFluid)));
         }
     }
 

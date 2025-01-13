@@ -111,7 +111,7 @@ public class LangKey {
     @Translation(comments = " on hit")
     public static final String ABILITY_ON_HIT = Translation.Type.GUI.wrap("ability.on_hit");
 
-    @Translation(comments = "Applies ")
+    @Translation(comments = "§6■ Applies %s")
     public static final String ABILITY_APPLIES = Translation.Type.GUI.wrap("ability.applies");
 
     @Translation(comments = "§6■ %s §6Damage:§r %s")

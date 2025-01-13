@@ -1,69 +1,54 @@
 package by.dragonsurvivalteam.dragonsurvival.network.player;
 
-import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.network.IMessage;
-import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec2;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.jetbrains.annotations.NotNull;
 
-import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
+public record SyncDragonMovement(int playerId, boolean isFirstPerson, boolean bite, boolean isFreeLook, Vec2 movement) implements CustomPacketPayload {
+    public static final Type<SyncDragonMovement> TYPE = new Type<>(DragonSurvival.res("sync_dragon_movement"));
 
-public class SyncDragonMovement implements IMessage<SyncDragonMovement.Data> {
+    public static final StreamCodec<FriendlyByteBuf, SyncDragonMovement> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, SyncDragonMovement::playerId,
+            ByteBufCodecs.BOOL, SyncDragonMovement::isFirstPerson,
+            ByteBufCodecs.BOOL, SyncDragonMovement::bite,
+            ByteBufCodecs.BOOL, SyncDragonMovement::isFreeLook,
+            MiscCodecs.VEC2_STREAM_CODEC, SyncDragonMovement::movement,
+            SyncDragonMovement::new
+    );
 
-    public static void handleClient(final Data message, final IPayloadContext context) {
-        context.enqueueWork(() -> ClientProxy.handleSyncDragonMovement(message));
-    }
-
-    public static void handleServer(final Data message, final IPayloadContext context) {
-        Entity entity = context.player();
+    public static void handleClient(final SyncDragonMovement packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
-            if(DragonStateProvider.isDragon(entity)) {
-                MovementData data = MovementData.getData(entity);
-                data.setFirstPerson(message.isFirstPerson);
-                data.setBite(message.bite);
-                data.setFreeLook(message.isFreeLook);
-                data.setDesiredMoveVec(new Vec2(message.desiredMoveVecX, message.desiredMoveVecY));
+            if (context.player().level().getEntity(packet.playerId()) instanceof Player player && player != DragonSurvival.PROXY.getLocalPlayer()) {
+                // Local player already has the correct values
+                handle(packet, player);
             }
-        }).thenRun(() -> PacketDistributor.sendToPlayersTrackingEntity(entity, message));
+        });
     }
 
-    public record Data(
-            int playerId,
-            boolean isFirstPerson,
-            boolean bite,
-            boolean isFreeLook,
-            float desiredMoveVecX,
-            float desiredMoveVecY
-    ) implements CustomPacketPayload {
-        public static final Type<Data> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "dragon_movement"));
+    public static void handleServer(final SyncDragonMovement packet, final IPayloadContext context) {
+        context.enqueueWork(() -> handle(packet, context.player()))
+                .thenRun(() -> PacketDistributor.sendToPlayersTrackingEntity(context.player(), packet));
+    }
 
-        public static final StreamCodec<FriendlyByteBuf, Data> STREAM_CODEC = StreamCodec.composite(
-                ByteBufCodecs.VAR_INT,
-                Data::playerId,
-                ByteBufCodecs.BOOL,
-                Data::isFirstPerson,
-                ByteBufCodecs.BOOL,
-                Data::bite,
-                ByteBufCodecs.BOOL,
-                Data::isFreeLook,
-                ByteBufCodecs.FLOAT,
-                Data::desiredMoveVecX,
-                ByteBufCodecs.FLOAT,
-                Data::desiredMoveVecY,
-                Data::new
-        );
+    private static void handle(final SyncDragonMovement packet, final Player player) {
+        MovementData data = MovementData.getData(player);
+        data.setFirstPerson(packet.isFirstPerson());
+        data.setBite(packet.bite());
+        data.setFreeLook(packet.isFreeLook());
+        data.setDesiredMoveVec(packet.movement());
+    }
 
-        @Override
-        public Type<? extends CustomPacketPayload> type() {
-            return TYPE;
-        }
+    @Override
+    public @NotNull Type<? extends CustomPacketPayload> type() {
+        return TYPE;
     }
 }

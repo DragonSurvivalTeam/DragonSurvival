@@ -50,7 +50,7 @@ public class SkeletonPieceBlock extends Block implements SimpleWaterloggedBlock 
     }
 
     @Override
-    protected @NotNull VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+    protected @NotNull VoxelShape getShape(@NotNull BlockState pState, @NotNull BlockGetter pLevel, @NotNull BlockPos pPos, @NotNull CollisionContext pContext) {
         switch (this.type) {
             case Types.CHEST -> {
                 return Block.box(0.0, 0.0, 0.0, 16.0, 16.0, 16.0);
@@ -82,7 +82,7 @@ public class SkeletonPieceBlock extends Block implements SimpleWaterloggedBlock 
     }
 
     @Override
-    public FluidState getFluidState(BlockState state) {
+    public @NotNull FluidState getFluidState(BlockState state) {
         return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 

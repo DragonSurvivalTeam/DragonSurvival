@@ -23,11 +23,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AbilityTargeting;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AreaTarget;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.DiscTarget;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.DragonBreathTarget;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.LookingAtTarget;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
@@ -50,21 +46,11 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec2;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.*;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.InputEvent;
-import net.neoforged.neoforge.client.event.RenderBlockScreenEffectEvent;
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
-import net.neoforged.neoforge.client.event.RenderNameTagEvent;
-import net.neoforged.neoforge.client.event.RenderPlayerEvent;
+import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.TriState;
 import net.neoforged.neoforge.event.level.LevelEvent;
@@ -73,8 +59,8 @@ import org.joml.Vector3f;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.util.RenderUtil;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.HashMap;
+import java.util.Map;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class ClientDragonRenderer {
@@ -87,7 +73,7 @@ public class ClientDragonRenderer {
     public static boolean isOverridingMovementData = false;
 
     /** Instances used for rendering third-person dragon models */
-    public static final ConcurrentHashMap<Integer, AtomicReference<DragonEntity>> PLAYER_DRAGON_MAP = new ConcurrentHashMap<>();
+    public static final Map<Integer, DragonEntity> PLAYER_DRAGON_MAP = new HashMap<>();
 
     @Translation(key = "render_dragon_in_first_person", type = Translation.Type.CONFIGURATION, comments = "If enabled the dragon body will be visible in first person")
     @ConfigOption(side = ConfigSide.CLIENT, category = "rendering", key = "render_dragon_in_first_person")
@@ -214,7 +200,7 @@ public class ClientDragonRenderer {
             DragonEntity dummyDragon = DSEntities.DRAGON.get().create(player.level());
             //noinspection DataFlowIssue -> dragon should not be null
             dummyDragon.playerId = player.getId();
-            PLAYER_DRAGON_MAP.put(player.getId(), new AtomicReference<>(dummyDragon));
+            PLAYER_DRAGON_MAP.put(player.getId(), dummyDragon);
         }
 
         if (handler.isDragon()) {
@@ -267,7 +253,8 @@ public class ClientDragonRenderer {
                 poseStack.scale(scale, scale, scale);
 
                 ((EntityRendererAccessor) renderPlayerEvent.getRenderer()).dragonSurvival$setShadowRadius((float) ((3.0F * size + 62.0F) / 260.0F));
-                DragonEntity playerAsDragon = PLAYER_DRAGON_MAP.get(player.getId()).get(); // What will be rendered in place of the human player model
+                // What will be rendered in place of the human player model
+                DragonEntity playerAsDragon = PLAYER_DRAGON_MAP.get(player.getId());
                 EntityRenderer<? super DragonEntity> dragonRenderer = minecraft.getEntityRenderDispatcher().getRenderer(playerAsDragon);
                 dragonModel.setOverrideTexture(customTexture);
 
@@ -464,32 +451,27 @@ public class ClientDragonRenderer {
     }
 
     @SubscribeEvent
-    public static void updateFirstPersonDataAndSendMovementData(ClientTickEvent.Pre event) {
+    public static void updateFirstPersonDataAndSendMovementData(final ClientTickEvent.Pre event) {
         LocalPlayer player = Minecraft.getInstance().player;
-        if(DragonStateProvider.isDragon(player)) {
-            Input input = player.input;
-            MovementData movement = MovementData.getData(player);
-            movement.setFirstPerson(Minecraft.getInstance().options.getCameraType().isFirstPerson());
-            movement.setFreeLook(Keybind.FREE_LOOK.consumeClick()); // FIXME :: handle this properly
-            movement.setDesiredMoveVec(new Vec2(input.leftImpulse, input.forwardImpulse));
-            if (player.isPassenger()) {
-                // Prevent animation jank while we are riding an entity
-                PacketDistributor.sendToServer(new SyncDeltaMovement.Data(player.getId(), 0, 0, 0));
-            } else {
-                PacketDistributor.sendToServer(new SyncDeltaMovement.Data(player.getId(), player.getDeltaMovement().x, player.getDeltaMovement().y, player.getDeltaMovement().z));
-            }
 
-            PacketDistributor.sendToServer(
-                    new SyncDragonMovement.Data(
-                            player.getId(),
-                            movement.isFirstPerson,
-                            movement.bite,
-                            movement.isFreeLook,
-                            movement.desiredMoveVec.x,
-                            movement.desiredMoveVec.y
-                    )
-            );
+        if (!DragonStateProvider.isDragon(player)) {
+            return;
         }
+
+        Input input = player.input;
+        MovementData movement = MovementData.getData(player);
+        movement.setFirstPerson(Minecraft.getInstance().options.getCameraType().isFirstPerson());
+        movement.setFreeLook(Keybind.FREE_LOOK.consumeClick()); // FIXME :: handle this properly
+        movement.setDesiredMoveVec(new Vec2(input.leftImpulse, input.forwardImpulse));
+
+        if (player.isPassenger()) {
+            // Prevent animation problems while we are riding an entity
+            PacketDistributor.sendToServer(new SyncDeltaMovement(player.getId(), Vec3.ZERO));
+        } else {
+            PacketDistributor.sendToServer(new SyncDeltaMovement(player.getId(), player.getDeltaMovement()));
+        }
+
+        PacketDistributor.sendToServer(new SyncDragonMovement(player.getId(), movement.isFirstPerson, movement.bite, movement.isFreeLook, movement.desiredMoveVec));
     }
 
     @SubscribeEvent // Don't render the fire overlay when fire immune

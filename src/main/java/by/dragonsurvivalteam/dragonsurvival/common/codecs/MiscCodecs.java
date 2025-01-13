@@ -3,9 +3,37 @@ package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.advancements.critereon.MinMaxBounds;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 public class MiscCodecs {
+    public static final StreamCodec<ByteBuf, Vec3> VEC3_STREAM_CODEC = new StreamCodec<>() {
+        public @NotNull Vec3 decode(@NotNull final ByteBuf buffer) {
+            return new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
+        }
+
+        public void encode(final @NotNull ByteBuf buffer, @NotNull final Vec3 input) {
+            buffer.writeDouble(input.x());
+            buffer.writeDouble(input.y());
+            buffer.writeDouble(input.z());
+        }
+    };
+
+    public static final StreamCodec<ByteBuf, Vec2> VEC2_STREAM_CODEC = new StreamCodec<>() {
+        public @NotNull Vec2 decode(@NotNull final ByteBuf buffer) {
+            return new Vec2(buffer.readFloat(), buffer.readFloat());
+        }
+
+        public void encode(final @NotNull ByteBuf buffer, @NotNull final Vec2 input) {
+            buffer.writeFloat(input.x);
+            buffer.writeFloat(input.y);
+        }
+    };
+
     public static Codec<MinMaxBounds.Doubles> percentageBounds() {
         return MinMaxBounds.Doubles.CODEC.validate(value -> {
             boolean isValid = true;
