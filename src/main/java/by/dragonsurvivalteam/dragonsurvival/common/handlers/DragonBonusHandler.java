@@ -13,7 +13,9 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
+import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.level.BlockDropsEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 @EventBusSubscriber
@@ -35,6 +37,23 @@ public class DragonBonusHandler {
             if(player.level().isClientSide()) {
                 if(Minecraft.getInstance().player == player) {
                     DragonEntity.DRAGON_JUMP_TICKS.put(player.getId(), 18);
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLand(final PlayerTickEvent.Pre event) {
+        LivingEntity entity = event.getEntity();
+
+        if (entity instanceof ServerPlayer serverPlayer && DragonStateProvider.isDragon(serverPlayer)) {
+            if(serverPlayer.onGround()) {
+                PacketDistributor.sendToPlayersTrackingEntity(serverPlayer, new SyncPlayerJump.Data(entity.getId(), 0));
+            }
+        } else if(entity instanceof Player player && DragonStateProvider.isDragon(player)) {
+            if(player.level().isClientSide() && player.onGround()) {
+                if(Minecraft.getInstance().player == player) {
+                    DragonEntity.DRAGON_JUMP_TICKS.put(player.getId(), 0);
                 }
             }
         }
