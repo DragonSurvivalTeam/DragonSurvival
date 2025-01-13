@@ -29,6 +29,9 @@ public record ProjectileDamageEffect(Holder<DamageType> damageType, LevelBasedVa
     @Override
     public void apply(final Projectile projectile, final Entity target, final int level) {
         target.hurt(new DamageSource(damageType, projectile.getOwner()), amount.calculate(level));
+        if(projectile.getOwner() instanceof Player player) {
+            player.setLastHurtMob(target);
+        }
     }
 
     @Override

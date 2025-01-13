@@ -26,7 +26,8 @@ public record DamageEffect(Holder<DamageType> type, LevelBasedValue amount) impl
 
     @Override
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity) {
-        entity.hurt(new DamageSource(type, null, null), amount().calculate(ability.level()));
+        entity.hurt(new DamageSource(type, dragon), amount().calculate(ability.level()));
+        dragon.setLastHurtMob(entity);
     }
 
     @Override
