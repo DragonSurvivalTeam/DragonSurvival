@@ -85,7 +85,7 @@
                 }
               },
               "effect": {
-                "entity_effect": "dragonsurvival:mob_effect",
+                "entity_effect": "dragonsurvival:potion",
                 "potion": {
                   "amplifier": 0.0,
                   "duration": 100.0,

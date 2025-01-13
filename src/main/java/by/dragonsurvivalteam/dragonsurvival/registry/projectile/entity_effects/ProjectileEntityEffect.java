@@ -32,7 +32,7 @@ public interface ProjectileEntityEffect extends ProjectileEffect<Entity> {
     static void registerEntries(final RegisterEvent event) {
         if (event.getRegistry() == REGISTRY) {
             event.register(REGISTRY_KEY, DragonSurvival.res("damage"), () -> ProjectileDamageEffect.CODEC);
-            event.register(REGISTRY_KEY, DragonSurvival.res("mob_effect"), () -> ProjectilePotionEffect.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("potion"), () -> ProjectilePotionEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("lightning"), () -> ProjectileLightningEntityEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("particle"), () -> ProjectileEntityParticleEffect.CODEC);
         }
