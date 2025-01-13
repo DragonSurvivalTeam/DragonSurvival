@@ -38,7 +38,7 @@ public class BuiltInDragonSpecies {
             "§7■ §6Cave Dragons§r§7 are the spawn of §ffire§r§7. They have little in common with living creatures. Their skeleton is made of §fnetherite§r§7, blood is §flava§r§7, and skin is §frocks§r§7.\n",
             "§2■ Features:§f§r§7 fire resistance, pickaxe claws, lava magic, faster movement on stone and hot blocks.",
             "§4■ Weakness:§r water.",
-            "§6■ Diet:§r"
+            "§6■ Diet:§r %s"
     })
     @Translation(type = Translation.Type.DRAGON_SPECIES_INVENTORY_DESCRIPTION, comments = {
             "§7■ §6Cave Dragon§r§7 are the spawn of §ffire§r§7. You have little in common with living creatures. Your skeleton is made of §fnetherite§r§7, your blood is §flava§r§7, and your skin is §frocks§r§7.\n",
@@ -51,7 +51,7 @@ public class BuiltInDragonSpecies {
             "§7■ §6Forest Dragons§r§7 is a §fdiamond§r§7 elementals covered in a multitude of §fplants§r§7. They are excellent §fhunters§r§7 and §ffarmers§r§7.\n",
             "§2■ Features:§f§r§7 soft fall, axe claws, drain and growth magic, faster movement on wooden and grass blocks.",
             "§4■ Weakness:§r§7 dark caves.",
-            "§6■ Diet:§r"
+            "§6■ Diet:§r %s"
     })
     @Translation(type = Translation.Type.DRAGON_SPECIES_INVENTORY_DESCRIPTION, comments = {
             "§7■ §6Forest Dragon§r§7 is a §fdiamond§r§7 elemental covered in a multitude of §fplants§r§7. You are excellent §fhunter§r§7 and §ffarmer§r§7.\n",
@@ -64,7 +64,7 @@ public class BuiltInDragonSpecies {
             "§7■ §6Sea Dragons§r§7 are fragile but ferocious §fcreatures§r§7. Their skeletons are made of §fgold§r§7 and conducts §felectricity§r§7 well.\n",
             "§2■ Features:§f§r§7 underwater breathing, shovel claws, electric magic, faster movement on wet and beach blocks.",
             "§4■ Weakness:§r§7 dehydration.",
-            "§6■ Diet:§r"
+            "§6■ Diet:§r %s"
     })
     @Translation(type = Translation.Type.DRAGON_SPECIES_INVENTORY_DESCRIPTION, comments = {
             "§7■ §6Sea Dragons§r§7 are fragile but ferocious §fcreatures§r§7. Their skeletons are made of §fgold§r§7 and conducts §felectricity§r§7 well.\n",
