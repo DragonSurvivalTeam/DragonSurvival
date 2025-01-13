@@ -6,9 +6,12 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.DietComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverDisableable;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
+import by.dragonsurvivalteam.dragonsurvival.network.status.SyncAltarCooldown;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -149,6 +152,7 @@ public class AltarTypeButton extends Button implements HoverDisableable {
 
             DragonStateHandler data = DragonStateProvider.getData(player);
             data.revertToHumanForm(player, false);
+            PacketDistributor.sendToServer(new SyncAltarCooldown(Functions.secondsToTicks(ServerConfig.altarUsageCooldown)));
             PacketDistributor.sendToServer(new SyncComplete.Data(player.getId(), data.serializeNBT(player.registryAccess())));
 
             player.closeContainer();

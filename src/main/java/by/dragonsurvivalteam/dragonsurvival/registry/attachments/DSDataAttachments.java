@@ -21,7 +21,7 @@ public class DSDataAttachments {
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<FlightData>> SPIN = DS_ATTACHMENT_TYPES.register("spin_data", () -> AttachmentType.serializable(FlightData::new).copyOnDeath().build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<ClawInventoryData>> CLAW_INVENTORY = DS_ATTACHMENT_TYPES.register("claw_inventory_data", () -> AttachmentType.serializable(ClawInventoryData::new).copyOnDeath().build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<TreasureRestData>> TREASURE_REST = DS_ATTACHMENT_TYPES.register("treasure_rest_data", () -> AttachmentType.serializable(TreasureRestData::new).build());
-    public static final DeferredHolder<AttachmentType<?>, AttachmentType<AltarData>> ALTAR = DS_ATTACHMENT_TYPES.register("altar_data", () -> AttachmentType.serializable(AltarData::new).copyOnDeath().copyOnDeath().build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<AltarData>> ALTAR = DS_ATTACHMENT_TYPES.register("altar_data", () -> AttachmentType.serializable(AltarData::new).copyOnDeath().build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<EffectsMaintainedThroughDeath>> EFFECTS_MAINTAINED_THROUGH_DEATH = DS_ATTACHMENT_TYPES.register("effects_maintained_through_death", () -> AttachmentType.serializable(EffectsMaintainedThroughDeath::new).copyOnDeath().build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<EnderDragonDamageHistory>> ENDER_DRAGON_DAMAGE_HISTORY = DS_ATTACHMENT_TYPES.register("ender_dragon_damage_history", () -> AttachmentType.serializable(EnderDragonDamageHistory::new).build());
 

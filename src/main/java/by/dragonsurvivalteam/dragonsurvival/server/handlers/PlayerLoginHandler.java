@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.network.container.OpenDragonAltar;
 import by.dragonsurvivalteam.dragonsurvival.network.sound.StopTickingSound;
+import by.dragonsurvivalteam.dragonsurvival.network.status.SyncAltarState;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AltarData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
@@ -146,5 +147,6 @@ public class PlayerLoginHandler {
         player.getExistingData(DSDataAttachments.BLOCK_VISION).ifPresent(data -> data.sync(player));
         player.getExistingData(DSDataAttachments.SPIN).ifPresent(data -> data.sync(player));
         player.getExistingData(DSDataAttachments.GLOW).ifPresent(data -> data.sync(player));
+        player.getExistingData(DSDataAttachments.ALTAR).ifPresent(data -> PacketDistributor.sendToPlayer(player, new SyncAltarState(data.serializeNBT(player.registryAccess()))));
     }
 }

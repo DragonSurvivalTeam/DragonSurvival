@@ -31,12 +31,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.player.SyncLargeDragonDestru
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncSize;
 import by.dragonsurvivalteam.dragonsurvival.network.sound.StartTickingSound;
 import by.dragonsurvivalteam.dragonsurvival.network.sound.StopTickingSound;
-import by.dragonsurvivalteam.dragonsurvival.network.status.RefreshDragon;
-import by.dragonsurvivalteam.dragonsurvival.network.status.SyncAltarCooldown;
-import by.dragonsurvivalteam.dragonsurvival.network.status.SyncEnderDragonMark;
-import by.dragonsurvivalteam.dragonsurvival.network.status.SyncMultiMining;
-import by.dragonsurvivalteam.dragonsurvival.network.status.SyncPlayerJump;
-import by.dragonsurvivalteam.dragonsurvival.network.status.SyncResting;
+import by.dragonsurvivalteam.dragonsurvival.network.status.*;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -78,6 +73,7 @@ public class NetworkHandler {
         registrar.playToClient(SyncDesiredSize.TYPE, SyncDesiredSize.STREAM_CODEC, SyncDesiredSize::handleClient);
         registrar.playToClient(RequestOpenDragonEditor.Data.TYPE, RequestOpenDragonEditor.Data.STREAM_CODEC, RequestOpenDragonEditor::handleClient);
         registrar.playToClient(SyncEnderDragonMark.TYPE, SyncEnderDragonMark.STREAM_CODEC, SyncEnderDragonMark::handleClient);
+        registrar.playToClient(SyncAltarState.TYPE, SyncAltarState.STREAM_CODEC, SyncAltarState::handleClient);
 
         registrar.playToServer(SyncMultiMining.TYPE, SyncMultiMining.STREAM_CODEC, SyncMultiMining::handleServer);
 
