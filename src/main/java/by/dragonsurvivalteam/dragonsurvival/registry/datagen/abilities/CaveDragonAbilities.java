@@ -96,7 +96,7 @@ public class CaveDragonAbilities {
     // --- Passive --- //
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ Upgrading this ability increases your §2maximum mana pool§r§7 and allows to restore mana by standing on §fhot blocks§r§7.",
+            "■ Upgrading this ability increases your §2maximum mana pool§r§7 and allows to restore mana by standing on §fhot blocks§r§7.\n",
             "■ §8The more levels you have, the more mana you get automatically."
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Cave Magic")
@@ -134,7 +134,7 @@ public class CaveDragonAbilities {
     public static final ResourceKey<DragonAbility> CAVE_SPIN = DragonAbilities.key("cave_spin");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ Cave dragons have a §fnetherite skeleton§r§7, and are made mostly of lava. They have innate §2immunity to fire§r."
+            "■ Cave dragons have innate §2immunity to fire§r. Nether has never been so easy to explore."
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Fire Immunity")
     public static final ResourceKey<DragonAbility> FIRE_IMMUNITY = DragonAbilities.key("fire_immunity");

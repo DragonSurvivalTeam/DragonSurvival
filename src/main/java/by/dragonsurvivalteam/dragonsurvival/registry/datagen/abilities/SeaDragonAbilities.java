@@ -99,7 +99,10 @@ public class SeaDragonAbilities {
 
     // --- Passive --- //
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Upgrading this ability increases your maximum mana pool. Additionally, mana regeneration will be sped up while standing on wet blocks.\n")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
+            "■ Upgrading this ability increases your maximum mana pool. Additionally, mana regeneration will be sped up while standing on wet blocks.\n",
+            "■ §8The more levels you have, the more mana you get automatically."
+    })
     @Translation(type = Translation.Type.ABILITY, comments = "Sea Magic")
     public static final ResourceKey<DragonAbility> SEA_MAGIC = DragonAbilities.key("sea_magic");
 
