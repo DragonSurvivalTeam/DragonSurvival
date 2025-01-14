@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effec
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.ParticleEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.RunFunctionEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.SummonEntityEffect;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -50,6 +51,7 @@ public interface AbilityBlockEffect {
             event.register(REGISTRY_KEY, DragonSurvival.res("area_cloud"), () -> AreaCloudEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("block_break"), () -> BlockBreakEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("particle"), () -> ParticleEffect.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("run_function"), () -> RunFunctionEffect.CODEC);
         }
     }
 }

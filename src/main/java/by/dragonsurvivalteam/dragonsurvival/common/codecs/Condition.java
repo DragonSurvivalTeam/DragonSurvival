@@ -29,17 +29,17 @@ import java.util.Optional;
 
 public class Condition {
     private static final LootContextParamSet ABILITY_CONTEXT = new LootContextParamSet.Builder()
-            .required(LootContextParams.ATTACKING_ENTITY)
             .required(LootContextParams.THIS_ENTITY)
             .required(LootContextParams.ORIGIN)
             .required(LootContextParams.TOOL)
+            .required(LootContextParams.ATTACKING_ENTITY)
             .build();
 
     private static final LootContextParamSet BLOCK_CONTEXT = new LootContextParamSet.Builder()
             .required(LootContextParams.THIS_ENTITY)
+            .required(LootContextParams.ORIGIN)
             .required(LootContextParams.TOOL)
             .required(LootContextParams.BLOCK_STATE)
-            .required(LootContextParams.ORIGIN)
             .optional(LootContextParams.BLOCK_ENTITY)
             .build();
 
@@ -50,9 +50,9 @@ public class Condition {
             .build();
 
     private static final LootContextParamSet PROJECTILE_CONTEXT = new LootContextParamSet.Builder()
-            .required(LootContextParams.ATTACKING_ENTITY)
             .required(LootContextParams.THIS_ENTITY)
             .required(LootContextParams.ORIGIN)
+            .required(LootContextParams.ATTACKING_ENTITY)
             .build();
 
     private static final LootContextParamSet ITEM_CONTEXT = new LootContextParamSet.Builder().required(LootContextParams.TOOL).build();

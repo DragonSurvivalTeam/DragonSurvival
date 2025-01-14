@@ -17,16 +17,11 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effect
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.AbilityEntityEffect;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.HolderSet;
-import net.minecraft.core.RegistryCodecs;
-import net.minecraft.core.UUIDUtil;
+import net.minecraft.core.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -40,13 +35,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.util.random.WeightedRandom;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LightningBolt;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -65,7 +54,7 @@ import java.util.UUID;
 import java.util.function.Function;
 
 public record SummonEntityEffect(
-        SimpleWeightedRandomList<EntityType<?>> entities,
+        Either<SimpleWeightedRandomList<EntityType<?>>, HolderSet<EntityType<?>>> entities,
         ResourceLocation id,
         LevelBasedValue maxSummons,
         LevelBasedValue duration,
@@ -82,7 +71,7 @@ public record SummonEntityEffect(
     private static final String CURRENT_AMOUNT = Translation.Type.GUI.wrap("summon_entity_effect.current_amount");
 
     public static final MapCodec<SummonEntityEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-                    SimpleWeightedRandomList.wrappedCodec(BuiltInRegistries.ENTITY_TYPE.byNameCodec()).fieldOf("entities").forGetter(SummonEntityEffect::entities),
+                    Codec.either(SimpleWeightedRandomList.wrappedCodec(BuiltInRegistries.ENTITY_TYPE.byNameCodec()), RegistryCodecs.homogeneousList(Registries.ENTITY_TYPE)).fieldOf("entities").forGetter(SummonEntityEffect::entities),
                     ResourceLocation.CODEC.fieldOf("id").forGetter(SummonEntityEffect::id),
                     LevelBasedValue.CODEC.fieldOf("max_summons").forGetter(SummonEntityEffect::maxSummons),
                     LevelBasedValue.CODEC.optionalFieldOf("duration", DragonAbilities.INFINITE_DURATION).forGetter(SummonEntityEffect::duration),
@@ -114,17 +103,32 @@ public record SummonEntityEffect(
     @Override
     public List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
         MutableComponent component = Component.translatable(SUMMON, DSColors.dynamicValue(maxSummons.calculate(ability.level())));
-        int totalWeight = WeightedRandom.getTotalWeight(entities.unwrap());
 
-        entities.unwrap().forEach(wrapper -> {
-            Component entityName = DSColors.dynamicValue(wrapper.data().getDescription());
-            double chance = (double) wrapper.getWeight().asInt() / totalWeight;
-            component.append(Component.translatable(SUMMON_CHANCE, DSColors.dynamicValue(entityName), DSColors.dynamicValue(NumberFormat.getPercentInstance().format(chance))));
+        entities.ifLeft(list -> {
+            int totalWeight = WeightedRandom.getTotalWeight(list.unwrap());
+
+            list.unwrap().forEach(wrapper -> {
+                Component entityName = DSColors.dynamicValue(wrapper.data().getDescription());
+                double chance = (double) wrapper.getWeight().asInt() / totalWeight;
+                component.append(Component.translatable(SUMMON_CHANCE, DSColors.dynamicValue(entityName), DSColors.dynamicValue(NumberFormat.getPercentInstance().format(chance))));
+            });
+
+            if (!list.isEmpty()) {
+                component.append(Component.literal("\n"));
+            }
+        }).ifRight(set -> {
+            int totalWeight = set.size();
+
+            set.forEach(type -> {
+                Component entityName = DSColors.dynamicValue(type.value().getDescription());
+                double chance = 1d / totalWeight;
+                component.append(Component.translatable(SUMMON_CHANCE, DSColors.dynamicValue(entityName), DSColors.dynamicValue(NumberFormat.getPercentInstance().format(chance))));
+            });
+
+            if (set.size() > 0) {
+                component.append(Component.literal("\n"));
+            }
         });
-
-        if (!entities.isEmpty()) {
-            component.append(Component.literal("\n"));
-        }
 
         float duration = this.duration.calculate(ability.level());
 
@@ -168,9 +172,13 @@ public record SummonEntityEffect(
             return;
         }
 
-        EntityType<?> type = entities.getRandom(level.getRandom()).map(WeightedEntry.Wrapper::data).orElse(null);
+        EntityType<?> type = entities.map(
+                list -> list.getRandom(level.getRandom()).map(WeightedEntry.Wrapper::data).orElse(null),
+                set -> set.size() > 0 ? set.get(dragon.getRandom().nextInt(set.size())).value() : null
+        );
 
         if (type == null) {
+            DragonSurvival.LOGGER.error("[{}] summon entity effect has no valid entity type entries", id);
             return;
         }
 
