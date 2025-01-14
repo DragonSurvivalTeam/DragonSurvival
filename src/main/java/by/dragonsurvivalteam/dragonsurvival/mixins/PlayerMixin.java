@@ -1,11 +1,13 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.TreasureRestData;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -74,6 +76,16 @@ public abstract class PlayerMixin extends LivingEntity {
             return DragonSizeHandler.canPoseFit((Player) (Object) this, pose);
         } else {
             return returnValue;
+        }
+    }
+
+    @ModifyExpressionValue(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;isSwimming()Z"))
+    private boolean dragonSurvival$consideredSwimmingEvenWhenGroundedInWater(boolean original) {
+        Player self = (Player) (Object) this;
+        if(DragonStateProvider.isDragon(self)) {
+            return original || DragonEntity.isConsideredSwimmingForAnimation((Player) (Object) this);
+        } else {
+            return original;
         }
     }
 }
