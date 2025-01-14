@@ -18,11 +18,11 @@ public class BlockVisionData extends Storage<BlockVision.Instance> {
     @SubscribeEvent
     public static void tickData(final EntityTickEvent.Post event) {
         if (event.getEntity() instanceof Player player) {
-            player.getExistingData(DSDataAttachments.OXYGEN_BONUSES).ifPresent(storage -> {
+            player.getExistingData(DSDataAttachments.BLOCK_VISION).ifPresent(storage -> {
                 storage.tick(event.getEntity());
 
                 if (storage.isEmpty()) {
-                    player.removeData(DSDataAttachments.OXYGEN_BONUSES);
+                    player.removeData(DSDataAttachments.BLOCK_VISION);
                 }
             });
         }
