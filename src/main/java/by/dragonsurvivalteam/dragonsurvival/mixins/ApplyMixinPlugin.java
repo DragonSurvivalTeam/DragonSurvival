@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins;
 
+import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.fml.loading.LoadingModList;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
@@ -52,7 +53,12 @@ public class ApplyMixinPlugin implements IMixinConfigPlugin {
         }
 
         if (mixinClassName.equals(PREFIX + "HolderSetCodecMixin") || mixinClassName.equals(PREFIX + "Holder$ReferenceAccess")) {
-            return System.getProperty("dragonsurvival.data_generation").equals("true");
+            // In production, this system property doesn't exist. We don't ever use this mixin in production anyways, so we can just return false in this case.
+            if(FMLLoader.isProduction()) {
+                return false;
+            } else {
+                return System.getProperty("dragonsurvival.data_generation").equals("true");
+            }
         }
 
         return true;
