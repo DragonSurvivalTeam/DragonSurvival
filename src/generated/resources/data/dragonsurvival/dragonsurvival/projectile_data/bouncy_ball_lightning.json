@@ -127,9 +127,6 @@
                     "condition": "minecraft:entity_properties",
                     "entity": "this",
                     "predicate": {
-                      "location": {
-                        "can_see_sky": true
-                      },
                       "type_specific": {
                         "type": "dragonsurvival:custom_predicates",
                         "weather_predicate": {

@@ -72,9 +72,12 @@ public class DragonPenalties {
     public static void registerPenalties(final BootstrapContext<DragonPenalty> context) {
         context.register(SNOW_AND_RAIN_WEAKNESS, new DragonPenalty(
                 Optional.of(DragonSurvival.res("abilities/cave/snow_and_rain_weakness")),
-                // Enable when in rain or on (or within) said block tag (except when affected by the 'FIRE' effect)
+                // Enable when:
+                // - in rain / snow
+                // - on / within said block tag
+                // (except when affected by the 'FIRE' effect)
                 Optional.of(AnyOfCondition.anyOf(
-                        Condition.thisEntity(EntityCondition.isInRain()),
+                        Condition.thisEntity(EntityCondition.isInRainOrSnow()),
                         Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_WET)),
                         Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_WET))
                 ).and(Condition.thisEntity(EntityCondition.hasEffect(DSEffects.FIRE)).invert()).build()),
@@ -96,7 +99,7 @@ public class DragonPenalties {
                 // Enable when in water, in rain or on (or within) said block tag
                 Optional.of(AnyOfCondition.anyOf(
                         Condition.thisEntity(EntityCondition.isInFluid(context.lookup(Registries.FLUID).getOrThrow(FluidTags.WATER))),
-                        Condition.thisEntity(EntityCondition.isInRain()),
+                        Condition.thisEntity(EntityCondition.isInRainOrSnow()),
                         Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_WET)),
                         Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_WET))
                 ).invert().build()),
