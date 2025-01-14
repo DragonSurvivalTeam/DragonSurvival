@@ -459,6 +459,15 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         clearVerticalVelocity = true;
     }
 
+     /** Is used to determine if the player is considered swimming for animation purposes.
+     /* We also want to disable head bob and walking sound effect in this case.
+     /* See dragonSurvival$modifyWalkSoundsWhenWalkingUnderwater and dragonSurvival$consideredSwimmingEvenWhenGroundedInWater
+     */
+    public static boolean isConsideredSwimmingForAnimation(Player player) {
+        boolean isInFluid = (player.isInWaterOrBubble() || SwimData.getData(player).canSwimIn(player.getMaxHeightFluidType()));
+        return isInFluid && !player.isPassenger() && (!player.onGround() || !player.getEyeInFluidType().isAir());
+    }
+
     private PlayState predicate(final AnimationState<DragonEntity> state) {
         Player player = getPlayer();
 
@@ -504,8 +513,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         }
 
         MovementData movement = MovementData.getData(player);
-        boolean isInFluid = (player.isInWaterOrBubble() || SwimData.getData(player).canSwimIn(player.getMaxHeightFluidType()));
-        boolean isSwimming = isInFluid && !player.isPassenger() && !player.onGround() && !player.getEyeInFluidType().isAir();
+        boolean isSwimming = isConsideredSwimmingForAnimation(player);
 
         // TODO: The transition length of animations doesn't work correctly when the framerate varies too much from 60 FPS
         if (!movement.isMoving() && handler.isOnMagicSource) {

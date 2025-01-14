@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -8,6 +9,7 @@ import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.LightLayer;
@@ -23,12 +25,14 @@ import java.util.Optional;
 public record CustomPredicates(
         Optional<HolderSet<FluidType>> eyeInFluid,
         Optional<WeatherPredicate> weatherPredicate,
-        Optional<MinMaxBounds.Ints> sunLightLevel
+        Optional<MinMaxBounds.Ints> sunLightLevel,
+        Optional<ResourceLocation> modifierPresent
 ) implements EntitySubPredicate {
     public static final MapCodec<CustomPredicates> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             RegistryCodecs.homogeneousList(NeoForgeRegistries.FLUID_TYPES.key()).optionalFieldOf("eye_in_fluid").forGetter(CustomPredicates::eyeInFluid),
             WeatherPredicate.CODEC.optionalFieldOf("weather_predicate").forGetter(CustomPredicates::weatherPredicate),
-            MinMaxBounds.Ints.CODEC.optionalFieldOf("sun_light_level").forGetter(CustomPredicates::sunLightLevel)
+            MinMaxBounds.Ints.CODEC.optionalFieldOf("sun_light_level").forGetter(CustomPredicates::sunLightLevel),
+            ResourceLocation.CODEC.optionalFieldOf("modifier_present").forGetter(CustomPredicates::modifierPresent)
     ).apply(instance, CustomPredicates::new));
 
     @Override
@@ -51,6 +55,19 @@ public record CustomPredicates(
             return false;
         }
 
+        if(!modifierPresent.map(modifier ->
+                entity.getExistingData(DSDataAttachments.MODIFIERS_WITH_DURATION).map(data -> data.all().stream().anyMatch(mod -> mod.id().equals(modifier))).orElse(false)
+                || entity.getExistingData(DSDataAttachments.OXYGEN_BONUSES).map(data -> data.all().stream().anyMatch(mod -> mod.id().equals(modifier))).orElse(false)
+                || entity.getExistingData(DSDataAttachments.HARVEST_BONUSES).map(data -> data.all().stream().anyMatch(mod -> mod.id().equals(modifier))).orElse(false)
+                || entity.getExistingData(DSDataAttachments.BLOCK_VISION).map(data -> data.all().stream().anyMatch(mod -> mod.id().equals(modifier))).orElse(false)
+                || entity.getExistingData(DSDataAttachments.DAMAGE_MODIFICATIONS).map(data -> data.all().stream().anyMatch(mod -> mod.id().equals(modifier))).orElse(false)
+                || entity.getExistingData(DSDataAttachments.EFFECT_MODIFICATIONS).map(data -> data.all().stream().anyMatch(mod -> mod.id().equals(modifier))).orElse(false)
+                || entity.getExistingData(DSDataAttachments.GLOW).map(data -> data.all().stream().anyMatch(mod -> mod.id().equals(modifier))).orElse(false)
+        ).orElse(true))
+        {
+            return false;
+        }
+
         return true;
     }
 
@@ -66,6 +83,7 @@ public record CustomPredicates(
         private Optional<Boolean> isRaining = Optional.empty();
         private Optional<Boolean> isThundering = Optional.empty();
         private Optional<MinMaxBounds.Ints> sunLightLevel = Optional.empty();
+        private Optional<ResourceLocation> modifierPresent = Optional.empty();
 
         public static CustomPredicates.Builder start() {
             return new CustomPredicates.Builder();
@@ -96,8 +114,13 @@ public record CustomPredicates(
             return this;
         }
 
+        public CustomPredicates.Builder modifierPresent(ResourceLocation modifier) {
+            this.modifierPresent = Optional.of(modifier);
+            return this;
+        }
+
         public CustomPredicates build() {
-            return new CustomPredicates(eyeInFluid, Optional.of(new WeatherPredicate(isRaining, isThundering)), sunLightLevel);
+            return new CustomPredicates(eyeInFluid, Optional.of(new WeatherPredicate(isRaining, isThundering)), sunLightLevel, modifierPresent);
         }
     }
 }

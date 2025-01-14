@@ -6,10 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncBrokenTool;
 import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawMenuToggle;
 import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawRender;
 import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawsMenu;
-import by.dragonsurvivalteam.dragonsurvival.network.container.OpenDragonAltar;
-import by.dragonsurvivalteam.dragonsurvival.network.container.RequestOpenDragonEditor;
-import by.dragonsurvivalteam.dragonsurvival.network.container.RequestOpenDragonInventory;
-import by.dragonsurvivalteam.dragonsurvival.network.container.RequestOpenVanillaInventory;
+import by.dragonsurvivalteam.dragonsurvival.network.container.*;
 import by.dragonsurvivalteam.dragonsurvival.network.dragon_editor.SyncDragonSkinSettings;
 import by.dragonsurvivalteam.dragonsurvival.network.dragon_editor.SyncPlayerSkinPreset;
 import by.dragonsurvivalteam.dragonsurvival.network.emotes.StopAllEmotes;
@@ -89,6 +86,7 @@ public class NetworkHandler {
         registrar.playToClient(SyncEffectModification.TYPE, SyncEffectModification.STREAM_CODEC, SyncEffectModification::handleClient);
         registrar.playToClient(SyncOxygenBonus.TYPE, SyncOxygenBonus.STREAM_CODEC, SyncOxygenBonus::handleClient);
         registrar.playToClient(SyncDragonPassengerID.TYPE, SyncDragonPassengerID.STREAM_CODEC, SyncDragonPassengerID::handleClient);
+        registrar.playToServer(SortInventory.TYPE, SortInventory.STREAM_CODEC, SortInventory::handleServer);
 
         registrar.playToServer(SyncAltarCooldown.TYPE, SyncAltarCooldown.STREAM_CODEC, SyncAltarCooldown::handleServer);
         registrar.playToServer(RequestOpenDragonInventory.TYPE, RequestOpenDragonInventory.STREAM_CODEC, RequestOpenDragonInventory::handleServer);

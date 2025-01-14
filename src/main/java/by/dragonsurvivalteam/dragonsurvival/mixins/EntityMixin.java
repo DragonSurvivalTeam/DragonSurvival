@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
@@ -203,6 +204,16 @@ public abstract class EntityMixin {
                 self.fudgePositionAfterSizeChange(entitydimensions);
                 DragonSizeHandler.overridePose(player);
             }
+        }
+    }
+
+    @ModifyExpressionValue(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity$MovementEmission;emitsSounds()Z"))
+    private boolean dragonSurvival$modifyWalkSoundsWhenWalkingUnderwater(boolean original) {
+        Entity self = (Entity) (Object) this;
+        if(DragonStateProvider.isDragon(self) && self instanceof Player player) {
+            return original && !DragonEntity.isConsideredSwimmingForAnimation(player);
+        } else {
+            return original;
         }
     }
 

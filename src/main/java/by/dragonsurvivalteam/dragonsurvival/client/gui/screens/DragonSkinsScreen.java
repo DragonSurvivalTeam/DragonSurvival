@@ -131,8 +131,8 @@ public class DragonSkinsScreen extends Screen {
     private static final ResourceLocation INFO_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/info_hover.png");
     private static final ResourceLocation INFO_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/info_main.png");
 
-    private static final ResourceLocation WIKI_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/wiki_main.png");
-    private static final ResourceLocation WIKI_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/wiki_hover.png");
+    private static final ResourceLocation WIKI_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/config_main.png");
+    private static final ResourceLocation WIKI_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/config_hover.png");
 
     private static final ResourceLocation DISCORD_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/discord_main.png");
     private static final ResourceLocation DISCORD_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/discord_hover.png");
