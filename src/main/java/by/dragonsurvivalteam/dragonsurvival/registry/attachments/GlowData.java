@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
-import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Glow;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
@@ -49,16 +48,12 @@ public class GlowData extends Storage<Glow.Instance> {
             return colors.getFirst();
         }
 
-        try {
-            int currentColor = colors.get(index);
-            int nextColor = colors.get((index + 1) % colors.size());
-            return FastColor.ARGB32.lerp(timer, DSColors.withAlpha(currentColor, 255), DSColors.withAlpha(nextColor, 255));
-        } catch (IndexOutOfBoundsException exception) {
-            // FIXME :: can happen sometimes, unclear atm as to why (index is 4 and list is size 4 - even though it should be 5)
-            DragonSurvival.LOGGER.error("Index: [{}] | Colors: [{}] | Storage size: [{}]", index, colors, size(), exception);
-        }
+        // Safety measure, since elements can get lost since the last timer update
+        index = index % colors.size();
 
-        return NO_COLOR;
+        int currentColor = colors.get(index);
+        int nextColor = colors.get((index + 1) % colors.size());
+        return FastColor.ARGB32.lerp(timer, DSColors.withAlpha(currentColor, 255), DSColors.withAlpha(nextColor, 255));
     }
 
     public void tickTimer() {
@@ -67,9 +62,6 @@ public class GlowData extends Storage<Glow.Instance> {
         if (timer >= 1) {
             timer = 0;
             index = (index + 1) % size();
-        } else {
-            // In case an entry gets removed before '1' is reached
-            index = Math.min(index, size() - 1);
         }
     }
 

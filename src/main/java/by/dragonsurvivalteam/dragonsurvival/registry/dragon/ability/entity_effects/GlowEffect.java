@@ -19,6 +19,11 @@ public record GlowEffect(List<Glow> glows) implements AbilityEntityEffect {
         glows.forEach(glow -> glow.apply(dragon, ability, entity));
     }
 
+    @Override
+    public void remove(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity) {
+        glows.forEach(glow -> glow.remove(entity));
+    }
+
     public static List<GlowEffect> only(final Glow modifier) {
         return List.of(new GlowEffect(List.of(modifier)));
     }

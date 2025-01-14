@@ -27,13 +27,15 @@ public record CustomPredicates(
         Optional<HolderSet<FluidType>> eyeInFluid,
         Optional<WeatherPredicate> weatherPredicate,
         Optional<MinMaxBounds.Ints> sunLightLevel,
-        Optional<ResourceLocation> hasAbilityEffect
+        Optional<ResourceLocation> hasAbilityEffect,
+        Optional<NearbyEntityPredicate> isNearbyEntity
 ) implements EntitySubPredicate {
     public static final MapCodec<CustomPredicates> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             RegistryCodecs.homogeneousList(NeoForgeRegistries.FLUID_TYPES.key()).optionalFieldOf("eye_in_fluid").forGetter(CustomPredicates::eyeInFluid),
             WeatherPredicate.CODEC.optionalFieldOf("weather_predicate").forGetter(CustomPredicates::weatherPredicate),
             MinMaxBounds.Ints.CODEC.optionalFieldOf("sun_light_level").forGetter(CustomPredicates::sunLightLevel),
-            ResourceLocation.CODEC.optionalFieldOf("has_ability_effect").forGetter(CustomPredicates::hasAbilityEffect)
+            ResourceLocation.CODEC.optionalFieldOf("has_ability_effect").forGetter(CustomPredicates::hasAbilityEffect),
+            NearbyEntityPredicate.CODEC.optionalFieldOf("is_nearby_entity").forGetter(CustomPredicates::isNearbyEntity)
     ).apply(instance, CustomPredicates::new));
 
     @Override
@@ -72,6 +74,10 @@ public record CustomPredicates(
             }
         }
 
+        if (!isNearbyEntity.map(predicate -> predicate.matches(level, position)).orElse(false)) {
+            return false;
+        }
+
         return true;
     }
 
@@ -90,6 +96,7 @@ public record CustomPredicates(
         private Optional<Boolean> isRainingOrSnowing = Optional.empty();
         private Optional<MinMaxBounds.Ints> sunLightLevel = Optional.empty();
         private Optional<ResourceLocation> hasAbilityEffect = Optional.empty();
+        private Optional<NearbyEntityPredicate> isNearbyEntity = Optional.empty();
 
         public static CustomPredicates.Builder start() {
             return new CustomPredicates.Builder();
@@ -135,8 +142,13 @@ public record CustomPredicates(
             return this;
         }
 
+        public CustomPredicates.Builder isNearbyEntity(final NearbyEntityPredicate isNearbyEntity) {
+            this.isNearbyEntity = Optional.of(isNearbyEntity);
+            return this;
+        }
+
         public CustomPredicates build() {
-            return new CustomPredicates(eyeInFluid, Optional.of(new WeatherPredicate(isRaining, isThundering, isSnowing, isRainingOrSnowing)), sunLightLevel, hasAbilityEffect);
+            return new CustomPredicates(eyeInFluid, Optional.of(new WeatherPredicate(isRaining, isThundering, isSnowing, isRainingOrSnowing)), sunLightLevel, hasAbilityEffect, isNearbyEntity);
         }
     }
 }

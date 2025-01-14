@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.conditions;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.CustomPredicates;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.DragonPredicate;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.EntityCheckPredicate;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.NearbyEntityPredicate;
 import by.dragonsurvivalteam.dragonsurvival.common.items.growth.StarHeartItem;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.Holder;
@@ -10,6 +11,7 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
@@ -128,6 +130,10 @@ public class EntityCondition {
 
     public static EntityPredicate spinWasGranted(boolean spinWasGranted) {
         return EntityPredicate.Builder.entity().subPredicate(DragonPredicate.Builder.dragon().spinWasGranted(spinWasGranted).build()).build();
+    }
+
+    public static EntityPredicate isNearbyTo(int radius, final EntityType<?>... types) {
+        return EntityPredicate.Builder.entity().subPredicate(CustomPredicates.Builder.start().isNearbyEntity(NearbyEntityPredicate.of(radius, EntityType.BEE)).build()).build();
     }
 
     @SafeVarargs
