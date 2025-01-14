@@ -25,11 +25,11 @@ public class ClearModifiersCommand {
 
     public static void register(final CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(literal("dragon-modifiers")
-                .requires(commandSourceStack -> commandSourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                .requires(source -> source.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(literal("clear")
-                        .executes(commandSourceStack -> clearModifiers(commandSourceStack.getSource(), ImmutableList.of(commandSourceStack.getSource().getEntityOrException())))
+                        .executes(source -> clearModifiers(source.getSource(), ImmutableList.of(source.getSource().getEntityOrException())))
                         .then(argument("targets", EntityArgument.entities())
-                                .executes(commandSourceStack -> clearModifiers(commandSourceStack.getSource(), EntityArgument.getEntities(commandSourceStack, "targets")))
+                                .executes(source -> clearModifiers(source.getSource(), EntityArgument.getEntities(source, "targets")))
                         )
                 )
         );

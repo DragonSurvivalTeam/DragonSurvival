@@ -45,7 +45,7 @@
     "texture_entries": [
       {
         "from_level": 0,
-        "texture_resource": "dragonsurvival:glow_test"
+        "texture_resource": "dragonsurvival:test_glow"
       }
     ]
   }

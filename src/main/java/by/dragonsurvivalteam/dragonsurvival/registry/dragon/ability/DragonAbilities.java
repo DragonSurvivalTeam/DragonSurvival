@@ -32,14 +32,14 @@ public class DragonAbilities {
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "Applies a changing glow color")
     @Translation(type = Translation.Type.ABILITY, comments = "Glow Test")
-    public static final ResourceKey<DragonAbility> GLOW_TEST = DragonAbilities.key("glow_test");
+    public static final ResourceKey<DragonAbility> TEST_GLOW = DragonAbilities.key("test_glow");
 
     public static void registerAbilities(final BootstrapContext<DragonAbility> context) {
         CaveDragonAbilities.registerAbilities(context);
         ForestDragonAbilities.registerAbilities(context);
         SeaDragonAbilities.registerAbilities(context);
 
-        context.register(GLOW_TEST, new DragonAbility(
+        context.register(TEST_GLOW, new DragonAbility(
                 Activation.passive(),
                 Optional.empty(),
                 Optional.empty(),
@@ -55,7 +55,7 @@ public class DragonAbilities {
                 ), LevelBasedValue.constant(10)), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("glow_test"), 0)
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("test_glow"), 0)
                 ))
         ));
     }
