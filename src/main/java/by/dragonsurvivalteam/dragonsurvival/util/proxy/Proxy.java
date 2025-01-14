@@ -40,8 +40,6 @@ public interface Proxy {
         return false;
     }
 
-    default void levelRendererAllChanged() { /* Nothing to do */ }
-
     /** This will always return 'false' when in production */
     default boolean isOnRenderThread() {
         return false;

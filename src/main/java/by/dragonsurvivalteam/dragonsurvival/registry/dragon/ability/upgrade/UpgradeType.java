@@ -73,7 +73,7 @@ public interface UpgradeType<T> {
             Class<?> parameterClass = (Class<?>) parameterized.getActualTypeArguments()[0];
 
             // 'Void' as type parameter means the upgrade logic is not dependent on any input
-            if (input == null && parameterClass == Void.class || input != null && parameterClass.isAssignableFrom(input.getClass())) {
+            if (input == null && parameterClass == Void.class || parameterClass.isInstance(input)) {
                 if (apply(dragon, ability, (T) input)) {
                     PacketDistributor.sendToPlayer(dragon, new SyncAbilityLevel(ability.key(), ability.level()));
                     return true;

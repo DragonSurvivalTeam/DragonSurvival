@@ -50,8 +50,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /** Mixture of vanilla implementation from {@link RespawnAnchorBlock} and {@link TheEndGatewayBlockEntity} */
 public class PrimordialAnchorBlock extends Block implements EntityBlock {

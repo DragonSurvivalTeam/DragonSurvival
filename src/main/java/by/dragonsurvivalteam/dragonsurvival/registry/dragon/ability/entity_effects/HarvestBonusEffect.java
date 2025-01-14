@@ -14,7 +14,7 @@ import java.util.List;
 
 public record HarvestBonusEffect(List<HarvestBonus> bonuses) implements AbilityEntityEffect {
     public static final MapCodec<HarvestBonusEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            HarvestBonus.CODEC.listOf().fieldOf("bonuses").forGetter(HarvestBonusEffect::bonuses)
+            HarvestBonus.CODEC.listOf().fieldOf("harvest_bonuses").forGetter(HarvestBonusEffect::bonuses)
     ).apply(instance, HarvestBonusEffect::new));
 
     @Override

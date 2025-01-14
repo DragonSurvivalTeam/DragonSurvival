@@ -7,7 +7,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DamageModificat
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
@@ -30,15 +29,16 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.text.NumberFormat;
 import java.util.Optional;
 
-public record DamageModification(ResourceLocation id, HolderSet<DamageType> damageTypes, LevelBasedValue multiplier, LevelBasedValue duration, Optional<ResourceLocation> customIcon, boolean isHidden) {
+public record DamageModification(DurationInstanceBase base, HolderSet<DamageType> damageTypes, LevelBasedValue multiplier) {
     @Translation(comments = "§6■ Immune§r to ")
     private static final String ABILITY_IMMUNITY = Translation.Type.GUI.wrap("damage_modification.immunity");
 
@@ -49,31 +49,28 @@ public record DamageModification(ResourceLocation id, HolderSet<DamageType> dama
     private static final String ABILITY_DAMAGE_INCREASE = Translation.Type.GUI.wrap("damage_modification.damage_increase");
 
     public static final Codec<DamageModification> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ResourceLocation.CODEC.fieldOf("id").forGetter(DamageModification::id),
+            DurationInstanceBase.CODEC.fieldOf("base").forGetter(DamageModification::base),
             RegistryCodecs.homogeneousList(Registries.DAMAGE_TYPE).fieldOf("types").forGetter(DamageModification::damageTypes),
-            LevelBasedValue.CODEC.fieldOf("multiplier").forGetter(DamageModification::multiplier),
-            LevelBasedValue.CODEC.optionalFieldOf("duration", DragonAbilities.INFINITE_DURATION).forGetter(DamageModification::duration),
-            ResourceLocation.CODEC.optionalFieldOf("custom_icon").forGetter(DamageModification::customIcon),
-            Codec.BOOL.optionalFieldOf("is_hidden", false).forGetter(DamageModification::isHidden)
+            LevelBasedValue.CODEC.fieldOf("multiplier").forGetter(DamageModification::multiplier)
     ).apply(instance, DamageModification::new));
 
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity) {
-        int newDuration = (int) duration.calculate(ability.level());
+        int newDuration = (int) base.duration().calculate(ability.level());
 
         DamageModifications data = entity.getData(DSDataAttachments.DAMAGE_MODIFICATIONS);
-        Instance instance = data.get(id);
+        Instance instance = data.get(base.id());
 
         if (instance != null && instance.appliedAbilityLevel() == ability.level() && instance.currentDuration() == newDuration) {
             return;
         }
 
         data.remove(entity, instance);
-        data.add(entity, new Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, customIcon), ability.level(), newDuration));
+        data.add(entity, new Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, base.customIcon()), ability.level(), newDuration));
     }
 
     public void remove(final Entity target) {
         DamageModifications data = target.getData(DSDataAttachments.DAMAGE_MODIFICATIONS);
-        data.remove(target, data.get(id));
+        data.remove(target, data.get(base.id()));
     }
 
     public boolean isFireImmune(int appliedAbilityLevel) {
@@ -125,7 +122,7 @@ public record DamageModification(ResourceLocation id, HolderSet<DamageType> dama
             }
         }
 
-        float duration = duration().calculate(abilityLevel);
+        float duration = base.duration().calculate(abilityLevel);
 
         if (duration != DurationInstance.INFINITE_DURATION) {
             name.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.dynamicValue(Functions.ticksToSeconds((int) duration))));
@@ -184,17 +181,22 @@ public record DamageModification(ResourceLocation id, HolderSet<DamageType> dama
 
         @Override
         public ResourceLocation id() {
-            return baseData().id();
+            return baseData().base().id();
         }
 
         @Override
         public int getDuration() {
-            return (int) baseData().duration().calculate(appliedAbilityLevel());
+            return (int) baseData().base().duration().calculate(appliedAbilityLevel());
+        }
+
+        @Override
+        public Optional<LootItemCondition> earlyRemovalCondition() {
+            return baseData().base().earlyRemovalCondition();
         }
 
         @Override
         public boolean isHidden() {
-            return baseData().isHidden();
+            return baseData().base().isHidden();
         }
     }
 }

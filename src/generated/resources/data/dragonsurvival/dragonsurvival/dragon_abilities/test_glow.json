@@ -8,24 +8,39 @@
               "effect_type": "dragonsurvival:glow",
               "glows": [
                 {
-                  "color": "gold",
-                  "id": "dragonsurvival:gold"
+                  "base": {
+                    "id": "dragonsurvival:gold",
+                    "is_hidden": true
+                  },
+                  "color": "gold"
                 },
                 {
-                  "color": "dark_purple",
-                  "id": "dragonsurvival:dark_purple"
+                  "base": {
+                    "id": "dragonsurvival:dark_purple",
+                    "is_hidden": true
+                  },
+                  "color": "dark_purple"
                 },
                 {
-                  "color": "green",
-                  "id": "dragonsurvival:green"
+                  "base": {
+                    "id": "dragonsurvival:green",
+                    "is_hidden": true
+                  },
+                  "color": "green"
                 },
                 {
-                  "color": "red",
-                  "id": "dragonsurvival:red"
+                  "base": {
+                    "id": "dragonsurvival:red",
+                    "is_hidden": true
+                  },
+                  "color": "red"
                 },
                 {
-                  "color": "blue",
-                  "id": "dragonsurvival:blue"
+                  "base": {
+                    "id": "dragonsurvival:blue",
+                    "is_hidden": true
+                  },
+                  "color": "blue"
                 }
               ]
             }
@@ -44,29 +59,44 @@
               "effect_type": "dragonsurvival:glow",
               "glows": [
                 {
-                  "color": "gold",
-                  "duration": 200.0,
-                  "id": "dragonsurvival:gold"
+                  "base": {
+                    "duration": 200.0,
+                    "id": "dragonsurvival:gold",
+                    "is_hidden": true
+                  },
+                  "color": "gold"
                 },
                 {
-                  "color": "dark_purple",
-                  "duration": 200.0,
-                  "id": "dragonsurvival:dark_purple"
+                  "base": {
+                    "duration": 200.0,
+                    "id": "dragonsurvival:dark_purple",
+                    "is_hidden": true
+                  },
+                  "color": "dark_purple"
                 },
                 {
-                  "color": "green",
-                  "duration": 200.0,
-                  "id": "dragonsurvival:green"
+                  "base": {
+                    "duration": 200.0,
+                    "id": "dragonsurvival:green",
+                    "is_hidden": true
+                  },
+                  "color": "green"
                 },
                 {
-                  "color": "red",
-                  "duration": 200.0,
-                  "id": "dragonsurvival:red"
+                  "base": {
+                    "duration": 200.0,
+                    "id": "dragonsurvival:red",
+                    "is_hidden": true
+                  },
+                  "color": "red"
                 },
                 {
-                  "color": "blue",
-                  "duration": 200.0,
-                  "id": "dragonsurvival:blue"
+                  "base": {
+                    "duration": 200.0,
+                    "id": "dragonsurvival:blue",
+                    "is_hidden": true
+                  },
+                  "color": "blue"
                 }
               ]
             }

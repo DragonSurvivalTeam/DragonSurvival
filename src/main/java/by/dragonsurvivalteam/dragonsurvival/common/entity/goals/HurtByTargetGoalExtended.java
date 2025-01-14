@@ -6,8 +6,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.phys.AABB;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class HurtByTargetGoalExtended extends HurtByTargetGoal {
     @Nullable private Class<? extends Mob>[] toHeedAlert;

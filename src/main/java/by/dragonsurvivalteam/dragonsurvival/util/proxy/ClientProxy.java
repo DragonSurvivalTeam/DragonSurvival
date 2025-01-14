@@ -143,9 +143,4 @@ public class ClientProxy implements Proxy {
     public boolean isMining(final Player player) {
         return Minecraft.getInstance().gameMode != null && Minecraft.getInstance().gameMode.isDestroying();
     }
-
-    @Override
-    public void levelRendererAllChanged() {
-        Minecraft.getInstance().levelRenderer.allChanged();
-    }
 }

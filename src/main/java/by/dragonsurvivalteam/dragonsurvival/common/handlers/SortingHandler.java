@@ -12,7 +12,25 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArrowItem;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.BowItem;
+import net.minecraft.world.item.CrossbowItem;
+import net.minecraft.world.item.DiggerItem;
+import net.minecraft.world.item.DyeItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.MinecartItem;
+import net.minecraft.world.item.PickaxeItem;
+import net.minecraft.world.item.PotionItem;
+import net.minecraft.world.item.ShovelItem;
+import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.TippedArrowItem;
+import net.minecraft.world.item.TridentItem;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -22,7 +40,11 @@ import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.wrapper.InvWrapper;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.function.Predicate;
 
 /**
@@ -176,7 +198,7 @@ public final class SortingHandler {
                 continue;
             }
 
-            if (stackAt.getCount() < stackAt.getMaxStackSize() && ItemStack.isSameItem(stack, stackAt) && ItemStack.isSameItemSameComponents(stack, stackAt)) {
+            if (stackAt.getCount() < stackAt.getMaxStackSize() && ItemStack.isSameItemSameComponents(stack, stackAt)) {
                 int setSize = stackAt.getCount() + stack.getCount();
                 int carryover = Math.max(0, setSize - stackAt.getMaxStackSize());
 
@@ -229,8 +251,8 @@ public final class SortingHandler {
         throw new RuntimeException("Having an ItemStack that doesn't fit in any type is impossible.");
     }
 
-    private static Predicate<ItemStack> classPredicate(Class<? extends Item> clazz) {
-        return (ItemStack s) -> !s.isEmpty() && clazz.isInstance(s.getItem());
+    private static Predicate<ItemStack> classPredicate(Class<? extends Item> type) {
+        return stack -> !stack.isEmpty() && type.isInstance(stack.getItem());
     }
 
     @SuppressWarnings("SameParameterValue") // ignore

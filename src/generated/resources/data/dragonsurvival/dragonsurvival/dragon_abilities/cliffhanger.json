@@ -8,8 +8,10 @@
               "effect_type": "dragonsurvival:modifier",
               "modifiers": [
                 {
-                  "id": "dragonsurvival:cliffhanger",
-                  "is_hidden": true,
+                  "base": {
+                    "id": "dragonsurvival:cliffhanger",
+                    "is_hidden": true
+                  },
                   "modifiers": [
                     {
                       "amount": {

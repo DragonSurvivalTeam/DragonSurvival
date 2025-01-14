@@ -1,7 +1,16 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.*;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.DamageModification;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.DurationInstanceBase;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.HarvestBonus;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierWithDuration;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.PotionData;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.SpawnParticles;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.TargetDirection;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
@@ -338,11 +347,8 @@ public class ForestDragonAbilities {
                 List.of(
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 ModifierEffect.only(new ModifierWithDuration(
-                                        DragonSurvival.res("forest_magic"),
-                                        List.of(new Modifier(DSAttributes.MANA, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
-                                        DragonAbilities.INFINITE_DURATION,
-                                        Optional.empty(),
-                                        true
+                                        DurationInstanceBase.create(DragonSurvival.res("forest_magic")).infinite().hidden().build(),
+                                        List.of(new Modifier(DSAttributes.MANA, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_VALUE, Optional.empty()))
                                 )),
                                 TargetingMode.ALLIES_AND_SELF
                         ), true), LevelBasedValue.constant(1)),
@@ -352,11 +358,8 @@ public class ForestDragonAbilities {
                                         .or(Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_GRASSY)))
                                         .or(Condition.thisEntity(EntityCondition.isInSunlight(10))).build(),
                                 ModifierEffect.only(new ModifierWithDuration(
-                                        DragonSurvival.res("good_mana_condition"),
-                                        List.of(new Modifier(DSAttributes.MANA_REGENERATION, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_MULTIPLIED_BASE, Optional.empty())),
-                                        DragonAbilities.INFINITE_DURATION,
-                                        Optional.empty(),
-                                        true
+                                        DurationInstanceBase.create(DragonSurvival.res("good_mana_condition")).infinite().hidden().build(),
+                                        List.of(new Modifier(DSAttributes.MANA_REGENERATION, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_MULTIPLIED_BASE, Optional.empty()))
                                 )),
                                 TargetingMode.ALLIES_AND_SELF
                         ), true), LevelBasedValue.constant(1))
@@ -404,11 +407,8 @@ public class ForestDragonAbilities {
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         ModifierEffect.only(new ModifierWithDuration(
-                                DragonSurvival.res("light_in_darkness"),
-                                List.of(new Modifier(DSAttributes.PENALTY_RESISTANCE_TIME, LevelBasedValue.perLevel(Functions.secondsToTicks(10)), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
-                                DragonAbilities.INFINITE_DURATION,
-                                Optional.empty(),
-                                true
+                                DurationInstanceBase.create(DragonSurvival.res("light_in_darkness")).infinite().hidden().build(),
+                                List.of(new Modifier(DSAttributes.PENALTY_RESISTANCE_TIME, LevelBasedValue.perLevel(Functions.secondsToTicks(10)), AttributeModifier.Operation.ADD_VALUE, Optional.empty()))
                         )),
                         TargetingMode.ALLIES_AND_SELF
                 ), true), LevelBasedValue.constant(1))),
@@ -432,11 +432,8 @@ public class ForestDragonAbilities {
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         ModifierEffect.only(new ModifierWithDuration(
-                                DragonSurvival.res("cliffhanger"),
-                                List.of(new Modifier(Attributes.SAFE_FALL_DISTANCE, LevelBasedValue.perLevel(5, 1), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
-                                DragonAbilities.INFINITE_DURATION,
-                                Optional.empty(),
-                                true
+                                DurationInstanceBase.create(DragonSurvival.res("cliffhanger")).infinite().hidden().build(),
+                                List.of(new Modifier(Attributes.SAFE_FALL_DISTANCE, LevelBasedValue.perLevel(5, 1), AttributeModifier.Operation.ADD_VALUE, Optional.empty()))
                         )),
                         TargetingMode.ALLIES_AND_SELF
                 ), true), LevelBasedValue.constant(1))),
@@ -458,13 +455,10 @@ public class ForestDragonAbilities {
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         HarvestBonusEffect.only(new HarvestBonus(
-                                DragonSurvival.res("forest_claws_and_teeth"),
+                                DurationInstanceBase.create(DragonSurvival.res("forest_claws_and_teeth")).infinite().customIcon(DragonSurvival.res("textures/ability_effect/forest_claw.png")).build(),
                                 Optional.of(context.lookup(Registries.BLOCK).getOrThrow(BlockTags.MINEABLE_WITH_AXE)),
                                 LevelBasedValue.perLevel(1, 0.5f),
-                                LevelBasedValue.perLevel(0.5f),
-                                DragonAbilities.INFINITE_DURATION,
-                                Optional.of(DragonSurvival.res("textures/ability_effect/forest_claw.png")),
-                                false
+                                LevelBasedValue.perLevel(0.5f)
                         )),
                         TargetingMode.ALLIES_AND_SELF
                 ), true), LevelBasedValue.constant(1))),
@@ -516,17 +510,14 @@ public class ForestDragonAbilities {
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         DamageModificationEffect.only(new DamageModification(
-                                DragonSurvival.res("forest_immunity"),
+                                DurationInstanceBase.create(DragonSurvival.res("forest_immunity")).infinite().customIcon(DragonSurvival.res("textures/ability_effect/drain_immunity.png")).build(),
                                 HolderSet.direct(
                                         context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.SWEET_BERRY_BUSH),
                                         context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.CACTUS),
                                         context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.DRAIN),
                                         context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FOREST_BREATH)
                                 ),
-                                LevelBasedValue.constant(0),
-                                DragonAbilities.INFINITE_DURATION,
-                                Optional.of(DragonSurvival.res("textures/ability_effect/drain_immunity.png")),
-                                false
+                                LevelBasedValue.constant(0)
                         )),
                         TargetingMode.ALL
                 ), true), LevelBasedValue.constant(1))),

@@ -43,7 +43,7 @@ public class Condition {
             .optional(LootContextParams.BLOCK_ENTITY)
             .build();
 
-    private static final LootContextParamSet PENALTY_CONTEXT = new LootContextParamSet.Builder()
+    private static final LootContextParamSet ENTITY_CONTEXT = new LootContextParamSet.Builder()
             .required(LootContextParams.THIS_ENTITY)
             .required(LootContextParams.ORIGIN)
             .required(LootContextParams.TOOL)
@@ -62,12 +62,21 @@ public class Condition {
         return new LootContext.Builder(parameters).create(Optional.empty());
     }
 
+    public static LootContext entityContext(final ServerLevel serverLevel, final Entity entity) {
+        LootParams parameters = new LootParams.Builder(serverLevel)
+                .withParameter(LootContextParams.THIS_ENTITY, entity)
+                .withParameter(LootContextParams.ORIGIN, entity.position())
+                .withParameter(LootContextParams.TOOL, entity instanceof LivingEntity livingEntity ? livingEntity.getMainHandItem() : ItemStack.EMPTY)
+                .create(ENTITY_CONTEXT);
+        return new LootContext.Builder(parameters).create(Optional.empty());
+    }
+
     public static LootContext penaltyContext(final ServerPlayer dragon) {
         LootParams parameters = new LootParams.Builder(dragon.serverLevel())
                 .withParameter(LootContextParams.THIS_ENTITY, dragon)
                 .withParameter(LootContextParams.ORIGIN, dragon.position())
                 .withParameter(LootContextParams.TOOL, dragon.getMainHandItem())
-                .create(PENALTY_CONTEXT);
+                .create(ENTITY_CONTEXT);
         return new LootContext.Builder(parameters).create(Optional.empty());
     }
 

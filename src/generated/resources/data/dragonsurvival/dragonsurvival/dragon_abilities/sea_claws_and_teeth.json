@@ -5,24 +5,26 @@
         "applied_effects": {
           "entity_effect": [
             {
-              "bonuses": [
+              "effect_type": "dragonsurvival:harvest_bonus",
+              "harvest_bonuses": [
                 {
+                  "base": {
+                    "custom_icon": "dragonsurvival:textures/ability_effect/sea_claw.png",
+                    "id": "dragonsurvival:sea_claws_and_teeth"
+                  },
                   "blocks": "#minecraft:mineable/shovel",
                   "break_speed_multiplier": {
                     "type": "minecraft:linear",
                     "base": 0.5,
                     "per_level_above_first": 0.5
                   },
-                  "custom_icon": "dragonsurvival:textures/ability_effect/sea_claw.png",
                   "harvest_bonus": {
                     "type": "minecraft:linear",
                     "base": 1.0,
                     "per_level_above_first": 0.5
-                  },
-                  "id": "dragonsurvival:sea_claws_and_teeth"
+                  }
                 }
-              ],
-              "effect_type": "dragonsurvival:harvest_bonus"
+              ]
             }
           ],
           "targeting_mode": "allies_and_self"

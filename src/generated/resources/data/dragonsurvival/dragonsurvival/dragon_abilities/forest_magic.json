@@ -8,8 +8,10 @@
               "effect_type": "dragonsurvival:modifier",
               "modifiers": [
                 {
-                  "id": "dragonsurvival:forest_magic",
-                  "is_hidden": true,
+                  "base": {
+                    "id": "dragonsurvival:forest_magic",
+                    "is_hidden": true
+                  },
                   "modifiers": [
                     {
                       "amount": {
@@ -39,8 +41,10 @@
               "effect_type": "dragonsurvival:modifier",
               "modifiers": [
                 {
-                  "id": "dragonsurvival:good_mana_condition",
-                  "is_hidden": true,
+                  "base": {
+                    "id": "dragonsurvival:good_mana_condition",
+                    "is_hidden": true
+                  },
                   "modifiers": [
                     {
                       "amount": {

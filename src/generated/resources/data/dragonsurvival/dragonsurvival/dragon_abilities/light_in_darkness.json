@@ -8,8 +8,10 @@
               "effect_type": "dragonsurvival:modifier",
               "modifiers": [
                 {
-                  "id": "dragonsurvival:light_in_darkness",
-                  "is_hidden": true,
+                  "base": {
+                    "id": "dragonsurvival:light_in_darkness",
+                    "is_hidden": true
+                  },
                   "modifiers": [
                     {
                       "amount": {

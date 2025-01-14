@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DamageModification;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.DurationInstanceBase;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.HarvestBonus;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
@@ -261,11 +262,8 @@ public class SeaDragonAbilities {
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(
                         List.of(
                                 ModifierEffect.single(new ModifierWithDuration(
-                                        DragonSurvival.res("revealing_the_soul"),
-                                        List.of(new Modifier(DSAttributes.EXPERIENCE, LevelBasedValue.perLevel(0.5f), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
-                                        LevelBasedValue.perLevel(Functions.secondsToTicks(60)),
-                                        Optional.of(DragonSurvival.res("textures/ability_effect/revealing_the_soul.png")),
-                                        false
+                                        DurationInstanceBase.create(DragonSurvival.res("revealing_the_soul")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(60))).customIcon(DragonSurvival.res("textures/ability_effect/revealing_the_soul.png")).build(),
+                                        List.of(new Modifier(DSAttributes.EXPERIENCE, LevelBasedValue.perLevel(0.5f), AttributeModifier.Operation.ADD_VALUE, Optional.empty()))
                                 )),
                                 new ParticleEffect(
                                         new SpawnParticles(ParticleTypes.SOUL, SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), ConstantFloat.of(0.05f)),
@@ -324,11 +322,8 @@ public class SeaDragonAbilities {
                 List.of(
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 ModifierEffect.only(new ModifierWithDuration(
-                                        DragonSurvival.res("sea_magic"),
-                                        List.of(new Modifier(DSAttributes.MANA, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
-                                        DragonAbilities.INFINITE_DURATION,
-                                        Optional.empty(),
-                                        true
+                                        DurationInstanceBase.create(DragonSurvival.res("sea_magic")).infinite().hidden().build(),
+                                        List.of(new Modifier(DSAttributes.MANA, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_VALUE, Optional.empty()))
                                 )),
                                 TargetingMode.ALLIES_AND_SELF
                         ), true), LevelBasedValue.constant(1)),
@@ -338,11 +333,8 @@ public class SeaDragonAbilities {
                                         .or(Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_WET)))
                                         .or(Condition.thisEntity(EntityCondition.isInFluid(context.lookup(Registries.FLUID).getOrThrow(FluidTags.WATER)))).build(),
                                 ModifierEffect.only(new ModifierWithDuration(
-                                        DragonSurvival.res("good_mana_condition"),
-                                        List.of(new Modifier(DSAttributes.MANA_REGENERATION, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_MULTIPLIED_BASE, Optional.empty())),
-                                        DragonAbilities.INFINITE_DURATION,
-                                        Optional.empty(),
-                                        true
+                                        DurationInstanceBase.create(DragonSurvival.res("good_mana_condition")).infinite().hidden().build(),
+                                        List.of(new Modifier(DSAttributes.MANA_REGENERATION, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_MULTIPLIED_BASE, Optional.empty()))
                                 )),
                                 TargetingMode.ALLIES_AND_SELF
                         ), true), LevelBasedValue.constant(1))
@@ -390,11 +382,8 @@ public class SeaDragonAbilities {
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         ModifierEffect.only(new ModifierWithDuration(
-                                DragonSurvival.res("dry_resilience"),
-                                List.of(new Modifier(DSAttributes.PENALTY_RESISTANCE_TIME, LevelBasedValue.perLevel(Functions.secondsToTicks(60)), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
-                                DragonAbilities.INFINITE_DURATION,
-                                Optional.empty(),
-                                true
+                                DurationInstanceBase.create(DragonSurvival.res("dry_resilience")).infinite().hidden().build(),
+                                List.of(new Modifier(DSAttributes.PENALTY_RESISTANCE_TIME, LevelBasedValue.perLevel(Functions.secondsToTicks(60)), AttributeModifier.Operation.ADD_VALUE, Optional.empty()))
                         )),
                         TargetingMode.ALLIES_AND_SELF
                 ), true), LevelBasedValue.constant(1))),
@@ -417,11 +406,8 @@ public class SeaDragonAbilities {
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         ModifierEffect.only(new ModifierWithDuration(
-                                DragonSurvival.res("spectral_impact"),
-                                List.of(new Modifier(DSAttributes.ARMOR_IGNORE_CHANCE, LevelBasedValue.perLevel(0.15f), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
-                                DragonAbilities.INFINITE_DURATION,
-                                Optional.empty(),
-                                true
+                                DurationInstanceBase.create(DragonSurvival.res("spectral_impact")).infinite().hidden().build(),
+                                List.of(new Modifier(DSAttributes.ARMOR_IGNORE_CHANCE, LevelBasedValue.perLevel(0.15f), AttributeModifier.Operation.ADD_VALUE, Optional.empty()))
                         )),
                         TargetingMode.ALLIES_AND_SELF
                 ), true), LevelBasedValue.constant(1))),
@@ -440,13 +426,10 @@ public class SeaDragonAbilities {
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         HarvestBonusEffect.only(new HarvestBonus(
-                                DragonSurvival.res("sea_claws_and_teeth"),
+                                DurationInstanceBase.create(DragonSurvival.res("sea_claws_and_teeth")).infinite().customIcon(DragonSurvival.res("textures/ability_effect/sea_claw.png")).build(),
                                 Optional.of(context.lookup(Registries.BLOCK).getOrThrow(BlockTags.MINEABLE_WITH_SHOVEL)),
                                 LevelBasedValue.perLevel(1, 0.5f),
-                                LevelBasedValue.perLevel(0.5f),
-                                DragonAbilities.INFINITE_DURATION,
-                                Optional.of(DragonSurvival.res("textures/ability_effect/sea_claw.png")),
-                                false
+                                LevelBasedValue.perLevel(0.5f)
                         )),
                         TargetingMode.ALLIES_AND_SELF
                 ), true), LevelBasedValue.constant(1))),
@@ -498,12 +481,9 @@ public class SeaDragonAbilities {
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         DamageModificationEffect.only(new DamageModification(
-                                DragonSurvival.res("electric_immunity"),
+                                DurationInstanceBase.create(DragonSurvival.res("electric_immunity")).infinite().customIcon(DragonSurvival.res("textures/ability_effect/electric_immunity.png")).build(),
                                 context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypeTags.IS_ELECTRIC),
-                                LevelBasedValue.constant(0),
-                                DragonAbilities.INFINITE_DURATION,
-                                Optional.of(DragonSurvival.res("textures/ability_effect/electric_immunity.png")),
-                                false
+                                LevelBasedValue.constant(0)
                         )),
                         TargetingMode.ALL
                 ), true), LevelBasedValue.constant(1))),
@@ -525,11 +505,8 @@ public class SeaDragonAbilities {
                         ), true), LevelBasedValue.constant(1)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 ModifierEffect.only(new ModifierWithDuration(
-                                        DragonSurvival.res("amphibious"),
-                                        List.of(new Modifier(NeoForgeMod.SWIM_SPEED, LevelBasedValue.constant(1f), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
-                                        DragonAbilities.INFINITE_DURATION,
-                                        Optional.empty(),
-                                        true
+                                        DurationInstanceBase.create(DragonSurvival.res("amphibious")).infinite().hidden().build(),
+                                        List.of(new Modifier(NeoForgeMod.SWIM_SPEED, LevelBasedValue.constant(1f), AttributeModifier.Operation.ADD_VALUE, Optional.empty()))
                                 )),
                                 TargetingMode.ALL
                         ), true), LevelBasedValue.constant(1))
@@ -548,11 +525,8 @@ public class SeaDragonAbilities {
                 List.of(
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 ModifierEffect.only(new ModifierWithDuration(
-                                        DragonSurvival.res("diver"),
-                                        List.of(new Modifier(Attributes.SUBMERGED_MINING_SPEED, LevelBasedValue.constant(0.8f), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
-                                        DragonAbilities.INFINITE_DURATION,
-                                        Optional.empty(),
-                                        true
+                                        DurationInstanceBase.create(DragonSurvival.res("diver")).infinite().hidden().build(),
+                                        List.of(new Modifier(Attributes.SUBMERGED_MINING_SPEED, LevelBasedValue.constant(0.8f), AttributeModifier.Operation.ADD_VALUE, Optional.empty()))
                                 )),
                                 TargetingMode.ALLIES_AND_SELF
                         ), true), LevelBasedValue.constant(1))

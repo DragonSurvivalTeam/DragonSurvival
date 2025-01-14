@@ -51,21 +51,21 @@ public class DragonAbilities {
                 List.of(
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(List.of(
                                         new GlowEffect(List.of(
-                                                new Glow(DragonSurvival.res("gold"), TextColor.fromLegacyFormat(ChatFormatting.GOLD), INFINITE_DURATION),
-                                                new Glow(DragonSurvival.res("dark_purple"), TextColor.fromLegacyFormat(ChatFormatting.DARK_PURPLE), INFINITE_DURATION),
-                                                new Glow(DragonSurvival.res("green"), TextColor.fromLegacyFormat(ChatFormatting.GREEN), INFINITE_DURATION),
-                                                new Glow(DragonSurvival.res("red"), TextColor.fromLegacyFormat(ChatFormatting.RED), INFINITE_DURATION),
-                                                new Glow(DragonSurvival.res("blue"), TextColor.fromLegacyFormat(ChatFormatting.BLUE), INFINITE_DURATION)
+                                                Glow.create((DragonSurvival.res("gold")), TextColor.fromLegacyFormat(ChatFormatting.GOLD)),
+                                                Glow.create((DragonSurvival.res("dark_purple")), TextColor.fromLegacyFormat(ChatFormatting.DARK_PURPLE)),
+                                                Glow.create((DragonSurvival.res("green")), TextColor.fromLegacyFormat(ChatFormatting.GREEN)),
+                                                Glow.create((DragonSurvival.res("red")), TextColor.fromLegacyFormat(ChatFormatting.RED)),
+                                                Glow.create((DragonSurvival.res("blue")), TextColor.fromLegacyFormat(ChatFormatting.BLUE))
                                         ))),
                                 TargetingMode.ALLIES_AND_SELF
                         ), true), LevelBasedValue.constant(1)),
                         new ActionContainer(new AreaTarget(AbilityTargeting.entity(List.of(
                                         new GlowEffect(List.of(
-                                                new Glow(DragonSurvival.res("gold"), TextColor.fromLegacyFormat(ChatFormatting.GOLD), LevelBasedValue.constant(Functions.secondsToTicks(10))),
-                                                new Glow(DragonSurvival.res("dark_purple"), TextColor.fromLegacyFormat(ChatFormatting.DARK_PURPLE), LevelBasedValue.constant(Functions.secondsToTicks(10))),
-                                                new Glow(DragonSurvival.res("green"), TextColor.fromLegacyFormat(ChatFormatting.GREEN), LevelBasedValue.constant(Functions.secondsToTicks(10))),
-                                                new Glow(DragonSurvival.res("red"), TextColor.fromLegacyFormat(ChatFormatting.RED), LevelBasedValue.constant(Functions.secondsToTicks(10))),
-                                                new Glow(DragonSurvival.res("blue"), TextColor.fromLegacyFormat(ChatFormatting.BLUE), LevelBasedValue.constant(Functions.secondsToTicks(10)))
+                                                Glow.create((DragonSurvival.res("gold")), LevelBasedValue.constant(Functions.secondsToTicks(10)), TextColor.fromLegacyFormat(ChatFormatting.GOLD)),
+                                                Glow.create((DragonSurvival.res("dark_purple")), LevelBasedValue.constant(Functions.secondsToTicks(10)), TextColor.fromLegacyFormat(ChatFormatting.DARK_PURPLE)),
+                                                Glow.create((DragonSurvival.res("green")), LevelBasedValue.constant(Functions.secondsToTicks(10)), TextColor.fromLegacyFormat(ChatFormatting.GREEN)),
+                                                Glow.create((DragonSurvival.res("red")), LevelBasedValue.constant(Functions.secondsToTicks(10)), TextColor.fromLegacyFormat(ChatFormatting.RED)),
+                                                Glow.create((DragonSurvival.res("blue")), LevelBasedValue.constant(Functions.secondsToTicks(10)), TextColor.fromLegacyFormat(ChatFormatting.BLUE))
                                         ))),
                                 TargetingMode.ALLIES_AND_SELF
                         ), LevelBasedValue.constant(10)), LevelBasedValue.constant(1))

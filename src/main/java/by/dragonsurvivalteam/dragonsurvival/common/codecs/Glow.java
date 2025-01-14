@@ -5,7 +5,6 @@ import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncGlowInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.GlowData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -19,23 +18,24 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
+import java.util.Optional;
 
-public record Glow(ResourceLocation id, TextColor color, LevelBasedValue duration) {
+public record Glow(DurationInstanceBase base, TextColor color) {
     public static final Codec<Glow> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ResourceLocation.CODEC.fieldOf("id").forGetter(Glow::id),
-            TextColor.CODEC.fieldOf("color").forGetter(Glow::color),
-            LevelBasedValue.CODEC.optionalFieldOf("duration", DragonAbilities.INFINITE_DURATION).forGetter(Glow::duration)
+            DurationInstanceBase.CODEC.fieldOf("base").forGetter(Glow::base),
+            TextColor.CODEC.fieldOf("color").forGetter(Glow::color)
     ).apply(instance, Glow::new));
 
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
-        int newDuration = (int) duration.calculate(ability.level());
+        int newDuration = (int) base.duration().calculate(ability.level());
 
         GlowData data = target.getData(DSDataAttachments.GLOW);
-        Glow.Instance instance = data.get(id);
+        Glow.Instance instance = data.get(base.id());
 
         if (instance != null && instance.appliedAbilityLevel() == ability.level() && instance.currentDuration() == newDuration) {
             return;
@@ -47,7 +47,15 @@ public record Glow(ResourceLocation id, TextColor color, LevelBasedValue duratio
 
     public void remove(final Entity target) {
         GlowData data = target.getData(DSDataAttachments.GLOW);
-        data.remove(target, data.get(id));
+        data.remove(target, data.get(base.id()));
+    }
+
+    public static Glow create(final ResourceLocation id, final TextColor color) {
+        return new Glow(DurationInstanceBase.create(id).infinite().hidden().build(), color);
+    }
+
+    public static Glow create(final ResourceLocation id, final LevelBasedValue duration, final TextColor color) {
+        return new Glow(DurationInstanceBase.create(id).duration(duration).hidden().build(), color);
     }
 
     public static class Instance extends DurationInstance<Glow> {
@@ -90,18 +98,22 @@ public record Glow(ResourceLocation id, TextColor color, LevelBasedValue duratio
 
         @Override
         public ResourceLocation id() {
-            return baseData().id();
+            return baseData().base().id();
         }
 
         @Override
         public int getDuration() {
-            return (int) baseData().duration().calculate(appliedAbilityLevel());
+            return (int) baseData().base().duration().calculate(appliedAbilityLevel());
+        }
+
+        @Override
+        public Optional<LootItemCondition> earlyRemovalCondition() {
+            return baseData().base().earlyRemovalCondition();
         }
 
         @Override
         public boolean isHidden() {
-            // There is nothing interesting to show
-            return true;
+            return baseData().base().isHidden();
         }
     }
 }

@@ -13,9 +13,14 @@ import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public abstract class Storage<T extends StorageEntry> implements INBTSerializable<CompoundTag> {
     public static final String STORAGE = "storage";
@@ -31,7 +36,7 @@ public abstract class Storage<T extends StorageEntry> implements INBTSerializabl
             Set<ResourceLocation> finished = new HashSet<>();
 
             storage.values().forEach(entry -> {
-                if (entry.tick()) {
+                if (entry.tick(storageHolder)) {
                     finished.add(entry.id());
                 }
             });
@@ -103,7 +108,7 @@ public abstract class Storage<T extends StorageEntry> implements INBTSerializabl
         }
 
         //noinspection DataFlowIssue -> it's not null at this point
-        return type.isAssignableFrom(storage.values().iterator().next().getClass());
+        return type.isInstance(storage.values().iterator().next());
     }
 
     @Override

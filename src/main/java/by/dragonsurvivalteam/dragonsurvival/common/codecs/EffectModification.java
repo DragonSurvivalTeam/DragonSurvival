@@ -7,7 +7,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.EffectModificat
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
@@ -28,15 +27,15 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.enchantment.LevelBasedValue;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.text.NumberFormat;
 import java.util.Optional;
 
-public record EffectModification(ResourceLocation id, HolderSet<MobEffect> effects, Modification durationModification, Modification amplifierModification, LevelBasedValue duration, Optional<ResourceLocation> customIcon, boolean isHidden) {
+public record EffectModification(DurationInstanceBase base, HolderSet<MobEffect> effects, Modification durationModification, Modification amplifierModification) {
     @Translation(comments = {
             "§6■ Effect modifications:§r",
             " - Duration %s",
@@ -55,32 +54,29 @@ public record EffectModification(ResourceLocation id, HolderSet<MobEffect> effec
     private static final String UNMODIFIED = Translation.Type.GUI.wrap("effect_modification.unmodified");
 
     public static final Codec<EffectModification> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ResourceLocation.CODEC.fieldOf("id").forGetter(EffectModification::id),
+            DurationInstanceBase.CODEC.fieldOf("base").forGetter(EffectModification::base),
             RegistryCodecs.homogeneousList(Registries.MOB_EFFECT).fieldOf("effects").forGetter(EffectModification::effects),
             Modification.CODEC.fieldOf("duration_modification").forGetter(EffectModification::durationModification),
-            Modification.CODEC.fieldOf("amplifier_modification").forGetter(EffectModification::amplifierModification),
-            LevelBasedValue.CODEC.optionalFieldOf("duration", DragonAbilities.INFINITE_DURATION).forGetter(EffectModification::duration),
-            ResourceLocation.CODEC.optionalFieldOf("custom_icon").forGetter(EffectModification::customIcon),
-            Codec.BOOL.optionalFieldOf("is_hidden", false).forGetter(EffectModification::isHidden)
+            Modification.CODEC.fieldOf("amplifier_modification").forGetter(EffectModification::amplifierModification)
     ).apply(instance, EffectModification::new));
 
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final LivingEntity target) {
-        int newDuration = (int) duration.calculate(ability.level());
+        int newDuration = (int) base.duration().calculate(ability.level());
 
         EffectModifications data = target.getData(DSDataAttachments.EFFECT_MODIFICATIONS);
-        Instance instance = data.get(id);
+        Instance instance = data.get(base.id());
 
         if (instance != null && instance.appliedAbilityLevel() == ability.level() && instance.currentDuration() == newDuration) {
             return;
         }
 
         data.remove(target, instance);
-        data.add(target, new Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, customIcon), ability.level(), newDuration));
+        data.add(target, new Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, base.customIcon()), ability.level(), newDuration));
     }
 
     public void remove(final LivingEntity target) {
         EffectModifications data = target.getData(DSDataAttachments.EFFECT_MODIFICATIONS);
-        data.remove(target, data.get(id));
+        data.remove(target, data.get(base.id()));
     }
 
     public MutableComponent getDescription(int abilityLevel) {
@@ -175,17 +171,22 @@ public record EffectModification(ResourceLocation id, HolderSet<MobEffect> effec
 
         @Override
         public ResourceLocation id() {
-            return baseData().id();
+            return baseData().base().id();
         }
 
         @Override
         public int getDuration() {
-            return (int) baseData().duration().calculate(appliedAbilityLevel());
+            return (int) baseData().base().duration().calculate(appliedAbilityLevel());
+        }
+
+        @Override
+        public Optional<LootItemCondition> earlyRemovalCondition() {
+            return baseData().base().earlyRemovalCondition();
         }
 
         @Override
         public boolean isHidden() {
-            return baseData().isHidden();
+            return baseData().base().isHidden();
         }
     }
 }

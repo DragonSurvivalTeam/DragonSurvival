@@ -19,8 +19,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class KeyHandler {
