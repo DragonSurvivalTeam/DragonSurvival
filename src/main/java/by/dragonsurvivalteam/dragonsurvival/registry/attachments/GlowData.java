@@ -1,7 +1,12 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Glow;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncData;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -22,11 +27,15 @@ import java.util.List;
 
 @EventBusSubscriber
 public class GlowData extends Storage<Glow.Instance> {
+    @ConfigRange(min = 0, max = 1)
+    @Translation(key = "glow_color_speed", type = Translation.Type.CONFIGURATION, comments = "Determines how fast colors switch when multiple glow colors are present")
+    @ConfigOption(side = ConfigSide.CLIENT, category = {"effect", "glow"}, key = "glow_color_speed")
+    public static float SPEED = 0.025f;
+
     public static final int NO_COLOR = -1;
-    private static final float DELTA = 0.01f;
 
     private float timer;
-    private boolean reversed;
+    private int index;
 
     public int getColor() {
         if (isEmpty()) {
@@ -40,32 +49,27 @@ public class GlowData extends Storage<Glow.Instance> {
             return colors.getFirst();
         }
 
-        if (timer == 0) {
-            return colors.getFirst();
-        } else if (timer == 1) {
-            return colors.getLast();
+        try {
+            int currentColor = colors.get(index);
+            int nextColor = colors.get((index + 1) % colors.size());
+            return FastColor.ARGB32.lerp(timer, DSColors.withAlpha(currentColor, 255), DSColors.withAlpha(nextColor, 255));
+        } catch (IndexOutOfBoundsException exception) {
+            // FIXME :: can happen sometimes, unclear atm as to why (index is 4 and list is size 4 - even though it should be 5)
+            DragonSurvival.LOGGER.error("Index: [{}] | Colors: [{}] | Storage size: [{}]", index, colors, size(), exception);
         }
 
-        float indexedTimer = (colors.size() - 1) * timer;
-        int colorIndex = (int) Math.floor(indexedTimer);
-
-        int color = DSColors.withAlpha(colors.get(colorIndex), 255);
-        int nextColor = DSColors.withAlpha(colors.get(colorIndex + 1), 255);
-
-        return FastColor.ARGB32.lerp(indexedTimer - colorIndex, color, nextColor);
+        return NO_COLOR;
     }
 
     public void tickTimer() {
-        if (reversed) {
-            timer = Math.clamp(timer - DELTA, 0, 1);
-        } else {
-            timer = Math.clamp(timer + DELTA, 0, 1);
-        }
+        timer += SPEED;
 
-        if (timer == 0) {
-            reversed = false;
-        } else if (timer == 1) {
-            reversed = true;
+        if (timer >= 1) {
+            timer = 0;
+            index = (index + 1) % size();
+        } else {
+            // In case an entry gets removed before '1' is reached
+            index = Math.min(index, size() - 1);
         }
     }
 

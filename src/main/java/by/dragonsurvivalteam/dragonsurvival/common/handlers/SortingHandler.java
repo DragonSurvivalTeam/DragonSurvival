@@ -1,18 +1,20 @@
 package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 
+import by.dragonsurvivalteam.dragonsurvival.server.containers.DragonContainer;
 import by.dragonsurvivalteam.dragonsurvival.util.PotionUtils;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.block.Block;
@@ -23,114 +25,132 @@ import net.neoforged.neoforge.items.wrapper.InvWrapper;
 import java.util.*;
 import java.util.function.Predicate;
 
-
 /**
- * Copied from Quark
- * Source: https://github.com/VazkiiMods/Quark/blob/1.21.0/dev/src/main/java/org/violetmoon/quark/base/handler/SortingHandler.java
- * License: https://github.com/VazkiiMods/Quark/blob/master/LICENSE.md
+ * Copied from Quark <br>
+ * <a href="https://github.com/VazkiiMods/Quark/blob/1.21.0/dev/src/main/java/org/violetmoon/quark/base/handler/SortingHandler.java">Source</a> <br>
+ * <a href="https://github.com/VazkiiMods/Quark/blob/master/LICENSE.md">License</a> <br>
  */
-public final class SortingHandler{
-
+public final class SortingHandler {
     private static final Comparator<ItemStack> FALLBACK_COMPARATOR = jointComparator(Arrays.asList(
-            Comparator.comparingInt((ItemStack s) -> Item.getId(s.getItem())),
+            Comparator.comparingInt(stack -> Item.getId(stack.getItem())),
             SortingHandler::damageCompare,
-            (ItemStack s1, ItemStack s2) -> s2.getCount() - s1.getCount(),
-            (ItemStack s1, ItemStack s2) -> s2.hashCode() - s1.hashCode(),
-            SortingHandler::fallbackNBTCompare));
+            Comparator.comparingInt(ItemStack::getCount),
+            Comparator.comparingInt(Object::hashCode),
+            SortingHandler::fallbackNBTCompare)
+    );
 
     private static final Comparator<ItemStack> FOOD_COMPARATOR = jointComparator(Arrays.asList(
-            SortingHandler::foodHealCompare,
-            SortingHandler::foodSaturationCompare));
+            SortingHandler::foodNutritionCompare,
+            SortingHandler::foodSaturationCompare)
+    );
 
     private static final Comparator<ItemStack> TOOL_COMPARATOR = jointComparator(Arrays.asList(
             SortingHandler::toolPowerCompare,
             SortingHandler::enchantmentCompare,
-            SortingHandler::damageCompare));
+            SortingHandler::damageCompare)
+    );
 
     private static final Comparator<ItemStack> SWORD_COMPARATOR = jointComparator(Arrays.asList(
             SortingHandler::swordPowerCompare,
             SortingHandler::enchantmentCompare,
-            SortingHandler::damageCompare));
+            SortingHandler::damageCompare)
+    );
 
     private static final Comparator<ItemStack> ARMOR_COMPARATOR = jointComparator(Arrays.asList(
             SortingHandler::armorSlotAndToughnessCompare,
             SortingHandler::enchantmentCompare,
-            SortingHandler::damageCompare));
+            SortingHandler::damageCompare)
+    );
 
     private static final Comparator<ItemStack> BOW_COMPARATOR = jointComparator(Arrays.asList(
             SortingHandler::enchantmentCompare,
-            SortingHandler::damageCompare));
+            SortingHandler::damageCompare)
+    );
 
     private static final Comparator<ItemStack> POTION_COMPARATOR = jointComparator(Arrays.asList(
             SortingHandler::potionComplexityCompare,
-            SortingHandler::potionTypeCompare));
+            SortingHandler::potionTypeCompare)
+    );
 
-    public static void sortInventory(Player player){
-        AbstractContainerMenu c = player.containerMenu;
-
-        for(Slot s : c.slots){
-            Container inv = s.container;
-            if(inv == player.getInventory()){
-                InvWrapper wrapper = new InvWrapper(inv);
-                sortInventory(wrapper, 9, 36);
-                break;
-            }
+    public static void sortInventory(final Player player) {
+        if (player.containerMenu instanceof DragonContainer) {
+            InvWrapper wrapper = new InvWrapper(player.getInventory());
+            sortInventory(wrapper, 9, 36);
         }
     }
 
-    public static void sortInventory(IItemHandler handler, int iStart, int iEnd) {
+    public static void sortInventory(final IItemHandler handler, final int start, final int end) {
         List<ItemStack> stacks = new ArrayList<>();
         List<ItemStack> restore = new ArrayList<>();
 
-        for(int i = iStart; i < iEnd; i++) {
-            ItemStack stackAt = handler.getStackInSlot(i);
+        for (int slot = start; slot < end; slot++) {
+            ItemStack stackAt = handler.getStackInSlot(slot);
 
             restore.add(stackAt.copy());
-            if(stackAt.isEmpty())
+
+            if (!stackAt.isEmpty()) {
                 stacks.add(stackAt.copy());
+            }
         }
 
         mergeStacks(stacks);
         sortStackList(stacks);
 
-        if(setInventory(handler, stacks, iStart, iEnd) == InteractionResult.FAIL)
-            setInventory(handler, restore, iStart, iEnd);
+        if (setInventory(handler, stacks, start, end) == InteractionResult.FAIL) {
+            setInventory(handler, restore, start, end);
+        }
     }
 
-    private static InteractionResult setInventory(IItemHandler inventory, List<ItemStack> stacks, int iStart, int iEnd) {
-        for(int i = iStart; i < iEnd; i++) {
-            int j = i - iStart;
-            ItemStack stack = j >= stacks.size() ? ItemStack.EMPTY : stacks.get(j);
+    private static InteractionResult setInventory(final IItemHandler inventory, final List<ItemStack> stacks, final int start, final int end) {
+        for (int slot = start; slot < end; slot++) {
+            int index = slot - start;
 
-            ItemStack stackInSlot = inventory.getStackInSlot(i);
-            if(!stackInSlot.isEmpty()) {
-                ItemStack extractTest = inventory.extractItem(i, inventory.getSlotLimit(i), true);
-                if(extractTest.isEmpty() || extractTest.getCount() != stackInSlot.getCount())
+            ItemStack stack = index >= stacks.size() ? ItemStack.EMPTY : stacks.get(index);
+            ItemStack stackInSlot = inventory.getStackInSlot(slot);
+
+            if (!stackInSlot.isEmpty()) {
+                ItemStack extractTest = inventory.extractItem(slot, inventory.getSlotLimit(slot), true);
+
+                if (extractTest.isEmpty() || extractTest.getCount() != stackInSlot.getCount()) {
                     return InteractionResult.PASS;
+                }
             }
 
-            if(!stack.isEmpty() && !inventory.isItemValid(i, stack))
+            if (!stack.isEmpty() && !inventory.isItemValid(slot, stack)) {
                 return InteractionResult.PASS;
+            }
         }
 
-        for(int i = iStart; i < iEnd; i++) {
-            inventory.extractItem(i, inventory.getSlotLimit(i), false);
+        for (int slot = start; slot < end; slot++) {
+            // Remove all currently existing items
+            inventory.extractItem(slot, inventory.getSlotLimit(slot), false);
         }
 
-        for(int i = iStart; i < iEnd; i++) {
-            int j = i - iStart;
-            ItemStack stack = j >= stacks.size() ? ItemStack.EMPTY : stacks.get(j);
+        for (int slot = start; slot < end; slot++) {
+            int index = slot - start;
 
-            if(!stack.isEmpty())
-                if(!inventory.insertItem(i, stack, false).isEmpty())
-                    return InteractionResult.FAIL;
+            if (index >= stacks.size()) {
+                // Since we already extracted all items
+                // We don't need to re-fill the slots with empty stacks
+                break;
+            }
+
+            ItemStack stack = stacks.get(index);
+
+            if (stack.isEmpty()) {
+                continue;
+            }
+
+            if (!inventory.insertItem(slot, stack, false).isEmpty()) {
+                return InteractionResult.FAIL;
+            }
         }
 
         return InteractionResult.SUCCESS;
     }
 
-    public static void mergeStacks(List<ItemStack> list) {
-        for(int i = 0; i < list.size(); i++) {
+    public static void mergeStacks(final List<ItemStack> list) {
+        for (int i = 0; i < list.size(); i++) {
             ItemStack set = mergeStackWithOthers(list, i);
             list.set(i, set);
         }
@@ -138,58 +158,73 @@ public final class SortingHandler{
         list.removeIf((ItemStack stack) -> stack.isEmpty() || stack.getCount() == 0);
     }
 
-    private static ItemStack mergeStackWithOthers(List<ItemStack> list, int index) {
+    private static ItemStack mergeStackWithOthers(final List<ItemStack> list, final int index) {
         ItemStack stack = list.get(index);
-        if(stack.isEmpty())
-            return stack;
 
-        for(int i = 0; i < list.size(); i++) {
-            if(i == index)
+        if (stack.isEmpty()) {
+            return stack;
+        }
+
+        for (int i = 0; i < list.size(); i++) {
+            if (i == index) {
                 continue;
+            }
 
             ItemStack stackAt = list.get(i);
-            if(stackAt.isEmpty())
-                continue;
 
-            if(stackAt.getCount() < stackAt.getMaxStackSize() && ItemStack.isSameItem(stack, stackAt) && ItemStack.isSameItemSameComponents(stack, stackAt)) {
+            if (stackAt.isEmpty()) {
+                continue;
+            }
+
+            if (stackAt.getCount() < stackAt.getMaxStackSize() && ItemStack.isSameItem(stack, stackAt) && ItemStack.isSameItemSameComponents(stack, stackAt)) {
                 int setSize = stackAt.getCount() + stack.getCount();
                 int carryover = Math.max(0, setSize - stackAt.getMaxStackSize());
+
                 stackAt.setCount(carryover);
                 stack.setCount(setSize - carryover);
 
-                if(stack.getCount() == stack.getMaxStackSize())
+                if (stack.getCount() == stack.getMaxStackSize()) {
                     return stack;
+                }
             }
         }
 
         return stack;
     }
 
-    public static void sortStackList(List<ItemStack> list) {
+    public static void sortStackList(final List<ItemStack> list) {
         list.sort(SortingHandler::stackCompare);
     }
 
-    private static int stackCompare(ItemStack stack1, ItemStack stack2) {
-        if(stack1 == stack2)
+    private static int stackCompare(final ItemStack first, final ItemStack second) {
+        if (first == second) {
             return 0;
-        if(stack1.isEmpty())
+        }
+
+        if (first.isEmpty()) {
             return -1;
-        if(stack2.isEmpty())
+        }
+
+        if (second.isEmpty()) {
             return 1;
+        }
 
-        ItemType type1 = getType(stack1);
-        ItemType type2 = getType(stack2);
+        ItemType firstType = getType(first);
+        ItemType secondType = getType(second);
 
-        if(type1 == type2)
-            return type1.comparator.compare(stack1, stack2);
+        if (firstType == secondType) {
+            return firstType.comparator.compare(first, second);
+        }
 
-        return type1.ordinal() - type2.ordinal();
+        return firstType.ordinal() - secondType.ordinal();
     }
 
-    private static ItemType getType(ItemStack stack) {
-        for(ItemType type : ItemType.values())
-            if(type.fitsInType(stack))
+    private static ItemType getType(final ItemStack stack) {
+        for (ItemType type : ItemType.values()) {
+            if (type.fitsInType(stack)) {
                 return type;
+            }
+        }
 
         throw new RuntimeException("Having an ItemStack that doesn't fit in any type is impossible.");
     }
@@ -198,32 +233,37 @@ public final class SortingHandler{
         return (ItemStack s) -> !s.isEmpty() && clazz.isInstance(s.getItem());
     }
 
-    private static Predicate<ItemStack> inverseClassPredicate(Class<? extends Item> clazz) {
-        return classPredicate(clazz).negate();
+    @SuppressWarnings("SameParameterValue") // ignore
+    private static Predicate<ItemStack> inverseClassPredicate(final Class<? extends Item> type) {
+        return classPredicate(type).negate();
     }
 
-    private static Predicate<ItemStack> itemPredicate(List<Item> list) {
+    private static Predicate<ItemStack> itemPredicate(final List<Item> list) {
         return (ItemStack s) -> !s.isEmpty() && list.contains(s.getItem());
     }
 
-    public static Comparator<ItemStack> jointComparator(Comparator<ItemStack> finalComparator, List<Comparator<ItemStack>> otherComparators) {
-        if(otherComparators == null)
+    public static Comparator<ItemStack> jointComparator(final Comparator<ItemStack> finalComparator, final List<Comparator<ItemStack>> otherComparators) {
+        if (otherComparators == null) {
             return jointComparator(List.of(finalComparator));
+        }
 
         List<Comparator<ItemStack>> newList = new ArrayList<>(otherComparators);
         newList.add(finalComparator);
         return jointComparator(newList);
     }
 
-    public static Comparator<ItemStack> jointComparator(List<Comparator<ItemStack>> comparators) {
-        return jointComparatorFallback((ItemStack s1, ItemStack s2) -> {
-            for(Comparator<ItemStack> comparator : comparators) {
-                if(comparator == null)
+    public static Comparator<ItemStack> jointComparator(final List<Comparator<ItemStack>> comparators) {
+        return jointComparatorFallback((ItemStack first, ItemStack second) -> {
+            for (Comparator<ItemStack> comparator : comparators) {
+                if (comparator == null) {
                     continue;
+                }
 
-                int compare = comparator.compare(s1, s2);
-                if(compare == 0)
+                int compare = comparator.compare(first, second);
+
+                if (compare == 0) {
                     continue;
+                }
 
                 return compare;
             }
@@ -232,169 +272,223 @@ public final class SortingHandler{
         }, FALLBACK_COMPARATOR);
     }
 
-    private static Comparator<ItemStack> jointComparatorFallback(Comparator<ItemStack> comparator, Comparator<ItemStack> fallback) {
-        return (ItemStack s1, ItemStack s2) -> {
-            int compare = comparator.compare(s1, s2);
-            if(compare == 0)
-                return fallback == null ? 0 : fallback.compare(s1, s2);
+    @SuppressWarnings("SameParameterValue") // ignore
+    private static Comparator<ItemStack> jointComparatorFallback(final Comparator<ItemStack> comparator, final Comparator<ItemStack> fallback) {
+        return (ItemStack first, ItemStack second) -> {
+            int compare = comparator.compare(first, second);
+
+            if (compare == 0) {
+                return fallback == null ? 0 : fallback.compare(first, second);
+            }
 
             return compare;
         };
     }
 
-    private static Comparator<ItemStack> listOrderComparator(List<Item> list) {
-        return (ItemStack stack1, ItemStack stack2) -> {
-            Item i1 = stack1.getItem();
-            Item i2 = stack2.getItem();
-            if(list.contains(i1)) {
-                if(list.contains(i2))
-                    return list.indexOf(i1) - list.indexOf(i2);
+    private static Comparator<ItemStack> listOrderComparator(final List<Item> list) {
+        return (ItemStack first, ItemStack second) -> {
+            Item firstItem = first.getItem();
+            Item secondItem = second.getItem();
+
+            if (list.contains(firstItem)) {
+                if (list.contains(secondItem)) {
+                    return list.indexOf(firstItem) - list.indexOf(secondItem);
+                }
+
                 return 1;
             }
 
-            if(list.contains(i2))
+            if (list.contains(secondItem)) {
                 return -1;
+            }
 
             return 0;
         };
     }
 
-    private static List<Item> list(Object... items) {
-        List<Item> itemList = new ArrayList<>();
-        for(Object o : items)
-            if(o != null) {
-                if(o instanceof Item item)
-                    itemList.add(item);
-                else if(o instanceof Block block)
-                    itemList.add(block.asItem());
-                else if(o instanceof ItemStack stack)
-                    itemList.add(stack.getItem());
-                else if(o instanceof String s) {
-                    Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(s));
-                    if(item != Items.AIR)
-                        itemList.add(item);
-                }
-            }
+    private static List<Item> list(final Object... items) {
+        List<Item> list = new ArrayList<>();
 
-        return itemList;
+        for (Object object : items) {
+            switch (object) {
+                case Item item -> list.add(item);
+                case Block block -> list.add(block.asItem());
+                case ItemStack stack -> list.add(stack.getItem());
+                case String string -> {
+                    Item item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(string));
+
+                    if (item != Items.AIR) {
+                        list.add(item);
+                    }
+                }
+                default -> { /* Nothing to do */ }
+            }
+        }
+
+        return list;
     }
 
-    private static int nutrition(FoodProperties properties) {
-        if(properties == null)
+    private static int nutrition(final FoodProperties properties) {
+        if (properties == null) {
             return 0;
+        }
+
         return properties.nutrition();
     }
 
-    private static int foodHealCompare(ItemStack stack1, ItemStack stack2) {
-        FoodProperties props1 = stack1.getFoodProperties(null);
-        FoodProperties props2 = stack2.getFoodProperties(null);
-
-        return nutrition(props2) - nutrition(props1);
+    private static int foodNutritionCompare(final ItemStack first, final ItemStack second) {
+        return nutrition(second.getFoodProperties(null)) - nutrition(first.getFoodProperties(null));
     }
 
-    private static float saturation(FoodProperties properties) {
-        if(properties == null)
+    private static float saturation(final FoodProperties properties) {
+        if (properties == null) {
             return 0;
-        return Math.min(20, properties.nutrition() * properties.saturation() * 2);
+        }
+
+        return properties.saturation();
     }
 
-    private static int foodSaturationCompare(ItemStack stack1, ItemStack stack2) {
-        FoodProperties props1 = stack1.getFoodProperties(null);
-        FoodProperties props2 = stack2.getFoodProperties(null);
+    private static int foodSaturationCompare(final ItemStack first, final ItemStack second) {
+        float result = saturation(second.getFoodProperties(null)) - saturation(first.getFoodProperties(null));
 
-        return (int) (saturation(props2) - saturation(props1));
+        if (result < 0) {
+            return 1;
+        } else if (result > 0) {
+            return -1;
+        }
+
+        return 0;
     }
 
-    private static int enchantmentCompare(ItemStack stack1, ItemStack stack2) {
-        return enchantmentPower(stack2) - enchantmentPower(stack1);
+    private static int enchantmentCompare(final ItemStack first, final ItemStack second) {
+        return enchantmentPower(second) - enchantmentPower(first);
     }
 
-    private static int enchantmentPower(ItemStack stack) {
-        if(!stack.isEnchanted())
+    private static int enchantmentPower(final ItemStack stack) {
+        if (!stack.isEnchanted()) {
             return 0;
+        }
 
+        // There is probably no need to resolve these through Stack#getAllEnchantments
+        // Since enchantments added through events are probably present on all instances of the item
         ItemEnchantments enchantments = EnchantmentHelper.getEnchantmentsForCrafting(stack);
+
         int total = 0;
 
-        for(var entry : enchantments.entrySet())
+        for (var entry : enchantments.entrySet()) {
             total += entry.getIntValue();
+        }
 
         return total;
     }
 
-    private static int toolPowerCompare(ItemStack stack1, ItemStack stack2) {
-        Tier mat1 = ((DiggerItem) stack1.getItem()).getTier();
-        Tier mat2 = ((DiggerItem) stack2.getItem()).getTier();
-        return (int) (mat2.getSpeed() * 100 - mat1.getSpeed() * 100);
+    private static int toolPowerCompare(final ItemStack first, final ItemStack second) {
+        Tier firstTier = ((DiggerItem) first.getItem()).getTier();
+        Tier secondTier = ((DiggerItem) second.getItem()).getTier();
+        return (int) (secondTier.getSpeed() * 100 - firstTier.getSpeed() * 100);
     }
 
-    private static int swordPowerCompare(ItemStack stack1, ItemStack stack2) {
-        Tier mat1 = ((SwordItem) stack1.getItem()).getTier();
-        Tier mat2 = ((SwordItem) stack2.getItem()).getTier();
-        return (int) (mat2.getAttackDamageBonus() * 100 - mat1.getAttackDamageBonus() * 100);
+    private static int swordPowerCompare(final ItemStack first, final ItemStack second) {
+        Tier firstTier = ((SwordItem) first.getItem()).getTier();
+        Tier secondTier = ((SwordItem) second.getItem()).getTier();
+        return (int) (secondTier.getAttackDamageBonus() * 100 - firstTier.getAttackDamageBonus() * 100);
     }
 
-    private static int armorSlotAndToughnessCompare(ItemStack stack1, ItemStack stack2) {
-        ArmorItem armor1 = (ArmorItem) stack1.getItem();
-        ArmorItem armor2 = (ArmorItem) stack2.getItem();
+    private static int armorSlotAndToughnessCompare(final ItemStack first, final ItemStack second) {
+        ArmorItem firstArmor = (ArmorItem) first.getItem();
+        ArmorItem secondArmor = (ArmorItem) second.getItem();
 
-        EquipmentSlot slot1 = armor1.getEquipmentSlot();
-        EquipmentSlot slot2 = armor2.getEquipmentSlot();
+        EquipmentSlot firstSlot = firstArmor.getEquipmentSlot();
+        EquipmentSlot secondSlot = secondArmor.getEquipmentSlot();
 
-        if(slot1 == slot2)
-            return armor2.getMaterial().value().getDefense(armor2.getType()) - armor2.getMaterial().value().getDefense(armor1.getType());
+        if (firstSlot == secondSlot) {
+            double firstDefense = firstArmor.getMaterial().value().getDefense(firstArmor.getType()) * (1 + firstArmor.getToughness());
+            double secondDefense = secondArmor.getMaterial().value().getDefense(secondArmor.getType()) * (1 + secondArmor.getToughness());
 
-        return slot2.getIndex() - slot1.getIndex();
+            // To make sure that a difference of 0.3 gets sorted properly
+            double result = secondDefense - firstDefense;
+
+            if (result < 0) {
+                return 1;
+            } else if (result > 0) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
+
+        return secondSlot.getIndex() - firstSlot.getIndex();
     }
 
     public static int damageCompare(ItemStack stack1, ItemStack stack2) {
         return stack1.getDamageValue() - stack2.getDamageValue();
     }
 
-    public static int fallbackNBTCompare(ItemStack stack1, ItemStack stack2) {
-        boolean hasTag1 = !stack1.getTags().toList().isEmpty();
-        boolean hasTag2 = !stack2.getTags().toList().isEmpty();
-
-        if(hasTag2 && !hasTag1)
-            return -1;
-        else if(hasTag1 && !hasTag2)
-            return 1;
-        else if(!hasTag1)
+    @SuppressWarnings("deprecation") // tag is not modified
+    public static int fallbackNBTCompare(final ItemStack first, final ItemStack second) {
+        if (ItemStack.isSameItemSameComponents(first, second)) {
             return 0;
+        }
 
-        return stack2.getTags().toString().hashCode() - stack1.getTags().toString().hashCode();
-    }
+        CustomData firstData = first.get(DataComponents.CUSTOM_DATA);
+        CustomData secondData = second.get(DataComponents.CUSTOM_DATA);
 
-    public static int potionComplexityCompare(ItemStack stack1, ItemStack stack2) {
-        List<MobEffectInstance> effects1 = PotionUtils.getPotion(stack1).map(Potion::getEffects).orElse(Collections.emptyList());
-        List<MobEffectInstance> effects2 = PotionUtils.getPotion(stack2).map(Potion::getEffects).orElse(Collections.emptyList());
-
-        int totalPower1 = 0;
-        int totalPower2 = 0;
-        for(MobEffectInstance inst : effects1)
-            totalPower1 += inst.getAmplifier() * inst.getDuration();
-        for(MobEffectInstance inst : effects2)
-            totalPower2 += inst.getAmplifier() * inst.getDuration();
-
-        return totalPower2 - totalPower1;
-    }
-
-    public static int potionTypeCompare(ItemStack stack1, ItemStack stack2) {
-        Potion potion1 = PotionUtils.getPotion(stack1).orElse(null);
-        Potion potion2 = PotionUtils.getPotion(stack2).orElse(null);
-
-        if(potion1 == null)
-            return potion2 == null ? 0 : 1;
-
-        if(potion2 == null)
+        if (firstData != null && secondData == null) {
+            return 1;
+        } else if (firstData == null && secondData != null) {
             return -1;
+        } else if (firstData == null) {
+            // Both have no custom data
+            return 0;
+        }
 
-        return BuiltInRegistries.POTION.getId(potion2) - BuiltInRegistries.POTION.getId(potion1);
+        CompoundTag firstTag = firstData.getUnsafe();
+        CompoundTag secondTag = secondData.getUnsafe();
+
+        if (NbtUtils.compareNbt(firstTag, secondTag, true)) {
+            return 0;
+        }
+
+        return Comparator.comparingInt(CompoundTag::size).compare(firstTag, secondTag);
+    }
+
+    public static int potionComplexityCompare(final ItemStack first, final ItemStack second) {
+        List<MobEffectInstance> firstEffects = PotionUtils.getPotion(first).map(Potion::getEffects).orElse(Collections.emptyList());
+        List<MobEffectInstance> secondEffects = PotionUtils.getPotion(second).map(Potion::getEffects).orElse(Collections.emptyList());
+
+        // TODO :: higher total amplifier should maybe win in general
+        //  and if they're the same then duration can be considered?
+        int firstTotal = 0;
+        int secondTotal = 0;
+
+        for (MobEffectInstance inst : firstEffects) {
+            firstTotal += inst.getAmplifier() * inst.getDuration();
+        }
+
+        for (MobEffectInstance inst : secondEffects) {
+            secondTotal += inst.getAmplifier() * inst.getDuration();
+        }
+
+        return secondTotal - firstTotal;
+    }
+
+    public static int potionTypeCompare(final ItemStack first, final ItemStack second) {
+        Potion firstPotion = PotionUtils.getPotion(first).orElse(null);
+        Potion secondPotion = PotionUtils.getPotion(second).orElse(null);
+
+        if (firstPotion == null) {
+            return secondPotion == null ? 0 : 1;
+        }
+
+        if (secondPotion == null) {
+            return -1;
+        }
+
+        return BuiltInRegistries.POTION.getId(secondPotion) - BuiltInRegistries.POTION.getId(firstPotion);
     }
 
     private enum ItemType {
-
-        FOOD(itemStack -> itemStack.getFoodProperties(null) != null, FOOD_COMPARATOR),
+        FOOD(stack -> stack.getFoodProperties(null) != null, FOOD_COMPARATOR),
         TORCH(list(Blocks.TORCH)),
         TOOL_PICKAXE(classPredicate(PickaxeItem.class), TOOL_COMPARATOR),
         TOOL_SHOVEL(classPredicate(ShovelItem.class), TOOL_COMPARATOR),
@@ -417,22 +511,21 @@ public final class SortingHandler{
         private final Predicate<ItemStack> predicate;
         private final Comparator<ItemStack> comparator;
 
-        ItemType(List<Item> list) {
+        ItemType(final List<Item> list) {
             this(itemPredicate(list), jointComparator(listOrderComparator(list), new ArrayList<>()));
         }
 
-        ItemType(Predicate<ItemStack> predicate) {
+        ItemType(final Predicate<ItemStack> predicate) {
             this(predicate, FALLBACK_COMPARATOR);
         }
 
-        ItemType(Predicate<ItemStack> predicate, Comparator<ItemStack> comparator) {
+        ItemType(final Predicate<ItemStack> predicate, final Comparator<ItemStack> comparator) {
             this.predicate = predicate;
             this.comparator = comparator;
         }
 
-        public boolean fitsInType(ItemStack stack) {
+        public boolean fitsInType(final ItemStack stack) {
             return predicate.test(stack);
         }
-
     }
 }

@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncGlowInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.GlowData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -27,7 +28,7 @@ public record Glow(ResourceLocation id, TextColor color, LevelBasedValue duratio
     public static final Codec<Glow> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ResourceLocation.CODEC.fieldOf("id").forGetter(Glow::id),
             TextColor.CODEC.fieldOf("color").forGetter(Glow::color),
-            LevelBasedValue.CODEC.optionalFieldOf("duration", LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)).forGetter(Glow::duration)
+            LevelBasedValue.CODEC.optionalFieldOf("duration", DragonAbilities.INFINITE_DURATION).forGetter(Glow::duration)
     ).apply(instance, Glow::new));
 
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
@@ -95,6 +96,12 @@ public record Glow(ResourceLocation id, TextColor color, LevelBasedValue duratio
         @Override
         public int getDuration() {
             return (int) baseData().duration().calculate(appliedAbilityLevel());
+        }
+
+        @Override
+        public boolean isHidden() {
+            // There is nothing interesting to show
+            return true;
         }
     }
 }

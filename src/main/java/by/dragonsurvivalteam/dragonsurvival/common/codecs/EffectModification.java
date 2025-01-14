@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.EffectModificat
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
@@ -58,7 +59,7 @@ public record EffectModification(ResourceLocation id, HolderSet<MobEffect> effec
             RegistryCodecs.homogeneousList(Registries.MOB_EFFECT).fieldOf("effects").forGetter(EffectModification::effects),
             Modification.CODEC.fieldOf("duration_modification").forGetter(EffectModification::durationModification),
             Modification.CODEC.fieldOf("amplifier_modification").forGetter(EffectModification::amplifierModification),
-            LevelBasedValue.CODEC.optionalFieldOf("duration", LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)).forGetter(EffectModification::duration),
+            LevelBasedValue.CODEC.optionalFieldOf("duration", DragonAbilities.INFINITE_DURATION).forGetter(EffectModification::duration),
             ResourceLocation.CODEC.optionalFieldOf("custom_icon").forGetter(EffectModification::customIcon),
             Codec.BOOL.optionalFieldOf("is_hidden", false).forGetter(EffectModification::isHidden)
     ).apply(instance, EffectModification::new));

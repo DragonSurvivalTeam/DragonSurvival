@@ -32,7 +32,7 @@ public abstract class LevelRendererMixin {
     @Shadow @Final private RenderBuffers renderBuffers;
 
     @ModifyVariable(method = "renderLevel", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/entity/Entity;getTeamColor()I"))
-    private int additional_enchantments$getTypeColor(final int teamColor, @Local final Entity entity) {
+    private int dragonSurvival$getTypeColor(final int teamColor, @Local final Entity entity) {
         if (teamColor != /* ChatFormatting#WHITE */ 16777215) {
             // For compatibility use the already modified color (if present)
             return teamColor;

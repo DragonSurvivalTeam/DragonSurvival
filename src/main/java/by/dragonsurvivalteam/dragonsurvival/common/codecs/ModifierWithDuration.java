@@ -8,6 +8,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.AttributeModifierSupplier;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.ModifierEffect;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
@@ -45,7 +46,7 @@ public record ModifierWithDuration(ResourceLocation id, List<Modifier> modifiers
     public static final Codec<ModifierWithDuration> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ResourceLocation.CODEC.fieldOf("id").forGetter(ModifierWithDuration::id),
             Modifier.CODEC.listOf().fieldOf("modifiers").forGetter(ModifierWithDuration::modifiers),
-            LevelBasedValue.CODEC.optionalFieldOf("duration", LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)).forGetter(ModifierWithDuration::duration),
+            LevelBasedValue.CODEC.optionalFieldOf("duration", DragonAbilities.INFINITE_DURATION).forGetter(ModifierWithDuration::duration),
             ResourceLocation.CODEC.optionalFieldOf("custom_icon").forGetter(ModifierWithDuration::customIcon),
             Codec.BOOL.optionalFieldOf("is_hidden", false).forGetter(ModifierWithDuration::isHidden)
     ).apply(instance, ModifierWithDuration::new));

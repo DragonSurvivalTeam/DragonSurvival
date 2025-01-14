@@ -142,6 +142,7 @@
               "probability": 0.2
             },
             {
+              "drop_loot": true,
               "effect_type": "dragonsurvival:block_break",
               "probability": 0.2,
               "valid_blocks": {

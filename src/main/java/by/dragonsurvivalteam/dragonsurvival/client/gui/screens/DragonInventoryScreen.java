@@ -222,7 +222,7 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
 
         // Sorting button
         HoverButton sortInventoryButton = new HoverButton(leftPos + 177, topPos + 120, 18, 16, 18, 18, SORT_MAIN, SORT_HOVER, button -> {
-            PacketDistributor.sendToServer(new SortInventory());
+            PacketDistributor.sendToServer(SortInventory.INSTANCE);
         });
         sortInventoryButton.setTooltip(Tooltip.create(Component.translatable(SORT_INVENTORY)));
         addRenderableWidget(sortInventoryButton);

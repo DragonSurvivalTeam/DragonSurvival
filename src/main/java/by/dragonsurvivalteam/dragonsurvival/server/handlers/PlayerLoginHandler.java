@@ -140,16 +140,9 @@ public class PlayerLoginHandler {
     }
 
     private static void syncDataAttachments(final ServerPlayer player) {
-        player.getExistingData(DSDataAttachments.MODIFIERS_WITH_DURATION).ifPresent(data -> data.sync(player));
         player.getExistingData(DSDataAttachments.PENALTY_SUPPLY).ifPresent(data -> data.sync(player));
-        player.getExistingData(DSDataAttachments.DAMAGE_MODIFICATIONS).ifPresent(data -> data.sync(player));
-        player.getExistingData(DSDataAttachments.HARVEST_BONUSES).ifPresent(data -> data.sync(player));
-        player.getExistingData(DSDataAttachments.SUMMONED_ENTITIES).ifPresent(data -> data.sync(player));
-        player.getExistingData(DSDataAttachments.EFFECT_MODIFICATIONS).ifPresent(data -> data.sync(player));
-        player.getExistingData(DSDataAttachments.OXYGEN_BONUSES).ifPresent(data -> data.sync(player));
-        player.getExistingData(DSDataAttachments.BLOCK_VISION).ifPresent(data -> data.sync(player));
-        player.getExistingData(DSDataAttachments.SPIN).ifPresent(data -> data.sync(player));
-        player.getExistingData(DSDataAttachments.GLOW).ifPresent(data -> data.sync(player));
         player.getExistingData(DSDataAttachments.ALTAR).ifPresent(data -> PacketDistributor.sendToPlayer(player, new SyncAltarState(data.serializeNBT(player.registryAccess()))));
+        player.getExistingData(DSDataAttachments.SPIN).ifPresent(data -> data.sync(player));
+        DSDataAttachments.getStorages(player).forEach(storage -> storage.sync(player));
     }
 }

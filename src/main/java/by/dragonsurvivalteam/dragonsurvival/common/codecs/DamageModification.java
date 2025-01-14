@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DamageModificat
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
@@ -51,7 +52,7 @@ public record DamageModification(ResourceLocation id, HolderSet<DamageType> dama
             ResourceLocation.CODEC.fieldOf("id").forGetter(DamageModification::id),
             RegistryCodecs.homogeneousList(Registries.DAMAGE_TYPE).fieldOf("types").forGetter(DamageModification::damageTypes),
             LevelBasedValue.CODEC.fieldOf("multiplier").forGetter(DamageModification::multiplier),
-            LevelBasedValue.CODEC.optionalFieldOf("duration", LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)).forGetter(DamageModification::duration),
+            LevelBasedValue.CODEC.optionalFieldOf("duration", DragonAbilities.INFINITE_DURATION).forGetter(DamageModification::duration),
             ResourceLocation.CODEC.optionalFieldOf("custom_icon").forGetter(DamageModification::customIcon),
             Codec.BOOL.optionalFieldOf("is_hidden", false).forGetter(DamageModification::isHidden)
     ).apply(instance, DamageModification::new));

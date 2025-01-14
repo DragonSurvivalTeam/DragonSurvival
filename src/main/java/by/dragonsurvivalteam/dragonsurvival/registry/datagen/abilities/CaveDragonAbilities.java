@@ -3,7 +3,6 @@ package by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DamageModification;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.DurationInstance;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.HarvestBonus;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
@@ -15,6 +14,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationLayer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.SimpleAbilityAnimation;
+import by.dragonsurvivalteam.dragonsurvival.common.conditions.BlockCondition;
 import by.dragonsurvivalteam.dragonsurvival.common.conditions.EntityCondition;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.LargeFireParticleOption;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.SmallFireParticleOption;
@@ -26,6 +26,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBlockTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.BlockBreakEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.FireEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.BreathParticlesEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.DamageEffect;
@@ -180,11 +181,15 @@ public class CaveDragonAbilities {
                                 List.of(
                                         new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FIRE_BREATH), LevelBasedValue.perLevel(3)),
                                         new IgniteEffect(LevelBasedValue.perLevel(Functions.secondsToTicks(5))),
-                                        PotionEffect.only(LevelBasedValue.constant(0), LevelBasedValue.constant(Functions.secondsToTicks(10)), LevelBasedValue.constant(0.3f), false, DSEffects.BURN).getFirst()
+                                        PotionEffect.single(LevelBasedValue.constant(0), LevelBasedValue.constant(Functions.secondsToTicks(10)), LevelBasedValue.constant(0.3f), false, DSEffects.BURN)
                                 ),
                                 TargetingMode.NON_ALLIES
                         ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
-                        new ActionContainer(new DragonBreathTarget(AbilityTargeting.block(List.of(new FireEffect(LevelBasedValue.constant(0.05f)))), LevelBasedValue.constant(1)), LevelBasedValue.constant(1)),
+                        new ActionContainer(new DragonBreathTarget(AbilityTargeting.block(List.of(
+                                new FireEffect(LevelBasedValue.constant(0.05f)),
+                                new BlockBreakEffect(BlockCondition.blocks(Blocks.SNOW, Blocks.SHORT_GRASS), LevelBasedValue.constant(1), false),
+                                new BlockBreakEffect(BlockCondition.blocks(Blocks.SNOW_BLOCK, Blocks.POWDER_SNOW), LevelBasedValue.perLevel(0.05f), false)
+                        )), LevelBasedValue.constant(1)), LevelBasedValue.constant(1)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 List.of(new BreathParticlesEffect(
                                         0.04f,
@@ -349,7 +354,7 @@ public class CaveDragonAbilities {
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DragonSurvival.res("cave_magic"),
                                         List.of(new Modifier(DSAttributes.MANA, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
-                                        LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                        DragonAbilities.INFINITE_DURATION,
                                         Optional.empty(),
                                         true
                                 )),
@@ -369,7 +374,7 @@ public class CaveDragonAbilities {
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DragonSurvival.res("good_mana_condition"),
                                         List.of(new Modifier(DSAttributes.MANA_REGENERATION, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_MULTIPLIED_BASE, Optional.empty())),
-                                        LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                        DragonAbilities.INFINITE_DURATION,
                                         Optional.empty(),
                                         true
                                 )),
@@ -421,7 +426,7 @@ public class CaveDragonAbilities {
                         ModifierEffect.only(new ModifierWithDuration(
                                 DragonSurvival.res("contrast_shower"),
                                 List.of(new Modifier(DSAttributes.PENALTY_RESISTANCE_TIME, LevelBasedValue.perLevel(Functions.secondsToTicks(30)), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
-                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                DragonAbilities.INFINITE_DURATION,
                                 Optional.empty(),
                                 true
                         )),
@@ -469,7 +474,7 @@ public class CaveDragonAbilities {
                                 Optional.of(context.lookup(Registries.BLOCK).getOrThrow(BlockTags.MINEABLE_WITH_PICKAXE)),
                                 LevelBasedValue.perLevel(1, 0.5f),
                                 LevelBasedValue.perLevel(0.5f),
-                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                DragonAbilities.INFINITE_DURATION,
                                 Optional.of(DragonSurvival.res("textures/ability_effect/cave_claw.png")),
                                 false
                         )),
@@ -526,7 +531,7 @@ public class CaveDragonAbilities {
                                 DragonSurvival.res("fire_immunity"),
                                 context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypeTags.IS_FIRE),
                                 LevelBasedValue.constant(0),
-                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                DragonAbilities.INFINITE_DURATION,
                                 Optional.of(DragonSurvival.res("textures/ability_effect/fire_immunity.png")),
                                 false
                         )),

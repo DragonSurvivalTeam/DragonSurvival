@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachmen
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HarvestBonuses;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.serialization.Codec;
@@ -60,7 +61,7 @@ public record HarvestBonus(ResourceLocation id, Optional<HolderSet<Block>> block
             RegistryCodecs.homogeneousList(Registries.BLOCK).optionalFieldOf("blocks").forGetter(HarvestBonus::blocks),
             LevelBasedValue.CODEC.optionalFieldOf("harvest_bonus", NO_BONUS).forGetter(HarvestBonus::harvestBonus),
             LevelBasedValue.CODEC.optionalFieldOf("break_speed_multiplier", NO_BONUS).forGetter(HarvestBonus::breakSpeedMultiplier),
-            LevelBasedValue.CODEC.optionalFieldOf("duration", LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)).forGetter(HarvestBonus::duration),
+            LevelBasedValue.CODEC.optionalFieldOf("duration", DragonAbilities.INFINITE_DURATION).forGetter(HarvestBonus::duration),
             ResourceLocation.CODEC.optionalFieldOf("custom_icon").forGetter(HarvestBonus::customIcon),
             Codec.BOOL.optionalFieldOf("is_hidden", false).forGetter(HarvestBonus::isHidden)
     ).apply(instance, HarvestBonus::new));
