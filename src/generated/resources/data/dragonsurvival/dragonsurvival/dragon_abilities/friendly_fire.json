@@ -43,7 +43,7 @@
       }
     },
     "can_move_while_casting": false,
-    "cast_time": 120.0,
+    "cast_time": 80.0,
     "cooldown": 600.0,
     "initial_mana_cost": 1.0,
     "sound": {

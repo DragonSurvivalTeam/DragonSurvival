@@ -187,14 +187,34 @@
     "upgrade_type": "dragonsurvival:experience_levels"
   },
   "usage_blocked": {
-    "condition": "minecraft:entity_properties",
-    "entity": "this",
-    "predicate": {
-      "type_specific": {
-        "type": "dragonsurvival:custom_predicates",
-        "eye_in_fluid": "minecraft:water",
-        "weather_predicate": {}
+    "condition": "minecraft:any_of",
+    "terms": [
+      {
+        "condition": "minecraft:entity_properties",
+        "entity": "this",
+        "predicate": {
+          "type_specific": {
+            "type": "dragonsurvival:custom_predicates",
+            "eye_in_fluid": "minecraft:water",
+            "weather_predicate": {}
+          }
+        }
+      },
+      {
+        "condition": "minecraft:entity_properties",
+        "entity": "this",
+        "predicate": {
+          "location": {
+            "can_see_sky": true
+          },
+          "type_specific": {
+            "type": "dragonsurvival:custom_predicates",
+            "weather_predicate": {
+              "is_raining": true
+            }
+          }
+        }
       }
-    }
+    ]
   }
 }

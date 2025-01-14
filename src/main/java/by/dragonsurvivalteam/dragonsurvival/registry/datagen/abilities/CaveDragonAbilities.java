@@ -170,7 +170,7 @@ public class CaveDragonAbilities {
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 10f, 30f, 50f), LevelBasedValue.perLevel(15)))),
                 // Disable underwater
-                Optional.of(Condition.thisEntity(EntityCondition.isEyeInFluid(NeoForgeMod.WATER_TYPE)).build()),
+                Optional.of(Condition.thisEntity(EntityCondition.isEyeInFluid(NeoForgeMod.WATER_TYPE)).or(Condition.thisEntity(EntityCondition.isInRain())).build()),
                 List.of(
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
                                 Condition.thisEntity(EntityCondition.isLiving()).build(),
@@ -222,7 +222,7 @@ public class CaveDragonAbilities {
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 20f, 40f, 45f), LevelBasedValue.perLevel(15)))),
                 // Disable underwater
-                Optional.of(Condition.thisEntity(EntityCondition.isEyeInFluid(NeoForgeMod.WATER_TYPE)).build()),
+                Optional.of(Condition.thisEntity(EntityCondition.isEyeInFluid(NeoForgeMod.WATER_TYPE)).or(Condition.thisEntity(EntityCondition.isInRain())).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         Condition.thisEntity(EntityCondition.isLiving()).build(),
                         List.of(new ProjectileEffect(
