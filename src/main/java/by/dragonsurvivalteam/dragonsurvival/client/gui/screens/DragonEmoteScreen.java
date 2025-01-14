@@ -86,8 +86,8 @@ public class DragonEmoteScreen extends Screen {
     private static final ResourceLocation RESET_EMOTES_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/reset_emotes_hover.png");
     private static final ResourceLocation RESET_EMOTES_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/reset_emotes_main.png");
 
-    private static final ResourceLocation WIKI_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/wiki_hover.png");
-    private static final ResourceLocation WIKI_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/wiki_main.png");
+    private static final ResourceLocation WIKI_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/config_hover.png");
+    private static final ResourceLocation WIKI_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/config_main.png");
 
     private static final ResourceLocation INFO_HOVER = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/info_hover.png");
     private static final ResourceLocation INFO_MAIN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/emote/info_main.png");

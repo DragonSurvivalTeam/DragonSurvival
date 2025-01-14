@@ -27,7 +27,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
@@ -64,9 +63,6 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
     @Translation(comments = "Open the config screen")
     private static final String TOGGLE_CONFIG = Translation.Type.GUI.wrap("inventory.toggle_config");
 
-    @Translation(comments = "Open the wiki")
-    private static final String TOGGLE_WIKI = Translation.Type.GUI.wrap("inventory.toggle_wiki");
-
     @Translation(comments = {
             "■ A dragon is §6born§r with strong claws and teeth, but you can make them even better! Just put §6any tools§r§f here in your claw slots and your bare paw will borrow their aspect as long as they are intact.",
             "§7■ Does not stack with §2«Claws and Teeth»§r§7 skill, which only applies if these slots are empty."
@@ -89,14 +85,11 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
     private static final ResourceLocation CONFIG_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/config_hover.png");
     private static final ResourceLocation CONFIG_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/config_main.png");
 
-    private static final ResourceLocation WIKI_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/wiki_hover.png");
-    private static final ResourceLocation WIKI_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/wiki_main.png");
-
     private static final ResourceLocation VANILLA_INVENTORY_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/vanilla_inventory_hover.png");
     private static final ResourceLocation VANILLA_INVENTORY_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/vanilla_inventory_main.png");
 
-    private static final ResourceLocation SORT_INVENTORY_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/sort_inventory_hover.png");
-    private static final ResourceLocation SORT_INVENTORY_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/sort_inventory_main.png");
+    private static final ResourceLocation SORT_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/sort_hover.png");
+    private static final ResourceLocation SORT_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/sort_main.png");
 
     private static final String WIKI_URL = "https://github.com/DragonSurvivalTeam/DragonSurvival/wiki";
 
@@ -203,13 +196,6 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
                     textures.growthLeftArrow().hoverIcon(), textures.growthLeftArrow().icon(), textures.growthRightArrow().hoverIcon(), textures.growthRightArrow().icon(), false);
         }
 
-        // Sorting button
-        HoverButton sortInventoryButton = new HoverButton(leftPos + 177, topPos + 66, 18, 16, 18, 18, SORT_INVENTORY_MAIN, SORT_INVENTORY_HOVER, button -> {
-            PacketDistributor.sendToServer(new SortInventory());
-        });
-        sortInventoryButton.setTooltip(Tooltip.create(Component.translatable(SORT_INVENTORY)));
-        addRenderableWidget(sortInventoryButton);
-
         // Vanilla inventory
         HoverButton vanillaInventoryButton = new HoverButton(leftPos + 177, topPos + 84, 18, 16, 18, 18, VANILLA_INVENTORY_MAIN, VANILLA_INVENTORY_HOVER, button -> {
             Minecraft.getInstance().setScreen(new InventoryScreen(player));
@@ -234,10 +220,12 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
         configButton.setTooltip(Tooltip.create(Component.translatable(TOGGLE_CONFIG)));
         addRenderableWidget(configButton);
 
-        // Wiki
-        HoverButton wikiButton = new HoverButton(leftPos + 177, topPos + 120, 18, 16, 18, 18, WIKI_MAIN, WIKI_HOVER,  ConfirmLinkScreen.confirmLink(this, WIKI_URL));
-        wikiButton.setTooltip(Tooltip.create(Component.translatable(TOGGLE_WIKI)));
-        addRenderableWidget(wikiButton);
+        // Sorting button
+        HoverButton sortInventoryButton = new HoverButton(leftPos + 177, topPos + 120, 18, 16, 18, 18, SORT_MAIN, SORT_HOVER, button -> {
+            PacketDistributor.sendToServer(new SortInventory());
+        });
+        sortInventoryButton.setTooltip(Tooltip.create(Component.translatable(SORT_INVENTORY)));
+        addRenderableWidget(sortInventoryButton);
     }
 
     @Override
