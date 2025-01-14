@@ -15,12 +15,7 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public abstract class Storage<T extends StorageEntry> implements INBTSerializable<CompoundTag> {
     public static final String STORAGE = "storage";
@@ -99,6 +94,16 @@ public abstract class Storage<T extends StorageEntry> implements INBTSerializabl
         }
 
         return storage.isEmpty();
+    }
+
+    /** Always returns 'false' if the storage is empty */
+    public boolean isType(final Class<?> type) {
+        if (isEmpty()) {
+            return false;
+        }
+
+        //noinspection DataFlowIssue -> it's not null at this point
+        return type.isAssignableFrom(storage.values().iterator().next().getClass());
     }
 
     @Override

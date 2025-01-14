@@ -9,7 +9,6 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -40,49 +39,11 @@ public class ClearModifiersCommand {
         AtomicInteger totalRemoved = new AtomicInteger();
 
         for (Entity target : targets) {
-            if (target instanceof LivingEntity) {
-                target.getExistingData(DSDataAttachments.MODIFIERS_WITH_DURATION).ifPresent(data -> {
-                    data.all().forEach(entry -> entry.onRemovalFromStorage(target));
-                    target.removeData(DSDataAttachments.MODIFIERS_WITH_DURATION);
-                    totalRemoved.getAndIncrement();
-                });
-
-                target.getExistingData(DSDataAttachments.DAMAGE_MODIFICATIONS).ifPresent(data -> {
-                    data.all().forEach(entry -> entry.onRemovalFromStorage(target));
-                    target.removeData(DSDataAttachments.DAMAGE_MODIFICATIONS);
-                    totalRemoved.getAndIncrement();
-                });
-
-                target.getExistingData(DSDataAttachments.HARVEST_BONUSES).ifPresent(data -> {
-                    data.all().forEach(entry -> entry.onRemovalFromStorage(target));
-                    target.removeData(DSDataAttachments.HARVEST_BONUSES);
-                    totalRemoved.getAndIncrement();
-                });
-
-                target.getExistingData(DSDataAttachments.OXYGEN_BONUSES).ifPresent(data -> {
-                    data.all().forEach(entry -> entry.onRemovalFromStorage(target));
-                    target.removeData(DSDataAttachments.OXYGEN_BONUSES);
-                    totalRemoved.getAndIncrement();
-                });
-
-                target.getExistingData(DSDataAttachments.BLOCK_VISION).ifPresent(data -> {
-                    data.all().forEach(entry -> entry.onRemovalFromStorage(target));
-                    target.removeData(DSDataAttachments.BLOCK_VISION);
-                    totalRemoved.getAndIncrement();
-                });
-
-                target.getExistingData(DSDataAttachments.EFFECT_MODIFICATIONS).ifPresent(data -> {
-                    data.all().forEach(entry -> entry.onRemovalFromStorage(target));
-                    target.removeData(DSDataAttachments.EFFECT_MODIFICATIONS);
-                    totalRemoved.getAndIncrement();
-                });
-
-                target.getExistingData(DSDataAttachments.GLOW).ifPresent(data -> {
-                    data.all().forEach(entry -> entry.onRemovalFromStorage(target));
-                    target.removeData(DSDataAttachments.GLOW);
-                    totalRemoved.getAndIncrement();
-                });
-            }
+            DSDataAttachments.getStorages(target).forEach(storage -> {
+                storage.all().forEach(entry -> entry.onRemovalFromStorage(target));
+                target.removeData(storage.type());
+                totalRemoved.getAndIncrement();
+            });
         }
 
         if (targets.size() == 1) {

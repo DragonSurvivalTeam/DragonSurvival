@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.BlockVisionData
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HarvestBonuses;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -37,7 +38,7 @@ public record BlockVision(ResourceLocation id, HolderSet<Block> blocks, LevelBas
     public static final Codec<BlockVision> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ResourceLocation.CODEC.fieldOf("id").forGetter(BlockVision::id),
             RegistryCodecs.homogeneousList(Registries.BLOCK).fieldOf("blocks").forGetter(BlockVision::blocks),
-            LevelBasedValue.CODEC.optionalFieldOf("duration", LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)).forGetter(BlockVision::duration),
+            LevelBasedValue.CODEC.optionalFieldOf("duration", DragonAbilities.INFINITE_DURATION).forGetter(BlockVision::duration),
             ExtraCodecs.ARGB_COLOR_CODEC.fieldOf("outline_color").forGetter(BlockVision::outlineColor),
             ResourceLocation.CODEC.optionalFieldOf("custom_icon").forGetter(BlockVision::customIcon),
             Codec.BOOL.optionalFieldOf("is_hidden", false).forGetter(BlockVision::isHidden)

@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
+import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.GlowData;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
@@ -17,7 +18,7 @@ public abstract class MinecraftMixin {
     @Shadow static Minecraft instance;
 
     @ModifyReturnValue(method = "shouldEntityAppearGlowing", at = @At("RETURN"))
-    boolean additional_enchantments$handlePerceptionEnchantment(final boolean shouldAppearGlowing, @Local(argsOnly = true) final Entity entity) {
+    boolean dragonSurvival$handleGlowEffect(final boolean shouldAppearGlowing, @Local(argsOnly = true) final Entity entity) {
         if (shouldAppearGlowing) {
             return true;
         }
@@ -27,6 +28,12 @@ public abstract class MinecraftMixin {
 
     @ModifyReturnValue(method = "useShaderTransparency", at = @At("RETURN"))
     private static boolean dragonSurvival$enableTranslucencyFix(boolean isEnabled) {
+        if (Compat.isModLoaded(Compat.IRIS)) {
+            // Iris doesn't properly work with Fabulous! mode
+            // (the translucency sorting feature) (it causes particles to be invisible)
+            return isEnabled;
+        }
+
         return isEnabled || (/* Unsure why this check exists in vanilla */ !instance.gameRenderer.isPanoramicMode() && HunterHandler.FIX_TRANSLUCENCY);
     }
 }

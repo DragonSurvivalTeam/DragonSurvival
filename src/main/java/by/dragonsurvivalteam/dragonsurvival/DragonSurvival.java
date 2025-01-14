@@ -58,7 +58,7 @@ public class DragonSurvival {
         PROXY = FMLLoader.getDist().isClient() ? new ClientProxy() : new ServerProxy();
         ConfigHandler.initConfig();
 
-        DSDataAttachments.DS_ATTACHMENT_TYPES.register(bus);
+        DSDataAttachments.REGISTRY.register(bus);
         DSDataComponents.REGISTRY.register(bus);
         DSAttributes.DS_ATTRIBUTES.register(bus);
         DSEquipment.DS_ARMOR_MATERIALS.register(bus);

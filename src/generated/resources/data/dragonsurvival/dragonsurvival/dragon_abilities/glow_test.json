@@ -9,28 +9,23 @@
               "glows": [
                 {
                   "color": "gold",
-                  "duration": 2400.0,
-                  "id": "dragonsurvival:one"
+                  "id": "dragonsurvival:gold"
                 },
                 {
                   "color": "dark_purple",
-                  "duration": 2400.0,
-                  "id": "dragonsurvival:two"
+                  "id": "dragonsurvival:dark_purple"
                 },
                 {
                   "color": "green",
-                  "duration": 2400.0,
-                  "id": "dragonsurvival:three"
+                  "id": "dragonsurvival:green"
                 },
                 {
                   "color": "red",
-                  "duration": 2400.0,
-                  "id": "dragonsurvival:four"
+                  "id": "dragonsurvival:red"
                 },
                 {
                   "color": "blue",
-                  "duration": 2400.0,
-                  "id": "dragonsurvival:five"
+                  "id": "dragonsurvival:blue"
                 }
               ]
             }
@@ -50,7 +45,7 @@
     "texture_entries": [
       {
         "from_level": 0,
-        "texture_resource": "dragonsurvival:test"
+        "texture_resource": "dragonsurvival:glow_test"
       }
     ]
   }

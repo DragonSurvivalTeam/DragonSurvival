@@ -3,7 +3,6 @@ package by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DamageModification;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.DurationInstance;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.HarvestBonus;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
@@ -173,7 +172,7 @@ public class ForestDragonAbilities {
                                 Condition.thisEntity(EntityCondition.isLiving()).build(),
                                 List.of(
                                         new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FOREST_BREATH), LevelBasedValue.perLevel(2)),
-                                        PotionEffect.only(LevelBasedValue.constant(0), LevelBasedValue.constant(Functions.secondsToTicks(10)), LevelBasedValue.constant(0.3f), false, DSEffects.DRAIN).getFirst()
+                                        PotionEffect.single(LevelBasedValue.constant(0), LevelBasedValue.constant(Functions.secondsToTicks(10)), LevelBasedValue.constant(0.3f), false, DSEffects.DRAIN)
                                 ),
                                 TargetingMode.NON_ALLIES
                         ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
@@ -197,7 +196,7 @@ public class ForestDragonAbilities {
                                                         new BlockConversionEffect.BlockTo(Blocks.COARSE_DIRT.defaultBlockState(), 3)
                                                 ))
                                         ), LevelBasedValue.constant(0.2f)),
-                                        new BlockBreakEffect(BlockCondition.blocks(Blocks.POTATOES), LevelBasedValue.constant(0.2f)),
+                                        new BlockBreakEffect(BlockCondition.blocks(Blocks.POTATOES), LevelBasedValue.constant(0.2f), true),
                                         new AreaCloudEffect(
                                                 PotionData.of(LevelBasedValue.constant(0), LevelBasedValue.constant(Functions.secondsToTicks(30)), false, DSEffects.DRAIN),
                                                 LevelBasedValue.constant(Functions.secondsToTicks(2)),
@@ -335,7 +334,7 @@ public class ForestDragonAbilities {
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DragonSurvival.res("forest_magic"),
                                         List.of(new Modifier(DSAttributes.MANA, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
-                                        LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                        DragonAbilities.INFINITE_DURATION,
                                         Optional.empty(),
                                         true
                                 )),
@@ -349,7 +348,7 @@ public class ForestDragonAbilities {
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DragonSurvival.res("good_mana_condition"),
                                         List.of(new Modifier(DSAttributes.MANA_REGENERATION, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_MULTIPLIED_BASE, Optional.empty())),
-                                        LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                        DragonAbilities.INFINITE_DURATION,
                                         Optional.empty(),
                                         true
                                 )),
@@ -401,7 +400,7 @@ public class ForestDragonAbilities {
                         ModifierEffect.only(new ModifierWithDuration(
                                 DragonSurvival.res("light_in_darkness"),
                                 List.of(new Modifier(DSAttributes.PENALTY_RESISTANCE_TIME, LevelBasedValue.perLevel(Functions.secondsToTicks(10)), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
-                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                DragonAbilities.INFINITE_DURATION,
                                 Optional.empty(),
                                 true
                         )),
@@ -429,7 +428,7 @@ public class ForestDragonAbilities {
                         ModifierEffect.only(new ModifierWithDuration(
                                 DragonSurvival.res("cliffhanger"),
                                 List.of(new Modifier(Attributes.SAFE_FALL_DISTANCE, LevelBasedValue.perLevel(5, 1), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
-                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                DragonAbilities.INFINITE_DURATION,
                                 Optional.empty(),
                                 true
                         )),
@@ -457,7 +456,7 @@ public class ForestDragonAbilities {
                                 Optional.of(context.lookup(Registries.BLOCK).getOrThrow(BlockTags.MINEABLE_WITH_AXE)),
                                 LevelBasedValue.perLevel(1, 0.5f),
                                 LevelBasedValue.perLevel(0.5f),
-                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                DragonAbilities.INFINITE_DURATION,
                                 Optional.of(DragonSurvival.res("textures/ability_effect/forest_claw.png")),
                                 false
                         )),
@@ -519,7 +518,7 @@ public class ForestDragonAbilities {
                                         context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FOREST_BREATH)
                                 ),
                                 LevelBasedValue.constant(0),
-                                LevelBasedValue.constant(DurationInstance.INFINITE_DURATION),
+                                DragonAbilities.INFINITE_DURATION,
                                 Optional.of(DragonSurvival.res("textures/ability_effect/drain_immunity.png")),
                                 false
                         )),

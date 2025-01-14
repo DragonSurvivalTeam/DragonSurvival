@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.OxygenBonuses;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -35,7 +36,7 @@ public record OxygenBonus(ResourceLocation id, Optional<ResourceKey<FluidType>> 
             ResourceLocation.CODEC.fieldOf("id").forGetter(OxygenBonus::id),
             ResourceKey.codec(NeoForgeRegistries.FLUID_TYPES.key()).optionalFieldOf("fluid_type").forGetter(OxygenBonus::fluidType),
             LevelBasedValue.CODEC.fieldOf("oxygen_bonus").forGetter(OxygenBonus::oxygenBonus),
-            LevelBasedValue.CODEC.optionalFieldOf("duration", LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)).forGetter(OxygenBonus::duration),
+            LevelBasedValue.CODEC.optionalFieldOf("duration", DragonAbilities.INFINITE_DURATION).forGetter(OxygenBonus::duration),
             ResourceLocation.CODEC.optionalFieldOf("custom_icon").forGetter(OxygenBonus::customIcon),
             Codec.BOOL.optionalFieldOf("is_hidden", false).forGetter(OxygenBonus::isHidden)
     ).apply(instance, OxygenBonus::new));
