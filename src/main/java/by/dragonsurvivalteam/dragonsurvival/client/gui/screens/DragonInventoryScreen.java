@@ -14,6 +14,7 @@ import by.dragonsurvivalteam.dragonsurvival.input.Keybind;
 import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawMenuToggle;
 import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawRender;
 import by.dragonsurvivalteam.dragonsurvival.network.container.RequestOpenVanillaInventory;
+import by.dragonsurvivalteam.dragonsurvival.network.container.SortInventory;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
@@ -54,6 +55,9 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
     @Translation(comments = "Toggle showing claws and teeth textures on your model.")
     private static final String TOGGLE_CLAWS = Translation.Type.GUI.wrap("dragon_inventory.toggle_claws");
 
+    @Translation(comments = "Sort inventory")
+    private static final String SORT_INVENTORY = Translation.Type.GUI.wrap("dragon_inventory.sort_inventory");
+
     @Translation(comments = "Open vanilla inventory screen")
     private static final String TOGGLE_VANILLA_INVENTORY = Translation.Type.GUI.wrap("dragon_inventory.toggle_vanilla_inventory");
 
@@ -90,6 +94,9 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
 
     private static final ResourceLocation VANILLA_INVENTORY_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/vanilla_inventory_hover.png");
     private static final ResourceLocation VANILLA_INVENTORY_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/vanilla_inventory_main.png");
+
+    private static final ResourceLocation SORT_INVENTORY_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/sort_inventory_hover.png");
+    private static final ResourceLocation SORT_INVENTORY_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/sort_inventory_main.png");
 
     private static final String WIKI_URL = "https://github.com/DragonSurvivalTeam/DragonSurvival/wiki";
 
@@ -195,6 +202,13 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
                     -11, 39, 1, 12, 16, 12, 16,
                     textures.growthLeftArrow().hoverIcon(), textures.growthLeftArrow().icon(), textures.growthRightArrow().hoverIcon(), textures.growthRightArrow().icon(), false);
         }
+
+        // Sorting button
+        HoverButton sortInventoryButton = new HoverButton(leftPos + 177, topPos + 66, 18, 16, 18, 18, SORT_INVENTORY_MAIN, SORT_INVENTORY_HOVER, button -> {
+            PacketDistributor.sendToServer(new SortInventory());
+        });
+        sortInventoryButton.setTooltip(Tooltip.create(Component.translatable(SORT_INVENTORY)));
+        addRenderableWidget(sortInventoryButton);
 
         // Vanilla inventory
         HoverButton vanillaInventoryButton = new HoverButton(leftPos + 177, topPos + 84, 18, 16, 18, 18, VANILLA_INVENTORY_MAIN, VANILLA_INVENTORY_HOVER, button -> {
