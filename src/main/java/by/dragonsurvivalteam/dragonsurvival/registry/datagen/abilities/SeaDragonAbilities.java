@@ -75,8 +75,8 @@ public class SeaDragonAbilities {
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
             "■ Breathe out a stream of sparks and electricity. Targets become §c«Electrified»§r and deal electric damage to everything nearby.\n",
-            "■ Charges creepers, and may summon thunderbolts during a storm.\n",
-            "■ Range depends on the age of the dragon."
+            "■ §fCharges creepers§r§7, and may summon §fthunderbolts§r§7 during a storm.\n",
+            "■ §fRange§r§8 depends on the age of the dragon."
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Storm Breath")
     public static final ResourceKey<DragonAbility> STORM_BREATH = DragonAbilities.key("storm_breath");
@@ -88,36 +88,36 @@ public class SeaDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Ball Lightning")
     public static final ResourceKey<DragonAbility> BALL_LIGHTNING = DragonAbilities.key("ball_lightning");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Give a buff to yourself and your allies that multiplies the amount of §2experience§r gained from monsters.\n")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Give a buff to yourself and your allies that multiplies the amount of §2experience§r gained from monsters.")
     @Translation(type = Translation.Type.ABILITY, comments = "Soul Revelation")
     public static final ResourceKey<DragonAbility> SOUL_REVELATION = DragonAbilities.key("soul_revelation");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Give yourself §2Sea Vision§r for a short time.\n")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Give yourself §2Sea Vision§r for a short time. Makes water more clear and less dark.")
     @Translation(type = Translation.Type.ABILITY, comments = "Sea Vision")
     public static final ResourceKey<DragonAbility> SEA_EYES = DragonAbilities.key("sea_eyes");
 
     // --- Passive --- //
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ Upgrading this ability increases your maximum mana pool. Additionally, mana regeneration will be sped up while standing on wet blocks.\n",
+            "■ Upgrading this ability increases your §2maximum mana pool§r§7 and allows to restore mana by standing on §fwet blocks§r§7.\n",
             "■ §8The more levels you have, the more mana you get automatically."
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Sea Magic")
     public static final ResourceKey<DragonAbility> SEA_MAGIC = DragonAbilities.key("sea_magic");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Standing on wet surfaces will increase your movement speed.")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Standing on wet, sandy and icy surfaces increases §2running speed§r§7.")
     @Translation(type = Translation.Type.ABILITY, comments = "Sea Athletics")
     public static final ResourceKey<DragonAbility> SEA_ATHLETICS = DragonAbilities.key("sea_athletics");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Increases your capacity for hydration while outside of water. Will help you to survive while venturing onto land, or even in the Nether.\n")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Increases your §2capacity for hydration§r§7 while outside of water. Will help you to survive while venturing onto land, or even in the §fNether§r§7.\n")
     @Translation(type = Translation.Type.ABILITY, comments = "Hydration")
     public static final ResourceKey<DragonAbility> HYDRATION = DragonAbilities.key("hydration");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Gives a chance to make your attack ignore enemy armor.")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Gives a chance to make your attack §cignore enemy armor§r§7.")
     @Translation(type = Translation.Type.ABILITY, comments = "Spectral Impact")
     public static final ResourceKey<DragonAbility> SPECTRAL_IMPACT = DragonAbilities.key("spectral_impact");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Sea dragons can dig blocks that require shovels without tools. This ability gets stronger as you grow.\n")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Sea dragons can dig blocks that require shovels §2without tools§r§7. This ability gets stronger as you grow.\n")
     @Translation(type = Translation.Type.ABILITY, comments = "Claws and Teeth")
     public static final ResourceKey<DragonAbility> SEA_CLAWS_AND_TEETH = DragonAbilities.key("sea_claws_and_teeth");
 
@@ -125,19 +125,19 @@ public class SeaDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Sea Wings")
     public static final ResourceKey<DragonAbility> SEA_WINGS = DragonAbilities.key("sea_wings");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ You can spin through the air and in water, boosting your speed. Head to §2the End§r §7to learn this skill.\n")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ You can §2spin§r§7 through the §fair§r§7 and in §fwater§r§7, boosting your speed. Head to §2the End§r §7to learn this skill.\n")
     @Translation(type = Translation.Type.ABILITY, comments = "Sea Spin")
     public static final ResourceKey<DragonAbility> SEA_SPIN = DragonAbilities.key("sea_spin");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Sea dragons have an innate immunity to lightning.")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Sea dragons have an innate §2immunity to lightning§r§7.")
     @Translation(type = Translation.Type.ABILITY, comments = "Electric Immunity")
     public static final ResourceKey<DragonAbility> ELECTRIC_IMMUNITY = DragonAbilities.key("electric_immunity");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Sea dragons are amphibious, and do not need to hold their breath underwater. In addition, they can swim much faster than other dragons.")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Sea dragons do not need to hold their §2breath underwater§r§7. In addition, they can §2swim much faster§r§7 than other dragons.")
     @Translation(type = Translation.Type.ABILITY, comments = "Amphibious")
     public static final ResourceKey<DragonAbility> AMPHIBIOUS = DragonAbilities.key("amphibious");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Dexterity in water allows sea dragons to mine resources underwater without penalty.")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Dexterity in water allows sea dragons to §2mine resources underwater§r§7 without penalty.")
     @Translation(type = Translation.Type.ABILITY, comments = "Diver")
     public static final ResourceKey<DragonAbility> DIVER = DragonAbilities.key("diver");
 
@@ -240,7 +240,7 @@ public class SeaDragonAbilities {
                         Activation.Type.ACTIVE_SIMPLE,
                         Optional.of(LevelBasedValue.constant(1)),
                         Optional.empty(),
-                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(1))),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(3))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
                         false,
                         Optional.of(new Activation.Sound(

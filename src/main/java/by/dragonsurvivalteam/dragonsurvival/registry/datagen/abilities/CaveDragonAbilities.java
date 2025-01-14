@@ -1,14 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.DamageModification;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.HarvestBonus;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierWithDuration;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.PotionData;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.TargetDirection;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.*;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
@@ -28,6 +21,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilit
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.BlockBreakEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.FireEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.ParticleEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.BreathParticlesEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.DamageEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.DamageModificationEffect;
@@ -53,6 +47,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.projectile.ProjectileData;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.Projectiles;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.datafixers.util.Either;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
@@ -60,6 +55,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
@@ -75,22 +71,22 @@ public class CaveDragonAbilities {
     // --- Active --- //
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ §fElemental breath:§r§7 a stream of fire that §cignites§r§7 enemies, items and blocks. Is able to §cdestroy§r§7 some blocks.\n",
+            "■ The stream of fire that §cignites§r§7 enemies, items and blocks. Is able to §cdestroy§r§7 some blocks.\n",
             "■ §fRange§r§7 depends on age of the dragon.\n",
             "■ §8Cannot be used under water, and during rain.§r"
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Nether Breath")
     public static final ResourceKey<DragonAbility> NETHER_BREATH = DragonAbilities.key("nether_breath");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ §fRanged attack:§r§7 shoots out a fireball that §cexplodes§r and sets the area on §cfire§r.")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Shoots out a fireball that §cexplodes§r and sets the area on §cfire§r.")
     @Translation(type = Translation.Type.ABILITY, comments = "Fireball")
     public static final ResourceKey<DragonAbility> FIRE_BALL = DragonAbilities.key("fire_ball");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ §fMass buff:§r§7 Grants additional §2armor points§r§7 to all entities in an area around the dragon.")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Gives you and your allies additional §2armor points§r§7.")
     @Translation(type = Translation.Type.ABILITY, comments = "Sturdy Skin")
     public static final ResourceKey<DragonAbility> STURDY_SKIN = DragonAbilities.key("sturdy_skin");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ §fPersonal buff:§r§7 makes lava more §2transparent§r while active.")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Makes lava more §2transparent§r for you.")
     @Translation(type = Translation.Type.ABILITY, comments = "Lava Vision")
     public static final ResourceKey<DragonAbility> LAVA_VISION = DragonAbilities.key("lava_vision");
 
@@ -141,7 +137,7 @@ public class CaveDragonAbilities {
     public static final ResourceKey<DragonAbility> FIRE_IMMUNITY = DragonAbilities.key("fire_immunity");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ §fMass buff:§r§7 Coat your allies with §fprotective dust§r§7 and they get the §2Fire Resistance§r§7 effect.\n",
+            "■ Coat your allies with §fprotective dust§r§7 and they get the §2Fire Resistance§r§7 effect.\n",
             "■ Your pets will stop dying by your §ffire§r§7 and your friends will be able to bathe in §flava§r§7. For a while."
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Friendly Fire")
@@ -253,7 +249,7 @@ public class CaveDragonAbilities {
                         Activation.Type.ACTIVE_SIMPLE,
                         Optional.of(LevelBasedValue.constant(1)),
                         Optional.empty(),
-                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(1))),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(3))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
                         false,
                         Activation.Sound.end(SoundEvents.UI_TOAST_IN),
@@ -267,7 +263,12 @@ public class CaveDragonAbilities {
                 // Disable when not on ground
                 Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false)).build()),
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(
-                        PotionEffect.only(LevelBasedValue.constant(0), LevelBasedValue.perLevel(Functions.secondsToTicks(60)), false, DSEffects.STURDY_SKIN),
+                        List.of(
+                        PotionEffect.only(LevelBasedValue.constant(0), LevelBasedValue.perLevel(Functions.secondsToTicks(60)), false, DSEffects.STURDY_SKIN).getFirst(),
+                        new ParticleEffect(
+                                new SpawnParticles(ParticleTypes.MYCELIUM, SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.1f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.1f)), ConstantFloat.of(0.05f)),
+                                LevelBasedValue.constant(50)
+                        )),
                         TargetingMode.ALLIES_AND_SELF
                 ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 true,
@@ -284,7 +285,7 @@ public class CaveDragonAbilities {
                         Activation.Type.ACTIVE_SIMPLE,
                         Optional.of(LevelBasedValue.constant(1)),
                         Optional.empty(),
-                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(6))),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(4))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
                         false,
                         Activation.Sound.end(SoundEvents.UI_TOAST_IN),
@@ -315,7 +316,7 @@ public class CaveDragonAbilities {
                         Activation.Type.ACTIVE_SIMPLE,
                         Optional.of(LevelBasedValue.constant(1)),
                         Optional.empty(),
-                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(1))),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(2))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
                         false,
                         Optional.of(new Activation.Sound(Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(SoundEvents.UI_TOAST_IN))),
@@ -404,7 +405,7 @@ public class CaveDragonAbilities {
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         // Enable when on said block tag
                         Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.SPEEDS_UP_CAVE_DRAGON)).build(),
-                        PotionEffect.only(LevelBasedValue.perLevel(1), LevelBasedValue.perLevel(Functions.secondsToTicks(5)), false, MobEffects.MOVEMENT_SPEED),
+                        PotionEffect.only(LevelBasedValue.perLevel(0.2f), LevelBasedValue.perLevel(Functions.secondsToTicks(1)), false, MobEffects.MOVEMENT_SPEED),
                         TargetingMode.ALLIES_AND_SELF
                 ), false), LevelBasedValue.constant(Functions.secondsToTicks(1)))),
                 true,
@@ -425,7 +426,7 @@ public class CaveDragonAbilities {
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         ModifierEffect.only(new ModifierWithDuration(
                                 DragonSurvival.res("contrast_shower"),
-                                List.of(new Modifier(DSAttributes.PENALTY_RESISTANCE_TIME, LevelBasedValue.perLevel(Functions.secondsToTicks(30)), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
+                                List.of(new Modifier(DSAttributes.PENALTY_RESISTANCE_TIME, LevelBasedValue.perLevel(Functions.secondsToTicks(10)), AttributeModifier.Operation.ADD_VALUE, Optional.empty())),
                                 DragonAbilities.INFINITE_DURATION,
                                 Optional.empty(),
                                 true

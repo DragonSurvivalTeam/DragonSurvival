@@ -1,14 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.DamageModification;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.HarvestBonus;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierWithDuration;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.PotionData;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.TargetDirection;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.*;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
@@ -31,6 +24,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effect
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.BlockBreakEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.BlockConversionEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.BonemealEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.ParticleEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.BreathParticlesEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.DamageEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.DamageModificationEffect;
@@ -55,6 +49,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.projectile.Projectiles;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
@@ -62,6 +57,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.util.random.WeightedRandomList;
+import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -78,7 +74,7 @@ public class ForestDragonAbilities {
     // --- Active --- //
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ §fElemental breath:§r§7 a toxic gas that creates a §c«Drain»§r area of effect, which is deadly for creatures, but helps §2plants grow faster§r§7. Turns §fdirt§r§7 into other blocks with a small chance.\n",
+            "■ The toxic gas that creates a §c«Drain»§r area of effect, which is deadly for creatures, but helps §2plants grow faster§r§7. Turns §fdirt§r§7 into other blocks with a small chance.\n",
             "■ §fRange§r§7 depends on age of the dragon.\n",
             "■ §8Cannot be used while affected by «Stress».§r"
     })
@@ -86,19 +82,19 @@ public class ForestDragonAbilities {
     public static final ResourceKey<DragonAbility> FOREST_BREATH = DragonAbilities.key("forest_breath");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ §fRanged attack:§r§7 Shoot out sharp §cdarts§r, which fly a large distance to pierce your target.\n",
+            "■ Shoot out sharp §cdarts§r, which fly a large distance to pierce your target.\n",
             "■ §8Less effective underwater."
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Spike")
     public static final ResourceKey<DragonAbility> SPIKE = DragonAbilities.key("spike");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ §fMass buff:§r§7 Provides §2Haste§r to all nearby creatures, increasing your block harvesting speed.")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Provides §2Haste§r to you and all nearby creatures. Increasing block §fharvesting speed§r§7.")
     @Translation(type = Translation.Type.ABILITY, comments = "Inspiration")
     public static final ResourceKey<DragonAbility> INSPIRATION = DragonAbilities.key("inspiration");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ §fMass buff:§r§7 Cover yourself and allies in a thick carpet of herbs and can §ffast§r§7 walk in the grass §2Invisible§r§7.\n",
-            "■ §fFirst§r§7 melee strike cause a critical hit with a §c%-based damage§r§7 bonus.\n",
+            "■ Cover yourself and allies in a thick carpet of herbs. Now you all can move §ffast§r§7 in the grass with §2Invisible§r§7.\n",
+            "■ First melee strike cause a critical hit with a §c%-based damage§r§7 bonus.\n",
             "■ §8Effect does not stack. Will be removed early if you take damage, or attack a target.§r",
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Hunters")
@@ -138,7 +134,7 @@ public class ForestDragonAbilities {
     public static final ResourceKey<DragonAbility> FOREST_SPIN = DragonAbilities.key("forest_spin");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "The skin of forest dragons is covered with §ffoliage§r§7 that give you §2immunity to thorn bushes and cacti§r§7."
+            "■ The skin of forest dragons is covered with §ffoliage§r§7 that give you §2immunity to thorn bushes and cacti§r§7."
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Forest Immunity")
     public static final ResourceKey<DragonAbility> FOREST_IMMUNITY = DragonAbilities.key("forest_immunity");
@@ -275,12 +271,17 @@ public class ForestDragonAbilities {
                                 Optional.of(new SimpleAbilityAnimation(SimpleAbilityAnimation.MASS_BUFF, AnimationLayer.BASE, 0, true, true))
                         ))
                 ),
-                Optional.of(new ExperienceLevelUpgrade(3, LevelBasedValue.lookup(List.of(0f, 15f, 35f), LevelBasedValue.perLevel(15)))),
+                Optional.of(new ExperienceLevelUpgrade(3, LevelBasedValue.lookup(List.of(5f, 15f, 35f), LevelBasedValue.perLevel(15)))),
                 // Disable when not on ground
                 Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false)).build()),
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(
-                        PotionEffect.only(LevelBasedValue.perLevel(1), LevelBasedValue.constant(Functions.secondsToTicks(200)), false, MobEffects.DIG_SPEED),
-                        TargetingMode.ALLIES_AND_SELF
+                        List.of(
+                        PotionEffect.only(LevelBasedValue.perLevel(1), LevelBasedValue.constant(Functions.secondsToTicks(200)), false, MobEffects.DIG_SPEED).getFirst(),
+                        new ParticleEffect(
+                                new SpawnParticles(ParticleTypes.END_ROD, SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), ConstantFloat.of(0.05f)),
+                                LevelBasedValue.constant(20)
+                        )),TargetingMode.ALLIES_AND_SELF
+
                 ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -296,7 +297,7 @@ public class ForestDragonAbilities {
                         Activation.Type.ACTIVE_SIMPLE,
                         Optional.of(LevelBasedValue.constant(1)),
                         Optional.empty(),
-                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(4))),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(3))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
                         false,
                         Activation.Sound.end(SoundEvents.UI_TOAST_IN),
@@ -310,7 +311,12 @@ public class ForestDragonAbilities {
                 // Disable when not on ground
                 Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false)).build()),
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(
-                        PotionEffect.only(LevelBasedValue.perLevel(1), LevelBasedValue.perLevel(Functions.secondsToTicks(30)), false, DSEffects.HUNTER),
+                        List.of(
+                        PotionEffect.only(LevelBasedValue.perLevel(1), LevelBasedValue.perLevel(Functions.secondsToTicks(30)), false, DSEffects.HUNTER).getFirst(),
+                        new ParticleEffect(
+                                new SpawnParticles(ParticleTypes.DRAGON_BREATH, SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.1f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.1f)), ConstantFloat.of(0.1f)),
+                                LevelBasedValue.constant(20)
+                        )),
                         TargetingMode.ALLIES_AND_SELF
                 ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 true,
@@ -378,7 +384,7 @@ public class ForestDragonAbilities {
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         // Enable when on said block tag
                         Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.SPEEDS_UP_FOREST_DRAGON)).build(),
-                        PotionEffect.only(LevelBasedValue.perLevel(1), LevelBasedValue.perLevel(Functions.secondsToTicks(5)), false, MobEffects.MOVEMENT_SPEED),
+                        PotionEffect.only(LevelBasedValue.perLevel(0.2f), LevelBasedValue.perLevel(Functions.secondsToTicks(1)), false, MobEffects.MOVEMENT_SPEED),
                         TargetingMode.ALLIES_AND_SELF
                 ), false), LevelBasedValue.constant(Functions.secondsToTicks(1)))),
                 true,

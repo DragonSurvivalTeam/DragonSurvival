@@ -19,6 +19,7 @@
         "#c:foods/raw_meat"
       ],
       "properties": {
+        "eat_seconds": 1.2,
         "nutrition": 6,
         "saturation": 4.0
       }
@@ -28,7 +29,8 @@
         "#c:foods/berry"
       ],
       "properties": {
-        "nutrition": 2,
+        "eat_seconds": 1.2,
+        "nutrition": 1,
         "saturation": 1.0
       }
     },
@@ -37,8 +39,29 @@
         "#c:mushrooms"
       ],
       "properties": {
+        "eat_seconds": 0.8,
         "nutrition": 1,
         "saturation": 1.0
+      }
+    },
+    {
+      "items": [
+        "#c:eggs"
+      ],
+      "properties": {
+        "eat_seconds": 0.8,
+        "nutrition": 2,
+        "saturation": 2.0
+      }
+    },
+    {
+      "items": [
+        "minecraft:sweet_berries"
+      ],
+      "properties": {
+        "eat_seconds": 0.6,
+        "nutrition": 2,
+        "saturation": 2.0
       }
     },
     {

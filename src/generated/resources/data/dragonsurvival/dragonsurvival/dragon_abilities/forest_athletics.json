@@ -9,13 +9,13 @@
               "potion": {
                 "amplifier": {
                   "type": "minecraft:linear",
-                  "base": 1.0,
-                  "per_level_above_first": 1.0
+                  "base": 0.2,
+                  "per_level_above_first": 0.2
                 },
                 "duration": {
                   "type": "minecraft:linear",
-                  "base": 100.0,
-                  "per_level_above_first": 100.0
+                  "base": 20.0,
+                  "per_level_above_first": 20.0
                 },
                 "effects": "minecraft:speed"
               }
