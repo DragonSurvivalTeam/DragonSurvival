@@ -123,7 +123,7 @@ public class DamageModification extends DurationInstanceBase<DamageModifications
 
     @Override
     public Instance createInstance(final ServerPlayer dragon, final DragonAbilityInstance ability, final int currentDuration) {
-        return new Instance(this, CommonData.from(dragon, ability, customIcon(), shouldRemoveAutomatically()), currentDuration);
+        return new Instance(this, CommonData.from(id(), dragon, ability, customIcon(), shouldRemoveAutomatically()), currentDuration);
     }
 
     @Override

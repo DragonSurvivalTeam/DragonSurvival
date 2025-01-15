@@ -7,9 +7,11 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.Rect2i;
@@ -148,6 +150,10 @@ public class EffectRenderingInventoryScreenMixin {
                 if (hovered != null) {
                     MutableComponent tooltip = Component.empty();
                     tooltip.append(hovered.clientData().name());
+
+                    if (Minecraft.getInstance().options.advancedItemTooltips) {
+                        tooltip.append(Component.literal("\n" + hovered.clientData().id().toString()).withStyle(ChatFormatting.DARK_GRAY));
+                    }
 
                     if (hovered.clientData().effectSource().getContents() != PlainTextContents.EMPTY) {
                         tooltip.append(Component.literal("\n")).append(Component.translatable(LangKey.APPLIED_BY, DSColors.dynamicValue(hovered.clientData().effectSource())));

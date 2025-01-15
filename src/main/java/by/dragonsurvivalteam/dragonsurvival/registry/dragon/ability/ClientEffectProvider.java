@@ -24,25 +24,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-// TODO :: add id field which is shown with advanced tooltips + add list config to override display style for certain ids?
 public interface ClientEffectProvider {
-    record ClientData(ResourceLocation texture, Component name, Component effectSource) {
+    record ClientData(ResourceLocation id, ResourceLocation texture, Component name, Component effectSource) {
         public static final Codec<ClientData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                ResourceLocation.CODEC.fieldOf("id").forGetter(ClientData::id),
                 ResourceLocation.CODEC.fieldOf("texture").forGetter(ClientData::texture),
                 ComponentSerialization.CODEC.fieldOf("name").forGetter(ClientData::name),
                 ComponentSerialization.CODEC.optionalFieldOf("effect_source", Component.empty()).forGetter(ClientData::effectSource)
         ).apply(instance, ClientData::new));
 
         @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // ignore
-        public static ClientData from(final ServerPlayer dragon, final DragonAbilityInstance ability, final Optional<ResourceLocation> customIcon) {
+        public static ClientData from(final ResourceLocation id, final ServerPlayer dragon, final DragonAbilityInstance ability, final Optional<ResourceLocation> customIcon) {
             ResourceLocation icon = customIcon.orElse(ability.getIcon().withPrefix("textures/gui/sprites/").withSuffix(".png"));
-            return new ClientData(icon, Component.translatable(Translation.Type.ABILITY.wrap(ability.location())), dragon.getName());
+            return new ClientData(id, icon, Component.translatable(Translation.Type.ABILITY.wrap(ability.location())), dragon.getName());
         }
 
         @SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "DataFlowIssue"}) // ignore
-        public static ClientData from(final Holder<DragonPenalty> penalty, final Optional<ResourceLocation> customIcon) {
+        public static ClientData from(final ResourceLocation id, final Holder<DragonPenalty> penalty, final Optional<ResourceLocation> customIcon) {
             ResourceLocation icon = customIcon.orElse(penalty.value().icon().orElse(UNKNOWN_ICON));
-            return new ClientData(icon, Component.translatable(Translation.Type.PENALTY.wrap(penalty.getKey().location())), Component.empty());
+            return new ClientData(id, icon, Component.translatable(Translation.Type.PENALTY.wrap(penalty.getKey().location())), Component.empty());
         }
     }
 
@@ -50,10 +50,12 @@ public interface ClientEffectProvider {
 
     /** See {@link net.minecraft.client.renderer.texture.MissingTextureAtlasSprite#MISSING_TEXTURE_LOCATION} */
     ResourceLocation MISSING_TEXTURE = ResourceLocation.withDefaultNamespace("missingno");
-    ClientData NONE = new ClientData(MISSING_TEXTURE, Component.literal("N/A"), Component.empty());
+    ClientData NONE = new ClientData(DragonSurvival.res("none"), MISSING_TEXTURE, Component.literal("N/A"), Component.empty());
 
     static List<ClientEffectProvider> getProviders(boolean isInventory) {
-        if (!DisplayType.isVisible(isInventory)) {
+        boolean isVisible = DisplayType.isVisible(isInventory);
+
+        if (!isVisible && DisplayType.ALWAYS_VISIBLE.isEmpty()) {
             return List.of();
         }
 
@@ -83,7 +85,7 @@ public interface ClientEffectProvider {
             }
         }
 
-        providers.removeIf(ClientEffectProvider::isHidden);
+        providers.removeIf(provider -> provider.isHidden() || !isVisible && !DisplayType.ALWAYS_VISIBLE.contains(provider.clientData().id().toString()));
         return providers;
     }
 

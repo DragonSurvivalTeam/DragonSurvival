@@ -9,6 +9,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -97,6 +98,9 @@ public class FlightData implements INBTSerializable<CompoundTag> {
         @Translation(type = Translation.Type.GUI, comments = "Dragon Wings")
         private static final ResourceLocation NAME = DragonSurvival.res("dragon_wings");
 
+        private static final ResourceLocation ID = DragonSurvival.res("dragon_wings");
+        private static final Component TRANSLATED_NAME = Component.translatable(Translation.Type.GUI.wrap(NAME));
+
         @Override
         public Component getDescription() {
             return Component.empty();
@@ -106,7 +110,7 @@ public class FlightData implements INBTSerializable<CompoundTag> {
         public ClientData clientData() {
             Player player = DragonSurvival.PROXY.getLocalPlayer();
             ResourceLocation icon = player != null ? FlightData.getData(player).icon : DEFAULT_ICON;
-            return new ClientData(icon, Component.translatable(Translation.Type.GUI.wrap(NAME)), Component.empty());
+            return new ClientData(ID, icon, TRANSLATED_NAME, CommonComponents.EMPTY);
         }
 
         @Override

@@ -28,7 +28,7 @@ import java.util.List;
 public class GlowData extends Storage<Glow.Instance> {
     @ConfigRange(min = 0, max = 1)
     @Translation(key = "glow_color_speed", type = Translation.Type.CONFIGURATION, comments = "Determines how fast colors switch when multiple glow colors are present")
-    @ConfigOption(side = ConfigSide.CLIENT, category = {"effect", "glow"}, key = "glow_color_speed")
+    @ConfigOption(side = ConfigSide.CLIENT, category = "effects", key = "glow_color_speed")
     public static float SPEED = 0.025f;
 
     public static final int NO_COLOR = -1;

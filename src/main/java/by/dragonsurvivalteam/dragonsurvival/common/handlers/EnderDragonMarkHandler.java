@@ -29,16 +29,16 @@ public class EnderDragonMarkHandler {
 
     @SubscribeEvent
     public static void onEnderDragonHealthChanged(LivingDamageEvent.Post event) {
-        if(event.getEntity().level().isClientSide()) return;
+        if (event.getEntity().level().isClientSide()) return;
 
-        if(event.getEntity() instanceof EnderDragon enderDragon) {
-            if(event.getSource().getEntity() instanceof Player player) {
+        if (event.getEntity() instanceof EnderDragon enderDragon) {
+            if (event.getSource().getEntity() instanceof Player player) {
                 EnderDragonDamageHistory data = EnderDragonDamageHistory.getData(enderDragon);
                 data.addDamage(player.getUUID(), event.getNewDamage());
             }
 
             // If the dragon is healed, reverse progress for all the players
-            if(event.getNewDamage() < 0) {
+            if (event.getNewDamage() < 0) {
                 // TODO :: shouldn't the dealt damage be reduced by a % of their contribution?
                 EnderDragonDamageHistory data = EnderDragonDamageHistory.getData(enderDragon);
                 data.addDamageAll(event.getNewDamage());
@@ -48,17 +48,19 @@ public class EnderDragonMarkHandler {
 
     @SubscribeEvent
     public static void onEnderDragonDeath(LivingDeathEvent event) {
-        if(event.getEntity().level().isClientSide()) return;
+        if (!enderDragonCursesYou || event.getEntity().level().isClientSide()) {
+            return;
+        }
 
-        if(event.getEntity() instanceof EnderDragon enderDragon) {
-            EnderDragonDamageHistory data = EnderDragonDamageHistory.getData(enderDragon);
-            for(Player player : data.getPlayers(event.getEntity().level())) {
+        if (event.getEntity() instanceof EnderDragon dragon) {
+            EnderDragonDamageHistory data = EnderDragonDamageHistory.getData(dragon);
+
+            for (Player player : data.getPlayers(event.getEntity().level())) {
                 DragonStateHandler handler = DragonStateProvider.getData(player);
-                if(handler.isDragon()) {
-                    if(enderDragonCursesYou) {
-                        handler.markedByEnderDragon = true;
-                        PacketDistributor.sendToPlayer((ServerPlayer)player, new SyncEnderDragonMark(true));
-                    }
+
+                if (handler.isDragon()) {
+                    handler.markedByEnderDragon = true;
+                    PacketDistributor.sendToPlayer((ServerPlayer) player, new SyncEnderDragonMark(true));
                 }
             }
         }
@@ -71,7 +73,7 @@ public class EnderDragonMarkHandler {
         @Translation(comments = "You have been cursed by the ender dragon. You may be unable to use some of your abilities. You can cure this curse by using a Primordial Anchor block after resurrecting the dragon.")
         private static final String DESCRIPTION = Translation.Type.GUI.wrap("ender_dragon_curse.tooltip");
 
-        private static final ClientData DATA = new ClientData(DragonSurvival.res("textures/ender_dragon_curse.png"), Component.translatable(Translation.Type.GUI.wrap(NAME)), Component.empty());
+        private static final ClientData DATA = new ClientData(DragonSurvival.res("ender_dragon_curse"), DragonSurvival.res("textures/ender_dragon_curse.png"), Component.translatable(Translation.Type.GUI.wrap(NAME)), Component.empty());
 
         @Override
         public Component getDescription() {

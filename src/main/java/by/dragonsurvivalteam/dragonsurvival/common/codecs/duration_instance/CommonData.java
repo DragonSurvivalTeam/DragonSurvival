@@ -25,14 +25,14 @@ public record CommonData(ClientEffectProvider.ClientData clientData, Optional<Re
     ).apply(instance, CommonData::new));
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // ignore
-    public static CommonData from(final ServerPlayer dragon, final DragonAbilityInstance ability, final Optional<ResourceLocation> customIcon, boolean removeAutomatically) {
-        ClientEffectProvider.ClientData clientData = ClientEffectProvider.ClientData.from(dragon, ability, customIcon);
+    public static CommonData from(final ResourceLocation id, final ServerPlayer dragon, final DragonAbilityInstance ability, final Optional<ResourceLocation> customIcon, boolean removeAutomatically) {
+        ClientEffectProvider.ClientData clientData = ClientEffectProvider.ClientData.from(id, dragon, ability, customIcon);
         return new CommonData(clientData, Optional.of(ability.key()), Optional.of(dragon.getUUID()), ability.level(), removeAutomatically);
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // ignore
-    public static CommonData from(final Holder<DragonPenalty> penalty, final Optional<ResourceLocation> customIcon) {
-        ClientEffectProvider.ClientData clientData = ClientEffectProvider.ClientData.from(penalty, customIcon);
+    public static CommonData from(final ResourceLocation id, final Holder<DragonPenalty> penalty, final Optional<ResourceLocation> customIcon) {
+        ClientEffectProvider.ClientData clientData = ClientEffectProvider.ClientData.from(id, penalty, customIcon);
         return new CommonData(clientData, Optional.empty(), Optional.empty(), 1, false);
     }
 }
