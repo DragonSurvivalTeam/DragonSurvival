@@ -28,6 +28,7 @@ public record SpinEffect(int spinLevel, Optional<Holder<FluidType>> swimSpinFlui
 
     public static final MapCodec<SpinEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.INT.fieldOf("spin_level").forGetter(SpinEffect::spinLevel),
+            // TODO :: holderset
             NeoForgeRegistries.FLUID_TYPES.holderByNameCodec().optionalFieldOf("swim_spin_fluid").forGetter(SpinEffect::swimSpinFluid)
     ).apply(instance, SpinEffect::new));
 
@@ -38,7 +39,6 @@ public record SpinEffect(int spinLevel, Optional<Holder<FluidType>> swimSpinFlui
         }
 
         FlightData data = FlightData.getData(serverTarget);
-
         boolean hadSpin = data.hasSpin;
 
         if (ability.level() >= spinLevel) {
@@ -62,7 +62,6 @@ public record SpinEffect(int spinLevel, Optional<Holder<FluidType>> swimSpinFlui
 
         FlightData data = FlightData.getData(serverTarget);
         boolean hadSpin = data.hasSpin;
-
         data.hasSpin = false;
 
         if (hadSpin != data.hasSpin) {

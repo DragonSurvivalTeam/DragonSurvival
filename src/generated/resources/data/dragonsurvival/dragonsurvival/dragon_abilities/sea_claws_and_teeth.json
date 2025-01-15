@@ -10,7 +10,8 @@
                 {
                   "base": {
                     "custom_icon": "dragonsurvival:textures/ability_effect/sea_claw.png",
-                    "id": "dragonsurvival:sea_claws_and_teeth"
+                    "id": "dragonsurvival:sea_claws_and_teeth",
+                    "should_remove_automatically": true
                   },
                   "blocks": "#minecraft:mineable/shovel",
                   "break_speed_multiplier": {

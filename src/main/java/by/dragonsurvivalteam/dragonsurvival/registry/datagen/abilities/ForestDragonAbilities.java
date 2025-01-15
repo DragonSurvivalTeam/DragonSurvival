@@ -218,7 +218,7 @@ public class ForestDragonAbilities {
                                         new LargePoisonParticleOption(37, false)
                                 )),
                                 TargetingMode.ALL
-                        ), true), LevelBasedValue.constant(1))),
+                        )), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/poisonous_breath_0"), 0),
@@ -252,7 +252,7 @@ public class ForestDragonAbilities {
                                 LevelBasedValue.constant(1)
                         )),
                         TargetingMode.ALL
-                ), true), LevelBasedValue.constant(1))),
+                )), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(
                         List.of(
@@ -347,22 +347,22 @@ public class ForestDragonAbilities {
                 List.of(
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 ModifierEffect.only(new ModifierWithDuration(
-                                        DurationInstanceBase.create(DragonSurvival.res("forest_magic")).infinite().hidden().build(),
+                                        DurationInstanceBase.create(DragonSurvival.res("forest_magic")).infinite().removeAutomatically().hidden().build(),
                                         List.of(new Modifier(DSAttributes.MANA, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_VALUE, Optional.empty()))
                                 )),
                                 TargetingMode.ALLIES_AND_SELF
-                        ), true), LevelBasedValue.constant(1)),
+                        )), LevelBasedValue.constant(1)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 // Enable when on (or within) said block tag or when under sunlight with a strength of at least 10
                                 Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_GRASSY))
                                         .or(Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_GRASSY)))
                                         .or(Condition.thisEntity(EntityCondition.isInSunlight(10))).build(),
                                 ModifierEffect.only(new ModifierWithDuration(
-                                        DurationInstanceBase.create(DragonSurvival.res("good_mana_condition")).infinite().hidden().build(),
+                                        DurationInstanceBase.create(DragonSurvival.res("good_mana_condition")).infinite().removeAutomatically().hidden().build(),
                                         List.of(new Modifier(DSAttributes.MANA_REGENERATION, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_MULTIPLIED_BASE, Optional.empty()))
                                 )),
                                 TargetingMode.ALLIES_AND_SELF
-                        ), true), LevelBasedValue.constant(1))
+                        )), LevelBasedValue.constant(1))
                 ),
                 true,
                 new LevelBasedResource(List.of(
@@ -389,7 +389,7 @@ public class ForestDragonAbilities {
                         Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.SPEEDS_UP_FOREST_DRAGON)).build(),
                         PotionEffect.only(LevelBasedValue.perLevel(0.2f), LevelBasedValue.perLevel(Functions.secondsToTicks(1)), false, MobEffects.MOVEMENT_SPEED),
                         TargetingMode.ALLIES_AND_SELF
-                ), false), LevelBasedValue.constant(Functions.secondsToTicks(1)))),
+                )), LevelBasedValue.constant(Functions.secondsToTicks(1)))),
                 true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_athletics_0"), 0),
@@ -407,11 +407,11 @@ public class ForestDragonAbilities {
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         ModifierEffect.only(new ModifierWithDuration(
-                                DurationInstanceBase.create(DragonSurvival.res("light_in_darkness")).infinite().hidden().build(),
+                                DurationInstanceBase.create(DragonSurvival.res("light_in_darkness")).infinite().removeAutomatically().hidden().build(),
                                 List.of(new Modifier(DSAttributes.PENALTY_RESISTANCE_TIME, LevelBasedValue.perLevel(Functions.secondsToTicks(10)), AttributeModifier.Operation.ADD_VALUE, Optional.empty()))
                         )),
                         TargetingMode.ALLIES_AND_SELF
-                ), true), LevelBasedValue.constant(1))),
+                )), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/light_in_darkness_0"), 0),
@@ -432,11 +432,11 @@ public class ForestDragonAbilities {
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         ModifierEffect.only(new ModifierWithDuration(
-                                DurationInstanceBase.create(DragonSurvival.res("cliffhanger")).infinite().hidden().build(),
+                                DurationInstanceBase.create(DragonSurvival.res("cliffhanger")).infinite().removeAutomatically().hidden().build(),
                                 List.of(new Modifier(Attributes.SAFE_FALL_DISTANCE, LevelBasedValue.perLevel(5, 1), AttributeModifier.Operation.ADD_VALUE, Optional.empty()))
                         )),
                         TargetingMode.ALLIES_AND_SELF
-                ), true), LevelBasedValue.constant(1))),
+                )), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/cliffhanger_0"), 0),
@@ -455,13 +455,13 @@ public class ForestDragonAbilities {
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         HarvestBonusEffect.only(new HarvestBonus(
-                                DurationInstanceBase.create(DragonSurvival.res("forest_claws_and_teeth")).infinite().customIcon(DragonSurvival.res("textures/ability_effect/forest_claw.png")).build(),
+                                DurationInstanceBase.create(DragonSurvival.res("forest_claws_and_teeth")).infinite().removeAutomatically().customIcon(DragonSurvival.res("textures/ability_effect/forest_claw.png")).build(),
                                 Optional.of(context.lookup(Registries.BLOCK).getOrThrow(BlockTags.MINEABLE_WITH_AXE)),
                                 LevelBasedValue.perLevel(1, 0.5f),
                                 LevelBasedValue.perLevel(0.5f)
                         )),
                         TargetingMode.ALLIES_AND_SELF
-                ), true), LevelBasedValue.constant(1))),
+                )), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_claws_and_teeth_0"), 0),
@@ -480,7 +480,7 @@ public class ForestDragonAbilities {
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         List.of(new FlightEffect(1, DragonSurvival.res("textures/ability_effect/forest_dragon_wings.png"))),
                         TargetingMode.ALLIES_AND_SELF
-                ), true), LevelBasedValue.constant(1))),
+                )), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_wings_0"), 0),
@@ -496,7 +496,7 @@ public class ForestDragonAbilities {
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         List.of(new SpinEffect(1, Optional.of(NeoForgeMod.WATER_TYPE))),
                         TargetingMode.ALLIES_AND_SELF
-                ), true), LevelBasedValue.constant(1))),
+                )), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_spin_0"), 0),
@@ -510,7 +510,7 @@ public class ForestDragonAbilities {
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         DamageModificationEffect.only(new DamageModification(
-                                DurationInstanceBase.create(DragonSurvival.res("forest_immunity")).infinite().customIcon(DragonSurvival.res("textures/ability_effect/drain_immunity.png")).build(),
+                                DurationInstanceBase.create(DragonSurvival.res("forest_immunity")).infinite().removeAutomatically().customIcon(DragonSurvival.res("textures/ability_effect/drain_immunity.png")).build(),
                                 HolderSet.direct(
                                         context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.SWEET_BERRY_BUSH),
                                         context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DamageTypes.CACTUS),
@@ -520,7 +520,7 @@ public class ForestDragonAbilities {
                                 LevelBasedValue.constant(0)
                         )),
                         TargetingMode.ALL
-                ), true), LevelBasedValue.constant(1))),
+                )), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/forest/forest_dragon_0"), 0),

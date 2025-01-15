@@ -39,7 +39,7 @@ public class Glow extends DurationInstanceBase<GlowData, Glow.Instance> {
     }
 
     public static Glow create(final ResourceLocation id, final TextColor color) {
-        return new Glow(DurationInstanceBase.create(id).infinite().hidden().build(), color);
+        return new Glow(DurationInstanceBase.create(id).infinite().removeAutomatically().hidden().build(), color);
     }
 
     public static Glow create(final ResourceLocation id, final LevelBasedValue duration, final TextColor color) {
@@ -48,7 +48,7 @@ public class Glow extends DurationInstanceBase<GlowData, Glow.Instance> {
 
     @Override
     public Instance createInstance(final ServerPlayer dragon, final DragonAbilityInstance ability, final int currentDuration) {
-        return new Instance(this, CommonData.from(dragon, ability, customIcon()), currentDuration);
+        return new Instance(this, CommonData.from(dragon, ability, customIcon(), shouldRemoveAutomatically()), currentDuration);
     }
 
     @Override

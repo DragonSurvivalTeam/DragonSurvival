@@ -26,7 +26,8 @@
                 {
                   "base": {
                     "id": "dragonsurvival:amphibious",
-                    "is_hidden": true
+                    "is_hidden": true,
+                    "should_remove_automatically": true
                   },
                   "modifiers": [
                     {

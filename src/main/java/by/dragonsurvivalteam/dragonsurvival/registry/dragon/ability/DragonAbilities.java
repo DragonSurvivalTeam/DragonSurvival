@@ -15,7 +15,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.SeaDragon
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.BlockConversionEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.GlowEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.*;
-import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Vec3i;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -66,14 +65,14 @@ public class DragonAbilities {
                                                 Glow.create((DragonSurvival.res("blue")), TextColor.fromLegacyFormat(ChatFormatting.BLUE))
                                         ))),
                                 TargetingMode.ALLIES_AND_SELF
-                        ), true), LevelBasedValue.constant(1)),
+                        )), LevelBasedValue.constant(1)),
                         new ActionContainer(new AreaTarget(AbilityTargeting.entity(List.of(
                                         new GlowEffect(List.of(
-                                                Glow.create((DragonSurvival.res("gold")), LevelBasedValue.constant(Functions.secondsToTicks(10)), TextColor.fromLegacyFormat(ChatFormatting.GOLD)),
-                                                Glow.create((DragonSurvival.res("dark_purple")), LevelBasedValue.constant(Functions.secondsToTicks(10)), TextColor.fromLegacyFormat(ChatFormatting.DARK_PURPLE)),
-                                                Glow.create((DragonSurvival.res("green")), LevelBasedValue.constant(Functions.secondsToTicks(10)), TextColor.fromLegacyFormat(ChatFormatting.GREEN)),
-                                                Glow.create((DragonSurvival.res("red")), LevelBasedValue.constant(Functions.secondsToTicks(10)), TextColor.fromLegacyFormat(ChatFormatting.RED)),
-                                                Glow.create((DragonSurvival.res("blue")), LevelBasedValue.constant(Functions.secondsToTicks(10)), TextColor.fromLegacyFormat(ChatFormatting.BLUE))
+                                                Glow.create((DragonSurvival.res("gold")), TextColor.fromLegacyFormat(ChatFormatting.GOLD)),
+                                                Glow.create((DragonSurvival.res("dark_purple")), TextColor.fromLegacyFormat(ChatFormatting.DARK_PURPLE)),
+                                                Glow.create((DragonSurvival.res("green")), TextColor.fromLegacyFormat(ChatFormatting.GREEN)),
+                                                Glow.create((DragonSurvival.res("red")), TextColor.fromLegacyFormat(ChatFormatting.RED)),
+                                                Glow.create((DragonSurvival.res("blue")), TextColor.fromLegacyFormat(ChatFormatting.BLUE))
                                         ))),
                                 TargetingMode.ALLIES_AND_SELF
                         ), LevelBasedValue.constant(10)), LevelBasedValue.constant(1))

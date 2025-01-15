@@ -30,8 +30,11 @@ public record AttemptManualUpgrade(ResourceKey<DragonAbility> ability, Experienc
             }
 
             MagicData data = MagicData.getData(serverPlayer);
-            DragonAbilityInstance ability = data.getAbilities().get(packet.ability());
-            ability.value().upgrade().ifPresent(upgrade -> upgrade.attempt(serverPlayer, ability, packet.upgradeType()));
+            DragonAbilityInstance ability = data.getAbility(packet.ability());
+
+            if (ability != null) {
+                ability.value().upgrade().ifPresent(upgrade -> upgrade.attempt(serverPlayer, ability, packet.upgradeType()));
+            }
         });
     }
 

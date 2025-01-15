@@ -11,7 +11,8 @@
                   "base": {
                     "custom_icon": "dragonsurvival:textures/ability_effect/cave_claw.png",
                     "id": "dragonsurvival:cave_claws_and_teeth",
-                    "is_hidden": true
+                    "is_hidden": true,
+                    "should_remove_automatically": true
                   },
                   "blocks": "#minecraft:mineable/pickaxe",
                   "break_speed_multiplier": {

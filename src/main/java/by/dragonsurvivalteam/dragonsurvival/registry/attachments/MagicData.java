@@ -111,6 +111,14 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         return abilities.get(species) == null || abilities.get(species).isEmpty();
     }
 
+    public @Nullable DragonAbilityInstance getAbility(final ResourceKey<DragonAbility> key) {
+        if (currentSpecies == null) {
+            return null;
+        }
+
+        return getAbilities().get(key);
+    }
+
     public Map<ResourceKey<DragonAbility>, DragonAbilityInstance> getAbilities() {
         if (currentSpecies == null) {
             return Map.of();
@@ -207,7 +215,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
     public @Nullable DragonAbilityInstance fromSlot(int slot) {
         ResourceKey<DragonAbility> key = getHotbar().get(slot);
-        return key != null ? getAbilities().get(key) : null;
+        return key != null ? getAbility(key) : null;
     }
 
     public int slotFromAbility(final ResourceKey<DragonAbility> key) {
@@ -364,6 +372,10 @@ public class MagicData implements INBTSerializable<CompoundTag> {
     // TODO :: don't we need to de-activate the ability?
     //  better have a centralized place where we call remove and only allow it with player context
     public void removeAbility(final ResourceKey<DragonAbility> key) {
+        if (currentSpecies == null) {
+            return;
+        }
+
         getAbilities().remove(key);
         int slot = slotFromAbility(key);
 
@@ -439,7 +451,11 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
     /** Returns the amount of experience gained / lost when down- or upgrading the ability */
     public int getCost(final Player dragon, final ResourceKey<DragonAbility> key, ExperiencePointsUpgrade.Type type) {
-        DragonAbilityInstance ability = getAbilities().get(key);
+        DragonAbilityInstance ability = getAbility(key);
+
+        if (ability == null) {
+            return 0;
+        }
 
         return ability.value().upgrade().map(upgrade -> {
             if (upgrade instanceof ExperiencePointsUpgrade experiencePointsUpgrade) {

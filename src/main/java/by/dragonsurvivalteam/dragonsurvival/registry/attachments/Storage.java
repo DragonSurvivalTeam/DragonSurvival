@@ -15,12 +15,11 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public abstract class Storage<T extends StorageEntry> implements INBTSerializable<CompoundTag> {
     public static final String STORAGE = "storage";
@@ -33,7 +32,7 @@ public abstract class Storage<T extends StorageEntry> implements INBTSerializabl
 
     public void tick(final Entity storageHolder) {
         if (storage != null) {
-            Set<ResourceLocation> finished = new HashSet<>();
+            List<ResourceLocation> finished = new ArrayList<>();
 
             storage.values().forEach(entry -> {
                 if (entry.tick(storageHolder)) {

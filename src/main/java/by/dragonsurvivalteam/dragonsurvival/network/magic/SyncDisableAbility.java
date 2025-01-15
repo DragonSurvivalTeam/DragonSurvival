@@ -25,7 +25,11 @@ public record SyncDisableAbility(ResourceKey<DragonAbility> ability, boolean isD
     public static void handleServer(final SyncDisableAbility packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
             MagicData data = MagicData.getData(context.player());
-            DragonAbilityInstance ability = data.getAbilities().get(packet.ability());
+            DragonAbilityInstance ability = data.getAbility(packet.ability());
+
+            if (ability == null) {
+                return;
+            }
 
             if (packet.isDisabled() && ability.isApplyingEffects() && ability == data.getCurrentlyCasting()) {
                 data.stopCasting(context.player(), true);
@@ -38,7 +42,11 @@ public record SyncDisableAbility(ResourceKey<DragonAbility> ability, boolean isD
     public static void handleClient(final SyncDisableAbility packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
             MagicData data = MagicData.getData(context.player());
-            DragonAbilityInstance ability = data.getAbilities().get(packet.ability());
+            DragonAbilityInstance ability = data.getAbility(packet.ability());
+
+            if (ability == null) {
+                return;
+            }
 
             if (data.getCurrentlyCasting() != null && data.getCurrentlyCasting() == ability) {
                 if (ability.isApplyingEffects()) {

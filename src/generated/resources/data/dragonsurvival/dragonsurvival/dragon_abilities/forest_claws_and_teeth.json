@@ -10,7 +10,8 @@
                 {
                   "base": {
                     "custom_icon": "dragonsurvival:textures/ability_effect/forest_claw.png",
-                    "id": "dragonsurvival:forest_claws_and_teeth"
+                    "id": "dragonsurvival:forest_claws_and_teeth",
+                    "should_remove_automatically": true
                   },
                   "blocks": "#minecraft:mineable/axe",
                   "break_speed_multiplier": {

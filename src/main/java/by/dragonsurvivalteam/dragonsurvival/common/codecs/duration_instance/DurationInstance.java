@@ -1,9 +1,12 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance;
 
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.StorageEntry;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.datafixers.Products;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -11,6 +14,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import java.util.Optional;
@@ -41,6 +45,23 @@ public abstract class DurationInstance<B extends DurationInstanceBase<?, ?>> imp
 
     @Override
     public boolean tick(final Entity storageHolder) {
+        if (commonData.removeAutomatically() && commonData.source().isPresent() && commonData.ability().isPresent()) {
+            Player source = storageHolder.level().getPlayerByUUID(commonData.source().get());
+
+            if (!DragonStateProvider.isDragon(source)) {
+                return true;
+            }
+
+            // TODO :: let the server deal with removal of entries through this tick method?
+            //  (avoids the need to sync magic data to the client - removal gets synchronized anyway)
+            MagicData data = MagicData.getData(source);
+            DragonAbilityInstance ability = data.getAbility(commonData.ability().get());
+
+            if (ability == null || !ability.isApplyingEffects()) {
+                return true;
+            }
+        }
+
         if (storageHolder.level() instanceof ServerLevel serverLevel && earlyRemovalCondition().map(condition -> condition.test(Condition.entityContext(serverLevel, storageHolder))).orElse(false)) {
             return true;
         }

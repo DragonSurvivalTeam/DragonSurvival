@@ -10,7 +10,8 @@
                 {
                   "base": {
                     "custom_icon": "dragonsurvival:textures/ability_effect/fire_immunity.png",
-                    "id": "dragonsurvival:fire_immunity"
+                    "id": "dragonsurvival:fire_immunity",
+                    "should_remove_automatically": true
                   },
                   "multiplier": 0.0,
                   "types": "#minecraft:is_fire"

@@ -20,6 +20,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO :: does this need some 'remove_automatically' handling as well?
 public record FlightEffect(int flightLevel, ResourceLocation icon) implements AbilityEntityEffect {
     @Translation(comments = "§6■ Can use flight")
     private static final String FLIGHT = Translation.Type.GUI.wrap("flight_effect.flight");

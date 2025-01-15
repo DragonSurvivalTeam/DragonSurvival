@@ -10,7 +10,8 @@
                 {
                   "base": {
                     "id": "dragonsurvival:forest_magic",
-                    "is_hidden": true
+                    "is_hidden": true,
+                    "should_remove_automatically": true
                   },
                   "modifiers": [
                     {
@@ -43,7 +44,8 @@
                 {
                   "base": {
                     "id": "dragonsurvival:good_mana_condition",
-                    "is_hidden": true
+                    "is_hidden": true,
+                    "should_remove_automatically": true
                   },
                   "modifiers": [
                     {

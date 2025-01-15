@@ -24,7 +24,7 @@ public record SyncAbilityLevel(ResourceKey<DragonAbility> ability, int level) im
     public static void handleClient(final SyncAbilityLevel packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
             MagicData data = MagicData.getData(context.player());
-            DragonAbilityInstance ability = data.getAbilities().get(packet.ability());
+            DragonAbilityInstance ability = data.getAbility(packet.ability());
 
             if (ability != null) {
                 ability.setLevel(packet.level());

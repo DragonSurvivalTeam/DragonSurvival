@@ -34,7 +34,6 @@
           },
           "targeting_mode": "allies_and_self"
         },
-        "remove_automatically": false,
         "target_type": "dragonsurvival:self"
       },
       "trigger_rate": 20.0

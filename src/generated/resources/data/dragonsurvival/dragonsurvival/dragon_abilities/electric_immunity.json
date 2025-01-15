@@ -10,7 +10,8 @@
                 {
                   "base": {
                     "custom_icon": "dragonsurvival:textures/ability_effect/electric_immunity.png",
-                    "id": "dragonsurvival:electric_immunity"
+                    "id": "dragonsurvival:electric_immunity",
+                    "should_remove_automatically": true
                   },
                   "multiplier": 0.0,
                   "types": "#dragonsurvival:is_electric"

@@ -10,35 +10,40 @@
                 {
                   "base": {
                     "id": "dragonsurvival:gold",
-                    "is_hidden": true
+                    "is_hidden": true,
+                    "should_remove_automatically": true
                   },
                   "color": "gold"
                 },
                 {
                   "base": {
                     "id": "dragonsurvival:dark_purple",
-                    "is_hidden": true
+                    "is_hidden": true,
+                    "should_remove_automatically": true
                   },
                   "color": "dark_purple"
                 },
                 {
                   "base": {
                     "id": "dragonsurvival:green",
-                    "is_hidden": true
+                    "is_hidden": true,
+                    "should_remove_automatically": true
                   },
                   "color": "green"
                 },
                 {
                   "base": {
                     "id": "dragonsurvival:red",
-                    "is_hidden": true
+                    "is_hidden": true,
+                    "should_remove_automatically": true
                   },
                   "color": "red"
                 },
                 {
                   "base": {
                     "id": "dragonsurvival:blue",
-                    "is_hidden": true
+                    "is_hidden": true,
+                    "should_remove_automatically": true
                   },
                   "color": "blue"
                 }
@@ -60,41 +65,41 @@
               "glows": [
                 {
                   "base": {
-                    "duration": 200.0,
                     "id": "dragonsurvival:gold",
-                    "is_hidden": true
+                    "is_hidden": true,
+                    "should_remove_automatically": true
                   },
                   "color": "gold"
                 },
                 {
                   "base": {
-                    "duration": 200.0,
                     "id": "dragonsurvival:dark_purple",
-                    "is_hidden": true
+                    "is_hidden": true,
+                    "should_remove_automatically": true
                   },
                   "color": "dark_purple"
                 },
                 {
                   "base": {
-                    "duration": 200.0,
                     "id": "dragonsurvival:green",
-                    "is_hidden": true
+                    "is_hidden": true,
+                    "should_remove_automatically": true
                   },
                   "color": "green"
                 },
                 {
                   "base": {
-                    "duration": 200.0,
                     "id": "dragonsurvival:red",
-                    "is_hidden": true
+                    "is_hidden": true,
+                    "should_remove_automatically": true
                   },
                   "color": "red"
                 },
                 {
                   "base": {
-                    "duration": 200.0,
                     "id": "dragonsurvival:blue",
-                    "is_hidden": true
+                    "is_hidden": true,
+                    "should_remove_automatically": true
                   },
                   "color": "blue"
                 }

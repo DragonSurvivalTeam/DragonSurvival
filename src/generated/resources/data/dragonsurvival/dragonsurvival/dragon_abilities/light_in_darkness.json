@@ -10,7 +10,8 @@
                 {
                   "base": {
                     "id": "dragonsurvival:light_in_darkness",
-                    "is_hidden": true
+                    "is_hidden": true,
+                    "should_remove_automatically": true
                   },
                   "modifiers": [
                     {

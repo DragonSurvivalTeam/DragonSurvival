@@ -258,7 +258,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
 
     @Override
     public Instance createInstance(final ServerPlayer dragon, final DragonAbilityInstance ability, final int currentDuration) {
-        return new Instance(this, CommonData.from(dragon, ability, customIcon()), currentDuration, new ArrayList<>(), 0);
+        return new Instance(this, CommonData.from(dragon, ability, customIcon(), shouldRemoveAutomatically()), currentDuration, new ArrayList<>(), 0);
     }
 
     @Override

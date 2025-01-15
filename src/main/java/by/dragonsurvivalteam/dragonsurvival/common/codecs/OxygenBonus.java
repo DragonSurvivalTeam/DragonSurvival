@@ -105,7 +105,7 @@ public class OxygenBonus extends DurationInstanceBase<OxygenBonuses, OxygenBonus
 
     @Override
     public Instance createInstance(final ServerPlayer dragon, final DragonAbilityInstance ability, final int currentDuration) {
-        return new Instance(this, CommonData.from(dragon, ability, customIcon()), currentDuration);
+        return new Instance(this, CommonData.from(dragon, ability, customIcon(), shouldRemoveAutomatically()), currentDuration);
     }
 
     @Override
