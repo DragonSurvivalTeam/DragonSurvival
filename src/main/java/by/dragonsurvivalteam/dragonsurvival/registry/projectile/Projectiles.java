@@ -141,16 +141,21 @@ public class Projectiles {
                                                 )
                                         ), 10, 0.1),
                                         LevelBasedValue.constant(4),
-                                        Optional.empty()
+                                        Optional.of(ParticleTypes.ELECTRIC_SPARK)
                                 )
                         ),
-                        List.of(),
+                        List.of(new ProjectilePointTarget(new ProjectileTargeting.GeneralData(List.of(
+                                new ProjectileTargeting.ConditionalEffect(new ProjectileWorldParticleEffect(
+                                        new SpawnParticles(new SmallLightningParticleOption(37, true), SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), ConstantFloat.of(0.1f)),
+                                        LevelBasedValue.constant(10)
+                                ), Optional.empty())), 1, 1)
+                        )),
                         List.of(),
                         List.of()
                 ),
                 Either.left(new ProjectileData.GenericBallData(
                         new LevelBasedResource(List.of(new LevelBasedResource.TextureEntry(BALL_LIGHTNING.location(), 1))),
-                        Optional.empty(),
+                        Optional.of(ParticleTypes.ELECTRIC_SPARK),
                         List.of(new ProjectilePointTarget(new ProjectileTargeting.GeneralData(List.of(
                                 new ProjectileTargeting.ConditionalEffect(new ProjectileExplosionEffect(
                                         context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.BALL_LIGHTNING),

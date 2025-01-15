@@ -1,7 +1,41 @@
 {
   "general_data": {
     "block_hit_effects": [],
-    "common_hit_effects": [],
+    "common_hit_effects": [
+      {
+        "general_data": {
+          "effects": [
+            {
+              "effect": {
+                "particle_count": 10.0,
+                "particle_data": {
+                  "horizontal_position": {
+                    "type": "in_bounding_box"
+                  },
+                  "horizontal_velocity": {
+                    "base": 0.05
+                  },
+                  "particle": {
+                    "type": "dragonsurvival:lightning",
+                    "duration": 37.0,
+                    "swirls": true
+                  },
+                  "speed": 0.1,
+                  "vertical_position": {
+                    "type": "in_bounding_box"
+                  },
+                  "vertical_velocity": {
+                    "base": 0.05
+                  }
+                },
+                "world_effect": "dragonsurvival:particle"
+              }
+            }
+          ]
+        },
+        "target_type": "dragonsurvival:point"
+      }
+    ],
     "entity_hit_condition": {
       "condition": "minecraft:entity_properties",
       "entity": "this",
@@ -115,6 +149,9 @@
           ],
           "tick_rate": 10
         },
+        "particle_trail": {
+          "type": "minecraft:electric_spark"
+        },
         "radius": 4.0,
         "target_type": "dragonsurvival:area"
       }
@@ -158,6 +195,9 @@
           "texture_resource": "dragonsurvival:ball_lightning"
         }
       ]
+    },
+    "trail_particle": {
+      "type": "minecraft:electric_spark"
     }
   }
 }
