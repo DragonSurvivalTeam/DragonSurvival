@@ -109,6 +109,9 @@ public class DragonStateHandler extends EntityStateHandler {
     // Needed to calculate collision damage correctly when flying. See ServerFlightHandler.
     public Vec3 preCollisionDeltaMovement = Vec3.ZERO;
 
+    // Needed for some special refreshDimensions calculations (see EntityMixin)
+    public boolean refreshedDimensionsFromSizeChange;
+
     /** Sets the stage and retains the current size */
     public void setStage(@Nullable final Player player, final Holder<DragonStage> dragonStage) {
         if (!dragonSpecies.value().getStages(player != null ? player.registryAccess() : null).contains(dragonStage)) {
@@ -178,7 +181,9 @@ public class DragonStateHandler extends EntityStateHandler {
             return;
         }
 
+        refreshedDimensionsFromSizeChange = true;
         player.refreshDimensions();
+        refreshedDimensionsFromSizeChange = false;
 
         if (player instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncSize(serverPlayer.getId(), getSize()));
