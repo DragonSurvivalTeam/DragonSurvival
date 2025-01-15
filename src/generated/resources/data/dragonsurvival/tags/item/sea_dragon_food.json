@@ -1,11 +1,15 @@
 {
   "values": [
     {
-      "id": "#minecraft:fishes",
+      "id": "#c:foods/raw_fish",
       "required": false
     },
     {
       "id": "minecraft:kelp",
+      "required": false
+    },
+    {
+      "id": "#c:eggs",
       "required": false
     },
     {

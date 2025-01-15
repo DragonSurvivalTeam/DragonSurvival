@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.conditions;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.CustomPredicates;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.DragonPredicate;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.EntityCheckPredicate;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.NearbyEntityPredicate;
 import by.dragonsurvivalteam.dragonsurvival.common.items.growth.StarHeartItem;
 import net.minecraft.advancements.critereon.BlockPredicate;
 import net.minecraft.advancements.critereon.EntityFlagsPredicate;
@@ -18,6 +19,7 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
@@ -107,9 +109,11 @@ public class EntityCondition {
     }
 
     public static EntityPredicate isInRain() {
-        return EntityPredicate.Builder.entity()
-                .located(LocationPredicate.Builder.location().setCanSeeSky(true))
-                .subPredicate(CustomPredicates.Builder.start().raining(true).build()).build();
+        return EntityPredicate.Builder.entity().subPredicate(CustomPredicates.Builder.start().raining(true).build()).build();
+    }
+
+    public static EntityPredicate isInRainOrSnow() {
+        return EntityPredicate.Builder.entity().subPredicate(CustomPredicates.Builder.start().rainingOrSnowing(true).build()).build();
     }
 
     public static EntityPredicate isInSunlight(int sunLightLevel) {
@@ -134,6 +138,10 @@ public class EntityCondition {
 
     public static EntityPredicate spinWasGranted(boolean spinWasGranted) {
         return EntityPredicate.Builder.entity().subPredicate(DragonPredicate.Builder.dragon().spinWasGranted(spinWasGranted).build()).build();
+    }
+
+    public static EntityPredicate isNearbyTo(int radius, final EntityType<?>... types) {
+        return EntityPredicate.Builder.entity().subPredicate(CustomPredicates.Builder.start().isNearbyEntity(NearbyEntityPredicate.of(radius, EntityType.BEE)).build()).build();
     }
 
     @SafeVarargs

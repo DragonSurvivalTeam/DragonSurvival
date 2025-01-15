@@ -7,6 +7,7 @@
     "#c:sands",
     "#dragonsurvival:is_wet",
     "minecraft:dirt_path",
+    "minecraft:sand",
     "minecraft:mud"
   ]
 }

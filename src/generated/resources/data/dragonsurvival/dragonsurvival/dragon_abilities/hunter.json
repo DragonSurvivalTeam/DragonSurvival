@@ -19,6 +19,28 @@
                 },
                 "effects": "dragonsurvival:hunter"
               }
+            },
+            {
+              "effect_type": "dragonsurvival:particle",
+              "particle_count": 20.0,
+              "particle_data": {
+                "horizontal_position": {
+                  "type": "in_bounding_box"
+                },
+                "horizontal_velocity": {
+                  "base": 0.1
+                },
+                "particle": {
+                  "type": "minecraft:dragon_breath"
+                },
+                "speed": 0.1,
+                "vertical_position": {
+                  "type": "in_bounding_box"
+                },
+                "vertical_velocity": {
+                  "base": 0.1
+                }
+              }
             }
           ],
           "targeting_mode": "allies_and_self"
@@ -47,7 +69,7 @@
       }
     },
     "can_move_while_casting": false,
-    "cast_time": 80.0,
+    "cast_time": 60.0,
     "cooldown": 600.0,
     "initial_mana_cost": 1.0,
     "sound": {

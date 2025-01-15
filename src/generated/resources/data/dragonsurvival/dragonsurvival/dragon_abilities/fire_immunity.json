@@ -8,8 +8,10 @@
               "effect_type": "dragonsurvival:damage_modification",
               "modifications": [
                 {
-                  "custom_icon": "dragonsurvival:textures/ability_effect/fire_immunity.png",
-                  "id": "dragonsurvival:fire_immunity",
+                  "base": {
+                    "custom_icon": "dragonsurvival:textures/ability_effect/fire_immunity.png",
+                    "id": "dragonsurvival:fire_immunity"
+                  },
                   "multiplier": 0.0,
                   "types": "#minecraft:is_fire"
                 }

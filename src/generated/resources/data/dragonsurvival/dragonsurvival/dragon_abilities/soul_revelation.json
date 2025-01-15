@@ -8,13 +8,15 @@
               "effect_type": "dragonsurvival:modifier",
               "modifiers": [
                 {
-                  "custom_icon": "dragonsurvival:textures/ability_effect/revealing_the_soul.png",
-                  "duration": {
-                    "type": "minecraft:linear",
-                    "base": 1200.0,
-                    "per_level_above_first": 1200.0
+                  "base": {
+                    "custom_icon": "dragonsurvival:textures/ability_effect/revealing_the_soul.png",
+                    "duration": {
+                      "type": "minecraft:linear",
+                      "base": 1200.0,
+                      "per_level_above_first": 1200.0
+                    },
+                    "id": "dragonsurvival:revealing_the_soul"
                   },
-                  "id": "dragonsurvival:revealing_the_soul",
                   "modifiers": [
                     {
                       "amount": {
@@ -78,7 +80,7 @@
       }
     },
     "can_move_while_casting": false,
-    "cast_time": 20.0,
+    "cast_time": 60.0,
     "cooldown": 600.0,
     "initial_mana_cost": 1.0,
     "sound": {

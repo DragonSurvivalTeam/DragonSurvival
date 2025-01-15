@@ -19,7 +19,7 @@ public record DamageModificationPenalty(DamageModification modification, int dur
     @Override
     public void apply(final ServerPlayer player, final Holder<DragonPenalty> penalty) {
         DamageModifications modifications = player.getData(DSDataAttachments.DAMAGE_MODIFICATIONS);
-        DamageModification.Instance instance = modifications.get(modification.id());
+        DamageModification.Instance instance = modifications.get(modification.base().id());
 
         if (instance != null && instance.currentDuration() == duration) {
             return;

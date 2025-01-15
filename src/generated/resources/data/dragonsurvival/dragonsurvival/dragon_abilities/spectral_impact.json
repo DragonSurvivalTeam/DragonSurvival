@@ -8,8 +8,10 @@
               "effect_type": "dragonsurvival:modifier",
               "modifiers": [
                 {
-                  "id": "dragonsurvival:spectral_impact",
-                  "is_hidden": true,
+                  "base": {
+                    "id": "dragonsurvival:spectral_impact",
+                    "is_hidden": true
+                  },
                   "modifiers": [
                     {
                       "amount": {

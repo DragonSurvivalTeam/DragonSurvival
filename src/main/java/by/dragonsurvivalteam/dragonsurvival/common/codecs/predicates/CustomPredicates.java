@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.Storage;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -26,13 +27,15 @@ public record CustomPredicates(
         Optional<HolderSet<FluidType>> eyeInFluid,
         Optional<WeatherPredicate> weatherPredicate,
         Optional<MinMaxBounds.Ints> sunLightLevel,
-        Optional<ResourceLocation> modifierPresent
+        Optional<ResourceLocation> hasAbilityEffect,
+        Optional<NearbyEntityPredicate> isNearbyEntity
 ) implements EntitySubPredicate {
     public static final MapCodec<CustomPredicates> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             RegistryCodecs.homogeneousList(NeoForgeRegistries.FLUID_TYPES.key()).optionalFieldOf("eye_in_fluid").forGetter(CustomPredicates::eyeInFluid),
             WeatherPredicate.CODEC.optionalFieldOf("weather_predicate").forGetter(CustomPredicates::weatherPredicate),
             MinMaxBounds.Ints.CODEC.optionalFieldOf("sun_light_level").forGetter(CustomPredicates::sunLightLevel),
-            ResourceLocation.CODEC.optionalFieldOf("modifier_present").forGetter(CustomPredicates::modifierPresent)
+            ResourceLocation.CODEC.optionalFieldOf("has_ability_effect").forGetter(CustomPredicates::hasAbilityEffect),
+            NearbyEntityPredicate.CODEC.optionalFieldOf("is_nearby_entity").forGetter(CustomPredicates::isNearbyEntity)
     ).apply(instance, CustomPredicates::new));
 
     @Override
@@ -55,16 +58,23 @@ public record CustomPredicates(
             return false;
         }
 
-        if(!modifierPresent.map(modifier ->
-                entity.getExistingData(DSDataAttachments.MODIFIERS_WITH_DURATION).map(data -> data.all().stream().anyMatch(mod -> mod.id().equals(modifier))).orElse(false)
-                || entity.getExistingData(DSDataAttachments.OXYGEN_BONUSES).map(data -> data.all().stream().anyMatch(mod -> mod.id().equals(modifier))).orElse(false)
-                || entity.getExistingData(DSDataAttachments.HARVEST_BONUSES).map(data -> data.all().stream().anyMatch(mod -> mod.id().equals(modifier))).orElse(false)
-                || entity.getExistingData(DSDataAttachments.BLOCK_VISION).map(data -> data.all().stream().anyMatch(mod -> mod.id().equals(modifier))).orElse(false)
-                || entity.getExistingData(DSDataAttachments.DAMAGE_MODIFICATIONS).map(data -> data.all().stream().anyMatch(mod -> mod.id().equals(modifier))).orElse(false)
-                || entity.getExistingData(DSDataAttachments.EFFECT_MODIFICATIONS).map(data -> data.all().stream().anyMatch(mod -> mod.id().equals(modifier))).orElse(false)
-                || entity.getExistingData(DSDataAttachments.GLOW).map(data -> data.all().stream().anyMatch(mod -> mod.id().equals(modifier))).orElse(false)
-        ).orElse(true))
-        {
+        if (hasAbilityEffect.isPresent()) {
+            ResourceLocation abilityEffect = hasAbilityEffect.get();
+            boolean isPresent = false;
+
+            for (Storage<?> storage : DSDataAttachments.getStorages(entity)) {
+                if (storage.all().stream().anyMatch(entry -> entry.id().equals(abilityEffect))) {
+                    isPresent = true;
+                    break;
+                }
+            }
+
+            if (!isPresent) {
+                return false;
+            }
+        }
+
+        if (!isNearbyEntity.map(predicate -> predicate.matches(level, position)).orElse(false)) {
             return false;
         }
 
@@ -82,8 +92,11 @@ public record CustomPredicates(
         private Optional<HolderSet<FluidType>> eyeInFluid = Optional.empty();
         private Optional<Boolean> isRaining = Optional.empty();
         private Optional<Boolean> isThundering = Optional.empty();
+        private Optional<Boolean> isSnowing = Optional.empty();
+        private Optional<Boolean> isRainingOrSnowing = Optional.empty();
         private Optional<MinMaxBounds.Ints> sunLightLevel = Optional.empty();
-        private Optional<ResourceLocation> modifierPresent = Optional.empty();
+        private Optional<ResourceLocation> hasAbilityEffect = Optional.empty();
+        private Optional<NearbyEntityPredicate> isNearbyEntity = Optional.empty();
 
         public static CustomPredicates.Builder start() {
             return new CustomPredicates.Builder();
@@ -109,18 +122,33 @@ public record CustomPredicates(
             return this;
         }
 
+        public CustomPredicates.Builder snowing(boolean isSnowing) {
+            this.isSnowing = Optional.of(isSnowing);
+            return this;
+        }
+
+        public CustomPredicates.Builder rainingOrSnowing(boolean isRainingOrSnowing) {
+            this.isRainingOrSnowing = Optional.of(isRainingOrSnowing);
+            return this;
+        }
+
         public CustomPredicates.Builder sunLightLevel(int atLeast) {
             this.sunLightLevel = Optional.of(MinMaxBounds.Ints.atLeast(atLeast));
             return this;
         }
 
-        public CustomPredicates.Builder modifierPresent(ResourceLocation modifier) {
-            this.modifierPresent = Optional.of(modifier);
+        public CustomPredicates.Builder hasAbilityEffect(final ResourceLocation abilityEffect) {
+            this.hasAbilityEffect = Optional.of(abilityEffect);
+            return this;
+        }
+
+        public CustomPredicates.Builder isNearbyEntity(final NearbyEntityPredicate isNearbyEntity) {
+            this.isNearbyEntity = Optional.of(isNearbyEntity);
             return this;
         }
 
         public CustomPredicates build() {
-            return new CustomPredicates(eyeInFluid, Optional.of(new WeatherPredicate(isRaining, isThundering)), sunLightLevel, modifierPresent);
+            return new CustomPredicates(eyeInFluid, Optional.of(new WeatherPredicate(isRaining, isThundering, isSnowing, isRainingOrSnowing)), sunLightLevel, hasAbilityEffect, isNearbyEntity);
         }
     }
 }

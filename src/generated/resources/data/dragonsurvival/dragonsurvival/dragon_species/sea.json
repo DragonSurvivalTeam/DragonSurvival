@@ -18,11 +18,12 @@
   "diet": [
     {
       "items": [
-        "#minecraft:fishes"
+        "#c:foods/raw_fish"
       ],
       "properties": {
-        "nutrition": 6,
-        "saturation": 4.0
+        "eat_seconds": 1.2,
+        "nutrition": 4,
+        "saturation": 1.0
       }
     },
     {
@@ -30,8 +31,19 @@
         "minecraft:kelp"
       ],
       "properties": {
+        "eat_seconds": 1.0,
         "nutrition": 1,
         "saturation": 1.0
+      }
+    },
+    {
+      "items": [
+        "#c:eggs"
+      ],
+      "properties": {
+        "eat_seconds": 0.8,
+        "nutrition": 2,
+        "saturation": 2.0
       }
     },
     {

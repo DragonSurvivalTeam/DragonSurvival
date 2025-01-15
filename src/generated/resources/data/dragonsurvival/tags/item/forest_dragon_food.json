@@ -13,6 +13,14 @@
       "required": false
     },
     {
+      "id": "#c:eggs",
+      "required": false
+    },
+    {
+      "id": "minecraft:sweet_berries",
+      "required": false
+    },
+    {
       "id": "minecraft:rotten_flesh",
       "required": false
     },

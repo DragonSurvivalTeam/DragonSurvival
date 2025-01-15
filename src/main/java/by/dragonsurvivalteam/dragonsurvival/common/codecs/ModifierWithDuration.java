@@ -30,47 +30,44 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.enchantment.LevelBasedValue;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public record ModifierWithDuration(ResourceLocation id, List<Modifier> modifiers, LevelBasedValue duration, Optional<ResourceLocation> customIcon, boolean isHidden) {
+public record ModifierWithDuration(DurationInstanceBase base, List<Modifier> modifiers) {
     public static final Codec<ModifierWithDuration> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ResourceLocation.CODEC.fieldOf("id").forGetter(ModifierWithDuration::id),
-            Modifier.CODEC.listOf().fieldOf("modifiers").forGetter(ModifierWithDuration::modifiers),
-            LevelBasedValue.CODEC.optionalFieldOf("duration", LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)).forGetter(ModifierWithDuration::duration),
-            ResourceLocation.CODEC.optionalFieldOf("custom_icon").forGetter(ModifierWithDuration::customIcon),
-            Codec.BOOL.optionalFieldOf("is_hidden", false).forGetter(ModifierWithDuration::isHidden)
+            DurationInstanceBase.CODEC.fieldOf("base").forGetter(ModifierWithDuration::base),
+            Modifier.CODEC.listOf().fieldOf("modifiers").forGetter(ModifierWithDuration::modifiers)
     ).apply(instance, ModifierWithDuration::new));
 
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final LivingEntity target) {
-        int newDuration = (int) duration.calculate(ability.level());
+        int newDuration = (int) base.duration().calculate(ability.level());
 
         ModifiersWithDuration data = target.getData(DSDataAttachments.MODIFIERS_WITH_DURATION);
-        Instance instance = data.get(id);
+        Instance instance = data.get(base.id());
 
         if (instance != null && instance.appliedAbilityLevel() == ability.level() && instance.currentDuration() == newDuration) {
             return;
         }
 
         data.remove(target, instance);
-        data.add(target, new ModifierWithDuration.Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, customIcon), ability.level(), newDuration, new HashMap<>()));
+        data.add(target, new ModifierWithDuration.Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, base.customIcon()), ability.level(), newDuration, new HashMap<>()));
     }
 
     public void remove(final LivingEntity target) {
         ModifiersWithDuration data = target.getData(DSDataAttachments.MODIFIERS_WITH_DURATION);
-        data.remove(target, data.get(id));
+        data.remove(target, data.get(base.id()));
     }
 
     public @Nullable MutableComponent getDescription(final int abilityLevel) {
-        double duration = Functions.ticksToSeconds((int) this.duration.calculate(abilityLevel));
+        double duration = Functions.ticksToSeconds((int) base.duration().calculate(abilityLevel));
         MutableComponent description = null;
 
         for (Modifier modifier : modifiers) {
@@ -183,17 +180,22 @@ public record ModifierWithDuration(ResourceLocation id, List<Modifier> modifiers
 
         @Override
         public ResourceLocation id() {
-            return baseData().id();
+            return baseData().base().id();
         }
 
         @Override
         public int getDuration() {
-            return (int) baseData().duration().calculate(appliedAbilityLevel());
+            return (int) baseData().base().duration().calculate(appliedAbilityLevel());
+        }
+
+        @Override
+        public Optional<LootItemCondition> earlyRemovalCondition() {
+            return baseData().base().earlyRemovalCondition();
         }
 
         @Override
         public boolean isHidden() {
-            return baseData().isHidden();
+            return baseData().base().isHidden();
         }
     }
 }

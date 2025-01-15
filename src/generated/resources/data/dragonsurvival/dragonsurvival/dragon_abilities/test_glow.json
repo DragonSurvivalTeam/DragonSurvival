@@ -1,0 +1,140 @@
+{
+  "actions": [
+    {
+      "target_selection": {
+        "applied_effects": {
+          "entity_effect": [
+            {
+              "effect_type": "dragonsurvival:glow",
+              "glows": [
+                {
+                  "base": {
+                    "id": "dragonsurvival:gold",
+                    "is_hidden": true
+                  },
+                  "color": "gold"
+                },
+                {
+                  "base": {
+                    "id": "dragonsurvival:dark_purple",
+                    "is_hidden": true
+                  },
+                  "color": "dark_purple"
+                },
+                {
+                  "base": {
+                    "id": "dragonsurvival:green",
+                    "is_hidden": true
+                  },
+                  "color": "green"
+                },
+                {
+                  "base": {
+                    "id": "dragonsurvival:red",
+                    "is_hidden": true
+                  },
+                  "color": "red"
+                },
+                {
+                  "base": {
+                    "id": "dragonsurvival:blue",
+                    "is_hidden": true
+                  },
+                  "color": "blue"
+                }
+              ]
+            }
+          ],
+          "targeting_mode": "allies_and_self"
+        },
+        "target_type": "dragonsurvival:self"
+      },
+      "trigger_rate": 1.0
+    },
+    {
+      "target_selection": {
+        "applied_effects": {
+          "entity_effect": [
+            {
+              "effect_type": "dragonsurvival:glow",
+              "glows": [
+                {
+                  "base": {
+                    "duration": 200.0,
+                    "id": "dragonsurvival:gold",
+                    "is_hidden": true
+                  },
+                  "color": "gold"
+                },
+                {
+                  "base": {
+                    "duration": 200.0,
+                    "id": "dragonsurvival:dark_purple",
+                    "is_hidden": true
+                  },
+                  "color": "dark_purple"
+                },
+                {
+                  "base": {
+                    "duration": 200.0,
+                    "id": "dragonsurvival:green",
+                    "is_hidden": true
+                  },
+                  "color": "green"
+                },
+                {
+                  "base": {
+                    "duration": 200.0,
+                    "id": "dragonsurvival:red",
+                    "is_hidden": true
+                  },
+                  "color": "red"
+                },
+                {
+                  "base": {
+                    "duration": 200.0,
+                    "id": "dragonsurvival:blue",
+                    "is_hidden": true
+                  },
+                  "color": "blue"
+                }
+              ]
+            }
+          ],
+          "targeting_mode": "allies_and_self"
+        },
+        "radius": 10.0,
+        "target_type": "dragonsurvival:area"
+      },
+      "trigger_rate": 1.0
+    }
+  ],
+  "activation": {
+    "type": "passive"
+  },
+  "icon": {
+    "texture_entries": [
+      {
+        "from_level": 0,
+        "texture_resource": "dragonsurvival:test_glow"
+      }
+    ]
+  },
+  "usage_blocked": {
+    "condition": "minecraft:inverted",
+    "term": {
+      "condition": "minecraft:entity_properties",
+      "entity": "this",
+      "predicate": {
+        "type_specific": {
+          "type": "dragonsurvival:custom_predicates",
+          "is_nearby_entity": {
+            "radius": 16,
+            "types": "minecraft:bee"
+          },
+          "weather_predicate": {}
+        }
+      }
+    }
+  }
+}

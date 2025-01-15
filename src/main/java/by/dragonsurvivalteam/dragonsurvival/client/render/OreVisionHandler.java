@@ -1,11 +1,20 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render;
 
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.FrustumAccess;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.BlockVisionData;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.MeshData;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -38,12 +47,11 @@ import java.util.concurrent.TimeUnit;
 public class OreVisionHandler {
     private static final int NO_COLOR = -1;
     /** Extend the search as a buffer while the background thread is searching */
-    private static final int EXTENDED_SEARCH_RANGE = 32;
+    private static final int EXTENDED_SEARCH_RANGE = 16;
     /** Forces all sides to be rendered (boolean amount is proportional to {@link Direction}) */
     private static final boolean[] FULL_DRAW = {true, true, true, true, true, true};
 
-    // TODO
-    private static int visibleRange = 32;
+    private static int visibleRange;
 
     private static Cache<LevelChunkSection, Boolean[]> CHUNK_CACHE;
 
@@ -97,13 +105,7 @@ public class OreVisionHandler {
     @SubscribeEvent
     public static void clearData(final EntityLeaveLevelEvent event) {
         if (event.getEntity() == Minecraft.getInstance().player) {
-            RENDER_DATA.clear();
-            SEARCH_RESULT.clear();
-            REMOVAL.clear();
-
-            lastPosition = null;
-            isSearching = false;
-            hasPendingUpdate = false;
+            clear();
         }
     }
 
@@ -114,6 +116,14 @@ public class OreVisionHandler {
         }
 
         LocalPlayer player = Objects.requireNonNull(Minecraft.getInstance().player);
+        BlockVisionData blockVision = player.getExistingData(DSDataAttachments.BLOCK_VISION).orElse(null);
+
+        if (blockVision == null) {
+            // TODO :: should be okay to call this every tick?
+            clear();
+            return;
+        }
+
         initCache();
 
         if (!isSearching && hasPendingUpdate) {
@@ -405,6 +415,18 @@ public class OreVisionHandler {
     private static void drawLine(final VertexConsumer buffer, final PoseStack.Pose pose, float fromX, float fromY, float fromZ, float toX, float toY, float toZ, int normalX, int normalY, int normalZ, final int color) {
         buffer.addVertex(pose, fromX, fromY, fromZ).setColor(color).setNormal(pose, normalX, normalY, normalZ);
         buffer.addVertex(pose, toX, toY, toZ).setColor(color).setNormal(pose, normalX, normalY, normalZ);
+    }
+
+    private static void clear() {
+        RENDER_DATA.clear();
+        SEARCH_RESULT.clear();
+        REMOVAL.clear();
+
+        lastPosition = null;
+        isSearching = false;
+        hasPendingUpdate = false;
+
+        CHUNK_CACHE.invalidateAll();
     }
 
     private static void initCache() {

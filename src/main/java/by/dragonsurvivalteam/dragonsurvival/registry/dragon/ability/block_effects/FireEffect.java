@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.FireBlock;
 import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 public record FireEffect(LevelBasedValue igniteProbability) implements AbilityBlockEffect {
     public static final MapCodec<FireEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -29,6 +30,8 @@ public record FireEffect(LevelBasedValue igniteProbability) implements AbilityBl
             dragon.level().setBlock(position, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL_IMMEDIATE);
         } else if (block instanceof CampfireBlock && !state.getValue(CampfireBlock.LIT)) {
             dragon.level().setBlock(position, state.setValue(CampfireBlock.LIT, true), Block.UPDATE_ALL_IMMEDIATE);
+        } else if (state.getOptionalValue(BlockStateProperties.SNOWY).orElse(false)) {
+            dragon.level().setBlock(position, state.setValue(BlockStateProperties.SNOWY, false), Block.UPDATE_ALL_IMMEDIATE);
         } else if (FireBlock.canBePlacedAt(dragon.level(), position, direction) && dragon.getRandom().nextDouble() < igniteProbability.calculate(ability.level())) {
             BlockState fireBlockState = FireBlock.getState(dragon.level(), position);
             dragon.level().setBlock(position, fireBlockState, Block.UPDATE_ALL_IMMEDIATE);

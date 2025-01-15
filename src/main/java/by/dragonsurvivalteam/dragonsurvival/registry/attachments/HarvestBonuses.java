@@ -52,7 +52,7 @@ public class HarvestBonuses extends Storage<HarvestBonus.Instance> {
         int bonus = player.getExistingData(DSDataAttachments.HARVEST_BONUSES).map(data -> data.getHarvestBonus(state)).orElse(HarvestBonus.NO_BONUS_VALUE);
 
         if (considerTool) {
-            return bonus + ToolUtils.toolToHarvestLevel(player.getMainHandItem()) > ToolUtils.getRequiredHarvestLevel(state);
+            return bonus + ToolUtils.toolToHarvestLevel(player.getMainHandItem()) >= ToolUtils.getRequiredHarvestLevel(state);
         }
 
         return bonus >= ToolUtils.getRequiredHarvestLevel(state);

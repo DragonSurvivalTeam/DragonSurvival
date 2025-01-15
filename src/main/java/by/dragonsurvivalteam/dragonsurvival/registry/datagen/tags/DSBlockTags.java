@@ -221,6 +221,7 @@ public class DSBlockTags extends BlockTagsProvider {
                 .addTag(Tags.Blocks.SANDS)
                 .addTag(IS_WET)
                 .add(Blocks.DIRT_PATH)
+                .add(Blocks.SAND)
                 .add(Blocks.MUD);
 
         tag(SPEEDS_UP_FOREST_DRAGON)

@@ -8,8 +8,10 @@
               "effect_type": "dragonsurvival:modifier",
               "modifiers": [
                 {
-                  "id": "dragonsurvival:dry_resilience",
-                  "is_hidden": true,
+                  "base": {
+                    "id": "dragonsurvival:dry_resilience",
+                    "is_hidden": true
+                  },
                   "modifiers": [
                     {
                       "amount": {

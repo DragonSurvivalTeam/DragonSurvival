@@ -15,6 +15,28 @@
                 "duration": 4000.0,
                 "effects": "minecraft:haste"
               }
+            },
+            {
+              "effect_type": "dragonsurvival:particle",
+              "particle_count": 20.0,
+              "particle_data": {
+                "horizontal_position": {
+                  "type": "in_bounding_box"
+                },
+                "horizontal_velocity": {
+                  "base": 0.05
+                },
+                "particle": {
+                  "type": "minecraft:end_rod"
+                },
+                "speed": 0.05,
+                "vertical_position": {
+                  "type": "in_bounding_box"
+                },
+                "vertical_velocity": {
+                  "base": 0.05
+                }
+              }
             }
           ],
           "targeting_mode": "allies_and_self"
@@ -79,7 +101,7 @@
         "per_level_above_first": 15.0
       },
       "values": [
-        0.0,
+        5.0,
         15.0,
         35.0
       ]

@@ -5,7 +5,11 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffect
 import com.mojang.datafixers.Products;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public abstract class DurationInstance<B> implements ClientEffectProvider, StorageEntry {
@@ -33,8 +37,12 @@ public abstract class DurationInstance<B> implements ClientEffectProvider, Stora
         );
     }
 
-    /** @return Whether the duration has reached its end or not */
-    public boolean tick() {
+    @Override
+    public boolean tick(final Entity storageHolder) {
+        if (storageHolder.level() instanceof ServerLevel serverLevel && earlyRemovalCondition().map(condition -> condition.test(Condition.entityContext(serverLevel, storageHolder))).orElse(false)) {
+            return true;
+        }
+
         if (currentDuration == INFINITE_DURATION) {
             return false;
         }
@@ -62,5 +70,7 @@ public abstract class DurationInstance<B> implements ClientEffectProvider, Stora
     }
 
     @Override
-    abstract public int getDuration();
+    public abstract int getDuration();
+
+    public abstract Optional<LootItemCondition> earlyRemovalCondition();
 }

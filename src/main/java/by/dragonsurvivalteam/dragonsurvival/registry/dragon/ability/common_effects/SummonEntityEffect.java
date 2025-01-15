@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effe
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DurationInstance;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.DurationInstanceBase;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierType;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.goals.FollowSummonerGoal;
 import by.dragonsurvivalteam.dragonsurvival.mixins.PrimedTntAccess;
@@ -16,6 +17,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effect
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.AbilityEntityEffect;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -53,24 +55,19 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 
-public record SummonEntityEffect(
-        SimpleWeightedRandomList<EntityType<?>> entities,
-        ResourceLocation id,
-        LevelBasedValue maxSummons,
-        LevelBasedValue duration,
-        List<AttributeScale> attributeScales,
-        boolean shouldSetAllied
-) implements AbilityBlockEffect, AbilityEntityEffect {
+public record SummonEntityEffect(DurationInstanceBase base, Either<SimpleWeightedRandomList<EntityType<?>>, HolderSet<EntityType<?>>> entities, LevelBasedValue maxSummons, List<AttributeScale> attributeScales, boolean shouldSetAllied) implements AbilityBlockEffect, AbilityEntityEffect {
     @Translation(comments = "§6■ Can summon up to§r %s §6entities:§r")
     private static final String SUMMON = Translation.Type.GUI.wrap("summon_entity_effect.summon");
 
@@ -81,10 +78,9 @@ public record SummonEntityEffect(
     private static final String CURRENT_AMOUNT = Translation.Type.GUI.wrap("summon_entity_effect.current_amount");
 
     public static final MapCodec<SummonEntityEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-                    SimpleWeightedRandomList.wrappedCodec(BuiltInRegistries.ENTITY_TYPE.byNameCodec()).fieldOf("entities").forGetter(SummonEntityEffect::entities),
-                    ResourceLocation.CODEC.fieldOf("id").forGetter(SummonEntityEffect::id),
+                    DurationInstanceBase.CODEC.fieldOf("duration").forGetter(SummonEntityEffect::base),
+                    Codec.either(SimpleWeightedRandomList.wrappedCodec(BuiltInRegistries.ENTITY_TYPE.byNameCodec()), RegistryCodecs.homogeneousList(Registries.ENTITY_TYPE)).fieldOf("entities").forGetter(SummonEntityEffect::entities),
                     LevelBasedValue.CODEC.fieldOf("max_summons").forGetter(SummonEntityEffect::maxSummons),
-                    LevelBasedValue.CODEC.optionalFieldOf("duration", LevelBasedValue.constant(DurationInstance.INFINITE_DURATION)).forGetter(SummonEntityEffect::duration),
                     AttributeScale.CODEC.listOf().optionalFieldOf("attribute_scales", List.of()).forGetter(SummonEntityEffect::attributeScales),
                     Codec.BOOL.optionalFieldOf("should_set_allied", true).forGetter(SummonEntityEffect::shouldSetAllied)
             ).apply(instance, SummonEntityEffect::new)
@@ -113,19 +109,34 @@ public record SummonEntityEffect(
     @Override
     public List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
         MutableComponent component = Component.translatable(SUMMON, DSColors.dynamicValue(maxSummons.calculate(ability.level())));
-        int totalWeight = WeightedRandom.getTotalWeight(entities.unwrap());
 
-        entities.unwrap().forEach(wrapper -> {
-            Component entityName = DSColors.dynamicValue(wrapper.data().getDescription());
-            double chance = (double) wrapper.getWeight().asInt() / totalWeight;
-            component.append(Component.translatable(SUMMON_CHANCE, DSColors.dynamicValue(entityName), DSColors.dynamicValue(NumberFormat.getPercentInstance().format(chance))));
+        entities.ifLeft(list -> {
+            int totalWeight = WeightedRandom.getTotalWeight(list.unwrap());
+
+            list.unwrap().forEach(wrapper -> {
+                Component entityName = DSColors.dynamicValue(wrapper.data().getDescription());
+                double chance = (double) wrapper.getWeight().asInt() / totalWeight;
+                component.append(Component.translatable(SUMMON_CHANCE, DSColors.dynamicValue(entityName), DSColors.dynamicValue(NumberFormat.getPercentInstance().format(chance))));
+            });
+
+            if (!list.isEmpty()) {
+                component.append(Component.literal("\n"));
+            }
+        }).ifRight(set -> {
+            int totalWeight = set.size();
+
+            set.forEach(type -> {
+                Component entityName = DSColors.dynamicValue(type.value().getDescription());
+                double chance = 1d / totalWeight;
+                component.append(Component.translatable(SUMMON_CHANCE, DSColors.dynamicValue(entityName), DSColors.dynamicValue(NumberFormat.getPercentInstance().format(chance))));
+            });
+
+            if (set.size() > 0) {
+                component.append(Component.literal("\n"));
+            }
         });
 
-        if (!entities.isEmpty()) {
-            component.append(Component.literal("\n"));
-        }
-
-        float duration = this.duration.calculate(ability.level());
+        float duration = base.duration().calculate(ability.level());
 
         if (duration != DurationInstance.INFINITE_DURATION) {
             component.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.dynamicValue(Functions.ticksToSeconds((int) duration))));
@@ -145,10 +156,10 @@ public record SummonEntityEffect(
     }
 
     private void spawn(final ServerLevel level, final ServerPlayer dragon, final DragonAbilityInstance ability, final BlockPos spawnPosition) {
-        int newDuration = (int) duration.calculate(ability.level());
+        int newDuration = (int) base.duration().calculate(ability.level());
 
         SummonedEntities summonData = dragon.getData(DSDataAttachments.SUMMONED_ENTITIES);
-        Instance instance = summonData.get(id);
+        Instance instance = summonData.get(base.id());
 
         if (instance != null) {
             if (instance.appliedAbilityLevel() != ability.level() || instance.currentDuration() != newDuration) {
@@ -167,9 +178,13 @@ public record SummonEntityEffect(
             return;
         }
 
-        EntityType<?> type = entities.getRandom(level.getRandom()).map(WeightedEntry.Wrapper::data).orElse(null);
+        EntityType<?> type = entities.map(
+                list -> list.getRandom(level.getRandom()).map(WeightedEntry.Wrapper::data).orElse(null),
+                set -> set.size() > 0 ? set.get(dragon.getRandom().nextInt(set.size())).value() : null
+        );
 
         if (type == null) {
+            DragonSurvival.LOGGER.error("[{}] summon entity effect has no valid entity type entries", base.id());
             return;
         }
 
@@ -304,11 +319,6 @@ public record SummonEntityEffect(
             }
         }
 
-        @Override
-        public int getDuration() {
-            return (int) baseData().duration().calculate(appliedAbilityLevel());
-        }
-
         public void increment(final UUID uuid) {
             summonedAmount++;
             entityUUIDs.add(uuid);
@@ -347,7 +357,22 @@ public record SummonEntityEffect(
 
         @Override
         public ResourceLocation id() {
-            return baseData().id();
+            return baseData().base().id();
+        }
+
+        @Override
+        public int getDuration() {
+            return (int) baseData().base.duration().calculate(appliedAbilityLevel());
+        }
+
+        @Override
+        public Optional<LootItemCondition> earlyRemovalCondition() {
+            return baseData().base().earlyRemovalCondition();
+        }
+
+        @Override
+        public boolean isHidden() {
+            return baseData().base().isHidden();
         }
 
         public ArrayList<UUID> entityUUIDs() {

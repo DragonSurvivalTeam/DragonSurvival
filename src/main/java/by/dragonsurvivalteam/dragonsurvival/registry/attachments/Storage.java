@@ -13,8 +13,8 @@ import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,7 +36,7 @@ public abstract class Storage<T extends StorageEntry> implements INBTSerializabl
             Set<ResourceLocation> finished = new HashSet<>();
 
             storage.values().forEach(entry -> {
-                if (entry.tick()) {
+                if (entry.tick(storageHolder)) {
                     finished.add(entry.id());
                 }
             });
@@ -99,6 +99,16 @@ public abstract class Storage<T extends StorageEntry> implements INBTSerializabl
         }
 
         return storage.isEmpty();
+    }
+
+    /** Always returns 'false' if the storage is empty */
+    public boolean isType(final Class<?> type) {
+        if (isEmpty()) {
+            return false;
+        }
+
+        //noinspection DataFlowIssue -> it's not null at this point
+        return type.isInstance(storage.values().iterator().next());
     }
 
     @Override

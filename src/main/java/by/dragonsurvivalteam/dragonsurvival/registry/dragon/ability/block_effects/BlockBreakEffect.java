@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.advancements.critereon.BlockPredicate;
@@ -8,26 +9,23 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
-import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import org.jetbrains.annotations.Nullable;
 
-public record BlockBreakEffect(BlockPredicate validBlocks, LevelBasedValue probability) implements AbilityBlockEffect {
+public record BlockBreakEffect(BlockPredicate validBlocks, LevelBasedValue probability, boolean dropLoot) implements AbilityBlockEffect {
     public static final MapCodec<BlockBreakEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             BlockPredicate.CODEC.fieldOf("valid_blocks").forGetter(BlockBreakEffect::validBlocks),
-            LevelBasedValue.CODEC.fieldOf("probability").forGetter(BlockBreakEffect::probability)
+            LevelBasedValue.CODEC.fieldOf("probability").forGetter(BlockBreakEffect::probability),
+            Codec.BOOL.optionalFieldOf("drop_loot", false).forGetter(BlockBreakEffect::dropLoot)
     ).apply(instance, BlockBreakEffect::new));
 
     @Override
-    public void apply(ServerPlayer dragon, DragonAbilityInstance ability, BlockPos position, @Nullable Direction direction) {
-        if (dragon.getRandom().nextDouble() < probability.calculate(ability.level())) {
+    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final BlockPos position, @Nullable final Direction direction) {
+        if (probability.calculate(ability.level()) < dragon.getRandom().nextDouble()) {
             return;
         }
 
-        // This allows the state to be cached and not retrieved for every check
-        BlockInWorld block = new BlockInWorld(dragon.serverLevel(), position, false);
-
-        if (validBlocks.matches(block)) {
-            dragon.serverLevel().destroyBlock(position, true);
+        if (validBlocks.matches(dragon.serverLevel(), position)) {
+            dragon.serverLevel().destroyBlock(position, dropLoot);
         }
     }
 
