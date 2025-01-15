@@ -25,11 +25,11 @@ public record DamageEffect(Holder<DamageType> type, LevelBasedValue amount) impl
     ).apply(instance, DamageEffect::new));
 
     @Override
-    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity) {
-        entity.hurt(new DamageSource(type, dragon), amount().calculate(ability.level()));
+    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
+        target.hurt(new DamageSource(type, dragon), amount().calculate(ability.level()));
 
         // Used by 'OwnerHurtTargetGoal'
-        dragon.setLastHurtMob(entity);
+        dragon.setLastHurtMob(target);
     }
 
     @Override

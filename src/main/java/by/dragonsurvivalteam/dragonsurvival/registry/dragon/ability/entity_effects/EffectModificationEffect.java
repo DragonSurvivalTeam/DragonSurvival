@@ -19,8 +19,8 @@ public record EffectModificationEffect(List<EffectModification> modifications) i
     ).apply(instance, EffectModificationEffect::new));
 
     @Override
-    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity) {
-        if (entity instanceof LivingEntity livingEntity) {
+    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
+        if (target instanceof LivingEntity livingEntity) {
             modifications.forEach(modification -> modification.apply(dragon, ability, livingEntity));
         }
     }

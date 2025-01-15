@@ -28,7 +28,7 @@ public interface AbilityEntityEffect {
 
     Codec<AbilityEntityEffect> CODEC = REGISTRY.byNameCodec().dispatch("effect_type", AbilityEntityEffect::entityCodec, Function.identity());
 
-    void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity);
+    void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target);
     MapCodec<? extends AbilityEntityEffect> entityCodec();
 
     default List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) { return List.of(); }

@@ -23,8 +23,8 @@ public record ModifierEffect(List<ModifierWithDuration> modifiers) implements Ab
     ).apply(instance, ModifierEffect::new));
 
     @Override
-    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity) {
-        if (entity instanceof LivingEntity livingEntity) {
+    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
+        if (target instanceof LivingEntity livingEntity) {
             modifiers.forEach(modifier -> modifier.apply(dragon, ability, livingEntity));
         }
     }

@@ -124,10 +124,11 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
     }
 
     @Override
-    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity) {
-        spawn(dragon.serverLevel(), dragon, ability, entity.blockPosition());
+    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
+        spawn(dragon.serverLevel(), dragon, ability, target.blockPosition());
     }
 
+    // The dragon always being the one that summons the entities is intended behaviour for now
     private void spawn(final ServerLevel level, final ServerPlayer dragon, final DragonAbilityInstance ability, final BlockPos spawnPosition) {
         int newDuration = (int) duration().calculate(ability.level());
 

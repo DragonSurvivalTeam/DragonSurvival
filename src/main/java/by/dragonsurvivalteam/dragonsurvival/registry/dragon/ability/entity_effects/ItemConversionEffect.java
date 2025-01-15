@@ -57,8 +57,8 @@ public record ItemConversionEffect(List<ItemConversionData> itemConversions, Lev
     }
 
     @Override
-    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity) {
-        if (!(entity instanceof ItemEntity itemEntity)) {
+    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
+        if (!(target instanceof ItemEntity itemEntity)) {
             return;
         }
 
@@ -72,7 +72,7 @@ public record ItemConversionEffect(List<ItemConversionData> itemConversions, Lev
 
         for (ItemConversionData conversion : itemConversions) {
             if (conversion.predicate().test(itemEntity.getItem())) {
-                conversion.itemsTo().getRandom(entity.getRandom()).ifPresent(item -> {
+                conversion.itemsTo().getRandom(target.getRandom()).ifPresent(item -> {
                     DSAdvancementTriggers.CONVERT_ITEM_FROM_ABILITY.get().trigger(dragon, itemEntity.getItem().getItemHolder(), item.item());
                     itemEntity.setItem(new ItemStack(item.item(), itemEntity.getItem().getCount()));
                 });

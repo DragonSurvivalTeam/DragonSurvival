@@ -18,8 +18,8 @@ public record HarvestBonusEffect(List<HarvestBonus> bonuses) implements AbilityE
     ).apply(instance, HarvestBonusEffect::new));
 
     @Override
-    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity) {
-        if (entity instanceof Player player) {
+    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
+        if (target instanceof Player player) {
             bonuses.forEach(bonus -> bonus.apply(dragon, ability, player));
         }
     }

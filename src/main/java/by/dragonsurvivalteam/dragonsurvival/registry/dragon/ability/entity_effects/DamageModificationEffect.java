@@ -18,8 +18,8 @@ public record DamageModificationEffect(List<DamageModification> modifications) i
     ).apply(instance, DamageModificationEffect::new));
 
     @Override
-    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity) {
-        modifications.forEach(modification -> modification.apply(dragon, ability, entity));
+    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
+        modifications.forEach(modification -> modification.apply(dragon, ability, target));
     }
 
     @Override

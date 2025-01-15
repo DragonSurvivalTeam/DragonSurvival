@@ -47,12 +47,12 @@ public record ProjectileEffect(Holder<ProjectileData> projectileData, TargetDire
     ).apply(instance, ProjectileEffect::new));
 
     @Override
-    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity) {
+    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
         ProjectileData projectileData = projectileData().value();
         Either<ProjectileData.GenericBallData, ProjectileData.GenericArrowData> specificData = projectileData.typeData();
 
         float speed = this.speed.calculate(ability.level());
-        BiConsumer<Projectile, Float> shootLogic = getShootLogic(dragon, entity, speed);
+        BiConsumer<Projectile, Float> shootLogic = getShootLogic(dragon, target, speed);
 
         // It doesn't make sense to spawn the projectile at the entity position and then make it move towards said entity
         boolean useEntityPosition = targetDirection.direction().left().orElse(null) != TargetDirection.Type.TOWARDS_ENTITY;
@@ -64,41 +64,41 @@ public record ProjectileEffect(Holder<ProjectileData> projectileData, TargetDire
                 if (useEntityPosition) {
                     int scale = 1;
 
-                    if (entity instanceof Player player && player.getAbilities().flying) {
+                    if (target instanceof Player player && player.getAbilities().flying) {
                         scale = 2;
                     }
 
-                    launchPosition = entity.getLookAngle().scale(scale).add(entity.getEyePosition());
+                    launchPosition = target.getLookAngle().scale(scale).add(target.getEyePosition());
                 } else {
                     int scale = dragon.getAbilities().flying ? 2 : 1;
                     launchPosition = dragon.getLookAngle().scale(scale).add(dragon.getEyePosition());
                 }
 
                 GenericBallEntity projectile = new GenericBallEntity(projectileData.generalData(), data, ability.level(), launchPosition, dragon.serverLevel());
-                projectile.setOwner(entity);
+                projectile.setOwner(target);
                 projectile.accelerationPower = 0;
 
                 float spread = count * projectileSpread.calculate(ability.level());
                 shootLogic.accept(projectile, spread);
-                entity.level().addFreshEntity(projectile);
+                target.level().addFreshEntity(projectile);
             }
         }).ifRight(data -> {
             for (int i = 0; i < numberOfProjectiles.calculate(ability.level()); i++) {
                 Vec3 launchPosition;
 
                 if (useEntityPosition) {
-                    launchPosition = new Vec3(entity.getX(), entity.getEyeY() - 0.1f, entity.getZ());
+                    launchPosition = new Vec3(target.getX(), target.getEyeY() - 0.1f, target.getZ());
                 } else {
                     launchPosition = new Vec3(dragon.getX(), dragon.getEyeY() - 0.1f, dragon.getZ());
                 }
 
                 GenericArrowEntity arrow = new GenericArrowEntity(projectileData.generalData(), data, ability.level(), launchPosition, dragon.serverLevel());
-                arrow.setOwner(entity);
+                arrow.setOwner(target);
                 arrow.pickup = AbstractArrow.Pickup.DISALLOWED;
 
                 float spread = i * projectileSpread.calculate(ability.level());
                 shootLogic.accept(arrow, spread);
-                entity.level().addFreshEntity(arrow);
+                target.level().addFreshEntity(arrow);
             }
         });
     }

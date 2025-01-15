@@ -23,8 +23,8 @@ public record OnAttackEffect(PotionData potionData) implements AbilityEntityEffe
     ).apply(instance, OnAttackEffect::new));
 
     @Override
-    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity) {
-        OnAttackEffects data = OnAttackEffects.getData(entity);
+    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
+        OnAttackEffects data = OnAttackEffects.getData(target);
         PotionData.Calculated calculated = PotionData.Calculated.from(potionData, ability.level());
         data.addEffect(ability.id(), new OnAttackEffectInstance(potionData.effects(), calculated.amplifier(), calculated.duration(), calculated.probability()));
     }

@@ -15,8 +15,8 @@ public record GlowEffect(List<Glow> glows) implements AbilityEntityEffect {
     ).apply(instance, GlowEffect::new));
 
     @Override
-    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity) {
-        glows.forEach(glow -> glow.apply(dragon, ability, entity));
+    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
+        glows.forEach(glow -> glow.apply(dragon, ability, target));
     }
 
     @Override

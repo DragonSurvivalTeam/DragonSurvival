@@ -31,7 +31,7 @@ public record RunFunctionEffect(ResourceLocation function) implements AbilityEnt
     ).apply(instance, RunFunctionEffect::new));
 
     @Override
-    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity) {
+    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
         MinecraftServer server = dragon.serverLevel().getServer();
         ServerFunctionManager manager = server.getFunctions();
 
@@ -39,10 +39,10 @@ public record RunFunctionEffect(ResourceLocation function) implements AbilityEnt
             CommandSourceStack stack = server.createCommandSourceStack()
                     .withPermission(Commands.LEVEL_GAMEMASTERS)
                     .withSuppressedOutput()
-                    .withEntity(entity)
+                    .withEntity(target)
                     .withLevel(dragon.serverLevel())
-                    .withPosition(entity.position())
-                    .withRotation(entity.getRotationVector());
+                    .withPosition(target.position())
+                    .withRotation(target.getRotationVector());
 
             manager.execute(source, stack);
         });

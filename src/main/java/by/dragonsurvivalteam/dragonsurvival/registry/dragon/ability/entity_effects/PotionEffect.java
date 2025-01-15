@@ -20,8 +20,8 @@ public record PotionEffect(PotionData potion) implements AbilityEntityEffect {
     ).apply(instance, PotionEffect::new));
 
     @Override
-    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity) {
-        potion.apply(dragon, ability.level(), entity);
+    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
+        potion.apply(dragon, ability.level(), target);
     }
 
     @Override

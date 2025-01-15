@@ -27,8 +27,8 @@ public class SwimData {
 
     private final Map<ResourceKey<FluidType>, Integer> swimData = new HashMap<>();
 
-    public void add(int maxOxygen, final Holder<FluidType> fluid) {
-        swimData.put(fluid.getKey(), maxOxygen);
+    public Integer add(int maxOxygen, final Holder<FluidType> fluid) {
+        return swimData.put(fluid.getKey(), maxOxygen);
     }
 
     public void remove(final Holder<FluidType> fluid) {

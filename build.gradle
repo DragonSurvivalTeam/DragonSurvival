@@ -84,6 +84,7 @@ dependencies {
 	runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
 
 	// Test
+	implementation "curse.maven:spark-361579:5759671" // 1.10.109
 	implementation "curse.maven:jade-324717:6011258" // 15.9.2
 
 //	implementation "curse.maven:emi-580555:6075440" // 1.1.19
