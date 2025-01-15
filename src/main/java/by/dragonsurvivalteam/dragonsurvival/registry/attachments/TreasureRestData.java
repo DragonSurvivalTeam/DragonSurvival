@@ -13,6 +13,7 @@ public class TreasureRestData implements INBTSerializable<CompoundTag> {
 
     public int restingTicks;
     public int sleepingTicks;
+    public int nearbyTreasure;
 
     private boolean isResting;
 
@@ -27,9 +28,10 @@ public class TreasureRestData implements INBTSerializable<CompoundTag> {
     public void setResting(final boolean isResting) {
         this.isResting = isResting;
 
-        if (isResting) {
+        if (!isResting) {
             restingTicks = 0;
             sleepingTicks = 0;
+            nearbyTreasure = 0;
         }
     }
 

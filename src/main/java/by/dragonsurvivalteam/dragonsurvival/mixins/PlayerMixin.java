@@ -59,14 +59,14 @@ public abstract class PlayerMixin extends LivingEntity {
     }
 
     /** Allow treasure blocks to trigger sleep logic */
-    @Inject(method = "isSleepingLongEnough", at = @At("HEAD"), cancellable = true)
-    public void dragonSurvival$isSleepingLongEnough(final CallbackInfoReturnable<Boolean> callback) {
-        Player player = (Player) (Object) this;
-        TreasureRestData data = TreasureRestData.getData(player);
-
-        if (DragonStateProvider.isDragon(player) && data.canSleep()) {
-            callback.setReturnValue(true);
+    @ModifyReturnValue(method = "isSleepingLongEnough", at = @At("RETURN"))
+    public boolean dragonSurvival$isSleepingLongEnough(final boolean isSleepingLongEnough) {
+        if (isSleepingLongEnough) {
+            return true;
         }
+
+        Player player = (Player) (Object) this;
+        return DragonStateProvider.isDragon(player) && TreasureRestData.getData(player).canSleep();
     }
 
     /** Make sure to consider the actual dragon hitbox when doing checks like these */
@@ -80,12 +80,12 @@ public abstract class PlayerMixin extends LivingEntity {
     }
 
     @ModifyExpressionValue(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;isSwimming()Z"))
-    private boolean dragonSurvival$consideredSwimmingEvenWhenGroundedInWater(boolean original) {
-        Player self = (Player) (Object) this;
-        if(DragonStateProvider.isDragon(self)) {
-            return original || DragonEntity.isConsideredSwimmingForAnimation((Player) (Object) this);
-        } else {
-            return original;
+    private boolean dragonSurvival$consideredSwimmingEvenWhenGroundedInWater(boolean isSwimming) {
+        if (isSwimming) {
+            return true;
         }
+
+        Player self = (Player) (Object) this;
+        return DragonStateProvider.isDragon(self) && DragonEntity.isConsideredSwimmingForAnimation(self);
     }
 }

@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.handlers.magic;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
-import by.dragonsurvivalteam.dragonsurvival.config.server.dragon.DragonBonusConfig;
+import by.dragonsurvivalteam.dragonsurvival.config.DragonBonusConfig;
 import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncBrokenTool;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
@@ -267,6 +267,6 @@ public class ClawToolHandler {
 
     public static float getReducedBonus(float bonus) {
         // 1 is the default / minimum multiplier - only reduce the added bonus (e.g. 1.5 -> 1.25)
-        return 1 + (bonus - 1) / DragonBonusConfig.breakSpeedReduction;
+        return 1 + (bonus - 1) / DragonBonusConfig.BREAK_SPEED_REDUCTION;
     }
 }

@@ -1,4 +1,4 @@
-package by.dragonsurvivalteam.dragonsurvival.config.server.dragon;
+package by.dragonsurvivalteam.dragonsurvival.config;
 
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
@@ -12,5 +12,5 @@ public class DragonBonusConfig {
             "- The dragon has a valid tool in the claw inventory"
     })
     @ConfigOption(side = ConfigSide.SERVER, category = "bonuses", key = "break_speed_reduction")
-    public static Float breakSpeedReduction = 2f;
+    public static Float BREAK_SPEED_REDUCTION = 2f;
 }

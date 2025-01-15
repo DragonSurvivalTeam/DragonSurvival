@@ -20,8 +20,7 @@ public class SleepOnTreasureTrigger extends SimpleCriterionTrigger<SleepOnTreasu
         return SleepOnTreasureInstance.CODEC;
     }
 
-    public record SleepOnTreasureInstance(Optional<ContextAwarePredicate> player,
-                                        Optional<Integer> nearbyTreasureAmount) implements SimpleCriterionTrigger.SimpleInstance {
+    public record SleepOnTreasureInstance(Optional<ContextAwarePredicate> player, Optional<Integer> nearbyTreasureAmount) implements SimpleCriterionTrigger.SimpleInstance {
         public static final Codec<SleepOnTreasureInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(SleepOnTreasureInstance::player),
                 Codec.INT.optionalFieldOf("nearby_treasure_amount").forGetter(SleepOnTreasureInstance::nearbyTreasureAmount)

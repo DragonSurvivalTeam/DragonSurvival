@@ -123,30 +123,6 @@ public class ServerConfig {
     @ConfigOption(side = ConfigSide.SERVER, category = "drops", key = "elder_dragon_heart_white_list")
     public static Boolean elderDragonHeartWhiteList = false;
 
-    // --- Treasure blocks --- //
-
-    @Translation(key = "treasure_health_regeneration", type = Translation.Type.CONFIGURATION, comments = "Sleeping on treasure blocks will regenerate health if enabled")
-    @ConfigOption(side = ConfigSide.SERVER, category = "treasure", key = "treasure_health_regeneration")
-    public static Boolean treasureHealthRegen = true;
-
-    @ConfigRange(min = 1, max = /* 1 hour */ 72_000)
-    @Translation(key = "treasure_health_regeneration_rate", type = Translation.Type.CONFIGURATION, comments = "The time in ticks (20 ticks = 1 second) it takes to recover 1 health while sleeping on treasure")
-    @ConfigOption(side = ConfigSide.SERVER, category = "treasure", key = "treasure_health_regeneration_rate")
-    public static Integer treasureRegenTicks = Functions.secondsToTicks(14);
-
-    @ConfigRange(min = 1, max = /* 1 hour */ 72_000)
-    @Translation(key = "nearby_treasure_rate_reduction", type = Translation.Type.CONFIGURATION, comments = "The amount of ticks (20 ticks = 1 second) each nearby treasure reduces the health regeneration time by")
-    @ConfigOption(side = ConfigSide.SERVER, category = "treasure", key = "nearby_treasure_rate_reduction")
-    public static Integer treasureRegenTicksReduce = 1;
-
-    @ConfigRange(min = 1, max = /* 16 x 9 x 16 hardcoded radius */ 2304)
-    @Translation(key = "max_treasure_for_rate_reduction", type = Translation.Type.CONFIGURATION, comments = {
-            "The maximum amount of additional treasure that can affect the health regeneration reduction",
-            "Only treasure within a 16 x 9 x 16 radius is considered"
-    })
-    @ConfigOption(side = ConfigSide.SERVER, category = "treasure", key = "max_treasure_for_rate_reduction")
-    public static Integer maxTreasures = 240;
-
     // --- Source of magic --- //
 
     @Translation(key = "damage_on_wrong_source_of_magic", type = Translation.Type.CONFIGURATION, comments = "Source of magic that does not match the dragon species will damage the player if enabled")

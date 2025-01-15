@@ -29,6 +29,7 @@
     "PlayerStartMixin",
     "PrimedTntAccess",
     "ServerGamePacketListenerImplMixin",
+    "ServerLevelMixin",
     "ServerPlayerGameModeMixin",
     "SleepStatusMixin",
     "SwellGoalMixin",

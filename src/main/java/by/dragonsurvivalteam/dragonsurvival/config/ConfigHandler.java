@@ -6,8 +6,6 @@ import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigType;
-import by.dragonsurvivalteam.dragonsurvival.config.obj.IgnoreConfigCheck;
-import by.dragonsurvivalteam.dragonsurvival.config.types.CustomConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
@@ -54,6 +52,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -263,9 +262,8 @@ public class ConfigHandler {
                             Class<?> customConfigType = Class.forName(className);
 
                             if (CustomConfig.class.isAssignableFrom(customConfigType)) {
-                                //noinspection unchecked -> ignore, type is safe
-                                List<CustomConfig> customList = (List<CustomConfig>) list;
-                                configList = buildList(builder, configOption, field, sizeRange, customList);
+                                List<String> customList = list.stream().map(customConfig -> ((CustomConfig) customConfig).convert()).toList();
+                                configList = buildList(builder, configOption, sizeRange, customList, configValue -> CustomConfig.getInstance(customConfigType).validate(configValue));
                                 handledList = true;
                             }
                         } catch (ClassNotFoundException exception) {
@@ -274,7 +272,7 @@ public class ConfigHandler {
                     }
 
                     if (!handledList) {
-                        configList = buildList(builder, configOption, field, sizeRange, list);
+                        configList = buildList(builder, configOption, sizeRange, list, configValue -> checkSpecific(configOption, configValue));
                     }
 
                     CONFIG_VALUES.put(key, configList);
@@ -297,13 +295,13 @@ public class ConfigHandler {
         }
     }
 
-    private static ModConfigSpec.ConfigValue<List<?>> buildList(final ModConfigSpec.Builder builder, final ConfigOption config, final Field field, final ModConfigSpec.Range<Integer> sizeRange, final List<?> defaultValues) {
+    private static ModConfigSpec.ConfigValue<List<?>> buildList(final ModConfigSpec.Builder builder, final ConfigOption config, final ModConfigSpec.Range<Integer> sizeRange, final List<?> defaultValues, final Predicate<Object> validation) {
         return builder.defineList(
                 List.of(config.key()),
                 () -> defaultValues,
-                () -> getDefaultListValueForConfig(config.key()),
+                () -> "",
                 configValue -> {
-                    if (field.isAnnotationPresent(IgnoreConfigCheck.class) || checkConfig(config, configValue)) {
+                    if (validation.test(configValue)) {
                         return true;
                     }
 
@@ -313,22 +311,6 @@ public class ConfigHandler {
                 },
                 sizeRange
         );
-    }
-
-    private static boolean checkConfig(final ConfigOption configOption, final Object configValue) {
-        return checkSpecific(configOption, configValue);
-    }
-
-    private static String getDefaultListValueForConfig(final String key) {
-        return switch (key) {
-            // Food options
-            case "cave_foods", "forest_foods", "sea_foods" -> "minecraft:empty:0:0";
-            // Hurtful items
-            case "cave_hurtful_items", "forest_hurtful_items", "sea_hurtful_items" -> "minecraft:empty:0";
-            // Dirt transformations (forest dragon breath)
-            case "forest_breath_dirt_transformation_blocks" -> "minecraft:empty:0";
-            default -> "minecraft:empty";
-        };
     }
 
     /** More specific checks depending on the config type */
@@ -387,63 +369,6 @@ public class ConfigHandler {
             }
         }
 
-        String configKey = configOption.key();
-
-        // Food options
-        switch (configKey) {
-            case "caveDragonFoods", "forestDragonFoods", "seaDragonFoods" -> {
-                if (configValue instanceof String string) {
-                    // namespace:item_id:hunger:saturation
-                    String[] split = string.split(":");
-
-                    if (split.length == 2) {
-                        return ResourceLocation.tryParse(string) != null;
-                    } else if (split.length == 4) {
-                        return ResourceLocation.tryParse(split[0] + ":" + split[1]) != null;
-                    }
-                }
-
-                return false;
-            }
-            case "hurtfulToCaveDragon", "hurtfulToForestDragon", "hurtfulToSeaDragon" -> {
-                if (configValue instanceof String string) {
-                    // namespace:item_id:damage
-                    String[] split = string.split(":");
-
-                    if (split.length == 3) {
-                        return ResourceLocation.tryParse(split[0] + ":" + split[1]) != null;
-                    }
-                }
-
-                return false;
-            }
-
-            // Blacklisted Slots
-            case "blacklistedSlots" -> {
-                try {
-                    Integer.parseInt(String.valueOf(configValue));
-                } catch (NumberFormatException e) {
-                    return false;
-                }
-
-                return true;
-            }
-
-            // Dirt transformations (forest dragon breath)
-            case "dirtTransformationBlocks" -> {
-                if (configValue instanceof String string) {
-                    String[] data = string.split(":");
-
-                    if (data.length == 3) {
-                        return ConfigUtils.validateInteger(data[2]) && ResourceLocation.tryParse(data[0] + ":" + data[1]) != null;
-                    }
-
-                    return false;
-                }
-            }
-        }
-
-        // Would most likely only relevant for numeric or string lists?
         return true;
     }
 
@@ -529,7 +454,7 @@ public class ConfigHandler {
 
                 // Check for string since the list itself goes through here as well
                 if (CustomConfig.class.isAssignableFrom(classType) && value instanceof String string) {
-                    return CustomConfig.parse(classType, string);
+                    return CustomConfig.getInstance(classType).parse(string);
                 }
             } catch (ClassNotFoundException exception) {
                 DragonSurvival.LOGGER.error("A problem occurred while trying to parse a custom config entry: {}", value);
@@ -732,7 +657,7 @@ public class ConfigHandler {
 
             result = resultList;
         } else if (CustomConfig.class.isAssignableFrom(field.getType())) {
-            result = CustomConfig.parse(field.getType(), (String) configValue);
+            return CustomConfig.getInstance(field.getType()).parse((String) configValue);
         } else {
             result = configValue;
         }
