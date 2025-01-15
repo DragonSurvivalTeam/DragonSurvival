@@ -24,7 +24,7 @@ import org.joml.Vector3f;
 
 import java.util.List;
 
-/** See {@link RunFunction} */  // TODO :: make the required permission level customizable as parameter? could that cause problems?
+/** See {@link RunFunction} */
 public record RunFunctionEffect(ResourceLocation function) implements AbilityEntityEffect, AbilityBlockEffect {
     public static final MapCodec<RunFunctionEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             ResourceLocation.CODEC.fieldOf("function").forGetter(RunFunctionEffect::function)

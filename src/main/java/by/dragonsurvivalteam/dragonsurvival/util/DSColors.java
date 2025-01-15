@@ -47,11 +47,11 @@ public class DSColors {
     public static final int SEA_TOP = 0x5DC9FF;
     public static final int SEA_BOTTOM = 0x316D90;
 
-    public static Component dynamicValue(final Object value) {
+    public static MutableComponent dynamicValue(final Object value) {
         return withColor(value, BLUE);
     }
 
-    public static Component withColor(final Object value, int color) {
+    public static MutableComponent withColor(final Object value, int color) {
         if (value instanceof MutableComponent mutable) {
             return mutable.withColor(color);
         }

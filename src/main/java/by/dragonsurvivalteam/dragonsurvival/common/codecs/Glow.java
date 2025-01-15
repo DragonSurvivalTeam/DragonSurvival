@@ -1,10 +1,12 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.CommonData;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstance;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstanceBase;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncGlowInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.GlowData;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -18,36 +20,22 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
-
-public record Glow(DurationInstanceBase base, TextColor color) {
+public class Glow extends DurationInstanceBase<GlowData, Glow.Instance> {
     public static final Codec<Glow> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            DurationInstanceBase.CODEC.fieldOf("base").forGetter(Glow::base),
+            DurationInstanceBase.CODEC.fieldOf("base").forGetter(identity -> identity),
             TextColor.CODEC.fieldOf("color").forGetter(Glow::color)
     ).apply(instance, Glow::new));
 
-    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
-        int newDuration = (int) base.duration().calculate(ability.level());
+    private final TextColor color;
 
-        GlowData data = target.getData(DSDataAttachments.GLOW);
-        Glow.Instance instance = data.get(base.id());
-
-        if (instance != null && instance.appliedAbilityLevel() == ability.level() && instance.currentDuration() == newDuration) {
-            return;
-        }
-
-        data.remove(target, instance);
-        data.add(target, new Glow.Instance(this, ClientEffectProvider.ClientData.from(dragon, ability), ability.level(), newDuration));
-    }
-
-    public void remove(final Entity target) {
-        GlowData data = target.getData(DSDataAttachments.GLOW);
-        data.remove(target, data.get(base.id()));
+    public Glow(final DurationInstanceBase<?, ?> base, TextColor color) {
+        super(base);
+        this.color = color;
     }
 
     public static Glow create(final ResourceLocation id, final TextColor color) {
@@ -58,19 +46,31 @@ public record Glow(DurationInstanceBase base, TextColor color) {
         return new Glow(DurationInstanceBase.create(id).duration(duration).hidden().build(), color);
     }
 
+    @Override
+    public Instance createInstance(final ServerPlayer dragon, final DragonAbilityInstance ability, final int currentDuration) {
+        return new Instance(this, CommonData.from(dragon, ability, customIcon()), currentDuration);
+    }
+
+    @Override
+    public AttachmentType<GlowData> type() {
+        return DSDataAttachments.GLOW.value();
+    }
+
+    public TextColor color() {
+        return color;
+    }
+
     public static class Instance extends DurationInstance<Glow> {
-        public static final Codec<Glow.Instance> CODEC = RecordCodecBuilder.create(instance -> DurationInstance.codecStart(instance, () -> Glow.CODEC).apply(instance, Glow.Instance::new));
+        public static final Codec<Instance> CODEC = RecordCodecBuilder.create(instance -> DurationInstance.codecStart(
+                instance, () -> Glow.CODEC).apply(instance, Instance::new)
+        );
 
-        public Instance(final Glow baseData, final ClientData clientData, int appliedAbilityLevel, int currentDuration) {
-            super(baseData, clientData, appliedAbilityLevel, currentDuration);
+        public Instance(final Glow baseData, final CommonData commonData, int currentDuration) {
+            super(baseData, commonData, currentDuration);
         }
 
-        public Tag save(@NotNull final HolderLookup.Provider provider) {
-            return CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), this).getOrThrow();
-        }
-
-        public static @Nullable Glow.Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag nbt) {
-            return CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), nbt).resultOrPartial(DragonSurvival.LOGGER::error).orElse(null);
+        public int getColor() {
+            return baseData().color().getValue();
         }
 
         @Override
@@ -92,28 +92,12 @@ public record Glow(DurationInstanceBase base, TextColor color) {
             }
         }
 
-        public int getColor() {
-            return baseData().color().getValue();
+        public Tag save(@NotNull final HolderLookup.Provider provider) {
+            return CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), this).getOrThrow();
         }
 
-        @Override
-        public ResourceLocation id() {
-            return baseData().base().id();
-        }
-
-        @Override
-        public int getDuration() {
-            return (int) baseData().base().duration().calculate(appliedAbilityLevel());
-        }
-
-        @Override
-        public Optional<LootItemCondition> earlyRemovalCondition() {
-            return baseData().base().earlyRemovalCondition();
-        }
-
-        @Override
-        public boolean isHidden() {
-            return baseData().base().isHidden();
+        public static @Nullable Glow.Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag nbt) {
+            return CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), nbt).resultOrPartial(DragonSurvival.LOGGER::error).orElse(null);
         }
     }
 }

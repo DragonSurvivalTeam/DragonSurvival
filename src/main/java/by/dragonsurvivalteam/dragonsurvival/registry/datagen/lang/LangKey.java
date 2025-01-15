@@ -138,15 +138,6 @@ public class LangKey {
     @Translation(comments = " with a %s chance")
     public static final String ABILITY_EFFECT_CHANCE = Translation.Type.GUI.wrap("ability.effect_chance_of_x");
 
-    @Translation(comments = "Can breathe in %s for %s additional seconds")
-    public static final String ABILITY_BREATHE = Translation.Type.GUI.wrap("ability.breathe");
-
-    @Translation(comments = "Can breathe in %s indefinitely")
-    public static final String ABILITY_BREATHE_INDEFINITELY = Translation.Type.GUI.wrap("ability.breathe_indefinitely");
-
-    @Translation(comments = "all fluids")
-    public static final String ABILITY_ALL_FLUIDS = Translation.Type.GUI.wrap("ability.all_fluids");
-
     // --- Projectile effects --- //
 
     @Translation(comments = " §6Projectile ")

@@ -1,10 +1,12 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.CommonData;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstance;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstanceBase;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncBlockVision;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.BlockVisionData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -18,46 +20,32 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
-
 // TODO :: should have range : holderset (in the vision handle the highest range decides the search range, the data entries store the visible range per block (and color)
-public record BlockVision(DurationInstanceBase base, HolderSet<Block> blocks, TextColor outlineColor) {
+public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVision.Instance> {
     public static int NO_COLOR = -1;
 
     public static final Codec<BlockVision> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            DurationInstanceBase.CODEC.fieldOf("base").forGetter(BlockVision::base),
+            DurationInstanceBase.CODEC.fieldOf("base").forGetter(identity -> identity),
             RegistryCodecs.homogeneousList(Registries.BLOCK).fieldOf("blocks").forGetter(BlockVision::blocks),
             TextColor.CODEC.fieldOf("outline_color").forGetter(BlockVision::outlineColor)
     ).apply(instance, BlockVision::new));
 
-    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Player target) {
-        int newDuration = (int) base.duration().calculate(ability.level());
+    private final HolderSet<Block> blocks;
+    private final TextColor outlineColor;
 
-        BlockVisionData data = target.getData(DSDataAttachments.BLOCK_VISION);
-        BlockVision.Instance instance = data.get(base.id());
-
-        if (instance != null && instance.appliedAbilityLevel() == ability.level() && instance.currentDuration() == newDuration) {
-            return;
-        }
-
-        data.remove(target, instance);
-        data.add(target, new BlockVision.Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, base.customIcon()), ability.level(), newDuration));
-    }
-
-    public void remove(final Player target) {
-        BlockVisionData blockVision = target.getData(DSDataAttachments.BLOCK_VISION);
-        blockVision.remove(target, blockVision.get(base.id()));
+    public BlockVision(final DurationInstanceBase<?, ?> base, final HolderSet<Block> blocks, final TextColor outlineColor) {
+        super(base);
+        this.blocks = blocks;
+        this.outlineColor = outlineColor;
     }
 
     public MutableComponent getDescription(final int abilityLevel) {
@@ -65,19 +53,31 @@ public record BlockVision(DurationInstanceBase base, HolderSet<Block> blocks, Te
         return Component.empty();
     }
 
+    public HolderSet<Block> blocks() {
+        return blocks;
+    }
+
+    public TextColor outlineColor() {
+        return outlineColor;
+    }
+
+    @Override
+    public Instance createInstance(final ServerPlayer dragon, final DragonAbilityInstance ability, final int currentDuration) {
+        return new Instance(this, CommonData.from(dragon, ability, customIcon()), currentDuration);
+    }
+
+    @Override
+    public AttachmentType<BlockVisionData> type() {
+        return DSDataAttachments.BLOCK_VISION.value();
+    }
+
     public static class Instance extends DurationInstance<BlockVision> {
-        public static final Codec<BlockVision.Instance> CODEC = RecordCodecBuilder.create(instance -> DurationInstance.codecStart(instance, () -> BlockVision.CODEC).apply(instance, BlockVision.Instance::new));
+        public static final Codec<Instance> CODEC = RecordCodecBuilder.create(
+                instance -> DurationInstance.codecStart(instance, () -> BlockVision.CODEC).apply(instance, Instance::new)
+        );
 
-        public Instance(final BlockVision baseData, final ClientData clientData, int appliedAbilityLevel, int currentDuration) {
-            super(baseData, clientData, appliedAbilityLevel, currentDuration);
-        }
-
-        public Tag save(@NotNull final HolderLookup.Provider provider) {
-            return CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), this).getOrThrow();
-        }
-
-        public static @Nullable BlockVision.Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag nbt) {
-            return CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), nbt).resultOrPartial(DragonSurvival.LOGGER::error).orElse(null);
+        public Instance(final BlockVision baseData, final CommonData commonData, final int currentDuration) {
+            super(baseData, commonData, currentDuration);
         }
 
         public int getColor(final BlockState state) {
@@ -107,24 +107,12 @@ public record BlockVision(DurationInstanceBase base, HolderSet<Block> blocks, Te
             }
         }
 
-        @Override
-        public ResourceLocation id() {
-            return baseData().base().id();
+        public Tag save(@NotNull final HolderLookup.Provider provider) {
+            return CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), this).getOrThrow();
         }
 
-        @Override
-        public int getDuration() {
-            return (int) baseData().base().duration().calculate(appliedAbilityLevel());
-        }
-
-        @Override
-        public Optional<LootItemCondition> earlyRemovalCondition() {
-            return baseData().base().earlyRemovalCondition();
-        }
-
-        @Override
-        public boolean isHidden() {
-            return baseData().base().isHidden();
+        public static @Nullable BlockVision.Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag nbt) {
+            return CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), nbt).resultOrPartial(DragonSurvival.LOGGER::error).orElse(null);
         }
     }
 }

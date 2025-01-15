@@ -37,26 +37,25 @@ public class SwimData {
 
     public int getMaxOxygen(final Player player, final FluidType fluid) {
         ResourceKey<FluidType> key = key(fluid);
+        float base;
 
-        // Query OxygenBonuses to modify the max oxygen value
-        float baseMaxOxygen;
         if (key == NeoForgeMod.EMPTY_TYPE.getKey()) {
-            baseMaxOxygen = getMaxOxygen(player, previousFluid);
+            base = getMaxOxygen(player, previousFluid);
         } else {
-            baseMaxOxygen = swimData.getOrDefault(key, Entity.TOTAL_AIR_SUPPLY);
+            base = swimData.getOrDefault(key, Entity.TOTAL_AIR_SUPPLY);
         }
 
-        if(baseMaxOxygen == UNLIMITED_OXYGEN) {
+        if (base == UNLIMITED_OXYGEN) {
             return UNLIMITED_OXYGEN;
         }
 
-        float oxygenBonusForFluid = player.getExistingData(DSDataAttachments.OXYGEN_BONUSES).map(data -> data.getOxygenBonus(key)).orElse(OxygenBonus.NO_BONUS_VALUE);
+        float bonus = player.getExistingData(DSDataAttachments.OXYGEN_BONUSES).map(data -> data.getBonus(key)).orElse(OxygenBonus.NONE);
 
-        if(oxygenBonusForFluid == OxygenBonus.INFINITE_VALUE) {
+        if (bonus == SwimData.UNLIMITED_OXYGEN) {
             return UNLIMITED_OXYGEN;
         }
 
-        return Math.max(0, (int) (baseMaxOxygen + oxygenBonusForFluid));
+        return Math.max(0, (int) (base + bonus));
     }
 
     public boolean canSwimIn(final FluidType fluid) {

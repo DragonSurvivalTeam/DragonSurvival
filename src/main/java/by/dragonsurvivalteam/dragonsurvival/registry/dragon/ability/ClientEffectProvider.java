@@ -4,7 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.DisplayType;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.DurationInstance;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstance;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.EnderDragonMarkHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
@@ -33,18 +33,10 @@ public interface ClientEffectProvider {
                 ComponentSerialization.CODEC.optionalFieldOf("effect_source", Component.empty()).forGetter(ClientData::effectSource)
         ).apply(instance, ClientData::new));
 
-        public static ClientData from(final ServerPlayer dragon, final DragonAbilityInstance ability) {
-            return from(dragon, ability, Optional.empty());
-        }
-
         @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // ignore
         public static ClientData from(final ServerPlayer dragon, final DragonAbilityInstance ability, final Optional<ResourceLocation> customIcon) {
             ResourceLocation icon = customIcon.orElse(ability.getIcon().withPrefix("textures/gui/sprites/").withSuffix(".png"));
             return new ClientData(icon, Component.translatable(Translation.Type.ABILITY.wrap(ability.location())), dragon.getName());
-        }
-
-        public static ClientData from(final Holder<DragonPenalty> penalty) {
-            return from(penalty, Optional.empty());
         }
 
         @SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "DataFlowIssue"}) // ignore

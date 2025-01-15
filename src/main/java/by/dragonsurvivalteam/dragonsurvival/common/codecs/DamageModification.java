@@ -1,12 +1,14 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.CommonData;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstance;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstanceBase;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncDamageModification;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DamageModifications;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
@@ -22,23 +24,21 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.NumberFormat;
-import java.util.Optional;
 
-public record DamageModification(DurationInstanceBase base, HolderSet<DamageType> damageTypes, LevelBasedValue multiplier) {
+public class DamageModification extends DurationInstanceBase<DamageModifications, DamageModification.Instance> {
     @Translation(comments = "§6■ Immune§r to ")
     private static final String ABILITY_IMMUNITY = Translation.Type.GUI.wrap("damage_modification.immunity");
 
@@ -49,28 +49,18 @@ public record DamageModification(DurationInstanceBase base, HolderSet<DamageType
     private static final String ABILITY_DAMAGE_INCREASE = Translation.Type.GUI.wrap("damage_modification.damage_increase");
 
     public static final Codec<DamageModification> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            DurationInstanceBase.CODEC.fieldOf("base").forGetter(DamageModification::base),
+            DurationInstanceBase.CODEC.fieldOf("base").forGetter(identity -> identity),
             RegistryCodecs.homogeneousList(Registries.DAMAGE_TYPE).fieldOf("types").forGetter(DamageModification::damageTypes),
             LevelBasedValue.CODEC.fieldOf("multiplier").forGetter(DamageModification::multiplier)
     ).apply(instance, DamageModification::new));
 
-    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity) {
-        int newDuration = (int) base.duration().calculate(ability.level());
+    private final HolderSet<DamageType> damageTypes;
+    private final LevelBasedValue multiplier;
 
-        DamageModifications data = entity.getData(DSDataAttachments.DAMAGE_MODIFICATIONS);
-        Instance instance = data.get(base.id());
-
-        if (instance != null && instance.appliedAbilityLevel() == ability.level() && instance.currentDuration() == newDuration) {
-            return;
-        }
-
-        data.remove(entity, instance);
-        data.add(entity, new Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, base.customIcon()), ability.level(), newDuration));
-    }
-
-    public void remove(final Entity target) {
-        DamageModifications data = target.getData(DSDataAttachments.DAMAGE_MODIFICATIONS);
-        data.remove(target, data.get(base.id()));
+    public DamageModification(final DurationInstanceBase<?, ?> base, final HolderSet<DamageType> damageTypes, final LevelBasedValue multiplier) {
+        super(base);
+        this.damageTypes = damageTypes;
+        this.multiplier = multiplier;
     }
 
     public boolean isFireImmune(int appliedAbilityLevel) {
@@ -91,7 +81,7 @@ public record DamageModification(DurationInstanceBase base, HolderSet<DamageType
         return false;
     }
 
-    public MutableComponent getDescription(int abilityLevel) {
+    public MutableComponent getDescription(final int abilityLevel) {
         float amount = multiplier.calculate(abilityLevel);
         String difference = NumberFormat.getPercentInstance().format(Math.abs(amount - 1));
 
@@ -122,7 +112,7 @@ public record DamageModification(DurationInstanceBase base, HolderSet<DamageType
             }
         }
 
-        float duration = base.duration().calculate(abilityLevel);
+        float duration = duration().calculate(abilityLevel);
 
         if (duration != DurationInstance.INFINITE_DURATION) {
             name.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.dynamicValue(Functions.ticksToSeconds((int) duration))));
@@ -131,11 +121,31 @@ public record DamageModification(DurationInstanceBase base, HolderSet<DamageType
         return name;
     }
 
-    public static class Instance extends DurationInstance<DamageModification> {
-        public static final Codec<Instance> CODEC = RecordCodecBuilder.create(instance -> DurationInstance.codecStart(instance, () -> DamageModification.CODEC).apply(instance, Instance::new));
+    @Override
+    public Instance createInstance(final ServerPlayer dragon, final DragonAbilityInstance ability, final int currentDuration) {
+        return new Instance(this, CommonData.from(dragon, ability, customIcon()), currentDuration);
+    }
 
-        public Instance(final DamageModification baseData, final ClientData clientData, int appliedAbilityLevel, int currentDuration) {
-            super(baseData, clientData, appliedAbilityLevel, currentDuration);
+    @Override
+    public AttachmentType<DamageModifications> type() {
+        return DSDataAttachments.DAMAGE_MODIFICATIONS.value();
+    }
+
+    public HolderSet<DamageType> damageTypes() {
+        return damageTypes;
+    }
+
+    public LevelBasedValue multiplier() {
+        return multiplier;
+    }
+
+    public static class Instance extends DurationInstance<DamageModification> {
+        public static final Codec<Instance> CODEC = RecordCodecBuilder.create(instance -> DurationInstance.codecStart(
+                instance, () -> DamageModification.CODEC).apply(instance, Instance::new)
+        );
+
+        public Instance(final DamageModification baseData, final CommonData commonData, int currentDuration) {
+            super(baseData, commonData, currentDuration);
         }
 
         public float calculate(final Holder<DamageType> damageType, float damageAmount) {
@@ -150,14 +160,6 @@ public record DamageModification(DurationInstanceBase base, HolderSet<DamageType
 
         public boolean isFireImmune() {
             return baseData().isFireImmune(appliedAbilityLevel());
-        }
-
-        public Tag save(@NotNull final HolderLookup.Provider provider) {
-            return CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), this).getOrThrow();
-        }
-
-        public static @Nullable Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag nbt) {
-            return CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), nbt).resultOrPartial(DragonSurvival.LOGGER::error).orElse(null);
         }
 
         @Override
@@ -179,24 +181,12 @@ public record DamageModification(DurationInstanceBase base, HolderSet<DamageType
             }
         }
 
-        @Override
-        public ResourceLocation id() {
-            return baseData().base().id();
+        public Tag save(@NotNull final HolderLookup.Provider provider) {
+            return CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), this).getOrThrow();
         }
 
-        @Override
-        public int getDuration() {
-            return (int) baseData().base().duration().calculate(appliedAbilityLevel());
-        }
-
-        @Override
-        public Optional<LootItemCondition> earlyRemovalCondition() {
-            return baseData().base().earlyRemovalCondition();
-        }
-
-        @Override
-        public boolean isHidden() {
-            return baseData().base().isHidden();
+        public static @Nullable Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag nbt) {
+            return CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), nbt).resultOrPartial(DragonSurvival.LOGGER::error).orElse(null);
         }
     }
 }

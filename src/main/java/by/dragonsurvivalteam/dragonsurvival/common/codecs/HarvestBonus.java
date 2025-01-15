@@ -1,11 +1,13 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.CommonData;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstance;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstanceBase;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncHarvestBonus;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HarvestBonuses;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.serialization.Codec;
@@ -19,14 +21,12 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +35,8 @@ import org.jetbrains.annotations.Nullable;
 import java.text.NumberFormat;
 import java.util.Optional;
 
-public record HarvestBonus(DurationInstanceBase base, Optional<HolderSet<Block>> blocks, LevelBasedValue harvestBonus, LevelBasedValue breakSpeedMultiplier) {
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType") // ignore
+public class HarvestBonus extends DurationInstanceBase<HarvestBonuses, HarvestBonus.Instance> {
     @Translation(comments = {
             "§6■ Harvest Bonus:§r",
             " - Harvest level: %s",
@@ -57,29 +58,21 @@ public record HarvestBonus(DurationInstanceBase base, Optional<HolderSet<Block>>
     public static final LevelBasedValue NO_BONUS = LevelBasedValue.constant(NO_BONUS_VALUE);
 
     public static final Codec<HarvestBonus> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            DurationInstanceBase.CODEC.fieldOf("base").forGetter(HarvestBonus::base),
+            DurationInstanceBase.CODEC.fieldOf("base").forGetter(identity -> identity),
             RegistryCodecs.homogeneousList(Registries.BLOCK).optionalFieldOf("blocks").forGetter(HarvestBonus::blocks),
             LevelBasedValue.CODEC.optionalFieldOf("harvest_bonus", NO_BONUS).forGetter(HarvestBonus::harvestBonus),
             LevelBasedValue.CODEC.optionalFieldOf("break_speed_multiplier", NO_BONUS).forGetter(HarvestBonus::breakSpeedMultiplier)
     ).apply(instance, HarvestBonus::new));
 
-    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final LivingEntity target) {
-        int newDuration = (int) base.duration().calculate(ability.level());
+    private final Optional<HolderSet<Block>> blocks;
+    private final LevelBasedValue harvestBonus;
+    private final LevelBasedValue breakSpeedMultiplier;
 
-        HarvestBonuses data = target.getData(DSDataAttachments.HARVEST_BONUSES);
-        Instance instance = data.get(base.id());
-
-        if (instance != null && instance.appliedAbilityLevel() == ability.level() && instance.currentDuration() == newDuration) {
-            return;
-        }
-
-        data.remove(target, instance);
-        data.add(target, new Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, base.customIcon()), ability.level(), newDuration));
-    }
-
-    public void remove(final LivingEntity target) {
-        HarvestBonuses data = target.getData(DSDataAttachments.HARVEST_BONUSES);
-        data.remove(target, data.get(base.id()));
+    public HarvestBonus(final DurationInstanceBase<?, ?> base, final Optional<HolderSet<Block>> blocks, final LevelBasedValue harvestBonus, final LevelBasedValue breakSpeedMultiplier) {
+        super(base);
+        this.blocks = blocks;
+        this.harvestBonus = harvestBonus;
+        this.breakSpeedMultiplier = breakSpeedMultiplier;
     }
 
     public MutableComponent getDescription(final int abilityLevel) {
@@ -100,19 +93,51 @@ public record HarvestBonus(DurationInstanceBase base, Optional<HolderSet<Block>>
         return Component.translatable(HARVEST_BONUS, DSColors.dynamicValue(harvestBonus), DSColors.dynamicValue(breakSpeedMultiplier), DSColors.dynamicValue(appliesTo));
     }
 
+    @Override
+    public Instance createInstance(final ServerPlayer dragon, final DragonAbilityInstance ability, final int currentDuration) {
+        return new Instance(this, CommonData.from(dragon, ability, customIcon()), currentDuration);
+    }
+
+    @Override
+    public AttachmentType<HarvestBonuses> type() {
+        return DSDataAttachments.HARVEST_BONUSES.value();
+    }
+
+    public Optional<HolderSet<Block>> blocks() {
+        return blocks;
+    }
+
+    public LevelBasedValue harvestBonus() {
+        return harvestBonus;
+    }
+
+    public LevelBasedValue breakSpeedMultiplier() {
+        return breakSpeedMultiplier;
+    }
+
     public static class Instance extends DurationInstance<HarvestBonus> {
-        public static final Codec<HarvestBonus.Instance> CODEC = RecordCodecBuilder.create(instance -> DurationInstance.codecStart(instance, () -> HarvestBonus.CODEC).apply(instance, Instance::new));
+        public static final Codec<Instance> CODEC = RecordCodecBuilder.create(instance -> DurationInstance.codecStart(
+                instance, () -> HarvestBonus.CODEC).apply(instance, Instance::new)
+        );
 
-        public Instance(final HarvestBonus baseData, final ClientData clientData, int appliedAbilityLevel, int currentDuration) {
-            super(baseData, clientData, appliedAbilityLevel, currentDuration);
+        public Instance(final HarvestBonus baseData, final CommonData commonData, int currentDuration) {
+            super(baseData, commonData, currentDuration);
         }
 
-        public Tag save(@NotNull final HolderLookup.Provider provider) {
-            return CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), this).getOrThrow();
+        public int getHarvestBonus(final BlockState state) {
+            if (baseData().blocks().isPresent() && !baseData().blocks().get().contains(state.getBlockHolder())) {
+                return NO_BONUS_VALUE;
+            }
+
+            return (int) baseData().harvestBonus().calculate(appliedAbilityLevel());
         }
 
-        public static @Nullable HarvestBonus.Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag nbt) {
-            return CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), nbt).resultOrPartial(DragonSurvival.LOGGER::error).orElse(null);
+        public float getSpeedMultiplier(final BlockState state) {
+            if (baseData().blocks().isPresent() && !baseData().blocks().get().contains(state.getBlockHolder())) {
+                return NO_BONUS_VALUE;
+            }
+
+            return baseData().breakSpeedMultiplier().calculate(appliedAbilityLevel());
         }
 
         @Override
@@ -134,40 +159,12 @@ public record HarvestBonus(DurationInstanceBase base, Optional<HolderSet<Block>>
             }
         }
 
-        public int getHarvestBonus(final BlockState state) {
-            if (baseData().blocks().isPresent() && !baseData().blocks().get().contains(state.getBlockHolder())) {
-                return NO_BONUS_VALUE;
-            }
-
-            return (int) baseData().harvestBonus().calculate(appliedAbilityLevel());
+        public Tag save(@NotNull final HolderLookup.Provider provider) {
+            return CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), this).getOrThrow();
         }
 
-        public float getSpeedMultiplier(final BlockState state) {
-            if (baseData().blocks().isPresent() && !baseData().blocks().get().contains(state.getBlockHolder())) {
-                return NO_BONUS_VALUE;
-            }
-
-            return baseData().breakSpeedMultiplier().calculate(appliedAbilityLevel());
-        }
-
-        @Override
-        public ResourceLocation id() {
-            return baseData().base().id();
-        }
-
-        @Override
-        public int getDuration() {
-            return (int) baseData().base().duration().calculate(appliedAbilityLevel());
-        }
-
-        @Override
-        public Optional<LootItemCondition> earlyRemovalCondition() {
-            return baseData().base().earlyRemovalCondition();
-        }
-
-        @Override
-        public boolean isHidden() {
-            return baseData().base().isHidden();
+        public static @Nullable HarvestBonus.Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag nbt) {
+            return CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), nbt).resultOrPartial(DragonSurvival.LOGGER::error).orElse(null);
         }
     }
 }

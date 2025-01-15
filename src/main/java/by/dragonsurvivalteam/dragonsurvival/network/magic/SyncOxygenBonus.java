@@ -12,13 +12,13 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record SyncOxygenBonus(int playerId, OxygenBonus.Instance oxygenBonusInstance, boolean remove) implements CustomPacketPayload {
+public record SyncOxygenBonus(int playerId, OxygenBonus.Instance oxygenBonusInstance, boolean isRemoval) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<SyncOxygenBonus> TYPE = new CustomPacketPayload.Type<>(DragonSurvival.res("sync_oxygen_bonus"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncOxygenBonus> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, SyncOxygenBonus::playerId,
             ByteBufCodecs.fromCodecWithRegistries(OxygenBonus.Instance.CODEC), SyncOxygenBonus::oxygenBonusInstance,
-            ByteBufCodecs.BOOL, SyncOxygenBonus::remove,
+            ByteBufCodecs.BOOL, SyncOxygenBonus::isRemoval,
             SyncOxygenBonus::new
     );
 
@@ -27,7 +27,7 @@ public record SyncOxygenBonus(int playerId, OxygenBonus.Instance oxygenBonusInst
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 OxygenBonuses data = player.getData(DSDataAttachments.OXYGEN_BONUSES);
 
-                if (packet.remove()) {
+                if (packet.isRemoval()) {
                     data.remove(player, packet.oxygenBonusInstance());
                 } else {
                     data.add(player, packet.oxygenBonusInstance());

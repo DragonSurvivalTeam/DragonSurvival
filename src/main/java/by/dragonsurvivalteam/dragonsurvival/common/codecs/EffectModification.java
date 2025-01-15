@@ -1,12 +1,14 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.CommonData;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstance;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstanceBase;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncEffectModification;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.EffectModifications;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
@@ -22,20 +24,17 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.NumberFormat;
-import java.util.Optional;
 
-public record EffectModification(DurationInstanceBase base, HolderSet<MobEffect> effects, Modification durationModification, Modification amplifierModification) {
+public class EffectModification extends DurationInstanceBase<EffectModifications, EffectModification.Instance> {
     @Translation(comments = {
             "§6■ Effect modifications:§r",
             " - Duration %s",
@@ -54,29 +53,21 @@ public record EffectModification(DurationInstanceBase base, HolderSet<MobEffect>
     private static final String UNMODIFIED = Translation.Type.GUI.wrap("effect_modification.unmodified");
 
     public static final Codec<EffectModification> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            DurationInstanceBase.CODEC.fieldOf("base").forGetter(EffectModification::base),
+            DurationInstanceBase.CODEC.fieldOf("base").forGetter(identity -> identity),
             RegistryCodecs.homogeneousList(Registries.MOB_EFFECT).fieldOf("effects").forGetter(EffectModification::effects),
             Modification.CODEC.fieldOf("duration_modification").forGetter(EffectModification::durationModification),
             Modification.CODEC.fieldOf("amplifier_modification").forGetter(EffectModification::amplifierModification)
     ).apply(instance, EffectModification::new));
 
-    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final LivingEntity target) {
-        int newDuration = (int) base.duration().calculate(ability.level());
+    private final HolderSet<MobEffect> effects;
+    private final Modification durationModification;
+    private final Modification amplifierModification;
 
-        EffectModifications data = target.getData(DSDataAttachments.EFFECT_MODIFICATIONS);
-        Instance instance = data.get(base.id());
-
-        if (instance != null && instance.appliedAbilityLevel() == ability.level() && instance.currentDuration() == newDuration) {
-            return;
-        }
-
-        data.remove(target, instance);
-        data.add(target, new Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, base.customIcon()), ability.level(), newDuration));
-    }
-
-    public void remove(final LivingEntity target) {
-        EffectModifications data = target.getData(DSDataAttachments.EFFECT_MODIFICATIONS);
-        data.remove(target, data.get(base.id()));
+    public EffectModification(final DurationInstanceBase<?, ?> base, final HolderSet<MobEffect> effects, final Modification durationModification, final Modification amplifierModification) {
+        super(base);
+        this.effects = effects;
+        this.durationModification = durationModification;
+        this.amplifierModification = amplifierModification;
     }
 
     public MutableComponent getDescription(int abilityLevel) {
@@ -121,11 +112,35 @@ public record EffectModification(DurationInstanceBase base, HolderSet<MobEffect>
         }
     }
 
-    public static class Instance extends DurationInstance<EffectModification> {
-        public static final Codec<Instance> CODEC = RecordCodecBuilder.create(instance -> DurationInstance.codecStart(instance, () -> EffectModification.CODEC).apply(instance, Instance::new));
+    @Override
+    public Instance createInstance(final ServerPlayer dragon, final DragonAbilityInstance ability, final int currentDuration) {
+        return new Instance(this, CommonData.from(dragon, ability, customIcon()), currentDuration);
+    }
 
-        public Instance(final EffectModification baseData, final ClientData clientData, int appliedAbilityLevel, int currentDuration) {
-            super(baseData, clientData, appliedAbilityLevel, currentDuration);
+    @Override
+    public AttachmentType<EffectModifications> type() {
+        return DSDataAttachments.EFFECT_MODIFICATIONS.value();
+    }
+
+    public HolderSet<MobEffect> effects() {
+        return effects;
+    }
+
+    public Modification durationModification() {
+        return durationModification;
+    }
+
+    public Modification amplifierModification() {
+        return amplifierModification;
+    }
+
+    public static class Instance extends DurationInstance<EffectModification> {
+        public static final Codec<Instance> CODEC = RecordCodecBuilder.create(instance -> DurationInstance.codecStart(
+                instance, () -> EffectModification.CODEC).apply(instance, Instance::new)
+        );
+
+        public Instance(final EffectModification baseData, final CommonData commonData, int currentDuration) {
+            super(baseData, commonData, currentDuration);
         }
 
         public int calculateDuration(final int duration) {
@@ -140,14 +155,6 @@ public record EffectModification(DurationInstanceBase base, HolderSet<MobEffect>
                 case ADDITIVE -> amplifier + (int) baseData().amplifierModification().amount().calculate(appliedAbilityLevel());
                 case MULTIPLICATIVE -> (int) (amplifier * baseData().amplifierModification().amount().calculate(appliedAbilityLevel()));
             };
-        }
-
-        public Tag save(@NotNull final HolderLookup.Provider provider) {
-            return CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), this).getOrThrow();
-        }
-
-        public static @Nullable Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag nbt) {
-            return CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), nbt).resultOrPartial(DragonSurvival.LOGGER::error).orElse(null);
         }
 
         @Override
@@ -169,24 +176,12 @@ public record EffectModification(DurationInstanceBase base, HolderSet<MobEffect>
             }
         }
 
-        @Override
-        public ResourceLocation id() {
-            return baseData().base().id();
+        public Tag save(@NotNull final HolderLookup.Provider provider) {
+            return CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), this).getOrThrow();
         }
 
-        @Override
-        public int getDuration() {
-            return (int) baseData().base().duration().calculate(appliedAbilityLevel());
-        }
-
-        @Override
-        public Optional<LootItemCondition> earlyRemovalCondition() {
-            return baseData().base().earlyRemovalCondition();
-        }
-
-        @Override
-        public boolean isHidden() {
-            return baseData().base().isHidden();
+        public static @Nullable Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag nbt) {
+            return CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), nbt).resultOrPartial(DragonSurvival.LOGGER::error).orElse(null);
         }
     }
 }

@@ -64,6 +64,7 @@ public record WeatherPredicate(Optional<Boolean> isRaining, Optional<Boolean> is
         }
 
         Biome biome = level.getBiome(position).value();
-        return biome.getPrecipitationAt(position) == Biome.Precipitation.RAIN || biome.getPrecipitationAt(position) == Biome.Precipitation.SNOW;
+        Biome.Precipitation precipitation = biome.getPrecipitationAt(position);
+        return precipitation == Biome.Precipitation.RAIN || precipitation == Biome.Precipitation.SNOW;
     }
 }

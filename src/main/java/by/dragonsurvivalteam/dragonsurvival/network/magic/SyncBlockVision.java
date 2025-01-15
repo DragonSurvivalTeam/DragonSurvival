@@ -12,13 +12,13 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record SyncBlockVision(int playerId, BlockVision.Instance blockVisionInstance, boolean remove) implements CustomPacketPayload {
+public record SyncBlockVision(int playerId, BlockVision.Instance blockVisionInstance, boolean isRemoval) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<SyncBlockVision> TYPE = new CustomPacketPayload.Type<>(DragonSurvival.res("sync_block_vision"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncBlockVision> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, SyncBlockVision::playerId,
             ByteBufCodecs.fromCodecWithRegistries(BlockVision.Instance.CODEC), SyncBlockVision::blockVisionInstance,
-            ByteBufCodecs.BOOL, SyncBlockVision::remove,
+            ByteBufCodecs.BOOL, SyncBlockVision::isRemoval,
             SyncBlockVision::new
     );
 
@@ -27,7 +27,7 @@ public record SyncBlockVision(int playerId, BlockVision.Instance blockVisionInst
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 BlockVisionData data = player.getData(DSDataAttachments.BLOCK_VISION);
 
-                if (packet.remove()) {
+                if (packet.isRemoval()) {
                     data.remove(player, packet.blockVisionInstance());
                 } else {
                     data.add(player, packet.blockVisionInstance());

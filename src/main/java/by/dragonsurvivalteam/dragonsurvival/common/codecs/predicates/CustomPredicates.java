@@ -74,7 +74,7 @@ public record CustomPredicates(
             }
         }
 
-        if (!isNearbyEntity.map(predicate -> predicate.matches(level, position)).orElse(false)) {
+        if (!isNearbyEntity.map(predicate -> predicate.matches(level, position)).orElse(true)) {
             return false;
         }
 

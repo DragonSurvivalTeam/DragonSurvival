@@ -119,7 +119,6 @@ public class OreVisionHandler {
         BlockVisionData blockVision = player.getExistingData(DSDataAttachments.BLOCK_VISION).orElse(null);
 
         if (blockVision == null) {
-            // TODO :: should be okay to call this every tick?
             clear();
             return;
         }
@@ -418,6 +417,11 @@ public class OreVisionHandler {
     }
 
     private static void clear() {
+        if (CHUNK_CACHE == null) {
+            // There is nothing to clean up
+            return;
+        }
+
         RENDER_DATA.clear();
         SEARCH_RESULT.clear();
         REMOVAL.clear();
@@ -426,10 +430,8 @@ public class OreVisionHandler {
         isSearching = false;
         hasPendingUpdate = false;
 
-        // FIXME :: I crashed because we tried to invalidate the chunk cache before it was initialized...
-        if(CHUNK_CACHE != null) {
-            CHUNK_CACHE.invalidateAll();
-        }
+        CHUNK_CACHE.invalidateAll();
+        CHUNK_CACHE = null;
     }
 
     private static void initCache() {

@@ -1,28 +1,32 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.CommonData;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstance;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstanceBase;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncOxygenBonus;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.OxygenBonuses;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
+import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.RegistryCodecs;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -31,66 +35,107 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public record OxygenBonus(DurationInstanceBase base, Optional<ResourceKey<FluidType>> fluidType, LevelBasedValue oxygenBonus) {
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType") // ignore
+public class OxygenBonus extends DurationInstanceBase<OxygenBonuses, OxygenBonus.Instance> {
+    @Translation(comments = "Can breathe in %s for %s additional seconds")
+    private static final String BONUS = Translation.Type.GUI.wrap("oxygen_bonus.bonus");
+
+    @Translation(comments = "Can breathe in %s indefinitely")
+    private static final String UNLIMITED = Translation.Type.GUI.wrap("oxygen_bonus.unlimited");
+
+    @Translation(comments = "all fluids")
+    private static final String ALL_FLUIDS = Translation.Type.GUI.wrap("oxygen_bonus.all_fluids");
+
+    @Translation(comments = "No fluid exists to which a bonus can be applied")
+    private static final String NO_FLUID = Translation.Type.GUI.wrap("oxygen_bonus.no_fluid");
+
+    public static float NONE;
+
     public static final Codec<OxygenBonus> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            DurationInstanceBase.CODEC.fieldOf("base").forGetter(OxygenBonus::base),
-            ResourceKey.codec(NeoForgeRegistries.FLUID_TYPES.key()).optionalFieldOf("fluid_type").forGetter(OxygenBonus::fluidType),
+            DurationInstanceBase.CODEC.fieldOf("base").forGetter(identity -> identity),
+            RegistryCodecs.homogeneousList(NeoForgeRegistries.Keys.FLUID_TYPES).optionalFieldOf("fluids").forGetter(OxygenBonus::fluids),
             LevelBasedValue.CODEC.fieldOf("oxygen_bonus").forGetter(OxygenBonus::oxygenBonus)
     ).apply(instance, OxygenBonus::new));
 
-    public static float NO_BONUS_VALUE = 0.f;
-    public static float INFINITE_VALUE = -1.f;
+    private final Optional<HolderSet<FluidType>> fluids;
+    private final LevelBasedValue oxygenBonus;
 
-    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final LivingEntity target) {
-        int newDuration = (int) base.duration().calculate(ability.level());
-
-        OxygenBonuses data = target.getData(DSDataAttachments.OXYGEN_BONUSES);
-        OxygenBonus.Instance instance = data.get(base.id());
-
-        if (instance != null && instance.appliedAbilityLevel() == ability.level() && instance.currentDuration() == newDuration) {
-            return;
-        }
-
-        data.remove(target, instance);
-        data.add(target, new OxygenBonus.Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, base.customIcon()), ability.level(), newDuration));
-    }
-
-    public void remove(final LivingEntity target) {
-        OxygenBonuses data = target.getData(DSDataAttachments.OXYGEN_BONUSES);
-        data.remove(target, data.get(base.id()));
+    public OxygenBonus(final DurationInstanceBase<?, ?> base, final Optional<HolderSet<FluidType>> fluids, final LevelBasedValue oxygenBonus) {
+        super(base);
+        this.fluids = fluids;
+        this.oxygenBonus = oxygenBonus;
     }
 
     public MutableComponent getDescription(final int abilityLevel) {
-        MutableComponent description;
-        MutableComponent fluids = fluidType().map(ResourceKey::location).map(Translation.Type.FLUID::wrap).map(Component::translatable).orElse(Component.translatable(LangKey.ABILITY_ALL_FLUIDS));
         float bonus = oxygenBonus.calculate(abilityLevel);
+        MutableComponent description;
 
-        if (bonus == INFINITE_VALUE) {
-            description = Component.translatable(LangKey.ABILITY_BREATHE_INDEFINITELY, fluids);
+        MutableComponent fluids = null;
+
+        if (fluids().isEmpty()) {
+            fluids = DSColors.dynamicValue(Component.translatable(ALL_FLUIDS));
         } else {
-            description = Component.translatable(LangKey.ABILITY_BREATHE, fluids, (int) bonus);
+            for (Holder<FluidType> fluid : fluids().get()) {
+                MutableComponent name = DSColors.dynamicValue(Component.translatable(fluid.value().getDescriptionId()));
+
+                if (fluids == null) {
+                    fluids = name;
+                } else {
+                    fluids.append(Component.literal(", ").append(name));
+                }
+            }
         }
 
-        if (base.duration().calculate(abilityLevel) != DurationInstance.INFINITE_DURATION) {
-            description.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, (int) base.duration().calculate(abilityLevel)));
+        if (fluids == null) {
+            return Component.translatable(NO_FLUID);
+        }
+
+        if (bonus == SwimData.UNLIMITED_OXYGEN) {
+            description = Component.translatable(UNLIMITED, fluids);
+        } else {
+            description = Component.translatable(BONUS, fluids, (int) bonus);
+        }
+
+        if (duration().calculate(abilityLevel) != DurationInstance.INFINITE_DURATION) {
+            description.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, (int) duration().calculate(abilityLevel)));
         }
 
         return description;
     }
 
+    @Override
+    public Instance createInstance(final ServerPlayer dragon, final DragonAbilityInstance ability, final int currentDuration) {
+        return new Instance(this, CommonData.from(dragon, ability, customIcon()), currentDuration);
+    }
+
+    @Override
+    public AttachmentType<OxygenBonuses> type() {
+        return DSDataAttachments.OXYGEN_BONUSES.value();
+    }
+
+    public Optional<HolderSet<FluidType>> fluids() {
+        return fluids;
+    }
+
+    public LevelBasedValue oxygenBonus() {
+        return oxygenBonus;
+    }
+
     public static class Instance extends DurationInstance<OxygenBonus> {
-        public static final Codec<OxygenBonus.Instance> CODEC = RecordCodecBuilder.create(instance -> DurationInstance.codecStart(instance, () -> OxygenBonus.CODEC).apply(instance, OxygenBonus.Instance::new));
+        public static final Codec<Instance> CODEC = RecordCodecBuilder.create(instance -> DurationInstance.codecStart(
+                instance, () -> OxygenBonus.CODEC).apply(instance, Instance::new)
+        );
 
-        public Instance(final OxygenBonus baseData, final ClientData clientData, int appliedAbilityLevel, int currentDuration) {
-            super(baseData, clientData, appliedAbilityLevel, currentDuration);
+        public Instance(final OxygenBonus baseData, final CommonData commonData, int currentDuration) {
+            super(baseData, commonData, currentDuration);
         }
 
-        public Tag save(@NotNull final HolderLookup.Provider provider) {
-            return CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), this).getOrThrow();
-        }
+        public float getOxygenBonus(final Holder<FluidType> fluid) {
+            if (!baseData().fluids().map(set -> set.contains(fluid)).orElse(true)) {
+                return OxygenBonus.NONE;
+            }
 
-        public static @Nullable OxygenBonus.Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag nbt) {
-            return CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), nbt).resultOrPartial(DragonSurvival.LOGGER::error).orElse(null);
+            return baseData().oxygenBonus().calculate(appliedAbilityLevel());
         }
 
         @Override
@@ -112,32 +157,12 @@ public record OxygenBonus(DurationInstanceBase base, Optional<ResourceKey<FluidT
             }
         }
 
-        public float getOxygenBonus(final ResourceKey<FluidType> fluidTypeResourceKey) {
-            if (baseData().fluidType().isPresent() && !baseData().fluidType().get().equals(fluidTypeResourceKey)) {
-                return NO_BONUS_VALUE;
-            }
-
-            return baseData().oxygenBonus().calculate(appliedAbilityLevel());
+        public Tag save(@NotNull final HolderLookup.Provider provider) {
+            return CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), this).getOrThrow();
         }
 
-        @Override
-        public ResourceLocation id() {
-            return baseData().base().id();
-        }
-
-        @Override
-        public int getDuration() {
-            return (int) baseData().base().duration().calculate(appliedAbilityLevel());
-        }
-
-        @Override
-        public Optional<LootItemCondition> earlyRemovalCondition() {
-            return baseData().base().earlyRemovalCondition();
-        }
-
-        @Override
-        public boolean isHidden() {
-            return baseData().base().isHidden();
+        public static @Nullable OxygenBonus.Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag nbt) {
+            return CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), nbt).resultOrPartial(DragonSurvival.LOGGER::error).orElse(null);
         }
     }
 }

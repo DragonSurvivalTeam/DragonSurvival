@@ -38,6 +38,6 @@ public class BlockVisionData extends Storage<BlockVision.Instance> {
 
     @Override
     public AttachmentType<?> type() {
-        return DSDataAttachments.BLOCK_VISION.get();
+        return DSDataAttachments.BLOCK_VISION.value();
     }
 }

@@ -1,13 +1,15 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.CommonData;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstance;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstanceBase;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncModifierWithDuration;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ModifiersWithDuration;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.AttributeModifierSupplier;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.ModifierEffect;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
@@ -30,7 +32,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,35 +41,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Objects;
 
-public record ModifierWithDuration(DurationInstanceBase base, List<Modifier> modifiers) {
+public class ModifierWithDuration extends DurationInstanceBase<ModifiersWithDuration, ModifierWithDuration.Instance> {
     public static final Codec<ModifierWithDuration> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            DurationInstanceBase.CODEC.fieldOf("base").forGetter(ModifierWithDuration::base),
+            DurationInstanceBase.CODEC.fieldOf("base").forGetter(identity -> identity),
             Modifier.CODEC.listOf().fieldOf("modifiers").forGetter(ModifierWithDuration::modifiers)
     ).apply(instance, ModifierWithDuration::new));
 
-    public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final LivingEntity target) {
-        int newDuration = (int) base.duration().calculate(ability.level());
+    private final List<Modifier> modifiers;
 
-        ModifiersWithDuration data = target.getData(DSDataAttachments.MODIFIERS_WITH_DURATION);
-        Instance instance = data.get(base.id());
-
-        if (instance != null && instance.appliedAbilityLevel() == ability.level() && instance.currentDuration() == newDuration) {
-            return;
-        }
-
-        data.remove(target, instance);
-        data.add(target, new ModifierWithDuration.Instance(this, ClientEffectProvider.ClientData.from(dragon, ability, base.customIcon()), ability.level(), newDuration, new HashMap<>()));
+    public ModifierWithDuration(final DurationInstanceBase<?, ?> base, final List<Modifier> modifiers) {
+        super(base);
+        this.modifiers = modifiers;
     }
 
-    public void remove(final LivingEntity target) {
-        ModifiersWithDuration data = target.getData(DSDataAttachments.MODIFIERS_WITH_DURATION);
-        data.remove(target, data.get(base.id()));
-    }
-
-    public @Nullable MutableComponent getDescription(final int abilityLevel) {
-        double duration = Functions.ticksToSeconds((int) base.duration().calculate(abilityLevel));
+    public MutableComponent getDescription(final int abilityLevel) {
+        double duration = Functions.ticksToSeconds((int) duration().calculate(abilityLevel));
         MutableComponent description = null;
 
         for (Modifier modifier : modifiers) {
@@ -84,7 +74,21 @@ public record ModifierWithDuration(DurationInstanceBase base, List<Modifier> mod
             }
         }
 
-        return description;
+        return Objects.requireNonNullElse(description, Component.empty());
+    }
+
+    @Override
+    public Instance createInstance(final ServerPlayer dragon, final DragonAbilityInstance ability, final int currentDuration) {
+        return new Instance(this, CommonData.from(dragon, ability, customIcon()), currentDuration);
+    }
+
+    @Override
+    public AttachmentType<ModifiersWithDuration> type() {
+        return DSDataAttachments.MODIFIERS_WITH_DURATION.value();
+    }
+
+    public List<Modifier> modifiers() {
+        return modifiers;
     }
 
     public static class Instance extends DurationInstance<ModifierWithDuration> implements AttributeModifierSupplier {
@@ -102,28 +106,19 @@ public record ModifierWithDuration(DurationInstanceBase base, List<Modifier> mod
 
         private final Map<Holder<Attribute>, List<ResourceLocation>> ids;
 
-        public Instance(final ModifierWithDuration baseData, final ClientData clientData, int appliedAbilityLevel, int currentDuration, final Map<Holder<Attribute>, List<ResourceLocation>> ids) {
-            super(baseData, clientData, appliedAbilityLevel, currentDuration);
+        public Instance(final ModifierWithDuration baseData, final CommonData commonData, final int currentDuration) {
+            this(baseData, commonData, currentDuration, new HashMap<>());
+        }
+
+        public Instance(final ModifierWithDuration baseData, final CommonData commonData, final int currentDuration, final Map<Holder<Attribute>, List<ResourceLocation>> ids) {
+            super(baseData, commonData, currentDuration);
             this.ids = ids;
-        }
-
-        public Tag save(@NotNull final HolderLookup.Provider provider) {
-            return CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), this).getOrThrow();
-        }
-
-        public static @Nullable Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag nbt) {
-            return CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), nbt).resultOrPartial(DragonSurvival.LOGGER::error).orElse(null);
         }
 
         @Override
         public Component getDescription() {
             MutableComponent description = baseData().getDescription(appliedAbilityLevel());
-
-            if (description == null) {
-                return Component.empty();
-            } else {
-                return Component.translatable(ModifierEffect.ATTRIBUTE_MODIFIERS).append(description);
-            }
+            return Component.translatable(ModifierEffect.ATTRIBUTE_MODIFIERS).append(description);
         }
 
         @Override
@@ -158,6 +153,14 @@ public record ModifierWithDuration(DurationInstanceBase base, List<Modifier> mod
             }
         }
 
+        public Tag save(@NotNull final HolderLookup.Provider provider) {
+            return CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), this).getOrThrow();
+        }
+
+        public static @Nullable Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag nbt) {
+            return CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), nbt).resultOrPartial(DragonSurvival.LOGGER::error).orElse(null);
+        }
+
         @Override
         public List<Modifier> modifiers() {
             return baseData().modifiers();
@@ -176,26 +179,6 @@ public record ModifierWithDuration(DurationInstanceBase base, List<Modifier> mod
         @Override
         public ModifierType getModifierType() {
             return ModifierType.CUSTOM;
-        }
-
-        @Override
-        public ResourceLocation id() {
-            return baseData().base().id();
-        }
-
-        @Override
-        public int getDuration() {
-            return (int) baseData().base().duration().calculate(appliedAbilityLevel());
-        }
-
-        @Override
-        public Optional<LootItemCondition> earlyRemovalCondition() {
-            return baseData().base().earlyRemovalCondition();
-        }
-
-        @Override
-        public boolean isHidden() {
-            return baseData().base().isHidden();
         }
     }
 }

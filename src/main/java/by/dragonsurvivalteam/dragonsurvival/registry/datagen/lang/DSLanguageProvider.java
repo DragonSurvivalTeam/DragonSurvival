@@ -19,7 +19,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.modscan.ModAnnotation;
-import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.neoforged.neoforgespi.language.ModFileScanData;
@@ -85,10 +84,6 @@ public class DSLanguageProvider extends LanguageProvider {
         for (ResourceKey<DamageType> damageType : ResourceHelper.keys(lookup.join(), Registries.DAMAGE_TYPE)) {
             add(Translation.Type.DAMAGE_TYPE.wrap(damageType.location()), capitalize(damageType.location().getPath()));
         }
-
-        // NeoForge fluid type keys
-        add(Translation.Type.FLUID.wrap(NeoForgeMod.WATER_TYPE.getKey().location()), "Water");
-        add(Translation.Type.FLUID.wrap(NeoForgeMod.LAVA_TYPE.getKey().location()), "Lava");
 
         // Tags are not available during data generation
         add(Tags.getTagTranslationKey(DamageTypeTags.IS_FIRE), "Fire");

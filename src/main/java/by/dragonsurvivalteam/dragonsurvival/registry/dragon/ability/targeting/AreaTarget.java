@@ -16,7 +16,7 @@ import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.AABB;
 
-// TODO :: provide boolean to only target exposed blocks / visible entities (isVisible)
+// TODO :: optional direction parameter
 public record AreaTarget(Either<BlockTargeting, EntityTargeting> target, LevelBasedValue radius) implements AbilityTargeting {
     @Translation(comments = " in a %s block radius")
     private static final String AREA_TARGET_BLOCK = Translation.Type.GUI.wrap("ability_target.area_target.block");
