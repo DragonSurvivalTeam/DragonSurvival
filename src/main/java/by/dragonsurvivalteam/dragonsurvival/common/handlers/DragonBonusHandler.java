@@ -5,7 +5,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.network.status.SyncPlayerJump;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
-import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -14,7 +13,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import net.neoforged.neoforge.event.level.BlockDropsEvent;
-import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 @EventBusSubscriber
@@ -30,31 +28,14 @@ public class DragonBonusHandler {
             return;
         }
 
-        if (entity instanceof ServerPlayer serverPlayer && DragonStateProvider.isDragon(serverPlayer)) {
-            PacketDistributor.sendToPlayersTrackingEntity(serverPlayer, new SyncPlayerJump(entity.getId(), 18));
-        } else if(entity instanceof Player player && DragonStateProvider.isDragon(player)) {
-            if(player.level().isClientSide()) {
-                if(Minecraft.getInstance().player == player) {
-                    DragonEntity.DRAGON_JUMP_TICKS.put(player.getId(), 18);
-                }
-            }
+        if (!DragonStateProvider.isDragon(entity)) {
+            return;
         }
-    }
 
-    @SubscribeEvent
-    public static void onLand(final PlayerTickEvent.Pre event) {
-        LivingEntity entity = event.getEntity();
-
-        if (entity instanceof ServerPlayer serverPlayer && DragonStateProvider.isDragon(serverPlayer)) {
-            if(serverPlayer.onGround()) {
-                PacketDistributor.sendToPlayersTrackingEntity(serverPlayer, new SyncPlayerJump(entity.getId(), 0));
-            }
-        } else if(entity instanceof Player player && DragonStateProvider.isDragon(player)) {
-            if(player.level().isClientSide() && player.onGround()) {
-                if(Minecraft.getInstance().player == player) {
-                    DragonEntity.DRAGON_JUMP_TICKS.put(player.getId(), 0);
-                }
-            }
+        if (entity instanceof ServerPlayer serverPlayer) {
+            PacketDistributor.sendToPlayersTrackingEntity(serverPlayer, new SyncPlayerJump(entity.getId(), 18));
+        } else if (entity instanceof Player player) {
+            DragonEntity.DRAGON_JUMP_TICKS.put(player.getId(), 18);
         }
     }
 

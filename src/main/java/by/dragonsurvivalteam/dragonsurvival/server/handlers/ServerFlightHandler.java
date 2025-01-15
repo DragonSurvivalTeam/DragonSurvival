@@ -3,12 +3,14 @@ package by.dragonsurvivalteam.dragonsurvival.server.handlers;
 import by.dragonsurvivalteam.dragonsurvival.client.handlers.ClientFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SpinDurationAndCooldown;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncFlyingPlayerAbility;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncWingsSpread;
+import by.dragonsurvivalteam.dragonsurvival.network.status.SyncPlayerJump;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
@@ -16,6 +18,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -27,6 +30,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerFlyableFallEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -86,15 +90,34 @@ public class ServerFlightHandler {
     @ConfigOption(side = ConfigSide.SERVER, category = "wings", key = "enable_flight_fall_damage")
     public static boolean enableFlightFallDamage = true;
 
+    @SubscribeEvent(receiveCanceled = true) // Unsure if this is needed
+    public static void handleLanding(final LivingFallEvent event) {
+        if (event.getEntity() instanceof Player player) {
+            handleLanding(player);
+        }
+    }
+
     @SubscribeEvent
-    public static void foldWingsOnLand(final LivingFallEvent event) {
-        if (!(event.getEntity() instanceof Player player) || player.level().isClientSide()) {
+    public static void handleLanding(final PlayerFlyableFallEvent event) {
+        if (event.getEntity() instanceof Player player) {
+            handleLanding(player);
+        }
+    }
+
+    private static void handleLanding(final Player player) {
+        DragonStateHandler handler = DragonStateProvider.getData(player);
+
+        if (!handler.isDragon()) {
             return;
         }
 
-        DragonStateHandler data = DragonStateProvider.getData(player);
+        if (player instanceof ServerPlayer serverPlayer) {
+            PacketDistributor.sendToPlayersTrackingEntity(serverPlayer, new SyncPlayerJump(player.getId(), 0));
+        } else {
+            DragonEntity.DRAGON_JUMP_TICKS.put(player.getId(), 0);
+        }
 
-        if (!foldWingsOnLand || !data.isDragon()) {
+        if (!foldWingsOnLand || player.level().isClientSide()) {
             return;
         }
 
