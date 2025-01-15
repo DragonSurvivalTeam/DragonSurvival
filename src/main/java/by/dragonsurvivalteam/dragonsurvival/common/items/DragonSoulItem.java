@@ -112,7 +112,6 @@ public class DragonSoulItem extends Item {
                 handler.spinWasGranted = spinGranted;
                 stack.set(DataComponents.CUSTOM_DATA, CustomData.of(currentDragonData));
                 stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(getCustomModelData(level.registryAccess(), currentDragonData)));
-                PlayerLoginHandler.syncComplete(player);
             } else {
                 CompoundTag tag = stack.get(DataComponents.CUSTOM_DATA).copyTag();
                 // Preserve spin/flight grant state
@@ -121,7 +120,6 @@ public class DragonSoulItem extends Item {
                 handler.deserializeNBT(level.registryAccess(), tag, true);
                 handler.flightWasGranted = flightGranted;
                 handler.spinWasGranted = spinGranted;
-                PlayerLoginHandler.syncComplete(player);
                 stack.set(DataComponents.CUSTOM_DATA, null);
                 stack.set(DataComponents.CUSTOM_MODEL_DATA, null);
             }
@@ -130,9 +128,9 @@ public class DragonSoulItem extends Item {
             stack.set(DataComponents.CUSTOM_DATA, CustomData.of(currentDragonData));
             stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(getCustomModelData(level.registryAccess(), currentDragonData)));
             handler.revertToHumanForm(player, true);
-            PlayerLoginHandler.syncComplete(player);
         }
 
+        PlayerLoginHandler.syncComplete(player);
         level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ENDER_DRAGON_GROWL, entity.getSoundSource(), 1.0F, 1.0F);
 
         for (int i = 0; i < 10; i++) {

@@ -132,7 +132,7 @@ public class PlayerLoginHandler {
                 }
 
                 SyncComplete.handleDragonSync(player, true);
-                PacketDistributor.sendToPlayer(player, new SyncComplete(player.getId(), handler.serializeNBT(player.registryAccess())));
+                PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncComplete(player.getId(), handler.serializeNBT(player.registryAccess())));
             });
 
             syncDataAttachments(player);
