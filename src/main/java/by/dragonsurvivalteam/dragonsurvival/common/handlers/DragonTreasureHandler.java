@@ -67,7 +67,7 @@ public class DragonTreasureHandler {
             "(amplifier calculation base is amplifier + 1)"
     })
     @ConfigOption(side = ConfigSide.SERVER, category = "treasure", key = "effects_on_sleep")
-    public static List<EffectConfig> EFFECTS_ON_SLEEP = List.of(EffectConfig.create(MobEffects.REGENERATION, 20, 0, 0.5, 0.01));
+    public static List<EffectConfig> EFFECTS_ON_SLEEP = List.of(EffectConfig.create(MobEffects.REGENERATION, 200, 0, 0.5, 0.01));
 
     @SubscribeEvent
     public static void update(final PlayerTickEvent.Post event) {
