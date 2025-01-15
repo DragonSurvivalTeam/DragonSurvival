@@ -22,7 +22,11 @@ public record SyncVisualEffectAdded(int entityId, MobEffectInstance effect) impl
     public static void handleClient(final SyncVisualEffectAdded packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.entityId()) instanceof LivingEntity entity) {
-                entity.addEffect(packet.effect());
+                MobEffectInstance current = entity.getEffect(packet.effect().getEffect());
+
+                if (current == null || current.getDuration() != packet.effect().getDuration() || current.getAmplifier() != packet.effect().getAmplifier()) {
+                    entity.addEffect(packet.effect());
+                }
             }
         });
     }

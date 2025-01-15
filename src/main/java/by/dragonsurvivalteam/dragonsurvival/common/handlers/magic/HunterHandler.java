@@ -223,7 +223,7 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
             return 1;
         }
 
-        float min = isLocalPlayer || FULLY_INVISIBLE ? MIN_ALPHA : 0;
+        float min = isLocalPlayer || !FULLY_INVISIBLE ? MIN_ALPHA : 0;
         return Math.max(min, 1f - (float) data.getHunterStacks() / getMaxStacks());
     }
 
@@ -231,7 +231,7 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
         return blockState.is(DSBlockTags.ENABLES_HUNTER_EFFECT);
     }
 
-    private static void clearHunterStacks(final Entity entity) {
+    private static void clearHunterStacks(final LivingEntity entity) {
         entity.getData(DSDataAttachments.HUNTER).clearHunterStacks();
 
         if (!entity.level().isClientSide()) {

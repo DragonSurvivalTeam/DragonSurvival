@@ -15,7 +15,12 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
 
-/** To update effects which affect clients (through visuals) on non-player entities (they get synchronized correctly) (vanilla handles glowing and invisibility effects with data accessors) */
+/**
+ * To update effects which affect clients (through visuals) <br>
+ * (vanilla handles glowing and invisibility effects with data accessors) <br>
+ * Players should already be handled through {@link ServerPlayer#onEffectUpdated} <br>
+ * (This apparently only applies to the local player though - other client players also don't synchronize)
+ */
 @EventBusSubscriber
 public class VisualEffectSync {
     private static final List<Holder<MobEffect>> VISUAL_EFFECTS = List.of(
@@ -32,8 +37,7 @@ public class VisualEffectSync {
     public static void handleEffectAdded(final MobEffectEvent.Added event) {
         LivingEntity entity = event.getEntity();
 
-        // Client-side entry is likely our own packet
-        if (entity.level().isClientSide() || /* players are already synchronized */ entity instanceof ServerPlayer) {
+        if (entity.level().isClientSide()) {
             return;
         }
 
@@ -58,7 +62,7 @@ public class VisualEffectSync {
 
     private static void handleEffectRemoval(final MobEffectInstance instance, final LivingEntity entity) {
         // Client-side entry is likely our own packet
-        if (instance == null || entity.level().isClientSide() || /* players are already synchronized */ entity instanceof ServerPlayer) {
+        if (instance == null || entity.level().isClientSide()) {
             return;
         }
 
