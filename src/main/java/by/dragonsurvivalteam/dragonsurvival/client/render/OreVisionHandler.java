@@ -426,7 +426,10 @@ public class OreVisionHandler {
         isSearching = false;
         hasPendingUpdate = false;
 
-        CHUNK_CACHE.invalidateAll();
+        // FIXME :: I crashed because we tried to invalidate the chunk cache before it was initialized...
+        if(CHUNK_CACHE != null) {
+            CHUNK_CACHE.invalidateAll();
+        }
     }
 
     private static void initCache() {
