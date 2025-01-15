@@ -60,6 +60,7 @@
               "effect_type": "dragonsurvival:block_break",
               "probability": 1.0,
               "valid_blocks": {
+                "type": "minecraft:matching_blocks",
                 "blocks": [
                   "minecraft:snow",
                   "minecraft:short_grass"
@@ -74,6 +75,7 @@
                 "per_level_above_first": 0.05
               },
               "valid_blocks": {
+                "type": "minecraft:matching_blocks",
                 "blocks": [
                   "minecraft:snow_block",
                   "minecraft:powder_snow"

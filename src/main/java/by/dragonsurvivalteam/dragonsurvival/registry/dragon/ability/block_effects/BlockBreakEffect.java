@@ -4,11 +4,11 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilit
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.advancements.critereon.BlockPredicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
+import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import org.jetbrains.annotations.Nullable;
 
 public record BlockBreakEffect(BlockPredicate validBlocks, LevelBasedValue probability, boolean dropLoot) implements AbilityBlockEffect {
@@ -24,7 +24,7 @@ public record BlockBreakEffect(BlockPredicate validBlocks, LevelBasedValue proba
             return;
         }
 
-        if (validBlocks.matches(dragon.serverLevel(), position)) {
+        if (validBlocks.test(dragon.serverLevel(), position)) {
             dragon.serverLevel().destroyBlock(position, dropLoot);
         }
     }

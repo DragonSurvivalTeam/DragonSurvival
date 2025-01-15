@@ -131,6 +131,7 @@
                     }
                   ],
                   "from_predicate": {
+                    "type": "minecraft:matching_blocks",
                     "blocks": [
                       "minecraft:dirt",
                       "minecraft:coarse_dirt"
@@ -146,6 +147,7 @@
               "effect_type": "dragonsurvival:block_break",
               "probability": 0.2,
               "valid_blocks": {
+                "type": "minecraft:matching_blocks",
                 "blocks": "minecraft:potatoes"
               }
             },

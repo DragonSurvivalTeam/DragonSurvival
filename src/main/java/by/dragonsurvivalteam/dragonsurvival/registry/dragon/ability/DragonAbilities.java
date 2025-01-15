@@ -12,19 +12,24 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.CaveDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.ForestDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.SeaDragonAbilities;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.BlockConversionEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.GlowEffect;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AbilityTargeting;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AreaTarget;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.SelfTarget;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.TargetingMode;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.*;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Vec3i;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.util.random.WeightedRandomList;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +43,10 @@ public class DragonAbilities {
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "Applies a changing glow color")
     @Translation(type = Translation.Type.ABILITY, comments = "Glow Test")
     public static final ResourceKey<DragonAbility> TEST_GLOW = DragonAbilities.key("test_glow");
+
+    @Translation(type =  Translation.Type.ABILITY_DESCRIPTION, comments = "Frost-walker like effect")
+    @Translation(type = Translation.Type.ABILITY, comments = "Frost Walker")
+    public static final ResourceKey<DragonAbility> FROST_WALKER = DragonAbilities.key("frost_walker");
 
     public static void registerAbilities(final BootstrapContext<DragonAbility> context) {
         CaveDragonAbilities.registerAbilities(context);
@@ -69,6 +78,36 @@ public class DragonAbilities {
                                         ))),
                                 TargetingMode.ALLIES_AND_SELF
                         ), LevelBasedValue.constant(10)), LevelBasedValue.constant(1))
+                ),
+                true,
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("test_glow"), 0)
+                ))
+        ));
+
+        context.register(FROST_WALKER, new DragonAbility(
+                Activation.passive(),
+                Optional.empty(),
+                Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false)).build()),
+                List.of(
+                        new ActionContainer(new DiscTarget(AbilityTargeting.block(
+                                List.of(
+                                        new BlockConversionEffect(
+                                                List.of(new BlockConversionEffect.BlockConversionData(
+                                                        BlockPredicate.allOf(
+                                                                BlockPredicate.matchesTag(new Vec3i(0, 1, 0), BlockTags.AIR),
+                                                                BlockPredicate.matchesBlocks(Blocks.WATER),
+                                                                BlockPredicate.matchesFluids(Fluids.WATER),
+                                                                BlockPredicate.unobstructed()
+                                                        ),
+                                                        WeightedRandomList.create(
+                                                                new BlockConversionEffect.BlockTo(Blocks.FROSTED_ICE.defaultBlockState(), 1)
+                                                        ))
+                                                ),
+                                                LevelBasedValue.constant(1.0f))
+                                )
+                        ), new LevelBasedValue.Clamped(LevelBasedValue.perLevel(3.0F, 1.0F), 0.0F, 16.0F), LevelBasedValue.constant(0.1f), true),
+                                LevelBasedValue.constant(1))
                 ),
                 true,
                 new LevelBasedResource(List.of(
