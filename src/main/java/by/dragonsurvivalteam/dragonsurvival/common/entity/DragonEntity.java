@@ -597,8 +597,11 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             }
         } else if (AnimationUtils.isAnimationPlaying(animationController, FLY_LAND)) {
             state.setAnimation(FLY_LAND_END);
+            if(!FLY_LAND_END.getAnimationStages().isEmpty()) {
+                animationTickTimer.putAnimation(FLY_LAND_END, animationDuration(player, FLY_LAND_END.getAnimationStages().getFirst().animationName()));
+            }
             animationController.transitionLength(2);
-        } else if (AnimationUtils.isAnimationPlaying(animationController, FLY_LAND_END)) {
+        } else if (animationTickTimer.getDuration(FLY_LAND_END) > 0) {
             // Don't add any animation
         } else if (DRAGON_JUMP_TICKS.getOrDefault(this.playerId, 0) > 0) {
             state.setAnimation(JUMP);
