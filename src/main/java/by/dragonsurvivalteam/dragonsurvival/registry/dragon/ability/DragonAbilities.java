@@ -8,6 +8,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContaine
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstance;
 import by.dragonsurvivalteam.dragonsurvival.common.conditions.EntityCondition;
+import by.dragonsurvivalteam.dragonsurvival.common.conditions.ItemCondition;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.CaveDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.ForestDragonAbilities;
@@ -24,6 +25,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.random.WeightedRandomList;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
@@ -43,8 +45,8 @@ public class DragonAbilities {
     public static final ResourceKey<DragonAbility> TEST_GLOW = DragonAbilities.key("test_glow");
 
     @Translation(type =  Translation.Type.ABILITY_DESCRIPTION, comments = "Frost-walker like effect")
-    @Translation(type = Translation.Type.ABILITY, comments = "Frost Walker")
-    public static final ResourceKey<DragonAbility> FROST_WALKER = DragonAbilities.key("frost_walker");
+    @Translation(type = Translation.Type.ABILITY, comments = "Frost Walker Test")
+    public static final ResourceKey<DragonAbility> FROST_WALKER = DragonAbilities.key("test_frost_walker");
 
     public static void registerAbilities(final BootstrapContext<DragonAbility> context) {
         CaveDragonAbilities.registerAbilities(context);
@@ -79,14 +81,14 @@ public class DragonAbilities {
                 ),
                 true,
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("test_glow"), 0)
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("test"), 0)
                 ))
         ));
 
         context.register(FROST_WALKER, new DragonAbility(
                 Activation.passive(),
                 Optional.empty(),
-                Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false)).build()),
+                Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false)).or(Condition.tool(ItemCondition.is(Items.DIAMOND)).invert()).build()),
                 List.of(
                         new ActionContainer(new DiscTarget(AbilityTargeting.block(
                                 List.of(
@@ -109,7 +111,7 @@ public class DragonAbilities {
                 ),
                 true,
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("test_glow"), 0)
+                        new LevelBasedResource.TextureEntry(DragonSurvival.res("test"), 0)
                 ))
         ));
     }

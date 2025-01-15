@@ -74,17 +74,31 @@
     "texture_entries": [
       {
         "from_level": 0,
-        "texture_resource": "dragonsurvival:test_glow"
+        "texture_resource": "dragonsurvival:test"
       }
     ]
   },
   "usage_blocked": {
-    "condition": "minecraft:entity_properties",
-    "entity": "this",
-    "predicate": {
-      "flags": {
-        "is_on_ground": false
+    "condition": "minecraft:any_of",
+    "terms": [
+      {
+        "condition": "minecraft:entity_properties",
+        "entity": "this",
+        "predicate": {
+          "flags": {
+            "is_on_ground": false
+          }
+        }
+      },
+      {
+        "condition": "minecraft:inverted",
+        "term": {
+          "condition": "minecraft:match_tool",
+          "predicate": {
+            "items": "minecraft:diamond"
+          }
+        }
       }
-    }
+    ]
   }
 }
