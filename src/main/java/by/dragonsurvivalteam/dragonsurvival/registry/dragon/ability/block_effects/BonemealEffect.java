@@ -29,6 +29,7 @@ public record BonemealEffect(LevelBasedValue attempts, LevelBasedValue probabili
 
             for (int i = 0; i < attempts; i++) {
                 bonemealableBlock.performBonemeal(dragon.serverLevel(), dragon.getRandom(), position, state);
+                dragon.level().levelEvent(1505, position, 15);
             }
         }
     }
