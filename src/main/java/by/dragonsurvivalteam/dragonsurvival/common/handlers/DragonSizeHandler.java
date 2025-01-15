@@ -152,7 +152,7 @@ public class DragonSizeHandler {
     }
 
     @SubscribeEvent
-    public static void handleLerpSize(final PlayerTickEvent.Pre event) {
+    public static void handleLerpSizeAndPose(final PlayerTickEvent.Pre event) {
         Player player = event.getEntity();
         DragonStateHandler data = DragonStateProvider.getData(player);
 

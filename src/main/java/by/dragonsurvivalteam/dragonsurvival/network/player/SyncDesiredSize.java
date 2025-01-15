@@ -25,7 +25,6 @@ public record SyncDesiredSize(int playerId, double desiredSize) implements Custo
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 DragonStateHandler data = DragonStateProvider.getData(player);
                 data.setDesiredSize(player, packet.desiredSize());
-                player.refreshDimensions();
             }
         });
     }
