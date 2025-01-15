@@ -29,6 +29,7 @@ import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -124,6 +125,13 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         }
 
         return hotbar.computeIfAbsent(currentSpecies, species -> new HashMap<>());
+    }
+
+    @SubscribeEvent
+    public static void cancelCastingOnDeath(final LivingDeathEvent event) {
+        if (event.getEntity() instanceof Player player && DragonStateProvider.isDragon(player)) {
+            MagicData.getData(player).stopCasting(player);
+        }
     }
 
     @SubscribeEvent
