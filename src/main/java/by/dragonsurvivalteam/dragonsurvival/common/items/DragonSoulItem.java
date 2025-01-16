@@ -130,6 +130,8 @@ public class DragonSoulItem extends Item {
             handler.revertToHumanForm(player, true);
         }
 
+        // This will require an explicit magic data sync (when switching between the same species)
+        // (If the dragon soul is ever made to also switch abilities)
         PlayerLoginHandler.syncHandler(player);
         level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ENDER_DRAGON_GROWL, entity.getSoundSource(), 1.0F, 1.0F);
 

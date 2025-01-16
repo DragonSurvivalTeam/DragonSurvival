@@ -13,7 +13,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 
-import java.util.Objects;
 import java.util.function.BiFunction;
 
 public record TimeComponent(Item item, int ticks, BiFunction<Item, Integer, Component> description) implements TooltipComponent {
@@ -34,10 +33,10 @@ public record TimeComponent(Item item, int ticks, BiFunction<Item, Integer, Comp
             return Component.translatable(item.getDescriptionId()).append(": ").append(translateTime(ticks));
         }
 
-        Integer numberOfUses = handler.usedGrowthItems.get(item);
-        MutableComponent usage = Component.translatable(String.format(" (%s / %s)", growthItem.maximumUsages() - Objects.requireNonNullElse(numberOfUses, 0), growthItem.maximumUsages()));
+        int numberOfUses = handler.getGrowthUses(item);
+        MutableComponent usage = Component.translatable(String.format(" (%s / %s)", growthItem.maximumUsages() - numberOfUses, growthItem.maximumUsages()));
 
-        if (numberOfUses != null && numberOfUses == growthItem.maximumUsages()) {
+        if (numberOfUses == growthItem.maximumUsages()) {
             usage = usage.withStyle(ChatFormatting.DARK_GRAY);
         }
 

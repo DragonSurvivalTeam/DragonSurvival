@@ -24,8 +24,11 @@ public record GrowthItem(HolderSet<Item> items, int growthInTicks, int maximumUs
     public boolean canBeUsed(final DragonStateHandler handler, final Item item) {
         //noinspection deprecation -> ignore
         if (items.contains(item.builtInRegistryHolder())) {
-            Integer used = handler.usedGrowthItems.get(item);
-            return used == null || maximumUsages == INFINITE_USAGES || used < maximumUsages;
+            if (maximumUsages == INFINITE_USAGES) {
+                return true;
+            }
+
+            return handler.getGrowthUses(item) < maximumUsages;
         }
 
         return false;

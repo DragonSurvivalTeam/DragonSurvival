@@ -43,8 +43,7 @@ public class DragonGrowthHandler {
             return;
         }
 
-        handler.usedGrowthItems.compute(event.getItemStack().getItem(), (key, timesUsed) -> timesUsed == null ? 1 : timesUsed + 1);
-
+        handler.incrementGrowthUses(event.getItemStack().getItem());
         double oldSize = handler.getDesiredSize();
         handler.setDesiredSize(player, handler.getDesiredSize() + growth);
 

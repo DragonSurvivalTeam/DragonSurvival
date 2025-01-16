@@ -73,7 +73,10 @@ public class DragonStateHandler extends EntityStateHandler {
     public MultiMining multiMining = MultiMining.ENABLED;
     public LargeDragonDestruction largeDragonDestruction = LargeDragonDestruction.ENABLED;
 
-    public final Map<Item, Integer> usedGrowthItems = new HashMap<>();
+    // Gets reset once the size reaches the starting size of the dragon species
+    // Currently also stores the usages of non-limited items (but doesn't limit them by doing so)
+    // (Preferably it would not but the additional checks may not be worth it)
+    private final Map<ResourceKey<DragonStage>, Map<Item, Integer>> usedGrowthItems = new HashMap<>();
 
     public StarHeartItem.State starHeartState = StarHeartItem.State.INACTIVE;
     public boolean isGrowing = true;
@@ -234,8 +237,10 @@ public class DragonStateHandler extends EntityStateHandler {
         dragonStage = dragonSpecies != null ? DragonStage.get(dragonSpecies.value().getStages(provider), size) : null;
         this.size = boundSize(provider, size);
 
-        if (this.desiredSize == DragonStage.getBounds().min()) {
+        if (dragonSpecies != null && this.desiredSize == dragonSpecies.value().getStartingSize(provider)) {
             // Allow the player to re-use growth items if their growth is reset
+            // Don't clear if the player is a human in case the growth is saved
+            // It will be cleared once they turn into a dragon, and its size matches the requirements
             usedGrowthItems.clear();
         }
     }
@@ -248,11 +253,29 @@ public class DragonStateHandler extends EntityStateHandler {
     }
 
     public List<Holder<DragonStage>> getStages(@Nullable final HolderLookup.Provider provider) {
-        if(dragonSpecies.value().stages().isPresent()) {
+        if (dragonSpecies.value().stages().isPresent()) {
             return dragonSpecies.value().stages().get().stream().toList();
         } else {
             return DragonStage.getDefaultStages(provider).stream().toList();
         }
+    }
+
+    /** Should only be called if the player is a dragon */
+    public void incrementGrowthUses(final Item item) {
+        Map<Item, Integer> items = usedGrowthItems.computeIfAbsent(stageKey(), key -> new HashMap<>());
+        items.compute(item, (key, timesUsed) -> timesUsed == null ? 1 : timesUsed + 1);
+    }
+
+    /** Should only be called if the player is a dragon */
+    public int getGrowthUses(final Item item) {
+        Map<Item, Integer> items = usedGrowthItems.get(stageKey());
+        Integer uses = items.get(item);
+
+        if (uses == null) {
+            return 0;
+        }
+
+        return uses;
     }
 
     public Holder<DragonSpecies> species() {
@@ -498,9 +521,15 @@ public class DragonStateHandler extends EntityStateHandler {
 
         CompoundTag usedGrowthItems = new CompoundTag();
 
-        this.usedGrowthItems.forEach((item, count) -> {
-            //noinspection deprecation,DataFlowIssue -> ignore / key is present
-            usedGrowthItems.putInt(item.builtInRegistryHolder().getKey().location().toString(), count);
+        this.usedGrowthItems.forEach((key, items) -> {
+            CompoundTag perStage = new CompoundTag();
+
+            items.forEach((item, count) -> {
+                //noinspection deprecation,DataFlowIssue -> ignore / key is present
+                perStage.putInt(item.builtInRegistryHolder().getKey().location().toString(), count);
+            });
+
+            usedGrowthItems.put(key.location().toString(), perStage);
         });
 
         tag.put(USED_GROWTH_ITEMS, usedGrowthItems);
@@ -579,11 +608,23 @@ public class DragonStateHandler extends EntityStateHandler {
 
         CompoundTag usedGrowthItems = tag.getCompound(USED_GROWTH_ITEMS);
         usedGrowthItems.getAllKeys().forEach(key -> {
-            Item item = BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(key));
+            ResourceLocation resource = ResourceLocation.tryParse(key);;
 
-            if (item != Items.AIR) {
-                this.usedGrowthItems.put(item, usedGrowthItems.getInt(key));
+            if (resource == null) {
+                // Just to be safe - would normally not occur
+                return;
             }
+
+            CompoundTag perStage = usedGrowthItems.getCompound(key);
+            ResourceKey<DragonStage> stageKey = ResourceKey.create(DragonStage.REGISTRY, resource);
+
+            perStage.getAllKeys().forEach(itemKey -> {
+                Item item = BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(key));
+
+                if (item != Items.AIR) {
+                    this.usedGrowthItems.computeIfAbsent(stageKey, ignored -> new HashMap<>()).put(item, perStage.getInt(itemKey));
+                }
+            });
         });
 
         skinData = new SkinData();
