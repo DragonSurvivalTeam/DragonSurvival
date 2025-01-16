@@ -1,13 +1,12 @@
 package by.dragonsurvivalteam.dragonsurvival.server.handlers;
 
-import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.network.animation.StopAbilityAnimation;
 import by.dragonsurvivalteam.dragonsurvival.network.container.OpenDragonAltar;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncData;
 import by.dragonsurvivalteam.dragonsurvival.network.sound.StopTickingSound;
-import by.dragonsurvivalteam.dragonsurvival.network.status.SyncAltarState;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AltarData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
@@ -32,12 +31,12 @@ import net.neoforged.neoforge.network.PacketDistributor;
 @EventBusSubscriber
 public class PlayerLoginHandler {
     // TODO: Do we need to start up any existing ticking sounds when a player starts getting tracked? e.g. moves into render distance while casting.
-    // Do we even care enough to account for this edge case?
+    //  Do we even care enough to account for this edge case?
     @SubscribeEvent
     public static void onTrackingStart(final PlayerEvent.StartTracking event) {
         Player tracker = event.getEntity();
         Entity tracked = event.getTarget();
-        syncComplete(tracker, tracked);
+        syncHandler(tracker, tracked);
     }
 
     @SubscribeEvent
@@ -49,18 +48,16 @@ public class PlayerLoginHandler {
 
     @SubscribeEvent
     public static void onLogin(final PlayerEvent.PlayerLoggedInEvent event) {
+        DragonStateHandler handler = DragonStateProvider.getData(event.getEntity());
+
         // Remove any existing penalty supplies that may no longer be relevant (due to datapack changes)
         event.getEntity().getExistingData(DSDataAttachments.PENALTY_SUPPLY).ifPresent(data -> {
-            DragonStateHandler handler = DragonStateProvider.getData(event.getEntity());
-
             for (ResourceLocation supplyType : data.getSupplyTypes()) {
                 if (handler.species().value().penalties().stream().noneMatch(penalty -> penalty.value().trigger() instanceof SupplyTrigger supplyTrigger && supplyTrigger.supplyType().equals(supplyType))) {
                     data.remove(supplyType);
                 }
             }
         });
-
-        DragonStateHandler handler = DragonStateProvider.getData(event.getEntity());
 
         if (ServerConfig.noHumansAllowed && !handler.isDragon()) {
             handler.setSpecies(event.getEntity(), ResourceHelper.random(event.getEntity().registryAccess(), DragonSpecies.REGISTRY));
@@ -115,27 +112,38 @@ public class PlayerLoginHandler {
         }
     }
 
-    // For handling a sync from a tracked entity to the tracker (so data needed to show a remote player correctly to the local player)
-    private static void syncComplete(final Player syncTo, final Entity syncFrom) {
-        if (syncTo instanceof ServerPlayer target && syncFrom instanceof ServerPlayer source) {
-            DragonStateProvider.getOptional(source).ifPresent(handler -> {
-                PacketDistributor.sendToPlayer(target, new SyncComplete(source.getId(), handler.serializeNBT(source.registryAccess())));
-            });
+    /** Synchronizes the dragon data to the player and all tracking players */
+    public static void syncHandler(final Player player) {
+        if (player instanceof ServerPlayer serverPlayer) {
+            DragonStateHandler handler = DragonStateProvider.getData(serverPlayer);
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncComplete(serverPlayer.getId(), handler.serializeNBT(serverPlayer.registryAccess())));
 
-            // Make sure to sync the SPIN data, otherwise the flight animation will be displayed incorrectly when tracking begins
-            syncFrom.getExistingData(DSDataAttachments.SPIN).ifPresent(data -> data.sync(source, target));
+            serverPlayer.getExistingData(DSDataAttachments.FLIGHT).ifPresent(data ->
+                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncData(serverPlayer.getId(), DSDataAttachments.FLIGHT.getId(), data.serializeNBT(serverPlayer.registryAccess())))
+            );
         }
     }
 
+    /** Synchronizes the dragon data of the newly tracked player to the tracking player */
+    public static void syncHandler(final Player syncTo, final Entity syncFrom) {
+        if (syncTo instanceof ServerPlayer target && syncFrom instanceof ServerPlayer source) {
+            DragonStateHandler handler = DragonStateProvider.getData(source);
+            PacketDistributor.sendToPlayer(target, new SyncComplete(source.getId(), handler.serializeNBT(source.registryAccess())));
+
+            // Make sure to sync the FLIGHT data, otherwise the flight animation will be displayed incorrectly when tracking begins
+            syncFrom.getExistingData(DSDataAttachments.FLIGHT).ifPresent(data -> data.sync(source, target));
+        }
+    }
+
+    /**
+     * Synchronizes: <br>
+     * - dragon data <br>
+     * - magic data (through {@link DragonStateHandler#refreshMagicData}) <br>
+     * - other data attachments that may be relevant client-side
+     */
     public static void syncComplete(final Entity entity) {
         if (entity instanceof ServerPlayer player) {
             DragonStateProvider.getOptional(player).ifPresent(handler -> {
-                if (handler.species() != null && handler.body() == null) {
-                    // Otherwise players won't be able to join the world
-                    handler.setBody(player, DragonBody.random(player.registryAccess(), handler.species()));
-                    DragonSurvival.LOGGER.error("Player {} was a dragon but had no dragon body", player);
-                }
-
                 SyncComplete.handleDragonSync(player, true);
                 PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncComplete(player.getId(), handler.serializeNBT(player.registryAccess())));
             });
@@ -146,8 +154,9 @@ public class PlayerLoginHandler {
 
     private static void syncDataAttachments(final ServerPlayer player) {
         player.getExistingData(DSDataAttachments.PENALTY_SUPPLY).ifPresent(data -> data.sync(player));
-        player.getExistingData(DSDataAttachments.ALTAR).ifPresent(data -> PacketDistributor.sendToPlayer(player, new SyncAltarState(data.serializeNBT(player.registryAccess()))));
-        player.getExistingData(DSDataAttachments.SPIN).ifPresent(data -> data.sync(player));
+        player.getExistingData(DSDataAttachments.ALTAR).ifPresent(data -> data.sync(player));
+        player.getExistingData(DSDataAttachments.FLIGHT).ifPresent(data -> data.sync(player));
+        player.getExistingData(DSDataAttachments.SWIM).ifPresent(data -> data.sync(player));
         DSDataAttachments.getStorages(player).forEach(storage -> storage.sync(player));
     }
 }

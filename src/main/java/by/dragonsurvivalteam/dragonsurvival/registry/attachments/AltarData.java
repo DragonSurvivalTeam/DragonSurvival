@@ -1,9 +1,12 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
+import by.dragonsurvivalteam.dragonsurvival.network.status.SyncAltarState;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 public class AltarData implements INBTSerializable<CompoundTag> {
@@ -14,7 +17,11 @@ public class AltarData implements INBTSerializable<CompoundTag> {
     public boolean hasUsedAltar;
     public boolean isInAltar;
 
-    public static AltarData getData(Player player) {
+    public void sync(final ServerPlayer player) {
+        PacketDistributor.sendToPlayer(player, new SyncAltarState(serializeNBT(player.registryAccess())));
+    }
+
+    public static AltarData getData(final Player player) {
         return player.getData(DSDataAttachments.ALTAR);
     }
 

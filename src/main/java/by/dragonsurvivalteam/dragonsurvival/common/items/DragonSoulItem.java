@@ -130,7 +130,7 @@ public class DragonSoulItem extends Item {
             handler.revertToHumanForm(player, true);
         }
 
-        PlayerLoginHandler.syncComplete(player);
+        PlayerLoginHandler.syncHandler(player);
         level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ENDER_DRAGON_GROWL, entity.getSoundSource(), 1.0F, 1.0F);
 
         for (int i = 0; i < 10; i++) {

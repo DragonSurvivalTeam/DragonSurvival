@@ -39,7 +39,7 @@ public class FlightData implements INBTSerializable<CompoundTag> {
     public int duration;
 
     public static FlightData getData(final Player player) {
-        return player.getData(DSDataAttachments.SPIN);
+        return player.getData(DSDataAttachments.FLIGHT);
     }
 
     @Override
@@ -76,21 +76,13 @@ public class FlightData implements INBTSerializable<CompoundTag> {
         icon = Objects.requireNonNullElse(ResourceLocation.tryParse(tag.getString(ICON)), DEFAULT_ICON);
     }
 
-    public AttachmentType<?> type() {
-        return DSDataAttachments.SPIN.get();
-    }
-
     public void sync(final ServerPlayer player) {
-        player.getExistingData(type()).ifPresent(data ->
-                PacketDistributor.sendToPlayer(player, new SyncData(player.getId(), NeoForgeRegistries.ATTACHMENT_TYPES.getKey(type()), serializeNBT(player.registryAccess())))
-        );
+        PacketDistributor.sendToPlayer(player, new SyncData(player.getId(), DSDataAttachments.FLIGHT.getId(), serializeNBT(player.registryAccess())));
     }
 
     // Needed for when a player enters tracking range, as the flight data has a visual impact (whether the wings are spread or not)
     public void sync(final ServerPlayer source, final ServerPlayer target) {
-        source.getExistingData(type()).ifPresent(data ->
-                PacketDistributor.sendToPlayer(target, new SyncData(source.getId(), NeoForgeRegistries.ATTACHMENT_TYPES.getKey(type()), serializeNBT(source.registryAccess())))
-        );
+        PacketDistributor.sendToPlayer(target, new SyncData(source.getId(), DSDataAttachments.FLIGHT.getId(), serializeNBT(source.registryAccess())));
     }
 
     public boolean hasFlight() {

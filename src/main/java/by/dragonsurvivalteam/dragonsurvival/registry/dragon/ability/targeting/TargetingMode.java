@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting;
 
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
 import com.mojang.serialization.Codec;
@@ -31,6 +33,17 @@ public enum TargetingMode implements StringRepresentable {
     @Translation(comments = "enemies")
     ENEMIES("enemies");
 
+    @Translation(key = "player_targeting_handling", type = Translation.Type.CONFIGURATION, comments = {
+            "Determines how players are handled for the initial targeting of abilities",
+            "The flags can be combined, e.g. '3' combines the flags '1' and '2'",
+            "0: No special handling (players are allies on the same team, otherwise they count as 'neutral')",
+            "1: They are always considered as 'ally'",
+            "2: They are always considered as 'enemy' (unless they're on the same team without friendly fire enabled)",
+            "4: Enabled Friendly fire on a team no longer flags players as 'enemy'"
+    })
+    @ConfigOption(side = ConfigSide.SERVER, category = "abilities", key = "player_targeting_handling")
+    public static int PLAYER_FLAG;
+
     public static final Codec<TargetingMode> CODEC = StringRepresentable.fromEnum(TargetingMode::values);
     private final String name;
 
@@ -38,33 +51,58 @@ public enum TargetingMode implements StringRepresentable {
         this.name = name;
     }
 
-    public boolean isEntityRelevant(final Player player, final Entity entity) {
+    public boolean isEntityRelevant(final Player player, final Entity target) {
         if (this == TargetingMode.ALL) {
             return true;
         }
 
-        if (player == entity) {
+        if (player == target) {
             return this == TargetingMode.ALLIES_AND_SELF;
         }
 
-        if (isFriendly(player, entity)) {
+        if (isFriendly(player, target)) {
             return this == TargetingMode.ALLIES_AND_SELF || this == TargetingMode.ALLIES;
         }
 
-        if (entity instanceof Enemy || entity.getType().getCategory() == MobCategory.MONSTER || entity instanceof Mob mob && mob.getTarget() == player) {
+        if (isEnemy(player, target)) {
             return this == TargetingMode.ENEMIES || this == TargetingMode.NON_ALLIES;
         }
 
         return this == TargetingMode.NEUTRAL || this == TargetingMode.NON_ALLIES;
     }
 
-    private boolean isFriendly(final Player player, final Entity entity) {
-        // The order of the check is important since certain entities may have a more complex logic to check for allies
-        if (entity.isAlliedTo(player)) {
+    private boolean isFriendly(final Player player, final Entity target) {
+        if (target instanceof Player && (PLAYER_FLAG & ALWAYS_ALLY) != 0) {
             return true;
         }
 
-        return entity instanceof Player otherPlayer && !player.canHarmPlayer(otherPlayer);
+        // The order of the check is important
+        // since certain entities may have a more complex logic to check for allies
+        return target.isAlliedTo(player);
+    }
+
+    private boolean isEnemy(final Player player, final Entity target) {
+        if (target instanceof Enemy || target.getType().getCategory() == MobCategory.MONSTER) {
+            return true;
+        }
+
+        if (target instanceof Mob mob && mob.getTarget() == player) {
+            return true;
+        }
+
+        if (target instanceof Player otherPlayer && (PLAYER_FLAG & ALWAYS_ENEMY) != 0) {
+            // Returns true if friendly fire is enabled for the team
+            boolean canHarmPlayer = player.canHarmPlayer(otherPlayer);
+
+            if (!canHarmPlayer) {
+                return false;
+            }
+
+            // They're not allied or the flag for team safety is not present
+            return !player.isAlliedTo(otherPlayer) || (PLAYER_FLAG & SAFE_IN_TEAM) == 0;
+        }
+
+        return false;
     }
 
     public Component translation() {
@@ -75,4 +113,8 @@ public enum TargetingMode implements StringRepresentable {
     public @NotNull String getSerializedName() {
         return name;
     }
+
+    private static final int ALWAYS_ALLY = 1;
+    private static final int ALWAYS_ENEMY = 2;
+    private static final int SAFE_IN_TEAM = 4;
 }

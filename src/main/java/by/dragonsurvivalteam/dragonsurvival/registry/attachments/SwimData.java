@@ -2,9 +2,11 @@ package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.OxygenBonus;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncSwimDataEntry;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.EventPriority;
@@ -13,6 +15,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.entity.living.LivingBreatheEvent;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
@@ -64,6 +67,12 @@ public class SwimData {
 
     public boolean canSwimIn(final ResourceKey<FluidType> fluid) {
         return swimData.containsKey(fluid);
+    }
+
+    public void sync(final ServerPlayer player) {
+        swimData.forEach((fluid, oxygen) -> {
+            PacketDistributor.sendToPlayer(player, new SyncSwimDataEntry(oxygen, player.registryAccess().holderOrThrow(fluid), false));
+        });
     }
 
     // TODO :: remove?
