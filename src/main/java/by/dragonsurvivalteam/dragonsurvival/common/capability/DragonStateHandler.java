@@ -269,6 +269,11 @@ public class DragonStateHandler extends EntityStateHandler {
     /** Should only be called if the player is a dragon */
     public int getGrowthUses(final Item item) {
         Map<Item, Integer> items = usedGrowthItems.get(stageKey());
+
+        if (items == null) {
+            return 0;
+        }
+
         Integer uses = items.get(item);
 
         if (uses == null) {
