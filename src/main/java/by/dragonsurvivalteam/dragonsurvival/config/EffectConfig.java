@@ -44,10 +44,11 @@ public class EffectConfig implements CustomConfig {
 
     public void applyEffects(final Player player, int level) {
         effects.forEach(resource -> BuiltInRegistries.MOB_EFFECT.getHolder(resource).ifPresent(effect -> {
-            int duration = (int) (this.duration * (level * durationMultiplier));
-            int amplifier = (int) ((1 + this.amplifier) * (level * amplifierMultiplier));
+            int duration = (int) (this.duration * (1 + level * durationMultiplier));
+            int amplifier = (int) ((1 + this.amplifier) * (1 + level * amplifierMultiplier));
 
-            MobEffectInstance instance = new MobEffectInstance(effect, duration, amplifier, false, true);
+            // Subtract 1 from the amplifier since the calculation was done with +1 to it for level 0 amplifier
+            MobEffectInstance instance = new MobEffectInstance(effect, duration, amplifier - 1, false, true);
             player.addEffect(instance);
         }));
     }

@@ -61,10 +61,9 @@ public class DragonTreasureHandler {
     @Translation(key = "effects_on_sleep", type = Translation.Type.CONFIGURATION, comments = {
             "Effects that are granted when skipping a night when sleeping on treasures",
             "Format: resource;duration;amplifier;duration_multiplier;amplifier_multiplier",
-            "Example: #my_namespace:some_effects;200;0;0.5;0.01",
-            "The can be defined as normal resource, tag or using regular expressions (for both namespace and path)",
-            "the multipliers are applied per nearby treasure ('max_treasure_for_rate_reduction' is used as max.)",
-            "(amplifier calculation base is amplifier + 1)"
+            "The resource can also be defined using regular expressions (for both namespace and path)",
+            "the multipliers are applied per nearby treasure ('max_treasure_for_rate_reduction' is used as limit)",
+            "(amplifier is calculated with +1, the +1 is subtracted for the final result)"
     })
     @ConfigOption(side = ConfigSide.SERVER, category = "treasure", key = "effects_on_sleep")
     public static List<EffectConfig> EFFECTS_ON_SLEEP = List.of(EffectConfig.create(MobEffects.REGENERATION, 200, 0, 0.5, 0.01));

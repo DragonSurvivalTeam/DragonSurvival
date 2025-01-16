@@ -14,7 +14,10 @@ public enum DisplayType {
     @ConfigOption(side = ConfigSide.CLIENT, category = "effects", key = "ability_effect_display_type")
     public static DisplayType DISPLAY_TYPE = INVENTORY_AND_GAME;
 
-    @Translation(key = "ability_effect_always_visible", type = Translation.Type.CONFIGURATION, comments = "Bypasses the set display type in case certain effects should be always visible")
+    @Translation(key = "ability_effect_always_visible", type = Translation.Type.CONFIGURATION, comments = {
+            "Bypasses the set display type in case certain effects should be always visible (namespace:path)",
+            "The id to be specified here can be seen when hovering the effect with advanced tooltips enabled"
+    })
     @ConfigOption(side = ConfigSide.CLIENT, category = "effects", key = "ability_effect_always_visible")
     public static List<String> ALWAYS_VISIBLE = List.of("dragonsurvival:dragon_wings", "dragonsurvival:ender_dragon_curse");
 
