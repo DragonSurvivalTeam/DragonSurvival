@@ -86,6 +86,13 @@ public class FlightData implements INBTSerializable<CompoundTag> {
         );
     }
 
+    // Needed for when a player enters tracking range, as the flight data has a visual impact (whether the wings are spread or not)
+    public void sync(final ServerPlayer source, final ServerPlayer target) {
+        source.getExistingData(type()).ifPresent(data ->
+                PacketDistributor.sendToPlayer(target, new SyncData(source.getId(), NeoForgeRegistries.ATTACHMENT_TYPES.getKey(type()), serializeNBT(source.registryAccess())))
+        );
+    }
+
     public boolean hasFlight() {
         return hasFlight;
     }

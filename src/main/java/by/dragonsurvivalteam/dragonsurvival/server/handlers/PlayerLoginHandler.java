@@ -37,7 +37,7 @@ public class PlayerLoginHandler {
     public static void onTrackingStart(final PlayerEvent.StartTracking event) {
         Player tracker = event.getEntity();
         Entity tracked = event.getTarget();
-        syncDragonData(tracker, tracked);
+        syncComplete(tracker, tracked);
     }
 
     @SubscribeEvent
@@ -115,10 +115,15 @@ public class PlayerLoginHandler {
         }
     }
 
-    private static void syncDragonData(final Player syncTo, final Entity syncFrom) {
+    // For handling a sync from a tracked entity to the tracker (so data needed to show a remote player correctly to the local player)
+    private static void syncComplete(final Player syncTo, final Entity syncFrom) {
         if (syncTo instanceof ServerPlayer target && syncFrom instanceof ServerPlayer source) {
-            DragonStateHandler handler = DragonStateProvider.getData(source);
-            PacketDistributor.sendToPlayer(target, new SyncComplete(syncFrom.getId(), handler.serializeNBT(syncFrom.registryAccess())));
+            DragonStateProvider.getOptional(source).ifPresent(handler -> {
+                PacketDistributor.sendToPlayer(target, new SyncComplete(source.getId(), handler.serializeNBT(source.registryAccess())));
+            });
+
+            // Make sure to sync the SPIN data, otherwise the flight animation will be displayed incorrectly when tracking begins
+            syncFrom.getExistingData(DSDataAttachments.SPIN).ifPresent(data -> data.sync(source, target));
         }
     }
 
