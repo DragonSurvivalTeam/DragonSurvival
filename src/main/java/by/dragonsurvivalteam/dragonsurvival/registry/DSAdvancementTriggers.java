@@ -21,15 +21,15 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import java.util.function.Supplier;
 
 public class DSAdvancementTriggers {
-    public static final DeferredRegister<CriterionTrigger<?>> DS_TRIGGERS = DeferredRegister.create(Registries.TRIGGER_TYPE, DragonSurvival.MODID);
+    public static final DeferredRegister<CriterionTrigger<?>> REGISTRY = DeferredRegister.create(Registries.TRIGGER_TYPE, DragonSurvival.MODID);
 
-    public static final Supplier<BeDragonTrigger> BE_DRAGON = DS_TRIGGERS.register("be_dragon", BeDragonTrigger::new);
-    public static final Supplier<SleepOnTreasureTrigger> SLEEP_ON_TREASURE = DS_TRIGGERS.register("sleep_on_treasure", SleepOnTreasureTrigger::new);
-    public static final Supplier<MineBlockUnderLavaTrigger> MINE_BLOCK_UNDER_LAVA = DS_TRIGGERS.register("mine_block_under_lava", MineBlockUnderLavaTrigger::new);
+    public static final Supplier<BeDragonTrigger> BE_DRAGON = REGISTRY.register("be_dragon", BeDragonTrigger::new);
+    public static final Supplier<SleepOnTreasureTrigger> SLEEP_ON_TREASURE = REGISTRY.register("sleep_on_treasure", SleepOnTreasureTrigger::new);
+    public static final Supplier<MineBlockUnderLavaTrigger> MINE_BLOCK_UNDER_LAVA = REGISTRY.register("mine_block_under_lava", MineBlockUnderLavaTrigger::new);
     /** In order to only trigger when the item has been fully used, not just started to being used */
-    public static final Supplier<UseDragonSoulTrigger> USE_DRAGON_SOUL = DS_TRIGGERS.register("use_dragon_soul", UseDragonSoulTrigger::new);
+    public static final Supplier<UseDragonSoulTrigger> USE_DRAGON_SOUL = REGISTRY.register("use_dragon_soul", UseDragonSoulTrigger::new);
     /** {@link CriteriaTriggers#USING_ITEM} is only triggered when {@link LivingEntity#startUsingItem(InteractionHand)} is called in {@link Item#use(Level, Player, InteractionHand)} */
-    public static final Supplier<UseStarHeartTrigger> USE_STAR_HEART = DS_TRIGGERS.register("use_star_heart", UseStarHeartTrigger::new);
-    public static final Supplier<UpgradeAbilityTrigger> UPGRADE_ABILITY = DS_TRIGGERS.register("upgrade_ability", UpgradeAbilityTrigger::new);
-    public static final Supplier<ConvertItemFromAbility> CONVERT_ITEM_FROM_ABILITY = DS_TRIGGERS.register("convert_item_from_ability", ConvertItemFromAbility::new);
+    public static final Supplier<UseStarHeartTrigger> USE_STAR_HEART = REGISTRY.register("use_star_heart", UseStarHeartTrigger::new);
+    public static final Supplier<UpgradeAbilityTrigger> UPGRADE_ABILITY = REGISTRY.register("upgrade_ability", UpgradeAbilityTrigger::new);
+    public static final Supplier<ConvertItemFromAbility> CONVERT_ITEM_FROM_ABILITY = REGISTRY.register("convert_item_from_ability", ConvertItemFromAbility::new);
 }

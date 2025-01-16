@@ -45,6 +45,8 @@ public abstract class DurationInstance<B extends DurationInstanceBase<?, ?>> imp
 
     @Override
     public boolean tick(final Entity storageHolder) {
+        // TODO :: check this differently for active abilities?
+        //  since for them it would just always remove the the instance after the cast has been completed
         if (commonData.removeAutomatically() && commonData.source().isPresent() && commonData.ability().isPresent()) {
             Player source = storageHolder.level().getPlayerByUUID(commonData.source().get());
 

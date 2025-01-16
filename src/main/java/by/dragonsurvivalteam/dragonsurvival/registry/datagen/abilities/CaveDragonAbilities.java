@@ -471,7 +471,7 @@ public class CaveDragonAbilities {
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         HarvestBonusEffect.only(new HarvestBonus(
-                                DurationInstanceBase.create(DragonSurvival.res("cave_claws_and_teeth")).infinite().removeAutomatically().customIcon(DragonSurvival.res("textures/ability_effect/cave_claw.png")).hidden().build(),
+                                DurationInstanceBase.create(DragonSurvival.res("cave_claws_and_teeth")).infinite().removeAutomatically().customIcon(DragonSurvival.res("textures/ability_effect/cave_claw.png")).build(),
                                 Optional.of(context.lookup(Registries.BLOCK).getOrThrow(BlockTags.MINEABLE_WITH_PICKAXE)),
                                 LevelBasedValue.perLevel(1, 0.5f),
                                 LevelBasedValue.perLevel(0.5f)

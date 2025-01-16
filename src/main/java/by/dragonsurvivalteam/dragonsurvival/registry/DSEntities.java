@@ -35,19 +35,19 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public class DSEntities {
-    public static final DeferredRegister<EntityType<?>> DS_ENTITY_TYPES = DeferredRegister.create(BuiltInRegistries.ENTITY_TYPE, DragonSurvival.MODID);
+    public static final DeferredRegister<EntityType<?>> REGISTRY = DeferredRegister.create(BuiltInRegistries.ENTITY_TYPE, DragonSurvival.MODID);
 
     // --- Player --- //
 
     @Translation(type = Translation.Type.ENTITY, comments = "Dragon")
-    public static DeferredHolder<EntityType<?>, EntityType<DragonEntity>> DRAGON = DS_ENTITY_TYPES.register(
+    public static DeferredHolder<EntityType<?>, EntityType<DragonEntity>> DRAGON = REGISTRY.register(
             "dummy_dragon",
             () -> new EntityType<>(DragonEntity::new, MobCategory.MISC, true, false, false, false, ImmutableSet.of(), EntityDimensions.fixed(0.9f, 1.9f), 1.0f, 0, 0, FeatureFlagSet.of(FeatureFlags.VANILLA)));
 
     // --- Fake entities --- //
 
     @Translation(type = Translation.Type.ENTITY, comments = "Bolas")
-    public static DeferredHolder<EntityType<?>, EntityType<Bolas>> BOLAS_ENTITY = DS_ENTITY_TYPES.register(
+    public static DeferredHolder<EntityType<?>, EntityType<Bolas>> BOLAS_ENTITY = REGISTRY.register(
             "bolas",
             () -> EntityType.Builder.<Bolas>of((entity, level) ->
                             new Bolas(level), MobCategory.MISC)
@@ -57,7 +57,7 @@ public class DSEntities {
                     .build("bolas"));
 
     @Translation(type = Translation.Type.ENTITY, comments = "Generic Ball Entity")
-    public static DeferredHolder<EntityType<?>, EntityType<GenericBallEntity>> GENERIC_BALL_ENTITY = DS_ENTITY_TYPES.register(
+    public static DeferredHolder<EntityType<?>, EntityType<GenericBallEntity>> GENERIC_BALL_ENTITY = REGISTRY.register(
             "generic_ball_entity",
             () -> EntityType.Builder.<GenericBallEntity>of(GenericBallEntity::new, MobCategory.MISC)
                     .sized(1F, 1F)
@@ -66,7 +66,7 @@ public class DSEntities {
                     .build("generic_ball_entity"));
 
     @Translation(type = Translation.Type.ENTITY, comments = "Generic Arrow Entity")
-    public static DeferredHolder<EntityType<?>, EntityType<GenericArrowEntity>> GENERIC_ARROW_ENTITY = DS_ENTITY_TYPES.register(
+    public static DeferredHolder<EntityType<?>, EntityType<GenericArrowEntity>> GENERIC_ARROW_ENTITY = REGISTRY.register(
             "generic_arrow_entity",
             () -> EntityType.Builder.<GenericArrowEntity>of(GenericArrowEntity::new, MobCategory.MISC)
                     .sized(0.5F, 0.5F)
@@ -77,7 +77,7 @@ public class DSEntities {
     // --- Entities --- //
 
     @Translation(type = Translation.Type.ENTITY, comments = "Hunter Hound")
-    public static DeferredHolder<EntityType<?>, EntityType<HoundEntity>> HUNTER_HOUND = DS_ENTITY_TYPES.register(
+    public static DeferredHolder<EntityType<?>, EntityType<HoundEntity>> HUNTER_HOUND = REGISTRY.register(
             "hunter_hound",
             () -> EntityType.Builder.of(HoundEntity::new, MobCategory.MONSTER)
                     .sized(0.6F, 0.85F)
@@ -86,7 +86,7 @@ public class DSEntities {
                     .build("hunter_hound"));
 
     @Translation(type = Translation.Type.ENTITY, comments = "Hunter Griffin")
-    public static DeferredHolder<EntityType<?>, EntityType<GriffinEntity>> HUNTER_GRIFFIN = DS_ENTITY_TYPES.register(
+    public static DeferredHolder<EntityType<?>, EntityType<GriffinEntity>> HUNTER_GRIFFIN = REGISTRY.register(
             "hunter_griffin",
             () -> EntityType.Builder.of(GriffinEntity::new, MobCategory.MONSTER)
                     .sized(0.6F, 0.85F)
@@ -95,7 +95,7 @@ public class DSEntities {
                     .build("hunter_griffin"));
 
     @Translation(type = Translation.Type.ENTITY, comments = "Hunter Spearman")
-    public static DeferredHolder<EntityType<?>, EntityType<SpearmanEntity>> HUNTER_SPEARMAN = DS_ENTITY_TYPES.register(
+    public static DeferredHolder<EntityType<?>, EntityType<SpearmanEntity>> HUNTER_SPEARMAN = REGISTRY.register(
             "hunter_spearman",
             () -> EntityType.Builder.of(SpearmanEntity::new, MobCategory.MONSTER)
                     .sized(0.6F, 1.95F)
@@ -104,7 +104,7 @@ public class DSEntities {
                     .build("hunter_spearman"));
 
     @Translation(type = Translation.Type.ENTITY, comments = "Hunter Knight")
-    public static DeferredHolder<EntityType<?>, EntityType<KnightEntity>> HUNTER_KNIGHT = DS_ENTITY_TYPES.register(
+    public static DeferredHolder<EntityType<?>, EntityType<KnightEntity>> HUNTER_KNIGHT = REGISTRY.register(
             "hunter_knight", () -> EntityType.Builder.of(KnightEntity::new, MobCategory.MONSTER)
                     .sized(1.5f, 3f)
                     .clientTrackingRange(64)
@@ -112,7 +112,7 @@ public class DSEntities {
                     .build("hunter_knight"));
 
     @Translation(type = Translation.Type.ENTITY, comments = "Hunter Ambusher")
-    public static DeferredHolder<EntityType<?>, EntityType<AmbusherEntity>> HUNTER_AMBUSHER = DS_ENTITY_TYPES.register(
+    public static DeferredHolder<EntityType<?>, EntityType<AmbusherEntity>> HUNTER_AMBUSHER = REGISTRY.register(
             "hunter_ambusher", () -> EntityType.Builder.of(AmbusherEntity::new, MobCategory.MONSTER)
                     .sized(0.8f, 2.5f)
                     .clientTrackingRange(64)
@@ -120,7 +120,7 @@ public class DSEntities {
                     .build("hunter_ambusher"));
 
     @Translation(type = Translation.Type.ENTITY, comments = "Hunter Leader")
-    public static DeferredHolder<EntityType<?>, EntityType<LeaderEntity>> HUNTER_LEADER = DS_ENTITY_TYPES.register(
+    public static DeferredHolder<EntityType<?>, EntityType<LeaderEntity>> HUNTER_LEADER = REGISTRY.register(
             "hunter_leader",
             () -> EntityType.Builder.of(LeaderEntity::new, MobCategory.MONSTER)
                     .sized(0.6F, 1.95F)

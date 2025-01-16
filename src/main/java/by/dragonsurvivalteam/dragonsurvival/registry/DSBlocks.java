@@ -46,10 +46,9 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
-import static by.dragonsurvivalteam.dragonsurvival.registry.DSItems.DS_ITEMS;
 
 public class DSBlocks {
-    public static final DeferredRegister<Block> DS_BLOCKS = DeferredRegister.create(BuiltInRegistries.BLOCK, MODID);
+    public static final DeferredRegister<Block> REGISTRY = DeferredRegister.create(BuiltInRegistries.BLOCK, MODID);
     // TODO :: why are these stored in a map if the map is unused
     public static final HashMap<String, Pair<DeferredHolder<Block, SkeletonPieceBlock>, DeferredHolder<Item, BlockItem>>> SKELETON_PIECES = new HashMap<>();
 
@@ -405,7 +404,7 @@ public class DSBlocks {
 
     @Translation(type = Translation.Type.BLOCK, comments = "Forest Source of Magic")
     @Translation(type = Translation.Type.DESCRIPTION_ADDITION, comments = "■§7 Forest dragons can bathe here to temporarily gain infinite mana. Damages other creatures.")
-    public static final DeferredHolder<Block, SourceOfMagicBlock> FOREST_SOURCE_OF_MAGIC = DS_BLOCKS.register(
+    public static final DeferredHolder<Block, SourceOfMagicBlock> FOREST_SOURCE_OF_MAGIC = REGISTRY.register(
             "forest_source_of_magic",
             () -> new SourceOfMagicBlock(Block.Properties.of()
                     .mapColor(MapColor.STONE)
@@ -418,7 +417,7 @@ public class DSBlocks {
 
     @Translation(type = Translation.Type.BLOCK, comments = "Cave Source of Magic")
     @Translation(type = Translation.Type.DESCRIPTION_ADDITION, comments = "■§7 Cave dragons can bathe here to temporarily gain infinite mana. Damages other creatures.")
-    public static final DeferredHolder<Block, SourceOfMagicBlock> CAVE_SOURCE_OF_MAGIC = DS_BLOCKS.register(
+    public static final DeferredHolder<Block, SourceOfMagicBlock> CAVE_SOURCE_OF_MAGIC = REGISTRY.register(
             "cave_source_of_magic",
             () -> new SourceOfMagicBlock(Block.Properties.of()
                     .mapColor(MapColor.STONE)
@@ -431,7 +430,7 @@ public class DSBlocks {
 
     @Translation(type = Translation.Type.BLOCK, comments = "Sea Source of Magic")
     @Translation(type = Translation.Type.DESCRIPTION_ADDITION, comments = "■§7 Sea dragons can bathe here to temporarily gain infinite mana. Damages other creatures.")
-    public static final DeferredHolder<Block, SourceOfMagicBlock> SEA_SOURCE_OF_MAGIC = DS_BLOCKS.register(
+    public static final DeferredHolder<Block, SourceOfMagicBlock> SEA_SOURCE_OF_MAGIC = REGISTRY.register(
             "sea_source_of_magic",
             () -> new SourceOfMagicBlock(Block.Properties.of()
                     .mapColor(MapColor.STONE)
@@ -572,7 +571,7 @@ public class DSBlocks {
 
     @Translation(type = Translation.Type.BLOCK, comments = "Forest Dragon Beacon")
     @Translation(type = Translation.Type.DESCRIPTION_ADDITION, comments = "■§7 Gives the effects §2«Forest Magic»§r and §2«Haste»§r. Best for forest dragons. You can buy an effect by pressing the right button in exchange for experience.")
-    public static final DeferredHolder<Block, DragonBeacon> FOREST_DRAGON_BEACON = DS_BLOCKS.register(
+    public static final DeferredHolder<Block, DragonBeacon> FOREST_DRAGON_BEACON = REGISTRY.register(
             "forest_dragon_beacon",
             () -> new DragonBeacon(EMPTY_DRAGON_BEACON.get().properties()
                     .lightLevel(value -> value.getValue(BlockStateProperties.LIT) ? 15 : 0))
@@ -580,7 +579,7 @@ public class DSBlocks {
 
     @Translation(type = Translation.Type.BLOCK, comments = "Sea Dragon Beacon")
     @Translation(type = Translation.Type.DESCRIPTION_ADDITION, comments = "■§7 Gives the effects §2«Sea Peace»§r and §2«Animal Calm»§r. Best for sea dragons. Peaceful animals stop running away from the dragon. You can buy an effect by pressing the right button in exchange for experience.")
-    public static final DeferredHolder<Block, DragonBeacon> SEA_DRAGON_BEACON = DS_BLOCKS.register(
+    public static final DeferredHolder<Block, DragonBeacon> SEA_DRAGON_BEACON = REGISTRY.register(
             "sea_dragon_beacon",
             () -> new DragonBeacon(EMPTY_DRAGON_BEACON.get().properties()
                     .lightLevel(value -> value.getValue(BlockStateProperties.LIT) ? 15 : 0))
@@ -588,7 +587,7 @@ public class DSBlocks {
 
     @Translation(type = Translation.Type.BLOCK, comments = "Cave Dragon Beacon")
     @Translation(type = Translation.Type.DESCRIPTION_ADDITION, comments = "■§7 Gives the effects §2«Cave Fire»§r and §2«Sturdy Skin»§r. Gives extra armor. Best for cave dragons. You can buy an effect by pressing the right button in exchange for experience.")
-    public static final DeferredHolder<Block, DragonBeacon> CAVE_DRAGON_BEACON = DS_BLOCKS.register(
+    public static final DeferredHolder<Block, DragonBeacon> CAVE_DRAGON_BEACON = REGISTRY.register(
             "cave_dragon_beacon",
             () -> new DragonBeacon(EMPTY_DRAGON_BEACON.get().properties()
                     .lightLevel(value -> value.getValue(BlockStateProperties.LIT) ? 15 : 0))
@@ -797,43 +796,43 @@ public class DSBlocks {
             .isViewBlocking((a, b, c) -> false);
 
     @Translation(type = Translation.Type.BLOCK, comments = "Light Vault")
-    public static final DeferredHolder<Block, VaultBlock> LIGHT_VAULT = DS_BLOCKS.register(
+    public static final DeferredHolder<Block, VaultBlock> LIGHT_VAULT = REGISTRY.register(
             "light_vault",
             () -> new VaultBlock(vaultBlockProperties)
     );
 
-    public static final DeferredHolder<Item, BlockItem> LIGHT_VAULT_ITEM = DS_ITEMS.register(
+    public static final DeferredHolder<Item, BlockItem> LIGHT_VAULT_ITEM = DSItems.REGISTRY.register(
             "light_vault",
             () -> new BlockItem(LIGHT_VAULT.get(), new Item.Properties()
                     .component(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(LIGHT_VAULT_TAG)))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Dark Vault")
-    public static final DeferredHolder<Block, VaultBlock> DARK_VAULT = DS_BLOCKS.register(
+    public static final DeferredHolder<Block, VaultBlock> DARK_VAULT = REGISTRY.register(
             "dark_vault",
             () -> new VaultBlock(vaultBlockProperties)
     );
 
-    public static final DeferredHolder<Item, BlockItem> DARK_VAULT_ITEM = DS_ITEMS.register(
+    public static final DeferredHolder<Item, BlockItem> DARK_VAULT_ITEM = DSItems.REGISTRY.register(
             "dark_vault",
             () -> new BlockItem(DARK_VAULT.get(), new Item.Properties()
                     .component(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(DARK_VAULT_TAG)))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Hunter's Vault")
-    public static final DeferredHolder<Block, VaultBlock> HUNTER_VAULT = DS_BLOCKS.register(
+    public static final DeferredHolder<Block, VaultBlock> HUNTER_VAULT = REGISTRY.register(
             "hunter_vault",
             () -> new VaultBlock(vaultBlockProperties)
     );
 
-    public static final DeferredHolder<Item, BlockItem> HUNTER_VAULT_ITEM = DS_ITEMS.register(
+    public static final DeferredHolder<Item, BlockItem> HUNTER_VAULT_ITEM = DSItems.REGISTRY.register(
             "hunter_vault",
             () -> new BlockItem(HUNTER_VAULT.get(), new Item.Properties()
                     .component(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(HUNTER_VAULT_TAG)))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Dragon Rider Workbench")
-    public static final DeferredHolder<Block, Block> DRAGON_RIDER_WORKBENCH = DS_BLOCKS.register("dragon_rider_workbench",
+    public static final DeferredHolder<Block, Block> DRAGON_RIDER_WORKBENCH = REGISTRY.register("dragon_rider_workbench",
             () -> new DragonRiderWorkbenchBlock(BlockBehaviour.Properties.of()
                     .sound(SoundType.TRIAL_SPAWNER)
                     .mapColor(MapColor.WOOD)
@@ -850,7 +849,7 @@ public class DSBlocks {
             )
     );
 
-    public static final DeferredHolder<Item, BlockItem> DRAGON_RIDER_WORKBENCH_ITEM = DS_ITEMS.register("dragon_rider_workbench",
+    public static final DeferredHolder<Item, BlockItem> DRAGON_RIDER_WORKBENCH_ITEM = DSItems.REGISTRY.register("dragon_rider_workbench",
             () -> new BlockItem(DRAGON_RIDER_WORKBENCH.get(), new Item.Properties()) {
                 @Translation(comments = "■§7 A work station for a villager who sells useful dragon enchantments. Knows the secrets to getting into the draconic vaults.")
                 private static final String DRAGON_RIDER_WORKBENCH = Translation.Type.DESCRIPTION.wrap("dragon_rider_workbench");
@@ -864,21 +863,21 @@ public class DSBlocks {
     );
 
     private static <B extends Block> DeferredHolder<Block, B> register(final String name, final Supplier<B> supplier) {
-        DeferredHolder<Block, B> holder = DS_BLOCKS.register(name, supplier);
-        DS_ITEMS.register(name, () -> new BlockItem(holder.value(), new Item.Properties()));
+        DeferredHolder<Block, B> holder = REGISTRY.register(name, supplier);
+        DSItems.REGISTRY.register(name, () -> new BlockItem(holder.value(), new Item.Properties()));
         return holder;
     }
 
     static {
         for (int i = 1; i < 9; i++) { // TODO :: what does he 9 indicate
             for (SkeletonPieceBlock.Type type : SkeletonPieceBlock.Types.values()) {
-                DeferredHolder<Block, SkeletonPieceBlock> block = DS_BLOCKS.register(type.getSerializedName() + "_skin" + i,
+                DeferredHolder<Block, SkeletonPieceBlock> block = REGISTRY.register(type.getSerializedName() + "_skin" + i,
                         () -> new SkeletonPieceBlock(type, BlockBehaviour.Properties.of()
                                 .mapColor(MapColor.CLAY)
                                 .strength(1.0F)
                                 .sound(SoundType.BONE_BLOCK)));
 
-                DeferredHolder<Item, BlockItem> item = DS_ITEMS.register(type.getSerializedName() + "_skin" + i,
+                DeferredHolder<Item, BlockItem> item = DSItems.REGISTRY.register(type.getSerializedName() + "_skin" + i,
                         () -> new BlockItem(block.value(), new Item.Properties()));
 
                 SKELETON_PIECES.put(type.getSerializedName(), new Pair<>(block, item));

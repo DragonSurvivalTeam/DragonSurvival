@@ -267,6 +267,8 @@
   "dragon_ability.dragonsurvival.test_frost_walker.desc": "Frost-walker like effect",
   "dragon_ability.dragonsurvival.test_glow": "Glow Test",
   "dragon_ability.dragonsurvival.test_glow.desc": "Applies a changing glow color",
+  "dragon_ability.dragonsurvival.test_summon": "Summon Test",
+  "dragon_ability.dragonsurvival.test_summon.desc": "Summons some entities",
   "dragon_body.dragonsurvival.center": "Center",
   "dragon_body.dragonsurvival.center.desc": "§6■ Central Type§r\n■ Inhabitants of all biomes, and the most common type of dragon. They are the most balanced type of dragon, having no particular strengths or weaknesses.",
   "dragon_body.dragonsurvival.center.wings": "Show wings",

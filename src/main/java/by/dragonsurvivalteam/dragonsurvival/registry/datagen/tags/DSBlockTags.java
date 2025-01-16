@@ -64,7 +64,7 @@ public class DSBlockTags extends BlockTagsProvider {
         addToDragonSpeedUpTags();
         addToTypeTags();
 
-        DSBlocks.DS_BLOCKS.getEntries().forEach(holder -> {
+        DSBlocks.REGISTRY.getEntries().forEach(holder -> {
             Block block = holder.value();
 
             switch (block) {

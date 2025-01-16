@@ -15,13 +15,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks.DS_BLOCKS;
-
 public class DSCreativeTabs {
     @Translation(comments = "Dragon Survival")
     private static final String CREATIVE_TAB = Translation.Type.GUI.wrap("creative_tab");
 
-    public static final DeferredRegister<CreativeModeTab> DS_CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, DragonSurvival.MODID);
+    public static final DeferredRegister<CreativeModeTab> REGISTRY = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, DragonSurvival.MODID);
 
     private static final List<Holder<Item>> HIDDEN = Arrays.asList(
             DSItems.HUNTING_NET,
@@ -35,14 +33,14 @@ public class DSCreativeTabs {
             DSItems.BOLAS
     );
 
-    private static final CreativeModeTab.DisplayItemsGenerator BLOCK_ITEM_GENERATOR = (parameters, output) -> Stream.of(DS_BLOCKS).forEach(holder -> holder.getEntries().forEach(entry -> output.accept(entry.value())));
-    private static final CreativeModeTab.DisplayItemsGenerator ITEM_GENERATOR = (parameters, output) -> Stream.of(DSItems.DS_ITEMS).forEach(holder -> holder.getEntries().forEach(entry -> {
+    private static final CreativeModeTab.DisplayItemsGenerator BLOCK_ITEM_GENERATOR = (parameters, output) -> Stream.of(DSBlocks.REGISTRY).forEach(holder -> holder.getEntries().forEach(entry -> output.accept(entry.value())));
+    private static final CreativeModeTab.DisplayItemsGenerator ITEM_GENERATOR = (parameters, output) -> Stream.of(DSItems.REGISTRY).forEach(holder -> holder.getEntries().forEach(entry -> {
         if (entry.value() instanceof PermanentEnchantmentItem || !(HIDDEN.contains(entry) || entry.value().toString().contains("skeleton"))) {
             output.accept(entry.value());
         }
     }));
 
-    public static Holder<CreativeModeTab> DS_TAB = DS_CREATIVE_MODE_TABS.register("dragon_survival", () -> CreativeModeTab.builder()
+    public static Holder<CreativeModeTab> DS_TAB = REGISTRY.register("dragon_survival", () -> CreativeModeTab.builder()
             .icon(() -> new ItemStack(DSItems.ELDER_DRAGON_BONE))
             .title(Component.translatable(CREATIVE_TAB))
             .displayItems(BLOCK_ITEM_GENERATOR)

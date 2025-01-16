@@ -7,7 +7,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncDisableAbility;
-import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncStopCast;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import com.mojang.serialization.Codec;
@@ -130,46 +129,41 @@ public class DragonAbilityInstance {
             value().activation().playLoopingAnimation(dragon);
         }
 
-        if (!(dragon instanceof ServerPlayer serverPlayer)) {
-            // TODO :: should mana also be consumed client-side?
-            //  maybe we can skip the sync that way?
-            return;
-        }
-
         if (currentTick < castTime) {
             return;
         }
 
         if (currentTick == castTime) {
-            ManaHandler.consumeMana(serverPlayer, getInitialManaCost());
+            ManaHandler.consumeMana(dragon, getInitialManaCost());
         }
 
         if (currentTick > castTime) {
             float manaCost = getContinuousManaCost(ManaCost.ManaCostType.TICKING);
 
-            if (ManaHandler.hasEnoughMana(serverPlayer, manaCost)) {
+            if (ManaHandler.hasEnoughMana(dragon, manaCost)) {
                 // TODO :: make this return a boolean and remove 'hasEnoughMana'?
-                ManaHandler.consumeMana(serverPlayer, manaCost);
+                ManaHandler.consumeMana(dragon, manaCost);
             } else {
-                stopCasting(serverPlayer);
+                stopCasting(dragon);
                 return;
             }
         }
 
-        ability.value().actions().forEach(action -> action.tick(serverPlayer, this, currentTick));
+        if (dragon instanceof ServerPlayer serverPlayer) {
+            ability.value().actions().forEach(action -> action.tick(serverPlayer, this, currentTick));
+        }
 
         if (value().activation().type() == Activation.Type.ACTIVE_SIMPLE) {
-            stopCasting(serverPlayer);
+            stopCasting(dragon);
         }
     }
 
-    private void stopCasting(final ServerPlayer dragon) {
+    private void stopCasting(final Player dragon) {
         value().activation().playEndSound(dragon);
         value().activation().playEndAnimation(dragon);
+
         MagicData magic = MagicData.getData(dragon);
         magic.stopCasting(dragon);
-        // TODO: We can send back the reason we failed here to the client
-        PacketDistributor.sendToPlayer(dragon, new SyncStopCast(dragon.getId(), false, true));
     }
 
     private float getInitialManaCost() {
@@ -192,7 +186,7 @@ public class DragonAbilityInstance {
         return manaCost.manaCost().calculate(level);
     }
 
-    public boolean checkInitialManaCost(final Player dragon) {
+    public boolean hasEnoughMana(final Player dragon) {
         float manaCost = getInitialManaCost();
 
         if (!ManaHandler.hasEnoughMana(dragon, manaCost)) {

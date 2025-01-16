@@ -30,10 +30,10 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.res;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class DSEquipment {
-    public static final DeferredRegister<ArmorMaterial> DS_ARMOR_MATERIALS = DeferredRegister.create(BuiltInRegistries.ARMOR_MATERIAL, MODID);
+    public static final DeferredRegister<ArmorMaterial> REGISTRY = DeferredRegister.create(BuiltInRegistries.ARMOR_MATERIAL, MODID);
 
     public static final Holder<ArmorMaterial> LIGHT_DRAGON_ARMOR_MATERIAL =
-            DS_ARMOR_MATERIALS.register("light_dragon", () -> new ArmorMaterial(
+            REGISTRY.register("light_dragon", () -> new ArmorMaterial(
                     Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
                         map.put(ArmorItem.Type.BOOTS, 3);
                         map.put(ArmorItem.Type.LEGGINGS, 6);
@@ -50,7 +50,7 @@ public class DSEquipment {
             ));
 
     public static final Holder<ArmorMaterial> DARK_DRAGON_ARMOR_MATERIAL =
-            DS_ARMOR_MATERIALS.register("dark_dragon", () -> new ArmorMaterial(
+            REGISTRY.register("dark_dragon", () -> new ArmorMaterial(
                     Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
                         map.put(ArmorItem.Type.BOOTS, 3);
                         map.put(ArmorItem.Type.LEGGINGS, 6);

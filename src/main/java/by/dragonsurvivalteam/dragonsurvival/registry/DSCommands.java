@@ -27,14 +27,14 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 @EventBusSubscriber
 public class DSCommands {
-    public static final DeferredRegister<ArgumentTypeInfo<?, ?>> ARGUMENT_TYPES = DeferredRegister.create(Registries.COMMAND_ARGUMENT_TYPE, DragonSurvival.MODID);
+    public static final DeferredRegister<ArgumentTypeInfo<?, ?>> REGISTRY = DeferredRegister.create(Registries.COMMAND_ARGUMENT_TYPE, DragonSurvival.MODID);
 
     static {
-        ARGUMENT_TYPES.register(DragonBodyArgument.ID, () -> ArgumentTypeInfos.registerByClass(DragonBodyArgument.class, SingletonArgumentInfo.contextAware(DragonBodyArgument::new)));
-        ARGUMENT_TYPES.register(DragonStageArgument.ID, () -> ArgumentTypeInfos.registerByClass(DragonStageArgument.class, SingletonArgumentInfo.contextAware(DragonStageArgument::new)));
-        ARGUMENT_TYPES.register(DragonSizeArgument.ID, () -> ArgumentTypeInfos.registerByClass(DragonSizeArgument.class, SingletonArgumentInfo.contextAware(DragonSizeArgument::new)));
-        ARGUMENT_TYPES.register(DragonSpeciesArgument.ID, () -> ArgumentTypeInfos.registerByClass(DragonSpeciesArgument.class, SingletonArgumentInfo.contextAware(DragonSpeciesArgument::new)));
-        ARGUMENT_TYPES.register(DragonAbilityArgument.ID, () -> ArgumentTypeInfos.registerByClass(DragonAbilityArgument.class, SingletonArgumentInfo.contextAware(DragonAbilityArgument::new)));
+        REGISTRY.register(DragonBodyArgument.ID, () -> ArgumentTypeInfos.registerByClass(DragonBodyArgument.class, SingletonArgumentInfo.contextAware(DragonBodyArgument::new)));
+        REGISTRY.register(DragonStageArgument.ID, () -> ArgumentTypeInfos.registerByClass(DragonStageArgument.class, SingletonArgumentInfo.contextAware(DragonStageArgument::new)));
+        REGISTRY.register(DragonSizeArgument.ID, () -> ArgumentTypeInfos.registerByClass(DragonSizeArgument.class, SingletonArgumentInfo.contextAware(DragonSizeArgument::new)));
+        REGISTRY.register(DragonSpeciesArgument.ID, () -> ArgumentTypeInfos.registerByClass(DragonSpeciesArgument.class, SingletonArgumentInfo.contextAware(DragonSpeciesArgument::new)));
+        REGISTRY.register(DragonAbilityArgument.ID, () -> ArgumentTypeInfos.registerByClass(DragonAbilityArgument.class, SingletonArgumentInfo.contextAware(DragonAbilityArgument::new)));
     }
 
     @SubscribeEvent

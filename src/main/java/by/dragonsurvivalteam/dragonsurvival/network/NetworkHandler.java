@@ -35,7 +35,6 @@ import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncGlowInstance;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncHarvestBonus;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncHunterStacksRemoval;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncMagicData;
-import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncMana;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncModifierWithDuration;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncOxygenBonus;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncPenaltySupply;
@@ -127,7 +126,6 @@ public class NetworkHandler {
         registrar.playToServer(SyncDragonClawMenuToggle.TYPE, SyncDragonClawMenuToggle.STREAM_CODEC, SyncDragonClawMenuToggle::handleServer);
 
         // Ability packets
-        registrar.playToClient(SyncMana.TYPE, SyncMana.STREAM_CODEC, SyncMana::handleClient);
         registrar.playToClient(SyncMagicData.TYPE, SyncMagicData.STREAM_CODEC, SyncMagicData::handleClient);
         registrar.playToClient(SyncHunterStacksRemoval.TYPE, SyncHunterStacksRemoval.STREAM_CODEC, SyncHunterStacksRemoval::handleClient);
         registrar.playToClient(SyncCooldownState.TYPE, SyncCooldownState.STREAM_CODEC, SyncCooldownState::handleClient);

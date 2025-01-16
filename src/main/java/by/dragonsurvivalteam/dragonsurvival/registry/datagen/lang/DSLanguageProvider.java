@@ -63,6 +63,11 @@ public class DSLanguageProvider extends LanguageProvider {
     }
 
     @Override
+    public void add(String key, String value) {
+        super.add(key, locale.equals("en_us") ? value : "");
+    }
+
+    @Override
     protected void addTranslations() {
         // This list contains a separate entry for each annotation - therefor we don't need to check for the Translations list element
         Set<ModFileScanData.AnnotationData> annotationDataSet = ModList.get().getModFileById(DragonSurvival.MODID).getFile().getScanResult().getAnnotations();

@@ -32,7 +32,7 @@ import java.util.Collections;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks.DS_BLOCKS;
+import static by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks.REGISTRY;
 
 public class BlockLootTableSubProvider extends BlockLootSubProvider {
 
@@ -42,7 +42,7 @@ public class BlockLootTableSubProvider extends BlockLootSubProvider {
 
     @Override
     protected void generate() {
-        DS_BLOCKS.getEntries().forEach((key) -> {
+        REGISTRY.getEntries().forEach((key) -> {
             Function<Block, LootTable.Builder> builder = block -> {
                 if (block instanceof DragonDoor) {
                     return createSinglePropConditionTable(block, DragonDoor.PART, DragonDoor.Part.BOTTOM);
@@ -86,6 +86,6 @@ public class BlockLootTableSubProvider extends BlockLootSubProvider {
 
     @Override
     protected @NotNull Iterable<Block> getKnownBlocks() {
-        return DS_BLOCKS.getEntries().stream().map(DeferredHolder::get).collect(Collectors.toList());
+        return REGISTRY.getEntries().stream().map(DeferredHolder::get).collect(Collectors.toList());
     }
 }
