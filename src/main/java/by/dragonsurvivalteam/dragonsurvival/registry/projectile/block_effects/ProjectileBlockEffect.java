@@ -32,6 +32,7 @@ public interface ProjectileBlockEffect extends ProjectileEffect<BlockPos> {
     static void registerEntries(final RegisterEvent event) {
         if (event.getRegistry() == REGISTRY) {
             event.register(REGISTRY_KEY, DragonSurvival.res("particle"), () -> ProjectileBlockParticleEffect.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("run_function"), () -> ProjectileBlockRunFunctionEffect.CODEC);
         }
     }
 }

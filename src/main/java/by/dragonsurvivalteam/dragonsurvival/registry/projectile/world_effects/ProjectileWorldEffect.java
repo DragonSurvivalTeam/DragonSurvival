@@ -33,6 +33,7 @@ public interface ProjectileWorldEffect extends ProjectileEffect<Void> {
             event.register(REGISTRY_KEY, DragonSurvival.res("explosion"), () -> ProjectileExplosionEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("lightning"), () -> ProjectileLightningWorldEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("particle"), () -> ProjectileWorldParticleEffect.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("run_function"), () -> ProjectileWorldRunFunctionEffect.CODEC);
         }
     }
 }
