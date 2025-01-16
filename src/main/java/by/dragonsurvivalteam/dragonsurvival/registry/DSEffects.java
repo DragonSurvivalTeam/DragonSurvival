@@ -1,12 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.effects.BurnEffect;
-import by.dragonsurvivalteam.dragonsurvival.common.effects.ChargedEffect;
-import by.dragonsurvivalteam.dragonsurvival.common.effects.DrainEffect;
-import by.dragonsurvivalteam.dragonsurvival.common.effects.ModifiableMobEffect;
-import by.dragonsurvivalteam.dragonsurvival.common.effects.Stress;
-import by.dragonsurvivalteam.dragonsurvival.common.effects.WingDisablingEffect;
+import by.dragonsurvivalteam.dragonsurvival.common.effects.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -108,4 +103,12 @@ public class DSEffects {
     @Translation(type = Translation.Type.EFFECT, comments = "Regeneration Delay")
     @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "N/A") // TODO :: effect not implemented
     public static Holder<MobEffect> REGENERATION_DELAY = REGISTRY.register("regeneration_delay", () -> new ModifiableMobEffect(MobEffectCategory.HARMFUL, 0x0, true));
+
+    @Translation(type = Translation.Type.EFFECT, comments = "Blast Dusted")
+    @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "You are about to explode if you don't find some water, quickly!")
+    public static Holder<MobEffect> BLAST_DUSTED = REGISTRY.register("blast_dusted", () -> new BlastDustedEffect(MobEffectCategory.HARMFUL, 0x0, true));
+
+    @Translation(type = Translation.Type.EFFECT, comments = "Confounded")
+    @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "A deadly curse that impairs the senses, and causes you to take damage whenever you inflict harm upon others.")
+    public static Holder<MobEffect> CONFOUNDED = REGISTRY.register("confounded", () -> new ModifiableMobEffect(MobEffectCategory.HARMFUL, 0x0, false));
 }

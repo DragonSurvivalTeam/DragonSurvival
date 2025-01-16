@@ -85,6 +85,16 @@ public class DSDamageTypes {
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Electric")
     public static final ResourceKey<DamageType> ELECTRIC = key("electric");
 
+    @Translation(type = Translation.Type.DEATH, comments = "%s got dusted.")
+    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "%s was dusted by %s.")
+    @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Blast Dust")
+    public static final ResourceKey<DamageType> BLAST_DUST = key("blast_dust");
+
+    @Translation(type = Translation.Type.DEATH, comments = "%s fell to their own bloodlust.")
+    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "%s was killed by %s's curse")
+    @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Mirror Curse")
+    public static final ResourceKey<DamageType> MIRROR_CURSE = key("mirror_curse");
+
     public static Holder<DamageType> get(final Level level, final ResourceKey<DamageType> damageType) {
         return level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(damageType);
     }
@@ -104,6 +114,8 @@ public class DSDamageTypes {
         register(context, DSDamageTypes.WATER_BURN);
         register(context, DSDamageTypes.SPIKE);
         register(context, DSDamageTypes.ELECTRIC);
+        register(context, DSDamageTypes.BLAST_DUST);
+        register(context, DSDamageTypes.MIRROR_CURSE);
     }
 
     private static void register(final BootstrapContext<DamageType> context, final ResourceKey<DamageType> damageType) {
