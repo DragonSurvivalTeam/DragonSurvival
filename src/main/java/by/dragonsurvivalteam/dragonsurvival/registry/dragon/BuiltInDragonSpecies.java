@@ -11,6 +11,8 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.CaveDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.ForestDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.SeaDragonAbilities;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonAbilityTags;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonPenaltyTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.datapacks.AncientDatapack;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalties;
@@ -78,33 +80,8 @@ public class BuiltInDragonSpecies {
                 Optional.empty(),
                 Optional.empty(),
                 HolderSet.empty(),
-                HolderSet.direct(
-                        // Active
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.NETHER_BREATH),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.FIRE_BALL),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.STURDY_SKIN),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.LAVA_VISION),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.FRIENDLY_FIRE),
-                        // Passive
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.CAVE_ATHLETICS),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.BURN),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.CAVE_MAGIC),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.CONTRAST_SHOWER),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.FIRE_IMMUNITY),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.CAVE_WINGS),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.CAVE_SPIN),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.CAVE_CLAWS_AND_TEETH),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(CaveDragonAbilities.LAVA_SWIMMING)
-                ),
-                HolderSet.direct(
-                        context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.SNOW_AND_RAIN_WEAKNESS),
-                        context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.WATER_WEAKNESS),
-                        context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.ITEM_BLACKLIST),
-                        context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.WATER_POTION_WEAKNESS),
-                        context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.SNOWBALL_WEAKNESS),
-                        context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.WATER_SPLASH_POTION_WEAKNESS)
-                ),
-                List.of(),
+                context.lookup(DragonAbility.REGISTRY).getOrThrow(DSDragonAbilityTags.CAVE),
+                context.lookup(DragonPenalty.REGISTRY).getOrThrow(DSDragonPenaltyTags.CAVE),
                 List.of(
                         DietEntry.from(ItemTags.COALS, new FoodProperties(1, 1, false, 0.8f, Optional.empty(), List.of())),
                         DietEntry.from(DSItems.CHARGED_COAL.value(), new FoodProperties(6, 1, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
@@ -193,37 +170,8 @@ public class BuiltInDragonSpecies {
                 Optional.empty(),
                 Optional.empty(),
                 HolderSet.empty(),
-                HolderSet.direct(
-                        // Active
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(SeaDragonAbilities.BALL_LIGHTNING),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(SeaDragonAbilities.STORM_BREATH),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(SeaDragonAbilities.SEA_EYES),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(SeaDragonAbilities.SOUL_REVELATION),
-                        // Passive
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(SeaDragonAbilities.SEA_ATHLETICS),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(SeaDragonAbilities.SEA_MAGIC),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(SeaDragonAbilities.SPECTRAL_IMPACT),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(SeaDragonAbilities.HYDRATION),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(SeaDragonAbilities.SEA_CLAWS_AND_TEETH),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(SeaDragonAbilities.SEA_WINGS),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(SeaDragonAbilities.SEA_SPIN),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(SeaDragonAbilities.ELECTRIC_IMMUNITY),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(SeaDragonAbilities.AMPHIBIOUS),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(SeaDragonAbilities.DIVER)
-                ),
-                HolderSet.direct(
-                        context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.THIN_SKIN),
-                        context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.ITEM_BLACKLIST)
-                ),
-                List.of(
-                        // We need to give the sea dragon some starting resistance time so they don't immediately dehydrate
-                        new Modifier(
-                                DSAttributes.PENALTY_RESISTANCE_TIME,
-                                LevelBasedValue.constant(Functions.secondsToTicks(60)),
-                                AttributeModifier.Operation.ADD_VALUE,
-                                Optional.empty()
-                        )
-                ),
+                context.lookup(DragonAbility.REGISTRY).getOrThrow(DSDragonAbilityTags.SEA),
+                context.lookup(DragonPenalty.REGISTRY).getOrThrow(DSDragonPenaltyTags.SEA),
                 List.of(
                         DietEntry.from(Tags.Items.FOODS_RAW_FISH, new FoodProperties(4, 1, false, 1.2f, Optional.empty(), List.of())),
                         DietEntry.from(Items.KELP, new FoodProperties(1, 1, false, 1.0f, Optional.empty(), List.of())),
@@ -441,27 +389,8 @@ public class BuiltInDragonSpecies {
                 Optional.empty(),
                 Optional.empty(),
                 HolderSet.empty(),
-                HolderSet.direct(
-                        // Active
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.SPIKE),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.FOREST_BREATH),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.HUNTER),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.INSPIRATION),
-                        // Passive
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.FOREST_IMMUNITY),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.FOREST_MAGIC),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.FOREST_CLAWS_AND_TEETH),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.FOREST_WINGS),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.FOREST_SPIN),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.FOREST_ATHLETICS),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.CLIFFHANGER),
-                        context.lookup(DragonAbility.REGISTRY).getOrThrow(ForestDragonAbilities.LIGHT_IN_DARKNESS)
-                ),
-                HolderSet.direct(
-                        context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.FEAR_OF_DARKNESS),
-                        context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.ITEM_BLACKLIST)
-                ),
-                List.of(),
+                context.lookup(DragonAbility.REGISTRY).getOrThrow(DSDragonAbilityTags.FOREST),
+                context.lookup(DragonPenalty.REGISTRY).getOrThrow(DSDragonPenaltyTags.FOREST),
                 List.of(
                         DietEntry.from(Tags.Items.FOODS_RAW_MEAT, new FoodProperties(6, 4, false, 1.2f, Optional.empty(), List.of())),
                         DietEntry.from(Tags.Items.FOODS_BERRY, new FoodProperties(1, 1, false, 1.2f, Optional.empty(), List.of())),

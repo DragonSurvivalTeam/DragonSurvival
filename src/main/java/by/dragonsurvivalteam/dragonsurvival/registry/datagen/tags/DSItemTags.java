@@ -72,7 +72,7 @@ public class DSItemTags extends ItemTagsProvider {
         addToVanillaTags();
         tagDragonSpeciesFood(provider);
 
-        DSItems.DS_ITEMS.getEntries().forEach(holder -> {
+        DSItems.REGISTRY.getEntries().forEach(holder -> {
             Item item = holder.value();
 
             if (item instanceof LightDragonArmorItem) {
@@ -140,7 +140,7 @@ public class DSItemTags extends ItemTagsProvider {
     }
 
     private void addToVanillaTags() {
-        DSItems.DS_ITEMS.getEntries().forEach(holder -> {
+        DSItems.REGISTRY.getEntries().forEach(holder -> {
             Item item = holder.value();
 
             if (item instanceof ArmorItem armor) {

@@ -39,11 +39,12 @@ public abstract class EntityMixin {
 
         if (DragonStateProvider.isDragon(player)) {
             MovementData movement = MovementData.getData(player);
+            DragonStateHandler handler = DragonStateProvider.getData(player);
             Vec3 originalPassPos = player.getPassengerRidingPosition(player);
-            double size = DragonStateProvider.getData(passenger).getSize();
-            double heightOffset = -0.15 - size * 0.08; // Arbitrarily chosen number
+            Vec3 offset = handler.body().value().mountingOffsets().offset();
+            Vec3 scale = handler.body().value().mountingOffsets().scale();
+            Vec3 offsetFromBb = offset.add(scale.multiply(player.getBoundingBox().getXsize(), player.getBoundingBox().getYsize(), player.getBoundingBox().getZsize()));
 
-            Vec3 offsetFromBb = new Vec3(0, heightOffset, -1.4 * player.getBbWidth());
             Vec3 offsetFromCenter = originalPassPos.subtract(player.position());
             offsetFromCenter = offsetFromCenter.xRot((float) Math.toRadians(movement.prevXRot * 1.5)).zRot(-(float) Math.toRadians(movement.prevZRot * 90));
             Vec3 totalOffset = offsetFromCenter.add(offsetFromBb).yRot(-(float) Math.toRadians(movement.bodyYawLastFrame));

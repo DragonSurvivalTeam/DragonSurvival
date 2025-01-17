@@ -20,7 +20,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -48,7 +47,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.DyeColor;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
-import net.neoforged.neoforge.common.CommonHooks;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -213,11 +211,16 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
         for (Renderable btn : renderables) {
             if (btn instanceof AltarTypeButton button) {
                 if (button.isHoveredOrFocused()) {
+                    Holder<DragonSpecies> handler1PreviousSpecies = handler1.species();
+                    Holder<DragonSpecies> handler2PreviousSpecies = handler2.species();
                     handler1.setSpecies(null, button.species);
                     handler2.setSpecies(null, button.species);
 
-                    if (button.species != null) {
+                    if(handler1PreviousSpecies != handler1.species() && handler1.species() != null) {
                         initializeHandler(handler1);
+                    }
+
+                    if(handler2PreviousSpecies != handler2.species() && handler2.species() != null) {
                         initializeHandler(handler2);
                     }
 
@@ -225,18 +228,19 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                     FakeClientPlayerUtils.getFakePlayer(1, handler2).animationSupplier = () -> animations[animation2];
 
                     LivingEntity entity1;
-                    int entity1Scale = 40;
+                    int entity1Scale = Math.min(50, (int)handler1.getSize());
                     if (handler1.isDragon()) {
                         entity1 = FakeClientPlayerUtils.getFakeDragon(0, handler1);
                         DragonEntity dragon = (DragonEntity) entity1;
                         dragon.neckLocked = true;
                         dragon.tailLocked = true;
-                        entity1Scale = 20;
                     } else {
                         entity1 = FakeClientPlayerUtils.getFakePlayer(0, handler1);
+                        entity1Scale = 40;
                     }
 
                     LivingEntity entity2;
+                    int entity2Scale = Math.min(50, (int)handler2.getSize());
                     if (handler2.isDragon()) {
                         entity2 = FakeClientPlayerUtils.getFakeDragon(1, handler2);
                         DragonEntity dragon = (DragonEntity) entity2;
@@ -244,6 +248,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                         dragon.tailLocked = true;
                     } else {
                         entity2 = FakeClientPlayerUtils.getFakePlayer(1, handler2);
+                        entity2Scale = 40;
                     }
 
                     Quaternionf quaternion = Axis.ZP.rotationDegrees(180.0F);
@@ -252,7 +257,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
 
                     Quaternionf quaternion2 = Axis.ZP.rotationDegrees(180.0F);
                     quaternion2.rotateY((float) Math.toRadians(210));
-                    InventoryScreen.renderEntityInInventory(guiGraphics, (float) width / 2 - 170, button.getY() + button.getHeight(), 40, new Vector3f(), quaternion2, null, entity2);
+                    InventoryScreen.renderEntityInInventory(guiGraphics, (float) width / 2 - 170, button.getY() + button.getHeight(), entity2Scale, new Vector3f(), quaternion2, null, entity2);
                 }
             }
 
@@ -271,14 +276,15 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
     }
 
     private void initializeHandler(final DragonStateHandler handler) {
+        handler.setSize(null, DragonStages.newborn().sizeRange().max() - 0.0001);
         if (handler.body() == null) {
             handler.setBody(null, DragonBody.random(null, handler.species()));
         }
 
-        //noinspection DataFlowIssue -> registry is expected to be present
-        Holder.Reference<DragonStage> dragonStage = CommonHooks.resolveLookup(DragonStage.REGISTRY).getOrThrow(DragonStages.adult);
-        handler.setStage(null, dragonStage);
-        handler.getCurrentStageCustomization().defaultSkin = true;
+        handler.setRandomValidStage(null);
+        if(handler.species() != null) {
+            handler.getCurrentStageCustomization().defaultSkin = true;
+        }
     }
 
     @Override

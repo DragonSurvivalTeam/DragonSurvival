@@ -3,7 +3,6 @@ package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.MagicHUD;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncCooldownState;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
@@ -58,7 +57,6 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
     private boolean errorMessageSent;
     private boolean isCasting;
-    private boolean castWasDenied;
     private int castTimer;
 
     public static MagicData getData(final Player player) {
@@ -243,7 +241,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
             return false;
         }
 
-        if (isCastBlocked(player, instance)) {
+        if (!canCastAbility(player, instance)) {
             int cooldown = instance.getCooldown();
 
             if (!errorMessageSent && player.level().isClientSide() && cooldown != DragonAbilityInstance.NO_COOLDOWN) {
@@ -264,10 +262,6 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         beginCasting(player);
 
         return true;
-    }
-
-    public void denyCast() {
-        castWasDenied = true;
     }
 
     public void stopCasting(final Player player, boolean withCooldown) {
@@ -314,10 +308,6 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         }
     }
 
-    public void setCastWasDenied(boolean castWasDenied) {
-        this.castWasDenied = castWasDenied;
-    }
-
     public void setErrorMessageSent(boolean errorMessageSent) {
         this.errorMessageSent = errorMessageSent;
     }
@@ -338,19 +328,8 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         return isCasting && getCurrentlyCasting() != null;
     }
 
-    // TODO :: return a blocked_type here? Like 'cooldown' 'mana_cost' etc.?
-    private boolean isCastBlocked(final Player dragon, final DragonAbilityInstance instance) {
-        boolean canBeUsed = instance.canBeCast() && instance.checkInitialManaCost(dragon);
-
-        if (!canBeUsed) {
-            return true;
-        }
-
-        if (dragon instanceof ServerPlayer serverPlayer) {
-            return instance.ability().value().usageBlocked().map(condition -> condition.test(Condition.abilityContext(serverPlayer))).orElse(false);
-        } else {
-            return castWasDenied;
-        }
+    private boolean canCastAbility(final Player dragon, final DragonAbilityInstance instance) {
+        return instance.canBeCast() && instance.hasEnoughMana(dragon);
     }
 
     public boolean shouldRenderAbilities() {

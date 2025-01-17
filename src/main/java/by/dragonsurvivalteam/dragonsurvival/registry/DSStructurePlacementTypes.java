@@ -8,7 +8,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class DSStructurePlacementTypes {
-    public static final DeferredRegister<StructurePlacementType<?>> DS_STRUCTURE_PLACEMENT_TYPES = DeferredRegister.create(BuiltInRegistries.STRUCTURE_PLACEMENT, DragonSurvival.MODID);
+    public static final DeferredRegister<StructurePlacementType<?>> REGISTRY = DeferredRegister.create(BuiltInRegistries.STRUCTURE_PLACEMENT, DragonSurvival.MODID);
 
-    public static final DeferredHolder<StructurePlacementType<?>, StructurePlacementType<AdvancedRandomSpread>> ADVANCED_RANDOM_SPREAD = DS_STRUCTURE_PLACEMENT_TYPES.register("advanced_random_spread", () -> () -> AdvancedRandomSpread.CODEC);
+    public static final DeferredHolder<StructurePlacementType<?>, StructurePlacementType<AdvancedRandomSpread>> ADVANCED_RANDOM_SPREAD = REGISTRY.register("advanced_random_spread", () -> () -> AdvancedRandomSpread.CODEC);
 }

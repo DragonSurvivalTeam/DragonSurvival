@@ -130,15 +130,12 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
 
     // The dragon always being the one that summons the entities is intended behaviour for now
     private void spawn(final ServerLevel level, final ServerPlayer dragon, final DragonAbilityInstance ability, final BlockPos spawnPosition) {
-        int newDuration = (int) duration().calculate(ability.level());
-
         SummonedEntities summonData = dragon.getData(DSDataAttachments.SUMMONED_ENTITIES);
         Instance instance = summonData.get(id());
 
         if (instance != null) {
-            if (instance.appliedAbilityLevel() != ability.level() || instance.currentDuration() != newDuration) {
-                // When the effect is applied to an area the entities are summoned in one tick (= duration has not decreased)
-                // Meaning this will only be reached if the ability is being cast again
+            // Only remove in certain conditions, so that more entities can be summoned over time
+            if (instance.appliedAbilityLevel() != ability.level() || instance.summonedAmount() == 0) {
                 summonData.remove(dragon, instance);
                 instance = null;
             } else if (instance.summonedAmount() == maxSummons.calculate(ability.level())) {
@@ -191,7 +188,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
         entity.moveTo(spawnPosition.getX(), spawnPosition.getY() + 1, spawnPosition.getZ(), entity.getYRot(), entity.getXRot());
 
         if (instance == null) {
-            instance = createInstance(dragon, ability, newDuration);
+            instance = createInstance(dragon, ability, (int) duration().calculate(ability.level()));
             instance.increment(entity.getUUID());
             summonData.add(dragon, instance);
         } else {

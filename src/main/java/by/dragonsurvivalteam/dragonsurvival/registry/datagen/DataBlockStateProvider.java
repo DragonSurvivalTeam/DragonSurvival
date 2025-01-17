@@ -38,7 +38,7 @@ public class DataBlockStateProvider extends BlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        DSBlocks.DS_BLOCKS.getEntries().forEach((holder) -> {
+        DSBlocks.REGISTRY.getEntries().forEach((holder) -> {
             if (holder.get() instanceof DragonDoor) {
                 getVariantBuilder(holder.get())
                         .forAllStates(state -> {

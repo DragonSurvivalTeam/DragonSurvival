@@ -48,14 +48,14 @@ import java.util.Optional;
 
 @EventBusSubscriber
 public class DSTrades {
-    public static final DeferredRegister<PoiType> DS_POI_TYPES = DeferredRegister.create(BuiltInRegistries.POINT_OF_INTEREST_TYPE, DragonSurvival.MODID);
-    public static final DeferredRegister<VillagerProfession> DS_VILLAGER_PROFESSIONS = DeferredRegister.create(BuiltInRegistries.VILLAGER_PROFESSION, DragonSurvival.MODID);
+    public static final DeferredRegister<PoiType> POI_REGISTRY = DeferredRegister.create(BuiltInRegistries.POINT_OF_INTEREST_TYPE, DragonSurvival.MODID);
+    public static final DeferredRegister<VillagerProfession> PROFESSION_REGISTRY = DeferredRegister.create(BuiltInRegistries.VILLAGER_PROFESSION, DragonSurvival.MODID);
 
-    public static final Holder<PoiType> DRAGON_RIDER_POI = DS_POI_TYPES.register(
+    public static final Holder<PoiType> DRAGON_RIDER_POI = POI_REGISTRY.register(
             "dragon_rider_poi",
             () -> new PoiType(ImmutableSet.copyOf(DSBlocks.DRAGON_RIDER_WORKBENCH.get().getStateDefinition().getPossibleStates()), 1, 1));
 
-    public static final Holder<VillagerProfession> DRAGON_RIDER_PROFESSION = DS_VILLAGER_PROFESSIONS.register(
+    public static final Holder<VillagerProfession> DRAGON_RIDER_PROFESSION = PROFESSION_REGISTRY.register(
             "dragon_rider",
             () -> new VillagerProfession("dragon_rider",
                     holder -> holder.value() == DRAGON_RIDER_POI.value(),

@@ -18,7 +18,6 @@ import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDragonMovement;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
@@ -29,7 +28,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.Di
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.DragonBreathTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.LookingAtTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -272,21 +270,27 @@ public class ClientDragonRenderer {
                 EntityRenderer<? super DragonEntity> dragonRenderer = minecraft.getEntityRenderDispatcher().getRenderer(playerAsDragon);
                 dragonModel.setOverrideTexture(customTexture);
 
-                FlightData flightData = FlightData.getData(player);
-                if (player.isCrouching() && flightData.isWingsSpread() && !player.onGround()) {
-                    poseStack.translate(0, -0.15, 0);
-                } else if (player.isCrouching()) {
+                // You would think that a recursive posestack translation would be needed for each mounted dragon, but because
+                // the situations where we translate the posestack are mutually exclusive with being mounted, we can just use the mount's stats
+                Player playerToUseForPoseStackTranslation;
+                //if(player.getVehicle() instanceof Player mount && DragonStateProvider.isDragon(mount)) {
+                    //playerToUseForPoseStackTranslation = mount;
+               // } else {
+                    playerToUseForPoseStackTranslation = player;
+               // }
+
+                if (playerToUseForPoseStackTranslation.isCrouching()) {
                     // Needed to prevent the dragon model from sinking into the ground
                     // The formula is generated based on input / output pairs of various sizes which looked correct
                     double translate = 1 / (0.4 * Math.pow(size, 0.78) + 0.5);
                     poseStack.translate(0, translate, 0);
-                } else if (player.isSwimming() || player.isAutoSpinAttack() || flightData.isWingsSpread() && !player.onGround() && !player.isInWater() && !player.isInLava()) {
+                } /*else if (shouldTranslatePlayerDownForSpinOrFlight(playerToUseForPoseStackTranslation)) {
                     if (size > DragonStage.MAX_HANDLED_SIZE) {
                         poseStack.translate(0, -0.55, 0);
                     } else {
                         poseStack.translate(0, -0.15 - size / 40 * 0.2, 0);
                     }
-                }
+                }*/
 
                 boolean isPlayerGliding = ServerFlightHandler.isGliding(player);
                 Entity playerVehicle = player.getVehicle();

@@ -36,6 +36,7 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -44,6 +45,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
@@ -115,6 +117,17 @@ public class DragonStateHandler extends EntityStateHandler {
     // Needed for some special refreshDimensions calculations (see EntityMixin)
     public boolean refreshedDimensionsFromSizeChange;
 
+    private static final RandomSource RANDOM = RandomSource.create();
+
+    public void setRandomValidStage(@Nullable final Player player) {
+        if (dragonSpecies == null) {
+            return;
+        }
+
+        HolderSet<DragonStage> stages = dragonSpecies.value().getStages(player != null ? player.registryAccess() : null);
+        setStage(player, stages.get((int)(RANDOM.nextDouble() * stages.size())));
+    }
+
     /** Sets the stage and retains the current size */
     public void setStage(@Nullable final Player player, final Holder<DragonStage> dragonStage) {
         if (!dragonSpecies.value().getStages(player != null ? player.registryAccess() : null).contains(dragonStage)) {
@@ -125,9 +138,9 @@ public class DragonStateHandler extends EntityStateHandler {
 
         double boundedSize = dragonStage.value().getBoundedSize(size);
 
-        if (boundedSize == dragonStage.value().sizeRange().min()) {
-            // Ties go to the lower stage, so we need to be slightly above the minimum size
-            boundedSize += Shapes.EPSILON;
+        if (boundedSize == dragonStage.value().sizeRange().max()) {
+            // Ties go to the larger stage, so we need to be slightly below the maximum size of the stage
+            boundedSize -= Shapes.EPSILON;
         }
 
         if (this.dragonStage == null) {

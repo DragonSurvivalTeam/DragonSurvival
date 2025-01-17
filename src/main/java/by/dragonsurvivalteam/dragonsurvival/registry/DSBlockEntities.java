@@ -14,9 +14,9 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 @SuppressWarnings("DataFlowIssue") // null parameter in 'build' does not cause issues
 public class DSBlockEntities {
-    public static final DeferredRegister<BlockEntityType<?>> DS_TILE_ENTITIES = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, MODID);
+    public static final DeferredRegister<BlockEntityType<?>> REGISTRY = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, MODID);
 
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SourceOfMagicBlockEntity>> SOURCE_OF_MAGIC_TILE_ENTITY = DS_TILE_ENTITIES.register(
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SourceOfMagicBlockEntity>> SOURCE_OF_MAGIC_TILE_ENTITY = REGISTRY.register(
             "dragon_nest", () -> BlockEntityType.Builder.of(
                             SourceOfMagicBlockEntity::new,
                             DSBlocks.CAVE_SOURCE_OF_MAGIC.get(),
@@ -25,7 +25,7 @@ public class DSBlockEntities {
                     .build(null)
     );
 
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SourceOfMagicPlaceholder>> SOURCE_OF_MAGIC_PLACEHOLDER = DS_TILE_ENTITIES.register(
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SourceOfMagicPlaceholder>> SOURCE_OF_MAGIC_PLACEHOLDER = REGISTRY.register(
             "placeholder", () -> BlockEntityType.Builder.of(
                             SourceOfMagicPlaceholder::new,
                             DSBlocks.FOREST_SOURCE_OF_MAGIC.get(),
@@ -34,7 +34,7 @@ public class DSBlockEntities {
                     .build(null)
     );
 
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HelmetBlockEntity>> HELMET = DS_TILE_ENTITIES.register(
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HelmetBlockEntity>> HELMET = REGISTRY.register(
             "knight_helmet", () -> BlockEntityType.Builder.of(
                             HelmetBlockEntity::new,
                             DSBlocks.GRAY_KNIGHT_HELMET.get(),
@@ -43,7 +43,7 @@ public class DSBlockEntities {
                     .build(null)
     );
 
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DragonBeaconBlockEntity>> DRAGON_BEACON = DS_TILE_ENTITIES.register(
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DragonBeaconBlockEntity>> DRAGON_BEACON = REGISTRY.register(
             "dragon_beacon", () -> BlockEntityType.Builder.of(
                             DragonBeaconBlockEntity::new,
                             DSBlocks.EMPTY_DRAGON_BEACON.get(),
@@ -53,7 +53,7 @@ public class DSBlockEntities {
                     .build(null)
     );
 
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PrimordialAnchorBlockEntity>> PRIMORDIAL_ANCHOR = DS_TILE_ENTITIES.register(
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PrimordialAnchorBlockEntity>> PRIMORDIAL_ANCHOR = REGISTRY.register(
             "primordial_anchor", () -> BlockEntityType.Builder.of(
                             PrimordialAnchorBlockEntity::new,
                             DSBlocks.PRIMORDIAL_ANCHOR.get())

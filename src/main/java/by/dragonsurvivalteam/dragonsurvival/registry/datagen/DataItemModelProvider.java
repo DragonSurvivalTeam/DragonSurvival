@@ -46,7 +46,7 @@ public class DataItemModelProvider extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
-        DSItems.DS_ITEMS.getEntries().forEach((holder) -> {
+        DSItems.REGISTRY.getEntries().forEach((holder) -> {
             if (holder.get() instanceof BlockItem blockItem && blockItemsThatShouldBeBasicInstead.stream().noneMatch(blockItem.toString()::contains)) {
                 if (blockItemsThatAreManuallyAuthored.stream().anyMatch(blockItem.toString()::contains)) {
                     return;

@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityDimensions;
@@ -95,7 +96,7 @@ public class DragonSizeHandler {
 
     public static double applyPose(double height, @Nullable final Pose pose, boolean hasExtendedCrouch) {
         if (pose == Pose.CROUCHING) {
-            height *= (hasExtendedCrouch ? 3d / 6d : 5d / 6d);
+            height *= (hasExtendedCrouch ? DragonBody.EXTENDED_CROUCH_HEIGHT_RATIO : DragonBody.CROUCH_HEIGHT_RATIO);
         } else if (pose == Pose.SWIMMING || pose == Pose.FALL_FLYING || pose == Pose.SPIN_ATTACK) {
             height *= 7.0D / 12.0D;
         }
@@ -165,13 +166,11 @@ public class DragonSizeHandler {
         } else if (isDragon) {
             data.lerpSize(player);
 
-            if (player.level().isClientSide()) {
-                // We need to do this special handling for the client so that the pose update looks smooth for the client
-                // (without updating using poses that are actually incorrect)
-                // (when doing the pose / refresh_size calculations on the server)
-                DragonSizeHandler.overridePose(player);
-                player.refreshDimensions();
-            }
+            // We need to do this special handling so that the pose update looks smooth
+            // (without updating using poses that are actually incorrect)
+            // (when doing the pose / refresh_size calculations on the server)
+            DragonSizeHandler.overridePose(player);
+            player.refreshDimensions();
         }
     }
 

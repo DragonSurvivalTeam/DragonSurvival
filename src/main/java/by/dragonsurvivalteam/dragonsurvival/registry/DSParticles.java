@@ -38,7 +38,7 @@ import java.util.function.Supplier;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class DSParticles {
-    public static final DeferredRegister<ParticleType<?>> DS_PARTICLES = DeferredRegister.create(
+    public static final DeferredRegister<ParticleType<?>> REGISTRY = DeferredRegister.create(
             BuiltInRegistries.PARTICLE_TYPE,
             DragonSurvival.MODID
     );
@@ -52,12 +52,12 @@ public class DSParticles {
     public static final DeferredHolder<ParticleType<?>, ParticleType<TreasureParticleOption>> TREASURE = register("treasure", () -> TreasureParticleOption.CODEC, () -> TreasureParticleOption.STREAM_CODEC);
     public static final DeferredHolder<ParticleType<?>, ParticleType<SeaSweepParticleOption>> SEA_SWEEP = register("sea_sweep", () -> SeaSweepParticleOption.CODEC, () -> SeaSweepParticleOption.STREAM_CODEC);
 
-    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> CAVE_BEACON_PARTICLE = DS_PARTICLES.register("netherite_particle", () -> new SimpleParticleType(false));
-    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> SEA_BEACON_PARTICLE = DS_PARTICLES.register("diamond_particle", () -> new SimpleParticleType(false));
-    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> FOREST_BEACON_PARTICLE = DS_PARTICLES.register("gold_particle", () -> new SimpleParticleType(false));
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> CAVE_BEACON_PARTICLE = REGISTRY.register("netherite_particle", () -> new SimpleParticleType(false));
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> SEA_BEACON_PARTICLE = REGISTRY.register("diamond_particle", () -> new SimpleParticleType(false));
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> FOREST_BEACON_PARTICLE = REGISTRY.register("gold_particle", () -> new SimpleParticleType(false));
 
     private static <T extends ParticleOptions> DeferredHolder<ParticleType<?>, ParticleType<T>> register(final String name, final Supplier<MapCodec<T>> codecSupplier, final Supplier<StreamCodec<? super RegistryFriendlyByteBuf, T>> streamCodecSupplier) {
-        return DS_PARTICLES.register(name, () -> new ParticleType<>(false) {
+        return REGISTRY.register(name, () -> new ParticleType<>(false) {
             @Override
             public @NotNull MapCodec<T> codec() {
                 return codecSupplier.get();

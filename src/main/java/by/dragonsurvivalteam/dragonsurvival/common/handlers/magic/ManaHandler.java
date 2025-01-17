@@ -3,20 +3,17 @@ package by.dragonsurvivalteam.dragonsurvival.common.handlers.magic;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
-import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncMana;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.ExperienceUtils;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 @EventBusSubscriber
 public class ManaHandler {
@@ -77,10 +74,6 @@ public class ManaHandler {
     }
 
     public static void replenishMana(final Player player, float mana) {
-        if (player.level().isClientSide()) {
-            return;
-        }
-
         MagicData data = MagicData.getData(player);
 
         if (getCurrentMana(player) == getMaxMana(player)) {
@@ -88,10 +81,6 @@ public class ManaHandler {
         }
 
         data.setCurrentMana(data.getCurrentMana() + mana);
-
-        if (player instanceof ServerPlayer serverPlayer) {
-            PacketDistributor.sendToPlayer(serverPlayer, new SyncMana(player.getId(), data.getCurrentMana()));
-        }
     }
 
     public static void consumeMana(final Player player, float manaCost) {
@@ -108,11 +97,7 @@ public class ManaHandler {
             }
         }
 
-        if (!(player instanceof ServerPlayer serverPlayer)) {
-            return;
-        }
-
-        MagicData magic = MagicData.getData(serverPlayer);
+        MagicData magic = MagicData.getData(player);
 
         if (ServerConfig.consumeExperienceAsMana) {
             if (pureMana < manaCost) {
@@ -125,8 +110,6 @@ public class ManaHandler {
         } else {
             magic.setCurrentMana(pureMana - manaCost);
         }
-
-        PacketDistributor.sendToPlayer(serverPlayer, new SyncMana(player.getId(), magic.getCurrentMana()));
     }
 
     public static float getReservedMana(final Player player) {

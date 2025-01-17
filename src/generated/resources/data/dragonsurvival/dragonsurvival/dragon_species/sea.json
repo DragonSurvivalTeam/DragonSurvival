@@ -1,20 +1,5 @@
 {
-  "abilities": [
-    "dragonsurvival:ball_lightning",
-    "dragonsurvival:storm_breath",
-    "dragonsurvival:sea_eyes",
-    "dragonsurvival:soul_revelation",
-    "dragonsurvival:sea_athletics",
-    "dragonsurvival:sea_magic",
-    "dragonsurvival:spectral_impact",
-    "dragonsurvival:hydration",
-    "dragonsurvival:sea_claws_and_teeth",
-    "dragonsurvival:sea_wings",
-    "dragonsurvival:sea_spin",
-    "dragonsurvival:electric_immunity",
-    "dragonsurvival:amphibious",
-    "dragonsurvival:diver"
-  ],
+  "abilities": "#dragonsurvival:sea",
   "diet": [
     {
       "items": [
@@ -1522,15 +1507,5 @@
     "primary_color": "#2DA5E0",
     "secondary_color": "#1D7099"
   },
-  "modifiers": [
-    {
-      "amount": 1200.0,
-      "attribute": "dragonsurvival:penalty_resistance_time",
-      "operation": "add_value"
-    }
-  ],
-  "penalties": [
-    "dragonsurvival:thin_skin",
-    "dragonsurvival:item_blacklist"
-  ]
+  "penalties": "#dragonsurvival:sea"
 }

@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.DragonPredicate;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.DragonStagePredicate;
+import by.dragonsurvivalteam.dragonsurvival.common.conditions.MatchItem;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
@@ -12,6 +13,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
@@ -25,6 +27,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyC
 import net.minecraft.world.level.storage.loot.predicates.MatchTool;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class Condition {
@@ -32,6 +35,11 @@ public class Condition {
             .required(LootContextParams.THIS_ENTITY)
             .required(LootContextParams.ORIGIN)
             .required(LootContextParams.TOOL)
+            .required(MatchItem.Slot.OFFHAND.context())
+            .required(MatchItem.Slot.HEAD.context())
+            .required(MatchItem.Slot.CHEST.context())
+            .required(MatchItem.Slot.LEGS.context())
+            .required(MatchItem.Slot.FEET.context())
             .required(LootContextParams.ATTACKING_ENTITY)
             .build();
 
@@ -39,6 +47,11 @@ public class Condition {
             .required(LootContextParams.THIS_ENTITY)
             .required(LootContextParams.ORIGIN)
             .required(LootContextParams.TOOL)
+            .required(MatchItem.Slot.OFFHAND.context())
+            .required(MatchItem.Slot.HEAD.context())
+            .required(MatchItem.Slot.CHEST.context())
+            .required(MatchItem.Slot.LEGS.context())
+            .required(MatchItem.Slot.FEET.context())
             .required(LootContextParams.BLOCK_STATE)
             .optional(LootContextParams.BLOCK_ENTITY)
             .build();
@@ -47,6 +60,11 @@ public class Condition {
             .required(LootContextParams.THIS_ENTITY)
             .required(LootContextParams.ORIGIN)
             .required(LootContextParams.TOOL)
+            .required(MatchItem.Slot.OFFHAND.context())
+            .required(MatchItem.Slot.HEAD.context())
+            .required(MatchItem.Slot.CHEST.context())
+            .required(MatchItem.Slot.LEGS.context())
+            .required(MatchItem.Slot.FEET.context())
             .build();
 
     private static final LootContextParamSet PROJECTILE_CONTEXT = new LootContextParamSet.Builder()
@@ -55,18 +73,16 @@ public class Condition {
             .required(LootContextParams.ATTACKING_ENTITY)
             .build();
 
-    private static final LootContextParamSet ITEM_CONTEXT = new LootContextParamSet.Builder().required(LootContextParams.TOOL).build();
-
-    public static LootContext itemContext(final ServerLevel level, final ItemStack stack) {
-        LootParams parameters = new LootParams.Builder(level).withParameter(LootContextParams.TOOL, stack).create(ITEM_CONTEXT);
-        return new LootContext.Builder(parameters).create(Optional.empty());
-    }
-
     public static LootContext entityContext(final ServerLevel serverLevel, final Entity entity) {
         LootParams parameters = new LootParams.Builder(serverLevel)
                 .withParameter(LootContextParams.THIS_ENTITY, entity)
                 .withParameter(LootContextParams.ORIGIN, entity.position())
-                .withParameter(LootContextParams.TOOL, entity instanceof LivingEntity livingEntity ? livingEntity.getMainHandItem() : ItemStack.EMPTY)
+                .withParameter(LootContextParams.TOOL, entity instanceof LivingEntity livingEntity ? livingEntity.getMainHandItem() : Objects.requireNonNullElse(entity.getWeaponItem(), ItemStack.EMPTY))
+                .withParameter(MatchItem.Slot.OFFHAND.context(), MatchItem.Slot.OFFHAND.getItem(entity))
+                .withParameter(MatchItem.Slot.HEAD.context(), MatchItem.Slot.OFFHAND.getItem(entity))
+                .withParameter(MatchItem.Slot.CHEST.context(), MatchItem.Slot.OFFHAND.getItem(entity))
+                .withParameter(MatchItem.Slot.LEGS.context(), MatchItem.Slot.OFFHAND.getItem(entity))
+                .withParameter(MatchItem.Slot.FEET.context(), MatchItem.Slot.OFFHAND.getItem(entity))
                 .create(ENTITY_CONTEXT);
         return new LootContext.Builder(parameters).create(Optional.empty());
     }
@@ -76,6 +92,11 @@ public class Condition {
                 .withParameter(LootContextParams.THIS_ENTITY, dragon)
                 .withParameter(LootContextParams.ORIGIN, dragon.position())
                 .withParameter(LootContextParams.TOOL, dragon.getMainHandItem())
+                .withParameter(MatchItem.Slot.OFFHAND.context(), MatchItem.Slot.OFFHAND.getItem(dragon))
+                .withParameter(MatchItem.Slot.HEAD.context(), MatchItem.Slot.OFFHAND.getItem(dragon))
+                .withParameter(MatchItem.Slot.CHEST.context(), MatchItem.Slot.OFFHAND.getItem(dragon))
+                .withParameter(MatchItem.Slot.LEGS.context(), MatchItem.Slot.OFFHAND.getItem(dragon))
+                .withParameter(MatchItem.Slot.FEET.context(), MatchItem.Slot.OFFHAND.getItem(dragon))
                 .create(ENTITY_CONTEXT);
         return new LootContext.Builder(parameters).create(Optional.empty());
     }
@@ -89,7 +110,12 @@ public class Condition {
                 .withParameter(LootContextParams.ATTACKING_ENTITY, attacker)
                 .withParameter(LootContextParams.THIS_ENTITY, entity)
                 .withParameter(LootContextParams.ORIGIN, origin)
-                .withParameter(LootContextParams.TOOL, entity instanceof LivingEntity livingEntity ? livingEntity.getMainHandItem() : ItemStack.EMPTY)
+                .withParameter(LootContextParams.TOOL, entity instanceof LivingEntity livingEntity ? livingEntity.getMainHandItem() : Objects.requireNonNullElse(entity.getWeaponItem(), ItemStack.EMPTY))
+                .withParameter(MatchItem.Slot.OFFHAND.context(), MatchItem.Slot.OFFHAND.getItem(entity))
+                .withParameter(MatchItem.Slot.HEAD.context(), MatchItem.Slot.OFFHAND.getItem(entity))
+                .withParameter(MatchItem.Slot.CHEST.context(), MatchItem.Slot.OFFHAND.getItem(entity))
+                .withParameter(MatchItem.Slot.LEGS.context(), MatchItem.Slot.OFFHAND.getItem(entity))
+                .withParameter(MatchItem.Slot.FEET.context(), MatchItem.Slot.OFFHAND.getItem(entity))
                 .create(ABILITY_CONTEXT);
         return new LootContext.Builder(parameters).create(Optional.empty());
     }
@@ -102,6 +128,11 @@ public class Condition {
         LootParams parameters = new LootParams.Builder(dragon.serverLevel())
                 .withParameter(LootContextParams.THIS_ENTITY, dragon)
                 .withParameter(LootContextParams.TOOL, dragon.getMainHandItem())
+                .withParameter(MatchItem.Slot.OFFHAND.context(), dragon.getOffhandItem())
+                .withParameter(MatchItem.Slot.HEAD.context(), dragon.getItemBySlot(EquipmentSlot.HEAD))
+                .withParameter(MatchItem.Slot.CHEST.context(), dragon.getItemBySlot(EquipmentSlot.CHEST))
+                .withParameter(MatchItem.Slot.LEGS.context(), dragon.getItemBySlot(EquipmentSlot.LEGS))
+                .withParameter(MatchItem.Slot.FEET.context(), dragon.getItemBySlot(EquipmentSlot.FEET))
                 .withParameter(LootContextParams.BLOCK_STATE, state)
                 .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(position))
                 .withOptionalParameter(LootContextParams.BLOCK_ENTITY, dragon.serverLevel().getBlockEntity(position))

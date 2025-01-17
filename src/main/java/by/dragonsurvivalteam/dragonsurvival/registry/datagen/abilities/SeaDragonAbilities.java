@@ -509,6 +509,14 @@ public class SeaDragonAbilities {
                                         List.of(new Modifier(NeoForgeMod.SWIM_SPEED, LevelBasedValue.constant(1f), AttributeModifier.Operation.ADD_VALUE, Optional.empty()))
                                 )),
                                 TargetingMode.ALL
+                        )), LevelBasedValue.constant(1)),
+                        // FIXME :: Put in a seperate ability? Put in a different ability from this one? Just needed to move it since we deleted built in modifiers for dragon species
+                        new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                                ModifierEffect.only(new ModifierWithDuration(
+                                        DurationInstanceBase.create(DragonSurvival.res("amphibious_penalty_resistance")).infinite().removeAutomatically().hidden().build(),
+                                        List.of(new Modifier(DSAttributes.PENALTY_RESISTANCE_TIME, LevelBasedValue.constant(Functions.secondsToTicks(60)), AttributeModifier.Operation.ADD_VALUE, Optional.empty()))
+                                )),
+                                TargetingMode.ALL
                         )), LevelBasedValue.constant(1))
                 ),
                 true,

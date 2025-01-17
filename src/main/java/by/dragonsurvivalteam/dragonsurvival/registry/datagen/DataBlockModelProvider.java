@@ -16,7 +16,7 @@ public class DataBlockModelProvider extends BlockModelProvider {
 
     @Override
     protected void registerModels() {
-        DSBlocks.DS_BLOCKS.getEntries().forEach((holder) -> {
+        DSBlocks.REGISTRY.getEntries().forEach((holder) -> {
             if (holder.get() instanceof DragonAltarBlock) {
                 withExistingParent(holder.getId().getPath(), BLOCK_FOLDER + "/orientable")
                         .texture("down", ResourceLocation.fromNamespaceAndPath(modid, BLOCK_FOLDER + "/" + holder.getId().getPath() + "_top"))
