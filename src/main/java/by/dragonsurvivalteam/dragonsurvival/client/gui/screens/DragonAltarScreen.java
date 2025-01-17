@@ -217,6 +217,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                     Holder<DragonSpecies> handler2PreviousSpecies = handler2.species();
                     handler1.setSpecies(null, button.species);
                     handler2.setSpecies(null, button.species);
+
                     if(handler1PreviousSpecies != handler1.species() && handler1.species() != null) {
                         initializeHandler(handler1);
                     }
@@ -277,6 +278,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
     }
 
     private void initializeHandler(final DragonStateHandler handler) {
+        handler.setSize(null, DragonStages.newborn().sizeRange().max() - 0.0001);
         if (handler.body() == null) {
             handler.setBody(null, DragonBody.random(null, handler.species()));
         }
