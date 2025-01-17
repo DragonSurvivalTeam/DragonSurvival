@@ -3,43 +3,43 @@ package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.item.Tiers;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
-public record LevelBasedResource(List<Entry> entries) {
-    public static final Codec<LevelBasedResource> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+public record LevelBasedTier(List<Entry> entries) {
+    public static final Codec<LevelBasedTier> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Entry.CODEC.listOf().xmap(list -> {
                 List<Entry> sorted = new ArrayList<>(list);
                 Collections.sort(sorted);
                 return sorted.reversed();
-            }, Function.identity()).fieldOf("texture_entries").forGetter(LevelBasedResource::entries)
-    ).apply(instance, LevelBasedResource::new));
+            }, Function.identity()).fieldOf("tiers").forGetter(LevelBasedTier::entries)
+    ).apply(instance, LevelBasedTier::new));
 
-    public ResourceLocation get(final int level) {
+    public @Nullable Tiers get(final int level) {
         for (Entry entry : entries) {
             if (level >= entry.fromLevel()) {
-                return entry.location();
+                return entry.tier();
             }
         }
 
-        // Fallback to returning the first entry (this is intended, as it happens for a single tick as the client is receiving projectile data from the server)
-        return entries().getFirst().location();
+        return null;
     }
 
-    public record Entry(ResourceLocation location, int fromLevel) implements Comparable<Entry> {
+    public record Entry(Tiers tier, int fromLevel) implements Comparable<Entry> {
         public static final Codec<Entry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                ResourceLocation.CODEC.fieldOf("texture_resource").forGetter(Entry::location),
+                MiscCodecs.enumCodec(Tiers.class).fieldOf("tier").forGetter(Entry::tier),
                 ExtraCodecs.intRange(DragonAbilityInstance.MIN_LEVEL, DragonAbilityInstance.MAX_LEVEL).fieldOf("from_level").forGetter(Entry::fromLevel)
         ).apply(instance, Entry::new));
 
         @Override
-        public int compareTo(@NotNull final LevelBasedResource.Entry other) {
+        public int compareTo(@NotNull final Entry other) {
             if (fromLevel < other.fromLevel()) {
                 return -1;
             } else if (fromLevel > other.fromLevel()) {

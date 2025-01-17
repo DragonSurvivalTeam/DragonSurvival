@@ -2,7 +2,6 @@ package by.dragonsurvivalteam.dragonsurvival.common.handlers.magic;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.config.DragonBonusConfig;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncBrokenTool;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
@@ -239,34 +238,16 @@ public class ClawToolHandler {
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST) // To set the base speed as early as possible
     public static void modifyBreakSpeed(final PlayerEvent.BreakSpeed event) {
-        Player player = event.getEntity();
+        event.getEntity().getExistingData(DSDataAttachments.HARVEST_BONUSES).ifPresent(bonuses -> {
+            float baseSpeed = bonuses.getBaseSpeed(event.getState());
 
-        player.getExistingData(DSDataAttachments.HARVEST_BONUSES).ifPresent(bonuses -> {
-            DragonStateHandler data = DragonStateProvider.getData(player);
-
-            if (data.isDragon()) {
-                ClawInventoryData clawData = ClawInventoryData.getData(player);
-
-                if (!clawData.switchedTool && !ToolUtils.shouldUseDragonTools(player.getMainHandItem())) {
-                    // Bonus does not apply when the player is holding a tool in the hotbar while being a dragon
-                    return;
-                }
-
-                float multiplier = bonuses.getSpeedMultiplier(event.getState());
-
-                if (clawData.hasValidClawTool(event.getState())) {
-                    multiplier = getReducedBonus(multiplier);
-                }
-
-                event.setNewSpeed(event.getNewSpeed() * multiplier);
+            if (baseSpeed > event.getNewSpeed()) {
+                event.setNewSpeed(baseSpeed);
             }
-        });
-    }
 
-    public static float getReducedBonus(float bonus) {
-        // 1 is the default / minimum multiplier - only reduce the added bonus (e.g. 1.5 -> 1.25)
-        return 1 + (bonus - 1) / DragonBonusConfig.BREAK_SPEED_REDUCTION;
+            event.setNewSpeed(event.getNewSpeed() * bonuses.getSpeedMultiplier(event.getState()));
+        });
     }
 }

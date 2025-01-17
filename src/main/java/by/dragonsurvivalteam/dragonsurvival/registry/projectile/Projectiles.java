@@ -62,7 +62,7 @@ public class Projectiles {
                         List.of()
                 ),
                 Either.left(new ProjectileData.GenericBallData(
-                        new LevelBasedResource(List.of(new LevelBasedResource.TextureEntry(FIREBALL.location(), 1))),
+                        new LevelBasedResource(List.of(new LevelBasedResource.Entry(FIREBALL.location(), 1))),
                         Optional.of(ParticleTypes.LARGE_SMOKE),
                         List.of(new ProjectilePointTarget(new ProjectileTargeting.GeneralData(List.of(
                                 new ProjectileTargeting.ConditionalEffect(new ProjectileExplosionEffect(
@@ -97,7 +97,7 @@ public class Projectiles {
                         List.of()
                 ),
                 Either.right(new ProjectileData.GenericArrowData(
-                        new LevelBasedResource(List.of(new LevelBasedResource.TextureEntry(SPIKE.location(), 1))),
+                        new LevelBasedResource(List.of(new LevelBasedResource.Entry(SPIKE.location(), 1))),
                         LevelBasedValue.constant(3)
                 ))
         ));
@@ -154,7 +154,7 @@ public class Projectiles {
                         List.of()
                 ),
                 Either.left(new ProjectileData.GenericBallData(
-                        new LevelBasedResource(List.of(new LevelBasedResource.TextureEntry(BALL_LIGHTNING.location(), 1))),
+                        new LevelBasedResource(List.of(new LevelBasedResource.Entry(BALL_LIGHTNING.location(), 1))),
                         Optional.of(ParticleTypes.ELECTRIC_SPARK),
                         List.of(new ProjectilePointTarget(new ProjectileTargeting.GeneralData(List.of(
                                 new ProjectileTargeting.ConditionalEffect(new ProjectileExplosionEffect(
@@ -226,7 +226,7 @@ public class Projectiles {
                         List.of()
                 ),
                 Either.left(new ProjectileData.GenericBallData(
-                        new LevelBasedResource(List.of(new LevelBasedResource.TextureEntry(BALL_LIGHTNING.location(), 1))),
+                        new LevelBasedResource(List.of(new LevelBasedResource.Entry(BALL_LIGHTNING.location(), 1))),
                         Optional.empty(),
                         List.of(new ProjectilePointTarget(new ProjectileTargeting.GeneralData(List.of(
                                 new ProjectileTargeting.ConditionalEffect(new ProjectileExplosionEffect(

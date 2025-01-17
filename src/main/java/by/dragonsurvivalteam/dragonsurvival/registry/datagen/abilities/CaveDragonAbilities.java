@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DamageModification;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.HarvestBonus;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedTier;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierWithDuration;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.PotionData;
@@ -67,6 +68,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -206,11 +208,11 @@ public class CaveDragonAbilities {
                         )), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/nether_breath_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/nether_breath_1"), 1),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/nether_breath_2"), 2),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/nether_breath_3"), 3),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/nether_breath_4"), 4)
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/nether_breath_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/nether_breath_1"), 1),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/nether_breath_2"), 2),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/nether_breath_3"), 3),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/nether_breath_4"), 4)
                 ))
         ));
 
@@ -245,11 +247,11 @@ public class CaveDragonAbilities {
                 )), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/fireball_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/fireball_1"), 1),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/fireball_2"), 2),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/fireball_3"), 3),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/fireball_4"), 4)
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/fireball_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/fireball_1"), 1),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/fireball_2"), 2),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/fireball_3"), 3),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/fireball_4"), 4)
                 ))
         ));
 
@@ -282,10 +284,10 @@ public class CaveDragonAbilities {
                 ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/sturdy_skin_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/sturdy_skin_1"), 1),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/sturdy_skin_2"), 2),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/sturdy_skin_3"), 3)
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/sturdy_skin_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/sturdy_skin_1"), 1),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/sturdy_skin_2"), 2),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/sturdy_skin_3"), 3)
                 ))
         ));
 
@@ -313,10 +315,10 @@ public class CaveDragonAbilities {
                 ), LevelBasedValue.constant(25)), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/friendly_fire_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/friendly_fire_1"), 1),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/friendly_fire_2"), 2),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/friendly_fire_3"), 3)
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/friendly_fire_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/friendly_fire_1"), 1),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/friendly_fire_2"), 2),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/friendly_fire_3"), 3)
                 ))
         ));
 
@@ -345,11 +347,11 @@ public class CaveDragonAbilities {
                 )), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/lava_vision_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/lava_vision_1"), 1),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/lava_vision_2"), 2),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/lava_vision_3"), 3),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/lava_vision_4"), 4)
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/lava_vision_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/lava_vision_1"), 1),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/lava_vision_2"), 2),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/lava_vision_3"), 3),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/lava_vision_4"), 4)
                 ))
         ));
     }
@@ -387,17 +389,17 @@ public class CaveDragonAbilities {
                 ),
                 true,
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_magic_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_magic_1"), 1),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_magic_2"), 2),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_magic_3"), 3),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_magic_4"), 4),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_magic_5"), 5),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_magic_6"), 6),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_magic_7"), 7),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_magic_8"), 8),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_magic_9"), 9),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_magic_10"), 10)
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_magic_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_magic_1"), 1),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_magic_2"), 2),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_magic_3"), 3),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_magic_4"), 4),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_magic_5"), 5),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_magic_6"), 6),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_magic_7"), 7),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_magic_8"), 8),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_magic_9"), 9),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_magic_10"), 10)
                 ))
         ));
 
@@ -413,12 +415,12 @@ public class CaveDragonAbilities {
                 )), LevelBasedValue.constant(Functions.secondsToTicks(1)))),
                 true,
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_athletics_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_athletics_1"), 1),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_athletics_2"), 2),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_athletics_3"), 3),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_athletics_4"), 4),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_athletics_5"), 5)
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_athletics_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_athletics_1"), 1),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_athletics_2"), 2),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_athletics_3"), 3),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_athletics_4"), 4),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_athletics_5"), 5)
                 ))
         ));
 
@@ -435,15 +437,15 @@ public class CaveDragonAbilities {
                 )), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/contrast_shower_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/contrast_shower_1"), 1),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/contrast_shower_2"), 2),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/contrast_shower_3"), 3),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/contrast_shower_4"), 4),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/contrast_shower_5"), 5),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/contrast_shower_6"), 6),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/contrast_shower_7"), 7),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/contrast_shower_8"), 8)
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/contrast_shower_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/contrast_shower_1"), 1),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/contrast_shower_2"), 2),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/contrast_shower_3"), 3),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/contrast_shower_4"), 4),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/contrast_shower_5"), 5),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/contrast_shower_6"), 6),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/contrast_shower_7"), 7),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/contrast_shower_8"), 8)
                 ))
         ));
 
@@ -457,11 +459,11 @@ public class CaveDragonAbilities {
                 )), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/burn_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/burn_1"), 1),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/burn_2"), 2),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/burn_3"), 3),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/burn_4"), 4)
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/burn_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/burn_1"), 1),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/burn_2"), 2),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/burn_3"), 3),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/burn_4"), 4)
                 ))
         ));
 
@@ -473,18 +475,22 @@ public class CaveDragonAbilities {
                         HarvestBonusEffect.only(new HarvestBonus(
                                 DurationInstanceBase.create(DragonSurvival.res("cave_claws_and_teeth")).infinite().removeAutomatically().customIcon(DragonSurvival.res("textures/ability_effect/cave_claw.png")).build(),
                                 Optional.of(context.lookup(Registries.BLOCK).getOrThrow(BlockTags.MINEABLE_WITH_PICKAXE)),
+                                Optional.of(new LevelBasedTier(List.of(
+                                        new LevelBasedTier.Entry(Tiers.WOOD, 1),
+                                        new LevelBasedTier.Entry(Tiers.STONE, 2)
+                                ))),
                                 LevelBasedValue.perLevel(1, 0.5f),
-                                LevelBasedValue.perLevel(0.5f)
+                                LevelBasedValue.perLevel(0.25f)
                         )),
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_claws_and_teeth_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_claws_and_teeth_1"), 1),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_claws_and_teeth_2"), 2),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_claws_and_teeth_3"), 3),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_claws_and_teeth_4"), 4)
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_claws_and_teeth_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_claws_and_teeth_1"), 1),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_claws_and_teeth_2"), 2),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_claws_and_teeth_3"), 3),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_claws_and_teeth_4"), 4)
                 ))
         ));
 
@@ -499,8 +505,8 @@ public class CaveDragonAbilities {
                 )), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_wings_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_wings_1"), 1)
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_wings_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_wings_1"), 1)
                 ))
         ));
 
@@ -515,8 +521,8 @@ public class CaveDragonAbilities {
                 )), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_spin_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_spin_1"), 1)
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_spin_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_spin_1"), 1)
                 ))
         ));
 
@@ -534,8 +540,8 @@ public class CaveDragonAbilities {
                 )), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_dragon_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_dragon_1"), 1)
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_dragon_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_dragon_1"), 1)
                 ))
         ));
 
@@ -549,8 +555,8 @@ public class CaveDragonAbilities {
                 )), LevelBasedValue.constant(1))),
                 false, // To prevent regaining oxygen
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/lava_swimming_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/lava_swimming_1"), 1)
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/lava_swimming_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/lava_swimming_1"), 1)
                 ))
         ));
     }

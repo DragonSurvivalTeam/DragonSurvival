@@ -10,7 +10,20 @@ import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+
 public class MiscCodecs {
+    public static <E extends Enum<E>> Codec<E> enumCodec(Class<E> enumType) {
+        return Codec.STRING.validate(string -> {
+            try {
+                Enum.valueOf(enumType, string);
+                return DataResult.success(string);
+            } catch (NullPointerException | IllegalArgumentException ignored) {
+                return DataResult.error(() -> String.format("[%s] is not a valid entry of [%s]", string, Arrays.toString(enumType.getEnumConstants())));
+            }
+        }).xmap(string -> Enum.valueOf(enumType, string), Enum::name);
+    }
+
     public static final StreamCodec<ByteBuf, Vec3> VEC3_STREAM_CODEC = new StreamCodec<>() {
         public @NotNull Vec3 decode(@NotNull final ByteBuf buffer) {
             return new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());

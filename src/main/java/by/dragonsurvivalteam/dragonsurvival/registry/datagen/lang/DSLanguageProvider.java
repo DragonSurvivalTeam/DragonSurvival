@@ -17,6 +17,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.item.Tiers;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.modscan.ModAnnotation;
 import net.neoforged.neoforge.common.Tags;
@@ -57,14 +58,13 @@ public class DSLanguageProvider extends LanguageProvider {
         return enumClassKey(enumValue.getClass());
     }
 
+    private static String enumValueKey(final Enum<?> enumValue) {
+        return enumClassKey(enumValue) + "." + enumValue.toString().toLowerCase(Locale.ENGLISH);
+    }
+
     /** Replace 'SomeDefinedClass' with 'enum.some_defined_class' for the translation key */
     private static String enumClassKey(final Class<?> classType) {
         return "enum." + classType.getSimpleName().replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase(Locale.ENGLISH);
-    }
-
-    @Override
-    public void add(String key, String value) {
-        super.add(key, locale.equals("en_us") ? value : "");
     }
 
     @Override
@@ -88,6 +88,11 @@ public class DSLanguageProvider extends LanguageProvider {
     private void handleVanilla() {
         for (ResourceKey<DamageType> damageType : ResourceHelper.keys(lookup.join(), Registries.DAMAGE_TYPE)) {
             add(Translation.Type.DAMAGE_TYPE.wrap(damageType.location()), capitalize(damageType.location().getPath()));
+        }
+
+        // Used by 'HarvestBonuses'
+        for (Tiers tier : Tiers.values()) {
+            add(enumValueKey(tier), capitalize(tier.toString().toLowerCase(Locale.ENGLISH)));
         }
 
         // Tags are not available during data generation
@@ -174,7 +179,7 @@ public class DSLanguageProvider extends LanguageProvider {
                         Enum<?> value = (Enum<?>) field.get(null);
 
                         if (type == Translation.Type.NONE) {
-                            add(enumClassKey(value) + "." + value.toString().toLowerCase(Locale.ENGLISH), format(comments));
+                            add(enumValueKey(value), format(comments));
                         } else {
                             // If special handling is needed (e.g. keybind)
                             add(type.wrap(value.toString().toLowerCase(Locale.ENGLISH)), format(comments));

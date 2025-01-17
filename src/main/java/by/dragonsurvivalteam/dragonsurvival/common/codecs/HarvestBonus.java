@@ -8,6 +8,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncHarvestBonus;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HarvestBonuses;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.serialization.Codec;
@@ -23,6 +24,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -39,6 +41,7 @@ import java.util.Optional;
 public class HarvestBonus extends DurationInstanceBase<HarvestBonuses, HarvestBonus.Instance> {
     @Translation(comments = {
             "§6■ Harvest Bonus:§r",
+            " - Base speed: %s",
             " - Harvest level: %s",
             " - Break speed: %s",
             " - Applies to: %s"
@@ -54,23 +57,30 @@ public class HarvestBonus extends DurationInstanceBase<HarvestBonuses, HarvestBo
     @Translation(comments = "None")
     private static final String NONE = Translation.Type.GUI.wrap("harvest_bonus.none");
 
+    @Translation(comments = "Default")
+    private static final String DEFAULT = Translation.Type.GUI.wrap("harvest_bonus.default");
+
+    public static float BASE_SPEED = 1;
     public static int NO_BONUS_VALUE = 0;
     public static final LevelBasedValue NO_BONUS = LevelBasedValue.constant(NO_BONUS_VALUE);
 
     public static final Codec<HarvestBonus> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             DurationInstanceBase.CODEC.fieldOf("base").forGetter(identity -> identity),
             RegistryCodecs.homogeneousList(Registries.BLOCK).optionalFieldOf("blocks").forGetter(HarvestBonus::blocks),
+            LevelBasedTier.CODEC.optionalFieldOf("base_speed").forGetter(HarvestBonus::tiers),
             LevelBasedValue.CODEC.optionalFieldOf("harvest_bonus", NO_BONUS).forGetter(HarvestBonus::harvestBonus),
             LevelBasedValue.CODEC.optionalFieldOf("break_speed_multiplier", NO_BONUS).forGetter(HarvestBonus::breakSpeedMultiplier)
     ).apply(instance, HarvestBonus::new));
 
     private final Optional<HolderSet<Block>> blocks;
+    private final Optional<LevelBasedTier> tiers;
     private final LevelBasedValue harvestBonus;
     private final LevelBasedValue breakSpeedMultiplier;
 
-    public HarvestBonus(final DurationInstanceBase<?, ?> base, final Optional<HolderSet<Block>> blocks, final LevelBasedValue harvestBonus, final LevelBasedValue breakSpeedMultiplier) {
+    public HarvestBonus(final DurationInstanceBase<?, ?> base, final Optional<HolderSet<Block>> blocks, final Optional<LevelBasedTier> tiers, final LevelBasedValue harvestBonus, final LevelBasedValue breakSpeedMultiplier) {
         super(base);
         this.blocks = blocks;
+        this.tiers = tiers;
         this.harvestBonus = harvestBonus;
         this.breakSpeedMultiplier = breakSpeedMultiplier;
     }
@@ -90,7 +100,21 @@ public class HarvestBonus extends DurationInstanceBase<HarvestBonuses, HarvestBo
             appliesTo = Component.translatable(NONE);
         }
 
-        return Component.translatable(HARVEST_BONUS, DSColors.dynamicValue(harvestBonus), DSColors.dynamicValue(breakSpeedMultiplier), DSColors.dynamicValue(appliesTo));
+        Component baseSpeed = null;
+
+        if (tiers.isPresent()) {
+            Tiers tier = tiers.get().get(abilityLevel);
+
+            if (tier != null) {
+                baseSpeed = DSLanguageProvider.enumValue(tier);
+            }
+        }
+
+        if (baseSpeed == null) {
+            baseSpeed = Component.translatable(DEFAULT);
+        }
+
+        return Component.translatable(HARVEST_BONUS, DSColors.dynamicValue(baseSpeed), DSColors.dynamicValue(harvestBonus), DSColors.dynamicValue(breakSpeedMultiplier), DSColors.dynamicValue(appliesTo));
     }
 
     @Override
@@ -105,6 +129,10 @@ public class HarvestBonus extends DurationInstanceBase<HarvestBonuses, HarvestBo
 
     public Optional<HolderSet<Block>> blocks() {
         return blocks;
+    }
+
+    public Optional<LevelBasedTier> tiers() {
+        return tiers;
     }
 
     public LevelBasedValue harvestBonus() {
@@ -122,6 +150,24 @@ public class HarvestBonus extends DurationInstanceBase<HarvestBonuses, HarvestBo
 
         public Instance(final HarvestBonus baseData, final CommonData commonData, int currentDuration) {
             super(baseData, commonData, currentDuration);
+        }
+
+        public float getBaseSpeed(final BlockState state) {
+            if (baseData().tiers().isEmpty()) {
+                return BASE_SPEED;
+            }
+
+            if (baseData().blocks().isPresent() && !baseData().blocks().get().contains(state.getBlockHolder())) {
+                return BASE_SPEED;
+            }
+
+            Tiers tier = baseData().tiers().get().get(appliedAbilityLevel());
+
+            if (tier != null) {
+                return tier.getSpeed();
+            }
+
+            return BASE_SPEED;
         }
 
         public int getHarvestBonus(final BlockState state) {

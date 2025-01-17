@@ -97,7 +97,7 @@ public class DragonAbilities {
                         ), LevelBasedValue.constant(10)), LevelBasedValue.constant(1))
                 ),
                 true,
-                new LevelBasedResource(List.of(new LevelBasedResource.TextureEntry(DragonSurvival.res("test"), 0)))
+                new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
         ));
 
         context.register(TEST_FROST_WALKER, new DragonAbility(
@@ -125,7 +125,7 @@ public class DragonAbilities {
                                 LevelBasedValue.constant(1))
                 ),
                 true,
-                new LevelBasedResource(List.of(new LevelBasedResource.TextureEntry(DragonSurvival.res("test"), 0)))
+                new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
         ));
 
         context.register(TEST_SUMMON, new DragonAbility(
@@ -155,7 +155,7 @@ public class DragonAbilities {
                         )
                 )), LevelBasedValue.constant(16)), LevelBasedValue.constant(1))),
                 true,
-                new LevelBasedResource(List.of(new LevelBasedResource.TextureEntry(DragonSurvival.res("test"), 0)))
+                new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
         ));
     }
 

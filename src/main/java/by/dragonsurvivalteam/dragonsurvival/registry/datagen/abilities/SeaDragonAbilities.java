@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DamageModification;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.HarvestBonus;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedTier;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierWithDuration;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.PotionData;
@@ -65,6 +66,7 @@ import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.neoforged.neoforge.common.NeoForgeMod;
 
@@ -192,11 +194,11 @@ public class SeaDragonAbilities {
                         )), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/storm_breath_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/storm_breath_1"), 1),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/storm_breath_2"), 2),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/storm_breath_3"), 3),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/storm_breath_4"), 4)
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/storm_breath_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/storm_breath_1"), 1),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/storm_breath_2"), 2),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/storm_breath_3"), 3),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/storm_breath_4"), 4)
                 ))
         ));
 
@@ -227,11 +229,11 @@ public class SeaDragonAbilities {
                 true,
                 new LevelBasedResource(
                         List.of(
-                                new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/ball_lightning_0"), 0),
-                                new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/ball_lightning_1"), 1),
-                                new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/ball_lightning_2"), 2),
-                                new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/ball_lightning_3"), 3),
-                                new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/ball_lightning_4"), 4)
+                                new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/ball_lightning_0"), 0),
+                                new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/ball_lightning_1"), 1),
+                                new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/ball_lightning_2"), 2),
+                                new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/ball_lightning_3"), 3),
+                                new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/ball_lightning_4"), 4)
                         )
                 )
         ));
@@ -273,10 +275,10 @@ public class SeaDragonAbilities {
                 ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/revealing_the_soul_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/revealing_the_soul_1"), 1),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/revealing_the_soul_2"), 2),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/revealing_the_soul_3"), 3)
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/revealing_the_soul_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/revealing_the_soul_1"), 1),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/revealing_the_soul_2"), 2),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/revealing_the_soul_3"), 3)
                 ))
         ));
 
@@ -305,11 +307,11 @@ public class SeaDragonAbilities {
                 )), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_eyes_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_eyes_1"), 1),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_eyes_2"), 2),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_eyes_3"), 3),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_eyes_4"), 4)
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_eyes_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_eyes_1"), 1),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_eyes_2"), 2),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_eyes_3"), 3),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_eyes_4"), 4)
                 ))
         ));
     }
@@ -341,17 +343,17 @@ public class SeaDragonAbilities {
                 ),
                 true,
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_magic_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_magic_1"), 1),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_magic_2"), 2),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_magic_3"), 3),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_magic_4"), 4),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_magic_5"), 5),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_magic_6"), 6),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_magic_7"), 7),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_magic_8"), 8),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_magic_9"), 9),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_magic_10"), 10)
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_magic_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_magic_1"), 1),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_magic_2"), 2),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_magic_3"), 3),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_magic_4"), 4),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_magic_5"), 5),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_magic_6"), 6),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_magic_7"), 7),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_magic_8"), 8),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_magic_9"), 9),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_magic_10"), 10)
                 ))
         ));
 
@@ -367,12 +369,12 @@ public class SeaDragonAbilities {
                 )), LevelBasedValue.constant(Functions.secondsToTicks(1)))),
                 true,
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_athletics_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_athletics_1"), 1),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_athletics_2"), 2),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_athletics_3"), 3),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_athletics_4"), 4),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_athletics_5"), 5)
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_athletics_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_athletics_1"), 1),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_athletics_2"), 2),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_athletics_3"), 3),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_athletics_4"), 4),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_athletics_5"), 5)
                 ))
         ));
 
@@ -389,14 +391,14 @@ public class SeaDragonAbilities {
                 )), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/water_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/water_1"), 1),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/water_2"), 2),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/water_3"), 3),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/water_4"), 4),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/water_5"), 5),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/water_6"), 6),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/water_7"), 7)
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/water_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/water_1"), 1),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/water_2"), 2),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/water_3"), 3),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/water_4"), 4),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/water_5"), 5),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/water_6"), 6),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/water_7"), 7)
                 ))
         ));
 
@@ -413,10 +415,10 @@ public class SeaDragonAbilities {
                 )), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/spectral_impact_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/spectral_impact_1"), 1),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/spectral_impact_2"), 2),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/spectral_impact_3"), 3)
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/spectral_impact_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/spectral_impact_1"), 1),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/spectral_impact_2"), 2),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/spectral_impact_3"), 3)
                 ))
         ));
 
@@ -428,18 +430,22 @@ public class SeaDragonAbilities {
                         HarvestBonusEffect.only(new HarvestBonus(
                                 DurationInstanceBase.create(DragonSurvival.res("sea_claws_and_teeth")).infinite().removeAutomatically().customIcon(DragonSurvival.res("textures/ability_effect/sea_claw.png")).build(),
                                 Optional.of(context.lookup(Registries.BLOCK).getOrThrow(BlockTags.MINEABLE_WITH_SHOVEL)),
+                                Optional.of(new LevelBasedTier(List.of(
+                                        new LevelBasedTier.Entry(Tiers.WOOD, 1),
+                                        new LevelBasedTier.Entry(Tiers.STONE, 2)
+                                ))),
                                 LevelBasedValue.perLevel(1, 0.5f),
-                                LevelBasedValue.perLevel(0.5f)
+                                LevelBasedValue.perLevel(0.25f)
                         )),
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_claws_and_teeth_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_claws_and_teeth_1"), 1),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_claws_and_teeth_2"), 2),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_claws_and_teeth_3"), 3),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_claws_and_teeth_4"), 4)
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_claws_and_teeth_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_claws_and_teeth_1"), 1),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_claws_and_teeth_2"), 2),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_claws_and_teeth_3"), 3),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_claws_and_teeth_4"), 4)
                 ))
         ));
 
@@ -454,8 +460,8 @@ public class SeaDragonAbilities {
                 )), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_wings_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_wings_1"), 1)
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_wings_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_wings_1"), 1)
                 ))
         ));
 
@@ -470,8 +476,8 @@ public class SeaDragonAbilities {
                 )), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_spin_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_spin_1"), 1)
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_spin_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_spin_1"), 1)
                 ))
         ));
 
@@ -489,8 +495,8 @@ public class SeaDragonAbilities {
                 )), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_dragon_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_dragon_1"), 1)
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_dragon_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_dragon_1"), 1)
                 ))
         ));
 
@@ -525,8 +531,8 @@ public class SeaDragonAbilities {
                 ),
                 true,
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/amphibian_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/amphibian_1"), 1)
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/amphibian_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/amphibian_1"), 1)
                 ))
         ));
 
@@ -545,8 +551,8 @@ public class SeaDragonAbilities {
                 ),
                 true,
                 new LevelBasedResource(List.of(
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/diver_0"), 0),
-                        new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/diver_1"), 1)
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/diver_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/diver_1"), 1)
                 ))
         ));
     }
