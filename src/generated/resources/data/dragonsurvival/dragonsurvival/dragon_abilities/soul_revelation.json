@@ -87,7 +87,6 @@
       "end": "minecraft:ui.toast.in"
     }
   },
-  "can_be_manually_disabled": false,
   "icon": {
     "texture_entries": [
       {

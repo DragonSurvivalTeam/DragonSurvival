@@ -204,7 +204,7 @@ public class CaveDragonAbilities {
                                 )),
                                 TargetingMode.ALL
                         )), LevelBasedValue.constant(1))),
-                false,
+                true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/nether_breath_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/nether_breath_1"), 1),
@@ -243,7 +243,7 @@ public class CaveDragonAbilities {
                         )),
                         TargetingMode.ALL
                 )), LevelBasedValue.constant(1))),
-                false,
+                true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/fireball_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/fireball_1"), 1),
@@ -280,7 +280,7 @@ public class CaveDragonAbilities {
                         )),
                         TargetingMode.ALLIES_AND_SELF
                 ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
-                false,
+                true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/sturdy_skin_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/sturdy_skin_1"), 1),
@@ -311,7 +311,7 @@ public class CaveDragonAbilities {
                         PotionEffect.only(LevelBasedValue.perLevel(1), LevelBasedValue.constant(Functions.secondsToTicks(200)), false, MobEffects.FIRE_RESISTANCE),
                         TargetingMode.ALLIES
                 ), LevelBasedValue.constant(25)), LevelBasedValue.constant(1))),
-                false,
+                true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/friendly_fire_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/friendly_fire_1"), 1),
@@ -343,7 +343,7 @@ public class CaveDragonAbilities {
                         PotionEffect.only(LevelBasedValue.constant(0), LevelBasedValue.perLevel(Functions.secondsToTicks(30)), false, DSEffects.LAVA_VISION),
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
-                false,
+                true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/lava_vision_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/lava_vision_1"), 1),
@@ -433,7 +433,7 @@ public class CaveDragonAbilities {
                         )),
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
-                false,
+                true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/contrast_shower_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/contrast_shower_1"), 1),
@@ -478,7 +478,7 @@ public class CaveDragonAbilities {
                         )),
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
-                false,
+                true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_claws_and_teeth_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_claws_and_teeth_1"), 1),
@@ -497,7 +497,7 @@ public class CaveDragonAbilities {
                         List.of(new FlightEffect(1, DragonSurvival.res("textures/ability_effect/cave_dragon_wings.png"))),
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
-                false,
+                true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_wings_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_wings_1"), 1)
@@ -513,7 +513,7 @@ public class CaveDragonAbilities {
                         List.of(new SpinEffect(1, Optional.of(NeoForgeMod.LAVA_TYPE))),
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
-                false,
+                true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_spin_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_spin_1"), 1)
@@ -532,7 +532,7 @@ public class CaveDragonAbilities {
                         )),
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
-                false,
+                true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_dragon_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/cave/cave_dragon_1"), 1)

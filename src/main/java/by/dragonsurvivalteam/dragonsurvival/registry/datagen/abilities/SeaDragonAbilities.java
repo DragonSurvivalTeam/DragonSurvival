@@ -190,7 +190,7 @@ public class SeaDragonAbilities {
                                 )),
                                 TargetingMode.ALL
                         )), LevelBasedValue.constant(1))),
-                false,
+                true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/storm_breath_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/storm_breath_1"), 1),
@@ -224,7 +224,7 @@ public class SeaDragonAbilities {
                         )),
                         TargetingMode.ALL
                 )), LevelBasedValue.constant(1))),
-                false,
+                true,
                 new LevelBasedResource(
                         List.of(
                                 new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/ball_lightning_0"), 0),
@@ -271,7 +271,7 @@ public class SeaDragonAbilities {
                                 )),
                         TargetingMode.ALLIES_AND_SELF
                 ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
-                false,
+                true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/revealing_the_soul_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/revealing_the_soul_1"), 1),
@@ -303,7 +303,7 @@ public class SeaDragonAbilities {
                         PotionEffect.only(LevelBasedValue.constant(0), LevelBasedValue.perLevel(Functions.secondsToTicks(30)), false, DSEffects.WATER_VISION),
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
-                false,
+                true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_eyes_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_eyes_1"), 1),
@@ -387,7 +387,7 @@ public class SeaDragonAbilities {
                         )),
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
-                false,
+                true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/water_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/water_1"), 1),
@@ -433,7 +433,7 @@ public class SeaDragonAbilities {
                         )),
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
-                false,
+                true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_claws_and_teeth_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_claws_and_teeth_1"), 1),
@@ -452,7 +452,7 @@ public class SeaDragonAbilities {
                         List.of(new FlightEffect(1, DragonSurvival.res("textures/ability_effect/sea_dragon_wings.png"))),
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
-                false,
+                true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_wings_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_wings_1"), 1)
@@ -468,7 +468,7 @@ public class SeaDragonAbilities {
                         List.of(new SpinEffect(1, Optional.of(NeoForgeMod.WATER_TYPE))),
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
-                false,
+                true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_spin_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_spin_1"), 1)
@@ -487,7 +487,7 @@ public class SeaDragonAbilities {
                         )),
                         TargetingMode.ALL
                 )), LevelBasedValue.constant(1))),
-                false,
+                true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_dragon_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/sea_dragon_1"), 1)
@@ -519,7 +519,7 @@ public class SeaDragonAbilities {
                                 TargetingMode.ALL
                         )), LevelBasedValue.constant(1))
                 ),
-                false,
+                true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/amphibian_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/amphibian_1"), 1)
@@ -539,7 +539,7 @@ public class SeaDragonAbilities {
                                 TargetingMode.ALLIES_AND_SELF
                         )), LevelBasedValue.constant(1))
                 ),
-                false,
+                true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/diver_0"), 0),
                         new LevelBasedResource.TextureEntry(DragonSurvival.res("abilities/sea/diver_1"), 1)

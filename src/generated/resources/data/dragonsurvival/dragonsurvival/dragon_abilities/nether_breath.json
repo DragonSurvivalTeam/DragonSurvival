@@ -146,7 +146,6 @@
       "start": "dragonsurvival:fire_breath_start"
     }
   },
-  "can_be_manually_disabled": false,
   "icon": {
     "texture_entries": [
       {
