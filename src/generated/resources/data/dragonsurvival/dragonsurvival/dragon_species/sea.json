@@ -1522,13 +1522,6 @@
     "primary_color": "#2DA5E0",
     "secondary_color": "#1D7099"
   },
-  "modifiers": [
-    {
-      "amount": 1200.0,
-      "attribute": "dragonsurvival:penalty_resistance_time",
-      "operation": "add_value"
-    }
-  ],
   "penalties": [
     "dragonsurvival:thin_skin",
     "dragonsurvival:item_blacklist"

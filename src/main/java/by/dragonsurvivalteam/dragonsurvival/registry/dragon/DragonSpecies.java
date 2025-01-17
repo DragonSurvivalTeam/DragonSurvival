@@ -51,7 +51,6 @@ public class DragonSpecies implements AttributeModifierSupplier {
             RegistryCodecs.homogeneousList(DragonBody.REGISTRY).optionalFieldOf("bodies", HolderSet.empty()).forGetter(DragonSpecies::bodies),
             RegistryCodecs.homogeneousList(DragonAbility.REGISTRY).optionalFieldOf("abilities", HolderSet.empty()).forGetter(DragonSpecies::abilities),
             RegistryCodecs.homogeneousList(DragonPenalty.REGISTRY).optionalFieldOf("penalties", HolderSet.empty()).forGetter(DragonSpecies::penalties),
-            Modifier.CODEC.listOf().optionalFieldOf("modifiers", List.of()).forGetter(DragonSpecies::modifiers),
             DietEntry.CODEC.listOf().optionalFieldOf("diet", List.of()).forGetter(DragonSpecies::diet),
             MiscDragonTextures.CODEC.fieldOf("misc_resources").forGetter(DragonSpecies::miscResources)
     ).apply(instance, instance.stable(DragonSpecies::new)));
@@ -64,20 +63,18 @@ public class DragonSpecies implements AttributeModifierSupplier {
     private final HolderSet<DragonBody> bodies;
     private final HolderSet<DragonAbility> abilities;
     private final HolderSet<DragonPenalty> penalties;
-    private final List<Modifier> modifiers;
     private final List<DietEntry> dietEntries;
     private final MiscDragonTextures miscResources;
 
     private @Nullable Map<Item, FoodProperties> diet;
     private long lastDietUpdate;
 
-    public DragonSpecies(final Optional<Double> startingSize, final Optional<HolderSet<DragonStage>> customStageProgression, final HolderSet<DragonBody> bodies, final HolderSet<DragonAbility> abilities, final HolderSet<DragonPenalty> penalties, List<Modifier> modifiers, final List<DietEntry> dietEntries, final MiscDragonTextures miscResources) {
+    public DragonSpecies(final Optional<Double> startingSize, final Optional<HolderSet<DragonStage>> customStageProgression, final HolderSet<DragonBody> bodies, final HolderSet<DragonAbility> abilities, final HolderSet<DragonPenalty> penalties, final List<DietEntry> dietEntries, final MiscDragonTextures miscResources) {
         this.startingSize = startingSize;
         this.customStageProgression = customStageProgression;
         this.bodies = bodies;
         this.abilities = abilities;
         this.penalties = penalties;
-        this.modifiers = modifiers;
         this.dietEntries = dietEntries;
         this.miscResources = miscResources;
     }
@@ -164,11 +161,6 @@ public class DragonSpecies implements AttributeModifierSupplier {
 
     public Optional<Double> startingSize() {
         return startingSize;
-    }
-
-    @Override
-    public List<Modifier> modifiers() {
-        return modifiers;
     }
 
     public Optional<HolderSet<DragonStage>> stages() {

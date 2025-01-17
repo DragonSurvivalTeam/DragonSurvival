@@ -9,5 +9,16 @@
       "operation": "add_value"
     }
   ],
-  "mounting_offset": {}
+  "mounting_offset": {
+    "offset": [
+      0.0,
+      -0.05000000074505806,
+      0.0
+    ],
+    "scale": [
+      0.0,
+      0.0,
+      -1.399999976158142
+    ]
+  }
 }

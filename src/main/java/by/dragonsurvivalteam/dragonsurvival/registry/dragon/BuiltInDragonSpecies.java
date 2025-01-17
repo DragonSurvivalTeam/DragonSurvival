@@ -104,7 +104,6 @@ public class BuiltInDragonSpecies {
                         context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.SNOWBALL_WEAKNESS),
                         context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.WATER_SPLASH_POTION_WEAKNESS)
                 ),
-                List.of(),
                 List.of(
                         DietEntry.from(ItemTags.COALS, new FoodProperties(1, 1, false, 0.8f, Optional.empty(), List.of())),
                         DietEntry.from(DSItems.CHARGED_COAL.value(), new FoodProperties(6, 1, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
@@ -214,15 +213,6 @@ public class BuiltInDragonSpecies {
                 HolderSet.direct(
                         context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.THIN_SKIN),
                         context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.ITEM_BLACKLIST)
-                ),
-                List.of(
-                        // We need to give the sea dragon some starting resistance time so they don't immediately dehydrate
-                        new Modifier(
-                                DSAttributes.PENALTY_RESISTANCE_TIME,
-                                LevelBasedValue.constant(Functions.secondsToTicks(60)),
-                                AttributeModifier.Operation.ADD_VALUE,
-                                Optional.empty()
-                        )
                 ),
                 List.of(
                         DietEntry.from(Tags.Items.FOODS_RAW_FISH, new FoodProperties(4, 1, false, 1.2f, Optional.empty(), List.of())),
@@ -461,7 +451,6 @@ public class BuiltInDragonSpecies {
                         context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.FEAR_OF_DARKNESS),
                         context.lookup(DragonPenalty.REGISTRY).getOrThrow(DragonPenalties.ITEM_BLACKLIST)
                 ),
-                List.of(),
                 List.of(
                         DietEntry.from(Tags.Items.FOODS_RAW_MEAT, new FoodProperties(6, 4, false, 1.2f, Optional.empty(), List.of())),
                         DietEntry.from(Tags.Items.FOODS_BERRY, new FoodProperties(1, 1, false, 1.2f, Optional.empty(), List.of())),
