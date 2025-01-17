@@ -37,6 +37,7 @@
     "cooldown": 400.0,
     "initial_mana_cost": 1.0
   },
+  "can_be_manually_disabled": false,
   "icon": {
     "texture_entries": [
       {

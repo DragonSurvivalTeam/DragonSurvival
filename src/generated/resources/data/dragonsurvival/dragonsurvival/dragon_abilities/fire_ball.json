@@ -49,6 +49,7 @@
       "end": "minecraft:item.firecharge.use"
     }
   },
+  "can_be_manually_disabled": false,
   "icon": {
     "texture_entries": [
       {
