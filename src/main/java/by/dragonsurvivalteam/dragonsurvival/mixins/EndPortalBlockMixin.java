@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonSpeciesTags;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -24,6 +25,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.StructureMode;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -59,6 +61,18 @@ public class EndPortalBlockMixin {
             }
         }
 
+        return original;
+    }
+
+    // We need to bump the player up a tiny bit to prevent them from getting stuck in the floor when teleporting to the end
+    @ModifyExpressionValue(method = "getPortalDestination", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/Vec3;subtract(DDD)Lnet/minecraft/world/phys/Vec3;"))
+    private Vec3 modifySubtractToPlaceDragonSlightlyAboveSpawnPoint(Vec3 original, @Local(argsOnly = true) Entity entity, @Local(argsOnly = true) ServerLevel level) {
+        if(entity instanceof Player player) {
+            DragonStateHandler handler = DragonStateProvider.getData(player);
+            if(handler.isDragon()) {
+                return original.add(0, 0.1f, 0);
+            }
+        }
         return original;
     }
 
