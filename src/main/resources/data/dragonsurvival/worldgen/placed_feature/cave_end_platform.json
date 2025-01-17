@@ -1,0 +1,18 @@
+{
+  "feature": "dragonsurvival:cave_end_platform",
+  "placement": [
+    {
+      "type": "minecraft:fixed_placement",
+      "positions": [
+        [
+          -200,
+          50,
+          0
+        ]
+      ]
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

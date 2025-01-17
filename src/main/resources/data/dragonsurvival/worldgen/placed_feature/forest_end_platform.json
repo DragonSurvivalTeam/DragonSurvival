@@ -1,0 +1,15 @@
+{
+  "feature": "dragonsurvival:forest_end_platform",
+  "placement": [
+    {
+      "type": "minecraft:fixed_placement",
+      "positions": [
+        [
+          0,
+          50,
+          -200
+        ]
+      ]
+    }
+  ]
+}
