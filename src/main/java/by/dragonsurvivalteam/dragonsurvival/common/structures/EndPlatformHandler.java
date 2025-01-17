@@ -103,14 +103,16 @@ public class EndPlatformHandler {
                     BlockPos currentPosition = mutablePosition.set(position).move(x, y, z);
                     BlockState state = level.getBlockState(currentPosition);
 
-                    if (state.is(DSBlockTags.END_PLATFORM_NON_REPLACEABLE)) {
+                    // Only place obsidian at the bottom (the other height is just cleared out)
+                    Block block = y == -1 ? Blocks.OBSIDIAN : Blocks.AIR;
+
+                    // If we're checking for placing obsidian and the block does not block motion (i.e. player can fall through it)
+                    // Then we replace it anyway to make sure that the player does not fall in the void
+                    if (state.is(DSBlockTags.END_PLATFORM_NON_REPLACEABLE) && (block == Blocks.AIR || state.blocksMotion())) {
                         // Mostly just here because the sea dragon platform has snow above the obsidian part
                         // Custom platforms may also have such types of decorative blocks
                         continue;
                     }
-
-                    // Only place obsidian at the bottom (the other height is just cleared out)
-                    Block block = y == -1 ? Blocks.OBSIDIAN : Blocks.AIR;
 
                     if (block == Blocks.AIR || !state.blocksMotion()) {
                         level.setBlock(currentPosition, block.defaultBlockState(), Block.UPDATE_ALL);
