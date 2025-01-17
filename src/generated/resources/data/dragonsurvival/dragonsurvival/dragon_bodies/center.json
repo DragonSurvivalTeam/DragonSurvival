@@ -8,5 +8,6 @@
       "attribute": "dragonsurvival:flight_speed",
       "operation": "add_value"
     }
-  ]
+  ],
+  "mounting_offset": {}
 }

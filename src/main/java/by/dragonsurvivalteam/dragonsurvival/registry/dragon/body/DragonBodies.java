@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForgeMod;
 
 import java.util.List;
@@ -65,7 +66,14 @@ public class DragonBodies {
     public static void registerBodies(final BootstrapContext<DragonBody> context) {
         context.register(center, new DragonBody(true, List.of(
                 Modifier.constant(DSAttributes.FLIGHT_SPEED, 0.2f, AttributeModifier.Operation.ADD_VALUE)
-        ), 1, false, false, DragonBody.DEFAULT_MODEL, List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"), context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES)));
+        ), 1,
+                false,
+                false,
+                DragonBody.DEFAULT_MODEL,
+                List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"),
+                context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
+                DragonBody.MountingOffsets.of(new Vec3(0, -0.05f, 0), new Vec3(0, 0f, -1.4f)))
+        );
 
         context.register(east, new DragonBody(true, List.of(
                 Modifier.constant(Attributes.ARMOR, 2, AttributeModifier.Operation.ADD_VALUE),
@@ -78,7 +86,14 @@ public class DragonBodies {
                 Modifier.constant(DSAttributes.MANA, 2, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_SPEED, 0.2f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, -0.2f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
-        ), 1, false, true, DragonBody.DEFAULT_MODEL, List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"), context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES)));
+        ), 1,
+                false,
+                true,
+                DragonBody.DEFAULT_MODEL,
+                List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"),
+                context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
+                DragonBody.MountingOffsets.of(new Vec3(0, -0.05f, 0), new Vec3(0, 0f, -1.4f)))
+        );
 
         context.register(north, new DragonBody(true, List.of(
                 Modifier.constant(Attributes.ATTACK_DAMAGE, -0.2f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
@@ -87,7 +102,14 @@ public class DragonBodies {
                 Modifier.constant(NeoForgeMod.SWIM_SPEED, 0.5f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.MANA, 2, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, -0.1f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
-        ), 0.55, true, true, DragonBody.DEFAULT_MODEL, List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"), context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES)));
+        ), 0.55,
+                true,
+                true,
+                DragonBody.DEFAULT_MODEL,
+                List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"),
+                context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
+                DragonBody.MountingOffsets.of(new Vec3(0, -0.05f, 0), new Vec3(0, 0f, -1.4f)))
+        );
 
         context.register(south, new DragonBody(true, List.of(
                 Modifier.constant(Attributes.ATTACK_DAMAGE, 0.5f, AttributeModifier.Operation.ADD_VALUE),
@@ -97,7 +119,14 @@ public class DragonBodies {
                 Modifier.constant(NeoForgeMod.SWIM_SPEED, -0.2f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_SPEED, -0.2f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, -0.5f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
-        ), 1, false, true, DragonBody.DEFAULT_MODEL, List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"), context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES)));
+        ), 1,
+                false,
+                true,
+                DragonBody.DEFAULT_MODEL,
+                List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"),
+                context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
+                DragonBody.MountingOffsets.of(new Vec3(0, -0.05f, 0), new Vec3(0, 0f, -1.4f)))
+        );
 
         context.register(west, new DragonBody(true, List.of(
                 Modifier.constant(Attributes.ATTACK_KNOCKBACK, 0.5f, AttributeModifier.Operation.ADD_VALUE),
@@ -106,7 +135,14 @@ public class DragonBodies {
                 Modifier.constant(NeoForgeMod.SWIM_SPEED, -0.2f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_SPEED, 0.2f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, 1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
-        ), 1, false, false, DragonBody.DEFAULT_MODEL, List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"), context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES)));
+        ), 1,
+                false,
+                false,
+                DragonBody.DEFAULT_MODEL,
+                List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"),
+                context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
+                DragonBody.MountingOffsets.of(new Vec3(0, -0.05f, 0), new Vec3(0, 0f, -1.4f)))
+        );
     }
 
     public static ResourceKey<DragonBody> key(final ResourceLocation location) {

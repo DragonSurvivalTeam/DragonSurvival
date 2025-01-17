@@ -547,7 +547,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
                     animationController.transitionLength(4);
                 }
             } else {
-                if (player.isCrouching() && deltaMovement.y < 0 && distanceFromGround < 10 && deltaMovement.length() < 4) {
+                if (player.isShiftKeyDown() && deltaMovement.y < 0 && distanceFromGround < 10 && deltaMovement.length() < 4) {
                     state.setAnimation(FLY_LAND);
                     animationController.transitionLength(2);
                 } else if (ServerFlightHandler.isSpin(player)) {

@@ -20,6 +20,7 @@ import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
@@ -28,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
-public record DragonBody(boolean isDefault, List<Modifier> modifiers, double heightMultiplier, boolean hasExtendedCrouch, boolean canHideWings, ResourceLocation model, List<String> bonesToHideForToggle, Holder<DragonEmoteSet> emotes) implements AttributeModifierSupplier {
+public record DragonBody(boolean isDefault, List<Modifier> modifiers, double heightMultiplier, boolean hasExtendedCrouch, boolean canHideWings, ResourceLocation model, List<String> bonesToHideForToggle, Holder<DragonEmoteSet> emotes, MountingOffsets mountingOffsets) implements AttributeModifierSupplier {
     public static final ResourceKey<Registry<DragonBody>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_bodies"));
 
     public static final ResourceLocation DEFAULT_MODEL = DragonSurvival.res("dragon_model");
@@ -41,11 +42,28 @@ public record DragonBody(boolean isDefault, List<Modifier> modifiers, double hei
             Codec.BOOL.optionalFieldOf("can_hide_wings", true).forGetter(DragonBody::canHideWings),
             ResourceLocation.CODEC.optionalFieldOf("model", DEFAULT_MODEL).forGetter(DragonBody::model),
             Codec.STRING.listOf().optionalFieldOf("bones_to_hide_for_toggle", List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight")).forGetter(DragonBody::bonesToHideForToggle),
-            DragonEmoteSet.CODEC.fieldOf("emotes").forGetter(DragonBody::emotes)
+            DragonEmoteSet.CODEC.fieldOf("emotes").forGetter(DragonBody::emotes),
+            MountingOffsets.CODEC.fieldOf("mounting_offset").forGetter(DragonBody::mountingOffsets)
+
     ).apply(instance, instance.stable(DragonBody::new)));
 
     public static final Codec<Holder<DragonBody>> CODEC = RegistryFixedCodec.create(REGISTRY);
     public static final StreamCodec<RegistryFriendlyByteBuf, Holder<DragonBody>> STREAM_CODEC = ByteBufCodecs.holderRegistry(REGISTRY);
+
+    public static final double EXTENDED_CROUCH_HEIGHT_RATIO = 3d / 6d;
+    public static final double CROUCH_HEIGHT_RATIO = 5d / 6d;
+
+
+    public record MountingOffsets(Vec3 offset, Vec3 scale) {
+        public static final Codec<MountingOffsets> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Vec3.CODEC.optionalFieldOf("offset", Vec3.ZERO).forGetter(MountingOffsets::offset),
+                Vec3.CODEC.optionalFieldOf("scale", Vec3.ZERO).forGetter(MountingOffsets::scale)
+        ).apply(instance, MountingOffsets::new));
+
+        public static MountingOffsets of(final Vec3 offset, final Vec3 scale) {
+            return new MountingOffsets(offset, scale);
+        }
+    }
 
     private static final RandomSource RANDOM = RandomSource.create();
 

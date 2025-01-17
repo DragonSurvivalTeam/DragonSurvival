@@ -34,5 +34,6 @@
       "attribute": "dragonsurvival:flight_stamina",
       "operation": "add_multiplied_total"
     }
-  ]
+  ],
+  "mounting_offset": {}
 }
