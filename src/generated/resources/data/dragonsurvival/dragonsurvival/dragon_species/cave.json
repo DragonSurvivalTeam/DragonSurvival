@@ -1,20 +1,5 @@
 {
-  "abilities": [
-    "dragonsurvival:nether_breath",
-    "dragonsurvival:fire_ball",
-    "dragonsurvival:sturdy_skin",
-    "dragonsurvival:lava_vision",
-    "dragonsurvival:friendly_fire",
-    "dragonsurvival:cave_athletics",
-    "dragonsurvival:burn",
-    "dragonsurvival:cave_magic",
-    "dragonsurvival:contrast_shower",
-    "dragonsurvival:fire_immunity",
-    "dragonsurvival:cave_wings",
-    "dragonsurvival:cave_spin",
-    "dragonsurvival:cave_claws_and_teeth",
-    "dragonsurvival:lava_swimming"
-  ],
+  "abilities": "#dragonsurvival:cave",
   "diet": [
     {
       "items": [
@@ -361,12 +346,5 @@
     "primary_color": "#E84141",
     "secondary_color": "#730B0B"
   },
-  "penalties": [
-    "dragonsurvival:snow_and_rain_weakness",
-    "dragonsurvival:water_weakness",
-    "dragonsurvival:item_blacklist",
-    "dragonsurvival:water_potion_weakness",
-    "dragonsurvival:snowball_weakness",
-    "dragonsurvival:water_splash_potion_weakness"
-  ]
+  "penalties": "#dragonsurvival:cave"
 }
