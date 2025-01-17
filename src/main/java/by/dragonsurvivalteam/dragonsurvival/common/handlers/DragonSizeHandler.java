@@ -165,13 +165,11 @@ public class DragonSizeHandler {
         } else if (isDragon) {
             data.lerpSize(player);
 
-            if (player.level().isClientSide()) {
-                // We need to do this special handling for the client so that the pose update looks smooth for the client
-                // (without updating using poses that are actually incorrect)
-                // (when doing the pose / refresh_size calculations on the server)
-                DragonSizeHandler.overridePose(player);
-                player.refreshDimensions();
-            }
+            // We need to do this special handling so that the pose update looks smooth
+            // (without updating using poses that are actually incorrect)
+            // (when doing the pose / refresh_size calculations on the server)
+            DragonSizeHandler.overridePose(player);
+            player.refreshDimensions();
         }
     }
 
