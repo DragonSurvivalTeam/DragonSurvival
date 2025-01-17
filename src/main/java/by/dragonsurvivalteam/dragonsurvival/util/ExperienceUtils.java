@@ -39,13 +39,29 @@ public class ExperienceUtils {
             requiredExperience += getExperienceForLevelAfter(level);
 
             if (requiredExperience > experience) {
-                break;
+                return level;
             }
 
             level++;
         }
+    }
 
-        return level;
+    /** See {@link ExperienceUtils#getLevel(int)} + also adds the progress to the next level (0..1) */
+    public static double getLevelAndProgress(int experience) {
+        int requiredExperience = 0;
+        int level = 0;
+
+        while (true) {
+            int requiredForNext = getExperienceForLevelAfter(level);
+            requiredExperience += requiredForNext;
+
+            if (requiredExperience > experience) {
+                double progress = (double) (experience - (requiredExperience - requiredForNext)) / requiredForNext;
+                return level + progress;
+            }
+
+            level++;
+        }
     }
 
     /** Calculate the total experience a level is worth given experience levels */

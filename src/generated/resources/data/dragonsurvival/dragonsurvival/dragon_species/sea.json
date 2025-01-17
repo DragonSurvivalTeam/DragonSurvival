@@ -1,5 +1,5 @@
 {
-  "abilities": "#dragonsurvival:sea",
+  "abilities": "#dragonsurvival:sea_dragon",
   "diet": [
     {
       "items": [
@@ -1507,5 +1507,5 @@
     "primary_color": "#2DA5E0",
     "secondary_color": "#1D7099"
   },
-  "penalties": "#dragonsurvival:sea"
+  "penalties": "#dragonsurvival:sea_dragon"
 }

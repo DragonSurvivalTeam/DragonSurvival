@@ -27,6 +27,8 @@ public class DSBlockTags extends BlockTagsProvider {
     public static final TagKey<Block> ENABLES_HUNTER_EFFECT = key("enables_hunter_effect");
     @Translation(comments = "Destructible by Large Dragons")
     public static final TagKey<Block> LARGE_DRAGON_DESTRUCTIBLE = key("large_dragon_destructible");
+    @Translation(comments = "Not replaced by the dragon end platform")
+    public static final TagKey<Block> END_PLATFORM_NON_REPLACEABLE = key("end_platform_non_replaceable");
 
     @Translation(comments = "Speeds up Cave Dragons")
     public static final TagKey<Block> SPEEDS_UP_CAVE_DRAGON = key("speeds_up_cave_dragon");
@@ -82,6 +84,8 @@ public class DSBlockTags extends BlockTagsProvider {
                 .addTag(BlockTags.MINEABLE_WITH_AXE)
                 .addTag(BlockTags.FLOWERS)
                 .addTag(BlockTags.REPLACEABLE); // Potentially has no entries?
+
+        tag(END_PLATFORM_NON_REPLACEABLE).add(Blocks.SNOW);
 
         tag(SMALL_WOODEN_DRAGON_DOORS)
                 .add(DSBlocks.SMALL_OAK_DRAGON_DOOR.value())

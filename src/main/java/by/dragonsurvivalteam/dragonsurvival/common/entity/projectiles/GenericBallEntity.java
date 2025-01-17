@@ -80,9 +80,9 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
         reapplyPosition();
     }
 
+    // Not setting any values here because this should not be called when creating an actual instance of the projectile
     public GenericBallEntity(final EntityType<GenericBallEntity> type, final Level level) {
         super(type, level);
-        accelerationPower = 0;
     }
 
     @Override

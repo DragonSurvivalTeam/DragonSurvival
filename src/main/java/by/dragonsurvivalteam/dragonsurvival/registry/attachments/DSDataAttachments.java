@@ -26,7 +26,9 @@ public class DSDataAttachments {
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<TreasureRestData>> TREASURE_REST = REGISTRY.register("treasure_rest_data", () -> AttachmentType.serializable(TreasureRestData::new).build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<AltarData>> ALTAR = REGISTRY.register("altar_data", () -> AttachmentType.serializable(AltarData::new).copyOnDeath().build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<EffectsMaintainedThroughDeath>> EFFECTS_MAINTAINED_THROUGH_DEATH = REGISTRY.register("effects_maintained_through_death", () -> AttachmentType.serializable(EffectsMaintainedThroughDeath::new).copyOnDeath().build());
+
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<EnderDragonDamageHistory>> ENDER_DRAGON_DAMAGE_HISTORY = REGISTRY.register("ender_dragon_damage_history", () -> AttachmentType.serializable(EnderDragonDamageHistory::new).build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<PlacedEndPlatforms>> PLACED_END_PLATFORMS = REGISTRY.register("placed_end_platforms", () -> AttachmentType.serializable(PlacedEndPlatforms::new).build());
 
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<HunterData>> HUNTER = REGISTRY.register("hunter_data", () -> AttachmentType.serializable(HunterData::new).build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<PenaltySupply>> PENALTY_SUPPLY = REGISTRY.register("penalty_supply", () -> AttachmentType.serializable(PenaltySupply::new).build());

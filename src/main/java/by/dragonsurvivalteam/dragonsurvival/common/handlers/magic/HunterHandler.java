@@ -143,7 +143,7 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
         });
     }
 
-    @SubscribeEvent
+    @SubscribeEvent // Does not use the critical event since projectiles owned by the player don't trigger it
     public static void handleCriticalBonus(final LivingDamageEvent.Pre event) {
         if (!(event.getSource().getEntity() instanceof LivingEntity attacker)) {
             return;

@@ -1,5 +1,5 @@
 {
-  "abilities": "#dragonsurvival:forest",
+  "abilities": "#dragonsurvival:forest_dragon",
   "diet": [
     {
       "items": [
@@ -1034,5 +1034,5 @@
     "primary_color": "#41CC48",
     "secondary_color": "#117816"
   },
-  "penalties": "#dragonsurvival:forest"
+  "penalties": "#dragonsurvival:forest_dragon"
 }

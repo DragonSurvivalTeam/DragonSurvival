@@ -28,12 +28,14 @@ import java.util.UUID;
 
 @Mixin(MobEffectInstance.class)
 public abstract class MobEffectInstanceMixin implements AdditionalEffectData {
+    @Unique private static final String dragonSurvival$APPLIER = "applier";
+
     @Shadow @Final private Holder<MobEffect> effect;
     @Shadow private int duration;
-    @Unique private static final String dragonSurvival$APPLIER = "applier";
 
     @Unique private @Nullable Entity dragonSurvival$applier;
     @Unique private @Nullable UUID dragonSurvival$applierUUID;
+    // Only temporarily referenced for the magic source effect
     @Unique private @Nullable ThreadLocal<Player> dragonSurvival$entity;
 
     @Override
@@ -45,6 +47,12 @@ public abstract class MobEffectInstanceMixin implements AdditionalEffectData {
     public @Nullable Entity dragonSurvival$getApplier(final ServerLevel level) {
         if (dragonSurvival$applier == null && dragonSurvival$applierUUID != null) {
             dragonSurvival$applier = level.getEntity(dragonSurvival$applierUUID);
+
+            if (dragonSurvival$applier == null) {
+                // The level probably only has references to the entities within it
+                // But the server can reference them across levels (i.e. dimensions)
+                dragonSurvival$applier = level.getServer().getPlayerList().getPlayer(dragonSurvival$applierUUID);
+            }
         }
 
         return this.dragonSurvival$applier;

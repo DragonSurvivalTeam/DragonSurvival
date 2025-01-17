@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.CaveDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.ForestDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.SeaDragonAbilities;
@@ -16,11 +17,15 @@ import org.jetbrains.annotations.Nullable;
 import java.util.concurrent.CompletableFuture;
 
 public class DSDragonAbilityTags extends TagsProvider<DragonAbility> {
+    @Translation(comments = "Dragon Ability Sorting Order")
     public static final TagKey<DragonAbility> ORDER = key("order");
 
-    public static final TagKey<DragonAbility> CAVE = key("cave");
-    public static final TagKey<DragonAbility> SEA = key("sea");
-    public static final TagKey<DragonAbility> FOREST = key("forest");
+    @Translation(comments = "Cave Dragon Abilities")
+    public static final TagKey<DragonAbility> CAVE = key("cave_dragon");
+    @Translation(comments = "Sea Dragon Abilities")
+    public static final TagKey<DragonAbility> SEA = key("sea_dragon");
+    @Translation(comments = "Forest Dragon Abilities")
+    public static final TagKey<DragonAbility> FOREST = key("forest_dragon");
 
     public DSDragonAbilityTags(final PackOutput output, final CompletableFuture<HolderLookup.Provider> provider, @Nullable final ExistingFileHelper helper) {
         super(output, DragonAbility.REGISTRY, provider, DragonSurvival.MODID, helper);

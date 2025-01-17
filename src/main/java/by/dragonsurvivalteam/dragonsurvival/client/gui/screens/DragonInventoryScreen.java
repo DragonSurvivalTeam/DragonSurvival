@@ -91,9 +91,6 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
     private static final ResourceLocation SORT_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/sort_hover.png");
     private static final ResourceLocation SORT_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/inventory/sort_main.png");
 
-    private static final String WIKI_URL = "https://github.com/DragonSurvivalTeam/DragonSurvival/wiki";
-
-
     public static double mouseX = -1;
     public static double mouseY = -1;
 

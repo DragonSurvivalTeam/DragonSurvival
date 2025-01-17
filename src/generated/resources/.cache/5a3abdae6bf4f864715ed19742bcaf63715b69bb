@@ -1,9 +1,10 @@
-// 1.21.1	2025-01-14T06:14:32.8799457	Dragon Survival Block tags
+// 1.21.1	2025-01-17T21:46:16.6268653	Dragon Survival Block tags
 cc6f21df43aff58278ff2d2b8b8a1900fb202738 data/dragonsurvival/tags/block/dragon_altars.json
 f619ffe1567682777028849930e160e620c521e4 data/dragonsurvival/tags/block/dragon_beacons.json
 f9a6a5f3b67bb79883689bdd154a227493642cf6 data/dragonsurvival/tags/block/dragon_bones.json
 33150f07d989f304c1970ffe443e33921b5d63a4 data/dragonsurvival/tags/block/dragon_treasures.json
 0fd05ce24f7e0237534571ed952465bbb582b59d data/dragonsurvival/tags/block/enables_hunter_effect.json
+c52fb02fcfb2a371fa75473ed6337a80e6a38ca0 data/dragonsurvival/tags/block/end_platform_non_replaceable.json
 ac59dfcbe1d062ddae5207f4b8e8a8df88a9c92c data/dragonsurvival/tags/block/is_grassy.json
 8f17cb6fcac5f917bce6e6610199a180e22399c7 data/dragonsurvival/tags/block/is_wet.json
 281fcde47848e0e1625bb7db46ae21c1beeecf4f data/dragonsurvival/tags/block/large_dragon_destructible.json

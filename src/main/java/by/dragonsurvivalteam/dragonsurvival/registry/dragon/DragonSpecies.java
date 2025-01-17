@@ -4,7 +4,6 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DietEntry;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.GrowthIcon;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscDragonTextures;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierType;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DataReloadHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;

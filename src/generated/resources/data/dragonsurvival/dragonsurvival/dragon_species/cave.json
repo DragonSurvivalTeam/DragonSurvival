@@ -1,5 +1,5 @@
 {
-  "abilities": "#dragonsurvival:cave",
+  "abilities": "#dragonsurvival:cave_dragon",
   "diet": [
     {
       "items": [
@@ -346,5 +346,5 @@
     "primary_color": "#E84141",
     "secondary_color": "#730B0B"
   },
-  "penalties": "#dragonsurvival:cave"
+  "penalties": "#dragonsurvival:cave_dragon"
 }

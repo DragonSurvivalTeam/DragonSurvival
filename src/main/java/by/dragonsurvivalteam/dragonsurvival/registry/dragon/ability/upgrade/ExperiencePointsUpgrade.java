@@ -11,6 +11,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 
+import java.text.NumberFormat;
+
 public record ExperiencePointsUpgrade(int maxLevel, LevelBasedValue experienceCost) implements UpgradeType<ExperiencePointsUpgrade.Type> {
     @Translation(comments = "■ Skill upgrade costs: %s experience points (level %s)")
     private static final String EXPERIENCE_POINTS_UPGRADE = Translation.Type.GUI.wrap("ability_upgrade.experience_points_upgrade");
@@ -18,6 +20,12 @@ public record ExperiencePointsUpgrade(int maxLevel, LevelBasedValue experienceCo
     public static final MapCodec<ExperiencePointsUpgrade> CODEC = RecordCodecBuilder.mapCodec(instance -> UpgradeType.codecStart(instance)
             .and(LevelBasedValue.CODEC.fieldOf("experience_cost").forGetter(ExperiencePointsUpgrade::experienceCost)).apply(instance, ExperiencePointsUpgrade::new)
     );
+
+    private static final NumberFormat FORMAT = NumberFormat.getInstance();
+
+    static {
+        FORMAT.setMaximumFractionDigits(2);
+    }
 
     @Override
     public boolean apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final ExperiencePointsUpgrade.Type type) {
@@ -35,7 +43,7 @@ public record ExperiencePointsUpgrade(int maxLevel, LevelBasedValue experienceCo
     @Override
     public MutableComponent getDescription(final int abilityLevel) {
         int experiencePoints = (int) experienceCost.calculate(abilityLevel);
-        return Component.translatable(EXPERIENCE_POINTS_UPGRADE, experiencePoints, ExperienceUtils.getLevel(experiencePoints));
+        return Component.translatable(EXPERIENCE_POINTS_UPGRADE, experiencePoints, FORMAT.format(ExperienceUtils.getLevelAndProgress(experiencePoints)));
     }
 
     @Override

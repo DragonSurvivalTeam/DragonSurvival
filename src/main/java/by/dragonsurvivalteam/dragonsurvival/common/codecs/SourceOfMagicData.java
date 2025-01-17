@@ -16,6 +16,7 @@ import java.util.List;
 public record SourceOfMagicData(List<Consumable> consumables, List<ResourceKey<DragonSpecies>> applicableSpecies) {
     public static final Codec<SourceOfMagicData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Consumable.CODEC.listOf().fieldOf("consumables").forGetter(SourceOfMagicData::consumables),
+            // TODO :: holderset?
             ResourceKey.codec(DragonSpecies.REGISTRY).listOf().fieldOf("applicable_species").forGetter(SourceOfMagicData::applicableSpecies)
     ).apply(instance, SourceOfMagicData::new));
 
