@@ -8,6 +8,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.SkinLayer;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DefaultPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -44,6 +45,7 @@ public class EditorPartComponent implements ScrollableComponent {
             }
         };
         partButton.setMessage(Component.translatable(DragonEditorScreen.partToTranslation(partKey)));
+        partButton.setTooltip(Tooltip.create(Component.translatable(skinLayer.getTranslatedName())));
         ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(partButton);
 
         // Left arrow

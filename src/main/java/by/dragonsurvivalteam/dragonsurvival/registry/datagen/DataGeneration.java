@@ -5,16 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEnchantments;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.advancements.DSAdvancements;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBlockTags;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDamageTypeTags;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonAbilityTags;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonBodyTags;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonSpeciesTags;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEffectTags;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEnchantmentTags;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSPoiTypeTags;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
@@ -121,6 +112,7 @@ public class DataGeneration {
         generator.addProvider(event.includeServer(), new DSEnchantmentTags(output, lookup, helper));
         generator.addProvider(event.includeServer(), new DSDragonBodyTags(output, lookup, helper));
         generator.addProvider(event.includeServer(), new DSDragonAbilityTags(output, lookup, helper));
+        generator.addProvider(event.includeServer(), new DSDragonPenaltyTags(output, lookup, helper));
         generator.addProvider(event.includeServer(), new DSDragonSpeciesTags(output, lookup, helper));
 
         generator.addProvider(event.includeServer(), new DataBlockModelProvider(output, helper));

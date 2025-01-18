@@ -5,24 +5,23 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import java.util.Locale;
 
 public enum SkinLayer {
-    // The translation is empty because currently the text is shown behind the dropdown elements for the skin part selections
-    @Translation(type = Translation.Type.SKIN_PART, comments = "")
+    @Translation(type = Translation.Type.SKIN_PART, comments = "Base")
     BASE("Base", true),
-    @Translation(type = Translation.Type.SKIN_PART, comments = "")
+    @Translation(type = Translation.Type.SKIN_PART, comments = "Bottom")
     BOTTOM("Bottom", true),
-    @Translation(type = Translation.Type.SKIN_PART, comments = "")
+    @Translation(type = Translation.Type.SKIN_PART, comments = "Eyes")
     EYES("Eyes", true),
-    @Translation(type = Translation.Type.SKIN_PART, comments = "")
+    @Translation(type = Translation.Type.SKIN_PART, comments = "Horns")
     HORNS("Horns", true),
-    @Translation(type = Translation.Type.SKIN_PART, comments = "")
+    @Translation(type = Translation.Type.SKIN_PART, comments = "Spikes")
     SPIKES("Spikes", true),
-    @Translation(type = Translation.Type.SKIN_PART, comments = "")
+    @Translation(type = Translation.Type.SKIN_PART, comments = "Claws")
     CLAWS("Claws", true),
-    @Translation(type = Translation.Type.SKIN_PART, comments = "")
+    @Translation(type = Translation.Type.SKIN_PART, comments = "Teeth")
     TEETH("Teeth", true),
-    @Translation(type = Translation.Type.SKIN_PART, comments = "")
+    @Translation(type = Translation.Type.SKIN_PART, comments = "Magic")
     MAGIC("Magic", true),
-    @Translation(type = Translation.Type.SKIN_PART, comments = "")
+    @Translation(type = Translation.Type.SKIN_PART, comments = "Extra")
     EXTRA("Extra", false),
     EXTRA1("Extra", false),
     EXTRA2("Extra", false),
@@ -38,6 +37,10 @@ public enum SkinLayer {
     SkinLayer(final String name, boolean base) {
         this.name = name;
         this.base = base;
+    }
+
+    public String getTranslatedName() {
+        return Translation.Type.SKIN_PART.wrap(getNameLowerCase());
     }
 
     public String getNameUpperCase() {
