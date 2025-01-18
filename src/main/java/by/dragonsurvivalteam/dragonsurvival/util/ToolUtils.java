@@ -1,6 +1,8 @@
 package by.dragonsurvivalteam.dragonsurvival.util;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.AxeItem;
@@ -12,6 +14,8 @@ import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.component.Tool;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.ItemAbilities;
@@ -83,5 +87,46 @@ public class ToolUtils {
         }
 
         return 0;
+    }
+
+    public static boolean isCorrectTool(final ItemStack stack, final BlockState state) {
+        if (stack.isEmpty()) {
+            return false;
+        }
+
+        Tool tool = stack.get(DataComponents.TOOL);
+
+        if (tool == null) {
+            return stack.isCorrectToolForDrops(state);
+        }
+
+        for (Tool.Rule rule : tool.rules()) {
+            if (shouldSkipRule(rule)) {
+                continue;
+            }
+
+            if (rule.correctForDrops().orElse(false) && state.is(rule.blocks())) {
+                // The order of the rules seem relevant
+                // Meaning the first entries are the exclusions
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static boolean shouldSkipRule(final Tool.Rule rule) {
+        if (rule.blocks() instanceof HolderSet.Named<Block> set) {
+            // Skip these since we just want to know if this tool is the correct type (defined by the rule that has a speed component)
+            // We don't skip all rules in case the tool is some sort of custom tool
+            return set.key() == BlockTags.INCORRECT_FOR_WOODEN_TOOL ||
+                    set.key() == BlockTags.INCORRECT_FOR_GOLD_TOOL ||
+                    set.key() == BlockTags.INCORRECT_FOR_STONE_TOOL ||
+                    set.key() == BlockTags.INCORRECT_FOR_IRON_TOOL ||
+                    set.key() == BlockTags.INCORRECT_FOR_DIAMOND_TOOL ||
+                    set.key() == BlockTags.INCORRECT_FOR_NETHERITE_TOOL;
+        }
+
+        return false;
     }
 }

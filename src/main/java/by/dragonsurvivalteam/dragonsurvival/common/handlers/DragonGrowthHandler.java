@@ -52,9 +52,7 @@ public class DragonGrowthHandler {
             return;
         }
 
-        if (!player.isCreative()) {
-            event.getItemStack().shrink(1);
-        }
+        event.getItemStack().consume(1, player);
     }
 
     public static double getGrowth(final DragonStateHandler handler, final Item item) {

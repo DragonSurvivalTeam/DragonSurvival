@@ -103,10 +103,7 @@ public class DragonBeacon extends Block implements SimpleWaterloggedBlock, Entit
 
         if (level.setBlockAndUpdate(position, blockItem.getBlock().defaultBlockState())) {
             level.playSound(player, position, DSSounds.UPGRADE_BEACON.get(), SoundSource.BLOCKS, 1, 1);
-
-            if (!player.hasInfiniteMaterials()) {
-                stack.shrink(1);
-            }
+            stack.consume(1, player);
 
             if (level.getBlockEntity(position) instanceof DragonBeaconBlockEntity newBeacon) {
                 newBeacon.setData(data);

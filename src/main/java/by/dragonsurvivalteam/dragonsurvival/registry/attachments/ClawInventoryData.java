@@ -5,6 +5,8 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ClawToolHandler;
 import by.dragonsurvivalteam.dragonsurvival.mixins.PlayerEndMixin;
 import by.dragonsurvivalteam.dragonsurvival.mixins.PlayerStartMixin;
+import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawsMenu;
+import by.dragonsurvivalteam.dragonsurvival.util.ToolUtils;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -14,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -138,16 +141,32 @@ public class ClawInventoryData implements INBTSerializable<CompoundTag> {
         return isMenuOpen;
     }
 
-    public boolean hasValidClawTool(final BlockState state) {
-        for (int i = 0; i < Slot.size(); i++) {
-            ItemStack stack = getContainer().getItem(i);
+    /** Returns the tool with the highest harvest level for said block */
+    public ItemStack getTool(final BlockState state) {
+        ItemStack currentTool = ItemStack.EMPTY;
+        int currentLevel = 0;
 
-            if (stack.isCorrectToolForDrops(state)) {
-                return true;
+        for (int slot = 0; slot < Slot.size(); slot++) {
+            ItemStack tool = getContainer().getItem(slot);
+            int level = ToolUtils.toolToHarvestLevel(tool);
+
+            // The tool data may have additional tags (rules) which can look like this:
+            // 'minecraft:incorrect_for_stone_tool', which contains blocks that require a higher tier
+            if (level > currentLevel && ToolUtils.isCorrectTool(tool, state)) {
+                currentTool = tool;
+                currentLevel = level;
             }
         }
 
-        return false;
+        return currentTool;
+    }
+
+    public void sync(final Player player) {
+        if (player.level().isClientSide()) {
+            return;
+        }
+
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncDragonClawsMenu(player.getId(), isMenuOpen, serializeNBT(player.registryAccess())));
     }
 
     public static ClawInventoryData getData(final Player player) {

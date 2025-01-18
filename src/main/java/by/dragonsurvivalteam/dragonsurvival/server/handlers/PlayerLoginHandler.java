@@ -155,6 +155,7 @@ public class PlayerLoginHandler {
     private static void syncDataAttachments(final ServerPlayer player) {
         player.getExistingData(DSDataAttachments.PENALTY_SUPPLY).ifPresent(data -> data.sync(player));
         player.getExistingData(DSDataAttachments.ALTAR).ifPresent(data -> data.sync(player));
+        player.getExistingData(DSDataAttachments.CLAW_INVENTORY).ifPresent(data -> data.sync(player));
         player.getExistingData(DSDataAttachments.FLIGHT).ifPresent(data -> data.sync(player));
         player.getExistingData(DSDataAttachments.SWIM).ifPresent(data -> data.sync(player));
         DSDataAttachments.getStorages(player).forEach(storage -> storage.sync(player));

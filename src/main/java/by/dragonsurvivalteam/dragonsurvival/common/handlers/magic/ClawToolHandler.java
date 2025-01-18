@@ -107,7 +107,7 @@ public class ClawToolHandler {
         if (data.isDragon()) {
             canHarvest = data.canHarvestWithPaw(player, event.getTargetBlock());
         } else {
-            canHarvest = HarvestBonuses.canHarvest(player, event.getTargetBlock(), true);
+            canHarvest = HarvestBonuses.canHarvest(player, event.getTargetBlock(), player.getMainHandItem());
         }
 
         if (canHarvest) {

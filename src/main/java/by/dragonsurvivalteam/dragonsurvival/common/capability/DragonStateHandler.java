@@ -408,14 +408,10 @@ public class DragonStateHandler extends EntityStateHandler {
     public boolean canHarvestWithPaw(final Player player, final BlockState state) {
         if (!ToolUtils.shouldUseDragonTools(player.getMainHandItem())) {
             // Player is holding a tool in the hotbar
-            return HarvestBonuses.canHarvest(player, state, true);
+            return HarvestBonuses.canHarvest(player, state, player.getMainHandItem());
         }
 
-        if (ClawInventoryData.getData(player).hasValidClawTool(state)) {
-            return true;
-        }
-
-        return HarvestBonuses.canHarvest(player, state, false);
+        return HarvestBonuses.canHarvest(player, state, ClawInventoryData.getData(player).getTool(state));
     }
 
     public void setPassengerId(int passengerId) {

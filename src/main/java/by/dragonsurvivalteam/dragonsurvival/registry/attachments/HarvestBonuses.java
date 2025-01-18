@@ -64,13 +64,13 @@ public class HarvestBonuses extends Storage<HarvestBonus.Instance> {
 
     /**
      * Determines if the player can harvest the provided block state
-     * @param considerTool if 'true' the main hand harvest level will be added (determined by {@link ToolUtils#toolToHarvestLevel(ItemStack)})
+     * @param tool @param tool The harvest level of this item will be used as a base (see {@link ToolUtils#toolToHarvestLevel(ItemStack)})
      */
-    public static boolean canHarvest(final Player player, final BlockState state, boolean considerTool) {
+    public static boolean canHarvest(final Player player, final BlockState state, final ItemStack tool) {
         int bonus = player.getExistingData(DSDataAttachments.HARVEST_BONUSES).map(data -> data.getHarvestBonus(state)).orElse(HarvestBonus.NO_BONUS_VALUE);
 
-        if (considerTool) {
-            return bonus + ToolUtils.toolToHarvestLevel(player.getMainHandItem()) >= ToolUtils.getRequiredHarvestLevel(state);
+        if (ToolUtils.isCorrectTool(tool, state)) {
+            return bonus + ToolUtils.toolToHarvestLevel(tool) >= ToolUtils.getRequiredHarvestLevel(state);
         }
 
         return bonus >= ToolUtils.getRequiredHarvestLevel(state);

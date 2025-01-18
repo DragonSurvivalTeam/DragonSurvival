@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.server.containers.slots;
 
-import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawsMenu;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import by.dragonsurvivalteam.dragonsurvival.server.containers.DragonContainer;
 import by.dragonsurvivalteam.dragonsurvival.util.ToolUtils;
@@ -10,7 +9,6 @@ import net.minecraft.world.Container;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,7 +42,7 @@ public class ClawToolSlot extends Slot {
     @Override
     public void set(@NotNull final ItemStack itemStack) {
         super.set(itemStack);
-        syncSlots();
+        ClawInventoryData.getData(dragonContainer.player).sync(dragonContainer.player);
     }
 
     @Nullable @Override
@@ -55,20 +53,12 @@ public class ClawToolSlot extends Slot {
     @Override
     public @NotNull ItemStack remove(int amount) {
         ItemStack stack = super.remove(amount);
-        syncSlots();
+        ClawInventoryData.getData(dragonContainer.player).sync(dragonContainer.player);
         return stack;
     }
 
     @Override
     public boolean isActive() {
         return dragonContainer.menuStatus == 1;
-    }
-
-    private void syncSlots() {
-        if (!dragonContainer.player.level().isClientSide()) {
-            ClawInventoryData data = ClawInventoryData.getData(dragonContainer.player);
-            // TODO :: do other players need to know about this data?
-            PacketDistributor.sendToPlayersTrackingEntityAndSelf(dragonContainer.player, new SyncDragonClawsMenu(dragonContainer.player.getId(), data.isMenuOpen(), data.serializeNBT(dragonContainer.player.registryAccess())));
-        }
     }
 }
