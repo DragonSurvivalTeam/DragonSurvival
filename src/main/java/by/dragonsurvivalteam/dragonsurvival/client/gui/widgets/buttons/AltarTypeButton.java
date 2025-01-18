@@ -9,6 +9,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.network.status.SyncAltarCooldown;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
+import by.dragonsurvivalteam.dragonsurvival.registry.data_maps.DietEntryCache;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
@@ -92,7 +93,7 @@ public class AltarTypeButton extends Button implements HoverDisableable {
             List<Either<FormattedText, TooltipComponent>> components = new ArrayList<>();
 
             if (species != null) {
-                List<Item> diet = species.value().getDietItems();
+                List<Item> diet = DietEntryCache.getDietItems(species);
 
                 if (diet.size() <= MAX_SHOWN) {
                     scroll = 0;

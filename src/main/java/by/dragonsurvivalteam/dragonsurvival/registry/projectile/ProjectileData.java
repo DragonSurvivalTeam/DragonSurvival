@@ -44,6 +44,9 @@ public record ProjectileData(GeneralData generalData, Either<GenericBallData, Ge
         event.dataPackRegistry(REGISTRY, DIRECT_CODEC, DIRECT_CODEC);
     }
 
+    // TODO :: add homing field
+    //  and when doing so maybe store a count on the targets for how many projectiles already target it
+    //  projectiles then may target entities with lower values
     public record GeneralData(
             ResourceLocation name,
             Optional<LootItemCondition> entityHitCondition,

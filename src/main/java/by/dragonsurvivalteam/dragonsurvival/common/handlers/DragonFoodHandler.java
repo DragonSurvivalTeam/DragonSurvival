@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
+import by.dragonsurvivalteam.dragonsurvival.registry.data_maps.DietEntryCache;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import net.minecraft.core.Holder;
@@ -12,7 +13,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -30,12 +30,8 @@ public class DragonFoodHandler {
     @ConfigOption(side = ConfigSide.SERVER, category = {"food"}, key = "bad_food_poison_chance")
     public static Float badFoodPoisonChance = 0.5F;
 
-    public static @Nullable FoodProperties getDragonFoodProperties(final Item item, final Holder<DragonSpecies> type) {
-        return getDragonFoodProperties(item.getDefaultInstance(), type);
-    }
-
-    public static @Nullable FoodProperties getDragonFoodProperties(final ItemStack stack, final Holder<DragonSpecies> type) {
-        FoodProperties properties = type.value().getDiet(stack.getItem());
+    public static @Nullable FoodProperties getDragonFoodProperties(final Holder<DragonSpecies> species, final ItemStack stack) {
+        FoodProperties properties = DietEntryCache.getDiet(species, stack.getItem());
 
         if (properties != null) {
             return properties;
@@ -55,17 +51,17 @@ public class DragonFoodHandler {
     }
 
     /** Checks if the item can be eaten (not whether it makes sense, see {@link DragonFoodHandler#getBadFoodProperties()}) */
-    public static boolean isEdible(final ItemStack stack, final Holder<DragonSpecies> type) {
+    public static boolean isEdible(final Holder<DragonSpecies> species, final ItemStack stack) {
         if (stack.getFoodProperties(null) != null) {
             return true;
         }
 
         // The mixin in 'IItemExtensionMixin' would require player context so we check this separately here
-        return type.value().getDiet(stack.getItem()) != null;
+        return DietEntryCache.getDiet(species, stack.getItem()) != null;
     }
 
     public static int getUseDuration(final ItemStack stack, final Player entity) {
-        FoodProperties properties = getDragonFoodProperties(stack.getItem(), DragonStateProvider.getData(entity).species());
+        FoodProperties properties = getDragonFoodProperties(DragonStateProvider.getData(entity).species(), stack);
 
         if (properties != null) {
             return properties.eatDurationTicks();
@@ -82,7 +78,7 @@ public class DragonFoodHandler {
 
         DragonStateHandler data = DragonStateProvider.getData(player);
 
-        if (!data.isDragon() || !DragonFoodHandler.isEdible(event.getItem(), data.species())) {
+        if (!data.isDragon() || !DragonFoodHandler.isEdible(data.species(), event.getItem())) {
             return;
         }
 

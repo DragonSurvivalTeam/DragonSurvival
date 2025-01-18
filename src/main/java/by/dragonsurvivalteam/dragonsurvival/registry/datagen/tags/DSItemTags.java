@@ -6,7 +6,9 @@ import by.dragonsurvivalteam.dragonsurvival.common.items.armor.DarkDragonArmorIt
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.LightDragonArmorItem;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.data_maps.DietEntryProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -24,6 +26,7 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class DSItemTags extends ItemTagsProvider {
@@ -126,14 +129,24 @@ public class DSItemTags extends ItemTagsProvider {
         provider.lookupOrThrow(DragonSpecies.REGISTRY).listElements().forEach(species -> {
             //noinspection DataFlowIssue -> key is present
             TagKey<Item> dragonFood = key(LangKey.DRAGON_FOOD.apply(species.getKey().location()));
+            List<DietEntry> diet;
 
-            for (DietEntry diet : species.value().diet()) {
-                for (String resource : diet.items()) {
-                    if (resource.startsWith("#")) {
-                        tag(dragonFood).addOptionalTag(ResourceLocation.parse(resource.substring(1)));
-                    } else {
-                        tag(dragonFood).addOptional(ResourceLocation.parse(resource));
-                    }
+            // Diet data is not available at this point
+            if (species.key() == BuiltInDragonSpecies.CAVE) {
+                diet = DietEntryProvider.caveDiet();
+            } else if (species.key() == BuiltInDragonSpecies.FOREST) {
+                diet = DietEntryProvider.forestDiet();
+            } else if (species.key() == BuiltInDragonSpecies.SEA) {
+                diet = DietEntryProvider.seaDiet();
+            } else {
+                throw new IllegalStateException("Diet tag setup is missing for dragon species [" + species.getRegisteredName() + "]");
+            }
+
+            for (DietEntry entry : diet) {
+                if (entry.items().startsWith("#")) {
+                    tag(dragonFood).addOptionalTag(ResourceLocation.parse(entry.items().substring(1)));
+                } else {
+                    tag(dragonFood).addOptional(ResourceLocation.parse(entry.items()));
                 }
             }
         });

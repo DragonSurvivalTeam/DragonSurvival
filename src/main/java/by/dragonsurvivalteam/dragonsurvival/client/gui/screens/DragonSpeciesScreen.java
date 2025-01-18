@@ -16,6 +16,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscDragonTextures;
 import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
 import by.dragonsurvivalteam.dragonsurvival.compat.jei.JEIPlugin;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
+import by.dragonsurvivalteam.dragonsurvival.registry.data_maps.DietEntryCache;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
@@ -183,7 +184,7 @@ public class DragonSpeciesScreen extends Screen {
         TabButton.addTabButtonsToScreen(this, startX + 17, startY - 56, TabButton.TabButtonType.SPECIES_TAB);
         DragonStateHandler data = DragonStateProvider.getData(minecraft.player);
 
-        if (dragonSpecies.value().diet().isEmpty()) {
+        if (DietEntryCache.getDietItems(dragonSpecies).isEmpty()) {
             ExtendedButton noDietText = new ExtendedButton(startX + 77, startY + 30, 140, 20, Component.empty(), button -> {}){
                 @Override
                 public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {

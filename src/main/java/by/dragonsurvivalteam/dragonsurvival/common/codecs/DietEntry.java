@@ -3,7 +3,6 @@ package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.food.FoodProperties;
@@ -13,14 +12,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
-public record DietEntry(List<String> items, Optional<FoodProperties> properties) {
+public record DietEntry(String items, Optional<FoodProperties> properties) {
     // Copied from FoodProperties.java. Trying to AT this didn't work out well.
     public static final float DEFAULT_EAT_SECONDS = 1.6f;
 
     public static final Codec<DietEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ResourceLocationWrapper.validatedCodec().listOf().fieldOf("items").forGetter(DietEntry::items),
+            ResourceLocationWrapper.validatedCodec().fieldOf("items").forGetter(DietEntry::items),
             FoodProperties.DIRECT_CODEC.optionalFieldOf("properties").forGetter(DietEntry::properties)
     ).apply(instance, DietEntry::new));
 
@@ -54,26 +52,24 @@ public record DietEntry(List<String> items, Optional<FoodProperties> properties)
     }
 
     public static DietEntry from(final String location, final FoodProperties properties) {
-        return new DietEntry(List.of(location), Optional.ofNullable(properties));
+        return new DietEntry(location, Optional.ofNullable(properties));
     }
 
     public static Map<Item, FoodProperties> map(final List<DietEntry> entries) {
         Map<Item, FoodProperties> diet = new HashMap<>();
 
         for (DietEntry entry : entries) {
-            for (String location : entry.items()) {
-                Set<ResourceKey<Item>> keys = ResourceLocationWrapper.map(location, BuiltInRegistries.ITEM);
+            ResourceLocationWrapper.map(entry.items(), BuiltInRegistries.ITEM).forEach(resource -> {
+                Item item = BuiltInRegistries.ITEM.get(resource);
 
-                keys.forEach(key -> {
-                    Item item = BuiltInRegistries.ITEM.get(key);
-                    if(item != null) {
-                        FoodProperties properties = entry.properties.orElse(item.getDefaultInstance().getFoodProperties(null));
-                        if (properties != null) {
-                            diet.put(item, properties);
-                        }
+                if (item != null) {
+                    FoodProperties properties = entry.properties.orElse(item.getDefaultInstance().getFoodProperties(null));
+
+                    if (properties != null) {
+                        diet.put(item, properties);
                     }
-                });
-            }
+                }
+            });
         }
 
         return diet;

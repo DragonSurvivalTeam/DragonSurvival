@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
+import by.dragonsurvivalteam.dragonsurvival.registry.data_maps.DietEntryCache;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
@@ -143,7 +144,7 @@ public class ToolTipHandler {
 
     /** Returns a tooltip component in the format of '1.0 nutrition_icon / 0.5 saturation_icon' (color and icon depend on the dragon species) */
     public static MutableComponent getFoodTooltipData(final Holder<DragonSpecies> species, final Item item) {
-        FoodProperties properties = species.value().getDiet(item);
+        FoodProperties properties = DietEntryCache.getDiet(species, item);
 
         if (properties == null) {
             return Component.empty();
@@ -317,7 +318,7 @@ public class ToolTipHandler {
         if (isHelpText()) {
             event.setBorderStart(DSColors.withAlpha(DSColors.LIGHT_PURPLE, 1));
             event.setBorderEnd(DSColors.withAlpha(DSColors.DARK_PURPLE, 1));
-        } else if (data.species().value().getDiet(event.getItemStack().getItem()) != null) {
+        } else if (DietEntryCache.getDiet(data.species(), event.getItemStack().getItem()) != null) {
             event.setBorderStart(DSColors.toARGB(data.species().value().miscResources().primaryColor()));
             event.setBorderEnd(DSColors.toARGB(data.species().value().miscResources().secondaryColor()));
         }

@@ -7,7 +7,7 @@
   "refmap": "dragonsurvival.refmap.json",
   "mixins": [
     "AttributeMapAccessor",
-    "AttributesMixin",
+    "BaseMappedRegistryAccess",
     "BlockMixin",
     "EndPortalBlockMixin",
     "EntityAccessor",
@@ -23,6 +23,7 @@
     "LightningBoltMixin",
     "LivingEntityMixin",
     "MaceItemMixin",
+    "MappedRegistryMixin",
     "MobEffectInstanceMixin",
     "PlayerEndMixin",
     "PlayerMixin",

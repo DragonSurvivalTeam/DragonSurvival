@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.MagicHUD;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncCooldownState;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
@@ -154,6 +155,12 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
         MagicData magic = optional.get();
         InputData experienceLevels = InputData.experienceLevels(event.getEntity().experienceLevel);
+
+        DragonStateHandler handler = DragonStateProvider.getData(event.getEntity());
+
+        if (handler.isDragon()) {
+//            System.out.println(handler.species().getData(DSDataMaps.DIET_ENTRY_MAP));
+        }
 
         for (DragonAbilityInstance ability : magic.getAbilities().values()) {
             if (event.getEntity() instanceof ServerPlayer serverPlayer) {

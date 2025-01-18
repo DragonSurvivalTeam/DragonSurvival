@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.data_maps.DietEntryCache;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
@@ -57,7 +58,7 @@ public class DietMenuComponent implements ScrollableComponent, Renderable {
 
     @Override
     public void render(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        List<Item> items = dragonSpecies.value().getDietItems();
+        List<Item> items = DietEntryCache.getDietItems(dragonSpecies);
 
         if (items.isEmpty()) {
             MutableComponent component = Component.translatable(NO_CUSTOM_DIET);
@@ -116,7 +117,7 @@ public class DietMenuComponent implements ScrollableComponent, Renderable {
     }
 
     private int maxScroll() {
-        List<Item> items = dragonSpecies.value().getDietItems();
+        List<Item> items = DietEntryCache.getDietItems(dragonSpecies);
 
         if (items.isEmpty()) {
             return 0;

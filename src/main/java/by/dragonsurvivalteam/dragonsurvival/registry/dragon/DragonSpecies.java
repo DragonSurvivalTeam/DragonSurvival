@@ -1,11 +1,9 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.DietEntry;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.GrowthIcon;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscDragonTextures;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierType;
-import by.dragonsurvivalteam.dragonsurvival.common.handlers.DataReloadHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
@@ -25,15 +23,12 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -50,7 +45,6 @@ public class DragonSpecies implements AttributeModifierSupplier {
             RegistryCodecs.homogeneousList(DragonBody.REGISTRY).optionalFieldOf("bodies", HolderSet.empty()).forGetter(DragonSpecies::bodies),
             RegistryCodecs.homogeneousList(DragonAbility.REGISTRY).optionalFieldOf("abilities", HolderSet.empty()).forGetter(DragonSpecies::abilities),
             RegistryCodecs.homogeneousList(DragonPenalty.REGISTRY).optionalFieldOf("penalties", HolderSet.empty()).forGetter(DragonSpecies::penalties),
-            DietEntry.CODEC.listOf().optionalFieldOf("diet", List.of()).forGetter(DragonSpecies::diet),
             MiscDragonTextures.CODEC.fieldOf("misc_resources").forGetter(DragonSpecies::miscResources)
     ).apply(instance, instance.stable(DragonSpecies::new)));
 
@@ -62,19 +56,14 @@ public class DragonSpecies implements AttributeModifierSupplier {
     private final HolderSet<DragonBody> bodies;
     private final HolderSet<DragonAbility> abilities;
     private final HolderSet<DragonPenalty> penalties;
-    private final List<DietEntry> dietEntries;
     private final MiscDragonTextures miscResources;
 
-    private @Nullable Map<Item, FoodProperties> diet;
-    private long lastDietUpdate;
-
-    public DragonSpecies(final Optional<Double> startingSize, final Optional<HolderSet<DragonStage>> customStageProgression, final HolderSet<DragonBody> bodies, final HolderSet<DragonAbility> abilities, final HolderSet<DragonPenalty> penalties, final List<DietEntry> dietEntries, final MiscDragonTextures miscResources) {
+    public DragonSpecies(final Optional<Double> startingSize, final Optional<HolderSet<DragonStage>> customStageProgression, final HolderSet<DragonBody> bodies, final HolderSet<DragonAbility> abilities, final HolderSet<DragonPenalty> penalties, final MiscDragonTextures miscResources) {
         this.startingSize = startingSize;
         this.customStageProgression = customStageProgression;
         this.bodies = bodies;
         this.abilities = abilities;
         this.penalties = penalties;
-        this.dietEntries = dietEntries;
         this.miscResources = miscResources;
     }
 
@@ -101,14 +90,6 @@ public class DragonSpecies implements AttributeModifierSupplier {
     @SubscribeEvent
     public static void register(final DataPackRegistryEvent.NewRegistry event) {
         event.dataPackRegistry(REGISTRY, DIRECT_CODEC, DIRECT_CODEC);
-    }
-
-    public List<Item> getDietItems() {
-        return List.copyOf(getDiet().keySet());
-    }
-
-    public @Nullable FoodProperties getDiet(final Item item) {
-        return getDiet().get(item);
     }
 
     public boolean isItemBlacklisted(final Item item) {
@@ -174,24 +155,11 @@ public class DragonSpecies implements AttributeModifierSupplier {
         return abilities;
     }
 
-    public List<DietEntry> diet() {
-        return dietEntries;
-    }
-
     public MiscDragonTextures miscResources() {
         return miscResources;
     }
 
     public HolderSet<DragonPenalty> penalties() {
         return penalties;
-    }
-
-    private Map<Item, FoodProperties> getDiet() {
-        if (diet == null || lastDietUpdate < DataReloadHandler.lastReload) {
-            lastDietUpdate = System.currentTimeMillis();
-            diet = DietEntry.map(dietEntries);
-        }
-
-        return diet;
     }
 }
