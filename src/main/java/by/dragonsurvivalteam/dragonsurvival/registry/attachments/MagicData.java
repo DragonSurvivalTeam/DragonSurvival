@@ -4,7 +4,10 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.MagicHUD;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonAbilityHolder;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncCooldownState;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncMagicData;
+import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataComponents;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
@@ -24,6 +27,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -188,13 +192,27 @@ public class MagicData implements INBTSerializable<CompoundTag> {
             return;
         }
 
-        MagicData.getData(player).getAbilities().values().forEach(ability -> ability.value().upgrade().ifPresent(upgrade -> {
-            if (event.getItemStack().isEmpty()) {
+        ItemStack stack = event.getItemStack();
+
+        if (stack.isEmpty()) {
+            return;
+        }
+
+        MagicData magic = MagicData.getData(player);
+        DragonAbilityHolder abilityHolder = stack.get(DSDataComponents.DRAGON_ABILITIES);
+
+        if (abilityHolder != null && abilityHolder.use(player, magic)) {
+            stack.consume(1, player);
+            PacketDistributor.sendToPlayer(player, new SyncMagicData(magic.serializeNBT(player.registryAccess())));
+        }
+
+        magic.getAbilities().values().forEach(ability -> ability.value().upgrade().ifPresent(upgrade -> {
+            if (stack.isEmpty()) {
                 return;
             }
 
-            if (upgrade.attempt(player, ability, event.getItemStack().getItem())) {
-                event.getItemStack().consume(1, player);
+            if (upgrade.attempt(player, ability, stack.getItem())) {
+                stack.consume(1, player);
                 player.playNotifySound(SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.PLAYERS, 1, 0);
             }
         }));
@@ -347,6 +365,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         this.renderAbilities = renderAbilities;
     }
 
+    /** This does not automatically synchronize the change to the client */
     public int clear(final ServerPlayer player) {
         int count = abilities.values().stream().mapToInt(Map::size).sum();
         abilities.values().forEach(perSpecies -> perSpecies.values().forEach(ability -> ability.setActive(player, false)));
@@ -357,6 +376,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
     // TODO :: don't we need to de-activate the ability?
     //  better have a centralized place where we call remove and only allow it with player context
+    /** This does not automatically synchronize the change to the client */
     public void removeAbility(final ResourceKey<DragonAbility> key) {
         if (currentSpecies == null) {
             return;
@@ -370,6 +390,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         }
     }
 
+    /** This does not automatically synchronize the change to the client */
     public void addAbility(final ServerPlayer player, final Holder<DragonAbility> ability) {
         UpgradeType<?> upgrade = ability.value().upgrade().orElse(null);
         DragonAbilityInstance instance;
@@ -394,6 +415,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         getAbilities().put(ability.getKey(), instance);
     }
 
+    /** This does not automatically synchronize the change to the client */
     public void refresh(final ServerPlayer player, final Holder<DragonSpecies> currentSpecies) {
         // Make sure we remove any passive effects for abilities that are no longer available
         abilities.values().forEach(perSpecies -> perSpecies.values().forEach(ability -> ability.setActive(player, false)));
