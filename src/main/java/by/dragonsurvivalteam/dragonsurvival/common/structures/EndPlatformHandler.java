@@ -1,12 +1,12 @@
 package by.dragonsurvivalteam.dragonsurvival.common.structures;
 
-import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.EndPlatform;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSDataMaps;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PlacedEndPlatforms;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBlockTags;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonSpeciesTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -21,15 +21,6 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import org.jetbrains.annotations.Nullable;
 
 public class EndPlatformHandler {
-    // TODO :: make this stuff configurable (data loader -> species : position+platform)
-    private static final BlockPos CAVE_SPAWN = new BlockPos(-200, 50, 0);
-    private static final BlockPos SEA_SPAWN = new BlockPos(0, 50, 200);
-    private static final BlockPos FOREST_SPAWN = new BlockPos(0, 50, -200);
-
-    private static final ResourceLocation CAVE_PLATFORM = DragonSurvival.res("end_spawn_platforms/cave_end_spawn_platform");
-    private static final ResourceLocation SEA_PLATFORM = DragonSurvival.res("end_spawn_platforms/sea_end_spawn_platform");
-    private static final ResourceLocation FOREST_PLATFORM = DragonSurvival.res("end_spawn_platforms/forest_end_spawn_platform");
-
     // Can call '.setLiquidSettings(LiquidSettings.IGNORE_WATERLOGGING)' to disable waterlogging
     private static final StructurePlaceSettings SETTINGS = new StructurePlaceSettings()
             .setRotation(Rotation.NONE)
@@ -44,12 +35,10 @@ public class EndPlatformHandler {
             return null;
         }
 
-        if (handler.species().is(DSDragonSpeciesTags.CAVE)) {
-            return CAVE_SPAWN;
-        } else if (handler.species().is(DSDragonSpeciesTags.SEA)) {
-            return SEA_SPAWN;
-        } else if (handler.species().is(DSDragonSpeciesTags.FOREST)) {
-            return FOREST_SPAWN;
+        EndPlatform data = handler.species().getData(DSDataMaps.END_PLATFORMS);
+
+        if (data != null) {
+            return data.spawnPosition();
         }
 
         return null;
@@ -62,18 +51,13 @@ public class EndPlatformHandler {
             return false;
         }
 
-        ResourceLocation platform;
+        EndPlatform data = handler.species().getData(DSDataMaps.END_PLATFORMS);
 
-        if (handler.species().is(DSDragonSpeciesTags.CAVE)) {
-            platform = CAVE_PLATFORM;
-        } else if (handler.species().is(DSDragonSpeciesTags.SEA)) {
-            platform = SEA_PLATFORM;
-        } else if (handler.species().is(DSDragonSpeciesTags.FOREST)) {
-            platform = FOREST_PLATFORM;
-        } else {
+        if (data == null) {
             return false;
         }
 
+        ResourceLocation platform = data.structure();
         PlacedEndPlatforms platforms = level.getData(DSDataAttachments.PLACED_END_PLATFORMS);
 
         if (platforms.wasPlaced(platform)) {

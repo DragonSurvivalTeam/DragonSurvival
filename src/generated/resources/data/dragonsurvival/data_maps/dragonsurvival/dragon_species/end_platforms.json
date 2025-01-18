@@ -1,0 +1,28 @@
+{
+  "values": {
+    "dragonsurvival:cave": {
+      "spawn_position": [
+        -200,
+        50,
+        0
+      ],
+      "structure": "dragonsurvival:end_spawn_platforms/cave_end_spawn_platform"
+    },
+    "dragonsurvival:forest": {
+      "spawn_position": [
+        0,
+        50,
+        -200
+      ],
+      "structure": "dragonsurvival:end_spawn_platforms/forest_end_spawn_platform"
+    },
+    "dragonsurvival:sea": {
+      "spawn_position": [
+        0,
+        50,
+        200
+      ],
+      "structure": "dragonsurvival:end_spawn_platforms/sea_end_spawn_platform"
+    }
+  }
+}

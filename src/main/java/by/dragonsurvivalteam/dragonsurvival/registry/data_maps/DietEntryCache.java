@@ -24,20 +24,20 @@ public class DietEntryCache {
     @SubscribeEvent
     public static void buildCache(final DataMapsUpdatedEvent event) {
         event.ifRegistry(DragonSpecies.REGISTRY, registry -> {
-            registry.getDataMap(DSDataMaps.DIET_ENTRY_MAP).forEach((key, diet) -> CACHE.put(key, DietEntry.map(diet == null ? List.of() : diet)));
+            registry.getDataMap(DSDataMaps.DIET_ENTRIES).forEach((key, diet) -> CACHE.put(key, DietEntry.map(diet == null ? List.of() : diet)));
         });
     }
 
     public static @Nullable FoodProperties getDiet(final Holder<DragonSpecies> species, final Item item) {
         return CACHE.computeIfAbsent(species.getKey(), key -> {
-            List<DietEntry> diet = species.getData(DSDataMaps.DIET_ENTRY_MAP);
+            List<DietEntry> diet = species.getData(DSDataMaps.DIET_ENTRIES);
             return DietEntry.map(diet == null ? List.of() : diet);
         }).get(item);
     }
 
     public static List<Item> getDietItems(final Holder<DragonSpecies> species) {
         return List.copyOf(CACHE.computeIfAbsent(species.getKey(), key -> {
-            List<DietEntry> diet = species.getData(DSDataMaps.DIET_ENTRY_MAP);
+            List<DietEntry> diet = species.getData(DSDataMaps.DIET_ENTRIES);
             return DietEntry.map(diet == null ? List.of() : diet);
         }).keySet());
     }

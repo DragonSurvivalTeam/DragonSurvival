@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.DataMapProvider;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +25,7 @@ public class DietEntryProvider extends DataMapProvider {
 
     @Override
     protected void gather() {
-        builder(DSDataMaps.DIET_ENTRY_MAP)
+        builder(DSDataMaps.DIET_ENTRIES)
                 .add(BuiltInDragonSpecies.CAVE, caveDiet(), false)
                 .add(BuiltInDragonSpecies.FOREST, forestDiet(), false)
                 .add(BuiltInDragonSpecies.SEA, seaDiet(), false);
@@ -344,5 +345,10 @@ public class DietEntryProvider extends DataMapProvider {
                 DietEntry.from("undergarden:glitterkelp", new FoodProperties(2, 2, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
                 DietEntry.from("enlightened_end:raw_stalker", new FoodProperties(10, 4, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of()))
         );
+    }
+
+    @Override
+    public @NotNull String getName() {
+        return "Dragon Survival Diet Entries";
     }
 }
