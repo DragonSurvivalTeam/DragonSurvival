@@ -4,11 +4,14 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HelpButton;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonAbilityHolder;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
+import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataComponents;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_maps.DietEntryCache;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.ChatFormatting;
@@ -63,10 +66,16 @@ public class ToolTipHandler {
     public static TooltipStyle TOOLTIP_STYLE = TooltipStyle.DEFAULT;
 
     @Translation(comments = "■ %s food: %s")
-    private static final String TOOLTIP_TEXT = Translation.Type.GUI.wrap("tooltip.dragon_food");
+    private static final String DRAGON_FOOD = Translation.Type.GUI.wrap("tooltip.dragon_food");
 
-    @Translation(comments = "Dragon Food - press 'SHIFT' for more info")
-    private static final String PRESS_SHIFT = Translation.Type.GUI.wrap("tooltip.dragon_food.shift");
+    @Translation(comments = "§7■ Adds the following abilities: %s")
+    private static final String ADDS_ABILITIES = Translation.Type.GUI.wrap("tooltip.adds_abilities");
+
+    @Translation(comments = "§7■ Removes the following abilities: %s")
+    private static final String REMOVES_ABILITIES = Translation.Type.GUI.wrap("tooltip.removes_abilities");
+
+    @Translation(comments = "Press 'SHIFT' for more info")
+    private static final String PRESS_SHIFT = Translation.Type.GUI.wrap("tooltip.shift");
 
     private static final ResourceLocation TOOLTIP_BLINKING = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/magic_tips_1.png");
     private static final ResourceLocation TOOLTIP = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/magic_tips_0.png");
@@ -75,6 +84,36 @@ public class ToolTipHandler {
     private static int tick;
 
     public enum TooltipStyle {NONE, DEFAULT, ONLY_CURRENT, ALL_SHIFT}
+
+    @SubscribeEvent
+    public static void addAbilityHolderInfo(final ItemTooltipEvent event) {
+        DragonAbilityHolder holder = event.getItemStack().get(DSDataComponents.DRAGON_ABILITIES);
+
+        if (holder == null) {
+            return;
+        }
+
+        if (Screen.hasShiftDown()) {
+            MutableComponent abilities = null;
+
+            // TODO :: color abilities in red / green depending on whether the player already has it?
+            //  might get too colorful? use gray-tones instead?
+            for (Holder<DragonAbility> ability : holder.abilities()) {
+                //noinspection DataFlowIssue -> key is present
+                MutableComponent name = DSColors.dynamicValue(Component.translatable(Translation.Type.ABILITY.wrap(ability.getKey().location())));
+
+                if (abilities == null) {
+                    abilities = name;
+                } else {
+                    abilities.append(Component.literal(", ").withStyle(ChatFormatting.GRAY)).append(name);
+                }
+            }
+
+            event.getToolTip().add(Component.translatable(holder.isRemoval() ? REMOVES_ABILITIES : ADDS_ABILITIES, abilities));
+        } else {
+            event.getToolTip().add(Component.translatable(PRESS_SHIFT).withStyle(ChatFormatting.DARK_GRAY));
+        }
+    }
 
     @SubscribeEvent
     public static void addDragonFoodTooltip(final ItemTooltipEvent event) {
@@ -136,7 +175,7 @@ public class ToolTipHandler {
         if (foodData.getContents() != PlainTextContents.EMPTY) {
             //noinspection DataFlowIssue -> key is present
             MutableComponent speciesTranslation = Component.translatable(Translation.Type.DRAGON_SPECIES.wrap(species.getKey().location()));
-            return Component.translatable(TOOLTIP_TEXT, speciesTranslation.withStyle(foodData.getStyle()), foodData).withStyle(foodData.getStyle());
+            return Component.translatable(DRAGON_FOOD, speciesTranslation.withStyle(foodData.getStyle()), foodData).withStyle(foodData.getStyle());
         }
 
         return null;

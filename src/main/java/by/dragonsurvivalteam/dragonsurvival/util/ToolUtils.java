@@ -89,6 +89,7 @@ public class ToolUtils {
         return 0;
     }
 
+    /** Skips exclusion rules related to requiring a higher tier of the tool */
     public static boolean isCorrectTool(final ItemStack stack, final BlockState state) {
         if (stack.isEmpty()) {
             return false;

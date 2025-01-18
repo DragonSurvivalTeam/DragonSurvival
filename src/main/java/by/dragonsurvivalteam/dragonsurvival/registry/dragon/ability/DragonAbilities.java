@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.BlockVision;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Glow;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
@@ -20,6 +21,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.SeaDragon
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.BlockConversionEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.SummonEntityEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.BlockVisionEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.GlowEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AbilityTargeting;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AreaTarget;
@@ -30,6 +32,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.Ta
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -65,6 +68,10 @@ public class DragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Summon Test")
     public static final ResourceKey<DragonAbility> TEST_SUMMON = DragonAbilities.key("test_summon");
 
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "Outlines nearby blocks")
+    @Translation(type = Translation.Type.ABILITY, comments = "Block Vision Test")
+    public static final ResourceKey<DragonAbility> TEST_BLOCK_VISION = DragonAbilities.key("test_block_vision");
+
     public static void registerAbilities(final BootstrapContext<DragonAbility> context) {
         CaveDragonAbilities.registerAbilities(context);
         ForestDragonAbilities.registerAbilities(context);
@@ -75,16 +82,6 @@ public class DragonAbilities {
                 Optional.empty(),
                 Optional.of(Condition.thisEntity(EntityCondition.isNearbyTo(16, EntityType.BEE)).invert().build()),
                 List.of(
-                        new ActionContainer(new SelfTarget(AbilityTargeting.entity(List.of(
-                                        new GlowEffect(List.of(
-                                                Glow.create((DragonSurvival.res("gold")), TextColor.fromLegacyFormat(ChatFormatting.GOLD)),
-                                                Glow.create((DragonSurvival.res("dark_purple")), TextColor.fromLegacyFormat(ChatFormatting.DARK_PURPLE)),
-                                                Glow.create((DragonSurvival.res("green")), TextColor.fromLegacyFormat(ChatFormatting.GREEN)),
-                                                Glow.create((DragonSurvival.res("red")), TextColor.fromLegacyFormat(ChatFormatting.RED)),
-                                                Glow.create((DragonSurvival.res("blue")), TextColor.fromLegacyFormat(ChatFormatting.BLUE))
-                                        ))),
-                                TargetingMode.ALLIES_AND_SELF
-                        )), LevelBasedValue.constant(1)),
                         new ActionContainer(new AreaTarget(AbilityTargeting.entity(List.of(
                                         new GlowEffect(List.of(
                                                 Glow.create((DragonSurvival.res("gold")), TextColor.fromLegacyFormat(ChatFormatting.GOLD)),
@@ -154,6 +151,40 @@ public class DragonAbilities {
                                 true
                         )
                 )), LevelBasedValue.constant(16)), LevelBasedValue.constant(1))),
+                true,
+                new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
+        ));
+
+        context.register(TEST_BLOCK_VISION, new DragonAbility(
+                Activation.passive(),
+                Optional.empty(),
+                Optional.empty(),
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(List.of(
+                        BlockVisionEffect.single(new BlockVision(
+                                DurationInstanceBase.create(DragonSurvival.res("diamond_vision")).infinite().removeAutomatically().hidden().build(),
+                                HolderSet.direct(Blocks.DIAMOND_ORE.builtInRegistryHolder(), Blocks.DEEPSLATE_DIAMOND_ORE.builtInRegistryHolder()),
+                                LevelBasedValue.constant(16),
+                                TextColor.fromLegacyFormat(ChatFormatting.AQUA)
+                        )),
+                        BlockVisionEffect.single(new BlockVision(
+                                DurationInstanceBase.create(DragonSurvival.res("lapis_vision")).infinite().removeAutomatically().hidden().build(),
+                                HolderSet.direct(Blocks.LAPIS_ORE.builtInRegistryHolder(), Blocks.DEEPSLATE_LAPIS_ORE.builtInRegistryHolder()),
+                                LevelBasedValue.constant(24),
+                                TextColor.fromLegacyFormat(ChatFormatting.BLUE)
+                        )),
+                        BlockVisionEffect.single(new BlockVision(
+                                DurationInstanceBase.create(DragonSurvival.res("gold_vision")).infinite().removeAutomatically().hidden().build(),
+                                HolderSet.direct(Blocks.GOLD_ORE.builtInRegistryHolder(), Blocks.DEEPSLATE_GOLD_ORE.builtInRegistryHolder()),
+                                LevelBasedValue.constant(32),
+                                TextColor.fromLegacyFormat(ChatFormatting.GOLD)
+                        )),
+                        BlockVisionEffect.single(new BlockVision(
+                                DurationInstanceBase.create(DragonSurvival.res("redstone_vision")).infinite().removeAutomatically().hidden().build(),
+                                HolderSet.direct(Blocks.REDSTONE_ORE.builtInRegistryHolder(), Blocks.DEEPSLATE_REDSTONE_ORE.builtInRegistryHolder()),
+                                LevelBasedValue.constant(32),
+                                TextColor.fromLegacyFormat(ChatFormatting.DARK_RED)
+                        ))
+                ), TargetingMode.ALLIES_AND_SELF)), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
         ));

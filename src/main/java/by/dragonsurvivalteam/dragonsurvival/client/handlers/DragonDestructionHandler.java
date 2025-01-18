@@ -90,24 +90,26 @@ public class DragonDestructionHandler {
             SortedSet<BlockDestructionProgress> set = access.dragonSurvival$getDestructionProgress().get(centerOfDestruction.asLong());
             int progress = set != null ? set.last().getProgress() : -1;
 
-            if (progress != -1) {
-                BlockPos.betweenClosedStream(AABB.ofSize(centerOfDestruction.getCenter(), radius, radius, radius)).forEach(offsetPosition -> {
-                    double xDistance = (double) offsetPosition.getX() - x;
-                    double yDistance = (double) offsetPosition.getY() - y;
-                    double zDistance = (double) offsetPosition.getZ() - z;
-
-                    // Check if the position is close enough to be rendered
-                    if (!(xDistance * xDistance + yDistance * yDistance + zDistance * zDistance > 1024)) {
-                        event.getPoseStack().pushPose();
-                        event.getPoseStack().translate((double) offsetPosition.getX() - x, (double) offsetPosition.getY() - y, (double) offsetPosition.getZ() - z);
-                        PoseStack.Pose lastPose = event.getPoseStack().last();
-                        VertexConsumer consumer = new SheetedDecalTextureGenerator(access.dragonSurvival$getRenderBuffers().crumblingBufferSource().getBuffer(ModelBakery.DESTROY_TYPES.get(progress)), lastPose, 1.0F);
-                        ModelData modelData = access.dragonSurvival$getLevel().getModelData(offsetPosition);
-                        Minecraft.getInstance().getBlockRenderer().renderBreakingTexture(access.dragonSurvival$getLevel().getBlockState(offsetPosition), offsetPosition, access.dragonSurvival$getLevel(), event.getPoseStack(), consumer, modelData);
-                        event.getPoseStack().popPose();
-                    }
-                });
+            if (progress == -1) {
+                return;
             }
+
+            BlockPos.betweenClosedStream(AABB.ofSize(centerOfDestruction.getCenter(), radius, radius, radius)).forEach(offsetPosition -> {
+                double xDistance = (double) offsetPosition.getX() - x;
+                double yDistance = (double) offsetPosition.getY() - y;
+                double zDistance = (double) offsetPosition.getZ() - z;
+
+                // Check if the position is close enough to be rendered
+                if (!(xDistance * xDistance + yDistance * yDistance + zDistance * zDistance > 1024)) {
+                    event.getPoseStack().pushPose();
+                    event.getPoseStack().translate((double) offsetPosition.getX() - x, (double) offsetPosition.getY() - y, (double) offsetPosition.getZ() - z);
+                    PoseStack.Pose lastPose = event.getPoseStack().last();
+                    VertexConsumer consumer = new SheetedDecalTextureGenerator(access.dragonSurvival$getRenderBuffers().crumblingBufferSource().getBuffer(ModelBakery.DESTROY_TYPES.get(progress)), lastPose, 1.0F);
+                    ModelData modelData = access.dragonSurvival$getLevel().getModelData(offsetPosition);
+                    Minecraft.getInstance().getBlockRenderer().renderBreakingTexture(access.dragonSurvival$getLevel().getBlockState(offsetPosition), offsetPosition, access.dragonSurvival$getLevel(), event.getPoseStack(), consumer, modelData);
+                    event.getPoseStack().popPose();
+                }
+            });
         }
     }
 

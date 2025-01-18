@@ -60,6 +60,7 @@ public interface AbilityEntityEffect {
             event.register(REGISTRY_KEY, DragonSurvival.res("particle"), () -> ParticleEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("glow"), () -> GlowEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("oxygen_bonus"), () -> OxygenBonusEffect.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("block_vision"), () -> BlockVisionEffect.CODEC);
         }
     }
 }

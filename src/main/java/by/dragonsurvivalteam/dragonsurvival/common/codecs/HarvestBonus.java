@@ -9,6 +9,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachmen
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HarvestBonuses;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.serialization.Codec;
@@ -48,15 +49,6 @@ public class HarvestBonus extends DurationInstanceBase<HarvestBonuses, HarvestBo
     })
     private static final String HARVEST_BONUS = Translation.Type.GUI.wrap("harvest_bonus");
 
-    @Translation(comments = "All blocks")
-    private static final String ALL_BLOCKS = Translation.Type.GUI.wrap("harvest_bonus.all_blocks");
-
-    @Translation(comments = "Various Blocks (%s)")
-    private static final String VARIOUS_BLOCKS = Translation.Type.GUI.wrap("harvest_bonus.various_blocks");
-
-    @Translation(comments = "None")
-    private static final String NONE = Translation.Type.GUI.wrap("harvest_bonus.none");
-
     @Translation(comments = "Default")
     private static final String DEFAULT = Translation.Type.GUI.wrap("harvest_bonus.default");
 
@@ -91,13 +83,13 @@ public class HarvestBonus extends DurationInstanceBase<HarvestBonuses, HarvestBo
         Component appliesTo;
 
         if (blocks.isEmpty()) {
-            appliesTo = Component.translatable(ALL_BLOCKS);
+            appliesTo = Component.translatable(LangKey.ALL_BLOCKS);
         } else if (blocks.get() instanceof HolderSet.Named<Block> named) {
             appliesTo = Component.translatable(Tags.getTagTranslationKey(named.key()));
         } else if (blocks.get().size() > 0) {
-            appliesTo = Component.translatable(VARIOUS_BLOCKS, blocks.get().size());
+            appliesTo = Component.translatable(LangKey.VARIOUS_BLOCKS, blocks.get().size());
         } else {
-            appliesTo = Component.translatable(NONE);
+            appliesTo = Component.translatable(LangKey.NONE);
         }
 
         Component baseSpeed = null;

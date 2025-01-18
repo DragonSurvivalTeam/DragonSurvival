@@ -150,8 +150,6 @@ public class ClawInventoryData implements INBTSerializable<CompoundTag> {
             ItemStack tool = getContainer().getItem(slot);
             int level = ToolUtils.toolToHarvestLevel(tool);
 
-            // The tool data may have additional tags (rules) which can look like this:
-            // 'minecraft:incorrect_for_stone_tool', which contains blocks that require a higher tier
             if (level > currentLevel && ToolUtils.isCorrectTool(tool, state)) {
                 currentTool = tool;
                 currentLevel = level;

@@ -26,6 +26,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.magic.AttemptManualUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncAbilityLevel;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncAddPenaltySupply;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncBeginCast;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncBlockVision;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncCooldownState;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncDamageModification;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncData;
@@ -145,6 +146,7 @@ public class NetworkHandler {
         registrar.playToClient(SyncData.TYPE, SyncData.STREAM_CODEC, SyncData::handleClient);
         registrar.playToClient(SyncSummonedEntity.TYPE, SyncSummonedEntity.STREAM_CODEC, SyncSummonedEntity::handleClient);
         registrar.playToClient(SyncGlowInstance.TYPE, SyncGlowInstance.STREAM_CODEC, SyncGlowInstance::handleClient);
+        registrar.playToClient(SyncBlockVision.TYPE, SyncBlockVision.STREAM_CODEC, SyncBlockVision::handleClient);
 
         registrar.playToServer(SyncSlotAssignment.TYPE, SyncSlotAssignment.STREAM_CODEC, SyncSlotAssignment::handleServer);
         registrar.playToServer(AttemptManualUpgrade.TYPE, AttemptManualUpgrade.STREAM_CODEC, AttemptManualUpgrade::handleServer);

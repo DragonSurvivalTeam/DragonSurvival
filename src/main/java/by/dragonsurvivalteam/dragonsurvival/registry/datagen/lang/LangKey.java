@@ -138,6 +138,15 @@ public class LangKey {
     @Translation(comments = " with a %s chance")
     public static final String ABILITY_EFFECT_CHANCE = Translation.Type.GUI.wrap("ability.effect_chance_of_x");
 
+    @Translation(comments = "All blocks")
+    public static final String ALL_BLOCKS = Translation.Type.GUI.wrap("ability.all_blocks");
+
+    @Translation(comments = "Various Blocks (%s)")
+    public static final String VARIOUS_BLOCKS = Translation.Type.GUI.wrap("ability.various_blocks");
+
+    @Translation(comments = "None")
+    public static final String NONE = Translation.Type.GUI.wrap("ability.none");
+
     // --- Projectile effects --- //
 
     @Translation(comments = " §6Projectile ")

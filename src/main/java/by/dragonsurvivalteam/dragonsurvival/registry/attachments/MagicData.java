@@ -2,7 +2,6 @@ package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.MagicHUD;
-import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonAbilityHolder;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncCooldownState;
@@ -145,7 +144,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent // TODO :: Completely skip in spectator mode (shows stress e.g.)? And penalties in spectator + creative?
     public static void tickAbilities(final PlayerTickEvent.Post event) {
         if (!DragonStateProvider.isDragon(event.getEntity())) {
             return;
@@ -159,12 +158,6 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
         MagicData magic = optional.get();
         InputData experienceLevels = InputData.experienceLevels(event.getEntity().experienceLevel);
-
-        DragonStateHandler handler = DragonStateProvider.getData(event.getEntity());
-
-        if (handler.isDragon()) {
-//            System.out.println(handler.species().getData(DSDataMaps.DIET_ENTRY_MAP));
-        }
 
         for (DragonAbilityInstance ability : magic.getAbilities().values()) {
             if (event.getEntity() instanceof ServerPlayer serverPlayer) {

@@ -47,6 +47,10 @@ public abstract class Storage<T extends StorageEntry> implements INBTSerializabl
                     removed.onRemovalFromStorage(storageHolder);
                 }
             });
+
+            if (!finished.isEmpty()) {
+                invalidateCache();
+            }
         }
     }
 
@@ -57,6 +61,7 @@ public abstract class Storage<T extends StorageEntry> implements INBTSerializabl
 
         storage.put(entry.id(), entry);
         entry.onAddedToStorage(storageHolder);
+        invalidateCache();
     }
 
     public void remove(final Entity storageHolder, final T entry) {
@@ -66,6 +71,7 @@ public abstract class Storage<T extends StorageEntry> implements INBTSerializabl
 
         storage.remove(entry.id());
         entry.onRemovalFromStorage(storageHolder);
+        invalidateCache();
     }
 
     public @Nullable T get(final ResourceLocation id) {
@@ -99,6 +105,8 @@ public abstract class Storage<T extends StorageEntry> implements INBTSerializabl
 
         return storage.isEmpty();
     }
+
+    public void invalidateCache() { /* Nothing to do */ }
 
     /** Always returns 'false' if the storage is empty */
     public boolean isType(final Class<?> type) {
@@ -139,6 +147,7 @@ public abstract class Storage<T extends StorageEntry> implements INBTSerializabl
         }
 
         this.storage = !storage.isEmpty() ? storage : null;
+        invalidateCache();
     }
 
     public abstract AttachmentType<?> type();
