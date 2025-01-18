@@ -216,11 +216,13 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                     handler1.setSpecies(null, button.species);
                     handler2.setSpecies(null, button.species);
 
-                    if(handler1.species() != null && handler1PreviousSpecies != null && handler1PreviousSpecies.getKey() != handler1.speciesKey()) {
+                    if((handler1.species() != null && handler1PreviousSpecies == null)
+                            || handler1.species() != null && handler1PreviousSpecies != null && handler1PreviousSpecies.getKey() != handler1.speciesKey()) {
                         initializeHandler(handler1);
                     }
 
-                    if(handler2.species() != null && handler2PreviousSpecies != null && handler2PreviousSpecies.getKey() != handler2.speciesKey()) {
+                    if((handler2.species() != null && handler2PreviousSpecies == null)
+                            || handler2.species() != null && handler2PreviousSpecies != null && handler2PreviousSpecies.getKey() != handler2.speciesKey()) {
                         initializeHandler(handler2);
                     }
 
