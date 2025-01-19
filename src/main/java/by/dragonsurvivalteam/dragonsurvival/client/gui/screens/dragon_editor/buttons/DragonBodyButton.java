@@ -72,12 +72,12 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
             iconSuffix = DEFAULT_SUFFIX;
         }
 
-        ResourceLocation iconLocation = ResourceLocation.fromNamespaceAndPath(location.getNamespace(), LOCATION_PREFIX + location.getPath() + "/" + iconSuffix + ".png");
+        ResourceLocation iconLocation = location.withPrefix(LOCATION_PREFIX).withSuffix("/" + iconSuffix + ".png");
         ResourceManager manager = ((TextureManagerAccess) Minecraft.getInstance().getTextureManager()).dragonSurvival$getResourceManager();
 
         if (manager.getResource(iconLocation).isEmpty()) {
             DragonSurvival.LOGGER.warn("Icon [{}] does not exist - using icon from body type [{}] as fallback", iconLocation, DragonBodies.center);
-            iconLocation = ResourceLocation.fromNamespaceAndPath(DragonBodies.center.location().getNamespace(), LOCATION_PREFIX + DragonBodies.center.location().getPath() + iconSuffix);
+            iconLocation = DragonBodies.center.location().withPrefix(LOCATION_PREFIX).withSuffix("/" + iconSuffix + ".png");
         }
 
         this.iconLocation = iconLocation;
