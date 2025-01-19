@@ -72,7 +72,7 @@ public class DragonBodies {
                 DragonBody.DEFAULT_MODEL,
                 List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"),
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
-                DragonBody.MountingOffsets.of(new Vec3(0, -0.05f, 0), new Vec3(0, 0f, -1.4f)))
+                DragonBody.MountingOffsets.of(new Vec3(0, -0.05, 0), new Vec3(0, 0, -1.4)))
         );
 
         context.register(east, new DragonBody(true, List.of(
@@ -92,7 +92,7 @@ public class DragonBodies {
                 DragonBody.DEFAULT_MODEL,
                 List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"),
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
-                DragonBody.MountingOffsets.of(new Vec3(0, -0.05f, 0), new Vec3(0, 0f, -1.4f)))
+                DragonBody.MountingOffsets.of(new Vec3(0, -0.05, 0), new Vec3(0, 0, -1.4)))
         );
 
         context.register(north, new DragonBody(true, List.of(
@@ -108,7 +108,7 @@ public class DragonBodies {
                 DragonBody.DEFAULT_MODEL,
                 List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"),
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
-                DragonBody.MountingOffsets.of(new Vec3(0, -0.05f, 0), new Vec3(0, 0f, -1.4f)))
+                DragonBody.MountingOffsets.of(new Vec3(0, -0.05, 0), new Vec3(0, 0f, -1.4)))
         );
 
         context.register(south, new DragonBody(true, List.of(
@@ -125,7 +125,7 @@ public class DragonBodies {
                 DragonBody.DEFAULT_MODEL,
                 List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"),
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
-                DragonBody.MountingOffsets.of(new Vec3(0, -0.05f, 0), new Vec3(0, 0f, -1.4f)))
+                DragonBody.MountingOffsets.of(new Vec3(0, -0.05, 0), new Vec3(0, 0, -1.4)))
         );
 
         context.register(west, new DragonBody(true, List.of(
@@ -141,7 +141,7 @@ public class DragonBodies {
                 DragonBody.DEFAULT_MODEL,
                 List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"),
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
-                DragonBody.MountingOffsets.of(new Vec3(0, -0.05f, 0), new Vec3(0, 0f, -1.4f)))
+                DragonBody.MountingOffsets.of(new Vec3(0, -0.05, 0), new Vec3(0, 0, -1.4)))
         );
     }
 
