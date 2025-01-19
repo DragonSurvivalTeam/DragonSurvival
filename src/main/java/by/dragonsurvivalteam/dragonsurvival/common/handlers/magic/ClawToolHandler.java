@@ -85,9 +85,8 @@ public class ClawToolHandler {
                 if (!stack.isEmpty()) {
                     if (!EnchantmentHelper.has(stack, EnchantmentEffectComponents.PREVENT_EQUIPMENT_DROP)) {
                         event.getDrops().add(new ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), stack));
+                        clawInventory.setItem(i, ItemStack.EMPTY);
                     }
-
-                    clawInventory.setItem(i, ItemStack.EMPTY);
                 }
             }
         }
