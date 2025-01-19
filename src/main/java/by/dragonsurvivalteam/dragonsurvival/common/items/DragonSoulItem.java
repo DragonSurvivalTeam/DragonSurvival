@@ -76,11 +76,11 @@ public class DragonSoulItem extends Item {
 
         Holder<DragonSpecies> dragonSpecies = provider.holderOrThrow(species);
 
-        if (dragonSpecies.is(DSDragonSpeciesTags.FOREST)) {
+        if (dragonSpecies.is(DSDragonSpeciesTags.FOREST_DRAGONS)) {
             return 1;
-        } else if (dragonSpecies.is(DSDragonSpeciesTags.CAVE)) {
+        } else if (dragonSpecies.is(DSDragonSpeciesTags.CAVE_DRAGONS)) {
             return 2;
-        } else if (dragonSpecies.is(DSDragonSpeciesTags.SEA)) {
+        } else if (dragonSpecies.is(DSDragonSpeciesTags.SEA_DRAGONS)) {
             return 3;
         }
 

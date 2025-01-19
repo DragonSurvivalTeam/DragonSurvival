@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.MagicHUD;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonAbilityHolder;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncCooldownState;
@@ -181,7 +182,13 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void handleItemBasedLeveling(final PlayerInteractEvent.RightClickItem event) {
-        if (!(event.getEntity() instanceof ServerPlayer player) || !DragonStateProvider.isDragon(event.getEntity())) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) {
+            return;
+        }
+
+        DragonStateHandler handler = DragonStateProvider.getData(player);
+
+        if (!handler.isDragon()) {
             return;
         }
 
@@ -194,7 +201,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         MagicData magic = MagicData.getData(player);
         DragonAbilityHolder abilityHolder = stack.get(DSDataComponents.DRAGON_ABILITIES);
 
-        if (abilityHolder != null && abilityHolder.use(player, magic)) {
+        if (abilityHolder != null && abilityHolder.use(player, handler, magic)) {
             stack.consume(1, player);
             PacketDistributor.sendToPlayer(player, new SyncMagicData(magic.serializeNBT(player.registryAccess())));
         }

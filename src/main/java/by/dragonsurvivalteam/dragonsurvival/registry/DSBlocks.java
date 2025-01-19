@@ -193,7 +193,7 @@ public class DSBlocks {
                     .requiresCorrectToolForDrops()
                     .strength(7.0F)
                     .sound(SoundType.GILDED_BLACKSTONE)
-                    .noOcclusion(), DSDragonSpeciesTags.CAVE)
+                    .noOcclusion(), DSDragonSpeciesTags.CAVE_DRAGONS)
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Forest Dragon Door")
@@ -206,7 +206,7 @@ public class DSBlocks {
                     .requiresCorrectToolForDrops()
                     .strength(7.0F)
                     .sound(SoundType.WOOD)
-                    .noOcclusion(), DSDragonSpeciesTags.FOREST)
+                    .noOcclusion(), DSDragonSpeciesTags.FOREST_DRAGONS)
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Sea Dragon Door")
@@ -219,7 +219,7 @@ public class DSBlocks {
                     .requiresCorrectToolForDrops()
                     .strength(7.0F)
                     .sound(SoundType.STONE)
-                    .noOcclusion(), DSDragonSpeciesTags.SEA)
+                    .noOcclusion(), DSDragonSpeciesTags.SEA_DRAGONS)
     );
 
     // --- Small Dragon Doors --- //
@@ -351,7 +351,7 @@ public class DSBlocks {
                     .requiresCorrectToolForDrops()
                     .strength(7.0F)
                     .sound(SoundType.GILDED_BLACKSTONE)
-                    .noOcclusion(), DSDragonSpeciesTags.CAVE)
+                    .noOcclusion(), DSDragonSpeciesTags.CAVE_DRAGONS)
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Small Forest Dragon Door")
@@ -363,7 +363,7 @@ public class DSBlocks {
                     .requiresCorrectToolForDrops()
                     .strength(7.0F)
                     .sound(SoundType.WOOD)
-                    .noOcclusion(), DSDragonSpeciesTags.FOREST)
+                    .noOcclusion(), DSDragonSpeciesTags.FOREST_DRAGONS)
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Small Sea Dragon Door")
@@ -375,7 +375,7 @@ public class DSBlocks {
                     .requiresCorrectToolForDrops()
                     .strength(7.0F)
                     .sound(SoundType.STONE)
-                    .noOcclusion(), DSDragonSpeciesTags.SEA)
+                    .noOcclusion(), DSDragonSpeciesTags.SEA_DRAGONS)
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Small Iron Dragon Door")
@@ -675,7 +675,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASEDRUM)
                     .strength(1.5f)
                     .sound(SoundType.STONE)
-                    .requiresCorrectToolForDrops(), DSDragonSpeciesTags.CAVE, false)
+                    .requiresCorrectToolForDrops(), DSDragonSpeciesTags.CAVE_DRAGONS, false)
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Forest Dragon Pressure Plate")
@@ -688,7 +688,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASS)
                     .strength(2.0F)
                     .sound(SoundType.WOOD)
-                    .requiresCorrectToolForDrops(), DSDragonSpeciesTags.FOREST, false)
+                    .requiresCorrectToolForDrops(), DSDragonSpeciesTags.FOREST_DRAGONS, false)
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Sea Dragon Pressure Plate")
@@ -700,7 +700,7 @@ public class DSBlocks {
                     .instrument(NoteBlockInstrument.BASEDRUM)
                     .strength(1.5f)
                     .sound(SoundType.STONE)
-                    .requiresCorrectToolForDrops(), DSDragonSpeciesTags.SEA, false)
+                    .requiresCorrectToolForDrops(), DSDragonSpeciesTags.SEA_DRAGONS, false)
     );
 
     // --- Helmets --- //

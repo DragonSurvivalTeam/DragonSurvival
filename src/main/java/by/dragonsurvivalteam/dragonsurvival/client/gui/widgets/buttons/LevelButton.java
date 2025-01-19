@@ -76,20 +76,18 @@ public class LevelButton extends ClickHoverButton {
         return isHovered() && canModify();
     }
 
-    public boolean canModifyFromLevelCap() {
+    public boolean isMinOrMaxLevel() {
         //noinspection OptionalGetWithoutIsPresent -> upgrade is present
         UpgradeType<?> upgrade = ability.value().upgrade().get();
 
-        boolean reachedLevelCap = switch (type) {
+        return switch (type) {
             case DOWNGRADE -> ability.level() == DragonAbilityInstance.MIN_LEVEL;
             case UPGRADE -> ability.level() == upgrade.maxLevel();
         };
-
-        return !reachedLevelCap;
     }
 
     public boolean canModify() {
-        if (!canModifyFromLevelCap()) {
+        if (isMinOrMaxLevel()) {
             return false;
         }
 
@@ -103,7 +101,7 @@ public class LevelButton extends ClickHoverButton {
 
     @Override
     public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        if (!canModifyFromLevelCap()) {
+        if (isMinOrMaxLevel()) {
             return;
         }
 

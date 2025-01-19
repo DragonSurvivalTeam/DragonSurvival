@@ -12,6 +12,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
@@ -46,9 +47,6 @@ public class OxygenBonus extends DurationInstanceBase<OxygenBonuses, OxygenBonus
     @Translation(comments = "all fluids")
     private static final String ALL_FLUIDS = Translation.Type.GUI.wrap("oxygen_bonus.all_fluids");
 
-    @Translation(comments = "No fluid exists to which a bonus can be applied")
-    private static final String NO_FLUID = Translation.Type.GUI.wrap("oxygen_bonus.no_fluid");
-
     public static float NONE;
 
     public static final Codec<OxygenBonus> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -67,28 +65,16 @@ public class OxygenBonus extends DurationInstanceBase<OxygenBonuses, OxygenBonus
     }
 
     public MutableComponent getDescription(final int abilityLevel) {
-        float bonus = oxygenBonus.calculate(abilityLevel);
-        MutableComponent description;
+        MutableComponent fluids;
 
-        MutableComponent fluids = null;
-
-        if (fluids().isEmpty()) {
+        if (this.fluids.isEmpty()) {
             fluids = DSColors.dynamicValue(Component.translatable(ALL_FLUIDS));
         } else {
-            for (Holder<FluidType> fluid : fluids().get()) {
-                MutableComponent name = DSColors.dynamicValue(Component.translatable(fluid.value().getDescriptionId()));
-
-                if (fluids == null) {
-                    fluids = name;
-                } else {
-                    fluids.append(Component.literal(", ").append(name));
-                }
-            }
+            fluids = Functions.translateHolderSet(this.fluids.get(), fluid -> fluid.value().getDescriptionId());
         }
 
-        if (fluids == null) {
-            return Component.translatable(NO_FLUID);
-        }
+        float bonus = oxygenBonus.calculate(abilityLevel);
+        MutableComponent description;
 
         if (bonus == SwimData.UNLIMITED_OXYGEN) {
             description = Component.translatable(UNLIMITED, fluids);

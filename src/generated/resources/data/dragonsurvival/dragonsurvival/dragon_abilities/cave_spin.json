@@ -6,8 +6,8 @@
           "entity_effect": [
             {
               "effect_type": "dragonsurvival:spin",
-              "spin_level": 1,
-              "swim_spin_fluid": "minecraft:lava"
+              "in_fluid": "minecraft:lava",
+              "spin_level": 1
             }
           ],
           "targeting_mode": "allies_and_self"

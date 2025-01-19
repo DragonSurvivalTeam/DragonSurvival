@@ -14,7 +14,6 @@ import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
@@ -31,7 +30,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -83,24 +81,7 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
             color = DSColors.dynamicValue(Component.translatable(LangKey.NONE));
         }
 
-        MutableComponent appliesTo = null;
-
-        if (blocks instanceof HolderSet.Named<Block> named) {
-            appliesTo = Component.translatable(Tags.getTagTranslationKey(named.key()));
-        } else if (blocks.size() > 0) {
-            for (Holder<Block> block : blocks) {
-                Component name = block.value().getName();
-
-                if (appliesTo == null) {
-                    appliesTo = DSColors.dynamicValue(name);
-                } else {
-                    appliesTo.append(Component.literal(", ").withStyle(ChatFormatting.GRAY)).append(name);
-                }
-            }
-        } else {
-            appliesTo = Component.translatable(LangKey.NONE);
-        }
-
+        MutableComponent appliesTo = Functions.translateHolderSet(blocks, Holder::getRegisteredName);
         return Component.translatable(HARVEST_BONUS, DSColors.dynamicValue(range), color, DSColors.dynamicValue(appliesTo));
     }
 

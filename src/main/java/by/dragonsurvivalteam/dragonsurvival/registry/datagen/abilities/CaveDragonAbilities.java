@@ -57,6 +57,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.projectile.ProjectileData;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.Projectiles;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.datafixers.util.Either;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -72,6 +73,7 @@ import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.storage.loot.predicates.AnyOfCondition;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.Tags;
 
@@ -497,8 +499,12 @@ public class CaveDragonAbilities {
         context.register(CAVE_WINGS, new DragonAbility(
                 Activation.passive(),
                 Optional.of(new ConditionUpgrade(List.of(Condition.thisEntity(EntityCondition.flightWasGranted(true)).build()), false)),
-                // Disable when marked by the ender dragon
-                Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
+                // Disable when marked by the ender dragon or when trapped / wings are broken
+                Optional.of(AnyOfCondition.anyOf(
+                        Condition.thisEntity(EntityCondition.isMarked(true)),
+                        Condition.thisEntity(EntityCondition.hasEffect(DSEffects.TRAPPED)),
+                        Condition.thisEntity(EntityCondition.hasEffect(DSEffects.BROKEN_WINGS))
+                ).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         List.of(new FlightEffect(1, DragonSurvival.res("textures/ability_effect/cave_dragon_wings.png"))),
                         TargetingMode.ALLIES_AND_SELF
@@ -516,7 +522,7 @@ public class CaveDragonAbilities {
                 // Disable when marked by the ender dragon
                 Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(new SpinEffect(1, Optional.of(NeoForgeMod.LAVA_TYPE))),
+                        List.of(new SpinEffect(1, Optional.of(HolderSet.direct(NeoForgeMod.LAVA_TYPE)))),
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
                 true,

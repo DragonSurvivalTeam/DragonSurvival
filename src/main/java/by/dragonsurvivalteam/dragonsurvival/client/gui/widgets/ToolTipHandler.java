@@ -11,7 +11,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataCompo
 import by.dragonsurvivalteam.dragonsurvival.registry.data_maps.DietEntryCache;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.ChatFormatting;
@@ -74,6 +73,9 @@ public class ToolTipHandler {
     @Translation(comments = "§7■ Removes the following abilities: %s")
     private static final String REMOVES_ABILITIES = Translation.Type.GUI.wrap("tooltip.removes_abilities");
 
+    @Translation(comments = "§7■ Applicable to: %s")
+    private static final String APPLICABLE_TO = Translation.Type.GUI.wrap("tooltip.applicable_to");
+
     @Translation(comments = "Press 'SHIFT' for more info")
     private static final String PRESS_SHIFT = Translation.Type.GUI.wrap("tooltip.shift");
 
@@ -94,22 +96,11 @@ public class ToolTipHandler {
         }
 
         if (Screen.hasShiftDown()) {
-            MutableComponent abilities = null;
+            event.getToolTip().add(Component.translatable(holder.isRemoval() ? REMOVES_ABILITIES : ADDS_ABILITIES, Functions.translateHolderSet(holder.abilities(), Translation.Type.ABILITY)));
 
-            // TODO :: color abilities in red / green depending on whether the player already has it?
-            //  might get too colorful? use gray-tones instead?
-            for (Holder<DragonAbility> ability : holder.abilities()) {
-                //noinspection DataFlowIssue -> key is present
-                MutableComponent name = DSColors.dynamicValue(Component.translatable(Translation.Type.ABILITY.wrap(ability.getKey().location())));
-
-                if (abilities == null) {
-                    abilities = name;
-                } else {
-                    abilities.append(Component.literal(", ").withStyle(ChatFormatting.GRAY)).append(name);
-                }
+            if (holder.applicableSpecies().isPresent()) {
+                event.getToolTip().add(Component.translatable(APPLICABLE_TO, Functions.translateHolderSet(holder.applicableSpecies().get(), Translation.Type.DRAGON_SPECIES)));
             }
-
-            event.getToolTip().add(Component.translatable(holder.isRemoval() ? REMOVES_ABILITIES : ADDS_ABILITIES, abilities));
         } else {
             event.getToolTip().add(Component.translatable(PRESS_SHIFT).withStyle(ChatFormatting.DARK_GRAY));
         }

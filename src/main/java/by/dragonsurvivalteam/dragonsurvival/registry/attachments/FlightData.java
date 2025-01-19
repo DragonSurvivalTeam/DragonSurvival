@@ -5,13 +5,14 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.Dura
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
-import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
-import net.minecraft.core.Holder;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.RegistryCodecs;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -28,7 +29,7 @@ public class FlightData implements INBTSerializable<CompoundTag> {
     public static final ResourceLocation DEFAULT_ICON = DragonSurvival.res("textures/ability_effect/generic_icons/dragon_wings.png");
 
     public ResourceLocation icon = DEFAULT_ICON;
-    public @Nullable Holder<FluidType> swimSpinFluid;
+    public @Nullable HolderSet<FluidType> inFluid;
 
     public boolean areWingsSpread;
     public boolean hasFlight;
@@ -50,8 +51,9 @@ public class FlightData implements INBTSerializable<CompoundTag> {
         tag.putInt(COOLDOWN, cooldown);
         tag.putInt(DURATION, duration);
 
-        if (swimSpinFluid != null) {
-            tag.putString(SWIM_SPIN_FLUID, swimSpinFluid.getRegisteredName());
+        if (inFluid != null) {
+            RegistryCodecs.homogeneousList(NeoForgeRegistries.Keys.FLUID_TYPES).encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), inFluid)
+                    .resultOrPartial(DragonSurvival.LOGGER::error).ifPresent(list -> tag.put(IN_FLUID, list));
         }
 
         tag.putString(ICON, icon.toString());
@@ -66,10 +68,11 @@ public class FlightData implements INBTSerializable<CompoundTag> {
         cooldown = tag.getInt(COOLDOWN);
         duration = tag.getInt(DURATION);
 
-        ResourceKey<FluidType> fluid = ResourceHelper.decodeKey(provider, NeoForgeRegistries.Keys.FLUID_TYPES, tag, SWIM_SPIN_FLUID);
-
-        if (fluid != null) {
-            swimSpinFluid = provider.holderOrThrow(fluid);
+        if (tag.contains(IN_FLUID)) {
+            inFluid = RegistryCodecs.homogeneousList(NeoForgeRegistries.Keys.FLUID_TYPES).decode(provider.createSerializationContext(NbtOps.INSTANCE), tag.get(IN_FLUID))
+                    .resultOrPartial(DragonSurvival.LOGGER::error).map(Pair::getFirst).orElse(null);
+        } else {
+            inFluid = null;
         }
 
         icon = Objects.requireNonNullElse(ResourceLocation.tryParse(tag.getString(ICON)), DEFAULT_ICON);
@@ -127,6 +130,6 @@ public class FlightData implements INBTSerializable<CompoundTag> {
     private static final String FLIGHT = "flight";
     private static final String SPIN = "spin";
     private static final String ARE_WINGS_SPREAD = "are_wings_spread";
-    private static final String SWIM_SPIN_FLUID = "swim_spin_fluid";
+    private static final String IN_FLUID = "in_fluid";
     private static final String ICON = "icon";
 }

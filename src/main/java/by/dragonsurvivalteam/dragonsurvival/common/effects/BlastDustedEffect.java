@@ -45,7 +45,7 @@ public class BlastDustedEffect extends ModifiableMobEffect {
 
     @Override
     public boolean applyEffectTick(@NotNull LivingEntity livingEntity, int amplifier) {
-        if ((DragonStateProvider.getOptional(livingEntity).isPresent() && DragonStateProvider.getOptional(livingEntity).get().species().is(DSDragonSpeciesTags.CAVE)) || livingEntity.isEyeInFluidType(NeoForgeMod.WATER_TYPE.value()) || livingEntity.isInWaterRainOrBubble()) {
+        if ((DragonStateProvider.getOptional(livingEntity).isPresent() && DragonStateProvider.getOptional(livingEntity).get().species().is(DSDragonSpeciesTags.CAVE_DRAGONS)) || livingEntity.isEyeInFluidType(NeoForgeMod.WATER_TYPE.value()) || livingEntity.isInWaterRainOrBubble()) {
             return false;
         }
         return super.applyEffectTick(livingEntity, amplifier);
@@ -77,7 +77,7 @@ public class BlastDustedEffect extends ModifiableMobEffect {
         LivingEntity livingEntity = removeEvent.getEntity();
         if (!(DragonStateProvider.isDragon(livingEntity))) {
             Optional<DragonStateHandler> optional = DragonStateProvider.getOptional(livingEntity);
-            if (optional.isEmpty() || !optional.get().species().is(DSDragonSpeciesTags.CAVE)) {
+            if (optional.isEmpty() || !optional.get().species().is(DSDragonSpeciesTags.CAVE_DRAGONS)) {
                 removeEvent.getEntity().level().playLocalSound(livingEntity.position().x(), livingEntity.position().y(), livingEntity.position().z(), SoundEvents.GENERIC_EXTINGUISH_FIRE, SoundSource.PLAYERS, 1f, 1f, false);
             }
         }

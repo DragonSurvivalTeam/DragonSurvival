@@ -11,7 +11,6 @@ import by.dragonsurvivalteam.dragonsurvival.input.Keybind;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SpinDurationAndCooldown;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncWingsSpread;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
@@ -35,7 +34,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -583,10 +581,9 @@ public class ClientFlightHandler {
             return WingsToggleResult.NO_WINGS;
         }
 
-        if (data.isWingsSpread()) return WingsToggleResult.ALREADY_ENABLED;
-
-        // TODO :: check these in usage_blocked of the ability
-        if (hasWingDisablingEffect(player)) return WingsToggleResult.WINGS_DISABLED;
+        if (data.isWingsSpread()) {
+            return WingsToggleResult.ALREADY_ENABLED;
+        }
 
         // Non-creative players need enough food to start flying
         if (!player.isCreative() && !hasEnoughFoodToStartFlight(player)) {
@@ -661,10 +658,6 @@ public class ClientFlightHandler {
             }
             default -> throw new IllegalStateException("Unexpected value: " + enableWings(player, data));
         }
-    }
-
-    private static boolean hasWingDisablingEffect(LivingEntity entity) {
-        return entity.hasEffect(DSEffects.TRAPPED) || entity.hasEffect(DSEffects.BROKEN_WINGS);
     }
 
     private static boolean hasEnoughFoodToStartFlight(Player player) {

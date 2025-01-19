@@ -31,5 +31,28 @@
         "texture_resource": "dragonsurvival:abilities/forest/forest_wings_0"
       }
     ]
+  },
+  "usage_blocked": {
+    "condition": "minecraft:any_of",
+    "terms": [
+      {
+        "condition": "minecraft:entity_properties",
+        "entity": "this",
+        "predicate": {
+          "effects": {
+            "dragonsurvival:trapped": {}
+          }
+        }
+      },
+      {
+        "condition": "minecraft:entity_properties",
+        "entity": "this",
+        "predicate": {
+          "effects": {
+            "dragonsurvival:broken_wings": {}
+          }
+        }
+      }
+    ]
   }
 }

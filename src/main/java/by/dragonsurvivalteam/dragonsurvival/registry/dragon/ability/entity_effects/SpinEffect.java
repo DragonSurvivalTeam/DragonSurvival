@@ -8,7 +8,8 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilit
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.RegistryCodecs;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,14 +23,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public record SpinEffect(int spinLevel, Optional<Holder<FluidType>> swimSpinFluid) implements AbilityEntityEffect {
+// TODO :: does this need some 'remove_automatically' handling as well?
+public record SpinEffect(int spinLevel, Optional<HolderSet<FluidType>> inFluid) implements AbilityEntityEffect {
     @Translation(comments = "§6■ Can use spin")
     private static final String SPIN = Translation.Type.GUI.wrap("spin_effect.spin");
 
     public static final MapCodec<SpinEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.INT.fieldOf("spin_level").forGetter(SpinEffect::spinLevel),
-            // TODO :: holderset
-            NeoForgeRegistries.FLUID_TYPES.holderByNameCodec().optionalFieldOf("swim_spin_fluid").forGetter(SpinEffect::swimSpinFluid)
+            RegistryCodecs.homogeneousList(NeoForgeRegistries.Keys.FLUID_TYPES).optionalFieldOf("in_fluid").forGetter(SpinEffect::inFluid)
     ).apply(instance, SpinEffect::new));
 
     @Override
@@ -43,13 +44,13 @@ public record SpinEffect(int spinLevel, Optional<Holder<FluidType>> swimSpinFlui
 
         if (ability.level() >= spinLevel) {
             data.hasSpin = true;
-            data.swimSpinFluid = swimSpinFluid.orElse(null);
+            data.inFluid = inFluid.orElse(null);
         } else {
             data.hasSpin = false;
         }
 
         if (hadSpin != data.hasSpin) {
-            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverTarget, new SyncSpinStatus(serverTarget.getId(), data.hasSpin, Optional.ofNullable(data.swimSpinFluid)));
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverTarget, new SyncSpinStatus(serverTarget.getId(), data.hasSpin, Optional.ofNullable(data.inFluid)));
         }
     }
 
@@ -65,7 +66,7 @@ public record SpinEffect(int spinLevel, Optional<Holder<FluidType>> swimSpinFlui
         data.hasSpin = false;
 
         if (hadSpin != data.hasSpin) {
-            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverTarget, new SyncSpinStatus(serverTarget.getId(), data.hasSpin, Optional.ofNullable(data.swimSpinFluid)));
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverTarget, new SyncSpinStatus(serverTarget.getId(), data.hasSpin, Optional.ofNullable(data.inFluid)));
         }
     }
 

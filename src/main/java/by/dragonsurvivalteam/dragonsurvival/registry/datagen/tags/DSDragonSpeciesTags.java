@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import net.minecraft.core.HolderLookup;
@@ -14,12 +15,17 @@ import org.jetbrains.annotations.Nullable;
 import java.util.concurrent.CompletableFuture;
 
 public class DSDragonSpeciesTags extends TagsProvider<DragonSpecies> {
+    @Translation(comments = "No Dragon Species")
     public static final TagKey<DragonSpecies> NONE = key("none");
+    @Translation(comments = "All Dragon Species")
     public static final TagKey<DragonSpecies> ALL = key("all");
 
-    public static final TagKey<DragonSpecies> CAVE = key("cave");
-    public static final TagKey<DragonSpecies> FOREST = key("forest");
-    public static final TagKey<DragonSpecies> SEA = key("sea");
+    @Translation(comments = "Cave Dragons")
+    public static final TagKey<DragonSpecies> CAVE_DRAGONS = key("cave_dragons");
+    @Translation(comments = "Forest Dragons")
+    public static final TagKey<DragonSpecies> FOREST_DRAGONS = key("forest_dragons");
+    @Translation(comments = "Sea Dragons")
+    public static final TagKey<DragonSpecies> SEA_DRAGONS = key("sea_dragons");
 
     public DSDragonSpeciesTags(final PackOutput output, final CompletableFuture<HolderLookup.Provider> provider, @Nullable final ExistingFileHelper helper) {
         super(output, DragonSpecies.REGISTRY, provider, DragonSurvival.MODID, helper);
@@ -30,9 +36,9 @@ public class DSDragonSpeciesTags extends TagsProvider<DragonSpecies> {
         tag(ALL).add(BuiltInDragonSpecies.CAVE).add(BuiltInDragonSpecies.FOREST).add(BuiltInDragonSpecies.SEA);
         tag(NONE);
 
-        tag(CAVE).add(BuiltInDragonSpecies.CAVE);
-        tag(FOREST).add(BuiltInDragonSpecies.FOREST);
-        tag(SEA).add(BuiltInDragonSpecies.SEA);
+        tag(CAVE_DRAGONS).add(BuiltInDragonSpecies.CAVE);
+        tag(FOREST_DRAGONS).add(BuiltInDragonSpecies.FOREST);
+        tag(SEA_DRAGONS).add(BuiltInDragonSpecies.SEA);
     }
 
     public static TagKey<DragonSpecies> key(final String path) {

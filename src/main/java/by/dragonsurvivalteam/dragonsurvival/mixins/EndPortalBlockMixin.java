@@ -50,7 +50,7 @@ public class EndPortalBlockMixin {
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
 
-        if (!handler.isDragon() || !(handler.species().is(DSDragonSpeciesTags.CAVE) || handler.species().is(DSDragonSpeciesTags.SEA) || handler.species().is(DSDragonSpeciesTags.FOREST))) {
+        if (!handler.isDragon() || !(handler.species().is(DSDragonSpeciesTags.CAVE_DRAGONS) || handler.species().is(DSDragonSpeciesTags.SEA_DRAGONS) || handler.species().is(DSDragonSpeciesTags.FOREST_DRAGONS))) {
             original.call(accessor, position, dropBlocks);
             return;
         }

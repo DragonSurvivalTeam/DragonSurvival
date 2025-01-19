@@ -13,6 +13,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncWingsSpread;
 import by.dragonsurvivalteam.dragonsurvival.network.status.SyncPlayerJump;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
@@ -32,6 +33,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerFlyableFallEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
@@ -277,9 +279,21 @@ public class ServerFlightHandler {
         return false;
     }
 
-    public static boolean canSwimSpin(Player player){
+    public static boolean canSwimSpin(final Player player) {
+        if (player.onGround()) {
+            return false;
+        }
+
         FlightData data = FlightData.getData(player);
-        return data.swimSpinFluid != null && player.isEyeInFluidType(data.swimSpinFluid.value()) && data.hasFlight() && !player.onGround();
+
+        if (data.inFluid == null || !data.hasFlight()) {
+            return false;
+        }
+
+        FluidType fluid = player.getEyeInFluidType();
+
+        //noinspection DataFlowIssue -> fluid exists, therefor it cannot be null
+        return data.inFluid.contains(player.registryAccess().holderOrThrow(SwimData.key(fluid)));
     }
 
     @SubscribeEvent

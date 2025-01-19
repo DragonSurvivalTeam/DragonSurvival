@@ -151,7 +151,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
 
         EntityType<?> type = entities.map(
                 list -> list.getRandom(level.getRandom()).map(WeightedEntry.Wrapper::data).orElse(null),
-                set -> set.size() > 0 ? set.get(dragon.getRandom().nextInt(set.size())).value() : null
+                set -> set.getRandomElement(dragon.getRandom()).map(Holder::value).orElse(null)
         );
 
         if (type == null) {

@@ -12,8 +12,10 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProv
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
@@ -30,7 +32,6 @@ import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -84,12 +85,8 @@ public class HarvestBonus extends DurationInstanceBase<HarvestBonuses, HarvestBo
 
         if (blocks.isEmpty()) {
             appliesTo = Component.translatable(LangKey.ALL_BLOCKS);
-        } else if (blocks.get() instanceof HolderSet.Named<Block> named) {
-            appliesTo = Component.translatable(Tags.getTagTranslationKey(named.key()));
-        } else if (blocks.get().size() > 0) {
-            appliesTo = Component.translatable(LangKey.VARIOUS_BLOCKS, blocks.get().size());
         } else {
-            appliesTo = Component.translatable(LangKey.NONE);
+            appliesTo = Functions.translateHolderSet(blocks.get(), Holder::getRegisteredName);
         }
 
         Component baseSpeed = null;

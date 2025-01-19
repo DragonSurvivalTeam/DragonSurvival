@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.network.flight;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.handlers.ClientFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
-import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -17,13 +17,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public record SyncSpinStatus(int playerId, boolean hasSpin, Optional<Holder<FluidType>> swimSpinFluid) implements CustomPacketPayload {
+public record SyncSpinStatus(int playerId, boolean hasSpin, Optional<HolderSet<FluidType>> swimSpinFluid) implements CustomPacketPayload {
     public static final Type<SyncSpinStatus> TYPE = new Type<>(DragonSurvival.res("sync_spin_status"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncSpinStatus> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, SyncSpinStatus::playerId,
             ByteBufCodecs.BOOL, SyncSpinStatus::hasSpin,
-            ByteBufCodecs.optional(ByteBufCodecs.holderRegistry(NeoForgeRegistries.Keys.FLUID_TYPES)), SyncSpinStatus::swimSpinFluid,
+            ByteBufCodecs.optional(ByteBufCodecs.holderSet(NeoForgeRegistries.Keys.FLUID_TYPES)), SyncSpinStatus::swimSpinFluid,
             SyncSpinStatus::new
     );
 
@@ -32,7 +32,7 @@ public record SyncSpinStatus(int playerId, boolean hasSpin, Optional<Holder<Flui
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 FlightData spin = FlightData.getData(player);
                 spin.hasSpin = packet.hasSpin();
-                spin.swimSpinFluid = packet.swimSpinFluid().orElse(null);
+                spin.inFluid = packet.swimSpinFluid().orElse(null);
                 ClientFlightHandler.lastSync = player.tickCount;
             }
         });
@@ -43,7 +43,7 @@ public record SyncSpinStatus(int playerId, boolean hasSpin, Optional<Holder<Flui
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 FlightData spin = FlightData.getData(player);
                 spin.hasSpin = packet.hasSpin();
-                spin.swimSpinFluid = packet.swimSpinFluid().orElse(null);
+                spin.inFluid = packet.swimSpinFluid().orElse(null);
             }
         }).thenRun(() -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(context.player(), packet));
     }

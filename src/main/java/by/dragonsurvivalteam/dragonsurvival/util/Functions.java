@@ -4,9 +4,15 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -14,11 +20,14 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.neoforge.common.Tags;
 import org.joml.Vector3f;
 import software.bernie.geckolib.util.RenderUtil;
 
 import java.text.NumberFormat;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
 
 public class Functions {
     public static int daysToTicks(double days) {
@@ -287,6 +296,31 @@ public class Functions {
         sunAngle = sunAngle + (angleTarget - sunAngle) * 0.2f;
         // 1 means it's a time of 6000 (sun is at the highest point)
         return Mth.cos(sunAngle);
+    }
+
+    public static <T> MutableComponent translateHolderSet(final HolderSet<T> set, final Translation.Type type) {
+        //noinspection DataFlowIssue -> key is present
+        return translateHolderSet(set, entry -> type.wrap(entry.getKey().location()));
+    }
+
+    public static <T> MutableComponent translateHolderSet(final HolderSet<T> set, final Function<Holder<T>, String> translationKey) {
+        if (set instanceof HolderSet.Named<T> named) {
+            return DSColors.dynamicValue(Component.translatable(Tags.getTagTranslationKey(named.key())));
+        }
+
+        MutableComponent list = null;
+
+        for (Holder<T> entry : set) {
+            MutableComponent name = DSColors.dynamicValue(Component.translatable(translationKey.apply(entry)));
+
+            if (list == null) {
+                list = name;
+            } else {
+                list.append(Component.literal(", ").withStyle(ChatFormatting.GRAY)).append(name);
+            }
+        }
+
+        return Objects.requireNonNullElse(list, Component.empty());
     }
 
     public static int lerpColor(final List<Integer> colors) {

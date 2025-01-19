@@ -1,5 +1,8 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.datapacks;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
+import by.dragonsurvivalteam.dragonsurvival.common.conditions.EntityCondition;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.CaveDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.ForestDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.SeaDragonAbilities;
@@ -7,6 +10,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilit
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.world.level.storage.loot.predicates.AnyOfCondition;
 
 import java.util.Optional;
 
@@ -22,7 +26,10 @@ public class UnlockWingsDatapack {
         context.register(wings.getKey(), new DragonAbility(
                 wings.value().activation(),
                 Optional.empty(),
-                Optional.empty(),
+                Optional.of(AnyOfCondition.anyOf(
+                        Condition.thisEntity(EntityCondition.hasEffect(DSEffects.TRAPPED)),
+                        Condition.thisEntity(EntityCondition.hasEffect(DSEffects.BROKEN_WINGS))
+                ).build()),
                 wings.value().actions(),
                 wings.value().canBeManuallyDisabled(),
                 wings.value().icon()
