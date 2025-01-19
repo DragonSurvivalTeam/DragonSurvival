@@ -76,7 +76,7 @@ public class LevelButton extends ClickHoverButton {
         return isHovered() && canModify();
     }
 
-    public boolean canModify() {
+    public boolean canModifyFromLevelCap() {
         //noinspection OptionalGetWithoutIsPresent -> upgrade is present
         UpgradeType<?> upgrade = ability.value().upgrade().get();
 
@@ -85,7 +85,11 @@ public class LevelButton extends ClickHoverButton {
             case UPGRADE -> ability.level() == upgrade.maxLevel();
         };
 
-        if (reachedLevelCap) {
+        return !reachedLevelCap;
+    }
+
+    public boolean canModify() {
+        if (!canModifyFromLevelCap()) {
             return false;
         }
 
@@ -99,7 +103,7 @@ public class LevelButton extends ClickHoverButton {
 
     @Override
     public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        if (!canModify()) {
+        if (!canModifyFromLevelCap()) {
             return;
         }
 
