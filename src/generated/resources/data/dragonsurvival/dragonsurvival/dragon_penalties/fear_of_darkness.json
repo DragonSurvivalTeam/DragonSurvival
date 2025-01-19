@@ -8,19 +8,6 @@
           "condition": "minecraft:entity_properties",
           "entity": "this",
           "predicate": {
-            "location": {
-              "light": {
-                "light": {
-                  "min": 3
-                }
-              }
-            }
-          }
-        },
-        {
-          "condition": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
             "effects": {
               "dragonsurvival:forest_magic": {}
             }
@@ -32,6 +19,32 @@
           "predicate": {
             "effects": {
               "minecraft:glowing": {}
+            }
+          }
+        },
+        {
+          "condition": "minecraft:match_tool",
+          "predicate": {
+            "items": "#dragonsurvival:light_source"
+          }
+        },
+        {
+          "condition": "dragonsurvival:match_item",
+          "predicate": {
+            "items": "#dragonsurvival:light_source"
+          },
+          "slot": "offhand"
+        },
+        {
+          "condition": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "location": {
+              "light": {
+                "light": {
+                  "min": 3
+                }
+              }
             }
           }
         }

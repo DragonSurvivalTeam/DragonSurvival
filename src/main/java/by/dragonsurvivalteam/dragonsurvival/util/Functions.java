@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -17,6 +18,7 @@ import org.joml.Vector3f;
 import software.bernie.geckolib.util.RenderUtil;
 
 import java.text.NumberFormat;
+import java.util.List;
 
 public class Functions {
     public static int daysToTicks(double days) {
@@ -287,12 +289,20 @@ public class Functions {
         return Mth.cos(sunAngle);
     }
 
-    public static void logOrThrow(final String message) {
-        if (FMLLoader.isProduction()) {
-            DragonSurvival.LOGGER.error(message);
-        } else {
-            throw new IllegalStateException(message);
+    public static int lerpColor(final List<Integer> colors) {
+        if (colors.isEmpty()) {
+            return DSColors.NONE;
         }
+
+        if (colors.size() == 1) {
+            return colors.getFirst();
+        }
+
+        float sizeIndex = DragonSurvival.PROXY.getTimer() * colors.size();
+        int currentIndex = (int) (Math.floor(sizeIndex) % colors.size());
+        int nextIndex = (currentIndex + 1) % colors.size();
+
+        return FastColor.ARGB32.lerp(sizeIndex - currentIndex, DSColors.withAlpha(colors.get(currentIndex), 255), DSColors.withAlpha(colors.get(nextIndex), 255));
     }
 
     /** Makes sure to return an enum value (instead of an exception) */
@@ -317,5 +327,13 @@ public class Functions {
         }
 
         return values[ordinal];
+    }
+
+    public static void logOrThrow(final String message) {
+        if (FMLLoader.isProduction()) {
+            DragonSurvival.LOGGER.error(message);
+        } else {
+            throw new IllegalStateException(message);
+        }
     }
 }

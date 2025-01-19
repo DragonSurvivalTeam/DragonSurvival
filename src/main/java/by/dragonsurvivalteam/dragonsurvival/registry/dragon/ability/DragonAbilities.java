@@ -72,6 +72,7 @@ public class DragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Block Vision Test")
     public static final ResourceKey<DragonAbility> TEST_BLOCK_VISION = DragonAbilities.key("test_block_vision");
 
+    @SuppressWarnings({"DataFlowIssue", "deprecation"}) // ignore
     public static void registerAbilities(final BootstrapContext<DragonAbility> context) {
         CaveDragonAbilities.registerAbilities(context);
         ForestDragonAbilities.registerAbilities(context);
@@ -164,25 +165,31 @@ public class DragonAbilities {
                                 DurationInstanceBase.create(DragonSurvival.res("diamond_vision")).infinite().removeAutomatically().hidden().build(),
                                 HolderSet.direct(Blocks.DIAMOND_ORE.builtInRegistryHolder(), Blocks.DEEPSLATE_DIAMOND_ORE.builtInRegistryHolder()),
                                 LevelBasedValue.constant(16),
-                                TextColor.fromLegacyFormat(ChatFormatting.AQUA)
+                                List.of(
+                                        TextColor.fromLegacyFormat(ChatFormatting.GOLD),
+                                        TextColor.fromLegacyFormat(ChatFormatting.DARK_PURPLE),
+                                        TextColor.fromLegacyFormat(ChatFormatting.GREEN),
+                                        TextColor.fromLegacyFormat(ChatFormatting.RED),
+                                        TextColor.fromLegacyFormat(ChatFormatting.BLUE)
+                                )
                         )),
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("lapis_vision")).infinite().removeAutomatically().hidden().build(),
                                 HolderSet.direct(Blocks.LAPIS_ORE.builtInRegistryHolder(), Blocks.DEEPSLATE_LAPIS_ORE.builtInRegistryHolder()),
                                 LevelBasedValue.constant(24),
-                                TextColor.fromLegacyFormat(ChatFormatting.BLUE)
+                                List.of(TextColor.fromLegacyFormat(ChatFormatting.BLUE))
                         )),
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("gold_vision")).infinite().removeAutomatically().hidden().build(),
                                 HolderSet.direct(Blocks.GOLD_ORE.builtInRegistryHolder(), Blocks.DEEPSLATE_GOLD_ORE.builtInRegistryHolder()),
                                 LevelBasedValue.constant(32),
-                                TextColor.fromLegacyFormat(ChatFormatting.GOLD)
+                                List.of(TextColor.fromLegacyFormat(ChatFormatting.GOLD))
                         )),
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("redstone_vision")).infinite().removeAutomatically().hidden().build(),
                                 HolderSet.direct(Blocks.REDSTONE_ORE.builtInRegistryHolder(), Blocks.DEEPSLATE_REDSTONE_ORE.builtInRegistryHolder()),
                                 LevelBasedValue.constant(32),
-                                TextColor.fromLegacyFormat(ChatFormatting.DARK_RED)
+                                List.of(TextColor.fromLegacyFormat(ChatFormatting.DARK_RED))
                         ))
                 ), TargetingMode.ALLIES_AND_SELF)), LevelBasedValue.constant(1))),
                 true,

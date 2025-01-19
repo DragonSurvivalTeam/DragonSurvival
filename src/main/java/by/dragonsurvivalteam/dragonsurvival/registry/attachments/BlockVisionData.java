@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.BlockVision;
-import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -16,11 +16,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @EventBusSubscriber
 public class BlockVisionData extends Storage<BlockVision.Instance> {
-    private final Map<Block, Pair</* Range */ Integer, /* Color */ Integer>> cache = new HashMap<>();
+    private final Map<Block, Pair</* Range */ Integer, /* Color */ List<Integer>>> cache = new HashMap<>();
     private int maximumRange = -1;
 
     public int getRange(@Nullable final Block block) {
@@ -36,10 +37,10 @@ public class BlockVisionData extends Storage<BlockVision.Instance> {
     }
 
     public int getColor(final Block block) {
-        return cache.computeIfAbsent(block, this::storeData).second();
+        return Functions.lerpColor(cache.computeIfAbsent(block, this::storeData).second());
     }
 
-    private Pair<Integer, Integer> storeData(final Block block) {
+    private Pair<Integer, List<Integer>> storeData(final Block block) {
         return Pair.of(storeRange(block), storeColor(block));
     }
 
@@ -58,16 +59,16 @@ public class BlockVisionData extends Storage<BlockVision.Instance> {
         return currentRange;
     }
 
-    private int storeColor(final Block block) {
+    private List<Integer> storeColor(final Block block) {
         for (BlockVision.Instance instance : all()) {
-            int color = instance.getColor(block);
+            List<Integer> colors = instance.getColors(block);
 
-            if (color != BlockVision.NO_COLOR) {
-                return DSColors.withAlpha(color, 1);
+            if (!colors.isEmpty()) {
+                return colors;
             }
         }
 
-        return BlockVision.NO_COLOR;
+        return List.of();
     }
 
     @Override

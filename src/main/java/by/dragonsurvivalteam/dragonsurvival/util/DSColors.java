@@ -9,6 +9,8 @@ import net.minecraft.util.FastColor;
 
 /** Colors are defined as RGB (no alpha) */
 public class DSColors {
+    public static final int NONE = -1;
+
     /** {@link ChatFormatting#BLACK} */
     public static final int BLACK = 0x000000;
 

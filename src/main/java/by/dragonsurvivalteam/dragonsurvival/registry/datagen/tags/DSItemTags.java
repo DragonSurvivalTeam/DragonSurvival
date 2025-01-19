@@ -38,6 +38,9 @@ public class DSItemTags extends ItemTagsProvider {
     @Translation(comments = "Dragon Claw Weapons")
     public static final TagKey<Item> CLAW_WEAPONS = key("claw_weapons");
 
+    @Translation(comments = "Light Source")
+    public static final TagKey<Item> LIGHT_SOURCE = key("light_source");
+
     @Translation(comments = "Transforms empty beacon into Cave Dragon beacon")
     public static final TagKey<Item> TRANSFORM_BEACON_CAVE = key("transform_beacon_cave");
     @Translation(comments = "Transforms empty beacon into Forest Dragon beacon")
@@ -88,6 +91,11 @@ public class DSItemTags extends ItemTagsProvider {
         tag(CLAW_WEAPONS)
                 .addTag(ItemTags.SWORDS)
                 .addTag(Tags.Items.MELEE_WEAPON_TOOLS);
+
+        tag(LIGHT_SOURCE)
+                .add(Items.TORCH)
+                .add(Items.LANTERN)
+                .add(Items.GLOWSTONE);
 
         tag(TRANSFORM_BEACON_CAVE).add(Items.NETHERITE_INGOT);
         tag(TRANSFORM_BEACON_FOREST).add(Items.GOLD_BLOCK);

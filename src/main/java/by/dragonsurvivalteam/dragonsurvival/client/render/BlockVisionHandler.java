@@ -24,6 +24,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
@@ -41,7 +42,6 @@ import java.util.concurrent.TimeUnit;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class BlockVisionHandler {
-    private static final int NO_COLOR = -1;
     /** Extend the search as a buffer while the background thread is searching */
     private static final int EXTENDED_SEARCH_RANGE = 16;
 
@@ -57,13 +57,13 @@ public class BlockVisionHandler {
     private static boolean isSearching;
     private static boolean hasPendingUpdate;
 
-    private record Data(int range, int color, float x, float y, float z) {
+    private record Data(Block block, int range, float x, float y, float z) {
         public boolean isInRange(final Vec3 position, final int visibleRange) {
             return position.distanceToSqr(x + 0.5, y + 0.5, z + 0.5) <= visibleRange * visibleRange;
         }
 
         public void render(final VertexConsumer buffer, final PoseStack.Pose pose) {
-            drawLines(buffer, pose, x, y, z, x + 1, y + 1, z + 1, color);
+            drawLines(buffer, pose, x, y, z, x + 1, y + 1, z + 1, vision.getColor(block));
         }
     }
 
@@ -170,35 +170,35 @@ public class BlockVisionHandler {
             return;
         }
 
-        int range = vision.getRange(null);
+        int searchRange = vision.getRange(null);
 
         // Subtract extended range so that they are considered part of the buffered data
-        if (lastScanCenter != null && player.position().distanceToSqr(lastScanCenter) - EXTENDED_SEARCH_RANGE * EXTENDED_SEARCH_RANGE > range * range) {
+        if (lastScanCenter != null && player.position().distanceToSqr(lastScanCenter) - EXTENDED_SEARCH_RANGE * EXTENDED_SEARCH_RANGE > searchRange * searchRange) {
             return;
         }
 
-        if (!RENDER_DATA.isEmpty() && vision.getColor(oldState.getBlock()) != NO_COLOR) {
+        if (!RENDER_DATA.isEmpty() && vision.getRange(oldState.getBlock()) != BlockVision.NO_RANGE) {
             REMOVAL.add(position);
         }
 
-        int color = vision.getColor(newState.getBlock());
+        int range = vision.getRange(newState.getBlock());
 
-        if (color != NO_COLOR) {
-            RENDER_DATA.add(new Data(vision.getRange(newState.getBlock()), color, position.getX(), position.getY(), position.getZ()));
+        if (range != BlockVision.NO_RANGE) {
+            RENDER_DATA.add(new Data(newState.getBlock(), range, position.getX(), position.getY(), position.getZ()));
         }
     }
 
-    private static void collect(final Player player, int range) {
+    private static void collect(final Player player, int searchRange) {
         BlockPos startPosition = player.blockPosition();
         ChunkPos currentChunkPosition = new ChunkPos(startPosition);
         LevelChunk currentChunk = null;
 
-        int minChunkX = startPosition.getX() - range;
-        int maxChunkX = startPosition.getX() + range;
-        int minChunkY = Math.max(player.level().getMinBuildHeight(), startPosition.getY() - range);
-        int maxChunkY = Math.min(player.level().getMaxBuildHeight(), startPosition.getY() + range);
-        int minChunkZ = startPosition.getZ() - range;
-        int maxChunkZ = startPosition.getZ() + range;
+        int minChunkX = startPosition.getX() - searchRange;
+        int maxChunkX = startPosition.getX() + searchRange;
+        int minChunkY = Math.max(player.level().getMinBuildHeight(), startPosition.getY() - searchRange);
+        int maxChunkY = Math.min(player.level().getMaxBuildHeight(), startPosition.getY() + searchRange);
+        int minChunkZ = startPosition.getZ() - searchRange;
+        int maxChunkZ = startPosition.getZ() + searchRange;
 
         boolean foundSection = false;
         BlockPos.MutableBlockPos mutablePosition = BlockPos.ZERO.mutable();
@@ -230,10 +230,10 @@ public class BlockVisionHandler {
                             continue;
                         }
 
-                        int color = vision.getColor(state.getBlock());
+                        int range = vision.getRange(state.getBlock());
 
-                        if (color != NO_COLOR) {
-                            SEARCH_RESULT.add(new Data(vision.getRange(state.getBlock()), color, x, y, z));
+                        if (range != BlockVision.NO_RANGE) {
+                            SEARCH_RESULT.add(new Data(state.getBlock(), range, x, y, z));
                         }
                     }
 
@@ -264,7 +264,7 @@ public class BlockVisionHandler {
         Boolean[] cachedSection = CHUNK_CACHE.getIfPresent(section);
 
         if (cachedSection == null || cachedSection[sectionIndex] == null) {
-            boolean containsRelevantBlock = !section.hasOnlyAir() && section.maybeHas(state -> vision.getColor(state.getBlock()) != NO_COLOR);
+            boolean containsRelevantBlock = !section.hasOnlyAir() && section.maybeHas(state -> vision.getRange(state.getBlock()) != BlockVision.NO_RANGE);
 
             if (cachedSection == null) {
                 cachedSection = new Boolean[chunk.getSections().length];

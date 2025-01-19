@@ -16,7 +16,13 @@
                     "minecraft:diamond_ore",
                     "minecraft:deepslate_diamond_ore"
                   ],
-                  "outline_color": "aqua",
+                  "colors": [
+                    "gold",
+                    "dark_purple",
+                    "green",
+                    "red",
+                    "blue"
+                  ],
                   "range": 16.0
                 }
               ],
@@ -34,7 +40,9 @@
                     "minecraft:lapis_ore",
                     "minecraft:deepslate_lapis_ore"
                   ],
-                  "outline_color": "blue",
+                  "colors": [
+                    "blue"
+                  ],
                   "range": 24.0
                 }
               ],
@@ -52,7 +60,9 @@
                     "minecraft:gold_ore",
                     "minecraft:deepslate_gold_ore"
                   ],
-                  "outline_color": "gold",
+                  "colors": [
+                    "gold"
+                  ],
                   "range": 32.0
                 }
               ],
@@ -70,7 +80,9 @@
                     "minecraft:redstone_ore",
                     "minecraft:deepslate_redstone_ore"
                   ],
-                  "outline_color": "dark_red",
+                  "colors": [
+                    "dark_red"
+                  ],
                   "range": 32.0
                 }
               ],

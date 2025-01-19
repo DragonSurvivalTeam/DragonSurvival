@@ -11,6 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
@@ -35,6 +36,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVision.Instance> {
     @Translation(comments = {
             "§6■ Block Vision:§r",
@@ -44,30 +47,41 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
     })
     private static final String HARVEST_BONUS = Translation.Type.GUI.wrap("block_vision");
 
-    public static int NO_COLOR = -1;
-    public static int NO_RANGE = 0;
+    @Translation(comments = "Multiple")
+    private static final String MULTIPLE_COLORS = Translation.Type.GUI.wrap("block_vision.multiple_colors");
+
+    public static final int NO_RANGE = 0;
 
     public static final Codec<BlockVision> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             DurationInstanceBase.CODEC.fieldOf("base").forGetter(identity -> identity),
             RegistryCodecs.homogeneousList(Registries.BLOCK).fieldOf("blocks").forGetter(BlockVision::blocks),
             LevelBasedValue.CODEC.fieldOf("range").forGetter(BlockVision::range),
-            TextColor.CODEC.fieldOf("outline_color").forGetter(BlockVision::outlineColor)
+            TextColor.CODEC.listOf().fieldOf("colors").forGetter(BlockVision::colors)
     ).apply(instance, BlockVision::new));
 
     private final HolderSet<Block> blocks;
     private final LevelBasedValue range;
-    private final TextColor outlineColor;
+    private final List<TextColor> colors;
 
-    public BlockVision(final DurationInstanceBase<?, ?> base, final HolderSet<Block> blocks, final LevelBasedValue range, final TextColor outlineColor) {
+    public BlockVision(final DurationInstanceBase<?, ?> base, final HolderSet<Block> blocks, final LevelBasedValue range, final List<TextColor> colors) {
         super(base);
         this.blocks = blocks;
         this.range = range;
-        this.outlineColor = outlineColor;
+        this.colors = colors;
     }
 
     public MutableComponent getDescription(final int abilityLevel) {
         int range = (int) this.range.calculate(abilityLevel);
-        String color = outlineColor.serialize();
+
+        Component color;
+
+        if (colors.size() == 1) {
+            color = DSColors.withColor(colors.getFirst().serialize(), colors.getFirst().getValue());
+        } else if (colors.size() > 1) {
+            color = DSColors.withColor(Component.translatable(MULTIPLE_COLORS), Functions.lerpColor(colors.stream().map(TextColor::getValue).toList()));
+        } else {
+            color = DSColors.dynamicValue(Component.translatable(LangKey.NONE));
+        }
 
         MutableComponent appliesTo = null;
 
@@ -87,7 +101,7 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
             appliesTo = Component.translatable(LangKey.NONE);
         }
 
-        return Component.translatable(HARVEST_BONUS, DSColors.dynamicValue(range), DSColors.withColor(color, outlineColor.getValue()), DSColors.dynamicValue(appliesTo));
+        return Component.translatable(HARVEST_BONUS, DSColors.dynamicValue(range), color, DSColors.dynamicValue(appliesTo));
     }
 
     public HolderSet<Block> blocks() {
@@ -98,8 +112,8 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
         return range;
     }
 
-    public TextColor outlineColor() {
-        return outlineColor;
+    public List<TextColor> colors() {
+        return colors;
     }
 
     @Override
@@ -125,19 +139,19 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
         public int getRange(@Nullable final Block block) {
             //noinspection deprecation -> ignore
             if (block == null || baseData().blocks().contains(block.builtInRegistryHolder())) {
-                return (int) baseData().range().calculate(appliedAbilityLevel());
+                return (int) Math.max(NO_RANGE, baseData().range().calculate(appliedAbilityLevel()));
             }
 
             return 0;
         }
 
-        public int getColor(final Block block) {
+        public List<Integer> getColors(final Block block) {
             //noinspection deprecation -> ignore
             if (baseData().blocks().contains(block.builtInRegistryHolder())) {
-                return baseData().outlineColor().getValue();
+                return baseData().colors().stream().map(color -> DSColors.withAlpha(color.getValue(), 1)).toList();
             }
 
-            return NO_COLOR;
+            return List.of();
         }
 
         @Override

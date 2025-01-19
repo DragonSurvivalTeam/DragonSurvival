@@ -40,11 +40,16 @@ public interface Proxy {
         return false;
     }
 
+    default float getTimer() {
+        return 1;
+    }
+
     /** This will always return 'false' when in production */
     default boolean isOnRenderThread() {
         return false;
     }
 
     @Nullable RegistryAccess getAccess();
+
     boolean isMining(final Player player);
 }

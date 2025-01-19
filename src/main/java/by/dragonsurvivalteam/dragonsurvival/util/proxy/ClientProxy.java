@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.util.proxy;
 
+import by.dragonsurvivalteam.dragonsurvival.client.DragonSurvivalClient;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.sounds.FollowEntitySound;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AbilityAnimation;
@@ -121,6 +122,11 @@ public class ClientProxy implements Proxy {
         }
 
         return dragon.isPlayingEmote(emote);
+    }
+
+    @Override
+    public float getTimer() {
+        return DragonSurvivalClient.timer;
     }
 
     @Override
