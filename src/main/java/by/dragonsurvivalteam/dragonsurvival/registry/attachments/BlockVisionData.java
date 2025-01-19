@@ -2,7 +2,6 @@ package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.BlockVision;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
-import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -21,8 +20,10 @@ import java.util.Map;
 
 @EventBusSubscriber
 public class BlockVisionData extends Storage<BlockVision.Instance> {
-    private final Map<Block, Pair</* Range */ Integer, /* Color */ List<Integer>>> cache = new HashMap<>();
+    private final Map<Block, CacheEntry> cache = new HashMap<>();
     private int maximumRange = -1;
+
+    record CacheEntry(int range, List<Integer> colors, BlockVision.DisplayType displayType) {}
 
     public int getRange(@Nullable final Block block) {
         if (block == null) {
@@ -33,15 +34,19 @@ public class BlockVisionData extends Storage<BlockVision.Instance> {
             return maximumRange;
         }
 
-        return cache.computeIfAbsent(block, this::storeData).first();
+        return cache.computeIfAbsent(block, this::storeData).range();
     }
 
     public int getColor(final Block block) {
-        return Functions.lerpColor(cache.computeIfAbsent(block, this::storeData).second());
+        return Functions.lerpColor(cache.computeIfAbsent(block, this::storeData).colors());
     }
 
-    private Pair<Integer, List<Integer>> storeData(final Block block) {
-        return Pair.of(storeRange(block), storeColor(block));
+    public BlockVision.DisplayType getDisplayType(final Block block) {
+        return cache.computeIfAbsent(block, this::storeData).displayType();
+    }
+
+    private CacheEntry storeData(final Block block) {
+        return new CacheEntry(storeRange(block), storeColor(block), storeDisplayType(block));
     }
 
     /** If the passed state is 'null' it will return the range as well */
@@ -69,6 +74,18 @@ public class BlockVisionData extends Storage<BlockVision.Instance> {
         }
 
         return List.of();
+    }
+
+    private BlockVision.DisplayType storeDisplayType(final Block block) {
+        for (BlockVision.Instance instance : all()) {
+            BlockVision.DisplayType displayType = instance.getDisplayType(block);
+
+            if (displayType != BlockVision.DisplayType.NONE) {
+                return displayType;
+            }
+        }
+
+        return BlockVision.DisplayType.NONE;
     }
 
     @Override

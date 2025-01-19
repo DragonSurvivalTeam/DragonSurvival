@@ -10,6 +10,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.particles.dragon.LargePoisonP
 import by.dragonsurvivalteam.dragonsurvival.client.particles.dragon.SmallFireParticle;
 import by.dragonsurvivalteam.dragonsurvival.client.particles.dragon.SmallLightningParticle;
 import by.dragonsurvivalteam.dragonsurvival.client.particles.dragon.SmallPoisonParticle;
+import by.dragonsurvivalteam.dragonsurvival.common.particles.CustomGlowParticle;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.LargeFireParticleOption;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.LargeLightningParticleOption;
 import by.dragonsurvivalteam.dragonsurvival.common.particles.LargePoisonParticleOption;
@@ -38,10 +39,7 @@ import java.util.function.Supplier;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class DSParticles {
-    public static final DeferredRegister<ParticleType<?>> REGISTRY = DeferredRegister.create(
-            BuiltInRegistries.PARTICLE_TYPE,
-            DragonSurvival.MODID
-    );
+    public static final DeferredRegister<ParticleType<?>> REGISTRY = DeferredRegister.create(BuiltInRegistries.PARTICLE_TYPE, DragonSurvival.MODID);
 
     public static final DeferredHolder<ParticleType<?>, ParticleType<SmallFireParticleOption>> FIRE = register("fire", () -> SmallFireParticleOption.CODEC, () -> SmallFireParticleOption.STREAM_CODEC);
     public static final DeferredHolder<ParticleType<?>, ParticleType<LargeFireParticleOption>> LARGE_FIRE = register("large_fire", () -> LargeFireParticleOption.CODEC, () -> LargeFireParticleOption.STREAM_CODEC);
@@ -55,6 +53,8 @@ public class DSParticles {
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> CAVE_BEACON_PARTICLE = REGISTRY.register("netherite_particle", () -> new SimpleParticleType(false));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> SEA_BEACON_PARTICLE = REGISTRY.register("diamond_particle", () -> new SimpleParticleType(false));
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> FOREST_BEACON_PARTICLE = REGISTRY.register("gold_particle", () -> new SimpleParticleType(false));
+
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> GLOW = REGISTRY.register("glow", () -> new SimpleParticleType(false));
 
     private static <T extends ParticleOptions> DeferredHolder<ParticleType<?>, ParticleType<T>> register(final String name, final Supplier<MapCodec<T>> codecSupplier, final Supplier<StreamCodec<? super RegistryFriendlyByteBuf, T>> streamCodecSupplier) {
         return REGISTRY.register(name, () -> new ParticleType<>(false) {
@@ -83,5 +83,6 @@ public class DSParticles {
         event.registerSpriteSet(DSParticles.CAVE_BEACON_PARTICLE.get(), BeaconParticle.FireFactory::new);
         event.registerSpriteSet(DSParticles.SEA_BEACON_PARTICLE.get(), BeaconParticle.MagicFactory::new);
         event.registerSpriteSet(DSParticles.FOREST_BEACON_PARTICLE.get(), BeaconParticle.PeaceFactory::new);
+        event.registerSpriteSet(DSParticles.GLOW.get(), CustomGlowParticle.Provider::new);
     }
 }

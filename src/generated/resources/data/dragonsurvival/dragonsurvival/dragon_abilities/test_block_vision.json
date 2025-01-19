@@ -23,6 +23,7 @@
                     "red",
                     "blue"
                   ],
+                  "display_type": "outline",
                   "range": 16.0
                 }
               ],
@@ -43,6 +44,7 @@
                   "colors": [
                     "blue"
                   ],
+                  "display_type": "outline",
                   "range": 24.0
                 }
               ],
@@ -63,6 +65,7 @@
                   "colors": [
                     "gold"
                   ],
+                  "display_type": "particles",
                   "range": 32.0
                 }
               ],
@@ -83,6 +86,7 @@
                   "colors": [
                     "dark_red"
                   ],
+                  "display_type": "particles",
                   "range": 32.0
                 }
               ],

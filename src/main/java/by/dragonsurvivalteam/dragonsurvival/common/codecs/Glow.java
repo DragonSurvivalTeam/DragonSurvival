@@ -28,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
 public class Glow extends DurationInstanceBase<GlowData, Glow.Instance> {
     public static final Codec<Glow> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             DurationInstanceBase.CODEC.fieldOf("base").forGetter(identity -> identity),
-            TextColor.CODEC.fieldOf("color").forGetter(Glow::color)
+            TextColor.CODEC.fieldOf("color").forGetter(Glow::color) // TODO :: probably make this a list as well (to avoid needing separate entries / instances)
     ).apply(instance, Glow::new));
 
     private final TextColor color;

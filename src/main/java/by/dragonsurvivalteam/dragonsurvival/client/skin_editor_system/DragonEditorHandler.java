@@ -62,6 +62,7 @@ public class DragonEditorHandler {
 
         if (layer == SkinLayer.BASE && partKey.equalsIgnoreCase(DefaultPartLoader.NO_PART)) {
             // Without a base the dragon will be invisible
+            // TODO :: return a sort of full-textured missingno texture?
             return ResourceLocation.parse(DragonPartLoader.DRAGON_PARTS.get(type).get(layer).getFirst().texture());
         }
 
@@ -84,6 +85,7 @@ public class DragonEditorHandler {
 
         if (layer == SkinLayer.BASE && partKey.equalsIgnoreCase(DefaultPartLoader.NO_PART)) {
             // Without a base the dragon will be invisible
+            // TODO :: return a sort of full-textured missingno texture?
             return DragonPartLoader.DRAGON_PARTS.get(type).get(layer).getFirst();
         }
 

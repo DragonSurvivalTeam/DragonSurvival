@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.render;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.BlockVision;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.FrustumAccess;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSParticles;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.BlockVisionData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import com.google.common.cache.Cache;
@@ -23,6 +24,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.enchantment.effects.SpawnParticlesEffect;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -57,7 +59,7 @@ public class BlockVisionHandler {
     private static boolean isSearching;
     private static boolean hasPendingUpdate;
 
-    private record Data(Block block, int range, float x, float y, float z) {
+    private record Data(Block block, int range, BlockVision.DisplayType displayType, float x, float y, float z) {
         public boolean isInRange(final Vec3 position, final int visibleRange) {
             return position.distanceToSqr(x + 0.5, y + 0.5, z + 0.5) <= visibleRange * visibleRange;
         }
@@ -135,7 +137,25 @@ public class BlockVisionHandler {
             }
 
             if (((FrustumAccess) event.getFrustum()).dragonSurvival$cubeInFrustum(data.x(), data.y(), data.z(), data.x() + 1, data.y() + 1, data.z() + 1)) {
-                data.render(buffer, pose.last());
+                if (data.displayType() == BlockVision.DisplayType.OUTLINE) {
+                    data.render(buffer, pose.last());
+                    continue;
+                }
+
+                if (Minecraft.getInstance().isPaused()) {
+                    // Particles will only render once the game is un-paused
+                    // Meaning if we don't skip here, all the added particles will be shown at once
+                    continue;
+                }
+
+                if (data.displayType() == BlockVision.DisplayType.PARTICLES && player.tickCount % 10 == 0) {
+                    // Increase the bounding box to make the particles more visible for blocks in walls etc.
+                    // TODO :: Maybe there is a somewhat reasonable way to only show particles / focus particles on non-occluded faces?
+                    double xPos = SpawnParticlesEffect.inBoundingBox().getCoordinate(data.x(), data.x() + 0.5, 2, player.getRandom());
+                    double yPos = SpawnParticlesEffect.inBoundingBox().getCoordinate(data.y(), data.y() + 0.5, 2, player.getRandom());
+                    double zPos = SpawnParticlesEffect.inBoundingBox().getCoordinate(data.z(), data.z() + 0.5, 2, player.getRandom());
+                    player.level().addParticle(DSParticles.GLOW.get(), xPos, yPos, zPos, vision.getColor(data.block()), 0, 0);
+                }
             }
         }
 
@@ -165,7 +185,9 @@ public class BlockVisionHandler {
             return;
         }
 
-        if (oldState.getBlock() == newState.getBlock()) {
+        Block newBlock = newState.getBlock();
+
+        if (oldState.getBlock() == newBlock) {
             // There is no block state property support
             return;
         }
@@ -181,10 +203,10 @@ public class BlockVisionHandler {
             REMOVAL.add(position);
         }
 
-        int range = vision.getRange(newState.getBlock());
+        int range = vision.getRange(newBlock);
 
         if (range != BlockVision.NO_RANGE) {
-            RENDER_DATA.add(new Data(newState.getBlock(), range, position.getX(), position.getY(), position.getZ()));
+            RENDER_DATA.add(new Data(newBlock, range, vision.getDisplayType(newBlock), position.getX(), position.getY(), position.getZ()));
         }
     }
 
@@ -230,10 +252,11 @@ public class BlockVisionHandler {
                             continue;
                         }
 
-                        int range = vision.getRange(state.getBlock());
+                        Block block = state.getBlock();
+                        int range = vision.getRange(block);
 
                         if (range != BlockVision.NO_RANGE) {
-                            SEARCH_RESULT.add(new Data(state.getBlock(), range, x, y, z));
+                            SEARCH_RESULT.add(new Data(block, range, vision.getDisplayType(block), x, y, z));
                         }
                     }
 

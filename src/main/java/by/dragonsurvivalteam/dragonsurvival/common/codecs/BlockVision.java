@@ -26,6 +26,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.block.Block;
@@ -54,17 +55,20 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
             DurationInstanceBase.CODEC.fieldOf("base").forGetter(identity -> identity),
             RegistryCodecs.homogeneousList(Registries.BLOCK).fieldOf("blocks").forGetter(BlockVision::blocks),
             LevelBasedValue.CODEC.fieldOf("range").forGetter(BlockVision::range),
+            DisplayType.CODEC.fieldOf("display_type").forGetter(BlockVision::displayType),
             TextColor.CODEC.listOf().fieldOf("colors").forGetter(BlockVision::colors)
     ).apply(instance, BlockVision::new));
 
     private final HolderSet<Block> blocks;
     private final LevelBasedValue range;
+    private final DisplayType displayType;
     private final List<TextColor> colors;
 
-    public BlockVision(final DurationInstanceBase<?, ?> base, final HolderSet<Block> blocks, final LevelBasedValue range, final List<TextColor> colors) {
+    public BlockVision(final DurationInstanceBase<?, ?> base, final HolderSet<Block> blocks, final LevelBasedValue range, final DisplayType displayType, final List<TextColor> colors) {
         super(base);
         this.blocks = blocks;
         this.range = range;
+        this.displayType = displayType;
         this.colors = colors;
     }
 
@@ -91,6 +95,10 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
 
     public LevelBasedValue range() {
         return range;
+    }
+
+    public DisplayType displayType() {
+        return displayType;
     }
 
     public List<TextColor> colors() {
@@ -135,6 +143,15 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
             return List.of();
         }
 
+        public DisplayType getDisplayType(final Block block) {
+            //noinspection deprecation -> ignore
+            if (baseData().blocks().contains(block.builtInRegistryHolder())) {
+                return baseData().displayType();
+            }
+
+            return DisplayType.NONE;
+        }
+
         @Override
         public Component getDescription() {
             return baseData().getDescription(appliedAbilityLevel());
@@ -160,6 +177,22 @@ public class BlockVision extends DurationInstanceBase<BlockVisionData, BlockVisi
 
         public static @Nullable BlockVision.Instance load(@NotNull final HolderLookup.Provider provider, final CompoundTag nbt) {
             return CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), nbt).resultOrPartial(DragonSurvival.LOGGER::error).orElse(null);
+        }
+    }
+
+    public enum DisplayType implements StringRepresentable {
+        OUTLINE("outline"), PARTICLES("particles"), NONE("none");
+
+        public static final Codec<DisplayType> CODEC = StringRepresentable.fromEnum(DisplayType::values);
+        private final String name;
+
+        DisplayType(final String name) {
+            this.name = name;
+        }
+
+        @Override
+        public @NotNull String getSerializedName() {
+            return name;
         }
     }
 }

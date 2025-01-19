@@ -165,6 +165,7 @@ public class DragonAbilities {
                                 DurationInstanceBase.create(DragonSurvival.res("diamond_vision")).infinite().removeAutomatically().hidden().build(),
                                 HolderSet.direct(Blocks.DIAMOND_ORE.builtInRegistryHolder(), Blocks.DEEPSLATE_DIAMOND_ORE.builtInRegistryHolder()),
                                 LevelBasedValue.constant(16),
+                                BlockVision.DisplayType.OUTLINE,
                                 List.of(
                                         TextColor.fromLegacyFormat(ChatFormatting.GOLD),
                                         TextColor.fromLegacyFormat(ChatFormatting.DARK_PURPLE),
@@ -177,18 +178,21 @@ public class DragonAbilities {
                                 DurationInstanceBase.create(DragonSurvival.res("lapis_vision")).infinite().removeAutomatically().hidden().build(),
                                 HolderSet.direct(Blocks.LAPIS_ORE.builtInRegistryHolder(), Blocks.DEEPSLATE_LAPIS_ORE.builtInRegistryHolder()),
                                 LevelBasedValue.constant(24),
+                                BlockVision.DisplayType.OUTLINE,
                                 List.of(TextColor.fromLegacyFormat(ChatFormatting.BLUE))
                         )),
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("gold_vision")).infinite().removeAutomatically().hidden().build(),
                                 HolderSet.direct(Blocks.GOLD_ORE.builtInRegistryHolder(), Blocks.DEEPSLATE_GOLD_ORE.builtInRegistryHolder()),
                                 LevelBasedValue.constant(32),
+                                BlockVision.DisplayType.PARTICLES,
                                 List.of(TextColor.fromLegacyFormat(ChatFormatting.GOLD))
                         )),
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("redstone_vision")).infinite().removeAutomatically().hidden().build(),
                                 HolderSet.direct(Blocks.REDSTONE_ORE.builtInRegistryHolder(), Blocks.DEEPSLATE_REDSTONE_ORE.builtInRegistryHolder()),
                                 LevelBasedValue.constant(32),
+                                BlockVision.DisplayType.PARTICLES,
                                 List.of(TextColor.fromLegacyFormat(ChatFormatting.DARK_RED))
                         ))
                 ), TargetingMode.ALLIES_AND_SELF)), LevelBasedValue.constant(1))),
