@@ -74,4 +74,22 @@ public record DietEntry(String items, Optional<FoodProperties> properties) {
 
         return diet;
     }
+
+    @Override
+    public boolean equals(final Object other) {
+        if (this == other) {
+            return true;
+        }
+
+        if (!(other instanceof DietEntry otherDiet)) {
+            return false;
+        }
+
+        return this.items.equals(otherDiet.items());
+    }
+
+    @Override
+    public int hashCode() {
+        return items.hashCode();
+    }
 }
