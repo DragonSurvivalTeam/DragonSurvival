@@ -376,14 +376,14 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         TagKey<Structure> tag = TagKey.create(Registries.STRUCTURE, DragonSurvival.res("dragon_skeletons")); // FIXME :: use tag from data generation
         createWithToast(parent, LangKey.FIND_BONES, DSItems.STAR_BONE.value(), PlayerTrigger.TriggerInstance.located(inStructure(tag)), 12);
 
-        AdvancementHolder useMemoryBlock = createWithToast(parent, LangKey.USE_MEMORY_BLOCK, DSBlocks.DRAGON_MEMORY_BLOCK.value(), itemUsedOnBlock(DSBlocks.DRAGON_MEMORY_BLOCK.value(), DSItemTags.DRAGON_BEACONS), 10);
+        AdvancementHolder useMemoryBlock = createWithToast(parent, LangKey.USE_MEMORY_BLOCK, DSBlocks.DRAGON_MEMORY_BLOCK.value(), itemUsedOnBlock(DSBlocks.DRAGON_MEMORY_BLOCK.value(), DSBlocks.DRAGON_BEACON.value()), 10);
         buildUseMemoryBlockChildren(useMemoryBlock);
     }
 
     private void buildUseMemoryBlockChildren(final AdvancementHolder parent) {
         // --- Parent: use_memory_block --- //
 
-        AdvancementHolder changeBeacon = createWithToast(parent, LangKey.CHANGE_BEACON, Items.NETHERITE_INGOT, itemUsedOnBlock(DSBlocks.EMPTY_DRAGON_BEACON.value(), Items.DIAMOND_BLOCK, Items.GOLD_BLOCK, Items.NETHERITE_INGOT), 10);
+        AdvancementHolder changeBeacon = createWithToast(parent, LangKey.CHANGE_BEACON, Items.NETHERITE_INGOT, itemUsedOnBlock(DSBlocks.DRAGON_BEACON.value(), Items.DIAMOND_BLOCK, Items.GOLD_BLOCK, Items.NETHERITE_INGOT), 10);
 
         // --- Parent: change_beacon --- //
 
@@ -415,7 +415,8 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         // --- Parent: collect_heart_from_monster --- //
 
-        AdvancementHolder beOldCaveDragon = createWithToast(collectHeartFromMonster, LangKey.CAVE_BE_OLD_DRAGON, DSBlocks.CAVE_DRAGON_BEACON.value(), beDragon(registries.holderOrThrow(BuiltInDragonSpecies.CAVE), registries.holderOrThrow(DragonStages.adult), 1), 120);
+        // TODO :: used beacon texture previously
+        AdvancementHolder beOldCaveDragon = createWithToast(collectHeartFromMonster, LangKey.CAVE_BE_OLD_DRAGON, Items.DIRT, beDragon(registries.holderOrThrow(BuiltInDragonSpecies.CAVE), registries.holderOrThrow(DragonStages.adult), 1), 120);
 
         // --- Parent: cave/be_old_dragon --- //
 
@@ -426,7 +427,8 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
                 upgradeAbilityMax(registries.holderOrThrow(CaveDragonAbilities.CAVE_MAGIC))
         ), 150);
 
-        AdvancementHolder beOldSeaDragon = createWithToast(collectHeartFromMonster, LangKey.SEA_BE_OLD_DRAGON, DSBlocks.SEA_DRAGON_BEACON.value(), beDragon(registries.holderOrThrow(BuiltInDragonSpecies.SEA), registries.holderOrThrow(DragonStages.adult), 1), 120);
+        // TODO :: used beacon texture previously
+        AdvancementHolder beOldSeaDragon = createWithToast(collectHeartFromMonster, LangKey.SEA_BE_OLD_DRAGON, Items.DIRT, beDragon(registries.holderOrThrow(BuiltInDragonSpecies.SEA), registries.holderOrThrow(DragonStages.adult), 1), 120);
 
         // --- Parent: sea/be_old_dragon --- //
 
@@ -437,7 +439,8 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
                 upgradeAbilityMax(registries.holderOrThrow(SeaDragonAbilities.SEA_MAGIC))
         ), 150);
 
-        AdvancementHolder beOldForestDragon = createWithToast(collectHeartFromMonster, LangKey.FOREST_BE_OLD_DRAGON, DSBlocks.FOREST_DRAGON_BEACON.value(), beDragon(registries.holderOrThrow(BuiltInDragonSpecies.FOREST), registries.holderOrThrow(DragonStages.adult), 1), 120);
+        // TODO :: used beacon texture previously
+        AdvancementHolder beOldForestDragon = createWithToast(collectHeartFromMonster, LangKey.FOREST_BE_OLD_DRAGON, Items.DIRT, beDragon(registries.holderOrThrow(BuiltInDragonSpecies.FOREST), registries.holderOrThrow(DragonStages.adult), 1), 120);
 
         // --- Parent: forest/be_old_dragon --- //
 

@@ -165,55 +165,12 @@ public class DSRecipes extends RecipeProvider {
     }
 
     private void buildDragonBeacons(final RecipeOutput output, final HolderLookup.Provider lookup) {
-        // --- Beacons --- //
-
         ShapelessRecipeBuilder
-                .shapeless(RecipeCategory.MISC, DSBlocks.CAVE_DRAGON_BEACON.value())
-                .requires(Tags.Items.INGOTS_NETHERITE)
-                .requires(DSBlocks.EMPTY_DRAGON_BEACON.value())
-                .unlockedBy(getHasName(DSBlocks.EMPTY_DRAGON_BEACON.value()), has(DSBlocks.EMPTY_DRAGON_BEACON.value()))
-                .save(output);
-
-        ShapelessRecipeBuilder
-                .shapeless(RecipeCategory.MISC, DSBlocks.SEA_DRAGON_BEACON.value())
-                .requires(Tags.Items.STORAGE_BLOCKS_GOLD)
-                .requires(DSBlocks.EMPTY_DRAGON_BEACON.value())
-                .unlockedBy(getHasName(DSBlocks.EMPTY_DRAGON_BEACON.value()), has(DSBlocks.EMPTY_DRAGON_BEACON.value()))
-                .save(output);
-
-        ShapelessRecipeBuilder
-                .shapeless(RecipeCategory.MISC, DSBlocks.FOREST_DRAGON_BEACON.value())
-                .requires(Tags.Items.STORAGE_BLOCKS_DIAMOND)
-                .requires(DSBlocks.EMPTY_DRAGON_BEACON.value())
-                .unlockedBy(getHasName(DSBlocks.EMPTY_DRAGON_BEACON.value()), has(DSBlocks.EMPTY_DRAGON_BEACON.value()))
-                .save(output);
-
-        // --- Empty Beacons --- //
-
-        ShapelessRecipeBuilder
-                .shapeless(RecipeCategory.MISC, DSBlocks.EMPTY_DRAGON_BEACON.value())
+                .shapeless(RecipeCategory.MISC, DSBlocks.DRAGON_BEACON.value())
                 .requires(Items.BEACON)
                 .requires(DSItemTags.DRAGON_ALTARS)
                 .unlockedBy(getHasName(Items.BEACON), has(Items.BEACON))
-                .save(output, DragonSurvival.res("empty_dragon_beacon_from_dragon_altars"));
-
-        ShapelessRecipeBuilder
-                .shapeless(RecipeCategory.MISC, DSBlocks.EMPTY_DRAGON_BEACON.value())
-                .requires(DSBlocks.CAVE_DRAGON_BEACON.value())
-                .unlockedBy(getHasName(DSBlocks.CAVE_DRAGON_BEACON.value()), has(DSBlocks.CAVE_DRAGON_BEACON.value()))
-                .save(output, DragonSurvival.res("empty_dragon_beacon_from_cave_dragon_beacon"));
-
-        ShapelessRecipeBuilder
-                .shapeless(RecipeCategory.MISC, DSBlocks.EMPTY_DRAGON_BEACON.value())
-                .requires(DSBlocks.SEA_DRAGON_BEACON.value())
-                .unlockedBy(getHasName(DSBlocks.SEA_DRAGON_BEACON.value()), has(DSBlocks.SEA_DRAGON_BEACON.value()))
-                .save(output, DragonSurvival.res("empty_dragon_beacon_from_sea_dragon_beacon"));
-
-        ShapelessRecipeBuilder
-                .shapeless(RecipeCategory.MISC, DSBlocks.EMPTY_DRAGON_BEACON.value())
-                .requires(DSBlocks.FOREST_DRAGON_BEACON.value())
-                .unlockedBy(getHasName(DSBlocks.FOREST_DRAGON_BEACON.value()), has(DSBlocks.FOREST_DRAGON_BEACON.value()))
-                .save(output, DragonSurvival.res("empty_dragon_beacon_from_forest_dragon_beacon"));
+                .save(output, DragonSurvival.res("dragon_beacon_from_dragon_altars"));
     }
 
     private void buildDragonAltars(final RecipeOutput output, final HolderLookup.Provider lookup) {

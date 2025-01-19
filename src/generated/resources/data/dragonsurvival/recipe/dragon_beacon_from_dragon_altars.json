@@ -3,14 +3,14 @@
   "category": "misc",
   "ingredients": [
     {
-      "tag": "c:ingots/netherite"
+      "item": "minecraft:beacon"
     },
     {
-      "item": "dragonsurvival:empty_dragon_beacon"
+      "tag": "dragonsurvival:dragon_altars"
     }
   ],
   "result": {
     "count": 1,
-    "id": "dragonsurvival:cave_dragon_beacon"
+    "id": "dragonsurvival:dragon_beacon"
   }
 }

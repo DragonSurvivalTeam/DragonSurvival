@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_empty_dragon_beacon": {
+    "has_beacon": {
       "conditions": {
         "items": [
           {
-            "items": "dragonsurvival:empty_dragon_beacon"
+            "items": "minecraft:beacon"
           }
         ]
       },
@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dragonsurvival:sea_dragon_beacon"
+        "recipe": "dragonsurvival:dragon_beacon_from_dragon_altars"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -21,12 +21,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_empty_dragon_beacon"
+      "has_beacon"
     ]
   ],
   "rewards": {
     "recipes": [
-      "dragonsurvival:sea_dragon_beacon"
+      "dragonsurvival:dragon_beacon_from_dragon_altars"
     ]
   }
 }

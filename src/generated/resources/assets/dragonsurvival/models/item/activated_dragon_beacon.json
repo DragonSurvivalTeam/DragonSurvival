@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "dragonsurvival:item/beacon_fire_1"
+    "layer0": "dragonsurvival:item/activated_dragon_beacon"
   }
 }

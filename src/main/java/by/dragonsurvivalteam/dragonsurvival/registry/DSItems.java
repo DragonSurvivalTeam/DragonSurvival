@@ -1,12 +1,10 @@
 package by.dragonsurvivalteam.dragonsurvival.registry;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonBeaconData;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.SourceOfMagicData;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.items.BolasArrowItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.ChargedCoalItem;
-import by.dragonsurvivalteam.dragonsurvival.common.items.DragonBeaconItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.DragonSoulItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.FlightGrantItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.RotatingKeyItem;
@@ -369,36 +367,6 @@ public class DSItems {
                     ))
     ));
 
-    public static final Holder<Item> CAVE_DRAGON_BEACON = REGISTRY.register("cave_dragon_beacon", () -> new DragonBeaconItem(
-            DSBlocks.CAVE_DRAGON_BEACON.get(),
-            new Item.Properties().rarity(Rarity.EPIC)
-                    .component(DSDataComponents.DRAGON_BEACON, new DragonBeaconData(
-                            DragonBeaconData.createEffects(Functions.secondsToTicks(20), 0, DSEffects.FIRE, DSEffects.STURDY_SKIN),
-                            List.of(BuiltInDragonSpecies.CAVE),
-                            new DragonBeaconData.PaymentData(60, 30, 0)
-                    ))
-    ));
-
-    public static final Holder<Item> FOREST_DRAGON_BEACON = REGISTRY.register("forest_dragon_beacon", () -> new DragonBeaconItem(
-            DSBlocks.FOREST_DRAGON_BEACON.get(),
-            new Item.Properties().rarity(Rarity.EPIC)
-                    .component(DSDataComponents.DRAGON_BEACON, new DragonBeaconData(
-                            DragonBeaconData.createEffects(Functions.secondsToTicks(20), 0, DSEffects.PEACE, DSEffects.ANIMAL_PEACE),
-                            List.of(BuiltInDragonSpecies.FOREST),
-                            new DragonBeaconData.PaymentData(60, 30, 0)
-                    ))
-    ));
-
-    public static final Holder<Item> SEA_DRAGON_BEACON = REGISTRY.register("sea_dragon_beacon", () -> new DragonBeaconItem(
-            DSBlocks.SEA_DRAGON_BEACON.get(),
-            new Item.Properties().rarity(Rarity.EPIC)
-                    .component(DSDataComponents.DRAGON_BEACON, new DragonBeaconData(
-                            DragonBeaconData.createEffects(Functions.secondsToTicks(20), 0, DSEffects.MAGIC, MobEffects.DIG_SPEED),
-                            List.of(BuiltInDragonSpecies.SEA),
-                            new DragonBeaconData.PaymentData(60, 30, 0)
-                    ))
-    ));
-
     // --- Misc --- //
 
     @Translation(type = Translation.Type.ITEM, comments = "Dragon Soul")
@@ -474,11 +442,7 @@ public class DSItems {
     public static final Holder<Item> HUNTING_NET = REGISTRY.register("dragon_hunting_mesh", () -> new Item(new Item.Properties()));
     public static final Holder<Item> LIGHTNING_TEXTURE_ITEM = REGISTRY.register("lightning", () -> new Item(new Item.Properties()));
 
-    public static final Holder<Item> PASSIVE_MAGIC_BEACON = REGISTRY.register("beacon_magic_1", () -> new Item(new Item.Properties()));
-    public static final Holder<Item> PASSIVE_PEACE_BEACON = REGISTRY.register("beacon_peace_1", () -> new Item(new Item.Properties()));
-    public static final Holder<Item> PASSIVE_FIRE_BEACON = REGISTRY.register("beacon_fire_1", () -> new Item(new Item.Properties()));
-
-    public static final Holder<Item> INACTIVE_MAGIC_DRAGON_BEACON = REGISTRY.register("beacon_magic_0", () -> new Item(new Item.Properties()));
-    public static final Holder<Item> INACTIVE_PEACE_DRAGON_BEACON = REGISTRY.register("beacon_peace_0", () -> new Item(new Item.Properties()));
-    public static final Holder<Item> INACTIVE_FIRE_DRAGON_BEACON = REGISTRY.register("beacon_fire_0", () -> new Item(new Item.Properties()));
+    // TODO :: Only here for easy rendering in 'DragonBeaconBlockEntity' (active beacon is not a different block, it's handled by a block state)
+    //  Unsure if there is another way to do this
+    public static final Holder<Item> ACTIVATED_DRAGON_BEACON = REGISTRY.register("activated_dragon_beacon", () -> new Item(new Item.Properties()));
 }

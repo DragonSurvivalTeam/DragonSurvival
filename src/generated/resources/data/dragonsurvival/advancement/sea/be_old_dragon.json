@@ -31,7 +31,7 @@
     },
     "icon": {
       "count": 1,
-      "id": "dragonsurvival:sea_dragon_beacon"
+      "id": "minecraft:dirt"
     },
     "title": {
       "translate": "dragonsurvival.advancement.sea/be_old_dragon"

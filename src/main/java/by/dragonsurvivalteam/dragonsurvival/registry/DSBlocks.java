@@ -556,41 +556,19 @@ public class DSBlocks {
                     .requiresCorrectToolForDrops())
     );
 
-    @Translation(type = Translation.Type.BLOCK, comments = "Empty Dragon Beacon")
-    @Translation(type = Translation.Type.DESCRIPTION_ADDITION, comments = "■§7 Required to create dragon beacons. When you craft this item, you will keep the beacon used in its recipe.")
-    public static final DeferredHolder<Block, DragonBeacon> EMPTY_DRAGON_BEACON = register(
-            "empty_dragon_beacon",
+    @Translation(type = Translation.Type.BLOCK, comments = "Dragon Beacon")
+    @Translation(type = Translation.Type.DESCRIPTION_ADDITION, comments = "■§7 Can be activated by dragons to grant special effects.")
+    public static final DeferredHolder<Block, DragonBeacon> DRAGON_BEACON = register(
+            "dragon_beacon",
             () -> new DragonBeacon(Block.Properties.of()
                     .mapColor(MapColor.METAL).
                     pushReaction(PushReaction.BLOCK)
                     .strength(15, 50)
                     .requiresCorrectToolForDrops()
                     .noOcclusion()
-                    .noCollission())
-    );
-
-    @Translation(type = Translation.Type.BLOCK, comments = "Forest Dragon Beacon")
-    @Translation(type = Translation.Type.DESCRIPTION_ADDITION, comments = "■§7 Gives the effects §2«Forest Magic»§r and §2«Haste»§r. Best for forest dragons. You can buy an effect by pressing the right button in exchange for experience.")
-    public static final DeferredHolder<Block, DragonBeacon> FOREST_DRAGON_BEACON = REGISTRY.register(
-            "forest_dragon_beacon",
-            () -> new DragonBeacon(EMPTY_DRAGON_BEACON.get().properties()
-                    .lightLevel(value -> value.getValue(BlockStateProperties.LIT) ? 15 : 0))
-    );
-
-    @Translation(type = Translation.Type.BLOCK, comments = "Sea Dragon Beacon")
-    @Translation(type = Translation.Type.DESCRIPTION_ADDITION, comments = "■§7 Gives the effects §2«Sea Peace»§r and §2«Animal Calm»§r. Best for sea dragons. Peaceful animals stop running away from the dragon. You can buy an effect by pressing the right button in exchange for experience.")
-    public static final DeferredHolder<Block, DragonBeacon> SEA_DRAGON_BEACON = REGISTRY.register(
-            "sea_dragon_beacon",
-            () -> new DragonBeacon(EMPTY_DRAGON_BEACON.get().properties()
-                    .lightLevel(value -> value.getValue(BlockStateProperties.LIT) ? 15 : 0))
-    );
-
-    @Translation(type = Translation.Type.BLOCK, comments = "Cave Dragon Beacon")
-    @Translation(type = Translation.Type.DESCRIPTION_ADDITION, comments = "■§7 Gives the effects §2«Cave Fire»§r and §2«Sturdy Skin»§r. Gives extra armor. Best for cave dragons. You can buy an effect by pressing the right button in exchange for experience.")
-    public static final DeferredHolder<Block, DragonBeacon> CAVE_DRAGON_BEACON = REGISTRY.register(
-            "cave_dragon_beacon",
-            () -> new DragonBeacon(EMPTY_DRAGON_BEACON.get().properties()
-                    .lightLevel(value -> value.getValue(BlockStateProperties.LIT) ? 15 : 0))
+                    .noCollission()
+                    .lightLevel(value -> value.getValue(BlockStateProperties.LIT) ? 15 : 0)
+            )
     );
 
     // --- Treasures --- //

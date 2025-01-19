@@ -1,20 +1,17 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffect;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public record DragonBeaconData(List<Effect> effects, List<ResourceKey<DragonSpecies>> applicableSpecies, PaymentData paymentData) {
+public record DragonBeaconData(List<Effect> effects, PaymentData paymentData) {
     public static final Codec<DragonBeaconData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Effect.CODEC.listOf().fieldOf("effects").forGetter(DragonBeaconData::effects),
-            ResourceKey.codec(DragonSpecies.REGISTRY).listOf().fieldOf("applicable_species").forGetter(DragonBeaconData::applicableSpecies),
             PaymentData.CODEC.fieldOf("payment_data").forGetter(DragonBeaconData::paymentData)
     ).apply(instance, DragonBeaconData::new));
 

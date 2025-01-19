@@ -8,7 +8,7 @@
             "condition": "minecraft:location_check",
             "predicate": {
               "block": {
-                "blocks": "dragonsurvival:empty_dragon_beacon"
+                "blocks": "dragonsurvival:dragon_beacon"
               }
             }
           },

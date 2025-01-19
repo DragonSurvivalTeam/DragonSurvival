@@ -23,17 +23,14 @@ public class DataItemModelProvider extends ItemModelProvider {
         super(output, DragonSurvival.MODID, existingFileHelper);
     }
 
-    private static final List<String> blockItemsThatShouldBeBasicInstead = List.of(
+    private static final List<String> BLOCK_MODELS_AS_BASIC = List.of(
             "door",
             "source",
-            "helmet"
-    );
-
-    private static final List<String> blockItemsThatAreManuallyAuthored = List.of(
+            "helmet",
             "beacon"
     );
 
-    private static final List<String> itemsThatAreManuallyAuthored = List.of(
+    private static final List<String> MANUALLY_AUTHORED = List.of(
             "dragon_hunting_mesh",
             "hunter_partisan",
             "hunter_partisan_diamond",
@@ -47,11 +44,7 @@ public class DataItemModelProvider extends ItemModelProvider {
     @Override
     protected void registerModels() {
         DSItems.REGISTRY.getEntries().forEach((holder) -> {
-            if (holder.get() instanceof BlockItem blockItem && blockItemsThatShouldBeBasicInstead.stream().noneMatch(blockItem.toString()::contains)) {
-                if (blockItemsThatAreManuallyAuthored.stream().anyMatch(blockItem.toString()::contains)) {
-                    return;
-                }
-
+            if (holder.get() instanceof BlockItem blockItem && BLOCK_MODELS_AS_BASIC.stream().noneMatch(blockItem.toString()::contains)) {
                 if (blockItem.toString().contains("skeleton")) {
                     // Parse the string up to "_skin"
                     String[] split = holder.getId().getPath().split("_skin");
@@ -76,7 +69,7 @@ public class DataItemModelProvider extends ItemModelProvider {
                     getBuilder(blockItem.toString()).parent(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + holder.getId().getPath())));
                 }
             } else {
-                if (itemsThatAreManuallyAuthored.stream().anyMatch(holder.getId().getPath()::contains)) {
+                if (MANUALLY_AUTHORED.stream().anyMatch(holder.getId().getPath()::contains)) {
                     return;
                 }
 

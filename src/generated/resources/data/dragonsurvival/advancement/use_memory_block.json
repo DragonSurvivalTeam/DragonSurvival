@@ -15,7 +15,7 @@
           {
             "condition": "minecraft:match_tool",
             "predicate": {
-              "items": "#dragonsurvival:dragon_beacons"
+              "items": "dragonsurvival:dragon_beacon"
             }
           }
         ]

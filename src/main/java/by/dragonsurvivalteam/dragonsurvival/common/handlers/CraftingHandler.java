@@ -14,15 +14,10 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 
 @EventBusSubscriber
 public class CraftingHandler {
-    @SubscribeEvent
-    public static void returnBeacon(PlayerEvent.ItemCraftedEvent craftedEvent) {
-        Container inventory = craftedEvent.getInventory();
-        ItemStack result = craftedEvent.getCrafting();
-        int rem = ContainerHelper.clearOrCountMatchingItems(inventory, item -> item.is(DSItems.PASSIVE_FIRE_BEACON)
-                || item.is(DSItems.PASSIVE_MAGIC_BEACON)
-                || item.is(DSItems.PASSIVE_PEACE_BEACON), 1, true);
-        if (rem == 0 && result.getItem() == DSBlocks.EMPTY_DRAGON_BEACON.get().asItem()) {
-            craftedEvent.getEntity().addItem(new ItemStack(Items.BEACON));
+    @SubscribeEvent // The beacon is a remaining material (TODO :: custom recipe to properly handle this?)
+    public static void returnBeacon(final PlayerEvent.ItemCraftedEvent event) {
+        if (event.getCrafting().getItem() == DSBlocks.DRAGON_BEACON.get().asItem()) {
+            event.getEntity().addItem(Items.BEACON.getDefaultInstance());
         }
     }
 

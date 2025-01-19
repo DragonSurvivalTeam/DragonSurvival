@@ -10,11 +10,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -24,11 +25,7 @@ public class DragonBeaconRenderer implements BlockEntityRenderer<DragonBeaconBlo
 
     @Override
     public void render(final DragonBeaconBlockEntity beacon, final float partialTick, final PoseStack pose, @NotNull final MultiBufferSource buffer, final int packedLight, final int packedOverlay) {
-        beacon.tick += 0.5f;
-        pose.pushPose();
-
         Level level = Objects.requireNonNull(beacon.getLevel());
-        Item item = DSBlocks.EMPTY_DRAGON_BEACON.value().asItem();
 
         boolean hasMemoryBlock = level.getBlockState(beacon.getBlockPos().below()).is(DSBlocks.DRAGON_MEMORY_BLOCK);
         boolean isPaused = Minecraft.getInstance().isPaused();
@@ -37,35 +34,35 @@ public class DragonBeaconRenderer implements BlockEntityRenderer<DragonBeaconBlo
         double y = beacon.getBlockPos().getY() + 0.5;
         double z = beacon.getBlockPos().getZ() + (0.25 + level.getRandom().nextInt(5) / 10d);
 
-        switch (beacon.type) {
-            case PEACE -> {
-                item = hasMemoryBlock ? DSItems.PASSIVE_PEACE_BEACON.value() : DSItems.INACTIVE_PEACE_DRAGON_BEACON.value();
+        boolean isActive = beacon.getBlockState().getValue(BlockStateProperties.LIT);
+        Item item = isActive ? DSItems.ACTIVATED_DRAGON_BEACON.value() : DSBlocks.DRAGON_BEACON.value().asItem();
 
-                if (!isPaused && beacon.tick % 5 == 0 && hasMemoryBlock) {
-                    level.addParticle(DSParticles.FOREST_BEACON_PARTICLE.value(), x, y, z, 0, 0, 0);
-                }
-            }
-            case MAGIC -> {
-                item = hasMemoryBlock ? DSItems.PASSIVE_MAGIC_BEACON.value() : DSItems.INACTIVE_MAGIC_DRAGON_BEACON.value();
+        if (!isPaused && isActive && beacon.tick % 5 == 0 && hasMemoryBlock) {
+            double random = level.getRandom().nextDouble();
+            ParticleOptions particle;
 
-                if (!isPaused && beacon.tick % 5 == 0 && hasMemoryBlock) {
-                    level.addParticle(DSParticles.SEA_BEACON_PARTICLE.value(), x, y, z, 0, 0, 0);
-                }
+            if (random < 0.33) {
+                particle = DSParticles.CAVE_BEACON_PARTICLE.value();
+            } else if (random < 0.66) {
+                particle = DSParticles.FOREST_BEACON_PARTICLE.value();
+            } else {
+                particle = DSParticles.SEA_BEACON_PARTICLE.value();
             }
-            case FIRE -> {
-                item = hasMemoryBlock ? DSItems.PASSIVE_FIRE_BEACON.value() : DSItems.INACTIVE_FIRE_DRAGON_BEACON.value();
 
-                if (!isPaused && beacon.tick % 5 == 0 && hasMemoryBlock) {
-                    level.addParticle(DSParticles.CAVE_BEACON_PARTICLE.value(), x, y, z, 0, 0, 0);
-                }
-            }
+            level.addParticle(particle, x, y, z, 0, 0, 0);
         }
 
+        if (!isPaused) {
+            beacon.tick += 0.5f;
+        }
+
+        pose.pushPose();
         float bounce = Mth.sin((beacon.tick + partialTick) / 20 + beacon.bobOffset) * 0.1f + 0.1f;
         pose.translate(0.5, 0.25 + bounce / 2f, 0.5);
         pose.mulPose(Axis.YP.rotationDegrees(beacon.tick));
+
         pose.scale(2, 2, 2);
-        Minecraft.getInstance().getItemRenderer().renderStatic(new ItemStack(item), ItemDisplayContext.GROUND, packedLight, packedOverlay, pose, buffer, level, 0);
+        Minecraft.getInstance().getItemRenderer().renderStatic(item.getDefaultInstance(), ItemDisplayContext.GROUND, packedLight, packedOverlay, pose, buffer, level, 0);
         pose.popPose();
     }
 }

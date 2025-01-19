@@ -19,7 +19,6 @@ public class ItemCondition {
         return ItemPredicate.Builder.item().of(tag).build();
     }
 
-
     @SafeVarargs
     public static ItemPredicate hasPotion(final Holder<Potion>... potions) {
         return ItemPredicate.Builder.item().withSubPredicate(ItemSubPredicates.POTIONS, new ItemPotionsPredicate(HolderSet.direct(potions))).build();

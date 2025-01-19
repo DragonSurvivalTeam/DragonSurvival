@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "dragonsurvival:empty_dragon_beacon"
+          "name": "dragonsurvival:dragon_beacon"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "dragonsurvival:blocks/empty_dragon_beacon"
+  "random_sequence": "dragonsurvival:blocks/dragon_beacon"
 }

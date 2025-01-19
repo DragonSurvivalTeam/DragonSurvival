@@ -2,7 +2,6 @@ package by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonAltarBlock;
-import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonBeacon;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.SkeletonPieceBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.TreasureBlock;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
@@ -48,8 +47,6 @@ public class DSBlockTags extends BlockTagsProvider {
     public static final TagKey<Block> DRAGON_ALTARS = key("dragon_altars");
     @Translation(comments = "Dragon Treasures")
     public static final TagKey<Block> DRAGON_TREASURES = key("dragon_treasures");
-    @Translation(comments = "Dragon Beacons")
-    public static final TagKey<Block> DRAGON_BEACONS = key("dragon_beacons");
 
     @Translation(comments = "Wooden Dragon Doors")
     public static final TagKey<Block> WOODEN_DRAGON_DOORS = key("wooden_dragon_doors");
@@ -72,7 +69,6 @@ public class DSBlockTags extends BlockTagsProvider {
             switch (block) {
                 case DragonAltarBlock ignored -> tag(DRAGON_ALTARS).add(block);
                 case TreasureBlock ignored -> tag(DRAGON_TREASURES).add(block);
-                case DragonBeacon ignored -> tag(DRAGON_BEACONS).add(block);
                 case SkeletonPieceBlock ignored -> tag(key("dragon_bones")).add(block);
                 default -> { /* Nothing to do */ }
             }
@@ -275,11 +271,8 @@ public class DSBlockTags extends BlockTagsProvider {
                 .add(DSBlocks.GRAY_KNIGHT_HELMET.value())
                 .add(DSBlocks.GOLDEN_KNIGHT_HELMET.value())
                 .add(DSBlocks.BLACK_KNIGHT_HELMET.value())
-                .add(DSBlocks.EMPTY_DRAGON_BEACON.value())
+                .add(DSBlocks.DRAGON_BEACON.value())
                 .add(DSBlocks.DRAGON_MEMORY_BLOCK.value())
-                .add(DSBlocks.FOREST_DRAGON_BEACON.value())
-                .add(DSBlocks.SEA_DRAGON_BEACON.value())
-                .add(DSBlocks.CAVE_DRAGON_BEACON.value())
                 .add(DSBlocks.DRAGON_PRESSURE_PLATE.value())
                 .add(DSBlocks.HUMAN_PRESSURE_PLATE.value())
                 .add(DSBlocks.SEA_DRAGON_PRESSURE_PLATE.value())
@@ -301,11 +294,8 @@ public class DSBlockTags extends BlockTagsProvider {
                 .add(DSBlocks.BLACK_KNIGHT_HELMET.value());
         
         tag(BlockTags.NEEDS_IRON_TOOL)
-                .add(DSBlocks.EMPTY_DRAGON_BEACON.value())
-                .add(DSBlocks.DRAGON_MEMORY_BLOCK.value())
-                .add(DSBlocks.FOREST_DRAGON_BEACON.value())
-                .add(DSBlocks.SEA_DRAGON_BEACON.value())
-                .add(DSBlocks.CAVE_DRAGON_BEACON.value());
+                .add(DSBlocks.DRAGON_BEACON.value())
+                .add(DSBlocks.DRAGON_MEMORY_BLOCK.value());
     }
 
     private static TagKey<Block> key(@NotNull final String name) {

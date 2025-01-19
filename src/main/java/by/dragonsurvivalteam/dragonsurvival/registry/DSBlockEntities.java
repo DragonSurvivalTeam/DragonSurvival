@@ -46,10 +46,7 @@ public class DSBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DragonBeaconBlockEntity>> DRAGON_BEACON = REGISTRY.register(
             "dragon_beacon", () -> BlockEntityType.Builder.of(
                             DragonBeaconBlockEntity::new,
-                            DSBlocks.EMPTY_DRAGON_BEACON.get(),
-                            DSBlocks.FOREST_DRAGON_BEACON.get(),
-                            DSBlocks.SEA_DRAGON_BEACON.get(),
-                            DSBlocks.CAVE_DRAGON_BEACON.get())
+                            DSBlocks.DRAGON_BEACON.get())
                     .build(null)
     );
 

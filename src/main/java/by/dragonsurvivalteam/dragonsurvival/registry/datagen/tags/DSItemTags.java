@@ -41,20 +41,14 @@ public class DSItemTags extends ItemTagsProvider {
     @Translation(comments = "Light Source")
     public static final TagKey<Item> LIGHT_SOURCE = key("light_source");
 
-    @Translation(comments = "Transforms empty beacon into Cave Dragon beacon")
-    public static final TagKey<Item> TRANSFORM_BEACON_CAVE = key("transform_beacon_cave");
-    @Translation(comments = "Transforms empty beacon into Forest Dragon beacon")
-    public static final TagKey<Item> TRANSFORM_BEACON_FOREST = key("transform_beacon_forest");
-    @Translation(comments = "Transforms empty beacon into Sea Dragon beacon")
-    public static final TagKey<Item> TRANSFORM_BEACON_SEA = key("transform_beacon_sea");
+    @Translation(comments = "Activates Dragon Beacon")
+    public static final TagKey<Item> ACTIVATES_DRAGON_BEACON = key("activates_dragon_beacon");
 
     // Used in recipes
     @Translation(comments = "Dragon Altars")
     public static final TagKey<Item> DRAGON_ALTARS = key("dragon_altars");
     @Translation(comments = "Dragon Treasures")
     public static final TagKey<Item> DRAGON_TREASURES = key("dragon_treasures");
-    @Translation(comments = "Dragon Beacons")
-    public static final TagKey<Item> DRAGON_BEACONS = key("dragon_beacons");
 
     @Translation(comments = "Wooden Dragon Doors")
     public static final TagKey<Item> WOODEN_DRAGON_DOORS = key("wooden_dragon_doors");
@@ -97,9 +91,8 @@ public class DSItemTags extends ItemTagsProvider {
                 .add(Items.LANTERN)
                 .add(Items.GLOWSTONE);
 
-        tag(TRANSFORM_BEACON_CAVE).add(Items.NETHERITE_INGOT);
-        tag(TRANSFORM_BEACON_FOREST).add(Items.GOLD_BLOCK);
-        tag(TRANSFORM_BEACON_SEA).add(Items.DIAMOND_BLOCK);
+        // TODO
+        tag(ACTIVATES_DRAGON_BEACON).add(Items.NETHERITE_INGOT);
 
         tag(CHARRED_FOOD)
                 .add(DSItems.CHARGED_COAL.value())
@@ -127,7 +120,6 @@ public class DSItemTags extends ItemTagsProvider {
 
         copy(DSBlockTags.DRAGON_ALTARS, DRAGON_ALTARS);
         copy(DSBlockTags.DRAGON_TREASURES, DRAGON_TREASURES);
-        copy(DSBlockTags.DRAGON_BEACONS, DRAGON_BEACONS);
 
         copy(DSBlockTags.SMALL_WOODEN_DRAGON_DOORS, SMALL_WOODEN_DRAGON_DOORS);
         copy(DSBlockTags.WOODEN_DRAGON_DOORS, WOODEN_DRAGON_DOORS);

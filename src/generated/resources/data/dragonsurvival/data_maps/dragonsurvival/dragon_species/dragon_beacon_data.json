@@ -1,0 +1,58 @@
+{
+  "values": {
+    "dragonsurvival:cave": {
+      "effects": [
+        {
+          "amplifier": 0,
+          "duration": 400,
+          "effect": "dragonsurvival:cave_fire"
+        },
+        {
+          "amplifier": 0,
+          "duration": 400,
+          "effect": "dragonsurvival:sturdy_skin"
+        }
+      ],
+      "payment_data": {
+        "duration_multiplier": 30,
+        "experience_cost": 60
+      }
+    },
+    "dragonsurvival:forest": {
+      "effects": [
+        {
+          "amplifier": 0,
+          "duration": 400,
+          "effect": "dragonsurvival:sea_peace"
+        },
+        {
+          "amplifier": 0,
+          "duration": 400,
+          "effect": "dragonsurvival:animal_peace"
+        }
+      ],
+      "payment_data": {
+        "duration_multiplier": 30,
+        "experience_cost": 60
+      }
+    },
+    "dragonsurvival:sea": {
+      "effects": [
+        {
+          "amplifier": 0,
+          "duration": 400,
+          "effect": "dragonsurvival:forest_magic"
+        },
+        {
+          "amplifier": 0,
+          "duration": 400,
+          "effect": "minecraft:haste"
+        }
+      ],
+      "payment_data": {
+        "duration_multiplier": 30,
+        "experience_cost": 60
+      }
+    }
+  }
+}

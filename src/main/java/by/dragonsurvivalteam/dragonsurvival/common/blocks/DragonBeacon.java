@@ -1,10 +1,11 @@
 package by.dragonsurvivalteam.dragonsurvival.common.blocks;
 
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonBeaconData;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSDataMaps;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSSounds;
-import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataComponents;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonBeaconBlockEntity;
 import by.dragonsurvivalteam.dragonsurvival.util.ExperienceUtils;
@@ -16,8 +17,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
@@ -56,73 +55,65 @@ public class DragonBeacon extends Block implements SimpleWaterloggedBlock, Entit
 
     @Override
     public @NotNull InteractionResult useWithoutItem(@NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final BlockHitResult hitResult) {
-        if (level.getBlockEntity(position) instanceof DragonBeaconBlockEntity beacon) {
-            if (!beacon.isRelevant(player)) {
-                return InteractionResult.FAIL;
-            }
+        if (!(level.getBlockEntity(position) instanceof DragonBeaconBlockEntity beacon)) {
+            return InteractionResult.FAIL;
+        }
 
-            if ((player.hasInfiniteMaterials() || ExperienceUtils.getTotalExperience(player) >= beacon.getExperienceCost()) && beacon.applyEffects(player, true)) {
+        if ((player.hasInfiniteMaterials() || ExperienceUtils.getTotalExperience(player) >= beacon.getExperienceCost())) {
+            // The client does not retain the block entity data - not worth to sync it
+            if (!player.level().isClientSide() && beacon.applyEffects(player, true)) {
                 if (!player.hasInfiniteMaterials()) {
                     player.giveExperiencePoints(-beacon.getExperienceCost());
                 }
 
-                level.playSound(player, position, DSSounds.APPLY_EFFECT.get(), SoundSource.PLAYERS, 1, 1);
-                return InteractionResult.sidedSuccess(level.isClientSide());
+                level.playSound(null, position, DSSounds.APPLY_EFFECT.get(), SoundSource.PLAYERS, 1, 1);
             }
+
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
 
         return InteractionResult.FAIL;
     }
 
-    private boolean transformBeacon(final Level level, final BlockPos position, final Player player, final ItemStack stack) {
-        if (!(level.getBlockEntity(position) instanceof DragonBeaconBlockEntity beacon) ||  beacon.type != DragonBeaconBlockEntity.Type.NONE) {
-            return false;
-        }
-
-        Item transformItem;
-
-        if (stack.is(DSItemTags.TRANSFORM_BEACON_CAVE)) {
-            transformItem = DSItems.CAVE_DRAGON_BEACON.value();
-        } else if (stack.is(DSItemTags.TRANSFORM_BEACON_FOREST)) {
-            transformItem = DSItems.FOREST_DRAGON_BEACON.value();
-        } else if (stack.is(DSItemTags.TRANSFORM_BEACON_SEA)) {
-            transformItem = DSItems.SEA_DRAGON_BEACON.value();
-        } else {
-            return false;
-        }
-
-        if (!(transformItem instanceof BlockItem blockItem)) {
-            return false;
-        }
-
-        DragonBeaconData data = transformItem.components().get(DSDataComponents.DRAGON_BEACON.get());
-
-        if (data == null) {
-            return false;
-        }
-
-        if (level.setBlockAndUpdate(position, blockItem.getBlock().defaultBlockState())) {
-            level.playSound(player, position, DSSounds.UPGRADE_BEACON.get(), SoundSource.BLOCKS, 1, 1);
-            stack.consume(1, player);
-
-            if (level.getBlockEntity(position) instanceof DragonBeaconBlockEntity newBeacon) {
-                newBeacon.setData(data);
-            }
-
-            return true;
-        }
-
-        return false;
-    }
-
     @Override
     public @NotNull ItemInteractionResult useItemOn(@NotNull final ItemStack stack, @NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final InteractionHand hand, @NotNull final BlockHitResult hitResult) {
-        if (transformBeacon(level, position, player, stack)) {
-            // TODO :: data should only be server side, meaning client would pass to default?
-            return ItemInteractionResult.sidedSuccess(level.isClientSide());
+        if (state.getValue(BlockStateProperties.LIT)) {
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
 
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        if (!stack.is(DSItemTags.ACTIVATES_DRAGON_BEACON)) {
+            return ItemInteractionResult.FAIL;
+        }
+
+        DragonStateHandler handler = DragonStateProvider.getData(player);
+
+        if (!handler.isDragon()) {
+            return ItemInteractionResult.FAIL;
+        }
+
+        if (player.level().isClientSide()) {
+            // We don't sync the beacon data to the client since it doesn't get retained anyway
+            // Therefor we just think of it as a successful interaction at this point
+            return ItemInteractionResult.sidedSuccess(true);
+        }
+
+        DragonBeaconData beaconData = handler.species().getData(DSDataMaps.DRAGON_BEACON_DATA);
+
+        if (beaconData == null) {
+            return ItemInteractionResult.FAIL;
+        }
+
+        if (!(level.getBlockEntity(position) instanceof DragonBeaconBlockEntity beacon)) {
+            return ItemInteractionResult.FAIL;
+        }
+
+        beacon.setData(beaconData);
+        stack.consume(1, player);
+
+        level.setBlockAndUpdate(position, state.cycle(BlockStateProperties.LIT));
+        level.playSound(null, position, DSSounds.ACTIVATE_BEACON.get(), SoundSource.BLOCKS, 1, 1);
+
+        return ItemInteractionResult.sidedSuccess(level.isClientSide());
     }
 
     @Override

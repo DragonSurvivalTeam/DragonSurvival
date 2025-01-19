@@ -1,9 +1,6 @@
 {
   "values": [
-    "dragonsurvival:empty_dragon_beacon",
-    "dragonsurvival:dragon_memory_block",
-    "dragonsurvival:forest_dragon_beacon",
-    "dragonsurvival:sea_dragon_beacon",
-    "dragonsurvival:cave_dragon_beacon"
+    "dragonsurvival:dragon_beacon",
+    "dragonsurvival:dragon_memory_block"
   ]
 }

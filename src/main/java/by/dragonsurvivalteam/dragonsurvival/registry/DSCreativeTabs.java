@@ -21,16 +21,12 @@ public class DSCreativeTabs {
 
     public static final DeferredRegister<CreativeModeTab> REGISTRY = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, DragonSurvival.MODID);
 
+    // TODO :: handle this by an annotation?
     private static final List<Holder<Item>> HIDDEN = Arrays.asList(
             DSItems.HUNTING_NET,
             DSItems.LIGHTNING_TEXTURE_ITEM,
-            DSItems.PASSIVE_MAGIC_BEACON,
-            DSItems.PASSIVE_PEACE_BEACON,
-            DSItems.PASSIVE_FIRE_BEACON,
-            DSItems.INACTIVE_MAGIC_DRAGON_BEACON,
-            DSItems.INACTIVE_PEACE_DRAGON_BEACON,
-            DSItems.INACTIVE_FIRE_DRAGON_BEACON,
-            DSItems.BOLAS
+            DSItems.BOLAS,
+            DSItems.ACTIVATED_DRAGON_BEACON
     );
 
     private static final CreativeModeTab.DisplayItemsGenerator BLOCK_ITEM_GENERATOR = (parameters, output) -> Stream.of(DSBlocks.REGISTRY).forEach(holder -> holder.getEntries().forEach(entry -> output.accept(entry.value())));
