@@ -1,0 +1,68 @@
+name: 1.21.1 Bug Report
+description: For your bugs.
+title: "[1.21.1 Bug]: "
+labels: ["bug", "triage"]
+assignees:
+  - octocat
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report! Make sure that you have removed the old configs and read the DS installation rules
+
+  - type: input
+    id: contact
+    attributes:
+      label: ■ Your Discord ID or other contacts
+      description: How can we get in touch with you if we need more info?
+      placeholder: BlackAures#7759
+    validations:
+      required: false
+
+  - type: textarea
+    id: version
+    attributes:
+      label: ■ Dragon Survival version
+      description: Copy the full name of the file.
+      placeholder: Example - DragonSurvival-1.21.1-v2.0.2-beta-16.01.2025
+    validations:
+      required: true
+
+  - type: textarea
+    id: modloader_version
+    attributes:
+      label: ■ Forge/Neoforge version
+      description: Copy the full name of modloader and version.
+      placeholder: Example - Neoforge 21.1.93
+    validations:
+      required: true
+
+  - type: dropdown
+    id: server
+    attributes:
+      label: ■ Single game or server?
+      description: There can be huge differences between the single-player game and the server.
+      options:
+        - Single-player (Default)
+        - Self-made dedicated server
+        - Host site
+        - Local network (LAN, Hamachi, Radmin etc.)
+    validations:
+      required: true
+
+  - type: textarea
+    id: bug
+    attributes:
+      label: ■ Describe the bug
+      description: If you are a host or player on a server, indicate this. Provide a link to the modpack or conflicting mods, if any. If the bug is repeatable provide instructions on how we can get the same result as yours.
+      placeholder: I read the wiki and installed the mod correctly, but still encountered bugs! I have been lying on the treasure for five minutes now, but nothing happens. I play on my friend's server and they don't have this problem. 1. Put the treasure on the ground 2. Right-click on them 3. Just wait and nothing happens.
+    validations:
+      required: true
+
+  - type: textarea
+    id: crash-report
+    attributes:
+      label: ■ Crash Report File and Logs
+      description: If your game or server crashes, the game creates a file in crash-reports folder. Just drag and drop file here. Latest logs is good too. No need to copy all text inside.
+    validations:
+      required: false
