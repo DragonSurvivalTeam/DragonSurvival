@@ -1,7 +1,7 @@
 {
   "abilities": "#dragonsurvival:forest_dragon",
   "misc_resources": {
-    "ability_bar": "dragonsurvival:textures/gui/custom/casting_bars/forest_cast_bar.png",
+    "ability_bar": "dragonsurvival:textures/gui/custom/casting_bars/forest/cast_bar.png",
     "altar_banner": "dragonsurvival:textures/gui/custom/altar/forest/altar_icon.png",
     "food_sprites": "dragonsurvival:textures/gui/custom/food_icons/forest_food_icons.png",
     "food_tooltip": {

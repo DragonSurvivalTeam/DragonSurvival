@@ -75,7 +75,7 @@ public class BuiltInDragonSpecies {
                                 DragonSurvival.res("textures/gui/custom/mana_icons/cave/empty.png")
                         ),
                         DragonSurvival.res("textures/gui/custom/altar/cave/altar_icon.png"),
-                        DragonSurvival.res("textures/gui/custom/casting_bars/cave_cast_bar.png"),
+                        DragonSurvival.res("textures/gui/custom/casting_bars/cave/cast_bar.png"),
                         DragonSurvival.res("textures/gui/custom/help_button/cave_help_button.png"),
                         List.of(new GrowthIcon(
                                         DragonSurvival.res("textures/gui/custom/stage/cave/newborn_stage_hover.png"),
@@ -131,7 +131,7 @@ public class BuiltInDragonSpecies {
                                 DragonSurvival.res("textures/gui/custom/mana_icons/sea/empty.png")
                         ),
                         DragonSurvival.res("textures/gui/custom/altar/sea/altar_icon.png"),
-                        DragonSurvival.res("textures/gui/custom/casting_bars/sea_cast_bar.png"),
+                        DragonSurvival.res("textures/gui/custom/casting_bars/sea/cast_bar.png"),
                         DragonSurvival.res("textures/gui/custom/help_button/sea_help_button.png"),
                         List.of(new GrowthIcon(
                                         DragonSurvival.res("textures/gui/custom/stage/sea/newborn_stage_hover.png"),
@@ -187,7 +187,7 @@ public class BuiltInDragonSpecies {
                                 DragonSurvival.res("textures/gui/custom/mana_icons/forest/empty.png")
                         ),
                         DragonSurvival.res("textures/gui/custom/altar/forest/altar_icon.png"),
-                        DragonSurvival.res("textures/gui/custom/casting_bars/forest_cast_bar.png"),
+                        DragonSurvival.res("textures/gui/custom/casting_bars/forest/cast_bar.png"),
                         DragonSurvival.res("textures/gui/custom/help_button/forest_help_button.png"),
                         List.of(new GrowthIcon(
                                         DragonSurvival.res("textures/gui/custom/stage/forest/newborn_stage_hover.png"),
