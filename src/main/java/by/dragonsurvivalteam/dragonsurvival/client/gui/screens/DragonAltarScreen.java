@@ -20,7 +20,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -47,6 +46,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
@@ -229,12 +229,13 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                         initializeHandler(handler2);
                     }
 
-                    // FIXME :: Can run into 'IndexOutOfBoundsException' (maybe only when the species-flicker issue occurs?
-                    FakeClientPlayerUtils.getFakePlayer(0, handler1).animationSupplier = () -> animations[animation1];
-                    FakeClientPlayerUtils.getFakePlayer(1, handler2).animationSupplier = () -> animations[animation2];
+                    // Without clamping the value it may run into 'IndexOutOfBoundsException' for some reason
+                    FakeClientPlayerUtils.getFakePlayer(0, handler1).animationSupplier = () -> animations[Math.min(animation1, animations.length - 1)];
+                    FakeClientPlayerUtils.getFakePlayer(1, handler2).animationSupplier = () -> animations[Math.min(animation2, animations.length - 1)];
 
                     LivingEntity entity1;
-                    int entity1Scale = Math.min(50, (int) handler1.getSize());
+                    int entity1Scale = Math.clamp((int) handler1.getSize(), 20, 50);
+
                     if (handler1.isDragon()) {
                         entity1 = FakeClientPlayerUtils.getFakeDragon(0, handler1);
                         DragonEntity dragon = (DragonEntity) entity1;
@@ -246,7 +247,8 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                     }
 
                     LivingEntity entity2;
-                    int entity2Scale = Math.min(50, (int) handler2.getSize());
+                    int entity2Scale = Math.clamp((int) handler2.getSize(), 20, 50);
+
                     if (handler2.isDragon()) {
                         entity2 = FakeClientPlayerUtils.getFakeDragon(1, handler2);
                         DragonEntity dragon = (DragonEntity) entity2;
@@ -286,7 +288,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
             return;
         }
 
-        handler.setSize(null, handler.species().value().getStartingSize(null));
+        handler.setSize(null, handler.species().value().getStartingStage(null).value().sizeRange().max() - Shapes.EPSILON);
 
         if (handler.body() == null) {
             handler.setBody(null, DragonBody.random(null, handler.species()));

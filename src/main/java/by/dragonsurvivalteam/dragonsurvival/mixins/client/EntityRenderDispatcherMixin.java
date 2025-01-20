@@ -1,11 +1,12 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
+import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelReader;
 import org.joml.Vector3f;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,8 +21,8 @@ public abstract class EntityRenderDispatcherMixin {
 
     @Inject(method = "renderShadow", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;last()Lcom/mojang/blaze3d/vertex/PoseStack$Pose;"))
     private static void dragonSurvival$modifyShadow(PoseStack poseStack, MultiBufferSource buffer, Entity entity, float weight, float partialTicks, LevelReader level, float size, CallbackInfo callback) {
-        if (DragonStateProvider.isDragon(entity)) {
-            Vector3f offset = Functions.getDragonCameraOffset(entity).negate();
+        if (entity instanceof Player player && DragonStateProvider.isDragon(player)) {
+            Vector3f offset = ClientDragonRenderer.getDragonCameraOffset(player).negate();
             poseStack.pushPose();
             poseStack.translate(offset.x(), offset.y(), offset.z());
             dragonSurvival$modifiedPoseStack = true;

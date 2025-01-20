@@ -1,9 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.util;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
-import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
@@ -21,7 +18,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.common.Tags;
-import org.joml.Vector3f;
 import software.bernie.geckolib.util.RenderUtil;
 
 import java.text.NumberFormat;
@@ -267,27 +263,11 @@ public class Functions {
         return value < min ? max : value > max ? min : value;
     }
 
-    public static Vector3f getDragonCameraOffset(Entity entity) {
-        Vector3f lookVector = new Vector3f(0, 0, 0);
-
-        if (entity instanceof Player player) {
-            if(DragonStateProvider.isDragon(entity)) {
-                DragonStateHandler handler = DragonStateProvider.getData(player);
-                MovementData movement = MovementData.getData(entity);
-                float angle = -(float) movement.bodyYaw * ((float) Math.PI / 180F);
-                float x = Mth.sin(angle);
-                float z = Mth.cos(angle);
-                float scale = getScale(player, handler.getSize());
-                lookVector.set(x * scale, 0, z * scale);
-            }
-        }
-
-        return lookVector;
-    }
-
     public static float getScale(final Player player, double size) {
         // The formula is generated based on input / output pairs of various sizes which looked correct
-        return (float) ((0.017 * Math.pow(size, 1.06) + 0.135) * player.getAttributeValue(Attributes.SCALE));
+        // The three values can be used to fine-tune the dragon model with the hitbox across the different sizes
+        // 1 = middle-sized dragons / 2 = large dragons / 3 = small dragons
+        return (float) ((0.010 * Math.pow(size, 1.14) + 0.3) * player.getAttributeValue(Attributes.SCALE));
     }
 
     public static double getSunPosition(final Entity entity) {

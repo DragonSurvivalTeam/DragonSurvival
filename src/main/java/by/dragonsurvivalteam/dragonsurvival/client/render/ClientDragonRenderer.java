@@ -240,7 +240,7 @@ public class ClientDragonRenderer {
             try {
                 poseStack.pushPose();
 
-                Vector3f lookVector = Functions.getDragonCameraOffset(player);
+                Vector3f lookVector = getDragonCameraOffset(player);
                 poseStack.translate(-lookVector.x(), lookVector.y(), -lookVector.z());
 
                 double size = handler.getVisualSize(partialRenderTick);
@@ -270,27 +270,12 @@ public class ClientDragonRenderer {
                 EntityRenderer<? super DragonEntity> dragonRenderer = minecraft.getEntityRenderDispatcher().getRenderer(playerAsDragon);
                 dragonModel.setOverrideTexture(customTexture);
 
-                // You would think that a recursive posestack translation would be needed for each mounted dragon, but because
-                // the situations where we translate the posestack are mutually exclusive with being mounted, we can just use the mount's stats
-                Player playerToUseForPoseStackTranslation;
-                //if(player.getVehicle() instanceof Player mount && DragonStateProvider.isDragon(mount)) {
-                    //playerToUseForPoseStackTranslation = mount;
-               // } else {
-                    playerToUseForPoseStackTranslation = player;
-               // }
-
-                if (playerToUseForPoseStackTranslation.isCrouching()) {
+                if (player.isCrouching()) {
                     // Needed to prevent the dragon model from sinking into the ground
                     // The formula is generated based on input / output pairs of various sizes which looked correct
                     double translate = 1 / (0.4 * Math.pow(size, 0.78) + 0.5);
                     poseStack.translate(0, translate, 0);
-                } /*else if (shouldTranslatePlayerDownForSpinOrFlight(playerToUseForPoseStackTranslation)) {
-                    if (size > DragonStage.MAX_HANDLED_SIZE) {
-                        poseStack.translate(0, -0.55, 0);
-                    } else {
-                        poseStack.translate(0, -0.15 - size / 40 * 0.2, 0);
-                    }
-                }*/
+                }
 
                 boolean isPlayerGliding = ServerFlightHandler.isGliding(player);
                 Entity playerVehicle = player.getVehicle();
@@ -434,6 +419,27 @@ public class ClientDragonRenderer {
             }
         }
         dragonModel.setOverrideTexture(null);
+    }
+
+    public static Vector3f getDragonCameraOffset(final Player player) {
+        Vector3f lookVector = new Vector3f(0, 0, 0);
+
+        MovementData movement = MovementData.getData(player);
+        float angle = -(float) movement.bodyYaw * ((float) Math.PI / 180F);
+        float x = Mth.sin(angle);
+        float z = Mth.cos(angle);
+        float scale = Functions.getScale(player, DragonStateProvider.getData(player).getSize());
+
+        if (Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
+            // To prevent clipping into the model
+            // Also to properly see the dragon body when looking down
+            lookVector.set(x * scale, 0, z * scale);
+        } else {
+            // To render the hitbox closer to the body
+            lookVector.set(x * scale / 1.5, 0, z * scale / 1.5);
+        }
+
+        return lookVector;
     }
 
     @SubscribeEvent
