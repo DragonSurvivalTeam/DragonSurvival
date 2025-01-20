@@ -359,20 +359,30 @@ public class DragonStateHandler extends EntityStateHandler {
         Holder<DragonSpecies> oldSpecies = dragonSpecies;
         dragonSpecies = species;
 
+        boolean speciesHasChanged = species != null && (oldSpecies == null || !oldSpecies.is(species));
+
+        if(speciesHasChanged) {
+            if(body() == null || !species.value().isValidForBody(body())) {
+                setBody(player, DragonBody.random(player != null ? player.registryAccess() : null, species));
+            }
+
+            if (skinData.skinPresets.get().get(speciesKey()).isEmpty()) {
+                refreshSkinPresetForSpecies(speciesKey());
+
+                recompileCurrentSkin();
+            }
+        }
+
         if (player == null) {
             return;
         }
 
-        if (species != null && (oldSpecies == null || !oldSpecies.is(species))) {
+        if (speciesHasChanged) {
             PenaltySupply.clear(player);
             DSModifiers.updateTypeModifiers(player, this);
 
             if (player instanceof ServerPlayer serverPlayer) {
                 refreshMagicData(serverPlayer, false);
-
-                if (skinData.skinPresets.get().get(speciesKey()).isEmpty()) {
-                    refreshSkinPresetForSpecies(speciesKey());
-                }
             }
         } else if (species == null) {
             PenaltySupply.clear(player);
@@ -388,9 +398,11 @@ public class DragonStateHandler extends EntityStateHandler {
         if (this.dragonBody != null && !isSameBody) {
             refreshBody = true;
 
-            // If the model has changed, just override the skin preset with the default one as a failsafe
             if (oldBody != null && this.dragonBody.value().model() != oldBody.value().model()) {
+                // If the model has changed, just override the skin preset with the default one as a failsafe
                 refreshSkinPresetForSpecies(speciesKey());
+
+                recompileCurrentSkin();
             }
         }
 
