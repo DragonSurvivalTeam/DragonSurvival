@@ -2,10 +2,11 @@ import os
 import json
 from PIL import Image
 
-filepath = "./textures/dragon/custom"
+texturefilepath = "./textures/dragon/custom/"
 hueavg = {}
-for dp in os.walk(filepath):
+for dp in os.walk(texturefilepath):
     for fp in dp[2]:
+        print (fp)
         try:
             with Image.open(dp[0] + '/' + fp, 'r') as im:
                 avg = [0, 0, 0]
@@ -43,30 +44,29 @@ for dp in os.walk(filepath):
             mn = min(avg)
             try:
                 if (mx == avg[0]):
-                    #print('red')
                     hue = (avg[1]-avg[2])/(mx-mn)
                 elif (mx == avg[1]):
-                    #print('green')
                     hue = 2.0 + (((avg[2]-avg[0]))/(mx-mn))
                 else:
-                    #print('blue')
                     hue = 4.0 + (((avg[0]-avg[1]))/(mx-mn))
             except ZeroDivisionError:
                 hue = 0
             hue = ((hue * 60.0 + 360.0) % 360.0) / 360.0
-            print(fp, hue)
             hueavg[fp] = hue
         except KeyError as e:
-            print(fp, e)
+            pass
 
-with open("./customization.json", 'r') as jsonf:
-    js = json.load(jsonf)
-    for dragon_type in js.keys():
-        if dragon_type == "defaults":
-            continue
-        for layer, v in js[dragon_type]['layers'].items():
-            for item in v:
-                item['average_hue'] = hueavg[item['texture'].split('/')[-1]]
+partfilepath = "./skin/parts/dragonsurvival/"
+custfiles = {}
+for basepath in os.walk(partfilepath):
+    custfiles[basepath[0]] = []
+    for fp in basepath[2]:
+        custfiles[basepath[0]].append(fp)
 
-with open("./customization.json", 'w') as f:
-    json.dump(js, f, indent=4)
+for cfilepath, cfilelist in custfiles.items():
+    for cfile in cfilelist:
+        js = json.load(open(cfilepath + "/" + cfile))
+        for c in range(len(js)):
+            js[c]['average_hue'] = hueavg[js[c]['texture'].split('/')[-1]]
+        with open(cfilepath + "/" + cfile, 'w') as f:
+            json.dump(js, f, indent=2)
