@@ -44,6 +44,7 @@ import java.util.concurrent.TimeUnit;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class BlockVisionHandler {
+    private static final SpawnParticlesEffect.PositionSource PARTICLE_POSITION = SpawnParticlesEffect.inBoundingBox();
     /** Extend the search as a buffer while the background thread is searching */
     private static final int EXTENDED_SEARCH_RANGE = 16;
 
@@ -143,7 +144,7 @@ public class BlockVisionHandler {
                 }
 
                 if (Minecraft.getInstance().isPaused()) {
-                    // Particles will only render once the game is un-paused
+                    // Newly added particles will only render once the game is un-paused
                     // Meaning if we don't skip here, all the added particles will be shown at once
                     continue;
                 }
@@ -151,9 +152,9 @@ public class BlockVisionHandler {
                 if (data.displayType() == BlockVision.DisplayType.PARTICLES && player.tickCount % 10 == 0) {
                     // Increase the bounding box to make the particles more visible for blocks in walls etc.
                     // TODO :: Maybe there is a somewhat reasonable way to only show particles / focus particles on non-occluded faces?
-                    double xPos = SpawnParticlesEffect.inBoundingBox().getCoordinate(data.x(), data.x() + 0.5, 2, player.getRandom());
-                    double yPos = SpawnParticlesEffect.inBoundingBox().getCoordinate(data.y(), data.y() + 0.5, 2, player.getRandom());
-                    double zPos = SpawnParticlesEffect.inBoundingBox().getCoordinate(data.z(), data.z() + 0.5, 2, player.getRandom());
+                    double xPos = PARTICLE_POSITION.getCoordinate(data.x(), data.x() + 0.5, 2, player.getRandom());
+                    double yPos = PARTICLE_POSITION.getCoordinate(data.y(), data.y() + 0.5, 2, player.getRandom());
+                    double zPos = PARTICLE_POSITION.getCoordinate(data.z(), data.z() + 0.5, 2, player.getRandom());
                     player.level().addParticle(DSParticles.GLOW.get(), xPos, yPos, zPos, vision.getColor(data.block()), 0, 0);
                 }
             }

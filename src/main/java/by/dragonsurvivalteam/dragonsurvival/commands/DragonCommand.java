@@ -10,7 +10,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryDa
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
 import com.mojang.brigadier.tree.ArgumentCommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -78,28 +77,28 @@ public class DragonCommand {
         dragonStage.addChild(target);
     }
 
-    private static int runCommand(Holder<DragonSpecies> type, @Nullable Holder<DragonBody> dragonBody, @Nullable Holder<DragonStage> dragonStage, ServerPlayer player) {
+    private static int runCommand(Holder<DragonSpecies> species, @Nullable Holder<DragonBody> dragonBody, @Nullable Holder<DragonStage> dragonStage, ServerPlayer player) {
         DragonStateHandler data = DragonStateProvider.getData(player);
+        boolean wasDragon = data.isDragon();
 
-        if (type != null && dragonBody == null) {
-            dragonBody = DragonBody.random(player.registryAccess(), type);
+        data.setSpecies(player, species);
+
+        if (species != null && dragonBody == null) {
+            dragonBody = DragonBody.random(player.registryAccess(), species);
         }
 
-        if (type != null && dragonStage == null) {
-            dragonStage = player.registryAccess().holderOrThrow(DragonStages.newborn);
-        }
-
-        if (type == null && data.species() != null) {
-            reInsertClawTools(player);
-        }
-
-        data.setSpecies(player, type);
         data.setBody(player, dragonBody);
 
-        if (dragonStage != null) {
+        if (species != null && dragonStage == null) {
+            data.setDesiredSize(player, species.value().getStartingSize(player.registryAccess()));
+        } else if (species != null) {
             data.setStage(player, dragonStage);
         } else {
             data.setDesiredSize(player, DragonStateHandler.NO_SIZE);
+        }
+
+        if (species == null && wasDragon) {
+            reInsertClawTools(player);
         }
 
         data.setPassengerId(DragonRidingHandler.NO_PASSENGER);

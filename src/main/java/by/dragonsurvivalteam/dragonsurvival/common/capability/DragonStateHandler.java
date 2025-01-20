@@ -25,7 +25,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.InputData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
@@ -660,8 +659,8 @@ public class DragonStateHandler extends EntityStateHandler {
             if (optional.isPresent()) {
                 return optional.get().value().getStartingSize(provider);
             } else {
-                DragonSurvival.LOGGER.warn("Cannot load saved size for dragon species [{}] while deserializing NBT of [{}] due to the dragon type not existing. Falling back to default newborn size.", dragonSpecies, tag);
-                return ResourceHelper.get(provider, DragonStages.newborn).orElseThrow().value().sizeRange().min();
+                DragonSurvival.LOGGER.warn("Cannot load saved size for dragon species [{}] while deserializing NBT of [{}] due to the dragon type not existing. Falling back to the smallest size.", dragonSpecies, tag);
+                return DragonStage.getBounds().min();
             }
         }
 
