@@ -25,7 +25,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.datapacks.AncientDatapack;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
-import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import com.ibm.icu.impl.Pair;
 import com.mojang.math.Axis;
@@ -246,9 +245,11 @@ public class DragonSkinsScreen extends Screen {
     public void init() {
         super.init();
 
-        if(!DragonBody.isBodyWithDefaultModelInRegistry(null)) {
+        //noinspection DataFlowIssue -> player is present
+        if (ResourceHelper.all(minecraft.player.registryAccess(), DragonBody.REGISTRY).stream().noneMatch(body -> body.value().model().equals(DragonBody.DEFAULT_MODEL))) {
             DragonSurvival.LOGGER.warn("No dragon body in the registry uses the default dragon model. Cannot use the Skins screen in this situation.");
             onClose();
+            return;
         }
 
         Minecraft minecraft = getMinecraft();
@@ -266,12 +267,15 @@ public class DragonSkinsScreen extends Screen {
 
         //noinspection DataFlowIssue -> player is present
         handler.deserializeNBT(minecraft.player.registryAccess(), DragonStateProvider.getData(minecraft.player).serializeNBT(minecraft.player.registryAccess()));
-        if(!DragonSpecies.isBuiltIn(handler.speciesKey())) {
+
+        if (!DragonSpecies.isBuiltIn(handler.speciesKey())) {
             handler.setSpecies(null, player.registryAccess().holderOrThrow(BuiltInDragonSpecies.CAVE));
         }
-        if(!handler.body().value().model().equals(DragonBody.DEFAULT_MODEL)) {
+
+        if (!handler.body().value().model().equals(DragonBody.DEFAULT_MODEL)) {
             ResourceHelper.all(null, DragonBody.REGISTRY).stream().filter(body -> body.value().model().equals(DragonBody.DEFAULT_MODEL)).findFirst().ifPresent(body -> handler.setBody(null, body));
         }
+
         handler.setStage(null, dragonStage);
         handler.setCurrentStageCustomization(DragonStateProvider.getData(player).getCustomizationForStage(dragonStage.getKey()));
         handler.getCurrentSkinPreset().setAllStagesToUseDefaultSkin(false);
@@ -281,8 +285,8 @@ public class DragonSkinsScreen extends Screen {
         // Add scrollable list of dragon bodies
         List<AbstractWidget> dragonBodyWidgets = new ArrayList<>();
 
-        for(Holder<DragonBody> dragonBodyHolder : DSDragonBodyTags.getOrdered(null)) {
-            if(dragonBodyHolder.value().model().equals(DragonBody.DEFAULT_MODEL)) {
+        for (Holder<DragonBody> dragonBodyHolder : DSDragonBodyTags.getOrdered(null)) {
+            if (dragonBodyHolder.value().model().equals(DragonBody.DEFAULT_MODEL)) {
                 dragonBodyWidgets.add(createButton(dragonBodyHolder, 0, 0));
             }
         }
@@ -293,11 +297,11 @@ public class DragonSkinsScreen extends Screen {
                 -15, 160, 7, 18, 20, 20, 20,
                 BODY_ARROW_LEFT_HOVER, BODY_ARROW_LEFT_MAIN, BODY_ARROW_RIGHT_HOVER, BODY_ARROW_RIGHT_MAIN, false);
 
-        playerNameDisplay = new HoverButton(startX - 62 , startY - 50 , 165, 22, 165, 22, BUTTON_BACKGROUND_WHITE, BUTTON_BACKGROUND_WHITE, button -> {});
+        playerNameDisplay = new HoverButton(startX - 62, startY - 50, 165, 22, 165, 22, BUTTON_BACKGROUND_WHITE, BUTTON_BACKGROUND_WHITE, button -> { /* Nothing to do */ });
         playerNameDisplay.setMessage(Component.literal(Objects.requireNonNull(player).getGameProfile().getName()));
         addRenderableOnly(playerNameDisplay);
 
-        playerStageDisplay = new HoverButton(startX - 55, startY + 150, 149, 22, 149, 22, STAGE_BACKGROUND, STAGE_BACKGROUND, button -> {});
+        playerStageDisplay = new HoverButton(startX - 55, startY + 150, 149, 22, 149, 22, STAGE_BACKGROUND, STAGE_BACKGROUND, button -> { /* Nothing to do */ });
         //noinspection DataFlowIssue -> key is present
         playerStageDisplay.setMessage(DragonStage.translatableName(dragonStage.getKey()));
         addRenderableOnly(playerStageDisplay);
@@ -331,14 +335,14 @@ public class DragonSkinsScreen extends Screen {
             ResourceKey<DragonStage> nextLevel = dragonStage.getKey();
             boolean ancientDataPackExists = ResourceHelper.get(Objects.requireNonNull(player).registryAccess(), AncientDatapack.ancient).isPresent();
 
-            if(ancientDataPackExists && dragonStage.is(AncientDatapack.ancient)) {
+            if (ancientDataPackExists && dragonStage.is(AncientDatapack.ancient)) {
                 nextLevel = DragonStages.newborn;
             } else if (dragonStage.is(DragonStages.newborn)) {
                 nextLevel = DragonStages.young;
             } else if (dragonStage.is(DragonStages.young)) {
                 nextLevel = DragonStages.adult;
             } else if (dragonStage.is(DragonStages.adult)) {
-                if(ancientDataPackExists) {
+                if (ancientDataPackExists) {
                     nextLevel = AncientDatapack.ancient;
                 } else {
                     nextLevel = DragonStages.newborn;
@@ -359,13 +363,14 @@ public class DragonSkinsScreen extends Screen {
             handler.getSkinData().renderCustomSkin = !handler.getSkinData().renderCustomSkin;
             ConfigHandler.updateConfigValue("render_custom_skin", handler.getSkinData().renderCustomSkin);
             PacketDistributor.sendToServer(new SyncDragonSkinSettings(player.getId(), handler.getSkinData().renderCustomSkin));
-        }){
+        }) {
             @Override
             public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
                 guiGraphics.blit(DragonStateProvider.getData(Objects.requireNonNull(player)).getSkinData().renderCustomSkin ? SKIN_ON : SKIN_OFF, getX() + 3, getY() + 5, 0, 0, 14, 14, 14, 14);
             }
         };
+
         toggleRenderingOwnSkin.setMessage(Component.translatable(SHOW_CUSTOM_SKIN));
         addRenderableWidget(toggleRenderingOwnSkin);
 
@@ -374,19 +379,21 @@ public class DragonSkinsScreen extends Screen {
         HoverButton toggleRenderingOtherSkins = new HoverButton(startX + 128, startY + 26 + 26, 165, 22, 165, 22, BUTTON_BACKGROUND_BLACK, BUTTON_BACKGROUND_BLACK, button -> {
             ClientDragonRenderer.renderOtherPlayerSkins = !ClientDragonRenderer.renderOtherPlayerSkins;
             ConfigHandler.updateConfigValue("render_other_players_custom_skins", ClientDragonRenderer.renderOtherPlayerSkins);
-        }){
+        }) {
             @Override
             public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
                 guiGraphics.blit(ClientDragonRenderer.renderOtherPlayerSkins ? SKIN_ON : SKIN_OFF, getX() + 3, getY() + 5, 0, 0, 14, 14, 14, 14);
             }
         };
+
         toggleRenderingOtherSkins.setMessage(Component.translatable(SHOW_OTHER_CUSTOM_SKINS));
         addRenderableWidget(toggleRenderingOtherSkins);
 
         HoverButton resetSkinButton = new HoverButton(startX + 20, startY + 128, 22, 21, 22, 21, RESET_SKIN_MAIN, RESET_SKIN_HOVER, button -> {
             playerName = Objects.requireNonNull(player).getGameProfile().getName();
         });
+
         addRenderableWidget(resetSkinButton);
 
         HoverButton randomSkinButton = new HoverButton(startX - 6, startY + 128, 22, 21, 22, 21, RANDOM_SKIN_MAIN, RANDOM_SKIN_HOVER, button -> {
@@ -429,7 +436,7 @@ public class DragonSkinsScreen extends Screen {
         openEditorButton.setMessage(Component.translatable(OPEN_EDITOR));
         addRenderableWidget(openEditorButton);
 
-        HoverButton additionsBackground = new HoverButton(startX + 128 + 44, startY + 128 + 16, 69, 22, 69, 22, ADDITIONS_BACKGROUND, ADDITIONS_BACKGROUND, button -> {});
+        HoverButton additionsBackground = new HoverButton(startX + 128 + 44, startY + 128 + 16, 69, 22, 69, 22, ADDITIONS_BACKGROUND, ADDITIONS_BACKGROUND, button -> { /* Nothing to do */ });
         addRenderableOnly(additionsBackground);
 
         ExtendedButton oldTextureButton = new ExtendedButton(startX + 176, startY + 128 + 20, 14, 14, Component.empty(), button -> {
@@ -440,10 +447,11 @@ public class DragonSkinsScreen extends Screen {
                 guiGraphics.blit(handler.getCurrentSkinPreset().isAnyStageUsingDefaultSkin() ? OLD_TEXTURE_ON : OLD_TEXTURE_OFF, getX(), getY(), 0, 0, 14, 14, 14, 14);
             }
         };
+
         oldTextureButton.setTooltip(Tooltip.create(Component.translatable(DEFAULT_SKIN_INFO)));
         addRenderableWidget(oldTextureButton);
 
-        HoverButton helpButton = new HoverButton(startX + 176 + 16, startY + 128 + 20, 14, 14, 14, 14, INFO_MAIN, INFO_HOVER, button -> {});
+        HoverButton helpButton = new HoverButton(startX + 176 + 16, startY + 128 + 20, 14, 14, 14, 14, INFO_MAIN, INFO_HOVER, button -> { /* Nothing to do */ });
         helpButton.setTooltip(Tooltip.create(Component.translatable(HELP)));
         addRenderableWidget(helpButton);
 

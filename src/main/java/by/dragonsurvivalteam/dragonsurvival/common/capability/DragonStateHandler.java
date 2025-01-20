@@ -124,7 +124,7 @@ public class DragonStateHandler extends EntityStateHandler {
         }
 
         HolderSet<DragonStage> stages = dragonSpecies.value().getStages(player != null ? player.registryAccess() : null);
-        setStage(player, stages.get((int)(RANDOM.nextDouble() * stages.size())));
+        setStage(player, stages.getRandomElement(player != null ? player.getRandom() : RANDOM).orElseThrow());
     }
 
     /** Sets the stage and retains the current size */
@@ -359,16 +359,15 @@ public class DragonStateHandler extends EntityStateHandler {
         Holder<DragonSpecies> oldSpecies = dragonSpecies;
         dragonSpecies = species;
 
-        boolean speciesHasChanged = species != null && (oldSpecies == null || !oldSpecies.is(species));
+        boolean hasChanged = species != null && !DragonUtils.isSpecies(oldSpecies, species);
 
-        if(speciesHasChanged) {
-            if(body() == null || !species.value().isValidForBody(body())) {
+        if (hasChanged) {
+            if (body() == null || !species.value().isValidForBody(body())) {
                 setBody(player, DragonBody.random(player != null ? player.registryAccess() : null, species));
             }
 
             if (skinData.skinPresets.get().get(speciesKey()).isEmpty()) {
                 refreshSkinPresetForSpecies(speciesKey());
-
                 recompileCurrentSkin();
             }
         }
@@ -377,7 +376,7 @@ public class DragonStateHandler extends EntityStateHandler {
             return;
         }
 
-        if (speciesHasChanged) {
+        if (hasChanged) {
             PenaltySupply.clear(player);
             DSModifiers.updateTypeModifiers(player, this);
 

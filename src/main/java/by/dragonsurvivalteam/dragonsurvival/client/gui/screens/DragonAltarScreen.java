@@ -188,21 +188,22 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
             animation1++;
             animation2++;
 
-            // FIXME :: for some reason at this point the species may not be set (happened for 'handler2')
+            // FIXME :: for some reason at this point the species may not be set
+            if (handler1.species() != null && handler2.species() != null) {
+                if (handler1.body() == null) {
+                    handler1.setBody(null, DragonBody.random(null, handler1.species()));
+                }
 
-            if (handler1.body() == null) {
+                handler2.setBody(null, handler1.body());
                 handler1.setBody(null, DragonBody.random(null, handler1.species()));
-            }
 
-            handler2.setBody(null, handler1.body());
-            handler1.setBody(null, DragonBody.random(null, handler1.species()));
+                if (animation1 >= animations.length) {
+                    animation1 = 0;
+                }
 
-            if (animation1 >= animations.length) {
-                animation1 = 0;
-            }
-
-            if (animation2 >= animations.length) {
-                animation2 = 0;
+                if (animation2 >= animations.length) {
+                    animation2 = 0;
+                }
             }
         }
 
@@ -213,7 +214,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
 
         for (Renderable btn : renderables) {
             if (btn instanceof AltarTypeButton button) {
-                if (button.isHoveredOrFocused()) {
+                if (button.isHovered()) {
                     Holder<DragonSpecies> handler1PreviousSpecies = handler1.species();
                     Holder<DragonSpecies> handler2PreviousSpecies = handler2.species();
                     handler1.setSpecies(null, button.species);
@@ -228,6 +229,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                         initializeHandler(handler2);
                     }
 
+                    // FIXME :: Can run into 'IndexOutOfBoundsException' (maybe only when the species-flicker issue occurs?
                     FakeClientPlayerUtils.getFakePlayer(0, handler1).animationSupplier = () -> animations[animation1];
                     FakeClientPlayerUtils.getFakePlayer(1, handler2).animationSupplier = () -> animations[animation2];
 
@@ -280,15 +282,18 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
     }
 
     private void initializeHandler(final DragonStateHandler handler) {
-        handler.setSize(null, DragonStages.newborn().sizeRange().max() - 0.0001);
+        if (handler.species() == null) {
+            return;
+        }
+
+        handler.setSize(null, handler.species().value().getStartingSize(null));
+
         if (handler.body() == null) {
             handler.setBody(null, DragonBody.random(null, handler.species()));
         }
 
         handler.setRandomValidStage(null);
-        if (handler.species() != null) {
-            handler.getCurrentStageCustomization().defaultSkin = true;
-        }
+        handler.getCurrentStageCustomization().defaultSkin = true;
     }
 
     @Override

@@ -33,7 +33,6 @@ import net.neoforged.fml.loading.FMLLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 @Mod(DragonSurvival.MODID)
 public class DragonSurvival {
     public static final String DISCORD_URL = "https://discord.gg/8SsB8ar";

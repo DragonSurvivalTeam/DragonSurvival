@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.client.models.DragonModel;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DefaultPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DragonPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonPart;
@@ -12,7 +13,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
@@ -49,7 +49,6 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
-import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class DragonEditorHandler {
@@ -157,12 +156,7 @@ public class DragonEditorHandler {
         normalTarget.clear(true);
         glowTarget.clear(true);
 
-        ResourceKey<DragonStage> stageKey = handler.stageKey();
         DragonStageCustomization customization = handler.getCurrentStageCustomization();
-        String uuid = player.getStringUUID();
-
-        ResourceLocation dynamicNormalKey = ResourceLocation.fromNamespaceAndPath(MODID, "dynamic_normal_" + uuid + "_" + stageKey.location().getPath());
-        ResourceLocation dynamicGlowKey = ResourceLocation.fromNamespaceAndPath(MODID, "dynamic_glow_" + uuid + "_" + stageKey.location().getPath());
 
         for (SkinLayer layer : SkinLayer.values()) {
             LayerSettings settings = customization.layerSettings.get(layer).get();
@@ -227,8 +221,8 @@ public class DragonEditorHandler {
             }
         }
 
-        RenderingUtils.copyTextureFromRenderTarget(glowTarget, dynamicGlowKey);
-        RenderingUtils.copyTextureFromRenderTarget(normalTarget, dynamicNormalKey);
+        RenderingUtils.copyTextureFromRenderTarget(normalTarget, DragonModel.dynamicTexture(player, handler, false));
+        RenderingUtils.copyTextureFromRenderTarget(glowTarget, DragonModel.dynamicTexture(player, handler, true));
         glowTarget.destroyBuffers();
         normalTarget.destroyBuffers();
         RenderSystem.restoreGlState(state);
@@ -290,12 +284,8 @@ public class DragonEditorHandler {
             }
         }
 
-        String uuid = player.getStringUUID();
-        ResourceLocation dynamicNormalKey = ResourceLocation.fromNamespaceAndPath(MODID, "dynamic_normal_" + uuid + "_" + handler.stageId().getPath());
-        ResourceLocation dynamicGlowKey = ResourceLocation.fromNamespaceAndPath(MODID, "dynamic_glow_" + uuid + "_" + handler.stageId().getPath());
-
-        texturesToRegister.add(new Pair<>(normal, dynamicNormalKey));
-        texturesToRegister.add(new Pair<>(glow, dynamicGlowKey));
+        texturesToRegister.add(new Pair<>(normal, DragonModel.dynamicTexture(player, handler, false)));
+        texturesToRegister.add(new Pair<>(glow, DragonModel.dynamicTexture(player, handler, true)));
 
         return texturesToRegister;
     }

@@ -31,21 +31,19 @@ import software.bernie.geckolib.loading.math.MathParser;
 import software.bernie.geckolib.model.GeoModel;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
-import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
-
 public class DragonModel extends GeoModel<DragonEntity> {
-    private final ResourceLocation defaultTexture = ResourceLocation.fromNamespaceAndPath(MODID, "textures/dragon/cave_newborn.png");
-    private ResourceLocation overrideTexture;
-    private CompletableFuture<Void> textureRegisterFuture = CompletableFuture.completedFuture(null);
-
     /** Factor to multiply the delta yaw and pitch by, needed for scaling for the animations */
     private static final double DELTA_YAW_PITCH_FACTOR = 0.2;
 
     /** Factor to multiply the delta movement by, needed for scaling for the animations */
     private static final double DELTA_MOVEMENT_FACTOR = 10;
+
+    private final ResourceLocation defaultTexture = DragonSurvival.res("textures/dragon/cave_newborn.png");
+
+    private ResourceLocation overrideTexture;
+    private CompletableFuture<Void> textureRegisterFuture = CompletableFuture.completedFuture(null);
 
     @Override
     public void applyMolangQueries(final AnimationState<DragonEntity> animationState, double currentTick) {
@@ -230,11 +228,15 @@ public class DragonModel extends GeoModel<DragonEntity> {
         // Show the default skin while we are compiling if we haven't already compiled the skin
         if (customization.defaultSkin || !handler.getSkinData().isCompiled.getOrDefault(stageKey, false)) {
             // TODO :: support custom
-            return ResourceLocation.fromNamespaceAndPath(MODID, "textures/dragon/" + handler.speciesId().getPath() + "_" + Objects.requireNonNull(stageKey).location().getPath() + ".png");
+            return DragonSurvival.res("textures/dragon/" + handler.speciesId().getPath() + "_" + stageKey.location().getPath() + ".png");
         }
 
-        // TODO :: use namespace and location
-        return ResourceLocation.fromNamespaceAndPath(MODID, "dynamic_normal_" + player.getStringUUID() + "_" + Objects.requireNonNull(stageKey).location().getPath());
+        return dynamicTexture(player, handler, false);
+    }
+
+    public static ResourceLocation dynamicTexture(final Player player, final DragonStateHandler handler, boolean isGlowLayer) {
+        String prefix = isGlowLayer ? "dynamic_glow_" : "dynamic_normal_";
+        return DragonSurvival.res(prefix + player.getStringUUID() + "_" + handler.speciesId().getPath() + "_" + handler.stageKey().location().getPath());
     }
 
     @Override

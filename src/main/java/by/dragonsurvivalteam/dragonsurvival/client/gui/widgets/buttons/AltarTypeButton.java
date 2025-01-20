@@ -32,7 +32,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -163,12 +163,12 @@ public class AltarTypeButton extends Button implements HoverDisableable {
 
     @Override
     public boolean isHovered() {
-        return !disableHover && super.isHovered();
+        return !disableHover && visible && super.isHovered();
     }
 
     @Override
     public boolean isFocused() {
-        return !disableHover && super.isFocused();
+        return !disableHover && visible && super.isFocused();
     }
 
     public void disableHover() {

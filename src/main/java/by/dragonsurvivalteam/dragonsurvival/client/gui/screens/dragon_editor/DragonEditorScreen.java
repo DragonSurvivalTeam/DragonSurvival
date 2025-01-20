@@ -301,9 +301,11 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         CompoundTag prevTag = HANDLER.getCurrentSkinPreset().serializeNBT(Objects.requireNonNull(Minecraft.getInstance().player).registryAccess());
         HANDLER.getCurrentSkinPreset().deserializeNBT(Minecraft.getInstance().player.registryAccess(), tag);
         HashMap<SkinLayer, Lazy<LayerSettings>> layerSettingsMap = HANDLER.getCurrentStageCustomization().layerSettings;
-        for(SkinLayer layer : layerSettingsMap.keySet()) {
+
+        for (SkinLayer layer : layerSettingsMap.keySet()) {
             partComponents.get(layer).setSelectedPart(layerSettingsMap.get(layer).get().partKey);
         }
+
         HANDLER.recompileCurrentSkin();
         update();
         return prevTag;
@@ -359,7 +361,8 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     };
 
     public static class UndoRedoList {
-        private record UndoRedoPair(EditorAction<?> undo, EditorAction<?> redo) { /* Nothing to do */ }
+        private record UndoRedoPair(EditorAction<?> undo, EditorAction<?> redo) { /* Nothing to do */
+        }
 
         private final List<UndoRedoPair> delegate = new ArrayList<>();
         private final int maxSize;
@@ -423,8 +426,8 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
     private boolean onlyCheckForColorSelectorComponentButtons() {
         boolean onlyCheckForColorSelectorComponentButtons = false;
-        for(EditorPartComponent partComponent : partComponents.values()) {
-            if(partComponent.colorSelectorIsToggled()) {
+        for (EditorPartComponent partComponent : partComponents.values()) {
+            if (partComponent.colorSelectorIsToggled()) {
                 onlyCheckForColorSelectorComponentButtons = true;
                 break;
             }
@@ -436,13 +439,13 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     // Ignore clicks on elements that are not in a popup menu, if one is open
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if(onlyCheckForColorSelectorComponentButtons()) {
-            for(EditorPartComponent partComponent : partComponents.values()) {
+        if (onlyCheckForColorSelectorComponentButtons()) {
+            for (EditorPartComponent partComponent : partComponents.values()) {
                 HueSelectorComponent hueComponent = partComponent.getColorSelectorButton().getHueComponent();
-                if(hueComponent != null && partComponent.getColorSelectorButton().toggled) {
+                if (hueComponent != null && partComponent.getColorSelectorButton().toggled) {
                     List<GuiEventListener> hueComponentChildrenAndColorButton = new ArrayList<>(hueComponent.children());
                     hueComponentChildrenAndColorButton.add(partComponent.getColorSelectorButton());
-                    for(GuiEventListener guieventlistener : hueComponentChildrenAndColorButton) {
+                    for (GuiEventListener guieventlistener : hueComponentChildrenAndColorButton) {
                         if (guieventlistener.mouseClicked(mouseX, mouseY, button)) {
                             this.setFocused(guieventlistener);
                             if (button == 0) {
@@ -458,7 +461,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             return false;
         }
 
-        if(confirmComponent != null && confirmation) {
+        if (confirmComponent != null && confirmation) {
             for (GuiEventListener guieventlistener : confirmComponent.children()) {
                 if (guieventlistener.mouseClicked(mouseX, mouseY, button)) {
                     this.setFocused(guieventlistener);
@@ -473,7 +476,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             return false;
         }
 
-        if(backgroundColorButton != null && backgroundColorButton.toggled) {
+        if (backgroundColorButton != null && backgroundColorButton.toggled) {
             for (GuiEventListener guieventlistener : backgroundColorButton.childrenAndSelf()) {
                 if (guieventlistener.mouseClicked(mouseX, mouseY, button)) {
                     this.setFocused(guieventlistener);
@@ -496,26 +499,26 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
                 }
 
                 // Do this after we have processed the click event, so that we can properly disable the other buttons immediately
-                if(onlyCheckForColorSelectorComponentButtons()) {
+                if (onlyCheckForColorSelectorComponentButtons()) {
                     for (GuiEventListener guieventlistener2 : this.children()) {
                         // Don't disable the button that opened the panel in the first place
-                        if(guieventlistener2 instanceof HoverDisableable hoverDisableable && guieventlistener != guieventlistener2) {
+                        if (guieventlistener2 instanceof HoverDisableable hoverDisableable && guieventlistener != guieventlistener2) {
                             hoverDisableable.disableHover();
                         }
                     }
                 }
 
-                if(confirmComponent != null && confirmation) {
+                if (confirmComponent != null && confirmation) {
                     for (GuiEventListener guieventlistener2 : this.children()) {
-                        if(guieventlistener2 instanceof HoverDisableable hoverDisableable) {
+                        if (guieventlistener2 instanceof HoverDisableable hoverDisableable) {
                             hoverDisableable.disableHover();
                         }
                     }
                 }
 
-                if(backgroundColorButton != null && backgroundColorButton.toggled) {
+                if (backgroundColorButton != null && backgroundColorButton.toggled) {
                     for (GuiEventListener guieventlistener2 : this.children()) {
-                        if(guieventlistener2 instanceof HoverDisableable hoverDisableable && !backgroundColorButton.childrenAndSelf().contains(guieventlistener2)) {
+                        if (guieventlistener2 instanceof HoverDisableable hoverDisableable && !backgroundColorButton.childrenAndSelf().contains(guieventlistener2)) {
                             hoverDisableable.disableHover();
                         }
                     }
@@ -555,14 +558,14 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         DragonAltarScreen.renderBorders(graphics, BACKGROUND_TEXTURE, 0, width, 32, height - 32, width, height);
         TextRenderUtil.drawCenteredScaledText(graphics, width / 2, 10, 2f, DragonStage.translatableName(Objects.requireNonNull(dragonStage.getKey())).getString().toUpperCase(), DyeColor.WHITE.getTextColor());
 
-        if(slotDisplayMessage != SlotDisplayMessage.NONE) {
+        if (slotDisplayMessage != SlotDisplayMessage.NONE) {
             int color;
-            if(slotDisplayMessage == SlotDisplayMessage.SLOT_SAVED) {
+            if (slotDisplayMessage == SlotDisplayMessage.SLOT_SAVED) {
                 color = DyeColor.GREEN.getTextColor();
             } else {
                 color = DyeColor.RED.getTextColor();
             }
-            if(tickWhenSlotDisplayMessageSet + 200 - tick > 0) {
+            if (tickWhenSlotDisplayMessageSet + 200 - tick > 0) {
                 TextRenderUtil.drawCenteredScaledText(graphics, width / 2, height / 2 + 20, 0.5f, loadSlotDisplayMessage(slotDisplayMessage).getString(), color);
             } else {
                 slotDisplayMessage = SlotDisplayMessage.NONE;
@@ -570,15 +573,15 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         }
 
         for (Renderable renderable : new CopyOnWriteArrayList<>(renderables)) {
-            if(!onlyCheckForColorSelectorComponentButtons() && !confirmation && (backgroundColorButton == null || !backgroundColorButton.toggled)) {
-                if(renderable instanceof HoverDisableable hoverDisableable) {
+            if (!onlyCheckForColorSelectorComponentButtons() && !confirmation && (backgroundColorButton == null || !backgroundColorButton.toggled)) {
+                if (renderable instanceof HoverDisableable hoverDisableable) {
                     hoverDisableable.enableHover();
                 }
             }
 
             if (renderable instanceof AbstractWidget widget && widget != uiButton) {
-                if(widget == wingsButton) {
-                    if(dragonBody != null && dragonBody.value().canHideWings() && widget == wingsButton) {
+                if (widget == wingsButton) {
+                    if (dragonBody != null && dragonBody.value().canHideWings() && widget == wingsButton) {
                         wingsButton.visible = showUi;
                         wingsButton.setTooltip(Tooltip.create(Component.translatable(DragonBody.getWingButtonDescription(dragonBody))));
                         wingsButton.setMessage(Component.translatable(DragonBody.getWingButtonName(dragonBody)));
@@ -586,7 +589,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
                         wingsButton.visible = false;
                     }
                 } else {
-                    if(dragonBodyBar.currentlyHiddenWidgets().contains(widget)) {
+                    if (dragonBodyBar.currentlyHiddenWidgets().contains(widget)) {
                         widget.visible = false;
                     } else {
                         widget.visible = showUi;
@@ -629,7 +632,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         HANDLER.setDesiredSize(null, dragonStage.value().sizeRange().min());
         HANDLER.setBody(null, dragonBody);
         SkinPreset skinPreset = localHandler.getSkinPresetForSpecies(dragonSpecies.getKey());
-        if(skinPreset.getModel().equals(dragonBody.value().model())) {
+        if (skinPreset.getModel().equals(dragonBody.value().model())) {
             HANDLER.setCurrentSkinPreset(skinPreset);
         } else {
             HANDLER.refreshSkinPresetForSpecies(dragonSpecies.getKey());
@@ -692,8 +695,8 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
         // Add scrollable list of dragon bodies
         List<AbstractWidget> dragonBodyWidgets = new ArrayList<>();
-        for(Holder<DragonBody> dragonBodyHolder : DSDragonBodyTags.getOrdered(null)) {
-            if(dragonSpecies.value().isValidForBody(dragonBodyHolder)) {
+        for (Holder<DragonBody> dragonBodyHolder : DSDragonBodyTags.getOrdered(null)) {
+            if (dragonSpecies.value().isValidForBody(dragonBodyHolder)) {
                 dragonBodyWidgets.add(createButton(dragonBodyHolder, 0, 0));
             }
         }
@@ -867,7 +870,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         randomButton.setTooltip(Tooltip.create(Component.translatable(RANDOMIZE)));
         addRenderableWidget(randomButton);
 
-        HoverButton undoButton = new HoverButton(width / 2 - 27, 40, 15, 14, 20, 20,  UNDO_MAIN, UNDO_HOVER, button -> actionHistory.undo());
+        HoverButton undoButton = new HoverButton(width / 2 - 27, 40, 15, 14, 20, 20, UNDO_MAIN, UNDO_HOVER, button -> actionHistory.undo());
         undoButton.setTooltip(Tooltip.create(Component.translatable(UNDO)));
         addRenderableWidget(undoButton);
 
@@ -895,14 +898,15 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         addRenderableWidget(copyToAllStagesButton);
 
         // Help button
-        HoverButton helpButton = new HoverButton(guiLeft - 75, height - 30, 20, 20, 20, 20, INFO_MAIN, INFO_HOVER, button -> {});
+        HoverButton helpButton = new HoverButton(guiLeft - 75, height - 30, 20, 20, 20, 20, INFO_MAIN, INFO_HOVER, button -> {
+        });
         helpButton.setTooltip(Tooltip.create(Component.translatable(CUSTOMIZATION)));
         addRenderableWidget(helpButton);
 
         // Wings button
-        wingsButton = new ExtendedButton(guiLeft - 35, height - 30, 20, 20,  Component.translatable(DragonBody.getWingButtonDescription(dragonBody)), button -> {
+        wingsButton = new ExtendedButton(guiLeft - 35, height - 30, 20, 20, Component.translatable(DragonBody.getWingButtonDescription(dragonBody)), button -> {
             actionHistory.add(new EditorAction<>(checkWingsButtonAction, !preset.get(Objects.requireNonNull(dragonStage.getKey())).get().wings));
-        }){
+        }) {
             @Override
             public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 ResourceLocation texture = preset.get(Objects.requireNonNull(dragonStage.getKey())).get().wings ? ALTERNATIVE_ON : ALTERNATIVE_OFF;
@@ -915,9 +919,9 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         addRenderableWidget(wingsButton);
 
         // Show UI button
-        uiButton = new ExtendedButton(guiLeft - 13, height - 30, 20, 20,  Component.translatable(SHOW_UI), button -> {
+        uiButton = new ExtendedButton(guiLeft - 13, height - 30, 20, 20, Component.translatable(SHOW_UI), button -> {
             showUi = !showUi;
-        }){
+        }) {
             @Override
             public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 ResourceLocation texture = showUi ? SHOW_UI_ON : SHOW_UI_OFF;
@@ -997,10 +1001,10 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     private DragonBodyButton createButton(Holder<DragonBody> dragonBody, int x, int y) {
         return new DragonBodyButton(this, x, y, 25, 25, dragonBody, isEditor, button -> {
             if (!((DragonBodyButton) button).isLocked()) {
-                if(dragonBody.value() != this.dragonBody.value()) {
+                if (dragonBody.value() != this.dragonBody.value()) {
                     actionHistory.add(new DragonEditorScreen.EditorAction<>(dragonBodySelectAction, dragonBody));
 
-                    if(dragonBody.value().model() != this.dragonBody.value().model()) {
+                    if (dragonBody.value().model() != this.dragonBody.value().model()) {
                         // We don't support undo-redo behavior when swapping between body types that have different custom models
                         actionHistory.clear();
                     }
@@ -1067,6 +1071,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             data.setSpecies(minecraft.player, dragonSpecies);
 
             double savedSize = data.getSavedDragonSize(data.speciesKey());
+
             if (!ServerConfig.saveGrowthStage || savedSize == DragonStateHandler.NO_SIZE) {
                 data.setSize(minecraft.player, dragonSpecies.value().getStartingSize(minecraft.player.registryAccess()));
             } else {
