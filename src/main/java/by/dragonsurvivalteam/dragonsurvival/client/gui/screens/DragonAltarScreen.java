@@ -21,6 +21,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
+import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -86,8 +87,8 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
 
     private static final ResourceLocation ALTAR_ARROW_LEFT_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/arrow_left_hover.png");
     private static final ResourceLocation ALTAR_ARROW_LEFT_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/arrow_left_main.png");
-    private static final ResourceLocation ALTAR_ARROW_RIGHT_HOVER =  ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/arrow_right_hover.png");
-    private static final ResourceLocation ALTAR_ARROW_RIGHT_MAIN =  ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/arrow_right_main.png");
+    private static final ResourceLocation ALTAR_ARROW_RIGHT_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/arrow_right_hover.png");
+    private static final ResourceLocation ALTAR_ARROW_RIGHT_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/arrow_right_main.png");
 
     private static final ResourceLocation INFO_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/info_hover.png");
     private static final ResourceLocation INFO_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/info_main.png");
@@ -136,7 +137,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if(confirmComponent != null && confirmation) {
+        if (confirmComponent != null && confirmation) {
             for (GuiEventListener guieventlistener : confirmComponent.children()) {
                 if (guieventlistener.mouseClicked(mouseX, mouseY, button)) {
                     this.setFocused(guieventlistener);
@@ -158,9 +159,9 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                     this.setDragging(true);
                 }
 
-                if(confirmComponent != null && confirmation) {
+                if (confirmComponent != null && confirmation) {
                     for (GuiEventListener guieventlistener2 : this.children()) {
-                        if(guieventlistener2 instanceof HoverDisableable hoverDisableable) {
+                        if (guieventlistener2 instanceof HoverDisableable hoverDisableable) {
                             hoverDisableable.disableHover();
                         }
                     }
@@ -187,6 +188,8 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
             animation1++;
             animation2++;
 
+            // FIXME :: for some reason at this point the species may not be set (happened for 'handler2')
+
             if (handler1.body() == null) {
                 handler1.setBody(null, DragonBody.random(null, handler1.species()));
             }
@@ -203,7 +206,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
             }
         }
 
-        if(!confirmation) {
+        if (!confirmation) {
             children().removeIf(s -> s == confirmComponent);
             renderables.removeIf(s -> s == renderButton);
         }
@@ -216,13 +219,12 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                     handler1.setSpecies(null, button.species);
                     handler2.setSpecies(null, button.species);
 
-                    if((handler1.species() != null && handler1PreviousSpecies == null)
-                            || handler1.species() != null && handler1PreviousSpecies != null && handler1PreviousSpecies.getKey() != handler1.speciesKey()) {
+
+                    if (handler1.species() != null && !DragonUtils.isSpecies(handler1.species(), handler1PreviousSpecies)) {
                         initializeHandler(handler1);
                     }
 
-                    if((handler2.species() != null && handler2PreviousSpecies == null)
-                            || handler2.species() != null && handler2PreviousSpecies != null && handler2PreviousSpecies.getKey() != handler2.speciesKey()) {
+                    if (handler2.species() != null && !DragonUtils.isSpecies(handler2.species(), handler2PreviousSpecies)) {
                         initializeHandler(handler2);
                     }
 
@@ -230,7 +232,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                     FakeClientPlayerUtils.getFakePlayer(1, handler2).animationSupplier = () -> animations[animation2];
 
                     LivingEntity entity1;
-                    int entity1Scale = Math.min(50, (int)handler1.getSize());
+                    int entity1Scale = Math.min(50, (int) handler1.getSize());
                     if (handler1.isDragon()) {
                         entity1 = FakeClientPlayerUtils.getFakeDragon(0, handler1);
                         DragonEntity dragon = (DragonEntity) entity1;
@@ -242,7 +244,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                     }
 
                     LivingEntity entity2;
-                    int entity2Scale = Math.min(50, (int)handler2.getSize());
+                    int entity2Scale = Math.min(50, (int) handler2.getSize());
                     if (handler2.isDragon()) {
                         entity2 = FakeClientPlayerUtils.getFakeDragon(1, handler2);
                         DragonEntity dragon = (DragonEntity) entity2;
@@ -263,8 +265,8 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                 }
             }
 
-            if(!confirmation) {
-                if(btn instanceof HoverDisableable hoverDisableable) {
+            if (!confirmation) {
+                if (btn instanceof HoverDisableable hoverDisableable) {
                     hoverDisableable.enableHover();
                 }
             }
@@ -284,7 +286,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
         }
 
         handler.setRandomValidStage(null);
-        if(handler.species() != null) {
+        if (handler.species() != null) {
             handler.getCurrentStageCustomization().defaultSkin = true;
         }
     }
@@ -339,13 +341,14 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
         int guiTop = (height - 190) / 2;
         int xPos = width / 2 - 104;
 
-        HoverButton helpButton = new HoverButton(width / 2 - 29, 31, 65, 18, 65, 18, INFO_MAIN, INFO_HOVER, button -> {});
+        HoverButton helpButton = new HoverButton(width / 2 - 29, 31, 65, 18, 65, 18, INFO_MAIN, INFO_HOVER, button -> {
+        });
         helpButton.setTooltip(Tooltip.create(Component.translatable(HELP)));
         addRenderableWidget(helpButton);
 
         RegistryAccess access = Objects.requireNonNull(DragonSurvival.PROXY.getAccess());
         List<AbstractWidget> altarButtons = new ArrayList<>(ResourceHelper.keys(access, DragonSpecies.REGISTRY).stream().map(typeKey -> (AbstractWidget) new AltarTypeButton(this, access.holderOrThrow(typeKey), 0, 0)).toList());
-        humanButton = new AltarTypeButton(this, null, 0, 0){
+        humanButton = new AltarTypeButton(this, null, 0, 0) {
             boolean toggled;
 
             @Override
@@ -368,7 +371,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                     confirmation = true;
                 }
 
-                if(confirmation) {
+                if (confirmation) {
                     if (!toggled) {
                         renderButton = new ExtendedButton(0, 0, 0, 0, Component.empty(), button -> { /* Nothing to do */ }) {
                             @Override
@@ -394,15 +397,16 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
             }
         };
 
-        if(!ServerConfig.noHumansAllowed) {
+        if (!ServerConfig.noHumansAllowed) {
             altarButtons.add(humanButton);
         }
 
         int extraOffset = 0;
-        if(altarButtons.size() == 3) {
+        if (altarButtons.size() == 3) {
             extraOffset += 27;
         }
 
+        // FIXME :: scrolls the wrong direction + shouldn't scroll when diet is hovered (since that is also scrollable)
         scrollableComponents.add(new BarComponent(this,
                 xPos + extraOffset, guiTop + 30, 4,
                 altarButtons, 55,

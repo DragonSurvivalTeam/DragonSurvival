@@ -229,11 +229,12 @@ public class DragonModel extends GeoModel<DragonEntity> {
 
         // Show the default skin while we are compiling if we haven't already compiled the skin
         if (customization.defaultSkin || !handler.getSkinData().isCompiled.getOrDefault(stageKey, false)) {
+            // TODO :: support custom
             return ResourceLocation.fromNamespaceAndPath(MODID, "textures/dragon/" + handler.speciesId().getPath() + "_" + Objects.requireNonNull(stageKey).location().getPath() + ".png");
         }
 
-        String uuid = player.getStringUUID();
-        return ResourceLocation.fromNamespaceAndPath(MODID, "dynamic_normal_" + uuid + "_" + Objects.requireNonNull(stageKey).location().getPath());
+        // TODO :: use namespace and location
+        return ResourceLocation.fromNamespaceAndPath(MODID, "dynamic_normal_" + player.getStringUUID() + "_" + Objects.requireNonNull(stageKey).location().getPath());
     }
 
     @Override
@@ -268,11 +269,10 @@ public class DragonModel extends GeoModel<DragonEntity> {
             Holder<DragonBody> body = handler.body();
 
             if (body != null) {
-                ResourceLocation location = Objects.requireNonNull(body.getKey()).location();
-                return ResourceLocation.fromNamespaceAndPath(location.getNamespace(), String.format("animations/dragon_%s.json", location.getPath()));
+                return body.value().animation().withPrefix("animations/").withSuffix(".json");
             }
         }
 
-        return ResourceLocation.fromNamespaceAndPath(MODID, "animations/dragon_center.json");
+        return DragonSurvival.res("animations/dragon_center.json");
     }
 }

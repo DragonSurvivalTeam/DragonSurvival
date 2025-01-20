@@ -49,11 +49,11 @@ public class DragonUtils {
         return playerBody.is(typeToCheck);
     }
 
-    public static boolean isType(final DragonStateHandler handler, final ResourceKey<DragonSpecies> typeToCheck) {
-        return isType(handler.speciesKey(), typeToCheck);
+    public static boolean isSpecies(final DragonStateHandler handler, final ResourceKey<DragonSpecies> typeToCheck) {
+        return isSpecies(handler.speciesKey(), typeToCheck);
     }
 
-    public static boolean isType(final Entity entity, ResourceKey<DragonSpecies> typeToCheck) {
+    public static boolean isSpecies(final Entity entity, ResourceKey<DragonSpecies> typeToCheck) {
         if (!(entity instanceof Player player)) {
             return false;
         }
@@ -64,10 +64,11 @@ public class DragonUtils {
             return false;
         }
 
-        return isType(playerType.getKey(), typeToCheck);
+        return isSpecies(playerType.getKey(), typeToCheck);
     }
 
-    public static boolean isType(final Holder<DragonSpecies> first, final Holder<DragonSpecies> second) {
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted") // ignore
+    public static boolean isSpecies(final Holder<DragonSpecies> first, final Holder<DragonSpecies> second) {
         if (first == second) {
             return true;
         }
@@ -79,7 +80,7 @@ public class DragonUtils {
         return first.getKey() == second.getKey();
     }
 
-    public static boolean isType(final ResourceKey<DragonSpecies> playerType, final ResourceKey<DragonSpecies> typeToCheck) {
+    public static boolean isSpecies(final ResourceKey<DragonSpecies> playerType, final ResourceKey<DragonSpecies> typeToCheck) {
         if (playerType == typeToCheck) {
             return true;
         }

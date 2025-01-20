@@ -29,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
-public record DragonBody(boolean isDefault, List<Modifier> modifiers, double heightMultiplier, boolean hasExtendedCrouch, boolean canHideWings, ResourceLocation model, List<String> bonesToHideForToggle, Holder<DragonEmoteSet> emotes, MountingOffsets mountingOffsets) implements AttributeModifierSupplier {
+public record DragonBody(boolean isDefault, List<Modifier> modifiers, double heightMultiplier, boolean hasExtendedCrouch, boolean canHideWings, ResourceLocation model, ResourceLocation animation, List<String> bonesToHideForToggle, Holder<DragonEmoteSet> emotes, MountingOffsets mountingOffsets) implements AttributeModifierSupplier {
     public static final ResourceKey<Registry<DragonBody>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_bodies"));
 
     public static final ResourceLocation DEFAULT_MODEL = DragonSurvival.res("dragon_model");
@@ -41,6 +41,7 @@ public record DragonBody(boolean isDefault, List<Modifier> modifiers, double hei
             Codec.BOOL.optionalFieldOf("has_extended_crouch", false).forGetter(DragonBody::hasExtendedCrouch),
             Codec.BOOL.optionalFieldOf("can_hide_wings", true).forGetter(DragonBody::canHideWings),
             ResourceLocation.CODEC.optionalFieldOf("model", DEFAULT_MODEL).forGetter(DragonBody::model),
+            ResourceLocation.CODEC.fieldOf("animation").forGetter(DragonBody::animation),
             Codec.STRING.listOf().optionalFieldOf("bones_to_hide_for_toggle", List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight")).forGetter(DragonBody::bonesToHideForToggle),
             DragonEmoteSet.CODEC.fieldOf("emotes").forGetter(DragonBody::emotes),
             MountingOffsets.CODEC.fieldOf("mounting_offset").forGetter(DragonBody::mountingOffsets)
@@ -53,6 +54,7 @@ public record DragonBody(boolean isDefault, List<Modifier> modifiers, double hei
     public static final double EXTENDED_CROUCH_HEIGHT_RATIO = 3d / 6d;
     public static final double CROUCH_HEIGHT_RATIO = 5d / 6d;
 
+    private static final RandomSource RANDOM = RandomSource.create();
 
     public record MountingOffsets(Vec3 offset, Vec3 scale) {
         public static final Codec<MountingOffsets> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -64,8 +66,6 @@ public record DragonBody(boolean isDefault, List<Modifier> modifiers, double hei
             return new MountingOffsets(offset, scale);
         }
     }
-
-    private static final RandomSource RANDOM = RandomSource.create();
 
     @SubscribeEvent
     public static void register(final DataPackRegistryEvent.NewRegistry event) {

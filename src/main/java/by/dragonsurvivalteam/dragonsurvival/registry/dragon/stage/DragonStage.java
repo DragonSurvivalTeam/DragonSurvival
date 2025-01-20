@@ -183,8 +183,7 @@ public record DragonStage(
     }
 
     public static double getStartingSize(final HolderSet<DragonStage> stages) {
-        return stages.stream().filter(stage -> stage.value().isDefault())
-                .min(Comparator.comparingDouble(stage -> stage.value().sizeRange().min()))
+        return stages.stream().min(Comparator.comparingDouble(stage -> stage.value().sizeRange().min()))
                 .map(stage -> stage.value().sizeRange().min()).orElse(DragonStateHandler.NO_SIZE);
     }
 

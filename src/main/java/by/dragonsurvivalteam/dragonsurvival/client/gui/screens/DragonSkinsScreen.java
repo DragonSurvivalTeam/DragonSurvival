@@ -206,7 +206,7 @@ public class DragonSkinsScreen extends Screen {
         if (dragonStage != null && !DragonSkins.playerSkinOrGlowFetchingInProgress(playerName, dragonStage.getKey())) {
             DragonStateHandler playerData = DragonStateProvider.getData(minecraft.player);
 
-            if (!DragonUtils.isType(handler.species(), playerData.species())) {
+            if (!DragonUtils.isSpecies(handler.species(), playerData.species())) {
                 handler.setSpecies(null, playerData.species());
             }
 
