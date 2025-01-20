@@ -430,7 +430,7 @@ public class ClientDragonRenderer {
         float z = Mth.cos(angle);
         float scale = Functions.getScale(player, DragonStateProvider.getData(player).getSize());
 
-        if (Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
+        if (player == Minecraft.getInstance().player && Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
             // To prevent clipping into the model
             // Also to properly see the dragon body when looking down
             lookVector.set(x * scale, 0, z * scale);
