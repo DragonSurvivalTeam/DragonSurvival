@@ -84,6 +84,10 @@ public record DragonBody(boolean isDefault, List<Modifier> modifiers, double hei
         return all.get(RANDOM.nextInt(all.size()));
     }
 
+    public static boolean isBodyWithDefaultModelInRegistry(@Nullable final HolderLookup.Provider provider) {
+        return ResourceHelper.all(provider, REGISTRY).stream().anyMatch(body -> body.value().model().equals(DEFAULT_MODEL));
+    }
+
     @Override
     public ModifierType getModifierType() {
         return ModifierType.DRAGON_BODY;

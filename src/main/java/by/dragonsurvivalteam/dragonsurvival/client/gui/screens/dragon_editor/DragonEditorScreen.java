@@ -693,7 +693,9 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         // Add scrollable list of dragon bodies
         List<AbstractWidget> dragonBodyWidgets = new ArrayList<>();
         for(Holder<DragonBody> dragonBodyHolder : DSDragonBodyTags.getOrdered(null)) {
-            dragonBodyWidgets.add(createButton(dragonBodyHolder, 0, 0));
+            if(dragonSpecies.value().isValidForBody(dragonBodyHolder)) {
+                dragonBodyWidgets.add(createButton(dragonBodyHolder, 0, 0));
+            }
         }
         dragonBodyBar = new BarComponent(this,
                 width / 2 - 38, height / 2 + 30, 5,
@@ -996,11 +998,11 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         return new DragonBodyButton(this, x, y, 25, 25, dragonBody, isEditor, button -> {
             if (!((DragonBodyButton) button).isLocked()) {
                 if(dragonBody.value() != this.dragonBody.value()) {
+                    actionHistory.add(new DragonEditorScreen.EditorAction<>(dragonBodySelectAction, dragonBody));
+
                     if(dragonBody.value().model() != this.dragonBody.value().model()) {
                         // We don't support undo-redo behavior when swapping between body types that have different custom models
                         actionHistory.clear();
-                    } else {
-                        actionHistory.add(new DragonEditorScreen.EditorAction<>(dragonBodySelectAction, dragonBody));
                     }
                 }
             }

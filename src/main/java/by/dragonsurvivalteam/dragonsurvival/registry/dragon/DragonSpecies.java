@@ -162,4 +162,14 @@ public class DragonSpecies implements AttributeModifierSupplier {
     public HolderSet<DragonPenalty> penalties() {
         return penalties;
     }
+
+    public boolean isValidForBody(final Holder<DragonBody> body) {
+        return bodies.size() == 0 && body.value().model().equals(DragonBody.DEFAULT_MODEL) || bodies.contains(body);
+    }
+
+    public static boolean isBuiltIn(final ResourceKey<DragonSpecies> speciesKey) {
+        return speciesKey.equals(BuiltInDragonSpecies.CAVE) ||
+                speciesKey.equals(BuiltInDragonSpecies.FOREST) ||
+                speciesKey.equals(BuiltInDragonSpecies.SEA);
+    }
 }

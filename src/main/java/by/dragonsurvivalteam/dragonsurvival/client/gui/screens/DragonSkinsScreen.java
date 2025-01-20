@@ -19,6 +19,8 @@ import by.dragonsurvivalteam.dragonsurvival.network.dragon_editor.SyncDragonSkin
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonBodyTags;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.datapacks.AncientDatapack;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
@@ -204,12 +206,6 @@ public class DragonSkinsScreen extends Screen {
 
         //noinspection DataFlowIssue -> key is present
         if (dragonStage != null && !DragonSkins.playerSkinOrGlowFetchingInProgress(playerName, dragonStage.getKey())) {
-            DragonStateHandler playerData = DragonStateProvider.getData(minecraft.player);
-
-            if (!DragonUtils.isSpecies(handler.species(), playerData.species())) {
-                handler.setSpecies(null, playerData.species());
-            }
-
             if (handler.stage() == null) {
                 boolean alreadyUsingDefaults = handler.getCurrentSkinPreset().isStageUsingDefaultSkin(dragonStage.getKey());
                 handler.setSize(null, handler.species().value().getStartingSize(minecraft.player.registryAccess()));
@@ -250,6 +246,11 @@ public class DragonSkinsScreen extends Screen {
     public void init() {
         super.init();
 
+        if(!DragonBody.isBodyWithDefaultModelInRegistry(null)) {
+            DragonSurvival.LOGGER.warn("No dragon body in the registry uses the default dragon model. Cannot use the Skins screen in this situation.");
+            onClose();
+        }
+
         Minecraft minecraft = getMinecraft();
         LocalPlayer player = minecraft.player;
 
@@ -265,6 +266,12 @@ public class DragonSkinsScreen extends Screen {
 
         //noinspection DataFlowIssue -> player is present
         handler.deserializeNBT(minecraft.player.registryAccess(), DragonStateProvider.getData(minecraft.player).serializeNBT(minecraft.player.registryAccess()));
+        if(!DragonSpecies.isBuiltIn(handler.speciesKey())) {
+            handler.setSpecies(null, player.registryAccess().holderOrThrow(BuiltInDragonSpecies.CAVE));
+        }
+        if(!handler.body().value().model().equals(DragonBody.DEFAULT_MODEL)) {
+            ResourceHelper.all(null, DragonBody.REGISTRY).stream().filter(body -> body.value().model().equals(DragonBody.DEFAULT_MODEL)).findFirst().ifPresent(body -> handler.setBody(null, body));
+        }
         handler.setStage(null, dragonStage);
         handler.setCurrentStageCustomization(DragonStateProvider.getData(player).getCustomizationForStage(dragonStage.getKey()));
         handler.getCurrentSkinPreset().setAllStagesToUseDefaultSkin(false);
@@ -275,7 +282,9 @@ public class DragonSkinsScreen extends Screen {
         List<AbstractWidget> dragonBodyWidgets = new ArrayList<>();
 
         for(Holder<DragonBody> dragonBodyHolder : DSDragonBodyTags.getOrdered(null)) {
-            dragonBodyWidgets.add(createButton(dragonBodyHolder, 0, 0));
+            if(dragonBodyHolder.value().model().equals(DragonBody.DEFAULT_MODEL)) {
+                dragonBodyWidgets.add(createButton(dragonBodyHolder, 0, 0));
+            }
         }
 
         new BarComponent(this,
