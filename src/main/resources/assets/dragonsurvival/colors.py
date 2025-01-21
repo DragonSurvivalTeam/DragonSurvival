@@ -4,9 +4,9 @@ from PIL import Image
 
 texturefilepath = "./textures/dragon/custom/"
 hueavg = {}
+
 for dp in os.walk(texturefilepath):
     for fp in dp[2]:
-        print (fp)
         try:
             with Image.open(dp[0] + '/' + fp, 'r') as im:
                 avg = [0, 0, 0]
@@ -53,10 +53,11 @@ for dp in os.walk(texturefilepath):
                 hue = 0
             hue = ((hue * 60.0 + 360.0) % 360.0) / 360.0
             hueavg[fp] = hue
+            print (dp[0] + fp, hue)
         except KeyError as e:
             pass
 
-partfilepath = "./skin/parts/dragonsurvival/"
+partfilepath = "./skin/parts/"
 custfiles = {}
 for basepath in os.walk(partfilepath):
     custfiles[basepath[0]] = []
@@ -66,7 +67,13 @@ for basepath in os.walk(partfilepath):
 for cfilepath, cfilelist in custfiles.items():
     for cfile in cfilelist:
         js = json.load(open(cfilepath + "/" + cfile))
-        for c in range(len(js)):
-            js[c]['average_hue'] = hueavg[js[c]['texture'].split('/')[-1]]
+        if type(js) is dict:
+            js['average_hue'] = hueavg[js['texture'].split('/')[-1]]
+        else:
+            for c in range(len(js)):
+                js[c]['average_hue'] = hueavg[js[c]['texture'].split('/')[-1]]
         with open(cfilepath + "/" + cfile, 'w') as f:
+            print(cfilepath.replace('\\', '/') + "/" + cfile, 'updated')
             json.dump(js, f, indent=2)
+
+input("Completed successfully, press any key to continue...")
