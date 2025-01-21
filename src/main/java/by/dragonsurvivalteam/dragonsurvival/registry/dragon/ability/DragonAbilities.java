@@ -165,7 +165,7 @@ public class DragonAbilities {
                                 DurationInstanceBase.create(DragonSurvival.res("diamond_vision")).infinite().removeAutomatically().hidden().build(),
                                 HolderSet.direct(Blocks.DIAMOND_ORE.builtInRegistryHolder(), Blocks.DEEPSLATE_DIAMOND_ORE.builtInRegistryHolder()),
                                 LevelBasedValue.constant(16),
-                                BlockVision.DisplayType.OUTLINE,
+                                BlockVision.DisplayType.PARTICLES,
                                 List.of(
                                         TextColor.fromLegacyFormat(ChatFormatting.GOLD),
                                         TextColor.fromLegacyFormat(ChatFormatting.DARK_PURPLE),
@@ -178,7 +178,7 @@ public class DragonAbilities {
                                 DurationInstanceBase.create(DragonSurvival.res("lapis_vision")).infinite().removeAutomatically().hidden().build(),
                                 HolderSet.direct(Blocks.LAPIS_ORE.builtInRegistryHolder(), Blocks.DEEPSLATE_LAPIS_ORE.builtInRegistryHolder()),
                                 LevelBasedValue.constant(24),
-                                BlockVision.DisplayType.OUTLINE,
+                                BlockVision.DisplayType.PARTICLES,
                                 List.of(TextColor.fromLegacyFormat(ChatFormatting.BLUE))
                         )),
                         BlockVisionEffect.single(new BlockVision(

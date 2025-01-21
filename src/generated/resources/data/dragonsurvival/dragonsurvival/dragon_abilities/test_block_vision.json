@@ -23,7 +23,7 @@
                     "red",
                     "blue"
                   ],
-                  "display_type": "outline",
+                  "display_type": "particles",
                   "range": 16.0
                 }
               ],
@@ -44,7 +44,7 @@
                   "colors": [
                     "blue"
                   ],
-                  "display_type": "outline",
+                  "display_type": "particles",
                   "range": 24.0
                 }
               ],

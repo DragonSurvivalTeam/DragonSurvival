@@ -41,6 +41,10 @@ public class BlockVisionData extends Storage<BlockVision.Instance> {
         return Functions.lerpColor(cache.computeIfAbsent(block, this::storeData).colors());
     }
 
+    public List<Integer> getColors(final Block block) {
+        return cache.computeIfAbsent(block, this::storeData).colors();
+    }
+
     public BlockVision.DisplayType getDisplayType(final Block block) {
         return cache.computeIfAbsent(block, this::storeData).displayType();
     }
