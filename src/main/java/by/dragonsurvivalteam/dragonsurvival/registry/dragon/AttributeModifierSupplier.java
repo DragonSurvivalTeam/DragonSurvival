@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierType;
 import by.dragonsurvivalteam.dragonsurvival.mixins.AttributeMapAccessor;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
@@ -11,41 +12,65 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 public interface AttributeModifierSupplier {
     static void removeModifiers(final ModifierType type, final LivingEntity entity) {
-        removeModifiers(type, ((AttributeMapAccessor) entity.getAttributes()).dragonSurvival$getAttributes());
-    }
+        if (type == ModifierType.CUSTOM) {
+            Functions.logOrThrow("Modifiers of the type " + ModifierType.CUSTOM.name() + " need to be handled using the stored ids");
+            return;
+        }
 
-    // TODO :: Throw an exception if this is called with the type 'CUSTOM'? Since CUSTOM would remove modifiers it shouldn't remove
-    static void removeModifiers(final ModifierType type, final Map<Holder<Attribute>, AttributeInstance> attributes) {
-        attributes.values().forEach(instance -> instance.getModifiers().forEach(modifier -> {
+        ((AttributeMapAccessor) entity.getAttributes()).dragonSurvival$getAttributes().values().forEach(instance -> instance.getModifiers().forEach(modifier -> {
             if (modifier.id().getPath().startsWith(type.path())) {
                 instance.removeModifier(modifier);
             }
         }));
     }
 
-    static List<AttributeModifier> getAttributeModifiersForAttribute(final ModifierType type, final Holder<Attribute> attribute, final Map<Holder<Attribute>, AttributeInstance> attributes) {
-        String attributeId = attribute.getRegisteredName().replace(":", ".");
-        return attributes.get(attribute).getModifiers().stream().filter(modifier -> modifier.id().getPath().startsWith(type.path()) && modifier.id().getPath().endsWith(attributeId)).toList();
+    /** Filters out the attribute modifiers that belong to this supplier */
+    default List<AttributeModifier> filterModifiers(final AttributeInstance instance) {
+        List<AttributeModifier> modifiers = new ArrayList<>();
+
+        if (getModifierType() == ModifierType.CUSTOM) {
+            List<ResourceLocation> ids = getStoredIds().getOrDefault(instance.getAttribute(), List.of());
+
+            for (AttributeModifier modifier : instance.getModifiers()) {
+                if (!ids.contains(modifier.id())) {
+                    modifiers.add(modifier);
+                }
+            }
+        } else {
+            for (AttributeModifier modifier : instance.getModifiers()) {
+                if (!modifier.id().getPath().startsWith(getModifierType().path())) {
+                    modifiers.add(modifier);
+                }
+            }
+        }
+
+        return modifiers;
     }
 
-    static List<AttributeModifier> getAttributeModifiersForAttribute(final ModifierType type, final Holder<Attribute> attribute, final LivingEntity entity) {
-        return getAttributeModifiersForAttribute(type, attribute, ((AttributeMapAccessor) entity.getAttributes()).dragonSurvival$getAttributes());
+    default void applyModifiers(final LivingEntity entity) {
+        applyModifiers(entity, 1);
     }
 
-    default void applyModifiers(final LivingEntity entity, @Nullable final Holder<DragonSpecies> dragonSpecies, double level) {
+    default void applyModifiers(final LivingEntity entity, double level) {
         modifiers().forEach(modifier -> {
             AttributeInstance instance = entity.getAttribute(modifier.attribute());
-            applyModifier(modifier, instance, dragonSpecies, level);
+            applyModifier(modifier, instance, level);
         });
     }
 
     default void removeModifiers(final LivingEntity entity) {
+        if (getModifierType() != ModifierType.CUSTOM) {
+            removeModifiers(getModifierType(), entity);
+            return;
+        }
+
         Map<Holder<Attribute>, List<ResourceLocation>> ids = getStoredIds();
 
         ids.forEach((attribute, modifiers) -> {
@@ -59,15 +84,8 @@ public interface AttributeModifierSupplier {
         ids.clear();
     }
 
-    /** Intended for usage within descriptions */
-    default double getAttributeValue(final Holder<DragonSpecies> dragonSpecies, double value, final Holder<Attribute> attribute) {
-        AttributeInstance instance = new AttributeInstance(attribute, ignored -> { /* Nothing to do */ });
-        applyModifiers(instance, dragonSpecies, value);
-        return instance.getValue();
-    }
-
-    private void applyModifier(final Modifier modifier, @Nullable final AttributeInstance instance, @Nullable final Holder<DragonSpecies> dragonSpecies, double level) {
-        if (instance == null || modifier.dragonSpecies().isPresent() && (dragonSpecies == null || !dragonSpecies.is(modifier.dragonSpecies().get()))) {
+    private void applyModifier(final Modifier modifier, @Nullable final AttributeInstance instance, double level) {
+        if (instance == null) {
             return;
         }
 
@@ -81,18 +99,6 @@ public interface AttributeModifierSupplier {
         AttributeModifier attributeModifier = modifier.getModifier(id, level);
         instance.addPermanentModifier(attributeModifier);
         storeId(instance.getAttribute(), attributeModifier.id());
-    }
-
-    private void applyModifiers(@Nullable final AttributeInstance instance, final Holder<DragonSpecies> dragonSpecies, double value) {
-        if (instance == null) {
-            return;
-        }
-
-        modifiers().forEach(modifier -> {
-            if (modifier.attribute().is(instance.getAttribute())) {
-                applyModifier(modifier, instance, dragonSpecies, value);
-            }
-        });
     }
 
     default void storeId(final Holder<Attribute> attribute, final ResourceLocation id) { /* Nothing to do */ }

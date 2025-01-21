@@ -351,7 +351,7 @@ public class ForestDragonAbilities {
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DurationInstanceBase.create(DragonSurvival.res("forest_magic")).infinite().removeAutomatically().hidden().build(),
-                                        List.of(new Modifier(DSAttributes.MANA, Either.left(LevelBasedValue.perLevel(1)), AttributeModifier.Operation.ADD_VALUE, Optional.empty()))
+                                        List.of(Modifier.per(DSAttributes.MANA, 1, AttributeModifier.Operation.ADD_VALUE))
                                 )),
                                 TargetingMode.ALLIES_AND_SELF
                         )), LevelBasedValue.constant(1)),
@@ -362,7 +362,7 @@ public class ForestDragonAbilities {
                                         .or(Condition.thisEntity(EntityCondition.isInSunlight(10))).build(),
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DurationInstanceBase.create(DragonSurvival.res("good_mana_condition")).infinite().removeAutomatically().hidden().build(),
-                                        List.of(new Modifier(DSAttributes.MANA_REGENERATION, Either.left(LevelBasedValue.perLevel(1)), AttributeModifier.Operation.ADD_MULTIPLIED_BASE, Optional.empty()))
+                                        List.of(Modifier.per(DSAttributes.MANA_REGENERATION, 1, AttributeModifier.Operation.ADD_MULTIPLIED_BASE))
                                 )),
                                 TargetingMode.ALLIES_AND_SELF
                         )), LevelBasedValue.constant(1))
@@ -411,7 +411,7 @@ public class ForestDragonAbilities {
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         ModifierEffect.only(new ModifierWithDuration(
                                 DurationInstanceBase.create(DragonSurvival.res("light_in_darkness")).infinite().removeAutomatically().hidden().build(),
-                                List.of(new Modifier(DSAttributes.PENALTY_RESISTANCE_TIME, Either.left(LevelBasedValue.perLevel(Functions.secondsToTicks(10))), AttributeModifier.Operation.ADD_VALUE, Optional.empty()))
+                                List.of(Modifier.per(DSAttributes.PENALTY_RESISTANCE_TIME, Functions.secondsToTicks(10), AttributeModifier.Operation.ADD_VALUE))
                         )),
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
@@ -436,7 +436,7 @@ public class ForestDragonAbilities {
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         ModifierEffect.only(new ModifierWithDuration(
                                 DurationInstanceBase.create(DragonSurvival.res("cliffhanger")).infinite().removeAutomatically().hidden().build(),
-                                List.of(new Modifier(Attributes.SAFE_FALL_DISTANCE, Either.left(LevelBasedValue.perLevel(5, 1)), AttributeModifier.Operation.ADD_VALUE, Optional.empty()))
+                                List.of(Modifier.perWithBase(Attributes.SAFE_FALL_DISTANCE, 5, 1, AttributeModifier.Operation.ADD_VALUE))
                         )),
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),

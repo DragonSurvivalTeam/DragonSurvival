@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.util;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
@@ -14,6 +15,7 @@ import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.fml.loading.FMLLoader;
@@ -21,6 +23,7 @@ import net.neoforged.neoforge.common.Tags;
 import software.bernie.geckolib.util.RenderUtil;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -276,6 +279,46 @@ public class Functions {
         sunAngle = sunAngle + (angleTarget - sunAngle) * 0.2f;
         // 1 means it's a time of 6000 (sun is at the highest point)
         return Mth.cos(sunAngle);
+    }
+
+    public static double calculateAttributeValue(final double base, final double level, final List<AttributeModifier> attributeModifiers, final List<Modifier> modifiers) {
+        List<Double> addition = new ArrayList<>();
+        List<Double> multiplyBase = new ArrayList<>();
+        List<Double> multiplyTotal = new ArrayList<>();
+
+        for (AttributeModifier modifier : attributeModifiers) {
+            switch (modifier.operation()) {
+                case ADD_VALUE -> addition.add(modifier.amount());
+                case ADD_MULTIPLIED_BASE -> multiplyBase.add(modifier.amount());
+                case ADD_MULTIPLIED_TOTAL -> multiplyTotal.add(modifier.amount());
+            }
+        }
+
+        for (Modifier modifier : modifiers) {
+            switch (modifier.operation()) {
+                case ADD_VALUE -> addition.add(modifier.calculate(level));
+                case ADD_MULTIPLIED_BASE -> multiplyBase.add(modifier.calculate(level));
+                case ADD_MULTIPLIED_TOTAL -> multiplyTotal.add(modifier.calculate(level));
+            }
+        }
+
+        double calculationBase = base;
+
+        for (double amount: addition) {
+            calculationBase += amount;
+        }
+
+        double result = calculationBase;
+
+        for (double amount: multiplyBase) {
+            result += calculationBase * amount;
+        }
+
+        for (double amount : multiplyTotal) {
+            result *= 1 + amount;
+        }
+
+        return result;
     }
 
     public static <T> MutableComponent translateHolderSet(final HolderSet<T> set, final Translation.Type type) {

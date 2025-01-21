@@ -1,4 +1,4 @@
-// 1.21.1	2025-01-20T23:04:15.1915071	Registries
+// 1.21.1	2025-01-21T13:39:45.4470144	Registries
 011b2ee382ec961722c100bbf059b4aa460f44b0 data/dragonsurvival/damage_type/anti_dragon.json
 d8c3135ecd1879e98a21e83ec1bcfd68c5fc3296 data/dragonsurvival/damage_type/ball_lightning.json
 3bca57c58e2307adb52a4b6e18ea88aae7e2d8d7 data/dragonsurvival/damage_type/blast_dust.json
@@ -23,7 +23,7 @@ bf2fd15cd9947cb9b052b05dbc7b6390e2df6b04 data/dragonsurvival/dragonsurvival/drag
 92911efdf8e07adbdb24b41f9090e70d93684bd6 data/dragonsurvival/dragonsurvival/dragon_abilities/cave_magic.json
 aa67a316d95e6d5575e99fb215791d01c65999d3 data/dragonsurvival/dragonsurvival/dragon_abilities/cave_spin.json
 6a2519cd119ffc1d19bc1a4df531ec50ebe87d75 data/dragonsurvival/dragonsurvival/dragon_abilities/cave_wings.json
-52a3ba9a0e8cbc3c543f1a1692bcde7ce3d7b343 data/dragonsurvival/dragonsurvival/dragon_abilities/cliffhanger.json
+0c1436daacd4b1ec2d16659045f33b2e6cb20500 data/dragonsurvival/dragonsurvival/dragon_abilities/cliffhanger.json
 8fdcedd59638f5ee71867806fc2694bf32cb520c data/dragonsurvival/dragonsurvival/dragon_abilities/contrast_shower.json
 825ca4462b0ff4df8c107a102e453500f69e3e30 data/dragonsurvival/dragonsurvival/dragon_abilities/diver.json
 3234c315f78f88cafa74c85fb661dcc4cd0e7524 data/dragonsurvival/dragonsurvival/dragon_abilities/electric_immunity.json

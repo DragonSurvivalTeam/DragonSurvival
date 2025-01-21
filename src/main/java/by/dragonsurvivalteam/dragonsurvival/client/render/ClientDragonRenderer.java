@@ -42,7 +42,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.layers.ParrotOnShoulderLayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Tuple;
@@ -421,7 +420,7 @@ public class ClientDragonRenderer {
         float angle = -(float) movement.bodyYaw * ((float) Math.PI / 180F);
         float x = Mth.sin(angle);
         float z = Mth.cos(angle);
-        float scale = (float)handler.getVisualScale(player, partialRenderTick) * (float)handler.body().value().scalingProportions().offset();
+        float scale = (float) handler.getVisualScale(player, partialRenderTick) * (float) handler.body().value().scalingProportions().offset();
         lookVector.set(x * scale, 0, z * scale);
 
         return lookVector;

@@ -9,11 +9,9 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachmen
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ModifiersWithDuration;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.AttributeModifierSupplier;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.ModifierEffect;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
-import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
@@ -31,7 +29,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
@@ -127,13 +124,7 @@ public class ModifierWithDuration extends DurationInstanceBase<ModifiersWithDura
                 return;
             }
 
-            Holder<DragonSpecies> type = null;
-
-            if (storageHolder instanceof Player player) {
-                type = DragonUtils.getType(player);
-            }
-
-            applyModifiers(livingEntity, type, appliedAbilityLevel());
+            applyModifiers(livingEntity, appliedAbilityLevel());
 
             if (storageHolder instanceof ServerPlayer player) {
                 PacketDistributor.sendToPlayer(player, new SyncModifierWithDuration(player.getId(), this, false));
