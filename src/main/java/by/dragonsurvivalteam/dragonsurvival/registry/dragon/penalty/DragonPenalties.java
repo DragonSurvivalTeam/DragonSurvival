@@ -36,8 +36,8 @@ public class DragonPenalties {
             "■ Cave dragons slowly take §cdamage§r while in snow or rain due to their fiery nature.\n",
             "■ The skill §2«Contrast Shower»§r §7could make your life easier.\n",
     })
-    @Translation(type = Translation.Type.PENALTY, comments = "Snow and Rain Weakness")
-    public static final ResourceKey<DragonPenalty> SNOW_AND_RAIN_WEAKNESS = DragonPenalties.key("snow_and_rain_weakness");
+    @Translation(type = Translation.Type.PENALTY, comments = "Cold Weakness")
+    public static final ResourceKey<DragonPenalty> COLD_WEAKNESS = DragonPenalties.key("cold_weakness");
 
     @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
             "■ Cave dragons quickly take §cdamage§r from water. Explosive water potions and snowballs also deal damage.\n",
@@ -54,7 +54,7 @@ public class DragonPenalties {
     public static final ResourceKey<DragonPenalty> THIN_SKIN = DragonPenalties.key("thin_skin");
 
     @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
-            "■ Dragons are unable to wield or equip certain items. Such as bows, shields, and tridents.\n",
+            "■ Dragons are unable to wield or equip certain items. Such as bows, shields, and tridents. They won't equip and will drop from the hotbar, but you can still craft items with it.\n",
     })
     @Translation(type = Translation.Type.PENALTY, comments = "Item Blacklist")
     public static final ResourceKey<DragonPenalty> ITEM_BLACKLIST = DragonPenalties.key("item_blacklist");
@@ -71,8 +71,8 @@ public class DragonPenalties {
     public static final ResourceKey<DragonPenalty> SNOWBALL_WEAKNESS = DragonPenalties.key("snowball_weakness");
 
     public static void registerPenalties(final BootstrapContext<DragonPenalty> context) {
-        context.register(SNOW_AND_RAIN_WEAKNESS, new DragonPenalty(
-                Optional.of(DragonSurvival.res("abilities/cave/snow_and_rain_weakness")),
+        context.register(COLD_WEAKNESS, new DragonPenalty(
+                Optional.of(DragonSurvival.res("abilities/cave/cold_weakness")),
                 // Enable when:
                 // - in rain / snow
                 // - on / within said block tag

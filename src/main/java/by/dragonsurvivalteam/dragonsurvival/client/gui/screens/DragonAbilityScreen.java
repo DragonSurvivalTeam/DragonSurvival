@@ -42,6 +42,7 @@ public class DragonAbilityScreen extends Screen {
             "§f- §9Disable§r§8 the skill by ctrl+right click.",
             "",
             "§f■ §aPassive skills§r§f are upgraded by spending experience levels or just give bonuses.",
+            "§f- §9To scroll skills use the mouse wheel.",
             "§f- §9More information§r§8 can be found on Curseforge mod page."
     })
     private static final String HELP_PASSIVE_ACTIVE = Translation.Type.GUI.wrap("help.passive_active_abilities");

@@ -60,7 +60,7 @@
     "amount": 1.0,
     "penalty_type": "dragonsurvival:take_damage"
   },
-  "icon": "dragonsurvival:abilities/cave/snow_and_rain_weakness",
+  "icon": "dragonsurvival:abilities/cave/cold_weakness",
   "trigger": {
     "particles_on_trigger": {
       "type": "minecraft:smoke"

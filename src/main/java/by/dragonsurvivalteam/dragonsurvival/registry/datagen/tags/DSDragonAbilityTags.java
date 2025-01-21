@@ -57,6 +57,7 @@ public class DSDragonAbilityTags extends TagsProvider<DragonAbility> {
                 .add(SeaDragonAbilities.STORM_BREATH)
                 .add(SeaDragonAbilities.BALL_LIGHTNING)
                 .add(SeaDragonAbilities.SEA_EYES)
+                .add(SeaDragonAbilities.ORE_GLOW)
                 .add(SeaDragonAbilities.SOUL_REVELATION)
                 // Passive (manual leveling)
                 .add(SeaDragonAbilities.SEA_MAGIC)
@@ -69,8 +70,7 @@ public class DSDragonAbilityTags extends TagsProvider<DragonAbility> {
                 .add(SeaDragonAbilities.AMPHIBIOUS)
                 .add(SeaDragonAbilities.DIVER)
                 .add(SeaDragonAbilities.SEA_WINGS)
-                .add(SeaDragonAbilities.SEA_SPIN)
-                .add(SeaDragonAbilities.TEST_BLOCK_VISION);
+                .add(SeaDragonAbilities.SEA_SPIN);
 
         tag(FOREST)
                 // Active

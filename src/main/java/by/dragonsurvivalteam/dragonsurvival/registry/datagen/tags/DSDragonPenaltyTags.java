@@ -29,7 +29,7 @@ public class DSDragonPenaltyTags extends TagsProvider<DragonPenalty> {
     @Override
     protected void addTags(HolderLookup.@NotNull Provider provider) {
         tag(CAVE)
-                .add(DragonPenalties.SNOW_AND_RAIN_WEAKNESS)
+                .add(DragonPenalties.COLD_WEAKNESS)
                 .add(DragonPenalties.WATER_WEAKNESS)
                 .add(DragonPenalties.ITEM_BLACKLIST)
                 .add(DragonPenalties.WATER_POTION_WEAKNESS)

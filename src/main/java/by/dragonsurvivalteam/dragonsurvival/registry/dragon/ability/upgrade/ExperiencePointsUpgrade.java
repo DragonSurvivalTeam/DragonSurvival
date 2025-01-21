@@ -14,7 +14,7 @@ import net.minecraft.world.item.enchantment.LevelBasedValue;
 import java.text.NumberFormat;
 
 public record ExperiencePointsUpgrade(int maxLevel, LevelBasedValue experienceCost) implements UpgradeType<ExperiencePointsUpgrade.Type> {
-    @Translation(comments = "■ Skill upgrade costs: %s experience points (level %s)")
+    @Translation(comments = "§6■ Skill upgrade costs: %s§6 experience points (level %s§6).")
     private static final String EXPERIENCE_POINTS_UPGRADE = Translation.Type.GUI.wrap("ability_upgrade.experience_points_upgrade");
 
     public static final MapCodec<ExperiencePointsUpgrade> CODEC = RecordCodecBuilder.mapCodec(instance -> UpgradeType.codecStart(instance)

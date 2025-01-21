@@ -98,13 +98,17 @@ public class SeaDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Ball Lightning")
     public static final ResourceKey<DragonAbility> BALL_LIGHTNING = DragonAbilities.key("ball_lightning");
 
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Give yourself §2Sea Vision§r§7 for a short time. Makes water more clear and less dark.")
+    @Translation(type = Translation.Type.ABILITY, comments = "Sea Vision")
+    public static final ResourceKey<DragonAbility> SEA_EYES = DragonAbilities.key("sea_eyes");
+
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Gives you and the players around you the ability to §2illuminate ore§r§7.")
+    @Translation(type = Translation.Type.ABILITY, comments = "Ore Glow")
+    public static final ResourceKey<DragonAbility> ORE_GLOW = DragonAbilities.key("ore_glow");
+
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Give a buff to yourself and your allies that multiplies the amount of §2experience§r gained from monsters.")
     @Translation(type = Translation.Type.ABILITY, comments = "Soul Revelation")
     public static final ResourceKey<DragonAbility> SOUL_REVELATION = DragonAbilities.key("soul_revelation");
-
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Give yourself §2Sea Vision§r for a short time. Makes water more clear and less dark.")
-    @Translation(type = Translation.Type.ABILITY, comments = "Sea Vision")
-    public static final ResourceKey<DragonAbility> SEA_EYES = DragonAbilities.key("sea_eyes");
 
     // --- Passive --- //
 
@@ -127,7 +131,7 @@ public class SeaDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Spectral Impact")
     public static final ResourceKey<DragonAbility> SPECTRAL_IMPACT = DragonAbilities.key("spectral_impact");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Sea dragons can dig blocks that require shovels §2without tools§r§7. This ability gets stronger as you grow.\n")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Sea dragons can dig blocks that require shovels §2without tools§r§7. This ability gets stronger as you grow.")
     @Translation(type = Translation.Type.ABILITY, comments = "Claws and Teeth")
     public static final ResourceKey<DragonAbility> SEA_CLAWS_AND_TEETH = DragonAbilities.key("sea_claws_and_teeth");
 
@@ -150,10 +154,6 @@ public class SeaDragonAbilities {
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Dexterity in water allows sea dragons to §2mine resources underwater§r§7 without penalty.")
     @Translation(type = Translation.Type.ABILITY, comments = "Diver")
     public static final ResourceKey<DragonAbility> DIVER = DragonAbilities.key("diver");
-
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "Outlines nearby blocks")
-    @Translation(type = Translation.Type.ABILITY, comments = "Block Vision Test")
-    public static final ResourceKey<DragonAbility> TEST_BLOCK_VISION = DragonAbilities.key("test_block_vision");
 
     public static void registerAbilities(final BootstrapContext<DragonAbility> context) {
         registerActiveAbilities(context);
@@ -264,7 +264,7 @@ public class SeaDragonAbilities {
                                 Optional.of(new SimpleAbilityAnimation(SimpleAbilityAnimation.MASS_BUFF, AnimationLayer.BASE, 0, true, true))
                         ))
                 ),
-                Optional.of(new ExperienceLevelUpgrade(3, LevelBasedValue.lookup(List.of(7f, 15f, 35f), LevelBasedValue.perLevel(15)))),
+                Optional.of(new ExperienceLevelUpgrade(3, LevelBasedValue.lookup(List.of(12f, 24f, 36f), LevelBasedValue.perLevel(15)))),
                 // Disable when not on ground
                 Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false)).build()),
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(
@@ -567,7 +567,7 @@ public class SeaDragonAbilities {
         ));
 
         //noinspection DataFlowIssue,deprecation -> ignore
-        context.register(TEST_BLOCK_VISION, new DragonAbility(
+        context.register(ORE_GLOW, new DragonAbility(
                 new Activation(
                         Activation.Type.ACTIVE_SIMPLE,
                         Optional.of(LevelBasedValue.constant(1)),
@@ -582,7 +582,7 @@ public class SeaDragonAbilities {
                                 Optional.of(new SimpleAbilityAnimation(SimpleAbilityAnimation.MASS_BUFF, AnimationLayer.BASE, 0, true, true))
                         ))
                 ),
-                Optional.of(new ExperienceLevelUpgrade(3, LevelBasedValue.lookup(List.of(7f, 15f, 35f), LevelBasedValue.perLevel(15)))),
+                Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 20f, 45f, 50f), LevelBasedValue.perLevel(35)))),
                 // Disable when not on ground
                 Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false)).build()),
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(List.of(
@@ -622,7 +622,13 @@ public class SeaDragonAbilities {
                         ))
                 ), TargetingMode.ALLIES_AND_SELF), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 true,
-                new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/ore_glow_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/ore_glow_1"), 1),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/ore_glow_2"), 2),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/ore_glow_3"), 3),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/ore_glow_4"), 4)
+                ))
         ));
     }
 }

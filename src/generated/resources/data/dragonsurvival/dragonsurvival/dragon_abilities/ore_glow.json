@@ -130,7 +130,23 @@
     "texture_entries": [
       {
         "from_level": 0,
-        "texture_resource": "dragonsurvival:test"
+        "texture_resource": "dragonsurvival:abilities/sea/ore_glow_0"
+      },
+      {
+        "from_level": 1,
+        "texture_resource": "dragonsurvival:abilities/sea/ore_glow_1"
+      },
+      {
+        "from_level": 2,
+        "texture_resource": "dragonsurvival:abilities/sea/ore_glow_2"
+      },
+      {
+        "from_level": 3,
+        "texture_resource": "dragonsurvival:abilities/sea/ore_glow_3"
+      },
+      {
+        "from_level": 4,
+        "texture_resource": "dragonsurvival:abilities/sea/ore_glow_4"
       }
     ]
   },
@@ -139,16 +155,17 @@
       "type": "minecraft:lookup",
       "fallback": {
         "type": "minecraft:linear",
-        "base": 15.0,
-        "per_level_above_first": 15.0
+        "base": 35.0,
+        "per_level_above_first": 35.0
       },
       "values": [
-        7.0,
-        15.0,
-        35.0
+        0.0,
+        20.0,
+        45.0,
+        50.0
       ]
     },
-    "maximum_level": 3,
+    "maximum_level": 4,
     "upgrade_type": "dragonsurvival:experience_levels"
   },
   "usage_blocked": {
