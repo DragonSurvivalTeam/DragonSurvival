@@ -115,8 +115,6 @@ public class ClientFlightHandler {
     public static void flightCamera(CalculateDetachedCameraDistanceEvent event) {
         DragonStateProvider.getOptional(DragonSurvival.PROXY.getLocalPlayer()).ifPresent(handler -> {
             if (handler.isDragon()) {
-                // I'm not entirely sure why 20 works here, but it seems to be the magic number that
-                // keeps the dragon's size from the camera's perspective constant.
                 float visualScale = (float)handler.getVisualScale(DragonSurvival.PROXY.getLocalPlayer(), Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false));
                 event.setDistance(event.getDistance() / event.getEntityScalingFactor() * visualScale);
             }
