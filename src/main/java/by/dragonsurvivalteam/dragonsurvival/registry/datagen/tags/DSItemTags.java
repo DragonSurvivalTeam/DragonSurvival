@@ -132,11 +132,11 @@ public class DSItemTags extends ItemTagsProvider {
             List<DietEntry> diet;
 
             // Diet data is not available at this point
-            if (species.key() == BuiltInDragonSpecies.CAVE) {
+            if (species.key() == BuiltInDragonSpecies.CAVE_DRAGON) {
                 diet = DietEntryProvider.caveDiet();
-            } else if (species.key() == BuiltInDragonSpecies.FOREST) {
+            } else if (species.key() == BuiltInDragonSpecies.FOREST_DRAGON) {
                 diet = DietEntryProvider.forestDiet();
-            } else if (species.key() == BuiltInDragonSpecies.SEA) {
+            } else if (species.key() == BuiltInDragonSpecies.SEA_DRAGON) {
                 diet = DietEntryProvider.seaDiet();
             } else {
                 throw new IllegalStateException("Diet tag setup is missing for dragon species [" + species.getRegisteredName() + "]");

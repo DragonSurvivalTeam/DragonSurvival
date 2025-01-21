@@ -333,7 +333,7 @@ public class DSItems {
                                     new SourceOfMagicData.Consumable(DSItems.WEAK_DRAGON_HEART.value(), Functions.secondsToTicks(120)),
                                     new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_HEART.value(), Functions.secondsToTicks(300))
                             ),
-                            List.of(BuiltInDragonSpecies.CAVE)
+                            List.of(BuiltInDragonSpecies.CAVE_DRAGON)
                     ))
     ));
 
@@ -348,7 +348,7 @@ public class DSItems {
                                     new SourceOfMagicData.Consumable(DSItems.WEAK_DRAGON_HEART.value(), Functions.secondsToTicks(120)),
                                     new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_HEART.value(), Functions.secondsToTicks(300))
                             ),
-                            List.of(BuiltInDragonSpecies.FOREST)
+                            List.of(BuiltInDragonSpecies.FOREST_DRAGON)
                     ))
     ));
 
@@ -363,7 +363,7 @@ public class DSItems {
                                     new SourceOfMagicData.Consumable(DSItems.WEAK_DRAGON_HEART.value(), Functions.secondsToTicks(120)),
                                     new SourceOfMagicData.Consumable(DSItems.ELDER_DRAGON_HEART.value(), Functions.secondsToTicks(300))
                             ),
-                            List.of(BuiltInDragonSpecies.SEA)
+                            List.of(BuiltInDragonSpecies.SEA_DRAGON)
                     ))
     ));
 

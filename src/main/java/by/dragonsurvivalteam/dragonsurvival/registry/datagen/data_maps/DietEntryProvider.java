@@ -26,9 +26,9 @@ public class DietEntryProvider extends DataMapProvider {
     @Override
     protected void gather() {
         builder(DSDataMaps.DIET_ENTRIES)
-                .add(BuiltInDragonSpecies.CAVE, caveDiet(), false)
-                .add(BuiltInDragonSpecies.FOREST, forestDiet(), false)
-                .add(BuiltInDragonSpecies.SEA, seaDiet(), false);
+                .add(BuiltInDragonSpecies.CAVE_DRAGON, caveDiet(), false)
+                .add(BuiltInDragonSpecies.FOREST_DRAGON, forestDiet(), false)
+                .add(BuiltInDragonSpecies.SEA_DRAGON, seaDiet(), false);
     }
 
     public static List<DietEntry> caveDiet() {
