@@ -1,0 +1,8 @@
+{
+  "key": "spikes_5",
+  "texture": "dragonsurvival:textures/dragon/custom/forest_spikes_5.png",
+  "average_hue": 0.2508809020436928,
+  "applicable_species": [
+    "dragonsurvival:forest"
+  ]
+}

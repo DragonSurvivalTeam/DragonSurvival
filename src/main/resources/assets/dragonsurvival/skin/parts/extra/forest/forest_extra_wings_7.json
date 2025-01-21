@@ -1,0 +1,9 @@
+{
+  "key": "forest_extra_wings_7",
+  "texture": "dragonsurvival:textures/dragon/custom/forest_extra_wings_7.png",
+  "include_in_randomizer": false,
+  "average_hue": 0.11379551820728295,
+  "applicable_species": [
+    "dragonsurvival:forest"
+  ]
+}

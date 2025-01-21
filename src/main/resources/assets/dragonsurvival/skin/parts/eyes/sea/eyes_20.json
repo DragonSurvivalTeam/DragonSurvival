@@ -1,0 +1,8 @@
+{
+  "key": "eyes_20",
+  "texture": "dragonsurvival:textures/dragon/custom/sea_eyes_20.png",
+  "average_hue": 0.6522491349480971,
+  "applicable_species": [
+    "dragonsurvival:sea"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "key": "sea_magic_6",
+  "texture": "dragonsurvival:textures/dragon/custom/sea_magic_6.png",
+  "average_hue": 0.5642590787417412,
+  "applicable_species": [
+    "dragonsurvival:sea"
+  ]
+}

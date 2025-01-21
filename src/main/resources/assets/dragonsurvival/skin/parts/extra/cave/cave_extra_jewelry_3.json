@@ -1,0 +1,8 @@
+{
+  "key": "cave_extra_jewelry_3",
+  "texture": "dragonsurvival:textures/dragon/custom/cave_extra_jewelry_3.png",
+  "average_hue": 0.09913623115916247,
+  "applicable_species": [
+    "dragonsurvival:cave"
+  ]
+}

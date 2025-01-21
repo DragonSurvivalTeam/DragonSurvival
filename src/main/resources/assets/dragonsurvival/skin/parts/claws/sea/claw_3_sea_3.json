@@ -1,0 +1,9 @@
+{
+  "key": "claw_3_sea_3",
+  "texture": "dragonsurvival:textures/dragon/custom/claw_3_sea_3.png",
+  "is_hue_randomizable": false,
+  "average_hue": 0.5353270756021248,
+  "applicable_species": [
+    "dragonsurvival:sea"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "key": "sea_extra_5",
+  "texture": "dragonsurvival:textures/dragon/custom/sea_extra_5.png",
+  "include_in_randomizer": false,
+  "average_hue": 0.5282140779522978,
+  "applicable_species": [
+    "dragonsurvival:sea"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "key": "teeth_8",
+  "texture": "dragonsurvival:textures/dragon/custom/teeth_8.png",
+  "average_hue": 0.11336078700526192,
+  "applicable_species": [
+    "dragonsurvival:cave"
+  ]
+}

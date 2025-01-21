@@ -1,0 +1,8 @@
+{
+  "key": "sea_extra_jewelry_2",
+  "texture": "dragonsurvival:textures/dragon/custom/sea_extra_jewelry_2.png",
+  "average_hue": 0.05172563962983124,
+  "applicable_species": [
+    "dragonsurvival:sea"
+  ]
+}

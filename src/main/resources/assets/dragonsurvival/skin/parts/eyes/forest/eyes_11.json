@@ -1,0 +1,8 @@
+{
+  "key": "eyes_11",
+  "texture": "dragonsurvival:textures/dragon/custom/forest_eyes_11.png",
+  "average_hue": 0.8333333333333334,
+  "applicable_species": [
+    "dragonsurvival:forest"
+  ]
+}

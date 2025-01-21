@@ -1,0 +1,8 @@
+{
+  "key": "claw_7_cave",
+  "texture": "dragonsurvival:textures/dragon/custom/claw_7_cave.png",
+  "average_hue": 0.04407770130443238,
+  "applicable_species": [
+    "dragonsurvival:cave"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "key": "extra_fins_5",
+  "texture": "dragonsurvival:textures/dragon/custom/extra_fins_5.png",
+  "average_hue": 0.7348722138998594,
+  "applicable_bodiess": [
+    "dragonsurvival:north"
+  ],
+  "applicable_species": [
+    "dragonsurvival:sea"
+  ]
+}

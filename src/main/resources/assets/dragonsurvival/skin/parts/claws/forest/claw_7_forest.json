@@ -1,0 +1,8 @@
+{
+  "key": "claw_7_forest",
+  "texture": "dragonsurvival:textures/dragon/custom/claw_7_forest.png",
+  "average_hue": 0.5078574856046063,
+  "applicable_species": [
+    "dragonsurvival:forest"
+  ]
+}

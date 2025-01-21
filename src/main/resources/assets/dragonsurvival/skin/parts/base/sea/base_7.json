@@ -1,0 +1,8 @@
+{
+  "key": "base_7",
+  "texture": "dragonsurvival:textures/dragon/custom/sea_base_7.png",
+  "average_hue": 0.44480249590026044,
+  "applicable_species": [
+    "dragonsurvival:sea"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "key": "cave_extra_wings_5",
+  "texture": "dragonsurvival:textures/dragon/custom/cave_extra_wings_5.png",
+  "include_in_randomizer": false,
+  "average_hue": 0.7746288798920378,
+  "applicable_species": [
+    "dragonsurvival:cave"
+  ]
+}

@@ -19,7 +19,7 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.List;
 import java.util.Optional;
 
-public class BuiltInDragonSpecies {
+public class BuiltInDragonSpecies { // TODO :: add `_dragon` to species
     @Translation(type = Translation.Type.DRAGON_SPECIES_ALTAR_DESCRIPTION, comments = {
             "§7■ §6Cave Dragons§r§7 are the spawn of §ffire§r§7. They have little in common with living creatures. Their skeleton is made of §fnetherite§r§7, blood is §flava§r§7, and skin is §frocks§r§7.\n",
             "§2■ Features:§f§r§7 fire resistance, pickaxe claws, lava magic, faster movement on stone and hot blocks.",

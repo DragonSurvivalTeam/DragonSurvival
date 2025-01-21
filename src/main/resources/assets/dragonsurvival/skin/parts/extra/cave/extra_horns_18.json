@@ -1,0 +1,8 @@
+{
+  "key": "extra_horns_18",
+  "texture": "dragonsurvival:textures/dragon/custom/extra_horns_18.png",
+  "average_hue": 0.05035971223021581,
+  "applicable_species": [
+    "dragonsurvival:cave"
+  ]
+}

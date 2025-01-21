@@ -21,10 +21,7 @@ import java.util.Map;
 
 public class DragonPartLoader extends SimpleJsonResourceReloadListener {
     public static final Map<ResourceKey<DragonSpecies>, Map<SkinLayer, List<DragonPart>>> DRAGON_PARTS = new HashMap<>();
-
-    private static final int NAMESPACE = 0;
-    private static final int SPECIES = 1;
-    private static final int PART = 2;
+    private static final int LAYER = 0;
 
     public DragonPartLoader() {
         super(new Gson(), "skin/parts");
@@ -32,18 +29,24 @@ public class DragonPartLoader extends SimpleJsonResourceReloadListener {
 
     @Override
     protected void apply(final @NotNull Map<ResourceLocation, JsonElement> map, @NotNull final ResourceManager manager, @NotNull final ProfilerFiller profiler) {
-        map.forEach((location, value) -> value.getAsJsonArray().forEach(element -> {
-            String[] elements = location.getPath().split("/");
+        map.forEach((location, value) -> {
+            String[] elements = location.getPath().split("/", 2);
 
-            if (elements.length != 3) {
-                DragonSurvival.LOGGER.error("The parts need to be stored as '<namespace>/<species>/*.json' - [{}] is invalid", location);
+            if (elements.length != 2) {
+                DragonSurvival.LOGGER.error("The dragon parts need to be stored as '<layer>/*.json' - [{}] is invalid", location);
                 return;
             }
 
-            ResourceKey<DragonSpecies> dragonSpecies = ResourceKey.create(DragonSpecies.REGISTRY, DragonSurvival.location(elements[NAMESPACE], elements[SPECIES]));
-            SkinLayer layer = SkinLayer.valueOf(elements[PART].toUpperCase(Locale.ENGLISH));
+            try {
+                SkinLayer layer = SkinLayer.valueOf(elements[LAYER].toUpperCase(Locale.ENGLISH));
+                DragonPart part = DragonPart.load(value.getAsJsonObject());
 
-            DRAGON_PARTS.computeIfAbsent(dragonSpecies, key -> new HashMap<>()).computeIfAbsent(layer, key -> new ArrayList<>()).add(DragonPart.load(element.getAsJsonObject()));
-        }));
+                for (ResourceKey<DragonSpecies> species : part.applicableSpecies()) {
+                    DRAGON_PARTS.computeIfAbsent(species, key -> new HashMap<>()).computeIfAbsent(layer, key -> new ArrayList<>()).add(part);
+                }
+            } catch (IllegalArgumentException exception) {
+                DragonSurvival.LOGGER.error("[{}] is not a valid layer for the dragon part - [{}] is invalid", elements[LAYER], location);
+            }
+        });
     }
 }

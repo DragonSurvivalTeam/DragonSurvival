@@ -822,7 +822,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
                     DragonSurvival.LOGGER.error("Key {} not found!", partKey);
                     return true;
                 }
-                return !text.isRandom();
+                return !text.includeInRandomizer();
             });
 
             // Don't actually modify the skin preset here, do it inside setSkinPresetAction
@@ -851,7 +851,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
                     settings.partKey = key;
                     DragonPart text = DragonEditorHandler.getDragonPart(layer, key, dragonSpecies.getKey());
 
-                    if (text != null && text.isHueRandom()) {
+                    if (text != null && text.isHueRandomizable()) {
                         settings.hue = minecraft.player.getRandom().nextFloat();
                         settings.saturation = 0.25f + minecraft.player.getRandom().nextFloat() * 0.5f;
                         settings.brightness = 0.3f + minecraft.player.getRandom().nextFloat() * 0.3f;

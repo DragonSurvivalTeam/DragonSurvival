@@ -1,0 +1,8 @@
+{
+  "key": "forest_extra_tail_8",
+  "texture": "dragonsurvival:textures/dragon/custom/forest_extra_tail_8.png",
+  "average_hue": 0.23548411612707096,
+  "applicable_species": [
+    "dragonsurvival:forest"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "key": "claw_3_cave_2",
+  "texture": "dragonsurvival:textures/dragon/custom/claw_3_cave_2.png",
+  "is_hue_randomizable": false,
+  "average_hue": 0.04096718331830607,
+  "applicable_species": [
+    "dragonsurvival:cave"
+  ]
+}

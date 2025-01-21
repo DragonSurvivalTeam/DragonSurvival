@@ -1,0 +1,8 @@
+{
+  "key": "cave_extra_paws_1",
+  "texture": "dragonsurvival:textures/dragon/custom/cave_extra_paws_1.png",
+  "average_hue": 0.04620124995635627,
+  "applicable_species": [
+    "dragonsurvival:cave"
+  ]
+}

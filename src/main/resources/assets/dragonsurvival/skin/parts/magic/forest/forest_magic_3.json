@@ -1,0 +1,8 @@
+{
+  "key": "forest_magic_3",
+  "texture": "dragonsurvival:textures/dragon/custom/forest_magic_3.png",
+  "average_hue": 0.2747586936400899,
+  "applicable_species": [
+    "dragonsurvival:forest"
+  ]
+}

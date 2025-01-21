@@ -1,0 +1,8 @@
+{
+  "key": "eyes_12",
+  "texture": "dragonsurvival:textures/dragon/custom/cave_eyes_12.png",
+  "average_hue": 0.11601884570082445,
+  "applicable_species": [
+    "dragonsurvival:cave"
+  ]
+}

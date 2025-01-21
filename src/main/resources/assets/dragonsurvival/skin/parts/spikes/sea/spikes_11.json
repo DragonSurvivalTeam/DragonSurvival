@@ -1,0 +1,8 @@
+{
+  "key": "spikes_11",
+  "texture": "dragonsurvival:textures/dragon/custom/sea_spikes_11.png",
+  "average_hue": 0.5668069558782722,
+  "applicable_species": [
+    "dragonsurvival:sea"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "key": "sea_extra_wings_9",
+  "texture": "dragonsurvival:textures/dragon/custom/sea_extra_wings_9.png",
+  "include_in_randomizer": false,
+  "average_hue": 0.5256420550656278,
+  "applicable_species": [
+    "dragonsurvival:sea"
+  ]
+}

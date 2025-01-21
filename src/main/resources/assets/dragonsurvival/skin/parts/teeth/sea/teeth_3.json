@@ -1,0 +1,8 @@
+{
+  "key": "teeth_3",
+  "texture": "dragonsurvival:textures/dragon/custom/teeth_3.png",
+  "average_hue": 0.07675739181515569,
+  "applicable_species": [
+    "dragonsurvival:sea"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "key": "base_8",
+  "texture": "dragonsurvival:textures/dragon/custom/cave_base_8.png",
+  "average_hue": 0.047133590586799,
+  "applicable_species": [
+    "dragonsurvival:cave"
+  ]
+}

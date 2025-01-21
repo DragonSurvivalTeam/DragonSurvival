@@ -41,14 +41,13 @@ import net.neoforged.neoforge.client.GlStateBackup;
 import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.Color;
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
-
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class DragonEditorHandler {
@@ -62,14 +61,14 @@ public class DragonEditorHandler {
         if (layer == SkinLayer.BASE && partKey.equalsIgnoreCase(DefaultPartLoader.NO_PART)) {
             // Without a base the dragon will be invisible
             // TODO :: return a sort of full-textured missingno texture?
-            return ResourceLocation.parse(DragonPartLoader.DRAGON_PARTS.get(type).get(layer).getFirst().texture());
+            return DragonPartLoader.DRAGON_PARTS.get(type).get(layer).getFirst().texture();
         }
 
         List<DragonPart> parts = DragonPartLoader.DRAGON_PARTS.get(type).get(layer);
 
         for (DragonPart part : parts) {
             if (Objects.equals(part.key(), partKey)) {
-                return ResourceLocation.parse(part.texture());
+                return part.texture();
             }
         }
 
@@ -109,8 +108,7 @@ public class DragonEditorHandler {
         List<DragonPart> parts = DragonPartLoader.DRAGON_PARTS.get(type.getKey()).get(layer);
 
         for (DragonPart part : parts) {
-            //noinspection DataFlowIssue -> key is present
-            if ((part.bodies() == null && body.value().model() == DragonBody.DEFAULT_MODEL) || (part.bodies() != null && part.bodies().contains(body.getKey().location().toString()))) {
+            if (part.applicableBodies().isEmpty() && body.value().model() == DragonBody.DEFAULT_MODEL || part.applicableBodies().contains(body.getKey())) {
                 keys.add(part.key());
             }
         }

@@ -1,0 +1,8 @@
+{
+  "key": "cave_magic_2",
+  "texture": "dragonsurvival:textures/dragon/custom/cave_magic_2.png",
+  "average_hue": 0.11583563307701247,
+  "applicable_species": [
+    "dragonsurvival:cave"
+  ]
+}

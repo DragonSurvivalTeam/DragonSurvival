@@ -1,0 +1,9 @@
+{
+  "key": "forest_extra_4",
+  "texture": "dragonsurvival:textures/dragon/custom/forest_extra_4.png",
+  "is_hue_randomizable": false,
+  "average_hue": 0.10638849929873781,
+  "applicable_species": [
+    "dragonsurvival:forest"
+  ]
+}

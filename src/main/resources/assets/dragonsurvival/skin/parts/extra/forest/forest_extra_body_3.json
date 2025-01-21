@@ -1,0 +1,8 @@
+{
+  "key": "forest_extra_body_3",
+  "texture": "dragonsurvival:textures/dragon/custom/forest_extra_body_3.png",
+  "average_hue": 0.24156051045447857,
+  "applicable_species": [
+    "dragonsurvival:forest"
+  ]
+}

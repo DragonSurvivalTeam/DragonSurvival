@@ -1,0 +1,8 @@
+{
+  "key": "base_2",
+  "texture": "dragonsurvival:textures/dragon/custom/forest_base_2.png",
+  "average_hue": 0.11667906351244994,
+  "applicable_species": [
+    "dragonsurvival:forest"
+  ]
+}

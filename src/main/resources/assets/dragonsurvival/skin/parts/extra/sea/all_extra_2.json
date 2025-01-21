@@ -1,0 +1,8 @@
+{
+  "key": "all_extra_2",
+  "texture": "dragonsurvival:textures/dragon/custom/all_extra_2.png",
+  "average_hue": 0.07053958896258083,
+  "applicable_species": [
+    "dragonsurvival:sea"
+  ]
+}

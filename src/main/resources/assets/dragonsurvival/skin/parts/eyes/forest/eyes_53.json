@@ -1,0 +1,8 @@
+{
+  "key": "eyes_53",
+  "texture": "dragonsurvival:textures/dragon/custom/forest_eyes_53.png",
+  "average_hue": 0.8365384615384615,
+  "applicable_species": [
+    "dragonsurvival:forest"
+  ]
+}

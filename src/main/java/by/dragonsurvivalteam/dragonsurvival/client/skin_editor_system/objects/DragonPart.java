@@ -1,36 +1,32 @@
 package by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import com.google.gson.JsonObject;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /** Part data read from the 'skin/parts/*.json' files */
-public record DragonPart(String key, String texture, List<String> bodies, float averageHue, boolean isColorable, boolean isRandom, boolean isHueRandom) {
-    public static final String KEY = "key";
-    public static final String TEXTURE = "texture";
-    public static final String BODIES = "bodies";
-    public static final String AVERAGE_HUE = "average_hue";
-    public static final String IS_COLORABLE = "colorable";
-    public static final String IS_RANDOM = "random";
-    public static final String IS_HUE_RANDOM = "randomHue";
+public record DragonPart(String key, ResourceLocation texture, List<ResourceKey<DragonSpecies>> applicableSpecies, List<ResourceKey<DragonBody>> applicableBodies, float averageHue, boolean isColorable, boolean includeInRandomizer, boolean isHueRandomizable) {
+    public static final Codec<DragonPart> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.STRING.fieldOf("key").forGetter(DragonPart::key),
+            ResourceLocation.CODEC.fieldOf("texture").forGetter(DragonPart::texture),
+            ResourceKey.codec(DragonSpecies.REGISTRY).listOf().optionalFieldOf("applicable_species", List.of()).forGetter(DragonPart::applicableSpecies),
+            ResourceKey.codec(DragonBody.REGISTRY).listOf().optionalFieldOf("applicable_bodies", List.of()).forGetter(DragonPart::applicableBodies),
+            Codec.FLOAT.optionalFieldOf("average_hue", 0f).forGetter(DragonPart::averageHue),
+            Codec.BOOL.optionalFieldOf("is_colorable", true).forGetter(DragonPart::isColorable),
+            Codec.BOOL.optionalFieldOf("include_in_randomizer", true).forGetter(DragonPart::includeInRandomizer),
+            Codec.BOOL.optionalFieldOf("is_hue_randomizable", true).forGetter(DragonPart::isHueRandomizable)
+    ).apply(instance, DragonPart::new));
 
-    @SuppressWarnings("SimplifiableConditionalExpression") // ignore for clarity
     public static DragonPart load(final JsonObject json) {
-        String key = json.get(KEY).getAsString();
-        String texture = json.get(TEXTURE).getAsString();
-        float averageHue = json.get(AVERAGE_HUE).getAsFloat();
-
-        List<String> bodies = new ArrayList<>();
-
-        if (json.has(BODIES)) {
-            json.get(BODIES).getAsJsonArray().forEach(entry -> bodies.add(entry.getAsString()));
-        }
-
-        boolean isColorable = json.has(IS_COLORABLE) ? json.get(IS_COLORABLE).getAsBoolean() : true;
-        boolean isRandom = json.has(IS_RANDOM) ? json.get(IS_RANDOM).getAsBoolean() : true;
-        boolean isHueRandom = json.has(IS_HUE_RANDOM) ? json.get(IS_HUE_RANDOM).getAsBoolean() : true;
-
-        return new DragonPart(key, texture, !bodies.isEmpty() ? bodies : null, averageHue, isColorable, isRandom, isHueRandom);
+        return CODEC.decode(JsonOps.INSTANCE, json).resultOrPartial(DragonSurvival.LOGGER::error).map(Pair::getFirst).orElse(null);
     }
 }

@@ -1,0 +1,8 @@
+{
+  "key": "forest_extra_moustache_2",
+  "texture": "dragonsurvival:textures/dragon/custom/forest_extra_moustache_2.png",
+  "average_hue": 0.24223602484472054,
+  "applicable_species": [
+    "dragonsurvival:forest"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "key": "horns_5",
+  "texture": "dragonsurvival:textures/dragon/custom/horns_5.png",
+  "average_hue": 0.12903225806451626,
+  "applicable_species": [
+    "dragonsurvival:sea"
+  ]
+}

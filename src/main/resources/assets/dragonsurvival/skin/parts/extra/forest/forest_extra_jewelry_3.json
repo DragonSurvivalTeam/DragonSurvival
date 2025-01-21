@@ -1,0 +1,8 @@
+{
+  "key": "forest_extra_jewelry_3",
+  "texture": "dragonsurvival:textures/dragon/custom/forest_extra_jewelry_3.png",
+  "average_hue": 0.12438198149422308,
+  "applicable_species": [
+    "dragonsurvival:forest"
+  ]
+}
