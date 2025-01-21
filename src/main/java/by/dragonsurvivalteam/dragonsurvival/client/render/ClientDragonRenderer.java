@@ -240,10 +240,13 @@ public class ClientDragonRenderer {
             try {
                 poseStack.pushPose();
 
-                Vector3f lookVector = getDragonCameraOffset(player);
+                Vector3f lookVector = getDragonCameraOffset(player, partialRenderTick);
                 poseStack.translate(-lookVector.x(), lookVector.y(), -lookVector.z());
 
-                double size = handler.getVisualSize(partialRenderTick);
+                // Make sure to update our modifiers on the clientside based on the partial visual size
+                float scale = (float)handler.getVisualScale(player, partialRenderTick);
+                poseStack.scale(scale, scale, scale);
+
                 EntityRenderer<? extends Player> playerRenderer = renderPlayerEvent.getRenderer();
                 int eventLight = renderPlayerEvent.getPackedLight();
                 final MultiBufferSource renderTypeBuffer = renderPlayerEvent.getMultiBufferSource();
@@ -261,22 +264,10 @@ public class ClientDragonRenderer {
                 MovementData movement = MovementData.getData(player);
                 poseStack.mulPose(Axis.YN.rotationDegrees((float) movement.bodyYaw));
 
-                float scale = Functions.getScale(player, size);
-                poseStack.scale(scale, scale, scale);
-
-                ((EntityRendererAccessor) renderPlayerEvent.getRenderer()).dragonSurvival$setShadowRadius((float) ((3.0F * size + 62.0F) / 260.0F));
                 // What will be rendered in place of the human player model
                 DragonEntity playerAsDragon = PLAYER_DRAGON_MAP.get(player.getId());
                 EntityRenderer<? super DragonEntity> dragonRenderer = minecraft.getEntityRenderDispatcher().getRenderer(playerAsDragon);
                 dragonModel.setOverrideTexture(customTexture);
-
-                if (player.isCrouching()) {
-                    // Needed to prevent the dragon model from sinking into the ground
-                    // The formula is generated based on input / output pairs of various sizes which looked correct
-                    double translate = 1 / (0.4 * Math.pow(size, 0.78) + 0.5);
-                    poseStack.translate(0, translate, 0);
-                }
-
                 boolean isPlayerGliding = ServerFlightHandler.isGliding(player);
                 Entity playerVehicle = player.getVehicle();
 
@@ -381,9 +372,10 @@ public class ClientDragonRenderer {
                 }
 
                 if (!player.isSpectator()) {
+                    // FIXME
                     // Render the parrot on the players shoulder
-                    ((LivingRendererAccessor) playerRenderer).dragonSurvival$getRenderLayers().stream().filter(ParrotOnShoulderLayer.class::isInstance).findAny().ifPresent(renderLayer -> {
-                        poseStack.scale(1 / scale, 1 / scale, 1 / scale);
+                    /*((LivingRendererAccessor) playerRenderer).dragonSurvival$getRenderLayers().stream().filter(ParrotOnShoulderLayer.class::isInstance).findAny().ifPresent(renderLayer -> {
+                       // poseStack.scale(1 / scale, 1 / scale, 1 / scale);
                         poseStack.mulPose(Axis.XN.rotationDegrees(180));
                         double height = 1.3 * scale;
                         double forward = 0.3 * scale;
@@ -394,7 +386,7 @@ public class ClientDragonRenderer {
                         poseStack.translate(0, height, forward);
                         poseStack.mulPose(Axis.XN.rotationDegrees(-180));
                         poseStack.scale(scale, scale, scale);
-                    });
+                    });*/
 
                     int combinedOverlayIn = LivingEntityRenderer.getOverlayCoords(player, 0);
                     if (player.hasEffect(DSEffects.TRAPPED)) {
@@ -421,23 +413,16 @@ public class ClientDragonRenderer {
         dragonModel.setOverrideTexture(null);
     }
 
-    public static Vector3f getDragonCameraOffset(final Player player) {
+    public static Vector3f getDragonCameraOffset(final Player player, float partialRenderTick) {
         Vector3f lookVector = new Vector3f(0, 0, 0);
 
         MovementData movement = MovementData.getData(player);
+        DragonStateHandler handler = DragonStateProvider.getData(player);
         float angle = -(float) movement.bodyYaw * ((float) Math.PI / 180F);
         float x = Mth.sin(angle);
         float z = Mth.cos(angle);
-        float scale = Functions.getScale(player, DragonStateProvider.getData(player).getSize());
-
-        if (player == Minecraft.getInstance().player && Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
-            // To prevent clipping into the model
-            // Also to properly see the dragon body when looking down
-            lookVector.set(x * scale, 0, z * scale);
-        } else {
-            // To render the hitbox closer to the body
-            lookVector.set(x * scale / 1.5, 0, z * scale / 1.5);
-        }
+        float scale = (float)handler.getVisualScale(player, partialRenderTick) * (float)handler.body().value().scalingProportions().offset();
+        lookVector.set(x * scale, 0, z * scale);
 
         return lookVector;
     }

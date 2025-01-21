@@ -105,6 +105,7 @@ public class DragonDestructionHandler {
         }
 
         AABB boundingBox = player.getBoundingBox();
+        // FIXME :: Use scale attribute
         AABB blockCollisionBoundingBox = boundingBox.inflate(1.25 + (data.getSize() - DragonStage.MAX_HANDLED_SIZE) / DragonStage.MAX_HANDLED_SIZE * 0.15f);
 
         checkAndDestroyCollidingBlocks(data, event, blockCollisionBoundingBox);

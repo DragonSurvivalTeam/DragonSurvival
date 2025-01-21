@@ -29,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
-public record DragonBody(boolean isDefault, List<Modifier> modifiers, double heightMultiplier, boolean hasExtendedCrouch, boolean canHideWings, ResourceLocation model, ResourceLocation animation, List<String> bonesToHideForToggle, Holder<DragonEmoteSet> emotes, MountingOffsets mountingOffsets) implements AttributeModifierSupplier {
+public record DragonBody(boolean isDefault, List<Modifier> modifiers, double heightMultiplier, boolean hasExtendedCrouch, boolean canHideWings, ResourceLocation model, ResourceLocation animation, List<String> bonesToHideForToggle, Holder<DragonEmoteSet> emotes, ScalingProportions scalingProportions, MountingOffsets mountingOffsets) implements AttributeModifierSupplier {
     public static final ResourceKey<Registry<DragonBody>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_bodies"));
 
     public static final ResourceLocation DEFAULT_MODEL = DragonSurvival.res("dragon_model");
@@ -44,6 +44,7 @@ public record DragonBody(boolean isDefault, List<Modifier> modifiers, double hei
             ResourceLocation.CODEC.fieldOf("animation").forGetter(DragonBody::animation),
             Codec.STRING.listOf().optionalFieldOf("bones_to_hide_for_toggle", List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight")).forGetter(DragonBody::bonesToHideForToggle),
             DragonEmoteSet.CODEC.fieldOf("emotes").forGetter(DragonBody::emotes),
+            ScalingProportions.CODEC.fieldOf("scaling_proportions").forGetter(DragonBody::scalingProportions),
             MountingOffsets.CODEC.fieldOf("mounting_offset").forGetter(DragonBody::mountingOffsets)
 
     ).apply(instance, instance.stable(DragonBody::new)));
@@ -55,6 +56,19 @@ public record DragonBody(boolean isDefault, List<Modifier> modifiers, double hei
     public static final double CROUCH_HEIGHT_RATIO = 5d / 6d;
 
     private static final RandomSource RANDOM = RandomSource.create();
+
+    public record ScalingProportions(double width, double height, double eyeHeight, double offset) {
+        public static final Codec<ScalingProportions> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.DOUBLE.optionalFieldOf("width", 1.0).forGetter(ScalingProportions::width),
+                Codec.DOUBLE.optionalFieldOf("height", 1.0).forGetter(ScalingProportions::height),
+                Codec.DOUBLE.optionalFieldOf("eye_height", 1.0).forGetter(ScalingProportions::eyeHeight),
+                Codec.DOUBLE.optionalFieldOf("offset", 0.0).forGetter(ScalingProportions::offset)
+        ).apply(instance, ScalingProportions::new));
+
+        public static ScalingProportions of(final double width, final double height, final double eyeHeight, final double offset) {
+            return new ScalingProportions(width, height, eyeHeight, offset);
+        }
+    }
 
     public record MountingOffsets(Vec3 offset, Vec3 scale) {
         public static final Codec<MountingOffsets> CODEC = RecordCodecBuilder.create(instance -> instance.group(

@@ -55,6 +55,14 @@
     },
     {
       "amount": {
+        "precise_amount": 0.02,
+        "precise_base": -0.9
+      },
+      "attribute": "minecraft:generic.scale",
+      "operation": "add_value"
+    },
+    {
+      "amount": {
         "type": "minecraft:linear",
         "base": 0.5,
         "per_level_above_first": 0.5

@@ -73,6 +73,7 @@ public class DragonBodies {
                 DragonSurvival.res("dragon_center"),
                 List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"),
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
+                DragonBody.ScalingProportions.of(0.6, 2.0, 1.8, 1.0),
                 DragonBody.MountingOffsets.of(new Vec3(0, -0.05, 0), new Vec3(0, 0, -1.4)))
         );
 
@@ -94,6 +95,7 @@ public class DragonBodies {
                 DragonSurvival.res("dragon_east"),
                 List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"),
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
+                DragonBody.ScalingProportions.of(0.6, 2.0, 1.8, 1.0),
                 DragonBody.MountingOffsets.of(new Vec3(0, -0.05, 0), new Vec3(0, 0, -1.4)))
         );
 
@@ -111,6 +113,7 @@ public class DragonBodies {
                 DragonSurvival.res("dragon_north"),
                 List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"),
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
+                DragonBody.ScalingProportions.of(0.6, 2.0, 1.8, 1.0),
                 DragonBody.MountingOffsets.of(new Vec3(0, -0.05, 0), new Vec3(0, 0f, -1.4)))
         );
 
@@ -129,6 +132,7 @@ public class DragonBodies {
                 DragonSurvival.res("dragon_south"),
                 List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"),
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
+                DragonBody.ScalingProportions.of(0.6, 2.0, 1.8, 1.0),
                 DragonBody.MountingOffsets.of(new Vec3(0, -0.05, 0), new Vec3(0, 0, -1.4)))
         );
 
@@ -146,6 +150,7 @@ public class DragonBodies {
                 DragonSurvival.res("dragon_west"),
                 List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"),
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
+                DragonBody.ScalingProportions.of(0.6, 2.0, 1.8, 1.0),
                 DragonBody.MountingOffsets.of(new Vec3(0, -0.05, 0), new Vec3(0, 0, -1.4)))
         );
     }

@@ -49,7 +49,7 @@ public class DSModifiers {
     }
 
     public static void updateSizeModifiers(@Nullable final Player player, final DragonStateHandler handler) {
-        if (player == null || player.level().isClientSide()) {
+        if (player == null) {
             return;
         }
 
@@ -58,6 +58,21 @@ public class DSModifiers {
 
         if (handler.isDragon()) {
             handler.stage().value().applyModifiers(player, handler.species(), handler.getSize());
+        }
+
+        player.setHealth(player.getMaxHealth() * healthPercentage);
+    }
+
+    public static void updateSizeModifiersVisual(@Nullable final Player player, final DragonStateHandler handler, final double visualSize) {
+        if (!player.level().isClientSide()) {
+            return;
+        }
+
+        float healthPercentage = player.getHealth() / player.getMaxHealth();
+        AttributeModifierSupplier.removeModifiers(ModifierType.DRAGON_STAGE, player);
+
+        if (handler.isDragon()) {
+            handler.stage().value().applyModifiers(player, handler.species(), visualSize);
         }
 
         player.setHealth(player.getMaxHealth() * healthPercentage);

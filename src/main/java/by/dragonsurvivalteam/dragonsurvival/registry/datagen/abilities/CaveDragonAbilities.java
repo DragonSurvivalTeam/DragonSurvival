@@ -367,7 +367,7 @@ public class CaveDragonAbilities {
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DurationInstanceBase.create(DragonSurvival.res("cave_magic")).infinite().removeAutomatically().hidden().build(),
-                                        List.of(new Modifier(DSAttributes.MANA, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_VALUE, Optional.empty()))
+                                        List.of(new Modifier(DSAttributes.MANA, Either.left(LevelBasedValue.perLevel(1)), AttributeModifier.Operation.ADD_VALUE, Optional.empty()))
                                 )),
                                 TargetingMode.ALLIES_AND_SELF
                         )), LevelBasedValue.constant(1)),
@@ -384,7 +384,7 @@ public class CaveDragonAbilities {
                                         .build(),
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DurationInstanceBase.create(DragonSurvival.res("good_mana_condition")).infinite().removeAutomatically().hidden().build(),
-                                        List.of(new Modifier(DSAttributes.MANA_REGENERATION, LevelBasedValue.perLevel(1), AttributeModifier.Operation.ADD_MULTIPLIED_BASE, Optional.empty()))
+                                        List.of(new Modifier(DSAttributes.MANA_REGENERATION, Either.left(LevelBasedValue.perLevel(1)), AttributeModifier.Operation.ADD_MULTIPLIED_BASE, Optional.empty()))
                                 )),
                                 TargetingMode.ALLIES_AND_SELF
                         )), LevelBasedValue.constant(1))
@@ -433,7 +433,7 @@ public class CaveDragonAbilities {
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         ModifierEffect.only(new ModifierWithDuration(
                                 DurationInstanceBase.create(DragonSurvival.res("contrast_shower")).infinite().removeAutomatically().hidden().build(),
-                                List.of(new Modifier(DSAttributes.PENALTY_RESISTANCE_TIME, LevelBasedValue.perLevel(Functions.secondsToTicks(10)), AttributeModifier.Operation.ADD_VALUE, Optional.empty()))
+                                List.of(new Modifier(DSAttributes.PENALTY_RESISTANCE_TIME, Either.left(LevelBasedValue.perLevel(Functions.secondsToTicks(10))), AttributeModifier.Operation.ADD_VALUE, Optional.empty()))
                         )),
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),

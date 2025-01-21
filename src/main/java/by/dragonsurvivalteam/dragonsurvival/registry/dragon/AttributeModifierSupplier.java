@@ -29,6 +29,15 @@ public interface AttributeModifierSupplier {
         }));
     }
 
+    static List<AttributeModifier> getAttributeModifiersForAttribute(final ModifierType type, final Holder<Attribute> attribute, final Map<Holder<Attribute>, AttributeInstance> attributes) {
+        String attributeId = attribute.getRegisteredName().replace(":", ".");
+        return attributes.get(attribute).getModifiers().stream().filter(modifier -> modifier.id().getPath().startsWith(type.path()) && modifier.id().getPath().endsWith(attributeId)).toList();
+    }
+
+    static List<AttributeModifier> getAttributeModifiersForAttribute(final ModifierType type, final Holder<Attribute> attribute, final LivingEntity entity) {
+        return getAttributeModifiersForAttribute(type, attribute, ((AttributeMapAccessor) entity.getAttributes()).dragonSurvival$getAttributes());
+    }
+
     default void applyModifiers(final LivingEntity entity, @Nullable final Holder<DragonSpecies> dragonSpecies, double level) {
         modifiers().forEach(modifier -> {
             AttributeInstance instance = entity.getAttribute(modifier.attribute());

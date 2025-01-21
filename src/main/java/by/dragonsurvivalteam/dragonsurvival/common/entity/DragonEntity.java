@@ -490,6 +490,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         double baseSpeed = DEFAULT_WALK_SPEED;
         double smallSizeFactor = ClientConfig.smallSizeAnimationSpeedFactor;
         double bigSizeFactor = ClientConfig.largeSizeAnimationSpeedFactor;
+        // FIXME :: Use scale attribute
         double baseSize = DragonStage.MAX_HANDLED_SIZE;
         double distanceFromGround = ServerFlightHandler.distanceFromGround(player);
 

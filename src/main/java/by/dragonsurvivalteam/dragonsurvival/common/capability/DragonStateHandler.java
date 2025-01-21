@@ -5,6 +5,8 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.TimeComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.SkinPreset;
 import by.dragonsurvivalteam.dragonsurvival.commands.DragonCommand;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierType;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.items.growth.StarHeartItem;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
@@ -21,6 +23,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PenaltySupply;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.AttributeModifierSupplier;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.InputData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
@@ -46,6 +49,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
@@ -196,6 +202,9 @@ public class DragonStateHandler extends EntityStateHandler {
             return;
         }
 
+        // Call updateSizeModifiers before we refreshDimensions, as the size modifiers may affect the dimensions
+        DSModifiers.updateSizeModifiers(player, this);
+
         refreshedDimensionsFromSizeChange = true;
         player.refreshDimensions();
         refreshedDimensionsFromSizeChange = false;
@@ -204,7 +213,6 @@ public class DragonStateHandler extends EntityStateHandler {
             PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncSize(serverPlayer.getId(), getSize()));
             MagicData.getData(player).handleAutoUpgrades(serverPlayer, InputData.size((int) this.size));
             DSAdvancementTriggers.BE_DRAGON.get().trigger(serverPlayer);
-            DSModifiers.updateSizeModifiers(serverPlayer, this);
         }
 
         if (player.level().isClientSide()) {
@@ -428,13 +436,38 @@ public class DragonStateHandler extends EntityStateHandler {
         this.passengerId = passengerId;
     }
 
-    public double getVisualSize(float partialTick) {
+    public double getVisualScale(Player player, float partialTick) {
         if (!DragonSurvival.PROXY.isOnRenderThread()) {
-            Functions.logOrThrow("Visual size should only be retrieved for rendering-purposes");
-            return size;
+            Functions.logOrThrow("Visual scale update should only be used for rendering purposes!");
+            return 1.0;
         }
 
-        return Mth.lerp(partialTick, visualSizeLastTick, visualSize);
+        AttributeInstance scaleAttribute = player.getAttribute(Attributes.SCALE);
+        if(scaleAttribute == null) {
+            Functions.logOrThrow("Scale attribute is null!");
+            return 1.0;
+        }
+
+        double partialVisualSize = Mth.lerp(partialTick, visualSizeLastTick, visualSize);
+        List<AttributeModifier> scaleAttributeModifiers = AttributeModifierSupplier.getAttributeModifiersForAttribute(ModifierType.DRAGON_STAGE, Attributes.SCALE, player);
+        double currentScale = player.getScale();
+        double realScaleModifiersFromStage = scaleAttributeModifiers.stream().mapToDouble(attributeModifier -> switch (attributeModifier.operation()) {
+            case ADD_MULTIPLIED_BASE -> attributeModifier.amount() * scaleAttribute.getBaseValue();
+            case ADD_VALUE -> attributeModifier.amount();
+            case ADD_MULTIPLIED_TOTAL -> attributeModifier.amount() * scaleAttribute.getValue();
+        }).sum();
+
+        List<Modifier> scaleModifiers = stage().value().modifiers().stream().filter(modifier -> modifier.attribute().is(Attributes.SCALE)).toList();
+        double visualScaleModifiersFromStage = scaleModifiers.stream().mapToDouble(modifier -> {
+            double value = modifier.calculate((float)partialVisualSize);
+            return switch (modifier.operation()) {
+                case ADD_MULTIPLIED_BASE -> value * scaleAttribute.getBaseValue();
+                case ADD_VALUE -> value;
+                case ADD_MULTIPLIED_TOTAL -> value * scaleAttribute.getValue();
+            };
+        }).sum();
+
+        return (currentScale - realScaleModifiersFromStage) + visualScaleModifiersFromStage;
     }
 
     public double getSize() {

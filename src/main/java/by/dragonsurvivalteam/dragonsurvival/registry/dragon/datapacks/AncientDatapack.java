@@ -41,6 +41,7 @@ public class AncientDatapack {
                         Modifier.constant(DSAttributes.DRAGON_BREATH_RANGE, 4, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.constant(Attributes.MOVEMENT_SPEED, 0.02f, AttributeModifier.Operation.ADD_VALUE),
                         /* Per size */
+                        Modifier.precisePerWithBase(Attributes.SCALE, -0.9f, 0.02f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.per(Attributes.MAX_HEALTH, 0.5f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.per(DSAttributes.DRAGON_BREATH_RANGE, 0.05f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.per(Attributes.ATTACK_DAMAGE, 0.05f, AttributeModifier.Operation.ADD_VALUE),

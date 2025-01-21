@@ -54,27 +54,28 @@ public class DragonSizeHandler {
             handler.previousPose = overridePose(player);
         }
 
+
         EntityDimensions newDimensions = calculateDimensions(handler, player, handler.previousPose);
         event.setNewSize(new EntityDimensions(newDimensions.width(), newDimensions.height(), newDimensions.eyeHeight(), event.getOldSize().attachments(), event.getOldSize().fixed()));
     }
 
     public static double calculateDragonHeight(final DragonStateHandler handler, final Player player) {
         double scale = player.getAttributeValue(Attributes.SCALE);
-        double height = calculateRawDragonHeight(handler.getSize()) * handler.body().value().heightMultiplier();
+        double height = handler.body().value().scalingProportions().height() * handler.body().value().heightMultiplier();
         return applyPose(height * scale, overridePose(player), handler.body().value().hasExtendedCrouch());
     }
 
     public static double calculateDragonEyeHeight(final DragonStateHandler handler, final Player player) {
         double scale = player.getAttributeValue(Attributes.SCALE);
-        double eyeHeight = calculateRawDragonEyeHeight(handler.getSize()) * handler.body().value().heightMultiplier();
+        double eyeHeight = handler.body().value().scalingProportions().eyeHeight() * handler.body().value().heightMultiplier();
         return applyPose(eyeHeight * scale, overridePose(player), handler.body().value().hasExtendedCrouch());
     }
 
     public static EntityDimensions calculateDimensions(final DragonStateHandler handler, final Player player, @Nullable final Pose overridePose) {
         double scale = player.getAttributeValue(Attributes.SCALE);
-        double height = calculateRawDragonHeight(handler.getSize()) * handler.body().value().heightMultiplier();
-        double eyeHeight = calculateRawDragonEyeHeight(handler.getSize()) * handler.body().value().heightMultiplier();
-        double width = calculateRawDragonWidth(handler.getSize());
+        double height = handler.body().value().scalingProportions().height() * handler.body().value().heightMultiplier();
+        double eyeHeight = handler.body().value().scalingProportions().eyeHeight() * handler.body().value().heightMultiplier();
+        double width = handler.body().value().scalingProportions().width();
 
         height = applyPose(height, overridePose, handler.body().value().hasExtendedCrouch());
         eyeHeight = applyPose(eyeHeight, overridePose, handler.body().value().hasExtendedCrouch());
@@ -82,23 +83,9 @@ public class DragonSizeHandler {
         return EntityDimensions.scalable((float) (width * scale), (float) (height * scale)).withEyeHeight((float) (eyeHeight * scale));
     }
 
-    public static double calculateRawDragonHeight(double size) {
-        return (size + 4.0D) / 20.0D;
-    }
-
-    public static double calculateRawDragonWidth(double size) {
-        return (3.0D * size + 62.0D) / 260.0D; // 0.4 -> Config Dragon Max;
-    }
-
-    public static double calculateRawDragonEyeHeight(double size) {
-        return (11.0D * size + 54.0D) / 260.0D; // 0.8 -> Config Dragon Max
-    }
-
     public static double applyPose(double height, @Nullable final Pose pose, boolean hasExtendedCrouch) {
-        if (pose == Pose.CROUCHING) {
+        if (pose == Pose.CROUCHING || pose == Pose.FALL_FLYING || pose == Pose.SWIMMING || pose == Pose.SPIN_ATTACK) {
             height *= (hasExtendedCrouch ? DragonBody.EXTENDED_CROUCH_HEIGHT_RATIO : DragonBody.CROUCH_HEIGHT_RATIO);
-        } else if (pose == Pose.SWIMMING || pose == Pose.FALL_FLYING || pose == Pose.SPIN_ATTACK) {
-            height *= 7.0D / 12.0D;
         }
 
         return height;

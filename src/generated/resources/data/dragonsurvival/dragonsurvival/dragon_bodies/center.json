@@ -21,5 +21,11 @@
       0.0,
       -1.4
     ]
+  },
+  "scaling_proportions": {
+    "eye_height": 1.8,
+    "height": 2.0,
+    "offset": 1.0,
+    "width": 0.6
   }
 }
