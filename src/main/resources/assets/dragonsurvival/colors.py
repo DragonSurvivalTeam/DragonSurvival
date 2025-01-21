@@ -76,4 +76,4 @@ for cfilepath, cfilelist in custfiles.items():
             print(cfilepath.replace('\\', '/') + "/" + cfile, 'updated')
             json.dump(js, f, indent=2)
 
-input("Completed successfully, press any key to continue...")
+input("Completed successfully, press Enter to exit...")
