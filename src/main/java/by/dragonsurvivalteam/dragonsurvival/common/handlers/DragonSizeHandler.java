@@ -114,7 +114,7 @@ public class DragonSizeHandler {
 
         Pose pose;
 
-        if (ServerFlightHandler.isFlying(player) && !player.isSleeping()) {
+        if ((player.getAbilities().flying || ServerFlightHandler.isFlying(player)) && !player.isSleeping()) {
             pose = Pose.FALL_FLYING;
         } else if (SwimData.getData(player).canSwimIn(player.getMaxHeightFluidType()) && player.isSprinting() && !player.isPassenger()) {
             pose = Pose.SWIMMING;
