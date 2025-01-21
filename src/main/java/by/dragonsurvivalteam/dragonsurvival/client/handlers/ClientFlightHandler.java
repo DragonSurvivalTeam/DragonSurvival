@@ -115,6 +115,7 @@ public class ClientFlightHandler {
     public static void flightCamera(CalculateDetachedCameraDistanceEvent event) {
         DragonStateProvider.getOptional(DragonSurvival.PROXY.getLocalPlayer()).ifPresent(handler -> {
             if (handler.isDragon()) {
+                // FIXME :: This camera placement isn't quite perfect yet. It is a little close to the player when the size is smaller.
                 float visualScale = (float)handler.getVisualScale(DragonSurvival.PROXY.getLocalPlayer(), Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false));
                 event.setDistance(event.getDistance() / event.getEntityScalingFactor() * visualScale);
             }
