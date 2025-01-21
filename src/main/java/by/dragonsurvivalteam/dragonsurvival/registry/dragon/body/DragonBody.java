@@ -51,9 +51,6 @@ public record DragonBody(boolean isDefault, List<Modifier> modifiers, boolean ca
     public static final Codec<Holder<DragonBody>> CODEC = RegistryFixedCodec.create(REGISTRY);
     public static final StreamCodec<RegistryFriendlyByteBuf, Holder<DragonBody>> STREAM_CODEC = ByteBufCodecs.holderRegistry(REGISTRY);
 
-    public static final double EXTENDED_CROUCH_HEIGHT_RATIO = 3d / 6d;
-    public static final double CROUCH_HEIGHT_RATIO = 5d / 6d;
-
     private static final RandomSource RANDOM = RandomSource.create();
 
     public record ScalingProportions(double width, double height, double eyeHeight, double offset) {
