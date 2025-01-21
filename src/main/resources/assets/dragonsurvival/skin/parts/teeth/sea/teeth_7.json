@@ -3,6 +3,6 @@
   "texture": "dragonsurvival:textures/dragon/custom/teeth_7.png",
   "average_hue": 0.08372509514215365,
   "applicable_species": [
-    "dragonsurvival:sea"
+    "dragonsurvival:sea_dragon"
   ]
 }

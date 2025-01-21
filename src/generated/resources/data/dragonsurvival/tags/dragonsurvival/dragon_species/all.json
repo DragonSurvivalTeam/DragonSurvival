@@ -1,7 +1,7 @@
 {
   "values": [
-    "dragonsurvival:cave",
-    "dragonsurvival:forest",
-    "dragonsurvival:sea"
+    "dragonsurvival:cave_dragon",
+    "dragonsurvival:forest_dragon",
+    "dragonsurvival:sea_dragon"
   ]
 }

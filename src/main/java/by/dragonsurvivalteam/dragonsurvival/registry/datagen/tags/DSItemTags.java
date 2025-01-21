@@ -128,7 +128,7 @@ public class DSItemTags extends ItemTagsProvider {
     private void tagDragonSpeciesFood(@NotNull final HolderLookup.Provider provider) {
         provider.lookupOrThrow(DragonSpecies.REGISTRY).listElements().forEach(species -> {
             //noinspection DataFlowIssue -> key is present
-            TagKey<Item> dragonFood = key(LangKey.DRAGON_FOOD.apply(species.getKey().location()));
+            TagKey<Item> dragonFood = key(LangKey.FOOD.apply(species.getKey().location()));
             List<DietEntry> diet;
 
             // Diet data is not available at this point

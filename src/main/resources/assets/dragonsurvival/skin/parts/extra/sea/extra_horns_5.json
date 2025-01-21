@@ -3,6 +3,6 @@
   "texture": "dragonsurvival:textures/dragon/custom/extra_horns_5.png",
   "average_hue": 0.13008130081300825,
   "applicable_species": [
-    "dragonsurvival:sea"
+    "dragonsurvival:sea_dragon"
   ]
 }

@@ -80,9 +80,9 @@ public class DSLanguageProvider extends LanguageProvider {
 
         // It seems only built-in registries are present (which excludes dragon species)
         // Therefor we have to handle these manually (because the tags are dynamically created)
-        add(Tags.getTagTranslationKey(DSItemTags.key(LangKey.DRAGON_FOOD.apply(BuiltInDragonSpecies.CAVE.location()))), "Cave Dragon Food");
-        add(Tags.getTagTranslationKey(DSItemTags.key(LangKey.DRAGON_FOOD.apply(BuiltInDragonSpecies.FOREST.location()))), "Forest Dragon Food");
-        add(Tags.getTagTranslationKey(DSItemTags.key(LangKey.DRAGON_FOOD.apply(BuiltInDragonSpecies.SEA.location()))), "Sea Dragon Food");
+        add(Tags.getTagTranslationKey(DSItemTags.key(LangKey.FOOD.apply(BuiltInDragonSpecies.CAVE.location()))), "Cave Dragon Food");
+        add(Tags.getTagTranslationKey(DSItemTags.key(LangKey.FOOD.apply(BuiltInDragonSpecies.FOREST.location()))), "Forest Dragon Food");
+        add(Tags.getTagTranslationKey(DSItemTags.key(LangKey.FOOD.apply(BuiltInDragonSpecies.SEA.location()))), "Sea Dragon Food");
     }
 
     private void handleVanilla() {

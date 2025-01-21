@@ -3,6 +3,6 @@
   "texture": "dragonsurvival:textures/dragon/custom/cave_extra_moustache_2.png",
   "average_hue": 0.06674958540630184,
   "applicable_species": [
-    "dragonsurvival:cave"
+    "dragonsurvival:cave_dragon"
   ]
 }

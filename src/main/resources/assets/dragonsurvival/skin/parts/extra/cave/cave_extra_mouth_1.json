@@ -3,6 +3,6 @@
   "texture": "dragonsurvival:textures/dragon/custom/cave_extra_mouth_1.png",
   "average_hue": 0.04164830321727635,
   "applicable_species": [
-    "dragonsurvival:cave"
+    "dragonsurvival:cave_dragon"
   ]
 }

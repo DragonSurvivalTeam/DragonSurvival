@@ -13,7 +13,7 @@
               },
               "type_specific": {
                 "type": "dragonsurvival:dragon_predicate",
-                "dragon_species": "dragonsurvival:sea"
+                "dragon_species": "dragonsurvival:sea_dragon"
               }
             }
           }
@@ -33,7 +33,7 @@
               },
               "type_specific": {
                 "type": "dragonsurvival:dragon_predicate",
-                "dragon_species": "dragonsurvival:sea"
+                "dragon_species": "dragonsurvival:sea_dragon"
               }
             }
           }

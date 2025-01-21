@@ -10,7 +10,7 @@
             "predicate": {
               "type_specific": {
                 "type": "dragonsurvival:dragon_predicate",
-                "dragon_species": "dragonsurvival:forest"
+                "dragon_species": "dragonsurvival:forest_dragon"
               }
             }
           }

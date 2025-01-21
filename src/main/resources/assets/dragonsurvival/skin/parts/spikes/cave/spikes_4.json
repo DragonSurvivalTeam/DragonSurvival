@@ -3,6 +3,6 @@
   "texture": "dragonsurvival:textures/dragon/custom/cave_spikes_4.png",
   "average_hue": 0.7476925991552719,
   "applicable_species": [
-    "dragonsurvival:cave"
+    "dragonsurvival:cave_dragon"
   ]
 }

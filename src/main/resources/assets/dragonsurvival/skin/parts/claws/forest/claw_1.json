@@ -3,6 +3,6 @@
   "texture": "dragonsurvival:textures/dragon/custom/claw_1.png",
   "average_hue": 0.045824821568182336,
   "applicable_species": [
-    "dragonsurvival:forest"
+    "dragonsurvival:forest_dragon"
   ]
 }

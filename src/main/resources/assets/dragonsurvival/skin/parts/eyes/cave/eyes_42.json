@@ -3,6 +3,6 @@
   "texture": "dragonsurvival:textures/dragon/custom/cave_eyes_42.png",
   "average_hue": 0.1118373275236021,
   "applicable_species": [
-    "dragonsurvival:cave"
+    "dragonsurvival:cave_dragon"
   ]
 }

@@ -40,7 +40,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
     /** Factor to multiply the delta movement by, needed for scaling for the animations */
     private static final double DELTA_MOVEMENT_FACTOR = 10;
 
-    private final ResourceLocation defaultTexture = DragonSurvival.res("textures/dragon/cave_newborn.png");
+    private final ResourceLocation defaultTexture = DragonSurvival.res("textures/dragon_dragon/newborn.png");
 
     private ResourceLocation overrideTexture;
     private CompletableFuture<Void> textureRegisterFuture = CompletableFuture.completedFuture(null);
@@ -201,7 +201,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
         DragonStageCustomization customization = handler.getCurrentStageCustomization();
 
         if (handler.getSkinData().blankSkin) {
-            return DragonSurvival.res("textures/dragon/blank_skin_" + handler.speciesId().getPath() + ".png");
+            return DragonSurvival.res("textures/dragon/" + handler.speciesId().getPath() + "/blank_skin.png");
         }
 
         ResourceKey<DragonStage> stageKey = handler.stageKey();
@@ -228,7 +228,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
         // Show the default skin while we are compiling if we haven't already compiled the skin
         if (customization.defaultSkin || !handler.getSkinData().isCompiled.getOrDefault(stageKey, false)) {
             // TODO :: support custom
-            return DragonSurvival.res("textures/dragon/" + handler.speciesId().getPath() + "_" + stageKey.location().getPath() + ".png");
+            return DragonSurvival.res("textures/dragon/" + handler.speciesId().getPath() + "/" + stageKey.location().getPath() + ".png");
         }
 
         return dynamicTexture(player, handler, false);

@@ -1,6 +1,6 @@
 {
   "values": {
-    "dragonsurvival:cave": [
+    "dragonsurvival:cave_dragon": [
       {
         "items": "#minecraft:coals",
         "properties": {
@@ -230,7 +230,7 @@
         }
       }
     ],
-    "dragonsurvival:forest": [
+    "dragonsurvival:forest_dragon": [
       {
         "items": "#c:foods/raw_meat",
         "properties": {
@@ -996,7 +996,7 @@
         }
       }
     ],
-    "dragonsurvival:sea": [
+    "dragonsurvival:sea_dragon": [
       {
         "items": "#c:foods/raw_fish",
         "properties": {

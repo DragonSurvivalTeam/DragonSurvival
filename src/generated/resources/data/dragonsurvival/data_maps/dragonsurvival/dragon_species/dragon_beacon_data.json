@@ -1,6 +1,6 @@
 {
   "values": {
-    "dragonsurvival:cave": {
+    "dragonsurvival:cave_dragon": {
       "effects": [
         {
           "amplifier": 0,
@@ -18,7 +18,7 @@
         "experience_cost": 60
       }
     },
-    "dragonsurvival:forest": {
+    "dragonsurvival:forest_dragon": {
       "effects": [
         {
           "amplifier": 0,
@@ -36,7 +36,7 @@
         "experience_cost": 60
       }
     },
-    "dragonsurvival:sea": {
+    "dragonsurvival:sea_dragon": {
       "effects": [
         {
           "amplifier": 0,

@@ -62,6 +62,7 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
             setTooltip(Tooltip.create(Component.translatable(Translation.Type.BODY_DESCRIPTION.wrap(location))));
         }
 
+        // FIXME :: needs to be adjusted to properly support custom
         String iconSuffix;
 
         if (screen instanceof DragonEditorScreen dragonEditorScreen) {

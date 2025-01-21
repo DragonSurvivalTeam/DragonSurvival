@@ -11,7 +11,7 @@ public class LangKey {
     public static final String CATEGORY_PREFIX = Translation.Type.CONFIGURATION.prefix + "category.";
 
     /** Needed since the tags (and therefor their translations) are dynamically created */
-    public static final Function<ResourceLocation, String> DRAGON_FOOD = id -> id.getPath() + "_dragon_food";
+    public static final Function<ResourceLocation, String> FOOD = id -> id.getPath() + "_food";
 
     @Translation(comments = "%s seconds")
     public static final String SECONDS = Translation.Type.GUI.wrap("general.seconds");

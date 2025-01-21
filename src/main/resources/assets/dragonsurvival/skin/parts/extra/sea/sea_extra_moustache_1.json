@@ -3,6 +3,6 @@
   "texture": "dragonsurvival:textures/dragon/custom/sea_extra_moustache_1.png",
   "average_hue": 0.5324159021406729,
   "applicable_species": [
-    "dragonsurvival:sea"
+    "dragonsurvival:sea_dragon"
   ]
 }

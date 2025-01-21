@@ -51,6 +51,12 @@ public class PlayerLoginHandler {
 
         // Remove any existing penalty supplies that may no longer be relevant (due to datapack changes)
         event.getEntity().getExistingData(DSDataAttachments.PENALTY_SUPPLY).ifPresent(data -> {
+            if (!handler.isDragon()) {
+                // In case the species was removed
+                event.getEntity().removeData(DSDataAttachments.PENALTY_SUPPLY);
+                return;
+            }
+
             for (ResourceLocation supplyType : data.getSupplyTypes()) {
                 if (handler.species().value().penalties().stream().noneMatch(penalty -> penalty.value().trigger() instanceof SupplyTrigger supplyTrigger && supplyTrigger.supplyType().equals(supplyType))) {
                     data.remove(supplyType);

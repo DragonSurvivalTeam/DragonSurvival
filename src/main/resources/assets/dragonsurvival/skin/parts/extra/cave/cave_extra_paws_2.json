@@ -3,6 +3,6 @@
   "texture": "dragonsurvival:textures/dragon/custom/cave_extra_paws_2.png",
   "average_hue": 0.10470666603601049,
   "applicable_species": [
-    "dragonsurvival:cave"
+    "dragonsurvival:cave_dragon"
   ]
 }

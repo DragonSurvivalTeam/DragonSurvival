@@ -3,6 +3,6 @@
   "texture": "dragonsurvival:textures/dragon/custom/forest_eyes_49.png",
   "average_hue": 0.838,
   "applicable_species": [
-    "dragonsurvival:forest"
+    "dragonsurvival:forest_dragon"
   ]
 }

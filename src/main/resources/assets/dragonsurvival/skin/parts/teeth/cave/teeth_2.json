@@ -3,6 +3,6 @@
   "texture": "dragonsurvival:textures/dragon/custom/teeth_2.png",
   "average_hue": 0.08426616915422881,
   "applicable_species": [
-    "dragonsurvival:cave"
+    "dragonsurvival:cave_dragon"
   ]
 }

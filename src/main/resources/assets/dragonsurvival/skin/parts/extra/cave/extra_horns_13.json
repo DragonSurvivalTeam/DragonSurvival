@@ -3,6 +3,6 @@
   "texture": "dragonsurvival:textures/dragon/custom/extra_horns_13.png",
   "average_hue": 0.11764705882352947,
   "applicable_species": [
-    "dragonsurvival:cave"
+    "dragonsurvival:cave_dragon"
   ]
 }

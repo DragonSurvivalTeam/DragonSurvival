@@ -18,7 +18,7 @@
               },
               "type_specific": {
                 "type": "dragonsurvival:dragon_predicate",
-                "dragon_species": "dragonsurvival:cave"
+                "dragon_species": "dragonsurvival:cave_dragon"
               }
             }
           }

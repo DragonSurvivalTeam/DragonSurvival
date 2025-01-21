@@ -3,6 +3,6 @@
   "texture": "dragonsurvival:textures/dragon/custom/sea_eyes_17.png",
   "average_hue": 0.6375519904931669,
   "applicable_species": [
-    "dragonsurvival:sea"
+    "dragonsurvival:sea_dragon"
   ]
 }

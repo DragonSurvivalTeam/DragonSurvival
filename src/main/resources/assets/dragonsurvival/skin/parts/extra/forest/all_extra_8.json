@@ -3,6 +3,6 @@
   "texture": "dragonsurvival:textures/dragon/custom/all_extra_8.png",
   "average_hue": 0.6467836257309942,
   "applicable_species": [
-    "dragonsurvival:forest"
+    "dragonsurvival:forest_dragon"
   ]
 }

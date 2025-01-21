@@ -3,6 +3,6 @@
   "texture": "dragonsurvival:textures/dragon/custom/sea_glob_tail.png",
   "average_hue": 0.5430123908186064,
   "applicable_species": [
-    "dragonsurvival:sea"
+    "dragonsurvival:sea_dragon"
   ]
 }
