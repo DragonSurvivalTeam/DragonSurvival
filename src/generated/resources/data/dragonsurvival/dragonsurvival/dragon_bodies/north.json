@@ -1,8 +1,7 @@
 {
   "animation": "dragonsurvival:dragon_north",
+  "crouch_height_ratio": 0.5,
   "emotes": "dragonsurvival:default_emotes",
-  "has_extended_crouch": true,
-  "height_multiplier": 0.55,
   "is_default": true,
   "modifiers": [
     {
@@ -49,8 +48,8 @@
     ]
   },
   "scaling_proportions": {
-    "eye_height": 1.8,
-    "height": 2.0,
+    "eye_height": 0.99,
+    "height": 1.1,
     "offset": 1.0,
     "width": 0.6
   }

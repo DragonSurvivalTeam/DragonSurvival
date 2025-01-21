@@ -1,6 +1,7 @@
 {
   "animation": "dragonsurvival:dragon_west",
   "can_hide_wings": false,
+  "crouch_height_ratio": 0.83333333,
   "emotes": "dragonsurvival:default_emotes",
   "is_default": true,
   "modifiers": [
