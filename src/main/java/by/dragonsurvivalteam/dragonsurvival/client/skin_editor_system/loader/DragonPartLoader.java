@@ -41,6 +41,7 @@ public class DragonPartLoader extends SimpleJsonResourceReloadListener {
                 SkinLayer layer = SkinLayer.valueOf(elements[LAYER].toUpperCase(Locale.ENGLISH));
                 DragonPart part = DragonPart.load(value.getAsJsonObject());
 
+                // TODO :: if no species are specific -> throw into generic map?
                 for (ResourceKey<DragonSpecies> species : part.applicableSpecies()) {
                     DRAGON_PARTS.computeIfAbsent(species, key -> new HashMap<>()).computeIfAbsent(layer, key -> new ArrayList<>()).add(part);
                 }

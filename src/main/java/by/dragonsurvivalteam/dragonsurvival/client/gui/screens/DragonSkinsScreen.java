@@ -269,7 +269,7 @@ public class DragonSkinsScreen extends Screen {
         handler.deserializeNBT(minecraft.player.registryAccess(), DragonStateProvider.getData(minecraft.player).serializeNBT(minecraft.player.registryAccess()));
 
         if (!DragonSpecies.isBuiltIn(handler.speciesKey())) {
-            handler.setSpecies(null, player.registryAccess().holderOrThrow(BuiltInDragonSpecies.CAVE));
+            handler.setSpecies(null, player.registryAccess().holderOrThrow(BuiltInDragonSpecies.CAVE_DRAGON));
         }
 
         if (!handler.body().value().model().equals(DragonBody.DEFAULT_MODEL)) {

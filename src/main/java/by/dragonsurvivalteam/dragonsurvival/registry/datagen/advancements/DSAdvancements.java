@@ -233,13 +233,13 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         // --- Parent: place_altar --- //
 
         // TODO :: add a method that supports creating a new display info and supply it with an item stack with the proper data attachment for the dragon species
-        AdvancementHolder beCaveDragon = createWithToast(parent, LangKey.CAVE_BE_DRAGON, DSItems.DRAGON_SOUL.value(), beDragon(registries.holderOrThrow(BuiltInDragonSpecies.CAVE)), 12);
+        AdvancementHolder beCaveDragon = createWithToast(parent, LangKey.CAVE_BE_DRAGON, DSItems.DRAGON_SOUL.value(), beDragon(registries.holderOrThrow(BuiltInDragonSpecies.CAVE_DRAGON)), 12);
         buildBeCaveDragonChildren(beCaveDragon);
 
-        AdvancementHolder beSeaDragon = createWithToast(parent, LangKey.SEA_BE_DRAGON, DSItems.DRAGON_SOUL.value(), beDragon(registries.holderOrThrow(BuiltInDragonSpecies.SEA)), 12);
+        AdvancementHolder beSeaDragon = createWithToast(parent, LangKey.SEA_BE_DRAGON, DSItems.DRAGON_SOUL.value(), beDragon(registries.holderOrThrow(BuiltInDragonSpecies.SEA_DRAGON)), 12);
         buildBeSeaDragonChildren(beSeaDragon);
 
-        AdvancementHolder beForestDragon = createWithToast(parent, LangKey.FOREST_BE_DRAGON, DSItems.DRAGON_SOUL.value(), beDragon(registries.holderOrThrow(BuiltInDragonSpecies.FOREST)), 12);
+        AdvancementHolder beForestDragon = createWithToast(parent, LangKey.FOREST_BE_DRAGON, DSItems.DRAGON_SOUL.value(), beDragon(registries.holderOrThrow(BuiltInDragonSpecies.FOREST_DRAGON)), 12);
         buildBeForestDragonChildren(beForestDragon);
     }
 
@@ -259,13 +259,13 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         ), 60);
 
         AdvancementHolder swimInLava = create(parent, LangKey.CAVE_SWIM_IN_LAVA, Items.LAVA_BUCKET, location(
-                Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.CAVE)).located(isInFluid(FluidTags.LAVA))
+                Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.CAVE_DRAGON)).located(isInFluid(FluidTags.LAVA))
         ), 20);
 
         // --- Parent: cave/rock_eater --- //
 
         create(rockEater, LangKey.CAVE_WATER_SAFETY, DSItems.CHARGED_SOUP.value(), location(
-                Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.CAVE))
+                Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.CAVE_DRAGON))
                         .located(isInFluid(FluidTags.WATER))
                         .effects(MobEffectsPredicate.Builder.effects().and(DSEffects.FIRE))
         ), 40);
@@ -275,7 +275,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         AdvancementHolder diamondsInLava = create(swimInLava, LangKey.CAVE_DIAMONDS_IN_LAVA, Items.DIAMOND_ORE, mineBlockInLava(Tags.Blocks.ORES_DIAMOND), 40);
 
         createWithToast(diamondsInLava, LangKey.CAVE_GO_HOME, Items.NETHER_BRICK_STAIRS, location(
-                Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.CAVE))
+                Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.CAVE_DRAGON))
                         .located(inDimension(Level.NETHER).setFluid(fluid(FluidTags.LAVA)))
                         .effects(hasEffect(DSEffects.LAVA_VISION))
         ), 20);
@@ -285,13 +285,13 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         // --- Parent: sea/be_dragon --- //
 
         AdvancementHolder lootShipwreck = create(parent, LangKey.SEA_LOOT_SHIPWRECK, Items.HEART_OF_THE_SEA, List.of(
-                location(Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.SEA)).located(inStructure(registries.holderOrThrow(BuiltinStructures.SHIPWRECK)))),
-                location(Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.SEA)).located(inStructure(registries.holderOrThrow(BuiltinStructures.SHIPWRECK_BEACHED))))
+                location(Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.SEA_DRAGON)).located(inStructure(registries.holderOrThrow(BuiltinStructures.SHIPWRECK)))),
+                location(Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.SEA_DRAGON)).located(inStructure(registries.holderOrThrow(BuiltinStructures.SHIPWRECK_BEACHED))))
         ), 20);
 
         AdvancementHolder rainDancing = create(parent, LangKey.SEA_RAIN_DANCING, Items.WATER_BUCKET, List.of(
-                location(ContextAwarePredicate.create(entityCondition(Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.SEA)).build()), WeatherCheck.weather().setRaining(true).build())),
-                location(ContextAwarePredicate.create(entityCondition(Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.SEA)).build()), WeatherCheck.weather().setThundering(true).build()))
+                location(ContextAwarePredicate.create(entityCondition(Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.SEA_DRAGON)).build()), WeatherCheck.weather().setRaining(true).build())),
+                location(ContextAwarePredicate.create(entityCondition(Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.SEA_DRAGON)).build()), WeatherCheck.weather().setThundering(true).build()))
         ), 30);
 
         // --- Parent: sea/loot_shipwreck --- //
@@ -308,13 +308,13 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         // --- Parent: sea/rain_dancing --- //
 
         AdvancementHolder placeSnowInNether = create(rainDancing, LangKey.SEA_PLACE_SNOW_IN_NETHER, Items.SNOW_BLOCK, placeBlockAsDragon(
-                Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.SEA)).located(inDimension(Level.NETHER)), Blocks.SNOW_BLOCK
+                Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.SEA_DRAGON)).located(inDimension(Level.NETHER)), Blocks.SNOW_BLOCK
         ), 16);
 
         // --- Parent: sea/place_snow_in_nether --- //
 
         create(placeSnowInNether, LangKey.SEA_PEACE_IN_NETHER, Items.CAULDRON, location(
-                Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.SEA))
+                Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.SEA_DRAGON))
                         .effects(hasEffect(DSEffects.PEACE))
                         .located(inDimension(Level.NETHER))
         ), 0);
@@ -323,17 +323,17 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
     private void buildBeForestDragonChildren(final AdvancementHolder parent) {
         // --- Parent: forest/be_dragon --- //
 
-        AdvancementHolder standOnSweetBerries = create(parent, LangKey.FOREST_STAND_ON_SWEET_BERRIES, Items.SWEET_BERRIES, location(Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.FOREST)).steppingOn(block(Blocks.SWEET_BERRY_BUSH))), 30);
+        AdvancementHolder standOnSweetBerries = create(parent, LangKey.FOREST_STAND_ON_SWEET_BERRIES, Items.SWEET_BERRIES, location(Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.FOREST_DRAGON)).steppingOn(block(Blocks.SWEET_BERRY_BUSH))), 30);
 
         // --- Parent: forest/stand_on_sweet_berries --- //
 
         create(standOnSweetBerries, LangKey.FOREST_PREVENT_DARKNESS_PENALTY, DSItems.LUMINOUS_OINTMENT.value(), location(
-                Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.FOREST))
+                Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.FOREST_DRAGON))
                         .located(light(MinMaxBounds.Ints.between(0, 3)))
                         .effects(MobEffectsPredicate.Builder.effects().and(DSEffects.MAGIC))
         ), 40);
 
-        AdvancementHolder poisonousPotato = create(parent, LangKey.FOREST_POISONOUS_POTATO, Items.POISONOUS_POTATO, convertPotato(Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.FOREST))), 16);
+        AdvancementHolder poisonousPotato = create(parent, LangKey.FOREST_POISONOUS_POTATO, Items.POISONOUS_POTATO, convertPotato(Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.FOREST_DRAGON))), 16);
 
         // --- Parent: forest/poisonous_potato --- //
 
@@ -350,7 +350,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         // --- Parent: forest/meat_eater --- //
 
         create(meatEater, LangKey.FOREST_TRANSPLANT_CHORUS_FRUIT, DSItems.DIAMOND_CHORUS.value(), placeBlockAsDragon(
-                Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.FOREST)).located(inDimension(Level.OVERWORLD)), Blocks.CHORUS_FLOWER
+                Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.FOREST_DRAGON)).located(inDimension(Level.OVERWORLD)), Blocks.CHORUS_FLOWER
         ), 90);
     }
 
@@ -416,7 +416,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         // --- Parent: collect_heart_from_monster --- //
 
         // TODO :: used beacon texture previously
-        AdvancementHolder beOldCaveDragon = createWithToast(collectHeartFromMonster, LangKey.CAVE_BE_OLD_DRAGON, Items.DIRT, beDragon(registries.holderOrThrow(BuiltInDragonSpecies.CAVE), registries.holderOrThrow(DragonStages.adult), 1), 120);
+        AdvancementHolder beOldCaveDragon = createWithToast(collectHeartFromMonster, LangKey.CAVE_BE_OLD_DRAGON, Items.DIRT, beDragon(registries.holderOrThrow(BuiltInDragonSpecies.CAVE_DRAGON), registries.holderOrThrow(DragonStages.adult), 1), 120);
 
         // --- Parent: cave/be_old_dragon --- //
 
@@ -428,7 +428,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         ), 150);
 
         // TODO :: used beacon texture previously
-        AdvancementHolder beOldSeaDragon = createWithToast(collectHeartFromMonster, LangKey.SEA_BE_OLD_DRAGON, Items.DIRT, beDragon(registries.holderOrThrow(BuiltInDragonSpecies.SEA), registries.holderOrThrow(DragonStages.adult), 1), 120);
+        AdvancementHolder beOldSeaDragon = createWithToast(collectHeartFromMonster, LangKey.SEA_BE_OLD_DRAGON, Items.DIRT, beDragon(registries.holderOrThrow(BuiltInDragonSpecies.SEA_DRAGON), registries.holderOrThrow(DragonStages.adult), 1), 120);
 
         // --- Parent: sea/be_old_dragon --- //
 
@@ -440,7 +440,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         ), 150);
 
         // TODO :: used beacon texture previously
-        AdvancementHolder beOldForestDragon = createWithToast(collectHeartFromMonster, LangKey.FOREST_BE_OLD_DRAGON, Items.DIRT, beDragon(registries.holderOrThrow(BuiltInDragonSpecies.FOREST), registries.holderOrThrow(DragonStages.adult), 1), 120);
+        AdvancementHolder beOldForestDragon = createWithToast(collectHeartFromMonster, LangKey.FOREST_BE_OLD_DRAGON, Items.DIRT, beDragon(registries.holderOrThrow(BuiltInDragonSpecies.FOREST_DRAGON), registries.holderOrThrow(DragonStages.adult), 1), 120);
 
         // --- Parent: forest/be_old_dragon --- //
 
@@ -545,7 +545,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
     }
 
     private Optional<ContextAwarePredicate> caveDragonInLava() {
-        return Optional.of(EntityPredicate.wrap(Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.CAVE)).located(isInFluid(FluidTags.LAVA))));
+        return Optional.of(EntityPredicate.wrap(Condition.dragonSpecies(registries.holderOrThrow(BuiltInDragonSpecies.CAVE_DRAGON)).located(isInFluid(FluidTags.LAVA))));
     }
 
     private FluidPredicate.Builder fluid(final TagKey<Fluid> fluids) {

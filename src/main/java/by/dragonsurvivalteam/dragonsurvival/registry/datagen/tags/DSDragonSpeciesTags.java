@@ -33,12 +33,12 @@ public class DSDragonSpeciesTags extends TagsProvider<DragonSpecies> {
 
     @Override
     protected void addTags(@NotNull final HolderLookup.Provider provider) {
-        tag(ALL).add(BuiltInDragonSpecies.CAVE).add(BuiltInDragonSpecies.FOREST).add(BuiltInDragonSpecies.SEA);
+        tag(ALL).add(BuiltInDragonSpecies.CAVE_DRAGON).add(BuiltInDragonSpecies.FOREST_DRAGON).add(BuiltInDragonSpecies.SEA_DRAGON);
         tag(NONE);
 
-        tag(CAVE_DRAGONS).add(BuiltInDragonSpecies.CAVE);
-        tag(FOREST_DRAGONS).add(BuiltInDragonSpecies.FOREST);
-        tag(SEA_DRAGONS).add(BuiltInDragonSpecies.SEA);
+        tag(CAVE_DRAGONS).add(BuiltInDragonSpecies.CAVE_DRAGON);
+        tag(FOREST_DRAGONS).add(BuiltInDragonSpecies.FOREST_DRAGON);
+        tag(SEA_DRAGONS).add(BuiltInDragonSpecies.SEA_DRAGON);
     }
 
     public static TagKey<DragonSpecies> key(final String path) {

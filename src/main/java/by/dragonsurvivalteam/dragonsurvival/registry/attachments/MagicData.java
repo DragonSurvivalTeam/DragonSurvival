@@ -582,7 +582,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
             if (provider.holder(currentSpecies).isEmpty()) {
                 DragonSurvival.LOGGER.warn("Failed to load current species for magic data! Did you remove a species from this save? Defaulting to cave dragon");
-                currentSpecies = BuiltInDragonSpecies.CAVE;
+                currentSpecies = BuiltInDragonSpecies.CAVE_DRAGON;
             }
         }
     }

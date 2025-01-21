@@ -21,15 +21,15 @@ public class DragonBeaconDataProvider extends DataMapProvider {
     @Override
     protected void gather() {
         builder(DSDataMaps.DRAGON_BEACON_DATA)
-                .add(BuiltInDragonSpecies.CAVE, new DragonBeaconData(
+                .add(BuiltInDragonSpecies.CAVE_DRAGON, new DragonBeaconData(
                         DragonBeaconData.createEffects(Functions.secondsToTicks(20), 0, DSEffects.FIRE, DSEffects.STURDY_SKIN),
                         new DragonBeaconData.PaymentData(60, 30, 0)
                 ), false)
-                .add(BuiltInDragonSpecies.FOREST, new DragonBeaconData(
+                .add(BuiltInDragonSpecies.FOREST_DRAGON, new DragonBeaconData(
                         DragonBeaconData.createEffects(Functions.secondsToTicks(20), 0, DSEffects.PEACE, DSEffects.ANIMAL_PEACE),
                         new DragonBeaconData.PaymentData(60, 30, 0)
                 ), false)
-                .add(BuiltInDragonSpecies.SEA, new DragonBeaconData(
+                .add(BuiltInDragonSpecies.SEA_DRAGON, new DragonBeaconData(
                         DragonBeaconData.createEffects(Functions.secondsToTicks(20), 0, DSEffects.MAGIC, MobEffects.DIG_SPEED),
                         new DragonBeaconData.PaymentData(60, 30, 0)
                 ), false);

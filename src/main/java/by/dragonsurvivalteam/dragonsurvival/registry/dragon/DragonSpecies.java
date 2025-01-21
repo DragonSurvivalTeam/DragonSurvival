@@ -172,8 +172,8 @@ public class DragonSpecies implements AttributeModifierSupplier {
     }
 
     public static boolean isBuiltIn(final ResourceKey<DragonSpecies> speciesKey) {
-        return speciesKey.equals(BuiltInDragonSpecies.CAVE) ||
-                speciesKey.equals(BuiltInDragonSpecies.FOREST) ||
-                speciesKey.equals(BuiltInDragonSpecies.SEA);
+        return speciesKey.equals(BuiltInDragonSpecies.CAVE_DRAGON) ||
+                speciesKey.equals(BuiltInDragonSpecies.FOREST_DRAGON) ||
+                speciesKey.equals(BuiltInDragonSpecies.SEA_DRAGON);
     }
 }
