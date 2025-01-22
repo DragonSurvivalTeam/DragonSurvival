@@ -467,7 +467,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
      /* See dragonSurvival$modifyWalkSoundsWhenWalkingUnderwater and dragonSurvival$consideredSwimmingEvenWhenGroundedInWater
      */
     public static boolean isConsideredSwimmingForAnimation(Player player) {
-        boolean isInFluid = (player.isInWaterOrBubble() || SwimData.getData(player).canSwimIn(player.getMaxHeightFluidType()));
+        boolean isInFluid = player.canSwimInFluidType(player.getInBlockState().getFluidState().getFluidType());
         return isInFluid && !player.isPassenger() && (!player.onGround() || !player.getEyeInFluidType().isAir());
     }
 

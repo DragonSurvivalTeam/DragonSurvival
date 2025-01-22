@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import net.minecraft.server.level.ServerPlayer;
@@ -115,7 +116,7 @@ public class DragonSizeHandler {
 
         if ((player.getAbilities().flying || ServerFlightHandler.isFlying(player)) && !player.isSleeping()) {
             pose = Pose.FALL_FLYING;
-        } else if (SwimData.getData(player).canSwimIn(player.getMaxHeightFluidType()) && player.isSprinting() && !player.isPassenger()) {
+        } else if (DragonEntity.isConsideredSwimmingForAnimation(player) && player.isSprinting()) {
             pose = Pose.SWIMMING;
         } else if (player.isAutoSpinAttack()) {
             pose = Pose.SPIN_ATTACK;
