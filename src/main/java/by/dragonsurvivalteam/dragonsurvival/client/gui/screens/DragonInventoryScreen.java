@@ -8,8 +8,8 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.BarCom
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.GrowthIcon;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscDragonTextures;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.StageResources;
 import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawMenuToggle;
 import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawRender;
 import by.dragonsurvivalteam.dragonsurvival.network.container.RequestOpenVanillaInventory;
@@ -167,7 +167,7 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
         DragonStateHandler data = DragonStateProvider.getData(minecraft.player);
 
         // Growth stage button
-        GrowthIcon growthIcon = data.species().value().getGrowthIcon(data.stage());
+        StageResources.GrowthIcon growthIcon = StageResources.getGrowthIcon(data.species(), data.stageKey());
         growthButton = new HoverButton(leftPos + 175, topPos + 4, 20, growthIcon.icon(), growthIcon.hoverIcon(), () -> {
             DragonStateHandler handler = DragonStateProvider.getData(minecraft.player);
             Pair<List<Either<FormattedText, TooltipComponent>>, Integer> growthDescriptionResult = handler.getGrowthDescription(growthTooltipScroll);

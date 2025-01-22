@@ -5,7 +5,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
@@ -16,7 +15,7 @@ import net.minecraft.world.food.FoodData;
 public class FoodBar {
     private static final RandomSource RANDOM = RandomSource.create();
 
-    public static boolean render(final Gui gui, final GuiGraphics graphics, int width, int height) {
+    public static boolean render(final GuiGraphics graphics, int width, int height) {
         Player localPlayer = DragonSurvival.PROXY.getLocalPlayer();
 
         //noinspection DataFlowIssue -> instance is present
@@ -30,15 +29,19 @@ public class FoodBar {
             return false;
         }
 
+        ResourceLocation foodSprites = handler.species().value().miscResources().foodSprites().orElse(null);
+
+        if (foodSprites == null) {
+            return false;
+        }
+
         Minecraft.getInstance().getProfiler().push("food");
         RenderSystem.enableBlend();
 
         final int left = width / 2 + 91;
-        final int top = height - gui.rightHeight;
-        gui.rightHeight += 10;
+        final int top = height - Minecraft.getInstance().gui.rightHeight;
+        Minecraft.getInstance().gui.rightHeight += 10;
         final FoodData food = localPlayer.getFoodData();
-
-        ResourceLocation foodIcons = handler.species().value().miscResources().foodSprites();
 
         final boolean hunger = localPlayer.hasEffect(MobEffects.HUNGER);
 
@@ -51,12 +54,12 @@ public class FoodBar {
                 y = top + RANDOM.nextInt(3) - 1;
             }
 
-            graphics.blit(foodIcons, left - i * 8 - 9, y, hunger ? 117 : 0, 0, 9, 9);
+            graphics.blit(foodSprites, left - i * 8 - 9, y, hunger ? 117 : 0, 0, 9, 9);
 
             if (icon < food.getFoodLevel()) {
-                graphics.blit(foodIcons, left - i * 8 - 9, y, hunger ? 72 : 36, 0, 9, 9);
+                graphics.blit(foodSprites, left - i * 8 - 9, y, hunger ? 72 : 36, 0, 9, 9);
             } else if (icon == food.getFoodLevel()) {
-                graphics.blit(foodIcons, left - i * 8 - 9, y, hunger ? 81 : 45, 0, 9, 9);
+                graphics.blit(foodSprites, left - i * 8 - 9, y, hunger ? 81 : 45, 0, 9, 9);
             }
         }
 

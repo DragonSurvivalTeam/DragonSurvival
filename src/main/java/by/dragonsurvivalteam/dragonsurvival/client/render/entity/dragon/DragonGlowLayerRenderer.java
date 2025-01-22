@@ -1,12 +1,12 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon;
 
-import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.models.DragonModel;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.SkinPreset;
 import by.dragonsurvivalteam.dragonsurvival.client.skins.DragonSkins;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.StageResources;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -67,8 +67,7 @@ public class DragonGlowLayerRenderer extends GeoRenderLayer<DragonEntity> {
         }
 
         if (customGlowTexture == null && handler.getCurrentStageCustomization().defaultSkin) {
-            // FIXME :: support custom
-            ResourceLocation location = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/dragon/" + handler.speciesId().getPath() + "_" + handler.stageId().getPath() + "_glow.png");
+            ResourceLocation location = StageResources.getDefaultSkin(handler.species(), handler.stageKey(), true);
 
             if (Minecraft.getInstance().getResourceManager().getResource(location).isPresent()) {
                 customGlowTexture = location;

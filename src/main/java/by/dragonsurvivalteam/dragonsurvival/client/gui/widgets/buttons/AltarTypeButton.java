@@ -125,11 +125,13 @@ public class AltarTypeButton extends Button implements HoverDisableable {
 
         if (species != null) {
             graphics.blit(species.value().miscResources().altarBanner(), getX(), getY(), 0, isHovered() ? 0 : 147, 49, 147, 49, 294);
-            if(isHovered() && isTop(mouseY)) {
-                graphics.blit(species.value().miscResources().growthIcons().getFirst().hoverIcon(), getX() + 1, getY() + 1, 0, 0, 18, 18, 18, 18);
-            } else {
-                graphics.blit(species.value().miscResources().growthIcons().getFirst().icon(), getX() + 1, getY() + 1, 0, 0, 18, 18, 18, 18);
-            }
+
+            // FIXME :: why show the first icon here?
+//            if (isHovered() && isTop(mouseY)) {
+//                graphics.blit(species.value().miscResources().growthIcons().getFirst().hoverIcon(), getX() + 1, getY() + 1, 0, 0, 18, 18, 18, 18);
+//            } else {
+//                graphics.blit(species.value().miscResources().growthIcons().getFirst().icon(), getX() + 1, getY() + 1, 0, 0, 18, 18, 18, 18);
+//            }
         } else {
             graphics.blit(HUMAN_ALTAR_ICON, getX(), getY(), 0, isHovered() ? 0 : 147, 49, 147, 49, 294);
         }

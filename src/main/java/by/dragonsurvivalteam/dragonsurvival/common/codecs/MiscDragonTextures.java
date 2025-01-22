@@ -1,22 +1,18 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.List;
 import java.util.Optional;
 
 public record MiscDragonTextures(
-        ResourceLocation foodSprites,
-        ManaSprites manaSprites,
+        Optional<ResourceLocation> foodSprites,
+        Optional<ManaSprites> manaSprites,
         ResourceLocation altarBanner,
         ResourceLocation castBar,
-        ResourceLocation helpButton,
-        List<GrowthIcon> growthIcons,
         HoverIcon growthLeftArrow,
         HoverIcon growthRightArrow,
         FillIcon growthCrystal,
@@ -25,14 +21,12 @@ public record MiscDragonTextures(
         TextColor secondaryColor
 ) {
     public static final Codec<MiscDragonTextures> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ResourceLocation.CODEC.fieldOf("food_sprites").forGetter(MiscDragonTextures::foodSprites), // TODO :: use vanilla food bar by default or have it optional and render vanilla bar if missing
-            ManaSprites.CODEC.fieldOf("mana_sprites").forGetter(MiscDragonTextures::manaSprites), // TODO :: can have default texture (gray and color with primary color)
+            ResourceLocation.CODEC.optionalFieldOf("food_sprites").forGetter(MiscDragonTextures::foodSprites),
+            ManaSprites.CODEC.optionalFieldOf("mana_sprites").forGetter(MiscDragonTextures::manaSprites),
             ResourceLocation.CODEC.fieldOf("altar_banner").forGetter(MiscDragonTextures::altarBanner),
             ResourceLocation.CODEC.fieldOf("ability_bar").forGetter(MiscDragonTextures::castBar), // TODO :: could have a simple cast bar without a dragon as default
-            ResourceLocation.CODEC.fieldOf("help_button").forGetter(MiscDragonTextures::helpButton), // TODO :: can be optional and use gray / green as default if missing
-            GrowthIcon.CODEC.listOf().optionalFieldOf("growth_icons", List.of()).forGetter(MiscDragonTextures::growthIcons),
-            HoverIcon.CODEC.fieldOf("growth_left_arrow").forGetter(MiscDragonTextures::growthLeftArrow),
-            HoverIcon.CODEC.fieldOf("growth_right_arrow").forGetter(MiscDragonTextures::growthRightArrow),
+            HoverIcon.CODEC.optionalFieldOf("growth_left_arrow", HoverIcon.DEFAULT_LEFT).forGetter(MiscDragonTextures::growthLeftArrow),
+            HoverIcon.CODEC.optionalFieldOf("growth_right_arrow", HoverIcon.DEFAULT_RIGHT).forGetter(MiscDragonTextures::growthRightArrow),
             FillIcon.CODEC.fieldOf("growth_crystal").forGetter(MiscDragonTextures::growthCrystal),
             FoodTooltip.CODEC.fieldOf("food_tooltip").forGetter(MiscDragonTextures::foodTooltip),
             TextColor.CODEC.fieldOf("primary_color").forGetter(MiscDragonTextures::primaryColor),
@@ -40,6 +34,16 @@ public record MiscDragonTextures(
     ).apply(instance, MiscDragonTextures::new));
 
     public record HoverIcon(ResourceLocation hoverIcon, ResourceLocation icon) {
+        public static final HoverIcon DEFAULT_LEFT = new HoverIcon(
+                DragonSurvival.res("textures/gui/custom/stage/generic/left_arrow_hover.png"),
+                DragonSurvival.res("textures/gui/custom/stage/generic/left_arrow_main.png")
+        );
+
+        public static final HoverIcon DEFAULT_RIGHT = new HoverIcon(
+                DragonSurvival.res("textures/gui/custom/stage/generic/right_arrow_hover.png"),
+                DragonSurvival.res("textures/gui/custom/stage/generic/right_arrow_main.png")
+        );
+
         public static final Codec<HoverIcon> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 ResourceLocation.CODEC.fieldOf("hover_icon").forGetter(HoverIcon::hoverIcon),
                 ResourceLocation.CODEC.fieldOf("icon").forGetter(HoverIcon::icon)
@@ -54,6 +58,13 @@ public record MiscDragonTextures(
     }
 
     public record ManaSprites(ResourceLocation full, ResourceLocation reserved, ResourceLocation recovery, ResourceLocation empty) {
+        public static final ManaSprites DEFAULT = new ManaSprites(
+                DragonSurvival.res("textures/gui/custom/mana_icons/generic/full.png"),
+                DragonSurvival.res("textures/gui/custom/mana_icons/generic/reserved.png"),
+                DragonSurvival.res("textures/gui/custom/mana_icons/generic/recovery.png"),
+                DragonSurvival.res("textures/gui/custom/mana_icons/generic/empty.png")
+        );
+
         public static final Codec<ManaSprites> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 ResourceLocation.CODEC.fieldOf("full").forGetter(ManaSprites::full),
                 ResourceLocation.CODEC.fieldOf("reserved").forGetter(ManaSprites::reserved),
@@ -74,8 +85,4 @@ public record MiscDragonTextures(
                 TextColor.CODEC.optionalFieldOf("color").forGetter(FoodTooltip::color)
         ).apply(instance, FoodTooltip::new));
     }
-
-    public static final ResourceLocation DEFAULT_GROWTH_HOVER_ICON = DragonSurvival.res("textures/gui/stage/cave/newborn_stage_hover.png");
-    public static final ResourceLocation DEFAULT_GROWTH_BASE_ICON = DragonSurvival.res("textures/gui/stage/cave/newborn_stage_main.png");
-    public static final GrowthIcon DEFAULT_GROWTH_ICON = new GrowthIcon(DEFAULT_GROWTH_HOVER_ICON, DEFAULT_GROWTH_BASE_ICON, DragonStages.newborn);
 }

@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.StageResources;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonGrowthHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
@@ -89,7 +90,7 @@ public class GrowthHUD {
 
         graphics.pose().pushPose();
         graphics.pose().translate(0, 0, 300);
-        graphics.blit(handler.species().value().getHoverGrowthIcon(dragonStage), circleX + 7, circleY + 6, 0, 0, 20, 20, 20, 20);
+        graphics.blit(StageResources.getHoverGrowthIcon(handler.species(), handler.stageKey()), circleX + 7, circleY + 6, 0, 0, 20, 20, 20, 20);
         graphics.pose().popPose();
     }
 }

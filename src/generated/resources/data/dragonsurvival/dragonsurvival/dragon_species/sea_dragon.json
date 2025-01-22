@@ -12,28 +12,6 @@
       "empty": "dragonsurvival:textures/gui/custom/stage/sea/point_main.png",
       "full": "dragonsurvival:textures/gui/custom/stage/sea/point_hover.png"
     },
-    "growth_icons": [
-      {
-        "dragon_stage": "dragonsurvival:newborn",
-        "hover_icon": "dragonsurvival:textures/gui/custom/stage/sea/newborn_stage_hover.png",
-        "icon": "dragonsurvival:textures/gui/custom/stage/sea/newborn_stage_main.png"
-      },
-      {
-        "dragon_stage": "dragonsurvival:young",
-        "hover_icon": "dragonsurvival:textures/gui/custom/stage/sea/young_stage_hover.png",
-        "icon": "dragonsurvival:textures/gui/custom/stage/sea/young_stage_main.png"
-      },
-      {
-        "dragon_stage": "dragonsurvival:adult",
-        "hover_icon": "dragonsurvival:textures/gui/custom/stage/sea/adult_stage_hover.png",
-        "icon": "dragonsurvival:textures/gui/custom/stage/sea/adult_stage_main.png"
-      },
-      {
-        "dragon_stage": "dragonsurvival:ancient",
-        "hover_icon": "dragonsurvival:textures/gui/custom/stage/sea/ancient_stage_hover.png",
-        "icon": "dragonsurvival:textures/gui/custom/stage/sea/ancient_stage_main.png"
-      }
-    ],
     "growth_left_arrow": {
       "hover_icon": "dragonsurvival:textures/gui/custom/stage/sea/left_arrow_hover.png",
       "icon": "dragonsurvival:textures/gui/custom/stage/sea/left_arrow_main.png"
@@ -42,7 +20,6 @@
       "hover_icon": "dragonsurvival:textures/gui/custom/stage/sea/right_arrow_hover.png",
       "icon": "dragonsurvival:textures/gui/custom/stage/sea/right_arrow_main.png"
     },
-    "help_button": "dragonsurvival:textures/gui/custom/help_button/sea_help_button.png",
     "mana_sprites": {
       "empty": "dragonsurvival:textures/gui/custom/mana_icons/sea/empty.png",
       "full": "dragonsurvival:textures/gui/custom/mana_icons/sea/full.png",

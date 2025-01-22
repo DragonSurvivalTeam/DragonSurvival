@@ -227,7 +227,7 @@ public class MagicHUD {
         }
 
         // Blinking speed
-        float delta = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true) / 30;
+        float delta = tracker.getGameTimeDeltaPartialTick(true) / 30;
         deltaCounter += reverseCounter ? -delta : delta;
 
         if (deltaCounter > 1) {
@@ -314,12 +314,25 @@ public class MagicHUD {
                 manaY += 20;
             }
 
-            MiscDragonTextures.ManaSprites manaSprites = DragonStateProvider.getData(player).species().value().miscResources().manaSprites();
-            int perRow = 9;
+            float red = 1;
+            float green = 1;
+            float blue = 1;
+
+            DragonStateHandler handler = DragonStateProvider.getData(player);
+            MiscDragonTextures.ManaSprites manaSprites = handler.species().value().miscResources().manaSprites().orElse(null);
+
+            if (manaSprites == null) {
+                manaSprites = MiscDragonTextures.ManaSprites.DEFAULT;
+
+                DSColors.RGB color = DSColors.RGB.of(handler.species().value().miscResources().primaryColor().getValue());
+                red = color.red();
+                green = color.green();
+                blue = color.blue();
+            }
 
             for (int row = 0; row < 3; row++) {
-                for (int point = 0; point < perRow; point++) {
-                    int slot = row * perRow + point;
+                for (int point = 0; point < 9; point++) {
+                    int slot = row * 9 + point;
 
                     if (slot + 0.5 > currentMana) {
                         int x = manaX + point * 9;
@@ -328,21 +341,21 @@ public class MagicHUD {
                         if (maxMana > 0 && maxMana >= slot + 0.5) {
                             if (magic.isCasting()) {
                                 // No mana regeneration
-                                blit(graphics, manaSprites.empty(), x, y, 9, 1);
+                                blit(graphics, manaSprites.empty(), x, y, 9, 1, 1, 1, 1);
                             } else if (player.getAttributeValue(DSAttributes.MANA_REGENERATION) > player.getAttributeBaseValue(DSAttributes.MANA_REGENERATION)) {
                                 // Fast mana regeneration
-                                blit(graphics, manaSprites.recovery(), x, y, 9, 1);
+                                blit(graphics, manaSprites.recovery(), x, y, 9, 1, red, green, blue);
                             } else {
                                 // Slow mana regeneration
-                                blit(graphics, manaSprites.empty(), x, y, 9, 1);
-                                blit(graphics, manaSprites.recovery(), x, y, 9, deltaCounter);
+                                blit(graphics, manaSprites.empty(), x, y, 9, 1, 1, 1, 1);
+                                blit(graphics, manaSprites.recovery(), x, y, 9, deltaCounter, red, green, blue);
                             }
                         } else if (reservedMana > 0 && reservedMana >= slot + 0.5 - maxMana) {
                             // Reserved mana
-                            blit(graphics, manaSprites.reserved(), x, y, 9, 1);
+                            blit(graphics, manaSprites.reserved(), x, y, 9, 1, red, green, blue);
                         }
                     } else {
-                        blit(graphics, manaSprites.full(), manaX + point * 9, manaY - 13 - row * 10, 9, 1);
+                        blit(graphics, manaSprites.full(), manaX + point * 9, manaY - 13 - row * 10, 9, 1, red, green, blue);
                     }
                 }
             }
@@ -383,7 +396,7 @@ public class MagicHUD {
     }
 
     @SuppressWarnings("SameParameterValue") // ignore
-    private static void blit(final GuiGraphics graphics, final ResourceLocation resource, int x, int y, int size, float alpha) {
-        ((GuiGraphicsAccess) graphics).dragonSurvival$innerBlit(resource, x, x + size, y, y + size, 0, 0, 1, 0, 1, 1, 1, 1, alpha);
+    private static void blit(final GuiGraphics graphics, final ResourceLocation resource, int x, int y, int size, float alpha, float red, float green, float blue) {
+        ((GuiGraphicsAccess) graphics).dragonSurvival$innerBlit(resource, x, x + size, y, y + size, 0, 0, 1, 0, 1, red, green, blue, alpha);
     }
 }

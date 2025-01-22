@@ -24,11 +24,11 @@ public class HUDHandler {
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "hud"}, key = "show_vanilla_experience_bar")
     public static Boolean vanillaExperienceBar = false;
 
-    @SubscribeEvent(receiveCanceled = true) // TODO :: should probably register experience + food as well and cancel those here depending on the config
+    @SubscribeEvent
     public static void onRenderOverlay(final RenderGuiLayerEvent.Pre event) {
         Minecraft minecraft = Minecraft.getInstance();
 
-        if (event.isCanceled() || minecraft.options.hideGui) {
+        if (minecraft.options.hideGui) {
             return;
         }
 
@@ -37,7 +37,7 @@ public class HUDHandler {
         ResourceLocation id = event.getName();
 
         if (DragonFoodHandler.requireDragonFood && !vanillaFoodLevel && id == VanillaGuiLayers.FOOD_LEVEL) {
-            boolean wasRendered = FoodBar.render(Minecraft.getInstance().gui, event.getGuiGraphics(), screenWidth, screenHeight);
+            boolean wasRendered = FoodBar.render(event.getGuiGraphics(), screenWidth, screenHeight);
 
             if (wasRendered) {
                 event.setCanceled(true);

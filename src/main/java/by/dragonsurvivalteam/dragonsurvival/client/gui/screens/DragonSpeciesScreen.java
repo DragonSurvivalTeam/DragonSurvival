@@ -11,8 +11,8 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.Scroll
 import by.dragonsurvivalteam.dragonsurvival.client.util.TextRenderUtil;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.GrowthIcon;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscDragonTextures;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.StageResources;
 import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
 import by.dragonsurvivalteam.dragonsurvival.compat.jei.JEIPlugin;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
@@ -247,7 +247,7 @@ public class DragonSpeciesScreen extends Screen {
         wingButton.setTooltip(Tooltip.create(flightTooltip));
 
         // Growth stage button
-        GrowthIcon growthIcon = data.species().value().getGrowthIcon(data.stage());
+        StageResources.GrowthIcon growthIcon = StageResources.getGrowthIcon(data.species(), data.stageKey());
         growthButton = new HoverButton(startX + 99, startY - 21, 20, growthIcon.icon(), growthIcon.hoverIcon(), () -> {
             DragonStateHandler handler = DragonStateProvider.getData(minecraft.player);
             Pair<List<Either<FormattedText, TooltipComponent>>, Integer> growthDescriptionResult = handler.getGrowthDescription(growthTooltipScroll);

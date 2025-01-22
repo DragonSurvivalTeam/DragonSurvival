@@ -1,7 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.GrowthIcon;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscDragonTextures;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierType;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
@@ -22,7 +21,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -121,26 +119,6 @@ public class DragonSpecies implements AttributeModifierSupplier {
 
     public HolderSet<DragonStage> getStages(@Nullable final HolderLookup.Provider provider) {
         return customStageProgression.orElseGet(() -> DragonStage.getDefaultStages(provider));
-    }
-
-    public GrowthIcon getGrowthIcon(final Holder<DragonStage> stage) {
-        for (GrowthIcon growthIcon : miscResources.growthIcons()) {
-            if (growthIcon.dragonStage() == stage.getKey()) {
-                return growthIcon;
-            }
-        }
-
-        return MiscDragonTextures.DEFAULT_GROWTH_ICON;
-    }
-
-    public ResourceLocation getHoverGrowthIcon(final Holder<DragonStage> stage) {
-        for (GrowthIcon growthIcon : miscResources.growthIcons()) {
-            if (growthIcon.dragonStage() == stage.getKey()) {
-                return growthIcon.hoverIcon();
-            }
-        }
-
-        return MiscDragonTextures.DEFAULT_GROWTH_HOVER_ICON;
     }
 
     public Optional<Double> startingSize() {

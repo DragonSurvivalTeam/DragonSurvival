@@ -15,14 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public record DietEntryRemover(List<String> key) implements DataMapValueRemover<DragonSpecies, List<DietEntry>> {
-    public static final Codec<DietEntryRemover> CODEC = ResourceLocationWrapper.validatedCodec().listOf().xmap(DietEntryRemover::new, DietEntryRemover::key);
+public record DietEntryRemover(List<String> keys) implements DataMapValueRemover<DragonSpecies, List<DietEntry>> {
+    public static final Codec<DietEntryRemover> CODEC = ResourceLocationWrapper.validatedCodec().listOf().xmap(DietEntryRemover::new, DietEntryRemover::keys);
 
     @Override
     public @NotNull Optional<List<DietEntry>> remove(@NotNull final List<DietEntry> value, @NotNull final Registry<DragonSpecies> registry, @NotNull final Either<TagKey<DragonSpecies>, ResourceKey<DragonSpecies>> source, @NotNull final DragonSpecies species) {
         // According to the documentation the original value should not be modified
         List<DietEntry> newDiet = new ArrayList<>(value);
-        newDiet.removeIf(entry -> key.contains(entry.items()));
+        newDiet.removeIf(entry -> keys.contains(entry.items()));
 
         if (newDiet.isEmpty()) {
             return Optional.empty();

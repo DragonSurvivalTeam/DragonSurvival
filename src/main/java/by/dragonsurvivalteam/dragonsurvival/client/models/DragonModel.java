@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.Dr
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.StageResources;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.config.ClientConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
@@ -227,8 +228,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
 
         // Show the default skin while we are compiling if we haven't already compiled the skin
         if (customization.defaultSkin || !handler.getSkinData().isCompiled.getOrDefault(stageKey, false)) {
-            // TODO :: support custom
-            return DragonSurvival.res("textures/dragon/" + handler.speciesId().getPath() + "/" + stageKey.location().getPath() + ".png");
+            return StageResources.getDefaultSkin(handler.species(), handler.stageKey(), false);
         }
 
         return dynamicTexture(player, handler, false);

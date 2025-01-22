@@ -1,22 +1,18 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.GrowthIcon;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscDragonTextures;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonAbilityTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonPenaltyTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.datapacks.AncientDatapack;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
 import net.minecraft.core.HolderSet;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.List;
 import java.util.Optional;
 
 public class BuiltInDragonSpecies {
@@ -67,37 +63,15 @@ public class BuiltInDragonSpecies {
                 context.lookup(DragonAbility.REGISTRY).getOrThrow(DSDragonAbilityTags.CAVE),
                 context.lookup(DragonPenalty.REGISTRY).getOrThrow(DSDragonPenaltyTags.CAVE),
                 new MiscDragonTextures(
-                        DragonSurvival.res("textures/gui/custom/food_icons/cave_food_icons.png"),
-                        new MiscDragonTextures.ManaSprites(
+                        Optional.of(DragonSurvival.res("textures/gui/custom/food_icons/cave_food_icons.png")),
+                        Optional.of(new MiscDragonTextures.ManaSprites(
                                 DragonSurvival.res("textures/gui/custom/mana_icons/cave/full.png"),
                                 DragonSurvival.res("textures/gui/custom/mana_icons/cave/reserved.png"),
                                 DragonSurvival.res("textures/gui/custom/mana_icons/cave/recovery.png"),
                                 DragonSurvival.res("textures/gui/custom/mana_icons/cave/empty.png")
-                        ),
+                        )),
                         DragonSurvival.res("textures/gui/custom/altar/cave/altar_icon.png"),
                         DragonSurvival.res("textures/gui/custom/casting_bars/cave/cast_bar.png"),
-                        DragonSurvival.res("textures/gui/custom/help_button/cave_help_button.png"),
-                        List.of(new GrowthIcon(
-                                        DragonSurvival.res("textures/gui/custom/stage/cave/newborn_stage_hover.png"),
-                                        DragonSurvival.res("textures/gui/custom/stage/cave/newborn_stage_main.png"),
-                                        DragonStages.newborn
-                                ),
-                                new GrowthIcon(
-                                        DragonSurvival.res("textures/gui/custom/stage/cave/young_stage_hover.png"),
-                                        DragonSurvival.res("textures/gui/custom/stage/cave/young_stage_main.png"),
-                                        DragonStages.young
-                                ),
-                                new GrowthIcon(
-                                        DragonSurvival.res("textures/gui/custom/stage/cave/adult_stage_hover.png"),
-                                        DragonSurvival.res("textures/gui/custom/stage/cave/adult_stage_main.png"),
-                                        DragonStages.adult
-                                ),
-                                new GrowthIcon(
-                                        DragonSurvival.res("textures/gui/custom/stage/cave/ancient_stage_hover.png"),
-                                        DragonSurvival.res("textures/gui/custom/stage/cave/ancient_stage_main.png"),
-                                        AncientDatapack.ancient
-                                )
-                        ),
                         new MiscDragonTextures.HoverIcon(
                                 DragonSurvival.res("textures/gui/custom/stage/cave/left_arrow_hover.png"),
                                 DragonSurvival.res("textures/gui/custom/stage/cave/left_arrow_main.png")
@@ -123,37 +97,15 @@ public class BuiltInDragonSpecies {
                 context.lookup(DragonAbility.REGISTRY).getOrThrow(DSDragonAbilityTags.SEA),
                 context.lookup(DragonPenalty.REGISTRY).getOrThrow(DSDragonPenaltyTags.SEA),
                 new MiscDragonTextures(
-                        DragonSurvival.res("textures/gui/custom/food_icons/sea_food_icons.png"),
-                        new MiscDragonTextures.ManaSprites(
+                        Optional.of(DragonSurvival.res("textures/gui/custom/food_icons/sea_food_icons.png")),
+                        Optional.of(new MiscDragonTextures.ManaSprites(
                                 DragonSurvival.res("textures/gui/custom/mana_icons/sea/full.png"),
                                 DragonSurvival.res("textures/gui/custom/mana_icons/sea/reserved.png"),
                                 DragonSurvival.res("textures/gui/custom/mana_icons/sea/recovery.png"),
                                 DragonSurvival.res("textures/gui/custom/mana_icons/sea/empty.png")
-                        ),
+                        )),
                         DragonSurvival.res("textures/gui/custom/altar/sea/altar_icon.png"),
                         DragonSurvival.res("textures/gui/custom/casting_bars/sea/cast_bar.png"),
-                        DragonSurvival.res("textures/gui/custom/help_button/sea_help_button.png"),
-                        List.of(new GrowthIcon(
-                                        DragonSurvival.res("textures/gui/custom/stage/sea/newborn_stage_hover.png"),
-                                        DragonSurvival.res("textures/gui/custom/stage/sea/newborn_stage_main.png"),
-                                        DragonStages.newborn
-                                ),
-                                new GrowthIcon(
-                                        DragonSurvival.res("textures/gui/custom/stage/sea/young_stage_hover.png"),
-                                        DragonSurvival.res("textures/gui/custom/stage/sea/young_stage_main.png"),
-                                        DragonStages.young
-                                ),
-                                new GrowthIcon(
-                                        DragonSurvival.res("textures/gui/custom/stage/sea/adult_stage_hover.png"),
-                                        DragonSurvival.res("textures/gui/custom/stage/sea/adult_stage_main.png"),
-                                        DragonStages.adult
-                                ),
-                                new GrowthIcon(
-                                        DragonSurvival.res("textures/gui/custom/stage/sea/ancient_stage_hover.png"),
-                                        DragonSurvival.res("textures/gui/custom/stage/sea/ancient_stage_main.png"),
-                                        AncientDatapack.ancient
-                                )
-                        ),
                         new MiscDragonTextures.HoverIcon(
                                 DragonSurvival.res("textures/gui/custom/stage/sea/left_arrow_hover.png"),
                                 DragonSurvival.res("textures/gui/custom/stage/sea/left_arrow_main.png")
@@ -179,37 +131,15 @@ public class BuiltInDragonSpecies {
                 context.lookup(DragonAbility.REGISTRY).getOrThrow(DSDragonAbilityTags.FOREST),
                 context.lookup(DragonPenalty.REGISTRY).getOrThrow(DSDragonPenaltyTags.FOREST),
                 new MiscDragonTextures(
-                        DragonSurvival.res("textures/gui/custom/food_icons/forest_food_icons.png"),
-                        new MiscDragonTextures.ManaSprites(
+                        Optional.of(DragonSurvival.res("textures/gui/custom/food_icons/forest_food_icons.png")),
+                        Optional.of(new MiscDragonTextures.ManaSprites(
                                 DragonSurvival.res("textures/gui/custom/mana_icons/forest/full.png"),
                                 DragonSurvival.res("textures/gui/custom/mana_icons/forest/reserved.png"),
                                 DragonSurvival.res("textures/gui/custom/mana_icons/forest/recovery.png"),
                                 DragonSurvival.res("textures/gui/custom/mana_icons/forest/empty.png")
-                        ),
+                        )),
                         DragonSurvival.res("textures/gui/custom/altar/forest/altar_icon.png"),
                         DragonSurvival.res("textures/gui/custom/casting_bars/forest/cast_bar.png"),
-                        DragonSurvival.res("textures/gui/custom/help_button/forest_help_button.png"),
-                        List.of(new GrowthIcon(
-                                        DragonSurvival.res("textures/gui/custom/stage/forest/newborn_stage_hover.png"),
-                                        DragonSurvival.res("textures/gui/custom/stage/forest/newborn_stage_main.png"),
-                                        DragonStages.newborn
-                                ),
-                                new GrowthIcon(
-                                        DragonSurvival.res("textures/gui/custom/stage/forest/young_stage_hover.png"),
-                                        DragonSurvival.res("textures/gui/custom/stage/forest/young_stage_main.png"),
-                                        DragonStages.young
-                                ),
-                                new GrowthIcon(
-                                        DragonSurvival.res("textures/gui/custom/stage/forest/adult_stage_hover.png"),
-                                        DragonSurvival.res("textures/gui/custom/stage/forest/adult_stage_main.png"),
-                                        DragonStages.adult
-                                ),
-                                new GrowthIcon(
-                                        DragonSurvival.res("textures/gui/custom/stage/forest/ancient_stage_hover.png"),
-                                        DragonSurvival.res("textures/gui/custom/stage/forest/ancient_stage_main.png"),
-                                        AncientDatapack.ancient
-                                )
-                        ),
                         new MiscDragonTextures.HoverIcon(
                                 DragonSurvival.res("textures/gui/custom/stage/forest/left_arrow_hover.png"),
                                 DragonSurvival.res("textures/gui/custom/stage/forest/left_arrow_main.png")

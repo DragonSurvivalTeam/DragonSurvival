@@ -49,6 +49,15 @@ public class DSColors {
     public static final int SEA_TOP = 0x5DC9FF;
     public static final int SEA_BOTTOM = 0x316D90;
 
+    public record RGB(float red, float green, float blue){
+        public static RGB of(int rgb) {
+            float red = (rgb >> 16) & 0xFF;
+            float green = (rgb >> 8) & 0xFF;
+            float blue = rgb & 0xFF;
+            return new RGB(red / 255f, green / 255f, blue / 255f);
+        }
+    }
+
     public static MutableComponent dynamicValue(final Object value) {
         return withColor(value, BLUE);
     }
