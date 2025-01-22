@@ -169,10 +169,6 @@ public class InventoryScreenHandler {
 
         if (screen == null) {
             if (Keybind.DRAGON_INVENTORY.isDown(key)) {
-                // FIXME :: if the key is held down the inventory will close after a second
-                //  This is not called multiple times, the open packet is only send once
-                //  The inventory is also not replaced or closed, at least not in this class
-                //  (This problem only applies to the dragon inventory)
                 PacketDistributor.sendToServer(RequestOpenDragonInventory.INSTANCE);
             } else if (Keybind.SKINS_MENU.isDown(key)) {
                 Minecraft.getInstance().setScreen(new DragonSkinsScreen());
