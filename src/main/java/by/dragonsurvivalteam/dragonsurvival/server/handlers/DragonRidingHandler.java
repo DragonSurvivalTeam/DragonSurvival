@@ -19,6 +19,8 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+// FIXME :: This relies on size right now. But size != scale now. We need to update this to use scale or player bounding boxes instead of size.
+
 @EventBusSubscriber
 public class DragonRidingHandler {
     @Translation(comments = "You are too big to mount on this dragon. You must be at least half the size of the dragon you are trying to ride or smaller, but you are size %s and the dragon is size %s.")
