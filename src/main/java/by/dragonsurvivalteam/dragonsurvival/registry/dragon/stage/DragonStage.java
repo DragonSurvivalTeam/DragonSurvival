@@ -64,9 +64,6 @@ public record DragonStage(
     public static final Codec<Holder<DragonStage>> CODEC = RegistryFixedCodec.create(REGISTRY);
     public static final StreamCodec<RegistryFriendlyByteBuf, Holder<DragonStage>> STREAM_CODEC = ByteBufCodecs.holderRegistry(REGISTRY);
 
-    /** Currently used for certain mechanics / animations */
-    public static final double MAX_HANDLED_SIZE = 60; // TODO :: remove
-
     private static DragonStage smallest;
     private static DragonStage largest;
 
