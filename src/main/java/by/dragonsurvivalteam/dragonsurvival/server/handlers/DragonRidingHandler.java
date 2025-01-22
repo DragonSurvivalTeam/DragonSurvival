@@ -23,7 +23,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 @EventBusSubscriber
 public class DragonRidingHandler {
-    @Translation(comments = "You are too big to mount on this dragon. You must be at least half the size of the dragon you are trying to ride or smaller, but you are size %s and the dragon is size %s.")
+    @Translation(comments = "You are too big to mount on this dragon. You must be at least half the size of the dragon you are trying to ride or smaller, but you are scale %s and the dragon is scale %s.")
     private static final String SELF_TOO_BIG = Translation.Type.GUI.wrap("message.self_too_big");
 
     @Translation(comments = "The dragon you are riding is too young. To ride a dragon as a human, the dragon must be an adult.")
@@ -35,7 +35,7 @@ public class DragonRidingHandler {
     public static final int NO_PASSENGER = -1;
 
     /** This is just the default adult dragon minimum size */
-    public static final int PLAYER_RIDING_SIZE = 30;
+    public static final float PLAYER_RIDING_SCALE = 1.0F;
 
     private enum DragonRideAttemptResult {
         SELF_TOO_BIG,
@@ -58,12 +58,12 @@ public class DragonRidingHandler {
 
         DragonStateHandler riderData = DragonStateProvider.getData(rider);
 
-        double sizeRatio = riderData.getSize() / mountData.getSize();
-        boolean dragonIsTooSmallToRide = sizeRatio >= 0.5;
+        double scaleRatio = rider.getScale() / mount.getScale();
+        boolean dragonIsTooSmallToRide = scaleRatio >= 0.5;
 
         if (dragonIsTooSmallToRide) {
             return DragonRideAttemptResult.SELF_TOO_BIG;
-        } else if (!riderData.isDragon() && mountData.getSize() < PLAYER_RIDING_SIZE) {
+        } else if (!riderData.isDragon() && mount.getScale() < PLAYER_RIDING_SCALE) {
             return DragonRideAttemptResult.MOUNT_TOO_SMALL_HUMAN;
         } else if (mount.getPose() != Pose.CROUCHING) {
             return DragonRideAttemptResult.NOT_CROUCHING;

@@ -53,7 +53,7 @@
     {
       "amount": {
         "type": "minecraft:linear",
-        "base": 0.5,
+        "base": -11.5,
         "per_level_above_first": 0.5
       },
       "attribute": "minecraft:generic.max_health",

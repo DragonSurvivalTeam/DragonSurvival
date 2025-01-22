@@ -40,7 +40,7 @@ public class AncientDatapack {
                         Modifier.constant(Attributes.MOVEMENT_SPEED, 0.02f, AttributeModifier.Operation.ADD_VALUE),
                         /* Per size */
                         Modifier.precisePerWithBase(Attributes.SCALE, -0.9f, 0.025f, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.per(Attributes.MAX_HEALTH, 0.5f, AttributeModifier.Operation.ADD_VALUE),
+                        Modifier.perWithBase(Attributes.MAX_HEALTH, -12,0.5f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.per(DSAttributes.DRAGON_BREATH_RANGE, 0.05f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.per(Attributes.ATTACK_DAMAGE, 0.05f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.per(Attributes.JUMP_STRENGTH, 0.0015f, AttributeModifier.Operation.ADD_VALUE),

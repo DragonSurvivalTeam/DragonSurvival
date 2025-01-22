@@ -55,7 +55,7 @@ public class DragonStages {
                         Modifier.constant(DSAttributes.DRAGON_BREATH_RANGE, 1.5f, AttributeModifier.Operation.ADD_VALUE),
                         /* Per size */
                         Modifier.precisePerWithBase(Attributes.SCALE, -0.9f, 0.025f, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.perWithBase(Attributes.MAX_HEALTH, -7, 0.5f, AttributeModifier.Operation.ADD_VALUE),
+                        Modifier.perWithBase(Attributes.MAX_HEALTH, -12, 0.5f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.per(DSAttributes.DRAGON_BREATH_RANGE, 0.05f, AttributeModifier.Operation.ADD_VALUE)
                 ),
                 List.of(
@@ -83,7 +83,7 @@ public class DragonStages {
                         Modifier.constant(DSAttributes.DRAGON_BREATH_RANGE, 2.5f, AttributeModifier.Operation.ADD_VALUE),
                         /* Per size */
                         Modifier.precisePerWithBase(Attributes.SCALE, -0.9f, 0.025f, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.per(Attributes.MAX_HEALTH, 0.5f, AttributeModifier.Operation.ADD_VALUE),
+                        Modifier.perWithBase(Attributes.MAX_HEALTH, -12,0.5f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.per(DSAttributes.DRAGON_BREATH_RANGE, 0.05f, AttributeModifier.Operation.ADD_VALUE)
                 ),
                 List.of(
@@ -111,7 +111,7 @@ public class DragonStages {
                         Modifier.constant(DSAttributes.DRAGON_BREATH_RANGE, 4, AttributeModifier.Operation.ADD_VALUE),
                         /* Per size */
                         Modifier.precisePerWithBase(Attributes.SCALE, -0.9f, 0.025f, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.per(Attributes.MAX_HEALTH, 0.5f, AttributeModifier.Operation.ADD_VALUE),
+                        Modifier.perWithBase(Attributes.MAX_HEALTH, -12,0.5f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.per(DSAttributes.DRAGON_BREATH_RANGE, 0.05f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.perWithBase(Attributes.ENTITY_INTERACTION_RANGE, -2, 0.05f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.perWithBase(Attributes.BLOCK_INTERACTION_RANGE, -2, 0.05f, AttributeModifier.Operation.ADD_VALUE)

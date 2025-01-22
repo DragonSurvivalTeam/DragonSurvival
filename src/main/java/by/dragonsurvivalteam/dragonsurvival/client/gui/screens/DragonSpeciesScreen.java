@@ -52,8 +52,8 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 public class DragonSpeciesScreen extends Screen {
     @Translation(comments = {
             "In order to allow other players to mount you, you must crouch and they can right click on you to mount.",
-            "\n§6Human players can ride you at size %s§r§7",
-            "\n§6Dragon players can ride you below or equal to size %s§r§7"
+            "\n§6Human players can ride you at scale %s§r§7",
+            "\n§6Dragon players can ride you below or equal to scale %s§r§7"
     })
     private static final String RIDING_INFO = Translation.Type.GUI.wrap("dragon_species_screen.riding_info");
 
@@ -276,7 +276,7 @@ public class DragonSpeciesScreen extends Screen {
 
         // Riding button
         HoverButton ridingButton = new HoverButton(startX + 186, startY - 18, 16, RIDING_MAIN, RIDING_HOVER);
-        ridingButton.setTooltip(Tooltip.create(Component.translatable(RIDING_INFO, DragonRidingHandler.PLAYER_RIDING_SIZE, (int) (data.getSize() / 2))));
+        ridingButton.setTooltip(Tooltip.create(Component.translatable(RIDING_INFO, DragonRidingHandler.PLAYER_RIDING_SCALE, String.format("%.2f", (minecraft.player.getScale() / 2)))));
         addRenderableWidget(ridingButton);
 
         // Body type button
