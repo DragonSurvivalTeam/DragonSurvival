@@ -4,7 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachmen
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonedEntities;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 
+/** This goal should only be attached to the entity if it is an ally since that flag isn't checked within this goal */
 public class FollowSummonerGoal extends Goal {
     private final Mob mob;
     private final PathNavigation navigation;
@@ -24,8 +25,8 @@ public class FollowSummonerGoal extends Goal {
     private final float stopDistance;
     private final float startDistance;
 
-    @Nullable private Entity owner;
-    private int timeToRecalcPath;
+    @Nullable private LivingEntity owner;
+    private int timeToRecalculatePath;
     private float oldWaterCost;
 
     public FollowSummonerGoal(final Mob mob, double speedModifier, float startDistance, float stopDistance) {
@@ -43,7 +44,7 @@ public class FollowSummonerGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        Entity owner = mob.getData(DSDataAttachments.ENTITY_HANDLER).getSummonOwner(mob.level());
+        LivingEntity owner = mob.getData(DSDataAttachments.SUMMON).getOwner(mob.level());
 
         if (shouldFollow(owner, startDistance)) {
             this.owner = owner;
@@ -64,7 +65,7 @@ public class FollowSummonerGoal extends Goal {
 
     @Override
     public void start() {
-        timeToRecalcPath = 0;
+        timeToRecalculatePath = 0;
         oldWaterCost = mob.getPathfindingMalus(PathType.WATER);
         mob.setPathfindingMalus(PathType.WATER, 0);
     }
@@ -85,8 +86,8 @@ public class FollowSummonerGoal extends Goal {
             mob.getLookControl().setLookAt(owner, 10, mob.getMaxHeadXRot());
         }
 
-        if (--timeToRecalcPath <= 0) {
-            timeToRecalcPath = adjustedTickDelay(10);
+        if (--timeToRecalculatePath <= 0) {
+            timeToRecalculatePath = adjustedTickDelay(10);
 
             if (shouldTeleport) {
                 teleportToOwner();
@@ -96,16 +97,16 @@ public class FollowSummonerGoal extends Goal {
         }
     }
 
-    private boolean shouldFollow(@Nullable final Entity owner, float distance) {
+    private boolean shouldFollow(@Nullable final LivingEntity owner, float distance) {
+        if (mob.getData(DSDataAttachments.SUMMON).movementBehaviour != SummonedEntities.MovementBehaviour.FOLLOW) {
+            return false;
+        }
+
         if (owner == null || !owner.isAlive()) {
             return false;
         }
 
-        if (mob.distanceToSqr(owner) < distance * distance) {
-            return false;
-        } else {
-            return owner.getData(DSDataAttachments.SUMMONED_ENTITIES).movementBehaviour == SummonedEntities.MovementBehaviour.FOLLOW;
-        }
+        return !(mob.distanceToSqr(owner) < distance * distance);
     }
 
     /** Copied from {@link TamableAnimal#teleportToAroundBlockPos(BlockPos)} */

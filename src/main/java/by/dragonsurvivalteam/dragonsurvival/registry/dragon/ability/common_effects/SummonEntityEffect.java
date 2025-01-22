@@ -6,9 +6,12 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.Comm
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstance;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstanceBase;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.goals.FollowSummonerGoal;
+import by.dragonsurvivalteam.dragonsurvival.common.entity.goals.SummonerHurtByTargetGoal;
+import by.dragonsurvivalteam.dragonsurvival.common.entity.goals.SummonerHurtTargetGoal;
 import by.dragonsurvivalteam.dragonsurvival.mixins.PrimedTntAccess;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncSummonedEntity;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonedEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
@@ -184,7 +187,11 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
 
         setAllied(dragon, entity);
 
-        entity.getData(DSDataAttachments.ENTITY_HANDLER).setSummonOwner(dragon);
+        SummonData data = entity.getData(DSDataAttachments.SUMMON);
+        data.attackBehaviour = summonData.attackBehaviour;
+        data.movementBehaviour = summonData.movementBehaviour;
+        data.setOwnerUUID(dragon);
+
         entity.moveTo(spawnPosition.getX(), spawnPosition.getY() + 1, spawnPosition.getZ(), entity.getYRot(), entity.getXRot());
 
         if (instance == null) {
@@ -250,6 +257,8 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
         }
 
         if (entity instanceof Mob mob) {
+            mob.goalSelector.addGoal(1, new SummonerHurtByTargetGoal(mob));
+            mob.goalSelector.addGoal(2, new SummonerHurtTargetGoal(mob));
             mob.goalSelector.addGoal(3, new FollowSummonerGoal(mob, 1, 10, 2));
         }
     }
@@ -367,7 +376,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
 
                 if (summonedEntity != null) {
                     // Since the entry is already removed from the storage we don't need any behaviour based on the owner
-                    summonedEntity.getData(DSDataAttachments.ENTITY_HANDLER).setSummonOwner(null);
+                    summonedEntity.getData(DSDataAttachments.SUMMON).setOwnerUUID(null);
                     summonedEntity.discard();
                 }
             });

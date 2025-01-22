@@ -1,14 +1,17 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import by.dragonsurvivalteam.dragonsurvival.common.entity.goals.FollowSummonerGoal;
+import by.dragonsurvivalteam.dragonsurvival.common.entity.goals.SummonerHurtByTargetGoal;
+import by.dragonsurvivalteam.dragonsurvival.common.entity.goals.SummonerHurtTargetGoal;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.SummonEntityEffect;
+import com.mojang.serialization.Codec;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.EventPriority;
@@ -22,34 +25,17 @@ import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.living.LivingExperienceDropEvent;
-import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Locale;
+
 @EventBusSubscriber
 public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
     public static final String MOVEMENT_BEHAVIOUR = "movement_behaviour";
     public static final String ATTACK_BEHAVIOUR = "attack_behaviour";
-
-    @Translation(comments = "Movement Behaviour")
-    public enum MovementBehaviour {
-        @Translation(comments = "Default")
-        DEFAULT,
-        @Translation(comments = "Follow")
-        FOLLOW
-    }
-
-    @Translation(comments = "Attack Behaviour")
-    public enum AttackBehaviour {
-        @Translation(comments = "Default")
-        DEFAULT,
-        @Translation(comments = "Defensive")
-        DEFENSIVE,
-        @Translation(comments = "Aggressive")
-        AGGRESSIVE
-    }
 
     public MovementBehaviour movementBehaviour = MovementBehaviour.FOLLOW;
     public AttackBehaviour attackBehaviour = AttackBehaviour.DEFENSIVE;
@@ -70,14 +56,14 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
             return false;
         }
 
-        return entity.getExistingData(DSDataAttachments.ENTITY_HANDLER).map(data -> {
+        return entity.getExistingData(DSDataAttachments.SUMMON).map(data -> {
             if (data.isOwner(target)) {
                 SummonedEntities summonData = target.getData(DSDataAttachments.SUMMONED_ENTITIES);
                 SummonEntityEffect.Instance instance = summonData.getInstance(entity);
                 return instance != null && instance.baseData().shouldSetAllied();
             }
 
-            Entity owner = data.getSummonOwner(entity.level());
+            Entity owner = data.getOwner(entity.level());
 
             if (owner == null) {
                 return false;
@@ -135,8 +121,8 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
             return;
         }
 
-        mob.getExistingData(DSDataAttachments.ENTITY_HANDLER).ifPresent(data -> {
-            Entity owner = data.getSummonOwner(event.getLevel());
+        mob.getExistingData(DSDataAttachments.SUMMON).ifPresent(data -> {
+            Entity owner = data.getOwner(event.getLevel());
 
             if (owner != null) {
                 SummonedEntities summonData = owner.getData(DSDataAttachments.SUMMONED_ENTITIES);
@@ -150,6 +136,8 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
                 }
 
                 if (instance.baseData().shouldSetAllied()) {
+                    mob.goalSelector.addGoal(1, new SummonerHurtByTargetGoal(mob));
+                    mob.goalSelector.addGoal(2, new SummonerHurtTargetGoal(mob));
                     mob.goalSelector.addGoal(3, new FollowSummonerGoal(mob, 1, 10, 2));
                 }
             }
@@ -157,56 +145,52 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
     }
 
     @SubscribeEvent
-    public static void decrementSummonCount(final EntityLeaveLevelEvent event) {
+    public static void removeDeadSummons(final EntityLeaveLevelEvent event) {
         if (event.getEntity() instanceof Player) {
             return;
         }
 
-        if (!event.getEntity().isAlive()) {
-            event.getEntity().getExistingData(DSDataAttachments.ENTITY_HANDLER).ifPresent(data -> {
-                Entity owner = data.getSummonOwner(event.getLevel());
-
-                if (owner != null) {
-                    SummonedEntities summonData = owner.getData(DSDataAttachments.SUMMONED_ENTITIES);
-                    SummonEntityEffect.Instance instance = summonData.getInstance(event.getEntity());
-
-                    if (instance == null) {
-                        // Faulty entity or summoner data already removed the entry
-                        return;
-                    }
-
-                    if (instance.removeSummon(event.getEntity())) {
-                        summonData.remove(owner, instance);
-                    }
-
-                    if (summonData.isEmpty()) {
-                        owner.removeData(DSDataAttachments.SUMMONED_ENTITIES);
-                    }
-                }
-            });
+        if (event.getEntity().isAlive()) {
+            return;
         }
+
+        event.getEntity().getExistingData(DSDataAttachments.SUMMON).ifPresent(data -> {
+            Entity owner = data.getOwner(event.getLevel());
+
+            if (owner != null) {
+                SummonedEntities summonData = owner.getData(DSDataAttachments.SUMMONED_ENTITIES);
+                SummonEntityEffect.Instance instance = summonData.getInstance(event.getEntity());
+
+                if (instance == null) {
+                    // Faulty entity or summoner data already removed the entry
+                    return;
+                }
+
+                if (instance.removeSummon(event.getEntity())) {
+                    summonData.remove(owner, instance);
+                }
+
+                if (summonData.isEmpty()) {
+                    owner.removeData(DSDataAttachments.SUMMONED_ENTITIES);
+                }
+            }
+        });
     }
 
-    /**
-     * Prevents summoned entities from targeting their owner <br>
-     * If an entity targets someone with summoned entities said entities will target the entity <br>
-     * (If their behaviour is set to the appropriate type)
-     */
-    @SubscribeEvent
+    @SubscribeEvent // Prevents summoned entities from targeting their owner or other allied summons
     public static void targetAttackedEnemy(final LivingChangeTargetEvent event) {
         if (event.getNewAboutToBeSetTarget() == null) {
+            return;
+        }
+
+        if (event.getEntity().getExistingData(DSDataAttachments.SUMMON).map(data -> data.attackBehaviour == AttackBehaviour.PASSIVE).orElse(false)) {
+            event.setNewAboutToBeSetTarget(null);
             return;
         }
 
         if (hasSummonRelationship(event.getEntity(), event.getNewAboutToBeSetTarget())) {
             // Fallback - should technically already be handled through the 'EntityMixin'
             event.setNewAboutToBeSetTarget(null);
-        } else {
-            event.getNewAboutToBeSetTarget().getExistingData(DSDataAttachments.SUMMONED_ENTITIES).ifPresent(data -> {
-                if (data.attackBehaviour != AttackBehaviour.DEFAULT) {
-                    data.setTarget(event.getEntity());
-                }
-            });
         }
     }
 
@@ -217,27 +201,14 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
         }
     }
 
-    @SubscribeEvent
-    public static void handleOwnerAttack(final AttackEntityEvent event) {
-        if (!(event.getTarget() instanceof LivingEntity livingTarget) || hasSummonRelationship(event.getEntity(), livingTarget)) {
-            return;
-        }
-
-        event.getEntity().getExistingData(DSDataAttachments.SUMMONED_ENTITIES).ifPresent(data -> {
-            if (data.attackBehaviour != AttackBehaviour.DEFAULT) {
-                data.setTarget(livingTarget);
-            }
-        });
-    }
-
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void skipLoot(final LivingDropsEvent event) {
         if (event.getEntity() instanceof Player) {
             return;
         }
 
-        event.getEntity().getExistingData(DSDataAttachments.ENTITY_HANDLER).ifPresent(data -> {
-            if (data.getSummonOwner(event.getEntity().level()) != null) {
+        event.getEntity().getExistingData(DSDataAttachments.SUMMON).ifPresent(data -> {
+            if (data.getOwner(event.getEntity().level()) != null) {
                 event.setCanceled(true);
             }
         });
@@ -249,15 +220,43 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
             return;
         }
 
-        event.getEntity().getExistingData(DSDataAttachments.ENTITY_HANDLER).ifPresent(data -> {
-            if (data.getSummonOwner(event.getEntity().level()) != null) {
+        event.getEntity().getExistingData(DSDataAttachments.SUMMON).ifPresent(data -> {
+            if (data.getOwner(event.getEntity().level()) != null) {
                 event.setCanceled(true);
             }
         });
     }
 
-    private void setTarget(final LivingEntity target) { // TODO :: search for target on entity join for the summon (if there is a hostile entity that targets the player)
-        all().forEach(instance -> instance.setTarget(target));
+    @Translation(comments = "Movement Behaviour")
+    public enum MovementBehaviour implements StringRepresentable {
+        @Translation(comments = "Default")
+        DEFAULT,
+        @Translation(comments = "Follow")
+        FOLLOW;
+
+        public static final Codec<MovementBehaviour> CODEC = StringRepresentable.fromValues(MovementBehaviour::values);
+
+        @Override
+        public @NotNull String getSerializedName() {
+            return name().toLowerCase(Locale.ENGLISH);
+        }
+    }
+
+    @Translation(comments = "Attack Behaviour")
+    public enum AttackBehaviour implements StringRepresentable {
+        @Translation(comments = "Default")
+        DEFAULT,
+        @Translation(comments = "Passive")
+        PASSIVE,
+        @Translation(comments = "Defensive")
+        DEFENSIVE;
+
+        public static final Codec<AttackBehaviour> CODEC = StringRepresentable.fromValues(AttackBehaviour::values);
+
+        @Override
+        public @NotNull String getSerializedName() {
+            return name().toLowerCase(Locale.ENGLISH);
+        }
     }
 
     @Override

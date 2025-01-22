@@ -19,6 +19,8 @@ public class DSDataAttachments {
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<EntityStateHandler>> ENTITY_HANDLER = REGISTRY.register("entity_handler", () -> AttachmentType.serializable(EntityStateHandler::new).build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<DragonStateHandler>> DRAGON_HANDLER = REGISTRY.register("dragon_handler", () -> AttachmentType.serializable(DragonStateHandler::new).copyOnDeath().build());
 
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<SummonData>> SUMMON = REGISTRY.register("summon_data", () -> AttachmentType.serializable(SummonData::new).build());
+
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<LightningHandler>> LIGHTNING_BOLT = REGISTRY.register("lightning_bolt_data", () -> AttachmentType.serializable(LightningHandler::new).build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<MovementData>> MOVEMENT = REGISTRY.register("movement_data", () -> AttachmentType.builder(MovementData::new).build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<FlightData>> FLIGHT = REGISTRY.register("flight_data", () -> AttachmentType.serializable(FlightData::new).copyOnDeath().build());
