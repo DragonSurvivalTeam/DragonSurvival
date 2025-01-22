@@ -3,14 +3,18 @@ package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
+import by.dragonsurvivalteam.dragonsurvival.mixins.EntityAccessor;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityEvent;
@@ -19,6 +23,7 @@ import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @EventBusSubscriber
@@ -133,6 +138,25 @@ public class DragonSizeHandler {
         }
 
         return Pose.STANDING;
+    }
+
+    /** Modified version of {@link Entity#fudgePositionAfterSizeChange(EntityDimensions)} */
+    public static void fudgePositionAfterSizeChange(final Entity entity, final EntityDimensions newDimensions) {
+        EntityDimensions oldDimensions = ((EntityAccessor) entity).dragonSurvival$getDimensions();
+        double widthChange = Math.max(0, oldDimensions.width() - newDimensions.width()) + Shapes.BIG_EPSILON;
+        double heightChange = Math.max(0, oldDimensions.height() - newDimensions.height()) + Shapes.BIG_EPSILON;
+
+        Vec3 halfHeightPosition = entity.position().add(0, newDimensions.height() / 2, 0);
+        VoxelShape fullHeightVoxelShape = Shapes.create(AABB.ofSize(halfHeightPosition, widthChange, heightChange, widthChange));
+        Optional<Vec3> fullHeightFreePosition = entity.level().findFreePosition(entity, fullHeightVoxelShape, halfHeightPosition, oldDimensions.width(), oldDimensions.height(), oldDimensions.width());
+
+        if (fullHeightFreePosition.isPresent()) {
+            entity.setPos(fullHeightFreePosition.get().add(0, -oldDimensions.height() / 2, 0));
+        } else {
+            VoxelShape deltaHeightVoxelShape = Shapes.create(AABB.ofSize(halfHeightPosition, widthChange, Shapes.BIG_EPSILON, widthChange));
+            Optional<Vec3> deltaHeightFreePosition = entity.level().findFreePosition(entity, deltaHeightVoxelShape, halfHeightPosition, oldDimensions.width(), newDimensions.height(), oldDimensions.width());
+            deltaHeightFreePosition.ifPresent(value -> entity.setPos(value.add(0, (double) (-newDimensions.height()) / 20 + Shapes.BIG_EPSILON, 0)));
+        }
     }
 
     public static boolean canPoseFit(final Player player, @Nullable final Pose pose) {

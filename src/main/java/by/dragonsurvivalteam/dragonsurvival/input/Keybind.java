@@ -137,4 +137,13 @@ public enum Keybind {
             return false;
         }
     }
+
+    /**
+     * Compares the key and also checks if the key modifier of this mapping is active <br>
+     * Exists because it seems like 'isDown' doesn't properly work within GUIs (?)
+     */
+    public boolean matches(final InputConstants.Key input) {
+        KeyMapping mapping = get();
+        return mapping.getKey().equals(input) && mapping.getKeyModifier().isActive(mapping.getKeyConflictContext());
+    }
 }

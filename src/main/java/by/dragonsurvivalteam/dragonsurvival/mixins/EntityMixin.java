@@ -20,19 +20,13 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import java.util.Optional;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin {
@@ -186,45 +180,30 @@ public abstract class EntityMixin {
         return maxAirSupply;
     }
 
-    // A modified version of the vanilla fudgePositionAfterSizeChange algorithm
-    @Unique
-    private void dragonSurvival$fudgePositionAfterSizeChange(EntityDimensions newDimensions) {
-        Entity self = (Entity) (Object) this;
-        EntityDimensions oldDimensions = ((EntityAccessor)self).dragonSurvival$getDimensions();
-        Vec3 halfHeightPosition = self.position().add(0.0, (double)newDimensions.height() / 2.0, 0.0);
-        double widthChange = (double)Math.max(0.0F, oldDimensions.width() - newDimensions.width()) + 1.0E-6;
-        double heightChange = (double)Math.max(0.0F, oldDimensions.height() - newDimensions.height()) + 1.0E-6;
-        VoxelShape fullHeightVoxelShape = Shapes.create(AABB.ofSize(halfHeightPosition, widthChange, heightChange, widthChange));
-        Optional<Vec3> fullHeightFreePosition = self.level().findFreePosition(self, fullHeightVoxelShape, halfHeightPosition, oldDimensions.width(), oldDimensions.height(), oldDimensions.width());
-        if(fullHeightFreePosition.isPresent()) {
-            self.setPos(fullHeightFreePosition.get().add(0.0, (double)(-oldDimensions.height()) / 2.0, 0.0));
-        } else {
-            VoxelShape deltaHeightVoxelShape = Shapes.create(AABB.ofSize(halfHeightPosition, widthChange, 1.0E-6, widthChange));
-            Optional<Vec3> deltaHeightFreePosition = self.level().findFreePosition(self, deltaHeightVoxelShape, halfHeightPosition, oldDimensions.width(), newDimensions.height(), oldDimensions.width());
-            deltaHeightFreePosition.ifPresent(value -> self.setPos(value.add(0.0, (double)(-newDimensions.height()) / 2.0 + 1.0E-6, 0.0)));
-        }
-    }
-
     // After a size refresh, vanilla normally prevents fudgePosition from being called. So we force it to be called, then *only* override the pose after all position fudging has completed
     // to prevent a pose change from triggering based on an incorrect position (which would cause stuttering otherwise).
     @Inject(method = "refreshDimensions", at = @At("TAIL"))
     private void dragonSurvival$fudgePositionAfterDragonSizeChange(CallbackInfo callback, @Local(ordinal = 0) EntityDimensions entitydimensions) {
-        Entity self = (Entity) (Object) this;
-        if(self instanceof Player player) {
+        if ((Object) this instanceof Player player) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
-            if (handler.isDragon()) {
-                if(handler.refreshedDimensionsFromSizeChange) {
-                    dragonSurvival$fudgePositionAfterSizeChange(entitydimensions);
-                }
-                DragonSizeHandler.overridePose(player);
+
+            if (!handler.isDragon()) {
+                return;
             }
+
+            if (handler.refreshedDimensionsFromSizeChange) {
+                DragonSizeHandler.fudgePositionAfterSizeChange(player, entitydimensions);
+            }
+
+            DragonSizeHandler.overridePose(player);
         }
     }
 
     @ModifyExpressionValue(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity$MovementEmission;emitsSounds()Z"))
     private boolean dragonSurvival$modifyWalkSoundsWhenWalkingUnderwater(boolean original) {
         Entity self = (Entity) (Object) this;
-        if(DragonStateProvider.isDragon(self) && self instanceof Player player) {
+
+        if (DragonStateProvider.isDragon(self) && self instanceof Player player) {
             return original && !DragonEntity.isConsideredSwimmingForAnimation(player);
         } else {
             return original;
