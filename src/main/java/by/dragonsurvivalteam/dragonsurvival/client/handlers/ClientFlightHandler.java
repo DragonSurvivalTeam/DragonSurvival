@@ -116,7 +116,7 @@ public class ClientFlightHandler {
             if (handler.isDragon()) {
                 // FIXME :: This camera placement isn't quite perfect yet. It is a little close to the player when the size is smaller.
                 float visualScale = (float)handler.getVisualScale(DragonSurvival.PROXY.getLocalPlayer(), Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false));
-                event.setDistance(event.getDistance() / event.getEntityScalingFactor() * visualScale);
+                event.setDistance(event.getDistance() / event.getEntityScalingFactor() * visualScale + 0.5f);
             }
         });
     }

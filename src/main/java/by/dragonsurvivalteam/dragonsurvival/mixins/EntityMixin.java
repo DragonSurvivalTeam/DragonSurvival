@@ -20,13 +20,19 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.Optional;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin {
@@ -180,20 +186,23 @@ public abstract class EntityMixin {
         return maxAirSupply;
     }
 
-    // This two functions below prevent the player from clipping into geometry if their growth would cause them to do so
-
-    // We need to override the dimensions for the getDimensions() call, as getDimensions from the player returns dimensions that are not actually valid for the dragon player.
-    @ModifyExpressionValue(method = "fudgePositionAfterSizeChange", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getDimensions(Lnet/minecraft/world/entity/Pose;)Lnet/minecraft/world/entity/EntityDimensions;"))
-    private EntityDimensions dragonSurvival$modifyFudgePositionAfterSizeChange(EntityDimensions original) {
+    // A modified version of the vanilla fudgePositionAfterSizeChange algorithm
+    @Unique
+    private void dragonSurvival$fudgePositionAfterSizeChange(EntityDimensions newDimensions) {
         Entity self = (Entity) (Object) this;
-
-        if(self instanceof Player) {
-            if (DragonStateProvider.isDragon(self)) {
-                return ((EntityAccessor)self).dragonSurvival$getDimensions();
-            }
+        EntityDimensions oldDimensions = ((EntityAccessor)self).dragonSurvival$getDimensions();
+        Vec3 halfHeightPosition = self.position().add(0.0, (double)newDimensions.height() / 2.0, 0.0);
+        double widthChange = (double)Math.max(0.0F, oldDimensions.width() - newDimensions.width()) + 1.0E-6;
+        double heightChange = (double)Math.max(0.0F, oldDimensions.height() - newDimensions.height()) + 1.0E-6;
+        VoxelShape fullHeightVoxelShape = Shapes.create(AABB.ofSize(halfHeightPosition, widthChange, heightChange, widthChange));
+        Optional<Vec3> fullHeightFreePosition = self.level().findFreePosition(self, fullHeightVoxelShape, halfHeightPosition, oldDimensions.width(), oldDimensions.height(), oldDimensions.width());
+        if(fullHeightFreePosition.isPresent()) {
+            self.setPos(fullHeightFreePosition.get().add(0.0, (double)(-oldDimensions.height()) / 2.0, 0.0));
+        } else {
+            VoxelShape deltaHeightVoxelShape = Shapes.create(AABB.ofSize(halfHeightPosition, widthChange, 1.0E-6, widthChange));
+            Optional<Vec3> deltaHeightFreePosition = self.level().findFreePosition(self, deltaHeightVoxelShape, halfHeightPosition, oldDimensions.width(), newDimensions.height(), oldDimensions.width());
+            deltaHeightFreePosition.ifPresent(value -> self.setPos(value.add(0.0, (double)(-newDimensions.height()) / 2.0 + 1.0E-6, 0.0)));
         }
-
-        return original;
     }
 
     // After a size refresh, vanilla normally prevents fudgePosition from being called. So we force it to be called, then *only* override the pose after all position fudging has completed
@@ -205,7 +214,7 @@ public abstract class EntityMixin {
             DragonStateHandler handler = DragonStateProvider.getData(player);
             if (handler.isDragon()) {
                 if(handler.refreshedDimensionsFromSizeChange) {
-                    self.fudgePositionAfterSizeChange(entitydimensions);
+                    dragonSurvival$fudgePositionAfterSizeChange(entitydimensions);
                 }
                 DragonSizeHandler.overridePose(player);
             }

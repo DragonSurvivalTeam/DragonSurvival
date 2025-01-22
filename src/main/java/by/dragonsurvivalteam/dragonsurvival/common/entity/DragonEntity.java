@@ -67,6 +67,9 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     private static final double DEFAULT_SWIM_SPEED = 0.051;
     private static final double DEFAULT_FAST_SWIM_SPEED = 0.13;
 
+    // Base "scale" to use when determining animation speed
+    private static final double BASE_SCALE = 1.3;
+
     /** Durations of jumps */
     public static final ConcurrentHashMap<Integer, Integer> DRAGON_JUMP_TICKS = new ConcurrentHashMap<>();
 
@@ -490,8 +493,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         double baseSpeed = DEFAULT_WALK_SPEED;
         double smallSizeFactor = ClientConfig.smallSizeAnimationSpeedFactor;
         double bigSizeFactor = ClientConfig.largeSizeAnimationSpeedFactor;
-        // FIXME :: Use scale attribute
-        double baseSize = DragonStage.MAX_HANDLED_SIZE;
         double distanceFromGround = ServerFlightHandler.distanceFromGround(player);
 
         if (checkAllEmotes(emote -> !emote.blend())) {
@@ -645,9 +646,9 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         if (useDynamicScaling) {
             double horizontalDistance = deltaMovement.horizontalDistance();
             double speedComponent = Math.min(ClientConfig.maxAnimationSpeedFactor, (horizontalDistance - baseSpeed) / baseSpeed * speedFactor);
-            double sizeDistance = handler.getSize() - baseSize;
+            double sizeDistance = handler.getVisualScale(player, state.getPartialTick()) - BASE_SCALE;
             double sizeFactor = sizeDistance >= 0 ? bigSizeFactor : smallSizeFactor;
-            double sizeComponent = baseSize / (baseSize + sizeDistance * sizeFactor);
+            double sizeComponent = BASE_SCALE / (BASE_SCALE + sizeDistance * sizeFactor);
             // We need a minimum speed here to prevent the animation from ever being truly at 0 speed (otherwise the animation state machine implodes)
             finalAnimationSpeed = Math.min(ClientConfig.maxAnimationSpeed, Math.max(ClientConfig.minAnimationSpeed, (animationSpeed + speedComponent) * sizeComponent));
         }

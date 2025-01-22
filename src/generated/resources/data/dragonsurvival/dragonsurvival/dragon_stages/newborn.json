@@ -47,7 +47,7 @@
     },
     {
       "amount": {
-        "precise_amount": 0.02,
+        "precise_amount": 0.025,
         "precise_base": -0.9
       },
       "attribute": "minecraft:generic.scale",
