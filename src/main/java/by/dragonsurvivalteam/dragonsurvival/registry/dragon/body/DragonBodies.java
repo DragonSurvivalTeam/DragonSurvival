@@ -15,7 +15,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForgeMod;
 
 import java.util.List;
-
+import java.util.Optional;
 
 public class DragonBodies {
     @Translation(type = Translation.Type.BODY_DESCRIPTION, comments = {
@@ -25,7 +25,7 @@ public class DragonBodies {
     @Translation(type = Translation.Type.BODY, comments = "Center")
     @Translation(type = Translation.Type.BODY_WINGS, comments = "Show wings")
     @Translation(type = Translation.Type.BODY_WINGS_DESCRIPTION, comments = "Show wings")
-    public static final ResourceKey<DragonBody> center = key("center");
+    public static final ResourceKey<DragonBody> CENTER = key("center");
 
     @Translation(type = Translation.Type.BODY_DESCRIPTION, comments = {
             "§6■ Eastern Type§r",
@@ -34,7 +34,7 @@ public class DragonBodies {
     @Translation(type = Translation.Type.BODY, comments = "East")
     @Translation(type = Translation.Type.BODY_WINGS, comments = "Show wings")
     @Translation(type = Translation.Type.BODY_WINGS_DESCRIPTION, comments = "Show wings")
-    public static final ResourceKey<DragonBody> east = key("east");
+    public static final ResourceKey<DragonBody> EAST = key("east");
 
     @Translation(type = Translation.Type.BODY_DESCRIPTION, comments = {
             "§6■ Northern Type§r",
@@ -43,7 +43,7 @@ public class DragonBodies {
     @Translation(type = Translation.Type.BODY, comments = "North")
     @Translation(type = Translation.Type.BODY_WINGS, comments = "Show wings")
     @Translation(type = Translation.Type.BODY_WINGS_DESCRIPTION, comments = "Show wings")
-    public static final ResourceKey<DragonBody> north = key("north");
+    public static final ResourceKey<DragonBody> NORTH = key("north");
 
     @Translation(type = Translation.Type.BODY_DESCRIPTION, comments = {
             "§6■ Southern Type§r",
@@ -52,7 +52,7 @@ public class DragonBodies {
     @Translation(type = Translation.Type.BODY, comments = "South")
     @Translation(type = Translation.Type.BODY_WINGS, comments = "Show wings")
     @Translation(type = Translation.Type.BODY_WINGS_DESCRIPTION, comments = "Show wings")
-    public static final ResourceKey<DragonBody> south = key("south");
+    public static final ResourceKey<DragonBody> SOUTH = key("south");
 
     @Translation(type = Translation.Type.BODY_DESCRIPTION, comments = {
             "§6■ Western Type§r",
@@ -61,10 +61,10 @@ public class DragonBodies {
     @Translation(type = Translation.Type.BODY, comments = "West")
     @Translation(type = Translation.Type.BODY_WINGS, comments = "Show wings")
     @Translation(type = Translation.Type.BODY_WINGS_DESCRIPTION, comments = "Show wings")
-    public static final ResourceKey<DragonBody> west = key("west");
+    public static final ResourceKey<DragonBody> WEST = key("west");
 
     public static void registerBodies(final BootstrapContext<DragonBody> context) {
-        context.register(center, new DragonBody(true, List.of(
+        context.register(CENTER, new DragonBody(true, List.of(
                 Modifier.constant(DSAttributes.FLIGHT_SPEED, 0.2f, AttributeModifier.Operation.ADD_VALUE)
         ), false,
                 DragonBody.DEFAULT_MODEL,
@@ -73,10 +73,11 @@ public class DragonBodies {
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
                 DragonBody.ScalingProportions.of(0.6, 2.0, 1.8, 1.0),
                 0.83333333,
-                DragonBody.MountingOffsets.of(new Vec3(0, -0.05, 0), new Vec3(0, 0, -1.4)))
-        );
+                DragonBody.MountingOffsets.of(new Vec3(0, -0.05, 0), new Vec3(0, 0, -1.4)),
+                Optional.of(DragonSurvival.res("textures/gui/custom/body/center/default.png"))
+        ));
 
-        context.register(east, new DragonBody(true, List.of(
+        context.register(EAST, new DragonBody(true, List.of(
                 Modifier.constant(Attributes.ARMOR, 2, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(Attributes.ATTACK_DAMAGE, -1, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(Attributes.ATTACK_KNOCKBACK, -1, AttributeModifier.Operation.ADD_VALUE),
@@ -94,10 +95,11 @@ public class DragonBodies {
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
                 DragonBody.ScalingProportions.of(0.6, 2.0, 1.8, 1.0),
                 0.83333333,
-                DragonBody.MountingOffsets.of(new Vec3(0, -0.05, 0), new Vec3(0, 0, -1.4)))
-        );
+                DragonBody.MountingOffsets.of(new Vec3(0, -0.05, 0), new Vec3(0, 0, -1.4)),
+                Optional.of(DragonSurvival.res("textures/gui/custom/body/east/default.png"))
+        ));
 
-        context.register(north, new DragonBody(true, List.of(
+        context.register(NORTH, new DragonBody(true, List.of(
                 Modifier.constant(Attributes.ATTACK_DAMAGE, -0.2f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
                 Modifier.constant(Attributes.ATTACK_KNOCKBACK, -0.5f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(Attributes.MOVEMENT_SPEED, -0.3f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
@@ -111,10 +113,11 @@ public class DragonBodies {
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
                 DragonBody.ScalingProportions.of(0.6, 1.1, 0.99, 1.0),
                 0.5,
-                DragonBody.MountingOffsets.of(new Vec3(0, -0.05, 0), new Vec3(0, 0f, -1.4)))
-        );
+                DragonBody.MountingOffsets.of(new Vec3(0, -0.05, 0), new Vec3(0, 0f, -1.4)),
+                Optional.of(DragonSurvival.res("textures/gui/custom/body/north/default.png"))
+        ));
 
-        context.register(south, new DragonBody(true, List.of(
+        context.register(SOUTH, new DragonBody(true, List.of(
                 Modifier.constant(Attributes.ATTACK_DAMAGE, 0.5f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(Attributes.GRAVITY, 0.2f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
                 Modifier.constant(Attributes.JUMP_STRENGTH, 0.2f, AttributeModifier.Operation.ADD_VALUE),
@@ -129,10 +132,11 @@ public class DragonBodies {
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
                 DragonBody.ScalingProportions.of(0.6, 2.0, 1.8, 1.0),
                 0.83333333,
-                DragonBody.MountingOffsets.of(new Vec3(0, -0.05, 0), new Vec3(0, 0, -1.4)))
-        );
+                DragonBody.MountingOffsets.of(new Vec3(0, -0.05, 0), new Vec3(0, 0, -1.4)),
+                Optional.of(DragonSurvival.res("textures/gui/custom/body/south/default.png"))
+        ));
 
-        context.register(west, new DragonBody(true, List.of(
+        context.register(WEST, new DragonBody(true, List.of(
                 Modifier.constant(Attributes.ATTACK_KNOCKBACK, 0.5f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(Attributes.KNOCKBACK_RESISTANCE, 0.15f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(Attributes.MOVEMENT_SPEED, -0.15f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
@@ -146,8 +150,9 @@ public class DragonBodies {
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
                 DragonBody.ScalingProportions.of(0.6, 2.0, 1.8, 1.0),
                 0.83333333,
-                DragonBody.MountingOffsets.of(new Vec3(0, -0.05, 0), new Vec3(0, 0, -1.4)))
-        );
+                DragonBody.MountingOffsets.of(new Vec3(0, -0.05, 0), new Vec3(0, 0, -1.4)),
+                Optional.of(DragonSurvival.res("textures/gui/custom/body/west/default.png"))
+        ));
     }
 
     public static ResourceKey<DragonBody> key(final ResourceLocation location) {

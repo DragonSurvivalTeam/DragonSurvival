@@ -22,7 +22,7 @@ public class GeneralTests {
     @GameTest(template = TestUtils.AIR_CUBE_1X)
     public static void test_tool_swap(final GameTestHelper helper) {
         Player player = TestUtils.createPlayer(helper);
-        TestUtils.setToDragon(helper, player, BuiltInDragonSpecies.CAVE_DRAGON, DragonBodies.center, DragonStages.young);
+        TestUtils.setToDragon(helper, player, BuiltInDragonSpecies.CAVE_DRAGON, DragonBodies.CENTER, DragonStages.young);
 
         ClawInventoryData clawInventory = ClawInventoryData.getData(player);
         ItemStack mainHandItem = Items.APPLE.getDefaultInstance();

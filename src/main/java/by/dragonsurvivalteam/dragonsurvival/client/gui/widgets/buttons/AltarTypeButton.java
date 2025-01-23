@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.DietComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverDisableable;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.StageResources;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.network.status.SyncAltarCooldown;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
@@ -125,13 +126,8 @@ public class AltarTypeButton extends Button implements HoverDisableable {
 
         if (species != null) {
             graphics.blit(species.value().miscResources().altarBanner(), getX(), getY(), 0, isHovered() ? 0 : 147, 49, 147, 49, 294);
-
-            // FIXME :: why show the first icon here?
-//            if (isHovered() && isTop(mouseY)) {
-//                graphics.blit(species.value().miscResources().growthIcons().getFirst().hoverIcon(), getX() + 1, getY() + 1, 0, 0, 18, 18, 18, 18);
-//            } else {
-//                graphics.blit(species.value().miscResources().growthIcons().getFirst().icon(), getX() + 1, getY() + 1, 0, 0, 18, 18, 18, 18);
-//            }
+            StageResources.GrowthIcon growthIcon = StageResources.getGrowthIcon(species, species.value().getStartingStage(null).getKey());
+            graphics.blit(isHovered() && isTop(mouseY) ? growthIcon.hoverIcon() : growthIcon.icon(), getX() + 1, getY() + 1, 0, 0, 18, 18, 18, 18);
         } else {
             graphics.blit(HUMAN_ALTAR_ICON, getX(), getY(), 0, isHovered() ? 0 : 147, 49, 147, 49, 294);
         }

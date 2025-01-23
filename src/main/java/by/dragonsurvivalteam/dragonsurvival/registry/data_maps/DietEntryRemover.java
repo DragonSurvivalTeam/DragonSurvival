@@ -20,7 +20,6 @@ public record DietEntryRemover(List<String> keys) implements DataMapValueRemover
 
     @Override
     public @NotNull Optional<List<DietEntry>> remove(@NotNull final List<DietEntry> value, @NotNull final Registry<DragonSpecies> registry, @NotNull final Either<TagKey<DragonSpecies>, ResourceKey<DragonSpecies>> source, @NotNull final DragonSpecies species) {
-        // According to the documentation the original value should not be modified
         List<DietEntry> newDiet = new ArrayList<>(value);
         newDiet.removeIf(entry -> keys.contains(entry.items()));
 

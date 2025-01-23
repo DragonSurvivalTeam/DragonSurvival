@@ -27,11 +27,23 @@ import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
-public record DragonBody(boolean isDefault, List<Modifier> modifiers, boolean canHideWings, ResourceLocation model, ResourceLocation animation, List<String> bonesToHideForToggle, Holder<DragonEmoteSet> emotes, ScalingProportions scalingProportions, double crouchHeightRatio, MountingOffsets mountingOffsets) implements AttributeModifierSupplier {
+public record DragonBody(
+        boolean isDefault,
+        List<Modifier> modifiers,
+        boolean canHideWings,
+        ResourceLocation model,
+        ResourceLocation animation,
+        List<String> bonesToHideForToggle,
+        Holder<DragonEmoteSet> emotes,
+        ScalingProportions scalingProportions,
+        double crouchHeightRatio,
+        MountingOffsets mountingOffsets,
+        Optional<ResourceLocation> defaultIcon
+) implements AttributeModifierSupplier {
     public static final ResourceKey<Registry<DragonBody>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_bodies"));
-
     public static final ResourceLocation DEFAULT_MODEL = DragonSurvival.res("dragon_model");
 
     public static final Codec<DragonBody> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -44,8 +56,8 @@ public record DragonBody(boolean isDefault, List<Modifier> modifiers, boolean ca
             DragonEmoteSet.CODEC.fieldOf("emotes").forGetter(DragonBody::emotes),
             ScalingProportions.CODEC.fieldOf("scaling_proportions").forGetter(DragonBody::scalingProportions),
             Codec.DOUBLE.fieldOf("crouch_height_ratio").forGetter(DragonBody::crouchHeightRatio),
-            MountingOffsets.CODEC.fieldOf("mounting_offset").forGetter(DragonBody::mountingOffsets)
-
+            MountingOffsets.CODEC.fieldOf("mounting_offset").forGetter(DragonBody::mountingOffsets),
+            ResourceLocation.CODEC.optionalFieldOf("default_icon").forGetter(DragonBody::defaultIcon)
     ).apply(instance, instance.stable(DragonBody::new)));
 
     public static final Codec<Holder<DragonBody>> CODEC = RegistryFixedCodec.create(REGISTRY);

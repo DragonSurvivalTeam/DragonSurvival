@@ -26,7 +26,7 @@ public class DSDragonBodyTags extends TagsProvider<DragonBody> {
 
     @Override
     protected void addTags(@NotNull final HolderLookup.Provider provider) {
-        tag(ORDER).add(DragonBodies.center, DragonBodies.east, DragonBodies.north, DragonBodies.south, DragonBodies.west);
+        tag(ORDER).add(DragonBodies.CENTER, DragonBodies.EAST, DragonBodies.NORTH, DragonBodies.SOUTH, DragonBodies.WEST);
     }
 
     public static List<Holder<DragonBody>> getOrdered(@Nullable final HolderLookup.Provider provider) {

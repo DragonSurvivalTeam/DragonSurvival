@@ -49,8 +49,7 @@ public interface ClientEffectProvider {
     ResourceLocation UNKNOWN_ICON = DragonSurvival.res("textures/gui/ability_effect/generic_icons/unknown.png");
 
     /** See {@link net.minecraft.client.renderer.texture.MissingTextureAtlasSprite#MISSING_TEXTURE_LOCATION} */
-    ResourceLocation MISSING_TEXTURE = ResourceLocation.withDefaultNamespace("missingno");
-    ClientData NONE = new ClientData(DragonSurvival.res("none"), MISSING_TEXTURE, Component.literal("N/A"), Component.empty());
+    ClientData NONE = new ClientData(DragonSurvival.res("none"), DragonSurvival.MISSING_TEXTURE, Component.literal("N/A"), Component.empty());
 
     static List<ClientEffectProvider> getProviders(boolean isInventory) {
         boolean isVisible = DisplayType.isVisible(isInventory);

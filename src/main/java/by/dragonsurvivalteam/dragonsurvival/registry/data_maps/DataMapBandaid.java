@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.data_maps;
 
 import by.dragonsurvivalteam.dragonsurvival.mixins.BaseMappedRegistryAccess;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -19,7 +20,7 @@ public class DataMapBandaid {
     @SubscribeEvent
     public static void storeData(final DataMapsUpdatedEvent event) {
         if (event.getRegistry() instanceof BaseMappedRegistryAccess<?> access) {
-            if (event.getRegistryKey() != DragonSpecies.REGISTRY) {
+            if (event.getRegistryKey() != DragonSpecies.REGISTRY && event.getRegistryKey() != DragonBody.REGISTRY) {
                 // Avoid storing unneeded data
                 return;
             }

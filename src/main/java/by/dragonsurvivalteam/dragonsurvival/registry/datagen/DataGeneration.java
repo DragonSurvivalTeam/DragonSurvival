@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEnchantments;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.advancements.DSAdvancements;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.data_maps.BodyIconProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.data_maps.DietEntryProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.data_maps.DragonBeaconDataProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.data_maps.EndPlatformProvider;
@@ -132,6 +133,7 @@ public class DataGeneration {
         generator.addProvider(event.includeServer(), new EndPlatformProvider(output, lookup));
         generator.addProvider(event.includeServer(), new DragonBeaconDataProvider(output, lookup));
         generator.addProvider(event.includeServer(), new StageResourceProvider(output, lookup));
+        generator.addProvider(event.includeServer(), new BodyIconProvider(output, lookup));
 
         generator.addProvider(event.includeServer(), new DataBlockModelProvider(output, helper));
         generator.addProvider(event.includeServer(), new AdvancementProvider(output, lookup, helper, List.of(new DSAdvancements())));

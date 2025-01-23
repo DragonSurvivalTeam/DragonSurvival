@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDataMaps;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
@@ -17,9 +18,7 @@ public class StageResources {
             ResourceKey.codec(DragonStage.REGISTRY), StageResource.CODEC
     );
 
-    /** See {@link net.minecraft.client.renderer.texture.MissingTextureAtlasSprite#MISSING_TEXTURE_LOCATION} */
-    private static final ResourceLocation MISSING_TEXTURE = ResourceLocation.withDefaultNamespace("missingno");
-    private static final GrowthIcon MISSING = new GrowthIcon(MISSING_TEXTURE, MISSING_TEXTURE);
+    private static final GrowthIcon MISSING = new GrowthIcon(DragonSurvival.MISSING_TEXTURE, DragonSurvival.MISSING_TEXTURE);
 
     public static StageResources.GrowthIcon getGrowthIcon(final Holder<DragonSpecies> species, final ResourceKey<DragonStage> stage) {
         Map<ResourceKey<DragonStage>, StageResource> resources = species.getData(DSDataMaps.STAGE_RESOURCES);
@@ -28,30 +27,32 @@ public class StageResources {
             return MISSING;
         }
 
-        return Objects.requireNonNullElse(resources.get(stage).growthIcon(), MISSING);
-    }
+        StageResource stageResource = resources.get(stage);
 
-    public static ResourceLocation getHoverGrowthIcon(final Holder<DragonSpecies> species, final ResourceKey<DragonStage> stage) {
-        Map<ResourceKey<DragonStage>, StageResource> resources = species.getData(DSDataMaps.STAGE_RESOURCES);
-
-        if (resources == null) {
-            return MISSING_TEXTURE;
+        if (stageResource == null) {
+            return MISSING;
         }
 
-        return Objects.requireNonNullElse(resources.get(stage).growthIcon().hoverIcon(), MISSING_TEXTURE);
+        return Objects.requireNonNullElse(stageResource.growthIcon(), MISSING);
     }
 
     public static ResourceLocation getDefaultSkin(final Holder<DragonSpecies> species, final ResourceKey<DragonStage> stage, final boolean glowLayer) {
         Map<ResourceKey<DragonStage>, StageResource> resources = species.getData(DSDataMaps.STAGE_RESOURCES);
 
         if (resources == null) {
-            return MISSING_TEXTURE;
+            return DragonSurvival.MISSING_TEXTURE;
         }
 
-        DefaultSkin skin = resources.get(stage).defaultSkin();
+        StageResource stageResource = resources.get(stage);
+
+        if (stageResource == null) {
+            return DragonSurvival.MISSING_TEXTURE;
+        }
+
+        DefaultSkin skin = stageResource.defaultSkin();
         ResourceLocation texture = glowLayer ? skin.glowSkin() : skin.skin();
 
-        return Objects.requireNonNullElse(texture, MISSING_TEXTURE);
+        return Objects.requireNonNullElse(texture, DragonSurvival.MISSING_TEXTURE);
     }
 
     public record StageResource(GrowthIcon growthIcon, DefaultSkin defaultSkin) {

@@ -11,6 +11,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.neoforge.common.data.DataMapProvider;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -177,5 +178,10 @@ public class StageResourceProvider extends DataMapProvider {
         ));
 
         return resources;
+    }
+
+    @Override
+    public @NotNull String getName() {
+        return "Dragon Stage Resources";
     }
 }

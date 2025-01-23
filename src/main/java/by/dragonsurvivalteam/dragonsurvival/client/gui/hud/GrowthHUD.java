@@ -90,7 +90,7 @@ public class GrowthHUD {
 
         graphics.pose().pushPose();
         graphics.pose().translate(0, 0, 300);
-        graphics.blit(StageResources.getHoverGrowthIcon(handler.species(), handler.stageKey()), circleX + 7, circleY + 6, 0, 0, 20, 20, 20, 20);
+        graphics.blit(StageResources.getGrowthIcon(handler.species(), handler.stageKey()).hoverIcon(), circleX + 7, circleY + 6, 0, 0, 20, 20, 20, 20);
         graphics.pose().popPose();
     }
 }

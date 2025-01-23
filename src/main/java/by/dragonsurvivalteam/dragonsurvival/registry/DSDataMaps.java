@@ -5,12 +5,16 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.DietEntry;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonBeaconData;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.EndPlatform;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.StageResources;
+import by.dragonsurvivalteam.dragonsurvival.registry.data_maps.BodyIconRemover;
+import by.dragonsurvivalteam.dragonsurvival.registry.data_maps.BodyIcons;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_maps.DietEntryMerger;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_maps.DietEntryRemover;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_maps.StageResourceRemover;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.registries.datamaps.AdvancedDataMapType;
@@ -23,6 +27,8 @@ import java.util.Map;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public class DSDataMaps {
+    // --- Dragon Species --- //
+
     public static final AdvancedDataMapType<DragonSpecies, List<DietEntry>, DietEntryRemover> DIET_ENTRIES = AdvancedDataMapType.builder(DragonSurvival.res("diet_entries"), DragonSpecies.REGISTRY, DietEntry.CODEC.listOf())
             .merger(new DietEntryMerger()).remover(DietEntryRemover.CODEC).synced(DietEntry.CODEC.listOf(), true).build();
 
@@ -33,11 +39,18 @@ public class DSDataMaps {
 
     public static final DataMapType<DragonSpecies, DragonBeaconData> DRAGON_BEACON_DATA = DataMapType.builder(DragonSurvival.res("dragon_beacon_data"), DragonSpecies.REGISTRY, DragonBeaconData.CODEC).build();
 
+    // --- Dragon Body --- //
+
+    public static final AdvancedDataMapType<DragonBody, Map<ResourceKey<DragonSpecies>, ResourceLocation>, BodyIconRemover> BODY_ICONS = AdvancedDataMapType.builder(DragonSurvival.res("body_icons"), DragonBody.REGISTRY, BodyIcons.CODEC)
+            .merger(DataMapValueMerger.mapMerger()).remover(BodyIconRemover.CODEC).synced(BodyIcons.CODEC, true).build();
+
     @SubscribeEvent
     public static void register(final RegisterDataMapTypesEvent event) {
         event.register(DIET_ENTRIES);
         event.register(STAGE_RESOURCES);
         event.register(END_PLATFORMS);
         event.register(DRAGON_BEACON_DATA);
+
+        event.register(BODY_ICONS);
     }
 }

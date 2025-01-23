@@ -1,6 +1,7 @@
 {
   "animation": "dragonsurvival:dragon_south",
   "crouch_height_ratio": 0.83333333,
+  "default_icon": "dragonsurvival:textures/gui/custom/body/south/default.png",
   "emotes": "dragonsurvival:default_emotes",
   "is_default": true,
   "modifiers": [

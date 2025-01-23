@@ -5,31 +5,26 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonSkinsScreen
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonSpeciesScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.DragonEditorScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverDisableable;
-import by.dragonsurvivalteam.dragonsurvival.mixins.client.TextureManagerAccess;
+import by.dragonsurvivalteam.dragonsurvival.registry.data_maps.BodyIcons;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBodies;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
 public class DragonBodyButton extends ExtendedButton implements HoverDisableable {
-
     @Translation(comments = "You can only change the body type in the altar when changing the dragon's species.")
     private static final String UNAVAILABLE = Translation.Type.GUI.wrap("dragon_body_button.unavailable");
-
-    private static final String LOCATION_PREFIX = "textures/gui/custom/body/";
-    private static final String DEFAULT_SUFFIX = "default";
 
     private static final ResourceLocation SELECTED_BACKGROUND = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/icon_skin_on.png");
     private static final ResourceLocation DESELECTED_BACKGROUND = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/icon_skin_off.png");
@@ -40,7 +35,7 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
 
     private final Screen screen;
     private final Holder<DragonBody> dragonBody;
-    private final ResourceLocation iconLocation;
+    private final ResourceLocation icon;
     private final ResourceLocation bodyLocation;
     private final boolean locked;
     private boolean disableHover;
@@ -55,33 +50,27 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
         this(screen, x, y, xSize, ySize, dragonBody, Objects.requireNonNull(dragonBody.getKey()).location(), locked, action, useBackground, noTooltip);
     }
 
-    @SuppressWarnings("DataFlowIssue") // key is expected to be present
     private DragonBodyButton(Screen screen, int x, int y, int xSize, int ySize, final Holder<DragonBody> dragonBody, final ResourceLocation location, boolean locked, OnPress action, boolean useBackground, boolean noTooltip) {
         super(x, y, xSize, ySize, Component.empty(), action, DEFAULT_NARRATION);
-        if(!noTooltip) {
+
+        if (!noTooltip) {
             setTooltip(Tooltip.create(Component.translatable(Translation.Type.BODY_DESCRIPTION.wrap(location))));
         }
 
-        // FIXME :: needs to be adjusted to properly support custom
-        String iconSuffix;
+        ResourceKey<DragonSpecies> species = null;
 
         if (screen instanceof DragonEditorScreen dragonEditorScreen) {
-            iconSuffix = dragonEditorScreen.dragonSpecies.getKey().location().getPath();
+            species = dragonEditorScreen.dragonSpecies.getKey();
         } else if (screen instanceof DragonSpeciesScreen dragonSpeciesScreen) {
-            iconSuffix = dragonSpeciesScreen.dragonSpecies.getKey().location().getPath();
+            species = dragonSpeciesScreen.dragonSpecies.getKey();
+        }
+
+        if (species == null) {
+            this.icon = dragonBody.value().defaultIcon().orElse(DragonSurvival.MISSING_TEXTURE);
         } else {
-            iconSuffix = DEFAULT_SUFFIX;
+            this.icon = BodyIcons.getIcon(dragonBody, species);
         }
 
-        ResourceLocation iconLocation = location.withPrefix(LOCATION_PREFIX).withSuffix("/" + iconSuffix + ".png");
-        ResourceManager manager = ((TextureManagerAccess) Minecraft.getInstance().getTextureManager()).dragonSurvival$getResourceManager();
-
-        if (manager.getResource(iconLocation).isEmpty()) {
-            DragonSurvival.LOGGER.warn("Icon [{}] does not exist - using icon from body type [{}] as fallback", iconLocation, DragonBodies.center);
-            iconLocation = DragonBodies.center.location().withPrefix(LOCATION_PREFIX).withSuffix("/" + iconSuffix + ".png");
-        }
-
-        this.iconLocation = iconLocation;
         this.screen = screen;
         this.dragonBody = dragonBody;
         this.bodyLocation = location;
@@ -133,9 +122,9 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
         if(this.useBackground) {
             ResourceLocation background = state == SELECTED ? SELECTED_BACKGROUND : DESELECTED_BACKGROUND;
             graphics.blit(background, getX(), getY(), 0, 0, this.width, this.height, 35, 35);
-            graphics.blit(iconLocation, getX() + 5, getY() + 5, 0, state * 25, 25, 25, 32, 104);
+            graphics.blit(icon, getX() + 5, getY() + 5, 0, state * 25, 25, 25, 32, 104);
         } else {
-            graphics.blit(iconLocation, getX(), getY(), 0, state * this.height, this.width, this.height, 32, 104);
+            graphics.blit(icon, getX(), getY(), 0, state * this.height, this.width, this.height, 32, 104);
         }
     }
 

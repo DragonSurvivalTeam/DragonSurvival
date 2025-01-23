@@ -25,6 +25,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataCompo
 import by.dragonsurvivalteam.dragonsurvival.util.proxy.ClientProxy;
 import by.dragonsurvivalteam.dragonsurvival.util.proxy.Proxy;
 import by.dragonsurvivalteam.dragonsurvival.util.proxy.ServerProxy;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -36,6 +37,9 @@ import org.apache.logging.log4j.Logger;
 @Mod(DragonSurvival.MODID)
 public class DragonSurvival {
     public static final String DISCORD_URL = "https://discord.gg/8SsB8ar";
+
+    /** See {@link MissingTextureAtlasSprite#MISSING_TEXTURE_LOCATION} */
+    public static final ResourceLocation MISSING_TEXTURE = ResourceLocation.withDefaultNamespace("missingno");
 
     public static final String MODID = "dragonsurvival";
     public static final Logger LOGGER = LogManager.getLogger("Dragon Survival");

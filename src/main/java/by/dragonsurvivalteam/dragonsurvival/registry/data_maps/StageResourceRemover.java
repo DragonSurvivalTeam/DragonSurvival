@@ -21,7 +21,6 @@ public record StageResourceRemover(List<ResourceKey<DragonStage>> keys) implemen
 
     @Override
     public @NotNull Optional<Map<ResourceKey<DragonStage>, StageResources.StageResource>> remove(@NotNull final Map<ResourceKey<DragonStage>, StageResources.StageResource> value, @NotNull final Registry<DragonSpecies> registry, @NotNull final Either<TagKey<DragonSpecies>, ResourceKey<DragonSpecies>> source, @NotNull final DragonSpecies species) {
-        // According to the documentation the original value should not be modified
         Map<ResourceKey<DragonStage>, StageResources.StageResource> newResources = new HashMap<>(value);
         keys.forEach(newResources::remove);
 

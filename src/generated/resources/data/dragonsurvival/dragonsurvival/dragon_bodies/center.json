@@ -2,6 +2,7 @@
   "animation": "dragonsurvival:dragon_center",
   "can_hide_wings": false,
   "crouch_height_ratio": 0.83333333,
+  "default_icon": "dragonsurvival:textures/gui/custom/body/center/default.png",
   "emotes": "dragonsurvival:default_emotes",
   "is_default": true,
   "modifiers": [
