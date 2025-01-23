@@ -90,6 +90,19 @@ public abstract class Storage<T extends StorageEntry> implements INBTSerializabl
         return storage.values();
     }
 
+    public void clear(final Entity storageHolder) {
+        if (storage == null || storageHolder.level().isClientSide()) {
+            return;
+        }
+
+        List<T> cleared = new ArrayList<>(storage.values());
+        storage.clear();
+        cleared.forEach(entry -> entry.onRemovalFromStorage(storageHolder));
+
+        invalidateCache();
+        storageHolder.removeData(type());
+    }
+
     public int size() {
         if (storage == null) {
             return 0;

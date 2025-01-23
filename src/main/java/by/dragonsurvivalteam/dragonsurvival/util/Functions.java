@@ -15,6 +15,7 @@ import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -281,7 +282,7 @@ public class Functions {
         return Mth.cos(sunAngle);
     }
 
-    public static double calculateAttributeValue(final double base, final double level, final List<AttributeModifier> attributeModifiers, final List<Modifier> modifiers) {
+    public static double calculateAttributeValue(final AttributeInstance instance, final double level, final List<AttributeModifier> attributeModifiers, final List<Modifier> modifiers) {
         List<Double> addition = new ArrayList<>();
         List<Double> multiplyBase = new ArrayList<>();
         List<Double> multiplyTotal = new ArrayList<>();
@@ -302,7 +303,7 @@ public class Functions {
             }
         }
 
-        double calculationBase = base;
+        double calculationBase = instance.getBaseValue();
 
         for (double amount: addition) {
             calculationBase += amount;
@@ -318,7 +319,7 @@ public class Functions {
             result *= 1 + amount;
         }
 
-        return result;
+        return instance.getAttribute().value().sanitizeValue(result);
     }
 
     public static <T> MutableComponent translateHolderSet(final HolderSet<T> set, final Translation.Type type) {

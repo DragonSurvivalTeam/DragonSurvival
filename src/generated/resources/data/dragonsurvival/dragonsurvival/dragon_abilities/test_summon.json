@@ -20,6 +20,35 @@
         "target_type": "dragonsurvival:looking_at"
       },
       "trigger_rate": 1.0
+    },
+    {
+      "target_selection": {
+        "applied_effects": {
+          "entity_effect": [
+            {
+              "effect_type": "dragonsurvival:modifier",
+              "modifiers": [
+                {
+                  "base": {
+                    "duration": 1200.0,
+                    "id": "dragonsurvival:summon_test"
+                  },
+                  "modifiers": [
+                    {
+                      "amount": 3.0,
+                      "attribute": "minecraft:generic.armor",
+                      "operation": "add_value"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "targeting_mode": "allies_and_self"
+        },
+        "target_type": "dragonsurvival:self"
+      },
+      "trigger_rate": 1.0
     }
   ],
   "activation": {

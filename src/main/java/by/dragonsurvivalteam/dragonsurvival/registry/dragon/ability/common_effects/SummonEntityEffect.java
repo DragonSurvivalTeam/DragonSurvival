@@ -64,9 +64,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 
 public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, SummonEntityEffect.Instance> implements AbilityEntityEffect, AbilityBlockEffect {
@@ -137,69 +137,64 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
         Instance instance = summonData.get(id());
 
         if (instance != null) {
-            // Only remove in certain conditions, so that more entities can be summoned over time
-            if (instance.appliedAbilityLevel() != ability.level() || instance.summonedAmount() == 0) {
-                summonData.remove(dragon, instance);
-                instance = null;
-            } else if (instance.summonedAmount() == maxSummons.calculate(ability.level())) {
-                // Keep the logic simple - players can kill their summons (they do not retaliate) if needed
-                // Otherwise, if cast over a large area it would spawn and discard a lot of entities
-                return;
-            }
+            summonData.remove(dragon, instance);
+            instance = null;
         }
 
         if (!Level.isInSpawnableBounds(spawnPosition)) {
             return;
         }
 
-        EntityType<?> type = entities.map(
-                list -> list.getRandom(level.getRandom()).map(WeightedEntry.Wrapper::data).orElse(null),
-                set -> set.getRandomElement(dragon.getRandom()).map(Holder::value).orElse(null)
-        );
+        for (int i = 0; i < maxSummons.calculate(ability.level()); i++) {
+            EntityType<?> type = entities.map(
+                    list -> list.getRandom(level.getRandom()).map(WeightedEntry.Wrapper::data).orElse(null),
+                    set -> set.getRandomElement(dragon.getRandom()).map(Holder::value).orElse(null)
+            );
 
-        if (type == null) {
-            DragonSurvival.LOGGER.error("[{}] summon entity effect has no valid entity type entries", id());
-            return;
-        }
+            if (type == null) {
+                DragonSurvival.LOGGER.error("[{}] summon entity effect has no valid entity type entries", id());
+                return;
+            }
 
-        Entity entity = type.spawn(level, spawnPosition, MobSpawnType.TRIGGERED);
+            Entity entity = type.spawn(level, spawnPosition, MobSpawnType.TRIGGERED);
 
-        if (entity == null) {
-            return;
-        }
+            if (entity == null) {
+                return;
+            }
 
-        if (entity instanceof LivingEntity livingEntity) {
-            int abilityLevel = ability.level();
-            attributeScales.forEach(attributeScale -> attributeScale.apply(livingEntity, abilityLevel));
-        }
+            if (entity instanceof LivingEntity livingEntity) {
+                int abilityLevel = ability.level();
+                attributeScales.forEach(attributeScale -> attributeScale.apply(livingEntity, abilityLevel));
+            }
 
-        if (entity instanceof Projectile projectile) {
-            projectile.setOwner(dragon);
-        }
+            if (entity instanceof Projectile projectile) {
+                projectile.setOwner(dragon);
+            }
 
-        if (entity instanceof LightningBolt bolt) {
-            bolt.setCause(dragon);
-        }
+            if (entity instanceof LightningBolt bolt) {
+                bolt.setCause(dragon);
+            }
 
-        if (entity instanceof PrimedTntAccess access) {
-            access.dragonSurvival$setOwner(dragon);
-        }
+            if (entity instanceof PrimedTntAccess access) {
+                access.dragonSurvival$setOwner(dragon);
+            }
 
-        setAllied(dragon, entity);
+            setAllied(dragon, entity);
 
-        SummonData data = entity.getData(DSDataAttachments.SUMMON);
-        data.attackBehaviour = summonData.attackBehaviour;
-        data.movementBehaviour = summonData.movementBehaviour;
-        data.setOwnerUUID(dragon);
+            SummonData data = entity.getData(DSDataAttachments.SUMMON);
+            data.attackBehaviour = summonData.attackBehaviour;
+            data.movementBehaviour = summonData.movementBehaviour;
+            data.setOwnerUUID(dragon);
 
-        entity.moveTo(spawnPosition.getX(), spawnPosition.getY() + 1, spawnPosition.getZ(), entity.getYRot(), entity.getXRot());
+            entity.moveTo(spawnPosition.getX(), spawnPosition.getY() + 1, spawnPosition.getZ(), entity.getYRot(), entity.getXRot());
 
-        if (instance == null) {
-            instance = createInstance(dragon, ability, (int) duration().calculate(ability.level()));
-            instance.increment(entity.getUUID());
-            summonData.add(dragon, instance);
-        } else {
-            instance.increment(entity.getUUID());
+            if (instance == null) {
+                instance = createInstance(dragon, ability, (int) duration().calculate(ability.level()));
+                instance.increment(entity.getUUID());
+                summonData.add(dragon, instance);
+            } else {
+                instance.increment(entity.getUUID());
+            }
         }
     }
 
@@ -265,7 +260,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
 
     @Override
     public Instance createInstance(final ServerPlayer dragon, final DragonAbilityInstance ability, final int currentDuration) {
-        return new Instance(this, CommonData.from(id(), dragon, ability, customIcon(), shouldRemoveAutomatically()), currentDuration, new ArrayList<>(), 0);
+        return new Instance(this, CommonData.from(id(), dragon, ability, customIcon(), shouldRemoveAutomatically()), currentDuration, new CopyOnWriteArrayList<>(), 0);
     }
 
     @Override
@@ -301,28 +296,19 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
 
     public static class Instance extends DurationInstance<SummonEntityEffect> {
         public static final Codec<Instance> CODEC = RecordCodecBuilder.create(instance -> DurationInstance.codecStart(instance, SummonEntityEffect.CODEC::codec)
-                .and(UUIDUtil.CODEC.listOf().xmap(/* Make list mutable */ ArrayList::new, Function.identity()).fieldOf("entity_uuid").forGetter(Instance::entityUUIDs))
+                .and(UUIDUtil.CODEC.listOf().xmap(/* Make list mutable */ CopyOnWriteArrayList::new, Function.identity()).fieldOf("entity_uuid").forGetter(Instance::entityUUIDs))
                 .and(Codec.INT.fieldOf("summoned_amount").forGetter(Instance::summonedAmount))
                 .apply(instance, Instance::new));
 
-        // Needs to specify 'ArrayList' due to the 'xmap'
-        private final ArrayList<UUID> entityUUIDs;
+        // Needs to be concurrent since the encoding for the 'sync_summoned_entity' happens on the network thread
+        // And since it goes through the list it can run into a ConcurrentModificationException
+        private final CopyOnWriteArrayList<UUID> entityUUIDs;
         private int summonedAmount;
 
-        public Instance(final SummonEntityEffect baseData, final CommonData commonData, int currentDuration, final ArrayList<UUID> entityUUIDs, int summonedAmount) {
+        public Instance(final SummonEntityEffect baseData, final CommonData commonData, int currentDuration, final CopyOnWriteArrayList<UUID> entityUUIDs, int summonedAmount) {
             super(baseData, commonData, currentDuration);
             this.entityUUIDs = entityUUIDs;
             this.summonedAmount = summonedAmount;
-        }
-
-        public void setTarget(final LivingEntity target) {
-            if (target.level() instanceof ServerLevel serverLevel) {
-                entityUUIDs.forEach(uuid -> {
-                    if (serverLevel.getEntity(uuid) instanceof Mob mob && mob.getTarget() == null) {
-                        mob.setTarget(target);
-                    }
-                });
-            }
         }
 
         /**
@@ -394,7 +380,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
             return CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), nbt).resultOrPartial(DragonSurvival.LOGGER::error).orElse(null);
         }
 
-        public ArrayList<UUID> entityUUIDs() {
+        public CopyOnWriteArrayList<UUID> entityUUIDs() {
             return entityUUIDs;
         }
 

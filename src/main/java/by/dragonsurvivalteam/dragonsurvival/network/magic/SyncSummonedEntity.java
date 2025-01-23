@@ -20,7 +20,6 @@ public record SyncSummonedEntity(SummonEntityEffect.Instance instance, boolean i
             SyncSummonedEntity::new
     );
 
-    // TODO :: also need to sync summon owner? or have that field in summoned_entities and rename the data to 'summon_data'?
     public static void handleClient(final SyncSummonedEntity packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
             SummonedEntities data = context.player().getData(DSDataAttachments.SUMMONED_ENTITIES);

@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
-import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.ClientConfig;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
@@ -24,15 +23,17 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 public abstract class GameRendererMixin {
     @ModifyReturnValue(method = "getNightVisionScale", at = @At(value = "RETURN"))
     private static float dragonSurvival$modifyNightVisionScale(float original) {
-        return ClientConfig.stableNightVision ? 1f : original;
+        return ClientConfig.stableNightVision ? 1 : original;
     }
 
     /** To prevent clipping issues (with blocks) at small sizes */
     @ModifyArg(method = "getProjectionMatrix", at = @At(value = "INVOKE", target = "Lorg/joml/Matrix4f;perspective(FFFF)Lorg/joml/Matrix4f;"), index = 2)
     private float dragonSurvival$adjustNearPlane(float original) {
         //noinspection DataFlowIssue -> player is present
-        if (Minecraft.getInstance().player.getScale() < 1) {
-            return original * Minecraft.getInstance().player.getScale();
+        float scale = Minecraft.getInstance().player.getScale();
+
+        if (scale < 1) {
+            return original * scale;
         }
 
         return original;
@@ -42,9 +43,11 @@ public abstract class GameRendererMixin {
     @ModifyArgs(method = "bobView", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;translate(FFF)V"))
     private void dragonSurvival$modifyBobViewTranslate(final Args args) {
         //noinspection DataFlowIssue -> player is present
-        if (Minecraft.getInstance().player.getScale() < 1) {
-            args.set(0, (float) args.get(0) * Minecraft.getInstance().player.getScale());
-            args.set(1, (float) args.get(1) * Minecraft.getInstance().player.getScale());
+        float scale = Minecraft.getInstance().player.getScale();
+
+        if (scale < 1) {
+            args.set(0, (float) args.get(0) * scale);
+            args.set(1, (float) args.get(1) * scale);
         }
     }
 

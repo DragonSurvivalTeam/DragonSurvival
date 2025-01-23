@@ -40,8 +40,7 @@ public class ClearModifiersCommand {
 
         for (Entity target : targets) {
             DSDataAttachments.getStorages(target).forEach(storage -> {
-                storage.all().forEach(entry -> entry.onRemovalFromStorage(target));
-                target.removeData(storage.type());
+                storage.clear(target);
                 totalRemoved.getAndIncrement();
             });
         }

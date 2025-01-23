@@ -5,6 +5,8 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.BlockVision;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Glow;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierWithDuration;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationLayer;
@@ -23,6 +25,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effect
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.SummonEntityEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.BlockVisionEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.GlowEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.ModifierEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AbilityTargeting;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AreaTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.DiscTarget;
@@ -43,6 +46,8 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.random.WeightedRandomList;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.block.Blocks;
@@ -90,8 +95,8 @@ public class DragonAbilities {
                                                 Glow.create((DragonSurvival.res("green")), TextColor.fromLegacyFormat(ChatFormatting.GREEN)),
                                                 Glow.create((DragonSurvival.res("red")), TextColor.fromLegacyFormat(ChatFormatting.RED)),
                                                 Glow.create((DragonSurvival.res("blue")), TextColor.fromLegacyFormat(ChatFormatting.BLUE))
-                                        ))),
-                                TargetingMode.ALLIES_AND_SELF
+                                        ))
+                                ), TargetingMode.ALLIES_AND_SELF
                         ), LevelBasedValue.constant(10)), LevelBasedValue.constant(1))
                 ),
                 true,
@@ -143,15 +148,21 @@ public class DragonAbilities {
                 ),
                 Optional.empty(),
                 Optional.of(MatchItem.build(ItemCondition.is(Items.MAP), MatchItem.Slot.OFFHAND).invert().build()),
-                List.of(new ActionContainer(new LookingAtTarget(AbilityTargeting.block(List.of(
-                        new SummonEntityEffect(
-                                DurationInstanceBase.create(DragonSurvival.res("summon_test")).duration(LevelBasedValue.constant(Functions.secondsToTicks(60))).hidden().build(),
-                                Either.right(context.lookup(Registries.ENTITY_TYPE).getOrThrow(DSEntityTypeTags.HUNTER_FACTION)),
-                                LevelBasedValue.constant(5),
-                                List.of(),
-                                true
-                        )
-                )), LevelBasedValue.constant(16)), LevelBasedValue.constant(1))),
+                List.of(
+                        new ActionContainer(new LookingAtTarget(AbilityTargeting.block(List.of(
+                                new SummonEntityEffect(
+                                        DurationInstanceBase.create(DragonSurvival.res("summon_test")).duration(LevelBasedValue.constant(Functions.secondsToTicks(60))).hidden().build(),
+                                        Either.right(context.lookup(Registries.ENTITY_TYPE).getOrThrow(DSEntityTypeTags.HUNTER_FACTION)),
+                                        LevelBasedValue.constant(5),
+                                        List.of(),
+                                        true
+                                )
+                        )), LevelBasedValue.constant(16)), LevelBasedValue.constant(1)),
+                        new ActionContainer(new SelfTarget(AbilityTargeting.entity(ModifierEffect.only(new ModifierWithDuration(
+                                DurationInstanceBase.create(DragonSurvival.res("summon_test")).duration(LevelBasedValue.constant(Functions.secondsToTicks(60))).build(),
+                                List.of(Modifier.constant(Attributes.ARMOR, 3, AttributeModifier.Operation.ADD_VALUE))
+                        )), TargetingMode.ALLIES_AND_SELF)), LevelBasedValue.constant(1))
+                ),
                 true,
                 new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
         ));

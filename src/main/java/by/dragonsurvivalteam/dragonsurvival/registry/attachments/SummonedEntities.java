@@ -1,30 +1,26 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
-import by.dragonsurvivalteam.dragonsurvival.common.entity.goals.FollowSummonerGoal;
-import by.dragonsurvivalteam.dragonsurvival.common.entity.goals.SummonerHurtByTargetGoal;
-import by.dragonsurvivalteam.dragonsurvival.common.entity.goals.SummonerHurtTargetGoal;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.SummonEntityEffect;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.event.entity.EntityInvulnerabilityCheckEvent;
-import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
-import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.living.LivingExperienceDropEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import org.jetbrains.annotations.NotNull;
@@ -34,6 +30,11 @@ import java.util.Locale;
 
 @EventBusSubscriber
 public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
+    // TODO :: also handle entities spawned from summoned entities?
+    //  persist entities ourselves to re-spawn them once the player re-joins?
+    //  would be useful if some sort of "personal companion" is intended as summon
+    //  Unsure how dimension change is handled atm
+
     public static final String MOVEMENT_BEHAVIOUR = "movement_behaviour";
     public static final String ATTACK_BEHAVIOUR = "attack_behaviour";
 
@@ -87,13 +88,6 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
         });
     }
 
-    @SubscribeEvent
-    public static void removeSummons(final LivingDeathEvent event) {
-        event.getEntity().getExistingData(DSDataAttachments.SUMMONED_ENTITIES).ifPresent(data -> {
-            data.all().forEach(instance -> instance.onRemovalFromStorage(event.getEntity()));
-        });
-    }
-
     @SubscribeEvent // Discard the summon if right-clicked with no item (while crouching)
     public static void discardSummon(final PlayerInteractEvent.EntityInteract event) {
         if (!(event.getHand() == InteractionHand.OFF_HAND && event.getItemStack().isEmpty() && event.getEntity().isCrouching())) {
@@ -116,46 +110,18 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
     }
 
     @SubscribeEvent
-    public static void attachFollowOwnerGoal(final EntityJoinLevelEvent event) {
-        if (!(event.getEntity() instanceof Mob mob)) {
+    public static void removeSummons(final LivingDeathEvent event) {
+        if (!(event.getEntity().level() instanceof ServerLevel serverLevel)) {
             return;
         }
 
-        mob.getExistingData(DSDataAttachments.SUMMON).ifPresent(data -> {
-            Entity owner = data.getOwner(event.getLevel());
-
-            if (owner != null) {
-                SummonedEntities summonData = owner.getData(DSDataAttachments.SUMMONED_ENTITIES);
-                SummonEntityEffect.Instance instance = summonData.getInstance(event.getEntity());
-
-                if (instance == null) {
-                    // The entity shouldn't exist
-                    // It has a summoner owner but said summoner doesn't know this entity
-                    mob.discard();
-                    return;
-                }
-
-                if (instance.baseData().shouldSetAllied()) {
-                    mob.goalSelector.addGoal(1, new SummonerHurtByTargetGoal(mob));
-                    mob.goalSelector.addGoal(2, new SummonerHurtTargetGoal(mob));
-                    mob.goalSelector.addGoal(3, new FollowSummonerGoal(mob, 1, 10, 2));
-                }
-            }
-        });
-    }
-
-    @SubscribeEvent
-    public static void removeDeadSummons(final EntityLeaveLevelEvent event) {
-        if (event.getEntity() instanceof Player) {
-            return;
-        }
-
-        if (event.getEntity().isAlive()) {
+        if (event.getEntity() instanceof Player player) {
+            player.getExistingData(DSDataAttachments.SUMMONED_ENTITIES).ifPresent(data -> data.clear(player));
             return;
         }
 
         event.getEntity().getExistingData(DSDataAttachments.SUMMON).ifPresent(data -> {
-            Entity owner = data.getOwner(event.getLevel());
+            Entity owner = data.getOwner(serverLevel);
 
             if (owner != null) {
                 SummonedEntities summonData = owner.getData(DSDataAttachments.SUMMONED_ENTITIES);
@@ -175,6 +141,12 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
                 }
             }
         });
+    }
+
+    @SubscribeEvent
+    public static void removeSummons(final PlayerEvent.PlayerLoggedOutEvent event) {
+        // Since we cannot tick the duration of the entities we need to remove them once the player leaves
+        event.getEntity().getExistingData(DSDataAttachments.SUMMONED_ENTITIES).ifPresent(data -> data.clear(event.getEntity()));
     }
 
     @SubscribeEvent // Prevents summoned entities from targeting their owner or other allied summons
