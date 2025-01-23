@@ -197,6 +197,11 @@ public class ClientDragonRenderer {
         }
     }
 
+    public static float adjustNearDistance() {
+        // FIXME :: adjust this
+        return 0.01f;
+    }
+
     /** Amount of client ticks the player model will not be rendered if the player was recently a dragon (to avoid player model pop-up after respawning) */
     private static final int MAX_DELAY = 10;
     private static int renderDelay;
