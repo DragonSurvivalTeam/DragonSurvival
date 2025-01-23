@@ -22,7 +22,7 @@ public abstract class EntityRenderDispatcherMixin {
     @Inject(method = "renderShadow", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;last()Lcom/mojang/blaze3d/vertex/PoseStack$Pose;"))
     private static void dragonSurvival$modifyShadow(PoseStack poseStack, MultiBufferSource buffer, Entity entity, float weight, float partialTicks, LevelReader level, float size, CallbackInfo callback) {
         if (entity instanceof Player player && DragonStateProvider.isDragon(player)) {
-            Vector3f offset = ClientDragonRenderer.getDragonCameraOffset(player, partialTicks).negate();
+            Vector3f offset = ClientDragonRenderer.getModelOffset(player, partialTicks).negate();
             poseStack.pushPose();
             poseStack.translate(offset.x(), offset.y(), offset.z());
             dragonSurvival$modifiedPoseStack = true;

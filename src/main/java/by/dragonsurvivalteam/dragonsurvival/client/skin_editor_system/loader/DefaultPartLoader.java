@@ -19,9 +19,9 @@ import java.util.Locale;
 import java.util.Map;
 
 public class DefaultPartLoader extends SimpleJsonResourceReloadListener {
-    public static final Map</* Model */ ResourceLocation, Map<ResourceKey<DragonSpecies>, Map<ResourceKey<DragonStage>, HashMap<SkinLayer, /* Part key */ String>>>> DEFAULT_PARTS = new HashMap<>();
     public static final String NO_PART = "none";
 
+    private static final Map</* Model */ ResourceLocation, Map<ResourceKey<DragonSpecies>, Map<ResourceKey<DragonStage>, HashMap<SkinLayer, /* Part key */ String>>>> DEFAULT_PARTS = new HashMap<>();
     private static final int MODEL_NAMESPACE = 0;
     private static final int MODEL = 1;
     private static final int SPECIES_NAMESPACE = 2;
@@ -61,17 +61,17 @@ public class DefaultPartLoader extends SimpleJsonResourceReloadListener {
         });
     }
 
-    public static String getDefaultPartKey(final ResourceKey<DragonSpecies> type, final ResourceKey<DragonStage> stage, final ResourceLocation customModel, final SkinLayer layer) {
+    public static String getDefaultPartKey(final ResourceKey<DragonSpecies> species, final ResourceKey<DragonStage> stage, final ResourceLocation customModel, final SkinLayer layer) {
         if (!DEFAULT_PARTS.containsKey(customModel)) {
             return NO_PART;
         }
 
-        HashMap<SkinLayer, String> partMap = DEFAULT_PARTS.get(customModel).get(type).get(stage);
+        HashMap<SkinLayer, String> partMap = DEFAULT_PARTS.get(customModel).get(species).get(stage);
         String partKey = partMap != null ? partMap.getOrDefault(layer, NO_PART) : NO_PART;
 
         if (layer == SkinLayer.BASE && partKey.equals(NO_PART)) {
             // Without a base the dragon will be invisible
-            return DragonPartLoader.DRAGON_PARTS.get(type).get(layer).getFirst().key();
+            return DragonPartLoader.DRAGON_PARTS.get(species).get(layer).getFirst().key();
         }
 
         return partKey;

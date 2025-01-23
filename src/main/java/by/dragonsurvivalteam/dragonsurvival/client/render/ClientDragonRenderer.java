@@ -33,6 +33,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.Input;
@@ -181,12 +182,6 @@ public class ClientDragonRenderer {
         }
     }
 
-    /**
-     * Amount of client ticks the player model will not be rendered if the player was recently a dragon (to avoid player model pop-up after respawning)
-     */
-    private static final int MAX_DELAY = 10;
-    private static int renderDelay;
-
     @SubscribeEvent(receiveCanceled = true)
     public static void cancelNameplatesFromDummyEntities(RenderNameTagEvent renderNameplateEvent) {
         Entity entity = renderNameplateEvent.getEntity();
@@ -195,9 +190,18 @@ public class ClientDragonRenderer {
         }
     }
 
-    /**
-     * Called for every player
-     */
+    public static void adjustCamera(final Camera camera) {
+        if (camera.isDetached()) {
+            // Zoom out a bit more since the camera is too zoomed in
+            camera.move(-0.3f, 0, 0);
+        }
+    }
+
+    /** Amount of client ticks the player model will not be rendered if the player was recently a dragon (to avoid player model pop-up after respawning) */
+    private static final int MAX_DELAY = 10;
+    private static int renderDelay;
+
+    /** Called for every player */
     @SubscribeEvent
     public static void thirdPersonPreRender(final RenderPlayerEvent.Pre renderPlayerEvent) {
         if (!(renderPlayerEvent.getEntity() instanceof AbstractClientPlayer player)) {
@@ -239,11 +243,11 @@ public class ClientDragonRenderer {
             try {
                 poseStack.pushPose();
 
-                Vector3f lookVector = getDragonCameraOffset(player, partialRenderTick);
+                Vector3f lookVector = getModelOffset(player, partialRenderTick);
                 poseStack.translate(-lookVector.x(), lookVector.y(), -lookVector.z());
 
                 // Make sure to update our modifiers on the clientside based on the partial visual size
-                float scale = (float)handler.getVisualScale(player, partialRenderTick);
+                float scale = (float) handler.getVisualScale(player, partialRenderTick);
                 poseStack.scale(scale, scale, scale);
 
                 EntityRenderer<? extends Player> playerRenderer = renderPlayerEvent.getRenderer();
@@ -412,18 +416,15 @@ public class ClientDragonRenderer {
         dragonModel.setOverrideTexture(null);
     }
 
-    public static Vector3f getDragonCameraOffset(final Player player, float partialRenderTick) {
-        Vector3f lookVector = new Vector3f(0, 0, 0);
-
-        MovementData movement = MovementData.getData(player);
-        DragonStateHandler handler = DragonStateProvider.getData(player);
-        float angle = -(float) movement.bodyYaw * ((float) Math.PI / 180F);
+    public static Vector3f getModelOffset(final Player player, float partialRenderTick) {
+        float angle = -(float) MovementData.getData(player).bodyYaw * ((float) Math.PI / 180);
         float x = Mth.sin(angle);
         float z = Mth.cos(angle);
-        float scale = (float) handler.getVisualScale(player, partialRenderTick) * (float) handler.body().value().scalingProportions().offset();
-        lookVector.set(x * scale, 0, z * scale);
 
-        return lookVector;
+        DragonStateHandler handler = DragonStateProvider.getData(player);
+        float scale = (float) handler.getVisualScale(player, partialRenderTick) * (float) handler.body().value().scalingProportions().offset();
+
+        return new Vector3f(x * scale, 0, z * scale);
     }
 
     @SubscribeEvent
