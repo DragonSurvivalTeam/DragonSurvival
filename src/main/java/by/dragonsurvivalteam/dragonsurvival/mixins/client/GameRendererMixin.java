@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.config.ClientConfig;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -15,7 +16,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Mixin(GameRenderer.class)
 public abstract class GameRendererMixin {
@@ -27,7 +30,22 @@ public abstract class GameRendererMixin {
     /** To prevent clipping issues (with blocks) at small sizes */
     @ModifyArg(method = "getProjectionMatrix", at = @At(value = "INVOKE", target = "Lorg/joml/Matrix4f;perspective(FFFF)Lorg/joml/Matrix4f;"), index = 2)
     private float dragonSurvival$adjustNearPlane(float original) {
-        return ClientDragonRenderer.adjustNearDistance();
+        //noinspection DataFlowIssue -> player is present
+        if (Minecraft.getInstance().player.getScale() < 1) {
+            return original * Minecraft.getInstance().player.getScale();
+        }
+
+        return original;
+    }
+
+    /** Adjust intensity of the bobbing animation while walking based on the current scale */
+    @ModifyArgs(method = "bobView", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;translate(FFF)V"))
+    private void dragonSurvival$modifyBobViewTranslate(final Args args) {
+        //noinspection DataFlowIssue -> player is present
+        if (Minecraft.getInstance().player.getScale() < 1) {
+            args.set(0, (float) args.get(0) * Minecraft.getInstance().player.getScale());
+            args.set(1, (float) args.get(1) * Minecraft.getInstance().player.getScale());
+        }
     }
 
     /** Prevent the hurt animation from playing when setting the health (due to {@link LocalPlayer#hurtTo(float)}) */

@@ -190,16 +190,13 @@ public class ClientDragonRenderer {
         }
     }
 
+    // FIXME :: move into mixin
+    //  also maybe use CalculateDetachedCameraDistanceEvent instead?
     public static void adjustCamera(final Camera camera) {
         if (camera.isDetached()) {
             // Zoom out a bit more since the camera is too zoomed in
             camera.move(-0.3f, 0, 0);
         }
-    }
-
-    public static float adjustNearDistance() {
-        // FIXME :: adjust this
-        return 0.01f;
     }
 
     /** Amount of client ticks the player model will not be rendered if the player was recently a dragon (to avoid player model pop-up after respawning) */
