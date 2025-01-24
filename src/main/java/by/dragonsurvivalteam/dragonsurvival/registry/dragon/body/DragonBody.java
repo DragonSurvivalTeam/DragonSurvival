@@ -67,10 +67,10 @@ public record DragonBody(
 
     public record ScalingProportions(double width, double height, double eyeHeight, double offset) {
         public static final Codec<ScalingProportions> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                Codec.DOUBLE.optionalFieldOf("width", 1.0).forGetter(ScalingProportions::width),
-                Codec.DOUBLE.optionalFieldOf("height", 1.0).forGetter(ScalingProportions::height),
-                Codec.DOUBLE.optionalFieldOf("eye_height", 1.0).forGetter(ScalingProportions::eyeHeight),
-                Codec.DOUBLE.optionalFieldOf("offset", 0.0).forGetter(ScalingProportions::offset)
+                Codec.DOUBLE.fieldOf("width").forGetter(ScalingProportions::width),
+                Codec.DOUBLE.fieldOf("height").forGetter(ScalingProportions::height),
+                Codec.DOUBLE.fieldOf("eye_height").forGetter(ScalingProportions::eyeHeight),
+                Codec.DOUBLE.fieldOf("offset").forGetter(ScalingProportions::offset)
         ).apply(instance, ScalingProportions::new));
 
         public static ScalingProportions of(final double width, final double height, final double eyeHeight, final double offset) {
