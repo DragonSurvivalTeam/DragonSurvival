@@ -1150,6 +1150,7 @@
   "enum.movement_behaviour": "Movement Behaviour",
   "enum.movement_behaviour.default": "Default",
   "enum.movement_behaviour.follow": "Follow",
+  "enum.movement_behaviour.stay": "Stay",
   "enum.multi_mining": "Multi Mining",
   "enum.multi_mining.disabled": "Disabled",
   "enum.multi_mining.enabled": "Enabled",

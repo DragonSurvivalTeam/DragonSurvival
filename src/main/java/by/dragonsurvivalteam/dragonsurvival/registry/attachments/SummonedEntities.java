@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -34,6 +35,7 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
     //  persist entities ourselves to re-spawn them once the player re-joins?
     //  would be useful if some sort of "personal companion" is intended as summon
     //  Unsure how dimension change is handled atm
+    //  add 'stay' movement by returning getDeltaMovement -> Vec3.ZERO?
 
     public static final String MOVEMENT_BEHAVIOUR = "movement_behaviour";
     public static final String ATTACK_BEHAVIOUR = "attack_behaviour";
@@ -58,22 +60,27 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
         }
 
         return entity.getExistingData(DSDataAttachments.SUMMON).map(data -> {
-            if (data.isOwner(target)) {
-                SummonedEntities summonData = target.getData(DSDataAttachments.SUMMONED_ENTITIES);
-                SummonEntityEffect.Instance instance = summonData.getInstance(entity);
-                return instance != null && instance.baseData().shouldSetAllied();
+            if (!data.isAllied) {
+                return false;
             }
 
-            Entity owner = data.getOwner(entity.level());
+            if (data.isOwner(target)) {
+                return true;
+            }
+
+            SummonData targetData = target.getExistingData(DSDataAttachments.SUMMON).orElse(null);
+
+            if (targetData == null || !targetData.isAllied) {
+                return false;
+            }
+
+            LivingEntity owner = data.getOwner(entity.level());
 
             if (owner == null) {
                 return false;
             }
 
-            // The entity shares the same summon owner
-            SummonedEntities summonData = owner.getData(DSDataAttachments.SUMMONED_ENTITIES);
-            SummonEntityEffect.Instance instance = summonData.getInstance(target);
-            return instance != null && instance.baseData().shouldSetAllied();
+            return targetData.isOwner(owner);
         }).orElse(false);
     }
 
@@ -204,7 +211,9 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
         @Translation(comments = "Default")
         DEFAULT,
         @Translation(comments = "Follow")
-        FOLLOW;
+        FOLLOW,
+        @Translation(comments = "Stay")
+        STAY;
 
         public static final Codec<MovementBehaviour> CODEC = StringRepresentable.fromValues(MovementBehaviour::values);
 

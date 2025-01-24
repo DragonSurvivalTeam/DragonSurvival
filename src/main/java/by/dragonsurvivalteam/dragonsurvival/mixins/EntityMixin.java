@@ -163,6 +163,17 @@ EntityMixin {
         }
     }
 
+    @ModifyReturnValue(method = "getDeltaMovement", at = @At("RETURN"))
+    private Vec3 dragonSurvival$handleSummonStay(final Vec3 deltaMovement) {
+        Entity self = (Entity) (Object) this;
+
+        if (self.getExistingData(DSDataAttachments.SUMMON).map(data -> data.movementBehaviour == SummonedEntities.MovementBehaviour.STAY).orElse(false)) {
+            return Vec3.ZERO;
+        }
+
+        return deltaMovement;
+    }
+
     @ModifyReturnValue(method = "getMaxAirSupply", at = @At("RETURN"))
     private int dragonSurvival$modifyMaxAirSupply(int maxAirSupply) {
         Entity self = (Entity) (Object) this;

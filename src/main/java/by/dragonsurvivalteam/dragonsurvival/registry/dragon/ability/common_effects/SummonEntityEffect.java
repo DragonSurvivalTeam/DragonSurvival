@@ -182,9 +182,10 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
             setAllied(dragon, entity);
 
             SummonData data = entity.getData(DSDataAttachments.SUMMON);
+            data.setOwnerUUID(dragon);
+            data.isAllied = shouldSetAllied;
             data.attackBehaviour = summonData.attackBehaviour;
             data.movementBehaviour = summonData.movementBehaviour;
-            data.setOwnerUUID(dragon);
 
             entity.moveTo(spawnPosition.getX(), spawnPosition.getY() + 1, spawnPosition.getZ(), entity.getYRot(), entity.getXRot());
 

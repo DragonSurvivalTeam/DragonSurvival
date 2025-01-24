@@ -5,7 +5,6 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.MagicHUD;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonAbilityHolder;
-import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncCooldownState;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncMagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSSounds;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataComponents;
@@ -308,14 +307,9 @@ public class MagicData implements INBTSerializable<CompoundTag> {
                 }
             } else {
                 DragonSurvival.PROXY.setCurrentAbilityAnimation(player.getId(), null);
-                currentlyCasting.releaseWithoutCooldown();
             }
 
             currentlyCasting.setActive(player, false);
-
-            if (player instanceof ServerPlayer serverPlayer) {
-                PacketDistributor.sendToPlayer(serverPlayer, new SyncCooldownState(player.getId(), getSelectedAbilitySlot(), currentlyCasting.getCooldown()));
-            }
         }
 
         isCasting = false;
@@ -324,15 +318,6 @@ public class MagicData implements INBTSerializable<CompoundTag> {
     public void stopCasting(final Player player) {
         DragonAbilityInstance currentlyCasting = getCurrentlyCasting();
         stopCasting(player, currentlyCasting != null && currentlyCasting.isApplyingEffects());
-    }
-
-    public void setClientCooldown(final Player player, int slot, int cooldown) {
-        DragonAbilityInstance ability = fromSlot(slot);
-
-        if (ability != null) {
-            ability.setCooldown(cooldown);
-            ability.setActive(player, false);
-        }
     }
 
     public void setErrorMessageSent(boolean errorMessageSent) {

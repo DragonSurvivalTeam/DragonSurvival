@@ -154,6 +154,9 @@ public class DragonAbilityInstance {
         }
 
         if (value().activation().type() == Activation.Type.ACTIVE_SIMPLE) {
+            // FIXME :: the cast bar stays if the server stops the cast before the client reached the max_tick
+            //  seems to be due to the client not calling MagicData#stopCasting in this case
+            //  unsure what the server sets so that the client skips that
             stopCasting(dragon);
         }
     }
@@ -190,7 +193,7 @@ public class DragonAbilityInstance {
         float manaCost = getInitialManaCost();
 
         if (!ManaHandler.hasEnoughMana(dragon, manaCost)) {
-            releaseWithoutCooldown();
+            currentTick = 0;
 
             if (dragon.level().isClientSide()) {
                 MagicData magicData = MagicData.getData(dragon);
@@ -227,11 +230,10 @@ public class DragonAbilityInstance {
             // Also makes sure to remove any affects that are applied by the ability
             ability.value().actions().forEach(action -> action.remove(serverPlayer, this));
         }
-    }
 
-    // Used for when a client was denied from casting an ability by the server
-    public void releaseWithoutCooldown() {
-        currentTick = 0;
+        if (!isActive) {
+            currentTick = 0;
+        }
     }
 
     public void release(final Player dragon) {
@@ -271,10 +273,6 @@ public class DragonAbilityInstance {
 
     public boolean isUsable() {
         return isEnabled() && level > 0;
-    }
-
-    public void setCooldown(int cooldown) {
-        this.cooldown = cooldown;
     }
 
     public int getCooldown() {

@@ -21,12 +21,14 @@ import java.util.UUID;
 public class SummonData implements INBTSerializable<CompoundTag> {
     public static final Codec<SummonData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             UUIDUtil.CODEC.optionalFieldOf("owner_uuid").forGetter(data -> Optional.ofNullable(data.ownerUUID)),
+            Codec.BOOL.optionalFieldOf("is_allied", false).forGetter(data -> data.isAllied),
             SummonedEntities.AttackBehaviour.CODEC.optionalFieldOf("attack_behaviour", SummonedEntities.AttackBehaviour.DEFENSIVE).forGetter(data -> data.attackBehaviour),
             SummonedEntities.MovementBehaviour.CODEC.optionalFieldOf("movement_behaviour", SummonedEntities.MovementBehaviour.FOLLOW).forGetter(data -> data.movementBehaviour)
     ).apply(instance, SummonData::new));
 
     private static final String DATA = "data";
 
+    public boolean isAllied;
     public SummonedEntities.AttackBehaviour attackBehaviour;
     public SummonedEntities.MovementBehaviour movementBehaviour;
 
@@ -38,8 +40,9 @@ public class SummonData implements INBTSerializable<CompoundTag> {
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // ignore
-    public SummonData(final Optional<UUID> ownerUUID, final SummonedEntities.AttackBehaviour attackBehaviour, final SummonedEntities.MovementBehaviour movementBehaviour) {
+    public SummonData(final Optional<UUID> ownerUUID, final boolean isAllied, final SummonedEntities.AttackBehaviour attackBehaviour, final SummonedEntities.MovementBehaviour movementBehaviour) {
         this.ownerUUID = ownerUUID.orElse(null);
+        this.isAllied = isAllied;
         this.attackBehaviour = attackBehaviour;
         this.movementBehaviour = movementBehaviour;
     }
