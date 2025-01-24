@@ -33,7 +33,6 @@ import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.Input;
@@ -187,15 +186,6 @@ public class ClientDragonRenderer {
         Entity entity = renderNameplateEvent.getEntity();
         if (entity.getType() == DSEntities.DRAGON.get()) {
             renderNameplateEvent.setCanRender(TriState.FALSE);
-        }
-    }
-
-    // FIXME :: move into mixin
-    //  also maybe use CalculateDetachedCameraDistanceEvent instead?
-    public static void adjustCamera(final Camera camera) {
-        if (camera.isDetached()) {
-            // Zoom out a bit more since the camera is too zoomed in
-            camera.move(-0.3f, 0, 0);
         }
     }
 

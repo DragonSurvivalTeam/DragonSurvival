@@ -23,26 +23,6 @@
   },
   "modifiers": [
     {
-      "amount": 3.0,
-      "attribute": "minecraft:generic.attack_damage",
-      "operation": "add_value"
-    },
-    {
-      "amount": 0.1,
-      "attribute": "minecraft:generic.jump_strength",
-      "operation": "add_value"
-    },
-    {
-      "amount": 1.0,
-      "attribute": "minecraft:generic.safe_fall_distance",
-      "operation": "add_value"
-    },
-    {
-      "amount": 4.0,
-      "attribute": "dragonsurvival:dragon_breath_range",
-      "operation": "add_value"
-    },
-    {
       "amount": 0.02,
       "attribute": "minecraft:generic.movement_speed",
       "operation": "add_value"
@@ -50,7 +30,7 @@
     {
       "amount": {
         "precise_amount": 0.025,
-        "precise_base": -0.9
+        "precise_base": 0.55
       },
       "attribute": "minecraft:generic.scale",
       "operation": "add_value"
@@ -58,7 +38,7 @@
     {
       "amount": {
         "type": "minecraft:linear",
-        "base": -11.5,
+        "base": 20.5,
         "per_level_above_first": 0.5
       },
       "attribute": "minecraft:generic.max_health",
@@ -67,7 +47,7 @@
     {
       "amount": {
         "type": "minecraft:linear",
-        "base": 0.05,
+        "base": 6.55,
         "per_level_above_first": 0.05
       },
       "attribute": "dragonsurvival:dragon_breath_range",
@@ -76,7 +56,7 @@
     {
       "amount": {
         "type": "minecraft:linear",
-        "base": 0.05,
+        "base": 3.05,
         "per_level_above_first": 0.05
       },
       "attribute": "minecraft:generic.attack_damage",
@@ -85,7 +65,7 @@
     {
       "amount": {
         "type": "minecraft:linear",
-        "base": 0.0015,
+        "base": 0.101500005,
         "per_level_above_first": 0.0015
       },
       "attribute": "minecraft:generic.jump_strength",
@@ -94,7 +74,7 @@
     {
       "amount": {
         "type": "minecraft:linear",
-        "base": 0.015,
+        "base": 1.015,
         "per_level_above_first": 0.015
       },
       "attribute": "minecraft:generic.safe_fall_distance",
@@ -112,7 +92,7 @@
     {
       "amount": {
         "type": "minecraft:linear",
-        "base": -1.95,
+        "base": 1.05,
         "per_level_above_first": 0.05
       },
       "attribute": "minecraft:player.entity_interaction_range",
@@ -121,7 +101,7 @@
     {
       "amount": {
         "type": "minecraft:linear",
-        "base": -1.95,
+        "base": 1.05,
         "per_level_above_first": 0.05
       },
       "attribute": "minecraft:player.block_interaction_range",
@@ -130,7 +110,7 @@
     {
       "amount": {
         "type": "minecraft:linear",
-        "base": -0.38500002,
+        "base": 0.515,
         "per_level_above_first": 0.015
       },
       "attribute": "minecraft:generic.step_height",

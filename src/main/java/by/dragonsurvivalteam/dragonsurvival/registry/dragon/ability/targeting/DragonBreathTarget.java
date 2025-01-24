@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting;
 
-import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
@@ -64,7 +63,7 @@ public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target,
 
     public AABB calculateBreathArea(final Player dragon, final DragonAbilityInstance ability) {
         Vec3 viewVector = dragon.getLookAngle().scale(rangeMultiplier.calculate(ability.level()) * dragon.getAttributeValue(DSAttributes.DRAGON_BREATH_RANGE));
-        double defaultRadius = DragonStateProvider.getData(dragon).getSize() * 0.03;
+        double defaultRadius = dragon.getScale();
 
         // Set the radius (value will be at least the default radius)
         double xOffset = getOffset(viewVector.x(), defaultRadius);

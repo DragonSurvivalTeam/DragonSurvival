@@ -155,7 +155,9 @@ public class DragonSizeHandler {
         } else {
             VoxelShape deltaHeightVoxelShape = Shapes.create(AABB.ofSize(halfHeightPosition, widthChange, Shapes.BIG_EPSILON, widthChange));
             Optional<Vec3> deltaHeightFreePosition = entity.level().findFreePosition(entity, deltaHeightVoxelShape, halfHeightPosition, oldDimensions.width(), newDimensions.height(), oldDimensions.width());
-            deltaHeightFreePosition.ifPresent(value -> entity.setPos(value.add(0, (double) (-newDimensions.height()) / 20 + Shapes.BIG_EPSILON, 0)));
+            if(deltaHeightFreePosition.isPresent()) {
+                entity.setPos(deltaHeightFreePosition.get().add(0, (double) (-newDimensions.height()) / 20 + Shapes.BIG_EPSILON, 0));
+            }
         }
     }
 

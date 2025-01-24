@@ -33,22 +33,18 @@ public class AncientDatapack {
                 Functions.daysToTicks(40),
                 List.of(
                         /* Constant */
-                        Modifier.constant(Attributes.ATTACK_DAMAGE, 3, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.constant(Attributes.JUMP_STRENGTH, 0.1f, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 1, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.constant(DSAttributes.DRAGON_BREATH_RANGE, 4, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.constant(Attributes.MOVEMENT_SPEED, 0.02f, AttributeModifier.Operation.ADD_VALUE),
                         /* Per size */
-                        Modifier.precisePerWithBase(Attributes.SCALE, -0.9f, 0.025f, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.perWithBase(Attributes.MAX_HEALTH, -12,0.5f, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.per(DSAttributes.DRAGON_BREATH_RANGE, 0.05f, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.per(Attributes.ATTACK_DAMAGE, 0.05f, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.per(Attributes.JUMP_STRENGTH, 0.0015f, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.per(Attributes.SAFE_FALL_DISTANCE, 0.015f, AttributeModifier.Operation.ADD_VALUE),
+                        Modifier.precisePerWithBase(Attributes.SCALE, 0.55f, 0.025f, AttributeModifier.Operation.ADD_VALUE),
+                        Modifier.perWithBase(Attributes.MAX_HEALTH, 20.0f,0.5f, AttributeModifier.Operation.ADD_VALUE),
+                        Modifier.perWithBase(DSAttributes.DRAGON_BREATH_RANGE, 6.5f, 0.05f, AttributeModifier.Operation.ADD_VALUE),
+                        Modifier.perWithBase(Attributes.ATTACK_DAMAGE, 3.f, 0.05f, AttributeModifier.Operation.ADD_VALUE),
+                        Modifier.perWithBase(Attributes.JUMP_STRENGTH, 0.1f,0.0015f, AttributeModifier.Operation.ADD_VALUE),
+                        Modifier.perWithBase(Attributes.SAFE_FALL_DISTANCE, 1, 0.015f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.per(DSAttributes.BLOCK_BREAK_RADIUS, 0.01f, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.perWithBase(Attributes.ENTITY_INTERACTION_RANGE, -2, 0.05f, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.perWithBase(Attributes.BLOCK_INTERACTION_RANGE, -2, 0.05f, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.perWithBase(Attributes.STEP_HEIGHT, -0.4f, 0.015f, AttributeModifier.Operation.ADD_VALUE)
+                        Modifier.perWithBase(Attributes.ENTITY_INTERACTION_RANGE, 1, 0.05f, AttributeModifier.Operation.ADD_VALUE),
+                        Modifier.perWithBase(Attributes.BLOCK_INTERACTION_RANGE, 1, 0.05f, AttributeModifier.Operation.ADD_VALUE),
+                        Modifier.perWithBase(Attributes.STEP_HEIGHT, 0.5f, 0.015f, AttributeModifier.Operation.ADD_VALUE)
                         ),
                 List.of(
                         GrowthItem.create(Functions.hoursToTicks(1), DSItems.ELDER_DRAGON_HEART.value()),

@@ -54,6 +54,7 @@ public class InventoryScreenHandler {
     public static final ResourceLocation INVENTORY_TOGGLE_BUTTON = DragonSurvival.res("textures/gui/inventory_button.png");
 
     private static ExtendedButton altarOpenButton;
+    private static ExtendedButton dragonInventoryButton;
     private static ExtendedButton creativeModeDragonInventoryButton;
 
     @SubscribeEvent
@@ -95,6 +96,21 @@ public class InventoryScreenHandler {
         }
     }
 
+
+
+    // We need to constantly update the position of these buttons in case the crafting tab gets opened and causes the screen to shift
+    @SubscribeEvent
+    public static void moveButtonsIfCraftingTabIsOpened(ScreenEvent.Render.Pre renderEvent) {
+        if (renderEvent.getScreen() instanceof InventoryScreen screen) {
+            if (altarOpenButton != null) {
+                altarOpenButton.setPosition(screen.getGuiLeft() + 138, screen.height / 2 - 32);
+            }
+            if (dragonInventoryButton != null) {
+                dragonInventoryButton.setPosition(screen.getGuiLeft() + 128, screen.height / 2 - 22);
+            }
+        }
+    }
+
     @SubscribeEvent
     public static void addCraftingButton(ScreenEvent.Init.Post initGuiEvent) {
         Screen sc = initGuiEvent.getScreen();
@@ -121,7 +137,7 @@ public class InventoryScreenHandler {
         // Dragon only UI
         if (sc instanceof InventoryScreen screen) {
             if (inventoryToggle) {
-                ExtendedButton inventoryToggle = new ExtendedButton(screen.getGuiLeft() + 128, screen.height / 2 - 22, 20, 18, Component.empty(), p_onPress_1_ -> {
+                dragonInventoryButton = new ExtendedButton(screen.getGuiLeft() + 128, screen.height / 2 - 22, 20, 18, Component.empty(), p_onPress_1_ -> {
                     openDragonInventory();
                 }) {
                     @Override
@@ -131,8 +147,8 @@ public class InventoryScreenHandler {
                         guiGraphics.blit(INVENTORY_TOGGLE_BUTTON, getX(), getY(), u, v, 20, 18, 256, 256);
                     }
                 };
-                inventoryToggle.setTooltip(Tooltip.create(Component.translatable(TOGGLE_DRAGON_INVENTORY)));
-                initGuiEvent.addListener(inventoryToggle);
+                dragonInventoryButton.setTooltip(Tooltip.create(Component.translatable(TOGGLE_DRAGON_INVENTORY)));
+                initGuiEvent.addListener(dragonInventoryButton);
             }
         }
 

@@ -41,14 +41,9 @@
       "operation": "add_value"
     },
     {
-      "amount": 1.5,
-      "attribute": "dragonsurvival:dragon_breath_range",
-      "operation": "add_value"
-    },
-    {
       "amount": {
-        "precise_amount": 0.025,
-        "precise_base": -0.9
+        "precise_amount": 0.035,
+        "precise_base": -0.7
       },
       "attribute": "minecraft:generic.scale",
       "operation": "add_value"
@@ -56,8 +51,8 @@
     {
       "amount": {
         "type": "minecraft:linear",
-        "base": -11.5,
-        "per_level_above_first": 0.5
+        "base": -5.6,
+        "per_level_above_first": 0.4
       },
       "attribute": "minecraft:generic.max_health",
       "operation": "add_value"
@@ -65,7 +60,7 @@
     {
       "amount": {
         "type": "minecraft:linear",
-        "base": 0.05,
+        "base": 1.55,
         "per_level_above_first": 0.05
       },
       "attribute": "dragonsurvival:dragon_breath_range",

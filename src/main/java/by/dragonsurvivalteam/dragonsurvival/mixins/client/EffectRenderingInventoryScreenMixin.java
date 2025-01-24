@@ -101,7 +101,7 @@ public class EffectRenderingInventoryScreenMixin {
         LocalPlayer player = Objects.requireNonNull(Minecraft.getInstance().player);
 
         if (!dragonSurvival$providers.isEmpty() && width >= 32) {
-            boolean isCompact = width < 120;
+            boolean isCompact = width >= 120;
             ScreenEvent.RenderInventoryMobEffects event = storedEvent.get();
 
             if (event == null) {

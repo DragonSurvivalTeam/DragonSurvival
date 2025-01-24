@@ -12,8 +12,6 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
-import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -36,9 +34,8 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(final IGuiHandlerRegistration registration) {
+        registration.addGlobalGuiHandler(new ModifierRenderingGUIHandler());
         registration.addGuiContainerHandler(DragonInventoryScreen.class, new DragonInventoryGUIHandler());
-        registration.addGuiContainerHandler(InventoryScreen.class, new InventoryScreenGUIHandler());
-        registration.addGuiContainerHandler(CreativeModeInventoryScreen.class, new CreativeModeInventoryScreenGUIHandler());
     }
 
     @Override

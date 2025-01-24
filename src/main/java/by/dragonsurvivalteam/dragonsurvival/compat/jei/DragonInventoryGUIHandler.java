@@ -1,13 +1,11 @@
 package by.dragonsurvivalteam.dragonsurvival.compat.jei;
 
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonInventoryScreen;
-import by.dragonsurvivalteam.dragonsurvival.mixins.client.EffectRenderingInventoryScreenAccessor;
 import by.dragonsurvivalteam.dragonsurvival.server.containers.DragonContainer;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
-import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -47,10 +45,5 @@ public class DragonInventoryGUIHandler implements IRecipeTransferInfo<DragonCont
     @Override
     public @NotNull List<Slot> getInventorySlots(@NotNull DragonContainer container, @NotNull RecipeHolder<CraftingRecipe> recipe) {
         return container.inventorySlots;
-    }
-
-    @Override
-    public @NotNull List<Rect2i> getGuiExtraAreas(@NotNull DragonInventoryScreen containerScreen) {
-        return ((EffectRenderingInventoryScreenAccessor)containerScreen).dragonSurvival$areasBlockedByModifierUIForJEI();
     }
 }
