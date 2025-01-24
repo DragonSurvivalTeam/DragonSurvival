@@ -79,10 +79,10 @@ public class Condition {
                 .withParameter(LootContextParams.ORIGIN, entity.position())
                 .withParameter(LootContextParams.TOOL, entity instanceof LivingEntity livingEntity ? livingEntity.getMainHandItem() : Objects.requireNonNullElse(entity.getWeaponItem(), ItemStack.EMPTY))
                 .withParameter(MatchItem.Slot.OFFHAND.context(), MatchItem.Slot.OFFHAND.getItem(entity))
-                .withParameter(MatchItem.Slot.HEAD.context(), MatchItem.Slot.OFFHAND.getItem(entity))
-                .withParameter(MatchItem.Slot.CHEST.context(), MatchItem.Slot.OFFHAND.getItem(entity))
-                .withParameter(MatchItem.Slot.LEGS.context(), MatchItem.Slot.OFFHAND.getItem(entity))
-                .withParameter(MatchItem.Slot.FEET.context(), MatchItem.Slot.OFFHAND.getItem(entity))
+                .withParameter(MatchItem.Slot.HEAD.context(), MatchItem.Slot.HEAD.getItem(entity))
+                .withParameter(MatchItem.Slot.CHEST.context(), MatchItem.Slot.CHEST.getItem(entity))
+                .withParameter(MatchItem.Slot.LEGS.context(), MatchItem.Slot.LEGS.getItem(entity))
+                .withParameter(MatchItem.Slot.FEET.context(), MatchItem.Slot.FEET.getItem(entity))
                 .create(ENTITY_CONTEXT);
         return new LootContext.Builder(parameters).create(Optional.empty());
     }
@@ -93,10 +93,10 @@ public class Condition {
                 .withParameter(LootContextParams.ORIGIN, dragon.position())
                 .withParameter(LootContextParams.TOOL, dragon.getMainHandItem())
                 .withParameter(MatchItem.Slot.OFFHAND.context(), MatchItem.Slot.OFFHAND.getItem(dragon))
-                .withParameter(MatchItem.Slot.HEAD.context(), MatchItem.Slot.OFFHAND.getItem(dragon))
-                .withParameter(MatchItem.Slot.CHEST.context(), MatchItem.Slot.OFFHAND.getItem(dragon))
-                .withParameter(MatchItem.Slot.LEGS.context(), MatchItem.Slot.OFFHAND.getItem(dragon))
-                .withParameter(MatchItem.Slot.FEET.context(), MatchItem.Slot.OFFHAND.getItem(dragon))
+                .withParameter(MatchItem.Slot.HEAD.context(), MatchItem.Slot.HEAD.getItem(dragon))
+                .withParameter(MatchItem.Slot.CHEST.context(), MatchItem.Slot.CHEST.getItem(dragon))
+                .withParameter(MatchItem.Slot.LEGS.context(), MatchItem.Slot.LEGS.getItem(dragon))
+                .withParameter(MatchItem.Slot.FEET.context(), MatchItem.Slot.FEET.getItem(dragon))
                 .create(ENTITY_CONTEXT);
         return new LootContext.Builder(parameters).create(Optional.empty());
     }
@@ -112,10 +112,10 @@ public class Condition {
                 .withParameter(LootContextParams.ORIGIN, origin)
                 .withParameter(LootContextParams.TOOL, entity instanceof LivingEntity livingEntity ? livingEntity.getMainHandItem() : Objects.requireNonNullElse(entity.getWeaponItem(), ItemStack.EMPTY))
                 .withParameter(MatchItem.Slot.OFFHAND.context(), MatchItem.Slot.OFFHAND.getItem(entity))
-                .withParameter(MatchItem.Slot.HEAD.context(), MatchItem.Slot.OFFHAND.getItem(entity))
-                .withParameter(MatchItem.Slot.CHEST.context(), MatchItem.Slot.OFFHAND.getItem(entity))
-                .withParameter(MatchItem.Slot.LEGS.context(), MatchItem.Slot.OFFHAND.getItem(entity))
-                .withParameter(MatchItem.Slot.FEET.context(), MatchItem.Slot.OFFHAND.getItem(entity))
+                .withParameter(MatchItem.Slot.HEAD.context(), MatchItem.Slot.HEAD.getItem(entity))
+                .withParameter(MatchItem.Slot.CHEST.context(), MatchItem.Slot.CHEST.getItem(entity))
+                .withParameter(MatchItem.Slot.LEGS.context(), MatchItem.Slot.LEGS.getItem(entity))
+                .withParameter(MatchItem.Slot.FEET.context(), MatchItem.Slot.FEET.getItem(entity))
                 .create(ABILITY_CONTEXT);
         return new LootContext.Builder(parameters).create(Optional.empty());
     }
