@@ -73,7 +73,7 @@ public class DragonBodies {
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
                 DragonBody.ScalingProportions.of(0.6, 2.0, 1.8, 1.0),
                 0.83333333,
-                DragonBody.MountingOffsets.of(new Vec3(0, -0.05, 0), new Vec3(0, 0, -1.4)),
+                Optional.of(DragonBody.MountingOffsets.of(new Vec3(0, -0.05, 0), new Vec3(0, 0, -1.4))),
                 Optional.of(DragonSurvival.res("textures/gui/custom/body/center/default.png"))
         ));
 
@@ -95,7 +95,7 @@ public class DragonBodies {
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
                 DragonBody.ScalingProportions.of(0.6, 2.0, 1.8, 1.0),
                 0.83333333,
-                DragonBody.MountingOffsets.of(new Vec3(0, -0.05, 0), new Vec3(0, 0, -1.4)),
+                Optional.of(DragonBody.MountingOffsets.of(new Vec3(0, -0.05, 0), new Vec3(0, 0, -1.4))),
                 Optional.of(DragonSurvival.res("textures/gui/custom/body/east/default.png"))
         ));
 
@@ -113,7 +113,7 @@ public class DragonBodies {
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
                 DragonBody.ScalingProportions.of(0.6, 1.1, 0.99, 1.0),
                 0.5,
-                DragonBody.MountingOffsets.of(new Vec3(0, -0.05, 0), new Vec3(0, 0f, -1.4)),
+                Optional.of(DragonBody.MountingOffsets.of(new Vec3(0, -0.05, 0), new Vec3(0, 0, -1.4))),
                 Optional.of(DragonSurvival.res("textures/gui/custom/body/north/default.png"))
         ));
 
@@ -132,7 +132,7 @@ public class DragonBodies {
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
                 DragonBody.ScalingProportions.of(0.6, 2.0, 1.8, 1.0),
                 0.83333333,
-                DragonBody.MountingOffsets.of(new Vec3(0, -0.05, 0), new Vec3(0, 0, -1.4)),
+                Optional.of(DragonBody.MountingOffsets.of(new Vec3(0, -0.05, 0), new Vec3(0, 0, -1.4))),
                 Optional.of(DragonSurvival.res("textures/gui/custom/body/south/default.png"))
         ));
 
@@ -150,7 +150,7 @@ public class DragonBodies {
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
                 DragonBody.ScalingProportions.of(0.6, 2.0, 1.8, 1.0),
                 0.83333333,
-                DragonBody.MountingOffsets.of(new Vec3(0, -0.05, 0), new Vec3(0, 0, -1.4)),
+                Optional.of(DragonBody.MountingOffsets.of(new Vec3(0, -0.05, 0), new Vec3(0, 0, -1.4))),
                 Optional.of(DragonSurvival.res("textures/gui/custom/body/west/default.png"))
         ));
     }

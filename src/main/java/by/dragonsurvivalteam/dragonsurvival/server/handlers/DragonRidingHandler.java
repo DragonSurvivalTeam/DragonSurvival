@@ -52,7 +52,7 @@ public class DragonRidingHandler {
 
         DragonStateHandler mountData = DragonStateProvider.getData(mount);
 
-        if (!mountData.isDragon()) {
+        if (!mountData.isDragon() || mountData.body().value().mountingOffsets().isEmpty()) {
             return DragonRideAttemptResult.OTHER;
         }
 

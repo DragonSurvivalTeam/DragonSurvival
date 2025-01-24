@@ -42,8 +42,9 @@ EntityMixin {
             MovementData movement = MovementData.getData(player);
             DragonStateHandler handler = DragonStateProvider.getData(player);
             Vec3 originalPassPos = player.getPassengerRidingPosition(player);
-            Vec3 offset = handler.body().value().mountingOffsets().offset();
-            Vec3 scale = handler.body().value().mountingOffsets().scale();
+            if(handler.body().value().mountingOffsets().isEmpty()) return;
+            Vec3 offset = handler.body().value().mountingOffsets().get().offset();
+            Vec3 scale = handler.body().value().mountingOffsets().get().scale();
             Vec3 offsetFromBb = offset.add(scale.multiply(player.getBoundingBox().getXsize(), player.getBoundingBox().getYsize(), player.getBoundingBox().getZsize()));
 
             Vec3 offsetFromCenter = originalPassPos.subtract(player.position());

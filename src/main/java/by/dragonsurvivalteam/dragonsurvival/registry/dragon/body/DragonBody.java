@@ -40,7 +40,7 @@ public record DragonBody(
         Holder<DragonEmoteSet> emotes,
         ScalingProportions scalingProportions,
         double crouchHeightRatio,
-        MountingOffsets mountingOffsets,
+        Optional<MountingOffsets> mountingOffsets,
         Optional<ResourceLocation> defaultIcon
 ) implements AttributeModifierSupplier {
     public static final ResourceKey<Registry<DragonBody>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_bodies"));
@@ -56,7 +56,7 @@ public record DragonBody(
             DragonEmoteSet.CODEC.fieldOf("emotes").forGetter(DragonBody::emotes),
             ScalingProportions.CODEC.fieldOf("scaling_proportions").forGetter(DragonBody::scalingProportions),
             Codec.DOUBLE.fieldOf("crouch_height_ratio").forGetter(DragonBody::crouchHeightRatio),
-            MountingOffsets.CODEC.fieldOf("mounting_offset").forGetter(DragonBody::mountingOffsets),
+            MountingOffsets.CODEC.optionalFieldOf("mounting_offset").forGetter(DragonBody::mountingOffsets),
             ResourceLocation.CODEC.optionalFieldOf("default_icon").forGetter(DragonBody::defaultIcon)
     ).apply(instance, instance.stable(DragonBody::new)));
 
