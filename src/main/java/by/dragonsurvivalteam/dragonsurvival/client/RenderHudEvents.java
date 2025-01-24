@@ -43,7 +43,7 @@ public class RenderHudEvents {
         int screenHeight = event.getWindow().getGuiScaledHeight();
         ResourceLocation id = event.getOverlay().id();
 
-        if (DragonFoodHandler.requireDragonFood && !vanillaFoodLevel && id == VanillaGuiOverlay.FOOD_LEVEL.id()) {
+        if (!DragonFoodHandler.disableDragonFoodHandling && DragonFoodHandler.requireDragonFood && !vanillaFoodLevel && id == VanillaGuiOverlay.FOOD_LEVEL.id()) {
             boolean wasRendered = DragonFoodHandler.renderFoodBar(getForgeGUI(), event.getGuiGraphics(), screenWidth, screenHeight);
 
             if (wasRendered) {

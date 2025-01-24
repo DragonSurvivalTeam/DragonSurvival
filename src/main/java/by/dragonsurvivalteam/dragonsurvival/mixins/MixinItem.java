@@ -19,6 +19,10 @@ import org.spongepowered.asm.mixin.injection.At;
 public class MixinItem {
 	@ModifyExpressionValue(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isEdible()Z"))
 	private boolean replaceIsEdibleInUse(boolean original, Level level, Player player, InteractionHand hand) {
+		if (DragonFoodHandler.disableDragonFoodHandling) {
+			return original;
+		}
+
 		DragonStateHandler handler = DragonStateProvider.getHandler(player);
 
 		if (handler != null) {
@@ -30,6 +34,10 @@ public class MixinItem {
 
 	@ModifyExpressionValue(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getFoodProperties(Lnet/minecraft/world/entity/LivingEntity;)Lnet/minecraft/world/food/FoodProperties;", remap = false))
 	private FoodProperties replaceFoodPropertiesInUse(FoodProperties original, Level pLevel, Player player, InteractionHand pUsedHand, @Local ItemStack stack) {
+		if (DragonFoodHandler.disableDragonFoodHandling) {
+			return original;
+		}
+
 		DragonStateHandler handler = DragonStateProvider.getHandler(player);
 
 		if (handler != null) {
@@ -41,6 +49,10 @@ public class MixinItem {
 
 	@ModifyExpressionValue (method = "finishUsingItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/Item;isEdible()Z"))
 	private boolean replaceIsEdibleInFinishUsingItem(boolean original, ItemStack stack, Level level, LivingEntity entity) {
+		if (DragonFoodHandler.disableDragonFoodHandling) {
+			return original;
+		}
+
 		DragonStateHandler handler = DragonStateProvider.getHandler(entity);
 
 		if (handler != null) {

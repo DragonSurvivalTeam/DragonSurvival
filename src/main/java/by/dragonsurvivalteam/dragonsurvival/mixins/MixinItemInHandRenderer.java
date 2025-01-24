@@ -32,6 +32,10 @@ public class MixinItemInHandRenderer{
 
 	@ModifyExpressionValue( method = "renderArmWithItem", at = @At( value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getUseAnimation()Lnet/minecraft/world/item/UseAnim;"))
 	private UseAnim dragonRenderArmWithItem(UseAnim original, AbstractClientPlayer pPlayer, float pPartialTicks, float pPitch, InteractionHand pHand, float pSwingProgress, ItemStack stack, float pEquippedProgress, PoseStack pPoseStack, MultiBufferSource pBuffer, int pCombinedLight){
+		if (DragonFoodHandler.disableDragonFoodHandling) {
+			return original;
+		}
+
 		AbstractDragonType type = DragonUtils.getDragonType(pPlayer);
 
 		if (type != null) {
@@ -43,6 +47,10 @@ public class MixinItemInHandRenderer{
 
 	@ModifyExpressionValue( method = "applyEatTransform", at = @At( value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getUseDuration()I"))
 	private int dragonUseDuration(int original, @Local(argsOnly = true) ItemStack stack){
+		if (DragonFoodHandler.disableDragonFoodHandling) {
+			return original;
+		}
+
 		DragonStateHandler handler = DragonStateProvider.getHandler(minecraft.player);
 		if (handler != null && handler.isDragon()) {
 			return DragonFoodHandler.getUseDuration(stack, handler.getType());
