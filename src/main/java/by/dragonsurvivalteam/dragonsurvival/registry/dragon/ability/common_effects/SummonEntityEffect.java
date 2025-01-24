@@ -58,12 +58,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -123,80 +125,42 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
 
     @Override
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final BlockPos position, @Nullable final Direction direction) {
-        spawn(dragon.serverLevel(), dragon, ability, position);
+        collectPosition(dragon, ability, position);
     }
 
     @Override
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
-        spawn(dragon.serverLevel(), dragon, ability, target.blockPosition());
+        collectPosition(dragon, ability, target.blockPosition());
     }
 
-    // The dragon always being the one that summons the entities is intended behaviour for now
-    private void spawn(final ServerLevel level, final ServerPlayer dragon, final DragonAbilityInstance ability, final BlockPos spawnPosition) {
+    private void collectPosition(final ServerPlayer dragon, final DragonAbilityInstance ability, final BlockPos spawnPosition) {
         SummonedEntities summonData = dragon.getData(DSDataAttachments.SUMMONED_ENTITIES);
         Instance instance = summonData.get(id());
 
-        if (instance != null) {
+        if (instance != null && instance.hasEntities()) {
             summonData.remove(dragon, instance);
             instance = null;
         }
 
+        // TODO :: check 'BlockState#isValidSpawn'? Or "force" entities to be spawned?
         if (!Level.isInSpawnableBounds(spawnPosition)) {
             return;
         }
 
-        for (int i = 0; i < maxSummons.calculate(ability.level()); i++) {
-            EntityType<?> type = entities.map(
-                    list -> list.getRandom(level.getRandom()).map(WeightedEntry.Wrapper::data).orElse(null),
-                    set -> set.getRandomElement(dragon.getRandom()).map(Holder::value).orElse(null)
-            );
+        BlockState state = dragon.level().getBlockState(spawnPosition);
 
-            if (type == null) {
-                DragonSurvival.LOGGER.error("[{}] summon entity effect has no valid entity type entries", id());
-                return;
-            }
-
-            Entity entity = type.spawn(level, spawnPosition, MobSpawnType.TRIGGERED);
-
-            if (entity == null) {
-                return;
-            }
-
-            if (entity instanceof LivingEntity livingEntity) {
-                int abilityLevel = ability.level();
-                attributeScales.forEach(attributeScale -> attributeScale.apply(livingEntity, abilityLevel));
-            }
-
-            if (entity instanceof Projectile projectile) {
-                projectile.setOwner(dragon);
-            }
-
-            if (entity instanceof LightningBolt bolt) {
-                bolt.setCause(dragon);
-            }
-
-            if (entity instanceof PrimedTntAccess access) {
-                access.dragonSurvival$setOwner(dragon);
-            }
-
-            setAllied(dragon, entity);
-
-            SummonData data = entity.getData(DSDataAttachments.SUMMON);
-            data.setOwnerUUID(dragon);
-            data.isAllied = shouldSetAllied;
-            data.attackBehaviour = summonData.attackBehaviour;
-            data.movementBehaviour = summonData.movementBehaviour;
-
-            entity.moveTo(spawnPosition.getX(), spawnPosition.getY() + 1, spawnPosition.getZ(), entity.getYRot(), entity.getXRot());
-
-            if (instance == null) {
-                instance = createInstance(dragon, ability, (int) duration().calculate(ability.level()));
-                instance.increment(entity.getUUID());
-                summonData.add(dragon, instance);
-            } else {
-                instance.increment(entity.getUUID());
-            }
+        if (state.isAir()) {
+            // TODO :: check other?
+            //  fluids should be allowed
+            return;
         }
+
+        if (instance == null) {
+            instance = createInstance(dragon, ability, (int) duration().calculate(ability.level()));
+            summonData.add(dragon, instance);
+        }
+
+        instance.addPosition(spawnPosition);
     }
 
     @Override
@@ -238,30 +202,9 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
         return List.of(component);
     }
 
-    private void setAllied(final ServerPlayer dragon, final Entity entity) {
-        if (!shouldSetAllied) {
-            return;
-        }
-
-        if (entity instanceof TamableAnimal tamable) {
-            tamable.setOwnerUUID(dragon.getUUID());
-            tamable.setTame(true, true);
-        }
-
-        if (dragon.getTeam() != null) {
-            dragon.level().getScoreboard().addPlayerToTeam(entity.getScoreboardName(), dragon.getTeam());
-        }
-
-        if (entity instanceof Mob mob) {
-            mob.goalSelector.addGoal(1, new SummonerHurtByTargetGoal(mob));
-            mob.goalSelector.addGoal(2, new SummonerHurtTargetGoal(mob));
-            mob.goalSelector.addGoal(3, new FollowSummonerGoal(mob, 1, 10, 2));
-        }
-    }
-
     @Override
     public Instance createInstance(final ServerPlayer dragon, final DragonAbilityInstance ability, final int currentDuration) {
-        return new Instance(this, CommonData.from(id(), dragon, ability, customIcon(), shouldRemoveAutomatically()), currentDuration, new CopyOnWriteArrayList<>(), 0);
+        return new Instance(this, CommonData.from(id(), dragon, ability, customIcon(), shouldRemoveAutomatically()), currentDuration, new CopyOnWriteArrayList<>());
     }
 
     @Override
@@ -298,18 +241,30 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
     public static class Instance extends DurationInstance<SummonEntityEffect> {
         public static final Codec<Instance> CODEC = RecordCodecBuilder.create(instance -> DurationInstance.codecStart(instance, SummonEntityEffect.CODEC::codec)
                 .and(UUIDUtil.CODEC.listOf().xmap(/* Make list mutable */ CopyOnWriteArrayList::new, Function.identity()).fieldOf("entity_uuid").forGetter(Instance::entityUUIDs))
-                .and(Codec.INT.fieldOf("summoned_amount").forGetter(Instance::summonedAmount))
                 .apply(instance, Instance::new));
 
         // Needs to be concurrent since the encoding for the 'sync_summoned_entity' happens on the network thread
         // And since it goes through the list it can run into a ConcurrentModificationException
         private final CopyOnWriteArrayList<UUID> entityUUIDs;
-        private int summonedAmount;
 
-        public Instance(final SummonEntityEffect baseData, final CommonData commonData, int currentDuration, final CopyOnWriteArrayList<UUID> entityUUIDs, int summonedAmount) {
+        // Transient field only needed for the initial summoning
+        private List<BlockPos> positions;
+
+        public Instance(final SummonEntityEffect baseData, final CommonData commonData, int currentDuration, final CopyOnWriteArrayList<UUID> entityUUIDs) {
             super(baseData, commonData, currentDuration);
             this.entityUUIDs = entityUUIDs;
-            this.summonedAmount = summonedAmount;
+        }
+
+        public void addPosition(final BlockPos position) {
+            if (positions == null) {
+                positions = new ArrayList<>();
+            }
+
+            positions.add(position);
+        }
+
+        public boolean hasEntities() {
+            return !entityUUIDs.isEmpty();
         }
 
         /**
@@ -323,24 +278,94 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
                 return false;
             }
 
-            int summonedAmount = entityUUIDs.size();
-
-            if (summonedAmount == 0) {
-                return true;
-            }
-
-            this.summonedAmount = summonedAmount;
-            return false;
+            return entityUUIDs.isEmpty();
         }
 
-        public void increment(final UUID uuid) {
-            summonedAmount++;
-            entityUUIDs.add(uuid);
+        public void summon(final ServerPlayer storageHolder) {
+            if (positions == null) {
+                return;
+            }
+
+            SummonedEntities summonData = storageHolder.getData(DSDataAttachments.SUMMONED_ENTITIES);
+
+            while (!positions.isEmpty()) {
+                if (entityUUIDs.size() >= baseData().maxSummons().calculate(appliedAbilityLevel())) {
+                    break;
+                }
+
+                BlockPos position = positions.remove(storageHolder.getRandom().nextInt(positions.size()));
+
+                EntityType<?> type = baseData().entities().map(
+                        list -> list.getRandom(storageHolder.getRandom()).map(WeightedEntry.Wrapper::data).orElse(null),
+                        set -> set.getRandomElement(storageHolder.getRandom()).map(Holder::value).orElse(null)
+                );
+
+                if (type == null) {
+                    DragonSurvival.LOGGER.error("[{}] summon entity effect has no valid entity type entries", id());
+                    return;
+                }
+
+                Entity entity = type.spawn(storageHolder.serverLevel(), position, MobSpawnType.TRIGGERED);
+
+                if (entity == null) {
+                    return;
+                }
+
+                if (entity instanceof LivingEntity livingEntity) {
+                    baseData().attributeScales().forEach(attributeScale -> attributeScale.apply(livingEntity, appliedAbilityLevel()));
+                }
+
+                if (entity instanceof Projectile projectile) {
+                    projectile.setOwner(storageHolder);
+                }
+
+                if (entity instanceof LightningBolt bolt) {
+                    bolt.setCause(storageHolder);
+                }
+
+                if (entity instanceof PrimedTntAccess access) {
+                    access.dragonSurvival$setOwner(storageHolder);
+                }
+
+                setAllied(storageHolder, entity);
+
+                SummonData summon = entity.getData(DSDataAttachments.SUMMON);
+                summon.setOwnerUUID(storageHolder);
+                summon.isAllied = baseData().shouldSetAllied();
+                summon.attackBehaviour = summonData.attackBehaviour;
+                summon.movementBehaviour = summonData.movementBehaviour;
+
+                entity.moveTo(position.getX(), position.getY() + 1, position.getZ(), entity.getYRot(), entity.getXRot());
+                entityUUIDs.add(entity.getUUID());
+            }
+
+            positions = null;
+        }
+
+        private void setAllied(final ServerPlayer dragon, final Entity entity) {
+            if (!baseData().shouldSetAllied()) {
+                return;
+            }
+
+            if (entity instanceof TamableAnimal tamable) {
+                tamable.setOwnerUUID(dragon.getUUID());
+                tamable.setTame(true, true);
+            }
+
+            if (dragon.getTeam() != null) {
+                dragon.level().getScoreboard().addPlayerToTeam(entity.getScoreboardName(), dragon.getTeam());
+            }
+
+            if (entity instanceof Mob mob) {
+                mob.goalSelector.addGoal(1, new SummonerHurtByTargetGoal(mob));
+                mob.goalSelector.addGoal(2, new SummonerHurtTargetGoal(mob));
+                mob.goalSelector.addGoal(3, new FollowSummonerGoal(mob, 1, 10, 2));
+            }
         }
 
         @Override
         public Component getDescription() {
-            Component current = DSColors.dynamicValue(summonedAmount);
+            Component current = DSColors.dynamicValue(entityUUIDs.size());
             Component max = DSColors.dynamicValue((int) baseData().maxSummons().calculate(appliedAbilityLevel()));
             return Component.translatable(CURRENT_AMOUNT, current, max);
         }
@@ -383,10 +408,6 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
 
         public CopyOnWriteArrayList<UUID> entityUUIDs() {
             return entityUUIDs;
-        }
-
-        public int summonedAmount() {
-            return summonedAmount;
         }
     }
 }

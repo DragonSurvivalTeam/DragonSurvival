@@ -16,8 +16,8 @@
             }
           ]
         },
-        "range": 16.0,
-        "target_type": "dragonsurvival:looking_at"
+        "radius": 12.0,
+        "target_type": "dragonsurvival:area"
       },
       "trigger_rate": 1.0
     },

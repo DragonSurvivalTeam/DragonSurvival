@@ -7,6 +7,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -86,13 +87,19 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
 
     @SubscribeEvent
     public static void tickData(final EntityTickEvent.Post event) {
-        event.getEntity().getExistingData(DSDataAttachments.SUMMONED_ENTITIES).ifPresent(data -> {
-            data.tick(event.getEntity());
+        if (event.getEntity() instanceof Player player) {
+            player.getExistingData(DSDataAttachments.SUMMONED_ENTITIES).ifPresent(data -> {
+                if (player instanceof ServerPlayer serverPlayer) {
+                    data.all().forEach(instance -> instance.summon(serverPlayer));
+                }
 
-            if (data.isEmpty()) {
-                event.getEntity().removeData(DSDataAttachments.SUMMONED_ENTITIES);
-            }
-        });
+                data.tick(player);
+
+                if (data.isEmpty()) {
+                    player.removeData(DSDataAttachments.SUMMONED_ENTITIES);
+                }
+            });
+        }
     }
 
     @SubscribeEvent // Discard the summon if right-clicked with no item (while crouching)
