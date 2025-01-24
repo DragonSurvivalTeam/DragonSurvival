@@ -180,7 +180,7 @@ public class ForestDragonAbilities {
                                 Condition.thisEntity(EntityCondition.isLiving()).build(),
                                 List.of(
                                         new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FOREST_BREATH), LevelBasedValue.perLevel(2)),
-                                        PotionEffect.single(LevelBasedValue.constant(0), LevelBasedValue.constant(Functions.secondsToTicks(10)), LevelBasedValue.constant(0.3f), false, DSEffects.DRAIN)
+                                        new PotionEffect(PotionData.create(DSEffects.DRAIN).duration(10).probability(0.3f).build())
                                 ),
                                 TargetingMode.NON_ALLIES
                         ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
@@ -206,7 +206,7 @@ public class ForestDragonAbilities {
                                         ), LevelBasedValue.constant(0.2f)),
                                         new BlockBreakEffect(BlockCondition.blocks(Blocks.POTATOES), LevelBasedValue.constant(0.2f), true),
                                         new AreaCloudEffect(
-                                                PotionData.of(LevelBasedValue.constant(0), LevelBasedValue.constant(Functions.secondsToTicks(30)), false, DSEffects.DRAIN),
+                                                PotionData.create(DSEffects.DRAIN).duration(30).build(),
                                                 LevelBasedValue.constant(Functions.secondsToTicks(2)),
                                                 0.3,
                                                 new LargePoisonParticleOption(37, false)
@@ -288,12 +288,12 @@ public class ForestDragonAbilities {
                 Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false)).build()),
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(
                         List.of(
-                        PotionEffect.only(LevelBasedValue.perLevel(1), LevelBasedValue.constant(Functions.secondsToTicks(200)), false, MobEffects.DIG_SPEED).getFirst(),
-                        new ParticleEffect(
-                                new SpawnParticles(ParticleTypes.END_ROD, SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), ConstantFloat.of(0.05f)),
-                                LevelBasedValue.constant(20)
-                        )),TargetingMode.ALLIES_AND_SELF
-
+                                new PotionEffect(PotionData.create(MobEffects.DIG_SPEED).amplifierPer(1).duration(200).build()),
+                                new ParticleEffect(
+                                        new SpawnParticles(ParticleTypes.END_ROD, SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), ConstantFloat.of(0.05f)),
+                                        LevelBasedValue.constant(20)
+                                )
+                        ), TargetingMode.ALLIES_AND_SELF
                 ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -324,12 +324,12 @@ public class ForestDragonAbilities {
                 Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false)).build()),
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(
                         List.of(
-                        PotionEffect.only(LevelBasedValue.perLevel(1), LevelBasedValue.perLevel(Functions.secondsToTicks(30)), false, DSEffects.HUNTER).getFirst(),
-                        new ParticleEffect(
-                                new SpawnParticles(ParticleTypes.DRAGON_BREATH, SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.1f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.1f)), ConstantFloat.of(0.1f)),
-                                LevelBasedValue.constant(20)
-                        )),
-                        TargetingMode.ALLIES_AND_SELF
+                                new PotionEffect(PotionData.create(DSEffects.HUNTER).amplifierPer(1).durationPer(30).build()),
+                                new ParticleEffect(
+                                        new SpawnParticles(ParticleTypes.DRAGON_BREATH, SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.1f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.1f)), ConstantFloat.of(0.1f)),
+                                        LevelBasedValue.constant(20)
+                                )
+                        ), TargetingMode.ALLIES_AND_SELF
                 ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -390,7 +390,7 @@ public class ForestDragonAbilities {
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         // Enable when on said block tag
                         Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.SPEEDS_UP_FOREST_DRAGON)).build(),
-                        PotionEffect.only(LevelBasedValue.perLevel(0.2f), LevelBasedValue.perLevel(Functions.secondsToTicks(1)), false, MobEffects.MOVEMENT_SPEED),
+                        PotionEffect.only(PotionData.create(MobEffects.MOVEMENT_SPEED).amplifierPer(0.2f).durationPer(1).build()),
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(Functions.secondsToTicks(1)))),
                 true,

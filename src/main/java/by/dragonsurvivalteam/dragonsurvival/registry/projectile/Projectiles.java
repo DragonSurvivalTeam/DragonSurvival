@@ -20,9 +20,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.projectile.targeting.Projec
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.world_effects.ProjectileExplosionEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.world_effects.ProjectileWorldParticleEffect;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.LightningHandler;
-import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.datafixers.util.Either;
-import net.minecraft.core.HolderSet;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -117,13 +115,7 @@ public class Projectiles {
                                                         Optional.of(Condition.thisEntity(EntityCondition.isLiving()).build())
                                                 ),
                                                 new ProjectileTargeting.ConditionalEffect(
-                                                        new ProjectilePotionEffect(new PotionData(
-                                                                HolderSet.direct(DSEffects.CHARGED),
-                                                                LevelBasedValue.constant(0),
-                                                                LevelBasedValue.constant(Functions.secondsToTicks(5)),
-                                                                LevelBasedValue.constant(0.5f),
-                                                                false
-                                                        )),
+                                                        new ProjectilePotionEffect(PotionData.create(DSEffects.CHARGED).duration(5).probability(0.5f).build()),
                                                         Optional.of(Condition.thisEntity(EntityCondition.isLiving()).build())
                                                 )
                                         ), 5, 1),
@@ -191,13 +183,7 @@ public class Projectiles {
                                                         Optional.of(Condition.thisEntity(EntityCondition.isLiving()).build())
                                                 ),
                                                 new ProjectileTargeting.ConditionalEffect(
-                                                        new ProjectilePotionEffect(new PotionData(
-                                                                HolderSet.direct(DSEffects.CHARGED),
-                                                                LevelBasedValue.constant(0),
-                                                                LevelBasedValue.constant(Functions.secondsToTicks(5)),
-                                                                LevelBasedValue.constant(0.5f),
-                                                                false
-                                                        )),
+                                                        new ProjectilePotionEffect(PotionData.create(DSEffects.CHARGED).duration(5).probability(0.5f).build()),
                                                         Optional.of(Condition.thisEntity(EntityCondition.isLiving()).build())
                                                 )
                                         ), 5, 1),

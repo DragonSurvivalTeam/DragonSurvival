@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.util.AdditionalEffectData;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
@@ -29,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier, LevelBasedValue duration, LevelBasedValue probability, boolean effectParticles) {
+public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier, LevelBasedValue duration, LevelBasedValue probability, boolean effectParticles, boolean showIcon) {
     public static final LevelBasedValue DEFAULT_PROBABILITY = LevelBasedValue.constant(1);
 
     public static final MapCodec<PotionData> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -37,7 +38,8 @@ public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier
             LevelBasedValue.CODEC.fieldOf("amplifier").forGetter(PotionData::amplifier),
             LevelBasedValue.CODEC.fieldOf("duration").forGetter(PotionData::duration),
             LevelBasedValue.CODEC.optionalFieldOf("probability", DEFAULT_PROBABILITY).forGetter(PotionData::probability),
-            Codec.BOOL.optionalFieldOf("effect_particles", false).forGetter(PotionData::effectParticles)
+            Codec.BOOL.optionalFieldOf("effect_particles", false).forGetter(PotionData::effectParticles),
+            Codec.BOOL.optionalFieldOf("show_icon", true).forGetter(PotionData::showIcon)
     ).apply(instance, PotionData::new));
 
     public record Calculated(int amplifier, int duration, float probability) {
@@ -60,7 +62,7 @@ public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier
                 }
 
                 if (livingEntity.getRandom().nextDouble() < calculated.probability()) {
-                    livingEntity.addEffect(new MobEffectInstance(effect, calculated.duration(), calculated.amplifier(), false, effectParticles()), dragon);
+                    livingEntity.addEffect(new MobEffectInstance(effect, calculated.duration(), calculated.amplifier(), false, effectParticles, showIcon), dragon);
                 }
             });
         }
@@ -125,12 +127,75 @@ public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier
     }
 
     @SafeVarargs
-    public static PotionData of(final LevelBasedValue amplifier, final LevelBasedValue duration,  final boolean effectParticles, final Holder<MobEffect>... effects) {
-        return of(amplifier, duration, DEFAULT_PROBABILITY, effectParticles, effects);
+    public static Builder create(final Holder<MobEffect>... effects) {
+        return new Builder(effects);
     }
 
-    @SafeVarargs
-    public static PotionData of(final LevelBasedValue amplifier, final LevelBasedValue duration, final LevelBasedValue probability, final boolean effectParticles, final Holder<MobEffect>... effects) {
-        return new PotionData(HolderSet.direct(effects), amplifier, duration, probability, effectParticles);
+    public static Builder create(final HolderSet<MobEffect> effects) {
+        return new Builder(effects);
+    }
+
+    public static class Builder {
+        private final HolderSet<MobEffect> effects;
+        private LevelBasedValue amplifier = LevelBasedValue.constant(0);
+        private LevelBasedValue duration = DragonAbilities.INFINITE_DURATION;
+        private LevelBasedValue probability = DEFAULT_PROBABILITY;
+        private boolean effectParticles;
+        private boolean showIcon = true;
+
+        @SafeVarargs
+        public Builder(final Holder<MobEffect>... effects) {
+            this.effects = HolderSet.direct(effects);
+        }
+
+        public Builder(final HolderSet<MobEffect> effects) {
+            this.effects = effects;
+        }
+
+        public Builder amplifier(final int amplifier) {
+            this.amplifier = LevelBasedValue.constant(amplifier);
+            return this;
+        }
+
+        public Builder amplifierPer(final float amplifier) {
+            this.amplifier = LevelBasedValue.perLevel(amplifier);
+            return this;
+        }
+
+        /** Takes the value in seconds */
+        public Builder duration(final int duration) {
+            this.duration = LevelBasedValue.constant(Functions.secondsToTicks(duration));
+            return this;
+        }
+
+        /** Takes the value in seconds */
+        public Builder durationPer(final int duration) {
+            this.duration = LevelBasedValue.perLevel(Functions.secondsToTicks(duration));
+            return this;
+        }
+    
+        public Builder probability(final float probability) {
+            this.probability = LevelBasedValue.constant(probability);
+            return this;
+        }
+
+        public Builder probabilityPer(final float probability) {
+            this.probability = LevelBasedValue.perLevel(probability);
+            return this;
+        }
+    
+        public Builder showParticles() {
+            this.effectParticles = true;
+            return this;
+        }
+    
+        public Builder hideIcon() {
+            this.showIcon = false;
+            return this;
+        }
+    
+        public PotionData build() {
+            return new PotionData(effects, amplifier, duration, probability, effectParticles, showIcon);
+        }
     }
 }

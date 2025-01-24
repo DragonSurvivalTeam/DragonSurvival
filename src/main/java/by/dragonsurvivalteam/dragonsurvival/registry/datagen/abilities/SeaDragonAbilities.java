@@ -173,13 +173,13 @@ public class SeaDragonAbilities {
                                 Condition.thisEntity(EntityCondition.isLiving()).build(),
                                 List.of(
                                         new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.LIGHTNING_BREATH), LevelBasedValue.perLevel(1)),
-                                        PotionEffect.single(LevelBasedValue.constant(0), LevelBasedValue.constant(Functions.secondsToTicks(30)), LevelBasedValue.constant(0.5f), false, DSEffects.CHARGED)
+                                        new PotionEffect(PotionData.create(DSEffects.CHARGED).duration(30).probability(0.5f).build())
                                 ),
                                 TargetingMode.NON_ALLIES
                         ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.block(
                                 List.of(new AreaCloudEffect(
-                                        PotionData.of(LevelBasedValue.constant(0), LevelBasedValue.constant(Functions.secondsToTicks(30)), false, DSEffects.CHARGED),
+                                        PotionData.create(DSEffects.CHARGED).duration(30).build(),
                                         LevelBasedValue.constant(Functions.secondsToTicks(2)),
                                         0.3,
                                         new LargeLightningParticleOption(37, false)
@@ -304,7 +304,7 @@ public class SeaDragonAbilities {
                 Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false))
                         .and(Condition.thisEntity(EntityCondition.isInFluid(context.lookup(Registries.FLUID).getOrThrow(FluidTags.WATER))).invert()).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        PotionEffect.only(LevelBasedValue.constant(0), LevelBasedValue.perLevel(Functions.secondsToTicks(30)), false, DSEffects.WATER_VISION),
+                        PotionEffect.only(PotionData.create(DSEffects.WATER_VISION).durationPer(30).build()),
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
                 true,
@@ -366,7 +366,7 @@ public class SeaDragonAbilities {
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         // Enable when on said block tag
                         Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.SPEEDS_UP_SEA_DRAGON)).build(),
-                        PotionEffect.only(LevelBasedValue.perLevel(0.2f), LevelBasedValue.perLevel(Functions.secondsToTicks(1)), false, MobEffects.MOVEMENT_SPEED),
+                        PotionEffect.only(PotionData.create(MobEffects.MOVEMENT_SPEED).amplifierPer(0.2f).durationPer(1).build()),
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(Functions.secondsToTicks(1)))),
                 true,

@@ -25,7 +25,6 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potions;
-import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.storage.loot.predicates.AnyOfCondition;
 import net.neoforged.neoforge.common.Tags;
 
@@ -141,7 +140,7 @@ public class DragonPenalties {
                         MatchItem.build(ItemCondition.is(DSItemTags.LIGHT_SOURCE), MatchItem.Slot.OFFHAND),
                         Condition.thisEntity(EntityCondition.isInLight(3))
                 ).invert().build()),
-                new MobEffectPenalty(PotionData.of(LevelBasedValue.constant(0), LevelBasedValue.constant(Functions.secondsToTicks(10)), true, DSEffects.STRESS)),
+                new MobEffectPenalty(PotionData.create(DSEffects.STRESS).duration(10).showParticles().build()),
                 new SupplyTrigger(DragonSurvival.res("stress_supply"), DSAttributes.PENALTY_RESISTANCE_TIME, Functions.secondsToTicks(2), 1, 0.013f, List.of(), false, Optional.empty())
         ));
 
