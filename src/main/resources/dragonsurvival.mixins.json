@@ -25,6 +25,7 @@
     "MaceItemMixin",
     "MappedRegistryMixin",
     "MobEffectInstanceMixin",
+    "ParrotMixin",
     "PlayerEndMixin",
     "PlayerMixin",
     "PlayerStartMixin",

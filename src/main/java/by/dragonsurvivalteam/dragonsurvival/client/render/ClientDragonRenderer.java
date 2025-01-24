@@ -367,22 +367,6 @@ public class ClientDragonRenderer {
                 }
 
                 if (!player.isSpectator()) {
-                    // FIXME
-                    // Render the parrot on the players shoulder
-                    /*((LivingRendererAccessor) playerRenderer).dragonSurvival$getRenderLayers().stream().filter(ParrotOnShoulderLayer.class::isInstance).findAny().ifPresent(renderLayer -> {
-                       // poseStack.scale(1 / scale, 1 / scale, 1 / scale);
-                        poseStack.mulPose(Axis.XN.rotationDegrees(180));
-                        double height = 1.3 * scale;
-                        double forward = 0.3 * scale;
-                        float parrotHeadYaw = Mth.clamp(-1 * ((float) movement.bodyYaw - (float) movement.headYaw), -75, 75);
-                        poseStack.translate(0, -height, -forward);
-                        //noinspection unchecked -> ignore
-                        renderLayer.render(poseStack, renderTypeBuffer, eventLight, player, 0, 0, partialRenderTick, (float) player.tickCount + partialRenderTick, parrotHeadYaw, (float) movement.headPitch);
-                        poseStack.translate(0, height, forward);
-                        poseStack.mulPose(Axis.XN.rotationDegrees(-180));
-                        poseStack.scale(scale, scale, scale);
-                    });*/
-
                     int combinedOverlayIn = LivingEntityRenderer.getOverlayCoords(player, 0);
                     if (player.hasEffect(DSEffects.TRAPPED)) {
                         float bolasScale = player.getEyeHeight();
