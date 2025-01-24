@@ -90,7 +90,17 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
         if (event.getEntity() instanceof Player player) {
             player.getExistingData(DSDataAttachments.SUMMONED_ENTITIES).ifPresent(data -> {
                 if (player instanceof ServerPlayer serverPlayer) {
-                    data.all().forEach(instance -> instance.summon(serverPlayer));
+                    boolean requiresSync = false;
+
+                    for (SummonEntityEffect.Instance instance : data.all()) {
+                        if (instance.initializeSummons(serverPlayer)) {
+                            requiresSync = true;
+                        }
+                    }
+
+                    if (requiresSync) {
+                        data.sync(serverPlayer);
+                    }
                 }
 
                 data.tick(player);

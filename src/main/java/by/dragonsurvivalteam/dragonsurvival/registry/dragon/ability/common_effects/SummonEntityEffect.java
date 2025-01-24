@@ -142,16 +142,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
             instance = null;
         }
 
-        // TODO :: check 'BlockState#isValidSpawn'? Or "force" entities to be spawned?
         if (!Level.isInSpawnableBounds(spawnPosition)) {
-            return;
-        }
-
-        BlockState state = dragon.level().getBlockState(spawnPosition);
-
-        if (state.isAir()) {
-            // TODO :: check other?
-            //  fluids should be allowed
             return;
         }
 
@@ -160,7 +151,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
             summonData.add(dragon, instance);
         }
 
-        instance.addPosition(spawnPosition);
+        instance.addPosition(spawnPosition.immutable());
     }
 
     @Override
@@ -281,65 +272,87 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
             return entityUUIDs.isEmpty();
         }
 
-        public void summon(final ServerPlayer storageHolder) {
-            if (positions == null) {
-                return;
+        public boolean initializeSummons(final ServerPlayer storageHolder) {
+            if (positions == null || positions.isEmpty()) {
+                return false;
+            }
+
+            int maxSummons = (int) baseData().maxSummons().calculate(appliedAbilityLevel());
+
+            if (maxSummons == 0) {
+                return false;
             }
 
             SummonedEntities summonData = storageHolder.getData(DSDataAttachments.SUMMONED_ENTITIES);
+            BlockPos spawnPosition = null;
 
             while (!positions.isEmpty()) {
-                if (entityUUIDs.size() >= baseData().maxSummons().calculate(appliedAbilityLevel())) {
+                if (entityUUIDs.size() >= maxSummons) {
                     break;
                 }
 
-                BlockPos position = positions.remove(storageHolder.getRandom().nextInt(positions.size()));
+                spawnPosition = positions.remove(storageHolder.getRandom().nextInt(positions.size()));
+                summon(storageHolder, spawnPosition, summonData);
+            }
 
-                EntityType<?> type = baseData().entities().map(
-                        list -> list.getRandom(storageHolder.getRandom()).map(WeightedEntry.Wrapper::data).orElse(null),
-                        set -> set.getRandomElement(storageHolder.getRandom()).map(Holder::value).orElse(null)
-                );
-
-                if (type == null) {
-                    DragonSurvival.LOGGER.error("[{}] summon entity effect has no valid entity type entries", id());
-                    return;
-                }
-
-                Entity entity = type.spawn(storageHolder.serverLevel(), position, MobSpawnType.TRIGGERED);
-
-                if (entity == null) {
-                    return;
-                }
-
-                if (entity instanceof LivingEntity livingEntity) {
-                    baseData().attributeScales().forEach(attributeScale -> attributeScale.apply(livingEntity, appliedAbilityLevel()));
-                }
-
-                if (entity instanceof Projectile projectile) {
-                    projectile.setOwner(storageHolder);
-                }
-
-                if (entity instanceof LightningBolt bolt) {
-                    bolt.setCause(storageHolder);
-                }
-
-                if (entity instanceof PrimedTntAccess access) {
-                    access.dragonSurvival$setOwner(storageHolder);
-                }
-
-                setAllied(storageHolder, entity);
-
-                SummonData summon = entity.getData(DSDataAttachments.SUMMON);
-                summon.setOwnerUUID(storageHolder);
-                summon.isAllied = baseData().shouldSetAllied();
-                summon.attackBehaviour = summonData.attackBehaviour;
-                summon.movementBehaviour = summonData.movementBehaviour;
-
-                entity.moveTo(position.getX(), position.getY() + 1, position.getZ(), entity.getYRot(), entity.getXRot());
-                entityUUIDs.add(entity.getUUID());
+            while (entityUUIDs.size() < maxSummons) {
+                summon(storageHolder, spawnPosition, summonData);
             }
 
             positions = null;
+            return true;
+        }
+
+        private void summon(final ServerPlayer storageHolder, final BlockPos spawnPosition, final SummonedEntities summonData) {
+            EntityType<?> type = baseData().entities().map(
+                    list -> list.getRandom(storageHolder.getRandom()).map(WeightedEntry.Wrapper::data).orElse(null),
+                    set -> set.getRandomElement(storageHolder.getRandom()).map(Holder::value).orElse(null)
+            );
+
+            if (type == null) {
+                return;
+            }
+
+            // Currently not checking 'BlockState#isValidSpawn' to allow spawning any type of entity
+            BlockState state = storageHolder.level().getBlockState(spawnPosition);
+
+            //noinspection deprecation -> ignore
+            if (!state.blocksMotion() || !storageHolder.level().getBlockState(spawnPosition.above()).isAir()) {
+                return;
+            }
+
+            Entity entity = type.spawn(storageHolder.serverLevel(), spawnPosition, MobSpawnType.TRIGGERED);
+
+            if (entity == null) {
+                return;
+            }
+
+            if (entity instanceof LivingEntity livingEntity) {
+                baseData().attributeScales().forEach(attributeScale -> attributeScale.apply(livingEntity, appliedAbilityLevel()));
+            }
+
+            if (entity instanceof Projectile projectile) {
+                projectile.setOwner(storageHolder);
+            }
+
+            if (entity instanceof LightningBolt bolt) {
+                bolt.setCause(storageHolder);
+            }
+
+            if (entity instanceof PrimedTntAccess access) {
+                access.dragonSurvival$setOwner(storageHolder);
+            }
+
+            setAllied(storageHolder, entity);
+
+            SummonData summon = entity.getData(DSDataAttachments.SUMMON);
+            summon.setOwnerUUID(storageHolder);
+            summon.isAllied = baseData().shouldSetAllied();
+            summon.attackBehaviour = summonData.attackBehaviour;
+            summon.movementBehaviour = summonData.movementBehaviour;
+
+            entity.moveTo(spawnPosition.getX(), spawnPosition.getY() + 1, spawnPosition.getZ(), entity.getYRot(), entity.getXRot());
+            entityUUIDs.add(entity.getUUID());
         }
 
         private void setAllied(final ServerPlayer dragon, final Entity entity) {
