@@ -33,6 +33,8 @@ public class DefaultPartLoader extends SimpleJsonResourceReloadListener {
 
     @Override
     protected void apply(@NotNull final Map<ResourceLocation, JsonElement> map, @NotNull final ResourceManager manager, @NotNull final ProfilerFiller profiler) {
+        DEFAULT_PARTS.clear();
+
         map.forEach((location, value) -> {
             String[] elements = location.getPath().split("/");
 
@@ -63,6 +65,14 @@ public class DefaultPartLoader extends SimpleJsonResourceReloadListener {
 
     public static String getDefaultPartKey(final ResourceKey<DragonSpecies> species, final ResourceKey<DragonStage> stage, final ResourceLocation customModel, final SkinLayer layer) {
         if (!DEFAULT_PARTS.containsKey(customModel)) {
+            return NO_PART;
+        }
+
+        if (!DEFAULT_PARTS.get(customModel).containsKey(species)) {
+            return NO_PART;
+        }
+
+        if (!DEFAULT_PARTS.get(customModel).get(species).containsKey(stage)) {
             return NO_PART;
         }
 

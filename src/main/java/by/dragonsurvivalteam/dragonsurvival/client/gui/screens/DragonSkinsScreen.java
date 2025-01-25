@@ -95,6 +95,12 @@ public class DragonSkinsScreen extends Screen {
     @Translation(comments = "Open Editor")
     private static final String OPEN_EDITOR = Translation.Type.GUI.wrap("skin_screen.open_editor");
 
+    @Translation(comments = "Your skin is not available")
+    private static final String CUSTOM_MODEL_WARNING_1 = Translation.Type.GUI.wrap("skin_screen.custom_model_warning");
+
+    @Translation(comments = "because you are using a custom model.")
+    private static final String CUSTOM_MODEL_WARNING_2 = Translation.Type.GUI.wrap("skin_screen.custom_model_warning_2");
+
     private static final ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/skin_interface.png");
 
     private static final ResourceLocation BUTTON_BACKGROUND_BLACK = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/background_black.png");
@@ -149,6 +155,7 @@ public class DragonSkinsScreen extends Screen {
     private static String playerName;
     private static String lastPlayerName;
     private static boolean noSkin;
+    private boolean showYourSkin;
 
     public final DragonStateHandler handler = new DragonStateHandler();
 
@@ -204,7 +211,7 @@ public class DragonSkinsScreen extends Screen {
         float scale = zoom;
 
         //noinspection DataFlowIssue -> key is present
-        if (dragonStage != null && !DragonSkins.playerSkinOrGlowFetchingInProgress(playerName, dragonStage.getKey())) {
+        if (dragonStage != null && !DragonSkins.playerSkinOrGlowFetchingInProgress(playerName, dragonStage.getKey()) && (showYourSkin || !Objects.equals(playerName, minecraft.player.getGameProfile().getName()))) {
             if (handler.stage() == null) {
                 boolean alreadyUsingDefaults = handler.getCurrentSkinPreset().isStageUsingDefaultSkin(dragonStage.getKey());
                 handler.setSize(null, handler.species().value().getStartingSize(minecraft.player.registryAccess()));
@@ -219,6 +226,9 @@ public class DragonSkinsScreen extends Screen {
             quaternion.mul(Axis.XP.rotationDegrees(yRot * 10.0F));
             quaternion.rotateY((float) Math.toRadians(180 - xRot * 10));
             InventoryScreen.renderEntityInInventory(guiGraphics, startX + 15, startY + 70, (int) scale, new Vector3f(0, 0, 100), quaternion, null, dragon);
+        } else if(!showYourSkin && Objects.equals(playerName, minecraft.player.getGameProfile().getName())) {
+            drawNonShadowString(guiGraphics, minecraft.font, Component.translatable(CUSTOM_MODEL_WARNING_1).withStyle(ChatFormatting.RED), startX + 26, startY + 40, -1);
+            drawNonShadowString(guiGraphics, minecraft.font, Component.translatable(CUSTOM_MODEL_WARNING_2).withStyle(ChatFormatting.RED), startX + 26, startY + 50, -1);
         }
 
         ((DragonRenderer) dragonRenderer).glowTexture = null;
@@ -273,7 +283,10 @@ public class DragonSkinsScreen extends Screen {
         }
 
         if (!handler.body().value().model().equals(DragonBody.DEFAULT_MODEL)) {
+            showYourSkin = true;
             ResourceHelper.all(null, DragonBody.REGISTRY).stream().filter(body -> body.value().model().equals(DragonBody.DEFAULT_MODEL)).findFirst().ifPresent(body -> handler.setBody(null, body));
+        } else {
+            showYourSkin = false;
         }
 
         handler.setStage(null, dragonStage);

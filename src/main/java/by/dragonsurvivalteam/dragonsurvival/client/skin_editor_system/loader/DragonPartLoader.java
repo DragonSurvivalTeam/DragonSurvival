@@ -29,6 +29,8 @@ public class DragonPartLoader extends SimpleJsonResourceReloadListener {
 
     @Override
     protected void apply(final @NotNull Map<ResourceLocation, JsonElement> map, @NotNull final ResourceManager manager, @NotNull final ProfilerFiller profiler) {
+        DRAGON_PARTS.clear();
+
         map.forEach((location, value) -> {
             String[] elements = location.getPath().split("/", 2);
 

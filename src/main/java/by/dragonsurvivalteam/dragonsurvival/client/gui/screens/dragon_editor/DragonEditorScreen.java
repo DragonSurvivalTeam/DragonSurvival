@@ -55,6 +55,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -615,7 +616,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             dragonBody = localHandler.body();
         } else if (dragonSpecies != null) {
             if (dragonStage == null) {
-                dragonStage = ResourceHelper.get(null, DragonStages.newborn).orElseThrow();
+                dragonStage = dragonSpecies.value().getStartingStage(null);
             }
 
             // body is null, or we are not a dragon, or the body is not valid for the species (is not default and species has bodies, or body is not in species' bodies)
@@ -678,18 +679,18 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
         // TODO :: use tag to order the species? otherwise it might not be consistent
         //noinspection SuspiciousMethodCalls -> type matches
-        selectedDragonStage = ResourceHelper.all(minecraft.player.registryAccess(), DragonStage.REGISTRY).indexOf(dragonStage);
+        selectedDragonStage = dragonSpecies.value().getStages(null).stream().toList().indexOf(dragonStage);
         HoverButton leftArrow = new HoverButton(width / 2 - 100, 10, 18, 20, 20, 20, LEFT_ARROW_MAIN, LEFT_ARROW_HOVER, button -> {
-            List<Holder.Reference<DragonStage>> all = ResourceHelper.all(minecraft.player.registryAccess(), DragonStage.REGISTRY);
-            selectedDragonStage = Functions.wrap(selectedDragonStage - 1, 0, all.size() - 1);
-            actionHistory.add(new EditorAction<>(selectStageAction, all.get(selectedDragonStage)));
+            List<Holder<DragonStage>> stages = dragonSpecies.value().getStages(null).stream().toList();
+            selectedDragonStage = Functions.wrap(selectedDragonStage - 1, 0, stages.size() - 1);
+            actionHistory.add(new EditorAction<>(selectStageAction, stages.get(selectedDragonStage)));
         });
         addRenderableWidget(leftArrow);
 
         HoverButton rightArrow = new HoverButton(width / 2 + 83, 10, 18, 20, 20, 20, RIGHT_ARROW_MAIN, RIGHT_ARROW_HOVER, button -> {
-            List<Holder.Reference<DragonStage>> all = ResourceHelper.all(minecraft.player.registryAccess(), DragonStage.REGISTRY);
-            selectedDragonStage = Functions.wrap(selectedDragonStage + 1, 0, all.size() - 1);
-            actionHistory.add(new EditorAction<>(selectStageAction, all.get(selectedDragonStage)));
+            List<Holder<DragonStage>> stages = dragonSpecies.value().getStages(null).stream().toList();
+            selectedDragonStage = Functions.wrap(selectedDragonStage + 1, 0, stages.size() - 1);
+            actionHistory.add(new EditorAction<>(selectStageAction, stages.get(selectedDragonStage)));
         });
         addRenderableWidget(rightArrow);
 
@@ -940,7 +941,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             SkinPreset preset = new SkinPreset();
 
             preset.deserializeNBT(access, this.preset.serializeNBT(access));
-            preset.put(dragonStage.getKey(), Lazy.of(() -> new DragonStageCustomization(dragonStage.getKey(), dragonSpecies.getKey(), data.getModel())));
+            preset.put(dragonStage.getKey(), Lazy.of(() -> new DragonStageCustomization(dragonStage.getKey(), dragonSpecies.getKey(), dragonBody.value().model())));
             actionHistory.add(new EditorAction<>(setSkinPresetAction, preset.serializeNBT(access)));
         });
         resetButton.setTooltip(Tooltip.create(Component.translatable(RESET)));
