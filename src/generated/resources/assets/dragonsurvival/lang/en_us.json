@@ -1018,6 +1018,7 @@
   "dragonsurvival.gui.skin_screen.custom_model_warning": "Your skin is not available",
   "dragonsurvival.gui.skin_screen.custom_model_warning_2": "because you are using a custom model.",
   "dragonsurvival.gui.skin_screen.help": "■ §6Skin§r is a texture for your dragon. There are two types of skins: built-in and custom. \n■ §6Custom skin§r§f you can draw yourself and upload to our github so that all players can see this texture.\n§7■ If you are interested in how to make your own skin or take a commission, use the buttons on the right.",
+  "dragonsurvival.gui.skin_screen.no_skin": "No skin found for this stage",
   "dragonsurvival.gui.skin_screen.open_editor": "Open Editor",
   "dragonsurvival.gui.skin_screen.random_info": "■ Shows a randomly selected §6other player§r§f who uploaded a skin.\n■§7 You §ccan't use§r§f§7 their skins for yourself! Only look and admire! >:D",
   "dragonsurvival.gui.skin_screen.settings": "Skin Settings",

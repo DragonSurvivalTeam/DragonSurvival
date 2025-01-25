@@ -47,6 +47,11 @@ public class DragonSkins {
         return SKIN_CACHE.containsKey(playerKey) && !SKIN_CACHE.get(playerKey).isDone() || GLOW_CACHE.containsKey(playerKey) && !GLOW_CACHE.get(playerKey).isDone();
     }
 
+    public static boolean fetchHasFailed(String playerName, ResourceKey<DragonStage> stage) {
+        String playerKey = playerName + "_" + stage.location().getPath();
+        return hasFailedFetch.contains(playerKey);
+    }
+
     public static @Nullable ResourceLocation getPlayerSkin(String playerName, ResourceKey<DragonStage> dragonStage) {
         String skinKey = playerName + "_" + dragonStage.location().getPath();
 
