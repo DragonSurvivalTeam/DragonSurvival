@@ -275,9 +275,11 @@ public class DragonSpeciesScreen extends Screen {
         }
 
         // Riding button
-        HoverButton ridingButton = new HoverButton(startX + 186, startY - 18, 16, RIDING_MAIN, RIDING_HOVER);
-        ridingButton.setTooltip(Tooltip.create(Component.translatable(RIDING_INFO, DragonRidingHandler.PLAYER_RIDING_SCALE, String.format("%.2f", (minecraft.player.getScale() / 2)))));
-        addRenderableWidget(ridingButton);
+        if(data.body().value().mountingOffsets().isPresent()) {
+            HoverButton ridingButton = new HoverButton(startX + 186, startY - 18, 16, RIDING_MAIN, RIDING_HOVER);
+            ridingButton.setTooltip(Tooltip.create(Component.translatable(RIDING_INFO, DragonRidingHandler.PLAYER_RIDING_SCALE, String.format("%.2f", (minecraft.player.getScale() / 2)))));
+            addRenderableWidget(ridingButton);
+        }
 
         // Body type button
         DragonBodyButton bodyTypeButton = new DragonBodyButton(this, startX + 29, startY + 101, 25, 25, data.body(), false, button -> {});
