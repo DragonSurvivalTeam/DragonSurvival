@@ -53,6 +53,9 @@ public class DSBlockTags extends BlockTagsProvider {
     @Translation(comments = "Small Wooden Dragon Doors")
     public static final TagKey<Block> SMALL_WOODEN_DRAGON_DOORS = key("small_wooden_dragon_doors");
 
+    @Translation(comments = "Dragon Ore/Bone Dropping Blocks")
+    public static final TagKey<Block> DRAGON_ORE_DROP = key("dragon_ore_drop");
+
     public DSBlockTags(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
         super(output, lookupProvider, DragonSurvival.MODID, existingFileHelper);
     }
@@ -124,6 +127,9 @@ public class DSBlockTags extends BlockTagsProvider {
                 .add(Blocks.NETHER_SPROUTS)
                 .add(Blocks.BIG_DRIPLEAF)
                 .add(Blocks.SMALL_DRIPLEAF);
+
+        tag(DRAGON_ORE_DROP)
+                .addTag(Tags.Blocks.ORES);
     }
 
     private void addToTypeTags() {

@@ -3,7 +3,12 @@ package by.dragonsurvivalteam.dragonsurvival.registry.datagen.loot;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBlockTags;
 import by.dragonsurvivalteam.dragonsurvival.util.EnchantmentUtils;
 import com.google.common.base.Suppliers;
 import com.mojang.serialization.MapCodec;
@@ -27,6 +32,30 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Supplier;
 
 public class DragonOreLootModifier extends LootModifier {
+    @Translation(key = "require_experience_drop_for_dragon_ore", type = Translation.Type.CONFIGURATION, comments = "Require the ore to drop experience for it to drop dragon ore items")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"drops", "ore"}, key = "require_experience_drop_for_dragon_ore")
+    public static boolean requireExperienceDropForDragonOre = true;
+
+    @ConfigRange(min = 0.0, max = 1.0)
+    @Translation(key = "human_ore_dust_chance", type = Translation.Type.CONFIGURATION, comments = "Determines the chance (in %) of dust dropping when a human harvests an ore block")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"drops", "ore"}, key = "human_ore_dust_chance")
+    public static Double humanOreDustChance = 0.1;
+
+    @ConfigRange(min = 0.0, max = 1.0)
+    @Translation(key = "dragon_ore_dust_chance", type = Translation.Type.CONFIGURATION, comments = "Determines the chance (in %) of dust dropping when a dragon harvests an ore block")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"drops", "ore"}, key = "dragon_ore_dust_chance")
+    public static Double dragonOreDustChance = 0.2;
+
+    @ConfigRange(min = 0.0, max = 1.0)
+    @Translation(key = "human_ore_bone_chance", type = Translation.Type.CONFIGURATION, comments = "Determines the chance (in %) of bones dropping when a human harvests an ore block")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"drops", "ore"}, key = "human_ore_bone_chance")
+    public static Double humanOreBoneChance = 0.0;
+
+    @ConfigRange(min = 0.0, max = 1.0)
+    @Translation(key = "dragon_ore_bone_chance", type = Translation.Type.CONFIGURATION, comments = "Determines the chance (in %) of bones dropping when a dragon harvests an ore block")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"drops", "ore"}, key = "dragon_ore_bone_chance")
+    public static Double dragonOreBoneChance = 0.01;
+
     public static final Supplier<MapCodec<DragonOreLootModifier>> CODEC = Suppliers.memoize(() -> RecordCodecBuilder.mapCodec(inst -> codecStart(inst).apply(inst, DragonOreLootModifier::new)));
 
     public DragonOreLootModifier(final LootItemCondition[] conditions) {
@@ -39,7 +68,7 @@ public class DragonOreLootModifier extends LootModifier {
         Entity entity = context.getParamOrNull(LootContextParams.THIS_ENTITY);
         Vec3 origin = context.getParamOrNull(LootContextParams.ORIGIN);
 
-        if (!(entity instanceof Player player) || origin == null || state == null || !state.is(Tags.Blocks.ORES)) {
+        if (!(entity instanceof Player player) || origin == null || state == null || !state.is(DSBlockTags.DRAGON_ORE_DROP)) {
             return generatedLoot;
         }
 
@@ -57,7 +86,7 @@ public class DragonOreLootModifier extends LootModifier {
         BlockPos position = BlockPos.containing(origin);
         int experience = state.getExpDrop(context.getLevel(), position, null, null, ItemStack.EMPTY);
 
-        if (experience > 0) {
+        if (experience > 0 || !requireExperienceDropForDragonOre) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
             int fortuneRoll = 1;
 
@@ -66,19 +95,19 @@ public class DragonOreLootModifier extends LootModifier {
             }
 
             if (handler.isDragon()) {
-                if (context.getRandom().nextDouble() < ServerConfig.dragonOreDustChance) {
+                if (context.getRandom().nextDouble() < dragonOreDustChance) {
                     generatedLoot.add(new ItemStack(DSItems.ELDER_DRAGON_DUST, fortuneRoll));
                 }
 
-                if (context.getRandom().nextDouble() < ServerConfig.dragonOreBoneChance) {
+                if (context.getRandom().nextDouble() < dragonOreBoneChance) {
                     generatedLoot.add(new ItemStack(DSItems.ELDER_DRAGON_BONE, fortuneRoll));
                 }
             } else {
-                if (context.getRandom().nextDouble() < ServerConfig.humanOreDustChance) {
+                if (context.getRandom().nextDouble() < humanOreDustChance) {
                     generatedLoot.add(new ItemStack(DSItems.ELDER_DRAGON_DUST, fortuneRoll));
                 }
 
-                if (context.getRandom().nextDouble() < ServerConfig.humanOreBoneChance) {
+                if (context.getRandom().nextDouble() < humanOreBoneChance) {
                     generatedLoot.add(new ItemStack(DSItems.ELDER_DRAGON_BONE, fortuneRoll));
                 }
             }
