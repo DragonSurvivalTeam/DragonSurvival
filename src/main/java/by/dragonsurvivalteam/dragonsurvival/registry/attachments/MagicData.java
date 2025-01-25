@@ -12,6 +12,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.FlightEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ExperiencePointsUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.InputData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.UpgradeType;
@@ -470,6 +471,14 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         } else {
             getHotbar().remove(currentSlot);
         }
+    }
+
+    public boolean hasFlightGrantingAbility() {
+        return getAbilities().values().stream().anyMatch(abilityInstance ->
+                abilityInstance.value().actions().stream()
+                        .anyMatch(action -> action.effect().target().right()
+                                .map(entityTargeting -> entityTargeting.effects().stream()
+                                        .anyMatch(effect -> effect instanceof FlightEffect)).orElse(false)));
     }
 
     @Override

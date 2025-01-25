@@ -92,17 +92,6 @@ public class LangKey {
     @Translation(comments = "\n§6--- Modifiers at max. size ---§r§7")
     public static final String GROWTH_MODIFIERS_AT_MAX_SIZE = Translation.Type.GUI.wrap("handler.growth_modifiers_at_max_size");
 
-    // --- Flight data --- //
-
-    @Translation(comments = "You currently cannot fly")
-    public static final String FLIGHT_CANNOT_FLY = Translation.Type.GUI.wrap("handler.flight_cannot_fly_or_spin");
-
-    @Translation(comments = "You currently can fly")
-    public static final String FLIGHT_CAN_FLY = Translation.Type.GUI.wrap("handler.flight_can_fly");
-
-    @Translation(comments = "You currently can spin")
-    public static final String FLIGHT_CAN_SPIN = Translation.Type.GUI.wrap("handler.flight_can_spin");
-
     // --- Ability effects --- //
 
     @Translation(comments = " every %s seconds")

@@ -16,6 +16,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.StageResources;
 import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
 import by.dragonsurvivalteam.dragonsurvival.compat.jei.JEIPlugin;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_maps.DietEntryCache;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
@@ -56,6 +57,21 @@ public class DragonSpeciesScreen extends Screen {
             "\n§6Dragon players can ride you below or equal to scale %s§r§7"
     })
     private static final String RIDING_INFO = Translation.Type.GUI.wrap("dragon_species_screen.riding_info");
+
+    @Translation(comments = "This species cannot gain the ability to fly.")
+    public static final String FLIGHT_CANNOT_GAIN = Translation.Type.GUI.wrap("dragon_species_screen.flight_cannot_gain");
+
+    @Translation(comments = "You currently cannot fly.")
+    public static final String FLIGHT_CANNOT_FLY = Translation.Type.GUI.wrap("dragon_species_screen.flight_cannot_fly_or_spin");
+
+    @Translation(comments = "You currently can fly.")
+    public static final String FLIGHT_CAN_FLY = Translation.Type.GUI.wrap("dragon_species_screen.flight_can_fly");
+
+    @Translation(comments = "You currently can spin.")
+    public static final String FLIGHT_CAN_SPIN = Translation.Type.GUI.wrap("dragon_species_screen.flight_can_spin");
+
+    @Translation(comments = "Players cannot ride this species.")
+    private static final String RIDING_DISABLED = Translation.Type.GUI.wrap("dragon_species_screen.riding_disabled");
 
     @Translation(comments = "This species has no penalties.")
     private static final String NO_PENALTIES = Translation.Type.GUI.wrap("dragon_species_screen.no_penalties");
@@ -229,7 +245,7 @@ public class DragonSpeciesScreen extends Screen {
         MutableComponent flightTooltip = Component.empty();
 
         if (flightData.hasFlight) {
-            flightTooltip = Component.translatable(LangKey.FLIGHT_CAN_FLY);
+            flightTooltip = Component.translatable(FLIGHT_CAN_FLY);
         }
 
         if (flightData.hasSpin) {
@@ -237,11 +253,15 @@ public class DragonSpeciesScreen extends Screen {
                 flightTooltip.append("\n");
             }
 
-            flightTooltip.append(Component.translatable(LangKey.FLIGHT_CAN_SPIN));
+            flightTooltip.append(Component.translatable(FLIGHT_CAN_SPIN));
         }
 
         if (!flightData.hasFlight && !flightData.hasSpin) {
-            flightTooltip.append(Component.translatable(LangKey.FLIGHT_CANNOT_FLY));
+            if(!MagicData.getData(minecraft.player).hasFlightGrantingAbility()) {
+                flightTooltip.append(Component.translatable(FLIGHT_CANNOT_GAIN));
+            } else {
+                flightTooltip.append(Component.translatable(FLIGHT_CANNOT_FLY));
+            }
         }
 
         wingButton.setTooltip(Tooltip.create(flightTooltip));
@@ -275,11 +295,13 @@ public class DragonSpeciesScreen extends Screen {
         }
 
         // Riding button
+        HoverButton ridingButton = new HoverButton(startX + 186, startY - 18, 16, RIDING_MAIN, RIDING_HOVER);
         if(data.body().value().mountingOffsets().isPresent()) {
-            HoverButton ridingButton = new HoverButton(startX + 186, startY - 18, 16, RIDING_MAIN, RIDING_HOVER);
             ridingButton.setTooltip(Tooltip.create(Component.translatable(RIDING_INFO, DragonRidingHandler.PLAYER_RIDING_SCALE, String.format("%.2f", (minecraft.player.getScale() / 2)))));
-            addRenderableWidget(ridingButton);
+        } else {
+            ridingButton.setTooltip(Tooltip.create(Component.translatable(RIDING_DISABLED)));
         }
+        addRenderableWidget(ridingButton);
 
         // Body type button
         DragonBodyButton bodyTypeButton = new DragonBodyButton(this, startX + 29, startY + 101, 25, 25, data.body(), false, button -> {});

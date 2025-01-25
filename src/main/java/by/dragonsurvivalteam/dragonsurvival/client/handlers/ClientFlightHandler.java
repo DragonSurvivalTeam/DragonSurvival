@@ -12,6 +12,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.flight.SpinDurationAndCooldo
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncWingsSpread;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
@@ -56,7 +57,7 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 /** Used in pair with {@link ServerFlightHandler} */
 @EventBusSubscriber(Dist.CLIENT)
 public class ClientFlightHandler {
-    @Translation(comments = "You have §cno levitation skill§r. Go to The End to learn this skill.")
+    @Translation(comments = "You have §cno levitation skill§r. Use a §cPrimordial Anchor§r in The End to learn this skill.")
     private static final String NO_WINGS = Translation.Type.GUI.wrap("message.no_wings");
 
     @Translation(key = "jump_to_fly", type = Translation.Type.CONFIGURATION, comments = "If enabled flight will be activated when jumping in the air")
@@ -535,7 +536,9 @@ public class ClientFlightHandler {
             case SUCCESS_DISABLED -> flight.areWingsSpread = false;
             case ALREADY_ENABLED, ALREADY_DISABLED -> { /* Nothing to do */ }
             case NO_WINGS -> {
-                player.sendSystemMessage(Component.translatable(NO_WINGS));
+                if(MagicData.getData(player).hasFlightGrantingAbility()) {
+                    player.sendSystemMessage(Component.translatable(NO_WINGS));
+                }
                 flight.areWingsSpread = false;
             }
             case NO_HUNGER -> {
