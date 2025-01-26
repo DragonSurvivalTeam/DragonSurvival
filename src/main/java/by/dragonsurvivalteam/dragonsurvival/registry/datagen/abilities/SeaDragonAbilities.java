@@ -257,12 +257,7 @@ public class SeaDragonAbilities {
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(3))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
                         false,
-                        Optional.of(new Activation.Sound(
-                                Optional.empty(),
-                                Optional.empty(),
-                                Optional.empty(),
-                                Optional.of(SoundEvents.UI_TOAST_IN)
-                        )),
+                        Activation.Sound.end(SoundEvents.UI_TOAST_IN),
                         Optional.of(new Activation.Animations(
                                 Optional.of(Either.right(new SimpleAbilityAnimation(SimpleAbilityAnimation.CAST_MASS_BUFF, AnimationLayer.BASE, 2, true, true))),
                                 Optional.empty(),
@@ -573,10 +568,24 @@ public class SeaDragonAbilities {
 
         //noinspection DataFlowIssue,deprecation -> ignore
         context.register(TEST_BLOCK_VISION, new DragonAbility(
-                Activation.passive(),
-                Optional.empty(),
-                Optional.empty(),
-                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(List.of(
+                new Activation(
+                        Activation.Type.ACTIVE_SIMPLE,
+                        Optional.of(LevelBasedValue.constant(1)),
+                        Optional.empty(),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(3))),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
+                        false,
+                        Activation.Sound.end(SoundEvents.UI_TOAST_IN),
+                        Optional.of(new Activation.Animations(
+                                Optional.of(Either.right(new SimpleAbilityAnimation(SimpleAbilityAnimation.CAST_MASS_BUFF, AnimationLayer.BASE, 2, true, true))),
+                                Optional.empty(),
+                                Optional.of(new SimpleAbilityAnimation(SimpleAbilityAnimation.MASS_BUFF, AnimationLayer.BASE, 0, true, true))
+                        ))
+                ),
+                Optional.of(new ExperienceLevelUpgrade(3, LevelBasedValue.lookup(List.of(7f, 15f, 35f), LevelBasedValue.perLevel(15)))),
+                // Disable when not on ground
+                Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false)).build()),
+                List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(List.of(
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("diamond_vision")).infinite().removeAutomatically().hidden().build(),
                                 HolderSet.direct(Blocks.DIAMOND_ORE.builtInRegistryHolder(), Blocks.DEEPSLATE_DIAMOND_ORE.builtInRegistryHolder()),
@@ -611,7 +620,7 @@ public class SeaDragonAbilities {
                                 BlockVision.DisplayType.PARTICLES,
                                 List.of(TextColor.fromLegacyFormat(ChatFormatting.DARK_RED))
                         ))
-                ), TargetingMode.ALLIES_AND_SELF)), LevelBasedValue.constant(1))),
+                ), TargetingMode.ALLIES_AND_SELF), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
         ));

@@ -106,8 +106,8 @@ public class DragonContainer extends AbstractContainerMenu {
 
         // Claw tool slots
         ClawInventoryData clawInventory = ClawInventoryData.getData(player);
-        for (int i = 0; i < ClawInventoryData.Slot.size(); i++) {
-            ClawToolSlot clawToolSlot = new ClawToolSlot(this, clawInventory.getContainer(), i, -26, 46 + i * 18, i);
+        for (int slot = 0; slot < ClawInventoryData.Slot.size(); slot++) {
+            ClawToolSlot clawToolSlot = new ClawToolSlot(this, clawInventory.getContainer(), slot, -26, 46 + slot * 18, ClawInventoryData.Slot.values()[slot]);
             addSlot(clawToolSlot);
         }
 

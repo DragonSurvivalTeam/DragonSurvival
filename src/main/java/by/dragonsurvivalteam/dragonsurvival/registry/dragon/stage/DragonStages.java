@@ -53,7 +53,7 @@ public class DragonStages {
                         Modifier.constant(Attributes.JUMP_STRENGTH, 0.025f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 0.25f, AttributeModifier.Operation.ADD_VALUE),
                         /* Per size */
-                        Modifier.precisePerWithBase(Attributes.SCALE, -0.7f, 0.035f, AttributeModifier.Operation.ADD_VALUE),
+                        Modifier.precisePerWithBase(Attributes.SCALE, -0.85f, 0.015f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.perWithBase(Attributes.MAX_HEALTH, -6, 0.4f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.perWithBase(DSAttributes.DRAGON_BREATH_RANGE, 1.5f, 0.05f, AttributeModifier.Operation.ADD_VALUE)
                 ),

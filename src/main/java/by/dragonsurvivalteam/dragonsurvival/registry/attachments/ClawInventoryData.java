@@ -10,6 +10,7 @@ import by.dragonsurvivalteam.dragonsurvival.util.ToolUtils;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
@@ -27,7 +28,20 @@ public class ClawInventoryData implements INBTSerializable<CompoundTag> {
     public static final String SHOULD_RENDER_CLAWS = "should_render_claws";
 
     public enum Slot {
-        SWORD, PICKAXE, AXE, SHOVEL;
+        SWORD("gui/dragon_claws_sword"),
+        PICKAXE("gui/dragon_claws_pickaxe"),
+        AXE("gui/dragon_claws_axe"),
+        SHOVEL("gui/dragon_claws_shovel");
+
+        private final ResourceLocation emptyTexture;
+
+        Slot(final String path) {
+            emptyTexture = DragonSurvival.res(path);
+        }
+
+        public ResourceLocation getEmptyTexture() {
+            return emptyTexture;
+        }
 
         /** Equivalent to the container size */
         public static int size() {

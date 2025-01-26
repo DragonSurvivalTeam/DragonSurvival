@@ -12,26 +12,19 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
-
 public class ClawToolSlot extends Slot {
-    static final ResourceLocation AXE_TEXTURE = ResourceLocation.fromNamespaceAndPath(MODID, "gui/dragon_claws_axe");
-    static final ResourceLocation PICKAXE_TEXTURE = ResourceLocation.fromNamespaceAndPath(MODID, "gui/dragon_claws_pickaxe");
-    static final ResourceLocation SHOVEL_TEXTURE = ResourceLocation.fromNamespaceAndPath(MODID, "gui/dragon_claws_shovel");
-    static final ResourceLocation SWORD_TEXTURE = ResourceLocation.fromNamespaceAndPath(MODID, "gui/dragon_claws_sword");
-
     private final DragonContainer dragonContainer;
-    private final int clawSlot;
+    private final ClawInventoryData.Slot slot;
 
-    public ClawToolSlot(final DragonContainer dragonContainer, final Container container, int index, int x, int y, int clawSlot) {
+    public ClawToolSlot(final DragonContainer dragonContainer, final Container container, int index, int x, int y, final ClawInventoryData.Slot slot) {
         super(container, index, x, y);
         this.dragonContainer = dragonContainer;
-        this.clawSlot = clawSlot;
+        this.slot = slot;
     }
 
     @Override
     public boolean mayPlace(@NotNull final ItemStack itemStack) {
-        return switch (ClawInventoryData.Slot.values()[clawSlot]) {
+        return switch (slot) {
             case SWORD -> ToolUtils.isWeapon(itemStack);
             case PICKAXE -> ToolUtils.isPickaxe(itemStack);
             case AXE -> ToolUtils.isAxe(itemStack);
@@ -45,9 +38,9 @@ public class ClawToolSlot extends Slot {
         ClawInventoryData.getData(dragonContainer.player).sync(dragonContainer.player);
     }
 
-    @Nullable @Override
-    public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
-        return Pair.of(InventoryMenu.BLOCK_ATLAS, clawSlot == 0 ? SWORD_TEXTURE : clawSlot == 2 ? AXE_TEXTURE : clawSlot == 1 ? PICKAXE_TEXTURE : SHOVEL_TEXTURE);
+    @Override
+    public @Nullable Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
+        return Pair.of(InventoryMenu.BLOCK_ATLAS, slot.getEmptyTexture());
     }
 
     @Override

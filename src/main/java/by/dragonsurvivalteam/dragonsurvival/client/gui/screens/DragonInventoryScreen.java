@@ -233,8 +233,6 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
         guiGraphics.blit(BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight);
         RenderSystem.disableBlend();
 
-        DragonStateHandler handler = DragonStateProvider.getData(player);
-
         int scissorY1 = topPos + 77;
         int scissorX1 = leftPos + 101;
         int scissorX0 = leftPos + 25;
