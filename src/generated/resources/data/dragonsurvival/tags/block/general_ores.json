@@ -1,6 +1,9 @@
 {
   "remove": [
+    "#c:ores/quartz",
+    "#c:ores/netherite_scrap",
     "#c:ores/coal",
+    "#c:ores/copper",
     "#c:ores/iron",
     "#c:ores/gold",
     "#c:ores/redstone",
