@@ -53,7 +53,7 @@ public class DragonStages {
                         Modifier.constant(Attributes.JUMP_STRENGTH, 0.025f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 0.25f, AttributeModifier.Operation.ADD_VALUE),
                         /* Per size */
-                        Modifier.precisePerWithBase(Attributes.SCALE, -0.85f, 0.015f, AttributeModifier.Operation.ADD_VALUE),
+                        Modifier.precisePerWithBase(Attributes.SCALE, -0.85f, 0.02f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.perWithBase(Attributes.MAX_HEALTH, -6, 0.4f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.perWithBase(DSAttributes.DRAGON_BREATH_RANGE, 1.5f, 0.05f, AttributeModifier.Operation.ADD_VALUE)
                 ),
@@ -80,7 +80,7 @@ public class DragonStages {
                         Modifier.constant(Attributes.JUMP_STRENGTH, 0.05f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 0.5f, AttributeModifier.Operation.ADD_VALUE),
                         /* Per size */
-                        Modifier.precisePerWithBase(Attributes.SCALE, -0.175f, 1.f / 60.f, AttributeModifier.Operation.ADD_VALUE),
+                        Modifier.precisePerWithBase(Attributes.SCALE, -0.55f, 1.f / 30.f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.per(Attributes.MAX_HEALTH, 2.f / 3.f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.perWithBase(DSAttributes.DRAGON_BREATH_RANGE, 3.25f, 0.05f, AttributeModifier.Operation.ADD_VALUE)
                 ),
@@ -107,7 +107,7 @@ public class DragonStages {
                         Modifier.constant(Attributes.JUMP_STRENGTH, 0.1f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 1, AttributeModifier.Operation.ADD_VALUE),
                         /* Per size */
-                        Modifier.precisePerWithBase(Attributes.SCALE, 0.05f, 0.025f, AttributeModifier.Operation.ADD_VALUE),
+                        Modifier.precisePerWithBase(Attributes.SCALE, -0.05f, 0.025f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.perWithBase(Attributes.MAX_HEALTH, 10.0f,0.5f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.perWithBase(DSAttributes.DRAGON_BREATH_RANGE, 5.5f, 0.05f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.per(Attributes.ENTITY_INTERACTION_RANGE, 0.05f, AttributeModifier.Operation.ADD_VALUE),
