@@ -89,7 +89,7 @@ public class DragonGrowthHandler {
             double oldSize = data.getDesiredSize();
             data.setDesiredSize(serverPlayer, data.getDesiredSize() + dragonStage.ticksToSize(getInterval()));
 
-            if (oldSize == data.getDesiredSize() || dragonStage.isNaturalGrowthStopped().map(condition -> condition.matches(serverPlayer.serverLevel(), serverPlayer.position(), serverPlayer)).orElse(true)) {
+            if (oldSize == data.getDesiredSize() || dragonStage.isNaturalGrowthStopped().map(condition -> condition.matches(serverPlayer.serverLevel(), serverPlayer.position(), serverPlayer)).orElse(false)) {
                 if (data.isGrowing) {
                     data.isGrowing = false;
                     PacketDistributor.sendToPlayer(serverPlayer, new SyncGrowthState(false));
