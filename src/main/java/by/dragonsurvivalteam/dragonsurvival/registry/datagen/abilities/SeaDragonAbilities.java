@@ -76,6 +76,7 @@ import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.loot.predicates.AnyOfCondition;
 import net.neoforged.neoforge.common.NeoForgeMod;
+import net.neoforged.neoforge.common.Tags;
 
 import java.util.List;
 import java.util.Optional;
@@ -584,7 +585,7 @@ public class SeaDragonAbilities {
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 20f, 45f, 50f), LevelBasedValue.perLevel(35)))),
                 // Disable when not on ground
-                Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false)).build()),
+                Optional.empty(),
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(List.of(
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("diamond_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(60))).hidden().build(),
@@ -601,24 +602,45 @@ public class SeaDragonAbilities {
                         )),
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("lapis_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(60))).hidden().build(),
-                                HolderSet.direct(Blocks.LAPIS_ORE.builtInRegistryHolder(), Blocks.DEEPSLATE_LAPIS_ORE.builtInRegistryHolder()),
+                                context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_LAPIS),
                                 LevelBasedValue.constant(24),
                                 BlockVision.DisplayType.PARTICLES,
                                 List.of(TextColor.fromLegacyFormat(ChatFormatting.BLUE))
                         )),
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("gold_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(60))).hidden().build(),
-                                HolderSet.direct(Blocks.GOLD_ORE.builtInRegistryHolder(), Blocks.DEEPSLATE_GOLD_ORE.builtInRegistryHolder()),
+                                context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_GOLD),
                                 LevelBasedValue.constant(32),
                                 BlockVision.DisplayType.PARTICLES,
                                 List.of(TextColor.fromLegacyFormat(ChatFormatting.GOLD))
                         )),
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("redstone_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(60))).hidden().build(),
-                                HolderSet.direct(Blocks.REDSTONE_ORE.builtInRegistryHolder(), Blocks.DEEPSLATE_REDSTONE_ORE.builtInRegistryHolder()),
+                                context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_REDSTONE),
                                 LevelBasedValue.constant(32),
                                 BlockVision.DisplayType.PARTICLES,
                                 List.of(TextColor.fromLegacyFormat(ChatFormatting.DARK_RED))
+                        )),
+                        BlockVisionEffect.single(new BlockVision(
+                                DurationInstanceBase.create(DragonSurvival.res("coal_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(60))).hidden().build(),
+                                context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_COAL),
+                                LevelBasedValue.constant(32),
+                                BlockVision.DisplayType.PARTICLES,
+                                List.of(TextColor.fromLegacyFormat(ChatFormatting.BLACK))
+                        )),
+                        BlockVisionEffect.single(new BlockVision(
+                                DurationInstanceBase.create(DragonSurvival.res("iron_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(60))).hidden().build(),
+                                context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_IRON),
+                                LevelBasedValue.constant(22),
+                                BlockVision.DisplayType.PARTICLES,
+                                List.of(TextColor.fromLegacyFormat(ChatFormatting.DARK_GRAY))
+                        )),
+                        BlockVisionEffect.single(new BlockVision(
+                                DurationInstanceBase.create(DragonSurvival.res("general_ore_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(60))).customIcon(DragonSurvival.res("textures/ability_effect/general_ore_vision.png")).build(),
+                                context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES),
+                                LevelBasedValue.constant(22),
+                                BlockVision.DisplayType.PARTICLES,
+                                List.of(TextColor.fromLegacyFormat(ChatFormatting.WHITE))
                         ))
                 ), TargetingMode.ALLIES_AND_SELF), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 true,

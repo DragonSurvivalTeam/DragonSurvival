@@ -52,7 +52,7 @@ public class MagicHUD {
     @ConfigRange(min = 0, max = 20)
     @Translation(key = "mark_disabled_abilities_red_delay", type = Translation.Type.CONFIGURATION, comments = "How long until the red overlay activates if an ability is disabled.")
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "magic"}, key = "mark_disabled_abilities_red_delay")
-    public static double markDisabledAbilitiesRedDelay = 2;
+    public static double markDisabledAbilitiesRedDelay = 0.8;
 
     @ConfigRange(min = -1000, max = 1000)
     @Translation(key = "cast_bar_x_offset", type = Translation.Type.CONFIGURATION, comments = "Offset for the x position of the cast bar")

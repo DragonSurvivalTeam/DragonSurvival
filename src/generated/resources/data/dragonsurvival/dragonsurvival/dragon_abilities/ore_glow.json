@@ -45,10 +45,7 @@
                     "id": "dragonsurvival:lapis_vision",
                     "is_hidden": true
                   },
-                  "blocks": [
-                    "minecraft:lapis_ore",
-                    "minecraft:deepslate_lapis_ore"
-                  ],
+                  "blocks": "#c:ores/lapis",
                   "colors": [
                     "blue"
                   ],
@@ -70,10 +67,7 @@
                     "id": "dragonsurvival:gold_vision",
                     "is_hidden": true
                   },
-                  "blocks": [
-                    "minecraft:gold_ore",
-                    "minecraft:deepslate_gold_ore"
-                  ],
+                  "blocks": "#c:ores/gold",
                   "colors": [
                     "gold"
                   ],
@@ -95,15 +89,78 @@
                     "id": "dragonsurvival:redstone_vision",
                     "is_hidden": true
                   },
-                  "blocks": [
-                    "minecraft:redstone_ore",
-                    "minecraft:deepslate_redstone_ore"
-                  ],
+                  "blocks": "#c:ores/redstone",
                   "colors": [
                     "dark_red"
                   ],
                   "display_type": "particles",
                   "range": 32.0
+                }
+              ],
+              "effect_type": "dragonsurvival:block_vision"
+            },
+            {
+              "block_visions": [
+                {
+                  "base": {
+                    "duration": {
+                      "type": "minecraft:linear",
+                      "base": 1200.0,
+                      "per_level_above_first": 1200.0
+                    },
+                    "id": "dragonsurvival:coal_vision",
+                    "is_hidden": true
+                  },
+                  "blocks": "#c:ores/coal",
+                  "colors": [
+                    "black"
+                  ],
+                  "display_type": "particles",
+                  "range": 32.0
+                }
+              ],
+              "effect_type": "dragonsurvival:block_vision"
+            },
+            {
+              "block_visions": [
+                {
+                  "base": {
+                    "duration": {
+                      "type": "minecraft:linear",
+                      "base": 1200.0,
+                      "per_level_above_first": 1200.0
+                    },
+                    "id": "dragonsurvival:iron_vision",
+                    "is_hidden": true
+                  },
+                  "blocks": "#c:ores/iron",
+                  "colors": [
+                    "dark_gray"
+                  ],
+                  "display_type": "particles",
+                  "range": 22.0
+                }
+              ],
+              "effect_type": "dragonsurvival:block_vision"
+            },
+            {
+              "block_visions": [
+                {
+                  "base": {
+                    "custom_icon": "dragonsurvival:textures/ability_effect/general_ore_vision.png",
+                    "duration": {
+                      "type": "minecraft:linear",
+                      "base": 1200.0,
+                      "per_level_above_first": 1200.0
+                    },
+                    "id": "dragonsurvival:general_ore_vision"
+                  },
+                  "blocks": "#c:ores",
+                  "colors": [
+                    "white"
+                  ],
+                  "display_type": "particles",
+                  "range": 22.0
                 }
               ],
               "effect_type": "dragonsurvival:block_vision"
@@ -183,14 +240,5 @@
     },
     "maximum_level": 4,
     "upgrade_type": "dragonsurvival:experience_levels"
-  },
-  "usage_blocked": {
-    "condition": "minecraft:entity_properties",
-    "entity": "this",
-    "predicate": {
-      "flags": {
-        "is_on_ground": false
-      }
-    }
   }
 }

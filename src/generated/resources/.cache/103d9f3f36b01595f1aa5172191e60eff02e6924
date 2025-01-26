@@ -1,4 +1,4 @@
-// 1.21.1	2025-01-26T09:13:57.9015719	Registries
+// 1.21.1	2025-01-26T18:50:51.6193351	Registries
 011b2ee382ec961722c100bbf059b4aa460f44b0 data/dragonsurvival/damage_type/anti_dragon.json
 d8c3135ecd1879e98a21e83ec1bcfd68c5fc3296 data/dragonsurvival/damage_type/ball_lightning.json
 3bca57c58e2307adb52a4b6e18ea88aae7e2d8d7 data/dragonsurvival/damage_type/blast_dust.json
@@ -44,7 +44,7 @@ e5296e88843834513b44d0112ad4a946751db182 data/dragonsurvival/dragonsurvival/drag
 92294f1cd40bb8a4add0744924859933498542d6 data/dragonsurvival/dragonsurvival/dragon_abilities/lava_vision.json
 b7cf601769c770fb9f3256751f79e7676346d3b9 data/dragonsurvival/dragonsurvival/dragon_abilities/light_in_darkness.json
 d44d9330463ad1353e8d944b63294ecd9225e0c6 data/dragonsurvival/dragonsurvival/dragon_abilities/nether_breath.json
-36a9ffd196b16594600e20d5f3fc8fe04272103c data/dragonsurvival/dragonsurvival/dragon_abilities/ore_glow.json
+0d37f8e01b0500738cc3ede586376bc9ec24718d data/dragonsurvival/dragonsurvival/dragon_abilities/ore_glow.json
 2c120f2313210d2706927e3c8524673b6acf9d99 data/dragonsurvival/dragonsurvival/dragon_abilities/sea_athletics.json
 9009d327651a436172b1f88e71fca22a5f892ee6 data/dragonsurvival/dragonsurvival/dragon_abilities/sea_claws_and_teeth.json
 36506df3b23ee45137bc072d353674bc95cb8b46 data/dragonsurvival/dragonsurvival/dragon_abilities/sea_eyes.json
