@@ -587,7 +587,7 @@ public class SeaDragonAbilities {
                 Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false)).build()),
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(List.of(
                         BlockVisionEffect.single(new BlockVision(
-                                DurationInstanceBase.create(DragonSurvival.res("diamond_vision")).infinite().removeAutomatically().hidden().build(),
+                                DurationInstanceBase.create(DragonSurvival.res("diamond_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(60))).hidden().build(),
                                 HolderSet.direct(Blocks.DIAMOND_ORE.builtInRegistryHolder(), Blocks.DEEPSLATE_DIAMOND_ORE.builtInRegistryHolder()),
                                 LevelBasedValue.constant(16),
                                 BlockVision.DisplayType.PARTICLES,
@@ -600,21 +600,21 @@ public class SeaDragonAbilities {
                                 )
                         )),
                         BlockVisionEffect.single(new BlockVision(
-                                DurationInstanceBase.create(DragonSurvival.res("lapis_vision")).infinite().removeAutomatically().hidden().build(),
+                                DurationInstanceBase.create(DragonSurvival.res("lapis_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(60))).hidden().build(),
                                 HolderSet.direct(Blocks.LAPIS_ORE.builtInRegistryHolder(), Blocks.DEEPSLATE_LAPIS_ORE.builtInRegistryHolder()),
                                 LevelBasedValue.constant(24),
                                 BlockVision.DisplayType.PARTICLES,
                                 List.of(TextColor.fromLegacyFormat(ChatFormatting.BLUE))
                         )),
                         BlockVisionEffect.single(new BlockVision(
-                                DurationInstanceBase.create(DragonSurvival.res("gold_vision")).infinite().removeAutomatically().hidden().build(),
+                                DurationInstanceBase.create(DragonSurvival.res("gold_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(60))).hidden().build(),
                                 HolderSet.direct(Blocks.GOLD_ORE.builtInRegistryHolder(), Blocks.DEEPSLATE_GOLD_ORE.builtInRegistryHolder()),
                                 LevelBasedValue.constant(32),
                                 BlockVision.DisplayType.PARTICLES,
                                 List.of(TextColor.fromLegacyFormat(ChatFormatting.GOLD))
                         )),
                         BlockVisionEffect.single(new BlockVision(
-                                DurationInstanceBase.create(DragonSurvival.res("redstone_vision")).infinite().removeAutomatically().hidden().build(),
+                                DurationInstanceBase.create(DragonSurvival.res("redstone_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(60))).hidden().build(),
                                 HolderSet.direct(Blocks.REDSTONE_ORE.builtInRegistryHolder(), Blocks.DEEPSLATE_REDSTONE_ORE.builtInRegistryHolder()),
                                 LevelBasedValue.constant(32),
                                 BlockVision.DisplayType.PARTICLES,

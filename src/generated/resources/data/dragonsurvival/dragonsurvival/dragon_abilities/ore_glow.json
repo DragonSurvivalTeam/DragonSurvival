@@ -8,9 +8,13 @@
               "block_visions": [
                 {
                   "base": {
+                    "duration": {
+                      "type": "minecraft:linear",
+                      "base": 1200.0,
+                      "per_level_above_first": 1200.0
+                    },
                     "id": "dragonsurvival:diamond_vision",
-                    "is_hidden": true,
-                    "should_remove_automatically": true
+                    "is_hidden": true
                   },
                   "blocks": [
                     "minecraft:diamond_ore",
@@ -33,9 +37,13 @@
               "block_visions": [
                 {
                   "base": {
+                    "duration": {
+                      "type": "minecraft:linear",
+                      "base": 1200.0,
+                      "per_level_above_first": 1200.0
+                    },
                     "id": "dragonsurvival:lapis_vision",
-                    "is_hidden": true,
-                    "should_remove_automatically": true
+                    "is_hidden": true
                   },
                   "blocks": [
                     "minecraft:lapis_ore",
@@ -54,9 +62,13 @@
               "block_visions": [
                 {
                   "base": {
+                    "duration": {
+                      "type": "minecraft:linear",
+                      "base": 1200.0,
+                      "per_level_above_first": 1200.0
+                    },
                     "id": "dragonsurvival:gold_vision",
-                    "is_hidden": true,
-                    "should_remove_automatically": true
+                    "is_hidden": true
                   },
                   "blocks": [
                     "minecraft:gold_ore",
@@ -75,9 +87,13 @@
               "block_visions": [
                 {
                   "base": {
+                    "duration": {
+                      "type": "minecraft:linear",
+                      "base": 1200.0,
+                      "per_level_above_first": 1200.0
+                    },
                     "id": "dragonsurvival:redstone_vision",
-                    "is_hidden": true,
-                    "should_remove_automatically": true
+                    "is_hidden": true
                   },
                   "blocks": [
                     "minecraft:redstone_ore",
