@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.BlockVision;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DamageModification;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.HarvestBonus;
@@ -32,6 +33,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilit
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.AreaCloudEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.ParticleEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.BlockVisionEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.BreathParticlesEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.DamageEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.DamageModificationEffect;
@@ -55,10 +57,12 @@ import by.dragonsurvivalteam.dragonsurvival.registry.projectile.ProjectileData;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.Projectiles;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.datafixers.util.Either;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
@@ -69,6 +73,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.loot.predicates.AnyOfCondition;
 import net.neoforged.neoforge.common.NeoForgeMod;
 
@@ -145,6 +150,10 @@ public class SeaDragonAbilities {
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Dexterity in water allows sea dragons to §2mine resources underwater§r§7 without penalty.")
     @Translation(type = Translation.Type.ABILITY, comments = "Diver")
     public static final ResourceKey<DragonAbility> DIVER = DragonAbilities.key("diver");
+
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "Outlines nearby blocks")
+    @Translation(type = Translation.Type.ABILITY, comments = "Block Vision Test")
+    public static final ResourceKey<DragonAbility> TEST_BLOCK_VISION = DragonAbilities.key("test_block_vision");
 
     public static void registerAbilities(final BootstrapContext<DragonAbility> context) {
         registerActiveAbilities(context);
@@ -560,6 +569,51 @@ public class SeaDragonAbilities {
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/diver_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/diver_1"), 1)
                 ))
+        ));
+
+        //noinspection DataFlowIssue,deprecation -> ignore
+        context.register(TEST_BLOCK_VISION, new DragonAbility(
+                Activation.passive(),
+                Optional.empty(),
+                Optional.empty(),
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(List.of(
+                        BlockVisionEffect.single(new BlockVision(
+                                DurationInstanceBase.create(DragonSurvival.res("diamond_vision")).infinite().removeAutomatically().hidden().build(),
+                                HolderSet.direct(Blocks.DIAMOND_ORE.builtInRegistryHolder(), Blocks.DEEPSLATE_DIAMOND_ORE.builtInRegistryHolder()),
+                                LevelBasedValue.constant(16),
+                                BlockVision.DisplayType.PARTICLES,
+                                List.of(
+                                        TextColor.fromLegacyFormat(ChatFormatting.GOLD),
+                                        TextColor.fromLegacyFormat(ChatFormatting.DARK_PURPLE),
+                                        TextColor.fromLegacyFormat(ChatFormatting.GREEN),
+                                        TextColor.fromLegacyFormat(ChatFormatting.RED),
+                                        TextColor.fromLegacyFormat(ChatFormatting.BLUE)
+                                )
+                        )),
+                        BlockVisionEffect.single(new BlockVision(
+                                DurationInstanceBase.create(DragonSurvival.res("lapis_vision")).infinite().removeAutomatically().hidden().build(),
+                                HolderSet.direct(Blocks.LAPIS_ORE.builtInRegistryHolder(), Blocks.DEEPSLATE_LAPIS_ORE.builtInRegistryHolder()),
+                                LevelBasedValue.constant(24),
+                                BlockVision.DisplayType.PARTICLES,
+                                List.of(TextColor.fromLegacyFormat(ChatFormatting.BLUE))
+                        )),
+                        BlockVisionEffect.single(new BlockVision(
+                                DurationInstanceBase.create(DragonSurvival.res("gold_vision")).infinite().removeAutomatically().hidden().build(),
+                                HolderSet.direct(Blocks.GOLD_ORE.builtInRegistryHolder(), Blocks.DEEPSLATE_GOLD_ORE.builtInRegistryHolder()),
+                                LevelBasedValue.constant(32),
+                                BlockVision.DisplayType.PARTICLES,
+                                List.of(TextColor.fromLegacyFormat(ChatFormatting.GOLD))
+                        )),
+                        BlockVisionEffect.single(new BlockVision(
+                                DurationInstanceBase.create(DragonSurvival.res("redstone_vision")).infinite().removeAutomatically().hidden().build(),
+                                HolderSet.direct(Blocks.REDSTONE_ORE.builtInRegistryHolder(), Blocks.DEEPSLATE_REDSTONE_ORE.builtInRegistryHolder()),
+                                LevelBasedValue.constant(32),
+                                BlockVision.DisplayType.PARTICLES,
+                                List.of(TextColor.fromLegacyFormat(ChatFormatting.DARK_RED))
+                        ))
+                ), TargetingMode.ALLIES_AND_SELF)), LevelBasedValue.constant(1))),
+                true,
+                new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
         ));
     }
 }

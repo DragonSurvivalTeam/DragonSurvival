@@ -69,7 +69,8 @@ public class DSDragonAbilityTags extends TagsProvider<DragonAbility> {
                 .add(SeaDragonAbilities.AMPHIBIOUS)
                 .add(SeaDragonAbilities.DIVER)
                 .add(SeaDragonAbilities.SEA_WINGS)
-                .add(SeaDragonAbilities.SEA_SPIN);
+                .add(SeaDragonAbilities.SEA_SPIN)
+                .add(SeaDragonAbilities.TEST_BLOCK_VISION);
 
         tag(FOREST)
                 // Active
@@ -88,7 +89,7 @@ public class DSDragonAbilityTags extends TagsProvider<DragonAbility> {
                 .add(ForestDragonAbilities.FOREST_WINGS)
                 .add(ForestDragonAbilities.FOREST_SPIN);
 
-        tag(ORDER)
+        tag(ORDER) // TODO :: if the tags are added instead, are the orders within them respected / guaranteed?
                 // Cave :: active
                 .add(CaveDragonAbilities.NETHER_BREATH)
                 .add(CaveDragonAbilities.FIRE_BALL)
