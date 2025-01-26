@@ -67,6 +67,7 @@
     "client.LiquidBlockRendererMixin",
     "client.LivingEntityRendererMixin",
     "client.LivingRendererAccessor",
+    "client.LocalPlayerAccessor",
     "client.LocalPlayerMixin",
     "client.MinecraftMixin",
     "client.PlayerRendererMixin",
