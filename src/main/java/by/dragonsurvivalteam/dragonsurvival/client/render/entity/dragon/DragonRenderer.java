@@ -5,6 +5,8 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
+import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
+import by.dragonsurvivalteam.dragonsurvival.compat.sophisticatedBackpacks.DragonBackpackRenderLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
@@ -30,6 +32,8 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
 
     public DragonRenderer(final EntityRendererProvider.Context context, final GeoModel<DragonEntity> model) {
         super(context, model);
+        
+        
 
         getRenderLayers().add(new DragonGlowLayerRenderer(this));
         getRenderLayers().add(new ClawsAndTeethRenderLayer(this));
@@ -42,6 +46,11 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
             }
             return null;
         }, (bone, animatable) -> null));
+
+
+        if(Compat.isModLoaded("sophisticatedbackpacks"))
+            getRenderLayers().add(new DragonBackpackRenderLayer(this));
+        
     }
 
     @Override
@@ -64,6 +73,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         if (player == null || player.isSpectator() || player.isInvisibleTo(Minecraft.getInstance().player)) {
             return;
         }
+        
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
         boolean hasWings = !handler.body().value().canHideWings() || handler.getCurrentStageCustomization().wings;
