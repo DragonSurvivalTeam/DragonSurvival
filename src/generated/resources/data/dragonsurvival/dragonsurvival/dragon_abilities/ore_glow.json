@@ -155,7 +155,7 @@
                     },
                     "id": "dragonsurvival:general_ore_vision"
                   },
-                  "blocks": "#c:ores",
+                  "blocks": "#dragonsurvival:unknown_ores",
                   "colors": [
                     "white"
                   ],

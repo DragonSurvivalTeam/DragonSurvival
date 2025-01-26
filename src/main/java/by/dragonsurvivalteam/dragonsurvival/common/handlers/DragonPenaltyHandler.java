@@ -11,6 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalt
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.HitByProjectileTrigger;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.ItemUsedTrigger;
 import by.dragonsurvivalteam.dragonsurvival.server.containers.slots.ClawToolSlot;
+import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -26,8 +27,6 @@ import net.neoforged.neoforge.event.ItemStackedOnOtherEvent;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-
-import static net.minecraft.client.CameraType.FIRST_PERSON;
 
 @EventBusSubscriber
 public class DragonPenaltyHandler {
@@ -145,16 +144,13 @@ public class DragonPenaltyHandler {
     @SubscribeEvent
     public static void preventThirdPersonWhenSuffocating(final ClientTickEvent.Post event) {
         Player player = DragonSurvival.PROXY.getLocalPlayer();
-        if(player == null) {
+
+        if (!DragonStateProvider.isDragon(player)) {
             return;
         }
 
-        if(!DragonStateProvider.isDragon(player)) {
-            return;
-        }
-
-        if (((LocalPlayerAccessor)player).dragonSurvival$suffocatesAt(BlockPos.containing(player.position()))) {
-            Minecraft.getInstance().options.setCameraType(FIRST_PERSON);
+        if (((LocalPlayerAccessor) player).dragonSurvival$suffocatesAt(BlockPos.containing(player.position()))) {
+            Minecraft.getInstance().options.setCameraType(CameraType.FIRST_PERSON);
         }
     }
 }

@@ -587,6 +587,7 @@ public class SeaDragonAbilities {
                 // Disable when not on ground
                 Optional.empty(),
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(List.of(
+                        // TODO :: add emerald?
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("diamond_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(60))).hidden().build(),
                                 HolderSet.direct(Blocks.DIAMOND_ORE.builtInRegistryHolder(), Blocks.DEEPSLATE_DIAMOND_ORE.builtInRegistryHolder()),
@@ -637,7 +638,7 @@ public class SeaDragonAbilities {
                         )),
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("general_ore_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(60))).customIcon(DragonSurvival.res("textures/ability_effect/general_ore_vision.png")).build(),
-                                context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES),
+                                context.lookup(Registries.BLOCK).getOrThrow(DSBlockTags.UNKNOWN_ORES),
                                 LevelBasedValue.constant(22),
                                 BlockVision.DisplayType.PARTICLES,
                                 List.of(TextColor.fromLegacyFormat(ChatFormatting.WHITE))

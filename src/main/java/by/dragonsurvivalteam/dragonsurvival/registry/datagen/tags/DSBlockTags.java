@@ -43,6 +43,9 @@ public class DSBlockTags extends BlockTagsProvider {
     @Translation(comments = "Is Wet")
     public static final TagKey<Block> IS_WET = key("is_wet");
 
+    @Translation(comments = "Unknown Ores")
+    public static final TagKey<Block> UNKNOWN_ORES = key("unknown_ores");
+
     @Translation(comments = "Dragon Altars")
     public static final TagKey<Block> DRAGON_ALTARS = key("dragon_altars");
     @Translation(comments = "Dragon Treasures")
@@ -130,6 +133,16 @@ public class DSBlockTags extends BlockTagsProvider {
 
         tag(DRAGON_ORE_DROP)
                 .addTag(Tags.Blocks.ORES);
+
+        tag(UNKNOWN_ORES)
+                .addTag(Tags.Blocks.ORES)
+                .remove(Tags.Blocks.ORES_COAL)
+                .remove(Tags.Blocks.ORES_IRON)
+                .remove(Tags.Blocks.ORES_GOLD)
+                .remove(Tags.Blocks.ORES_REDSTONE)
+                .remove(Tags.Blocks.ORES_LAPIS)
+                .remove(Tags.Blocks.ORES_EMERALD)
+                .remove(Tags.Blocks.ORES_DIAMOND);
     }
 
     private void addToTypeTags() {

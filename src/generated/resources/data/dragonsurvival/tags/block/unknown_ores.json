@@ -1,0 +1,14 @@
+{
+  "remove": [
+    "#c:ores/coal",
+    "#c:ores/iron",
+    "#c:ores/gold",
+    "#c:ores/redstone",
+    "#c:ores/lapis",
+    "#c:ores/emerald",
+    "#c:ores/diamond"
+  ],
+  "values": [
+    "#c:ores"
+  ]
+}
