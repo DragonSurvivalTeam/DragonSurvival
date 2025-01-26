@@ -43,8 +43,8 @@ public class DSBlockTags extends BlockTagsProvider {
     @Translation(comments = "Is Wet")
     public static final TagKey<Block> IS_WET = key("is_wet");
 
-    @Translation(comments = "Unknown Ores")
-    public static final TagKey<Block> UNKNOWN_ORES = key("unknown_ores");
+    @Translation(comments = "General Ores")
+    public static final TagKey<Block> GENERAL_ORES = key("general_ores");
 
     @Translation(comments = "Dragon Altars")
     public static final TagKey<Block> DRAGON_ALTARS = key("dragon_altars");
@@ -56,7 +56,7 @@ public class DSBlockTags extends BlockTagsProvider {
     @Translation(comments = "Small Wooden Dragon Doors")
     public static final TagKey<Block> SMALL_WOODEN_DRAGON_DOORS = key("small_wooden_dragon_doors");
 
-    @Translation(comments = "Dragon Ore/Bone Dropping Blocks")
+    @Translation(comments = "Dragon Dust/Bone Dropping Blocks")
     public static final TagKey<Block> DRAGON_ORE_DROP = key("dragon_ore_drop");
 
     public DSBlockTags(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
@@ -134,9 +134,14 @@ public class DSBlockTags extends BlockTagsProvider {
         tag(DRAGON_ORE_DROP)
                 .addTag(Tags.Blocks.ORES);
 
-        tag(UNKNOWN_ORES)
+        tag(GENERAL_ORES)
                 .addTag(Tags.Blocks.ORES)
+                // Nether
+                .remove(Tags.Blocks.ORES_QUARTZ)
+                .remove(Tags.Blocks.ORES_NETHERITE_SCRAP)
+                // Overworld
                 .remove(Tags.Blocks.ORES_COAL)
+                .remove(Tags.Blocks.ORES_COPPER)
                 .remove(Tags.Blocks.ORES_IRON)
                 .remove(Tags.Blocks.ORES_GOLD)
                 .remove(Tags.Blocks.ORES_REDSTONE)
