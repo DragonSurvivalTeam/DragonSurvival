@@ -167,7 +167,7 @@ public class ForestDragonAbilities {
                         true,
                         Activation.Sound.of(DSSounds.FOREST_BREATH_START.get(), null, DSSounds.FOREST_BREATH_LOOP.get(), DSSounds.FOREST_BREATH_END.get()),
                         Optional.of(new Activation.Animations(
-                                Optional.empty(),
+                                Optional.of(Either.right(new SimpleAbilityAnimation("spell_charge", AnimationLayer.BREATH, 5, false, false))),
                                 Optional.of(new SimpleAbilityAnimation("breath", AnimationLayer.BREATH, 5, false, false)),
                                 Optional.empty()
                         ))
@@ -237,11 +237,15 @@ public class ForestDragonAbilities {
                         Activation.Type.ACTIVE_SIMPLE,
                         Optional.of(LevelBasedValue.constant(1)),
                         Optional.empty(),
-                        Optional.empty(),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(0.1))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(3))),
                         true,
                         Activation.Sound.end(SoundEvents.ARROW_SHOOT),
-                        Optional.empty()
+                        Optional.of(new Activation.Animations(
+                                Optional.of(Either.right(new SimpleAbilityAnimation("spell_charge", AnimationLayer.BREATH, 5, false, false))),
+                                Optional.empty(),
+                                Optional.empty()
+                        ))
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 20f, 30f, 40f), LevelBasedValue.perLevel(15)))),
                 Optional.empty(),

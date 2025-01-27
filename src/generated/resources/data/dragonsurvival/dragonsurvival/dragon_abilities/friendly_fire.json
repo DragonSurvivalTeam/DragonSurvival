@@ -15,9 +15,31 @@
                 "duration": 4000.0,
                 "effects": "minecraft:fire_resistance"
               }
+            },
+            {
+              "effect_type": "dragonsurvival:particle",
+              "particle_count": 20.0,
+              "particle_data": {
+                "horizontal_position": {
+                  "type": "in_bounding_box"
+                },
+                "horizontal_velocity": {
+                  "base": 0.1
+                },
+                "particle": {
+                  "type": "minecraft:lava"
+                },
+                "speed": 0.1,
+                "vertical_position": {
+                  "type": "in_bounding_box"
+                },
+                "vertical_velocity": {
+                  "base": 0.1
+                }
+              }
             }
           ],
-          "targeting_mode": "allies"
+          "targeting_mode": "allies_and_self"
         },
         "radius": 25.0,
         "target_type": "dragonsurvival:area"

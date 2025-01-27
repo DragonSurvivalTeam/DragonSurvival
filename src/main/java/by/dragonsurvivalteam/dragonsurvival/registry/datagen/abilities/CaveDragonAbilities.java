@@ -228,7 +228,7 @@ public class CaveDragonAbilities {
                         true,
                         Optional.of(new Activation.Sound(Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(SoundEvents.FIRECHARGE_USE))),
                         Optional.of(new Activation.Animations(
-                                Optional.of(Either.right(new SimpleAbilityAnimation("breath", AnimationLayer.BREATH, 5, false, false))),
+                                Optional.of(Either.right(new SimpleAbilityAnimation("spell_charge", AnimationLayer.BREATH, 5, false, false))),
                                 Optional.empty(),
                                 Optional.empty()
                         ))
@@ -312,8 +312,13 @@ public class CaveDragonAbilities {
                 // Disable when not on ground
                 Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false)).build()),
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(
-                        PotionEffect.only(PotionData.create(MobEffects.FIRE_RESISTANCE).amplifierPer(1).duration(200).build()),
-                        TargetingMode.ALLIES
+                        List.of(
+                                new PotionEffect(PotionData.create(MobEffects.FIRE_RESISTANCE).amplifierPer(1).duration(200).build()),
+                                new ParticleEffect(
+                                        new SpawnParticles(ParticleTypes.LAVA, SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.1f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.1f)), ConstantFloat.of(0.1f)),
+                                        LevelBasedValue.constant(20)
+                                )
+                        ), TargetingMode.ALLIES_AND_SELF
                 ), LevelBasedValue.constant(25)), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -334,9 +339,9 @@ public class CaveDragonAbilities {
                         false,
                         Optional.of(new Activation.Sound(Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(SoundEvents.UI_TOAST_IN))),
                         Optional.of(new Activation.Animations(
-                                Optional.of(Either.right(new SimpleAbilityAnimation("cast_self_buff", AnimationLayer.BASE, 2, true, false))),
+                                Optional.of(Either.right(new SimpleAbilityAnimation("cast_magic_alt", AnimationLayer.BASE, 5, false, false))),
                                 Optional.empty(),
-                                Optional.of(new SimpleAbilityAnimation("self_buff", AnimationLayer.BASE, 0, true, false))
+                                Optional.of(new SimpleAbilityAnimation("magic_alt", AnimationLayer.BASE, 4, false, false))
                         ))
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 25f, 45f, 60f), LevelBasedValue.perLevel(15)))),

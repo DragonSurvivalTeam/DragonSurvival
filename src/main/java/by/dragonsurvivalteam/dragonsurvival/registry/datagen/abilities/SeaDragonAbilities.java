@@ -172,7 +172,7 @@ public class SeaDragonAbilities {
                         true,
                         Activation.Sound.of(DSSounds.STORM_BREATH_START.get(), null, DSSounds.STORM_BREATH_LOOP.get(), DSSounds.STORM_BREATH_END.get()),
                         Optional.of(new Activation.Animations(
-                                Optional.empty(),
+                                Optional.of(Either.right(new SimpleAbilityAnimation("spell_charge", AnimationLayer.BREATH, 5, false, false))),
                                 Optional.of(new SimpleAbilityAnimation("breath", AnimationLayer.BREATH, 5, false, false)),
                                 Optional.empty()
                         ))
@@ -223,7 +223,11 @@ public class SeaDragonAbilities {
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(20))),
                         true,
                         Optional.empty(),
-                        Optional.empty()
+                        Optional.of(new Activation.Animations(
+                                Optional.of(Either.right(new SimpleAbilityAnimation("spell_charge", AnimationLayer.BREATH, 5, false, false))),
+                                Optional.empty(),
+                                Optional.empty()
+                        ))
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 20f, 45f, 50f), LevelBasedValue.perLevel(15)))),
                 Optional.empty(),
@@ -299,9 +303,9 @@ public class SeaDragonAbilities {
                         false,
                         Activation.Sound.end(SoundEvents.UI_TOAST_IN),
                         Optional.of(new Activation.Animations(
-                                Optional.of(Either.right(new SimpleAbilityAnimation("cast_self_buff", AnimationLayer.BASE, 2, true, false))),
+                                Optional.of(Either.right(new SimpleAbilityAnimation("cast_magic_alt", AnimationLayer.BASE, 5, false, false))),
                                 Optional.empty(),
-                                Optional.of(new SimpleAbilityAnimation("self_buff", AnimationLayer.BASE, 0, true, false))
+                                Optional.of(new SimpleAbilityAnimation("magic_alt", AnimationLayer.BASE, 4, false, false))
                         ))
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 25f, 45f, 60f), LevelBasedValue.perLevel(15)))),
@@ -630,11 +634,54 @@ public class SeaDragonAbilities {
                                 List.of(TextColor.fromLegacyFormat(ChatFormatting.BLACK))
                         )),
                         BlockVisionEffect.single(new BlockVision(
+                                DurationInstanceBase.create(DragonSurvival.res("emerald_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(60))).hidden().build(),
+                                context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_EMERALD),
+                                LevelBasedValue.constant(26),
+                                BlockVision.DisplayType.PARTICLES,
+                                List.of(TextColor.fromLegacyFormat(ChatFormatting.GREEN))
+                        )),
+                        BlockVisionEffect.single(new BlockVision(
+                                DurationInstanceBase.create(DragonSurvival.res("quartz_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(60))).hidden().build(),
+                                context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_QUARTZ),
+                                LevelBasedValue.constant(20),
+                                BlockVision.DisplayType.PARTICLES,
+                                List.of(
+                                        TextColor.fromLegacyFormat(ChatFormatting.DARK_RED),
+                                        TextColor.fromLegacyFormat(ChatFormatting.GRAY)
+                                )
+                        )),
+                        BlockVisionEffect.single(new BlockVision(
+                                DurationInstanceBase.create(DragonSurvival.res("copper_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(60))).hidden().build(),
+                                context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_COPPER),
+                                LevelBasedValue.constant(12),
+                                BlockVision.DisplayType.PARTICLES,
+                                List.of(
+                                        TextColor.fromLegacyFormat(ChatFormatting.GOLD),
+                                        TextColor.fromLegacyFormat(ChatFormatting.DARK_GREEN)
+                                )
+                        )),
+                        BlockVisionEffect.single(new BlockVision(
+                                DurationInstanceBase.create(DragonSurvival.res("netherite_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(60))).hidden().build(),
+                                context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_NETHERITE_SCRAP),
+                                LevelBasedValue.constant(12),
+                                BlockVision.DisplayType.PARTICLES,
+                                List.of(
+                                        TextColor.fromLegacyFormat(ChatFormatting.GOLD),
+                                        TextColor.fromLegacyFormat(ChatFormatting.BLACK),
+                                        TextColor.fromLegacyFormat(ChatFormatting.YELLOW),
+                                        TextColor.fromLegacyFormat(ChatFormatting.DARK_GRAY)
+                                )
+                        )),
+                        BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("iron_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(60))).hidden().build(),
                                 context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_IRON),
                                 LevelBasedValue.constant(22),
                                 BlockVision.DisplayType.PARTICLES,
-                                List.of(TextColor.fromLegacyFormat(ChatFormatting.DARK_GRAY))
+                                List.of(
+                                        TextColor.fromLegacyFormat(ChatFormatting.DARK_GRAY),
+                                        TextColor.fromLegacyFormat(ChatFormatting.GRAY),
+                                        TextColor.fromLegacyFormat(ChatFormatting.WHITE)
+                                )
                         )),
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("general_ore_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(60))).customIcon(DragonSurvival.res("textures/ability_effect/general_ore_vision.png")).build(),

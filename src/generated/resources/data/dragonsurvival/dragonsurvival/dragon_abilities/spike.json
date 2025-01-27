@@ -38,6 +38,16 @@
   ],
   "activation": {
     "type": "active_simple",
+    "animations": {
+      "start_and_charging": {
+        "animation_key": "spell_charge",
+        "layer": "BREATH",
+        "locks_neck": false,
+        "locks_tail": false,
+        "transition_length": 5
+      }
+    },
+    "cast_time": 2.0,
     "cooldown": 60.0,
     "initial_mana_cost": 1.0,
     "sound": {
