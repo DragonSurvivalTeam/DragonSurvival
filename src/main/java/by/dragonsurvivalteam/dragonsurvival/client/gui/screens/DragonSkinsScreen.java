@@ -215,7 +215,7 @@ public class DragonSkinsScreen extends Screen {
 
         //noinspection DataFlowIssue -> key is present
         if (dragonStage != null && !DragonSkins.playerSkinOrGlowFetchingInProgress(playerName, dragonStage.getKey()) && (showYourSkin || !Objects.equals(playerName, minecraft.player.getGameProfile().getName()))) {
-            if(!DragonSkins.fetchHasFailed(playerName, dragonStage.getKey())) {
+            if(!DragonSkins.fetchHasFailed(playerName, dragonStage.getKey()) || Objects.equals(playerName, minecraft.player.getGameProfile().getName())) {
                 if (handler.stage() == null) {
                     boolean alreadyUsingDefaults = handler.getCurrentSkinPreset().isStageUsingDefaultSkin(dragonStage.getKey());
                     handler.setSize(null, handler.species().value().getStartingSize(minecraft.player.registryAccess()));
@@ -283,17 +283,18 @@ public class DragonSkinsScreen extends Screen {
         }
 
         //noinspection DataFlowIssue -> player is present
-        handler.deserializeNBT(minecraft.player.registryAccess(), DragonStateProvider.getData(minecraft.player).serializeNBT(minecraft.player.registryAccess()));
+        DragonStateHandler playerHandler = DragonStateProvider.getData(minecraft.player);
+        handler.deserializeNBT(minecraft.player.registryAccess(), playerHandler.serializeNBT(minecraft.player.registryAccess()));
 
         if (!DragonSpecies.isBuiltIn(handler.speciesKey())) {
             handler.setSpecies(null, player.registryAccess().holderOrThrow(BuiltInDragonSpecies.CAVE_DRAGON));
         }
 
-        if (!handler.body().value().model().equals(DragonBody.DEFAULT_MODEL)) {
-            showYourSkin = true;
+        if (!playerHandler.body().value().model().equals(DragonBody.DEFAULT_MODEL)) {
+            showYourSkin = false;
             ResourceHelper.all(null, DragonBody.REGISTRY).stream().filter(body -> body.value().model().equals(DragonBody.DEFAULT_MODEL)).findFirst().ifPresent(body -> handler.setBody(null, body));
         } else {
-            showYourSkin = false;
+            showYourSkin = true;
         }
 
         handler.setStage(null, dragonStage);
