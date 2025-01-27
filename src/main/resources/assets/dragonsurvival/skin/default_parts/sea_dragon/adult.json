@@ -1,0 +1,16 @@
+{
+  "species": "dragonsurvival:sea_dragon",
+  "stage": "dragonsurvival:adult",
+  "model": "dragonsurvival:dragon_model",
+  "parts": {
+    "base": "base_4",
+    "bottom": "bottom_3",
+    "eyes": "eyes_12",
+    "horns": "horns_21",
+    "spikes": "spikes_3",
+    "claws": "claw_3_sea_3",
+    "teeth": "teeth_3",
+    "magic": "sea_magic_3",
+    "extra": "sea_extra_2"
+  }
+}
