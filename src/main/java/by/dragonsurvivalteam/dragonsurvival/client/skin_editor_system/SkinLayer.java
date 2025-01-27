@@ -1,10 +1,13 @@
 package by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import com.mojang.serialization.Codec;
+import net.minecraft.util.StringRepresentable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
-public enum SkinLayer {
+public enum SkinLayer implements StringRepresentable {
     @Translation(type = Translation.Type.SKIN_PART, comments = "Base")
     BASE("Base", true),
     @Translation(type = Translation.Type.SKIN_PART, comments = "Bottom")
@@ -31,6 +34,8 @@ public enum SkinLayer {
     EXTRA6("Extra", false),
     EXTRA7("Extra", false);
 
+    public static final Codec<SkinLayer> CODEC = StringRepresentable.fromValues(SkinLayer::values);
+
     public final String name;
     public final boolean base;
 
@@ -49,5 +54,10 @@ public enum SkinLayer {
 
     public String getNameLowerCase() {
         return name.toLowerCase(Locale.ENGLISH);
+    }
+
+    @Override
+    public @NotNull String getSerializedName() {
+        return toString().toLowerCase(Locale.ENGLISH);
     }
 }

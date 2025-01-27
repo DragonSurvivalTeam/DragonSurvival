@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.Def
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DragonPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
+import com.mojang.datafixers.util.Either;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
@@ -37,7 +38,7 @@ public class DragonStageCustomization implements INBTSerializable<CompoundTag> {
 
             if (partMap != null) {
                 List<DragonPart> parts = partMap.get(actualLayer);
-                String partKey = DefaultPartLoader.getDefaultPartKey(type, dragonStage, customModel, layer);
+                String partKey = DefaultPartLoader.getDefaultPartKey(type, dragonStage, Either.right(customModel), layer);
 
                 if (parts != null) {
                     for (DragonPart part : parts) {
