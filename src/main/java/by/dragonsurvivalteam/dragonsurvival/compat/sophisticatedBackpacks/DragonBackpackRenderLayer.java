@@ -23,6 +23,7 @@ import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
 import java.lang.Math;
 
+
 public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
 
     @Translation(key = "backpack_offset_x", type = Translation.Type.CONFIGURATION, comments = "Backpack X offset")
@@ -112,10 +113,8 @@ public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
         poseStack.translate(model_offset_x, model_offset_y, model_offset_z);
         float s = (float) model_scale;
         poseStack.scale(s, s, s);
+        
         poseStack.rotateAround(rotation, 0, 1, 0);
 
     }
 }
-
-
-
