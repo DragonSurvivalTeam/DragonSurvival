@@ -742,6 +742,8 @@
   "dragonsurvival.configuration.primordial_anchor_gives_flight_grant_state.tooltip": "If enabled, the primordial anchor will give the flight grant state.",
   "dragonsurvival.configuration.primordial_anchor_gives_spin_grant_state": "Primordial Anchor Gives Spin Grant State",
   "dragonsurvival.configuration.primordial_anchor_gives_spin_grant_state.tooltip": "If enabled, the primordial anchor will give the spin grant state.",
+  "dragonsurvival.configuration.render_backpack": "Render Backpack",
+  "dragonsurvival.configuration.render_backpack.tooltip": "enable / disable backpack rendering",
   "dragonsurvival.configuration.render_custom_skin": "Render Custom Skin",
   "dragonsurvival.configuration.render_custom_skin.tooltip": "If enabled your custom dragon skin will be rendered",
   "dragonsurvival.configuration.render_dragon_claws": "Render Dragon Claws",
