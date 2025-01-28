@@ -39,7 +39,7 @@ import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
-import java.awt.Color;
+import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -47,8 +47,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-
-import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.res;
 
 public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
     private final GeoEntityRenderer<DragonEntity> renderer;
@@ -131,7 +129,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
     private static Optional<ResourceLocation> constructTrimmedDragonArmorTexture(final Player player) {
         String armorUUID = buildUniqueArmorUUID(player);
         // This is an internal (dynamically created) resource, so we can keep it in the DS namespace
-        ResourceLocation imageResource = res("armor_" + armorUUID);
+        ResourceLocation imageResource = DragonSurvival.res("armor_" + armorUUID);
 
         if (armorTextures.containsKey(imageResource)) {
             CompletableFuture<Void> future = armorTextures.get(imageResource);
@@ -160,16 +158,22 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         NativeImage image = new NativeImage(512, 512, true);
         DragonStateHandler handler = DragonStateProvider.getData(player);
         ResourceLocation currentDragonModel = handler.getModel();
-        if(!armorMasksPerModel.containsKey(currentDragonModel)) {
+
+        if (!armorMasksPerModel.containsKey(currentDragonModel)) {
             return image;
         }
 
         HashMap<EquipmentSlot, NativeImage> armorMasks = armorMasksPerModel.get(currentDragonModel);
+
         for (EquipmentSlot slot : EquipmentSlot.values()) {
-            if (!armorMasks.containsKey(slot)) continue;
+            if (!armorMasks.containsKey(slot)) {
+                continue;
+            }
+
             ItemStack itemstack = player.getItemBySlot(slot);
             ResourceLocation existingArmorLocation = generateArmorTextureResourceLocation(player, slot);
             NativeImage armorImage = RenderingUtils.getImageFromResource(existingArmorLocation);
+
             // TODO: This will need to be significantly more flexible for 1.21.2 onwards (since anything can be considered armor)
             if (itemstack.getItem() instanceof ArmorItem) {
                 if (armorImage == null) {
@@ -179,18 +183,23 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
                 ArmorTrim trim = itemstack.get(DataComponents.TRIM);
                 boolean hasTrim = false;
                 float[] trimBaseHSB = new float[3];
+
                 if (trim != null) {
                     Color trimBaseColor;
                     hasTrim = true;
-                    String materialAssetName = trim.material().value().assetName();
-                    NativeImage colorPalette = RenderingUtils.getImageFromResource(ResourceLocation.withDefaultNamespace("textures/trims/color_palettes/" + materialAssetName + ".png"));
+
+                    ResourceLocation paletteResource = ResourceLocation.withDefaultNamespace("textures/trims/color_palettes/" + trim.material().value().assetName() + ".png");
+                    NativeImage colorPalette = RenderingUtils.getImageFromResource(paletteResource);
+
                     if (colorPalette != null) {
                         int[] baseRed = new int[colorPalette.getWidth() * colorPalette.getHeight()], baseGreen = new int[colorPalette.getWidth() * colorPalette.getHeight()], baseBlue = new int[colorPalette.getWidth() * colorPalette.getHeight()];
                         int red = 0, green = 0, blue = 0;
                         int z = 0;
+
                         for (int x = 0; x < colorPalette.getWidth(); x++) {
                             for (int y = 0; y < colorPalette.getHeight(); y++) {
                                 int rgba = colorPalette.getPixelRGBA(x, y);
+
                                 if (rgba != 0) {
                                     Color c = new Color(rgba);
                                     baseRed[z] = c.getRed();
@@ -200,33 +209,41 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
                                 }
                             }
                         }
+
                         for (int i = 0; i < z; i++) {
                             red += baseRed[i];
                             green += baseGreen[i];
                             blue += baseBlue[i];
                         }
+
                         trimBaseColor = new Color(blue / z, green / z, red / z, 255);
                         Color.RGBtoHSB(trimBaseColor.getBlue(), trimBaseColor.getGreen(), trimBaseColor.getRed(), trimBaseHSB);
+
+                        colorPalette.close();
                     } else {
-                        TextColor tc = trim.material().value().description().getStyle().getColor();
-                        if (tc != null) {
+                        TextColor textColor = trim.material().value().description().getStyle().getColor();
+
+                        if (textColor != null) {
                             // Not the most elegant solution,
                             // but the best way I could find to get a single color reliably...
-                            trimBaseColor = new Color(tc.getValue());
+                            trimBaseColor = new Color(textColor.getValue());
                             Color.RGBtoHSB(trimBaseColor.getBlue(), trimBaseColor.getGreen(), trimBaseColor.getRed(), trimBaseHSB);
                         }
                     }
                 }
+
                 float[] armorHSB = new float[3];
                 float[] trimHSB = new float[3];
                 float[] dyeHSB = new float[3];
                 DyedItemColor dyeColor = itemstack.get(DataComponents.DYED_COLOR);
+
                 if (dyeColor != null) {
                     Color armorDye = new Color(dyeColor.rgb());
                     Color.RGBtoHSB(armorDye.getBlue(), armorDye.getGreen(), armorDye.getRed(), dyeHSB);
                 }
 
                 NativeImage trimImage = null;
+
                 if (hasTrim) {
                     String patternPath = trim.pattern().value().assetId().getPath();
                     String texture = "textures/armor/" + handler.getModel().getPath() + "/armor_trims/" + patternPath + ".png";
@@ -236,7 +253,10 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
 
                 for (int x = 0; x < armorImage.getWidth(); x++) {
                     for (int y = 0; y < armorImage.getHeight(); y++) {
-                        if (armorMasks.get(slot).getPixelRGBA(x, y) == 0) continue;
+                        if (armorMasks.get(slot).getPixelRGBA(x, y) == 0) {
+                            continue;
+                        }
+
                         Color armorColor = new Color(armorImage.getPixelRGBA(x, y), true);
 
                         if (hasTrim) {
@@ -246,6 +266,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
 
                             Color trimColor = new Color(trimImage.getPixelRGBA(x, y), true);
                             Color.RGBtoHSB(trimColor.getRed(), trimColor.getGreen(), trimColor.getBlue(), trimHSB);
+
                             if (trimColor.getAlpha() != 0) {
                                 // Changes the hue and saturation to be the same as the trim's base color while keeping the design's brightness
                                 if (trimHSB[1] == 0) {
@@ -267,6 +288,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
                         } else if (armorColor.getAlpha() != 0) {
                             // No armor trim, just the armor
                             Color.RGBtoHSB(armorColor.getRed(), armorColor.getGreen(), armorColor.getBlue(), armorHSB);
+
                             if ((dyeHSB[0] != 0 || dyeHSB[1] != 0) && armorHSB[1] == 0) {
                                 // Get the armor's brightness, and the dye's hue and saturation
                                 image.setPixelRGBA(x, y, Color.HSBtoRGB(dyeHSB[0], dyeHSB[1], armorHSB[2]));
@@ -276,51 +298,49 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
                         }
                     }
                 }
-            } else {
-                // If it isn't an armor item, just copy the texture over
-                if(armorImage != null) {
-                    for (int x = 0; x < armorImage.getWidth(); x++) {
-                        for (int y = 0; y < armorImage.getHeight(); y++) {
-                            if(armorImage.getPixelRGBA(x, y) != 0) {
-                                image.setPixelRGBA(x, y, armorImage.getPixelRGBA(x, y));
-                            }
-                        }
-                    }
+
+                armorImage.close();
+
+                if (trimImage != null) {
+                    trimImage.close();
                 }
+            } else {
+                copyPixels(image, armorImage);
             }
         }
 
         if (ClawInventoryData.getData(player).shouldRenderClaws) {
             // claws and teeth go over the armor, so they are added last
-            String clawTexture = ClawsAndTeethRenderLayer.constructClawTexture(player);
-            if (clawTexture != null) {
-                NativeImage clawImage = RenderingUtils.getImageFromResource(res(ClawsAndTeethRenderLayer.constructClawTexture(player)));
-                if (clawImage != null) {
-                    for (int x = 0; x < clawImage.getWidth(); x++) {
-                        for (int y = 0; y < clawImage.getHeight(); y++) {
-                            if (clawImage.getPixelRGBA(x, y) != 0) {
-                                image.setPixelRGBA(x, y, clawImage.getPixelRGBA(x, y));
-                            }
-                        }
-                    }
-                }
+            ResourceLocation clawResource = ClawsAndTeeth.constructClawTexture(player);
+
+            if (clawResource != null) {
+                copyPixels(image, RenderingUtils.getImageFromResource(clawResource));
             }
-            String teethTexture = ClawsAndTeethRenderLayer.constructTeethTexture(player);
-            if (teethTexture != null) {
-                NativeImage teethImage = RenderingUtils.getImageFromResource(res(ClawsAndTeethRenderLayer.constructTeethTexture(player)));
-                if (teethImage != null) {
-                    for (int x = 0; x < teethImage.getWidth(); x++) {
-                        for (int y = 0; y < teethImage.getHeight(); y++) {
-                            if (teethImage.getPixelRGBA(x, y) != 0) {
-                                image.setPixelRGBA(x, y, teethImage.getPixelRGBA(x, y));
-                            }
-                        }
-                    }
-                }
+
+            ResourceLocation teethResource = ClawsAndTeeth.constructTeethTexture(player);
+
+            if (teethResource != null) {
+                copyPixels(image, RenderingUtils.getImageFromResource(teethResource));
             }
         }
 
         return image;
+    }
+
+    private static void copyPixels(final NativeImage destination, final NativeImage source) {
+        if (source != null) {
+            for (int x = 0; x < source.getWidth(); x++) {
+                for (int y = 0; y < source.getHeight(); y++) {
+                    int pixel = source.getPixelRGBA(x, y);
+
+                    if (pixel != 0) {
+                        destination.setPixelRGBA(x, y, pixel);
+                    }
+                }
+            }
+
+            source.close();
+        }
     }
 
     private static boolean hasAnyArmorEquipped(Player pPlayer) {
@@ -374,7 +394,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         }
 
         if (ClawInventoryData.getData(player).shouldRenderClaws) {
-            armorTotal.append(separator).append(ClawsAndTeethRenderLayer.constructClawTexture(player)).append(separator).append(ClawsAndTeethRenderLayer.constructTeethTexture(player));
+            armorTotal.append(separator).append(ClawsAndTeeth.constructClawTexture(player)).append(separator).append(ClawsAndTeeth.constructTeethTexture(player));
         }
 
         return UUID.nameUUIDFromBytes(armorTotal.toString().getBytes()).toString();
@@ -460,7 +480,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         }
 
         // Since this is just an empty image it should be applicable to all models
-        return res("textures/armor/empty_armor.png");
+        return DragonSurvival.res("textures/armor/empty_armor.png");
     }
 
     private static ResourceLocation toArmorResource(final ResourceLocation model, final Item item) {

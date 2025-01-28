@@ -3,6 +3,7 @@
   "misc_resources": {
     "ability_bar": "dragonsurvival:textures/gui/custom/casting_bars/forest/cast_bar.png",
     "altar_banner": "dragonsurvival:textures/gui/custom/altar/forest/altar_icon.png",
+    "claw_texture_slot": "axe",
     "food_sprites": "dragonsurvival:textures/gui/custom/food_icons/forest_food_icons.png",
     "food_tooltip": {
       "nutrition_icon": "\\uEA01",

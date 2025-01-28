@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.common.codecs;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.TextColor;
@@ -18,7 +19,8 @@ public record MiscDragonTextures(
         FillIcon growthCrystal,
         FoodTooltip foodTooltip,
         TextColor primaryColor,
-        TextColor secondaryColor
+        TextColor secondaryColor,
+        ClawInventoryData.Slot clawTextureSlot
 ) {
     public static final Codec<MiscDragonTextures> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ResourceLocation.CODEC.optionalFieldOf("food_sprites").forGetter(MiscDragonTextures::foodSprites),
@@ -30,7 +32,8 @@ public record MiscDragonTextures(
             FillIcon.CODEC.fieldOf("growth_crystal").forGetter(MiscDragonTextures::growthCrystal),
             FoodTooltip.CODEC.fieldOf("food_tooltip").forGetter(MiscDragonTextures::foodTooltip),
             TextColor.CODEC.fieldOf("primary_color").forGetter(MiscDragonTextures::primaryColor),
-            TextColor.CODEC.fieldOf("secondary_color").forGetter(MiscDragonTextures::secondaryColor)
+            TextColor.CODEC.fieldOf("secondary_color").forGetter(MiscDragonTextures::secondaryColor),
+            ClawInventoryData.Slot.CODEC.optionalFieldOf("claw_texture_slot", ClawInventoryData.Slot.PICKAXE).forGetter(MiscDragonTextures::clawTextureSlot)
     ).apply(instance, MiscDragonTextures::new));
 
     public record HoverIcon(ResourceLocation hoverIcon, ResourceLocation icon) {
