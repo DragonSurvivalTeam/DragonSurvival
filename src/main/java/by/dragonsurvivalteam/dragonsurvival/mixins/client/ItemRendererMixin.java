@@ -2,7 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -64,11 +64,11 @@ public abstract class ItemRendererMixin { // FIXME :: doesn't work with sodium s
         if (entity instanceof DragonEntity dragon) {
             Player player = dragon.getPlayer();
 
-            if (player != null && player.getData(DSDataAttachments.HUNTER).hasHunterStacks()) {
+            if (player != null && HunterData.hasTransparency(player)) {
                 return player;
             }
         }
 
-        return entity.getData(DSDataAttachments.HUNTER).hasHunterStacks() ? entity : null;
+        return HunterData.hasTransparency(entity) ? entity : null;
     }
 }

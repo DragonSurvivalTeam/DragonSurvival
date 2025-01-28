@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins;
 
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.SwellGoal;
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +21,7 @@ public abstract class SwellGoalMixin {
             return;
         }
 
-        if (target.getData(DSDataAttachments.HUNTER).hasMaxHunterStacks()) {
+        if (HunterData.hasMaxHunterStacks(target)) {
             target = null;
         }
     }

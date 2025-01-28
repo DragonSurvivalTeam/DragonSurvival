@@ -202,6 +202,10 @@ public class MagicHUD {
     }
 
     public static void render(@NotNull final GuiGraphics graphics, @NotNull final DeltaTracker tracker) {
+        if (Minecraft.getInstance().options.hideGui) {
+            return;
+        }
+
         Player player = Minecraft.getInstance().player;
 
         if (player == null || player.isSpectator()) {

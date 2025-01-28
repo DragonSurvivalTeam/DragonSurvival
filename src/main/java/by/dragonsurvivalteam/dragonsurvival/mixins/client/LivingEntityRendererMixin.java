@@ -1,7 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.model.EntityModel;
@@ -24,8 +23,7 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
     @ModifyArg(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/LivingEntityRenderer;getRenderType(Lnet/minecraft/world/entity/LivingEntity;ZZZ)Lnet/minecraft/client/renderer/RenderType;"), index = 2)
     private boolean dragonSurvival$getTranslucentRenderType(boolean isTranslucent, @Local(argsOnly = true) final T entity) {
         if (!isTranslucent) {
-            HunterData data = entity.getData(DSDataAttachments.HUNTER);
-            return data.hasHunterStacks() && !data.isBeingRenderedInInventory;
+            return HunterData.hasTransparency(entity);
         }
 
         return true;

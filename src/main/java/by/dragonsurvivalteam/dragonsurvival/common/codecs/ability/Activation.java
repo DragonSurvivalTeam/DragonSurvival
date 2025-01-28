@@ -208,12 +208,43 @@ public record Activation(
                 BuiltInRegistries.SOUND_EVENT.byNameCodec().optionalFieldOf("end").forGetter(Sound::end)
         ).apply(instance, Sound::new));
 
-        public static Optional<Sound> end(final SoundEvent end) {
-            return of(null, null, null, end);
+        public static Builder create() {
+            return new Builder();
         }
 
-        public static Optional<Sound> of(final SoundEvent start, final SoundEvent charging, final SoundEvent looping, final SoundEvent end) {
-            return Optional.of(new Sound(Optional.ofNullable(start), Optional.ofNullable(charging), Optional.ofNullable(looping), Optional.ofNullable(end)));
+        public static class Builder {
+            private SoundEvent start;
+            private SoundEvent charging;
+            private SoundEvent looping;
+            private SoundEvent end;
+
+            public Builder start(final SoundEvent start) {
+                this.start = start;
+                return this;
+            }
+
+            public Builder charging(final SoundEvent charging) {
+                this.charging = charging;
+                return this;
+            }
+
+            public Builder looping(final SoundEvent looping) {
+                this.looping = looping;
+                return this;
+            }
+
+            public Builder end(final SoundEvent end) {
+                this.end = end;
+                return this;
+            }
+
+            public Sound build() {
+                return new Sound(Optional.ofNullable(start), Optional.ofNullable(charging), Optional.ofNullable(looping), Optional.ofNullable(end));
+            }
+
+            public Optional<Sound> optional() {
+                return Optional.of(build());
+            }
         }
     }
 
@@ -233,6 +264,44 @@ public record Activation(
                 SimpleAbilityAnimation.CODEC.optionalFieldOf("looping").forGetter(Animations::looping),
                 SimpleAbilityAnimation.CODEC.optionalFieldOf("end").forGetter(Animations::end)
         ).apply(instance, Animations::new));
+
+        public static Builder create() {
+            return new Builder();
+        }
+
+        public static class Builder {
+            private Either<CompoundAbilityAnimation, SimpleAbilityAnimation> startAndCharging;
+            private SimpleAbilityAnimation looping;
+            private SimpleAbilityAnimation end;
+
+            public Builder startAndCharging(final CompoundAbilityAnimation startAndCharging) {
+                this.startAndCharging = Either.left(startAndCharging);
+                return this;
+            }
+
+            public Builder startAndCharging(final SimpleAbilityAnimation startAndCharging) {
+                this.startAndCharging = Either.right(startAndCharging);
+                return this;
+            }
+    
+            public Builder looping(final SimpleAbilityAnimation looping) {
+                this.looping = looping;
+                return this;
+            }
+
+            public Builder end(final SimpleAbilityAnimation end) {
+                this.end = end;
+                return this;
+            }
+    
+            public Animations build() {
+                return new Animations(Optional.ofNullable(startAndCharging), Optional.ofNullable(looping), Optional.ofNullable(end));
+            }
+
+            public Optional<Animations> optional() {
+                return Optional.of(build());
+            }
+        }
     }
 
     // TODO :: move 'ManaCost' here? it probably won't be used by anything else

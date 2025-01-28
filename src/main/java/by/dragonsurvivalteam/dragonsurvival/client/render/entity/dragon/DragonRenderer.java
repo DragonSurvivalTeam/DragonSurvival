@@ -34,7 +34,6 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         super(context, model);
 
         getRenderLayers().add(new DragonGlowLayerRenderer(this));
-        getRenderLayers().add(new ClawsAndTeethRenderLayer(this));
         getRenderLayers().add(new DragonArmorRenderLayer(this));
         getRenderLayers().add(new DragonItemRenderLayer(this, (bone, animatable) -> {
             if (bone.getName().equals(ClientDragonRenderer.renderItemsInMouth ? "RightItem_jaw" : "RightItem")) {

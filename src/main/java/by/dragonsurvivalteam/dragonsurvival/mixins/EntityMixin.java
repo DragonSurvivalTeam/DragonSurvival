@@ -19,6 +19,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
@@ -125,12 +126,10 @@ public abstract class EntityMixin {
             return true;
         }
 
-        Entity self = (Entity) (Object) this;
-        HunterData data = self.getData(DSDataAttachments.HUNTER);
-
-        if (data.hasMaxHunterStacks()) {
+        //noinspection ConstantValue -> check is valid
+        if ((Object) this instanceof LivingEntity entity && HunterData.hasMaxHunterStacks(entity)) {
             // With max. stacks the visibility value is set to 0 anyway so this shouldn't affect actual gameplay features
-            return HunterHandler.calculateAlpha(self) == 0;
+            return HunterHandler.calculateAlpha(entity) == 0;
         }
 
         return false;

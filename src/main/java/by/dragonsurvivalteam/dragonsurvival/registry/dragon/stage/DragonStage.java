@@ -64,13 +64,16 @@ public record DragonStage(
     public static final Codec<Holder<DragonStage>> CODEC = RegistryFixedCodec.create(REGISTRY);
     public static final StreamCodec<RegistryFriendlyByteBuf, Holder<DragonStage>> STREAM_CODEC = ByteBufCodecs.holderRegistry(REGISTRY);
 
-    private static DragonStage smallest;
-    private static DragonStage largest;
+    private static @Nullable HolderSet<DragonStage> defaultStages;
+
+    private static double minSize;
+    private static double maxSize;
 
     public static void update(final RegistryAccess access) {
-        Pair<DragonStage, DragonStage> sizes = getSizes(access);
-        smallest = sizes.getFirst();
-        largest = sizes.getSecond();
+        Pair<Double, Double> sizes = getSizes(access);
+        minSize = sizes.getFirst();
+        maxSize = sizes.getSecond();
+        defaultStages = null;
 
         validate(access);
     }
@@ -169,14 +172,9 @@ public record DragonStage(
         return Math.clamp(size, sizeRange().min(), sizeRange().max());
     }
 
-    /** Returns a valid size (meaning a size within the bounds of the smallest and largest dragon) */
-    public static double getValidSize(double size) {
-        return Math.clamp(size, smallest.sizeRange.min(), largest.sizeRange().max());
-    }
-
     /** Returns the bounds between the smallest and largest dragon sizes */
     public static MiscCodecs.Bounds getBounds() {
-        return new MiscCodecs.Bounds(smallest.sizeRange().min(), largest.sizeRange().max());
+        return new MiscCodecs.Bounds(minSize, maxSize);
     }
 
     public static double getStartingSize(final HolderSet<DragonStage> stages) {
@@ -245,7 +243,7 @@ public record DragonStage(
         throw new IllegalStateException("There is no valid dragon level for the supplied size [" + size + "]");
     }
 
-    private static Pair<DragonStage, DragonStage> getSizes(@Nullable final HolderLookup.Provider provider) {
+    private static Pair<Double, Double> getSizes(@Nullable final HolderLookup.Provider provider) {
         DragonStage smallest = null;
         DragonStage largest = null;
 
@@ -259,11 +257,16 @@ public record DragonStage(
             }
         }
 
-        return Pair.of(smallest, largest);
+        //noinspection DataFlowIssue -> stages should not be null
+        return Pair.of(smallest.sizeRange.min(), largest.sizeRange.max());
     }
 
     public static HolderSet<DragonStage> getDefaultStages(@Nullable final HolderLookup.Provider provider) {
-        return HolderSet.direct(ResourceHelper.all(provider, REGISTRY).stream().filter(stage -> stage.value().isDefault()).toList());
+        if (defaultStages == null) {
+            defaultStages = HolderSet.direct(ResourceHelper.all(provider, REGISTRY).stream().filter(stage -> stage.value().isDefault()).toList());
+        }
+
+        return defaultStages;
     }
 
     public String getTimeToGrowFormattedWithPercentage(double percentage, double size, boolean isGrowing) {

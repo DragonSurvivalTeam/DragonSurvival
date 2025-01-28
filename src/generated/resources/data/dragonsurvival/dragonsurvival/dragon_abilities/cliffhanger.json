@@ -17,8 +17,8 @@
                     {
                       "amount": {
                         "type": "minecraft:linear",
-                        "base": 6.0,
-                        "per_level_above_first": 1.0
+                        "base": 7.0,
+                        "per_level_above_first": 2.0
                       },
                       "attribute": "minecraft:generic.safe_fall_distance",
                       "operation": "add_value"
@@ -73,8 +73,8 @@
   "upgrade": {
     "experience_cost": {
       "type": "minecraft:linear",
-      "base": 15.0,
-      "per_level_above_first": 15.0
+      "base": 16.0,
+      "per_level_above_first": 16.0
     },
     "maximum_level": 6,
     "upgrade_type": "dragonsurvival:experience_points"

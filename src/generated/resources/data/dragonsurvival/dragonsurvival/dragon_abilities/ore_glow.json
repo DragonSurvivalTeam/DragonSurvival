@@ -10,8 +10,8 @@
                   "base": {
                     "duration": {
                       "type": "minecraft:linear",
-                      "base": 1200.0,
-                      "per_level_above_first": 1200.0
+                      "base": 5200.0,
+                      "per_level_above_first": 5200.0
                     },
                     "id": "dragonsurvival:diamond_vision",
                     "is_hidden": true
@@ -39,8 +39,8 @@
                   "base": {
                     "duration": {
                       "type": "minecraft:linear",
-                      "base": 1200.0,
-                      "per_level_above_first": 1200.0
+                      "base": 5200.0,
+                      "per_level_above_first": 5200.0
                     },
                     "id": "dragonsurvival:lapis_vision",
                     "is_hidden": true
@@ -61,8 +61,8 @@
                   "base": {
                     "duration": {
                       "type": "minecraft:linear",
-                      "base": 1200.0,
-                      "per_level_above_first": 1200.0
+                      "base": 5200.0,
+                      "per_level_above_first": 5200.0
                     },
                     "id": "dragonsurvival:gold_vision",
                     "is_hidden": true
@@ -83,8 +83,8 @@
                   "base": {
                     "duration": {
                       "type": "minecraft:linear",
-                      "base": 1200.0,
-                      "per_level_above_first": 1200.0
+                      "base": 5200.0,
+                      "per_level_above_first": 5200.0
                     },
                     "id": "dragonsurvival:redstone_vision",
                     "is_hidden": true
@@ -105,8 +105,8 @@
                   "base": {
                     "duration": {
                       "type": "minecraft:linear",
-                      "base": 1200.0,
-                      "per_level_above_first": 1200.0
+                      "base": 5200.0,
+                      "per_level_above_first": 5200.0
                     },
                     "id": "dragonsurvival:coal_vision",
                     "is_hidden": true
@@ -127,15 +127,110 @@
                   "base": {
                     "duration": {
                       "type": "minecraft:linear",
-                      "base": 1200.0,
-                      "per_level_above_first": 1200.0
+                      "base": 5200.0,
+                      "per_level_above_first": 5200.0
+                    },
+                    "id": "dragonsurvival:emerald_vision",
+                    "is_hidden": true
+                  },
+                  "blocks": "#c:ores/emerald",
+                  "colors": [
+                    "green"
+                  ],
+                  "display_type": "particles",
+                  "range": 26.0
+                }
+              ],
+              "effect_type": "dragonsurvival:block_vision"
+            },
+            {
+              "block_visions": [
+                {
+                  "base": {
+                    "duration": {
+                      "type": "minecraft:linear",
+                      "base": 5200.0,
+                      "per_level_above_first": 5200.0
+                    },
+                    "id": "dragonsurvival:quartz_vision",
+                    "is_hidden": true
+                  },
+                  "blocks": "#c:ores/quartz",
+                  "colors": [
+                    "dark_red",
+                    "gray"
+                  ],
+                  "display_type": "particles",
+                  "range": 20.0
+                }
+              ],
+              "effect_type": "dragonsurvival:block_vision"
+            },
+            {
+              "block_visions": [
+                {
+                  "base": {
+                    "duration": {
+                      "type": "minecraft:linear",
+                      "base": 5200.0,
+                      "per_level_above_first": 5200.0
+                    },
+                    "id": "dragonsurvival:copper_vision",
+                    "is_hidden": true
+                  },
+                  "blocks": "#c:ores/copper",
+                  "colors": [
+                    "gold",
+                    "dark_green"
+                  ],
+                  "display_type": "particles",
+                  "range": 12.0
+                }
+              ],
+              "effect_type": "dragonsurvival:block_vision"
+            },
+            {
+              "block_visions": [
+                {
+                  "base": {
+                    "duration": {
+                      "type": "minecraft:linear",
+                      "base": 5200.0,
+                      "per_level_above_first": 5200.0
+                    },
+                    "id": "dragonsurvival:netherite_vision",
+                    "is_hidden": true
+                  },
+                  "blocks": "#c:ores/netherite_scrap",
+                  "colors": [
+                    "gold",
+                    "black",
+                    "yellow",
+                    "dark_gray"
+                  ],
+                  "display_type": "particles",
+                  "range": 12.0
+                }
+              ],
+              "effect_type": "dragonsurvival:block_vision"
+            },
+            {
+              "block_visions": [
+                {
+                  "base": {
+                    "duration": {
+                      "type": "minecraft:linear",
+                      "base": 5200.0,
+                      "per_level_above_first": 5200.0
                     },
                     "id": "dragonsurvival:iron_vision",
                     "is_hidden": true
                   },
                   "blocks": "#c:ores/iron",
                   "colors": [
-                    "dark_gray"
+                    "dark_gray",
+                    "gray",
+                    "white"
                   ],
                   "display_type": "particles",
                   "range": 22.0
@@ -150,8 +245,8 @@
                     "custom_icon": "dragonsurvival:textures/ability_effect/general_ore_vision.png",
                     "duration": {
                       "type": "minecraft:linear",
-                      "base": 1200.0,
-                      "per_level_above_first": 1200.0
+                      "base": 5200.0,
+                      "per_level_above_first": 5200.0
                     },
                     "id": "dragonsurvival:general_ore_vision"
                   },
@@ -194,7 +289,7 @@
     "can_move_while_casting": false,
     "cast_time": 60.0,
     "cooldown": 600.0,
-    "initial_mana_cost": 1.0,
+    "initial_mana_cost": 3.0,
     "sound": {
       "end": "minecraft:ui.toast.in"
     }

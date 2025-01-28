@@ -35,7 +35,7 @@
     "type": "active_simple",
     "animations": {
       "start_and_charging": {
-        "animation_key": "breath",
+        "animation_key": "spell_charge",
         "layer": "BREATH",
         "locks_neck": false,
         "locks_tail": false,

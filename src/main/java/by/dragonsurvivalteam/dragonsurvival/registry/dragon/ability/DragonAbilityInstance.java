@@ -154,9 +154,6 @@ public class DragonAbilityInstance {
         }
 
         if (value().activation().type() == Activation.Type.ACTIVE_SIMPLE) {
-            // FIXME :: the cast bar stays if the server stops the cast before the client reached the max_tick
-            //  seems to be due to the client not calling MagicData#stopCasting in this case
-            //  unsure what the server sets so that the client skips that
             stopCasting(dragon);
         }
     }

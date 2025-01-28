@@ -50,7 +50,7 @@ public class DSLanguageProvider extends LanguageProvider {
     }
 
     public static Component enumValue(final Enum<?> enumValue) {
-        return Component.translatable(enumClassKey(enumValue) + "." + enumValue.toString().toLowerCase(Locale.ENGLISH));
+        return Component.translatable(enumClassKey(enumValue) + "." + enumValue.name().toLowerCase(Locale.ENGLISH));
     }
 
     /** See {@link DSLanguageProvider#enumClassKey(Class)} */
@@ -59,7 +59,7 @@ public class DSLanguageProvider extends LanguageProvider {
     }
 
     private static String enumValueKey(final Enum<?> enumValue) {
-        return enumClassKey(enumValue) + "." + enumValue.toString().toLowerCase(Locale.ENGLISH);
+        return enumClassKey(enumValue) + "." + enumValue.name().toLowerCase(Locale.ENGLISH);
     }
 
     /** Replace 'SomeDefinedClass' with 'enum.some_defined_class' for the translation key */
@@ -92,7 +92,7 @@ public class DSLanguageProvider extends LanguageProvider {
 
         // Used by 'HarvestBonuses'
         for (Tiers tier : Tiers.values()) {
-            add(enumValueKey(tier), capitalize(tier.toString().toLowerCase(Locale.ENGLISH)));
+            add(enumValueKey(tier), capitalize(tier.name().toLowerCase(Locale.ENGLISH)));
         }
 
         // Tags are not available during data generation
@@ -182,7 +182,7 @@ public class DSLanguageProvider extends LanguageProvider {
                             add(enumValueKey(value), format(comments));
                         } else {
                             // If special handling is needed (e.g. keybind)
-                            add(type.wrap(value.toString().toLowerCase(Locale.ENGLISH)), format(comments));
+                            add(type.wrap(value.name().toLowerCase(Locale.ENGLISH)), format(comments));
                         }
 
                         continue;

@@ -14,6 +14,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.TargetDirection;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationKey;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationLayer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.SimpleAbilityAnimation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstanceBase;
@@ -56,7 +57,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.Expe
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.ProjectileData;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.Projectiles;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
-import com.mojang.datafixers.util.Either;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
@@ -174,12 +174,11 @@ public class CaveDragonAbilities {
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(1))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(2))),
                         true,
-                        Optional.of(new Activation.Sound(Optional.of(DSSounds.FIRE_BREATH_START.get()), Optional.empty(), Optional.of(DSSounds.FIRE_BREATH_LOOP.get()), Optional.of(DSSounds.FIRE_BREATH_END.get()))),
-                        Optional.of(new Activation.Animations(
-                                Optional.of(Either.right(new SimpleAbilityAnimation("spell_charge", AnimationLayer.BREATH, 5, false, false))),
-                                Optional.of(new SimpleAbilityAnimation("breath", AnimationLayer.BREATH, 5, false, false)),
-                                Optional.empty()
-                        ))
+                        Activation.Sound.create().start(DSSounds.FIRE_BREATH_START.get()).looping(DSSounds.FIRE_BREATH_LOOP.get()).end(DSSounds.FIRE_BREATH_END.get()).optional(),
+                        Activation.Animations.create()
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).transitionLength(5).build())
+                                .looping(SimpleAbilityAnimation.create(AnimationKey.BREATH, AnimationLayer.BREATH).transitionLength(5).build())
+                                .optional()
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 10f, 30f, 50f), LevelBasedValue.perLevel(15)))),
                 // Disable underwater
@@ -226,12 +225,8 @@ public class CaveDragonAbilities {
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(2))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(7))),
                         true,
-                        Optional.of(new Activation.Sound(Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(SoundEvents.FIRECHARGE_USE))),
-                        Optional.of(new Activation.Animations(
-                                Optional.of(Either.right(new SimpleAbilityAnimation("breath", AnimationLayer.BREATH, 5, false, false))),
-                                Optional.empty(),
-                                Optional.empty()
-                        ))
+                        Activation.Sound.create().end(SoundEvents.FIRECHARGE_USE).optional(),
+                        Activation.Animations.create().startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).transitionLength(5).build()).optional()
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 20f, 40f, 45f), LevelBasedValue.perLevel(15)))),
                 // Disable underwater
@@ -260,17 +255,16 @@ public class CaveDragonAbilities {
         context.register(STURDY_SKIN, new DragonAbility(
                 new Activation(
                         Activation.Type.ACTIVE_SIMPLE,
-                        Optional.of(LevelBasedValue.constant(1)),
+                        Optional.of(LevelBasedValue.constant(2)),
                         Optional.empty(),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(3))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
                         false,
-                        Activation.Sound.end(SoundEvents.UI_TOAST_IN),
-                        Optional.of(new Activation.Animations(
-                                Optional.of(Either.right(new SimpleAbilityAnimation(SimpleAbilityAnimation.CAST_MASS_BUFF, AnimationLayer.BASE, 2, true, true))),
-                                Optional.empty(),
-                                Optional.of(new SimpleAbilityAnimation(SimpleAbilityAnimation.MASS_BUFF, AnimationLayer.BASE, 0, true, true))
-                        ))
+                        Activation.Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
+                        Activation.Animations.create()
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MASS_BUFF, AnimationLayer.BASE).transitionLength(2).locksNeck().locksTail().build())
+                                .end(SimpleAbilityAnimation.create(AnimationKey.MASS_BUFF, AnimationLayer.BASE).locksNeck().locksTail().build())
+                                .optional()
                 ),
                 Optional.of(new ExperienceLevelUpgrade(3, LevelBasedValue.lookup(List.of(0f, 15f, 35f), LevelBasedValue.perLevel(15)))),
                 // Disable when not on ground
@@ -296,24 +290,28 @@ public class CaveDragonAbilities {
         context.register(FRIENDLY_FIRE, new DragonAbility(
                 new Activation(
                         Activation.Type.ACTIVE_SIMPLE,
-                        Optional.of(LevelBasedValue.constant(1)),
+                        Optional.of(LevelBasedValue.constant(4)),
                         Optional.empty(),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(4))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
                         false,
-                        Activation.Sound.end(SoundEvents.UI_TOAST_IN),
-                        Optional.of(new Activation.Animations(
-                                Optional.of(Either.right(new SimpleAbilityAnimation(SimpleAbilityAnimation.CAST_MASS_BUFF, AnimationLayer.BASE, 2, true, true))),
-                                Optional.empty(),
-                                Optional.of(new SimpleAbilityAnimation(SimpleAbilityAnimation.MASS_BUFF, AnimationLayer.BASE, 0, true, true))
-                        ))
+                        Activation.Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
+                        Activation.Animations.create()
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MASS_BUFF, AnimationLayer.BASE).transitionLength(2).locksNeck().locksTail().build())
+                                .end(SimpleAbilityAnimation.create(AnimationKey.MASS_BUFF, AnimationLayer.BASE).locksNeck().locksTail().build())
+                                .optional()
                 ),
-                Optional.of(new ExperienceLevelUpgrade(3, LevelBasedValue.lookup(List.of(35f, 45f, 60f), LevelBasedValue.perLevel(120)))),
+                Optional.of(new ExperienceLevelUpgrade(3, LevelBasedValue.lookup(List.of(26f, 45f, 60f), LevelBasedValue.perLevel(120)))),
                 // Disable when not on ground
                 Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false)).build()),
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(
-                        PotionEffect.only(PotionData.create(MobEffects.FIRE_RESISTANCE).amplifierPer(1).duration(200).build()),
-                        TargetingMode.ALLIES
+                        List.of(
+                                new PotionEffect(PotionData.create(MobEffects.FIRE_RESISTANCE).amplifierPer(1).durationPer(264).build()),
+                                new ParticleEffect(
+                                        new SpawnParticles(ParticleTypes.LAVA, SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.1f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.1f)), ConstantFloat.of(0.1f)),
+                                        LevelBasedValue.constant(20)
+                                )
+                        ), TargetingMode.ALLIES_AND_SELF
                 ), LevelBasedValue.constant(25)), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -332,12 +330,11 @@ public class CaveDragonAbilities {
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(2))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
                         false,
-                        Optional.of(new Activation.Sound(Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(SoundEvents.UI_TOAST_IN))),
-                        Optional.of(new Activation.Animations(
-                                Optional.of(Either.right(new SimpleAbilityAnimation("cast_self_buff", AnimationLayer.BASE, 2, true, false))),
-                                Optional.empty(),
-                                Optional.of(new SimpleAbilityAnimation("self_buff", AnimationLayer.BASE, 0, true, false))
-                        ))
+                        Activation.Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
+                        Activation.Animations.create()
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MAGIC_ALT, AnimationLayer.BASE).transitionLength(5).build())
+                                .end(SimpleAbilityAnimation.create(AnimationKey.MAGIC_ALT, AnimationLayer.BASE).transitionLength(4).build())
+                                .optional()
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 25f, 45f, 60f), LevelBasedValue.perLevel(15)))),
                 // Disable when not on ground (except when in lava)

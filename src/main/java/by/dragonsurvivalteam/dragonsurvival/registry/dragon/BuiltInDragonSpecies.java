@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscDragonTextures;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonAbilityTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonPenaltyTags;
@@ -86,7 +87,8 @@ public class BuiltInDragonSpecies {
                         ),
                         new MiscDragonTextures.FoodTooltip(MiscDragonTextures.FoodTooltip.DEFAULT_FOOD_TOOLTIP_FONT, "\\uEA02", "\\uEA05", Optional.empty()),
                         TextColor.fromRgb(0xE84141),
-                        TextColor.fromRgb(0x730B0B)
+                        TextColor.fromRgb(0x730B0B),
+                        ClawInventoryData.Slot.PICKAXE
                 )
         ));
 
@@ -120,7 +122,8 @@ public class BuiltInDragonSpecies {
                         ),
                         new MiscDragonTextures.FoodTooltip(MiscDragonTextures.FoodTooltip.DEFAULT_FOOD_TOOLTIP_FONT, "\\uEA03", "\\uEA06", Optional.empty()),
                         TextColor.fromRgb(0x2DA5E0),
-                        TextColor.fromRgb(0x1D7099)
+                        TextColor.fromRgb(0x1D7099),
+                        ClawInventoryData.Slot.SHOVEL
                 )
         ));
 
@@ -154,7 +157,8 @@ public class BuiltInDragonSpecies {
                         ),
                         new MiscDragonTextures.FoodTooltip(MiscDragonTextures.FoodTooltip.DEFAULT_FOOD_TOOLTIP_FONT, "\\uEA01", "\\uEA04", Optional.empty()),
                         TextColor.fromRgb(0x41CC48),
-                        TextColor.fromRgb(0x117816)
+                        TextColor.fromRgb(0x117816),
+                        ClawInventoryData.Slot.AXE
                 )
         ));
     }
