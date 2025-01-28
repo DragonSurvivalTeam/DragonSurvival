@@ -140,7 +140,7 @@ public class DSTrades {
         private final int maxLevel;
 
         public EnchantBookForEmeralds(final ResourceKey<Enchantment> enchantment, int villagerExperience) {
-            this(enchantment, 0, Integer.MAX_VALUE, villagerExperience);
+            this(enchantment, villagerExperience, 0, Integer.MAX_VALUE);
         }
 
         public EnchantBookForEmeralds(final ResourceKey<Enchantment> enchantment, int villagerExperience, int minLevel, int maxLevel) {
