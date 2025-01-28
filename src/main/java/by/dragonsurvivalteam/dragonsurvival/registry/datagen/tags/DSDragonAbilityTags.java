@@ -75,6 +75,7 @@ public class DSDragonAbilityTags extends TagsProvider<DragonAbility> {
         tag(FOREST)
                 // Active
                 .add(ForestDragonAbilities.FOREST_BREATH)
+                .add(ForestDragonAbilities.SUN_BREATH)
                 .add(ForestDragonAbilities.SPIKE)
                 .add(ForestDragonAbilities.INSPIRATION)
                 .add(ForestDragonAbilities.HUNTER)
@@ -109,6 +110,7 @@ public class DSDragonAbilityTags extends TagsProvider<DragonAbility> {
                 .add(CaveDragonAbilities.CAVE_SPIN)
                 // Forest :: active
                 .add(ForestDragonAbilities.FOREST_BREATH)
+                .add(ForestDragonAbilities.SUN_BREATH)
                 .add(ForestDragonAbilities.SPIKE)
                 .add(ForestDragonAbilities.INSPIRATION)
                 .add(ForestDragonAbilities.HUNTER)
