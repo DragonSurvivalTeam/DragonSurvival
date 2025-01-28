@@ -10,6 +10,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.items.armor.DarkDragonArmorIt
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.LightDragonArmorItem;
 import by.dragonsurvivalteam.dragonsurvival.compat.iris.InnerWrappedRenderType;
 import by.dragonsurvivalteam.dragonsurvival.compat.iris.LayeringStates;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -46,6 +47,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+
+import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.res;
 
 public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
     private final GeoEntityRenderer<DragonEntity> renderer;
@@ -99,7 +102,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
             initArmorMasks(handler.getModel());
         }
 
-        if (hasAnyArmorEquipped(player)) {
+        if (hasAnyArmorEquipped(player) || ClawInventoryData.getData(player).shouldRenderClaws) {
             Optional<ResourceLocation> armorTexture = constructTrimmedDragonArmorTexture(player);
             if (armorTexture.isPresent()) {
                 ((DragonRenderer) renderer).isRenderLayers = true;
@@ -128,7 +131,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
     private static Optional<ResourceLocation> constructTrimmedDragonArmorTexture(final Player player) {
         String armorUUID = buildUniqueArmorUUID(player);
         // This is an internal (dynamically created) resource, so we can keep it in the DS namespace
-        ResourceLocation imageResource = DragonSurvival.res("armor_" + armorUUID);
+        ResourceLocation imageResource = res("armor_" + armorUUID);
 
         if (armorTextures.containsKey(imageResource)) {
             CompletableFuture<Void> future = armorTextures.get(imageResource);
@@ -226,7 +229,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
                 NativeImage trimImage = null;
                 if (hasTrim) {
                     String patternPath = trim.pattern().value().assetId().getPath();
-                    String texture = "textures/armor/" + handler.getModel() + "/armor_trims/" + patternPath + ".png";
+                    String texture = "textures/armor/" + handler.getModel().getPath() + "/armor_trims/" + patternPath + ".png";
                     ResourceLocation resource = ResourceLocation.fromNamespaceAndPath(handler.getModel().getNamespace(), texture);
                     trimImage = RenderingUtils.getImageFromResource(resource);
                 }
@@ -286,6 +289,37 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
                 }
             }
         }
+
+        if (ClawInventoryData.getData(player).shouldRenderClaws) {
+            // claws and teeth go over the armor, so they are added last
+            String clawTexture = ClawsAndTeethRenderLayer.constructClawTexture(player);
+            if (clawTexture != null) {
+                NativeImage clawImage = RenderingUtils.getImageFromResource(res(ClawsAndTeethRenderLayer.constructClawTexture(player)));
+                if (clawImage != null) {
+                    for (int x = 0; x < clawImage.getWidth(); x++) {
+                        for (int y = 0; y < clawImage.getHeight(); y++) {
+                            if (clawImage.getPixelRGBA(x, y) != 0) {
+                                image.setPixelRGBA(x, y, clawImage.getPixelRGBA(x, y));
+                            }
+                        }
+                    }
+                }
+            }
+            String teethTexture = ClawsAndTeethRenderLayer.constructTeethTexture(player);
+            if (teethTexture != null) {
+                NativeImage teethImage = RenderingUtils.getImageFromResource(res(ClawsAndTeethRenderLayer.constructTeethTexture(player)));
+                if (teethImage != null) {
+                    for (int x = 0; x < teethImage.getWidth(); x++) {
+                        for (int y = 0; y < teethImage.getHeight(); y++) {
+                            if (teethImage.getPixelRGBA(x, y) != 0) {
+                                image.setPixelRGBA(x, y, teethImage.getPixelRGBA(x, y));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         return image;
     }
 
@@ -309,6 +343,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
      * - {@link ResourceLocation#toLanguageKey()} of each equipped armor item <br>
      * - {@link DataComponents#TRIM} of each equipped armor slot <br>
      * - {@link DataComponents#DYED_COLOR} of each equipped armor slot <br> <br>
+     * - What is currently being used in the claw slot and teeth slot (ie. tools/weapons)
      */
     private static String buildUniqueArmorUUID(final Player player) {
         StringBuilder armorTotal = new StringBuilder();
@@ -336,6 +371,10 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
             if (dyeColor != null) {
                 armorTotal.append(separator).append(dyeColor.rgb());
             }
+        }
+
+        if (ClawInventoryData.getData(player).shouldRenderClaws) {
+            armorTotal.append(separator).append(ClawsAndTeethRenderLayer.constructClawTexture(player)).append(separator).append(ClawsAndTeethRenderLayer.constructTeethTexture(player));
         }
 
         return UUID.nameUUIDFromBytes(armorTotal.toString().getBytes()).toString();
@@ -421,7 +460,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         }
 
         // Since this is just an empty image it should be applicable to all models
-        return DragonSurvival.res("textures/armor/empty_armor.png");
+        return res("textures/armor/empty_armor.png");
     }
 
     private static ResourceLocation toArmorResource(final ResourceLocation model, final Item item) {

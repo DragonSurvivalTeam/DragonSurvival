@@ -19,8 +19,6 @@ import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
-import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
-
 public class ClawsAndTeethRenderLayer extends GeoRenderLayer<DragonEntity> {
     private final GeoEntityRenderer<DragonEntity> renderer;
 
@@ -51,7 +49,7 @@ public class ClawsAndTeethRenderLayer extends GeoRenderLayer<DragonEntity> {
 
     @Override
     public void render(final PoseStack poseStack, final DragonEntity animatable, final BakedGeoModel bakedModel, final RenderType renderType, final MultiBufferSource bufferSource, final VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
-        if (!((DragonRenderer) renderer).shouldRenderLayers) {
+        /*if (!((DragonRenderer) renderer).shouldRenderLayers) {
             return;
         }
 
@@ -65,7 +63,7 @@ public class ClawsAndTeethRenderLayer extends GeoRenderLayer<DragonEntity> {
             return;
         }
 
-        String clawTexture = constructClaws(player);
+        String clawTexture = constructClawTexture(player);
 
         if (clawTexture != null) {
             ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(MODID, clawTexture);
@@ -83,7 +81,7 @@ public class ClawsAndTeethRenderLayer extends GeoRenderLayer<DragonEntity> {
             ((DragonRenderer) renderer).isRenderLayers = true;
             renderToolLayer(poseStack, animatable, bakedModel, bufferSource, texture, partialTick, packedLight);
             ((DragonRenderer) renderer).isRenderLayers = false;
-        }
+        }*/
     }
 
     private void renderToolLayer(final PoseStack poseStack, final DragonEntity animatable, final BakedGeoModel bakedModel, final MultiBufferSource bufferSource, final ResourceLocation texture, float partialTick, int packedLight) {
@@ -95,7 +93,7 @@ public class ClawsAndTeethRenderLayer extends GeoRenderLayer<DragonEntity> {
         }
     }
 
-    public String constructClaws(final Player player) {
+    public static String constructClawTexture(final Player player) {
         DragonStateHandler handler = DragonStateProvider.getData(player);
         String texturePath = "textures/armor/" + handler.body().value().model().getPath() + "/";
         if (handler.species() == null) {
@@ -114,7 +112,7 @@ public class ClawsAndTeethRenderLayer extends GeoRenderLayer<DragonEntity> {
         return texturePath + "dragon_claws.png";
     }
 
-    public String constructTeethTexture(final Player player) {
+    public static String constructTeethTexture(final Player player) {
         String texturePath = "textures/armor/" + DragonStateProvider.getData(player).body().value().model().getPath() + "/";
         ItemStack swordItem = ClawInventoryData.getData(player).getContainer().getItem(0);
 
