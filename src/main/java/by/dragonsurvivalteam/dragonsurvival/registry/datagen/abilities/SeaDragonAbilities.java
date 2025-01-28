@@ -285,7 +285,7 @@ public class SeaDragonAbilities {
         context.register(ORE_GLOW, new DragonAbility(
                 new Activation(
                         Activation.Type.ACTIVE_SIMPLE,
-                        Optional.of(LevelBasedValue.constant(1)),
+                        Optional.of(LevelBasedValue.constant(3)),
                         Optional.empty(),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(3))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
@@ -302,7 +302,7 @@ public class SeaDragonAbilities {
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(List.of(
                         // TODO :: add emerald?
                         BlockVisionEffect.single(new BlockVision(
-                                DurationInstanceBase.create(DragonSurvival.res("diamond_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(60))).hidden().build(),
+                                DurationInstanceBase.create(DragonSurvival.res("diamond_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(260))).hidden().build(),
                                 HolderSet.direct(Blocks.DIAMOND_ORE.builtInRegistryHolder(), Blocks.DEEPSLATE_DIAMOND_ORE.builtInRegistryHolder()),
                                 LevelBasedValue.constant(16),
                                 BlockVision.DisplayType.PARTICLES,
@@ -315,42 +315,42 @@ public class SeaDragonAbilities {
                                 )
                         )),
                         BlockVisionEffect.single(new BlockVision(
-                                DurationInstanceBase.create(DragonSurvival.res("lapis_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(60))).hidden().build(),
+                                DurationInstanceBase.create(DragonSurvival.res("lapis_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(260))).hidden().build(),
                                 context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_LAPIS),
                                 LevelBasedValue.constant(24),
                                 BlockVision.DisplayType.PARTICLES,
                                 List.of(TextColor.fromLegacyFormat(ChatFormatting.BLUE))
                         )),
                         BlockVisionEffect.single(new BlockVision(
-                                DurationInstanceBase.create(DragonSurvival.res("gold_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(60))).hidden().build(),
+                                DurationInstanceBase.create(DragonSurvival.res("gold_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(260))).hidden().build(),
                                 context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_GOLD),
                                 LevelBasedValue.constant(32),
                                 BlockVision.DisplayType.PARTICLES,
                                 List.of(TextColor.fromLegacyFormat(ChatFormatting.GOLD))
                         )),
                         BlockVisionEffect.single(new BlockVision(
-                                DurationInstanceBase.create(DragonSurvival.res("redstone_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(60))).hidden().build(),
+                                DurationInstanceBase.create(DragonSurvival.res("redstone_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(260))).hidden().build(),
                                 context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_REDSTONE),
                                 LevelBasedValue.constant(32),
                                 BlockVision.DisplayType.PARTICLES,
                                 List.of(TextColor.fromLegacyFormat(ChatFormatting.DARK_RED))
                         )),
                         BlockVisionEffect.single(new BlockVision(
-                                DurationInstanceBase.create(DragonSurvival.res("coal_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(60))).hidden().build(),
+                                DurationInstanceBase.create(DragonSurvival.res("coal_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(260))).hidden().build(),
                                 context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_COAL),
                                 LevelBasedValue.constant(32),
                                 BlockVision.DisplayType.PARTICLES,
                                 List.of(TextColor.fromLegacyFormat(ChatFormatting.BLACK))
                         )),
                         BlockVisionEffect.single(new BlockVision(
-                                DurationInstanceBase.create(DragonSurvival.res("emerald_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(60))).hidden().build(),
+                                DurationInstanceBase.create(DragonSurvival.res("emerald_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(260))).hidden().build(),
                                 context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_EMERALD),
                                 LevelBasedValue.constant(26),
                                 BlockVision.DisplayType.PARTICLES,
                                 List.of(TextColor.fromLegacyFormat(ChatFormatting.GREEN))
                         )),
                         BlockVisionEffect.single(new BlockVision(
-                                DurationInstanceBase.create(DragonSurvival.res("quartz_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(60))).hidden().build(),
+                                DurationInstanceBase.create(DragonSurvival.res("quartz_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(260))).hidden().build(),
                                 context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_QUARTZ),
                                 LevelBasedValue.constant(20),
                                 BlockVision.DisplayType.PARTICLES,
@@ -360,7 +360,7 @@ public class SeaDragonAbilities {
                                 )
                         )),
                         BlockVisionEffect.single(new BlockVision(
-                                DurationInstanceBase.create(DragonSurvival.res("copper_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(60))).hidden().build(),
+                                DurationInstanceBase.create(DragonSurvival.res("copper_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(260))).hidden().build(),
                                 context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_COPPER),
                                 LevelBasedValue.constant(12),
                                 BlockVision.DisplayType.PARTICLES,
@@ -370,7 +370,7 @@ public class SeaDragonAbilities {
                                 )
                         )),
                         BlockVisionEffect.single(new BlockVision(
-                                DurationInstanceBase.create(DragonSurvival.res("netherite_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(60))).hidden().build(),
+                                DurationInstanceBase.create(DragonSurvival.res("netherite_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(260))).hidden().build(),
                                 context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_NETHERITE_SCRAP),
                                 LevelBasedValue.constant(12),
                                 BlockVision.DisplayType.PARTICLES,
@@ -382,7 +382,7 @@ public class SeaDragonAbilities {
                                 )
                         )),
                         BlockVisionEffect.single(new BlockVision(
-                                DurationInstanceBase.create(DragonSurvival.res("iron_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(60))).hidden().build(),
+                                DurationInstanceBase.create(DragonSurvival.res("iron_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(260))).hidden().build(),
                                 context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_IRON),
                                 LevelBasedValue.constant(22),
                                 BlockVision.DisplayType.PARTICLES,
@@ -393,7 +393,7 @@ public class SeaDragonAbilities {
                                 )
                         )),
                         BlockVisionEffect.single(new BlockVision(
-                                DurationInstanceBase.create(DragonSurvival.res("general_ore_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(60))).customIcon(DragonSurvival.res("textures/ability_effect/general_ore_vision.png")).build(),
+                                DurationInstanceBase.create(DragonSurvival.res("general_ore_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(260))).customIcon(DragonSurvival.res("textures/ability_effect/general_ore_vision.png")).build(),
                                 context.lookup(Registries.BLOCK).getOrThrow(DSBlockTags.GENERAL_ORES),
                                 LevelBasedValue.constant(22),
                                 BlockVision.DisplayType.PARTICLES,
@@ -413,7 +413,7 @@ public class SeaDragonAbilities {
         context.register(SOUL_REVELATION, new DragonAbility(
                 new Activation(
                         Activation.Type.ACTIVE_SIMPLE,
-                        Optional.of(LevelBasedValue.constant(1)),
+                        Optional.of(LevelBasedValue.constant(6)),
                         Optional.empty(),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(3))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
@@ -452,7 +452,7 @@ public class SeaDragonAbilities {
     private static void registerPassiveAbilities(final BootstrapContext<DragonAbility> context) {
         context.register(SEA_MAGIC, new DragonAbility(
                 Activation.passive(),
-                Optional.of(new ExperiencePointsUpgrade(10, LevelBasedValue.perLevel(15))),
+                Optional.of(new ExperiencePointsUpgrade(10, LevelBasedValue.perLevel(16))),
                 Optional.empty(),
                 List.of(
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -537,7 +537,7 @@ public class SeaDragonAbilities {
 
         context.register(SPECTRAL_IMPACT, new DragonAbility(
                 Activation.passive(),
-                Optional.of(new ExperiencePointsUpgrade(3, LevelBasedValue.perLevel(15))),
+                Optional.of(new ExperiencePointsUpgrade(3, LevelBasedValue.perLevel(64))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         ModifierEffect.only(new ModifierWithDuration(

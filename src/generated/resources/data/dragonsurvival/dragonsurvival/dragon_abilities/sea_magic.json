@@ -161,8 +161,8 @@
   "upgrade": {
     "experience_cost": {
       "type": "minecraft:linear",
-      "base": 15.0,
-      "per_level_above_first": 15.0
+      "base": 16.0,
+      "per_level_above_first": 16.0
     },
     "maximum_level": 10,
     "upgrade_type": "dragonsurvival:experience_points"

@@ -12,7 +12,11 @@
                   "base": 1.0,
                   "per_level_above_first": 1.0
                 },
-                "duration": 4000.0,
+                "duration": {
+                  "type": "minecraft:linear",
+                  "base": 5280.0,
+                  "per_level_above_first": 5280.0
+                },
                 "effects": "minecraft:fire_resistance"
               }
             },
@@ -67,7 +71,7 @@
     "can_move_while_casting": false,
     "cast_time": 80.0,
     "cooldown": 600.0,
-    "initial_mana_cost": 1.0,
+    "initial_mana_cost": 4.0,
     "sound": {
       "end": "minecraft:ui.toast.in"
     }
@@ -101,7 +105,7 @@
         "per_level_above_first": 120.0
       },
       "values": [
-        35.0,
+        26.0,
         45.0,
         60.0
       ]

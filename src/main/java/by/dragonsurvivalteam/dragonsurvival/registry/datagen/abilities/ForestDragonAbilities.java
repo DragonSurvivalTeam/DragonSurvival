@@ -270,7 +270,7 @@ public class ForestDragonAbilities {
         context.register(INSPIRATION, new DragonAbility(
                 new Activation(
                         Activation.Type.ACTIVE_SIMPLE,
-                        Optional.of(LevelBasedValue.constant(1)),
+                        Optional.of(LevelBasedValue.constant(2)),
                         Optional.empty(),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(4))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
@@ -286,7 +286,7 @@ public class ForestDragonAbilities {
                 Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false)).build()),
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(
                         List.of(
-                                new PotionEffect(PotionData.create(MobEffects.DIG_SPEED).amplifierPer(1).duration(200).build()),
+                                new PotionEffect(PotionData.create(MobEffects.DIG_SPEED).amplifierPer(1).durationPer(200).build()),
                                 new ParticleEffect(
                                         new SpawnParticles(ParticleTypes.END_ROD, SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), ConstantFloat.of(0.05f)),
                                         LevelBasedValue.constant(20)
@@ -305,7 +305,7 @@ public class ForestDragonAbilities {
         context.register(HUNTER, new DragonAbility(
                 new Activation(
                         Activation.Type.ACTIVE_SIMPLE,
-                        Optional.of(LevelBasedValue.constant(1)),
+                        Optional.of(LevelBasedValue.constant(3)),
                         Optional.empty(),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(3))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
@@ -408,7 +408,7 @@ public class ForestDragonAbilities {
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         ModifierEffect.only(new ModifierWithDuration(
                                 DurationInstanceBase.create(DragonSurvival.res("light_in_darkness")).infinite().removeAutomatically().hidden().build(),
-                                List.of(Modifier.per(DSAttributes.PENALTY_RESISTANCE_TIME, Functions.secondsToTicks(10), AttributeModifier.Operation.ADD_VALUE))
+                                List.of(Modifier.per(DSAttributes.PENALTY_RESISTANCE_TIME, Functions.secondsToTicks(20), AttributeModifier.Operation.ADD_VALUE))
                         )),
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
@@ -428,12 +428,12 @@ public class ForestDragonAbilities {
 
         context.register(CLIFFHANGER, new DragonAbility(
                 Activation.passive(),
-                Optional.of(new ExperiencePointsUpgrade(6, LevelBasedValue.perLevel(15))),
+                Optional.of(new ExperiencePointsUpgrade(6, LevelBasedValue.perLevel(16))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         ModifierEffect.only(new ModifierWithDuration(
                                 DurationInstanceBase.create(DragonSurvival.res("cliffhanger")).infinite().removeAutomatically().hidden().build(),
-                                List.of(Modifier.perWithBase(Attributes.SAFE_FALL_DISTANCE, 5, 1, AttributeModifier.Operation.ADD_VALUE))
+                                List.of(Modifier.perWithBase(Attributes.SAFE_FALL_DISTANCE, 5, 2, AttributeModifier.Operation.ADD_VALUE))
                         )),
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),

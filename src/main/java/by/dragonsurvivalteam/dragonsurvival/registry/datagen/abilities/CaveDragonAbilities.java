@@ -255,7 +255,7 @@ public class CaveDragonAbilities {
         context.register(STURDY_SKIN, new DragonAbility(
                 new Activation(
                         Activation.Type.ACTIVE_SIMPLE,
-                        Optional.of(LevelBasedValue.constant(1)),
+                        Optional.of(LevelBasedValue.constant(2)),
                         Optional.empty(),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(3))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
@@ -290,7 +290,7 @@ public class CaveDragonAbilities {
         context.register(FRIENDLY_FIRE, new DragonAbility(
                 new Activation(
                         Activation.Type.ACTIVE_SIMPLE,
-                        Optional.of(LevelBasedValue.constant(1)),
+                        Optional.of(LevelBasedValue.constant(4)),
                         Optional.empty(),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(4))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
@@ -301,12 +301,12 @@ public class CaveDragonAbilities {
                                 .end(SimpleAbilityAnimation.create(AnimationKey.MASS_BUFF, AnimationLayer.BASE).locksNeck().locksTail().build())
                                 .optional()
                 ),
-                Optional.of(new ExperienceLevelUpgrade(3, LevelBasedValue.lookup(List.of(35f, 45f, 60f), LevelBasedValue.perLevel(120)))),
+                Optional.of(new ExperienceLevelUpgrade(3, LevelBasedValue.lookup(List.of(26f, 45f, 60f), LevelBasedValue.perLevel(120)))),
                 // Disable when not on ground
                 Optional.of(Condition.thisEntity(EntityCondition.isOnGround(false)).build()),
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(
                         List.of(
-                                new PotionEffect(PotionData.create(MobEffects.FIRE_RESISTANCE).amplifierPer(1).duration(200).build()),
+                                new PotionEffect(PotionData.create(MobEffects.FIRE_RESISTANCE).amplifierPer(1).durationPer(264).build()),
                                 new ParticleEffect(
                                         new SpawnParticles(ParticleTypes.LAVA, SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.1f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.1f)), ConstantFloat.of(0.1f)),
                                         LevelBasedValue.constant(20)

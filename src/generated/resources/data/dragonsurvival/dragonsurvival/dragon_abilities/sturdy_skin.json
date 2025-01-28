@@ -67,7 +67,7 @@
     "can_move_while_casting": false,
     "cast_time": 60.0,
     "cooldown": 600.0,
-    "initial_mana_cost": 1.0,
+    "initial_mana_cost": 2.0,
     "sound": {
       "end": "minecraft:ui.toast.in"
     }

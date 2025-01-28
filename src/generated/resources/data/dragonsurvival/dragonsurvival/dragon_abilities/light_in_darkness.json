@@ -17,8 +17,8 @@
                     {
                       "amount": {
                         "type": "minecraft:linear",
-                        "base": 200.0,
-                        "per_level_above_first": 200.0
+                        "base": 400.0,
+                        "per_level_above_first": 400.0
                       },
                       "attribute": "dragonsurvival:penalty_resistance_time",
                       "operation": "add_value"
