@@ -143,12 +143,31 @@
 							"origin": [-1, 22, -8],
 							"size": [2, 2, 2],
 							"uv": {
-								"north": {"uv": [0, 0], "uv_size": [2, 2]},
-								"east": {"uv": [0, 0], "uv_size": [2, 2]},
-								"south": {"uv": [0, 0], "uv_size": [2, 2]},
-								"west": {"uv": [0, 0], "uv_size": [2, 2]},
-								"up": {"uv": [2, 2], "uv_size": [-2, -2]},
-								"down": {"uv": [2, 2], "uv_size": [-2, -2]}
+								"north": {"uv": [0, 0], "uv_size": [0, 0]},
+								"east": {"uv": [0, 0], "uv_size": [0, 0]},
+								"south": {"uv": [0, 0], "uv_size": [0, 0]},
+								"west": {"uv": [0, 0], "uv_size": [0, 0]},
+								"up": {"uv": [0, 0], "uv_size": [0, 0]},
+								"down": {"uv": [0, 0], "uv_size": [0, 0]}
+							}
+						}
+					]
+				},
+				{
+					"name": "BackpackBone",
+					"parent": "Torso",
+					"pivot": [0, 23, -7],
+					"cubes": [
+						{
+							"origin": [-1, 22, -8],
+							"size": [2, 2, 2],
+							"uv": {
+								"north": {"uv": [0, 0], "uv_size": [0, 0]},
+								"east": {"uv": [0, 0], "uv_size": [0, 0]},
+								"south": {"uv": [0, 0], "uv_size": [0, 0]},
+								"west": {"uv": [0, 0], "uv_size": [0, 0]},
+								"up": {"uv": [0, 0], "uv_size": [0, 0]},
+								"down": {"uv": [0, 0], "uv_size": [0, 0]}
 							}
 						}
 					]
