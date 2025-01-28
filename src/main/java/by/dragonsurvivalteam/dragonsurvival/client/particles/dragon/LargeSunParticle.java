@@ -5,11 +5,19 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
 public class LargeSunParticle extends DragonParticle {
     protected LargeSunParticle(ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed, double duration, boolean swirls, SpriteSet sprite) {
         super(pLevel, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed, duration, swirls, sprite);
+    }
+
+    @Override // Clamp brightness between 10 and 15, depending on the particle age
+    protected int getLightColor(float partialTick) {
+        float progress = (age + partialTick) / lifetime;
+        progress = Mth.clamp(progress, 0, 1);
+        return (int) (0xF0 - (progress * (0xF0 - 0xA0)));
     }
 
     public static final class Factory implements ParticleProvider<LargeSunParticleOption> {

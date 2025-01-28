@@ -36,6 +36,10 @@ public class DragonPenaltyHandler {
             return;
         }
 
+        if (serverPlayer.isSpectator() || serverPlayer.isCreative()) {
+            return;
+        }
+
         DragonStateHandler handler = DragonStateProvider.getData(serverPlayer);
 
         if (!handler.isDragon()) {
