@@ -10,7 +10,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.StageResources;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.config.ClientConfig;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
@@ -249,13 +248,8 @@ public class DragonModel extends GeoModel<DragonEntity> {
     public RenderType getRenderType(final DragonEntity animatable, final ResourceLocation texture) {
         Player player = animatable.getPlayer();
 
-        if (player != null) {
-            HunterData data = player.getData(DSDataAttachments.HUNTER);
-
-            if (!data.isBeingRenderedInInventory && data.hasHunterStacks()) {
-                // Transparent rendering in inventory causes the entity to be invisible
-                return RenderType.itemEntityTranslucentCull(texture);
-            }
+        if (player != null && HunterData.hasTransparency(player)) {
+            return RenderType.itemEntityTranslucentCull(texture);
         }
 
         return RenderType.entityCutout(texture);

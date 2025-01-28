@@ -58,6 +58,6 @@ public enum SkinLayer implements StringRepresentable {
 
     @Override
     public @NotNull String getSerializedName() {
-        return toString().toLowerCase(Locale.ENGLISH);
+        return name().toLowerCase(Locale.ENGLISH);
     }
 }

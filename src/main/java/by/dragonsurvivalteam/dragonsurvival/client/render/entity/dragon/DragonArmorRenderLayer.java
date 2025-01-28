@@ -46,7 +46,6 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
     private final GeoEntityRenderer<DragonEntity> renderer;
@@ -138,15 +137,8 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
                 return Optional.of(imageResource);
             }
         } else {
-            CompletableFuture<NativeImage> imageCompilationStep = CompletableFuture.supplyAsync(() -> compileArmorTexture(player));
-
-            CompletableFuture<Void> uploadStep = imageCompilationStep.thenRunAsync(() -> {
-                try {
-                    RenderingUtils.uploadTexture(imageCompilationStep.get(), imageResource);
-                } catch (InterruptedException | ExecutionException e) {
-                    DragonSurvival.LOGGER.error("An error occurred while uploading the dragon armor texture", e);
-                }
-            }, Minecraft.getInstance());
+            CompletableFuture<Void> uploadStep = CompletableFuture.supplyAsync(() -> compileArmorTexture(player))
+                    .thenAcceptAsync(image -> RenderingUtils.uploadTexture(image, imageResource), Minecraft.getInstance());
 
             armorTextures.put(imageResource, uploadStep);
         }

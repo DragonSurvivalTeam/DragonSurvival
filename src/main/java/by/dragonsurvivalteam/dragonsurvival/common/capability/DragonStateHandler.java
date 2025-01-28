@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.TimeComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.SkinPreset;
 import by.dragonsurvivalteam.dragonsurvival.commands.DragonCommand;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.items.growth.StarHeartItem;
@@ -228,7 +229,8 @@ public class DragonStateHandler extends EntityStateHandler {
     }
 
     private double boundSize(@Nullable final HolderLookup.Provider provider, double size) {
-        double newSize = DragonStage.getValidSize(size);
+        MiscCodecs.Bounds bounds = DragonStage.getBounds();
+        double newSize = Math.clamp(size, bounds.min(), bounds.max());
 
         if (dragonSpecies == null) {
             return newSize;

@@ -103,7 +103,7 @@ public enum Keybind {
 
     public KeyMapping get() {
         if (keyMapping == null) {
-            String translationKey = Translation.Type.KEYBIND.wrap(toString().toLowerCase(Locale.ENGLISH));
+            String translationKey = Translation.Type.KEYBIND.wrap(name().toLowerCase(Locale.ENGLISH));
 
             if (defaultModifier == null) {
                 keyMapping = new KeyMapping(translationKey, keyConflictContext, InputConstants.Type.KEYSYM, defaultKey, CATEGORY);

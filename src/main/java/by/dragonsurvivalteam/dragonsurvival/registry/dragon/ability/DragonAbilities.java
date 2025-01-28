@@ -8,6 +8,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierWithDuration;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationKey;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationLayer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.SimpleAbilityAnimation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstance;
@@ -130,12 +131,11 @@ public class DragonAbilities {
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(3))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
                         false,
-                        Activation.Sound.end(SoundEvents.UI_TOAST_IN),
-                        Optional.of(new Activation.Animations(
-                                Optional.of(Either.right(new SimpleAbilityAnimation(SimpleAbilityAnimation.CAST_MASS_BUFF, AnimationLayer.BASE, 2, true, true))),
-                                Optional.empty(),
-                                Optional.of(new SimpleAbilityAnimation(SimpleAbilityAnimation.MASS_BUFF, AnimationLayer.BASE, 0, true, true))
-                        ))
+                        Activation.Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
+                        Activation.Animations.create()
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MASS_BUFF, AnimationLayer.BASE).transitionLength(2).locksNeck().locksTail().build())
+                                .end(SimpleAbilityAnimation.create(AnimationKey.MASS_BUFF, AnimationLayer.BASE).locksNeck().locksTail().build())
+                                .optional()
                 ),
                 Optional.empty(),
                 Optional.of(MatchItem.build(ItemCondition.is(Items.MAP), MatchItem.Slot.OFFHAND).invert().build()),

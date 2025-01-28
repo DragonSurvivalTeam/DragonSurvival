@@ -51,41 +51,35 @@ public class DragonGlowLayerRenderer extends GeoRenderLayer<DragonEntity> {
         SkinPreset preset = handler.getCurrentSkinPreset();
 
         DragonStageCustomization customization = preset.get(handler.stageKey()).get();
-        ResourceLocation customGlowTexture;
+        ResourceLocation glowTexture = null;
 
+        // At the moment GitHub only contains textures based on the dragon model
         if (handler.getModel().equals(DragonBody.DEFAULT_MODEL)) {
-            customGlowTexture = DragonSkins.getGlowTexture(player, handler.stageKey());
-        } else {
-            customGlowTexture = null;
+            glowTexture = DragonSkins.getGlowTexture(player, handler.stageKey());
         }
 
         // FIXME :: is this safe?
-        if (customGlowTexture == null || customGlowTexture.getPath().contains("/" + handler.speciesId().getPath() + "_")) {
-            if (dragonRenderer.glowTexture != null) {
-                customGlowTexture = dragonRenderer.glowTexture;
-            }
+        if (dragonRenderer.glowTexture != null && (glowTexture == null || glowTexture.getPath().contains("/" + handler.speciesId().getPath() + "_"))) {
+            glowTexture = dragonRenderer.glowTexture;
         }
 
-        if (customGlowTexture == null && handler.getCurrentStageCustomization().defaultSkin) {
-            ResourceLocation location = StageResources.getDefaultSkin(handler.species(), handler.stageKey(), true);
+        if (glowTexture == null && handler.getCurrentStageCustomization().defaultSkin) {
+            ResourceLocation defaultGlowSkin = StageResources.getDefaultSkin(handler.species(), handler.stageKey(), true);
 
-            if (Minecraft.getInstance().getResourceManager().getResource(location).isPresent()) {
-                customGlowTexture = location;
+            if (Minecraft.getInstance().getResourceManager().getResource(defaultGlowSkin).isPresent()) {
+                glowTexture = defaultGlowSkin;
             }
         }
 
         dragonRenderer.isRenderLayers = true;
 
-        if (customGlowTexture != null) {
-            RenderType type = RenderType.EYES.apply(customGlowTexture, RenderType.LIGHTNING_TRANSPARENCY);
-            VertexConsumer vertexConsumer = bufferSource.getBuffer(type);
-            dragonRenderer.actuallyRender(poseStack, animatable, bakedModel, type, bufferSource, vertexConsumer, true, partialTick, packedLight, OverlayTexture.NO_OVERLAY, renderer.getRenderColor(animatable, partialTick, packedLight).getColor());
-        } else {
-            if (customization.layerSettings.values().stream().anyMatch(layerSettings -> layerSettings.get().glowing)) {
-                RenderType type = RenderType.EYES.apply(DragonModel.dynamicTexture(player, handler, true), RenderType.LIGHTNING_TRANSPARENCY);
-                VertexConsumer vertexConsumer = bufferSource.getBuffer(type);
-                dragonRenderer.actuallyRender(poseStack, animatable, bakedModel, type, bufferSource, vertexConsumer, true, partialTick, packedLight, OverlayTexture.NO_OVERLAY, renderer.getRenderColor(animatable, partialTick, packedLight).getColor());
-            }
+        if (glowTexture == null && customization.layerSettings.values().stream().anyMatch(layerSettings -> layerSettings.get().glowing)) {
+            glowTexture = DragonModel.dynamicTexture(player, handler, true);
+        }
+
+        if (glowTexture != null) {
+            RenderType type = RenderType.EYES.apply(glowTexture, RenderType.LIGHTNING_TRANSPARENCY);
+            dragonRenderer.actuallyRender(poseStack, animatable, bakedModel, type, bufferSource, bufferSource.getBuffer(type), true, partialTick, packedLight, OverlayTexture.NO_OVERLAY, renderer.getRenderColor(animatable, partialTick, packedLight).getColor());
         }
 
         dragonRenderer.isRenderLayers = false;

@@ -54,7 +54,7 @@ public class ClawInventoryData implements INBTSerializable<CompoundTag> {
 
         @Override
         public @NotNull String getSerializedName() {
-            return toString().toLowerCase(Locale.ENGLISH);
+            return name().toLowerCase(Locale.ENGLISH);
         }
     }
 

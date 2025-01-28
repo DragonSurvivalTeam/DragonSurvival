@@ -23,7 +23,6 @@ import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
-import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -68,14 +67,18 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
     public static float itemTranslucency = UNMODIFIED;
 
     @SubscribeEvent
-    public static void modifyHunterStacks(final PlayerTickEvent.Post event) {
-        MobEffectInstance hunterEffect = event.getEntity().getEffect(DSEffects.HUNTER);
+    public static void modifyHunterStacks(final EntityTickEvent.Post event) {
+        if (!(event.getEntity() instanceof LivingEntity entity)) {
+            return;
+        }
+
+        MobEffectInstance hunterEffect = entity.getEffect(DSEffects.HUNTER);
 
         if (hunterEffect != null) {
-            HunterData data = event.getEntity().getData(DSDataAttachments.HUNTER);
+            HunterData data = entity.getData(DSDataAttachments.HUNTER);
             int modification;
 
-            if (/* Below feet*/ isHunterRelevant(event.getEntity().getBlockStateOn()) || /* Within block */ isHunterRelevant(event.getEntity().getInBlockState())) {
+            if (/* Below feet*/ isHunterRelevant(entity.getBlockStateOn()) || /* Within block */ isHunterRelevant(entity.getInBlockState())) {
                 // Gain more stacks per tick per amplifier level (min. of 1 and max. of max. ability level)
                 modification = Math.min(MAX_LEVEL, 1 + hunterEffect.getAmplifier());
             } else {
@@ -91,9 +94,8 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
     public static void clearCurrentTarget(final EntityTickEvent.Post event) {
         if (event.getEntity() instanceof Mob mob && mob.getTarget() != null) {
             LivingEntity target = mob.getTarget();
-            boolean maxHunterStacks = target.getExistingData(DSDataAttachments.HUNTER).map(HunterData::hasMaxHunterStacks).orElse(false);
 
-            if (maxHunterStacks) {
+            if (HunterData.hasMaxHunterStacks(target)) {
                 mob.setTarget(null);
             }
         }
@@ -183,9 +185,9 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
             return packedColor;
         }
 
-        HunterData data = entity.getData(DSDataAttachments.HUNTER);
+        HunterData data = entity.getExistingData(DSDataAttachments.HUNTER).orElse(null);
 
-        if (!data.hasHunterStacks()) {
+        if (data == null || !data.hasHunterStacks()) {
             return packedColor;
         }
 
@@ -199,9 +201,9 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
             return color;
         }
 
-        HunterData data = entity.getData(DSDataAttachments.HUNTER);
+        HunterData data = entity.getExistingData(DSDataAttachments.HUNTER).orElse(null);
 
-        if (!data.hasHunterStacks()) {
+        if (data == null || !data.hasHunterStacks()) {
             return color;
         }
 
@@ -215,12 +217,18 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
     }
 
     public static float calculateAlphaAsFloat(final Entity entity) {
-        return calculateAlpha(entity.getData(DSDataAttachments.HUNTER), entity == DragonSurvival.PROXY.getLocalPlayer());
+        HunterData data = entity.getExistingData(DSDataAttachments.HUNTER).orElse(null);
+
+        if (data == null) {
+            return HunterHandler.UNMODIFIED;
+        }
+
+        return calculateAlpha(data, entity == DragonSurvival.PROXY.getLocalPlayer());
     }
 
     private static float calculateAlpha(@NotNull final HunterData data, boolean isLocalPlayer) {
-        if (!data.hasHunterStacks() || data.isBeingRenderedInInventory) {
-            return 1;
+        if (!data.hasTransparency()) {
+            return HunterHandler.UNMODIFIED;
         }
 
         float min = isLocalPlayer || !FULLY_INVISIBLE ? MIN_ALPHA : 0;

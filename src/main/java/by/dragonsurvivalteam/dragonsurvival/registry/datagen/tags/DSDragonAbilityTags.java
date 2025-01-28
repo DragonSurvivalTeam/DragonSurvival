@@ -126,6 +126,7 @@ public class DSDragonAbilityTags extends TagsProvider<DragonAbility> {
                 .add(SeaDragonAbilities.STORM_BREATH)
                 .add(SeaDragonAbilities.BALL_LIGHTNING)
                 .add(SeaDragonAbilities.SEA_EYES)
+                .add(SeaDragonAbilities.ORE_GLOW)
                 .add(SeaDragonAbilities.SOUL_REVELATION)
                 // Sea :: passive (manual leveling)
                 .add(SeaDragonAbilities.SEA_MAGIC)

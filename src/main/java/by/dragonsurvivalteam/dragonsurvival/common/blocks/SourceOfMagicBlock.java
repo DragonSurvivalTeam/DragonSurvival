@@ -108,7 +108,7 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
 
         @Override
         public @NotNull String getSerializedName() {
-            return toString().toLowerCase(Locale.ENGLISH);
+            return name().toLowerCase(Locale.ENGLISH);
         }
     }
 

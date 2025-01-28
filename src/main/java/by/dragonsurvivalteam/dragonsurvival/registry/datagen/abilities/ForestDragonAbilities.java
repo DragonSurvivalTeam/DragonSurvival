@@ -14,6 +14,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.TargetDirection;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationKey;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationLayer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.SimpleAbilityAnimation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstanceBase;
@@ -57,7 +58,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.Expe
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.ProjectileData;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.Projectiles;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
-import com.mojang.datafixers.util.Either;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
@@ -165,12 +165,11 @@ public class ForestDragonAbilities {
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(1))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(2))),
                         true,
-                        Activation.Sound.of(DSSounds.FOREST_BREATH_START.get(), null, DSSounds.FOREST_BREATH_LOOP.get(), DSSounds.FOREST_BREATH_END.get()),
-                        Optional.of(new Activation.Animations(
-                                Optional.of(Either.right(new SimpleAbilityAnimation("spell_charge", AnimationLayer.BREATH, 5, false, false))),
-                                Optional.of(new SimpleAbilityAnimation("breath", AnimationLayer.BREATH, 5, false, false)),
-                                Optional.empty()
-                        ))
+                        Activation.Sound.create().start(DSSounds.FOREST_BREATH_START.get()).looping(DSSounds.FOREST_BREATH_LOOP.get()).end(DSSounds.FOREST_BREATH_END.get()).optional(),
+                        Activation.Animations.create()
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).transitionLength(5).build())
+                                .looping(SimpleAbilityAnimation.create(AnimationKey.BREATH, AnimationLayer.BREATH).transitionLength(5).build())
+                                .optional()
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 10f, 30f, 50f), LevelBasedValue.perLevel(15)))),
                 // Disable when affected by the 'STRESS' effect
@@ -240,12 +239,8 @@ public class ForestDragonAbilities {
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(0.1))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(3))),
                         true,
-                        Activation.Sound.end(SoundEvents.ARROW_SHOOT),
-                        Optional.of(new Activation.Animations(
-                                Optional.of(Either.right(new SimpleAbilityAnimation("spell_charge", AnimationLayer.BREATH, 5, false, false))),
-                                Optional.empty(),
-                                Optional.empty()
-                        ))
+                        Activation.Sound.create().end(SoundEvents.ARROW_SHOOT).optional(),
+                        Activation.Animations.create().startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).transitionLength(5).build()).optional()
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 20f, 30f, 40f), LevelBasedValue.perLevel(15)))),
                 Optional.empty(),
@@ -280,12 +275,11 @@ public class ForestDragonAbilities {
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(4))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
                         false,
-                        Activation.Sound.end(SoundEvents.UI_TOAST_IN),
-                        Optional.of(new Activation.Animations(
-                                Optional.of(Either.right(new SimpleAbilityAnimation(SimpleAbilityAnimation.CAST_MASS_BUFF, AnimationLayer.BASE, 2, true, true))),
-                                Optional.empty(),
-                                Optional.of(new SimpleAbilityAnimation(SimpleAbilityAnimation.MASS_BUFF, AnimationLayer.BASE, 0, true, true))
-                        ))
+                        Activation.Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
+                        Activation.Animations.create()
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MASS_BUFF, AnimationLayer.BASE).transitionLength(2).locksNeck().locksTail().build())
+                                .end(SimpleAbilityAnimation.create(AnimationKey.MASS_BUFF, AnimationLayer.BASE).locksNeck().locksTail().build())
+                                .optional()
                 ),
                 Optional.of(new ExperienceLevelUpgrade(3, LevelBasedValue.lookup(List.of(5f, 15f, 35f), LevelBasedValue.perLevel(15)))),
                 // Disable when not on ground
@@ -316,12 +310,11 @@ public class ForestDragonAbilities {
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(3))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
                         false,
-                        Activation.Sound.end(SoundEvents.UI_TOAST_IN),
-                        Optional.of(new Activation.Animations(
-                                Optional.of(Either.right(new SimpleAbilityAnimation(SimpleAbilityAnimation.CAST_MASS_BUFF, AnimationLayer.BASE, 2, true, true))),
-                                Optional.empty(),
-                                Optional.of(new SimpleAbilityAnimation(SimpleAbilityAnimation.MASS_BUFF, AnimationLayer.BASE, 0, true, true))
-                        ))
+                        Activation.Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
+                        Activation.Animations.create()
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MASS_BUFF, AnimationLayer.BASE).transitionLength(2).locksNeck().locksTail().build())
+                                .end(SimpleAbilityAnimation.create(AnimationKey.MASS_BUFF, AnimationLayer.BASE).locksNeck().locksTail().build())
+                                .optional()
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 25f, 35f, 55f), LevelBasedValue.perLevel(15)))),
                 // Disable when not on ground
