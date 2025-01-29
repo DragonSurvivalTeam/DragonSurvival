@@ -30,7 +30,7 @@ import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
 
     @Translation(key = "render_backpack", type = Translation.Type.CONFIGURATION, comments = "enable / disable backpack rendering")
-    @ConfigOption(side = ConfigSide.CLIENT, category = {"compat", "sophisticated backpacks"}, key = "render_backpack")
+    @ConfigOption(side = ConfigSide.CLIENT, category = "rendering", key = "render_backpack")
     public static Boolean renderBackpack = true;
 
     public DragonBackpackRenderLayer(GeoEntityRenderer<DragonEntity> renderer) {
