@@ -60,6 +60,11 @@ public class DSAttributes {
     @Translation(type = Translation.Type.ATTRIBUTE_DESCRIPTION, comments = "The chance to ignore armor when attacking")
     public static final Holder<Attribute> ARMOR_IGNORE_CHANCE = REGISTRY.register("armor_ignore_chance", () -> new PercentageAttribute(Translation.Type.ATTRIBUTE.wrap("armor_ignore_chance"), 0, 0, 1).setSyncable(true));
 
+    @Translation(type = Translation.Type.ATTRIBUTE, comments = "Villager Damage")
+    @Translation(type = Translation.Type.ATTRIBUTE_DESCRIPTION, comments = "The amount of bonus damage villager-aligned mobs will take from your attacks")
+    public static final Holder<Attribute> VILLAGER_DAMAGE_BONUS = REGISTRY.register("villager_damage_bonus", () -> new PercentageAttribute(Translation.Type.ATTRIBUTE.wrap("villager_damage_bonus"), 0, -1, 1).setSyncable(true));
+
+    @SuppressWarnings("unused")
     @SubscribeEvent
     public static void attachAttributes(final EntityAttributeModificationEvent event) {
         event.add(EntityType.PLAYER, FLIGHT_STAMINA_COST);
@@ -71,6 +76,7 @@ public class DSAttributes {
         event.add(EntityType.PLAYER, BLOCK_BREAK_RADIUS);
         event.add(EntityType.PLAYER, PENALTY_RESISTANCE_TIME);
         event.add(EntityType.PLAYER, ARMOR_IGNORE_CHANCE);
+        event.add(EntityType.PLAYER, VILLAGER_DAMAGE_BONUS);
 
         event.getTypes().forEach(type -> event.add(type, LAVA_SWIM_SPEED));
     }
