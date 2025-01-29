@@ -11,8 +11,6 @@
   "attribute.dragonsurvival.flight_speed.desc": "A multiplier to the dragon flight speed",
   "attribute.dragonsurvival.flight_stamina": "Dragon Flight Stamina",
   "attribute.dragonsurvival.flight_stamina.desc": "Reduces the food exhaustion of flying",
-  "attribute.dragonsurvival.lava_oxygen_amount": "Lava Temperature Amount",
-  "attribute.dragonsurvival.lava_oxygen_amount.desc": "The amount of time a dragon can withstand the high temperature of lava.",
   "attribute.dragonsurvival.lava_swim_speed": "Lava Swim Speed",
   "attribute.dragonsurvival.lava_swim_speed.desc": "A multiplier to the lava swim speed",
   "attribute.dragonsurvival.mana": "Dragon Mana",
