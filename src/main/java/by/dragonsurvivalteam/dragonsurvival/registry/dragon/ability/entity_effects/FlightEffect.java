@@ -53,7 +53,11 @@ public record FlightEffect(int flightLevel, ResourceLocation icon) implements Ab
 
     @Override
     @SuppressWarnings("ConstantValue") // ignore
-    public void remove(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
+    public void remove(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target, final boolean isAutoRemoval) {
+        if (isAutoRemoval) {
+            return;
+        }
+
         if (!(target instanceof ServerPlayer serverTarget) || !DragonStateProvider.isDragon(serverTarget)) {
             return;
         }

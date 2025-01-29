@@ -92,8 +92,8 @@ dependencies {
 	implementation "maven.modrinth:sodium:mc1.21.1-0.6.5-neoforge"
 //	implementation "curse.maven:irisshaders-455508:5957827" // 1.8.1
 
-//	implementation "curse.maven:apothic-attributes-898963:5751458" // 2.4.0
-//	implementation "curse.maven:placebo-283644:5869769" // 9.5.4
+	implementation "curse.maven:apothic-attributes-898963:5751458" // 2.4.0
+	implementation "curse.maven:placebo-283644:5869769" // 9.5.4
 
 	// Curios testing
 //  runtimeOnly "top.theillusivec4.curios:curios-neoforge:9.2.2+1.21.1"

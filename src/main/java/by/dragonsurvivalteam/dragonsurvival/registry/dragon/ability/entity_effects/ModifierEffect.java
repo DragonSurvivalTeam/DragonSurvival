@@ -30,9 +30,13 @@ public record ModifierEffect(List<ModifierWithDuration> modifiers) implements Ab
     }
 
     @Override
-    public void remove(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity) {
+    public void remove(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity, final boolean isAutoRemoval) {
         if (entity instanceof LivingEntity livingEntity) {
-            modifiers.forEach(modifier -> modifier.remove(livingEntity));
+            modifiers.forEach(modifier -> {
+                if (!isAutoRemoval || modifier.shouldRemoveAutomatically()) {
+                    modifier.remove(livingEntity);
+                }
+            });
         }
     }
 

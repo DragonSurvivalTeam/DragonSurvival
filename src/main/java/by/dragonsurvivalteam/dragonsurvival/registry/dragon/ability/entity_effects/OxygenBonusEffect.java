@@ -25,9 +25,13 @@ public record OxygenBonusEffect(List<OxygenBonus> bonuses) implements AbilityEnt
     }
 
     @Override
-    public void remove(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity) {
+    public void remove(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity, final boolean isAutoRemoval) {
         if (entity instanceof Player player) {
-            bonuses.forEach(bonus -> bonus.remove(player));
+            bonuses.forEach(bonus -> {
+                if (!isAutoRemoval || bonus.shouldRemoveAutomatically()) {
+                    bonus.remove(player);
+                }
+            });
         }
     }
 

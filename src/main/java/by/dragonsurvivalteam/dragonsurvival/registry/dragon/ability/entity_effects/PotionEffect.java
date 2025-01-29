@@ -27,7 +27,11 @@ public record PotionEffect(PotionData potion) implements AbilityEntityEffect {
     }
 
     @Override
-    public void remove(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity) {
+    public void remove(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity, final boolean isAutoRemoval) {
+        if (isAutoRemoval) {
+            return;
+        }
+
         potion.remove(dragon, entity);
     }
 

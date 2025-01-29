@@ -91,6 +91,17 @@
                 "condition": "minecraft:entity_properties",
                 "entity": "this",
                 "predicate": {
+                  "stepping_on": {
+                    "block": {
+                      "blocks": "minecraft:fire"
+                    }
+                  }
+                }
+              },
+              {
+                "condition": "minecraft:entity_properties",
+                "entity": "this",
+                "predicate": {
                   "location": {
                     "fluid": {
                       "fluids": "#minecraft:lava"
@@ -136,17 +147,6 @@
                       "state": {
                         "lit": "true"
                       }
-                    }
-                  }
-                }
-              },
-              {
-                "condition": "minecraft:entity_properties",
-                "entity": "this",
-                "predicate": {
-                  "stepping_on": {
-                    "block": {
-                      "blocks": "minecraft:fire"
                     }
                   }
                 }

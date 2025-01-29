@@ -33,7 +33,8 @@ public interface AbilityEntityEffect {
     MapCodec<? extends AbilityEntityEffect> entityCodec();
 
     default List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) { return List.of(); }
-    default void remove(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity) { /* Nothing to do */ }
+    default void remove(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity, boolean isAutoRemoval) { /* Nothing to do */ }
+    default boolean shouldRemoveAutomatically() { return false; }
 
     @SubscribeEvent
     static void register(final NewRegistryEvent event) {
