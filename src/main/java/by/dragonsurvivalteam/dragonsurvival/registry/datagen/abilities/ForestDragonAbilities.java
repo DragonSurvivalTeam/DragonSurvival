@@ -87,7 +87,7 @@ public class ForestDragonAbilities {
     // --- Active --- //
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ The toxic gas that creates a §c«Drain»§r area of effect, which is deadly for creatures.\n",
+            "■ Breathe out toxic gas that causes §c«Drain»§r, which withers away enemies over time.\n",
             "■ §fRange§r§7 depends on age of the dragon.\n",
             "■ §8Cannot be used while affected by «Stress».§r"
     })
@@ -95,7 +95,7 @@ public class ForestDragonAbilities {
     public static final ResourceKey<DragonAbility> FOREST_BREATH = DragonAbilities.key("forest_breath");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ This breathing releases the solar energy stored in you and helps §2plants grow faster§r§7. Turns §fdirt§r§7 into other blocks with a small chance.\n",
+            "■ Breathe out solar energy stored within you and helps §2plants grow faster§r§7. Turns §fdirt§r§7 into other blocks with a small chance.\n",
             "■ §fRange§r§7 depends on age of the dragon.\n",
             "■ §8Cannot be used while affected by «Stress».§r"
     })
@@ -114,8 +114,8 @@ public class ForestDragonAbilities {
     public static final ResourceKey<DragonAbility> INSPIRATION = DragonAbilities.key("inspiration");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ Cover yourself and allies in a thick carpet of herbs. Now you all can move §ffast§r§7 in the grass with §2Invisible§r§7.\n",
-            "■ First melee strike cause a critical hit with a §c%-based damage§r§7 bonus.\n",
+            "■ Cover yourself and allies in a thick carpet of herbs. This grants §ffast§r§7 movement and §2Invisibility§r§7 whilst in the grass.\n",
+            "■ Your first attack while invisible is a critical hit with a §c%-based damage§r§7 bonus.\n",
             "■ §8Effect does not stack. Will be removed early if you take damage, or attack a target.§r",
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Hunters")
@@ -142,7 +142,7 @@ public class ForestDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Cliffhanger")
     public static final ResourceKey<DragonAbility> CLIFFHANGER = DragonAbilities.key("cliffhanger");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Forest dragons can §2fast chop§7 trees §fwithout tools§r§7. This ability gets stronger as you grow.")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Forest dragons can §2chop§7 trees faster §fwithout tools§r§7. This ability gets stronger as you grow.")
     @Translation(type = Translation.Type.ABILITY, comments = "Claws and Teeth")
     public static final ResourceKey<DragonAbility> FOREST_CLAWS_AND_TEETH = DragonAbilities.key("forest_claws_and_teeth");
 

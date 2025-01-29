@@ -144,7 +144,7 @@ public class CaveDragonAbilities {
     public static final ResourceKey<DragonAbility> CAVE_SPIN = DragonAbilities.key("cave_spin");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ Cave dragons have innate §2immunity to fire§r. Nether has never been so easy to explore."
+            "■ Cave dragons have innate §2immunity to fire§r. They feel at home in The Nether."
     })
     @Translation(type = Translation.Type.ABILITY, comments = "Fire Immunity")
     public static final ResourceKey<DragonAbility> FIRE_IMMUNITY = DragonAbilities.key("fire_immunity");
@@ -156,7 +156,7 @@ public class CaveDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Friendly Fire")
     public static final ResourceKey<DragonAbility> FRIENDLY_FIRE = DragonAbilities.key("friendly_fire");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Cave dragons can §2swim in lava§r§7, but they can't stay here too long because the §ftemperature§r§7 is too high.")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Cave dragons can §2swim in lava§r§7, but they can't breathe when under the lava.")
     @Translation(type = Translation.Type.ABILITY, comments = "Lava Swimming")
     public static final ResourceKey<DragonAbility> LAVA_SWIMMING = DragonAbilities.key("lava_swimming");
 

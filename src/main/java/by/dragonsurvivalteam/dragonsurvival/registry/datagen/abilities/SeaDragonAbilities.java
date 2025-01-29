@@ -152,7 +152,7 @@ public class SeaDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Amphibious")
     public static final ResourceKey<DragonAbility> AMPHIBIOUS = DragonAbilities.key("amphibious");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Dexterity in water allows sea dragons to §2mine resources underwater§r§7 without penalty.")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Sea dragons' natural dexterity in water allows them to §2mine resources underwater§r§7 without a speed penalty.")
     @Translation(type = Translation.Type.ABILITY, comments = "Diver")
     public static final ResourceKey<DragonAbility> DIVER = DragonAbilities.key("diver");
 
