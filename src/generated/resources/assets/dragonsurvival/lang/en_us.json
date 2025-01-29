@@ -19,7 +19,7 @@
   "attribute.dragonsurvival.mana_regeneration.desc": "Amount of dragon mana regenerated per tick",
   "attribute.dragonsurvival.penalty_resistance_time": "Penalty Resistance Time",
   "attribute.dragonsurvival.penalty_resistance_time.desc": "Increases the time before the dragon penalty effect is applied",
-  "attribute.dragonsurvival.villager_damage_bonus": "Villager Damage Bonus",
+  "attribute.dragonsurvival.villager_damage_bonus": "Villager Damage",
   "attribute.dragonsurvival.villager_damage_bonus.desc": "The amount of bonus damage villager-aligned mobs will take from your attacks",
   "block.dragonsurvival.acacia_dragon_door": "Acacia Dragon Door",
   "block.dragonsurvival.birch_dragon_altar": "Birch Dragon Altar",
