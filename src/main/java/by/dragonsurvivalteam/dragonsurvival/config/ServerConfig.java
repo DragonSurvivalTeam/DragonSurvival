@@ -56,7 +56,7 @@ public class ServerConfig {
 
     @Translation(key = "disable_dragon_suffocation", type = Translation.Type.CONFIGURATION, comments = "If enabled dragons will not take suffocation damage")
     @ConfigOption(side = ConfigSide.SERVER, category = "general", key = "disable_dragon_suffocation")
-    public static Boolean disableDragonSuffocation = false;
+    public static Boolean disableDragonSuffocation = true;
 
     // --- Large dragon scaling --- //
 

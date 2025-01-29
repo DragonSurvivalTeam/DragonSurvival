@@ -1001,7 +1001,7 @@
         "items": "#c:foods/raw_fish",
         "properties": {
           "eat_seconds": 1.2,
-          "nutrition": 4,
+          "nutrition": 1,
           "saturation": 1.0
         }
       },
