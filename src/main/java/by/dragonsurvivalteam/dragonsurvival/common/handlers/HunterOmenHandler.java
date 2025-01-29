@@ -1,9 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 
-import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSEnchantments;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSMapDecorationTypes;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSTrades;
+import by.dragonsurvivalteam.dragonsurvival.registry.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.EffectsMaintainedThroughDeath;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
@@ -19,6 +16,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.npc.AbstractVillager;
@@ -43,6 +41,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("unused")
 @EventBusSubscriber
 public class HunterOmenHandler {
     @SubscribeEvent
@@ -169,7 +168,7 @@ public class HunterOmenHandler {
     public static void voidsHunterOmen(MobEffectEvent.Added potionAddedEvent) {
         MobEffectInstance effectInstance = potionAddedEvent.getEffectInstance();
         LivingEntity livingEntity = potionAddedEvent.getEntity();
-        if (effectInstance.getEffect() == MobEffects.HERO_OF_THE_VILLAGE) {
+        if (effectInstance != null && effectInstance.getEffect() == MobEffects.HERO_OF_THE_VILLAGE) {
             livingEntity.removeEffect(DSEffects.HUNTER_OMEN);
         }
     }
@@ -199,11 +198,12 @@ public class HunterOmenHandler {
                 duration = effect.getDuration();
             }
 
+            AttributeInstance damage_reduction = attacker.getAttribute(DSAttributes.VILLAGER_DAMAGE_BONUS);
+            if (damage_reduction != null) {
+                attackEntityEvent.setAmount((float) (attackEntityEvent.getAmount() * (1f + damage_reduction.getValue())));
+            }
             int enchantmentLevel = EnchantmentUtils.getLevel(attacker, DSEnchantments.CURSE_OF_KINDNESS);
-
-            if (enchantmentLevel > 0) {
-                attackEntityEvent.setAmount(attackEntityEvent.getAmount() * ((float) Math.pow(enchantmentLevel, 0.7f)));
-            } else {
+            if (enchantmentLevel <= 0) {
                 attacker.addEffect(new MobEffectInstance(DSEffects.HUNTER_OMEN, duration + Functions.secondsToTicks(5), 0, false, false, true));
             }
         }

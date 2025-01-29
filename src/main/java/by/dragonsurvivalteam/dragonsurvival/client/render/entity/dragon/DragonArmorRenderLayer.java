@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
+import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayer;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
@@ -99,12 +100,14 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
             initArmorMasks(handler.getModel());
         }
 
-        if (hasAnyArmorEquipped(player) || ClawInventoryData.getData(player).shouldRenderClaws) {
-            Optional<ResourceLocation> armorTexture = constructTrimmedDragonArmorTexture(player);
-            if (armorTexture.isPresent()) {
-                ((DragonRenderer) renderer).isRenderLayers = true;
-                renderArmor(poseStack, animatable, bakedModel, bufferSource, partialTick, packedLight, armorTexture.get());
-                ((DragonRenderer) renderer).isRenderLayers = false;
+        if (!(player instanceof FakeClientPlayer)) {
+            if (hasAnyArmorEquipped(player) || ClawInventoryData.getData(player).shouldRenderClaws) {
+                Optional<ResourceLocation> armorTexture = constructTrimmedDragonArmorTexture(player);
+                if (armorTexture.isPresent()) {
+                    ((DragonRenderer) renderer).isRenderLayers = true;
+                    renderArmor(poseStack, animatable, bakedModel, bufferSource, partialTick, packedLight, armorTexture.get());
+                    ((DragonRenderer) renderer).isRenderLayers = false;
+                }
             }
         }
     }
