@@ -1,7 +1,5 @@
 {
   "values": [
-    "minecraft:netherite_ingot",
-    "minecraft:diamond_block",
-    "minecraft:gold_block"
+    "dragonsurvival:beacon_activator"
   ]
 }

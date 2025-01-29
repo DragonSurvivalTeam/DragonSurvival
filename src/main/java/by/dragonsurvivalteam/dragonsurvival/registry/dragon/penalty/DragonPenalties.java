@@ -54,7 +54,7 @@ public class DragonPenalties {
     public static final ResourceKey<DragonPenalty> THIN_SKIN = DragonPenalties.key("thin_skin");
 
     @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
-            "■ Dragons are unable to wield or equip certain items. Such as bows, shields, and tridents. They won't equip and will drop from the hotbar, but you can still craft items with it.\n",
+            "■ Dragons are §dunable to wield§r§7 or equip certain items. Such as bows, shields, and tridents. They won't equip and will §cdrop§r from the hotbar, but you can still craft items with it.",
     })
     @Translation(type = Translation.Type.PENALTY, comments = "Item Blacklist")
     public static final ResourceKey<DragonPenalty> ITEM_BLACKLIST = DragonPenalties.key("item_blacklist");

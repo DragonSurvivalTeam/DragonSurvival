@@ -445,4 +445,11 @@ public class DSItems {
     // TODO :: Only here for easy rendering in 'DragonBeaconBlockEntity' (active beacon is not a different block, it's handled by a block state)
     //  Unsure if there is another way to do this
     public static final Holder<Item> ACTIVATED_DRAGON_BEACON = REGISTRY.register("activated_dragon_beacon", () -> new Item(new Item.Properties()));
+
+    @Translation(type = Translation.Type.DESCRIPTION, comments = {
+            "■§7 By combining the basic elements of dragons, you have the item to activate the beacon. Depending what species of dragon you are, the beacon will have different effects."
+    })
+    @Translation(type = Translation.Type.ITEM, comments = "Beacon Activator")
+    public static final Holder<Item> BEACON_ACTIVATOR = REGISTRY.register("beacon_activator", location -> new TooltipItem(new Item.Properties(), location.getPath()));
+
 }

@@ -156,7 +156,7 @@ public class CaveDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Friendly Fire")
     public static final ResourceKey<DragonAbility> FRIENDLY_FIRE = DragonAbilities.key("friendly_fire");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Cave dragons can §2swim in lava§r§7, but they can't breathe when under the lava.")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ ■ Cave dragons can §2swim in lava§r§7, but they can't stay here too long because the §ftemperature§r§7 is too high.")
     @Translation(type = Translation.Type.ABILITY, comments = "Lava Swimming")
     public static final ResourceKey<DragonAbility> LAVA_SWIMMING = DragonAbilities.key("lava_swimming");
 

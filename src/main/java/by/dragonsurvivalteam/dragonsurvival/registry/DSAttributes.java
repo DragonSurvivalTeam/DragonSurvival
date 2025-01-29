@@ -56,8 +56,8 @@ public class DSAttributes {
     @Translation(type = Translation.Type.ATTRIBUTE_DESCRIPTION, comments = "Increases the time before the dragon penalty effect is applied")
     public static final Holder<Attribute> PENALTY_RESISTANCE_TIME = REGISTRY.register("penalty_resistance_time", () -> new TimeAttribute(Translation.Type.ATTRIBUTE.wrap("penalty_resistance_time"), Functions.secondsToTicks(10), 0, 16384).setSyncable(true));
 
-    @Translation(type = Translation.Type.ATTRIBUTE, comments = "Lava Oxygen Amount")
-    @Translation(type = Translation.Type.ATTRIBUTE_DESCRIPTION, comments = "The amount of oxygen the dragon gets when swimming in lava")
+    @Translation(type = Translation.Type.ATTRIBUTE, comments = "Lava Temperature Amount")
+    @Translation(type = Translation.Type.ATTRIBUTE_DESCRIPTION, comments = "The amount of time a dragon can withstand the high temperature of lava.")
     public static final Holder<Attribute> LAVA_OXYGEN_AMOUNT = REGISTRY.register("lava_oxygen_amount", () -> new RangedAttribute(Translation.Type.ATTRIBUTE.wrap("lava_oxygen_bonus"), 3600, 0, 16384).setSyncable(true));
 
     @Translation(type = Translation.Type.ATTRIBUTE, comments = "Armor Ignore Chance")
