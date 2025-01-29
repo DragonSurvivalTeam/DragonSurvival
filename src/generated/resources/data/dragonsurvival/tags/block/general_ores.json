@@ -12,6 +12,7 @@
     "#c:ores/diamond"
   ],
   "values": [
-    "#c:ores"
+    "#c:ores",
+    "minecraft:gilded_blackstone"
   ]
 }
