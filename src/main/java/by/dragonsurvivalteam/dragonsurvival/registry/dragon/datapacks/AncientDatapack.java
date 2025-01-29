@@ -51,7 +51,6 @@ public class AncientDatapack {
                         GrowthItem.create(Functions.hoursToTicks(-1), DSItems.STAR_BONE.value())
                 ),
                 Optional.of(EntityCondition.defaultNaturalGrowthBlocker()),
-                Optional.empty(),
                 Optional.of(new MiscCodecs.DestructionData(120, 120, 0.05))
         );
     }

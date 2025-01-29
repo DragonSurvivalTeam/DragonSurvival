@@ -136,6 +136,7 @@ public class DSBlockTags extends BlockTagsProvider {
 
         tag(GENERAL_ORES)
                 .addTag(Tags.Blocks.ORES)
+                .add(Blocks.GILDED_BLACKSTONE)
                 // Nether
                 .remove(Tags.Blocks.ORES_QUARTZ)
                 .remove(Tags.Blocks.ORES_NETHERITE_SCRAP)

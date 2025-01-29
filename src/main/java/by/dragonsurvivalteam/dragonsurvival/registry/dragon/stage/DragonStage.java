@@ -45,7 +45,6 @@ public record DragonStage(
         List<Modifier> modifiers,
         List<GrowthItem> growthItems,
         Optional<EntityPredicate> isNaturalGrowthStopped,
-        Optional<EntityPredicate> growIntoRequirements,
         Optional<MiscCodecs.DestructionData> destructionData
 ) implements AttributeModifierSupplier {
     public static final ResourceKey<Registry<DragonStage>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_stages"));
@@ -57,7 +56,6 @@ public record DragonStage(
             Modifier.CODEC.listOf().optionalFieldOf("modifiers", List.of()).forGetter(DragonStage::modifiers),
             GrowthItem.CODEC.listOf().optionalFieldOf("growth_items", List.of()).forGetter(DragonStage::growthItems),
             EntityPredicate.CODEC.optionalFieldOf("is_natural_growth_stopped").forGetter(DragonStage::isNaturalGrowthStopped),
-            EntityPredicate.CODEC.optionalFieldOf("grow_into_requirements").forGetter(DragonStage::growIntoRequirements), // FIXME :: unused
             MiscCodecs.DestructionData.CODEC.optionalFieldOf("destruction_data").forGetter(DragonStage::destructionData)
     ).apply(instance, instance.stable(DragonStage::new)));
 

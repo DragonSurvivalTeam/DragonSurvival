@@ -64,7 +64,6 @@ public class DragonStages {
                         GrowthItem.create(Functions.hoursToTicks(-1), DSItems.STAR_BONE.value())
                 ),
                 Optional.of(EntityCondition.defaultNaturalGrowthBlocker()),
-                Optional.empty(),
                 Optional.empty()
         );
     }
@@ -90,7 +89,6 @@ public class DragonStages {
                         GrowthItem.create(Functions.hoursToTicks(-1), DSItems.STAR_BONE.value())
                 ),
                 Optional.of(EntityCondition.defaultNaturalGrowthBlocker()),
-                Optional.empty(),
                 Optional.empty()
         );
     }
@@ -118,7 +116,6 @@ public class DragonStages {
                         GrowthItem.create(Functions.hoursToTicks(-1), DSItems.STAR_BONE.value())
                 ),
                 Optional.of(EntityCondition.defaultNaturalGrowthBlocker()),
-                Optional.empty(),
                 Optional.empty()
         );
     }

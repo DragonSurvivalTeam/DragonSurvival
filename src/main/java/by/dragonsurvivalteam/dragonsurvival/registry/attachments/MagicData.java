@@ -146,8 +146,12 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         }
     }
 
-    @SubscribeEvent // TODO :: Completely skip in spectator mode (shows stress e.g.)? And penalties in spectator + creative?
+    @SubscribeEvent
     public static void tickAbilities(final PlayerTickEvent.Post event) {
+        if (event.getEntity().isSpectator()) {
+            return;
+        }
+
         if (!DragonStateProvider.isDragon(event.getEntity())) {
             return;
         }

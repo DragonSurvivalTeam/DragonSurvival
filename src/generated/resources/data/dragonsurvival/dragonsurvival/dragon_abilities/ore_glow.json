@@ -28,7 +28,7 @@
                     "blue"
                   ],
                   "display_type": "particles",
-                  "range": 16.0
+                  "range": 36.0
                 }
               ],
               "effect_type": "dragonsurvival:block_vision"
@@ -50,7 +50,7 @@
                     "blue"
                   ],
                   "display_type": "particles",
-                  "range": 24.0
+                  "range": 16.0
                 }
               ],
               "effect_type": "dragonsurvival:block_vision"
@@ -72,7 +72,7 @@
                     "gold"
                   ],
                   "display_type": "particles",
-                  "range": 32.0
+                  "range": 22.0
                 }
               ],
               "effect_type": "dragonsurvival:block_vision"
@@ -94,7 +94,7 @@
                     "dark_red"
                   ],
                   "display_type": "particles",
-                  "range": 32.0
+                  "range": 16.0
                 }
               ],
               "effect_type": "dragonsurvival:block_vision"
@@ -116,7 +116,7 @@
                     "black"
                   ],
                   "display_type": "particles",
-                  "range": 32.0
+                  "range": 16.0
                 }
               ],
               "effect_type": "dragonsurvival:block_vision"
@@ -161,7 +161,7 @@
                     "gray"
                   ],
                   "display_type": "particles",
-                  "range": 20.0
+                  "range": 12.0
                 }
               ],
               "effect_type": "dragonsurvival:block_vision"
@@ -184,7 +184,7 @@
                     "dark_green"
                   ],
                   "display_type": "particles",
-                  "range": 12.0
+                  "range": 16.0
                 }
               ],
               "effect_type": "dragonsurvival:block_vision"
@@ -203,13 +203,13 @@
                   },
                   "blocks": "#c:ores/netherite_scrap",
                   "colors": [
-                    "gold",
+                    "dark_aqua",
                     "black",
-                    "yellow",
+                    "aqua",
                     "dark_gray"
                   ],
                   "display_type": "particles",
-                  "range": 12.0
+                  "range": 36.0
                 }
               ],
               "effect_type": "dragonsurvival:block_vision"
@@ -255,7 +255,7 @@
                     "white"
                   ],
                   "display_type": "particles",
-                  "range": 22.0
+                  "range": 16.0
                 }
               ],
               "effect_type": "dragonsurvival:block_vision"

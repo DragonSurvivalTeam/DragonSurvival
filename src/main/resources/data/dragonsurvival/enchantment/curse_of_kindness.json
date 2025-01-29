@@ -22,6 +22,18 @@
           }
         }
       }
+    ],
+    "minecraft:attributes": [
+      {
+        "amount": {
+          "type": "minecraft:linear",
+          "base": -0.25,
+          "per_level_above_first": -0.25
+        },
+        "attribute": "dragonsurvival:villager_damage_bonus",
+        "id": "dragonsurvival:enchantment.curse_of_kindness",
+        "operation": "add_value"
+      }
     ]
   },
   "exclusive_set": "#dragonsurvival:exclusive_set/dark_dragon",

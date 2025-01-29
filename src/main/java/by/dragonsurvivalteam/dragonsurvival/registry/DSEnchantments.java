@@ -27,7 +27,7 @@ public class DSEnchantments {
     public static ResourceKey<Enchantment> DRAGONSBANE = register("dragonsbane");
 
     @Translation(type = Translation.Type.ENCHANTMENT, comments = "Dragonsboon")
-    @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "Attacks heal dragons and apply a regeneration effect.")
+    @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "Test enchantment - should not be available. Attacks heal dragons and apply a regeneration effect.")
     public static ResourceKey<Enchantment> DRAGONSBOON = register("dragonsboon");
 
     @Translation(type = Translation.Type.ENCHANTMENT, comments = "Dragonsbonk")
@@ -35,47 +35,47 @@ public class DSEnchantments {
     public static ResourceKey<Enchantment> DRAGONSBONK = register("dragonsbonk");
 
     @Translation(type = Translation.Type.ENCHANTMENT, comments = "Dragon Shrinker")
-    @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "Causes the user to become smaller.")
+    @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "Test enchantment - should not be available. Causes the user to become smaller.")
     public static ResourceKey<Enchantment> SHRINK = register("shrink");
 
     @Translation(type = Translation.Type.ENCHANTMENT, comments = "Blood Siphon")
-    @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "Has a chance to apply Blood Siphon to the enemy when you get hit, allowing you to recover a portion of the damage done.")
+    @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "Dark Set. Has a chance to apply Blood Siphon to the enemy when you get hit, allowing you to recover a portion of the damage done.")
     public static ResourceKey<Enchantment> BLOOD_SIPHON = register("blood_siphon");
 
     @Translation(type = Translation.Type.ENCHANTMENT, comments = "Murderer's Cunning")
-    @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "You inflict increased damage to targets with full health.")
+    @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "Dark Set. You inflict increased damage to targets with full health.")
     public static ResourceKey<Enchantment> MURDERERS_CUNNING = register("murderers_cunning");
 
     @Translation(type = Translation.Type.ENCHANTMENT, comments = "Overwhelming Might")
-    @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "Debuffs you apply to targets are increased by 1 level.")
+    @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "Dark Set. Debuffs you apply to targets are increased by 1 level.")
     public static ResourceKey<Enchantment> OVERWHELMING_MIGHT = register("overwhelming_might");
 
     @Translation(type = Translation.Type.ENCHANTMENT, comments = "Draconic Superiority")
-    @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "All damage you inflict is increased, and your melee damage is further increased.")
+    @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "Dark Set. All damage you inflict is increased, and your melee damage is further increased.")
     public static ResourceKey<Enchantment> DRACONIC_SUPERIORITY = register("draconic_superiority");
 
     @Translation(type = Translation.Type.ENCHANTMENT, comments = "Combat Recovery")
-    @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "When you take damage, has a chance to apply Regeneration to yourself.")
+    @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "Light Set. When you take damage, has a chance to apply Regeneration to yourself.")
     public static ResourceKey<Enchantment> COMBAT_RECOVERY = register("combat_recovery");
 
     @Translation(type = Translation.Type.ENCHANTMENT, comments = "Aerodynamic Mastery")
-    @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "Reduces flight stamina cost, and has a chance to conserve rockets during elytra flight.")
+    @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "Light Set. Reduces flight stamina cost.")
     public static ResourceKey<Enchantment> AERODYNAMIC_MASTERY = register("aerodynamic_mastery");
 
     @Translation(type = Translation.Type.ENCHANTMENT, comments = "Unbreakable Spirit")
-    @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "Reduces incoming debuffs by 1 level.")
+    @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "Light Set. Reduces incoming debuffs by 1 level.")
     public static ResourceKey<Enchantment> UNBREAKABLE_SPIRIT = register("unbreakable_spirit");
 
     @Translation(type = Translation.Type.ENCHANTMENT, comments = "Sacred Scales")
-    @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "Has a chance to reduce incoming damage.")
+    @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "Light Set. Has a chance to reduce incoming damage.")
     public static ResourceKey<Enchantment> SACRED_SCALES = register("sacred_scales");
 
     @Translation(type = Translation.Type.ENCHANTMENT, comments = "Outlaw's Mark")
-    @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "Causes you to be a permanent target for dragon hunters.")
+    @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "Dark Set. Causes you to be a permanent target for dragon hunters.")
     public static ResourceKey<Enchantment> CURSE_OF_OUTLAW = register("curse_of_outlaw");
 
     @Translation(type = Translation.Type.ENCHANTMENT, comments = "Mark of Compassion")
-    @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "You deal reduced damage to dragon hunters and villagers.")
+    @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "Light Set. Villagers and dragon hunters do not take damage from you.")
     public static ResourceKey<Enchantment> CURSE_OF_KINDNESS = register("curse_of_kindness");
 
     private static ResourceKey<Enchantment> register(String key) {

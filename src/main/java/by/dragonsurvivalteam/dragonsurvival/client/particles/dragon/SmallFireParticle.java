@@ -6,7 +6,7 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
 public class SmallFireParticle extends DragonParticle {
@@ -20,11 +20,11 @@ public class SmallFireParticle extends DragonParticle {
         super.remove();
     }
 
-    @Override
+    @Override // Clamp brightness between 10 and 15, depending on the particle age
     protected int getLightColor(float partialTick) {
-        int color = super.getLightColor(partialTick);
-        int red = FastColor.ARGB32.red(color);
-        return 240 | red << 16;
+        float progress = (age + partialTick) / lifetime;
+        progress = Mth.clamp(progress, 0, 1);
+        return (int) (0xF0 - (progress * (0xF0 - 0xA0)));
     }
 
     public static final class Factory implements ParticleProvider<SmallFireParticleOption> {

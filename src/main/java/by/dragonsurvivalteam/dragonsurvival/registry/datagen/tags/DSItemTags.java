@@ -87,12 +87,13 @@ public class DSItemTags extends ItemTagsProvider {
                 .addTag(Tags.Items.MELEE_WEAPON_TOOLS);
 
         tag(LIGHT_SOURCE)
+                .addTag(Tags.Items.DUSTS_GLOWSTONE)
                 .add(Items.TORCH)
                 .add(Items.LANTERN)
                 .add(Items.GLOWSTONE);
 
-        // TODO
-        tag(ACTIVATES_DRAGON_BEACON).add(Items.NETHERITE_INGOT);
+        tag(ACTIVATES_DRAGON_BEACON)
+                .add(DSItems.BEACON_ACTIVATOR.value());
 
         tag(CHARRED_FOOD)
                 .add(DSItems.CHARGED_COAL.value())

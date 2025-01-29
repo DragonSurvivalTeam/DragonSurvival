@@ -56,11 +56,6 @@ public class DSDamageTypes {
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Toxic Breath")
     public static final ResourceKey<DamageType> FOREST_BREATH = key("forest_breath");
 
-    @Translation(type = Translation.Type.DEATH, comments = "%s was poisoned by a sun breath.")
-    @Translation(type = Translation.Type.DEATH_PLAYER, comments = "%s was poisoned by %s's sun breath.")
-    @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Sun Breath")
-    public static final ResourceKey<DamageType> SUN_BREATH = key("sun_breath");
-
     @Translation(type = Translation.Type.DEATH, comments = "%s had their life force drained.")
     @Translation(type = Translation.Type.DEATH_PLAYER, comments = "%s had their life force drained by %s.")
     @Translation(type = Translation.Type.DAMAGE_TYPE, comments = "Drain")
@@ -113,7 +108,6 @@ public class DSDamageTypes {
         register(context, DSDamageTypes.BALL_LIGHTNING);
         register(context, DSDamageTypes.DRAGON_BREATH);
         register(context, DSDamageTypes.FOREST_BREATH);
-        register(context, DSDamageTypes.SUN_BREATH);
         register(context, DSDamageTypes.DRAIN);
         register(context, DSDamageTypes.RAIN_BURN);
         register(context, DSDamageTypes.LIGHTNING_BREATH);

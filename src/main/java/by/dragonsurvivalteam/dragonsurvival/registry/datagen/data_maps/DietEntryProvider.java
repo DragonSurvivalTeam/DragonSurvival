@@ -183,7 +183,7 @@ public class DietEntryProvider extends DataMapProvider {
 
     public static List<DietEntry> seaDiet() {
         return List.of(
-                DietEntry.from(Tags.Items.FOODS_RAW_FISH, new FoodProperties(4, 1, false, 1.2f, Optional.empty(), List.of())),
+                DietEntry.from(Tags.Items.FOODS_RAW_FISH, new FoodProperties(1, 1, false, 1.2f, Optional.empty(), List.of())),
                 DietEntry.from(Items.KELP, new FoodProperties(1, 1, false, 1.0f, Optional.empty(), List.of())),
                 DietEntry.from(Tags.Items.EGGS, new FoodProperties(2, 2, false, 0.8f, Optional.empty(), List.of())),
                 DietEntry.from(Items.PUFFERFISH, new FoodProperties(8, 8, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),

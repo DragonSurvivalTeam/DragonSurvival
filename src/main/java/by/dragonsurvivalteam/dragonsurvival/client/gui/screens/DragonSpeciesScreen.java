@@ -51,25 +51,25 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class DragonSpeciesScreen extends Screen {
     @Translation(comments = {
-            "In order to allow other players to mount you, you must crouch and they can right click on you to mount.",
-            "\n§6Human players can ride you at scale %s§r§7",
-            "\n§6Dragon players can ride you below or equal to scale %s§r§7"
+            "■ In order to allow other players to mount you, you must crouch and they can right click on you to mount.",
+            "\n§6■ Human players can ride you at scale %s§r§7",
+            "\n§6■ Dragon players can ride you below or equal to scale %s§r§7"
     })
     private static final String RIDING_INFO = Translation.Type.GUI.wrap("dragon_species_screen.riding_info");
 
-    @Translation(comments = "This species cannot gain the ability to fly.")
+    @Translation(comments = "■ This species cannot gain the ability to fly.")
     public static final String FLIGHT_CANNOT_GAIN = Translation.Type.GUI.wrap("dragon_species_screen.flight_cannot_gain");
 
-    @Translation(comments = "You currently cannot fly.")
+    @Translation(comments = "■ You currently cannot fly.")
     public static final String FLIGHT_CANNOT_FLY = Translation.Type.GUI.wrap("dragon_species_screen.flight_cannot_fly_or_spin");
 
-    @Translation(comments = "You currently can fly.")
+    @Translation(comments = "■ You currently can fly.")
     public static final String FLIGHT_CAN_FLY = Translation.Type.GUI.wrap("dragon_species_screen.flight_can_fly");
 
-    @Translation(comments = "You currently can spin.")
+    @Translation(comments = "■ You currently can spin.")
     public static final String FLIGHT_CAN_SPIN = Translation.Type.GUI.wrap("dragon_species_screen.flight_can_spin");
 
-    @Translation(comments = "Players cannot ride this species.")
+    @Translation(comments = "■ Players cannot ride this species.")
     private static final String RIDING_DISABLED = Translation.Type.GUI.wrap("dragon_species_screen.riding_disabled");
 
     @Translation(comments = "This species has no penalties.")
