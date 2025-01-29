@@ -41,6 +41,7 @@ public record DragonBody(
         ScalingProportions scalingProportions,
         double crouchHeightRatio,
         Optional<MountingOffsets> mountingOffsets,
+        Optional<BackpackOffsets> backpackOffsets,
         Optional<ResourceLocation> defaultIcon
 ) implements AttributeModifierSupplier {
     public static final ResourceKey<Registry<DragonBody>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_bodies"));
@@ -57,6 +58,7 @@ public record DragonBody(
             ScalingProportions.CODEC.fieldOf("scaling_proportions").forGetter(DragonBody::scalingProportions),
             Codec.DOUBLE.fieldOf("crouch_height_ratio").forGetter(DragonBody::crouchHeightRatio),
             MountingOffsets.CODEC.optionalFieldOf("mounting_offset").forGetter(DragonBody::mountingOffsets),
+            BackpackOffsets.CODEC.optionalFieldOf("backpack_offset").forGetter(DragonBody::backpackOffsets),
             ResourceLocation.CODEC.optionalFieldOf("default_icon").forGetter(DragonBody::defaultIcon)
     ).apply(instance, instance.stable(DragonBody::new)));
 
@@ -87,6 +89,19 @@ public record DragonBody(
         public static MountingOffsets of(final Vec3 offset, final Vec3 scale) {
             return new MountingOffsets(offset, scale);
         }
+    }
+    
+    public record BackpackOffsets(Vec3 pos_offset, Vec3 rot_offset, Vec3 scale) {
+        public static final Codec<BackpackOffsets> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Vec3.CODEC.optionalFieldOf("position_offset", Vec3.ZERO).forGetter(BackpackOffsets::pos_offset),
+                Vec3.CODEC.optionalFieldOf("rotation_offset", Vec3.ZERO).forGetter(BackpackOffsets::rot_offset),
+                Vec3.CODEC.optionalFieldOf("scale", new Vec3(1, 1, 1)).forGetter(BackpackOffsets::scale)
+        ).apply(instance, BackpackOffsets::new));
+
+        public static BackpackOffsets of(final Vec3 pos_offset, final Vec3 rot_offset, final Vec3 scale) {
+            return new BackpackOffsets(pos_offset, rot_offset, scale);
+        }
+        
     }
 
     @SubscribeEvent

@@ -1,5 +1,17 @@
 {
   "animation": "dragonsurvival:dragon_west",
+  "backpack_offset": {
+    "position_offset": [
+      0.0,
+      3.2,
+      0.0
+    ],
+    "scale": [
+      0.9,
+      0.9,
+      0.9
+    ]
+  },
   "can_hide_wings": false,
   "crouch_height_ratio": 0.83333333,
   "default_icon": "dragonsurvival:textures/gui/custom/body/west/default.png",
