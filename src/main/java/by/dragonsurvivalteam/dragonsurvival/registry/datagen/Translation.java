@@ -105,6 +105,7 @@ public @interface Translation {
         STAGE_DESCRIPTION("dragon_stage." + DragonSurvival.MODID + ".", ".desc"),
 
         COMMAND("command." + DragonSurvival.MODID + ".", ""),
+        VILLAGER_PROFESSION("entity.minecraft.villager." + DragonSurvival.MODID + ".", ""),
 
         /**
          * When used on {@link String} and no specified key it's expected that the string contains the translation key <br>

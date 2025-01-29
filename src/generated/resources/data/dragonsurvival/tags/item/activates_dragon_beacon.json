@@ -1,5 +1,7 @@
 {
   "values": [
-    "minecraft:netherite_ingot"
+    "minecraft:netherite_ingot",
+    "minecraft:diamond_block",
+    "minecraft:gold_block"
   ]
 }

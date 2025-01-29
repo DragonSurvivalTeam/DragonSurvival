@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.util.EnchantmentUtils;
 import com.google.common.collect.ImmutableSet;
@@ -55,6 +56,7 @@ public class DSTrades {
             "dragon_rider_poi",
             () -> new PoiType(ImmutableSet.copyOf(DSBlocks.DRAGON_RIDER_WORKBENCH.get().getStateDefinition().getPossibleStates()), 1, 1));
 
+    @Translation(type = Translation.Type.VILLAGER_PROFESSION, comments = {"Dragon Rider"})
     public static final Holder<VillagerProfession> DRAGON_RIDER_PROFESSION = PROFESSION_REGISTRY.register(
             "dragon_rider",
             () -> new VillagerProfession("dragon_rider",

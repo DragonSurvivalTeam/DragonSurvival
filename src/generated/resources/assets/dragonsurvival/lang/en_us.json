@@ -1147,6 +1147,7 @@
   "entity.dragonsurvival.hunter_knight": "Hunter Knight",
   "entity.dragonsurvival.hunter_leader": "Hunter Leader",
   "entity.dragonsurvival.hunter_spearman": "Hunter Spearman",
+  "entity.minecraft.villager.dragonsurvival.dragon_rider": "Dragon Rider",
   "enum.attack_behaviour": "Attack Behaviour",
   "enum.attack_behaviour.default": "Default",
   "enum.attack_behaviour.defensive": "Defensive",

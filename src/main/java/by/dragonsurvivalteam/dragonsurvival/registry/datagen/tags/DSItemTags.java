@@ -91,8 +91,10 @@ public class DSItemTags extends ItemTagsProvider {
                 .add(Items.LANTERN)
                 .add(Items.GLOWSTONE);
 
-        // TODO
-        tag(ACTIVATES_DRAGON_BEACON).add(Items.NETHERITE_INGOT);
+        tag(ACTIVATES_DRAGON_BEACON)
+                .add(Items.NETHERITE_INGOT)
+                .add(Items.DIAMOND_BLOCK)
+                .add(Items.GOLD_BLOCK);
 
         tag(CHARRED_FOOD)
                 .add(DSItems.CHARGED_COAL.value())
