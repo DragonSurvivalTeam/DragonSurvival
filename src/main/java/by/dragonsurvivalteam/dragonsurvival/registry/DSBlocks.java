@@ -813,6 +813,7 @@ public class DSBlocks {
     public static final DeferredHolder<Block, Block> DRAGON_RIDER_WORKBENCH = REGISTRY.register("dragon_rider_workbench",
             () -> new DragonRiderWorkbenchBlock(BlockBehaviour.Properties.of()
                     .sound(SoundType.TRIAL_SPAWNER)
+                    .strength(1.5f)
                     .mapColor(MapColor.WOOD)
             )
     );
