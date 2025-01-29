@@ -38,7 +38,7 @@ public class DSAttributes {
 
     @Translation(type = Translation.Type.ATTRIBUTE, comments = "Dragon Mana Regeneration")
     @Translation(type = Translation.Type.ATTRIBUTE_DESCRIPTION, comments = "Amount of dragon mana regenerated per tick") // Default regenerates 0.002 mana per second / 1 full mana point per 500 seconds
-    public static final Holder<Attribute> MANA_REGENERATION = REGISTRY.register("mana_regeneration", () -> new RangedAttribute(Translation.Type.ATTRIBUTE.wrap("mana_regeneration"), 0.0001, 0, 1024).setSyncable(true));
+    public static final Holder<Attribute> MANA_REGENERATION = REGISTRY.register("mana_regeneration", () -> new RangedAttribute(Translation.Type.ATTRIBUTE.wrap("mana_regeneration"), 0.004, 0, 1024).setSyncable(true));
 
     @Translation(type = Translation.Type.ATTRIBUTE, comments = "Experience")
     @Translation(type = Translation.Type.ATTRIBUTE_DESCRIPTION, comments = "A multiplier to the dropped experience")
