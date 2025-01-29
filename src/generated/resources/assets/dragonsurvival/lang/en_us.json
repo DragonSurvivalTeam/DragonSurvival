@@ -269,7 +269,7 @@
   "dragon_ability.dragonsurvival.sturdy_skin": "Sturdy Skin",
   "dragon_ability.dragonsurvival.sturdy_skin.desc": "■ Gives you and your allies additional §2armor points§r§7.",
   "dragon_ability.dragonsurvival.sun_breath": "Sun Breath",
-  "dragon_ability.dragonsurvival.sun_breath.desc": "■ Breathe out solar energy stored within you and helps §2plants grow faster§r§7. Turns §fdirt§r§7 into other blocks with a small chance.\n\n■ §fRange§r§7 depends on age of the dragon.\n\n■ §8Cannot be used while affected by «Stress».§r",
+  "dragon_ability.dragonsurvival.sun_breath.desc": "■ Breathe out solar energy stored within you, helping §2plants grow faster§r§7. Turns §fdirt§r§7 into other blocks with a small chance.\n\n■ §fRange§r§7 depends on age of the dragon.\n\n■ §8Cannot be used while affected by «Stress».§r",
   "dragon_ability.dragonsurvival.test_frost_walker": "Frost Walker Test",
   "dragon_ability.dragonsurvival.test_frost_walker.desc": "Frost-walker like effect",
   "dragon_ability.dragonsurvival.test_glow": "Glow Test",
