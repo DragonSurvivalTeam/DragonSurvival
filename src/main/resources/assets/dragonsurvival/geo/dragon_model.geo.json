@@ -156,11 +156,12 @@
 				{
 					"name": "BackpackBone",
 					"parent": "Torso",
-					"pivot": [0, 23, -7],
+					"pivot": [0, 22, -2],
+					"rotation": [88, 0, 0],
 					"cubes": [
 						{
-							"origin": [-1, 22, -8],
-							"size": [2, 2, 2],
+							"origin": [0.1, 22, -8],
+							"size": [0.9, 0.9, 0.9],
 							"uv": {
 								"north": {"uv": [0, 0], "uv_size": [0, 0]},
 								"east": {"uv": [0, 0], "uv_size": [0, 0]},
