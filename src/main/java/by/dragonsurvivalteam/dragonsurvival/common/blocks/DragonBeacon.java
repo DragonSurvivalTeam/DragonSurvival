@@ -6,11 +6,13 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonBeaconData;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDataMaps;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSSounds;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonBeaconBlockEntity;
 import by.dragonsurvivalteam.dragonsurvival.util.ExperienceUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -39,6 +41,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class DragonBeacon extends Block implements SimpleWaterloggedBlock, EntityBlock {
+    @Translation(comments = "Not enough experience to gain the beacon effects (%s / %s)")
+    private static final String NOT_ENOUGH_EXPERIENCE = Translation.Type.GUI.wrap("message.not_enough_experience");
+
     public DragonBeacon(final Properties properties) {
         super(properties);
         registerDefaultState(getStateDefinition().any().setValue(BlockStateProperties.LIT, false).setValue(BlockStateProperties.WATERLOGGED, false));
@@ -59,7 +64,9 @@ public class DragonBeacon extends Block implements SimpleWaterloggedBlock, Entit
             return InteractionResult.FAIL;
         }
 
-        if ((player.hasInfiniteMaterials() || ExperienceUtils.getTotalExperience(player) >= beacon.getExperienceCost())) {
+        int playerExperience = ExperienceUtils.getTotalExperience(player);
+
+        if ((player.hasInfiniteMaterials() || playerExperience >= beacon.getExperienceCost())) {
             // The client does not retain the block entity data - not worth to sync it
             if (!player.level().isClientSide() && beacon.applyEffects(player, true)) {
                 if (!player.hasInfiniteMaterials()) {
@@ -70,6 +77,8 @@ public class DragonBeacon extends Block implements SimpleWaterloggedBlock, Entit
             }
 
             return InteractionResult.sidedSuccess(level.isClientSide());
+        } else {
+            player.displayClientMessage(Component.translatable(NOT_ENOUGH_EXPERIENCE, playerExperience, beacon.getExperienceCost()), true);
         }
 
         return InteractionResult.FAIL;
