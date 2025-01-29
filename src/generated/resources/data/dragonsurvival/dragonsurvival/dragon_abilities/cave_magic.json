@@ -51,11 +51,11 @@
                     {
                       "amount": {
                         "type": "minecraft:linear",
-                        "base": 1.0,
-                        "per_level_above_first": 1.0
+                        "base": 0.01,
+                        "per_level_above_first": 0.01
                       },
                       "attribute": "dragonsurvival:mana_regeneration",
-                      "operation": "add_multiplied_base"
+                      "operation": "add_value"
                     }
                   ]
                 }
@@ -83,6 +83,17 @@
                   "location": {
                     "block": {
                       "blocks": "#dragonsurvival:warm_blocks"
+                    }
+                  }
+                }
+              },
+              {
+                "condition": "minecraft:entity_properties",
+                "entity": "this",
+                "predicate": {
+                  "stepping_on": {
+                    "block": {
+                      "blocks": "minecraft:fire"
                     }
                   }
                 }
@@ -136,17 +147,6 @@
                       "state": {
                         "lit": "true"
                       }
-                    }
-                  }
-                }
-              },
-              {
-                "condition": "minecraft:entity_properties",
-                "entity": "this",
-                "predicate": {
-                  "stepping_on": {
-                    "block": {
-                      "blocks": "minecraft:fire"
                     }
                   }
                 }

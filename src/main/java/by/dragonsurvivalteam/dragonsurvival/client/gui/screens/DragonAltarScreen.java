@@ -175,12 +175,12 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
     }
 
     @Override
-    public void render(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void render(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         if (minecraft == null) {
             return;
         }
 
-        renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+        renderBackground(graphics, mouseX, mouseY, partialTick);
 
         tick++;
 
@@ -259,13 +259,15 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                         entity2Scale = 40;
                     }
 
+                    // Left side
                     Quaternionf quaternion = Axis.ZP.rotationDegrees(180.0F);
-                    quaternion.rotateY((float) Math.toRadians(150));
-                    InventoryScreen.renderEntityInInventory(guiGraphics, (float) width / 2 + 170, button.getY() + button.getHeight(), entity1Scale, new Vector3f(), quaternion, null, entity1);
+                    quaternion.rotateY((float) Math.toRadians(210));
+                    InventoryScreen.renderEntityInInventory(graphics, (width / 2f) - 180, button.getY() + button.getHeight(), entity1Scale, new Vector3f(), quaternion, null, entity1);
 
+                    // Right side
                     Quaternionf quaternion2 = Axis.ZP.rotationDegrees(180.0F);
-                    quaternion2.rotateY((float) Math.toRadians(210));
-                    InventoryScreen.renderEntityInInventory(guiGraphics, (float) width / 2 - 170, button.getY() + button.getHeight(), entity2Scale, new Vector3f(), quaternion2, null, entity2);
+                    quaternion2.rotateY((float) Math.toRadians(150));
+                    InventoryScreen.renderEntityInInventory(graphics, (width / 2f) + 180, button.getY() + button.getHeight(), entity2Scale, new Vector3f(), quaternion2, null, entity2);
                 }
             }
 
@@ -276,11 +278,11 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
             }
         }
 
-        TextRenderUtil.drawCenteredScaledText(guiGraphics, width / 2 + 7, 10, 2f, Component.translatable(TITLE).getString(), DyeColor.WHITE.getTextColor());
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0, 0, 300);
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
-        guiGraphics.pose().popPose();
+        TextRenderUtil.drawCenteredScaledText(graphics, width / 2 + 7, 10, 2f, Component.translatable(TITLE).getString(), DyeColor.WHITE.getTextColor());
+        graphics.pose().pushPose();
+        graphics.pose().translate(0, 0, 300);
+        super.render(graphics, mouseX, mouseY, partialTick);
+        graphics.pose().popPose();
     }
 
     private void initializeHandler(final DragonStateHandler handler) {

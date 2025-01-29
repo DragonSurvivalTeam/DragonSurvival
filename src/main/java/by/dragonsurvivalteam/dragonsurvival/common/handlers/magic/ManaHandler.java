@@ -75,12 +75,7 @@ public class ManaHandler {
 
     public static void replenishMana(final Player player, float mana) {
         MagicData data = MagicData.getData(player);
-
-        if (getCurrentMana(player) == getMaxMana(player)) {
-            return;
-        }
-
-        data.setCurrentMana(data.getCurrentMana() + mana);
+        data.setCurrentMana(Math.min(getMaxMana(player), data.getCurrentMana() + mana));
     }
 
     public static void consumeMana(final Player player, float manaCost) {

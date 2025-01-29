@@ -380,7 +380,7 @@ public class ForestDragonAbilities {
     private static void registerPassiveAbilities(final BootstrapContext<DragonAbility> context) {
         context.register(FOREST_MAGIC, new DragonAbility(
                 Activation.passive(),
-                Optional.of(new ExperiencePointsUpgrade(10, LevelBasedValue.perLevel(15))),
+                Optional.of(new ExperiencePointsUpgrade(10, LevelBasedValue.perLevel(36))),
                 Optional.empty(),
                 List.of(
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -397,7 +397,7 @@ public class ForestDragonAbilities {
                                         .or(Condition.thisEntity(EntityCondition.isInSunlight(10))).build(),
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DurationInstanceBase.create(DragonSurvival.res("good_mana_condition")).infinite().removeAutomatically().hidden().build(),
-                                        List.of(Modifier.per(DSAttributes.MANA_REGENERATION, 1, AttributeModifier.Operation.ADD_MULTIPLIED_BASE))
+                                        List.of(Modifier.per(DSAttributes.MANA_REGENERATION, 0.01f, AttributeModifier.Operation.ADD_VALUE))
                                 )),
                                 TargetingMode.ALLIES_AND_SELF
                         )), LevelBasedValue.constant(1))

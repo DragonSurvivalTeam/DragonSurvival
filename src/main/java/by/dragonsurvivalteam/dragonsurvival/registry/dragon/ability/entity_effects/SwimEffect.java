@@ -37,7 +37,11 @@ public record SwimEffect(LevelBasedValue maxOxygen, Holder<FluidType> fluid) imp
     }
 
     @Override
-    public void remove(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
+    public void remove(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target, final boolean isAutoRemoval) {
+        if (isAutoRemoval) {
+            return;
+        }
+
         if (!(target instanceof ServerPlayer player)) {
             return;
         }

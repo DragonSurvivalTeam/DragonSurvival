@@ -358,7 +358,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
      * - {@link ResourceLocation#toLanguageKey()} of each equipped armor item <br>
      * - {@link DataComponents#TRIM} of each equipped armor slot <br>
      * - {@link DataComponents#DYED_COLOR} of each equipped armor slot <br> <br>
-     * - What is currently being used in the claw slot and teeth slot (ie. tools/weapons)
+     * - What is currently being used in the claw slot and teeth slot (i.e. tools/weapons)
      */
     private static String buildUniqueArmorUUID(final Player player) {
         StringBuilder armorTotal = new StringBuilder();

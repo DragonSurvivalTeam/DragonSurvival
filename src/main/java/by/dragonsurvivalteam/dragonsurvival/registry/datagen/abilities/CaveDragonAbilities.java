@@ -358,7 +358,7 @@ public class CaveDragonAbilities {
     private static void registerPassiveAbilities(final BootstrapContext<DragonAbility> context) {
         context.register(CAVE_MAGIC, new DragonAbility(
                 Activation.passive(),
-                Optional.of(new ExperiencePointsUpgrade(10, LevelBasedValue.perLevel(15))),
+                Optional.of(new ExperiencePointsUpgrade(10, LevelBasedValue.perLevel(36))),
                 Optional.empty(),
                 List.of(
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -370,18 +370,19 @@ public class CaveDragonAbilities {
                         )), LevelBasedValue.constant(1)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                                 // Enable when on (or within) said block tag, when in lava or when on certain lit blocks
-                                Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_WARM))
-                                        .or(Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_WARM)))
-                                        .or(Condition.thisEntity(EntityCondition.isInFluid(context.lookup(Registries.FLUID).getOrThrow(FluidTags.LAVA))))
-                                        .or(Condition.thisEntity(EntityCondition.isOnBlock(BlockTags.CAMPFIRES, BlockStateProperties.LIT, true)))
-                                        .or(Condition.thisEntity(EntityCondition.isOnBlock(Tags.Blocks.PLAYER_WORKSTATIONS_FURNACES, BlockStateProperties.LIT, true)))
-                                        .or(Condition.thisEntity(EntityCondition.isOnBlock(Blocks.SMOKER, BlockStateProperties.LIT, true)))
-                                        .or(Condition.thisEntity(EntityCondition.isOnBlock(Blocks.FIRE)))
-                                        .or(Condition.thisEntity(EntityCondition.isOnBlock(Blocks.BLAST_FURNACE, BlockStateProperties.LIT, true)))
-                                        .build(),
+                                AnyOfCondition.anyOf(
+                                        Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_WARM)),
+                                        Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_WARM)),
+                                        Condition.thisEntity(EntityCondition.isOnBlock(Blocks.FIRE)),
+                                        Condition.thisEntity(EntityCondition.isInFluid(context.lookup(Registries.FLUID).getOrThrow(FluidTags.LAVA))),
+                                        Condition.thisEntity(EntityCondition.isOnBlock(BlockTags.CAMPFIRES, BlockStateProperties.LIT, true)),
+                                        Condition.thisEntity(EntityCondition.isOnBlock(Tags.Blocks.PLAYER_WORKSTATIONS_FURNACES, BlockStateProperties.LIT, true)),
+                                        Condition.thisEntity(EntityCondition.isOnBlock(Blocks.SMOKER, BlockStateProperties.LIT, true)),
+                                        Condition.thisEntity(EntityCondition.isOnBlock(Blocks.BLAST_FURNACE, BlockStateProperties.LIT, true))
+                                ).build(),
                                 ModifierEffect.only(new ModifierWithDuration(
                                         DurationInstanceBase.create(DragonSurvival.res("good_mana_condition")).infinite().removeAutomatically().hidden().build(),
-                                        List.of(Modifier.per(DSAttributes.MANA_REGENERATION, 1, AttributeModifier.Operation.ADD_MULTIPLIED_BASE))
+                                        List.of(Modifier.per(DSAttributes.MANA_REGENERATION, 0.03f, AttributeModifier.Operation.ADD_VALUE))
                                 )),
                                 TargetingMode.ALLIES_AND_SELF
                         )), LevelBasedValue.constant(1))

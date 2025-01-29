@@ -23,8 +23,12 @@ public record DamageModificationEffect(List<DamageModification> modifications) i
     }
 
     @Override
-    public void remove(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity) {
-        modifications.forEach(modification -> modification.remove(entity));
+    public void remove(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity, final boolean isAutoRemoval) {
+        modifications.forEach(modification -> {
+            if (!isAutoRemoval || modification.shouldRemoveAutomatically()) {
+                modification.remove(entity);
+            }
+        });
     }
 
     @Override

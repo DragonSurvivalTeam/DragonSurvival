@@ -26,9 +26,13 @@ public record EffectModificationEffect(List<EffectModification> modifications) i
     }
 
     @Override
-    public void remove(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity) {
+    public void remove(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity, final boolean isAutoRemoval) {
         if (entity instanceof LivingEntity livingEntity) {
-            modifications.forEach(modification -> modification.remove(livingEntity));
+            modifications.forEach(modification -> {
+                if (!isAutoRemoval || modification.shouldRemoveAutomatically()) {
+                    modification.remove(livingEntity);
+                }
+            });
         }
     }
 
