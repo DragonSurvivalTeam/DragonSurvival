@@ -80,14 +80,15 @@ public record DragonBody(
         }
     }
 
-    public record MountingOffsets(Vec3 offset, Vec3 scale) {
+    public record MountingOffsets(Vec3 humanOffset, Vec3 dragonOffset, Vec3 scale) {
         public static final Codec<MountingOffsets> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                Vec3.CODEC.optionalFieldOf("offset", Vec3.ZERO).forGetter(MountingOffsets::offset),
-                Vec3.CODEC.optionalFieldOf("scale", Vec3.ZERO).forGetter(MountingOffsets::scale)
+                Vec3.CODEC.optionalFieldOf("human_offset", Vec3.ZERO).forGetter(MountingOffsets::humanOffset),
+                Vec3.CODEC.optionalFieldOf("dragon_offset", Vec3.ZERO).forGetter(MountingOffsets::dragonOffset),
+                Vec3.CODEC.optionalFieldOf("offset_per_scale_above_one", Vec3.ZERO).forGetter(MountingOffsets::scale)
         ).apply(instance, MountingOffsets::new));
 
-        public static MountingOffsets of(final Vec3 offset, final Vec3 scale) {
-            return new MountingOffsets(offset, scale);
+        public static MountingOffsets of(final Vec3 humanOffset, final Vec3 dragonOffset, final Vec3 scale) {
+            return new MountingOffsets(humanOffset, dragonOffset, scale);
         }
     }
     

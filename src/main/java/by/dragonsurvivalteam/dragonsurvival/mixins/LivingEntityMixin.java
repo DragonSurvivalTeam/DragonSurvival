@@ -19,11 +19,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -74,45 +70,14 @@ public abstract class LivingEntityMixin extends Entity {
         return getItemBySlot(slot);
     }
 
-    @ModifyReturnValue(at = @At(value = "RETURN"), method = "getPassengerRidingPosition")
-    public Vec3 dragonSurvival$getDragonPassengersRidingOffset(Vec3 original) {
-        if ((Object) this instanceof Player player) {
-            DragonStateHandler handler = DragonStateProvider.getData(player);
-
-            if (handler.isDragon()) {
-                double height = DragonSizeHandler.calculateDragonHeight(handler, player);
-
-                if (!DragonStateProvider.isDragon(getPassengers().getFirst())) {
-                    // Human passenger
-                    switch (getPose()) {
-                        case FALL_FLYING, SWIMMING, SPIN_ATTACK -> {
-                            return original.add(new Vec3(0, (height * 0.65) - 1D, 0));
-                        }
-                        case CROUCHING -> {
-                            return original.add(new Vec3(0, (height * 0.73D) - 2D, 0));
-                        }
-                        default -> {
-                            return original.add(new Vec3(0, (height * 0.66D) - 1.9D, 0));
-                        }
-                    }
-                } else {
-                    // Dragon passenger
-                    switch (getPose()) {
-                        case FALL_FLYING, SWIMMING, SPIN_ATTACK -> {
-                            return original.add(new Vec3(0, (height * 0.66) - 0.4D, 0));
-                        }
-                        case CROUCHING -> {
-                            return original.add(new Vec3(0, (height * 0.79D) - 1.7D, 0));
-                        }
-                        default -> {
-                            return original.add(new Vec3(0, (height * 0.72D) - 1.9D, 0));
-                        }
-                    }
-                }
-            }
+    @ModifyExpressionValue(method = "getPassengerRidingPosition", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getDimensions(Lnet/minecraft/world/entity/Pose;)Lnet/minecraft/world/entity/EntityDimensions;"))
+    public EntityDimensions dragonSurvival$useCorrectDimensionsForPassengerRidingCalculation(EntityDimensions original) {
+        LivingEntity self = (LivingEntity) (Object) this;
+        if(DragonStateProvider.isDragon(self) && self instanceof Player player) {
+            return DragonSizeHandler.calculateDimensions(DragonStateProvider.getData(player), player, DragonSizeHandler.getOverridePose(player));
+        } else {
+            return original;
         }
-
-        return original;
     }
 
     @Unique private int dragonSurvival$getHumanOrDragonUseDuration(int original) {

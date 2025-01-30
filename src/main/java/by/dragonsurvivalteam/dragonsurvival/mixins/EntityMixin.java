@@ -31,32 +31,25 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin {
+
     /** Correctly position the passenger when riding a player dragon */
-    @Inject(method = "positionRider(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/entity/Entity$MoveFunction;)V", at = @At(value = "HEAD"), cancellable = true)
-    private void dragonSurvival$positionRider(Entity entity, Entity.MoveFunction move, CallbackInfo callback) {
-        if (!((Entity) (Object) this instanceof Player player) || !(entity instanceof Player passenger) || !hasPassenger(passenger)) {
-            return;
+    @ModifyReturnValue(method = "getPassengerAttachmentPoint", at = @At("RETURN"))
+    protected Vec3 dragonSurvival$modifyPassengerAttachmentPoint(Vec3 original, @Local(argsOnly = true, index = 0) Entity entity) {
+        if (!((Entity) (Object) this instanceof Player player) || !(entity instanceof Player passenger) || !hasPassenger(passenger) || !DragonStateProvider.isDragon(player)) {
+            return original;
         }
 
-        if (DragonStateProvider.isDragon(player)) {
-            MovementData movement = MovementData.getData(player);
-            DragonStateHandler handler = DragonStateProvider.getData(player);
-            Vec3 originalPassPos = player.getPassengerRidingPosition(player);
-            if(handler.body().value().mountingOffsets().isEmpty()) return;
-            Vec3 offset = handler.body().value().mountingOffsets().get().offset();
-            Vec3 scale = handler.body().value().mountingOffsets().get().scale();
-            Vec3 offsetFromBb = offset.add(scale.multiply(player.getBoundingBox().getXsize(), player.getBoundingBox().getYsize(), player.getBoundingBox().getZsize()));
-
-            Vec3 offsetFromCenter = originalPassPos.subtract(player.position());
-            offsetFromCenter = offsetFromCenter.xRot((float) Math.toRadians(movement.prevXRot * 1.5)).zRot(-(float) Math.toRadians(movement.prevZRot * 90));
-            Vec3 totalOffset = offsetFromCenter.add(offsetFromBb).yRot(-(float) Math.toRadians(movement.bodyYawLastFrame));
-            Vec3 passPos = player.position().add(totalOffset);
-
-            move.accept(passenger, passPos.x(), passPos.y(), passPos.z());
-            player.onPassengerTurned(passenger);
-
-            callback.cancel();
-        }
+        DragonStateHandler handler = DragonStateProvider.getData(player);
+        MovementData movement = MovementData.getData(player);
+        if(handler.body().value().mountingOffsets().isEmpty()) return original;
+        Vec3 offset = DragonStateProvider.isDragon(passenger) ? handler.body().value().mountingOffsets().get().dragonOffset() : handler.body().value().mountingOffsets().get().humanOffset();
+        Vec3 offsetPerScaleAboveOne = handler.body().value().mountingOffsets().get().scale();
+        float scale = player.getScale();
+        offset = offset.add(offsetPerScaleAboveOne.scale(scale - 1));
+        original = original.add(offset);
+        original = original.xRot((float) Math.toRadians(movement.prevXRot * 1.5)).zRot(-(float) Math.toRadians(movement.prevZRot * 90));
+        original = original.add(offset).yRot(-(float) Math.toRadians(movement.bodyYawLastFrame));
+        return original;
     }
 
     /** Correctly rotate the passenger when riding a dragon */

@@ -19,15 +19,12 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-// FIXME :: This relies on size right now. But size != scale now. We need to update this to use scale or player bounding boxes instead of size.
+import java.text.NumberFormat;
 
 @EventBusSubscriber
 public class DragonRidingHandler {
-    @Translation(comments = "You are too big to mount on this dragon. You must be at least half the size of the dragon you are trying to ride or smaller, but you are scale %s and the dragon is scale %s.")
+    @Translation(comments = "You are too big to mount on this dragon. You must be at most %s the scale of the dragon you are trying to ride or smaller, but you are scale %s and the dragon is scale %s.")
     private static final String SELF_TOO_BIG = Translation.Type.GUI.wrap("message.self_too_big");
-
-    @Translation(comments = "The dragon you are riding is too young. To ride a dragon as a human, the dragon must be an adult.")
-    private static final String TARGET_TOO_SMALL = Translation.Type.GUI.wrap("message.target_too_small");
 
     @Translation(comments = "The dragon you are trying to ride must be crouching for you to mount them.")
     private static final String NOT_CROUCHING = Translation.Type.GUI.wrap("message.not_crouching");
@@ -35,11 +32,12 @@ public class DragonRidingHandler {
     public static final int NO_PASSENGER = -1;
 
     /** This is just the default adult dragon minimum size */
-    public static final float PLAYER_RIDING_SCALE = 1.0F;
+    public static final float PLAYER_RIDING_SCALE_RATIO = 0.8F;
+
+    public static final float DRAGON_RIDING_SCALE_RATIO = 0.5F;
 
     private enum DragonRideAttemptResult {
         SELF_TOO_BIG,
-        MOUNT_TOO_SMALL_HUMAN,
         NOT_CROUCHING,
         OTHER,
         SUCCESS
@@ -56,15 +54,11 @@ public class DragonRidingHandler {
             return DragonRideAttemptResult.OTHER;
         }
 
-        DragonStateHandler riderData = DragonStateProvider.getData(rider);
-
         double scaleRatio = rider.getScale() / mount.getScale();
-        boolean dragonIsTooSmallToRide = scaleRatio >= 0.5;
+        boolean dragonIsTooSmallToRide = DragonStateProvider.isDragon(rider) ? scaleRatio >= DRAGON_RIDING_SCALE_RATIO : scaleRatio >= PLAYER_RIDING_SCALE_RATIO;
 
         if (dragonIsTooSmallToRide) {
             return DragonRideAttemptResult.SELF_TOO_BIG;
-        } else if (!riderData.isDragon() && mount.getScale() < PLAYER_RIDING_SCALE) {
-            return DragonRideAttemptResult.MOUNT_TOO_SMALL_HUMAN;
         } else if (mount.getPose() != Pose.CROUCHING) {
             return DragonRideAttemptResult.NOT_CROUCHING;
         }
@@ -96,13 +90,9 @@ public class DragonRidingHandler {
             event.setCancellationResult(InteractionResult.SUCCESS);
             event.setCanceled(true);
         } else {
-            if (result == DragonRideAttemptResult.MOUNT_TOO_SMALL_HUMAN) {
-                self.sendSystemMessage(Component.translatable(TARGET_TOO_SMALL));
-            } else if (result == DragonRideAttemptResult.SELF_TOO_BIG) {
-                DragonStateHandler targetData = DragonStateProvider.getData(target);
-                DragonStateHandler selfData = DragonStateProvider.getData(self);
-
-                self.sendSystemMessage(Component.translatable(SELF_TOO_BIG, String.format("%.0f", selfData.getSize()), String.format("%.0f", targetData.getSize())));
+            if (result == DragonRideAttemptResult.SELF_TOO_BIG) {
+                float ridingScaleRatio = DragonStateProvider.isDragon(self) ? DRAGON_RIDING_SCALE_RATIO : PLAYER_RIDING_SCALE_RATIO;
+                self.sendSystemMessage(Component.translatable(SELF_TOO_BIG, NumberFormat.getPercentInstance().format(ridingScaleRatio), String.format("%.2f", self.getScale()), String.format("%.2f", target.getScale())));
             } else if (result == DragonRideAttemptResult.NOT_CROUCHING) {
                 self.sendSystemMessage(Component.translatable(NOT_CROUCHING));
             }

@@ -51,8 +51,8 @@
                     {
                       "amount": {
                         "type": "minecraft:linear",
-                        "base": 0.01,
-                        "per_level_above_first": 0.01
+                        "base": 0.03,
+                        "per_level_above_first": 0.03
                       },
                       "attribute": "dragonsurvival:mana_regeneration",
                       "operation": "add_value"
@@ -228,8 +228,8 @@
   "upgrade": {
     "experience_cost": {
       "type": "minecraft:linear",
-      "base": 15.0,
-      "per_level_above_first": 15.0
+      "base": 36.0,
+      "per_level_above_first": 36.0
     },
     "maximum_level": 10,
     "upgrade_type": "dragonsurvival:experience_points"

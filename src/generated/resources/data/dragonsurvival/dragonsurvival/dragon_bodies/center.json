@@ -20,15 +20,20 @@
     }
   ],
   "mounting_offset": {
-    "offset": [
+    "dragon_offset": [
       0.0,
-      -0.05,
-      0.0
+      0.05,
+      -0.5
     ],
-    "scale": [
+    "human_offset": [
       0.0,
+      -0.15,
+      -0.5
+    ],
+    "offset_per_scale_above_one": [
       0.0,
-      -1.4
+      -0.25,
+      -0.5
     ]
   },
   "scaling_proportions": {
