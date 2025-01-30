@@ -52,8 +52,8 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 public class DragonSpeciesScreen extends Screen {
     @Translation(comments = {
             "■ In order to allow other players to mount you, you must crouch and they can right click on you to mount.",
-            "\n§6■ Human players can ride you at scale %s§r§7",
-            "\n§6■ Dragon players can ride you below or equal to scale %s§r§7"
+            "\n§6■ Human players can ride you at below or equal to scale %s§r§7",
+            "\n§6■ Dragon players can ride you at below or equal to scale %s§r§7"
     })
     private static final String RIDING_INFO = Translation.Type.GUI.wrap("dragon_species_screen.riding_info");
 
@@ -296,7 +296,7 @@ public class DragonSpeciesScreen extends Screen {
         // Riding button
         HoverButton ridingButton = new HoverButton(startX + 186, startY - 18, 16, RIDING_MAIN, RIDING_HOVER);
         if(data.body().value().mountingOffsets().isPresent()) {
-            ridingButton.setTooltip(Tooltip.create(Component.translatable(RIDING_INFO, String.format("%.2f", (minecraft.player.getScale() / DragonRidingHandler.PLAYER_RIDING_SCALE_RATIO)), String.format("%.2f", (minecraft.player.getScale() / DragonRidingHandler.DRAGON_RIDING_SCALE_RATIO)))));
+            ridingButton.setTooltip(Tooltip.create(Component.translatable(RIDING_INFO, String.format("%.2f", (minecraft.player.getScale() * DragonRidingHandler.PLAYER_RIDING_SCALE_RATIO)), String.format("%.2f", (minecraft.player.getScale() * DragonRidingHandler.DRAGON_RIDING_SCALE_RATIO)))));
         } else {
             ridingButton.setTooltip(Tooltip.create(Component.translatable(RIDING_DISABLED)));
         }

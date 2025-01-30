@@ -950,7 +950,7 @@
   "dragonsurvival.gui.dragon_species_screen.no_diet": "This species has no special diet.",
   "dragonsurvival.gui.dragon_species_screen.no_penalties": "This species has no penalties.",
   "dragonsurvival.gui.dragon_species_screen.riding_disabled": "■ Players cannot ride this species.",
-  "dragonsurvival.gui.dragon_species_screen.riding_info": "■ In order to allow other players to mount you, you must crouch and they can right click on you to mount.\n\n§6■ Human players can ride you at scale %s§r§7\n\n§6■ Dragon players can ride you below or equal to scale %s§r§7",
+  "dragonsurvival.gui.dragon_species_screen.riding_info": "■ In order to allow other players to mount you, you must crouch and they can right click on you to mount.\n\n§6■ Human players can ride you at below or equal to scale %s§r§7\n\n§6■ Dragon players can ride you at below or equal to scale %s§r§7",
   "dragonsurvival.gui.dragon_wings": "Dragon Wings",
   "dragonsurvival.gui.effect_modification": "§6■ Effect modifications:§r\n - Duration %s\n - Amplifier %s\n\nAffected effects:",
   "dragonsurvival.gui.effect_modification.increased": "increased by %s",
