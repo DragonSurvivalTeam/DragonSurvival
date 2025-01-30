@@ -24,11 +24,12 @@ public record DragonEmote(String animationKey, Optional<String> translationOverr
             Codec.DOUBLE.optionalFieldOf("speed", DEFAULT_SPEED).forGetter(DragonEmote::speed),
             Codec.INT.optionalFieldOf("duration", NO_DURATION).forGetter(DragonEmote::duration),
             Codec.BOOL.optionalFieldOf("loops", false).forGetter(DragonEmote::loops),
-            Codec.BOOL.fieldOf("blend").forGetter(DragonEmote::blend),
-            Codec.BOOL.fieldOf("locks_head").forGetter(DragonEmote::locksHead),
-            Codec.BOOL.fieldOf("locks_tail").forGetter(DragonEmote::locksTail),
-            Codec.BOOL.fieldOf("third_person").forGetter(DragonEmote::thirdPerson),
-            Codec.BOOL.fieldOf("can_move").forGetter(DragonEmote::canMove),
+            Codec.BOOL.optionalFieldOf("blend", false).forGetter(DragonEmote::blend),
+            Codec.BOOL.optionalFieldOf("locks_head", false).forGetter(DragonEmote::locksHead),
+            Codec.BOOL.optionalFieldOf("locks_tail", false).forGetter(DragonEmote::locksTail),
+            Codec.BOOL.optionalFieldOf("third_person", false).forGetter(DragonEmote::thirdPerson),
+            // TODO :: set default to 'true'? seems to be the case for most of the animations
+            Codec.BOOL.optionalFieldOf("can_move", false).forGetter(DragonEmote::canMove),
             Sound.CODEC.optionalFieldOf("sound").forGetter(DragonEmote::sound)
     ).apply(instance, DragonEmote::new));
 

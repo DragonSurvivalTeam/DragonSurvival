@@ -8,7 +8,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.BarCom
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscDragonTextures;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscResources;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.StageResources;
 import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawMenuToggle;
 import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawRender;
@@ -183,7 +183,7 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
 
         if (!stages.isEmpty()) {
             List<AbstractWidget> crystals = stages.stream().map(stage -> (AbstractWidget) new GrowthCrystalButton(0, 0, stage)).toList();
-            MiscDragonTextures textures = data.species().value().miscResources();
+            MiscResources textures = data.species().value().miscResources();
 
             new BarComponent(this,
                     leftPos + 124, topPos + 6, 4,

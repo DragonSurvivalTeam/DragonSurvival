@@ -56,6 +56,7 @@ public record DragonBody(
             Codec.STRING.listOf().optionalFieldOf("bones_to_hide_for_toggle", List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight")).forGetter(DragonBody::bonesToHideForToggle),
             DragonEmoteSet.CODEC.fieldOf("emotes").forGetter(DragonBody::emotes),
             ScalingProportions.CODEC.fieldOf("scaling_proportions").forGetter(DragonBody::scalingProportions),
+            // TODO :: limit to max. 1
             Codec.DOUBLE.fieldOf("crouch_height_ratio").forGetter(DragonBody::crouchHeightRatio),
             MountingOffsets.CODEC.optionalFieldOf("mounting_offset").forGetter(DragonBody::mountingOffsets),
             BackpackOffsets.CODEC.optionalFieldOf("backpack_offset").forGetter(DragonBody::backpackOffsets),
@@ -69,6 +70,7 @@ public record DragonBody(
 
     public record ScalingProportions(double width, double height, double eyeHeight, double offset) {
         public static final Codec<ScalingProportions> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                // TODO :: validate (at least 0)?
                 Codec.DOUBLE.fieldOf("width").forGetter(ScalingProportions::width),
                 Codec.DOUBLE.fieldOf("height").forGetter(ScalingProportions::height),
                 Codec.DOUBLE.fieldOf("eye_height").forGetter(ScalingProportions::eyeHeight),

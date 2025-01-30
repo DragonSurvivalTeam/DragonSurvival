@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscDragonTextures;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscResources;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonAbilityTags;
@@ -63,9 +63,9 @@ public class BuiltInDragonSpecies {
                 HolderSet.empty(),
                 context.lookup(DragonAbility.REGISTRY).getOrThrow(DSDragonAbilityTags.CAVE),
                 context.lookup(DragonPenalty.REGISTRY).getOrThrow(DSDragonPenaltyTags.CAVE),
-                new MiscDragonTextures(
+                new MiscResources(
                         Optional.of(DragonSurvival.res("textures/gui/custom/food_icons/cave_food_icons.png")),
-                        Optional.of(new MiscDragonTextures.ManaSprites(
+                        Optional.of(new MiscResources.ManaSprites(
                                 DragonSurvival.res("textures/gui/custom/mana_icons/cave/full.png"),
                                 DragonSurvival.res("textures/gui/custom/mana_icons/cave/reserved.png"),
                                 DragonSurvival.res("textures/gui/custom/mana_icons/cave/recovery.png"),
@@ -73,19 +73,19 @@ public class BuiltInDragonSpecies {
                         )),
                         DragonSurvival.res("textures/gui/custom/altar/cave/altar_icon.png"),
                         DragonSurvival.res("textures/gui/custom/casting_bars/cave/cast_bar.png"),
-                        new MiscDragonTextures.HoverIcon(
+                        new MiscResources.HoverIcon(
                                 DragonSurvival.res("textures/gui/custom/stage/cave/left_arrow_hover.png"),
                                 DragonSurvival.res("textures/gui/custom/stage/cave/left_arrow_main.png")
                         ),
-                        new MiscDragonTextures.HoverIcon(
+                        new MiscResources.HoverIcon(
                                 DragonSurvival.res("textures/gui/custom/stage/cave/right_arrow_hover.png"),
                                 DragonSurvival.res("textures/gui/custom/stage/cave/right_arrow_main.png")
                         ),
-                        new MiscDragonTextures.FillIcon(
+                        new MiscResources.FillIcon(
                                 DragonSurvival.res("textures/gui/custom/stage/cave/point_main.png"),
                                 DragonSurvival.res("textures/gui/custom/stage/cave/point_hover.png")
                         ),
-                        new MiscDragonTextures.FoodTooltip(MiscDragonTextures.FoodTooltip.DEFAULT_FOOD_TOOLTIP_FONT, "\\uEA02", "\\uEA05", Optional.empty()),
+                        new MiscResources.FoodTooltip(MiscResources.FoodTooltip.DEFAULT_FOOD_TOOLTIP_FONT, "\\uEA02", "\\uEA05", Optional.empty()),
                         TextColor.fromRgb(0xE84141),
                         TextColor.fromRgb(0x730B0B),
                         ClawInventoryData.Slot.PICKAXE
@@ -98,9 +98,9 @@ public class BuiltInDragonSpecies {
                 HolderSet.empty(),
                 context.lookup(DragonAbility.REGISTRY).getOrThrow(DSDragonAbilityTags.SEA),
                 context.lookup(DragonPenalty.REGISTRY).getOrThrow(DSDragonPenaltyTags.SEA),
-                new MiscDragonTextures(
+                new MiscResources(
                         Optional.of(DragonSurvival.res("textures/gui/custom/food_icons/sea_food_icons.png")),
-                        Optional.of(new MiscDragonTextures.ManaSprites(
+                        Optional.of(new MiscResources.ManaSprites(
                                 DragonSurvival.res("textures/gui/custom/mana_icons/sea/full.png"),
                                 DragonSurvival.res("textures/gui/custom/mana_icons/sea/reserved.png"),
                                 DragonSurvival.res("textures/gui/custom/mana_icons/sea/recovery.png"),
@@ -108,19 +108,19 @@ public class BuiltInDragonSpecies {
                         )),
                         DragonSurvival.res("textures/gui/custom/altar/sea/altar_icon.png"),
                         DragonSurvival.res("textures/gui/custom/casting_bars/sea/cast_bar.png"),
-                        new MiscDragonTextures.HoverIcon(
+                        new MiscResources.HoverIcon(
                                 DragonSurvival.res("textures/gui/custom/stage/sea/left_arrow_hover.png"),
                                 DragonSurvival.res("textures/gui/custom/stage/sea/left_arrow_main.png")
                         ),
-                        new MiscDragonTextures.HoverIcon(
+                        new MiscResources.HoverIcon(
                                 DragonSurvival.res("textures/gui/custom/stage/sea/right_arrow_hover.png"),
                                 DragonSurvival.res("textures/gui/custom/stage/sea/right_arrow_main.png")
                         ),
-                        new MiscDragonTextures.FillIcon(
+                        new MiscResources.FillIcon(
                                 DragonSurvival.res("textures/gui/custom/stage/sea/point_main.png"),
                                 DragonSurvival.res("textures/gui/custom/stage/sea/point_hover.png")
                         ),
-                        new MiscDragonTextures.FoodTooltip(MiscDragonTextures.FoodTooltip.DEFAULT_FOOD_TOOLTIP_FONT, "\\uEA03", "\\uEA06", Optional.empty()),
+                        new MiscResources.FoodTooltip(MiscResources.FoodTooltip.DEFAULT_FOOD_TOOLTIP_FONT, "\\uEA03", "\\uEA06", Optional.empty()),
                         TextColor.fromRgb(0x2DA5E0),
                         TextColor.fromRgb(0x1D7099),
                         ClawInventoryData.Slot.SHOVEL
@@ -133,9 +133,9 @@ public class BuiltInDragonSpecies {
                 HolderSet.empty(),
                 context.lookup(DragonAbility.REGISTRY).getOrThrow(DSDragonAbilityTags.FOREST),
                 context.lookup(DragonPenalty.REGISTRY).getOrThrow(DSDragonPenaltyTags.FOREST),
-                new MiscDragonTextures(
+                new MiscResources(
                         Optional.of(DragonSurvival.res("textures/gui/custom/food_icons/forest_food_icons.png")),
-                        Optional.of(new MiscDragonTextures.ManaSprites(
+                        Optional.of(new MiscResources.ManaSprites(
                                 DragonSurvival.res("textures/gui/custom/mana_icons/forest/full.png"),
                                 DragonSurvival.res("textures/gui/custom/mana_icons/forest/reserved.png"),
                                 DragonSurvival.res("textures/gui/custom/mana_icons/forest/recovery.png"),
@@ -143,19 +143,19 @@ public class BuiltInDragonSpecies {
                         )),
                         DragonSurvival.res("textures/gui/custom/altar/forest/altar_icon.png"),
                         DragonSurvival.res("textures/gui/custom/casting_bars/forest/cast_bar.png"),
-                        new MiscDragonTextures.HoverIcon(
+                        new MiscResources.HoverIcon(
                                 DragonSurvival.res("textures/gui/custom/stage/forest/left_arrow_hover.png"),
                                 DragonSurvival.res("textures/gui/custom/stage/forest/left_arrow_main.png")
                         ),
-                        new MiscDragonTextures.HoverIcon(
+                        new MiscResources.HoverIcon(
                                 DragonSurvival.res("textures/gui/custom/stage/forest/right_arrow_hover.png"),
                                 DragonSurvival.res("textures/gui/custom/stage/forest/right_arrow_main.png")
                         ),
-                        new MiscDragonTextures.FillIcon(
+                        new MiscResources.FillIcon(
                                 DragonSurvival.res("textures/gui/custom/stage/forest/point_main.png"),
                                 DragonSurvival.res("textures/gui/custom/stage/forest/point_hover.png")
                         ),
-                        new MiscDragonTextures.FoodTooltip(MiscDragonTextures.FoodTooltip.DEFAULT_FOOD_TOOLTIP_FONT, "\\uEA01", "\\uEA04", Optional.empty()),
+                        new MiscResources.FoodTooltip(MiscResources.FoodTooltip.DEFAULT_FOOD_TOOLTIP_FONT, "\\uEA01", "\\uEA04", Optional.empty()),
                         TextColor.fromRgb(0x41CC48),
                         TextColor.fromRgb(0x117816),
                         ClawInventoryData.Slot.AXE

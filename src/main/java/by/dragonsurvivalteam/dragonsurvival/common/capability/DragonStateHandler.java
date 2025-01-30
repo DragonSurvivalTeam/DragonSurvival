@@ -448,6 +448,7 @@ public class DragonStateHandler extends EntityStateHandler {
         List<AttributeModifier> attributeModifiers = stage().value().filterModifiers(instance);
         List<Modifier> modifiers = stage().value().modifiers().stream().filter(modifier -> modifier.attribute().is(Attributes.SCALE)).toList();
 
+        // FIXME :: +1? lookup would crash
         return Functions.calculateAttributeValue(instance, partialVisualSize - stage().value().sizeRange().min(), attributeModifiers, modifiers);
     }
 

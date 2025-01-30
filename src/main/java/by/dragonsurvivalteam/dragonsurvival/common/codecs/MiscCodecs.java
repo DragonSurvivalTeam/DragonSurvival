@@ -101,7 +101,9 @@ public class MiscCodecs {
 
     public record DestructionData(double crushingSize, double blockDestructionSize, double crushingDamageScalar) {
         public static final Codec<DestructionData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                // TODO :: add fields to specify applicable entities
                 Codec.DOUBLE.fieldOf("crushing_size").forGetter(DestructionData::crushingSize),
+                // TODO :: add fields to specify applicable blocks
                 Codec.DOUBLE.fieldOf("block_destruction_size").forGetter(DestructionData::blockDestructionSize),
                 Codec.DOUBLE.fieldOf("crushing_damage_scalar").forGetter(DestructionData::crushingDamageScalar)
         ).apply(instance, instance.stable(DestructionData::new)));

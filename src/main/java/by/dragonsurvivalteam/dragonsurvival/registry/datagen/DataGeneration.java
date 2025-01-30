@@ -168,7 +168,8 @@ public class DataGeneration {
     }
 
     private static void registerBuiltInDataPack(AddPackFindersEvent event, MutableComponent name, String folder) {
-        event.addPackFinders(DragonSurvival.res(folder), PackType.SERVER_DATA, name, PackSource.FEATURE, true, Pack.Position.TOP);
+        // Can only be disabled through '/datapack disable (...)' after world creation
+        event.addPackFinders(DragonSurvival.res(folder), PackType.SERVER_DATA, name, PackSource.DEFAULT, false, Pack.Position.TOP);
     }
 
     private static void addAncientStageDatapack(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup) {

@@ -30,10 +30,7 @@ public class DragonRidingHandler {
     private static final String NOT_CROUCHING = Translation.Type.GUI.wrap("message.not_crouching");
 
     public static final int NO_PASSENGER = -1;
-
-    /** This is just the default adult dragon minimum size */
     public static final float PLAYER_RIDING_SCALE_RATIO = 0.8F;
-
     public static final float DRAGON_RIDING_SCALE_RATIO = 0.5F;
 
     private enum DragonRideAttemptResult {
@@ -66,7 +63,6 @@ public class DragonRidingHandler {
         return DragonRideAttemptResult.SUCCESS;
     }
 
-    /** Mounting a dragon */
     @SubscribeEvent
     public static void onRideAttempt(final PlayerInteractEvent.EntityInteractSpecific event) {
         if (!(event.getTarget() instanceof ServerPlayer target)) {

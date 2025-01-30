@@ -126,6 +126,7 @@ public interface AbilityTargeting {
         return descriptions;
     }
 
+    // FIXME :: may not be needed anymore
     default void remove(final ServerPlayer dragon, final DragonAbilityInstance ability) { /* Nothing to do */ }
 
     MutableComponent getDescription(final Player dragon, final DragonAbilityInstance ability);

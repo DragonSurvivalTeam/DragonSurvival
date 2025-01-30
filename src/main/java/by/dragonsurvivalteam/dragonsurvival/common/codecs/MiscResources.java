@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.Optional;
 
-public record MiscDragonTextures(
+public record MiscResources(
         Optional<ResourceLocation> foodSprites,
         Optional<ManaSprites> manaSprites,
         ResourceLocation altarBanner,
@@ -22,19 +22,19 @@ public record MiscDragonTextures(
         TextColor secondaryColor,
         ClawInventoryData.Slot clawTextureSlot
 ) {
-    public static final Codec<MiscDragonTextures> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ResourceLocation.CODEC.optionalFieldOf("food_sprites").forGetter(MiscDragonTextures::foodSprites),
-            ManaSprites.CODEC.optionalFieldOf("mana_sprites").forGetter(MiscDragonTextures::manaSprites),
-            ResourceLocation.CODEC.fieldOf("altar_banner").forGetter(MiscDragonTextures::altarBanner),
-            ResourceLocation.CODEC.fieldOf("ability_bar").forGetter(MiscDragonTextures::castBar), // TODO :: could have a simple cast bar without a dragon as default
-            HoverIcon.CODEC.optionalFieldOf("growth_left_arrow", HoverIcon.DEFAULT_LEFT).forGetter(MiscDragonTextures::growthLeftArrow),
-            HoverIcon.CODEC.optionalFieldOf("growth_right_arrow", HoverIcon.DEFAULT_RIGHT).forGetter(MiscDragonTextures::growthRightArrow),
-            FillIcon.CODEC.fieldOf("growth_crystal").forGetter(MiscDragonTextures::growthCrystal),
-            FoodTooltip.CODEC.fieldOf("food_tooltip").forGetter(MiscDragonTextures::foodTooltip),
-            TextColor.CODEC.fieldOf("primary_color").forGetter(MiscDragonTextures::primaryColor),
-            TextColor.CODEC.fieldOf("secondary_color").forGetter(MiscDragonTextures::secondaryColor),
-            ClawInventoryData.Slot.CODEC.optionalFieldOf("claw_texture_slot", ClawInventoryData.Slot.PICKAXE).forGetter(MiscDragonTextures::clawTextureSlot)
-    ).apply(instance, MiscDragonTextures::new));
+    public static final Codec<MiscResources> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            ResourceLocation.CODEC.optionalFieldOf("food_sprites").forGetter(MiscResources::foodSprites),
+            ManaSprites.CODEC.optionalFieldOf("mana_sprites").forGetter(MiscResources::manaSprites),
+            ResourceLocation.CODEC.fieldOf("altar_banner").forGetter(MiscResources::altarBanner),
+            ResourceLocation.CODEC.fieldOf("ability_bar").forGetter(MiscResources::castBar), // TODO :: could have a simple cast bar without a dragon as default
+            HoverIcon.CODEC.optionalFieldOf("growth_left_arrow", HoverIcon.DEFAULT_LEFT).forGetter(MiscResources::growthLeftArrow),
+            HoverIcon.CODEC.optionalFieldOf("growth_right_arrow", HoverIcon.DEFAULT_RIGHT).forGetter(MiscResources::growthRightArrow),
+            FillIcon.CODEC.fieldOf("growth_crystal").forGetter(MiscResources::growthCrystal),
+            FoodTooltip.CODEC.fieldOf("food_tooltip").forGetter(MiscResources::foodTooltip),
+            TextColor.CODEC.fieldOf("primary_color").forGetter(MiscResources::primaryColor),
+            TextColor.CODEC.fieldOf("secondary_color").forGetter(MiscResources::secondaryColor),
+            ClawInventoryData.Slot.CODEC.optionalFieldOf("claw_texture_slot", ClawInventoryData.Slot.PICKAXE).forGetter(MiscResources::clawTextureSlot)
+    ).apply(instance, MiscResources::new));
 
     public record HoverIcon(ResourceLocation hoverIcon, ResourceLocation icon) {
         public static final HoverIcon DEFAULT_LEFT = new HoverIcon(

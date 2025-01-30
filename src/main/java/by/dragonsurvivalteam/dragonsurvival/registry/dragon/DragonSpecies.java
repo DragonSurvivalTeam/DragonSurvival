@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscDragonTextures;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscResources;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierType;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
@@ -43,7 +43,7 @@ public class DragonSpecies implements AttributeModifierSupplier {
             RegistryCodecs.homogeneousList(DragonBody.REGISTRY).optionalFieldOf("bodies", HolderSet.empty()).forGetter(DragonSpecies::bodies),
             RegistryCodecs.homogeneousList(DragonAbility.REGISTRY).optionalFieldOf("abilities", HolderSet.empty()).forGetter(DragonSpecies::abilities),
             RegistryCodecs.homogeneousList(DragonPenalty.REGISTRY).optionalFieldOf("penalties", HolderSet.empty()).forGetter(DragonSpecies::penalties),
-            MiscDragonTextures.CODEC.fieldOf("misc_resources").forGetter(DragonSpecies::miscResources)
+            MiscResources.CODEC.fieldOf("misc_resources").forGetter(DragonSpecies::miscResources)
     ).apply(instance, instance.stable(DragonSpecies::new)));
 
     public static final Codec<Holder<DragonSpecies>> CODEC = RegistryFixedCodec.create(REGISTRY);
@@ -54,9 +54,9 @@ public class DragonSpecies implements AttributeModifierSupplier {
     private final HolderSet<DragonBody> bodies;
     private final HolderSet<DragonAbility> abilities;
     private final HolderSet<DragonPenalty> penalties;
-    private final MiscDragonTextures miscResources;
+    private final MiscResources miscResources;
 
-    public DragonSpecies(final Optional<Double> startingSize, final Optional<HolderSet<DragonStage>> customStageProgression, final HolderSet<DragonBody> bodies, final HolderSet<DragonAbility> abilities, final HolderSet<DragonPenalty> penalties, final MiscDragonTextures miscResources) {
+    public DragonSpecies(final Optional<Double> startingSize, final Optional<HolderSet<DragonStage>> customStageProgression, final HolderSet<DragonBody> bodies, final HolderSet<DragonAbility> abilities, final HolderSet<DragonPenalty> penalties, final MiscResources miscResources) {
         this.startingSize = startingSize;
         this.customStageProgression = customStageProgression;
         this.bodies = bodies;
@@ -137,7 +137,7 @@ public class DragonSpecies implements AttributeModifierSupplier {
         return abilities;
     }
 
-    public MiscDragonTextures miscResources() {
+    public MiscResources miscResources() {
         return miscResources;
     }
 

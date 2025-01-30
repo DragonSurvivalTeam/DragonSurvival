@@ -11,7 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.Scroll
 import by.dragonsurvivalteam.dragonsurvival.client.util.TextRenderUtil;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscDragonTextures;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscResources;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.StageResources;
 import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
 import by.dragonsurvivalteam.dragonsurvival.compat.jei.JEIPlugin;
@@ -282,7 +282,7 @@ public class DragonSpeciesScreen extends Screen {
 
         if (!stages.isEmpty()) {
             List<AbstractWidget> crystals = stages.stream().map(stage -> (AbstractWidget) new GrowthCrystalButton(0, 0, stage)).toList();
-            MiscDragonTextures textures = data.species().value().miscResources();
+            MiscResources textures = data.species().value().miscResources();
 
             crystalBar = new BarComponent(this,
                     startX + 130, startY - 19, 4,

@@ -57,7 +57,7 @@ public class DSModifiers {
         AttributeModifierSupplier.removeModifiers(ModifierType.DRAGON_STAGE, player);
 
         if (handler.isDragon()) {
-//            handler.stage().value().applyModifiers(player, handler.getSize());
+            // FIXME :: +1? lookup would crash
             handler.stage().value().applyModifiers(player, handler.getSize() - handler.stage().value().sizeRange().min());
         }
 

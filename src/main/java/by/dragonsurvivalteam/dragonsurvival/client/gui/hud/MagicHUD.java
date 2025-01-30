@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.hud;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscDragonTextures;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscResources;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
@@ -323,10 +323,10 @@ public class MagicHUD {
             float blue = 1;
 
             DragonStateHandler handler = DragonStateProvider.getData(player);
-            MiscDragonTextures.ManaSprites manaSprites = handler.species().value().miscResources().manaSprites().orElse(null);
+            MiscResources.ManaSprites manaSprites = handler.species().value().miscResources().manaSprites().orElse(null);
 
             if (manaSprites == null) {
-                manaSprites = MiscDragonTextures.ManaSprites.DEFAULT;
+                manaSprites = MiscResources.ManaSprites.DEFAULT;
 
                 DSColors.RGB color = DSColors.RGB.of(handler.species().value().miscResources().primaryColor().getValue());
                 red = color.red();
