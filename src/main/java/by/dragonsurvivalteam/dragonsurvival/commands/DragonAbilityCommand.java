@@ -30,7 +30,7 @@ public class DragonAbilityCommand {
                         .then(Commands.argument("targets", EntityArgument.players())
                                 .executes(source -> handleCommand(source, EntityArgument.getPlayers(source, "targets"), (player, data) -> data.clear(player)))
                                 .then(Commands.argument(DragonAbilityArgument.ID, new DragonAbilityArgument(event.getBuildContext()))
-                                        .executes(source -> handleCommand(source, EntityArgument.getPlayers(source, "targets"), (player, data) -> data.removeAbility(DragonAbilityArgument.get(source).getKey())))
+                                        .executes(source -> handleCommand(source, EntityArgument.getPlayers(source, "targets"), (player, data) -> data.removeAbility(player, DragonAbilityArgument.get(source).getKey())))
                                 )))
                 .then(Commands.literal("add")
                         .then(Commands.argument("targets", EntityArgument.players())

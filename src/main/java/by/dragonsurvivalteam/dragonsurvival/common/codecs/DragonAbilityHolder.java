@@ -36,7 +36,7 @@ public record DragonAbilityHolder(HolderSet<DragonAbility> abilities, Optional<H
             }
 
             if (isRemoval) {
-                magic.removeAbility(ability.getKey());
+                magic.removeAbility(player, ability.getKey());
             } else {
                 magic.addAbility(player, ability);
             }

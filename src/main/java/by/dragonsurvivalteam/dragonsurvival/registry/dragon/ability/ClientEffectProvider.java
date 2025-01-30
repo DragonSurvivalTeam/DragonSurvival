@@ -75,7 +75,7 @@ public interface ClientEffectProvider {
         if (handler.isDragon()) {
             FlightData flightData = FlightData.getData(player);
 
-            if (flightData.areWingsSpread) {
+            if (flightData.hasFlight && flightData.areWingsSpread) {
                 providers.add(FlightData.FLIGHT_EFFECT);
             }
 

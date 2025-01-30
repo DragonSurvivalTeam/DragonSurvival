@@ -366,15 +366,18 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         return count;
     }
 
-    // TODO :: don't we need to de-activate the ability?
-    //  better have a centralized place where we call remove and only allow it with player context
     /** This does not automatically synchronize the change to the client */
-    public void removeAbility(final ResourceKey<DragonAbility> key) {
+    public void removeAbility(final Player player, final ResourceKey<DragonAbility> key) {
         if (currentSpecies == null) {
             return;
         }
 
-        getAbilities().remove(key);
+        DragonAbilityInstance removed = getAbilities().remove(key);
+
+        if (removed != null) {
+            removed.setActive(player, false);
+        }
+
         int slot = slotFromAbility(key);
 
         if (slot != NO_SLOT) {

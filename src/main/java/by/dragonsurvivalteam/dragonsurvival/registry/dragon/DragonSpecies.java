@@ -36,6 +36,7 @@ public class DragonSpecies implements AttributeModifierSupplier {
     public static final ResourceKey<Registry<DragonSpecies>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_species"));
 
     public static final Codec<DragonSpecies> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            // TODO :: validate size
             Codec.DOUBLE.optionalFieldOf("starting_size").forGetter(DragonSpecies::startingSize),
             // No defined stages means all are applicable
             RegistryCodecs.homogeneousList(DragonStage.REGISTRY).optionalFieldOf("custom_stage_progression").forGetter(DragonSpecies::stages),
