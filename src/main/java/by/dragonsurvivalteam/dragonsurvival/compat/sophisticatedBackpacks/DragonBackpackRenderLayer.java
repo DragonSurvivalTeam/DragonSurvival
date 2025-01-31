@@ -40,7 +40,7 @@ public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
     @ConfigOption(side = ConfigSide.CLIENT, category = "rendering", key = "render_backpack")
     public static Boolean renderBackpack = true;
 
-    private boolean isCurioLoaded = false;
+    private final boolean isCurioLoaded;
 
     public DragonBackpackRenderLayer(GeoEntityRenderer<DragonEntity> renderer) {
 
@@ -103,8 +103,7 @@ public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
 
         Optional<ItemStack> backpackStack = Optional.empty();
         boolean isArmorSlot = false;
-        boolean isVisible = true;
-
+        
         if(isCurioLoaded) {
             backpackStack = getBackpackFromCurio(player);
         }
