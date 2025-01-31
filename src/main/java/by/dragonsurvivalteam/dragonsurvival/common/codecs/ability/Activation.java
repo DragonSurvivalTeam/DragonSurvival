@@ -45,16 +45,29 @@ public record Activation(
             Animations.CODEC.optionalFieldOf("animations").forGetter(Activation::animations)
     ).apply(instance, Activation::new));
 
+    // TODO :: clean this up and use codec.either
     public static Codec<Activation> codec() {
         return CODEC.validate(activation -> {
             switch (activation.type()) {
                 case PASSIVE -> {
+                    if (activation.initialManaCost().isPresent()) {
+                        return DataResult.error(() -> "[initial_mana_cost] is not applicable for [" + activation.type() + "] activation");
+                    }
+
                     if (activation.castTime().isPresent()) {
                         return DataResult.error(() -> "[cast_time] is not applicable for [" + activation.type() + "] activation");
                     }
 
                     if (activation.cooldown().isPresent()) {
                         return DataResult.error(() -> "[cooldown] is not applicable for [" + activation.type() + "] activation");
+                    }
+
+                    if (activation.sound().isPresent()) {
+                        return DataResult.error(() -> "[sound] is not applicable for [" + activation.type() + "] activation");
+                    }
+
+                    if (activation.animations().isPresent()) {
+                        return DataResult.error(() -> "[animations] is not applicable for [" + activation.type() + "] activation");
                     }
                 }
                 case ACTIVE_CHANNELED -> {

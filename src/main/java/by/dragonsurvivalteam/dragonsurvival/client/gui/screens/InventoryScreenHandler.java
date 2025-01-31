@@ -103,7 +103,7 @@ public class InventoryScreenHandler {
     public static void moveButtonsIfCraftingTabIsOpened(ScreenEvent.Render.Pre renderEvent) {
         if (renderEvent.getScreen() instanceof InventoryScreen screen) {
             if (altarOpenButton != null) {
-                altarOpenButton.setPosition(screen.getGuiLeft() + 138, screen.height / 2 - 32);
+                altarOpenButton.setPosition(screen.getGuiLeft() + 130, screen.height / 2 - 32);
             }
             if (dragonInventoryButton != null) {
                 dragonInventoryButton.setPosition(screen.getGuiLeft() + 128, screen.height / 2 - 22);

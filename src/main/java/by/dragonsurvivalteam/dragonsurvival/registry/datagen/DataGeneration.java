@@ -146,7 +146,7 @@ public class DataGeneration {
     public static void addPackFinders(final AddPackFindersEvent event) {
         if (event.getPackType() == PackType.CLIENT_RESOURCES) {
             HashMap<MutableComponent, String> resourcepacks = new HashMap<>();
-            resourcepacks.put(Component.literal("DS - Old Magic Icons"), "resourcepacks/ds_old_magic");
+            resourcepacks.put(Component.literal("DS - Draconized Armor"), "resourcepacks/draconized_armor");
             resourcepacks.put(Component.literal("DS - Dark GUI"), "resourcepacks/ds_dark_gui");
 
             for (Map.Entry<MutableComponent, String> entry : resourcepacks.entrySet()) {
