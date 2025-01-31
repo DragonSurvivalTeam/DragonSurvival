@@ -20,6 +20,9 @@ import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -46,6 +49,10 @@ public record DragonBody(
 ) implements AttributeModifierSupplier {
     public static final ResourceKey<Registry<DragonBody>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_body"));
     public static final ResourceLocation DEFAULT_MODEL = DragonSurvival.res("dragon_model");
+    // See dragonSurvival$modifyVehicleAttachmentPoint in EntityMixin
+    // TODO :: Probably should make some sort of system in the configs to allow for the user to define their own entities and offsets?
+    public static final Vec3 BOAT_MOUNTING_OFFSET = new Vec3(0, 0.9, 0);
+    public static final Vec3 HORSE_MOUNTING_OFFSET = new Vec3(0, 1.3, 0);
 
     public static final Codec<DragonBody> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.BOOL.optionalFieldOf("is_default", false).forGetter(DragonBody::isDefault),
@@ -137,5 +144,15 @@ public record DragonBody(
     public static String getWingButtonDescription(final Holder<DragonBody> holder) {
         //noinspection DataFlowIssue -> key is present
         return Translation.Type.BODY_WINGS_DESCRIPTION.wrap(holder.getKey().location());
+    }
+
+    public static Vec3 getMountingOffsetForEntity(final Entity entity) {
+        if(entity instanceof Boat) {
+            return BOAT_MOUNTING_OFFSET;
+        } else if(entity instanceof AbstractHorse){
+            return HORSE_MOUNTING_OFFSET;
+        }
+
+        return Vec3.ZERO;
     }
 }
