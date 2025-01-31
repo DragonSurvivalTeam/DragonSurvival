@@ -8,6 +8,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.block.BonemealableBlock;
+import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
 
 public record BonemealEffect(LevelBasedValue attempts, LevelBasedValue probability) implements AbilityBlockEffect {
@@ -28,8 +29,13 @@ public record BonemealEffect(LevelBasedValue attempts, LevelBasedValue probabili
             float attempts = attempts().calculate(ability.level());
 
             for (int i = 0; i < attempts; i++) {
+                if (!bonemealableBlock.isValidBonemealTarget(dragon.level(), position, state)) {
+                    return;
+                }
+
                 bonemealableBlock.performBonemeal(dragon.serverLevel(), dragon.getRandom(), position, state);
-                dragon.level().levelEvent(1505, position, 15);
+                // '15' is the particle count, see BoneMealItem#addGrowthParticles
+                dragon.level().levelEvent(LevelEvent.PARTICLES_AND_SOUND_PLANT_GROWTH, position, 15);
             }
         }
     }
