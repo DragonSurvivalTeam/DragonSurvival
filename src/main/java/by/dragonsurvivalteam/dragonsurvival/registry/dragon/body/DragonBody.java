@@ -44,7 +44,7 @@ public record DragonBody(
         Optional<BackpackOffsets> backpackOffsets,
         Optional<ResourceLocation> defaultIcon
 ) implements AttributeModifierSupplier {
-    public static final ResourceKey<Registry<DragonBody>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_bodies"));
+    public static final ResourceKey<Registry<DragonBody>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_body"));
     public static final ResourceLocation DEFAULT_MODEL = DragonSurvival.res("dragon_model");
 
     public static final Codec<DragonBody> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
