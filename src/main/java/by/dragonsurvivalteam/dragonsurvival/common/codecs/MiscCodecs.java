@@ -99,26 +99,26 @@ public class MiscCodecs {
         });
     }
 
-    public record DestructionData(double crushingSize, double blockDestructionSize, double crushingDamageScalar) {
+    public record DestructionData(double crushingGrowth, double blockDestructionGrowth, double crushingDamageScalar) {
         public static final Codec<DestructionData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 // TODO :: add fields to specify applicable entities
-                Codec.DOUBLE.fieldOf("crushing_size").forGetter(DestructionData::crushingSize),
+                Codec.DOUBLE.fieldOf("crushing_growth").forGetter(DestructionData::crushingGrowth),
                 // TODO :: add fields to specify applicable blocks
-                Codec.DOUBLE.fieldOf("block_destruction_size").forGetter(DestructionData::blockDestructionSize),
+                Codec.DOUBLE.fieldOf("block_destruction_growth").forGetter(DestructionData::blockDestructionGrowth),
                 Codec.DOUBLE.fieldOf("crushing_damage_scalar").forGetter(DestructionData::crushingDamageScalar)
         ).apply(instance, instance.stable(DestructionData::new)));
 
-        public boolean isCrushingAllowed(double dragonSize) {
-            return dragonSize >= crushingSize;
+        public boolean isCrushingAllowed(double growth) {
+            return growth >= crushingGrowth;
         }
 
-        public boolean isBlockDestructionAllowed(double dragonSize) {
-            return dragonSize >= blockDestructionSize;
+        public boolean isBlockDestructionAllowed(double growth) {
+            return growth >= blockDestructionGrowth;
         }
 
         @SuppressWarnings("BooleanMethodIsAlwaysInverted") // ignore
-        public boolean isDestructionAllowed(double dragonSize) {
-            return isCrushingAllowed(dragonSize) || isBlockDestructionAllowed(dragonSize);
+        public boolean isDestructionAllowed(double growth) {
+            return isCrushingAllowed(growth) || isBlockDestructionAllowed(growth);
         }
     }
 }

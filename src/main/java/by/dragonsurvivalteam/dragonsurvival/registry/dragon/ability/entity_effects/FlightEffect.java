@@ -21,12 +21,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 // TODO :: does this need some 'remove_automatically' handling as well?
-public record FlightEffect(int flightLevel, ResourceLocation icon) implements AbilityEntityEffect {
+public record FlightEffect(int levelRequirement, ResourceLocation icon) implements AbilityEntityEffect {
     @Translation(comments = "§6■ Can use flight")
     private static final String FLIGHT = Translation.Type.GUI.wrap("flight_effect.flight");
 
     public static final MapCodec<FlightEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.INT.fieldOf("flight_level").forGetter(FlightEffect::flightLevel),
+            Codec.INT.fieldOf("level_requirement").forGetter(FlightEffect::levelRequirement),
             ResourceLocation.CODEC.optionalFieldOf("icon", FlightData.DEFAULT_ICON).forGetter(FlightEffect::icon)
     ).apply(instance, FlightEffect::new));
 
@@ -39,7 +39,7 @@ public record FlightEffect(int flightLevel, ResourceLocation icon) implements Ab
         FlightData data = FlightData.getData(serverTarget);
 
         boolean hadFlight = data.hasFlight;
-        data.hasFlight = ability.level() >= flightLevel;
+        data.hasFlight = ability.level() >= levelRequirement;
 
         if (hadFlight != data.hasFlight) {
              PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverTarget, new FlightStatus(serverTarget.getId(), data.hasFlight));
@@ -76,7 +76,7 @@ public record FlightEffect(int flightLevel, ResourceLocation icon) implements Ab
     public List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
         List<MutableComponent> components = new ArrayList<>();
 
-        if (ability.level() >= flightLevel) {
+        if (ability.level() >= levelRequirement) {
             components.add(Component.translatable(FLIGHT));
         }
 

@@ -16,7 +16,7 @@ public class DSModifiers {
         float healthPercentage = player.getHealth() / player.getMaxHealth();
         DragonStateHandler handler = DragonStateProvider.getData(player);
         updateTypeModifiers(player, handler);
-        updateSizeModifiers(player, handler);
+        updateGrowthModifiers(player, handler);
         updateBodyModifiers(player, handler);
         player.setHealth(player.getMaxHealth() * healthPercentage);
     }
@@ -48,7 +48,7 @@ public class DSModifiers {
         player.setHealth(player.getMaxHealth() * healthPercentage);
     }
 
-    public static void updateSizeModifiers(@Nullable final Player player, final DragonStateHandler handler) {
+    public static void updateGrowthModifiers(@Nullable final Player player, final DragonStateHandler handler) {
         if (player == null) {
             return;
         }
@@ -57,8 +57,7 @@ public class DSModifiers {
         AttributeModifierSupplier.removeModifiers(ModifierType.DRAGON_STAGE, player);
 
         if (handler.isDragon()) {
-            // FIXME :: +1? lookup would crash
-            handler.stage().value().applyModifiers(player, handler.getSize() - handler.stage().value().sizeRange().min());
+            handler.stage().value().applyModifiers(player, handler.getGrowth() - handler.stage().value().growthRange().min());
         }
 
         player.setHealth(player.getMaxHealth() * healthPercentage);

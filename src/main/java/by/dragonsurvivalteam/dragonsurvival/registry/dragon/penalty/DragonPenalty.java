@@ -35,7 +35,7 @@ public record DragonPenalty(Optional<ResourceLocation> icon, Optional<LootItemCo
             PenaltyTrigger.CODEC.fieldOf("trigger").forGetter(DragonPenalty::trigger)
     ).apply(instance, DragonPenalty::new));
 
-    public static final ResourceKey<Registry<DragonPenalty>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_penalties"));
+    public static final ResourceKey<Registry<DragonPenalty>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_penalty"));
     public static final Codec<Holder<DragonPenalty>> CODEC = RegistryFixedCodec.create(REGISTRY);
 
     public void apply(final ServerPlayer dragon, final Holder<DragonPenalty> penalty) {
@@ -66,8 +66,6 @@ public record DragonPenalty(Optional<ResourceLocation> icon, Optional<LootItemCo
         }
     }
 
-    // TODO :: figure out why some part of the description doesn't reset its color after '§r' is used
-    //  (i.e. why isn't it gray but stays e.g. green)
     public MutableComponent getDescription(final Player dragon) {
         MutableComponent description = trigger.getDescription(dragon);
 

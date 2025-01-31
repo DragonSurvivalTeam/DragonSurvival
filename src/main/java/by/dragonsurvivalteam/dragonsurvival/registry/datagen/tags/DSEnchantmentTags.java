@@ -47,7 +47,7 @@ public class DSEnchantmentTags extends EnchantmentTagsProvider {
                 .add(DSEnchantments.CURSE_OF_KINDNESS);
 
         // Used in enchantments
-        tag(exclusiveSet("size_changing"))
+        tag(exclusiveSet("size_changing")) // FIXME :: rename here and in the enchantments
                 .add(DSEnchantments.SHRINK);
     }
 

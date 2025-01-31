@@ -51,7 +51,7 @@ public class OxygenBonus extends DurationInstanceBase<OxygenBonuses, OxygenBonus
 
     public static final Codec<OxygenBonus> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             DurationInstanceBase.CODEC.fieldOf("base").forGetter(identity -> identity),
-            RegistryCodecs.homogeneousList(NeoForgeRegistries.Keys.FLUID_TYPES).optionalFieldOf("fluids").forGetter(OxygenBonus::fluids),
+            RegistryCodecs.homogeneousList(NeoForgeRegistries.Keys.FLUID_TYPES).optionalFieldOf("fluid_types").forGetter(OxygenBonus::fluids),
             LevelBasedValue.CODEC.fieldOf("oxygen_bonus").forGetter(OxygenBonus::oxygenBonus)
     ).apply(instance, OxygenBonus::new));
 

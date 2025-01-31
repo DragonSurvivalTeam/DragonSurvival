@@ -679,16 +679,16 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         return beDragon(Condition.dragonSpecies(type));
     }
 
-    public Criterion<BeDragonTrigger.Instance> beDragon(double size) {
-        return beDragon(Condition.dragonSizeAtLeast(size));
+    public Criterion<BeDragonTrigger.Instance> beDragon(double growth) {
+        return beDragon(Condition.dragonSizeAtLeast(growth));
     }
 
     public Criterion<BeDragonTrigger.Instance> beDragon(final ResourceKey<DragonStage> dragonStage) {
         return beDragon(Condition.dragonStage(registries.holderOrThrow(dragonStage)));
     }
 
-    public Criterion<BeDragonTrigger.Instance> beDragon(final Holder<DragonSpecies> species, final Holder<DragonStage> dragonStage, double growthPercentage) {
-        return beDragon(EntityPredicate.Builder.entity().subPredicate(DragonPredicate.Builder.dragon().species(species).stage(dragonStage, MinMaxBounds.Doubles.atLeast(growthPercentage)).build()));
+    public Criterion<BeDragonTrigger.Instance> beDragon(final Holder<DragonSpecies> species, final Holder<DragonStage> dragonStage, double progress) {
+        return beDragon(EntityPredicate.Builder.entity().subPredicate(DragonPredicate.Builder.dragon().species(species).stage(dragonStage, MinMaxBounds.Doubles.atLeast(progress)).build()));
     }
 
     public Criterion<BeDragonTrigger.Instance> beDragon(final EntityPredicate.Builder builder) {

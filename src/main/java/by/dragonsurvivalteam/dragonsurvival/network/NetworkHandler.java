@@ -49,12 +49,12 @@ import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncVisualEffectAdded;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncVisualEffectRemoval;
 import by.dragonsurvivalteam.dragonsurvival.network.particle.SyncBreathParticles;
 import by.dragonsurvivalteam.dragonsurvival.network.particle.SyncParticleTrail;
-import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDesiredSize;
+import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDesiredGrowth;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDragonMovement;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDragonPassengerID;
+import by.dragonsurvivalteam.dragonsurvival.network.player.SyncGrowth;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncGrowthState;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncLargeDragonDestruction;
-import by.dragonsurvivalteam.dragonsurvival.network.player.SyncSize;
 import by.dragonsurvivalteam.dragonsurvival.network.sound.StartTickingSound;
 import by.dragonsurvivalteam.dragonsurvival.network.sound.StopTickingSound;
 import by.dragonsurvivalteam.dragonsurvival.network.status.RefreshDragon;
@@ -102,8 +102,8 @@ public class NetworkHandler {
 
         // Status
         registrar.playToClient(SyncGrowthState.TYPE, SyncGrowthState.STREAM_CODEC, SyncGrowthState::handleClient);
-        registrar.playToClient(SyncSize.TYPE, SyncSize.STREAM_CODEC, SyncSize::handleClient);
-        registrar.playToClient(SyncDesiredSize.TYPE, SyncDesiredSize.STREAM_CODEC, SyncDesiredSize::handleClient);
+        registrar.playToClient(SyncGrowth.TYPE, SyncGrowth.STREAM_CODEC, SyncGrowth::handleClient);
+        registrar.playToClient(SyncDesiredGrowth.TYPE, SyncDesiredGrowth.STREAM_CODEC, SyncDesiredGrowth::handleClient);
         registrar.playToClient(RequestOpenDragonEditor.TYPE, RequestOpenDragonEditor.STREAM_CODEC, RequestOpenDragonEditor::handleClient);
         registrar.playToClient(SyncEnderDragonMark.TYPE, SyncEnderDragonMark.STREAM_CODEC, SyncEnderDragonMark::handleClient);
         registrar.playToClient(SyncAltarState.TYPE, SyncAltarState.STREAM_CODEC, SyncAltarState::handleClient);

@@ -15,11 +15,11 @@ public record DragonStagePredicate(Optional<HolderSet<DragonStage>> dragonStage,
     public static final Codec<DragonStagePredicate> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             RegistryCodecs.homogeneousList(DragonStage.REGISTRY).optionalFieldOf("dragon_stage").forGetter(DragonStagePredicate::dragonStage),
             MiscCodecs.percentageBounds().optionalFieldOf("growth_percentage").forGetter(DragonStagePredicate::growthPercentage),
-            MinMaxBounds.Doubles.CODEC.optionalFieldOf("size").forGetter(DragonStagePredicate::size)
+            MinMaxBounds.Doubles.CODEC.optionalFieldOf("growth").forGetter(DragonStagePredicate::size)
     ).apply(instance, DragonStagePredicate::new));
 
     @SuppressWarnings("RedundantIfStatement") // ignore for clarity
-    public boolean matches(final Holder<DragonStage> stage, double size) {
+    public boolean matches(final Holder<DragonStage> stage, double growth) {
         if (stage == null) {
             return false;
         }
@@ -28,11 +28,11 @@ public record DragonStagePredicate(Optional<HolderSet<DragonStage>> dragonStage,
             return false;
         }
 
-        if (growthPercentage().isPresent() && !growthPercentage().get().matches(stage.value().getProgress(size))) {
+        if (growthPercentage().isPresent() && !growthPercentage().get().matches(stage.value().getProgress(growth))) {
             return false;
         }
 
-        if (size().isPresent() && !size().get().matches(size)) {
+        if (size().isPresent() && !size().get().matches(growth)) {
             return false;
         }
 
@@ -42,8 +42,8 @@ public record DragonStagePredicate(Optional<HolderSet<DragonStage>> dragonStage,
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // ignore
     public static class Builder {
         private Optional<HolderSet<DragonStage>> dragonStage = Optional.empty();
-        private Optional<MinMaxBounds.Doubles> size = Optional.empty();
-        private Optional<MinMaxBounds.Doubles> growthPercentage = Optional.empty();
+        private Optional<MinMaxBounds.Doubles> progress = Optional.empty();
+        private Optional<MinMaxBounds.Doubles> growth = Optional.empty();
 
         public static DragonStagePredicate.Builder start() {
             return new DragonStagePredicate.Builder();
@@ -54,38 +54,38 @@ public record DragonStagePredicate(Optional<HolderSet<DragonStage>> dragonStage,
             return this;
         }
 
-        public DragonStagePredicate.Builder growth(final MinMaxBounds.Doubles growthPercentage) {
-            this.growthPercentage = Optional.of(growthPercentage);
+        public DragonStagePredicate.Builder progress(final MinMaxBounds.Doubles progress) {
+            this.progress = Optional.of(progress);
             return this;
         }
 
-        public DragonStagePredicate.Builder growthAtLeast(double percentage) {
-            this.growthPercentage = Optional.of((MinMaxBounds.Doubles.atLeast(percentage)));
+        public DragonStagePredicate.Builder progressAtLeast(double percentage) {
+            this.progress = Optional.of((MinMaxBounds.Doubles.atLeast(percentage)));
             return this;
         }
 
-        public DragonStagePredicate.Builder size(final MinMaxBounds.Doubles size) {
-            this.size = Optional.of(size);
+        public DragonStagePredicate.Builder growth(final MinMaxBounds.Doubles growth) {
+            this.growth = Optional.of(growth);
             return this;
         }
 
-        public DragonStagePredicate.Builder sizeBetween(double min, double max) {
-            this.size = Optional.of(MinMaxBounds.Doubles.between(min, max));
+        public DragonStagePredicate.Builder growthBetween(double min, double max) {
+            this.growth = Optional.of(MinMaxBounds.Doubles.between(min, max));
             return this;
         }
 
-        public DragonStagePredicate.Builder sizeAtLeast(double min) {
-            this.size = Optional.of(MinMaxBounds.Doubles.atLeast(min));
+        public DragonStagePredicate.Builder growthAtLeast(double min) {
+            this.growth = Optional.of(MinMaxBounds.Doubles.atLeast(min));
             return this;
         }
 
-        public DragonStagePredicate.Builder sizeAtMost(double max) {
-            this.size = Optional.of(MinMaxBounds.Doubles.atLeast(max));
+        public DragonStagePredicate.Builder growthAtMost(double max) {
+            this.growth = Optional.of(MinMaxBounds.Doubles.atLeast(max));
             return this;
         }
 
         public DragonStagePredicate build() {
-            return new DragonStagePredicate(dragonStage, growthPercentage, size);
+            return new DragonStagePredicate(dragonStage, progress, growth);
         }
     }
 }

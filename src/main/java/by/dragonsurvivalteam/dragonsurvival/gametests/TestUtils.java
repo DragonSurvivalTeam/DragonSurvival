@@ -99,8 +99,8 @@ public class TestUtils {
         Holder<DragonStage> dragonStage = data.stage();
         helper.assertTrue(dragonStage == null, String.format("Dragon level was [%s] - expected [null]", dragonStage));
 
-        double size = data.getSize();
-        helper.assertTrue(size == DragonStateHandler.NO_SIZE, String.format("Size was [%f] - expected [0]", size));
+        double size = data.getGrowth();
+        helper.assertTrue(size == DragonStateHandler.NO_GROWTH, String.format("Size was [%f] - expected [0]", size));
 
         tick(player);
     }

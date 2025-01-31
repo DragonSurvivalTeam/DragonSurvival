@@ -15,12 +15,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-public record BreathParticlesEffect(float spread, float speedPerSize, ParticleOptions mainParticle, ParticleOptions secondaryParticle) implements AbilityEntityEffect {
-    private static final int DEFAULT_PARTICLE_COUNT = 20; // TODO :: add as parameter? of type (amount or have it calculated by size etc.)?
+public record BreathParticlesEffect(float spread, float speedPerGrowth, ParticleOptions mainParticle, ParticleOptions secondaryParticle) implements AbilityEntityEffect {
+    private static final int DEFAULT_PARTICLE_COUNT = 20;
 
     public static final MapCodec<BreathParticlesEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.FLOAT.fieldOf("spread").forGetter(BreathParticlesEffect::spread),
-            Codec.FLOAT.fieldOf("speed_per_size").forGetter(BreathParticlesEffect::speedPerSize),
+            Codec.FLOAT.fieldOf("speed_per_growth").forGetter(BreathParticlesEffect::speedPerGrowth),
             ParticleTypes.CODEC.fieldOf("main_particle").forGetter(BreathParticlesEffect::mainParticle),
             ParticleTypes.CODEC.fieldOf("secondary_particle").forGetter(BreathParticlesEffect::secondaryParticle)
     ).apply(instance, BreathParticlesEffect::new));
@@ -31,13 +31,13 @@ public record BreathParticlesEffect(float spread, float speedPerSize, ParticleOp
 
         if (target instanceof Player player) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
-            particleAmount = handler.isDragon() ? handler.getSize() : DEFAULT_PARTICLE_COUNT;
+            particleAmount = handler.isDragon() ? handler.getGrowth() : DEFAULT_PARTICLE_COUNT;
         } else {
             particleAmount = DEFAULT_PARTICLE_COUNT;
         }
 
         particleAmount = Mth.clamp(particleAmount * 0.6, 12, 100);
-        PacketDistributor.sendToPlayersTrackingEntityAndSelf(target, new SyncBreathParticles(target.getId(), spread, speedPerSize, (int) particleAmount, mainParticle, secondaryParticle));
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(target, new SyncBreathParticles(target.getId(), spread, speedPerGrowth, (int) particleAmount, mainParticle, secondaryParticle));
     }
 
     @Override

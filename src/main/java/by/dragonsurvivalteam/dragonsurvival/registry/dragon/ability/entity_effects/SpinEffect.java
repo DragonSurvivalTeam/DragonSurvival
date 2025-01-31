@@ -24,13 +24,13 @@ import java.util.List;
 import java.util.Optional;
 
 // TODO :: does this need some 'remove_automatically' handling as well?
-public record SpinEffect(int spinLevel, Optional<HolderSet<FluidType>> inFluid) implements AbilityEntityEffect {
+public record SpinEffect(int levelRequirement, Optional<HolderSet<FluidType>> fluidTypes) implements AbilityEntityEffect {
     @Translation(comments = "§6■ Can use spin")
     private static final String SPIN = Translation.Type.GUI.wrap("spin_effect.spin");
 
     public static final MapCodec<SpinEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.INT.fieldOf("spin_level").forGetter(SpinEffect::spinLevel),
-            RegistryCodecs.homogeneousList(NeoForgeRegistries.Keys.FLUID_TYPES).optionalFieldOf("in_fluid").forGetter(SpinEffect::inFluid)
+            Codec.INT.fieldOf("level_requirement").forGetter(SpinEffect::levelRequirement),
+            RegistryCodecs.homogeneousList(NeoForgeRegistries.Keys.FLUID_TYPES).optionalFieldOf("fluid_types").forGetter(SpinEffect::fluidTypes)
     ).apply(instance, SpinEffect::new));
 
     @Override
@@ -42,9 +42,9 @@ public record SpinEffect(int spinLevel, Optional<HolderSet<FluidType>> inFluid) 
         FlightData data = FlightData.getData(serverTarget);
         boolean hadSpin = data.hasSpin;
 
-        if (ability.level() >= spinLevel) {
+        if (ability.level() >= levelRequirement) {
             data.hasSpin = true;
-            data.inFluid = inFluid.orElse(null);
+            data.inFluid = fluidTypes.orElse(null);
         } else {
             data.hasSpin = false;
         }
@@ -78,7 +78,7 @@ public record SpinEffect(int spinLevel, Optional<HolderSet<FluidType>> inFluid) 
     public List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
         List<MutableComponent> components = new ArrayList<>();
         
-        if (ability.level() >= spinLevel) {
+        if (ability.level() >= levelRequirement) {
             components.add(Component.translatable(SPIN));
         }
 

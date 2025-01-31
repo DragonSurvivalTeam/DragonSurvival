@@ -218,7 +218,7 @@ public class DragonSkinsScreen extends Screen {
             if(!DragonSkins.fetchHasFailed(playerName, dragonStage.getKey()) || Objects.equals(playerName, minecraft.player.getGameProfile().getName())) {
                 if (handler.stage() == null) {
                     boolean alreadyUsingDefaults = handler.getCurrentSkinPreset().isStageUsingDefaultSkin(dragonStage.getKey());
-                    handler.setSize(null, handler.species().value().getStartingSize(minecraft.player.registryAccess()));
+                    handler.setGrowth(null, handler.species().value().getStartingGrowth(minecraft.player.registryAccess()));
                     handler.setCurrentStageCustomization(DragonStateProvider.getData(minecraft.player).getCustomizationForStage(dragonStage.getKey()));
                     handler.getCurrentSkinPreset().setAllStagesToUseDefaultSkin(alreadyUsingDefaults);
                     DragonSkinsScreen.dragonStage = handler.stage();

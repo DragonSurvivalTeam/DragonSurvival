@@ -12,7 +12,6 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
-/** Synchronizes dragon level and size */
 public record SyncParticleTrail(Vector3f source, Vector3f target, ParticleOptions trailParticle) implements CustomPacketPayload {
     public static final Type<SyncParticleTrail> TYPE = new Type<>(DragonSurvival.res("sync_particle_trail"));
 
