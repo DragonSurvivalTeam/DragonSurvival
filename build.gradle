@@ -87,6 +87,8 @@ dependencies {
 	implementation "curse.maven:spark-361579:5759671" // 1.10.109
 	implementation "curse.maven:jade-324717:6011258" // 15.9.2
 
+	implementation "curse.maven:cosmetic-armor-reworked-237307:5610814"
+
 //	implementation "curse.maven:emi-580555:6075440" // 1.1.19
 
 	implementation "maven.modrinth:sodium:mc1.21.1-0.6.5-neoforge"
