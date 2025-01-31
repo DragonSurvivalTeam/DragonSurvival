@@ -107,8 +107,6 @@ public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
 
         if(isCurioLoaded) {
             backpackStack = getBackpackFromCurio(player);
-
-
         }
 
         if(backpackStack.isEmpty()) {
@@ -125,6 +123,7 @@ public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
         return Optional.empty();
 
     }
+
     private void transformModel(PoseStack poseStack, Vec3 pos_offset, Vec3 rot_offset, Vec3 scale) {
 
         Vec3 rot = rot_offset.add(0, 0, 180);
@@ -154,7 +153,7 @@ public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
 
                 if(!backpackItem.slotContext().visible())
                     continue;
-                
+
                 ItemStack itemStack = backpackItem.stack();
 
                 if(itemStack.getItem() instanceof BackpackItem) {
@@ -181,5 +180,5 @@ public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
 
     }
 
-    
+
 }
