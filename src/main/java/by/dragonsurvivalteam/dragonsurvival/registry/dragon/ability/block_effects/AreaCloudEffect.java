@@ -18,6 +18,7 @@ public record AreaCloudEffect(PotionData potion, LevelBasedValue duration, doubl
     public static final MapCodec<AreaCloudEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             PotionData.CODEC.fieldOf("potion").forGetter(AreaCloudEffect::potion),
             LevelBasedValue.CODEC.fieldOf("duration").forGetter(AreaCloudEffect::duration),
+            // TODO :: why not level based?
             Codec.DOUBLE.fieldOf("probability").forGetter(AreaCloudEffect::probability),
             ParticleTypes.CODEC.fieldOf("particle").forGetter(AreaCloudEffect::particle)
     ).apply(instance, AreaCloudEffect::new));

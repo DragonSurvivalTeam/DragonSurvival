@@ -8,6 +8,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
 import com.mojang.blaze3d.Blaze3D;
 import com.mojang.blaze3d.platform.NativeImage;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -176,7 +177,10 @@ public class DragonSkins {
         }
 
         NativeImage customTexture = NativeImage.read(imageStream);
-        Minecraft.getInstance().getTextureManager().register(location, new DynamicTexture(customTexture));
+        // Avoid overwriting and closing the texture (closing the image as well, leading to a crash)
+        // (Since this method is handled off-thread the image doesn't get immediately uploaded)
+        RenderSystem.recordRenderCall(() -> Minecraft.getInstance().getTextureManager().register(location, new DynamicTexture(customTexture)));
+
         return location;
     }
 
