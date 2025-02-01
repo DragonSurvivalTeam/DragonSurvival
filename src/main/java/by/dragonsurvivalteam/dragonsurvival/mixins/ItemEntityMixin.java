@@ -21,16 +21,20 @@ public abstract class ItemEntityMixin extends Entity implements IEntityWithCompl
 
     @Override
     public void writeSpawnData(@NotNull final RegistryFriendlyByteBuf buffer) {
-        buffer.writeBoolean(getData(DSDataAttachments.ENTITY_HANDLER).isFireImmune);
+        getExistingData(DSDataAttachments.ITEM).ifPresentOrElse(data -> buffer.writeBoolean(data.isFireImmune), () -> buffer.writeBoolean(false));
     }
 
     @Override
     public void readSpawnData(@NotNull final RegistryFriendlyByteBuf buffer) {
-        getData(DSDataAttachments.ENTITY_HANDLER).isFireImmune = buffer.readBoolean();
+        if (/* Fire immune */ !buffer.readBoolean()) {
+            return;
+        }
+
+        getData(DSDataAttachments.ITEM).isFireImmune = true;
     }
 
     @ModifyReturnValue(method = "fireImmune", at = @At("RETURN"))
     private boolean dragonSurvival$makeFireImmune(boolean isFireImmune) {
-        return isFireImmune || getExistingData(DSDataAttachments.ENTITY_HANDLER).map(data -> data.isFireImmune).orElse(false);
+        return isFireImmune || getExistingData(DSDataAttachments.ITEM).map(data -> data.isFireImmune).orElse(false);
     }
 }

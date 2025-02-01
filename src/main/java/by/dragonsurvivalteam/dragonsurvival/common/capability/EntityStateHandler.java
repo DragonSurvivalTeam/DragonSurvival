@@ -13,14 +13,11 @@ public class EntityStateHandler implements INBTSerializable<CompoundTag> {
     public Vec3 lastPos;
     // Amount of times the last chain attack has chained
     public int chainCount;
-    // Currently only used for item entities
-    public boolean isFireImmune;
 
     @Override
     public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
         tag.putInt(CHAIN_COUNT, chainCount);
-        tag.putBoolean(IS_FIRE_IMMUNE, isFireImmune);
 
         if (lastPos != null) {
             tag.put(LAST_POSITION, Functions.newDoubleList(lastPos.x, lastPos.y, lastPos.z));
@@ -32,7 +29,6 @@ public class EntityStateHandler implements INBTSerializable<CompoundTag> {
     @Override
     public void deserializeNBT(@NotNull final HolderLookup.Provider provider, CompoundTag tag) {
         chainCount = tag.getInt(CHAIN_COUNT);
-        isFireImmune = tag.getBoolean(IS_FIRE_IMMUNE);
 
         if (tag.contains(LAST_POSITION)) {
             ListTag list = tag.getList(LAST_POSITION, ListTag.TAG_DOUBLE);
@@ -42,5 +38,4 @@ public class EntityStateHandler implements INBTSerializable<CompoundTag> {
 
     public static final String LAST_POSITION = "last_position";
     public static final String CHAIN_COUNT = "chain_count";
-    public static final String IS_FIRE_IMMUNE = "is_fire_immune";
 }

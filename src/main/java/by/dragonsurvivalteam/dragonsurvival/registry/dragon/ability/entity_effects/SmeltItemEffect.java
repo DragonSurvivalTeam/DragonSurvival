@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ItemData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -15,10 +17,10 @@ import net.minecraft.world.item.enchantment.LevelBasedValue;
 
 import java.util.Optional;
 
-public record SmeltItemEffect(Optional<ItemPredicate> itemPredicate, LevelBasedValue probability, boolean dropsExperience) implements AbilityEntityEffect {
+public record SmeltItemEffect(Optional<ItemPredicate> itemPredicate, LevelBasedValue progress, boolean dropsExperience) implements AbilityEntityEffect {
     public static final MapCodec<SmeltItemEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             ItemPredicate.CODEC.optionalFieldOf("item_predicate").forGetter(SmeltItemEffect::itemPredicate),
-            LevelBasedValue.CODEC.optionalFieldOf("probability", LevelBasedValue.constant(1)).forGetter(SmeltItemEffect::probability),
+            LevelBasedValue.CODEC.optionalFieldOf("progress", LevelBasedValue.constant(1)).forGetter(SmeltItemEffect::progress),
             Codec.BOOL.optionalFieldOf("drops_experience", true).forGetter(SmeltItemEffect::dropsExperience)
     ).apply(instance, SmeltItemEffect::new));
 
@@ -28,7 +30,10 @@ public record SmeltItemEffect(Optional<ItemPredicate> itemPredicate, LevelBasedV
             return;
         }
 
-        if (probability.calculate(ability.level()) < dragon.getRandom().nextDouble()) {
+        ItemData data = itemEntity.getData(DSDataAttachments.ITEM);
+        data.smeltingProgress += progress.calculate(ability.level());
+
+        if (data.smeltingProgress < 1) {
             return;
         }
 
