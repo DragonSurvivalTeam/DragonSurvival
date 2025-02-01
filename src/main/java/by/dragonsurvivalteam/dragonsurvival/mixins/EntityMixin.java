@@ -130,15 +130,18 @@ public abstract class EntityMixin {
     /**
      * Prevent dragons from riding certain vehicles
      */
-    @SuppressWarnings("ConstantValue") // the if statement checks are valid
-    // Using 'ModifyReturnValue' seems to not work - the mixin cannot find the method
-    @Inject(method = "canRide", at = @At("HEAD"), cancellable = true)
-    public void dragonSurvival$canRide(Entity vehicle, CallbackInfoReturnable<Boolean> cir) {
-        if (ServerConfig.limitedRiding && DragonStateProvider.isDragon((Entity) (Object) this) && /* Still allow riding dragons */ !DragonStateProvider.isDragon(vehicle)) {
-            if(!vehicle.getType().is(DSEntityTypeTags.VEHICLE_WHITELIST)) {
-                cir.setReturnValue(false);
-            }
+    @ModifyReturnValue(method = "canRide", at = @At(value = "RETURN"))
+    private boolean dragonSurvival$canRide(boolean canRide, final Entity mount) {
+        if (!canRide) {
+            return false;
         }
+
+        //noinspection ConstantValue -> the check is valid
+        if (ServerConfig.limitedRiding && DragonStateProvider.isDragon((Entity) (Object) this) && /* Still allow riding dragons */ !DragonStateProvider.isDragon(mount)) {
+            return mount.getType().is(DSEntityTypeTags.VEHICLE_WHITELIST);
+        }
+
+        return canRide;
     }
 
     /** To just skip rendering entirely instead of rendering with a 0 alpha value */
