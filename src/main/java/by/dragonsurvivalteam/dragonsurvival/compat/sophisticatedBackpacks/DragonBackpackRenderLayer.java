@@ -46,7 +46,7 @@ public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
 
         super(renderer);
 
-        isCurioLoaded = Compat.isModLoaded("curios");
+        isCurioLoaded = Compat.isModLoaded(Compat.CURIOS);
     }
 
     @Override
@@ -76,51 +76,43 @@ public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
         int borderColor = wrapper.getAccentColor();
         IBackpackModel model = BackpackModelManager.getBackpackModel(backpack.getItem());
 
-            Vec3 posOffset = new Vec3(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
-            
-            Vec3 rotOffset = Vec3.ZERO;
+        Vec3 posOffset = new Vec3(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
+
+        Vec3 rotOffset = Vec3.ZERO;
 
         Vec3 scale = new Vec3(1, 1, 1);
 
-        
-            if(handler.body().value().backpackOffsets().isPresent()) {
-                DragonBody.BackpackOffsets backpackOffsets = handler.body().value().backpackOffsets().get();
 
-                scale = backpackOffsets.scale();
-                posOffset = posOffset.add(backpackOffsets.posOffset());
-                rotOffset = backpackOffsets.rotOffset();
-            }
+        if(handler.body().value().backpackOffsets().isPresent()) {
+            DragonBody.BackpackOffsets backpackOffsets = handler.body().value().backpackOffsets().get();
 
-        
-
-        transformModel(poseStack, posOffset, rotOffset, scale);
-            pos_offset = pos_offset.add(backpackOffsets.pos_offset());
-            rot_offset = backpackOffsets.rot_offset();
-
+            scale = backpackOffsets.scale();
+            posOffset = posOffset.add(backpackOffsets.posOffset());
+            rotOffset = backpackOffsets.rotOffset();
         }
 
-        transformModel(poseStack, pos_offset, rot_offset, scale);
+
+        transformModel(poseStack, posOffset, rotOffset, scale);
 
         model.render(null, player, poseStack, bufferSource, packedLight, clothColor, borderColor, backpack.getItem(), wrapper.getRenderInfo());
         poseStack.popPose();
 
-
     }
-    
+
 
     private void transformModel(PoseStack poseStack, Vec3 posOffset, Vec3 rotOffset, Vec3 scale) {
-        
+
         Vec3 rot = rotOffset.add(0, 0, 180);
 
         Quaternionf quat = new Quaternionf().rotationZYX((float) Math.toRadians(rot.x), (float) Math.toRadians(rot.y), (float) Math.toRadians(rot.z));
 
         poseStack.rotateAround(quat, 0, 1.1f, 0);
-        
+
         posOffset = posOffset.scale(1 / 32f);
 
         // The backpack rendering is slightly offset to center the pivot in back middle
         poseStack.translate(posOffset.x, -posOffset.y + 0.5, -posOffset.z - 0.1);
-        
+
         poseStack.scale((float) scale.x, (float) scale.y, (float) scale.z);
 
     }
@@ -131,7 +123,7 @@ public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
         boolean isArmorSlot = false;
 
         if(isCurioLoaded) {
-            backpackStack = getBackpackFromCurio(player);
+            backpackStack = getBackpackFromCurios(player);
         }
 
         if(backpackStack.isEmpty()) {
@@ -140,9 +132,7 @@ public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
         }
 
         if(backpackStack.isPresent()) {
-
             return Optional.of(new PlayerInventoryProvider.RenderInfo(backpackStack.get(), isArmorSlot));
-
         }
 
         return Optional.empty();
@@ -150,13 +140,11 @@ public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
     }
 
 
-
-    private Optional<ItemStack> getBackpackFromCurio(Player player) {
+    private Optional<ItemStack> getBackpackFromCurios(Player player) {
 
         if(CuriosApi.getCuriosInventory(player).isPresent()) {
 
             List<SlotResult> curioBackSlots = CuriosApi.getCuriosInventory(player).get().findCurios("back");
-
 
             for(SlotResult backpackItem : curioBackSlots) {
 
@@ -172,12 +160,12 @@ public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
                 return Optional.empty();
             }
         }
+        
         return Optional.empty();
 
     }
 
     private Optional<ItemStack> getBackpackFromChestSlot(Player player) {
-
 
         ItemStack armorSlot = player.getInventory().armor.get(EquipmentSlot.CHEST.getIndex());
 
@@ -188,6 +176,4 @@ public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
         return Optional.empty();
 
     }
-
-
 }
