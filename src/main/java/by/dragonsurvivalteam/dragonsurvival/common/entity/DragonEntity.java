@@ -66,7 +66,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     private static final double DEFAULT_FAST_SWIM_SPEED = 0.13;
 
     // Base "scale" to use when determining animation speed
-    private static final double BASE_SCALE = 1.3;
+    private static final double BASE_SCALE = 1.0;
 
     /** Durations of jumps */
     public static final ConcurrentHashMap<Integer, Integer> DRAGON_JUMP_TICKS = new ConcurrentHashMap<>();
