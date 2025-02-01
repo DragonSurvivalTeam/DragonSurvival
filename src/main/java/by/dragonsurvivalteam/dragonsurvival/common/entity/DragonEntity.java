@@ -314,7 +314,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             // When the player is eating the main hand item
             if (animationTickTimer.getDuration("eat_item_right") <= 0) {
                 movement.bite = false;
-                animationTickTimer.putAnimation("eat_item_right", 0.32 * 20);
+                animationTickTimer.putAnimation("eat_item_right", animationDuration(player, "eat_item_right"));
             }
 
             return state.setAndContinue(EAT_ITEM_RIGHT);
@@ -322,7 +322,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             // When the player is eating the offhand item
             if (animationTickTimer.getDuration("eat_item_left") <= 0) {
                 movement.bite = false;
-                animationTickTimer.putAnimation("eat_item_left", 0.32 * 20);
+                animationTickTimer.putAnimation("eat_item_left", animationDuration(player, "eat_item_left"));
             }
 
             return state.setAndContinue(EAT_ITEM_LEFT);
@@ -330,7 +330,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             // When the player is using the main hand item
             if (animationTickTimer.getDuration("use_item_right") <= 0) {
                 movement.bite = false;
-                animationTickTimer.putAnimation("use_item_right", 0.32 * 20);
+                animationTickTimer.putAnimation("use_item_right", animationDuration(player, "use_item_right"));
             }
 
             return state.setAndContinue(USE_ITEM_RIGHT);
@@ -338,14 +338,14 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             // When the player is using the offhand item
             if (animationTickTimer.getDuration("use_item_left") <= 0) {
                 movement.bite = false;
-                animationTickTimer.putAnimation("use_item_left", 0.32 * 20);
+                animationTickTimer.putAnimation("use_item_left", animationDuration(player, "use_item_left"));
             }
 
             return state.setAndContinue(USE_ITEM_LEFT);
         } else if (movement.bite && !movement.dig || animationTickTimer.getDuration("bite") > 0) {
             if (animationTickTimer.getDuration("bite") <= 0) {
                 movement.bite = false;
-                animationTickTimer.putAnimation("bite", 0.44 * 20);
+                animationTickTimer.putAnimation("bite", animationDuration(player, "bite"));
             }
 
             return state.setAndContinue(BITE);
