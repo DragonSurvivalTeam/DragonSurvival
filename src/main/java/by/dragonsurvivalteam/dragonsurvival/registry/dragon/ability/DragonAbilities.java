@@ -16,15 +16,16 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.Dura
 import by.dragonsurvivalteam.dragonsurvival.common.conditions.EntityCondition;
 import by.dragonsurvivalteam.dragonsurvival.common.conditions.ItemCondition;
 import by.dragonsurvivalteam.dragonsurvival.common.conditions.MatchItem;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.CaveDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.ForestDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.SeaDragonAbilities;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.BlockConversionEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.SummonEntityEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.GlowEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.ModifierEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.SmeltItemEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AbilityTargeting;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AreaTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.DiscTarget;
@@ -34,13 +35,13 @@ import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Vec3i;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.util.random.WeightedRandomList;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -69,6 +70,10 @@ public class DragonAbilities {
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "Summons some entities")
     @Translation(type = Translation.Type.ABILITY, comments = "Summon Test")
     public static final ResourceKey<DragonAbility> TEST_SUMMON = DragonAbilities.key("test_summon");
+
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "Tests smelting")
+    @Translation(type = Translation.Type.ABILITY, comments = "Smelting Test")
+    public static final ResourceKey<DragonAbility> TEST_SMELTING = DragonAbilities.key("test_smelting");
 
     public static void registerAbilities(final BootstrapContext<DragonAbility> context) {
         CaveDragonAbilities.registerAbilities(context);
@@ -149,10 +154,27 @@ public class DragonAbilities {
 //                                        true
 //                                )
 //                        )), LevelBasedValue.constant(16)), LevelBasedValue.constant(1)),
+//                        new ActionContainer(new AreaTarget(AbilityTargeting.block(List.of(
+//                                new SummonEntityEffect(
+//                                        DurationInstanceBase.create(DragonSurvival.res("summon_test")).duration(LevelBasedValue.constant(Functions.secondsToTicks(60))).hidden().build(),
+//                                        Either.right(context.lookup(Registries.ENTITY_TYPE).getOrThrow(DSEntityTypeTags.HUNTER_FACTION)),
+//                                        LevelBasedValue.constant(5),
+//                                        List.of(),
+//                                        true
+//                                )
+//                        )), LevelBasedValue.constant(12)), LevelBasedValue.constant(1)),
                         new ActionContainer(new AreaTarget(AbilityTargeting.block(List.of(
                                 new SummonEntityEffect(
                                         DurationInstanceBase.create(DragonSurvival.res("summon_test")).duration(LevelBasedValue.constant(Functions.secondsToTicks(60))).hidden().build(),
-                                        Either.right(context.lookup(Registries.ENTITY_TYPE).getOrThrow(DSEntityTypeTags.HUNTER_FACTION)),
+                                        Either.left(SimpleWeightedRandomList.<EntityType<?>>builder()
+                                                .add(DSEntities.HUNTER_HOUND.value(), 30)
+                                                .add(DSEntities.HUNTER_GRIFFIN.value(), 30)
+                                                .add(DSEntities.HUNTER_SPEARMAN.value(), 20)
+                                                .add(DSEntities.HUNTER_AMBUSHER.value(), 20)
+                                                .add(DSEntities.HUNTER_KNIGHT.value(), 10)
+                                                .add(DSEntities.HUNTER_LEADER.value(), 5)
+                                                .build()
+                                        ),
                                         LevelBasedValue.constant(5),
                                         List.of(),
                                         true
@@ -163,6 +185,29 @@ public class DragonAbilities {
                                 List.of(Modifier.constant(Attributes.ARMOR, 3, AttributeModifier.Operation.ADD_VALUE))
                         )), TargetingMode.ALLIES_AND_SELF)), LevelBasedValue.constant(1))
                 ),
+                true,
+                new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
+        ));
+
+        context.register(TEST_SMELTING, new DragonAbility(
+                new Activation(
+                        Activation.Type.ACTIVE_SIMPLE,
+                        Optional.of(LevelBasedValue.constant(1)),
+                        Optional.empty(),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(3))),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
+                        false,
+                        Activation.Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
+                        Activation.Animations.create()
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MASS_BUFF, AnimationLayer.BASE).transitionLength(2).locksNeck().locksTail().build())
+                                .end(SimpleAbilityAnimation.create(AnimationKey.MASS_BUFF, AnimationLayer.BASE).locksNeck().locksTail().build())
+                                .optional()
+                ),
+                Optional.empty(),
+                Optional.empty(),
+                List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(Condition.thisEntity(EntityCondition.isItem()).build(), List.of(
+                        new SmeltItemEffect(Optional.empty(), LevelBasedValue.constant(1), true)
+                ), TargetingMode.ALL), LevelBasedValue.constant(12)), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
         ));

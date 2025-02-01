@@ -24,7 +24,7 @@ import java.util.function.Function;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public interface AbilityEntityEffect {
-    ResourceKey<Registry<MapCodec<? extends AbilityEntityEffect>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("ability_entity_effects"));
+    ResourceKey<Registry<MapCodec<? extends AbilityEntityEffect>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("ability_entity_effect"));
     Registry<MapCodec<? extends AbilityEntityEffect>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();
 
     Codec<AbilityEntityEffect> CODEC = REGISTRY.byNameCodec().dispatch("effect_type", AbilityEntityEffect::entityCodec, Function.identity());
@@ -64,6 +64,7 @@ public interface AbilityEntityEffect {
             event.register(REGISTRY_KEY, DragonSurvival.res("oxygen_bonus"), () -> OxygenBonusEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("block_vision"), () -> BlockVisionEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("run_function"), () -> RunFunctionEffect.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("smelting"), () -> SmeltItemEffect.CODEC);
         }
     }
 }

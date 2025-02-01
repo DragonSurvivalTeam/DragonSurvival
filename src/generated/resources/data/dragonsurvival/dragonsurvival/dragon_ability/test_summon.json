@@ -1,0 +1,122 @@
+{
+  "actions": [
+    {
+      "target_selection": {
+        "applied_effects": {
+          "block_effect": [
+            {
+              "base": {
+                "duration": 1200.0,
+                "id": "dragonsurvival:summon_test",
+                "is_hidden": true
+              },
+              "effect_type": "dragonsurvival:summon_entity",
+              "entities": [
+                {
+                  "data": "dragonsurvival:hunter_hound",
+                  "weight": 30
+                },
+                {
+                  "data": "dragonsurvival:hunter_griffin",
+                  "weight": 30
+                },
+                {
+                  "data": "dragonsurvival:hunter_spearman",
+                  "weight": 20
+                },
+                {
+                  "data": "dragonsurvival:hunter_ambusher",
+                  "weight": 20
+                },
+                {
+                  "data": "dragonsurvival:hunter_knight",
+                  "weight": 10
+                },
+                {
+                  "data": "dragonsurvival:hunter_leader",
+                  "weight": 5
+                }
+              ],
+              "max_summons": 5.0
+            }
+          ]
+        },
+        "radius": 12.0,
+        "target_type": "dragonsurvival:area"
+      },
+      "trigger_rate": 1.0
+    },
+    {
+      "target_selection": {
+        "applied_effects": {
+          "entity_effect": [
+            {
+              "effect_type": "dragonsurvival:modifier",
+              "modifiers": [
+                {
+                  "base": {
+                    "duration": 1200.0,
+                    "id": "dragonsurvival:summon_test"
+                  },
+                  "modifiers": [
+                    {
+                      "amount": 3.0,
+                      "attribute": "minecraft:generic.armor",
+                      "operation": "add_value"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "targeting_mode": "allies_and_self"
+        },
+        "target_type": "dragonsurvival:self"
+      },
+      "trigger_rate": 1.0
+    }
+  ],
+  "activation": {
+    "type": "active_simple",
+    "animations": {
+      "end": {
+        "animation_key": "mass_buff",
+        "layer": "BASE",
+        "locks_neck": true,
+        "locks_tail": true
+      },
+      "start_and_charging": {
+        "animation_key": "cast_mass_buff",
+        "layer": "BASE",
+        "locks_neck": true,
+        "locks_tail": true,
+        "transition_length": 2
+      }
+    },
+    "can_move_while_casting": false,
+    "cast_time": 60.0,
+    "cooldown": 600.0,
+    "initial_mana_cost": 1.0,
+    "sound": {
+      "end": "minecraft:ui.toast.in"
+    }
+  },
+  "icon": {
+    "texture_entries": [
+      {
+        "from_level": 0,
+        "texture_resource": "dragonsurvival:test"
+      }
+    ]
+  },
+  "usage_blocked": {
+    "condition": "minecraft:inverted",
+    "term": {
+      "condition": "dragonsurvival:match_item",
+      "predicate": {
+        "items": "minecraft:map"
+      },
+      "slot": "offhand"
+    }
+  }
+}

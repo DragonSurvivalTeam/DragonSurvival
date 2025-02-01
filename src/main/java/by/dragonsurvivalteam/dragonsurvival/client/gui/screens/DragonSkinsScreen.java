@@ -60,6 +60,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Random;
 import java.util.function.Supplier;
 
@@ -218,7 +219,7 @@ public class DragonSkinsScreen extends Screen {
             if(!DragonSkins.fetchHasFailed(playerName, dragonStage.getKey()) || Objects.equals(playerName, minecraft.player.getGameProfile().getName())) {
                 if (handler.stage() == null) {
                     boolean alreadyUsingDefaults = handler.getCurrentSkinPreset().isStageUsingDefaultSkin(dragonStage.getKey());
-                    handler.setSize(null, handler.species().value().getStartingSize(minecraft.player.registryAccess()));
+                    handler.setGrowth(null, handler.species().value().getStartingGrowth(minecraft.player.registryAccess()));
                     handler.setCurrentStageCustomization(DragonStateProvider.getData(minecraft.player).getCustomizationForStage(dragonStage.getKey()));
                     handler.getCurrentSkinPreset().setAllStagesToUseDefaultSkin(alreadyUsingDefaults);
                     DragonSkinsScreen.dragonStage = handler.stage();
@@ -433,19 +434,29 @@ public class DragonSkinsScreen extends Screen {
 
             skins.removeIf(pair -> SEEN_SKINS.contains(pair.second));
 
-            if (!skins.isEmpty()) {
-                Pair<ResourceKey<DragonStage>, String> skin = skins.get(random.nextInt(skins.size()));
+            while (!skins.isEmpty()) {
+                Pair<ResourceKey<DragonStage>, String> skin = skins.remove(random.nextInt(skins.size()));
 
-                if (skin != null) {
-                    dragonStage = Objects.requireNonNull(player).registryAccess().holderOrThrow(skin.first);
-                    playerName = skin.second;
-
-                    SEEN_SKINS.add(skin.second);
-
-                    if (SEEN_SKINS.size() >= users.size() / 2) {
-                        SEEN_SKINS.removeFirst();
-                    }
+                if (skin == null) {
+                    continue;
                 }
+
+                Optional<Holder.Reference<DragonStage>> stage = player.registryAccess().holder(skin.first);
+
+                if (stage.isEmpty()) {
+                    continue;
+                }
+
+                dragonStage = stage.get();
+                playerName = skin.second;
+
+                SEEN_SKINS.add(skin.second);
+
+                if (SEEN_SKINS.size() >= users.size() / 2) {
+                    SEEN_SKINS.removeFirst();
+                }
+
+                break;
             }
         });
         randomSkinButton.setTooltip(Tooltip.create(Component.translatable(RANDOM_INFO)));

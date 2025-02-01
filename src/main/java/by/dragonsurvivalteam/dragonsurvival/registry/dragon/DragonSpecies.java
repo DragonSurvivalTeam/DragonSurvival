@@ -10,6 +10,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.ItemBlacklis
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -36,11 +37,8 @@ public class DragonSpecies implements AttributeModifierSupplier {
     public static final ResourceKey<Registry<DragonSpecies>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_species"));
 
     public static final Codec<DragonSpecies> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            // TODO :: validate size
-            Codec.DOUBLE.optionalFieldOf("starting_size").forGetter(DragonSpecies::startingSize),
-            // No defined stages means all are applicable
+            Codec.DOUBLE.validate(value -> value >= 1 ? DataResult.success(value) : DataResult.error(() -> "Starting growth must be at least 1")).optionalFieldOf("starting_growth").forGetter(DragonSpecies::startingGrowth),
             RegistryCodecs.homogeneousList(DragonStage.REGISTRY).optionalFieldOf("custom_stage_progression").forGetter(DragonSpecies::stages),
-            // No defined bodies means all are applicable
             RegistryCodecs.homogeneousList(DragonBody.REGISTRY).optionalFieldOf("bodies", HolderSet.empty()).forGetter(DragonSpecies::bodies),
             RegistryCodecs.homogeneousList(DragonAbility.REGISTRY).optionalFieldOf("abilities", HolderSet.empty()).forGetter(DragonSpecies::abilities),
             RegistryCodecs.homogeneousList(DragonPenalty.REGISTRY).optionalFieldOf("penalties", HolderSet.empty()).forGetter(DragonSpecies::penalties),
@@ -50,15 +48,15 @@ public class DragonSpecies implements AttributeModifierSupplier {
     public static final Codec<Holder<DragonSpecies>> CODEC = RegistryFixedCodec.create(REGISTRY);
     public static final StreamCodec<RegistryFriendlyByteBuf, Holder<DragonSpecies>> STREAM_CODEC = ByteBufCodecs.holderRegistry(REGISTRY);
 
-    private final Optional<Double> startingSize;
+    private final Optional<Double> startingGrowth;
     private final Optional<HolderSet<DragonStage>> customStageProgression;
     private final HolderSet<DragonBody> bodies;
     private final HolderSet<DragonAbility> abilities;
     private final HolderSet<DragonPenalty> penalties;
     private final MiscResources miscResources;
 
-    public DragonSpecies(final Optional<Double> startingSize, final Optional<HolderSet<DragonStage>> customStageProgression, final HolderSet<DragonBody> bodies, final HolderSet<DragonAbility> abilities, final HolderSet<DragonPenalty> penalties, final MiscResources miscResources) {
-        this.startingSize = startingSize;
+    public DragonSpecies(final Optional<Double> startingGrowth, final Optional<HolderSet<DragonStage>> customStageProgression, final HolderSet<DragonBody> bodies, final HolderSet<DragonAbility> abilities, final HolderSet<DragonPenalty> penalties, final MiscResources miscResources) {
+        this.startingGrowth = startingGrowth;
         this.customStageProgression = customStageProgression;
         this.bodies = bodies;
         this.abilities = abilities;
@@ -75,7 +73,7 @@ public class DragonSpecies implements AttributeModifierSupplier {
             Holder.Reference<DragonSpecies> type = ResourceHelper.get(provider, key).get();
 
             if (type.value().stages().isPresent()) {
-                if (!DragonStage.stagesHaveContinuousSizeRange(type.value().stages().get(), validationError, false)) {
+                if (!DragonStage.areStagesConnected(type.value().stages().get(), validationError, false)) {
                     areTypesValid.set(false);
                 }
             }
@@ -108,22 +106,22 @@ public class DragonSpecies implements AttributeModifierSupplier {
 
     /**
      * Returns the configured starting size or the smallest size of the configured stages <br>
-     * If no configured stages are present it will return the smallest size of the default stages
+     * If no configured stages are present it will return the smallest growth of the default stages
      */
-    public double getStartingSize(@Nullable final HolderLookup.Provider provider) {
-        return startingSize.orElseGet(() -> DragonStage.getStartingSize(getStages(provider)));
+    public double getStartingGrowth(@Nullable final HolderLookup.Provider provider) {
+        return startingGrowth.orElseGet(() -> DragonStage.getStartingGrowth(getStages(provider)));
     }
 
     public Holder<DragonStage> getStartingStage(@Nullable final HolderLookup.Provider provider) {
-        return DragonStage.get(getStages(provider), getStartingSize(provider));
+        return DragonStage.get(getStages(provider), getStartingGrowth(provider));
     }
 
     public HolderSet<DragonStage> getStages(@Nullable final HolderLookup.Provider provider) {
         return customStageProgression.orElseGet(() -> DragonStage.getDefaultStages(provider));
     }
 
-    public Optional<Double> startingSize() {
-        return startingSize;
+    public Optional<Double> startingGrowth() {
+        return startingGrowth;
     }
 
     public Optional<HolderSet<DragonStage>> stages() {

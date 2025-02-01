@@ -82,11 +82,11 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
     private static final String CURRENT_AMOUNT = Translation.Type.GUI.wrap("summon_entity_effect.current_amount");
 
     public static final MapCodec<SummonEntityEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-                    DurationInstanceBase.CODEC.fieldOf("duration").forGetter(identity -> identity),
+                    DurationInstanceBase.CODEC.fieldOf("base").forGetter(identity -> identity),
                     Codec.either(SimpleWeightedRandomList.wrappedCodec(BuiltInRegistries.ENTITY_TYPE.byNameCodec()), RegistryCodecs.homogeneousList(Registries.ENTITY_TYPE)).fieldOf("entities").forGetter(SummonEntityEffect::entities),
                     LevelBasedValue.CODEC.fieldOf("max_summons").forGetter(SummonEntityEffect::maxSummons),
                     AttributeScale.CODEC.listOf().optionalFieldOf("attribute_scales", List.of()).forGetter(SummonEntityEffect::attributeScales),
-                    Codec.BOOL.optionalFieldOf("should_set_allied", true).forGetter(SummonEntityEffect::shouldSetAllied)
+                    Codec.BOOL.optionalFieldOf("is_allied", true).forGetter(SummonEntityEffect::isAllied)
             ).apply(instance, SummonEntityEffect::new)
     );
 
@@ -113,14 +113,14 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
     private final Either<SimpleWeightedRandomList<EntityType<?>>, HolderSet<EntityType<?>>> entities;
     private final LevelBasedValue maxSummons;
     private final List<AttributeScale> attributeScales;
-    private final boolean shouldSetAllied;
+    private final boolean isAllied;
 
-    public SummonEntityEffect(final DurationInstanceBase<?, ?> base, final Either<SimpleWeightedRandomList<EntityType<?>>, HolderSet<EntityType<?>>> entities, final LevelBasedValue maxSummons, final List<AttributeScale> attributeScales, final boolean shouldSetAllied) {
+    public SummonEntityEffect(final DurationInstanceBase<?, ?> base, final Either<SimpleWeightedRandomList<EntityType<?>>, HolderSet<EntityType<?>>> entities, final LevelBasedValue maxSummons, final List<AttributeScale> attributeScales, final boolean isAllied) {
         super(base);
         this.entities = entities;
         this.maxSummons = maxSummons;
         this.attributeScales = attributeScales;
-        this.shouldSetAllied = shouldSetAllied;
+        this.isAllied = isAllied;
     }
 
     @Override
@@ -215,8 +215,8 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
         return attributeScales;
     }
 
-    public boolean shouldSetAllied() {
-        return shouldSetAllied;
+    public boolean isAllied() {
+        return isAllied;
     }
 
     @Override
@@ -347,7 +347,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
 
             SummonData summon = entity.getData(DSDataAttachments.SUMMON);
             summon.setOwnerUUID(storageHolder);
-            summon.isAllied = baseData().shouldSetAllied();
+            summon.isAllied = baseData().isAllied();
             summon.attackBehaviour = summonData.attackBehaviour;
             summon.movementBehaviour = summonData.movementBehaviour;
 
@@ -356,7 +356,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
         }
 
         private void setAllied(final ServerPlayer dragon, final Entity entity) {
-            if (!baseData().shouldSetAllied()) {
+            if (!baseData().isAllied()) {
                 return;
             }
 

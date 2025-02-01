@@ -40,18 +40,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public record DragonStage(
         boolean isDefault,
-        MiscCodecs.Bounds sizeRange,
+        MiscCodecs.Bounds growthRange,
         int ticksUntilGrown,
         List<Modifier> modifiers,
         List<GrowthItem> growthItems,
         Optional<EntityPredicate> isNaturalGrowthStopped,
         Optional<MiscCodecs.DestructionData> destructionData
 ) implements AttributeModifierSupplier {
-    public static final ResourceKey<Registry<DragonStage>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_stages"));
+    public static final ResourceKey<Registry<DragonStage>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_stage"));
 
     public static final Codec<DragonStage> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.BOOL.optionalFieldOf("is_default", false).forGetter(DragonStage::isDefault),
-            MiscCodecs.bounds().fieldOf("size_range").forGetter(DragonStage::sizeRange),
+            MiscCodecs.bounds().fieldOf("growth_range").forGetter(DragonStage::growthRange),
             ExtraCodecs.intRange(Functions.secondsToTicks(1), Functions.daysToTicks(365)).fieldOf("ticks_until_grown").forGetter(DragonStage::ticksUntilGrown),
             Modifier.CODEC.listOf().optionalFieldOf("modifiers", List.of()).forGetter(DragonStage::modifiers),
             GrowthItem.CODEC.listOf().optionalFieldOf("growth_items", List.of()).forGetter(DragonStage::growthItems),
@@ -64,13 +64,13 @@ public record DragonStage(
 
     private static @Nullable HolderSet<DragonStage> defaultStages;
 
-    private static double minSize;
-    private static double maxSize;
+    private static double minGrowth;
+    private static double maxGrowth;
 
     public static void update(final RegistryAccess access) {
-        Pair<Double, Double> sizes = getSizes(access);
-        minSize = sizes.getFirst();
-        maxSize = sizes.getSecond();
+        Pair<Double, Double> sizes = calculateGrowthBounds(access);
+        minGrowth = sizes.getFirst();
+        maxGrowth = sizes.getSecond();
         defaultStages = null;
 
         validate(access);
@@ -96,28 +96,28 @@ public record DragonStage(
             //noinspection OptionalGetWithoutIsPresent -> ignore
             Holder.Reference<DragonStage> stage = ResourceHelper.get(access, key).get();
 
-            // Validate that the block destruction size and the crushing size are within the bounds of the current dragon stage
+            // Validate that the block destruction growth and the crushing growth are within the bounds of the current dragon stage
             if (stage.value().destructionData().isPresent()) {
                 MiscCodecs.DestructionData destructionData = stage.value().destructionData().get();
 
-                if (destructionData.blockDestructionSize() > stage.value().sizeRange().max() || destructionData.blockDestructionSize() < stage.value().sizeRange().min()) {
-                    validationError.append("\n- Block destruction size of [").append(key.location()).append("] is not within the bounds of the dragon stage");
+                if (destructionData.blockDestructionGrowth() > stage.value().growthRange().max() || destructionData.blockDestructionGrowth() < stage.value().growthRange().min()) {
+                    validationError.append("\n- Block destruction growth of [").append(key.location()).append("] is not within the bounds of the dragon stage");
                     areStagesValid.set(false);
                 }
 
-                if (destructionData.crushingSize() > stage.value().sizeRange().max() || destructionData.crushingSize() < stage.value().sizeRange().min()) {
-                    validationError.append("\n- Crushing size of [").append(key.location()).append("] is not within the bounds of the dragon stage");
+                if (destructionData.crushingGrowth() > stage.value().growthRange().max() || destructionData.crushingGrowth() < stage.value().growthRange().min()) {
+                    validationError.append("\n- Crushing growth of [").append(key.location()).append("] is not within the bounds of the dragon stage");
                     areStagesValid.set(false);
                 }
             }
         });
 
-        // Validate that the default stages have a connected size range
+        // Validate that the default stages have a connected growth range
         HolderSet<DragonStage> defaultStages = getDefaultStages(access);
-        // Sort the default stages by size range
-        HolderSet<DragonStage> sortedDefaultStages = HolderSet.direct(defaultStages.stream().sorted(Comparator.comparingDouble(stage -> stage.value().sizeRange().min())).toList());
+        // Sort the default stages by growth range
+        HolderSet<DragonStage> sortedDefaultStages = HolderSet.direct(defaultStages.stream().sorted(Comparator.comparingDouble(stage -> stage.value().growthRange().min())).toList());
 
-        if (!stagesHaveContinuousSizeRange(sortedDefaultStages, validationError, true)) {
+        if (!areStagesConnected(sortedDefaultStages, validationError, true)) {
             areStagesValid.set(false);
         }
 
@@ -126,10 +126,11 @@ public record DragonStage(
         }
     }
 
+    /** Checks if the max. growth of each stage lines up with the min. growth of the next stage */
     @SuppressWarnings("BooleanMethodIsAlwaysInverted") // ignore for clarity
-    public static boolean stagesHaveContinuousSizeRange(final HolderSet<DragonStage> sortedStages, final StringBuilder error, boolean isForDefaultStages) {
+    public static boolean areStagesConnected(final HolderSet<DragonStage> sortedStages, final StringBuilder error, boolean isForDefaultStages) {
         for (int i = 0; i < sortedStages.size() - 1; i++) {
-            if (sortedStages.get(i).value().sizeRange().max() != sortedStages.get(i + 1).value().sizeRange().min()) {
+            if (sortedStages.get(i).value().growthRange().max() != sortedStages.get(i + 1).value().growthRange().min()) {
                 error.append(isForDefaultStages ? "\n- Default stages [" : "\n- Stages [").append(sortedStages.get(i).getRegisteredName()).append("] and [").append(sortedStages.get(i + 1).getRegisteredName()).append("] are not connected");
                 return false;
             }
@@ -149,12 +150,12 @@ public record DragonStage(
         }
     }
 
-    public double ticksToSize(int ticks) {
-        return (sizeRange().max() - sizeRange().min()) / ticksUntilGrown() * ticks;
+    public double ticksToGrowth(int ticks) {
+        return (growthRange().max() - growthRange().min()) / ticksUntilGrown() * ticks;
     }
 
-    public double getProgress(double size) {
-        return ((size - sizeRange().min())) / (sizeRange().max() - sizeRange().min());
+    public double getProgress(double growth) {
+        return ((growth - growthRange().min())) / (growthRange().max() - growthRange().min());
     }
 
     @SubscribeEvent
@@ -166,45 +167,45 @@ public record DragonStage(
         return Component.translatable(Translation.Type.STAGE.wrap(dragonStage.location()));
     }
 
-    public double getBoundedSize(double size) {
-        return Math.clamp(size, sizeRange().min(), sizeRange().max());
+    public double getBoundedGrowth(double growth) {
+        return Math.clamp(growth, growthRange().min(), growthRange().max());
     }
 
-    /** Returns the bounds between the smallest and largest dragon sizes */
+    /** Returns the bounds between the smallest and largest dragon growth */
     public static MiscCodecs.Bounds getBounds() {
-        return new MiscCodecs.Bounds(minSize, maxSize);
+        return new MiscCodecs.Bounds(minGrowth, maxGrowth);
     }
 
-    public static double getStartingSize(final HolderSet<DragonStage> stages) {
-        return stages.stream().min(Comparator.comparingDouble(stage -> stage.value().sizeRange().min()))
-                .map(stage -> stage.value().sizeRange().min()).orElse(DragonStateHandler.NO_SIZE);
+    public static double getStartingGrowth(final HolderSet<DragonStage> stages) {
+        return stages.stream().min(Comparator.comparingDouble(stage -> stage.value().growthRange().min()))
+                .map(stage -> stage.value().growthRange().min()).orElse(DragonStateHandler.NO_GROWTH);
     }
 
     /**
-     * Returns a stage from the provided set whose size range matches the provided size <br>
-     * It is not a match if the size equals to the max. size of the stage <br>
-     * (This is because if we provide such a size we usually want the next stage, not the current stage at max. size)
+     * Returns a stage from the provided set whose growth range matches the provided growth <br>
+     * It is not a match if the growth equals to the max. growth of the stage <br>
+     * (This is because if we provide such a growth we usually want the next stage, not the current stage at max. growth)
      */
-    public static Holder<DragonStage> get(final HolderSet<DragonStage> stages, double size) {
+    public static Holder<DragonStage> get(final HolderSet<DragonStage> stages, double growth) {
         Holder<DragonStage> smallest = null;
         Holder<DragonStage> largest = null;
 
         for (Holder<DragonStage> stage : stages) {
-            if (stage.value().sizeRange().matches(size) && stage.value().sizeRange().max() != size) {
+            if (stage.value().growthRange().matches(growth) && stage.value().growthRange().max() != growth) {
                 return stage;
             }
 
-            if (smallest == null || stage.value().sizeRange().min() < smallest.value().sizeRange().min()) {
+            if (smallest == null || stage.value().growthRange().min() < smallest.value().growthRange().min()) {
                 smallest = stage;
             }
 
-            if (largest == null || stage.value().sizeRange().min() > largest.value().sizeRange().min()) {
+            if (largest == null || stage.value().growthRange().min() > largest.value().growthRange().min()) {
                 largest = stage;
             }
         }
 
         //noinspection DataFlowIssue -> stage should not be null at this point
-        if (size <= smallest.value().sizeRange().min()) {
+        if (growth <= smallest.value().growthRange().min()) {
             return smallest;
         }
 
@@ -216,16 +217,16 @@ public record DragonStage(
      * If no size range matches either the smallest or largest stage will be returned <br>
      * (Depending on whose min. size is closer to the provided size)
      */
-    public static Holder<DragonStage> get(@Nullable final HolderLookup.Provider provider, double size) {
+    public static Holder<DragonStage> get(@Nullable final HolderLookup.Provider provider, double growth) {
         double fallbackDifference = Double.MAX_VALUE;
         Holder<DragonStage> fallback = null;
 
         for (Holder.Reference<DragonStage> level : ResourceHelper.all(provider, REGISTRY)) {
-            if (level.value().sizeRange().matches(size)) {
+            if (level.value().growthRange().matches(growth)) {
                 return level;
             }
 
-            double difference = Math.abs(level.value().sizeRange().min() - size);
+            double difference = Math.abs(level.value().growthRange().min() - growth);
 
             if (fallback == null || difference < fallbackDifference) {
                 fallbackDifference = difference;
@@ -234,29 +235,29 @@ public record DragonStage(
         }
 
         if (fallback != null) {
-            DragonSurvival.LOGGER.warn("No matching dragon level found for size [{}] - using [{}] as fallback", size, fallback.getRegisteredName());
+            DragonSurvival.LOGGER.warn("No matching dragon level found for size [{}] - using [{}] as fallback", growth, fallback.getRegisteredName());
             return fallback;
         }
 
-        throw new IllegalStateException("There is no valid dragon level for the supplied size [" + size + "]");
+        throw new IllegalStateException("There is no valid dragon level for the supplied growth [" + growth + "]");
     }
 
-    private static Pair<Double, Double> getSizes(@Nullable final HolderLookup.Provider provider) {
+    private static Pair<Double, Double> calculateGrowthBounds(@Nullable final HolderLookup.Provider provider) {
         DragonStage smallest = null;
         DragonStage largest = null;
 
         for (Holder.Reference<DragonStage> level : ResourceHelper.all(provider, REGISTRY)) {
-            if (smallest == null || level.value().sizeRange().min() < smallest.sizeRange().min()) {
+            if (smallest == null || level.value().growthRange().min() < smallest.growthRange().min()) {
                 smallest = level.value();
             }
 
-            if (largest == null || level.value().sizeRange().max() > largest.sizeRange().max()) {
+            if (largest == null || level.value().growthRange().max() > largest.growthRange().max()) {
                 largest = level.value();
             }
         }
 
         //noinspection DataFlowIssue -> stages should not be null
-        return Pair.of(smallest.sizeRange.min(), largest.sizeRange.max());
+        return Pair.of(smallest.growthRange.min(), largest.growthRange.max());
     }
 
     public static HolderSet<DragonStage> getDefaultStages(@Nullable final HolderLookup.Provider provider) {
@@ -274,8 +275,8 @@ public record DragonStage(
             return ageInformation + " (§4--:--:--§r)";
         }
 
-        double sizeToTicks = (sizeRange().max() - sizeRange().min()) / ticksUntilGrown();
-        double missingSize = sizeRange().max() - size;
+        double sizeToTicks = (growthRange().max() - growthRange().min()) / ticksUntilGrown();
+        double missingSize = growthRange().max() - size;
         Functions.Time time = Functions.Time.fromTicks((int) (missingSize / sizeToTicks));
 
         if (time.hasTime()) {

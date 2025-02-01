@@ -4,14 +4,10 @@ import by.dragonsurvivalteam.dragonsurvival.common.entity.creatures.AmbusherEnti
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
-import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigType;
-import by.dragonsurvivalteam.dragonsurvival.config.obj.Validation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
-import net.minecraft.world.entity.EntityType;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
-import java.util.List;
 
 public class ServerConfig {
     ServerConfig(final ModConfigSpec.Builder builder) {
@@ -73,6 +69,11 @@ public class ServerConfig {
     @ConfigOption(side = ConfigSide.SERVER, category = {"growth", "big_dragon"}, key = "crushing_interval")
     public static Integer crushingTickDelay = 20;
 
+    @ConfigRange(min = 0.0, max = 1.0)
+    @Translation(key = "crushing_size_ratio", type = Translation.Type.CONFIGURATION, comments = "The size ratio between the entity and the crusher for crushing to occur")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"growth", "big_dragon"}, key = "crushing_size_ratio")
+    public static Double crushingSizeRatio = 0.25;
+
     // --- Standard dragon scaling --- //
 
     @Translation(key = "save_growth_stage", type = Translation.Type.CONFIGURATION, comments = "If enabled the current growth will be saved for the current dragon species when changing types or reverting back to being a human")
@@ -95,21 +96,6 @@ public class ServerConfig {
     @Translation(key = "elder_dragon_heart_chance", type = Translation.Type.CONFIGURATION, comments = "Determines the chance (in %) of elder dragon hearts dropping from entities with a maximum health above 50")
     @ConfigOption(side = ConfigSide.SERVER, category = "drops", key = "elder_dragon_heart_chance")
     public static Double elderDragonHeartChance = 0.01;
-
-    @ConfigType(EntityType.class) // FIXME :: tag
-    @Translation(key = "dragon_heart_entity_list", type = Translation.Type.CONFIGURATION, comments = "Determines either which entities cannot drop dragon hearts or which entities are allowed to drop dragon hearts")
-    @ConfigOption(side = ConfigSide.SERVER, category = "drops", key = "dragon_heart_entity_list", validation = Validation.RESOURCE_LOCATION)
-    public static List<String> dragonHeartEntityList = List.of();
-
-    @ConfigType(EntityType.class) // FIXME :: tag
-    @Translation(key = "weak_dragon_heart_entity_list", type = Translation.Type.CONFIGURATION, comments = "Determines either which entities cannot drop weak dragon hearts or which entities are allowed to drop weak dragon hearts")
-    @ConfigOption(side = ConfigSide.SERVER, category = "drops", key = "weak_dragon_heart_entity_list", validation = Validation.RESOURCE_LOCATION)
-    public static List<String> weakDragonHeartEntityList = List.of();
-
-    @ConfigType(EntityType.class) // FIXME :: tag
-    @Translation(key = "elder_dragon_heart_entity_list", type = Translation.Type.CONFIGURATION, comments = "Determines either which entities cannot drop elder dragon hearts or which entities are allowed to drop elder dragon hearts")
-    @ConfigOption(side = ConfigSide.SERVER, category = "drops", key = "elder_dragon_heart_entity_list", validation = Validation.RESOURCE_LOCATION)
-    public static List<String> elderDragonHeartEntityList = List.of();
 
     @Translation(key = "dragon_heart_white_list", type = Translation.Type.CONFIGURATION, comments = "If enabled the entity list for dragon hearts acts as a whitelist - if disabled it acts as a blacklist")
     @ConfigOption(side = ConfigSide.SERVER, category = "drops", key = "dragon_heart_white_list")

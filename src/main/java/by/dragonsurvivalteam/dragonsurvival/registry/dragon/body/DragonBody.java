@@ -44,7 +44,7 @@ public record DragonBody(
         Optional<BackpackOffsets> backpackOffsets,
         Optional<ResourceLocation> defaultIcon
 ) implements AttributeModifierSupplier {
-    public static final ResourceKey<Registry<DragonBody>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_bodies"));
+    public static final ResourceKey<Registry<DragonBody>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_body"));
     public static final ResourceLocation DEFAULT_MODEL = DragonSurvival.res("dragon_model");
 
     public static final Codec<DragonBody> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -94,17 +94,16 @@ public record DragonBody(
         }
     }
     
-    public record BackpackOffsets(Vec3 pos_offset, Vec3 rot_offset, Vec3 scale) {
+    public record BackpackOffsets(Vec3 posOffset, Vec3 rotOffset, Vec3 scale) {
         public static final Codec<BackpackOffsets> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                Vec3.CODEC.optionalFieldOf("position_offset", Vec3.ZERO).forGetter(BackpackOffsets::pos_offset),
-                Vec3.CODEC.optionalFieldOf("rotation_offset", Vec3.ZERO).forGetter(BackpackOffsets::rot_offset),
+                Vec3.CODEC.optionalFieldOf("position_offset", Vec3.ZERO).forGetter(BackpackOffsets::posOffset),
+                Vec3.CODEC.optionalFieldOf("rotation_offset", Vec3.ZERO).forGetter(BackpackOffsets::rotOffset),
                 Vec3.CODEC.optionalFieldOf("scale", new Vec3(1, 1, 1)).forGetter(BackpackOffsets::scale)
         ).apply(instance, BackpackOffsets::new));
 
         public static BackpackOffsets of(final Vec3 pos_offset, final Vec3 rot_offset, final Vec3 scale) {
             return new BackpackOffsets(pos_offset, rot_offset, scale);
         }
-        
     }
 
     @SubscribeEvent

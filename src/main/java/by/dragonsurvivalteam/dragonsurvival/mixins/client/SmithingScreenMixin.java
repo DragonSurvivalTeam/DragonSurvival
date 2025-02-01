@@ -33,7 +33,7 @@ public abstract class SmithingScreenMixin {
             dragonSurvival$dragon.overrideUUIDWithLocalPlayerForTextureFetch = true;
             dragonSurvival$dragon.yBodyRot = 210.0F;
             dragonSurvival$dragon.setXRot(25.0F);
-            FakeClientPlayerUtils.getFakePlayer(1, handler).animationSupplier = () -> "sit_head_locked";
+            FakeClientPlayerUtils.getFakePlayer(1, handler).animationSupplier = () -> "sit";
         } else {
             dragonSurvival$dragon = null;
         }

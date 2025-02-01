@@ -6,14 +6,13 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBlockTags;
 import by.dragonsurvivalteam.dragonsurvival.util.BlockPosHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -24,22 +23,18 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 /** See {@link by.dragonsurvivalteam.dragonsurvival.client.handlers.DragonDestructionHandler} for client-specific handling */
 @EventBusSubscriber
 public class DragonDestructionHandler {
-    private static final float SIZE_RATIO = 4;
-
     private static int crushTickCounter;
     private static boolean isBreakingMultipleBlocks;
 
     private static void checkAndDestroyCollidingBlocks(final DragonStateHandler data, final PlayerTickEvent event, final AABB boundingBox) {
         MiscCodecs.DestructionData destructionData = data.stage().value().destructionData().orElse(null);
 
-        if (destructionData == null || !destructionData.isBlockDestructionAllowed(data.getSize())) {
+        if (destructionData == null || !destructionData.isBlockDestructionAllowed(data.getGrowth())) {
             return;
         }
 
         BlockPosHelper.betweenClosedCeil(boundingBox).forEach(position -> {
-            BlockState state = event.getEntity().level().getBlockState(position);
-
-            if (state.isAir() || !state.is(DSBlockTags.LARGE_DRAGON_DESTRUCTIBLE)) {
+            if (!destructionData.blockPredicate().test((ServerLevel)event.getEntity().level(), position)) {
                 return;
             }
 
@@ -93,7 +88,7 @@ public class DragonDestructionHandler {
 
         MiscCodecs.DestructionData destructionData = data.stage().value().destructionData().orElse(null);
 
-        if (destructionData == null || !destructionData.isDestructionAllowed(data.getSize())) {
+        if (destructionData == null || !destructionData.isDestructionAllowed(data.getGrowth())) {
             return;
         }
 
@@ -112,7 +107,7 @@ public class DragonDestructionHandler {
 
     private static void checkAndDamageCrushedEntities(DragonStateHandler data, ServerPlayer player, AABB boundingBox) {
         MiscCodecs.DestructionData destructionData = data.stage().value().destructionData().orElse(null);
-        if (destructionData == null || !destructionData.isCrushingAllowed(data.getSize())) {
+        if (destructionData == null || !destructionData.isCrushingAllowed(data.getGrowth())) {
             return;
         }
 
@@ -125,12 +120,14 @@ public class DragonDestructionHandler {
 
         for (LivingEntity entity : player.level().getNearbyEntities(LivingEntity.class, TargetingConditions.DEFAULT, player, feetBoundingBox)) {
             // If the entity being crushed is too big, don't damage it
-            if (entity.getBoundingBox().getSize() > boundingBox.getSize() / SIZE_RATIO) {
+            if (entity.getBoundingBox().getSize() > boundingBox.getSize() * ServerConfig.crushingSizeRatio) {
                 continue;
             }
 
-            entity.hurt(new DamageSource(DSDamageTypes.get(player.level(), DSDamageTypes.CRUSHED), player), (float) (data.getSize() * destructionData.crushingDamageScalar()));
-            crushTickCounter = ServerConfig.crushingTickDelay;
+            if (destructionData.entityPredicate().matches(player, entity)) {
+                entity.hurt(new DamageSource(DSDamageTypes.get(player.level(), DSDamageTypes.CRUSHED), player), (float) (data.getGrowth() * destructionData.crushingDamageScalar()));
+                crushTickCounter = ServerConfig.crushingTickDelay;
+            }
         }
     }
 }

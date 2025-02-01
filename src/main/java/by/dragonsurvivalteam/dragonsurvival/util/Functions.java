@@ -7,7 +7,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.nbt.DoubleTag;
-import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -17,7 +16,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.common.Tags;
@@ -250,28 +248,8 @@ public class Functions {
         return listtag;
     }
 
-    /**
-     * Returns a new NBTTagList filled with the specified floats
-     */
-    public static ListTag newFloatList(float... pNumbers) {
-        ListTag listtag = new ListTag();
-
-        for (float f : pNumbers) {
-            listtag.add(FloatTag.valueOf(f));
-        }
-
-        return listtag;
-    }
-
     public static int wrap(int value, int min, int max) {
         return value < min ? max : value > max ? min : value;
-    }
-
-    public static float getScale(final Player player, double size) {
-        // The formula is generated based on input / output pairs of various sizes which looked correct
-        // The three values can be used to fine-tune the dragon model with the hitbox across the different sizes
-        // 1 = middle-sized dragons / 2 = large dragons / 3 = small dragons
-        return (float) ((0.010 * Math.pow(size, 1.14) + 0.3) * player.getAttributeValue(Attributes.SCALE));
     }
 
     public static double getSunPosition(final Entity entity) {

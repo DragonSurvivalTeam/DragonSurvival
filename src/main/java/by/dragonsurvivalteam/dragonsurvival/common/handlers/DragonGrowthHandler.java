@@ -19,13 +19,12 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-
 @EventBusSubscriber(modid = DragonSurvival.MODID)
 public class DragonGrowthHandler {
-    @Translation(comments = "You have reached the largest size")
+    @Translation(comments = "You have reached the largest growth")
     private static final String REACHED_LARGEST = Translation.Type.GUI.wrap("system.reached_largest");
 
-    @Translation(comments = "You have reached the smallest size")
+    @Translation(comments = "You have reached the smallest growth")
     private static final String REACHED_SMALLEST = Translation.Type.GUI.wrap("system.reached_smallest");
 
     @SubscribeEvent
@@ -44,10 +43,10 @@ public class DragonGrowthHandler {
         }
 
         handler.incrementGrowthUses(event.getItemStack().getItem());
-        double oldSize = handler.getDesiredSize();
-        handler.setDesiredSize(player, handler.getDesiredSize() + growth);
+        double oldGrowth = handler.getDesiredGrowth();
+        handler.setDesiredGrowth(player, handler.getDesiredGrowth() + growth);
 
-        if (handler.getDesiredSize() == oldSize) {
+        if (handler.getDesiredGrowth() == oldGrowth) {
             player.sendSystemMessage(Component.translatable(growth > 0 ? REACHED_LARGEST : REACHED_SMALLEST).withStyle(ChatFormatting.RED));
             return;
         }
@@ -69,7 +68,7 @@ public class DragonGrowthHandler {
             }
         }
 
-        return handler.stage().value().ticksToSize(growth);
+        return handler.stage().value().ticksToGrowth(growth);
     }
 
     @SubscribeEvent
@@ -86,10 +85,10 @@ public class DragonGrowthHandler {
 
         if (serverPlayer.tickCount % getInterval() == 0) {
             DragonStage dragonStage = data.stage().value();
-            double oldSize = data.getDesiredSize();
-            data.setDesiredSize(serverPlayer, data.getDesiredSize() + dragonStage.ticksToSize(getInterval()));
+            double oldGrowth = data.getDesiredGrowth();
+            data.setDesiredGrowth(serverPlayer, data.getDesiredGrowth() + dragonStage.ticksToGrowth(getInterval()));
 
-            if (oldSize == data.getDesiredSize() || dragonStage.isNaturalGrowthStopped().map(condition -> condition.matches(serverPlayer.serverLevel(), serverPlayer.position(), serverPlayer)).orElse(false)) {
+            if (oldGrowth == data.getDesiredGrowth() || dragonStage.isNaturalGrowthStopped().map(condition -> condition.matches(serverPlayer.serverLevel(), serverPlayer.position(), serverPlayer)).orElse(false)) {
                 if (data.isGrowing) {
                     data.isGrowing = false;
                     PacketDistributor.sendToPlayer(serverPlayer, new SyncGrowthState(false));

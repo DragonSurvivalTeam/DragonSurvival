@@ -9,6 +9,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.DarkDragonArmorItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.LightDragonArmorItem;
+import by.dragonsurvivalteam.dragonsurvival.compat.car.CosmeticArmorReworkedHelper;
 import by.dragonsurvivalteam.dragonsurvival.compat.iris.InnerWrappedRenderType;
 import by.dragonsurvivalteam.dragonsurvival.compat.iris.LayeringStates;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
@@ -160,22 +161,22 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
 
         HashMap<EquipmentSlot, NativeImage> armorMasks = armorMasksPerModel.get(currentDragonModel);
 
-        for (EquipmentSlot slot : EquipmentSlot.values()) {
-            if (!armorMasks.containsKey(slot)) {
+        for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
+            if (!armorMasks.containsKey(equipmentSlot)) {
                 continue;
             }
 
-            ItemStack itemstack = player.getItemBySlot(slot);
-            ResourceLocation existingArmorLocation = generateArmorTextureResourceLocation(player, slot);
+            ItemStack stack = CosmeticArmorReworkedHelper.getItemVisibleInSlot(player, equipmentSlot);
+            ResourceLocation existingArmorLocation = generateArmorTextureResourceLocation(player, equipmentSlot);
             NativeImage armorImage = RenderingUtils.getImageFromResource(existingArmorLocation);
 
             // TODO: This will need to be significantly more flexible for 1.21.2 onwards (since anything can be considered armor)
-            if (itemstack.getItem() instanceof ArmorItem) {
+            if (stack.getItem() instanceof ArmorItem) {
                 if (armorImage == null) {
                     continue;
                 }
 
-                ArmorTrim trim = itemstack.get(DataComponents.TRIM);
+                ArmorTrim trim = stack.get(DataComponents.TRIM);
                 boolean hasTrim = false;
                 float[] trimBaseHSB = new float[3];
 
@@ -230,7 +231,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
                 float[] armorHSB = new float[3];
                 float[] trimHSB = new float[3];
                 float[] dyeHSB = new float[3];
-                DyedItemColor dyeColor = itemstack.get(DataComponents.DYED_COLOR);
+                DyedItemColor dyeColor = stack.get(DataComponents.DYED_COLOR);
 
                 if (dyeColor != null) {
                     Color armorDye = new Color(dyeColor.rgb());
@@ -248,7 +249,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
 
                 for (int x = 0; x < armorImage.getWidth(); x++) {
                     for (int y = 0; y < armorImage.getHeight(); y++) {
-                        if (armorMasks.get(slot).getPixelRGBA(x, y) == 0) {
+                        if (armorMasks.get(equipmentSlot).getPixelRGBA(x, y) == 0) {
                             continue;
                         }
 
@@ -366,12 +367,13 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
 
         armorTotal.append(DragonStateProvider.getData(player).getModel().toLanguageKey());
 
-        for (EquipmentSlot slot : EquipmentSlot.values()) {
-            if (!slot.isArmor()) {
+        for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
+            if (!equipmentSlot.isArmor()) {
                 continue;
             }
 
-            ItemStack stack = player.getItemBySlot(slot);
+            ItemStack stack = CosmeticArmorReworkedHelper.getItemVisibleInSlot(player, equipmentSlot);
+
             //noinspection DataFlowIssue -> key is present
             armorTotal.append(separator).append(separator).append(stack.getItemHolder().getKey().location().toLanguageKey());
 
@@ -396,7 +398,8 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
     }
 
     private static ResourceLocation generateArmorTextureResourceLocation(Player player, EquipmentSlot equipmentSlot) {
-        Item item = player.getItemBySlot(equipmentSlot).getItem();
+        ItemStack stack = CosmeticArmorReworkedHelper.getItemVisibleInSlot(player, equipmentSlot);
+        Item item = stack.getItem();
         DragonStateHandler handler = DragonStateProvider.getData(player);
         ResourceLocation armorResource = toArmorResource(handler.getModel(), item);
 

@@ -43,11 +43,10 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
             }
             return null;
         }, (bone, animatable) -> null));
-
-
-        if(Compat.isModLoaded("sophisticatedbackpacks"))
-            getRenderLayers().add(new DragonBackpackRenderLayer(this));
         
+        if(Compat.isModLoaded(Compat.SOPHISTICATED_BACKPACKS)) {
+            getRenderLayers().add(new DragonBackpackRenderLayer(this));
+        }
     }
 
     @Override

@@ -149,7 +149,7 @@ public class ServerFlightHandler {
                         return;
                     }
 
-                    double damage = verticalFlightSpeed * (handler.getSize() / 20);
+                    double damage = verticalFlightSpeed * (handler.getGrowth() / 20);
                     damage = Mth.clamp(damage, 0, livingEntity.getHealth() - 1);
 
                     // See Attributes.SAFE_FALL_DISTANCE

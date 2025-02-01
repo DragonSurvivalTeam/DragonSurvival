@@ -50,9 +50,6 @@ public class LangKey {
     @Translation(comments = "Hunger has exhausted you, and you can't fly.")
     public static final String MESSAGE_NO_HUNGER = Translation.Type.GUI.wrap("message.no_hunger");
 
-    @Translation(comments = "§8I'll get you to the islands with Ender Dragon magic if you feed me a pearl.")
-    public static final String MESSAGE_ANCHOR = Translation.Type.GUI.wrap("message.anchor");
-
     @Translation(comments = "■ Join our §6discord server§r!§7 Read the Rules, FAQ and Wiki before you ask anything.")
     public static final String DISCORD = Translation.Type.GUI.wrap("general.discord");
 
@@ -64,8 +61,8 @@ public class LangKey {
     @Translation(comments = "■ §6Age§r§7: %s")
     public static final String GROWTH_AGE = Translation.Type.GUI.wrap("handler.growth_age");
 
-    @Translation(comments = "■ §6Size§r§7: %s")
-    public static final String GROWTH_SIZE = Translation.Type.GUI.wrap("handler.growth_size");
+    @Translation(comments = "■ §6Growth§r§7: %s")
+    public static final String GROWTH_AMOUNT = Translation.Type.GUI.wrap("handler.growth_amount");
 
     @Translation(comments = {
             "\n■ All dragons will gradually grow as time passes, improving their attributes. At certain growth stages, your appearance will change, and your growth will slow.§r",
@@ -74,23 +71,23 @@ public class LangKey {
     })
     public static final String GROWTH_INFO = Translation.Type.GUI.wrap("handler.growth_info");
 
-    @Translation(comments = "§6Minimum Size§r§7: %s")
-    public static final String GROWTH_STARTING_SIZE = Translation.Type.GUI.wrap("handler.growth_starting_size");
+    @Translation(comments = "§6Minimum Growth§r§7: %s")
+    public static final String GROWTH_STARTING_AMOUNT = Translation.Type.GUI.wrap("handler.growth_starting_amount");
 
-    @Translation(comments = "§6Maximum Size§r§7: %s")
-    public static final String GROWTH_MAX_SIZE = Translation.Type.GUI.wrap("handler.growth_max_size");
+    @Translation(comments = "§6Maximum Growth§r§7: %s")
+    public static final String GROWTH_MAX_AMOUNT = Translation.Type.GUI.wrap("handler.growth_max_amount");
 
     @Translation(comments = "§6Time to Grow§r§7: %s")
     public static final String GROWTH_TIME = Translation.Type.GUI.wrap("handler.growth_time");
 
-    @Translation(comments = "§6Can destroy blocks at size§r§7: %s")
+    @Translation(comments = "§6Can destroy blocks at growth§r§7: %s")
     public static final String GROWTH_CAN_DESTROY_BLOCKS = Translation.Type.GUI.wrap("handler.growth_items");
 
-    @Translation(comments = "§6Can crush entities at size§r§7: %s")
+    @Translation(comments = "§6Can crush entities at growth§r§7: %s")
     public static final String GROWTH_CAN_CRUSH_ENTITIES = Translation.Type.GUI.wrap("handler.growth_can_crush_entities");
 
-    @Translation(comments = "\n§6--- Modifiers at max. size ---§r§7")
-    public static final String GROWTH_MODIFIERS_AT_MAX_SIZE = Translation.Type.GUI.wrap("handler.growth_modifiers_at_max_size");
+    @Translation(comments = "\n§6--- Modifiers at max. growth ---§r§7")
+    public static final String GROWTH_MODIFIERS_AT_MAX_GROWTH = Translation.Type.GUI.wrap("handler.growth_modifiers_at_max_growth");
 
     // --- Ability effects --- //
 
@@ -129,9 +126,6 @@ public class LangKey {
 
     @Translation(comments = "All blocks")
     public static final String ALL_BLOCKS = Translation.Type.GUI.wrap("ability.all_blocks");
-
-    @Translation(comments = "Various Blocks (%s)")
-    public static final String VARIOUS_BLOCKS = Translation.Type.GUI.wrap("ability.various_blocks");
 
     @Translation(comments = "None")
     public static final String NONE = Translation.Type.GUI.wrap("ability.none");

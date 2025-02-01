@@ -390,13 +390,13 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         UpgradeType<?> upgrade = ability.value().upgrade().orElse(null);
         DragonAbilityInstance instance;
 
-        InputData sizeInput = InputData.size((int) DragonStateProvider.getData(player).getSize());
+        InputData growthInput = InputData.growth((int) DragonStateProvider.getData(player).getGrowth());
 
         if (upgrade == null) {
             instance = new DragonAbilityInstance(ability, ability.value().getMaxLevel());
         } else {
             instance = new DragonAbilityInstance(ability, DragonAbilityInstance.MIN_LEVEL);
-            upgrade.attempt(player, instance, sizeInput);
+            upgrade.attempt(player, instance, growthInput);
         }
 
 
@@ -420,7 +420,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         }
 
         this.currentSpecies = currentSpecies.getKey();
-        InputData sizeInput = InputData.size((int) DragonStateProvider.getData(player).getSize());
+        InputData growthInput = InputData.growth((int) DragonStateProvider.getData(player).getGrowth());
 
         int slot = 0;
 
@@ -432,7 +432,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
                 instance = new DragonAbilityInstance(ability, ability.value().getMaxLevel());
             } else {
                 instance = new DragonAbilityInstance(ability, DragonAbilityInstance.MIN_LEVEL);
-                upgrade.attempt(player, instance, sizeInput);
+                upgrade.attempt(player, instance, growthInput);
             }
 
             if (slot < HOTBAR_SLOTS && !instance.isPassive()) {

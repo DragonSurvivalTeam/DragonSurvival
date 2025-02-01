@@ -13,13 +13,13 @@ public record InputData(Type type, Integer input) {
         return new InputData(Type.EXPERIENCE_LEVELS, experienceLevels);
     }
 
-    public static InputData size(int size) {
-        return new InputData(Type.SIZE, size);
+    public static InputData growth(int growth) {
+        return new InputData(Type.GROWTH, growth);
     }
 
     public enum Type implements StringRepresentable {
         EXPERIENCE_LEVELS("experience_levels"),
-        SIZE("size");
+        GROWTH("growth");
 
         public static final Codec<Type> CODEC = StringRepresentable.fromEnum(Type::values);
         private final String name;

@@ -38,7 +38,7 @@ public class GrowthCrystalButton extends ExtendedButton {
     public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         //noinspection DataFlowIssue -> player is present
         DragonStateHandler handler = DragonStateProvider.getData(Minecraft.getInstance().player);
-        double percentageFull = stage.value().getProgress(handler.getSize());
+        double percentageFull = stage.value().getProgress(handler.getGrowth());
 
         if (percentageFull > 1) {
             graphics.blit(handler.species().value().miscResources().growthCrystal().full(), getX(), getY(), 0, 0, width, height, 8, 16);
@@ -94,19 +94,19 @@ public class GrowthCrystalButton extends ExtendedButton {
         List<Component> components = new ArrayList<>();
 
         components.add(Component.translatable(LangKey.GROWTH_STAGE).append(DragonStage.translatableName(Objects.requireNonNull(stage.getKey()))));
-        components.add(Component.translatable(LangKey.GROWTH_STARTING_SIZE, stage.value().sizeRange().min()));
-        components.add(Component.translatable(LangKey.GROWTH_MAX_SIZE, stage.value().sizeRange().max()));
+        components.add(Component.translatable(LangKey.GROWTH_STARTING_AMOUNT, stage.value().growthRange().min()));
+        components.add(Component.translatable(LangKey.GROWTH_MAX_AMOUNT, stage.value().growthRange().max()));
         components.add(Component.translatable(LangKey.GROWTH_TIME, stage.value().getTimeToGrowFormatted(false)));
 
         stage.value().destructionData().ifPresent(data -> {
-            components.add(Component.translatable(LangKey.GROWTH_CAN_DESTROY_BLOCKS, data.blockDestructionSize()));
-            components.add(Component.translatable(LangKey.GROWTH_CAN_CRUSH_ENTITIES, data.crushingSize()));
+            components.add(Component.translatable(LangKey.GROWTH_CAN_DESTROY_BLOCKS, data.blockDestructionGrowth()));
+            components.add(Component.translatable(LangKey.GROWTH_CAN_CRUSH_ENTITIES, data.crushingGrowth()));
         });
 
-        components.add(Component.translatable(LangKey.GROWTH_MODIFIERS_AT_MAX_SIZE));
+        components.add(Component.translatable(LangKey.GROWTH_MODIFIERS_AT_MAX_GROWTH));
 
         for (Modifier modifier : stage.value().modifiers()) {
-            MutableComponent name = modifier.getFormattedDescription((int) stage.value().sizeRange().max(), true);
+            MutableComponent name = modifier.getFormattedDescription((int) stage.value().growthRange().max(), true);
             components.add(name);
         }
 

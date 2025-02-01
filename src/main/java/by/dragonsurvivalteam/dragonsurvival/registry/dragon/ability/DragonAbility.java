@@ -41,7 +41,7 @@ public record DragonAbility(
         boolean canBeManuallyDisabled,
         LevelBasedResource icon
 ) {
-    public static final ResourceKey<Registry<DragonAbility>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_abilities"));
+    public static final ResourceKey<Registry<DragonAbility>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_ability"));
 
     public static final Codec<DragonAbility> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Activation.codec().fieldOf("activation").forGetter(DragonAbility::activation),

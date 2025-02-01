@@ -7,13 +7,16 @@ import by.dragonsurvivalteam.dragonsurvival.common.conditions.EntityCondition;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBlockTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
+import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 
 import java.util.List;
 import java.util.Optional;
@@ -51,7 +54,7 @@ public class AncientDatapack {
                         GrowthItem.create(Functions.hoursToTicks(-1), DSItems.STAR_BONE.value())
                 ),
                 Optional.of(EntityCondition.defaultNaturalGrowthBlocker()),
-                Optional.of(new MiscCodecs.DestructionData(120, 120, 0.05))
+                Optional.of(new MiscCodecs.DestructionData(EntityPredicate.Builder.entity().build(), BlockPredicate.matchesTag(DSBlockTags.LARGE_DRAGON_DESTRUCTIBLE), 120, 120, 0.05))
         );
     }
 }

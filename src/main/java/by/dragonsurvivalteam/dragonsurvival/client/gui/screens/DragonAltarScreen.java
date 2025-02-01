@@ -234,7 +234,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                     FakeClientPlayerUtils.getFakePlayer(1, handler2).animationSupplier = () -> animations[Math.min(animation2, animations.length - 1)];
 
                     LivingEntity entity1;
-                    int entity1Scale = Math.clamp((int) handler1.getSize(), 20, 50);
+                    int entity1Scale = Math.clamp((int) handler1.getGrowth(), 20, 50);
 
                     if (handler1.isDragon()) {
                         entity1 = FakeClientPlayerUtils.getFakeDragon(0, handler1);
@@ -247,7 +247,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                     }
 
                     LivingEntity entity2;
-                    int entity2Scale = Math.clamp((int) handler2.getSize(), 20, 50);
+                    int entity2Scale = Math.clamp((int) handler2.getGrowth(), 20, 50);
 
                     if (handler2.isDragon()) {
                         entity2 = FakeClientPlayerUtils.getFakeDragon(1, handler2);
@@ -290,7 +290,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
             return;
         }
 
-        handler.setSize(null, handler.species().value().getStartingStage(null).value().sizeRange().max() - Shapes.EPSILON);
+        handler.setGrowth(null, handler.species().value().getStartingStage(null).value().growthRange().max() - Shapes.EPSILON);
 
         if (handler.body() == null) {
             handler.setBody(null, DragonBody.random(null, handler.species()));

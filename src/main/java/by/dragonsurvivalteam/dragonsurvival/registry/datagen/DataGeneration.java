@@ -62,9 +62,7 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
@@ -145,21 +143,11 @@ public class DataGeneration {
     @SubscribeEvent
     public static void addPackFinders(final AddPackFindersEvent event) {
         if (event.getPackType() == PackType.CLIENT_RESOURCES) {
-            HashMap<MutableComponent, String> resourcepacks = new HashMap<>();
-            resourcepacks.put(Component.literal("DS - Draconized Armor"), "resourcepacks/draconized_armor");
-            resourcepacks.put(Component.literal("DS - Dark GUI"), "resourcepacks/ds_dark_gui");
-
-            for (Map.Entry<MutableComponent, String> entry : resourcepacks.entrySet()) {
-                registerBuiltinResourcePack(event, entry.getKey(), entry.getValue());
-            }
+            registerBuiltinResourcePack(event, Component.literal("DS - Draconized Armor"), "resourcepacks/draconized_armor");
+            registerBuiltinResourcePack(event, Component.literal("DS - Dark GUI"), "resourcepacks/ds_dark_gui");
         } else if (event.getPackType() == PackType.SERVER_DATA) {
-            HashMap<MutableComponent, String> datapacks = new HashMap<>();
-            datapacks.put(Component.literal("DS - Ancient Dragons"), "data/" + DragonSurvival.MODID + "/datapacks/" + ANCIENT_STAGE_DATAPACK);
-            datapacks.put(Component.literal("DS - Unlock Wings"), "data/" + DragonSurvival.MODID + "/datapacks/" + UNLOCK_WINGS_DATAPACK);
-
-            for (Map.Entry<MutableComponent, String> entry : datapacks.entrySet()) {
-                registerBuiltInDataPack(event, entry.getKey(), entry.getValue());
-            }
+            registerBuiltInDataPack(event, Component.literal("DS - Ancient Dragons"), "data/" + DragonSurvival.MODID + "/datapacks/" + ANCIENT_STAGE_DATAPACK);
+            registerBuiltInDataPack(event, Component.literal("DS - Unlock Wings"), "data/" + DragonSurvival.MODID + "/datapacks/" + UNLOCK_WINGS_DATAPACK);
         }
     }
 

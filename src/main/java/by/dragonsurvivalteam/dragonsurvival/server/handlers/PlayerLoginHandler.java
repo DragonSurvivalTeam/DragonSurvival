@@ -67,7 +67,7 @@ public class PlayerLoginHandler {
         if (ServerConfig.noHumansAllowed && !handler.isDragon()) {
             handler.setSpecies(event.getEntity(), ResourceHelper.random(event.getEntity().registryAccess(), DragonSpecies.REGISTRY));
             handler.setBody(event.getEntity(), DragonBody.random(event.getEntity().registryAccess(), handler.species()));
-            handler.setSize(event.getEntity(), handler.species().value().getStartingSize(event.getEntity().registryAccess()));
+            handler.setGrowth(event.getEntity(), handler.species().value().getStartingGrowth(event.getEntity().registryAccess()));
         }
 
         syncComplete(event.getEntity());

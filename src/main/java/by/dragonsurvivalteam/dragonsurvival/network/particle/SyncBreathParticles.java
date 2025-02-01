@@ -15,13 +15,13 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record SyncBreathParticles(int playerId, float spread, float speedPerSize, int numParticles, ParticleOptions mainParticle, ParticleOptions secondaryParticle) implements CustomPacketPayload {
+public record SyncBreathParticles(int playerId, float spread, float speedPerGrowth, int numParticles, ParticleOptions mainParticle, ParticleOptions secondaryParticle) implements CustomPacketPayload {
     public static final Type<SyncBreathParticles> TYPE = new Type<>(DragonSurvival.res("sync_breath_particles"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncBreathParticles> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.INT, SyncBreathParticles::playerId,
             ByteBufCodecs.FLOAT, SyncBreathParticles::spread,
-            ByteBufCodecs.FLOAT, SyncBreathParticles::speedPerSize,
+            ByteBufCodecs.FLOAT, SyncBreathParticles::speedPerGrowth,
             ByteBufCodecs.INT, SyncBreathParticles::numParticles,
             ParticleTypes.STREAM_CODEC, SyncBreathParticles::mainParticle,
             ParticleTypes.STREAM_CODEC, SyncBreathParticles::secondaryParticle,
@@ -41,14 +41,14 @@ public record SyncBreathParticles(int playerId, float spread, float speedPerSize
                 DragonStateHandler handler = DragonStateProvider.getData(player);
 
                 if (handler.isDragon()) {
-                    positionOffset = handler.getSize() / 30;
-                    speedMultiplier = handler.getSize();
+                    positionOffset = handler.getGrowth() / 30;
+                    speedMultiplier = handler.getGrowth();
                 }
             }
 
             float yaw = (float) Math.toRadians(-entity.getYRot());
             float pitch = (float) Math.toRadians(-entity.getXRot());
-            float speed = (float) (packet.speedPerSize() * speedMultiplier);
+            float speed = (float) (packet.speedPerGrowth() * speedMultiplier);
 
             Vec3 eyePos = entity.getEyePosition();
             Vec3 lookAngle = entity.getLookAngle();

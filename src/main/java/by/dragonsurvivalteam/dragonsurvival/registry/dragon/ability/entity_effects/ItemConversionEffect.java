@@ -62,11 +62,11 @@ public record ItemConversionEffect(List<ItemConversionData> itemConversions, Lev
             return;
         }
 
-        if (dragon.getRandom().nextDouble() < probability().calculate(ability.level())) {
+        if (probability.calculate(ability.level()) < dragon.getRandom().nextDouble()) {
             return;
         }
 
-        if (itemConversions().isEmpty()) {
+        if (itemConversions.isEmpty()) {
             return;
         }
 
