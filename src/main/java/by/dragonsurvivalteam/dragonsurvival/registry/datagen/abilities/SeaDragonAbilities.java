@@ -73,7 +73,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.loot.predicates.AnyOfCondition;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.Tags;
@@ -281,7 +280,7 @@ public class SeaDragonAbilities {
                 ))
         ));
 
-        //noinspection DataFlowIssue,deprecation -> ignore
+        //noinspection DataFlowIssue -> ignore
         context.register(ORE_GLOW, new DragonAbility(
                 new Activation(
                         Activation.Type.ACTIVE_SIMPLE,
@@ -297,13 +296,11 @@ public class SeaDragonAbilities {
                                 .optional()
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 20f, 45f, 50f), LevelBasedValue.perLevel(35)))),
-                // Disable when not on ground
                 Optional.empty(),
                 List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(List.of(
-                        // TODO :: add emerald?
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("diamond_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(260))).hidden().build(),
-                                HolderSet.direct(Blocks.DIAMOND_ORE.builtInRegistryHolder(), Blocks.DEEPSLATE_DIAMOND_ORE.builtInRegistryHolder()),
+                                context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_DIAMOND),
                                 LevelBasedValue.constant(36),
                                 BlockVision.DisplayType.PARTICLES,
                                 List.of(

@@ -6,7 +6,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.EnchantmentTagsProvider;
-import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -52,13 +51,16 @@ public class DSEnchantmentTags extends EnchantmentTagsProvider {
     }
 
     private void addToVanillaTags() {
-        // Enchantments in this tag...
-        // - won't be enchanted on to random loot, traded equipment or equipment from spawned mobs
-        // - won't appear in the enchantment table
-        // - won't naturally appear in trades
-        // - double trade prices
-        // (these behaviours can be changed by adding them manually to other specific vanilla enchantment tags)
-        tag(EnchantmentTags.TREASURE).add(DSEnchantments.DRAGONSBONK);
+        /* Explanation about the tags:
+            - treasure: included in other tags
+            - non_treasure: included in other tags
+            - double_trade_price: contains 'treasure'
+            - in_enchanting_table: contains 'non_treasure'
+            - on_mob_spawn_equipment: contains 'non_treasure'
+            - on_trade_equipment: contains 'non_treasure'
+            - on_random_loot: contains 'non_treasure'
+            - tradeable: contains 'non_treasure'
+        */
     }
 
     private static TagKey<Enchantment> exclusiveSet(@NotNull final String path) {

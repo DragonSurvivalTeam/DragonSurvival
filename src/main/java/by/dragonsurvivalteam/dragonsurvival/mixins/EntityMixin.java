@@ -13,7 +13,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonedEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
+import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -58,13 +58,13 @@ public abstract class EntityMixin {
             // Handle dragon riding normal mounts (e.g. boats)
             // The vanilla player hitbox actually clips through most mounts, but the dragon player does not.
             // So we need to push it up such that it meets the point at which the vanilla player's actual model starts
-            return original.add(DragonBody.getMountingOffsetForEntity(mount));
+            return original.add(DragonRidingHandler.getMountingOffsetForEntity(mount));
         }
 
         return original;
     }
 
-    @ModifyReturnValue(method = "getPassengerRidingPosition", at = @At("RETURN"))
+    @ModifyReturnValue(method = "getPassengerRidingPosition", at = @At("RETURN")) // TODO :: might be enough to add our offset only to this one (since 'getPassengerAttachmentPoint' seems to only be called by it and nowhere else)
     protected Vec3 dragonSurvival$modifyPassengerRidingPosition(Vec3 original, @Local(argsOnly = true, index = 0) Entity entity) {
         Entity mount = (Entity) (Object) this;
         if (entity instanceof Player passenger && hasPassenger(passenger) && DragonStateProvider.isDragon(passenger) && !DragonStateProvider.isDragon(mount)) {
@@ -72,7 +72,7 @@ public abstract class EntityMixin {
             // Handle dragon riding normal mounts (e.g. boats)
             // The vanilla player hitbox actually clips through most mounts, but the dragon player does not.
             // So we need to push it up such that it meets the point at which the vanilla player's actual model starts
-            return original.add(DragonBody.getMountingOffsetForEntity(mount));
+            return original.add(DragonRidingHandler.getMountingOffsetForEntity(mount));
         }
 
         return original;
