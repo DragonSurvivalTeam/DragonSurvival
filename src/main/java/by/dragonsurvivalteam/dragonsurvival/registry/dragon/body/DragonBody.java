@@ -50,9 +50,8 @@ public record DragonBody(
     public static final ResourceKey<Registry<DragonBody>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_body"));
     public static final ResourceLocation DEFAULT_MODEL = DragonSurvival.res("dragon_model");
     // See dragonSurvival$modifyVehicleAttachmentPoint in EntityMixin
-    // TODO :: Probably should make some sort of system in the configs to allow for the user to define their own entities and offsets?
+    public static final Vec3 BASE_MOUNTING_OFFSET = new Vec3(0, 0.63, 0);
     public static final Vec3 BOAT_MOUNTING_OFFSET = new Vec3(0, 0.9, 0);
-    public static final Vec3 HORSE_MOUNTING_OFFSET = new Vec3(0, 1.3, 0);
 
     public static final Codec<DragonBody> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.BOOL.optionalFieldOf("is_default", false).forGetter(DragonBody::isDefault),
@@ -148,11 +147,10 @@ public record DragonBody(
 
     public static Vec3 getMountingOffsetForEntity(final Entity entity) {
         if(entity instanceof Boat) {
+            // If we used the base mounting offset here, you would touch the water as a cave dragon even when in a boat. So push them up a little further than normal
             return BOAT_MOUNTING_OFFSET;
-        } else if(entity instanceof AbstractHorse){
-            return HORSE_MOUNTING_OFFSET;
+        } else {
+            return BASE_MOUNTING_OFFSET;
         }
-
-        return Vec3.ZERO;
     }
 }
