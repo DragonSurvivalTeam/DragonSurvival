@@ -1,8 +1,8 @@
 package by.dragonsurvivalteam.dragonsurvival.compat.car;
 
-import lain.mods.cos.impl.inventory.InventoryCosArmor;
-import lain.mods.cos.api.CosArmorAPI;
 import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
+import lain.mods.cos.api.CosArmorAPI;
+import lain.mods.cos.impl.inventory.InventoryCosArmor;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
