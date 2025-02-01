@@ -30,6 +30,12 @@ public record SmeltItemEffect(Optional<ItemPredicate> itemPredicate, LevelBasedV
             return;
         }
 
+        ItemStack stack = itemEntity.getItem();
+
+        if (itemPredicate.map(predicate -> !predicate.test(stack)).orElse(false)) {
+            return;
+        }
+
         ItemData data = itemEntity.getData(DSDataAttachments.ITEM);
         data.smeltingProgress += progress.calculate(ability.level());
 
@@ -37,32 +43,30 @@ public record SmeltItemEffect(Optional<ItemPredicate> itemPredicate, LevelBasedV
             return;
         }
 
-        ItemStack stack = itemEntity.getItem();
+        dragon.level().getRecipeManager()
+                .getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(stack), dragon.level())
+                .ifPresent(recipe -> {
+                    ItemStack result = recipe.value().getResultItem(dragon.registryAccess());
 
-        if (itemPredicate.map(predicate -> predicate.test(stack)).orElse(true)) {
-            dragon.level().getRecipeManager()
-                    .getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(stack), dragon.level())
-                    .ifPresent(recipe -> {
-                        ItemStack result = recipe.value().getResultItem(dragon.registryAccess());
+                    if (result.isEmpty()) {
+                        return;
+                    }
 
-                        if (result.isEmpty()) {
-                            return;
-                        }
+                    // Result is amount of smelting 1 item - therefor calculate the actual resulting amount
+                    itemEntity.setItem(result.copyWithCount(stack.getCount() * result.getCount()));
 
-                        // Result is amount of smelting 1 item - therefor calculate the actual resulting amount
-                        itemEntity.setItem(result.copyWithCount(stack.getCount() * result.getCount()));
+                    if (!dropsExperience) {
+                        return;
+                    }
 
-                        if (!dropsExperience) {
-                            return;
-                        }
+                    float experience = recipe.value().getExperience() * stack.getCount();
 
-                        float experience = recipe.value().getExperience() * stack.getCount();
+                    if (experience > 0) {
+                        dragon.giveExperiencePoints((int) experience);
+                    }
+                });
 
-                        if (experience > 0) {
-                            dragon.giveExperiencePoints((int) experience);
-                        }
-                    });
-        }
+        data.smeltingProgress = 0;
     }
 
     @Override
