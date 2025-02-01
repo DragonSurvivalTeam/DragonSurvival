@@ -96,21 +96,6 @@ public class ServerConfig {
     @ConfigOption(side = ConfigSide.SERVER, category = "drops", key = "elder_dragon_heart_chance")
     public static Double elderDragonHeartChance = 0.01;
 
-    @ConfigType(EntityType.class) // FIXME :: tag
-    @Translation(key = "dragon_heart_entity_list", type = Translation.Type.CONFIGURATION, comments = "Determines either which entities cannot drop dragon hearts or which entities are allowed to drop dragon hearts")
-    @ConfigOption(side = ConfigSide.SERVER, category = "drops", key = "dragon_heart_entity_list", validation = Validation.RESOURCE_LOCATION)
-    public static List<String> dragonHeartEntityList = List.of();
-
-    @ConfigType(EntityType.class) // FIXME :: tag
-    @Translation(key = "weak_dragon_heart_entity_list", type = Translation.Type.CONFIGURATION, comments = "Determines either which entities cannot drop weak dragon hearts or which entities are allowed to drop weak dragon hearts")
-    @ConfigOption(side = ConfigSide.SERVER, category = "drops", key = "weak_dragon_heart_entity_list", validation = Validation.RESOURCE_LOCATION)
-    public static List<String> weakDragonHeartEntityList = List.of();
-
-    @ConfigType(EntityType.class) // FIXME :: tag
-    @Translation(key = "elder_dragon_heart_entity_list", type = Translation.Type.CONFIGURATION, comments = "Determines either which entities cannot drop elder dragon hearts or which entities are allowed to drop elder dragon hearts")
-    @ConfigOption(side = ConfigSide.SERVER, category = "drops", key = "elder_dragon_heart_entity_list", validation = Validation.RESOURCE_LOCATION)
-    public static List<String> elderDragonHeartEntityList = List.of();
-
     @Translation(key = "dragon_heart_white_list", type = Translation.Type.CONFIGURATION, comments = "If enabled the entity list for dragon hearts acts as a whitelist - if disabled it acts as a blacklist")
     @ConfigOption(side = ConfigSide.SERVER, category = "drops", key = "dragon_heart_white_list")
     public static Boolean dragonHeartWhiteList = false;
