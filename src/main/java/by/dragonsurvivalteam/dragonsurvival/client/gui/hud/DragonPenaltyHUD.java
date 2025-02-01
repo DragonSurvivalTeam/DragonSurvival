@@ -18,8 +18,11 @@ public class DragonPenaltyHUD {
     public static final ResourceLocation ID = DragonSurvival.res("penalty_hud");
 
     public static void render(@NotNull final GuiGraphics graphics, @NotNull final DeltaTracker tracker) {
-        LocalPlayer player = Minecraft.getInstance().player;
+        if(Minecraft.getInstance().options.hideGui) {
+            return;
+        }
 
+        LocalPlayer player = Minecraft.getInstance().player;
         //noinspection DataFlowIssue -> game mode is expected to be present
         if (player == null || !Minecraft.getInstance().gameMode.canHurtPlayer()) {
             return;
