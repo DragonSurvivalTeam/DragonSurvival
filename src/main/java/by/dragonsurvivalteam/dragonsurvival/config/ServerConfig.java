@@ -73,6 +73,11 @@ public class ServerConfig {
     @ConfigOption(side = ConfigSide.SERVER, category = {"growth", "big_dragon"}, key = "crushing_interval")
     public static Integer crushingTickDelay = 20;
 
+    @ConfigRange(min = 0.0, max = 1.0)
+    @Translation(key = "crushing_size_ratio", type = Translation.Type.CONFIGURATION, comments = "The size ratio between the entity and the crusher for crushing to occur")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"growth", "big_dragon"}, key = "crushing_size_ratio")
+    public static Double crushingSizeRatio = 0.25;
+
     // --- Standard dragon scaling --- //
 
     @Translation(key = "save_growth_stage", type = Translation.Type.CONFIGURATION, comments = "If enabled the current growth will be saved for the current dragon species when changing types or reverting back to being a human")

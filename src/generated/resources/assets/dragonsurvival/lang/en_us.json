@@ -577,6 +577,8 @@
   "dragonsurvival.configuration.consume_experience_as_mana.tooltip": "If enabled experience will be used to substitute for missing mana (10 experience points equals 1 mana point)",
   "dragonsurvival.configuration.crushing_interval": "Crushing Interval",
   "dragonsurvival.configuration.crushing_interval.tooltip": "The amount of ticks (20 ticks = 1 second) before an entity can be crushed again",
+  "dragonsurvival.configuration.crushing_size_ratio": "Crushing Size Ratio",
+  "dragonsurvival.configuration.crushing_size_ratio.tooltip": "The size ratio between the entity and the crusher for crushing to occur",
   "dragonsurvival.configuration.damage_on_wrong_source_of_magic": "Damage On Wrong Source Of Magic",
   "dragonsurvival.configuration.damage_on_wrong_source_of_magic.tooltip": "Source of magic that does not match the dragon species will damage the player if enabled",
   "dragonsurvival.configuration.disable_dragon_suffocation": "Disable Dragon Suffocation",
