@@ -91,11 +91,11 @@ public class DragonCommand {
 
         // Need to use 'setSize' since the desired size call doesn't set the stage
         if (species != null && dragonStage == null) {
-            data.setSize(player, species.value().getStartingSize(player.registryAccess()));
+            data.setGrowth(player, species.value().getStartingGrowth(player.registryAccess()));
         } else if (species != null) {
             data.setStage(player, dragonStage);
         } else {
-            data.setSize(player, DragonStateHandler.NO_SIZE);
+            data.setGrowth(player, DragonStateHandler.NO_GROWTH);
         }
 
         if (species == null && wasDragon) {

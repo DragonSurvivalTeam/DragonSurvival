@@ -12,8 +12,8 @@ import by.dragonsurvivalteam.dragonsurvival.common.items.growth.StarHeartItem;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncMagicData;
-import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDesiredSize;
-import by.dragonsurvivalteam.dragonsurvival.network.player.SyncSize;
+import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDesiredGrowth;
+import by.dragonsurvivalteam.dragonsurvival.network.player.SyncGrowth;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSModifiers;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AltarData;
@@ -72,15 +72,15 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class DragonStateHandler extends EntityStateHandler {
-    public static final double NO_SIZE = -1;
+    public static final double NO_GROWTH = -1;
 
-    private static final double SIZE_LERP_SPEED = 0.1; // 10% per tick
-    private static final double SIZE_EPSILON = 0.01;
+    private static final double AGE_LERP_SPEED = 0.1; // 10% per tick
+    private static final double AGE_EPSILON = 0.01;
 
     public MultiMining multiMining = MultiMining.ENABLED;
     public LargeDragonDestruction largeDragonDestruction = LargeDragonDestruction.ENABLED;
 
-    // Gets reset once the size reaches the starting size of the dragon species
+    // Gets reset once the growth reaches the starting growth of the dragon species
     // Currently also stores the usages of non-limited items (but doesn't limit them by doing so)
     // (Preferably it would not but the additional checks may not be worth it)
     private final Map<ResourceKey<DragonStage>, Map<Item, Integer>> usedGrowthItems = new HashMap<>();
@@ -99,7 +99,7 @@ public class DragonStateHandler extends EntityStateHandler {
     /** Last timestamp the server synchronized the player */
     public int lastSync;
 
-    private final Map<ResourceKey<DragonSpecies>, Double> savedSizes = new HashMap<>();
+    private final Map<ResourceKey<DragonSpecies>, Double> savedGrowth = new HashMap<>();
     private SkinData skinData = new SkinData();
 
     private Holder<DragonSpecies> dragonSpecies;
@@ -107,10 +107,10 @@ public class DragonStateHandler extends EntityStateHandler {
     private Holder<DragonStage> dragonStage;
 
     private int passengerId = DragonRidingHandler.NO_PASSENGER;
-    private double size = NO_SIZE;
-    private double visualSize = NO_SIZE;
-    private double visualSizeLastTick = NO_SIZE;
-    private double desiredSize = NO_SIZE;
+    private double growth = NO_GROWTH;
+    private double visualGrowth = NO_GROWTH;
+    private double visualGrowthLastTick = NO_GROWTH;
+    private double desiredGrowth = NO_GROWTH;
 
     private boolean destructionEnabled;
 
@@ -130,7 +130,7 @@ public class DragonStateHandler extends EntityStateHandler {
         setStage(player, stages.getRandomElement(player != null ? player.getRandom() : RANDOM).orElseThrow());
     }
 
-    /** Sets the stage and retains the current size */
+    /** Sets the stage and retains the current age */
     public void setStage(@Nullable final Player player, final Holder<DragonStage> dragonStage) {
         if (!dragonSpecies.value().getStages(player != null ? player.registryAccess() : null).contains(dragonStage)) {
             //noinspection DataFlowIssue -> key is present
@@ -138,74 +138,74 @@ public class DragonStateHandler extends EntityStateHandler {
             return;
         }
 
-        double boundedSize = dragonStage.value().getBoundedSize(size);
+        double boundedGrowth = dragonStage.value().getBoundedGrowth(growth);
 
-        if (boundedSize == dragonStage.value().sizeRange().max()) {
-            // Ties go to the larger stage, so we need to be slightly below the maximum size of the stage
-            boundedSize -= Shapes.EPSILON;
+        if (boundedGrowth == dragonStage.value().growthRange().max()) {
+            // Ties go to the larger stage, so we need to be slightly below the maximum growth of the stage
+            boundedGrowth -= Shapes.EPSILON;
         }
 
         if (this.dragonStage == null) {
-            // No reason to slowly adjust to the size in this case
-            setDesiredSize(player, boundedSize);
-            setSize(player, desiredSize);
+            // No reason to slowly adjust to the growth in this case
+            setDesiredGrowth(player, boundedGrowth);
+            setGrowth(player, desiredGrowth);
         } else {
-            setDesiredSize(player, boundedSize);
+            setDesiredGrowth(player, boundedGrowth);
         }
     }
 
     /**
-     * - Server-side: lerp to the actual size <br>
-     * - Client-side: update the visual size
+     * - Server-side: lerp to the actual growth <br>
+     * - Client-side: update the visual growth
      */
-    public void lerpSize(final Player player) {
+    public void lerpGrowth(final Player player) {
         if (player.level().isClientSide()) {
-            if (visualSize == NO_SIZE) {
-                visualSize = size;
+            if (visualGrowth == NO_GROWTH) {
+                visualGrowth = growth;
             }
 
-            visualSizeLastTick = visualSize;
+            visualGrowthLastTick = visualGrowth;
 
-            if (Math.abs(visualSize - desiredSize) < SIZE_EPSILON) {
-                visualSize = desiredSize;
+            if (Math.abs(visualGrowth - desiredGrowth) < AGE_EPSILON) {
+                visualGrowth = desiredGrowth;
             } else {
-                visualSize = Mth.lerp(SIZE_LERP_SPEED, visualSize, desiredSize);
+                visualGrowth = Mth.lerp(AGE_LERP_SPEED, visualGrowth, desiredGrowth);
             }
         } else {
-            if (Math.abs(size - desiredSize) < SIZE_EPSILON) {
-                setSize(player, desiredSize);
+            if (Math.abs(growth - desiredGrowth) < AGE_EPSILON) {
+                setGrowth(player, desiredGrowth);
                 DragonSizeHandler.overridePose(player);
             } else {
-                setSize(player, Mth.lerp(SIZE_LERP_SPEED, size, desiredSize));
+                setGrowth(player, Mth.lerp(AGE_LERP_SPEED, growth, desiredGrowth));
             }
         }
     }
 
-    public void setSize(@Nullable final Player player, final double size) {
-        double oldSize = this.size;
+    public void setGrowth(@Nullable final Player player, final double growth) {
+        double oldGrowth = this.growth;
         Holder<DragonStage> oldStage = dragonStage;
-        updateSizeAndStage(player != null ? player.registryAccess() : null, size);
+        updateGrowthAndStage(player != null ? player.registryAccess() : null, growth);
 
         if (player == null) {
             return;
         }
 
         if (dragonStage == null) {
-            DSModifiers.updateSizeModifiers(player, this);
+            DSModifiers.updateGrowthModifiers(player, this);
             return;
         }
 
-        if (oldSize == this.size && oldStage != null && dragonStage.is(oldStage)) {
+        if (oldGrowth == this.growth && oldStage != null && dragonStage.is(oldStage)) {
             return;
         }
 
-        // Call updateSizeModifiers before we refreshDimensions, as the size modifiers may affect the dimensions
-        DSModifiers.updateSizeModifiers(player, this);
+        // Update modifiers before refreshing the dimensions, as the growth modifiers may affect them
+        DSModifiers.updateGrowthModifiers(player, this);
         player.refreshDimensions();
 
         if (player instanceof ServerPlayer serverPlayer) {
-            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncSize(serverPlayer.getId(), getSize()));
-            MagicData.getData(player).handleAutoUpgrades(serverPlayer, InputData.size((int) this.size));
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncGrowth(serverPlayer.getId(), getGrowth()));
+            MagicData.getData(player).handleAutoUpgrades(serverPlayer, InputData.growth((int) this.growth));
             DSAdvancementTriggers.BE_DRAGON.get().trigger(serverPlayer);
         }
 
@@ -214,48 +214,47 @@ public class DragonStateHandler extends EntityStateHandler {
         }
     }
 
-    public void setDesiredSize(@Nullable final Player player, double size) {
+    public void setDesiredGrowth(@Nullable final Player player, double growth) {
         if (player == null) {
-            desiredSize = size;
-            setSize(null, size);
+            desiredGrowth = growth;
+            setGrowth(null, growth);
             return;
         }
 
-        desiredSize = boundSize(player.registryAccess(), size);
+        desiredGrowth = clampGrowth(player.registryAccess(), growth);
 
         if (player instanceof ServerPlayer serverPlayer) {
-            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncDesiredSize(serverPlayer.getId(), desiredSize));
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncDesiredGrowth(serverPlayer.getId(), desiredGrowth));
         }
     }
 
-    private double boundSize(@Nullable final HolderLookup.Provider provider, double size) {
+    private double clampGrowth(@Nullable final HolderLookup.Provider provider, double growth) {
         MiscCodecs.Bounds bounds = DragonStage.getBounds();
-        double newSize = Math.clamp(size, bounds.min(), bounds.max());
+        double newGrowth = Math.clamp(growth, bounds.min(), bounds.max());
 
         if (dragonSpecies == null) {
-            return newSize;
+            return newGrowth;
         }
 
-        Holder<DragonStage> stageToUseForSizeBounds = DragonStage.get(dragonSpecies.value().getStages(provider), newSize);
-        newSize = stageToUseForSizeBounds.value().getBoundedSize(newSize);
-        return newSize;
+        Holder<DragonStage> stage = DragonStage.get(dragonSpecies.value().getStages(provider), newGrowth);
+        return stage.value().getBoundedGrowth(newGrowth);
     }
 
-    private void updateSizeAndStage(@Nullable final HolderLookup.Provider provider, double size) {
-        if (size == NO_SIZE) {
+    private void updateGrowthAndStage(@Nullable final HolderLookup.Provider provider, double growth) {
+        if (growth == NO_GROWTH) {
             dragonStage = null;
-            this.size = NO_SIZE;
-            this.desiredSize = NO_SIZE;
+            this.growth = NO_GROWTH;
+            this.desiredGrowth = NO_GROWTH;
             return;
         }
 
-        dragonStage = dragonSpecies != null ? DragonStage.get(dragonSpecies.value().getStages(provider), size) : null;
-        this.size = boundSize(provider, size);
+        dragonStage = dragonSpecies != null ? DragonStage.get(dragonSpecies.value().getStages(provider), growth) : null;
+        this.growth = clampGrowth(provider, growth);
 
-        if (dragonSpecies != null && this.desiredSize == dragonSpecies.value().getStartingSize(provider)) {
+        if (dragonSpecies != null && this.desiredGrowth == dragonSpecies.value().getStartingGrowth(provider)) {
             // Allow the player to re-use growth items if their growth is reset
             // Don't clear if the player is a human in case the growth is saved
-            // It will be cleared once they turn into a dragon, and its size matches the requirements
+            // It will be cleared once they turn into a dragon, and its growth matches the requirements
             usedGrowthItems.clear();
         }
     }
@@ -263,7 +262,7 @@ public class DragonStateHandler extends EntityStateHandler {
     public List<Holder<DragonStage>> getStagesSortedByProgression(@Nullable final HolderLookup.Provider provider) {
         List<Holder<DragonStage>> stages = getStages(provider);
         List<Holder<DragonStage>> sortedStages = new ArrayList<>(stages);
-        sortedStages.sort(Comparator.comparingDouble(stage -> stage.value().sizeRange().min()));
+        sortedStages.sort(Comparator.comparingDouble(stage -> stage.value().growthRange().min()));
         return sortedStages;
     }
 
@@ -439,25 +438,24 @@ public class DragonStateHandler extends EntityStateHandler {
 
         // Missing attribute would result in an unstable environment / experience
         AttributeInstance instance = Objects.requireNonNull(player.getAttribute(Attributes.SCALE));
-        double partialVisualSize = Mth.lerp(partialTick, visualSizeLastTick, visualSize);
+        double partialVisualGrowth = Mth.lerp(partialTick, visualGrowthLastTick, visualGrowth);
 
-        if (partialVisualSize == visualSize) {
+        if (partialVisualGrowth == visualGrowth) {
             return player.getAttributeValue(Attributes.SCALE);
         }
 
         List<AttributeModifier> attributeModifiers = stage().value().filterModifiers(instance);
         List<Modifier> modifiers = stage().value().modifiers().stream().filter(modifier -> modifier.attribute().is(Attributes.SCALE)).toList();
 
-        // FIXME :: +1? lookup would crash
-        return Functions.calculateAttributeValue(instance, partialVisualSize - stage().value().sizeRange().min(), attributeModifiers, modifiers);
+        return Functions.calculateAttributeValue(instance, partialVisualGrowth - stage().value().growthRange().min(), attributeModifiers, modifiers);
     }
 
-    public double getSize() {
-        return size;
+    public double getGrowth() {
+        return growth;
     }
 
-    public double getDesiredSize() {
-        return desiredSize;
+    public double getDesiredGrowth() {
+        return desiredGrowth;
     }
 
     public boolean isDragon() {
@@ -530,7 +528,7 @@ public class DragonStateHandler extends EntityStateHandler {
             tag.putString(DRAGON_SPECIES, speciesId().toString());
             tag.putString(DRAGON_BODY, bodyId().toString());
             tag.putString(DRAGON_STAGE, stageId().toString());
-            tag.putDouble(SIZE, size);
+            tag.putDouble(GROWTH, growth);
             tag.putString(STAR_HEART_STATE, starHeartState.name());
             tag.putBoolean(IS_GROWING, isGrowing);
             tag.putBoolean(DESTRUCTION_ENABLED, destructionEnabled);
@@ -546,14 +544,14 @@ public class DragonStateHandler extends EntityStateHandler {
         tag.putString(GIANT_DRAGON_DESTRUCTION, largeDragonDestruction.name());
 
         if (isDragonSoul && dragonSpecies != null) {
-            // Only store the size of the dragon the player is currently in if we are saving for the soul
-            storeSavedSize(speciesId(), tag);
+            // Only store the growth of the dragon the player is currently in if we are saving for the soul
+            storeSavedAge(speciesId(), tag);
         } else if (!isDragonSoul) {
             for (ResourceKey<DragonSpecies> type : ResourceHelper.keys(provider, DragonSpecies.REGISTRY)) {
-                boolean hasSavedSize = savedSizes.containsKey(type);
+                boolean hasSavedGrowth = savedGrowth.containsKey(type);
 
-                if (hasSavedSize) {
-                    storeSavedSize(type.location(), tag);
+                if (hasSavedGrowth) {
+                    storeSavedAge(type.location(), tag);
                 }
             }
         }
@@ -617,9 +615,9 @@ public class DragonStateHandler extends EntityStateHandler {
                 dragonBody = DragonBody.random(provider, dragonSpecies);
             }
 
-            // Makes sure that the set size matches the previously set stage
-            setSize(null, tag.getDouble(SIZE));
-            desiredSize = size;
+            // Makes sure that the set growth matches the previously set stage
+            setGrowth(null, tag.getDouble(GROWTH));
+            desiredGrowth = growth;
             destructionEnabled = tag.getBoolean(DESTRUCTION_ENABLED);
             isGrowing = !tag.contains(IS_GROWING) || tag.getBoolean(IS_GROWING);
             starHeartState = Functions.getEnum(StarHeartItem.State.class, tag.getString(STAR_HEART_STATE));
@@ -630,14 +628,14 @@ public class DragonStateHandler extends EntityStateHandler {
 
         if (dragonSpecies != null) {
             if (isDragonSoul) {
-                // Only load the size of the dragon the player is currently in if we are loading for the soul
-                savedSizes.put(speciesKey(), loadSavedStage(provider, speciesKey(), tag));
+                // Only load the growth of the dragon the player is currently in if we are loading for the soul
+                savedGrowth.put(speciesKey(), loadSavedStage(provider, speciesKey(), tag));
             } else {
                 for (ResourceKey<DragonSpecies> type : ResourceHelper.keys(provider, DragonSpecies.REGISTRY)) {
-                    CompoundTag compound = tag.getCompound(speciesId() + SAVED_SIZE_SUFFIX);
+                    CompoundTag compound = tag.getCompound(speciesId() + SAVED_GROWTH_SUFFIX);
 
                     if (!compound.isEmpty()) {
-                        savedSizes.put(type, loadSavedStage(provider, type, tag));
+                        savedGrowth.put(type, loadSavedStage(provider, type, tag));
                     }
                 }
             }
@@ -677,26 +675,26 @@ public class DragonStateHandler extends EntityStateHandler {
     }
 
     private double loadSavedStage(@NotNull final HolderLookup.Provider provider, final ResourceKey<DragonSpecies> dragonSpecies, final CompoundTag tag) {
-        CompoundTag compound = tag.getCompound(dragonSpecies.location() + SAVED_SIZE_SUFFIX);
+        CompoundTag compound = tag.getCompound(dragonSpecies.location() + SAVED_GROWTH_SUFFIX);
 
         if (compound.isEmpty()) {
             Optional<Holder.Reference<DragonSpecies>> optional = ResourceHelper.get(provider, dragonSpecies);
 
             if (optional.isPresent()) {
-                return optional.get().value().getStartingSize(provider);
+                return optional.get().value().getStartingGrowth(provider);
             } else {
-                DragonSurvival.LOGGER.warn("Cannot load saved size for dragon species [{}] while deserializing NBT of [{}] due to the dragon type not existing. Falling back to the smallest size.", dragonSpecies, tag);
+                DragonSurvival.LOGGER.warn("Cannot load saved growth for dragon species [{}] while deserializing NBT of [{}] due to the dragon type not existing. Falling back to the smallest growth.", dragonSpecies, tag);
                 return DragonStage.getBounds().min();
             }
         }
 
-        return compound.getDouble(SIZE);
+        return compound.getDouble(GROWTH);
     }
 
-    private void storeSavedSize(final ResourceLocation dragonSpecies, final CompoundTag tag) {
-        CompoundTag savedSizeTag = new CompoundTag();
-        savedSizeTag.putDouble(SIZE, size);
-        tag.put(dragonSpecies + SAVED_SIZE_SUFFIX, savedSizeTag);
+    private void storeSavedAge(final ResourceLocation dragonSpecies, final CompoundTag tag) {
+        CompoundTag savedGrowthTag = new CompoundTag();
+        savedGrowthTag.putDouble(GROWTH, growth);
+        tag.put(dragonSpecies + SAVED_GROWTH_SUFFIX, savedGrowthTag);
     }
 
     @Override
@@ -705,9 +703,9 @@ public class DragonStateHandler extends EntityStateHandler {
     }
 
     public void revertToHumanForm(final Player player, boolean isDragonSoul) {
-        // Don't set the saved dragon size if we are reverting from a soul, as we already are storing the size of the dragon in the soul
+        // Don't set the saved dragon growth if we are reverting from a soul, as we already are storing the growth of the dragon in the soul
         if (ServerConfig.saveGrowthStage && !isDragonSoul && dragonSpecies != null) {
-            savedSizes.put(speciesKey(), getSize());
+            savedGrowth.put(speciesKey(), getGrowth());
         }
 
         // Drop everything in your claw slots
@@ -715,23 +713,23 @@ public class DragonStateHandler extends EntityStateHandler {
 
         setSpecies(player, null);
         setBody(player, null);
-        setDesiredSize(player, NO_SIZE);
+        setDesiredGrowth(player, NO_GROWTH);
 
         AltarData altarData = AltarData.getData(player);
         altarData.altarCooldown = Functions.secondsToTicks(ServerConfig.altarUsageCooldown);
         altarData.hasUsedAltar = true;
     }
 
-    public double getSavedDragonSize(final ResourceKey<DragonSpecies> type) {
-        return savedSizes.getOrDefault(type, NO_SIZE);
+    public double getSavedDragonAge(final ResourceKey<DragonSpecies> type) {
+        return savedGrowth.getOrDefault(type, NO_GROWTH);
     }
 
     private static final int MAX_SHOWN = 5;
 
     public Pair<List<Either<FormattedText, TooltipComponent>>, Integer> getGrowthDescription(int currentScroll) {
         DragonStage stage = dragonStage.value();
-        double percentage = Math.clamp(stage.getProgress(getSize()), 0, 1);
-        String ageInformation = stage.getTimeToGrowFormattedWithPercentage(percentage, getSize(), isGrowing);
+        double percentage = Math.clamp(stage.getProgress(getGrowth()), 0, 1);
+        String ageInformation = stage.getTimeToGrowFormattedWithPercentage(percentage, getGrowth(), isGrowing);
 
         List<TimeComponent> growthItems = new ArrayList<>();
 
@@ -752,7 +750,7 @@ public class DragonStateHandler extends EntityStateHandler {
         List<Either<FormattedText, TooltipComponent>> components = new ArrayList<>();
         components.add(Either.left(Component.translatable(LangKey.GROWTH_STAGE).append(DragonStage.translatableName(stageKey()))));
         components.add(Either.left(Component.translatable(LangKey.GROWTH_AGE, ageInformation)));
-        components.add(Either.left(Component.translatable(LangKey.GROWTH_SIZE, (int)getSize())));
+        components.add(Either.left(Component.translatable(LangKey.GROWTH_AMOUNT, (int) getGrowth())));
         components.add(Either.left(Component.translatable(LangKey.GROWTH_INFO).append(Component.literal(" [" + Math.min(growthItems.size(), scroll + MAX_SHOWN) + " / " + growthItems.size() + "]").withStyle(ChatFormatting.DARK_GRAY))));
 
         for (int i = scroll; i < max; i++) {
@@ -785,8 +783,8 @@ public class DragonStateHandler extends EntityStateHandler {
     private static final String ENTITY_STATE = "entity_state";
     private static final String SKIN_DATA = "skin_data";
 
-    private static final String SIZE = "size";
-    private static final String SAVED_SIZE_SUFFIX = "_saved_size";
+    private static final String GROWTH = "growth";
+    private static final String SAVED_GROWTH_SUFFIX = "_saved_growth";
 
     private static final String MULTI_MINING = "multi_mining";
     private static final String GIANT_DRAGON_DESTRUCTION = "giant_dragon_destruction";

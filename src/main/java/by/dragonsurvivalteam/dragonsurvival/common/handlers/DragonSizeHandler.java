@@ -31,14 +31,14 @@ public class DragonSizeHandler {
     private static final ConcurrentHashMap<String, Boolean> WAS_DRAGON = new ConcurrentHashMap<>();
 
     @SubscribeEvent
-    public static void initializeSizeOnJoin(final EntityJoinLevelEvent event) {
+    public static void initializeGrowthOnJoin(final EntityJoinLevelEvent event) {
         // There is no entity context when de-serializing the data
-        // Therefor we set the size again, causing a refresh of the dimension
+        // Therefor we set the growth again, causing a refresh of the dimension
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             DragonStateHandler data = DragonStateProvider.getData(serverPlayer);
 
             if (data.isDragon()) {
-                data.setDesiredSize(serverPlayer, data.getSize());
+                data.setDesiredGrowth(serverPlayer, data.getGrowth());
             }
         }
     }
@@ -154,10 +154,10 @@ public class DragonSizeHandler {
             entity.setPos(fullHeightFreePosition.get().add(0, -oldDimensions.height() / 2, 0));
         } else {
             VoxelShape deltaHeightVoxelShape = Shapes.create(AABB.ofSize(halfHeightPosition, widthChange, Shapes.BIG_EPSILON, widthChange));
-            Optional<Vec3> deltaHeightFreePosition = entity.level().findFreePosition(entity, deltaHeightVoxelShape, halfHeightPosition, oldDimensions.width(), newDimensions.height(), oldDimensions.width());
-            if(deltaHeightFreePosition.isPresent()) {
-                entity.setPos(deltaHeightFreePosition.get().add(0, (double) (-newDimensions.height()) / 20 + Shapes.BIG_EPSILON, 0));
-            }
+
+            entity.level().findFreePosition(entity, deltaHeightVoxelShape, halfHeightPosition, oldDimensions.width(), newDimensions.height(), oldDimensions.width()).ifPresent(freePosition -> {
+                entity.setPos(freePosition.add(0, (double) (-newDimensions.height()) / 20 + Shapes.BIG_EPSILON, 0));
+            });
         }
     }
 
@@ -166,7 +166,7 @@ public class DragonSizeHandler {
     }
 
     @SubscribeEvent
-    public static void handleLerpSizeAndPose(final PlayerTickEvent.Pre event) {
+    public static void handleLerpGrowthAndPose(final PlayerTickEvent.Pre event) {
         Player player = event.getEntity();
         DragonStateHandler data = DragonStateProvider.getData(player);
 
@@ -177,7 +177,7 @@ public class DragonSizeHandler {
             player.setForcedPose(null);
             player.refreshDimensions();
         } else if (isDragon) {
-            data.lerpSize(player);
+            data.lerpGrowth(player);
 
             // We need to do this special handling so that the pose update looks smooth
             // (without updating using poses that are actually incorrect)

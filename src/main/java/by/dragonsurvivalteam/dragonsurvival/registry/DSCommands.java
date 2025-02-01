@@ -7,10 +7,10 @@ import by.dragonsurvivalteam.dragonsurvival.commands.DragonAbilityCommand;
 import by.dragonsurvivalteam.dragonsurvival.commands.DragonAltarCommand;
 import by.dragonsurvivalteam.dragonsurvival.commands.DragonCommand;
 import by.dragonsurvivalteam.dragonsurvival.commands.DragonEditorCommand;
-import by.dragonsurvivalteam.dragonsurvival.commands.DragonSizeCommand;
+import by.dragonsurvivalteam.dragonsurvival.commands.DragonGrowthCommand;
 import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonAbilityArgument;
 import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonBodyArgument;
-import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonSizeArgument;
+import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonGrowthArgument;
 import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonSpeciesArgument;
 import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonStageArgument;
 import com.mojang.brigadier.CommandDispatcher;
@@ -32,7 +32,7 @@ public class DSCommands {
     static {
         REGISTRY.register(DragonBodyArgument.ID, () -> ArgumentTypeInfos.registerByClass(DragonBodyArgument.class, SingletonArgumentInfo.contextAware(DragonBodyArgument::new)));
         REGISTRY.register(DragonStageArgument.ID, () -> ArgumentTypeInfos.registerByClass(DragonStageArgument.class, SingletonArgumentInfo.contextAware(DragonStageArgument::new)));
-        REGISTRY.register(DragonSizeArgument.ID, () -> ArgumentTypeInfos.registerByClass(DragonSizeArgument.class, SingletonArgumentInfo.contextAware(DragonSizeArgument::new)));
+        REGISTRY.register(DragonGrowthArgument.ID, () -> ArgumentTypeInfos.registerByClass(DragonGrowthArgument.class, SingletonArgumentInfo.contextAware(DragonGrowthArgument::new)));
         REGISTRY.register(DragonSpeciesArgument.ID, () -> ArgumentTypeInfos.registerByClass(DragonSpeciesArgument.class, SingletonArgumentInfo.contextAware(DragonSpeciesArgument::new)));
         REGISTRY.register(DragonAbilityArgument.ID, () -> ArgumentTypeInfos.registerByClass(DragonAbilityArgument.class, SingletonArgumentInfo.contextAware(DragonAbilityArgument::new)));
     }
@@ -47,6 +47,6 @@ public class DSCommands {
         DragonAltarCommand.register(dispatcher);
 
         DragonCommand.register(event);
-        DragonSizeCommand.register(event);
+        DragonGrowthCommand.register(event);
     }
 }

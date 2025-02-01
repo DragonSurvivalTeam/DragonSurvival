@@ -59,7 +59,7 @@ public record DragonPredicate(
             return false;
         }
 
-        if (dragonStage().isPresent() && !dragonStage().get().matches(data.stage(), data.getSize())) {
+        if (dragonStage().isPresent() && !dragonStage().get().matches(data.stage(), data.getGrowth())) {
             return false;
         }
 
@@ -120,8 +120,8 @@ public record DragonPredicate(
             return this;
         }
 
-        public DragonPredicate.Builder stage(final Holder<DragonStage> dragonStage, final MinMaxBounds.Doubles growthPercentage) {
-            this.dragonStage = Optional.of(DragonStagePredicate.Builder.start().stage(dragonStage).growth(growthPercentage).build());
+        public DragonPredicate.Builder stage(final Holder<DragonStage> dragonStage, final MinMaxBounds.Doubles progress) {
+            this.dragonStage = Optional.of(DragonStagePredicate.Builder.start().stage(dragonStage).progress(progress).build());
             return this;
         }
 

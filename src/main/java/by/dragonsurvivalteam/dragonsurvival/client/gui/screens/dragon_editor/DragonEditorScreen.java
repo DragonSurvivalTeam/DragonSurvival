@@ -278,7 +278,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     }
 
     public static float setZoom(final Holder<DragonStage> dragonStage) {
-        return (float) (0.4 * dragonStage.value().sizeRange().min() + 20);
+        return (float) (0.4 * dragonStage.value().growthRange().min() + 20);
     }
 
     public final Function<Holder<DragonStage>, Holder<DragonStage>> selectStageAction = newStage -> {
@@ -628,7 +628,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         }
 
         HANDLER.setSpecies(null, dragonSpecies);
-        HANDLER.setDesiredSize(null, dragonStage.value().sizeRange().min());
+        HANDLER.setDesiredGrowth(null, dragonStage.value().growthRange().min());
         HANDLER.setBody(null, dragonBody);
         SkinPreset skinPreset = localHandler.getSkinPresetForSpecies(dragonSpecies.getKey());
         if (skinPreset.getModel().equals(dragonBody.value().model())) {
@@ -1019,7 +1019,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
         HANDLER.setBody(null, dragonBody);
         HANDLER.setCurrentSkinPreset(preset);
-        HANDLER.setDesiredSize(null, dragonStage.value().sizeRange().min());
+        HANDLER.setDesiredGrowth(null, dragonStage.value().growthRange().min());
 
     }
 
@@ -1069,12 +1069,12 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             data.setBody(minecraft.player, dragonBody);
             data.setSpecies(minecraft.player, dragonSpecies);
 
-            double savedSize = data.getSavedDragonSize(data.speciesKey());
+            double savedSize = data.getSavedDragonAge(data.speciesKey());
 
-            if (!ServerConfig.saveGrowthStage || savedSize == DragonStateHandler.NO_SIZE) {
-                data.setSize(minecraft.player, dragonSpecies.value().getStartingSize(minecraft.player.registryAccess()));
+            if (!ServerConfig.saveGrowthStage || savedSize == DragonStateHandler.NO_GROWTH) {
+                data.setGrowth(minecraft.player, dragonSpecies.value().getStartingGrowth(minecraft.player.registryAccess()));
             } else {
-                data.setDesiredSize(minecraft.player, savedSize);
+                data.setDesiredGrowth(minecraft.player, savedSize);
             }
 
             FlightData.getData(minecraft.player).hasSpin = ServerConfig.saveGrowthStage && FlightData.getData(minecraft.player).hasSpin;

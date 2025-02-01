@@ -175,7 +175,7 @@ public class Condition {
 
     public static EntityPredicate.Builder dragonSizeAtLeast(double min) {
         return EntityPredicate.Builder.entity().subPredicate(
-                DragonPredicate.Builder.dragon().stage(DragonStagePredicate.Builder.start().sizeAtLeast(min).build()).build()
+                DragonPredicate.Builder.dragon().stage(DragonStagePredicate.Builder.start().growthAtLeast(min).build()).build()
         );
     }
 }

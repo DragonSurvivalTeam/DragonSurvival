@@ -73,12 +73,12 @@ public class EnchantmentEffectHandler {
                 return;
             }
 
-            victimData.setDesiredSize(victim, victimData.getSize() - getStolenTime(victimData) * enchantmentLevel);
+            victimData.setDesiredGrowth(victim, victimData.getGrowth() - getStolenTime(victimData) * enchantmentLevel);
             DragonStateHandler attackerData = DragonStateProvider.getData(attacker);
 
             if (attackerData.isDragon()) {
                 // TODO :: why doesn't this scale with the enchantment level
-                attackerData.setDesiredSize(attacker, attackerData.getSize() + getStolenTime(attackerData));
+                attackerData.setDesiredGrowth(attacker, attackerData.getGrowth() + getStolenTime(attackerData));
             }
 
             attacker.level().playLocalSound(attacker.blockPosition(), SoundEvents.AMBIENT_UNDERWATER_LOOP_ADDITIONS_ULTRA_RARE, SoundSource.PLAYERS, 2, 1, false);
@@ -88,6 +88,6 @@ public class EnchantmentEffectHandler {
     private static double getStolenTime(DragonStateHandler handler) {
         int ticksToSteal = Functions.minutesToTicks(30); // TODO :: make this configurable in the enchantment
         DragonStage level = handler.stage().value();
-        return level.ticksToSize(ticksToSteal);
+        return level.ticksToGrowth(ticksToSteal);
     }
 }

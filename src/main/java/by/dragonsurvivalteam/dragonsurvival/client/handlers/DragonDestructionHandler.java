@@ -124,7 +124,7 @@ public class DragonDestructionHandler {
         DragonStateHandler handler = data.getSecond();
         MiscCodecs.DestructionData destructionData = handler.stage().value().destructionData().orElse(null);
 
-        if (destructionData == null || !destructionData.isDestructionAllowed(handler.getSize())) {
+        if (destructionData == null || !destructionData.isDestructionAllowed(handler.getGrowth())) {
             return;
         }
 

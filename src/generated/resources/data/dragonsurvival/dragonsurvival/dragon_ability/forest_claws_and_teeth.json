@@ -1,0 +1,95 @@
+{
+  "actions": [
+    {
+      "target_selection": {
+        "applied_effects": {
+          "entity_effect": [
+            {
+              "effect_type": "dragonsurvival:harvest_bonus",
+              "harvest_bonuses": [
+                {
+                  "base": {
+                    "custom_icon": "dragonsurvival:textures/ability_effect/forest_claw.png",
+                    "id": "dragonsurvival:forest_claws_and_teeth",
+                    "should_remove_automatically": true
+                  },
+                  "base_speed": {
+                    "tiers": [
+                      {
+                        "from_level": 1,
+                        "tier": "WOOD"
+                      },
+                      {
+                        "from_level": 2,
+                        "tier": "STONE"
+                      }
+                    ]
+                  },
+                  "blocks": "#minecraft:mineable/axe",
+                  "break_speed_multiplier": {
+                    "type": "minecraft:linear",
+                    "base": 0.25,
+                    "per_level_above_first": 0.25
+                  },
+                  "harvest_bonus": {
+                    "type": "minecraft:linear",
+                    "base": 1.0,
+                    "per_level_above_first": 0.5
+                  }
+                }
+              ]
+            }
+          ],
+          "targeting_mode": "allies_and_self"
+        },
+        "target_type": "dragonsurvival:self"
+      },
+      "trigger_rate": 1.0
+    }
+  ],
+  "activation": {
+    "type": "passive"
+  },
+  "icon": {
+    "texture_entries": [
+      {
+        "from_level": 0,
+        "texture_resource": "dragonsurvival:abilities/forest/forest_claws_and_teeth_0"
+      },
+      {
+        "from_level": 1,
+        "texture_resource": "dragonsurvival:abilities/forest/forest_claws_and_teeth_1"
+      },
+      {
+        "from_level": 2,
+        "texture_resource": "dragonsurvival:abilities/forest/forest_claws_and_teeth_2"
+      },
+      {
+        "from_level": 3,
+        "texture_resource": "dragonsurvival:abilities/forest/forest_claws_and_teeth_3"
+      },
+      {
+        "from_level": 4,
+        "texture_resource": "dragonsurvival:abilities/forest/forest_claws_and_teeth_4"
+      }
+    ]
+  },
+  "upgrade": {
+    "growth_requirement": {
+      "type": "minecraft:lookup",
+      "fallback": {
+        "type": "minecraft:linear",
+        "base": 15.0,
+        "per_level_above_first": 15.0
+      },
+      "values": [
+        0.0,
+        25.0,
+        40.0,
+        60.0
+      ]
+    },
+    "maximum_level": 4,
+    "upgrade_type": "dragonsurvival:dragon_growth"
+  }
+}

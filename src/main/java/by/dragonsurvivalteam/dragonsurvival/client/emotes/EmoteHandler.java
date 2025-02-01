@@ -30,12 +30,12 @@ public class EmoteHandler {
 
         Player player = event.getEntity();
         DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(player.getId());
-
         if (dragon == null) {
             return;
         }
 
-        if (player.isCrouching() || player.swinging) {
+        boolean isForLocalPlayer = player == Minecraft.getInstance().player;
+        if ((player.isCrouching() || player.swinging) && isForLocalPlayer) {
             dragon.stopAllEmotes();
             PacketDistributor.sendToServer(new StopAllEmotes(player.getId()));
             return;
@@ -45,17 +45,21 @@ public class EmoteHandler {
         boolean playerIsMoving = player.getDeltaMovement().lengthSqr() > EMOTE_MOVEMENT_EPSILON;
         for(int i = 0; i < currentlyPlayingEmotes.length; i++) {
             if(currentlyPlayingEmotes[i] != null) {
-                if(!currentlyPlayingEmotes[i].canMove() && playerIsMoving) {
-                    PacketDistributor.sendToServer(new SyncEmote(player.getId(), currentlyPlayingEmotes[i], true));
-                    dragon.stopEmote(i);
-                    continue;
-                }
-
                 if(currentlyPlayingEmotes[i].sound().isPresent()) {
                     DragonEmote.Sound sound = currentlyPlayingEmotes[i].sound().get();
                     if(dragon.getTicksForEmote(i) % sound.interval() == 0 && dragon.getTicksForEmote(i) != -1) {
                         sound.playSound(player);
                     }
+                }
+
+                if (!isForLocalPlayer) {
+                    continue;
+                }
+
+                if(!currentlyPlayingEmotes[i].canMove() && playerIsMoving) {
+                    PacketDistributor.sendToServer(new SyncEmote(player.getId(), currentlyPlayingEmotes[i], true));
+                    dragon.stopEmote(i);
+                    continue;
                 }
 
                 if (currentlyPlayingEmotes[i].thirdPerson()) {

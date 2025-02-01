@@ -20,7 +20,7 @@ public record SpawnParticles(ParticleOptions particle, SpawnParticlesEffect.Posi
             SpawnParticlesEffect.PositionSource.CODEC.fieldOf("vertical_position").forGetter(SpawnParticles::verticalPosition),
             SpawnParticlesEffect.VelocitySource.CODEC.fieldOf("horizontal_velocity").forGetter(SpawnParticles::horizontalVelocity),
             SpawnParticlesEffect.VelocitySource.CODEC.fieldOf("vertical_velocity").forGetter(SpawnParticles::verticalVelocity),
-            FloatProvider.CODEC.fieldOf("speed").forGetter(SpawnParticles::speed)
+            FloatProvider.CODEC.optionalFieldOf("speed", ConstantFloat.ZERO).forGetter(SpawnParticles::speed)
     ).apply(instance, SpawnParticles::new));
 
     public static SpawnParticlesEffect.PositionSource offsetFromEntityPosition(float offset) {

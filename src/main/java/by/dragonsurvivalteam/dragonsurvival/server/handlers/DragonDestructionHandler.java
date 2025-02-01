@@ -32,7 +32,7 @@ public class DragonDestructionHandler {
     private static void checkAndDestroyCollidingBlocks(final DragonStateHandler data, final PlayerTickEvent event, final AABB boundingBox) {
         MiscCodecs.DestructionData destructionData = data.stage().value().destructionData().orElse(null);
 
-        if (destructionData == null || !destructionData.isBlockDestructionAllowed(data.getSize())) {
+        if (destructionData == null || !destructionData.isBlockDestructionAllowed(data.getGrowth())) {
             return;
         }
 
@@ -93,7 +93,7 @@ public class DragonDestructionHandler {
 
         MiscCodecs.DestructionData destructionData = data.stage().value().destructionData().orElse(null);
 
-        if (destructionData == null || !destructionData.isDestructionAllowed(data.getSize())) {
+        if (destructionData == null || !destructionData.isDestructionAllowed(data.getGrowth())) {
             return;
         }
 
@@ -112,7 +112,7 @@ public class DragonDestructionHandler {
 
     private static void checkAndDamageCrushedEntities(DragonStateHandler data, ServerPlayer player, AABB boundingBox) {
         MiscCodecs.DestructionData destructionData = data.stage().value().destructionData().orElse(null);
-        if (destructionData == null || !destructionData.isCrushingAllowed(data.getSize())) {
+        if (destructionData == null || !destructionData.isCrushingAllowed(data.getGrowth())) {
             return;
         }
 
@@ -129,7 +129,7 @@ public class DragonDestructionHandler {
                 continue;
             }
 
-            entity.hurt(new DamageSource(DSDamageTypes.get(player.level(), DSDamageTypes.CRUSHED), player), (float) (data.getSize() * destructionData.crushingDamageScalar()));
+            entity.hurt(new DamageSource(DSDamageTypes.get(player.level(), DSDamageTypes.CRUSHED), player), (float) (data.getGrowth() * destructionData.crushingDamageScalar()));
             crushTickCounter = ServerConfig.crushingTickDelay;
         }
     }

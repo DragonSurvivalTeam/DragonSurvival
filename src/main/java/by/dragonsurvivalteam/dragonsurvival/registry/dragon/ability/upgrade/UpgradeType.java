@@ -46,7 +46,7 @@ public interface UpgradeType<T> {
         if (event.getRegistry() == REGISTRY) {
             event.register(REGISTRY_KEY, DragonSurvival.res("experience_points"), () -> ExperiencePointsUpgrade.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("experience_levels"), () -> ExperienceLevelUpgrade.CODEC);
-            event.register(REGISTRY_KEY, DragonSurvival.res("dragon_size"), () -> DragonSizeUpgrade.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("dragon_growth"), () -> DragonGrowthUpgrade.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("item_based"), () -> ItemUpgrade.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("condition_based"), () -> ConditionUpgrade.CODEC);
         }

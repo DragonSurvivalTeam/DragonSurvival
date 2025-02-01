@@ -58,14 +58,14 @@ public class GrowthHUD {
         ItemStack stack = player.getMainHandItem();
 
         Holder<DragonStage> dragonStage = handler.stage();
-        double nextSize = dragonStage.value().sizeRange().max();
+        double nextSize = dragonStage.value().growthRange().max();
 
-        float currentProgress = (float) dragonStage.value().getProgress(handler.getSize());
-        float desiredProgress = (float) dragonStage.value().getProgress(handler.getDesiredSize());
+        float currentProgress = (float) dragonStage.value().getProgress(handler.getGrowth());
+        float desiredProgress = (float) dragonStage.value().getProgress(handler.getDesiredGrowth());
         float progressDiff = Math.abs(currentProgress - desiredProgress);
         boolean progressDiffIsSmall = progressDiff < 0.01;
 
-        if (progressDiffIsSmall && (handler.getSize() == nextSize || dragonStage.value().growthItems().stream().noneMatch(growthItem -> growthItem.canBeUsed(handler, stack.getItem())))) {
+        if (progressDiffIsSmall && (handler.getGrowth() == nextSize || dragonStage.value().growthItems().stream().noneMatch(growthItem -> growthItem.canBeUsed(handler, stack.getItem())))) {
             return;
         }
 
@@ -81,7 +81,7 @@ public class GrowthHUD {
         float targetProgress;
 
         if (progressDiffIsSmall) {
-            targetProgress = (float) dragonStage.value().getProgress(handler.getSize() + DragonGrowthHandler.getGrowth(handler, stack.getItem()));
+            targetProgress = (float) dragonStage.value().getProgress(handler.getGrowth() + DragonGrowthHandler.getGrowth(handler, stack.getItem()));
         } else {
             targetProgress = desiredProgress;
         }

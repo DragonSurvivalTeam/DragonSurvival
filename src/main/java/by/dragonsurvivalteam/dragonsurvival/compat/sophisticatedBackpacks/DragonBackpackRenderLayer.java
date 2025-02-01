@@ -76,16 +76,24 @@ public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
         int borderColor = wrapper.getAccentColor();
         IBackpackModel model = BackpackModelManager.getBackpackModel(backpack.getItem());
 
-        Vec3 pos_offset = new Vec3(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
-
-        Vec3 rot_offset = Vec3.ZERO;
+            Vec3 posOffset = new Vec3(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
+            
+            Vec3 rotOffset = Vec3.ZERO;
 
         Vec3 scale = new Vec3(1, 1, 1);
 
-        if(handler.body().value().backpackOffsets().isPresent()) {
-            DragonBody.BackpackOffsets backpackOffsets = handler.body().value().backpackOffsets().get();
+        
+            if(handler.body().value().backpackOffsets().isPresent()) {
+                DragonBody.BackpackOffsets backpackOffsets = handler.body().value().backpackOffsets().get();
 
-            scale = backpackOffsets.scale();
+                scale = backpackOffsets.scale();
+                posOffset = posOffset.add(backpackOffsets.posOffset());
+                rotOffset = backpackOffsets.rotOffset();
+            }
+
+        
+
+        transformModel(poseStack, posOffset, rotOffset, scale);
             pos_offset = pos_offset.add(backpackOffsets.pos_offset());
             rot_offset = backpackOffsets.rot_offset();
 
@@ -98,12 +106,30 @@ public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
 
 
     }
+    
+
+    private void transformModel(PoseStack poseStack, Vec3 posOffset, Vec3 rotOffset, Vec3 scale) {
+        
+        Vec3 rot = rotOffset.add(0, 0, 180);
+
+        Quaternionf quat = new Quaternionf().rotationZYX((float) Math.toRadians(rot.x), (float) Math.toRadians(rot.y), (float) Math.toRadians(rot.z));
+
+        poseStack.rotateAround(quat, 0, 1.1f, 0);
+        
+        posOffset = posOffset.scale(1 / 32f);
+
+        // The backpack rendering is slightly offset to center the pivot in back middle
+        poseStack.translate(posOffset.x, -posOffset.y + 0.5, -posOffset.z - 0.1);
+        
+        poseStack.scale((float) scale.x, (float) scale.y, (float) scale.z);
+
+    }
 
     private Optional<PlayerInventoryProvider.RenderInfo> getRenderInfo(Player player) {
 
         Optional<ItemStack> backpackStack = Optional.empty();
         boolean isArmorSlot = false;
-        
+
         if(isCurioLoaded) {
             backpackStack = getBackpackFromCurio(player);
         }
@@ -123,22 +149,6 @@ public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
 
     }
 
-    private void transformModel(PoseStack poseStack, Vec3 pos_offset, Vec3 rot_offset, Vec3 scale) {
-
-        Vec3 rot = rot_offset.add(0, 0, 180);
-
-        Quaternionf quat = new Quaternionf().rotationZYX((float) Math.toRadians(rot.x), (float) Math.toRadians(rot.y), (float) Math.toRadians(rot.z));
-
-        poseStack.rotateAround(quat, 0, 1.1f, 0);
-
-        pos_offset = pos_offset.scale(1 / 32f);
-
-        // The backpack rendering is slightly offset to center the pivot in back middle
-        poseStack.translate(pos_offset.x, -pos_offset.y + 0.5, -pos_offset.z - 0.1);
-
-        poseStack.scale((float) scale.x, (float) scale.y, (float) scale.z);
-
-    }
 
 
     private Optional<ItemStack> getBackpackFromCurio(Player player) {

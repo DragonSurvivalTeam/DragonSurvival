@@ -20,6 +20,8 @@ import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -44,8 +46,11 @@ public record DragonBody(
         Optional<BackpackOffsets> backpackOffsets,
         Optional<ResourceLocation> defaultIcon
 ) implements AttributeModifierSupplier {
-    public static final ResourceKey<Registry<DragonBody>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_bodies"));
+    public static final ResourceKey<Registry<DragonBody>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_body"));
     public static final ResourceLocation DEFAULT_MODEL = DragonSurvival.res("dragon_model");
+    // See dragonSurvival$modifyVehicleAttachmentPoint in EntityMixin
+    public static final Vec3 BASE_MOUNTING_OFFSET = new Vec3(0, 0.63, 0);
+    public static final Vec3 BOAT_MOUNTING_OFFSET = new Vec3(0, 0.9, 0);
 
     public static final Codec<DragonBody> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.BOOL.optionalFieldOf("is_default", false).forGetter(DragonBody::isDefault),
@@ -94,10 +99,10 @@ public record DragonBody(
         }
     }
     
-    public record BackpackOffsets(Vec3 pos_offset, Vec3 rot_offset, Vec3 scale) {
+    public record BackpackOffsets(Vec3 posOffset, Vec3 rotOffset, Vec3 scale) {
         public static final Codec<BackpackOffsets> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                Vec3.CODEC.optionalFieldOf("position_offset", Vec3.ZERO).forGetter(BackpackOffsets::pos_offset),
-                Vec3.CODEC.optionalFieldOf("rotation_offset", Vec3.ZERO).forGetter(BackpackOffsets::rot_offset),
+                Vec3.CODEC.optionalFieldOf("position_offset", Vec3.ZERO).forGetter(BackpackOffsets::posOffset),
+                Vec3.CODEC.optionalFieldOf("rotation_offset", Vec3.ZERO).forGetter(BackpackOffsets::rotOffset),
                 Vec3.CODEC.optionalFieldOf("scale", new Vec3(1, 1, 1)).forGetter(BackpackOffsets::scale)
         ).apply(instance, BackpackOffsets::new));
 
@@ -137,5 +142,14 @@ public record DragonBody(
     public static String getWingButtonDescription(final Holder<DragonBody> holder) {
         //noinspection DataFlowIssue -> key is present
         return Translation.Type.BODY_WINGS_DESCRIPTION.wrap(holder.getKey().location());
+    }
+
+    public static Vec3 getMountingOffsetForEntity(final Entity entity) {
+        if(entity instanceof Boat) {
+            // If we used the base mounting offset here, you would touch the water as a cave dragon even when in a boat. So push them up a little further than normal
+            return BOAT_MOUNTING_OFFSET;
+        } else {
+            return BASE_MOUNTING_OFFSET;
+        }
     }
 }
