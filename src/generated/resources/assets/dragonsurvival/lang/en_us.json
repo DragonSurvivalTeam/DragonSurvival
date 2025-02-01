@@ -274,6 +274,8 @@
   "dragon_ability.dragonsurvival.test_frost_walker.desc": "Frost-walker like effect",
   "dragon_ability.dragonsurvival.test_glow": "Glow Test",
   "dragon_ability.dragonsurvival.test_glow.desc": "Applies a changing glow color",
+  "dragon_ability.dragonsurvival.test_smelting": "Smelting Test",
+  "dragon_ability.dragonsurvival.test_smelting.desc": "Tests smelting",
   "dragon_ability.dragonsurvival.test_summon": "Summon Test",
   "dragon_ability.dragonsurvival.test_summon.desc": "Summons some entities",
   "dragon_body.dragonsurvival.center": "Center",
