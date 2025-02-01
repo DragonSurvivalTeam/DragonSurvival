@@ -16,10 +16,7 @@
                     "id": "dragonsurvival:diamond_vision",
                     "is_hidden": true
                   },
-                  "blocks": [
-                    "minecraft:diamond_ore",
-                    "minecraft:deepslate_diamond_ore"
-                  ],
+                  "blocks": "#c:ores/diamond",
                   "colors": [
                     "gold",
                     "dark_purple",

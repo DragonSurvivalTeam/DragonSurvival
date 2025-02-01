@@ -10,10 +10,7 @@ import net.minecraft.world.entity.player.Player;
 
 import java.util.Set;
 
-// FIXME :: add generic codec config and handle custom configs through that
 public class EffectConfig implements CustomConfig {
-    private static final String SPLIT = ";";
-
     private final Set<ResourceLocation> effects;
     private final int duration;
     private final int amplifier;
@@ -24,11 +21,11 @@ public class EffectConfig implements CustomConfig {
 
     /** Required to handle creation, parsing etc. (created through reflection) */
     public EffectConfig() {
-        this(Set.of(), 0, 0, 0, 0, "");
+        this("", 0, 0, 0, 0, "");
     }
 
-    private EffectConfig(final Set<ResourceLocation> effects, final int duration, final int amplifier, final double durationMultiplier, final double amplifierMultiplier, final String originalData) {
-        this.effects = effects;
+    private EffectConfig(final String effectResource, final int duration, final int amplifier, final double durationMultiplier, final double amplifierMultiplier, final String originalData) {
+        this.effects = ResourceLocationWrapper.getEntries(effectResource, BuiltInRegistries.MOB_EFFECT);
         this.duration = duration;
         this.amplifier = amplifier;
         this.durationMultiplier = durationMultiplier;
@@ -38,8 +35,7 @@ public class EffectConfig implements CustomConfig {
 
     public static EffectConfig create(final Holder<MobEffect> effect, final int duration, final int amplifier, final double durationMultiplier, final double amplifierMultiplier) {
         String data = effect.getRegisteredName() + SPLIT + duration + SPLIT + amplifier + SPLIT + durationMultiplier + SPLIT + amplifierMultiplier;
-        //noinspection DataFlowIssue -> key is present
-        return new EffectConfig(Set.of(effect.getKey().location()), duration, amplifier, durationMultiplier, amplifierMultiplier, data);
+        return new EffectConfig(effect.getRegisteredName(), duration, amplifier, durationMultiplier, amplifierMultiplier, data);
     }
 
     public void applyEffects(final Player player, int level) {
@@ -54,8 +50,15 @@ public class EffectConfig implements CustomConfig {
     }
 
     @Override
-    public String convert() {
-        return originalData;
+    public CustomConfig parse(final String data) {
+        String[] elements = data.split(SPLIT);
+
+        int duration = Integer.parseInt(elements[DURATION]);
+        int amplifier = Integer.parseInt(elements[AMPLIFIER]);
+        double durationMultiplier = Double.parseDouble(elements[DURATION_MULTIPLIER]);
+        double amplifierMultiplier = Double.parseDouble(elements[AMPLIFIER_MULTIPLIER]);
+
+        return new EffectConfig(elements[EFFECTS], duration, amplifier, durationMultiplier, amplifierMultiplier, data);
     }
 
     @Override
@@ -91,16 +94,8 @@ public class EffectConfig implements CustomConfig {
     }
 
     @Override
-    public CustomConfig parse(final String data) {
-        String[] elements = data.split(SPLIT);
-
-        Set<ResourceLocation> entries = ResourceLocationWrapper.getEntries(elements[EFFECTS], BuiltInRegistries.MOB_EFFECT);
-        int duration = Integer.parseInt(elements[DURATION]);
-        int amplifier = Integer.parseInt(elements[AMPLIFIER]);
-        double durationMultiplier = Double.parseDouble(elements[DURATION_MULTIPLIER]);
-        double amplifierMultiplier = Double.parseDouble(elements[AMPLIFIER_MULTIPLIER]);
-
-        return new EffectConfig(entries, duration, amplifier, durationMultiplier, amplifierMultiplier, data);
+    public String convert() {
+        return originalData;
     }
 
     private static final int EFFECTS = 0;
