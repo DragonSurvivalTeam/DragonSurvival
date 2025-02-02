@@ -19,7 +19,7 @@ public class ItemData implements INBTSerializable<CompoundTag> {
     public int noSmeltingChange;
 
     @SubscribeEvent
-    public static void resetProgress(final EntityTickEvent.Post event) {
+    public static void resetSmeltingProgress(final EntityTickEvent.Post event) {
         event.getEntity().getExistingData(DSDataAttachments.ITEM).ifPresent(data -> {
             if (data.smeltingProgress == data.previousSmeltingProgress) {
                 data.noSmeltingChange++;

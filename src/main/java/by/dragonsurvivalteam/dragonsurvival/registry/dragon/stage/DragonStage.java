@@ -235,7 +235,7 @@ public record DragonStage(
         }
 
         if (fallback != null) {
-            DragonSurvival.LOGGER.warn("No matching dragon level found for size [{}] - using [{}] as fallback", growth, fallback.getRegisteredName());
+            DragonSurvival.LOGGER.warn("No matching dragon level found for growth [{}] - using [{}] as fallback", growth, fallback.getRegisteredName());
             return fallback;
         }
 

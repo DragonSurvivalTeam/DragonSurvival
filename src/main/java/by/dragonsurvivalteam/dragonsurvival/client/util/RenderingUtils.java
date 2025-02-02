@@ -18,7 +18,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -29,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
-import java.awt.Color;
+import java.awt.*;
 import java.io.IOException;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -173,7 +175,9 @@ public class RenderingUtils {
             //}
 
             // the other 'getTexture' call tries to register the texture immediately
-            if (Minecraft.getInstance().getTextureManager().getTexture(key, null) instanceof DynamicTexture texture) {
+            DynamicTexture missing = MissingTextureAtlasSprite.getTexture();
+
+            if (Minecraft.getInstance().getTextureManager().getTexture(key, missing) instanceof DynamicTexture texture && texture != missing) {
                 texture.setPixels(image);
                 texture.upload();
             } else {
@@ -193,7 +197,7 @@ public class RenderingUtils {
         uploadTexture(image, key);
     }
 
-    @Nullable public static NativeImage getImageFromResource(ResourceLocation location) {
+    public static @Nullable NativeImage getImageFromResource(ResourceLocation location) {
         NativeImage image = null;
 
         try {
@@ -203,6 +207,12 @@ public class RenderingUtils {
         }
 
         return image;
+    }
+
+    public static boolean hasTexture(final ResourceLocation resource) {
+        DynamicTexture missing = MissingTextureAtlasSprite.getTexture();
+        AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(resource, missing);
+        return texture != missing;
     }
 
     public static void drawGrowthCircle(final GuiGraphics guiGraphics, float x, float y, float radius, int sides, float lineWidthPercent, float percent, float targetPercent, Color innerColor, Color outlineColor, Color addColor, Color subtractColor) {

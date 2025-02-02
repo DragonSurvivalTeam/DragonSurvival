@@ -176,11 +176,11 @@ public class DragonSoulItem extends Item {
                 name = Component.translatable(INVALID_DRAGON_TYPE);
             }
 
-            double size = tag.getDouble(SIZE);
-            Holder<DragonStage> stage = DragonStage.get(provider, size);
+            double growth = tag.getDouble(SIZE);
+            Holder<DragonStage> stage = DragonStage.get(provider, growth);
 
             //noinspection DataFlowIssue -> key is present
-            tooltips.add(Component.translatable(INFO, name, DragonStage.translatableName(stage.getKey()), String.format("%.0f", size)));
+            tooltips.add(Component.translatable(INFO, name, DragonStage.translatableName(stage.getKey()), String.format("%.0f", growth)));
         } else {
             tooltips.add(Component.translatable(IS_EMPTY));
         }

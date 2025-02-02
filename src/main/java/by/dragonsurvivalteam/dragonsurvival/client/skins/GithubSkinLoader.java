@@ -89,10 +89,12 @@ public class GithubSkinLoader extends NetSkinLoader {
     private static final String GLOW = "_glow";
 
     public InputStream querySkinImage(final String skinName, final ResourceKey<DragonStage> dragonStage) {
+        boolean isGlow = skinName.endsWith(GLOW);
+
         try {
             String fetchName;
 
-            if (skinName.endsWith(GLOW)) {
+            if (isGlow) {
                 fetchName = skinName.replace(GLOW, "");
                 fetchName = SKIN + fetchName + "_" + dragonStage.location().getPath() + GLOW + ".png";
             } else {
@@ -102,7 +104,9 @@ public class GithubSkinLoader extends NetSkinLoader {
             URL url = new URL(fetchName);
             return internetGetStream(url, 15 * 1000);
         } catch (IOException exception) {
-            DragonSurvival.LOGGER.error("Failed to get skin information in GitHub: [{}]", exception.getMessage());
+            if (!isGlow) {
+                DragonSurvival.LOGGER.error("Failed to get skin information in GitHub: [{}]", exception.getMessage());
+            }
         }
 
         return null;

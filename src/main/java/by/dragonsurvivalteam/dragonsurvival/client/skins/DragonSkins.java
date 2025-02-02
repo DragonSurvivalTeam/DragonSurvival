@@ -289,6 +289,7 @@ public class DragonSkins {
     }
 
     public static ResourceKey<DragonStage> parseResourceKeyFromName(String name) {
+        // FIXME :: has problems with '_Katya_Ket__newborn'
         String skinName = name.substring(0, name.indexOf("."));
 
         if (skinName.endsWith("_glow")) {
