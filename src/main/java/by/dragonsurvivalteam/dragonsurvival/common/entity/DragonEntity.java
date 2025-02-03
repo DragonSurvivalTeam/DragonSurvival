@@ -165,6 +165,10 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     }
 
     public void beginPlayingEmote(DragonEmote emote) {
+        if(emote == null) {
+            return;
+        }
+
         for (int i = 0; i < MAX_EMOTES; i++) {
             if (currentlyPlayingEmotes[i] == emote) {
                 currentlyPlayingEmotes[i] = null;
