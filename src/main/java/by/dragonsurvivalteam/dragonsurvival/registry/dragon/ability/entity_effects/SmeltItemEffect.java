@@ -2,26 +2,44 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effe
 
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ItemData;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
+import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 
+import java.text.NumberFormat;
+import java.util.List;
 import java.util.Optional;
 
-public record SmeltItemEffect(Optional<ItemPredicate> itemPredicate, LevelBasedValue progress, boolean dropsExperience) implements AbilityEntityEffect {
+public record SmeltItemEffect(Optional<ItemPredicate> itemPredicate, Optional<LevelBasedValue> progress, boolean dropsExperience) implements AbilityEntityEffect {
+    @Translation(comments = "Smelts items %s as fast as a furnace")
+    private static final String CUSTOM_SPEED = Translation.Type.GUI.wrap("smelting_effect.custom_speed");
+
+    @Translation(comments = "Smelts items at the speed of a furnace")
+    private static final String FURNACE_SPEED = Translation.Type.GUI.wrap("smelting_effect.furnace_speed");
+
+    @Translation(comments = "Smelts items instantly")
+    private static final String INSTANT = Translation.Type.GUI.wrap("smelting_effect.instant");
+
     public static final MapCodec<SmeltItemEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             ItemPredicate.CODEC.optionalFieldOf("item_predicate").forGetter(SmeltItemEffect::itemPredicate),
-            LevelBasedValue.CODEC.optionalFieldOf("progress", LevelBasedValue.constant(1)).forGetter(SmeltItemEffect::progress),
-            Codec.BOOL.optionalFieldOf("drops_experience", true).forGetter(SmeltItemEffect::dropsExperience)
+            LevelBasedValue.CODEC.optionalFieldOf("progress").forGetter(SmeltItemEffect::progress),
+            Codec.BOOL.optionalFieldOf("grants_experience", true).forGetter(SmeltItemEffect::dropsExperience)
     ).apply(instance, SmeltItemEffect::new));
 
     @Override
@@ -36,37 +54,50 @@ public record SmeltItemEffect(Optional<ItemPredicate> itemPredicate, LevelBasedV
             return;
         }
 
-        ItemData data = itemEntity.getData(DSDataAttachments.ITEM);
-        data.smeltingProgress += progress.calculate(ability.level());
+        RecipeHolder<SmeltingRecipe> recipe = dragon.level().getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(stack), dragon.level()).orElse(null);
 
-        if (data.smeltingProgress < 1) {
+        if (recipe == null || recipe.value().getResultItem(dragon.registryAccess()).isEmpty()) {
             return;
         }
 
-        dragon.level().getRecipeManager()
-                .getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(stack), dragon.level())
-                .ifPresent(recipe -> {
-                    ItemStack result = recipe.value().getResultItem(dragon.registryAccess());
+        if (progress.isPresent()) {
+            ItemData data = itemEntity.getData(DSDataAttachments.ITEM);
+            data.smeltingProgress += progress.get().calculate(ability.level());
 
-                    if (result.isEmpty()) {
-                        return;
-                    }
+            if (data.smeltingProgress < recipe.value().getCookingTime() * stack.getCount()) {
+                return;
+            }
 
-                    // Result is amount of smelting 1 item - therefor calculate the actual resulting amount
-                    itemEntity.setItem(result.copyWithCount(stack.getCount() * result.getCount()));
+            data.smeltingProgress = 0;
+        }
 
-                    if (!dropsExperience) {
-                        return;
-                    }
+        ItemStack result = recipe.value().getResultItem(dragon.registryAccess());
+        itemEntity.setItem(result.copyWithCount(result.getCount() * stack.getCount()));
 
-                    float experience = recipe.value().getExperience() * stack.getCount();
+        if (!dropsExperience) {
+            return;
+        }
 
-                    if (experience > 0) {
-                        dragon.giveExperiencePoints((int) experience);
-                    }
-                });
+        float experience = recipe.value().getExperience() * stack.getCount();
 
-        data.smeltingProgress = 0;
+        if (experience > 0) {
+            dragon.giveExperiencePoints((int) experience);
+        }
+    }
+
+    @Override
+    public List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
+        if (this.progress.isPresent()) {
+            double progress = this.progress.get().calculate(ability.level());
+
+            if (progress == 1) {
+                return List.of(Component.translatable(FURNACE_SPEED));
+            } else {
+                return List.of(Component.translatable(CUSTOM_SPEED, DSColors.dynamicValue(NumberFormat.getPercentInstance().format(progress))));
+            }
+        } else {
+            return List.of(Component.translatable(INSTANT));
+        }
     }
 
     @Override

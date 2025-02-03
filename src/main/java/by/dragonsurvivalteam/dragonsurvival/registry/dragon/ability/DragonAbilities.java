@@ -8,6 +8,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierWithDuration;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationKey;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationLayer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.SimpleAbilityAnimation;
@@ -16,13 +17,17 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.Dura
 import by.dragonsurvivalteam.dragonsurvival.common.conditions.EntityCondition;
 import by.dragonsurvivalteam.dragonsurvival.common.conditions.ItemCondition;
 import by.dragonsurvivalteam.dragonsurvival.common.conditions.MatchItem;
+import by.dragonsurvivalteam.dragonsurvival.common.particles.LargeFireParticleOption;
+import by.dragonsurvivalteam.dragonsurvival.common.particles.SmallFireParticleOption;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSSounds;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.CaveDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.ForestDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.SeaDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.BlockConversionEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.SummonEntityEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.BreathParticlesEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.GlowEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.ModifierEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.SmeltItemEffect;
@@ -31,6 +36,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.Ar
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.DiscTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.SelfTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.TargetingMode;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ExperienceLevelUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.ChatFormatting;
@@ -51,6 +57,7 @@ import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.common.NeoForgeMod;
 
 import java.util.List;
 import java.util.Optional;
@@ -189,25 +196,37 @@ public class DragonAbilities {
                 new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
         ));
 
+
         context.register(TEST_SMELTING, new DragonAbility(
                 new Activation(
-                        Activation.Type.ACTIVE_SIMPLE,
-                        Optional.of(LevelBasedValue.constant(1)),
+                        Activation.Type.ACTIVE_CHANNELED,
                         Optional.empty(),
-                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(3))),
-                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
-                        false,
-                        Activation.Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
+                        Optional.of(ManaCost.ticking(LevelBasedValue.constant(0.025f))),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(1))),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(2))),
+                        true,
+                        Activation.Sound.create().start(DSSounds.FIRE_BREATH_START.get()).looping(DSSounds.FIRE_BREATH_LOOP.get()).end(DSSounds.FIRE_BREATH_END.get()).optional(),
                         Activation.Animations.create()
-                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MASS_BUFF, AnimationLayer.BASE).transitionLength(2).locksNeck().locksTail().build())
-                                .end(SimpleAbilityAnimation.create(AnimationKey.MASS_BUFF, AnimationLayer.BASE).locksNeck().locksTail().build())
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).transitionLength(5).build())
+                                .looping(SimpleAbilityAnimation.create(AnimationKey.BREATH, AnimationLayer.BREATH).transitionLength(5).build())
                                 .optional()
                 ),
-                Optional.empty(),
-                Optional.empty(),
-                List.of(new ActionContainer(new AreaTarget(AbilityTargeting.entity(Condition.thisEntity(EntityCondition.isItem()).build(), List.of(
-                        new SmeltItemEffect(Optional.empty(), LevelBasedValue.constant(1), true)
-                ), TargetingMode.ALL), LevelBasedValue.constant(12)), LevelBasedValue.constant(1))),
+                Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 10f, 30f, 50f), LevelBasedValue.perLevel(15)))),
+                // Disable underwater
+                Optional.of(Condition.thisEntity(EntityCondition.isEyeInFluid(NeoForgeMod.WATER_TYPE)).or(Condition.thisEntity(EntityCondition.isInRainOrSnow())).build()),
+                List.of(
+                        new ActionContainer(new AreaTarget(AbilityTargeting.entity(Condition.thisEntity(EntityCondition.isItem()).build(), List.of(
+                                new SmeltItemEffect(Optional.empty(), Optional.of(LevelBasedValue.perLevel(2)), true)
+                        ), TargetingMode.ALL), LevelBasedValue.constant(12)), LevelBasedValue.constant(1)),
+                        new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                                List.of(new BreathParticlesEffect(
+                                        0.04f,
+                                        0.02f,
+                                        new SmallFireParticleOption(37, true),
+                                        new LargeFireParticleOption(37, false)
+                                )),
+                                TargetingMode.ALL
+                        )), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
         ));

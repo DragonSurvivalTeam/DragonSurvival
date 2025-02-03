@@ -20,10 +20,12 @@ import java.util.List;
 
 /** Basically just a copy of {@link GlowParticle.GlowSquidProvider} but allows setting a custom color */
 public class CustomGlowParticle extends GlowParticle {
+    private final double colorOffset;
     private List<Integer> colors;
 
-    protected CustomGlowParticle(final ClientLevel level, final double x, final double y, final double z, final double blockId, final double ySpeed, final double ignored, final SpriteSet sprites) {
+    protected CustomGlowParticle(final ClientLevel level, final double x, final double y, final double z, final double blockId, final double ySpeed, final double colorOffset, final SpriteSet sprites) {
         super(level, x, y, z, 0.5 - level.getRandom().nextDouble(), ySpeed, 0.5 - level.getRandom().nextDouble(), sprites);
+        this.colorOffset = colorOffset;
     }
 
     @Override
@@ -31,7 +33,7 @@ public class CustomGlowParticle extends GlowParticle {
         super.tick();
 
         if (colors != null) {
-            int argb = DSColors.withAlpha(Functions.lerpColor(colors), 1);
+            int argb = DSColors.withAlpha(Functions.lerpColor(colors, colorOffset), 1);
 
             float red = FastColor.ARGB32.red(argb) / 255f;
             float green = FastColor.ARGB32.green(argb) / 255f;
@@ -51,8 +53,8 @@ public class CustomGlowParticle extends GlowParticle {
             this.sprites = sprites;
         }
 
-        public Particle createParticle(@NotNull final SimpleParticleType type, @NotNull final ClientLevel level, final double x, final double y, final double z, final double blockId, final double ySpeed, final double ignored) {
-            CustomGlowParticle particle = new CustomGlowParticle(level, x, y, z, blockId, ySpeed, ignored, sprites);
+        public Particle createParticle(@NotNull final SimpleParticleType type, @NotNull final ClientLevel level, final double x, final double y, final double z, final double blockId, final double ySpeed, final double colorOffset) {
+            CustomGlowParticle particle = new CustomGlowParticle(level, x, y, z, blockId, ySpeed, colorOffset, sprites);
 
             LocalPlayer player = Minecraft.getInstance().player;
             List<Integer> colors = List.of();
@@ -74,7 +76,7 @@ public class CustomGlowParticle extends GlowParticle {
             particle.xd *= 0.1F;
             particle.zd *= 0.1F;
 
-            particle.setColors(colors); // TODO :: also add a random offset to the lerp timer?
+            particle.setColors(colors);
             particle.setLifetime((int) (8 / (level.getRandom().nextDouble() * 0.8 + 0.2)));
             return particle;
         }
