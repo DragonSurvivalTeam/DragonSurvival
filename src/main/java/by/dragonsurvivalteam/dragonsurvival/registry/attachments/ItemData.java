@@ -1,8 +1,11 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.util.INBTSerializable;
@@ -13,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 public class ItemData implements INBTSerializable<CompoundTag> {
     public boolean isFireImmune;
 
+    public double smeltingTime;
     public double smeltingProgress;
     public double previousSmeltingProgress;
 
@@ -20,7 +24,15 @@ public class ItemData implements INBTSerializable<CompoundTag> {
 
     @SubscribeEvent
     public static void resetSmeltingProgress(final EntityTickEvent.Post event) {
+        if (!(event.getEntity().level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
+
         event.getEntity().getExistingData(DSDataAttachments.ITEM).ifPresent(data -> {
+            if (data.smeltingTime == 0) {
+                return;
+            }
+
             if (data.smeltingProgress == data.previousSmeltingProgress) {
                 data.noSmeltingChange++;
 
@@ -33,6 +45,11 @@ public class ItemData implements INBTSerializable<CompoundTag> {
             }
 
             data.previousSmeltingProgress = data.smeltingProgress;
+
+            if (event.getEntity().tickCount % 10 == 0) {
+                int amount = (int) Math.max(1, 10 * (data.smeltingProgress / data.smeltingTime));
+                serverLevel.sendParticles(ParticleTypes.SMOKE, event.getEntity().getX(), event.getEntity().getY() + 0.5, event.getEntity().getZ(), amount, 0, 0, 0, 0);
+            }
         });
     }
 

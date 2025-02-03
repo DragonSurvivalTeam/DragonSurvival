@@ -63,8 +63,9 @@ public record SmeltItemEffect(Optional<ItemPredicate> itemPredicate, Optional<Le
         if (progress.isPresent()) {
             ItemData data = itemEntity.getData(DSDataAttachments.ITEM);
             data.smeltingProgress += progress.get().calculate(ability.level());
+            data.smeltingTime = recipe.value().getCookingTime() * stack.getCount();
 
-            if (data.smeltingProgress < recipe.value().getCookingTime() * stack.getCount()) {
+            if (data.smeltingProgress < data.smeltingTime) {
                 return;
             }
 
