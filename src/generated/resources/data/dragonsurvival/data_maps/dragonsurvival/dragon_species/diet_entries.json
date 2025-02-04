@@ -295,8 +295,8 @@
       {
         "items": "minecraft:poisonous_potato",
         "properties": {
-          "nutrition": 7,
-          "saturation": 8.0
+          "nutrition": 2,
+          "saturation": 4.0
         }
       },
       {

@@ -230,6 +230,8 @@
   "dragon_ability.dragonsurvival.forest_wings.desc": "■ Dragons use §flevitation§r§7 to §2fly§r§7, but are rarely born with that ability.",
   "dragon_ability.dragonsurvival.friendly_fire": "Friendly Fire",
   "dragon_ability.dragonsurvival.friendly_fire.desc": "■ Coat your allies with §fprotective dust§r§7 and they get the §2Fire Resistance§r§7 effect.\n\n■ Your pets will stop dying by your §ffire§r§7 and your friends will be able to bathe in §flava§r§7. For a while.",
+  "dragon_ability.dragonsurvival.furnace_heat": "Furnace Heat",
+  "dragon_ability.dragonsurvival.furnace_heat.desc": "■ §2Melts items§r§7 on the ground.\n\n■ The melting rate is §ffaster§r§7 when there are fewer items in the stack. Items §fretain§r§7 their melting degree even if you stop casting, but §fpicking§r§7 the item will discard all progress.\n\n■ Inflicts §clittle damage§r§7 compared to Nether Breath.\n\n■ §8Cannot be used under water, and during rain.§r",
   "dragon_ability.dragonsurvival.hunter": "Hunters",
   "dragon_ability.dragonsurvival.hunter.desc": "■ Cover yourself and allies in a thick carpet of herbs. This grants §ffast§r§7 movement and §2Invisibility§r§7 whilst in the grass.\n\n■ Your first attack while invisible is a critical hit with a §c%-based damage§r§7 bonus.\n\n■ §8Effect does not stack. Will be removed early if you take damage, or attack a target.§r",
   "dragon_ability.dragonsurvival.hydration": "Hydration",

@@ -33,18 +33,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilit
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.BlockBreakEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.FireEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.ParticleEffect;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.BreathParticlesEffect;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.DamageEffect;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.DamageModificationEffect;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.FlightEffect;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.HarvestBonusEffect;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.IgniteEffect;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.ModifierEffect;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.OnAttackEffect;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.PotionEffect;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.ProjectileEffect;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.SpinEffect;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.SwimEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AbilityTargeting;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AreaTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.DragonBreathTarget;
@@ -94,6 +83,15 @@ public class CaveDragonAbilities {
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Shoots out a fireball that §cexplodes§r and sets the area on §cfire§r.")
     @Translation(type = Translation.Type.ABILITY, comments = "Fireball")
     public static final ResourceKey<DragonAbility> FIRE_BALL = DragonAbilities.key("fire_ball");
+
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
+            "■ §2Melts items§r§7 on the ground.\n",
+            "■ The melting rate is §ffaster§r§7 when there are fewer items in the stack. Items §fretain§r§7 their melting degree even if you stop casting, but §fpicking§r§7 the item will discard all progress.\n",
+            "■ Inflicts §clittle damage§r§7 compared to Nether Breath.\n",
+            "■ §8Cannot be used under water, and during rain.§r"
+    })
+    @Translation(type = Translation.Type.ABILITY, comments = "Furnace Heat")
+    public static final ResourceKey<DragonAbility> FURNACE_HEAT = DragonAbilities.key("furnace_heat");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Gives you and your allies additional §2armor points§r§7.")
     @Translation(type = Translation.Type.ABILITY, comments = "Sturdy Skin")
@@ -214,6 +212,55 @@ public class CaveDragonAbilities {
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/nether_breath_2"), 2),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/nether_breath_3"), 3),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/nether_breath_4"), 4)
+                ))
+        ));
+
+        context.register(FURNACE_HEAT, new DragonAbility(
+                new Activation(
+                        Activation.Type.ACTIVE_CHANNELED,
+                        Optional.empty(),
+                        Optional.of(ManaCost.ticking(LevelBasedValue.constant(0.030f))),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(1))),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(2))),
+                        true,
+                        Activation.Sound.create().start(DSSounds.FIRE_BREATH_START.get()).looping(DSSounds.FIRE_BREATH_LOOP.get()).end(DSSounds.FIRE_BREATH_END.get()).optional(),
+                        Activation.Animations.create()
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).transitionLength(5).build())
+                                .looping(SimpleAbilityAnimation.create(AnimationKey.BREATH, AnimationLayer.BREATH).transitionLength(5).build())
+                                .optional()
+                ),
+                Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 12f, 32f, 64f), LevelBasedValue.perLevel(15)))),
+                // Disable underwater
+                Optional.of(Condition.thisEntity(EntityCondition.isEyeInFluid(NeoForgeMod.WATER_TYPE)).or(Condition.thisEntity(EntityCondition.isInRainOrSnow())).build()),
+                List.of(
+                        new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(Condition.thisEntity(EntityCondition.isItem()).build(), List.of(
+                                new SmeltItemEffect(Optional.empty(), Optional.of(LevelBasedValue.perLevel(1.0f)), true)
+
+                        ), TargetingMode.ALL), LevelBasedValue.constant(1)), LevelBasedValue.constant(1)),
+                        new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
+                                Condition.thisEntity(EntityCondition.isLiving()).build(),
+                                List.of(
+                                        new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FIRE_BREATH), LevelBasedValue.perLevel(0.5f)),
+                                        new IgniteEffect(LevelBasedValue.perLevel(Functions.secondsToTicks(1)))
+                                ),
+                                TargetingMode.NON_ALLIES
+                        ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
+                        new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                                List.of(new BreathParticlesEffect(
+                                        0.04f,
+                                        0.02f,
+                                        new SmallFireParticleOption(12, true),
+                                        new SmallFireParticleOption(27, true)
+                                )),
+                                TargetingMode.ALL
+                        )), LevelBasedValue.constant(1))),
+                true,
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/furnace_heat_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/furnace_heat_1"), 1),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/furnace_heat_2"), 2),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/furnace_heat_3"), 3),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/furnace_heat_3"), 4)
                 ))
         ));
 

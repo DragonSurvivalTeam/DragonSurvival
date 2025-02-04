@@ -37,6 +37,7 @@ public class DSDragonAbilityTags extends TagsProvider<DragonAbility> {
                 // Active
                 .add(CaveDragonAbilities.NETHER_BREATH)
                 .add(CaveDragonAbilities.FIRE_BALL)
+                .add(CaveDragonAbilities.FURNACE_HEAT)
                 .add(CaveDragonAbilities.LAVA_VISION)
                 .add(CaveDragonAbilities.STURDY_SKIN)
                 .add(CaveDragonAbilities.FRIENDLY_FIRE)
@@ -94,6 +95,7 @@ public class DSDragonAbilityTags extends TagsProvider<DragonAbility> {
                 // Cave :: active
                 .add(CaveDragonAbilities.NETHER_BREATH)
                 .add(CaveDragonAbilities.FIRE_BALL)
+                .add(CaveDragonAbilities.FURNACE_HEAT)
                 .add(CaveDragonAbilities.LAVA_VISION)
                 .add(CaveDragonAbilities.STURDY_SKIN)
                 .add(CaveDragonAbilities.FRIENDLY_FIRE)

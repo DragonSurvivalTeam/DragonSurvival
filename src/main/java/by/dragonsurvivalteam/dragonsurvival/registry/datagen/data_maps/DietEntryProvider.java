@@ -78,7 +78,7 @@ public class DietEntryProvider extends DataMapProvider {
                 DietEntry.from(Items.ROTTEN_FLESH, new FoodProperties(2, 4, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
                 DietEntry.from(Items.SPIDER_EYE, new FoodProperties(6, 8, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
                 DietEntry.from(Items.RABBIT, new FoodProperties(7, 8, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
-                DietEntry.from(Items.POISONOUS_POTATO, new FoodProperties(7, 8, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                DietEntry.from(Items.POISONOUS_POTATO, new FoodProperties(2, 4, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
                 DietEntry.from(Items.CHORUS_FRUIT, new FoodProperties(9, 8, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
                 DietEntry.from(Items.BROWN_MUSHROOM, new FoodProperties(2, 1, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
                 DietEntry.from(Items.RED_MUSHROOM, new FoodProperties(2, 3, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
