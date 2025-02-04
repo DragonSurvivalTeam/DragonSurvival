@@ -5,12 +5,12 @@
         "applied_effects": {
           "entity_effect": [
             {
-              "type": "dragonsurvival:lightning_breath",
               "amount": {
                 "type": "minecraft:linear",
                 "base": 1.0,
                 "per_level_above_first": 1.0
               },
+              "damage_type": "dragonsurvival:lightning_breath",
               "effect_type": "dragonsurvival:damage"
             },
             {

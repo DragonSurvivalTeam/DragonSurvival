@@ -13,17 +13,7 @@
               }
             }
           ],
-          "target_conditions": {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "type_specific": {
-                "type": "dragonsurvival:entity_check_predicate",
-                "check_for": "item"
-              }
-            }
-          },
-          "targeting_mode": "all"
+          "targeting_mode": "items"
         },
         "range_multiplier": 1.0,
         "target_type": "dragonsurvival:dragon_breath"
@@ -35,12 +25,12 @@
         "applied_effects": {
           "entity_effect": [
             {
-              "type": "dragonsurvival:fire_breath",
               "amount": {
                 "type": "minecraft:linear",
                 "base": 0.5,
                 "per_level_above_first": 0.5
               },
+              "damage_type": "dragonsurvival:fire_breath",
               "effect_type": "dragonsurvival:damage"
             },
             {

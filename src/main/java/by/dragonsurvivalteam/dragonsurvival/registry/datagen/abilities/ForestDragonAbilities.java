@@ -230,12 +230,11 @@ public class ForestDragonAbilities {
                     Optional.of(Condition.thisEntity(EntityCondition.hasEffect(DSEffects.STRESS)).build()),
                     List.of(
                             new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
-                                    Condition.thisEntity(EntityCondition.isItem()).build(),
                                     List.of(new ItemConversionEffect(
                                             List.of(new ItemConversionEffect.ItemConversionData(ItemCondition.is(Items.POTATO), WeightedRandomList.create(ItemConversionEffect.ItemTo.of(Items.POISONOUS_POTATO)))),
                                             LevelBasedValue.constant(0.5f)
                                     )),
-                                    TargetingMode.ALL
+                                    TargetingMode.ITEMS
                             ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
                             new ActionContainer(new DragonBreathTarget(AbilityTargeting.block(
                                     List.of(

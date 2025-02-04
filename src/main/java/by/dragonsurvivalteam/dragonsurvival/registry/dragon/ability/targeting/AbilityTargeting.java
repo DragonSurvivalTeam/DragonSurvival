@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.AbilityBlockEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.AbilityEntityEffect;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.datafixers.Products;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
@@ -12,6 +13,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
@@ -25,6 +27,7 @@ import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +35,9 @@ import java.util.function.Function;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public interface AbilityTargeting {
+    String EFFECT_HEADER = "#HEADER#";
+    NumberFormat FORMAT = Functions.getFormat(2);
+
     ResourceKey<Registry<MapCodec<? extends AbilityTargeting>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("ability_targeting"));
     Registry<MapCodec<? extends AbilityTargeting>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();
 
@@ -108,22 +114,30 @@ public interface AbilityTargeting {
             List<MutableComponent> abilityEffectDescriptions = effect.getDescription(dragon, ability);
 
             if (!effect.getDescription(dragon, ability).isEmpty()) {
-                descriptions.addAll(abilityEffectDescriptions.stream().map(description -> description.append(targetDescription)).toList());
+                descriptions.addAll(abilityEffectDescriptions.stream().map(description -> format(description, targetDescription)).toList());
             }
         })).ifRight(entityTargeting -> entityTargeting.effects().forEach(effect -> {
             List<MutableComponent> abilityEffectDescriptions = effect.getDescription(dragon, ability);
 
             if (!effect.getDescription(dragon, ability).isEmpty()) {
                 if (this instanceof SelfTarget) {
-                    descriptions.addAll(effect.getDescription(dragon, ability));
+                    descriptions.addAll(effect.getDescription(dragon, ability).stream().map(this::format).toList());
                 } else {
-                    descriptions.addAll(abilityEffectDescriptions.stream().map(description -> description.append(targetDescription)).toList());
+                    descriptions.addAll(abilityEffectDescriptions.stream().map(description -> format(description, targetDescription)).toList());
                 }
             }
 
         }));
 
         return descriptions;
+    }
+
+    private MutableComponent format(final MutableComponent description) {
+        return Component.literal(EFFECT_HEADER).append(Component.literal("\n")).append(description);
+    }
+
+    private MutableComponent format(final MutableComponent description, final MutableComponent targetDescription) {
+        return format(description).append(Component.literal("\n\n")).append(targetDescription);
     }
 
     // FIXME :: may not be needed anymore

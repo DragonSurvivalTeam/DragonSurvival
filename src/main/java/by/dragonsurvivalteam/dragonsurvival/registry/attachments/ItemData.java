@@ -1,7 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
-import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -22,8 +21,8 @@ public class ItemData implements INBTSerializable<CompoundTag> {
 
     public int noSmeltingChange;
 
-    @SubscribeEvent
-    public static void resetSmeltingProgress(final EntityTickEvent.Post event) {
+    @SubscribeEvent // Resets progress after inactivity and spawns the smoke particles
+    public static void handleSmelting(final EntityTickEvent.Post event) {
         if (!(event.getEntity().level() instanceof ServerLevel serverLevel)) {
             return;
         }

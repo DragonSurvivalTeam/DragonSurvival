@@ -325,6 +325,12 @@ public class Functions {
         return Objects.requireNonNullElse(list, Component.empty());
     }
 
+    public static NumberFormat getFormat(final int decimals) {
+        NumberFormat format = NumberFormat.getInstance();
+        format.setMaximumFractionDigits(decimals);
+        return format;
+    }
+
     public static int lerpColor(final List<Integer> colors) {
         return lerpColor(colors, 0);
     }

@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.projectile.targeting;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
+import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -27,7 +28,7 @@ public record ProjectilePointTarget(GeneralData generalData) implements Projecti
         MutableComponent description = Component.empty();
 
         if (generalData.tickRate() > 1) {
-            description.append(Component.translatable(LangKey.ABILITY_X_SECONDS, Functions.ticksToSeconds(generalData.tickRate())));
+            description.append(Component.translatable(LangKey.ABILITY_X_SECONDS, DSColors.dynamicValue(Functions.ticksToSeconds(generalData.tickRate()))));
         }
 
         return description;

@@ -19,10 +19,10 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 public record DiscTarget(Either<BlockTargeting, EntityTargeting> target, LevelBasedValue radius, LevelBasedValue height, boolean heightStartsBelow) implements AbilityTargeting {
-    @Translation(comments = " in a disc around you (radius: %s / height: %s)")
+    @Translation(comments = "Targets a disc around you (radius: %s / height: %s)")
     private static final String DISC_TARGET_BLOCK = Translation.Type.GUI.wrap("ability_target.disc_target.block");
 
-    @Translation(comments = " to %s in a disc around you (radius: %s / height: %s)")
+    @Translation(comments = "Targets %s in a disc around you (radius: %s / height: %s)")
     public static final String DISC_TARGET_ENTITY = Translation.Type.GUI.wrap("ability_target.disc_target.entity");
 
     public static final MapCodec<DiscTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> AbilityTargeting.codecStart(instance)

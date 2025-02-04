@@ -5,12 +5,12 @@
         "applied_effects": {
           "entity_effect": [
             {
-              "type": "dragonsurvival:forest_breath",
               "amount": {
                 "type": "minecraft:linear",
                 "base": 2.0,
                 "per_level_above_first": 2.0
               },
+              "damage_type": "dragonsurvival:forest_breath",
               "effect_type": "dragonsurvival:damage"
             },
             {

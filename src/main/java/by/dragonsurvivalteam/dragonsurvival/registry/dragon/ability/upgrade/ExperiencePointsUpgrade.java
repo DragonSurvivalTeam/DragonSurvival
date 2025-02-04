@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.util.ExperienceUtils;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.Component;
@@ -21,11 +22,7 @@ public record ExperiencePointsUpgrade(int maxLevel, LevelBasedValue experienceCo
             .and(LevelBasedValue.CODEC.fieldOf("experience_cost").forGetter(ExperiencePointsUpgrade::experienceCost)).apply(instance, ExperiencePointsUpgrade::new)
     );
 
-    private static final NumberFormat FORMAT = NumberFormat.getInstance();
-
-    static {
-        FORMAT.setMaximumFractionDigits(2);
-    }
+    private static final NumberFormat FORMAT = Functions.getFormat(2);
 
     @Override
     public boolean apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final ExperiencePointsUpgrade.Type type) {

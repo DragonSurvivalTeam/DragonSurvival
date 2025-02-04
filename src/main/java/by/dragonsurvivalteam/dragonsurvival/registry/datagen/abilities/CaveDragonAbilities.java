@@ -86,7 +86,7 @@ public class CaveDragonAbilities {
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
             "■ §2Melts items§r§7 on the ground.\n",
-            "■ The melting rate is §ffaster§r§7 when there are fewer items in the stack. Items §fretain§r§7 their melting degree even if you stop casting, but §fpicking§r§7 the item will discard all progress.\n",
+            "■ The melting rate is §ffaster§r§7 when there are fewer items in the stack. Items §fretain§r§7 their melting degree for a short duration if you stop casting, but §fpicking up§r§7 the item will discard all progress.\n",
             "■ Inflicts §clittle damage§r§7 compared to Nether Breath.\n",
             "■ §8Cannot be used under water, and during rain.§r"
     })
@@ -154,7 +154,7 @@ public class CaveDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Friendly Fire")
     public static final ResourceKey<DragonAbility> FRIENDLY_FIRE = DragonAbilities.key("friendly_fire");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ ■ Cave dragons can §2swim in lava§r§7, but they can't stay here too long because the §ftemperature§r§7 is too high.")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Cave dragons can §2swim in lava§r§7, but they can't stay here too long because the §ftemperature§r§7 is too high.")
     @Translation(type = Translation.Type.ABILITY, comments = "Lava Swimming")
     public static final ResourceKey<DragonAbility> LAVA_SWIMMING = DragonAbilities.key("lava_swimming");
 
@@ -230,13 +230,11 @@ public class CaveDragonAbilities {
                                 .optional()
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 12f, 32f, 64f), LevelBasedValue.perLevel(15)))),
-                // Disable underwater
                 Optional.of(Condition.thisEntity(EntityCondition.isEyeInFluid(NeoForgeMod.WATER_TYPE)).or(Condition.thisEntity(EntityCondition.isInRainOrSnow())).build()),
                 List.of(
-                        new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(Condition.thisEntity(EntityCondition.isItem()).build(), List.of(
+                        new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(List.of(
                                 new SmeltItemEffect(Optional.empty(), Optional.of(LevelBasedValue.perLevel(1.0f)), true)
-
-                        ), TargetingMode.ALL), LevelBasedValue.constant(1)), LevelBasedValue.constant(1)),
+                        ), TargetingMode.ITEMS), LevelBasedValue.constant(1)), LevelBasedValue.constant(1)),
                         new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
                                 Condition.thisEntity(EntityCondition.isLiving()).build(),
                                 List.of(

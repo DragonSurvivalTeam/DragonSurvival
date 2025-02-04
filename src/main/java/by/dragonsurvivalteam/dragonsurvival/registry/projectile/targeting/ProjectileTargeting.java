@@ -8,7 +8,9 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -96,11 +98,19 @@ public interface ProjectileTargeting {
             List<MutableComponent> effectDescription = conditional.effect().getDescription(dragon, level);
             
             if (!effectDescription.isEmpty()) {
-                descriptions.addAll(effectDescription.stream().map(abilityEffectDescription -> abilityEffectDescription.append(targetDescription)).toList());
+                descriptions.addAll(effectDescription.stream().map(description -> format(description, targetDescription)).toList());
             }
         }
 
         return descriptions;
+    }
+
+    static MutableComponent format(final MutableComponent description, final MutableComponent targetDescription) {
+        if (targetDescription.getContents() == PlainTextContents.EMPTY) {
+            return description;
+        }
+
+        return description.append(Component.literal("\n\n")).append(targetDescription);
     }
 
     void apply(final Projectile projectile, int projectileLevel);

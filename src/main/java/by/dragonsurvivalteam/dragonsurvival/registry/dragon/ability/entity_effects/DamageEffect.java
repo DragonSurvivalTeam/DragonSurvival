@@ -18,15 +18,15 @@ import net.minecraft.world.item.enchantment.LevelBasedValue;
 
 import java.util.List;
 
-public record DamageEffect(Holder<DamageType> type, LevelBasedValue amount) implements AbilityEntityEffect {
+public record DamageEffect(Holder<DamageType> damageType, LevelBasedValue amount) implements AbilityEntityEffect {
     public static final MapCodec<DamageEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            DamageType.CODEC.fieldOf("type").forGetter(DamageEffect::type),
+            DamageType.CODEC.fieldOf("damage_type").forGetter(DamageEffect::damageType),
             LevelBasedValue.CODEC.fieldOf("amount").forGetter(DamageEffect::amount)
     ).apply(instance, DamageEffect::new));
 
     @Override
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
-        target.hurt(new DamageSource(type, dragon), amount().calculate(ability.level()));
+        target.hurt(new DamageSource(damageType, dragon), amount().calculate(ability.level()));
 
         // Used by 'OwnerHurtTargetGoal'
         dragon.setLastHurtMob(target);
@@ -35,8 +35,8 @@ public record DamageEffect(Holder<DamageType> type, LevelBasedValue amount) impl
     @Override
     public List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
         //noinspection DataFlowIssue -> key is present
-        MutableComponent translation = Component.translatable(Translation.Type.DAMAGE_TYPE.wrap(type.getKey().location())).withColor(DSColors.GOLD);
-        return List.of(Component.translatable(LangKey.ABILITY_DAMAGE, translation, DSColors.dynamicValue(amount.calculate(ability.level()))));
+        MutableComponent damageType = Component.translatable(Translation.Type.DAMAGE_TYPE.wrap(this.damageType.getKey().location()));
+        return List.of(Component.translatable(LangKey.ABILITY_DAMAGE, DSColors.dynamicValue(amount.calculate(ability.level())), DSColors.dynamicValue(damageType)));
     }
 
     @Override

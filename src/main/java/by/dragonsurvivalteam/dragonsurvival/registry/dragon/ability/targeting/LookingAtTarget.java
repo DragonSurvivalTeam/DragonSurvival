@@ -20,10 +20,10 @@ import net.minecraft.world.phys.HitResult;
 import java.util.function.Predicate;
 
 public record LookingAtTarget(Either<BlockTargeting, EntityTargeting> target, LevelBasedValue range) implements AbilityTargeting {
-    @Translation(comments = " to a block that you are looking at within a range of %s blocks")
+    @Translation(comments = "Targets a block that you are looking at within a range of %s blocks")
     private static final String LOOKING_AT_TARGET_BLOCK = Translation.Type.GUI.wrap("ability_target.looking_at.block");
 
-    @Translation(comments = " to %s that you are looking at within a range of %s blocks")
+    @Translation(comments = "Targets %s that you are looking at within a range of %s blocks")
     private static final String LOOKING_AT_TARGET_ENTITY = Translation.Type.GUI.wrap("ability_target.looking_at.entity");
 
     public static final MapCodec<LookingAtTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> AbilityTargeting.codecStart(instance)
@@ -59,11 +59,12 @@ public record LookingAtTarget(Either<BlockTargeting, EntityTargeting> target, Le
     @Override
     public MutableComponent getDescription(final Player dragon, final DragonAbilityInstance ability) {
         Component targetingComponent = target.map(block -> null, entity -> entity.targetingMode().translation());
+        MutableComponent range = DSColors.dynamicValue(FORMAT.format(this.range.calculate(ability.level())));
 
         if (targetingComponent == null) {
-            return Component.translatable(LOOKING_AT_TARGET_BLOCK, DSColors.dynamicValue(range.calculate(ability.level())));
+            return Component.translatable(LOOKING_AT_TARGET_BLOCK, range);
         } else {
-            return Component.translatable(LOOKING_AT_TARGET_ENTITY, DSColors.dynamicValue(targetingComponent), DSColors.dynamicValue(range.calculate(ability.level())));
+            return Component.translatable(LOOKING_AT_TARGET_ENTITY, DSColors.dynamicValue(targetingComponent), range);
         }
     }
 

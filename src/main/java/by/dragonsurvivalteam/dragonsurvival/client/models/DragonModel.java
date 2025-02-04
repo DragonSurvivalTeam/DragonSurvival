@@ -39,6 +39,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
     /** Factor to multiply the delta movement by, needed for scaling for the animations */
     private static final double DELTA_MOVEMENT_FACTOR = 10;
 
+    // FIXME 'dragon_dragon'?
     private final ResourceLocation defaultTexture = DragonSurvival.res("textures/dragon_dragon/newborn.png");
 
     private ResourceLocation overrideTexture;
@@ -180,7 +181,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
 
     @Override
     public ResourceLocation getTextureResource(final DragonEntity dragon) {
-        if (overrideTexture != null) {
+        if (overrideTexture != null && RenderingUtils.hasTexture(overrideTexture)) {
             return overrideTexture;
         }
 

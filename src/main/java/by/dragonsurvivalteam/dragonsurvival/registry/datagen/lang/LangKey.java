@@ -97,14 +97,11 @@ public class LangKey {
     @Translation(comments = " on hit")
     public static final String ABILITY_ON_HIT = Translation.Type.GUI.wrap("ability.on_hit");
 
-    @Translation(comments = "§6■ Applies %s")
+    @Translation(comments = "§6■ Applies§r %s")
     public static final String ABILITY_APPLIES = Translation.Type.GUI.wrap("ability.applies");
 
-    @Translation(comments = "§6■ %s §6Damage:§r %s")
+    @Translation(comments = "§6■ Deals %s %s damage§r")
     public static final String ABILITY_DAMAGE = Translation.Type.GUI.wrap("ability.x_damage");
-
-    @Translation(comments = "§6■%s§6Explosion Power:§r %s")
-    public static final String ABILITY_EXPLOSION_POWER = Translation.Type.GUI.wrap("ability.explosion_power");
 
     @Translation(comments = "§6■ Cooldown:§r %ss")
     public static final String ABILITY_COOLDOWN = Translation.Type.GUI.wrap("ability.cooldown_of_x");

@@ -22,6 +22,7 @@ import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -213,6 +214,15 @@ public class RenderingUtils {
         DynamicTexture missing = MissingTextureAtlasSprite.getTexture();
         AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(resource, missing);
         return texture != missing;
+    }
+
+    public static void setShaderColor(int color) {
+        float alpha = FastColor.ARGB32.alpha(color) / 255f;
+        float red = FastColor.ARGB32.red(color) / 255f;
+        float green = FastColor.ARGB32.green(color) / 255f;
+        float blue = FastColor.ARGB32.blue(color) / 255f;
+
+        RenderSystem.setShaderColor(red, green, blue, alpha);
     }
 
     public static void drawGrowthCircle(final GuiGraphics guiGraphics, float x, float y, float radius, int sides, float lineWidthPercent, float percent, float targetPercent, Color innerColor, Color outlineColor, Color addColor, Color subtractColor) {
