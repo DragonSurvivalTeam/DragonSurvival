@@ -101,8 +101,8 @@ dependencies {
 //	implementation "curse.maven:placebo-283644:5869769" // 9.5.4
 
 	// Curios testing
-//  runtimeOnly "top.theillusivec4.curios:curios-neoforge:9.2.2+1.21.1"
-//	compileOnly "top.theillusivec4.curios:curios-neoforge:9.2.2+1.21.1:api"
+//     runtimeOnly "top.theillusivec4.curios:curios-neoforge:9.2.2+1.21.1"
+    compileOnly "top.theillusivec4.curios:curios-neoforge:9.2.2+1.21.1:api"
 
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
