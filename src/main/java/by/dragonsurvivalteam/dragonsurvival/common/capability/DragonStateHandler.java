@@ -171,13 +171,11 @@ public class DragonStateHandler extends EntityStateHandler {
             } else {
                 visualGrowth = Mth.lerp(AGE_LERP_SPEED, visualGrowth, desiredGrowth);
             }
+        } else if (Math.abs(growth - desiredGrowth) < AGE_EPSILON) {
+            setGrowth(player, desiredGrowth);
+            DragonSizeHandler.overridePose(player);
         } else {
-            if (Math.abs(growth - desiredGrowth) < AGE_EPSILON) {
-                setGrowth(player, desiredGrowth);
-                DragonSizeHandler.overridePose(player);
-            } else {
-                setGrowth(player, Mth.lerp(AGE_LERP_SPEED, growth, desiredGrowth));
-            }
+            setGrowth(player, Mth.lerp(AGE_LERP_SPEED, growth, desiredGrowth));
         }
     }
 
@@ -196,11 +194,18 @@ public class DragonStateHandler extends EntityStateHandler {
         }
 
         if (oldGrowth == this.growth && oldStage != null && dragonStage.is(oldStage)) {
+            // There is no need to refresh the dimensions / fudge the position in this case
+            // the visual size is only for the client (rendering) and therefor doesn't cause position desync
             return;
         }
 
         // Update modifiers before refreshing the dimensions, as the growth modifiers may affect them
         DSModifiers.updateGrowthModifiers(player, this);
+
+        // We need to do this special handling so that the pose update looks smooth
+        // (without updating using poses that are actually incorrect)
+        // (when doing the pose / refresh_size calculations on the server)
+        DragonSizeHandler.overridePose(player);
         player.refreshDimensions();
 
         if (player instanceof ServerPlayer serverPlayer) {

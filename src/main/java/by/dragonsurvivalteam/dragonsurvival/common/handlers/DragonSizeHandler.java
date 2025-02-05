@@ -178,12 +178,6 @@ public class DragonSizeHandler {
             player.refreshDimensions();
         } else if (isDragon) {
             data.lerpGrowth(player);
-
-            // We need to do this special handling so that the pose update looks smooth
-            // (without updating using poses that are actually incorrect)
-            // (when doing the pose / refresh_size calculations on the server)
-            DragonSizeHandler.overridePose(player);
-            player.refreshDimensions();
         }
     }
 
