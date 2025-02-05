@@ -78,8 +78,8 @@
         "type_specific": {
           "type": "dragonsurvival:custom_predicates",
           "is_nearby_entity": {
-            "radius": 16,
-            "types": "minecraft:bee"
+            "entity_types": "minecraft:bee",
+            "radius": 16
           },
           "weather_predicate": {}
         }

@@ -164,8 +164,9 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
         // Need to check in the stream due to the usage of 'BlockPos$MutableBlockPos'
         BlockPos.betweenClosedStream(clickedPosition.getX() - 1, clickedPosition.getY(), clickedPosition.getZ() - 1, clickedPosition.getX() + 1, clickedPosition.getY(), clickedPosition.getZ() + 1).forEach(position -> {
             if (isValid.get() && !SpawningUtils.isAirOrFluid(position, level, context)) {
-                if (player != null && level.isClientSide()) {
-                    player.sendSystemMessage(Component.translatable(OCCUPIED, asItem().getDefaultInstance().getDisplayName()));
+                if (player != null && !level.isClientSide()) {
+                    // Only send on the server-side to avoid issues (message spam) with other mods that use this method for tooltips
+                    player.displayClientMessage(Component.translatable(OCCUPIED, asItem().getDefaultInstance().getDisplayName()), true);
                 }
 
                 isValid.set(false);

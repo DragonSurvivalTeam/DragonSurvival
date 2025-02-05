@@ -16,9 +16,9 @@ import net.minecraft.world.phys.Vec3;
 import java.util.ArrayList;
 import java.util.List;
 
-public record NearbyEntityPredicate(HolderSet<EntityType<?>> types, int radius) {
+public record NearbyEntityPredicate(HolderSet<EntityType<?>> entityTypes, int radius) {
     public static final Codec<NearbyEntityPredicate> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            RegistryCodecs.homogeneousList(Registries.ENTITY_TYPE).fieldOf("types").forGetter(NearbyEntityPredicate::types),
+            RegistryCodecs.homogeneousList(Registries.ENTITY_TYPE).fieldOf("entity_types").forGetter(NearbyEntityPredicate::entityTypes),
             Codec.INT.fieldOf("radius").forGetter(NearbyEntityPredicate::radius)
     ).apply(instance, NearbyEntityPredicate::new));
 
@@ -36,7 +36,7 @@ public record NearbyEntityPredicate(HolderSet<EntityType<?>> types, int radius) 
 
     public boolean matches(final ServerLevel level, final Vec3 position) {
         for (Entity entity : level.getEntities(null, AABB.ofSize(position, radius * 2, radius * 2, radius * 2))) {
-            if (entity.getType().is(types)) {
+            if (entity.getType().is(entityTypes)) {
                 return true;
             }
         }
