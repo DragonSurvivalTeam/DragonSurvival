@@ -12,9 +12,11 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -126,6 +128,22 @@ public class ClawInventoryData implements INBTSerializable<CompoundTag> {
             switchedTool = false;
             switchedToolSlot = -1;
         }
+    }
+
+    public static void reInsertClawTools(final Player player) {
+        SimpleContainer clawsContainer = ClawInventoryData.getData(player).getContainer();
+
+        for (int i = 0; i < 4; i++) {
+            ItemStack stack = clawsContainer.getItem(i);
+
+            if (player instanceof ServerPlayer serverPlayer) {
+                if (!serverPlayer.addItem(stack)) {
+                    serverPlayer.level().addFreshEntity(new ItemEntity(serverPlayer.level(), serverPlayer.position().x, serverPlayer.position().y, serverPlayer.position().z, stack));
+                }
+            }
+        }
+
+        clawsContainer.clearContent();
     }
 
     public void set(final ClawInventoryData.Slot slot, final ItemStack stack) {

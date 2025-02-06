@@ -7,7 +7,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -120,7 +119,8 @@ public class GrowthCrystalButton extends ExtendedButton {
             }
         }
 
-        List<FormattedCharSequence> lines = Tooltip.splitTooltip(Minecraft.getInstance(), tooltip);
+        // The default width (170) of 'Tooltip#splitTooltip' is not enough
+        List<FormattedCharSequence> lines = Minecraft.getInstance().font.split(tooltip, 200);
         List<FormattedCharSequence> shownTooltip = new ArrayList<>();
 
         maxScroll = lines.size();

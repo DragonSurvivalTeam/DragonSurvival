@@ -25,7 +25,6 @@ import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.La
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.SkinPreset;
 import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayerUtils;
 import by.dragonsurvivalteam.dragonsurvival.client.util.TextRenderUtil;
-import by.dragonsurvivalteam.dragonsurvival.commands.DragonCommand;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
@@ -35,6 +34,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.dragon_editor.SyncPlayerSkin
 import by.dragonsurvivalteam.dragonsurvival.network.status.SyncAltarCooldown;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AltarData;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
@@ -1063,7 +1063,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
         if (!data.isDragon() || dragonWouldChange(data)) {
             if (dragonSpecies == null && data.species() != null) {
-                DragonCommand.reInsertClawTools(minecraft.player);
+                ClawInventoryData.reInsertClawTools(minecraft.player);
             }
 
             data.setBody(minecraft.player, dragonBody);

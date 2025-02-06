@@ -4,7 +4,6 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.TimeComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.SkinPreset;
-import by.dragonsurvivalteam.dragonsurvival.commands.DragonCommand;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
@@ -714,7 +713,7 @@ public class DragonStateHandler extends EntityStateHandler {
         }
 
         // Drop everything in your claw slots
-        DragonCommand.reInsertClawTools(player);
+        ClawInventoryData.reInsertClawTools(player);
 
         setSpecies(player, null);
         setBody(player, null);

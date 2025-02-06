@@ -104,7 +104,7 @@ public @interface Translation {
         STAGE("dragon_stage." + DragonSurvival.MODID + ".", ""),
         STAGE_DESCRIPTION("dragon_stage." + DragonSurvival.MODID + ".", ".desc"),
 
-        COMMAND("command." + DragonSurvival.MODID + ".", ""),
+        COMMAND("command." + DragonSurvival.MODID + ".", ""), // TODO :: replace with 'gui'
         VILLAGER_PROFESSION("entity.minecraft.villager." + DragonSurvival.MODID + ".", ""),
 
         /**

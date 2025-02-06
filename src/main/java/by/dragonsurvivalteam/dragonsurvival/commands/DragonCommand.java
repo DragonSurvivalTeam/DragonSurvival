@@ -6,11 +6,12 @@ import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonStageArgume
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
+import by.dragonsurvivalteam.dragonsurvival.server.handlers.PlayerLoginHandler;
+import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import com.mojang.brigadier.tree.ArgumentCommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.minecraft.commands.CommandSourceStack;
@@ -19,54 +20,47 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import static net.minecraft.commands.Commands.argument;
-import static net.minecraft.commands.Commands.literal;
-
 public class DragonCommand {
     public static void register(final RegisterCommandsEvent event) {
-        LiteralCommandNode<CommandSourceStack> dragon = literal("dragon").requires(source -> source.hasPermission(Commands.LEVEL_GAMEMASTERS)).executes(context -> {
-            Holder<DragonSpecies> type = DragonSpeciesArgument.get(context);
-            return runCommand(type, null, null, context.getSource().getPlayerOrException());
+        LiteralCommandNode<CommandSourceStack> dragon = Commands.literal("dragon").requires(source -> source.hasPermission(Commands.LEVEL_GAMEMASTERS)).executes(context -> {
+            Holder<DragonSpecies> species = ResourceHelper.random(context.getSource().registryAccess(), DragonSpecies.REGISTRY);
+            return runCommand(species, null, null, context.getSource().getPlayerOrException());
         }).build();
 
-        ArgumentCommandNode<CommandSourceStack, Holder<DragonSpecies>> dragonSpecies = argument(DragonSpeciesArgument.ID, new DragonSpeciesArgument(event.getBuildContext())).executes(context -> {
-            Holder<DragonSpecies> type = DragonSpeciesArgument.get(context);
+        ArgumentCommandNode<CommandSourceStack, Holder<DragonSpecies>> dragonSpecies = Commands.argument(DragonSpeciesArgument.ID, new DragonSpeciesArgument(event.getBuildContext())).executes(context -> {
+            Holder<DragonSpecies> species = DragonSpeciesArgument.get(context);
             ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
-            return runCommand(type, null, null, serverPlayer);
+            return runCommand(species, null, null, serverPlayer);
         }).build();
 
-        ArgumentCommandNode<CommandSourceStack, Holder<DragonBody>> dragonBody = argument(DragonBodyArgument.ID, new DragonBodyArgument(event.getBuildContext())).executes(context -> {
-            Holder<DragonSpecies> type = DragonSpeciesArgument.get(context);
+        ArgumentCommandNode<CommandSourceStack, Holder<DragonBody>> dragonBody = Commands.argument(DragonBodyArgument.ID, new DragonBodyArgument(event.getBuildContext())).executes(context -> {
+            Holder<DragonSpecies> species = DragonSpeciesArgument.get(context);
             Holder<DragonBody> body = DragonBodyArgument.get(context);
             ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
-            return runCommand(type, body, null, serverPlayer);
+            return runCommand(species, body, null, serverPlayer);
         }).build();
 
-        ArgumentCommandNode<CommandSourceStack, Holder<DragonStage>> dragonStage = argument(DragonStageArgument.ID, new DragonStageArgument(event.getBuildContext())).executes(context -> {
-            Holder<DragonSpecies> type = DragonSpeciesArgument.get(context);
+        ArgumentCommandNode<CommandSourceStack, Holder<DragonStage>> dragonStage = Commands.argument(DragonStageArgument.ID, new DragonStageArgument(event.getBuildContext())).executes(context -> {
+            Holder<DragonSpecies> species = DragonSpeciesArgument.get(context);
             Holder<DragonBody> body = DragonBodyArgument.get(context);
             Holder<DragonStage> level = DragonStageArgument.get(context);
             ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
-            return runCommand(type, body, level, serverPlayer);
+            return runCommand(species, body, level, serverPlayer);
         }).build();
 
-        ArgumentCommandNode<CommandSourceStack, EntitySelector> target = argument("target", EntityArgument.players()).executes(context -> {
-            Holder<DragonSpecies> type = DragonSpeciesArgument.get(context);
+        ArgumentCommandNode<CommandSourceStack, EntitySelector> target = Commands.argument("target", EntityArgument.players()).executes(context -> {
+            Holder<DragonSpecies> species = DragonSpeciesArgument.get(context);
             Holder<DragonBody> body = DragonBodyArgument.get(context);
             Holder<DragonStage> level = DragonStageArgument.get(context);
             EntitySelector selector = context.getArgument("target", EntitySelector.class);
             List<ServerPlayer> serverPlayers = selector.findPlayers(context.getSource());
-            serverPlayers.forEach(player -> runCommand(type, body, level, player));
+            serverPlayers.forEach(player -> runCommand(species, body, level, player));
             return 1;
         }).build();
 
@@ -78,51 +72,37 @@ public class DragonCommand {
     }
 
     private static int runCommand(Holder<DragonSpecies> species, @Nullable Holder<DragonBody> dragonBody, @Nullable Holder<DragonStage> dragonStage, ServerPlayer player) {
-        DragonStateHandler data = DragonStateProvider.getData(player);
-        boolean wasDragon = data.isDragon();
+        DragonStateHandler handler = DragonStateProvider.getData(player);
+        boolean wasDragon = handler.isDragon();
 
-        data.setSpecies(player, species);
+        if (wasDragon && species.value() == DragonSpeciesArgument.EMPTY) {
+            handler.revertToHumanForm(player, false);
+            PlayerLoginHandler.syncHandler(player);
+            return 1;
+        } else if (species.value() == DragonSpeciesArgument.EMPTY) {
+            return 0;
+        }
 
-        if (species != null && dragonBody == null) {
+        handler.setSpecies(player, species);
+
+        if (dragonBody == null) {
             dragonBody = DragonBody.random(player.registryAccess(), species);
         }
 
-        data.setBody(player, dragonBody);
+        handler.setBody(player, dragonBody);
 
         // Need to use 'setSize' since the desired size call doesn't set the stage
-        if (species != null && dragonStage == null) {
-            data.setGrowth(player, species.value().getStartingGrowth(player.registryAccess()));
-        } else if (species != null) {
-            data.setStage(player, dragonStage);
+        if (dragonStage == null) {
+            handler.setGrowth(player, species.value().getStartingGrowth(player.registryAccess()));
         } else {
-            data.setGrowth(player, DragonStateHandler.NO_GROWTH);
+            handler.setStage(player, dragonStage);
         }
 
-        if (species == null && wasDragon) {
-            reInsertClawTools(player);
-        }
-
-        data.setPassengerId(DragonRidingHandler.NO_PASSENGER);
-        data.isGrowing = true;
+        handler.setPassengerId(DragonRidingHandler.NO_PASSENGER);
+        handler.isGrowing = true;
 
         SyncComplete.handleDragonSync(player, false);
-        PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncComplete(player.getId(), data.serializeNBT(player.registryAccess())));
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncComplete(player.getId(), handler.serializeNBT(player.registryAccess())));
         return 1;
-    }
-
-    public static void reInsertClawTools(final Player player) {
-        SimpleContainer clawsContainer = ClawInventoryData.getData(player).getContainer();
-
-        for (int i = 0; i < 4; i++) {
-            ItemStack stack = clawsContainer.getItem(i);
-
-            if (player instanceof ServerPlayer serverPlayer) {
-                if (!serverPlayer.addItem(stack)) {
-                    serverPlayer.level().addFreshEntity(new ItemEntity(serverPlayer.level(), serverPlayer.position().x, serverPlayer.position().y, serverPlayer.position().z, stack));
-                }
-            }
-        }
-
-        clawsContainer.clearContent();
     }
 }
