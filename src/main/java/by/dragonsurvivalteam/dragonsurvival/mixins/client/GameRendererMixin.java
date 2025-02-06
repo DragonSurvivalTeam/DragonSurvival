@@ -26,14 +26,19 @@ public abstract class GameRendererMixin {
         return ClientConfig.stableNightVision ? 1 : original;
     }
 
-    /** To prevent clipping issues (with blocks) at small sizes */
+    /** Small scale values will cause the player to be able to x-ray through the block in front of them (if the near plane is too far away) */
     @ModifyArg(method = "getProjectionMatrix", at = @At(value = "INVOKE", target = "Lorg/joml/Matrix4f;perspective(FFFF)Lorg/joml/Matrix4f;"), index = 2)
     private float dragonSurvival$adjustNearPlane(float original) {
+        if (!Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
+            return original;
+        }
+
         //noinspection DataFlowIssue -> player is present
         float scale = Minecraft.getInstance().player.getScale();
 
         if (scale < 1) {
-            return original * scale;
+            // Some mods have issues if the near plane is too close (0.016 seems to work)
+            return Math.max(0.02f, original * scale);
         }
 
         return original;
