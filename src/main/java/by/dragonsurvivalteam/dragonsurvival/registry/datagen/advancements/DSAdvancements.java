@@ -383,7 +383,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
     private void buildUseMemoryBlockChildren(final AdvancementHolder parent) {
         // --- Parent: use_memory_block --- //
 
-        AdvancementHolder changeBeacon = createWithToast(parent, LangKey.CHANGE_BEACON, Items.NETHERITE_INGOT, itemUsedOnBlock(DSBlocks.DRAGON_BEACON.value(), Items.DIAMOND_BLOCK, Items.GOLD_BLOCK, Items.NETHERITE_INGOT), 10);
+        AdvancementHolder changeBeacon = createWithToast(parent, LangKey.CHANGE_BEACON, DSItems.BEACON_ACTIVATOR.value(), itemUsedOnBlock(DSBlocks.DRAGON_BEACON.value(), DSItems.BEACON_ACTIVATOR.value()), 10);
 
         // --- Parent: change_beacon --- //
 

@@ -86,7 +86,7 @@ public class LangKey {
     protected static final String USE_MEMORY_BLOCK = "use_memory_block";
 
     @Translation(type = Translation.Type.ADVANCEMENT, comments = "Unity of Species")
-    @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Upgrade the Empty Dragon Beacon with Netherite ingot, Gold block or Diamond block.")
+    @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Upgrade the Empty Dragon Beacon with special item.")
     protected static final String CHANGE_BEACON = "change_beacon";
 
     @Translation(type = Translation.Type.ADVANCEMENT, comments = "Zmei Gorynich")
