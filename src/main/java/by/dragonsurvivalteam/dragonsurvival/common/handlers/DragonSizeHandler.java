@@ -64,12 +64,6 @@ public class DragonSizeHandler {
         event.setNewSize(new EntityDimensions(newDimensions.width(), newDimensions.height(), newDimensions.eyeHeight(), event.getOldSize().attachments(), event.getOldSize().fixed()));
     }
 
-    public static double calculateDragonHeight(final DragonStateHandler handler, final Player player) {
-        double scale = player.getAttributeValue(Attributes.SCALE);
-        double height = handler.body().value().scalingProportions().height();
-        return applyPose(height * scale, overridePose(player), handler.body().value().crouchHeightRatio());
-    }
-
     public static double calculateDragonEyeHeight(final DragonStateHandler handler, final Player player) {
         double scale = player.getAttributeValue(Attributes.SCALE);
         double eyeHeight = handler.body().value().scalingProportions().eyeHeight();
