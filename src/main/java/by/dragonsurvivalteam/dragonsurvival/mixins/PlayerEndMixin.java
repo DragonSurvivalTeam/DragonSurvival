@@ -25,7 +25,7 @@ public class PlayerEndMixin {
 
         ClawInventoryData clawInventory = ClawInventoryData.getData(player);
         if (clawInventory.switchedWeapon) {
-            ItemStack originalMainHand = clawInventory.storedMainHandTool;
+            ItemStack originalMainHand = clawInventory.storedMainHandWeapon;
             ItemStack originalToolSlot = player.getItemInHand(InteractionHand.MAIN_HAND);
 
             player.setItemInHand(InteractionHand.MAIN_HAND, originalMainHand);
