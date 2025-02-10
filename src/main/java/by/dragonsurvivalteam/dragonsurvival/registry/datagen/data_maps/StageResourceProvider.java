@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.datagen.data_maps;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.StageResources;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSConditions;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDataMaps;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.datapacks.AncientDatapack;
@@ -25,9 +26,9 @@ public class StageResourceProvider extends DataMapProvider {
     @Override
     protected void gather() {
         builder(DSDataMaps.STAGE_RESOURCES)
-                .add(BuiltInDragonSpecies.CAVE_DRAGON, caveDragon(), false)
-                .add(BuiltInDragonSpecies.FOREST_DRAGON, forestDragon(), false)
-                .add(BuiltInDragonSpecies.SEA_DRAGON, seaDragon(), false);
+                .add(BuiltInDragonSpecies.CAVE_DRAGON, caveDragon(), false, DSConditions.CAVE_DRAGON_LOADED)
+                .add(BuiltInDragonSpecies.FOREST_DRAGON, forestDragon(), false, DSConditions.FOREST_DRAGON_LOADED)
+                .add(BuiltInDragonSpecies.SEA_DRAGON, seaDragon(), false, DSConditions.SEA_DRAGON_LOADED);
     }
 
     private Map<ResourceKey<DragonStage>, StageResources.StageResource> caveDragon() {

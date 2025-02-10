@@ -24,27 +24,27 @@ public class BodyIconProvider extends DataMapProvider {
                         BuiltInDragonSpecies.CAVE_DRAGON, DragonSurvival.res("textures/gui/custom/body/center/cave_dragon.png"),
                         BuiltInDragonSpecies.FOREST_DRAGON, DragonSurvival.res("textures/gui/custom/body/center/forest_dragon.png"),
                         BuiltInDragonSpecies.SEA_DRAGON, DragonSurvival.res("textures/gui/custom/body/center/sea_dragon.png")
-                ), false)
+                ), false, new RegisteredCondition<>(DragonBodies.CENTER))
                 .add(DragonBodies.EAST, Map.of(
                         BuiltInDragonSpecies.CAVE_DRAGON, DragonSurvival.res("textures/gui/custom/body/east/cave_dragon.png"),
                         BuiltInDragonSpecies.FOREST_DRAGON, DragonSurvival.res("textures/gui/custom/body/east/forest_dragon.png"),
                         BuiltInDragonSpecies.SEA_DRAGON, DragonSurvival.res("textures/gui/custom/body/east/sea_dragon.png")
-                ), false)
+                ), false, new RegisteredCondition<>(DragonBodies.EAST))
                 .add(DragonBodies.NORTH, Map.of(
                         BuiltInDragonSpecies.CAVE_DRAGON, DragonSurvival.res("textures/gui/custom/body/north/cave_dragon.png"),
                         BuiltInDragonSpecies.FOREST_DRAGON, DragonSurvival.res("textures/gui/custom/body/north/forest_dragon.png"),
                         BuiltInDragonSpecies.SEA_DRAGON, DragonSurvival.res("textures/gui/custom/body/north/sea_dragon.png")
-                ), false)
+                ), false, new RegisteredCondition<>(DragonBodies.NORTH))
                 .add(DragonBodies.SOUTH, Map.of(
                         BuiltInDragonSpecies.CAVE_DRAGON, DragonSurvival.res("textures/gui/custom/body/south/cave_dragon.png"),
                         BuiltInDragonSpecies.FOREST_DRAGON, DragonSurvival.res("textures/gui/custom/body/south/forest_dragon.png"),
                         BuiltInDragonSpecies.SEA_DRAGON, DragonSurvival.res("textures/gui/custom/body/south/sea_dragon.png")
-                ), false)
+                ), false, new RegisteredCondition<>(DragonBodies.SOUTH))
                 .add(DragonBodies.WEST, Map.of(
                         BuiltInDragonSpecies.CAVE_DRAGON, DragonSurvival.res("textures/gui/custom/body/west/cave_dragon.png"),
                         BuiltInDragonSpecies.FOREST_DRAGON, DragonSurvival.res("textures/gui/custom/body/west/forest_dragon.png"),
                         BuiltInDragonSpecies.SEA_DRAGON, DragonSurvival.res("textures/gui/custom/body/west/sea_dragon.png")
-                ), false);
+                ), false, new RegisteredCondition<>(DragonBodies.EAST));
     }
 
     @Override

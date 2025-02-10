@@ -1,6 +1,13 @@
 {
   "values": {
     "dragonsurvival:cave_dragon": {
+      "neoforge:conditions": [
+        {
+          "type": "dragonsurvival:registered",
+          "registry": "dragonsurvival:dragon_species",
+          "value": "dragonsurvival:cave_dragon"
+        }
+      ],
       "dragonsurvival:adult": {
         "default_skin": {
           "glow_skin": "dragonsurvival:textures/dragon/cave_dragon/adult_glow.png",
@@ -43,6 +50,13 @@
       }
     },
     "dragonsurvival:forest_dragon": {
+      "neoforge:conditions": [
+        {
+          "type": "dragonsurvival:registered",
+          "registry": "dragonsurvival:dragon_species",
+          "value": "dragonsurvival:forest_dragon"
+        }
+      ],
       "dragonsurvival:adult": {
         "default_skin": {
           "glow_skin": "dragonsurvival:textures/dragon/forest_dragon/adult_glow.png",
@@ -85,6 +99,13 @@
       }
     },
     "dragonsurvival:sea_dragon": {
+      "neoforge:conditions": [
+        {
+          "type": "dragonsurvival:registered",
+          "registry": "dragonsurvival:dragon_species",
+          "value": "dragonsurvival:sea_dragon"
+        }
+      ],
       "dragonsurvival:adult": {
         "default_skin": {
           "glow_skin": "dragonsurvival:textures/dragon/sea_dragon/adult_glow.png",

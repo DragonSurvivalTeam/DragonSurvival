@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSCommands;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSConditions;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSContainers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSCreativeTabs;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
@@ -71,6 +72,7 @@ public class DragonSurvival {
         DSCommands.REGISTRY.register(bus);
         DSLootItemConditions.REGISTRY.register(bus);
         DSLootModifiers.REGISTRY.register(bus);
+        DSConditions.REGISTRY.register(bus);
     }
 
     /** Creates a {@link ResourceLocation} with the dragon survival namespace */
