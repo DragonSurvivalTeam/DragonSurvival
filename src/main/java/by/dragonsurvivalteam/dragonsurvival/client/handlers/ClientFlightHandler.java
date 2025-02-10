@@ -86,6 +86,30 @@ public class ClientFlightHandler {
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "spin"}, key = "spin_cooldown_y_offset")
     public static Integer spinCooldownYOffset = 0;
 
+    @ConfigRange(min = 0.0f, max = 32.0f)
+    @Translation(key = "base_dragon_camera_offset", type = Translation.Type.CONFIGURATION, comments = "Base offset for the dragon's third person camera (is multiplied and scaled by the other factors)")
+    @ConfigOption(side = ConfigSide.CLIENT, category = {"rendering"}, key = "base_dragon_camera_offset")
+    public static Float baseDragonCameraOffset = 16.0f;
+
+    @ConfigRange(min = 0.0f, max = 32.0f)
+    @Translation(key = "flat_dragon_camera_offset", type = Translation.Type.CONFIGURATION, comments = "Flat offset for the dragon's third person camera (is added after all other factors are combined)")
+    @ConfigOption(side = ConfigSide.CLIENT, category = {"rendering"}, key = "flat_dragon_camera_offset")
+    public static Float flatDragonCameraOffset = 1.0f;
+
+    @ConfigRange(min = 0.0f, max = 1.0f)
+    @Translation(key = "dragon_camera_minimum_scale", type = Translation.Type.CONFIGURATION, comments = "The scale at which the dragon's third person camera will stop zooming in")
+    @ConfigOption(side = ConfigSide.CLIENT, category = {"rendering"}, key = "dragon_camera_minimum_scale")
+    public static Float dragonCameraMinimumScale = 0.5f;
+
+    @ConfigRange(min = 0.0f, max = 2.0f)
+    @Translation(key = "dragon_camera_scale_factor", type = Translation.Type.CONFIGURATION, comments = "How much scale impacts the third person camera distance")
+    @ConfigOption(side = ConfigSide.CLIENT, category = {"rendering"}, key = "dragon_camera_scale_factor")
+    public static Float dragonCameraScaleFactor = 0.15f;
+
+    @Translation(key = "disable_size_camera_modifications", type = Translation.Type.CONFIGURATION, comments = "Disable all size-based camera modifications from DS")
+    @ConfigOption(side = ConfigSide.CLIENT, category = {"rendering"}, key = "disable_camera_modifications")
+    public static Boolean disableSizeCameraModifications = false;
+
     private static final ResourceLocation SPIN_COOLDOWN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spin_cooldown.png");
 
     private static final ActionWithTimedCooldown HUNGER_MESSAGE_WITH_COOLDOWN = new ActionWithTimedCooldown(30_000, () -> {
@@ -113,10 +137,15 @@ public class ClientFlightHandler {
 
     @SubscribeEvent
     public static void flightCamera(CalculateDetachedCameraDistanceEvent event) {
+
         DragonStateProvider.getOptional(DragonSurvival.PROXY.getLocalPlayer()).ifPresent(handler -> {
             if (handler.isDragon()) {
                 float visualScale = (float)handler.getVisualScale(DragonSurvival.PROXY.getLocalPlayer(), Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false));
-                event.setDistance((event.getDistance() + 16.0f) / event.getEntityScalingFactor() * Math.max(visualScale, 0.5f) * 0.15f);
+                if(disableSizeCameraModifications) {
+                    event.setDistance((event.getDistance()) / event.getEntityScalingFactor() * visualScale);
+                } else {
+                    event.setDistance((event.getDistance() + baseDragonCameraOffset) / event.getEntityScalingFactor() * Math.max(visualScale, dragonCameraMinimumScale) * dragonCameraScaleFactor + flatDragonCameraOffset);
+                }
             }
         });
     }
@@ -132,7 +161,6 @@ public class ClientFlightHandler {
 
             if (ServerFlightHandler.isGliding(currentPlayer)) {
                 if (setup.getCamera().isDetached()) {
-
                     if (flightCameraMovement) {
                         Vec3 lookVec = currentPlayer.getLookAngle();
                         float increase = (float) Mth.clamp(lookVec.y * 10, 0, lookVec.y * 5);

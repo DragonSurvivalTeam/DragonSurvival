@@ -1,4 +1,4 @@
-// 1.21.1	2025-01-21T20:45:40.4198154	Advancements
+// 1.21.1	2025-02-09T15:50:22.977141	Advancements
 1a7d4520fc656360fe5fccecd785f600641927d3 data/dragonsurvival/advancement/be_adult_dragon.json
 550afd5ed2eeeeefe5bfaff761df685a793a5978 data/dragonsurvival/advancement/be_dragon.json
 a52fbc87e18b5cfd6830774af942373c963d546f data/dragonsurvival/advancement/be_young_dragon.json
@@ -10,7 +10,7 @@ b1a29206ccd568af43818681a98c378ef84dd602 data/dragonsurvival/advancement/cave/ma
 dfe999cda0b66f1f0ab33f787d67e1364a9770bb data/dragonsurvival/advancement/cave/rock_eater.json
 e4ff0787d8c1ffc28f981c498f06d4ed964297f5 data/dragonsurvival/advancement/cave/swim_in_lava.json
 4fcff6182a2614255f993afe53f7d82cf7d5c121 data/dragonsurvival/advancement/cave/water_safety.json
-33b1d5cb30b3c0b6455846e45dbddc4d14c8e122 data/dragonsurvival/advancement/change_beacon.json
+4f547c6ca4c7aba088d4d1e8d303df786dd1c36f data/dragonsurvival/advancement/change_beacon.json
 679a70536616b7efefab2492f7b1416c78a27e46 data/dragonsurvival/advancement/collect_dust.json
 cb0123a5eb343c9570ae8723a8bd0467033316ff data/dragonsurvival/advancement/collect_heart_from_monster.json
 5593033f44209111ad943b52cf5ee57b7238735d data/dragonsurvival/advancement/dark/affected_by_hunter_omen.json
