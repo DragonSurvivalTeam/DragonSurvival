@@ -41,7 +41,7 @@ public class ItemInHandRendererMixin {
     @ModifyExpressionValue(method = "applyEatTransform", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getUseDuration(Lnet/minecraft/world/entity/LivingEntity;)I"))
     private int dragonSurvival$dragonUseDuration(int original, @Local(argsOnly = true) ItemStack stack) {
         if (DragonStateProvider.isDragon(minecraft.player)) {
-            return DragonFoodHandler.getUseDuration(stack, minecraft.player);
+            return DragonFoodHandler.getUseDuration(stack, minecraft.player, original);
         }
 
         return original;

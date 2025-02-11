@@ -11,6 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
@@ -30,20 +31,22 @@ public class DragonFoodHandler {
     @ConfigOption(side = ConfigSide.SERVER, category = {"food"}, key = "bad_food_poison_chance")
     public static Float badFoodPoisonChance = 0.5F;
 
-    public static @Nullable FoodProperties getDragonFoodProperties(final Holder<DragonSpecies> species, final ItemStack stack) {
+    public static @Nullable FoodProperties getDragonFoodProperties(final Holder<DragonSpecies> species, final ItemStack stack, @Nullable final FoodProperties original) {
+        if(DietEntryCache.getDietItems(species).isEmpty()) {
+            return original;
+        }
+
         FoodProperties properties = DietEntryCache.getDiet(species, stack.getItem());
 
         if (properties != null) {
             return properties;
         }
 
-        FoodProperties baseProperties = stack.getFoodProperties(null);
-
-        if (baseProperties != null) {
+        if (original != null) {
             if (requireDragonFood) {
                 return getBadFoodProperties();
             } else {
-                return baseProperties;
+                return original;
             }
         }
 
@@ -60,13 +63,13 @@ public class DragonFoodHandler {
         return DietEntryCache.getDiet(species, stack.getItem()) != null;
     }
 
-    public static int getUseDuration(final ItemStack stack, final Player entity) {
-        FoodProperties properties = getDragonFoodProperties(DragonStateProvider.getData(entity).species(), stack);
+    public static int getUseDuration(final ItemStack stack, final Player entity, int original) {
+        FoodProperties properties = getDragonFoodProperties(DragonStateProvider.getData(entity).species(), stack, null);
 
         if (properties != null) {
             return properties.eatDurationTicks();
         } else {
-            return stack.getUseDuration(entity);
+            return original;
         }
     }
 
@@ -82,7 +85,7 @@ public class DragonFoodHandler {
             return;
         }
 
-        event.setDuration(getUseDuration(event.getItem(), player));
+        event.setDuration(getUseDuration(event.getItem(), player, event.getDuration()));
     }
 
     private static FoodProperties getBadFoodProperties() {
