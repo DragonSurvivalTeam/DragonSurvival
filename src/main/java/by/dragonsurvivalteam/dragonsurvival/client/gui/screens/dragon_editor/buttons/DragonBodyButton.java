@@ -60,9 +60,9 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
         ResourceKey<DragonSpecies> species = null;
 
         if (screen instanceof DragonEditorScreen dragonEditorScreen) {
-            species = dragonEditorScreen.dragonSpecies.getKey();
+            species = dragonEditorScreen.species.getKey();
         } else if (screen instanceof DragonSpeciesScreen dragonSpeciesScreen) {
-            species = dragonSpeciesScreen.dragonSpecies.getKey();
+            species = dragonSpeciesScreen.species.getKey();
         }
 
         if (species == null) {
@@ -130,7 +130,7 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
 
     private boolean isSelected() {
         if (screen instanceof DragonEditorScreen dragonEditorScreen) {
-            return DragonUtils.isBody(dragonBody, dragonEditorScreen.dragonBody);
+            return DragonUtils.isBody(dragonBody, dragonEditorScreen.body);
         }
 
         if (screen instanceof DragonSkinsScreen skinsScreen) {

@@ -89,11 +89,11 @@ public class DragonSpeciesScreen extends Screen {
     private static final ResourceLocation PENALTIES_RIGHT_ARROW_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_right_arrow_hover.png");
     private static final ResourceLocation PENALTIES_RIGHT_ARROW_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/species/penalties_right_arrow_main.png");
 
-    public Holder<DragonSpecies> dragonSpecies;
+    public Holder<DragonSpecies> species;
+    private Holder<DragonStage> stage;
 
     private final List<ScrollableComponent> scrollableComponents = new ArrayList<>();
     private DietMenuComponent dietMenu;
-    private Holder<DragonStage> dragonStage;
     private HoverButton growthButton;
     private ExtendedButton speciesBanner;
     private ScrollableComponent crystalBar;
@@ -184,8 +184,8 @@ public class DragonSpeciesScreen extends Screen {
     @Override
     public void init() {
         //noinspection DataFlowIssue -> player is present
-        dragonSpecies = DragonStateProvider.getData(minecraft.player).species();
-        dragonStage = DragonStateProvider.getData(minecraft.player).stage();
+        species = DragonStateProvider.getData(minecraft.player).species();
+        stage = DragonStateProvider.getData(minecraft.player).stage();
 
         int xSize = 256;
         int ySize = 256;
@@ -199,7 +199,7 @@ public class DragonSpeciesScreen extends Screen {
         TabButton.addTabButtonsToScreen(this, startX + 17, startY - 56, TabButton.TabButtonType.SPECIES_TAB);
         DragonStateHandler data = DragonStateProvider.getData(minecraft.player);
 
-        if (DietEntryCache.getDietItems(dragonSpecies).isEmpty()) {
+        if (DietEntryCache.isEmpty(species)) {
             ExtendedButton noDietText = new ExtendedButton(startX + 77, startY + 30, 140, 20, Component.empty(), button -> {}){
                 @Override
                 public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
@@ -210,7 +210,7 @@ public class DragonSpeciesScreen extends Screen {
             noDietText.setMessage(Component.translatable(NO_DIET));
             addRenderableOnly(noDietText);
         } else {
-            dietMenu = new DietMenuComponent(dragonSpecies, startX + 78, startY + 10);
+            dietMenu = new DietMenuComponent(species, startX + 78, startY + 10);
             scrollableComponents.add(dietMenu);
             renderables.add(dietMenu);
         }
@@ -227,7 +227,7 @@ public class DragonSpeciesScreen extends Screen {
                     graphics.blit(data.species().value().miscResources().altarBanner(), getX(), getY(), 0, 0, 49, 147, 49, 294);
                     List<Either<FormattedText, TooltipComponent>> components = new ArrayList<>();
                     //noinspection DataFlowIssue -> key is present
-                    components.addFirst(Either.left(Component.translatable(Translation.Type.DRAGON_SPECIES_INVENTORY_DESCRIPTION.wrap(dragonSpecies.getKey().location()))));
+                    components.addFirst(Either.left(Component.translatable(Translation.Type.DRAGON_SPECIES_INVENTORY_DESCRIPTION.wrap(species.getKey().location()))));
                     graphics.renderComponentTooltipFromElements(Minecraft.getInstance().font, components, mouseX, mouseY, ItemStack.EMPTY);
                 } else {
                     graphics.blit(data.species().value().miscResources().altarBanner(), getX(), getY(), 0, 147, 49, 147, 49, 294);
@@ -333,13 +333,13 @@ public class DragonSpeciesScreen extends Screen {
         //noinspection DataFlowIssue -> players should be present
         DragonStateHandler data = DragonStateProvider.getData(minecraft.player);
 
-        if (dragonSpecies == null) {
+        if (species == null) {
             onClose();
         }
 
-        if (dragonSpecies != data.species() || dragonStage != data.stage()) {
-            dragonSpecies = data.species();
-            dragonStage = data.stage();
+        if (species != data.species() || stage != data.stage()) {
+            species = data.species();
+            stage = data.stage();
             clearWidgets();
             init();
         }

@@ -48,13 +48,13 @@ public class ColorSelectorButton extends ExtendedButton {
 
     @Override
     public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        active = !screen.preset.get(Objects.requireNonNull(screen.dragonStage.getKey())).get().defaultSkin;
+        active = !screen.preset.get(Objects.requireNonNull(screen.stage.getKey())).get().defaultSkin;
 
-        DragonPart part = DragonEditorHandler.getDragonPart(layer, screen.preset.get(screen.dragonStage.getKey()).get().layerSettings.get(layer).get().partKey, DragonEditorScreen.HANDLER.speciesKey());
+        DragonPart part = DragonEditorHandler.getDragonPart(layer, screen.preset.get(screen.stage.getKey()).get().layerSettings.get(layer).get().partKey, DragonEditorScreen.HANDLER.speciesKey());
         visible = part != null && !Objects.equals(part.key(), DefaultPartLoader.NO_PART) &&  part.isColorable();
 
         if (visible) {
-            LayerSettings layerSettings = screen.preset.get(Objects.requireNonNull(screen.dragonStage.getKey())).get().layerSettings.get(layer).get();
+            LayerSettings layerSettings = screen.preset.get(Objects.requireNonNull(screen.stage.getKey())).get().layerSettings.get(layer).get();
             if(layerSettings.modifiedColor || layerSettings.glowing) {
                 guiGraphics.blit(BUTTON_HUE_CHANGED, getX(), getY(), 0, 0, width, height, width, height);
             } else {
@@ -77,7 +77,7 @@ public class ColorSelectorButton extends ExtendedButton {
     @Override
     public void onPress() {
         if (!toggled) {
-            DragonPart part = DragonEditorHandler.getDragonPart(layer, screen.preset.get(screen.dragonStage.getKey()).get().layerSettings.get(layer).get().partKey, DragonEditorScreen.HANDLER.speciesKey());
+            DragonPart part = DragonEditorHandler.getDragonPart(layer, screen.preset.get(screen.stage.getKey()).get().layerSettings.get(layer).get().partKey, DragonEditorScreen.HANDLER.speciesKey());
 
             if (part == null) {
                 return;

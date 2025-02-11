@@ -30,7 +30,7 @@ public class FoodBar {
             return false;
         }
 
-        if (DietEntryCache.getDietItems(handler.species()).isEmpty()) {
+        if (DietEntryCache.isEmpty(handler.species())) {
             return false;
         }
 

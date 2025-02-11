@@ -373,7 +373,7 @@ public class DragonStateHandler extends EntityStateHandler {
             }
 
             if (skinData.skinPresets.get().get(speciesKey()).isEmpty()) {
-                refreshSkinPresetForSpecies(speciesKey());
+                refreshSkinPresetForSpecies(dragonSpecies, dragonBody);
                 recompileCurrentSkin();
             }
         }
@@ -405,7 +405,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
             if (oldBody != null && this.dragonBody.value().model() != oldBody.value().model()) {
                 // If the model has changed, just override the skin preset with the default one as a failsafe
-                refreshSkinPresetForSpecies(speciesKey());
+                refreshSkinPresetForSpecies(dragonSpecies, this.dragonBody);
 
                 recompileCurrentSkin();
             }
@@ -491,18 +491,20 @@ public class DragonStateHandler extends EntityStateHandler {
         return skinData.skinPresets.get().get(speciesKey());
     }
 
-    public void refreshSkinPresetForSpecies(final ResourceKey<DragonSpecies> dragonSpecies) {
+    public void refreshSkinPresetForSpecies(final Holder<DragonSpecies> species, final Holder<DragonBody> body) {
         SkinPreset freshSkinPreset = new SkinPreset();
-        freshSkinPreset.initDefaults(dragonSpecies, dragonBody != null ? dragonBody.value().model() : DragonBody.DEFAULT_MODEL);
-        skinData.skinPresets.get().put(dragonSpecies, freshSkinPreset);
+        freshSkinPreset.initDefaults(species, body != null ? body.value().model() : DragonBody.DEFAULT_MODEL);
+        skinData.skinPresets.get().put(species.getKey(), freshSkinPreset);
     }
 
-    public SkinPreset getSkinPresetForSpecies(final ResourceKey<DragonSpecies> dragonSpecies) {
-        SkinPreset skinPreset = skinData.skinPresets.get().get(dragonSpecies);
-        if(skinPreset.isEmpty()) {
-            refreshSkinPresetForSpecies(dragonSpecies);
+    public SkinPreset getSkinPresetForSpecies(final Holder<DragonSpecies> species, final Holder<DragonBody> body) {
+        SkinPreset skinPreset = skinData.skinPresets.get().get(species.getKey());
+
+        if (skinPreset.isEmpty()) {
+            refreshSkinPresetForSpecies(species, body);
         }
-        return skinData.skinPresets.get().get(dragonSpecies);
+
+        return skinData.skinPresets.get().get(species.getKey());
     }
 
     public void recompileCurrentSkin() {

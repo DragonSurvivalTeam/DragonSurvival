@@ -28,17 +28,17 @@ public class DragonStageCustomization implements INBTSerializable<CompoundTag> {
     public boolean wings = true;
     public boolean defaultSkin;
 
-    public DragonStageCustomization(final ResourceKey<DragonStage> dragonStage, final ResourceKey<DragonSpecies> type, final ResourceLocation customModel) {
+    public DragonStageCustomization(final ResourceKey<DragonStage> stage, final ResourceKey<DragonSpecies> species, final ResourceLocation customModel) {
         this();
 
         for (SkinLayer layer : SkinLayer.values()) {
             // Convert the numbered 'EXTRA' layer to the generic 'EXTRA' layer
             SkinLayer actualLayer = SkinLayer.valueOf(layer.getNameUpperCase());
-            Map<SkinLayer, List<DragonPart>> partMap = DragonPartLoader.DRAGON_PARTS.get(type);
+            Map<SkinLayer, List<DragonPart>> partMap = DragonPartLoader.DRAGON_PARTS.get(species);
 
             if (partMap != null) {
                 List<DragonPart> parts = partMap.get(actualLayer);
-                String partKey = DefaultPartLoader.getDefaultPartKey(type, dragonStage, Either.right(customModel), layer);
+                String partKey = DefaultPartLoader.getDefaultPartKey(species, stage, Either.right(customModel), layer);
 
                 if (parts != null) {
                     for (DragonPart part : parts) {
