@@ -447,7 +447,8 @@ public class ClientDragonRenderer {
         MovementData movement = MovementData.getData(player);
         movement.setFirstPerson(Minecraft.getInstance().options.getCameraType().isFirstPerson());
         movement.setFreeLook(Keybind.FREE_LOOK.consumeClick()); // FIXME :: handle this properly
-        movement.setDesiredMoveVec(new Vec2(input.leftImpulse, input.forwardImpulse));
+        float vertical = input.jumping && input.shiftKeyDown ? 0 : input.jumping ? 1 : input.shiftKeyDown ? -1 : 0;
+        movement.setDesiredMoveVec(new Vec3(input.leftImpulse, input.forwardImpulse, vertical));
 
         if (player.isPassenger()) {
             // Prevent animation problems while we are riding an entity
@@ -569,7 +570,7 @@ public class ClientDragonRenderer {
             boolean hasPosDelta = posDelta.horizontalDistanceSqr() > MOVE_DELTA_EPSILON * MOVE_DELTA_EPSILON;
 
             var rawInput = movement.desiredMoveVec;
-            var hasMoveInput = rawInput.lengthSquared() > MovementData.INPUT_EPSILON * MovementData.INPUT_EPSILON;
+            var hasMoveInput = rawInput.lengthSqr() > MovementData.INPUT_EPSILON * MovementData.INPUT_EPSILON;
             boolean isInputBack = rawInput.y < 0;
 
             if (hasMoveInput) {
