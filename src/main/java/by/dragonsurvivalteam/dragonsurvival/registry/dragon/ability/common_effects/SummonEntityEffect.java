@@ -295,12 +295,12 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
                 summon(storageHolder, spawnPosition, summonData);
             }
 
-            while (entityUUIDs.size() < maxSummons) {
+            for (int attempt = 0; attempt < maxSummons - entityUUIDs.size(); attempt++) {
                 summon(storageHolder, spawnPosition, summonData);
             }
 
             positions = null;
-            return true;
+            return !entityUUIDs.isEmpty();
         }
 
         private void summon(final ServerPlayer storageHolder, final BlockPos spawnPosition, final SummonedEntities summonData) {
@@ -317,11 +317,17 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
             BlockState state = storageHolder.level().getBlockState(spawnPosition);
 
             //noinspection deprecation -> ignore
-            if (!state.blocksMotion() || !storageHolder.level().getBlockState(spawnPosition.above()).isAir()) {
+            if (!state.blocksMotion()) {
                 return;
             }
 
-            Entity entity = type.spawn(storageHolder.serverLevel(), spawnPosition, MobSpawnType.TRIGGERED);
+            for (int i = 1; i <= Math.max(1, type.getHeight()); i++) {
+                if (!storageHolder.level().getBlockState(spawnPosition.above(i)).isAir()) {
+                    return;
+                }
+            }
+
+            Entity entity = type.spawn(storageHolder.serverLevel(), spawnPosition.above(), MobSpawnType.TRIGGERED);
 
             if (entity == null) {
                 return;
@@ -351,7 +357,6 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
             summon.attackBehaviour = summonData.attackBehaviour;
             summon.movementBehaviour = summonData.movementBehaviour;
 
-            entity.moveTo(spawnPosition.getX(), spawnPosition.getY() + 1, spawnPosition.getZ(), entity.getYRot(), entity.getXRot());
             entityUUIDs.add(entity.getUUID());
         }
 
