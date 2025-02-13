@@ -559,7 +559,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
                     state.setAnimation(FLY_SPIN);
                     animationController.transitionLength(2);
                 } else {
-                    if (deltaMovement.y > 0) {
+                    if (movement.desiredMoveVec.z > 0) {
                         animationSpeed = 2;
                     }
                     state.setAnimation(FLY);
