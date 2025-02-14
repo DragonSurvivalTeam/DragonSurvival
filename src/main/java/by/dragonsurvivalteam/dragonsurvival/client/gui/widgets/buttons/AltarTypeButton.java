@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.DietComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverDisableable;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.AltarBehaviour;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.StageResources;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.network.status.SyncAltarCooldown;
@@ -32,6 +33,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -50,9 +52,10 @@ public class AltarTypeButton extends Button implements HoverDisableable {
     })
     private static final String HUMAN = Translation.Type.GUI.wrap("altar.info.human");
 
-    private static final ResourceLocation HUMAN_ALTAR_ICON = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/custom/altar/human/altar_icon.png");
+    private static final ResourceLocation HUMAN_BANNER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/custom/altar/human/altar_icon.png");
+    private static final ResourceLocation LOCKED_BANNER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/blocked_species.png");
 
-    public final Holder<DragonSpecies> species;
+    public final @Nullable AltarBehaviour.Entry entry;
     private final DragonAltarScreen parent;
 
     private boolean disableHover;
@@ -60,17 +63,22 @@ public class AltarTypeButton extends Button implements HoverDisableable {
     private int scroll;
     private boolean resetScroll;
 
-    public AltarTypeButton(final DragonAltarScreen parent, final Holder<DragonSpecies> species, int x, int y) {
+    public AltarTypeButton(final DragonAltarScreen parent, @Nullable final AltarBehaviour.Entry entry, int x, int y) {
         super(x, y, 49, 147, Component.empty(), Button::onPress, DEFAULT_NARRATION);
         this.parent = parent;
-        this.species = species;
+        this.entry = entry;
 
         scroll = 0;
     }
 
     @Override
     public void onPress() {
-        initiateDragonForm(species);
+        if (entry == null) {
+            // Human
+            initiateDragonForm(null);
+        } else if (entry.isUnlocked()) {
+            initiateDragonForm(entry.species());
+        }
     }
 
     @Override
@@ -93,8 +101,8 @@ public class AltarTypeButton extends Button implements HoverDisableable {
 
             List<Either<FormattedText, TooltipComponent>> components = new ArrayList<>();
 
-            if (species != null) {
-                List<Item> diet = DietEntryCache.getDietItems(species);
+            if (entry != null) {
+                List<Item> diet = DietEntryCache.getDietItems(entry.species());
 
                 if (diet.size() <= MAX_SHOWN) {
                     scroll = 0;
@@ -107,10 +115,10 @@ public class AltarTypeButton extends Button implements HoverDisableable {
                 // Using the color codes in the translation doesn't seem to apply the color to the entire text - therefor we create the [shown / max_items] tooltip part here
                 MutableComponent shownFoods = Component.literal("[" + Math.min(diet.size(), scroll + MAX_SHOWN) + " / " + diet.size() + "]").withStyle(ChatFormatting.DARK_GRAY);
                 //noinspection DataFlowIssue -> key is present
-                components.addFirst(Either.left(Component.translatable(Translation.Type.DRAGON_SPECIES_ALTAR_DESCRIPTION.wrap(species.getKey().location()), shownFoods)));
+                components.addFirst(Either.left(Component.translatable(Translation.Type.DRAGON_SPECIES_ALTAR_DESCRIPTION.wrap(entry.species().getKey().location()), shownFoods)));
 
                 for (int i = scroll; i < max; i++) {
-                    components.add(Either.right(new DietComponent(species, diet.get(i))));
+                    components.add(Either.right(new DietComponent(entry.species(), diet.get(i))));
                 }
 
                 graphics.renderComponentTooltipFromElements(Minecraft.getInstance().font, components, mouseX, mouseY, ItemStack.EMPTY);
@@ -124,12 +132,16 @@ public class AltarTypeButton extends Button implements HoverDisableable {
 
         graphics.renderOutline(getX() - 1, getY() - 1, width + 2, height + 2, Color.black.getRGB());
 
-        if (species != null) {
-            graphics.blit(species.value().miscResources().altarBanner(), getX(), getY(), 0, isHovered() ? 0 : 147, 49, 147, 49, 294);
-            StageResources.GrowthIcon growthIcon = StageResources.getGrowthIcon(species, species.value().getStartingStage(null).getKey());
+        if (entry != null && entry.isUnlocked()) {
+            graphics.blit(entry.species().value().miscResources().altarBanner(), getX(), getY(), 0, isHovered() ? 0 : 147, 49, 147, 49, 294);
+            StageResources.GrowthIcon growthIcon = StageResources.getGrowthIcon(entry.species(), entry.species().value().getStartingStage(null).getKey());
+            graphics.blit(isHovered() && isTop(mouseY) ? growthIcon.hoverIcon() : growthIcon.icon(), getX() + 1, getY() + 1, 0, 0, 18, 18, 18, 18);
+        } else if (entry != null) {
+            graphics.blit(LOCKED_BANNER, getX(), getY(), 0, 0, 49, 147, 49, 147);
+            StageResources.GrowthIcon growthIcon = StageResources.getGrowthIcon(entry.species(), entry.species().value().getStartingStage(null).getKey());
             graphics.blit(isHovered() && isTop(mouseY) ? growthIcon.hoverIcon() : growthIcon.icon(), getX() + 1, getY() + 1, 0, 0, 18, 18, 18, 18);
         } else {
-            graphics.blit(HUMAN_ALTAR_ICON, getX(), getY(), 0, isHovered() ? 0 : 147, 49, 147, 49, 294);
+            graphics.blit(HUMAN_BANNER, getX(), getY(), 0, isHovered() ? 0 : 147, 49, 147, 49, 294);
         }
     }
 
@@ -137,7 +149,7 @@ public class AltarTypeButton extends Button implements HoverDisableable {
         return mouseY > getY() + 6 && mouseY < getY() + 26;
     }
 
-    public void initiateDragonForm(final Holder<DragonSpecies> species) {
+    public void initiateDragonForm(@Nullable final Holder<DragonSpecies> species) {
         LocalPlayer player = Minecraft.getInstance().player;
 
         if (player == null) {

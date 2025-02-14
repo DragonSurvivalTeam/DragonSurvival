@@ -20,7 +20,7 @@ public class DragonAltarCommand {
     }
 
     private static int runCommand(final ServerPlayer player) {
-        PacketDistributor.sendToPlayer(player, new OpenDragonAltar(DragonSpecies.getUnlockedSpecies(player)));
+        PacketDistributor.sendToPlayer(player, new OpenDragonAltar(DragonSpecies.getSpecies(player, true)));
         return 1;
     }
 }

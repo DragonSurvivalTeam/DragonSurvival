@@ -106,7 +106,7 @@ public class PlayerLoginHandler {
             return;
         }
 
-        PacketDistributor.sendToPlayer(serverPlayer, new OpenDragonAltar(DragonSpecies.getUnlockedSpecies(serverPlayer)));
+        PacketDistributor.sendToPlayer(serverPlayer, new OpenDragonAltar(DragonSpecies.getSpecies(serverPlayer, true)));
         data.isInAltar = true;
     }
 

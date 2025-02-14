@@ -77,7 +77,7 @@ public class DragonAltarBlock extends Block {
             data.isInAltar = true;
 
             if (player instanceof ServerPlayer serverPlayer) {
-                PacketDistributor.sendToPlayer(serverPlayer, new OpenDragonAltar(DragonSpecies.getUnlockedSpecies(serverPlayer)));
+                PacketDistributor.sendToPlayer(serverPlayer, new OpenDragonAltar(DragonSpecies.getSpecies(serverPlayer, true)));
             }
 
             return InteractionResult.sidedSuccess(level.isClientSide());

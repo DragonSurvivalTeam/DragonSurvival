@@ -5,14 +5,13 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.Dra
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.AltarBehaviour;
 import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawRender;
 import by.dragonsurvivalteam.dragonsurvival.network.container.OpenDragonAltar;
 import by.dragonsurvivalteam.dragonsurvival.network.dragon_editor.SyncDragonSkinSettings;
 import by.dragonsurvivalteam.dragonsurvival.network.dragon_editor.SyncPlayerSkinPreset;
 import by.dragonsurvivalteam.dragonsurvival.network.particle.SyncParticleTrail;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.Holder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -45,8 +44,8 @@ public class ClientProxy {
         PacketDistributor.sendToServer(new OpenDragonAltar(List.of()));
     }
 
-    public static void openDragonAltar(final List<Holder<DragonSpecies>> unlockedSpecies) {
-        Minecraft.getInstance().setScreen(new DragonAltarScreen(unlockedSpecies));
+    public static void openDragonAltar(final List<AltarBehaviour.Entry> entries) {
+        Minecraft.getInstance().setScreen(new DragonAltarScreen(entries));
     }
 
     public static void openDragonEditor() {

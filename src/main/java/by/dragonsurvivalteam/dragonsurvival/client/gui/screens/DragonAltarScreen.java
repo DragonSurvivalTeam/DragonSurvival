@@ -11,6 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayerUtils;
 import by.dragonsurvivalteam.dragonsurvival.client.util.TextRenderUtil;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.AltarBehaviour;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
@@ -90,7 +91,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
     private static final ResourceLocation INFO_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/info_hover.png");
     private static final ResourceLocation INFO_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/info_main.png");
 
-    private final List<Holder<DragonSpecies>> unlockedSpecies;
+    private final List<AltarBehaviour.Entry> entries;
 
     private boolean hasInit = false;
     private int animation1 = 1;
@@ -103,9 +104,9 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
     private boolean confirmation;
 
 
-    public DragonAltarScreen(final List<Holder<DragonSpecies>> unlockedSpecies) {
+    public DragonAltarScreen(final List<AltarBehaviour.Entry> entries) {
         super(Component.translatable(CHOOSE_SPECIES));
-        this.unlockedSpecies = unlockedSpecies;
+        this.entries = entries;
     }
 
     @Override
@@ -218,9 +219,10 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                 if (button.isHovered()) {
                     Holder<DragonSpecies> handler1PreviousSpecies = handler1.species();
                     Holder<DragonSpecies> handler2PreviousSpecies = handler2.species();
-                    handler1.setSpecies(null, button.species);
-                    handler2.setSpecies(null, button.species);
 
+                    Holder<DragonSpecies> species = button.entry != null? button.entry.species() : null;
+                    handler1.setSpecies(null, species);
+                    handler2.setSpecies(null, species);
 
                     if (handler1.species() != null && !DragonUtils.isSpecies(handler1.species(), handler1PreviousSpecies)) {
                         initializeHandler(handler1);
@@ -355,7 +357,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
         helpButton.setTooltip(Tooltip.create(Component.translatable(HELP)));
         addRenderableWidget(helpButton);
 
-        List<AltarTypeButton> altarButtons = unlockedSpecies.stream().map(species -> new AltarTypeButton(this, species, 0, 0)).collect(Collectors.toList());
+        List<AltarTypeButton> altarButtons = entries.stream().map(species -> new AltarTypeButton(this, species, 0, 0)).collect(Collectors.toList());
         humanButton = new AltarTypeButton(this, null, 0, 0) {
             boolean toggled;
 
