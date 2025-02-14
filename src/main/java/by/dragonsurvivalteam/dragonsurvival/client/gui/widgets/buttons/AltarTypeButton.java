@@ -15,6 +15,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.data_maps.DietEntryCache;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -131,18 +132,22 @@ public class AltarTypeButton extends Button implements HoverDisableable {
         }
 
         graphics.renderOutline(getX() - 1, getY() - 1, width + 2, height + 2, Color.black.getRGB());
+        RenderSystem.enableBlend(); // Needs to happen after the outline for the transparent locked banner to render correctly
 
-        if (entry != null && entry.isUnlocked()) {
+        if (entry != null) {
             graphics.blit(entry.species().value().miscResources().altarBanner(), getX(), getY(), 0, isHovered() ? 0 : 147, 49, 147, 49, 294);
-            StageResources.GrowthIcon growthIcon = StageResources.getGrowthIcon(entry.species(), entry.species().value().getStartingStage(null).getKey());
-            graphics.blit(isHovered() && isTop(mouseY) ? growthIcon.hoverIcon() : growthIcon.icon(), getX() + 1, getY() + 1, 0, 0, 18, 18, 18, 18);
-        } else if (entry != null) {
-            graphics.blit(LOCKED_BANNER, getX(), getY(), 0, 0, 49, 147, 49, 147);
+
+            if (!entry.isUnlocked()) {
+                graphics.blit(LOCKED_BANNER, getX(), getY(), 0, 0, 49, 147, 49, 147);
+            }
+
             StageResources.GrowthIcon growthIcon = StageResources.getGrowthIcon(entry.species(), entry.species().value().getStartingStage(null).getKey());
             graphics.blit(isHovered() && isTop(mouseY) ? growthIcon.hoverIcon() : growthIcon.icon(), getX() + 1, getY() + 1, 0, 0, 18, 18, 18, 18);
         } else {
             graphics.blit(HUMAN_BANNER, getX(), getY(), 0, isHovered() ? 0 : 147, 49, 147, 49, 294);
         }
+
+        RenderSystem.disableBlend();
     }
 
     private boolean isTop(double mouseY) {
