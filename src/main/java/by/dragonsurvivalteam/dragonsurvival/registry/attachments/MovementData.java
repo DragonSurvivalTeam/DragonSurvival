@@ -1,7 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
 public class MovementData {

@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscResources;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierType;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
@@ -22,12 +23,16 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.extensions.IHolderExtension;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -38,6 +43,7 @@ public class DragonSpecies implements AttributeModifierSupplier {
 
     public static final Codec<DragonSpecies> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.DOUBLE.validate(value -> value >= 1 ? DataResult.success(value) : DataResult.error(() -> "Starting growth must be at least 1")).optionalFieldOf("starting_growth").forGetter(DragonSpecies::startingGrowth),
+            LootItemCondition.DIRECT_CODEC.optionalFieldOf("unlock_condition").forGetter(DragonSpecies::unlockCondition),
             RegistryCodecs.homogeneousList(DragonStage.REGISTRY).optionalFieldOf("custom_stage_progression").forGetter(DragonSpecies::stages),
             RegistryCodecs.homogeneousList(DragonBody.REGISTRY).optionalFieldOf("bodies", HolderSet.empty()).forGetter(DragonSpecies::bodies),
             RegistryCodecs.homogeneousList(DragonAbility.REGISTRY).optionalFieldOf("abilities", HolderSet.empty()).forGetter(DragonSpecies::abilities),
@@ -49,14 +55,16 @@ public class DragonSpecies implements AttributeModifierSupplier {
     public static final StreamCodec<RegistryFriendlyByteBuf, Holder<DragonSpecies>> STREAM_CODEC = ByteBufCodecs.holderRegistry(REGISTRY);
 
     private final Optional<Double> startingGrowth;
+    private final Optional<LootItemCondition> unlockCondition;
     private final Optional<HolderSet<DragonStage>> customStageProgression;
     private final HolderSet<DragonBody> bodies;
     private final HolderSet<DragonAbility> abilities;
     private final HolderSet<DragonPenalty> penalties;
     private final MiscResources miscResources;
 
-    public DragonSpecies(final Optional<Double> startingGrowth, final Optional<HolderSet<DragonStage>> customStageProgression, final HolderSet<DragonBody> bodies, final HolderSet<DragonAbility> abilities, final HolderSet<DragonPenalty> penalties, final MiscResources miscResources) {
+    public DragonSpecies(final Optional<Double> startingGrowth, final Optional<LootItemCondition> unlockCondition, final Optional<HolderSet<DragonStage>> customStageProgression, final HolderSet<DragonBody> bodies, final HolderSet<DragonAbility> abilities, final HolderSet<DragonPenalty> penalties, final MiscResources miscResources) {
         this.startingGrowth = startingGrowth;
+        this.unlockCondition = unlockCondition;
         this.customStageProgression = customStageProgression;
         this.bodies = bodies;
         this.abilities = abilities;
@@ -87,6 +95,22 @@ public class DragonSpecies implements AttributeModifierSupplier {
     @SubscribeEvent
     public static void register(final DataPackRegistryEvent.NewRegistry event) {
         event.dataPackRegistry(REGISTRY, DIRECT_CODEC, DIRECT_CODEC);
+    }
+
+    public static List<Holder<DragonSpecies>> getUnlockedSpecies(final ServerPlayer player) {
+        return ResourceHelper.all(player.registryAccess(), REGISTRY).stream().filter(
+                species -> species.value().unlockCondition().map(condition -> condition.test(Condition.entityContext(player.serverLevel(), player))).orElse(true)
+        ).map(IHolderExtension::getDelegate).toList();
+    }
+
+    public static @Nullable Holder<DragonSpecies> getRandom(final ServerPlayer player) {
+        List<Holder<DragonSpecies>> unlockedSpecies = getUnlockedSpecies(player);
+
+        if (unlockedSpecies.isEmpty()) {
+            return null;
+        }
+
+        return unlockedSpecies.get(player.getRandom().nextInt(unlockedSpecies.size()));
     }
 
     public boolean isItemBlacklisted(final Item item) {
@@ -122,6 +146,10 @@ public class DragonSpecies implements AttributeModifierSupplier {
 
     public Optional<Double> startingGrowth() {
         return startingGrowth;
+    }
+
+    public Optional<LootItemCondition> unlockCondition() {
+        return unlockCondition;
     }
 
     public Optional<HolderSet<DragonStage>> stages() {

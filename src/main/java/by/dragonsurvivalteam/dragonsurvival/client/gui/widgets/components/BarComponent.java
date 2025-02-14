@@ -21,7 +21,7 @@ public class BarComponent implements ScrollableComponent {
 
     private int centerIndex;
 
-    public BarComponent(Screen parentScreen, int xPos, int yPos, int numberOfElementsToDisplay, List<AbstractWidget> widgets, int elementSpacing, int arrowLeftX, int arrowRightX, int arrowY, int arrowWidth, int arrowHeight, int arrowTextureWidth, int arrowTextureHeight, ResourceLocation leftArrowHover, ResourceLocation leftArrowMain, ResourceLocation rightArrowHover, ResourceLocation rightArrowMain, boolean replaceButtonsWithArrowsWhenOversize) {
+    public BarComponent(Screen parentScreen, int xPos, int yPos, int numberOfElementsToDisplay, List<? extends AbstractWidget> widgets, int elementSpacing, int arrowLeftX, int arrowRightX, int arrowY, int arrowWidth, int arrowHeight, int arrowTextureWidth, int arrowTextureHeight, ResourceLocation leftArrowHover, ResourceLocation leftArrowMain, ResourceLocation rightArrowHover, ResourceLocation rightArrowMain, boolean replaceButtonsWithArrowsWhenOversize) {
         this.xPos = xPos;
         this.yPos = yPos;
         this.elementSpacing = elementSpacing;

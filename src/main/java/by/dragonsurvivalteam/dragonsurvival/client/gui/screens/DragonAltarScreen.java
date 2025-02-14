@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.screens;
 
-import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.DragonEditorScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.AltarTypeButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverButton;
@@ -21,7 +20,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
-import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
@@ -32,7 +30,6 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -41,7 +38,6 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.Holder;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
@@ -55,6 +51,7 @@ import org.joml.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
@@ -93,6 +90,8 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
     private static final ResourceLocation INFO_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/info_hover.png");
     private static final ResourceLocation INFO_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/info_main.png");
 
+    private final List<Holder<DragonSpecies>> unlockedSpecies;
+
     private boolean hasInit = false;
     private int animation1 = 1;
     private int animation2 = 0;
@@ -103,8 +102,10 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
     private Renderable renderButton;
     private boolean confirmation;
 
-    public DragonAltarScreen() {
+
+    public DragonAltarScreen(final List<Holder<DragonSpecies>> unlockedSpecies) {
         super(Component.translatable(CHOOSE_SPECIES));
+        this.unlockedSpecies = unlockedSpecies;
     }
 
     @Override
@@ -350,13 +351,11 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
         int guiTop = (height - 190) / 2;
         int xPos = width / 2 - 104;
 
-        HoverButton helpButton = new HoverButton(width / 2 - 29, 31, 65, 18, 65, 18, INFO_MAIN, INFO_HOVER, button -> {
-        });
+        HoverButton helpButton = new HoverButton(width / 2 - 29, 31, 65, 18, 65, 18, INFO_MAIN, INFO_HOVER, button -> { /* Nothing to do */ });
         helpButton.setTooltip(Tooltip.create(Component.translatable(HELP)));
         addRenderableWidget(helpButton);
 
-        RegistryAccess access = Objects.requireNonNull(DragonSurvival.PROXY.getAccess());
-        List<AbstractWidget> altarButtons = new ArrayList<>(ResourceHelper.keys(access, DragonSpecies.REGISTRY).stream().map(typeKey -> (AbstractWidget) new AltarTypeButton(this, access.holderOrThrow(typeKey), 0, 0)).toList());
+        List<AltarTypeButton> altarButtons = unlockedSpecies.stream().map(species -> new AltarTypeButton(this, species, 0, 0)).collect(Collectors.toList());
         humanButton = new AltarTypeButton(this, null, 0, 0) {
             boolean toggled;
 
@@ -411,10 +410,12 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
         }
 
         int extraOffset = 0;
+
         if (altarButtons.size() == 3) {
             extraOffset += 27;
         }
 
+        // TODO :: display message if no unlocked are present
         // FIXME :: scrolls the wrong direction + shouldn't scroll when diet is hovered (since that is also scrollable)
         scrollableComponents.add(new BarComponent(this,
                 xPos + extraOffset, guiTop + 30, 4,

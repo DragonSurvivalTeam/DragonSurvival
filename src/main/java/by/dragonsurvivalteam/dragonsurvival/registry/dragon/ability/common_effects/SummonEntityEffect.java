@@ -72,7 +72,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 
 public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, SummonEntityEffect.Instance> implements AbilityEntityEffect, AbilityBlockEffect {
-    @Translation(comments = "§6■ Can summon up to§r %s §6entities:§r")
+    @Translation(comments = "§6■ Summon up to§r %s §6entities:§r")
     private static final String SUMMON = Translation.Type.GUI.wrap("summon_entity_effect.summon");
 
     @Translation(comments = "\n- %s (%s)")
@@ -292,6 +292,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
                 }
 
                 spawnPosition = positions.remove(storageHolder.getRandom().nextInt(positions.size()));
+                // TODO :: store valid spawn positions so it can be used for the remaining attempts?
                 summon(storageHolder, spawnPosition, summonData);
             }
 

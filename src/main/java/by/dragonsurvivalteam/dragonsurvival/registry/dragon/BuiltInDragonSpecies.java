@@ -60,6 +60,7 @@ public class BuiltInDragonSpecies {
         context.register(CAVE_DRAGON, new DragonSpecies(
                 Optional.empty(),
                 Optional.empty(),
+                Optional.empty(),
                 HolderSet.empty(),
                 context.lookup(DragonAbility.REGISTRY).getOrThrow(DSDragonAbilityTags.CAVE),
                 context.lookup(DragonPenalty.REGISTRY).getOrThrow(DSDragonPenaltyTags.CAVE),
@@ -95,6 +96,7 @@ public class BuiltInDragonSpecies {
         context.register(SEA_DRAGON, new DragonSpecies(
                 Optional.empty(),
                 Optional.empty(),
+                Optional.empty(),
                 HolderSet.empty(),
                 context.lookup(DragonAbility.REGISTRY).getOrThrow(DSDragonAbilityTags.SEA),
                 context.lookup(DragonPenalty.REGISTRY).getOrThrow(DSDragonPenaltyTags.SEA),
@@ -128,6 +130,7 @@ public class BuiltInDragonSpecies {
         ));
 
         context.register(FOREST_DRAGON, new DragonSpecies(
+                Optional.empty(),
                 Optional.empty(),
                 Optional.empty(),
                 HolderSet.empty(),

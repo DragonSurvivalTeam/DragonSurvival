@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.network.container.OpenDragonAltar;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AltarData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -76,7 +77,7 @@ public class DragonAltarBlock extends Block {
             data.isInAltar = true;
 
             if (player instanceof ServerPlayer serverPlayer) {
-                PacketDistributor.sendToPlayer(serverPlayer, OpenDragonAltar.INSTANCE);
+                PacketDistributor.sendToPlayer(serverPlayer, new OpenDragonAltar(DragonSpecies.getUnlockedSpecies(serverPlayer)));
             }
 
             return InteractionResult.sidedSuccess(level.isClientSide());
