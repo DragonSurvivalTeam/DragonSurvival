@@ -12,6 +12,7 @@ public class Compat {
     public static final String IRIS = "iris";
     public static final String COSMETIC_ARMOR_REWORKED = "cosmeticarmorreworked";
     public static final String SOPHISTICATED_BACKPACKS = "sophisticatedbackpacks";
+    public static final String CURIOS = "curios";
 
     private static final Map<String, List<String>> ALIAS = Map.of(
             IRIS, List.of("oculus"),
