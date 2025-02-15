@@ -399,11 +399,12 @@ public class MagicData implements INBTSerializable<CompoundTag> {
             upgrade.attempt(player, instance, growthInput);
         }
 
-
-        for (int i = 0; i < HOTBAR_SLOTS; i++) {
-            if (!getHotbar().containsKey(i)) {
-                getHotbar().put(i, ability.getKey());
-                break;
+        if (!instance.isPassive()) {
+            for (int i = 0; i < HOTBAR_SLOTS; i++) {
+                if (!getHotbar().containsKey(i)) {
+                    getHotbar().put(i, ability.getKey());
+                    break;
+                }
             }
         }
 

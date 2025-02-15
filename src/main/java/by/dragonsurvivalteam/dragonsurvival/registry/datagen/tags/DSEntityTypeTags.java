@@ -26,8 +26,6 @@ public class DSEntityTypeTags extends EntityTypeTagsProvider {
     public static final TagKey<EntityType<?>> HUNTER_TARGETS = key("hunter_targets");
     @Translation(comments = "Charged Effect Spread Blacklist")
     public static final TagKey<EntityType<?>> CHARGED_SPREAD_BLACKLIST = key("charged_spread_blacklist");
-    @Translation(comments = "Applies Hunter Omen")
-    public static final TagKey<EntityType<?>> APPLIES_HUNTER_OMEN = key("applies_hunter_omen");
     @Translation(comments = "hunter_faction")
     public static final TagKey<EntityType<?>> HUNTER_FACTION = key("hunter_faction");
     @Translation(comments = "Drops Weak Dragon Heart")
@@ -95,16 +93,13 @@ public class DSEntityTypeTags extends EntityTypeTagsProvider {
         // Used in 'curse_of_kindness' enchantment
         tag(HUNTER_FACTION)
                 .add(EntityType.VILLAGER)
+                .add(EntityType.IRON_GOLEM)
                 .add(DSEntities.HUNTER_AMBUSHER.value())
                 .add(DSEntities.HUNTER_GRIFFIN.value())
                 .add(DSEntities.HUNTER_HOUND.value())
                 .add(DSEntities.HUNTER_KNIGHT.value())
                 .add(DSEntities.HUNTER_LEADER.value())
                 .add(DSEntities.HUNTER_SPEARMAN.value());
-
-        tag(APPLIES_HUNTER_OMEN)
-                .addTag(HUNTER_FACTION)
-                .add(EntityType.IRON_GOLEM);
 
         // TODO :: currently unused
         tag(key("other_dragons"))

@@ -4,25 +4,6 @@
     "translate": "enchantment.dragonsurvival.curse_of_kindness"
   },
   "effects": {
-    "minecraft:damage": [
-      {
-        "effect": {
-          "type": "minecraft:add",
-          "value": {
-            "type": "minecraft:linear",
-            "base": -1.0,
-            "per_level_above_first": -0.5
-          }
-        },
-        "requirements": {
-          "condition": "minecraft:entity_properties",
-          "entity": "this",
-          "predicate": {
-            "type": "#dragonsurvival:hunter_faction"
-          }
-        }
-      }
-    ],
     "minecraft:attributes": [
       {
         "amount": {
@@ -30,7 +11,7 @@
           "base": -0.25,
           "per_level_above_first": -0.25
         },
-        "attribute": "dragonsurvival:villager_damage_bonus",
+        "attribute": "dragonsurvival:hunter_faction_damage",
         "id": "dragonsurvival:enchantment.curse_of_kindness",
         "operation": "add_value"
       }

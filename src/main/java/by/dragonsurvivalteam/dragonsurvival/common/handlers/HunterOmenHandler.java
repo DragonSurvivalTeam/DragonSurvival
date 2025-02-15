@@ -1,6 +1,10 @@
 package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 
-import by.dragonsurvivalteam.dragonsurvival.registry.*;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSEnchantments;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSMapDecorationTypes;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSTrades;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.EffectsMaintainedThroughDeath;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
@@ -16,7 +20,6 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.npc.AbstractVillager;
@@ -49,10 +52,8 @@ public class HunterOmenHandler {
         LivingEntity livingEntity = deathEvent.getEntity();
         Entity killer = deathEvent.getSource().getEntity();
 
-        if (killer instanceof Player player) {
-            if (livingEntity.getType().is(DSEntityTypeTags.APPLIES_HUNTER_OMEN)) {
-                applyHunterOmenFromKilling(player);
-            }
+        if (killer instanceof Player player && livingEntity.getType().is(DSEntityTypeTags.HUNTER_FACTION)) {
+            applyHunterOmenFromKilling(player);
         }
     }
 
@@ -181,31 +182,32 @@ public class HunterOmenHandler {
         }
     }
 
-    @SubscribeEvent
-    public static void applyHunterOmenOnHurtEntities(LivingIncomingDamageEvent attackEntityEvent) {
-        Entity attacked = attackEntityEvent.getEntity();
-        Player attacker = attackEntityEvent.getSource().getEntity() instanceof Player ? (Player) attackEntityEvent.getSource().getEntity() : null;
+    @SubscribeEvent // Handles the damage modification and the
+    public static void handleVillagerAttack(final LivingIncomingDamageEvent event) {
+        Entity target = event.getEntity();
+        Player attacker = event.getSource().getEntity() instanceof Player player ? player : null;
 
-        if (attacker == null) {
+        if (attacker == null || !target.getType().is(DSEntityTypeTags.HUNTER_FACTION)) {
             return;
         }
 
-        if (attacked.getType().is(DSEntityTypeTags.APPLIES_HUNTER_OMEN)) {
-            MobEffectInstance effect = attacker.getEffect(DSEffects.HUNTER_OMEN);
-            int duration = 0;
+        double multiplier = attacker.getAttributeValue(DSAttributes.HUNTER_FACTION_DAMAGE);
+        double damage = event.getAmount() * multiplier;
 
-            if (effect != null) {
-                duration = effect.getDuration();
-            }
+        if (damage == 0) {
+            event.setCanceled(true);
+            return;
+        }
 
-            AttributeInstance damage_reduction = attacker.getAttribute(DSAttributes.VILLAGER_DAMAGE_BONUS);
-            if (damage_reduction != null) {
-                attackEntityEvent.setAmount((float) (attackEntityEvent.getAmount() * (1f + damage_reduction.getValue())));
-            }
-            int enchantmentLevel = EnchantmentUtils.getLevel(attacker, DSEnchantments.CURSE_OF_KINDNESS);
-            if (enchantmentLevel <= 0) {
-                attacker.addEffect(new MobEffectInstance(DSEffects.HUNTER_OMEN, duration + Functions.secondsToTicks(5), 0, false, false, true));
-            }
+        MobEffectInstance effect = attacker.getEffect(DSEffects.HUNTER_OMEN);
+        int duration = 0;
+
+        if (effect != null) {
+            duration = effect.getDuration();
+        }
+
+        if (EnchantmentUtils.getLevel(attacker, DSEnchantments.CURSE_OF_KINDNESS) < 1) {
+            attacker.addEffect(new MobEffectInstance(DSEffects.HUNTER_OMEN, duration + Functions.secondsToTicks(5), 0, false, false, true));
         }
     }
 }
