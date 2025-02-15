@@ -22,6 +22,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
@@ -94,13 +95,37 @@ public class AltarTypeButton extends Button implements HoverDisableable {
 
     @Override
     protected void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        if (isHovered() && isTop(mouseY)) {
+        if (isHovered()) {
+            handleTooltip(graphics, mouseX, mouseY);
+        }
+
+        graphics.renderOutline(getX() - 1, getY() - 1, width + 2, height + 2, Color.black.getRGB());
+        RenderSystem.enableBlend(); // Needs to happen after the outline for the transparent locked banner to render correctly
+
+        if (entry != null) {
+            graphics.blit(entry.species().value().miscResources().altarBanner(), getX(), getY(), 0, isHovered() ? 0 : 147, 49, 147, 49, 294);
+
+            if (entry.isUnlocked()) {
+                StageResources.GrowthIcon growthIcon = StageResources.getGrowthIcon(entry.species(), entry.species().value().getStartingStage(null).getKey());
+                graphics.blit(isHovered() && isTop(mouseY) ? growthIcon.hoverIcon() : growthIcon.icon(), getX() + 1, getY() + 1, 0, 0, 18, 18, 18, 18);
+            } else {
+                graphics.blit(LOCKED_BANNER, getX(), getY(), 0, 0, 49, 147, 49, 147);
+            }
+        } else {
+            graphics.blit(HUMAN_BANNER, getX(), getY(), 0, isHovered() ? 0 : 147, 49, 147, 49, 294);
+        }
+
+        RenderSystem.disableBlend();
+    }
+
+    private void handleTooltip(@NotNull final GuiGraphics graphics, int mouseX, int mouseY) {
+        List<Either<FormattedText, TooltipComponent>> components = new ArrayList<>();
+
+        if ((entry == null || entry.isUnlocked()) && isTop(mouseY)) {
             if (resetScroll) {
                 resetScroll = false;
                 scroll = 0;
             }
-
-            List<Either<FormattedText, TooltipComponent>> components = new ArrayList<>();
 
             if (entry != null) {
                 List<Item> diet = DietEntryCache.getDietItems(entry.species());
@@ -121,33 +146,24 @@ public class AltarTypeButton extends Button implements HoverDisableable {
                 for (int i = scroll; i < max; i++) {
                     components.add(Either.right(new DietComponent(entry.species(), diet.get(i))));
                 }
-
-                graphics.renderComponentTooltipFromElements(Minecraft.getInstance().font, components, mouseX, mouseY, ItemStack.EMPTY);
             } else {
                 components.addFirst(Either.left(Component.translatable(HUMAN)));
-                graphics.renderComponentTooltipFromElements(Minecraft.getInstance().font, components, mouseX, mouseY, ItemStack.EMPTY);
             }
         } else {
             resetScroll = true;
-        }
 
-        graphics.renderOutline(getX() - 1, getY() - 1, width + 2, height + 2, Color.black.getRGB());
-        RenderSystem.enableBlend(); // Needs to happen after the outline for the transparent locked banner to render correctly
+            if (entry != null && !entry.isUnlocked()) {
+                String key = Translation.Type.DRAGON_SPECIES_LOCKED.wrap(entry.species());
 
-        if (entry != null) {
-            graphics.blit(entry.species().value().miscResources().altarBanner(), getX(), getY(), 0, isHovered() ? 0 : 147, 49, 147, 49, 294);
-
-            if (!entry.isUnlocked()) {
-                graphics.blit(LOCKED_BANNER, getX(), getY(), 0, 0, 49, 147, 49, 147);
+                if (I18n.exists(key)) {
+                    components.addFirst(Either.left(Component.translatable(key)));
+                }
             }
-
-            StageResources.GrowthIcon growthIcon = StageResources.getGrowthIcon(entry.species(), entry.species().value().getStartingStage(null).getKey());
-            graphics.blit(isHovered() && isTop(mouseY) ? growthIcon.hoverIcon() : growthIcon.icon(), getX() + 1, getY() + 1, 0, 0, 18, 18, 18, 18);
-        } else {
-            graphics.blit(HUMAN_BANNER, getX(), getY(), 0, isHovered() ? 0 : 147, 49, 147, 49, 294);
         }
 
-        RenderSystem.disableBlend();
+        if (!components.isEmpty()) {
+            graphics.renderComponentTooltipFromElements(Minecraft.getInstance().font, components, mouseX, mouseY, ItemStack.EMPTY);
+        }
     }
 
     private boolean isTop(double mouseY) {
