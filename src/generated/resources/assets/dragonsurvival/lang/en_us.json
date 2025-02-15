@@ -725,6 +725,8 @@
   "dragonsurvival.configuration.max_treasure_for_rate_reduction.tooltip": "The maximum amount of additional treasure that can affect the health regeneration reduction\nOnly treasure within a 16 x 9 x 16 radius is considered",
   "dragonsurvival.configuration.min_animation_speed": "Min Animation Speed",
   "dragonsurvival.configuration.min_animation_speed.tooltip": "The minimum animation speed allowed for dragons.",
+  "dragonsurvival.configuration.min_near_plane": "Min Near Plane",
+  "dragonsurvival.configuration.min_near_plane.tooltip": "Lower values prevent x-ray through blocks when using a small entity scale\nA value that is too low may cause issues when rendering chunks when certain (unknown) mods are present",
   "dragonsurvival.configuration.movement_animation_speed_factor": "Movement Animation Speed Factor",
   "dragonsurvival.configuration.movement_animation_speed_factor.tooltip": "The amount by which the movement animation speed factor is multiplied. 1.0 represents the animation speed accurately reflecting the speed of your movement.",
   "dragonsurvival.configuration.nearby_treasure_rate_reduction": "Nearby Treasure Rate Reduction",

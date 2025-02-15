@@ -19,6 +19,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
@@ -65,6 +66,19 @@ public abstract class CameraMixin {
                 return;
             }
         }
+    }
+
+    /** Reduce x-ray through the blocks to the side of the player (when moving the third person camera) */
+    @ModifyVariable(method = "getMaxZoom", at = @At(value = "STORE"), ordinal = 5)
+    private float dragonSurvival$modifyDistance(float distance) {
+        //noinspection DataFlowIssue -> player is present
+        float scale = Minecraft.getInstance().player.getScale();
+
+        if (scale < 1) {
+            return distance * scale;
+        }
+
+        return distance;
     }
 
     // We need to adjust the distance at which blocks are checked for collision to prevent the camera from thinking it is blocked
