@@ -95,7 +95,7 @@ public class NetworkHandler {
         registrar.playToServer(RequestOpenVanillaInventory.TYPE, RequestOpenVanillaInventory.STREAM_CODEC, RequestOpenVanillaInventory::handleServer);
         registrar.playToServer(SyncLargeDragonDestruction.TYPE, SyncLargeDragonDestruction.STREAM_CODEC, SyncLargeDragonDestruction::handleServer);
 
-        registrar.playToClient(OpenDragonAltar.TYPE, OpenDragonAltar.STREAM_CODEC, new DirectionalPayloadHandler<>(OpenDragonAltar::handleClient, OpenDragonAltar::handleServer));
+        registrar.playBidirectional(OpenDragonAltar.TYPE, OpenDragonAltar.STREAM_CODEC, new DirectionalPayloadHandler<>(OpenDragonAltar::handleClient, OpenDragonAltar::handleServer));
         registrar.playBidirectional(FlightStatus.TYPE, FlightStatus.STREAM_CODEC, new DirectionalPayloadHandler<>(FlightStatus::handleClient, FlightStatus::handleServer));
         registrar.playBidirectional(SyncDragonMovement.TYPE, SyncDragonMovement.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncDragonMovement::handleClient, SyncDragonMovement::handleServer));
         registrar.playBidirectional(SyncComplete.TYPE, SyncComplete.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncComplete::handleClient, SyncComplete::handleServer));
