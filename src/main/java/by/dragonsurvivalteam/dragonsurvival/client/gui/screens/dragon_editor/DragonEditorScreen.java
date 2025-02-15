@@ -588,7 +588,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
                         wingsButton.visible = false;
                     }
                 } else {
-                    if (dragonBodyBar.currentlyHiddenWidgets().contains(widget)) {
+                    if (dragonBodyBar.isHidden(widget)) {
                         widget.visible = false;
                     } else {
                         widget.visible = showUi;
@@ -676,8 +676,6 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             hasInit = true;
         }
 
-        // TODO :: use tag to order the species? otherwise it might not be consistent
-        //noinspection SuspiciousMethodCalls -> type matches
         selectedDragonStage = species.value().getStages(null).stream().toList().indexOf(stage);
         HoverButton leftArrow = new HoverButton(width / 2 - 100, 10, 18, 20, 20, 20, LEFT_ARROW_MAIN, LEFT_ARROW_HOVER, button -> {
             List<Holder<DragonStage>> stages = species.value().getStages(null).stream().toList();
@@ -695,16 +693,18 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
         // Add scrollable list of dragon bodies
         List<AbstractWidget> dragonBodyWidgets = new ArrayList<>();
+
         for (Holder<DragonBody> dragonBodyHolder : DSDragonBodyTags.getOrdered(null)) {
             if (species.value().isValidForBody(dragonBodyHolder)) {
                 dragonBodyWidgets.add(createButton(dragonBodyHolder, 0, 0));
             }
         }
+
         dragonBodyBar = new BarComponent(this,
-                width / 2 - 38, height / 2 + 30, 5,
-                dragonBodyWidgets, 25,
-                -16, 82, 4, 18, 20, 20, 20,
-                SMALL_LEFT_ARROW_HOVER, SMALL_LEFT_ARROW_MAIN, SMALL_RIGHT_ARROW_HOVER, SMALL_RIGHT_ARROW_MAIN, true);
+                    width / 2 - 43, height / 2 + 30, 3,
+                dragonBodyWidgets, 5,
+                -15, 92, 4, 10, 16,
+                SMALL_LEFT_ARROW_HOVER, SMALL_LEFT_ARROW_MAIN, SMALL_RIGHT_ARROW_HOVER, SMALL_RIGHT_ARROW_MAIN);
 
         int maxWidth = -1;
 
@@ -732,7 +732,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         animationNameButton.setMessage(Component.empty().append(WordUtils.capitalize(animations[curAnimation].replace("_", " "))));
         addRenderableWidget(animationNameButton);
 
-        HoverButton leftAnimationArrow = new HoverButton(width / 2 - 57, height / 2 + 65, 9, 16, 20, 20, SMALL_LEFT_ARROW_MAIN, SMALL_LEFT_ARROW_HOVER, button -> {
+        HoverButton leftAnimationArrow = new HoverButton(width / 2 - 57, height / 2 + 65, 10, 16, 10, 16, SMALL_LEFT_ARROW_MAIN, SMALL_LEFT_ARROW_HOVER, button -> {
             curAnimation -= 1;
 
             if (curAnimation < 0) {
@@ -742,7 +742,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         });
         addRenderableWidget(leftAnimationArrow);
 
-        HoverButton rightAnimationArrow = new HoverButton(width / 2 + 48, height / 2 + 65, 9, 16, 20, 20, SMALL_RIGHT_ARROW_MAIN, SMALL_RIGHT_ARROW_HOVER, button -> {
+        HoverButton rightAnimationArrow = new HoverButton(width / 2 + 48, height / 2 + 65, 10, 16, 10, 16, SMALL_RIGHT_ARROW_MAIN, SMALL_RIGHT_ARROW_HOVER, button -> {
             curAnimation += 1;
 
             if (curAnimation >= animations.length) {
@@ -783,8 +783,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
                 if (confirmation) {
                     if (!toggled) {
-                        renderButton = new ExtendedButton(0, 0, 0, 0, Component.empty(), b -> {
-                        }) {
+                        renderButton = new ExtendedButton(0, 0, 0, 0, Component.empty(), button -> { /* Nothing to do */ }) {
                             @Override
                             public void renderWidget(@NotNull final GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
                                 if (confirmComponent != null && confirmation) {
@@ -799,8 +798,8 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
                     }
                     toggled = !toggled;
                 } else {
-                    children().removeIf(s -> s == confirmComponent);
-                    renderables.removeIf(s -> s == renderButton);
+                    children().removeIf(listener -> listener == confirmComponent);
+                    renderables.removeIf(renderable -> renderable == renderButton);
                 }
             }
         };
@@ -898,8 +897,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         addRenderableWidget(copyToAllStagesButton);
 
         // Help button
-        HoverButton helpButton = new HoverButton(guiLeft - 75, height - 30, 20, 20, 20, 20, INFO_MAIN, INFO_HOVER, button -> {
-        });
+        HoverButton helpButton = new HoverButton(guiLeft - 75, height - 30, 20, 20, 20, 20, INFO_MAIN, INFO_HOVER, button -> { /* Nothing to do */ });
         helpButton.setTooltip(Tooltip.create(Component.translatable(CUSTOMIZATION)));
         addRenderableWidget(helpButton);
 
@@ -919,9 +917,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         addRenderableWidget(wingsButton);
 
         // Show UI button
-        uiButton = new ExtendedButton(guiLeft - 13, height - 30, 20, 20, Component.translatable(SHOW_UI), button -> {
-            showUi = !showUi;
-        }) {
+        uiButton = new ExtendedButton(guiLeft - 13, height - 30, 20, 20, Component.translatable(SHOW_UI), button -> showUi = !showUi) {
             @Override
             public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 ResourceLocation texture = showUi ? SHOW_UI_ON : SHOW_UI_OFF;

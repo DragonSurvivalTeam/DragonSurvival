@@ -14,59 +14,31 @@ public class BarComponent implements ScrollableComponent {
     private final HoverButton leftArrow;
     private final HoverButton rightArrow;
 
-    private final int numberOfElementsToDisplay;
-    private final int elementSpacing;
+    private final int displayAmount;
+    private final int spacing;
     private final int xPos;
     private final int yPos;
 
-    private int centerIndex;
+    private int scrollAmount;
 
-    public BarComponent(Screen parentScreen, int xPos, int yPos, int numberOfElementsToDisplay, List<? extends AbstractWidget> widgets, int elementSpacing, int arrowLeftX, int arrowRightX, int arrowY, int arrowWidth, int arrowHeight, int arrowTextureWidth, int arrowTextureHeight, ResourceLocation leftArrowHover, ResourceLocation leftArrowMain, ResourceLocation rightArrowHover, ResourceLocation rightArrowMain, boolean replaceButtonsWithArrowsWhenOversize) {
+    public BarComponent(final Screen screen, int xPos, int yPos, int displayAmount, final List<? extends AbstractWidget> widgets, int spacing, int arrowLeftX, int arrowRightX, int arrowY, int arrowWidth, int arrowHeight, ResourceLocation leftArrowHover, ResourceLocation leftArrowMain, ResourceLocation rightArrowHover, ResourceLocation rightArrowMain) {
         this.xPos = xPos;
         this.yPos = yPos;
-        this.elementSpacing = elementSpacing;
-        if(replaceButtonsWithArrowsWhenOversize) {
-            if (widgets.size() > numberOfElementsToDisplay) {
-                this.numberOfElementsToDisplay = numberOfElementsToDisplay - 2;
-            } else {
-                this.numberOfElementsToDisplay = numberOfElementsToDisplay;
-            }
-        } else {
-            this.numberOfElementsToDisplay = numberOfElementsToDisplay;
-        }
-
-        if (widgets.size() > 3) {
-            int oddOffset = widgets.size() % 2 == 0 ? 0 : 1;
-            centerIndex = widgets.size() / 2 - 1 + oddOffset;
-        } else if (widgets.size() >= 2) {
-            centerIndex = 1;
-        } else {
-            centerIndex = 0;
-        }
-
+        this.displayAmount = displayAmount;
+        this.spacing = spacing;
         this.widgets.addAll(widgets);
 
         for (AbstractWidget widget : widgets) {
-            ((ScreenAccessor) parentScreen).dragonSurvival$addRenderableWidget(widget);
+            ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(widget);
         }
 
-        if (widgets.size() > this.numberOfElementsToDisplay) {
-            leftArrow = new HoverButton(xPos + arrowLeftX, yPos + arrowY, arrowWidth, arrowHeight, arrowTextureWidth, arrowTextureHeight, leftArrowMain, leftArrowHover, button -> rotate(false));
-            rightArrow = new HoverButton(xPos + arrowRightX, yPos + arrowY, arrowWidth, arrowHeight, arrowTextureWidth, arrowTextureHeight, rightArrowMain, rightArrowHover, button -> rotate(true));
-            ((ScreenAccessor) parentScreen).dragonSurvival$addRenderableWidget(leftArrow);
-            ((ScreenAccessor) parentScreen).dragonSurvival$addRenderableWidget(rightArrow);
+        leftArrow = new HoverButton(xPos + arrowLeftX, yPos + arrowY, arrowWidth, arrowHeight, arrowWidth, arrowHeight, leftArrowMain, leftArrowHover, button -> scroll(false));
+        rightArrow = new HoverButton(xPos + arrowRightX, yPos + arrowY, arrowWidth, arrowHeight, arrowWidth, arrowHeight, rightArrowMain, rightArrowHover, button -> scroll(true));
+        ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(leftArrow);
+        ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(rightArrow);
 
-            if (centerIndex - getNumberOfElementsLeftOfCenter() <= 0) {
-                leftArrow.visible = false;
-            }
-
-            if (centerIndex + getNumberOfElementsRightOfCenter() >= widgets.size() - 1) {
-                rightArrow.visible = false;
-            }
-        } else {
-            leftArrow = null;
-            rightArrow = null;
-        }
+        leftArrow.visible = false;
+        rightArrow.visible = widgets.size() > displayAmount;
 
         forceSetButtonPositions();
     }
@@ -83,39 +55,37 @@ public class BarComponent implements ScrollableComponent {
 
     @Override
     public void scroll(double mouseX, double mouseY, double scrollX, double scrollY) {
-        if (!isHoveringOverWidget(mouseX, mouseY)) {
+        if (Screen.hasShiftDown() || !isHoveringOverWidget(mouseX, mouseY)) {
             return;
         }
 
-        rotate(scrollY > 0);
+        scroll(scrollY < 0);
     }
 
-    private void rotate(boolean right) {
-        if (widgets.size() <= numberOfElementsToDisplay) {
+    private void scroll(boolean isNext) {
+        if (widgets.size() <= displayAmount) {
             return;
         }
 
-        if (!right) {
-            if (centerIndex - getNumberOfElementsLeftOfCenter() > 0) {
-                centerIndex--;
-
-                if (rightArrow != null) {
-                    rightArrow.visible = true;
-                }
-
-                if (leftArrow != null && centerIndex - getNumberOfElementsLeftOfCenter() <= 0) {
-                    leftArrow.visible = false;
-                }
-            }
-        } else if (centerIndex + getNumberOfElementsRightOfCenter() < widgets.size() - 1) {
-            centerIndex++;
+        if (isNext && displayAmount + scrollAmount < widgets.size()) {
+            scrollAmount++;
 
             if (leftArrow != null) {
                 leftArrow.visible = true;
             }
 
-            if (rightArrow != null && centerIndex + getNumberOfElementsRightOfCenter() >= widgets.size() - 1) {
+            if (rightArrow != null && displayAmount + scrollAmount == widgets.size()) {
                 rightArrow.visible = false;
+            }
+        } else if (!isNext && scrollAmount > 0) {
+            scrollAmount--;
+
+            if (rightArrow != null) {
+                rightArrow.visible = true;
+            }
+
+            if (leftArrow != null && scrollAmount == 0) {
+                leftArrow.visible = false;
             }
         }
 
@@ -123,16 +93,7 @@ public class BarComponent implements ScrollableComponent {
     }
 
     private boolean isVisibleElement(int index) {
-        return index >= centerIndex - getNumberOfElementsLeftOfCenter() && index <= centerIndex + getNumberOfElementsRightOfCenter();
-    }
-
-    private int getNumberOfElementsLeftOfCenter() {
-        int evenOffset = numberOfElementsToDisplay % 2 == 0 ? 1 : 0;
-        return numberOfElementsToDisplay / 2 - evenOffset;
-    }
-
-    private int getNumberOfElementsRightOfCenter() {
-        return numberOfElementsToDisplay / 2;
+        return index >= scrollAmount && index < displayAmount + scrollAmount;
     }
 
     private void forceSetButtonPositions() {
@@ -141,30 +102,35 @@ public class BarComponent implements ScrollableComponent {
             widget.visible = isVisibleElement(index);
 
             if (widget.visible) {
-                int centerAlignment = index - centerIndex + 1;
-                widget.setX(xPos + centerAlignment * elementSpacing);
+                if (widgets.size() < displayAmount) {
+                    int totalWidth = widgets.size() * (widget.getWidth() + spacing) - spacing;
+                    int centeredX = xPos + (displayAmount * (widget.getWidth() + spacing) - spacing - totalWidth) / 2;
+                    widget.setX(centeredX + index * (widget.getWidth() + spacing));
+                } else {
+                    widget.setX(xPos + (index - scrollAmount) * (widget.getWidth() + spacing));
+                }
+                
                 widget.setY(yPos);
             }
         }
     }
 
-    public List<AbstractWidget> currentlyHiddenWidgets() {
-        List<AbstractWidget> hiddenWidgets = new ArrayList<>();
-
-        for (int i = 0; i < widgets.size(); i++) {
-            if (!isVisibleElement(i)) {
-                hiddenWidgets.add(widgets.get(i));
-            }
+    /** Needed due to the 'show ui' button of the dragon editor (which overwrites the visibility) */
+    public boolean isHidden(final AbstractWidget widget) {
+        if (widget == leftArrow && scrollAmount == 0) {
+            return true;
         }
 
-        if (rightArrow != null && centerIndex + getNumberOfElementsRightOfCenter() >= widgets.size() - 1) {
-            hiddenWidgets.add(rightArrow);
+        if (widget == rightArrow && (widgets.size() < displayAmount || displayAmount + scrollAmount == widgets.size())) {
+            return true;
         }
 
-        if (leftArrow != null && centerIndex - getNumberOfElementsLeftOfCenter() <= 0) {
-            hiddenWidgets.add(leftArrow);
+        int index = widgets.indexOf(widget);
+
+        if (index == -1) {
+            return false;
         }
 
-        return hiddenWidgets;
+        return !isVisibleElement(index);
     }
 }

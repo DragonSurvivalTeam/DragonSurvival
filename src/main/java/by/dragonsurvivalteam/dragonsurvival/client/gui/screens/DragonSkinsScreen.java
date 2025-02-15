@@ -315,9 +315,9 @@ public class DragonSkinsScreen extends Screen {
 
         new BarComponent(this,
                 startX + 128 + 4, height / 2 + 14, 4,
-                dragonBodyWidgets, 40,
-                -15, 160, 7, 18, 20, 20, 20,
-                BODY_ARROW_LEFT_HOVER, BODY_ARROW_LEFT_MAIN, BODY_ARROW_RIGHT_HOVER, BODY_ARROW_RIGHT_MAIN, false);
+                dragonBodyWidgets, 5,
+                -15, 160, 7, 18, 20,
+                BODY_ARROW_LEFT_HOVER, BODY_ARROW_LEFT_MAIN, BODY_ARROW_RIGHT_HOVER, BODY_ARROW_RIGHT_MAIN);
 
         playerNameDisplay = new HoverButton(startX - 62, startY - 50, 165, 22, 165, 22, BUTTON_BACKGROUND_WHITE, BUTTON_BACKGROUND_WHITE, button -> { /* Nothing to do */ });
         playerNameDisplay.setMessage(Component.literal(Objects.requireNonNull(player).getGameProfile().getName()));

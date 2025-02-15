@@ -49,7 +49,7 @@ public class EditorPartComponent implements ScrollableComponent {
         ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(partButton);
 
         // Left arrow
-        ((ScreenAccessor)screen).dragonSurvival$addRenderableWidget(new HoverButton(xPos - 7, yPos + 2, 9, 16, 20, 20, SMALL_LEFT_ARROW_MAIN, SMALL_LEFT_ARROW_HOVER, button -> {
+        ((ScreenAccessor)screen).dragonSurvival$addRenderableWidget(new HoverButton(xPos - 7, yPos + 2, 10, 16, 10, 16, SMALL_LEFT_ARROW_MAIN, SMALL_LEFT_ARROW_HOVER, button -> {
             List<String> partsFromLayer = screen.getPartsFromLayer(skinLayer);
 
             if (partsFromLayer.isEmpty()) {
@@ -74,7 +74,7 @@ public class EditorPartComponent implements ScrollableComponent {
         }));
 
         // Right arrow
-        ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(new HoverButton(xPos + 108, yPos + 2, 9, 16, 20, 20, SMALL_RIGHT_ARROW_MAIN, SMALL_RIGHT_ARROW_HOVER, button -> {
+        ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(new HoverButton(xPos + 108, yPos + 2, 10, 16, 10, 16, SMALL_RIGHT_ARROW_MAIN, SMALL_RIGHT_ARROW_HOVER, button -> {
             List<String> partsFromLayer = screen.getPartsFromLayer(skinLayer);
 
             if (partsFromLayer.isEmpty()) {

@@ -286,9 +286,9 @@ public class DragonSpeciesScreen extends Screen {
 
             crystalBar = new BarComponent(this,
                     startX + 130, startY - 19, 4,
-                    crystals, 10,
-                    -11, 39, 1, 12, 16, 12, 16,
-                    textures.growthLeftArrow().hoverIcon(), textures.growthLeftArrow().icon(), textures.growthRightArrow().hoverIcon(), textures.growthRightArrow().icon(), false);
+                    crystals, 2,
+                    -11, 39, 1, 12, 16,
+                    textures.growthLeftArrow().hoverIcon(), textures.growthLeftArrow().icon(), textures.growthRightArrow().hoverIcon(), textures.growthRightArrow().icon());
 
             scrollableComponents.add(crystalBar);
         }
@@ -308,14 +308,15 @@ public class DragonSpeciesScreen extends Screen {
 
         // Penalties bar
         List<AbstractWidget> penalties = data.species().value().penalties().stream().filter(penalty -> penalty.value().icon().isPresent()).map(penalty -> (AbstractWidget) new PenaltyButton(0, 0, penalty)).toList();
-        if(!penalties.isEmpty()) {
+
+        if (!penalties.isEmpty()) {
             scrollableComponents.add(new BarComponent(this,
                     startX + 85, startY + 85, 3,
-                    penalties, 40,
-                    -10, 116, 10, 9, 16, 20, 20,
-                    PENALTIES_LEFT_ARROW_HOVER, PENALTIES_LEFT_ARROW_MAIN, PENALTIES_RIGHT_ARROW_HOVER, PENALTIES_RIGHT_ARROW_MAIN, false));
+                    penalties, 5,
+                    -10, 116, 10, 9, 16,
+                    PENALTIES_LEFT_ARROW_HOVER, PENALTIES_LEFT_ARROW_MAIN, PENALTIES_RIGHT_ARROW_HOVER, PENALTIES_RIGHT_ARROW_MAIN));
         } else {
-            ExtendedButton noPenaltiesText = new ExtendedButton(startX + 82, startY + 100, 140, 10, Component.empty(), button -> {}){
+            ExtendedButton noPenaltiesText = new ExtendedButton(startX + 82, startY + 100, 140, 10, Component.empty(), button -> { /* Nothing to do */ }) {
                 @Override
                 public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
                     final FormattedText buttonText = Minecraft.getInstance().font.ellipsize(this.getMessage(), this.width + 26); // Remove 6 pixels so that the text is always contained within the button's borders

@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.screens;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.DragonEditorScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.AltarTypeButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverButton;
@@ -14,10 +15,12 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.AltarBehaviour;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
+import by.dragonsurvivalteam.dragonsurvival.mixins.HolderSet$NamedAccess;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AltarData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonSpeciesTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
@@ -50,6 +53,7 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -106,6 +110,20 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
 
     public DragonAltarScreen(final List<AltarBehaviour.Entry> entries) {
         super(Component.translatable(CHOOSE_SPECIES));
+
+        //noinspection DataFlowIssue -> access is expected to be present
+        DragonSurvival.PROXY.getAccess().registryOrThrow(DragonSpecies.REGISTRY).getTag(DSDragonSpeciesTags.ORDER).ifPresent(order -> {
+            //noinspection unchecked -> cast is valid
+            List<Holder<DragonSpecies>> list = ((HolderSet$NamedAccess<DragonSpecies>) order).dragonSurvival$contents();
+            Comparator<AltarBehaviour.Entry> comparator = Comparator.comparingInt(entry -> {
+                int index = list.indexOf(entry.species());
+                // Sort entries that are not present to the end
+                return index == -1 ? Integer.MAX_VALUE : index;
+            });
+
+            entries.sort(comparator);
+        });
+
         this.entries = entries;
     }
 
@@ -418,12 +436,11 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
         }
 
         // TODO :: display message if no unlocked are present
-        // FIXME :: scrolls the wrong direction + shouldn't scroll when diet is hovered (since that is also scrollable)
         scrollableComponents.add(new BarComponent(this,
                 xPos + extraOffset, guiTop + 30, 4,
-                altarButtons, 55,
-                -13, 215, 60, 12, 19, 12, 19,
-                ALTAR_ARROW_LEFT_HOVER, ALTAR_ARROW_LEFT_MAIN, ALTAR_ARROW_RIGHT_HOVER, ALTAR_ARROW_RIGHT_MAIN, false));
+                altarButtons, 5,
+                -13, 215, 60, 12, 19,
+                ALTAR_ARROW_LEFT_HOVER, ALTAR_ARROW_LEFT_MAIN, ALTAR_ARROW_RIGHT_HOVER, ALTAR_ARROW_RIGHT_MAIN));
 
         addRenderableWidget(new ExtendedButton(xPos + 32, height - 25, 150, 20, Component.translatable(LangKey.GUI_DRAGON_EDITOR), action -> Minecraft.getInstance().setScreen(new DragonEditorScreen(Minecraft.getInstance().screen))) {
             @Override
