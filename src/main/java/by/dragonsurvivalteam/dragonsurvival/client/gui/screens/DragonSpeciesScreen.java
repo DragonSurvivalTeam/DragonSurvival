@@ -20,6 +20,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_maps.DietEntryCache;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.FlightEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -256,7 +257,7 @@ public class DragonSpeciesScreen extends Screen {
         }
 
         if (!flightData.hasFlight && !flightData.hasSpin) {
-            if(!MagicData.getData(minecraft.player).hasFlightGrantingAbility()) {
+            if (!MagicData.getData(minecraft.player).checkAbility(minecraft.player, FlightEffect.class, MagicData.AbilityCheck.HAS_EFFECT)) {
                 flightTooltip.append(Component.translatable(FLIGHT_CANNOT_GAIN));
             } else {
                 flightTooltip.append(Component.translatable(FLIGHT_CANNOT_FLY));

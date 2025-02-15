@@ -26,12 +26,8 @@ public record OpenDragonAltar(List<AltarBehaviour.Entry> entries) implements Cus
     );
 
     public static void handleServer(final OpenDragonAltar ignored, final IPayloadContext context) {
-        if (!(context.player() instanceof ServerPlayer serverPlayer)) {
-            return;
-        }
-
-        context.enqueueWork(() -> DragonSpecies.getSpecies(serverPlayer, true))
-                .thenAccept(unlockedSpecies -> PacketDistributor.sendToPlayer(serverPlayer, new OpenDragonAltar(unlockedSpecies)));
+        context.enqueueWork(() -> DragonSpecies.getSpecies((ServerPlayer) context.player(), true))
+                .thenAccept(unlockedSpecies -> PacketDistributor.sendToPlayer((ServerPlayer) context.player(), new OpenDragonAltar(unlockedSpecies)));
     }
 
     public static void handleClient(final OpenDragonAltar packet, final IPayloadContext context) {

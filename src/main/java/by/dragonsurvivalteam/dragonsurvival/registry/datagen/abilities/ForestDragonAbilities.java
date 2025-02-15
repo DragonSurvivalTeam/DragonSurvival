@@ -516,12 +516,8 @@ public class ForestDragonAbilities {
         context.register(FOREST_WINGS, new DragonAbility(
                 Activation.passive(),
                 Optional.of(new ConditionUpgrade(List.of(Condition.thisEntity(EntityCondition.flightWasGranted(true)).build()), false)),
-                // Disable when marked by the ender dragon or when trapped / wings are broken
-                Optional.of(AnyOfCondition.anyOf(
-                        Condition.thisEntity(EntityCondition.isMarked(true)),
-                        Condition.thisEntity(EntityCondition.hasEffect(DSEffects.TRAPPED)),
-                        Condition.thisEntity(EntityCondition.hasEffect(DSEffects.BROKEN_WINGS))
-                ).build()),
+                // Disable when marked by the ender dragon
+                Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         List.of(new FlightEffect(1, DragonSurvival.res("textures/ability_effect/forest_dragon_wings.png"))),
                         TargetingMode.ALLIES_AND_SELF

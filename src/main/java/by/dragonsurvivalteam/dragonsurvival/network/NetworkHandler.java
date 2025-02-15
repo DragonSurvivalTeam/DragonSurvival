@@ -22,6 +22,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncFlyingPlayerAbili
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncSpinStatus;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncWingIcon;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncWingsSpread;
+import by.dragonsurvivalteam.dragonsurvival.network.flight.ToggleFlight;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.AttemptManualUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncAbilityLevel;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncAddPenaltySupply;
@@ -99,6 +100,7 @@ public class NetworkHandler {
         registrar.playBidirectional(FlightStatus.TYPE, FlightStatus.STREAM_CODEC, new DirectionalPayloadHandler<>(FlightStatus::handleClient, FlightStatus::handleServer));
         registrar.playBidirectional(SyncDragonMovement.TYPE, SyncDragonMovement.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncDragonMovement::handleClient, SyncDragonMovement::handleServer));
         registrar.playBidirectional(SyncComplete.TYPE, SyncComplete.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncComplete::handleClient, SyncComplete::handleServer));
+        registrar.playBidirectional(ToggleFlight.TYPE, ToggleFlight.STREAM_CODEC, new DirectionalPayloadHandler<>(ToggleFlight::handleClient, ToggleFlight::handleServer));
 
         // Status
         registrar.playToClient(SyncGrowthState.TYPE, SyncGrowthState.STREAM_CODEC, SyncGrowthState::handleClient);

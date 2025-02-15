@@ -61,7 +61,7 @@ public class KeyHandler {
      * - The player is null or the player is not a dragon
      */
     public static @Nullable Pair<Player, DragonStateHandler> checkAndGet(final InputEvent.Key event, final Keybind keybind, boolean dragonOnly) {
-        if (Minecraft.getInstance().screen != null || event.getAction() != InputConstants.PRESS || !keybind.consumeClick()) {
+        if (Minecraft.getInstance().screen != null || event.getAction() != InputConstants.PRESS || !keybind.isDown(InputConstants.getKey(event.getKey(), event.getScanCode()))) {
             return null;
         }
 

@@ -49,36 +49,13 @@
     "upgrade_type": "dragonsurvival:condition_based"
   },
   "usage_blocked": {
-    "condition": "minecraft:any_of",
-    "terms": [
-      {
-        "condition": "minecraft:entity_properties",
-        "entity": "this",
-        "predicate": {
-          "type_specific": {
-            "type": "dragonsurvival:dragon_predicate",
-            "marked_by_ender_dragon": true
-          }
-        }
-      },
-      {
-        "condition": "minecraft:entity_properties",
-        "entity": "this",
-        "predicate": {
-          "effects": {
-            "dragonsurvival:trapped": {}
-          }
-        }
-      },
-      {
-        "condition": "minecraft:entity_properties",
-        "entity": "this",
-        "predicate": {
-          "effects": {
-            "dragonsurvival:broken_wings": {}
-          }
-        }
+    "condition": "minecraft:entity_properties",
+    "entity": "this",
+    "predicate": {
+      "type_specific": {
+        "type": "dragonsurvival:dragon_predicate",
+        "marked_by_ender_dragon": true
       }
-    ]
+    }
   }
 }

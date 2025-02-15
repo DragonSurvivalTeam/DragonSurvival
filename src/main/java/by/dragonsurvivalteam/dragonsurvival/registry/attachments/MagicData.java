@@ -4,7 +4,9 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.MagicHUD;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonAbilityHolder;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncMagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSSounds;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataComponents;
@@ -12,7 +14,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.FlightEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ExperiencePointsUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.InputData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.UpgradeType;
@@ -30,6 +31,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -481,12 +483,45 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         }
     }
 
-    public boolean hasFlightGrantingAbility() {
-        return getAbilities().values().stream().anyMatch(abilityInstance ->
-                abilityInstance.value().actions().stream()
-                        .anyMatch(action -> action.effect().target().right()
-                                .map(entityTargeting -> entityTargeting.effects().stream()
-                                        .anyMatch(effect -> effect instanceof FlightEffect)).orElse(false)));
+    /**
+     * Checks the abilities for effects <br>
+     * Note that {@link AbilityCheck#IS_EFFECT_UNLOCKED} can only be checked using a {@link ServerPlayer}
+     */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public boolean checkAbility(final Player player, final Class<?> effectType, final AbilityCheck check) {
+        for (DragonAbilityInstance instance : getAbilities().values()) {
+            for (ActionContainer action : instance.value().actions()) {
+                if (action.effect().target().map(
+                        target -> checkEffects(player, effectType, check, instance, target.effects(), target.targetConditions().orElse(null)),
+                        target -> checkEffects(player, effectType, check, instance, target.effects(), target.targetConditions().orElse(null))
+                )) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private <T> boolean checkEffects(final Player player, final Class<?> effectType, final AbilityCheck check, final DragonAbilityInstance instance, final List<T> effects, @Nullable final LootItemCondition condition) {
+        for (T effect : effects) {
+            if (effectType.isInstance(effect)) {
+                if (check == AbilityCheck.HAS_EFFECT) {
+                    return true;
+                }
+
+                if (player instanceof ServerPlayer serverPlayer && check == AbilityCheck.IS_EFFECT_UNLOCKED && instance.isApplyingEffects()) {
+                    return condition == null || condition.test(Condition.abilityContext(serverPlayer));
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public enum AbilityCheck {
+        HAS_EFFECT,
+        IS_EFFECT_UNLOCKED
     }
 
     @Override
