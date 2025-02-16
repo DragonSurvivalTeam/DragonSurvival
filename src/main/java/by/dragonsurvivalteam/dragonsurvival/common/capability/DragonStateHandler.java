@@ -650,22 +650,22 @@ public class DragonStateHandler extends EntityStateHandler {
         this.usedGrowthItems.clear();
 
         CompoundTag usedGrowthItems = tag.getCompound(USED_GROWTH_ITEMS);
-        usedGrowthItems.getAllKeys().forEach(key -> {
-            ResourceLocation resource = ResourceLocation.tryParse(key);;
+        usedGrowthItems.getAllKeys().forEach(growthItemStage -> {
+            ResourceLocation stageResource = ResourceLocation.tryParse(growthItemStage);
 
-            if (resource == null) {
+            if (stageResource == null) {
                 // Just to be safe - would normally not occur
                 return;
             }
 
-            CompoundTag perStage = usedGrowthItems.getCompound(key);
-            ResourceKey<DragonStage> stageKey = ResourceKey.create(DragonStage.REGISTRY, resource);
+            CompoundTag perStage = usedGrowthItems.getCompound(growthItemStage);
+            ResourceKey<DragonStage> stageKey = ResourceKey.create(DragonStage.REGISTRY, stageResource);
 
-            perStage.getAllKeys().forEach(itemKey -> {
-                Item item = BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(key));
+            perStage.getAllKeys().forEach(itemResource -> {
+                Item item = BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(itemResource));
 
                 if (item != Items.AIR) {
-                    this.usedGrowthItems.computeIfAbsent(stageKey, ignored -> new HashMap<>()).put(item, perStage.getInt(itemKey));
+                    this.usedGrowthItems.computeIfAbsent(stageKey, ignored -> new HashMap<>()).put(item, perStage.getInt(itemResource));
                 }
             });
         });
