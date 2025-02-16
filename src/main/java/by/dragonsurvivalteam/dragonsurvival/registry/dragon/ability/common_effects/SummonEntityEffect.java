@@ -408,12 +408,16 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
             }
 
             entityUUIDs.forEach(uuid -> {
-                Entity summonedEntity = serverLevel.getEntity(uuid);
+                // Go through all levels in case the summoner or the summons are in different dimensions
+                for (ServerLevel level : serverLevel.getServer().getAllLevels()) {
+                    Entity summonedEntity = level.getEntity(uuid);
 
-                if (summonedEntity != null) {
-                    // Since the entry is already removed from the storage we don't need any behaviour based on the owner
-                    summonedEntity.getData(DSDataAttachments.SUMMON).setOwnerUUID(null);
-                    summonedEntity.discard();
+                    if (summonedEntity != null) {
+                        // Since the entry is already removed from the storage we don't need any behaviour based on the owner
+                        summonedEntity.getData(DSDataAttachments.SUMMON).setOwnerUUID(null);
+                        summonedEntity.discard();
+                        break;
+                    }
                 }
             });
 
