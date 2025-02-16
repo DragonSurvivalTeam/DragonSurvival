@@ -84,6 +84,7 @@ public interface UpgradeType<T> {
         return false;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     default boolean canUpgrade(final ServerPlayer dragon, final DragonAbilityInstance ability) {
         return ability.level() < maxLevel();
     }

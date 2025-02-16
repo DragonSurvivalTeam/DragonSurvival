@@ -339,7 +339,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         }
 
         isCasting = true;
-        castTimer = instance.value().getChargeTime(instance.level());
+        castTimer = instance.value().activation().getCastTime(instance.level());
         instance.setActive(player, true);
     }
 

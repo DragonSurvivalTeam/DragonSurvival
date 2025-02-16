@@ -278,7 +278,7 @@ public class MagicHUD {
 
                         graphics.blitSprite(ability.getIcon(), posX + x * sizeX + 3, posY + 1, 0, 16, 16);
 
-                        float skillCooldown = ability.value().getCooldown(ability.level());
+                        float skillCooldown = ability.value().activation().getCooldown(ability.level());
                         float currentCooldown = ability.getCooldown() - Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
 
                         if (skillCooldown > 0 && currentCooldown > 0 && skillCooldown != currentCooldown) {
@@ -368,7 +368,7 @@ public class MagicHUD {
         if (magic.isCasting()) {
             DragonAbilityInstance ability = Objects.requireNonNull(magic.fromSlot(magic.getSelectedAbilitySlot()));
             float currentCastTime = magic.getClientCastTimer() - Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
-            int skillCastTime = ability.getCastTime();
+            int skillCastTime = ability.value().activation().getCastTime(ability.level());
 
             if (skillCastTime > 0) {
                 graphics.pose().pushPose();

@@ -3,9 +3,9 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Activation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.UpgradeType;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
@@ -44,7 +44,7 @@ public record DragonAbility(
     public static final ResourceKey<Registry<DragonAbility>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_ability"));
 
     public static final Codec<DragonAbility> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Activation.codec().fieldOf("activation").forGetter(DragonAbility::activation),
+            Activation.CODEC.fieldOf("activation").forGetter(DragonAbility::activation),
             UpgradeType.CODEC.optionalFieldOf("upgrade").forGetter(DragonAbility::upgrade),
             LootItemCondition.DIRECT_CODEC.optionalFieldOf("usage_blocked").forGetter(DragonAbility::usageBlocked),
             ActionContainer.CODEC.listOf().optionalFieldOf("actions", List.of()).forGetter(DragonAbility::actions),
@@ -54,14 +54,6 @@ public record DragonAbility(
 
     public static final Codec<Holder<DragonAbility>> CODEC = RegistryFixedCodec.create(REGISTRY);
     public static final StreamCodec<RegistryFriendlyByteBuf, Holder<DragonAbility>> STREAM_CODEC = ByteBufCodecs.holderRegistry(REGISTRY);
-
-    public int getCooldown(int abilityLevel) {
-        return activation.cooldown().map(cooldown -> cooldown.calculate(abilityLevel)).orElse(0f).intValue();
-    }
-
-    public int getChargeTime(int abilityLevel) {
-        return activation.castTime().map(castTime -> castTime.calculate(abilityLevel)).orElse(0f).intValue();
-    }
 
     public int getMaxLevel() {
         return upgrade.map(UpgradeType::maxLevel).orElse(1);
@@ -80,19 +72,24 @@ public record DragonAbility(
 
     public List<Component> getInfo(final Player dragon, final DragonAbilityInstance instance) {
         List<Component> info = new ArrayList<>();
-        int castTime = instance.getCastTime();
+        int castTime = activation.getCastTime(instance.level());
 
         if (castTime > 0) {
             info.add(Component.translatable(LangKey.ABILITY_CAST_TIME, Functions.ticksToSeconds(castTime)));
         }
 
-        int cooldown = instance.ability().value().getCooldown(instance.level());
+        int cooldown = instance.ability().value().activation.getCooldown(instance.level());
 
         if (cooldown > 0) {
             info.add(Component.translatable(LangKey.ABILITY_COOLDOWN, Functions.ticksToSeconds(cooldown)));
         }
 
-        instance.ability().value().activation().initialManaCost().ifPresent(cost -> info.add(Component.translatable(LangKey.ABILITY_INITIAL_MANA_COST, cost.calculate(instance.level()))));
+        float initialManaCost = instance.ability().value().activation().getInitialManaCost(instance.level());
+
+        if (initialManaCost > 0) {
+            info.add(Component.translatable(LangKey.ABILITY_INITIAL_MANA_COST, initialManaCost));
+        }
+
         instance.ability().value().activation().continuousManaCost().ifPresent(cost -> info.add(Component.translatable(LangKey.ABILITY_CONTINUOUS_MANA_COST, cost.manaCost().calculate(instance.level()), DSLanguageProvider.enumValue(cost.manaCostType()))));
 
         for (ActionContainer action : actions) {

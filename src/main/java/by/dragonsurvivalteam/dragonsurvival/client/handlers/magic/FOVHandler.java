@@ -18,7 +18,7 @@ public class FOVHandler {
         DragonAbilityInstance ability = MagicData.getData(player).getCurrentlyCasting();
 
         if (ability != null && ability.getCurrentCastTime() > 0) {
-            double perc = Math.min(ability.getCurrentCastTime() / (float) ability.getCastTime(), 1) / 4;
+            double perc = Math.min(ability.getCurrentCastTime() / (float) ability.value().activation().getCastTime(ability.level()), 1) / 4;
             double c4 = 2 * Math.PI / 3;
 
             if (perc != 0 && perc != 1) {

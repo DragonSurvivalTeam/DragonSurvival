@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.MagicHUD;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Activation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncDisableAbility;
@@ -112,7 +112,7 @@ public class DragonAbilityInstance {
     }
 
     private void tickActions(final Player dragon) {
-        int castTime = getCastTime();
+        int castTime = value().activation().getCastTime(level);
         currentTick++;
 
         if (currentTick < castTime) {
@@ -134,7 +134,7 @@ public class DragonAbilityInstance {
         }
 
         if (currentTick == castTime) {
-            ManaHandler.consumeMana(dragon, getInitialManaCost());
+            ManaHandler.consumeMana(dragon, value().activation().getInitialManaCost(level));
         }
 
         if (currentTick > castTime) {
@@ -153,7 +153,7 @@ public class DragonAbilityInstance {
             ability.value().actions().forEach(action -> action.tick(serverPlayer, this, currentTick));
         }
 
-        if (value().activation().type() == Activation.Type.ACTIVE_SIMPLE) {
+        if (value().activation().type() == Activation.Type.SIMPLE) {
             stopCasting(dragon);
         }
     }
@@ -164,10 +164,6 @@ public class DragonAbilityInstance {
 
         MagicData magic = MagicData.getData(dragon);
         magic.stopCasting(dragon);
-    }
-
-    private float getInitialManaCost() {
-        return value().activation().initialManaCost().map(cost -> cost.calculate(level)).orElse(0f);
     }
 
     public float getContinuousManaCost(final ManaCost.ManaCostType manaCostType) {
@@ -187,7 +183,7 @@ public class DragonAbilityInstance {
     }
 
     public boolean hasEnoughMana(final Player dragon) {
-        float manaCost = getInitialManaCost();
+        float manaCost = value().activation().getInitialManaCost(level);
 
         if (!ManaHandler.hasEnoughMana(dragon, manaCost)) {
             currentTick = 0;
@@ -205,7 +201,7 @@ public class DragonAbilityInstance {
     }
 
     public boolean isApplyingEffects() {
-        return isActive && canBeCast() && currentTick >= getCastTime();
+        return isActive && canBeCast() && currentTick >= value().activation().getCastTime(level);
     }
 
     public boolean hasEndAnimation() {
@@ -239,7 +235,7 @@ public class DragonAbilityInstance {
         if (dragon.hasInfiniteMaterials()) {
             cooldown = NO_COOLDOWN;
         } else {
-            cooldown = ability.value().getCooldown(level);
+            cooldown = ability.value().activation().getCooldown(level);
         }
     }
 
@@ -251,21 +247,8 @@ public class DragonAbilityInstance {
         return value().getMaxLevel();
     }
 
-    // TODO: These need to be synced in some way for MagicHUD?
-    //  technically no since it just adds 1 per tick while the ability is active
-    //  this can be done on both sides
     public int getCurrentCastTime() {
         return currentTick;
-    }
-
-    // TODO: These need to be synced in some way for MagicHUD?
-    //  should not be needed, since the client has info about the level and would reach the same value as the server here
-    public int getCastTime() {
-        return value().activation().castTime().map(time -> time.calculate(level)).orElse(0f).intValue();
-    }
-
-    public boolean canMoveWhileCasting() {
-        return value().activation().canMoveWhileCasting();
     }
 
     public boolean isUsable() {

@@ -13,8 +13,12 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.PotionData;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.SpawnParticles;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.TargetDirection;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Animations;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.ChanneledActivation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.PassiveActivation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.SimpleActivation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Sound;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationKey;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationLayer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.SimpleAbilityAnimation;
@@ -161,15 +165,14 @@ public class SeaDragonAbilities {
 
     private static void registerActiveAbilities(final BootstrapContext<DragonAbility> context) {
         context.register(STORM_BREATH, new DragonAbility(
-                new Activation(
-                        Activation.Type.ACTIVE_CHANNELED,
+                new ChanneledActivation(
                         Optional.empty(),
                         Optional.of(ManaCost.ticking(LevelBasedValue.constant(0.025f))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(1))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(2))),
                         true,
-                        Activation.Sound.create().start(DSSounds.STORM_BREATH_START.get()).looping(DSSounds.STORM_BREATH_LOOP.get()).end(DSSounds.STORM_BREATH_END.get()).optional(),
-                        Activation.Animations.create()
+                        Sound.create().start(DSSounds.STORM_BREATH_START.get()).looping(DSSounds.STORM_BREATH_LOOP.get()).end(DSSounds.STORM_BREATH_END.get()).optional(),
+                        Animations.create()
                                 .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).transitionLength(5).build())
                                 .looping(SimpleAbilityAnimation.create(AnimationKey.BREATH, AnimationLayer.BREATH).transitionLength(5).build())
                                 .optional()
@@ -212,15 +215,13 @@ public class SeaDragonAbilities {
         ));
 
         context.register(BALL_LIGHTNING, new DragonAbility(
-                new Activation(
-                        Activation.Type.ACTIVE_SIMPLE,
+                new SimpleActivation(
                         Optional.of(LevelBasedValue.constant(1)),
-                        Optional.empty(),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(2))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(20))),
                         true,
                         Optional.empty(),
-                        Activation.Animations.create().startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).transitionLength(5).build()).optional()
+                        Animations.create().startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).transitionLength(5).build()).optional()
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 20f, 45f, 50f), LevelBasedValue.perLevel(15)))),
                 Optional.empty(),
@@ -248,15 +249,13 @@ public class SeaDragonAbilities {
         ));
 
         context.register(SEA_EYES, new DragonAbility(
-                new Activation(
-                        Activation.Type.ACTIVE_SIMPLE,
+                new SimpleActivation(
                         Optional.of(LevelBasedValue.constant(1)),
-                        Optional.empty(),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(1))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
                         false,
-                        Activation.Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
-                        Activation.Animations.create()
+                        Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
+                        Animations.create()
                                 .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MAGIC_ALT, AnimationLayer.BASE).transitionLength(5).build())
                                 .end(SimpleAbilityAnimation.create(AnimationKey.MAGIC_ALT, AnimationLayer.BASE).transitionLength(4).build())
                                 .optional()
@@ -281,15 +280,13 @@ public class SeaDragonAbilities {
 
         //noinspection DataFlowIssue -> ignore
         context.register(ORE_GLOW, new DragonAbility(
-                new Activation(
-                        Activation.Type.ACTIVE_SIMPLE,
+                new SimpleActivation(
                         Optional.of(LevelBasedValue.constant(3)),
-                        Optional.empty(),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(3))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
                         false,
-                        Activation.Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
-                        Activation.Animations.create()
+                        Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
+                        Animations.create()
                                 .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MASS_BUFF, AnimationLayer.BASE).transitionLength(2).locksNeck().locksTail().build())
                                 .end(SimpleAbilityAnimation.create(AnimationKey.MASS_BUFF, AnimationLayer.BASE).locksNeck().locksTail().build())
                                 .optional()
@@ -407,15 +404,13 @@ public class SeaDragonAbilities {
         ));
 
         context.register(SOUL_REVELATION, new DragonAbility(
-                new Activation(
-                        Activation.Type.ACTIVE_SIMPLE,
+                new SimpleActivation(
                         Optional.of(LevelBasedValue.constant(6)),
-                        Optional.empty(),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(3))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
                         false,
-                        Activation.Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
-                        Activation.Animations.create()
+                        Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
+                        Animations.create()
                                 .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MASS_BUFF, AnimationLayer.BASE).transitionLength(2).locksNeck().locksTail().build())
                                 .end(SimpleAbilityAnimation.create(AnimationKey.MASS_BUFF, AnimationLayer.BASE).locksNeck().locksTail().build())
                                 .optional()
@@ -447,7 +442,7 @@ public class SeaDragonAbilities {
 
     private static void registerPassiveAbilities(final BootstrapContext<DragonAbility> context) {
         context.register(SEA_MAGIC, new DragonAbility(
-                Activation.passive(),
+                new PassiveActivation(Optional.empty()),
                 Optional.of(new ExperiencePointsUpgrade(10, LevelBasedValue.perLevel(36))),
                 Optional.empty(),
                 List.of(
@@ -487,7 +482,7 @@ public class SeaDragonAbilities {
         ));
 
         context.register(SEA_ATHLETICS, new DragonAbility(
-                Activation.passive(),
+                new PassiveActivation(Optional.empty()),
                 Optional.of(new ExperiencePointsUpgrade(5, LevelBasedValue.perLevel(25))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -508,7 +503,7 @@ public class SeaDragonAbilities {
         ));
 
         context.register(HYDRATION, new DragonAbility(
-                Activation.passive(),
+                new PassiveActivation(Optional.empty()),
                 Optional.of(new ExperiencePointsUpgrade(7, LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -532,7 +527,7 @@ public class SeaDragonAbilities {
         ));
 
         context.register(SPECTRAL_IMPACT, new DragonAbility(
-                Activation.passive(),
+                new PassiveActivation(Optional.empty()),
                 Optional.of(new ExperiencePointsUpgrade(3, LevelBasedValue.perLevel(64))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -552,7 +547,7 @@ public class SeaDragonAbilities {
         ));
 
         context.register(SEA_CLAWS_AND_TEETH, new DragonAbility(
-                Activation.passive(),
+                new PassiveActivation(Optional.empty()),
                 Optional.of(new DragonGrowthUpgrade(4, LevelBasedValue.lookup(List.of(0f, 25f, 40f, 60f), LevelBasedValue.perLevel(15)))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -579,7 +574,7 @@ public class SeaDragonAbilities {
         ));
 
         context.register(SEA_WINGS, new DragonAbility(
-                Activation.passive(),
+                new PassiveActivation(Optional.empty()),
                 Optional.of(new ConditionUpgrade(List.of(Condition.thisEntity(EntityCondition.flightWasGranted(true)).build()), false)),
                 // Disable when marked by the ender dragon
                 Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
@@ -595,7 +590,7 @@ public class SeaDragonAbilities {
         ));
 
         context.register(SEA_SPIN, new DragonAbility(
-                Activation.passive(),
+                new PassiveActivation(Optional.empty()),
                 Optional.of(new ConditionUpgrade(List.of(Condition.thisEntity(EntityCondition.spinWasGranted(true)).build()), false)),
                 // Disable when marked by the ender dragon
                 Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
@@ -611,7 +606,7 @@ public class SeaDragonAbilities {
         ));
 
         context.register(ELECTRIC_IMMUNITY, new DragonAbility(
-                Activation.passive(),
+                new PassiveActivation(Optional.empty()),
                 Optional.empty(),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -630,7 +625,7 @@ public class SeaDragonAbilities {
         ));
 
         context.register(AMPHIBIOUS, new DragonAbility(
-                Activation.passive(),
+                new PassiveActivation(Optional.empty()),
                 Optional.empty(),
                 Optional.empty(),
                 List.of(
@@ -666,7 +661,7 @@ public class SeaDragonAbilities {
         ));
 
         context.register(DIVER, new DragonAbility(
-                Activation.passive(),
+                new PassiveActivation(Optional.empty()),
                 Optional.empty(),
                 Optional.empty(),
                 List.of(

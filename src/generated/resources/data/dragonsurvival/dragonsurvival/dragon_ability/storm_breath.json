@@ -94,7 +94,7 @@
     }
   ],
   "activation": {
-    "type": "active_channeled",
+    "activation_type": "dragonsurvival:channeled",
     "animations": {
       "looping": {
         "animation_key": "breath",

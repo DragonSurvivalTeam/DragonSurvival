@@ -12,8 +12,12 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.PotionData;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.SpawnParticles;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.TargetDirection;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Animations;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.ChanneledActivation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.PassiveActivation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.SimpleActivation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Sound;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationKey;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationLayer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.SimpleAbilityAnimation;
@@ -166,15 +170,14 @@ public class ForestDragonAbilities {
 
     private static void registerActiveAbilities(final BootstrapContext<DragonAbility> context) {
         context.register(FOREST_BREATH, new DragonAbility(
-                new Activation(
-                        Activation.Type.ACTIVE_CHANNELED,
+                new ChanneledActivation(
                         Optional.empty(),
                         Optional.of(ManaCost.ticking(LevelBasedValue.constant(0.025f))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(1))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(2))),
                         true,
-                        Activation.Sound.create().start(DSSounds.FOREST_BREATH_START.get()).looping(DSSounds.FOREST_BREATH_LOOP.get()).end(DSSounds.FOREST_BREATH_END.get()).optional(),
-                        Activation.Animations.create()
+                        Sound.create().start(DSSounds.FOREST_BREATH_START.get()).looping(DSSounds.FOREST_BREATH_LOOP.get()).end(DSSounds.FOREST_BREATH_END.get()).optional(),
+                        Animations.create()
                                 .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).transitionLength(5).build())
                                 .looping(SimpleAbilityAnimation.create(AnimationKey.BREATH, AnimationLayer.BREATH).transitionLength(5).build())
                                 .optional()
@@ -211,15 +214,14 @@ public class ForestDragonAbilities {
         ));
 
             context.register(SUN_BREATH, new DragonAbility(
-                    new Activation(
-                            Activation.Type.ACTIVE_CHANNELED,
+                    new ChanneledActivation(
                             Optional.empty(),
                             Optional.of(ManaCost.ticking(LevelBasedValue.constant(0.04f))),
                             Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(1))),
                             Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(2))),
                             true,
-                            Activation.Sound.create().start(DSSounds.FOREST_BREATH_START.get()).looping(DSSounds.FOREST_BREATH_LOOP.get()).end(DSSounds.FOREST_BREATH_END.get()).optional(),
-                            Activation.Animations.create()
+                            Sound.create().start(DSSounds.FOREST_BREATH_START.get()).looping(DSSounds.FOREST_BREATH_LOOP.get()).end(DSSounds.FOREST_BREATH_END.get()).optional(),
+                            Animations.create()
                                     .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).transitionLength(5).build())
                                     .looping(SimpleAbilityAnimation.create(AnimationKey.BREATH, AnimationLayer.BREATH).transitionLength(5).build())
                                     .optional()
@@ -268,15 +270,13 @@ public class ForestDragonAbilities {
             ));
 
         context.register(SPIKE, new DragonAbility(
-                new Activation(
-                        Activation.Type.ACTIVE_SIMPLE,
+                new SimpleActivation(
                         Optional.of(LevelBasedValue.constant(1)),
-                        Optional.empty(),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(0.1))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(3))),
                         true,
-                        Activation.Sound.create().end(SoundEvents.ARROW_SHOOT).optional(),
-                        Activation.Animations.create().startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).transitionLength(5).build()).optional()
+                        Sound.create().end(SoundEvents.ARROW_SHOOT).optional(),
+                        Animations.create().startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).transitionLength(5).build()).optional()
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 20f, 30f, 40f), LevelBasedValue.perLevel(15)))),
                 Optional.empty(),
@@ -304,15 +304,13 @@ public class ForestDragonAbilities {
         ));
 
         context.register(INSPIRATION, new DragonAbility(
-                new Activation(
-                        Activation.Type.ACTIVE_SIMPLE,
+                new SimpleActivation(
                         Optional.of(LevelBasedValue.constant(2)),
-                        Optional.empty(),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(4))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
                         false,
-                        Activation.Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
-                        Activation.Animations.create()
+                        Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
+                        Animations.create()
                                 .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MASS_BUFF, AnimationLayer.BASE).transitionLength(2).locksNeck().locksTail().build())
                                 .end(SimpleAbilityAnimation.create(AnimationKey.MASS_BUFF, AnimationLayer.BASE).locksNeck().locksTail().build())
                                 .optional()
@@ -339,15 +337,13 @@ public class ForestDragonAbilities {
         ));
 
         context.register(HUNTER, new DragonAbility(
-                new Activation(
-                        Activation.Type.ACTIVE_SIMPLE,
+                new SimpleActivation(
                         Optional.of(LevelBasedValue.constant(3)),
-                        Optional.empty(),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(3))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
                         false,
-                        Activation.Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
-                        Activation.Animations.create()
+                        Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
+                        Animations.create()
                                 .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MASS_BUFF, AnimationLayer.BASE).transitionLength(2).locksNeck().locksTail().build())
                                 .end(SimpleAbilityAnimation.create(AnimationKey.MASS_BUFF, AnimationLayer.BASE).locksNeck().locksTail().build())
                                 .optional()
@@ -377,7 +373,7 @@ public class ForestDragonAbilities {
 
     private static void registerPassiveAbilities(final BootstrapContext<DragonAbility> context) {
         context.register(FOREST_MAGIC, new DragonAbility(
-                Activation.passive(),
+                new PassiveActivation(Optional.empty()),
                 Optional.of(new ExperiencePointsUpgrade(10, LevelBasedValue.perLevel(36))),
                 Optional.empty(),
                 List.of(
@@ -417,7 +413,7 @@ public class ForestDragonAbilities {
         ));
 
         context.register(FOREST_ATHLETICS, new DragonAbility(
-                Activation.passive(),
+                new PassiveActivation(Optional.empty()),
                 Optional.of(new ExperiencePointsUpgrade(5, LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -438,7 +434,7 @@ public class ForestDragonAbilities {
         ));
 
         context.register(LIGHT_IN_DARKNESS, new DragonAbility(
-                Activation.passive(),
+                new PassiveActivation(Optional.empty()),
                 Optional.of(new ExperiencePointsUpgrade(8, LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -463,7 +459,7 @@ public class ForestDragonAbilities {
         ));
 
         context.register(CLIFFHANGER, new DragonAbility(
-                Activation.passive(),
+                new PassiveActivation(Optional.empty()),
                 Optional.of(new ExperiencePointsUpgrade(6, LevelBasedValue.perLevel(16))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -486,7 +482,7 @@ public class ForestDragonAbilities {
         ));
 
         context.register(FOREST_CLAWS_AND_TEETH, new DragonAbility(
-                Activation.passive(),
+                new PassiveActivation(Optional.empty()),
                 Optional.of(new DragonGrowthUpgrade(4, LevelBasedValue.lookup(List.of(0f, 25f, 40f, 60f), LevelBasedValue.perLevel(15)))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -513,7 +509,7 @@ public class ForestDragonAbilities {
         ));
 
         context.register(FOREST_WINGS, new DragonAbility(
-                Activation.passive(),
+                new PassiveActivation(Optional.empty()),
                 Optional.of(new ConditionUpgrade(List.of(Condition.thisEntity(EntityCondition.flightWasGranted(true)).build()), false)),
                 // Disable when marked by the ender dragon
                 Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
@@ -529,7 +525,7 @@ public class ForestDragonAbilities {
         ));
 
         context.register(FOREST_SPIN, new DragonAbility(
-                Activation.passive(),
+                new PassiveActivation(Optional.empty()),
                 Optional.of(new ConditionUpgrade(List.of(Condition.thisEntity(EntityCondition.spinWasGranted(true)).build()), false)),
                 // Disable when marked by the ender dragon
                 Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
@@ -545,7 +541,7 @@ public class ForestDragonAbilities {
         ));
 
         context.register(FOREST_IMMUNITY, new DragonAbility(
-                Activation.passive(),
+                new PassiveActivation(Optional.empty()),
                 Optional.empty(),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(

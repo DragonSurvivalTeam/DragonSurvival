@@ -37,7 +37,7 @@
     }
   ],
   "activation": {
-    "type": "active_simple",
+    "activation_type": "dragonsurvival:simple",
     "animations": {
       "start_and_charging": {
         "animation_key": "spell_charge",
