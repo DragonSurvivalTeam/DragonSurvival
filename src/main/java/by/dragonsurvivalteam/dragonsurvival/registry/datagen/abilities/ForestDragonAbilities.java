@@ -13,11 +13,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.SpawnParticles;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.TargetDirection;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Animations;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.ChanneledActivation;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.PassiveActivation;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.SimpleActivation;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Sound;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationKey;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationLayer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.SimpleAbilityAnimation;
@@ -37,6 +32,12 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBlockTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Animations;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.ChanneledActivation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Notification;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.PassiveActivation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.SimpleActivation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Sound;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.BlockBreakEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.BlockConversionEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.BonemealEffect;
@@ -175,6 +176,7 @@ public class ForestDragonAbilities {
                         Optional.of(ManaCost.ticking(LevelBasedValue.constant(0.025f))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(1))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(2))),
+                        Notification.DEFAULT,
                         true,
                         Sound.create().start(DSSounds.FOREST_BREATH_START.get()).looping(DSSounds.FOREST_BREATH_LOOP.get()).end(DSSounds.FOREST_BREATH_END.get()).optional(),
                         Animations.create()
@@ -219,6 +221,7 @@ public class ForestDragonAbilities {
                             Optional.of(ManaCost.ticking(LevelBasedValue.constant(0.04f))),
                             Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(1))),
                             Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(2))),
+                            Notification.DEFAULT,
                             true,
                             Sound.create().start(DSSounds.FOREST_BREATH_START.get()).looping(DSSounds.FOREST_BREATH_LOOP.get()).end(DSSounds.FOREST_BREATH_END.get()).optional(),
                             Animations.create()
@@ -274,6 +277,7 @@ public class ForestDragonAbilities {
                         Optional.of(LevelBasedValue.constant(1)),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(0.1))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(3))),
+                        Notification.DEFAULT,
                         true,
                         Sound.create().end(SoundEvents.ARROW_SHOOT).optional(),
                         Animations.create().startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).transitionLength(5).build()).optional()
@@ -308,6 +312,7 @@ public class ForestDragonAbilities {
                         Optional.of(LevelBasedValue.constant(2)),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(4))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
+                        Notification.DEFAULT,
                         false,
                         Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
                         Animations.create()
@@ -341,6 +346,7 @@ public class ForestDragonAbilities {
                         Optional.of(LevelBasedValue.constant(3)),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(3))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
+                        Notification.DEFAULT,
                         false,
                         Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
                         Animations.create()

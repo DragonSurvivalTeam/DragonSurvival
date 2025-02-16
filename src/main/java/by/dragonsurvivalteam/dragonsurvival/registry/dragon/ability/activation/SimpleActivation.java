@@ -12,6 +12,7 @@ public record SimpleActivation(
         Optional<LevelBasedValue> initialManaCost,
         Optional<LevelBasedValue> castTime,
         Optional<LevelBasedValue> cooldown,
+        Notification notification,
         boolean canMoveWhileCasting,
         Optional<Sound> sound,
         Optional<Animations> animations
@@ -20,6 +21,7 @@ public record SimpleActivation(
             LevelBasedValue.CODEC.optionalFieldOf("initial_mana_cost").forGetter(SimpleActivation::initialManaCost),
             LevelBasedValue.CODEC.optionalFieldOf("cast_time").forGetter(SimpleActivation::castTime),
             LevelBasedValue.CODEC.optionalFieldOf("cooldown").forGetter(SimpleActivation::cooldown),
+            Notification.CODEC.optionalFieldOf("notification", Notification.DEFAULT).forGetter(SimpleActivation::notification),
             Codec.BOOL.optionalFieldOf("can_move_while_casting", true).forGetter(SimpleActivation::canMoveWhileCasting),
             Sound.CODEC
                     .validate(sound -> sound.looping().isPresent() ? DataResult.error(() -> "Simple activation does not support [looping] sounds") : DataResult.success(sound))

@@ -23,6 +23,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -274,7 +275,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
             return false;
         }
 
-        if (!canCastAbility(player, instance)) {
+        if (!checkCast(player, instance)) {
             int cooldown = instance.getCooldown();
 
             if (!errorMessageSent && player.level().isClientSide() && cooldown != DragonAbilityInstance.NO_COOLDOWN) {
@@ -347,7 +348,23 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         return isCasting && getCurrentlyCasting() != null;
     }
 
-    private boolean canCastAbility(final Player dragon, final DragonAbilityInstance instance) {
+    /** Also sends the error message (if present) when the ability is automatically blocked or the player doesn't have enough mana */
+    private boolean checkCast(final Player dragon, final DragonAbilityInstance instance) {
+        if (instance.isDisabled(false)) {
+            if (dragon.level().isClientSide()) {
+                MagicData magic = MagicData.getData(dragon);
+                magic.setErrorMessageSent(true);
+
+                Optional<Component> message = instance.value().activation().notification().usageBlocked();
+
+                if (message.isPresent() && message.get().getContents() != PlainTextContents.EMPTY) {
+                    MagicHUD.castingError(message.get());
+                }
+            }
+
+            return false;
+        }
+
         return instance.canBeCast() && instance.hasEnoughMana(dragon);
     }
 

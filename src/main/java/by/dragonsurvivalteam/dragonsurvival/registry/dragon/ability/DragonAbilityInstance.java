@@ -3,21 +3,21 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.MagicHUD;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Activation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncDisableAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Activation;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -189,9 +189,12 @@ public class DragonAbilityInstance {
             currentTick = 0;
 
             if (dragon.level().isClientSide()) {
-                MagicData magicData = MagicData.getData(dragon);
-                magicData.setErrorMessageSent(true);
-                MagicHUD.castingError(Component.translatable(MagicHUD.NO_MANA).withStyle(ChatFormatting.RED));
+                MagicData magic = MagicData.getData(dragon);
+                magic.setErrorMessageSent(true);
+
+                if (value().activation().notification().notEnoughMana().getContents() != PlainTextContents.EMPTY) {
+                    MagicHUD.castingError(value().activation().notification().notEnoughMana());
+                }
             }
 
             return false;

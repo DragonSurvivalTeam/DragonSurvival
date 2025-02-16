@@ -14,6 +14,7 @@ public record ChanneledActivation(
         Optional<ManaCost> continuousManaCost,
         Optional<LevelBasedValue> castTime,
         Optional<LevelBasedValue> cooldown,
+        Notification notification,
         boolean canMoveWhileCasting,
         Optional<Sound> sound,
         Optional<Animations> animations
@@ -25,6 +26,7 @@ public record ChanneledActivation(
                     .optionalFieldOf("continuous_mana_cost").forGetter(ChanneledActivation::continuousManaCost),
             LevelBasedValue.CODEC.optionalFieldOf("cast_time").forGetter(ChanneledActivation::castTime),
             LevelBasedValue.CODEC.optionalFieldOf("cooldown").forGetter(ChanneledActivation::cooldown),
+            Notification.CODEC.optionalFieldOf("notification", Notification.DEFAULT).forGetter(ChanneledActivation::notification),
             Codec.BOOL.optionalFieldOf("can_move_while_casting", true).forGetter(ChanneledActivation::canMoveWhileCasting),
             Sound.CODEC.optionalFieldOf("sound").forGetter(ChanneledActivation::sound),
             Animations.CODEC.optionalFieldOf("animations").forGetter(ChanneledActivation::animations)

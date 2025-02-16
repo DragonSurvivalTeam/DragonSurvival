@@ -67,6 +67,10 @@ public interface Activation {
         return 0;
     }
 
+    default Notification notification() {
+        return Notification.NONE;
+    }
+
     default boolean canMoveWhileCasting() {
         return true;
     }

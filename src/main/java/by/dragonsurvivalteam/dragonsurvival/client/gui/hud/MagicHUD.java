@@ -21,7 +21,6 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
@@ -38,9 +37,6 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 @EventBusSubscriber(value = Dist.CLIENT)
 public class MagicHUD {
-    @Translation(comments = "§fNot enough§r §cmana or experience§r!")
-    public static final String NO_MANA = Translation.Type.GUI.wrap("ability.no_mana");
-
     @Translation(comments = "§fThis ability is §r§cnot ready§r§f yet!§r (%s)")
     public static final String COOLDOWN = Translation.Type.GUI.wrap("ability.cooldown");
 
@@ -122,7 +118,6 @@ public class MagicHUD {
         }
 
 
-
         Window window = Minecraft.getInstance().getWindow();
         int guiScaledWidth = window.getGuiScaledWidth();
         int guiScaledHeight = window.getGuiScaledHeight();
@@ -163,9 +158,9 @@ public class MagicHUD {
     }
 
     private static int errorTicks;
-    private static MutableComponent errorMessage;
+    private static Component errorMessage;
 
-    public static void castingError(MutableComponent component) {
+    public static void castingError(final Component component) {
         errorTicks = Functions.secondsToTicks(5);
         errorMessage = component;
     }
@@ -184,11 +179,11 @@ public class MagicHUD {
 
     private static void lerpToColor(int slot, Color color) {
         disabledAbilitiesColor[slot].delay -= AnimationUtils.getDeltaSeconds();
-        if(disabledAbilitiesColor[slot].delay <= 0) {
+        if (disabledAbilitiesColor[slot].delay <= 0) {
             disabledAbilitiesColor[slot].pastDelay = true;
         }
 
-        if(!disabledAbilitiesColor[slot].pastDelay) {
+        if (!disabledAbilitiesColor[slot].pastDelay) {
             return;
         }
 
@@ -253,15 +248,15 @@ public class MagicHUD {
         posY += skillbarYOffset;
 
         if (magic.shouldRenderAbilities()) {
-            if(!magic.getActiveAbilities().isEmpty()) {
+            if (!magic.getActiveAbilities().isEmpty()) {
                 graphics.setColor(1, 0, 0, 1);
                 graphics.setColor(1, 1, 1, 1);
 
                 for (int x = 0; x < MagicData.HOTBAR_SLOTS; x++) {
                     DragonAbilityInstance ability = magic.fromSlot(x);
                     if (ability != null) {
-                        if(!ability.isEnabled()) {
-                            if(disabledAbilitiesColor[x].pastDelay && disabledAbilitiesColor[x].color.equals(Color.ofOpaque(-2314))) {
+                        if (!ability.isEnabled()) {
+                            if (disabledAbilitiesColor[x].pastDelay && disabledAbilitiesColor[x].color.equals(Color.ofOpaque(-2314))) {
                                 disabledAbilitiesColor[x].delay = markDisabledAbilitiesRedDelay;
                                 disabledAbilitiesColor[x].pastDelay = false;
                             }
@@ -285,7 +280,7 @@ public class MagicHUD {
                             float cooldown = Mth.clamp(currentCooldown / skillCooldown, 0, 1);
                             int boxX = posX + x * sizeX + 3;
                             int boxY = posY + 1;
-                            int offset = 16 - (int)(16 - (cooldown * 16));
+                            int offset = 16 - (int) (16 - (cooldown * 16));
                             int color = errorTicks > 0 ? DSColors.withAlpha(DSColors.RED, 0.75f) : DSColors.withAlpha(DSColors.DARK_GRAY, 0.75f);
                             graphics.fill(boxX, boxY, boxX + 16, boxY + offset, color);
                         }
@@ -294,7 +289,7 @@ public class MagicHUD {
                     }
                 }
 
-                if(magic.getSelectedAbility() != null) {
+                if (magic.getSelectedAbility() != null) {
                     Color outlineColor = disabledAbilitiesColor[magic.getSelectedAbilitySlot()].color;
                     graphics.setColor(outlineColor.getRedFloat(), outlineColor.getGreenFloat(), outlineColor.getBlueFloat(), outlineColor.getAlphaFloat());
                 }
@@ -313,7 +308,7 @@ public class MagicHUD {
 
             manaX += manabarXOffset;
             manaY += manabarYOffset;
-            if(magic.getActiveAbilities().isEmpty()) {
+            if (magic.getActiveAbilities().isEmpty()) {
                 // Move the bar down a bit if there are no abilities to show
                 manaY += 20;
             }
@@ -395,7 +390,7 @@ public class MagicHUD {
         }
 
         if (errorTicks > 0) {
-            graphics.drawString(Minecraft.getInstance().font, errorMessage.getVisualOrderText(), (int) (graphics.guiWidth() / 2f - Minecraft.getInstance().font.width(errorMessage) / 2f), graphics.guiHeight() - 70, 0);
+            graphics.drawString(Minecraft.getInstance().font, errorMessage.getVisualOrderText(), (int) (graphics.guiWidth() / 2f - Minecraft.getInstance().font.width(errorMessage) / 2f), graphics.guiHeight() - 70, DSColors.NONE);
         }
     }
 
