@@ -84,7 +84,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
 
     private final DragonStateHandler handler1 = new DragonStateHandler();
     private final DragonStateHandler handler2 = new DragonStateHandler();
-    private final String[] animations = {"sit", "idle", "fly", "swim", "run", "dig", "vibing_sitting", "shy_sitting", "vibing_sitting", "rocking_on_back"};
+    private final String[] animations = {"sit", "idle", "fly", "swim", "run", "dig", "vibing_sitting", "shy_sitting", "rocking_on_back"};
     private final List<ScrollableComponent> scrollableComponents = new ArrayList<>();
 
     private static final ResourceLocation ALTAR_ARROW_LEFT_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/altar/arrow_left_hover.png");
