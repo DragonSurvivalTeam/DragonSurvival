@@ -812,27 +812,32 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         RegistryAccess access = Objects.requireNonNull(Minecraft.getInstance().player).registryAccess();
 
         HoverButton randomButton = new HoverButton(width / 2 - 8, 40, 16, 17, 20, 20, RANDOM_MAIN, RANDOM_HOVER, btn -> {
+            // Since there are multiple 'EXTRA' field for the editor
             ArrayList<String> extraKeys = DragonEditorHandler.getDragonPartKeys(FakeClientPlayerUtils.getFakePlayer(0, HANDLER), SkinLayer.EXTRA);
-
-            extraKeys.removeIf(partKey -> {
-                DragonPart text = DragonEditorHandler.getDragonPart(SkinLayer.EXTRA, partKey, species.getKey());
-                if (text == null) {
-                    DragonSurvival.LOGGER.error("Key {} not found!", partKey);
-                    return true;
-                }
-                return !text.includeInRandomizer();
-            });
 
             // Don't actually modify the skin preset here, do it inside setSkinPresetAction
             SkinPreset preset = new SkinPreset();
             preset.deserializeNBT(access, this.preset.serializeNBT(access));
 
             for (SkinLayer layer : SkinLayer.values()) {
-                ArrayList<String> keys = DragonEditorHandler.getDragonPartKeys(FakeClientPlayerUtils.getFakePlayer(0, HANDLER), layer);
+                ArrayList<String> keys;
 
                 if (Objects.equals(layer.name, "Extra")) {
                     keys = extraKeys;
+                } else {
+                    keys = DragonEditorHandler.getDragonPartKeys(FakeClientPlayerUtils.getFakePlayer(0, HANDLER), layer);
                 }
+
+                keys.removeIf(key -> {
+                    DragonPart part = DragonEditorHandler.getDragonPart(layer, key, species.getKey());
+
+                    if (part == null) {
+                        DragonSurvival.LOGGER.error("Key {} not found!", key);
+                        return true;
+                    }
+
+                    return !part.includeInRandomizer();
+                });
 
                 if (layer != SkinLayer.BASE) {
                     keys.add(DefaultPartLoader.NO_PART);

@@ -113,9 +113,8 @@ public class DSTrades {
             this.villagerXp = pVillagerXp;
         }
 
-        @Nullable
         @Override
-        public MerchantOffer getOffer(final Entity trader, @NotNull final RandomSource random) {
+        public @Nullable MerchantOffer getOffer(final Entity trader, @NotNull final RandomSource random) {
             if (!(trader.level() instanceof ServerLevel serverlevel)) {
                 return null;
             } else {

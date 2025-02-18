@@ -54,15 +54,7 @@ public class DragonFoodHandler {
 
     /** Checks if the item can be eaten (not whether it makes sense, see {@link DragonFoodHandler#getBadFoodProperties()}) */
     public static boolean isEdible(final Player player, final ItemStack stack) {
-        DragonStateHandler handler = DragonStateProvider.getData(player);
-        if (stack.getFoodProperties(player) != null) {
-            return true;
-        } else if (!handler.isDragon()) {
-            return false;
-        }
-
-        // The mixin in 'IItemExtensionMixin' would require player context so we check this separately here
-        return DietEntryCache.getDiet(handler.species(), stack.getItem()) != null;
+        return stack.getFoodProperties(player) != null;
     }
 
     public static int getUseDuration(final ItemStack stack, final Player entity, int original) {

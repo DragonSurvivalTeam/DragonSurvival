@@ -255,7 +255,7 @@ public class DragonStateHandler extends EntityStateHandler {
         dragonStage = dragonSpecies != null ? DragonStage.get(dragonSpecies.value().getStages(provider), growth) : null;
         this.growth = clampGrowth(provider, growth);
 
-        if (dragonSpecies != null && this.desiredGrowth == dragonSpecies.value().getStartingGrowth(provider)) {
+        if (dragonSpecies != null && this.growth == dragonSpecies.value().getStartingGrowth(provider)) {
             // Allow the player to re-use growth items if their growth is reset
             // Don't clear if the player is a human in case the growth is saved
             // It will be cleared once they turn into a dragon, and its growth matches the requirements
@@ -787,14 +787,16 @@ public class DragonStateHandler extends EntityStateHandler {
         DISABLED
     }
 
-    private static final String DRAGON_SPECIES = "dragon_species";
+    // Used by the dragon soul item
+    public static final String DRAGON_SPECIES = "dragon_species";
+    public static final String GROWTH = "growth";
+
     private static final String DRAGON_BODY = "dragon_body";
     private static final String DRAGON_STAGE = "dragon_stage";
 
     private static final String ENTITY_STATE = "entity_state";
     private static final String SKIN_DATA = "skin_data";
 
-    private static final String GROWTH = "growth";
     private static final String SAVED_GROWTH_SUFFIX = "_saved_growth";
 
     private static final String MULTI_MINING = "multi_mining";

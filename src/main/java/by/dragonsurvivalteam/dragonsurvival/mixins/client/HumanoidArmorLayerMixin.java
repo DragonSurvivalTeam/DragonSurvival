@@ -80,8 +80,7 @@ public abstract class HumanoidArmorLayerMixin {
         original.call(instance, poseStack, vertexConsumer, packedLight, packedOverlay);
     }
 
-    @Unique
-    private static RenderType.CompositeRenderType dragonSurvival$createTranslucentArmorCutoutNoCull(final String name, final ResourceLocation texture, boolean equalDepthTest) {
+    @Unique private static RenderType.CompositeRenderType dragonSurvival$createTranslucentArmorCutoutNoCull(final String name, final ResourceLocation texture, boolean equalDepthTest) {
         RenderType.CompositeState state = RenderType.CompositeState.builder()
                 .setShaderState(RenderStateShard.RENDERTYPE_ARMOR_CUTOUT_NO_CULL_SHADER)
                 .setTextureState(new RenderStateShard.TextureStateShard(texture, false, false))

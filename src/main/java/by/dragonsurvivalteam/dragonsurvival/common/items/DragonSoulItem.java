@@ -44,7 +44,7 @@ public class DragonSoulItem extends Item {
     @Translation(comments = "■§7 This vessel holds the dragon's soul. Use it to become a dragon. Replaces your current stats if you are a dragon.\n")
     private static final String DESCRIPTION = Translation.Type.DESCRIPTION.wrap("dragon_soul");
 
-    @Translation(comments = "§6■ Species:§r %s\n§6■ Growth Stage:§r %s\n§6■ Size:§r %s\n")
+    @Translation(comments = "§6■ Species:§r %s\n§6■ Growth Stage:§r %s\n§6■ Growth:§r %s\n")
     private static final String INFO = Translation.Type.DESCRIPTION.wrap("dragon_soul.info");
 
     @Translation(comments = "■§7 An empty dragon's soul. With this item, you can store all your dragon's characteristics. After using it, you become human.")
@@ -67,8 +67,9 @@ public class DragonSoulItem extends Item {
         }
     }
 
+    // TODO :: make compatible with custom species
     private static int getCustomModelData(@NotNull final HolderLookup.Provider provider, final CompoundTag tag) {
-        ResourceKey<DragonSpecies> species = ResourceHelper.decodeKey(provider, DragonSpecies.REGISTRY, tag, SPECIES);
+        ResourceKey<DragonSpecies> species = ResourceHelper.decodeKey(provider, DragonSpecies.REGISTRY, tag, DragonStateHandler.DRAGON_SPECIES);
 
         if (species == null) {
             return 0;
@@ -167,7 +168,7 @@ public class DragonSoulItem extends Item {
             CompoundTag tag = stack.get(DataComponents.CUSTOM_DATA).getUnsafe();
             tooltips.add(Component.translatable(DESCRIPTION));
 
-            ResourceKey<DragonSpecies> species = ResourceHelper.decodeKey(provider, DragonSpecies.REGISTRY, tag, SPECIES);
+            ResourceKey<DragonSpecies> species = ResourceHelper.decodeKey(provider, DragonSpecies.REGISTRY, tag, DragonStateHandler.DRAGON_SPECIES);
             Component name;
 
             if (species != null) {
@@ -176,7 +177,7 @@ public class DragonSoulItem extends Item {
                 name = Component.translatable(INVALID_DRAGON_TYPE);
             }
 
-            double growth = tag.getDouble(SIZE);
+            double growth = tag.getDouble(DragonStateHandler.GROWTH);
             Holder<DragonStage> stage = DragonStage.get(provider, growth);
 
             //noinspection DataFlowIssue -> key is present
@@ -201,7 +202,7 @@ public class DragonSoulItem extends Item {
     public @NotNull Component getName(@NotNull final ItemStack stack) {
         if (stack.has(DataComponents.CUSTOM_DATA)) {
             //noinspection DataFlowIssue, deprecation -> tag isn't modified, no need to create a copy
-            ResourceKey<DragonSpecies> species = ResourceHelper.decodeKey(null, DragonSpecies.REGISTRY, stack.get(DataComponents.CUSTOM_DATA).getUnsafe(), SPECIES);
+            ResourceKey<DragonSpecies> species = ResourceHelper.decodeKey(null, DragonSpecies.REGISTRY, stack.get(DataComponents.CUSTOM_DATA).getUnsafe(), DragonStateHandler.DRAGON_SPECIES);
 
             if (species != null) {
                 return Component.translatable(Translation.Type.DRAGON_SPECIES.wrap(species.location())).append(Component.translatable(SOUL));
@@ -210,7 +211,4 @@ public class DragonSoulItem extends Item {
 
         return Component.translatable(EMPTY_DRAGON_SOUL);
     }
-
-    public static final String SPECIES = "dragon_species";
-    public static final String SIZE = "size";
 }
