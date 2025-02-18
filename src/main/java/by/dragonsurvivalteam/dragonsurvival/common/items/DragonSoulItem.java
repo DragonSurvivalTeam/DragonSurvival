@@ -2,6 +2,9 @@ package by.dragonsurvivalteam.dragonsurvival.common.items;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonSpeciesTags;
@@ -52,6 +55,11 @@ public class DragonSoulItem extends Item {
 
     @Translation(comments = "Invalid dragon type")
     private static final String INVALID_DRAGON_TYPE = Translation.Type.DESCRIPTION.wrap("dragon_soul.invalid_type");
+
+    @ConfigRange(min = 0, max = Integer.MAX_VALUE)
+    @Translation(key = "dragon_soul_cooldown", type = Translation.Type.CONFIGURATION, comments = "Cooldown (in ticks) (20 ticks = 1 second) that occurs after using the dragon soul")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"items", "dragon_soul"}, key = "dragon_soul_cooldown")
+    public static int COOLDOWN = Functions.secondsToTicks(10);
 
     public DragonSoulItem(final Properties properties) {
         super(properties);
@@ -130,6 +138,8 @@ public class DragonSoulItem extends Item {
             stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(getCustomModelData(level.registryAccess(), currentDragonData)));
             handler.revertToHumanForm(player, true);
         }
+
+        player.getCooldowns().addCooldown(stack.getItem(), COOLDOWN);
 
         // This will require an explicit magic data sync (when switching between the same species)
         // (If the dragon soul is ever made to also switch abilities)
