@@ -70,7 +70,7 @@ public class PlayerLoginHandler {
 
         if (ServerConfig.noHumansAllowed && !handler.isDragon()) {
             handler.setSpecies(player, DragonSpecies.getRandom(player));
-            handler.setBody(player, DragonBody.random(player.registryAccess(), handler.species()));
+            handler.setBody(player, DragonBody.getRandomUnlocked(player));
             handler.setGrowth(player, handler.species().value().getStartingGrowth(player.registryAccess()));
         }
 

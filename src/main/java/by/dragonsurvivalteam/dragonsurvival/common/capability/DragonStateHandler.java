@@ -369,7 +369,11 @@ public class DragonStateHandler extends EntityStateHandler {
 
         if (hasChanged) {
             if (body() == null || !species.value().isValidForBody(body())) {
-                setBody(player, DragonBody.random(player != null ? player.registryAccess() : null, species));
+                if(player instanceof ServerPlayer serverPlayer) {
+                    setBody(serverPlayer, DragonBody.getRandomUnlocked(serverPlayer));
+                } else {
+                    setBody(player, DragonBody.getRandom(player != null ? player.registryAccess() : null, species));
+                }
             }
 
             if (skinData.skinPresets.get().get(speciesKey()).isEmpty()) {
@@ -617,8 +621,9 @@ public class DragonStateHandler extends EntityStateHandler {
 
         if (dragonSpecies != null) {
             if (dragonBody == null) {
-                // This can happen if a dragon body gets removed
-                dragonBody = DragonBody.random(provider, dragonSpecies);
+                // This can happen if a dragon body gets removed; we pick a random one, which will cause a desync between clients
+                // But this situation should only happen during testing; the end user should not be removing body types once real gameplay is occurring
+                dragonBody = DragonBody.getRandom(provider, dragonSpecies);
             }
 
             // Makes sure that the set growth matches the previously set stage

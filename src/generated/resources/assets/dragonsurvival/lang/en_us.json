@@ -925,6 +925,7 @@
   "dragonsurvival.gui.destruction.enabled": "Destruction mode enabled",
   "dragonsurvival.gui.diet_menu.no_custom_diet": "There is no custom dragon diet",
   "dragonsurvival.gui.display.cycle_enum": "%s is now set to %s",
+  "dragonsurvival.gui.dragon_body_button.not_unlocked": "This body type has not been unlocked yet.",
   "dragonsurvival.gui.dragon_body_button.unavailable": "You can only change the body type in the altar when changing the dragon's species.",
   "dragonsurvival.gui.dragon_editor.background_color": "Change the background color",
   "dragonsurvival.gui.dragon_editor.confirm.abilities": "\nWith your current config settings §4your ability progress will be lost§r§f when changing species.\n\nWould you still like to continue?",

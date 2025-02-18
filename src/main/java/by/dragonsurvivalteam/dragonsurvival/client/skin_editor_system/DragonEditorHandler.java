@@ -135,19 +135,19 @@ public class DragonEditorHandler {
         }
 
         ArrayList<String> keys = new ArrayList<>();
-        if(DragonPartLoader.DRAGON_PARTS.get(type) == null) {
+        if(DragonPartLoader.DRAGON_PARTS.get(type.getKey()) == null) {
             DragonSurvival.LOGGER.error("Part type map missing for dragon type {}", type);
             keys.add(DefaultPartLoader.NO_PART);
             return keys;
         }
 
-        if(DragonPartLoader.DRAGON_PARTS.get(type).get(layer) == null) {
+        if(DragonPartLoader.DRAGON_PARTS.get(type.getKey()).get(layer) == null) {
             DragonSurvival.LOGGER.error("Dragon part layer {} not found", layer.name);
             keys.add(DefaultPartLoader.NO_PART);
             return keys;
         }
 
-        if(DragonPartLoader.DRAGON_PARTS.get(type).get(layer).isEmpty()) {
+        if(DragonPartLoader.DRAGON_PARTS.get(type.getKey()).get(layer).isEmpty()) {
             DragonSurvival.LOGGER.error("Dragon part layer {} is empty", layer.name);
             keys.add(DefaultPartLoader.NO_PART);
             return keys;

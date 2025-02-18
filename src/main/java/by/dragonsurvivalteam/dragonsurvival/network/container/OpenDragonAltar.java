@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.network.container;
 
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.AltarBehaviour;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.UnlockableBehavior;
 import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -17,11 +17,11 @@ import java.util.List;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
-public record OpenDragonAltar(List<AltarBehaviour.Entry> entries) implements CustomPacketPayload {
+public record OpenDragonAltar(List<UnlockableBehavior.SpeciesEntry> entries) implements CustomPacketPayload {
     public static final Type<OpenDragonAltar> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "open_dragon_altar"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, OpenDragonAltar> STREAM_CODEC = StreamCodec.composite(
-            AltarBehaviour.Entry.STREAM_CODEC.apply(ByteBufCodecs.list()), OpenDragonAltar::entries,
+            UnlockableBehavior.SpeciesEntry.STREAM_CODEC.apply(ByteBufCodecs.list()), OpenDragonAltar::entries,
             OpenDragonAltar::new
     );
 

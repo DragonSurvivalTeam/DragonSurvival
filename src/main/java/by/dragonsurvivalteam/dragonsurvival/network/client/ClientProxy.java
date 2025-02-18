@@ -5,18 +5,27 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.Dra
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.AltarBehaviour;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.UnlockableBehavior;
 import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawRender;
 import by.dragonsurvivalteam.dragonsurvival.network.container.OpenDragonAltar;
+import by.dragonsurvivalteam.dragonsurvival.network.container.OpenDragonEditor;
 import by.dragonsurvivalteam.dragonsurvival.network.dragon_editor.SyncDragonSkinSettings;
 import by.dragonsurvivalteam.dragonsurvival.network.dragon_editor.SyncPlayerSkinPreset;
 import by.dragonsurvivalteam.dragonsurvival.network.particle.SyncParticleTrail;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
+import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.jetbrains.annotations.Nullable;
+import org.openjdk.nashorn.internal.runtime.linker.LinkerCallSite;
 
 import java.util.List;
+import java.util.Optional;
 
 /** To avoid loading client classes on the server side */
 public class ClientProxy {
@@ -44,12 +53,21 @@ public class ClientProxy {
         PacketDistributor.sendToServer(new OpenDragonAltar(List.of()));
     }
 
-    public static void openDragonAltar(final List<AltarBehaviour.Entry> entries) {
+    public static void openDragonAltar(final List<UnlockableBehavior.SpeciesEntry> entries) {
         Minecraft.getInstance().setScreen(new DragonAltarScreen(entries));
     }
 
-    public static void openDragonEditor() {
-        Minecraft.getInstance().setScreen(new DragonEditorScreen(Minecraft.getInstance().screen));
+    public static void openDragonEditor(ResourceKey<DragonSpecies> species, boolean fromAltar) {
+        PacketDistributor.sendToServer(new OpenDragonEditor(species, List.of(), fromAltar));
+    }
+
+    public static void openDragonEditor(final List<UnlockableBehavior.BodyEntry> entries, ResourceKey<DragonSpecies> species, boolean fromAltar) {
+        Optional<Holder.Reference<DragonSpecies>> speciesHolder = ResourceHelper.get(null, species);
+        if(speciesHolder.isEmpty()) {
+            Minecraft.getInstance().setScreen(null);
+        } else {
+            Minecraft.getInstance().setScreen(new DragonEditorScreen(speciesHolder.get(), entries, fromAltar));
+        }
     }
 
     public static void handleSyncParticleTrail(SyncParticleTrail message) {

@@ -27,6 +27,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayerUtils;
 import by.dragonsurvivalteam.dragonsurvival.client.util.TextRenderUtil;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.UnlockableBehavior;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
@@ -38,7 +39,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryDa
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonBodyTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
@@ -204,8 +204,6 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     public int selectedSaveSlot = CustomizationFileHandler.STARTING_SLOT;
 
     public int backgroundColor = -804253680;
-
-    private final Screen source;
     private int guiLeft;
 
     private final String[] animations = {"sit_dentist", "sit", "idle", "fly", "swim", "run", "spinning_on_back"};
@@ -225,7 +223,9 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     private int curAnimation;
     private int selectedDragonStage;
     private boolean hasInit;
-    private boolean isEditor;
+    private boolean fromAltar;
+
+    private final List<UnlockableBehavior.BodyEntry> unlockedBodies;
 
     private enum SlotDisplayMessage {
         INVALID_FOR_TYPE,
@@ -248,15 +248,11 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     private float tickWhenSlotDisplayMessageSet = -1;
     private SlotDisplayMessage slotDisplayMessage = SlotDisplayMessage.NONE;
 
-    public DragonEditorScreen(Screen source) {
-        this(source, null);
-        this.isEditor = true;
-    }
-
-    public DragonEditorScreen(Screen source, Holder<DragonSpecies> species) {
+    public DragonEditorScreen(Holder<DragonSpecies> species, List<UnlockableBehavior.BodyEntry> unlockedBodies, boolean fromAltar) {
         super(Component.translatable(LangKey.GUI_DRAGON_EDITOR));
-        this.source = source;
+        this.fromAltar = fromAltar;
         this.species = species;
+        this.unlockedBodies = unlockedBodies;
     }
 
     public record EditorAction<T>(Function<T, T> action, T value) {
@@ -619,7 +615,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
             // body is null, or we are not a dragon, or the body is not valid for the species (is not default and species has bodies, or body is not in species' bodies)
             if (body == null && (!localHandler.isDragon() || !((species.value().bodies().size() == 0 && localHandler.body().value().isDefault()) || species.value().bodies().contains(localHandler.body())))) {
-                body = DragonBody.random(null, species);
+                body = DragonBody.getRandomUnlocked(species, unlockedBodies);
             } else {
                 body = localHandler.body();
             }
@@ -694,11 +690,9 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         // Add scrollable list of dragon bodies
         List<AbstractWidget> dragonBodyWidgets = new ArrayList<>();
 
-        for (Holder<DragonBody> dragonBodyHolder : DSDragonBodyTags.getOrdered(null)) {
-            if (species.value().isValidForBody(dragonBodyHolder)) {
-                dragonBodyWidgets.add(createButton(dragonBodyHolder, 0, 0));
-            }
-        }
+        unlockedBodies.forEach(bodyEntry -> {
+            dragonBodyWidgets.add(createButton(bodyEntry.body(), bodyEntry.isUnlocked(), 0, 0));
+        });
 
         dragonBodyBar = new BarComponent(this,
                     width / 2 - 43, height / 2 + 30, 3,
@@ -806,7 +800,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         saveButton.setMessage(Component.translatable(LangKey.GUI_CONFIRM));
         addRenderableWidget(saveButton);
 
-        ExtendedButton discardButton = new HoverButton(width / 2 + 1, height - 30, 60, 20, 60, 20, CANCEL_MAIN, CANCEL_HOVER, btn -> Minecraft.getInstance().setScreen(source));
+        ExtendedButton discardButton = new HoverButton(width / 2 + 1, height - 30, 60, 20, 60, 20, CANCEL_MAIN, CANCEL_HOVER, btn -> Minecraft.getInstance().setScreen(null));
         discardButton.setMessage(Component.translatable(LangKey.GUI_CANCEL));
         addRenderableWidget(discardButton);
 
@@ -994,9 +988,10 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
     }
 
-    private DragonBodyButton createButton(Holder<DragonBody> dragonBody, int x, int y) {
-        return new DragonBodyButton(this, x, y, 25, 25, dragonBody, isEditor, button -> {
-            if (!((DragonBodyButton) button).isLocked()) {
+    private DragonBodyButton createButton(Holder<DragonBody> dragonBody, boolean unlocked, int x, int y) {
+        DragonBodyButton.LockedReason lockedReason = !fromAltar ? DragonBodyButton.LockedReason.NOT_IN_ALTAR : !unlocked ? DragonBodyButton.LockedReason.NOT_UNLOCKED : DragonBodyButton.LockedReason.NONE;
+        return new DragonBodyButton(this, x, y, 25, 25, dragonBody, lockedReason, button -> {
+            if (((DragonBodyButton) button).lockedReason() == DragonBodyButton.LockedReason.NONE) {
                 if (dragonBody.value() != this.body.value()) {
                     actionHistory.add(new DragonEditorScreen.EditorAction<>(dragonBodySelectAction, dragonBody));
 

@@ -66,7 +66,7 @@ public class DragonBodies {
     private static final DragonBody.MountingOffsets DEFAULT_MOUNTING_OFFSETS = DragonBody.MountingOffsets.of(new Vec3(0, -0.15, -0.5), new Vec3(0, 0.05, -0.5), new Vec3(0, -0.25, -0.5));
 
     public static void registerBodies(final BootstrapContext<DragonBody> context) {
-        context.register(CENTER, new DragonBody(true, List.of(
+        context.register(CENTER, new DragonBody(true, Optional.empty(), List.of(
                 Modifier.constant(DSAttributes.FLIGHT_SPEED, 0.2f, AttributeModifier.Operation.ADD_VALUE)
         ), false,
                 DragonBody.DEFAULT_MODEL,
@@ -80,7 +80,7 @@ public class DragonBodies {
                 Optional.of(DragonSurvival.res("textures/gui/custom/body/center/default.png"))
         ));
 
-        context.register(EAST, new DragonBody(true, List.of(
+        context.register(EAST, new DragonBody(true, Optional.empty(), List.of(
                 Modifier.constant(Attributes.ARMOR, 2, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(Attributes.ATTACK_DAMAGE, -1, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(Attributes.ATTACK_KNOCKBACK, -1, AttributeModifier.Operation.ADD_VALUE),
@@ -103,7 +103,7 @@ public class DragonBodies {
                 Optional.of(DragonSurvival.res("textures/gui/custom/body/east/default.png"))
         ));
 
-        context.register(NORTH, new DragonBody(true, List.of(
+        context.register(NORTH, new DragonBody(true, Optional.empty(), List.of(
                 Modifier.constant(Attributes.ATTACK_DAMAGE, -0.2f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
                 Modifier.constant(Attributes.ATTACK_KNOCKBACK, -0.5f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(Attributes.MOVEMENT_SPEED, -0.3f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
@@ -122,7 +122,7 @@ public class DragonBodies {
                 Optional.of(DragonSurvival.res("textures/gui/custom/body/north/default.png"))
         ));
 
-        context.register(SOUTH, new DragonBody(true, List.of(
+        context.register(SOUTH, new DragonBody(true, Optional.empty(), List.of(
                 Modifier.constant(Attributes.ATTACK_DAMAGE, 0.5f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(Attributes.GRAVITY, 0.2f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
                 Modifier.constant(Attributes.JUMP_STRENGTH, 0.2f, AttributeModifier.Operation.ADD_VALUE),
@@ -142,7 +142,7 @@ public class DragonBodies {
                 Optional.of(DragonSurvival.res("textures/gui/custom/body/south/default.png"))
         ));
 
-        context.register(WEST, new DragonBody(true, List.of(
+        context.register(WEST, new DragonBody(true, Optional.empty(), List.of(
                 Modifier.constant(Attributes.ATTACK_KNOCKBACK, 0.5f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(Attributes.KNOCKBACK_RESISTANCE, 0.15f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(Attributes.MOVEMENT_SPEED, -0.15f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),

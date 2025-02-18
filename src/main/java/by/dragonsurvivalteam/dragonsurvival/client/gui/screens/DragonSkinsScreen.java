@@ -15,6 +15,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.config.ConfigHandler;
+import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
 import by.dragonsurvivalteam.dragonsurvival.network.dragon_editor.SyncDragonSkinSettings;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
@@ -462,11 +463,13 @@ public class DragonSkinsScreen extends Screen {
         randomSkinButton.setTooltip(Tooltip.create(Component.translatable(RANDOM_INFO)));
         addRenderableWidget(randomSkinButton);
 
-        HoverButton openEditorButton = new HoverButton(startX + 128, startY + 115, 165, 22, 165, 22, OPEN_EDITOR_MAIN, OPEN_EDITOR_HOVER, button -> {
-            minecraft.setScreen(new DragonEditorScreen(this));
-        });
-        openEditorButton.setMessage(Component.translatable(OPEN_EDITOR));
-        addRenderableWidget(openEditorButton);
+        if (handler.isDragon()) {
+            HoverButton openEditorButton = new HoverButton(startX + 128, startY + 115, 165, 22, 165, 22, OPEN_EDITOR_MAIN, OPEN_EDITOR_HOVER, button -> {
+                ClientProxy.openDragonEditor(handler.speciesKey(), false);
+            });
+            openEditorButton.setMessage(Component.translatable(OPEN_EDITOR));
+            addRenderableWidget(openEditorButton);
+        }
 
         HoverButton additionsBackground = new HoverButton(startX + 128 + 44, startY + 128 + 16, 69, 22, 69, 22, ADDITIONS_BACKGROUND, ADDITIONS_BACKGROUND, button -> { /* Nothing to do */ });
         addRenderableOnly(additionsBackground);
@@ -497,7 +500,7 @@ public class DragonSkinsScreen extends Screen {
     }
 
     private DragonBodyButton createButton(final Holder<DragonBody> dragonBody, int x, int y) {
-        return new DragonBodyButton(this, x, y, 35, 35, dragonBody, false, button -> handler.setBody(null, dragonBody), true, true);
+        return new DragonBodyButton(this, x, y, 35, 35, dragonBody, DragonBodyButton.LockedReason.NONE, button -> handler.setBody(null, dragonBody), true, true);
     }
 
     private void setTextures() {

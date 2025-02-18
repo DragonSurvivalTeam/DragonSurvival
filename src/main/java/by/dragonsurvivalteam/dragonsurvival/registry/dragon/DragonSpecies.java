@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.AltarBehaviour;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.UnlockableBehavior;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscResources;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierType;
@@ -43,7 +43,7 @@ public class DragonSpecies implements AttributeModifierSupplier {
 
     public static final Codec<DragonSpecies> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.DOUBLE.validate(value -> value >= 1 ? DataResult.success(value) : DataResult.error(() -> "Starting growth must be at least 1")).optionalFieldOf("starting_growth").forGetter(DragonSpecies::startingGrowth),
-            AltarBehaviour.CODEC.optionalFieldOf("altar_behaviour").forGetter(DragonSpecies::altarBehaviour),
+            UnlockableBehavior.CODEC.optionalFieldOf("unlockable_behavior").forGetter(DragonSpecies::unlockableBehavior),
             RegistryCodecs.homogeneousList(DragonStage.REGISTRY).optionalFieldOf("custom_stage_progression").forGetter(DragonSpecies::stages),
             RegistryCodecs.homogeneousList(DragonBody.REGISTRY).optionalFieldOf("bodies", HolderSet.empty()).forGetter(DragonSpecies::bodies),
             RegistryCodecs.homogeneousList(DragonAbility.REGISTRY).optionalFieldOf("abilities", HolderSet.empty()).forGetter(DragonSpecies::abilities),
@@ -55,16 +55,16 @@ public class DragonSpecies implements AttributeModifierSupplier {
     public static final StreamCodec<RegistryFriendlyByteBuf, Holder<DragonSpecies>> STREAM_CODEC = ByteBufCodecs.holderRegistry(REGISTRY);
 
     private final Optional<Double> startingGrowth;
-    private final Optional<AltarBehaviour> altarBehaviour;
+    private final Optional<UnlockableBehavior> unlockableBehavior;
     private final Optional<HolderSet<DragonStage>> customStageProgression;
     private final HolderSet<DragonBody> bodies;
     private final HolderSet<DragonAbility> abilities;
     private final HolderSet<DragonPenalty> penalties;
     private final MiscResources miscResources;
 
-    public DragonSpecies(final Optional<Double> startingGrowth, final Optional<AltarBehaviour> altarBehaviour, final Optional<HolderSet<DragonStage>> customStageProgression, final HolderSet<DragonBody> bodies, final HolderSet<DragonAbility> abilities, final HolderSet<DragonPenalty> penalties, final MiscResources miscResources) {
+    public DragonSpecies(final Optional<Double> startingGrowth, final Optional<UnlockableBehavior> unlockableBehavior, final Optional<HolderSet<DragonStage>> customStageProgression, final HolderSet<DragonBody> bodies, final HolderSet<DragonAbility> abilities, final HolderSet<DragonPenalty> penalties, final MiscResources miscResources) {
         this.startingGrowth = startingGrowth;
-        this.altarBehaviour = altarBehaviour;
+        this.unlockableBehavior = unlockableBehavior;
         this.customStageProgression = customStageProgression;
         this.bodies = bodies;
         this.abilities = abilities;
@@ -101,38 +101,38 @@ public class DragonSpecies implements AttributeModifierSupplier {
      * Returns the list of relevant species for the player <br>
      * It may contain locked species, depending on how the species' altar visibility is configured
      */
-    public static List<AltarBehaviour.Entry> getSpecies(final ServerPlayer player, boolean isAltar) {
-        List<AltarBehaviour.Entry> entries = new ArrayList<>();
+    public static List<UnlockableBehavior.SpeciesEntry> getSpecies(final ServerPlayer player, boolean isAltar) {
+        List<UnlockableBehavior.SpeciesEntry> entries = new ArrayList<>();
 
         ResourceHelper.all(player.registryAccess(), REGISTRY).forEach(species -> {
-            AltarBehaviour behaviour = species.value().altarBehaviour().orElse(null);
+            UnlockableBehavior behaviour = species.value().unlockableBehavior().orElse(null);
 
             if (behaviour == null) {
-                entries.add(new AltarBehaviour.Entry(species, true));
+                entries.add(new UnlockableBehavior.SpeciesEntry(species, true));
                 return;
             }
 
             boolean isUnlocked = behaviour.unlockCondition().map(condition -> condition.test(Condition.entityContext(player.serverLevel(), player))).orElse(true);
-            AltarBehaviour.Visibility visibility = behaviour.visibility().orElse(null);
+            UnlockableBehavior.Visibility visibility = behaviour.visibility().orElse(null);
 
             if (isAltar) {
-                if (visibility == AltarBehaviour.Visibility.ALWAYS_VISIBLE) {
-                    entries.add(new AltarBehaviour.Entry(species, isUnlocked));
+                if (visibility == UnlockableBehavior.Visibility.ALWAYS_VISIBLE) {
+                    entries.add(new UnlockableBehavior.SpeciesEntry(species, isUnlocked));
                     return;
                 }
 
-                if (visibility == AltarBehaviour.Visibility.ALWAYS_HIDDEN) {
+                if (visibility == UnlockableBehavior.Visibility.ALWAYS_HIDDEN) {
                     return;
                 }
             }
 
             if (isUnlocked) {
-                entries.add(new AltarBehaviour.Entry(species, true));
+                entries.add(new UnlockableBehavior.SpeciesEntry(species, true));
                 return;
             }
 
-            if (isAltar && visibility == AltarBehaviour.Visibility.VISIBLE_IF_LOCKED) {
-                entries.add(new AltarBehaviour.Entry(species, false));
+            if (isAltar && visibility == UnlockableBehavior.Visibility.VISIBLE_IF_LOCKED) {
+                entries.add(new UnlockableBehavior.SpeciesEntry(species, false));
             }
         });
 
@@ -141,7 +141,7 @@ public class DragonSpecies implements AttributeModifierSupplier {
 
     /** Returns a random species that the player has unlocked */
     public static @Nullable Holder<DragonSpecies> getRandom(final ServerPlayer player) {
-        List<AltarBehaviour.Entry> unlockedSpecies = getSpecies(player, false);
+        List<UnlockableBehavior.SpeciesEntry> unlockedSpecies = getSpecies(player, false);
 
         if (unlockedSpecies.isEmpty()) {
             return null;
@@ -185,8 +185,8 @@ public class DragonSpecies implements AttributeModifierSupplier {
         return startingGrowth;
     }
 
-    public Optional<AltarBehaviour> altarBehaviour() {
-        return altarBehaviour;
+    public Optional<UnlockableBehavior> unlockableBehavior() {
+        return unlockableBehavior;
     }
 
     public Optional<HolderSet<DragonStage>> stages() {

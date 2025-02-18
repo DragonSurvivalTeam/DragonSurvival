@@ -97,7 +97,7 @@ public class DragonCommand {
         handler.setSpecies(player, species);
 
         if (dragonBody == null) {
-            dragonBody = DragonBody.random(player.registryAccess(), species);
+            dragonBody = DragonBody.getRandomUnlocked(player);
         }
 
         handler.setBody(player, dragonBody);
