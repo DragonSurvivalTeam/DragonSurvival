@@ -18,7 +18,7 @@ public record ProjectileEntityRunFunctionEffect(ResourceLocation function) imple
 
     @Override
     public void apply(Projectile projectile, Entity target, int level) {
-        ServerLevel serverLevel = (ServerLevel)projectile.level();
+        ServerLevel serverLevel = (ServerLevel) projectile.level();
         MinecraftServer server = serverLevel.getServer();
         ServerFunctionManager manager = server.getFunctions();
 

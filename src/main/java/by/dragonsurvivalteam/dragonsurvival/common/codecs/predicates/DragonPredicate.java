@@ -71,15 +71,15 @@ public record DragonPredicate(
             return false;
         }
 
-        if(markedByEnderDragon().isPresent() && markedByEnderDragon().get() != data.markedByEnderDragon) {
+        if (markedByEnderDragon().isPresent() && markedByEnderDragon().get() != data.markedByEnderDragon) {
             return false;
         }
 
-        if(flightWasGranted().isPresent() && flightWasGranted().get() != data.flightWasGranted) {
+        if (flightWasGranted().isPresent() && flightWasGranted().get() != data.flightWasGranted) {
             return false;
         }
 
-        if(spinWasGranted().isPresent() && spinWasGranted().get() != data.spinWasGranted) {
+        if (spinWasGranted().isPresent() && spinWasGranted().get() != data.spinWasGranted) {
             return false;
         }
 

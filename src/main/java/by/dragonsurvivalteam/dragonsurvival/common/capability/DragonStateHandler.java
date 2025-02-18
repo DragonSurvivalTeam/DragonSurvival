@@ -369,7 +369,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
         if (hasChanged) {
             if (body() == null || !species.value().isValidForBody(body())) {
-                if(player instanceof ServerPlayer serverPlayer) {
+                if (player instanceof ServerPlayer serverPlayer) {
                     setBody(serverPlayer, DragonBody.getRandomUnlocked(serverPlayer));
                 } else {
                     setBody(player, DragonBody.getRandom(player != null ? player.registryAccess() : null, species));
@@ -786,7 +786,7 @@ public class DragonStateHandler extends EntityStateHandler {
         @Translation(comments = "Disabled")
         DISABLED
     }
-    
+
     private static final String DRAGON_SPECIES = "dragon_species";
     private static final String DRAGON_BODY = "dragon_body";
     private static final String DRAGON_STAGE = "dragon_stage";

@@ -93,10 +93,10 @@ public interface ProjectileTargeting {
     default List<MutableComponent> getAllEffectDescriptions(final Player dragon, final int level) {
         List<MutableComponent> descriptions = new ArrayList<>();
         MutableComponent targetDescription = getDescription(dragon, level);
-        
+
         for (ConditionalEffect conditional : generalData().effects()) {
             List<MutableComponent> effectDescription = conditional.effect().getDescription(dragon, level);
-            
+
             if (!effectDescription.isEmpty()) {
                 descriptions.addAll(effectDescription.stream().map(description -> format(description, targetDescription)).toList());
             }
@@ -114,7 +114,9 @@ public interface ProjectileTargeting {
     }
 
     void apply(final Projectile projectile, int projectileLevel);
+
     MutableComponent getDescription(final Player dragon, final int level);
+
     MapCodec<? extends ProjectileTargeting> codec();
 
     GeneralData generalData();

@@ -20,10 +20,10 @@ public class HarvestBonuses extends Storage<HarvestBonus.Instance> {
         if (storage == null) {
             return HarvestBonus.BASE_SPEED;
         }
-        
+
         float baseSpeed = HarvestBonus.BASE_SPEED;
 
-        for (HarvestBonus.Instance instance : storage.values()){
+        for (HarvestBonus.Instance instance : storage.values()) {
             float speed = instance.getBaseSpeed(state);
 
             if (speed > baseSpeed) {
@@ -33,7 +33,7 @@ public class HarvestBonuses extends Storage<HarvestBonus.Instance> {
 
         return baseSpeed;
     }
-    
+
     public int getHarvestBonus(final BlockState state) {
         if (storage == null) {
             return HarvestBonus.NO_BONUS_VALUE;
@@ -64,6 +64,7 @@ public class HarvestBonuses extends Storage<HarvestBonus.Instance> {
 
     /**
      * Determines if the player can harvest the provided block state
+     *
      * @param tool @param tool The harvest level of this item will be used as a base (see {@link ToolUtils#toolToHarvestLevel(ItemStack)})
      */
     public static boolean canHarvest(final Player player, final BlockState state, final ItemStack tool) {

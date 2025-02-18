@@ -24,7 +24,7 @@ public class EmoteHandler {
 
     @SubscribeEvent
     public static void playerTick(final PlayerTickEvent.Post event) {
-        if(!event.getEntity().level().isClientSide()) {
+        if (!event.getEntity().level().isClientSide()) {
             return;
         }
 
@@ -43,11 +43,11 @@ public class EmoteHandler {
 
         DragonEmote[] currentlyPlayingEmotes = dragon.getCurrentlyPlayingEmotes();
         boolean playerIsMoving = player.getDeltaMovement().lengthSqr() > EMOTE_MOVEMENT_EPSILON;
-        for(int i = 0; i < currentlyPlayingEmotes.length; i++) {
-            if(currentlyPlayingEmotes[i] != null) {
-                if(currentlyPlayingEmotes[i].sound().isPresent()) {
+        for (int i = 0; i < currentlyPlayingEmotes.length; i++) {
+            if (currentlyPlayingEmotes[i] != null) {
+                if (currentlyPlayingEmotes[i].sound().isPresent()) {
                     DragonEmote.Sound sound = currentlyPlayingEmotes[i].sound().get();
-                    if(dragon.getTicksForEmote(i) % sound.interval() == 0 && dragon.getTicksForEmote(i) != -1) {
+                    if (dragon.getTicksForEmote(i) % sound.interval() == 0 && dragon.getTicksForEmote(i) != -1) {
                         sound.playSound(player);
                     }
                 }
@@ -56,7 +56,7 @@ public class EmoteHandler {
                     continue;
                 }
 
-                if(!currentlyPlayingEmotes[i].canMove() && playerIsMoving) {
+                if (!currentlyPlayingEmotes[i].canMove() && playerIsMoving) {
                     PacketDistributor.sendToServer(new SyncEmote(player.getId(), currentlyPlayingEmotes[i], true));
                     dragon.stopEmote(i);
                     continue;
@@ -80,7 +80,7 @@ public class EmoteHandler {
 
     @SubscribeEvent
     public static void playerAttacked(final LivingIncomingDamageEvent event) {
-        if(!event.getEntity().level().isClientSide()) {
+        if (!event.getEntity().level().isClientSide()) {
             return;
         }
 

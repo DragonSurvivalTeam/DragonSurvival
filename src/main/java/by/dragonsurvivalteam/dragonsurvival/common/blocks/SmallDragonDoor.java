@@ -80,7 +80,7 @@ public class SmallDragonDoor extends Block implements SimpleWaterloggedBlock {
     }
 
     @Override
-    @Nullable public BlockState getStateForPlacement(final BlockPlaceContext context) {
+    public @Nullable BlockState getStateForPlacement(final BlockPlaceContext context) {
         BlockPos clickedPosition = context.getClickedPos();
 
         if (clickedPosition.getY() < 255) {

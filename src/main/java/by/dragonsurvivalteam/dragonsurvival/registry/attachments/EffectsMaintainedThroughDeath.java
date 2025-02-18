@@ -35,7 +35,7 @@ public class EffectsMaintainedThroughDeath implements INBTSerializable<CompoundT
         Player player = event.getEntity();
         EffectsMaintainedThroughDeath effectsMaintainedThroughDeath = getData(player);
 
-        for(MobEffectInstance effect : effectsMaintainedThroughDeath.getEffectsToReapplyOnDeath()) {
+        for (MobEffectInstance effect : effectsMaintainedThroughDeath.getEffectsToReapplyOnDeath()) {
             player.addEffect(effect);
         }
 
@@ -45,7 +45,7 @@ public class EffectsMaintainedThroughDeath implements INBTSerializable<CompoundT
     @Override
     public @UnknownNullability CompoundTag serializeNBT(HolderLookup.@NotNull Provider provider) {
         CompoundTag tag = new CompoundTag();
-        for(int i = 0; i < effectsToReapplyOnDeath.size(); i++) {
+        for (int i = 0; i < effectsToReapplyOnDeath.size(); i++) {
             tag.put("effect" + i, effectsToReapplyOnDeath.get(i).save());
         }
 
@@ -55,7 +55,7 @@ public class EffectsMaintainedThroughDeath implements INBTSerializable<CompoundT
     @Override
     public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag nbt) {
         effectsToReapplyOnDeath.clear();
-        for(int i = 0; i < nbt.size(); i++) {
+        for (int i = 0; i < nbt.size(); i++) {
             effectsToReapplyOnDeath.add(MobEffectInstance.load(nbt.getCompound("effect" + i)));
         }
     }

@@ -41,7 +41,7 @@ import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -341,8 +341,9 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
 
     private static boolean hasAnyArmorEquipped(Player pPlayer) {
         for (EquipmentSlot slot : EquipmentSlot.values()) {
-            if (!slot.isArmor())
+            if (!slot.isArmor()) {
                 continue;
+            }
 
             ItemStack itemstack = pPlayer.getItemBySlot(slot);
             if (!itemstack.is(Items.AIR)) {
@@ -456,7 +457,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
                 }
 
                 // TODO :: Do we really have to make a special case for this? Do items not have a way to signify "can be dyed?"
-                if(isDyeable && player.getItemBySlot(equipmentSlot).get(DataComponents.DYED_COLOR) == null) {
+                if (isDyeable && player.getItemBySlot(equipmentSlot).get(DataComponents.DYED_COLOR) == null) {
                     texture += "_undyed";
                 }
 

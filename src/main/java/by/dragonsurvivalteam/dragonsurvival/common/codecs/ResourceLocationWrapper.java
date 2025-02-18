@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  * - normal {@link ResourceLocation} <br>
  * - tags by prefixing a {@link ResourceLocation} with '#' (e.g. '#minecraft:doors') <br>
  * - Regex in namespace and / or path (e.g. '.*:.*_bow')
- * */
+ */
 public class ResourceLocationWrapper {
     /** These are the regex meta characters that can start a valid regular expression */
     private static final List<Character> VALID_REGEX_START = List.of('.', '^', '[', '(', '\\');

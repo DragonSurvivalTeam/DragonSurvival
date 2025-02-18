@@ -89,8 +89,8 @@ public class DSTrades {
             this.xp = xp;
         }
 
-        @Nullable @Override
-        public MerchantOffer getOffer(@NotNull final Entity entity, @NotNull final RandomSource random) {
+        @Override
+        public @Nullable MerchantOffer getOffer(@NotNull final Entity entity, @NotNull final RandomSource random) {
             return new MerchantOffer(item, Optional.empty(), result, maxUses, xp, priceMultiplier);
         }
     }
@@ -113,7 +113,8 @@ public class DSTrades {
             this.villagerXp = pVillagerXp;
         }
 
-        @Nullable @Override
+        @Nullable
+        @Override
         public MerchantOffer getOffer(final Entity trader, @NotNull final RandomSource random) {
             if (!(trader.level() instanceof ServerLevel serverlevel)) {
                 return null;

@@ -33,7 +33,7 @@ public class EditorPartComponent implements ScrollableComponent {
         this.selectedPart = partKey;
         this.skinLayer = skinLayer;
 
-        partButton = new HoverButton(xPos, yPos, 110, 19, 149, 22, DROPDOWN_BUTTON_BACKGROUND, DROPDOWN_BUTTON_BACKGROUND, button -> { /* Nothing to do*/ }){
+        partButton = new HoverButton(xPos, yPos, 110, 19, 149, 22, DROPDOWN_BUTTON_BACKGROUND, DROPDOWN_BUTTON_BACKGROUND, button -> { /* Nothing to do*/ }) {
             @Override
             public boolean isValidClickButton(int button) {
                 return button == 1 && skinLayer != SkinLayer.BASE;
@@ -49,13 +49,13 @@ public class EditorPartComponent implements ScrollableComponent {
         ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(partButton);
 
         // Left arrow
-        ((ScreenAccessor)screen).dragonSurvival$addRenderableWidget(new HoverButton(xPos - 7, yPos + 2, 10, 16, 10, 16, SMALL_LEFT_ARROW_MAIN, SMALL_LEFT_ARROW_HOVER, button -> {
+        ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(new HoverButton(xPos - 7, yPos + 2, 10, 16, 10, 16, SMALL_LEFT_ARROW_MAIN, SMALL_LEFT_ARROW_HOVER, button -> {
             List<String> partsFromLayer = screen.getPartsFromLayer(skinLayer);
 
             if (partsFromLayer.isEmpty()) {
                 return;
             }
-            
+
             int currentPart = partsFromLayer.indexOf(this.selectedPart);
 
             if (currentPart < 0) {
@@ -102,7 +102,7 @@ public class EditorPartComponent implements ScrollableComponent {
         ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(colorSelectorButton);
     }
 
-    public boolean colorSelectorIsToggled () {
+    public boolean colorSelectorIsToggled() {
         return colorSelectorButton.toggled;
     }
 

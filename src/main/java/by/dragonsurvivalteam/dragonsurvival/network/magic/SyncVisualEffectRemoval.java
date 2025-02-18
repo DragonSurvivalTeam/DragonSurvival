@@ -31,8 +31,8 @@ public record SyncVisualEffectRemoval(int entityId, Holder<MobEffect> effect) im
         });
     }
 
-        @Override
-        public @NotNull Type<? extends CustomPacketPayload> type() {
-            return TYPE;
-        }
+    @Override
+    public @NotNull Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
 }

@@ -20,13 +20,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 public class LevelButton extends ClickHoverButton {
-    private static final ResourceLocation DOWNGRADE_CLICK = DragonSurvival.res( "textures/gui/ability_screen/arrow_left_upgrade_click.png");
-    private static final ResourceLocation DOWNGRADE_HOVER = DragonSurvival.res( "textures/gui/ability_screen/arrow_left_upgrade_hover.png");
-    private static final ResourceLocation DOWNGRADE_MAIN = DragonSurvival.res( "textures/gui/ability_screen/arrow_left_upgrade_main.png");
+    private static final ResourceLocation DOWNGRADE_CLICK = DragonSurvival.res("textures/gui/ability_screen/arrow_left_upgrade_click.png");
+    private static final ResourceLocation DOWNGRADE_HOVER = DragonSurvival.res("textures/gui/ability_screen/arrow_left_upgrade_hover.png");
+    private static final ResourceLocation DOWNGRADE_MAIN = DragonSurvival.res("textures/gui/ability_screen/arrow_left_upgrade_main.png");
 
-    public static final ResourceLocation UPGRADE_CLICK = DragonSurvival.res( "textures/gui/ability_screen/arrow_right_upgrade_click.png");
-    private static final ResourceLocation UPGRADE_HOVER = DragonSurvival.res( "textures/gui/ability_screen/arrow_right_upgrade_hover.png");
-    private static final ResourceLocation UPGRADE_MAIN = DragonSurvival.res( "textures/gui/ability_screen/arrow_right_upgrade_main.png");
+    public static final ResourceLocation UPGRADE_CLICK = DragonSurvival.res("textures/gui/ability_screen/arrow_right_upgrade_click.png");
+    private static final ResourceLocation UPGRADE_HOVER = DragonSurvival.res("textures/gui/ability_screen/arrow_right_upgrade_hover.png");
+    private static final ResourceLocation UPGRADE_MAIN = DragonSurvival.res("textures/gui/ability_screen/arrow_right_upgrade_main.png");
 
     private static final int WIDTH = 9;
     private static final int HEIGHT = 14;

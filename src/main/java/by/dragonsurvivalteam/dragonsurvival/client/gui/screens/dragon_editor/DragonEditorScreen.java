@@ -223,7 +223,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     private int curAnimation;
     private int selectedDragonStage;
     private boolean hasInit;
-    private boolean fromAltar;
+    private final boolean fromAltar;
 
     private final List<UnlockableBehavior.BodyEntry> unlockedBodies;
 
@@ -294,7 +294,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         HashMap<SkinLayer, Lazy<LayerSettings>> layerSettingsMap = HANDLER.getCurrentStageCustomization().layerSettings;
 
         for (SkinLayer layer : layerSettingsMap.keySet()) {
-            if(partComponents.containsKey(layer)) {
+            if (partComponents.containsKey(layer)) {
                 partComponents.get(layer).setSelectedPart(layerSettingsMap.get(layer).get().partKey);
             }
         }
@@ -694,13 +694,13 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         List<AbstractWidget> dragonBodyWidgets = new ArrayList<>();
 
         unlockedBodies.forEach(bodyEntry -> {
-            if(DragonBody.bodyIsValidForSpecies(bodyEntry.body(), species)) {
+            if (DragonBody.bodyIsValidForSpecies(bodyEntry.body(), species)) {
                 dragonBodyWidgets.add(createButton(bodyEntry.body(), bodyEntry.isUnlocked(), 0, 0));
             }
         });
 
         dragonBodyBar = new BarComponent(this,
-                    width / 2 - 43, height / 2 + 30, 3,
+                width / 2 - 43, height / 2 + 30, 3,
                 dragonBodyWidgets, 5,
                 -15, 92, 4, 10, 16,
                 SMALL_LEFT_ARROW_HOVER, SMALL_LEFT_ARROW_MAIN, SMALL_RIGHT_ARROW_HOVER, SMALL_RIGHT_ARROW_MAIN);

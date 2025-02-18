@@ -18,7 +18,7 @@ public class DragonPenaltyHUD {
     public static final ResourceLocation ID = DragonSurvival.res("penalty_hud");
 
     public static void render(@NotNull final GuiGraphics graphics, @NotNull final DeltaTracker tracker) {
-        if(Minecraft.getInstance().options.hideGui) {
+        if (Minecraft.getInstance().options.hideGui) {
             return;
         }
 

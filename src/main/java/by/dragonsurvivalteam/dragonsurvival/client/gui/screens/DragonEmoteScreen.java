@@ -141,7 +141,7 @@ public class DragonEmoteScreen extends Screen {
         int totalPages = (int) Math.ceil((double) DragonStateProvider.getData(minecraft.player).body().value().emotes().value().emotes().size() / PER_PAGE);
         TextRenderUtil.drawCenteredScaledText(graphics, guiLeft + 75, guiTop + 137, 1.0f, (emotePage + 1) + "/" + totalPages, Color.white.getRGB());
 
-        if(currentlyKeybinding != null) {
+        if (currentlyKeybinding != null) {
             TextRenderUtil.drawCenteredScaledText(graphics, guiLeft + 75, guiTop + 151, 1.0f, Component.translatable(CURRENTLY_BINDING).getString(), Color.red.getRGB());
             TextRenderUtil.drawCenteredScaledText(graphics, guiLeft + 75, guiTop + 161, 1.0f, Component.translatable(PRESS_ESCAPE_TO_CANCEL).getString(), Color.red.getRGB());
         }
@@ -200,20 +200,20 @@ public class DragonEmoteScreen extends Screen {
     }
 
     private void reinitializeEmoteComponents() {
-        for(EmoteComponent emoteComponent : emoteComponents) {
-            for(AbstractWidget button : emoteComponent.children()) {
+        for (EmoteComponent emoteComponent : emoteComponents) {
+            for (AbstractWidget button : emoteComponent.children()) {
                 removeWidget(button);
             }
         }
 
         emoteComponents.clear();
 
-        for(int i = 0; i < PER_PAGE; i++) {
+        for (int i = 0; i < PER_PAGE; i++) {
             //noinspection DataFlowIssue -> player is present
             DragonStateHandler handler = DragonStateProvider.getData(Minecraft.getInstance().player);
             List<DragonEmote> emotes = handler.body().value().emotes().value().emotes();
             int emoteIndex = PER_PAGE * emotePage + i;
-            if(emoteIndex >= emotes.size()) {
+            if (emoteIndex >= emotes.size()) {
                 break;
             }
 
@@ -238,7 +238,7 @@ public class DragonEmoteScreen extends Screen {
     // Prevent the screen from closing when pressing escape to cancel a keybind
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if(keyCode == 256 && currentlyKeybinding != null) {
+        if (keyCode == 256 && currentlyKeybinding != null) {
             currentlyKeybinding = null;
             return true;
         }
@@ -271,7 +271,7 @@ public class DragonEmoteScreen extends Screen {
                     DSEmoteKeybindings.EMOTE_KEYBINDS.put(keyCode, emoteScreen.currentlyKeybinding);
                 }
 
-                for(EmoteComponent emoteComponent : emoteScreen.emoteComponents) {
+                for (EmoteComponent emoteComponent : emoteScreen.emoteComponents) {
                     emoteComponent.refreshKeybinding();
                 }
 

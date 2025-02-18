@@ -427,9 +427,11 @@ public class ClientDragonRenderer {
     }
 
     public static void setDragonMovementData(Player player, float realtimeDeltaTick) {
-        if (player == null) return;
+        if (player == null) {
+            return;
+        }
 
-        if(DragonStateProvider.isDragon(player)) {
+        if (DragonStateProvider.isDragon(player)) {
             MovementData movement = MovementData.getData(player);
 
             Vec3 moveVector;

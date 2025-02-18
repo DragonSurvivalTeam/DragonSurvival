@@ -191,7 +191,6 @@ public class DragonEmoteSets {
     public static final String SOUND_HAPPY = "happy";
 
 
-
     public static void registerEmoteSets(final BootstrapContext<DragonEmoteSet> context) {
         context.register(DEFAULT_EMOTES,
                 new DragonEmoteSet(
@@ -206,7 +205,7 @@ public class DragonEmoteSets {
                                 DragonEmote.Builder.of(BLEND_LICKING).blend().canMove().build(),
                                 DragonEmote.Builder.of(BLEND_YAWNING).blend().canMove().build(),
                                 DragonEmote.Builder.of(BLEND_BREATH).loops().loops().blend().canMove().build(),
-                                DragonEmote.Builder.of(BLEND_SNIFFING).blend().sound(SoundEvents.FOX_SNIFF,60,1.0f,0.1f).canMove().build(),
+                                DragonEmote.Builder.of(BLEND_SNIFFING).blend().sound(SoundEvents.FOX_SNIFF, 60, 1.0f, 0.1f).canMove().build(),
                                 DragonEmote.Builder.of(BLEND_DIG).blend().canMove().build(),
                                 DragonEmote.Builder.of(BLEND_BITE).loops().canMove().blend().build(),
                                 DragonEmote.Builder.of(BLEND_ONE_BITE).blend().canMove().build(),
@@ -226,8 +225,8 @@ public class DragonEmoteSets {
                                 DragonEmote.Builder.of(REST_LYING_R).loops().canMove().build(),
                                 DragonEmote.Builder.of(REST_LYING_WINGED_L).loops().canMove().build(),
                                 DragonEmote.Builder.of(REST_LYING_WINGED_R).loops().canMove().build(),
-                                DragonEmote.Builder.of(REST_SLEEP_L).loops().sound(SoundEvents.FOX_SLEEP,100,1.0f,0.1f).canMove().build(),
-                                DragonEmote.Builder.of(REST_SLEEP_R).loops().sound(SoundEvents.FOX_SLEEP,100,1.0f,0.1f).canMove().build(),
+                                DragonEmote.Builder.of(REST_SLEEP_L).loops().sound(SoundEvents.FOX_SLEEP, 100, 1.0f, 0.1f).canMove().build(),
+                                DragonEmote.Builder.of(REST_SLEEP_R).loops().sound(SoundEvents.FOX_SLEEP, 100, 1.0f, 0.1f).canMove().build(),
                                 DragonEmote.Builder.of(REST_ON_SIDE).loops().canMove().build(),
                                 DragonEmote.Builder.of(REST_STRAIGHT).loops().canMove().build(),
                                 DragonEmote.Builder.of(REST_ON_BACK).loops().canMove().build(),
@@ -241,20 +240,20 @@ public class DragonEmoteSets {
                                 DragonEmote.Builder.of(FUN_WINGS_BIPED).loops().canMove().build(),
                                 DragonEmote.Builder.of(FUN_WINGS).loops().canMove().build(),
                                 DragonEmote.Builder.of(FUN_PASSENGER).loops().canMove().build(),
-                                DragonEmote.Builder.of(FUN_SHAKING).canMove().sound(SoundEvents.WOLF_SHAKE,60,1.0f,0.1f).build(),
+                                DragonEmote.Builder.of(FUN_SHAKING).canMove().sound(SoundEvents.WOLF_SHAKE, 60, 1.0f, 0.1f).build(),
                                 DragonEmote.Builder.of(MISC_SWIM).loops().canMove().build(),
                                 DragonEmote.Builder.of(MISC_LAND).loops().canMove().build(),
                                 DragonEmote.Builder.of(MISC_SOARING).loops().canMove().build(),
                                 DragonEmote.Builder.of(MISC_FLY).loops().canMove().build(),
-                                DragonEmote.Builder.of(BLEND_HEAD_LOCKED, SOUND_PURR).sound(SoundEvents.CAT_PURR,160,1.5f,0.8f).blend().build(),
-                                DragonEmote.Builder.of(BLEND_HEAD_LOCKED, SOUND_PURREOW).sound(SoundEvents.CAT_PURREOW,160,2.0f,0.3f).blend().build(),
-                                DragonEmote.Builder.of(BLEND_TALK, SOUND_STRAY_AMBIENT).speed(0.1).sound(SoundEvents.CAT_STRAY_AMBIENT,160,2.0f,0.2f).blend().build(),
-                                DragonEmote.Builder.of(BLEND_BREATH, SOUND_ROAR).speed(0.1).sound(SoundEvents.ENDER_DRAGON_GROWL,160,0.3f,0.1f).blend().build(),
-                                DragonEmote.Builder.of(BLEND_BREATH, SOUND_HISS).speed(0.2).sound(SoundEvents.CAT_HISS,160,1.5f,0.2f).blend().build(),
-                                DragonEmote.Builder.of(BLEND_SPELL_CHARGE, SOUND_GROWL).speed(0.001).sound(SoundEvents.WOLF_GROWL,160,1.0f,0.2f).blend().build(),
-                                DragonEmote.Builder.of(BLEND_TALK, SOUND_CAMEL).speed(0.01).sound(SoundEvents.CAMEL_AMBIENT,160,1.0f,0.2f).blend().build(),
-                                DragonEmote.Builder.of(BLEND_TALK, SOUND_BEAR).speed(0.02).sound(SoundEvents.POLAR_BEAR_AMBIENT,160,1.0f,0.2f).blend().build(),
-                                DragonEmote.Builder.of(BLEND_BREATH, SOUND_HAPPY).speed(0.01).sound(SoundEvents.SNIFFER_HAPPY,160,0.5f,0.8f).blend().build()
+                                DragonEmote.Builder.of(BLEND_HEAD_LOCKED, SOUND_PURR).sound(SoundEvents.CAT_PURR, 160, 1.5f, 0.8f).blend().build(),
+                                DragonEmote.Builder.of(BLEND_HEAD_LOCKED, SOUND_PURREOW).sound(SoundEvents.CAT_PURREOW, 160, 2.0f, 0.3f).blend().build(),
+                                DragonEmote.Builder.of(BLEND_TALK, SOUND_STRAY_AMBIENT).speed(0.1).sound(SoundEvents.CAT_STRAY_AMBIENT, 160, 2.0f, 0.2f).blend().build(),
+                                DragonEmote.Builder.of(BLEND_BREATH, SOUND_ROAR).speed(0.1).sound(SoundEvents.ENDER_DRAGON_GROWL, 160, 0.3f, 0.1f).blend().build(),
+                                DragonEmote.Builder.of(BLEND_BREATH, SOUND_HISS).speed(0.2).sound(SoundEvents.CAT_HISS, 160, 1.5f, 0.2f).blend().build(),
+                                DragonEmote.Builder.of(BLEND_SPELL_CHARGE, SOUND_GROWL).speed(0.001).sound(SoundEvents.WOLF_GROWL, 160, 1.0f, 0.2f).blend().build(),
+                                DragonEmote.Builder.of(BLEND_TALK, SOUND_CAMEL).speed(0.01).sound(SoundEvents.CAMEL_AMBIENT, 160, 1.0f, 0.2f).blend().build(),
+                                DragonEmote.Builder.of(BLEND_TALK, SOUND_BEAR).speed(0.02).sound(SoundEvents.POLAR_BEAR_AMBIENT, 160, 1.0f, 0.2f).blend().build(),
+                                DragonEmote.Builder.of(BLEND_BREATH, SOUND_HAPPY).speed(0.01).sound(SoundEvents.SNIFFER_HAPPY, 160, 0.5f, 0.8f).blend().build()
                         )
                 )
         );

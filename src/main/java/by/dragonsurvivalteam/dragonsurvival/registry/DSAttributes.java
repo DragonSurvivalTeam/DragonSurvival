@@ -24,7 +24,8 @@ public class DSAttributes {
     public static final Holder<Attribute> FLIGHT_STAMINA_COST = REGISTRY.register("flight_stamina", () -> new RangedAttribute(Translation.Type.ATTRIBUTE.wrap("flight_stamina"), 1, 0, 5).setSyncable(true));
 
     @Translation(type = Translation.Type.ATTRIBUTE, comments = "Lava Swim Speed")
-    @Translation(type = Translation.Type.ATTRIBUTE_DESCRIPTION, comments = "A multiplier to the lava swim speed") // TODO :: enable 'can swim in fluid' for lava when this value is above 0 (or some other threshold)?
+    @Translation(type = Translation.Type.ATTRIBUTE_DESCRIPTION, comments = "A multiplier to the lava swim speed")
+    // TODO :: enable 'can swim in fluid' for lava when this value is above 0 (or some other threshold)?
     public static final Holder<Attribute> LAVA_SWIM_SPEED = REGISTRY.register("lava_swim_speed", () -> new RangedAttribute(Translation.Type.ATTRIBUTE.wrap("lava_swim_speed"), 1, 0, 1024).setSyncable(true));
 
     // TODO :: use Attributes#FLYING_SPEED instead? Currently it seems to be only used for mobs

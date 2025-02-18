@@ -141,7 +141,7 @@ public class DragonRidingHandler {
                 if (passenger == null || !player.hasPassenger(passenger) || passenger.getRootVehicle() != player.getRootVehicle() || !player.isVehicle()) {
                     dragonStateHandler.setPassengerId(NO_PASSENGER);
                     PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncDragonPassengerID(player.getId(), NO_PASSENGER));
-                    if(passenger != null) {
+                    if (passenger != null) {
                         passenger.stopRiding();
                     }
                     player.connection.send(new ClientboundSetPassengersPacket(player));

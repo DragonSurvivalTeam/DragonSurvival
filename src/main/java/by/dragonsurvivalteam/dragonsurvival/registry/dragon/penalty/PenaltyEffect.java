@@ -24,9 +24,12 @@ public interface PenaltyEffect {
 
     Codec<PenaltyEffect> CODEC = REGISTRY.byNameCodec().dispatch("penalty_type", PenaltyEffect::codec, Function.identity());
 
-    default MutableComponent getDescription() { return Component.empty(); }
+    default MutableComponent getDescription() {
+        return Component.empty();
+    }
 
     void apply(final ServerPlayer player, final Holder<DragonPenalty> penalty);
+
     MapCodec<? extends PenaltyEffect> codec();
 
     @SubscribeEvent

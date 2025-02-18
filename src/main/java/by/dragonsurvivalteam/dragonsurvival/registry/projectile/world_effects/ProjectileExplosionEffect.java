@@ -17,7 +17,13 @@ import net.minecraft.world.level.Level;
 
 import java.util.List;
 
-public record ProjectileExplosionEffect(Holder<DamageType> damageType, LevelBasedValue explosionPower, boolean fire, boolean breakBlocks, boolean canDamageSelf) implements ProjectileWorldEffect {
+public record ProjectileExplosionEffect(
+        Holder<DamageType> damageType,
+        LevelBasedValue explosionPower,
+        boolean fire,
+        boolean breakBlocks,
+        boolean canDamageSelf
+) implements ProjectileWorldEffect {
     @Translation(comments = "§6■ Explosion Power:§r %s")
     private static final String POWER = Translation.Type.GUI.wrap("explosion_effect.power");
 

@@ -166,5 +166,6 @@ public abstract class Storage<T extends StorageEntry> implements INBTSerializabl
     public abstract AttachmentType<?> type();
 
     protected abstract Tag save(@NotNull final HolderLookup.Provider provider, final T entry);
+
     protected abstract T load(@NotNull final HolderLookup.Provider provider, final CompoundTag tag);
 }

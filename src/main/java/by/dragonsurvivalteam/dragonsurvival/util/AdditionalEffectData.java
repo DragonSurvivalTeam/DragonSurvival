@@ -8,6 +8,7 @@ import java.util.UUID;
 
 public interface AdditionalEffectData {
     void dragonSurvival$setApplier(final Entity applier);
+
     @Nullable Entity dragonSurvival$getApplier(final ServerLevel level);
 
     void dragonSurvival$setApplierUUID(final UUID applierUUID);

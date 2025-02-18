@@ -332,7 +332,7 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
     }
 
     @Override
-    @Nullable public MenuProvider getMenuProvider(@NotNull final BlockState state, final Level level, @NotNull final BlockPos position) {
+    public @Nullable MenuProvider getMenuProvider(@NotNull final BlockState state, final Level level, @NotNull final BlockPos position) {
         BlockEntity blockentity = level.getBlockEntity(position);
         return blockentity instanceof MenuProvider ? (MenuProvider) blockentity : null;
     }

@@ -34,7 +34,7 @@ public class DragonDestructionHandler {
         }
 
         BlockPosHelper.betweenClosedCeil(boundingBox).forEach(position -> {
-            if (!destructionData.blockPredicate().test((ServerLevel)event.getEntity().level(), position)) {
+            if (!destructionData.blockPredicate().test((ServerLevel) event.getEntity().level(), position)) {
                 return;
             }
 

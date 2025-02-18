@@ -34,7 +34,7 @@ public enum ModifierType implements StringRepresentable {
     public ResourceLocation randomId(final Holder<Attribute> attribute, final AttributeModifier.Operation operation) {
         String attributeId = attribute.getRegisteredName().replace(":", ".");
         int hash = Objects.hash(String.valueOf(RANDOM.nextInt(100_000)), operation.getSerializedName());
-        return DragonSurvival.res(path() + hash  + "/" + attributeId);
+        return DragonSurvival.res(path() + hash + "/" + attributeId);
     }
 
     @Override

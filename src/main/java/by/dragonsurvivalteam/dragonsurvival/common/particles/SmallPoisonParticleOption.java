@@ -12,19 +12,19 @@ import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.NotNull;
 
 public record SmallPoisonParticleOption(float duration, boolean swirls) implements ParticleOptions {
-        public static final MapCodec<SmallPoisonParticleOption> CODEC = RecordCodecBuilder.mapCodec(codecBuilder -> codecBuilder.group(
-                Codec.FLOAT.fieldOf("duration").forGetter(SmallPoisonParticleOption::duration),
-                Codec.BOOL.fieldOf("swirls").forGetter(SmallPoisonParticleOption::swirls)
-        ).apply(codecBuilder, SmallPoisonParticleOption::new));
+    public static final MapCodec<SmallPoisonParticleOption> CODEC = RecordCodecBuilder.mapCodec(codecBuilder -> codecBuilder.group(
+            Codec.FLOAT.fieldOf("duration").forGetter(SmallPoisonParticleOption::duration),
+            Codec.BOOL.fieldOf("swirls").forGetter(SmallPoisonParticleOption::swirls)
+    ).apply(codecBuilder, SmallPoisonParticleOption::new));
 
-        public static final StreamCodec<ByteBuf, SmallPoisonParticleOption> STREAM_CODEC = StreamCodec.composite(
-                ByteBufCodecs.FLOAT, SmallPoisonParticleOption::duration,
-                ByteBufCodecs.BOOL, SmallPoisonParticleOption::swirls,
-                SmallPoisonParticleOption::new
-        );
+    public static final StreamCodec<ByteBuf, SmallPoisonParticleOption> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.FLOAT, SmallPoisonParticleOption::duration,
+            ByteBufCodecs.BOOL, SmallPoisonParticleOption::swirls,
+            SmallPoisonParticleOption::new
+    );
 
-        @Override
-        public @NotNull ParticleType<?> getType() {
-            return DSParticles.POISON.value();
-        }
+    @Override
+    public @NotNull ParticleType<?> getType() {
+        return DSParticles.POISON.value();
     }
+}

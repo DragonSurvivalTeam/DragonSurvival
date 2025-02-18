@@ -33,10 +33,10 @@ public abstract class MobEffectInstanceMixin implements AdditionalEffectData {
     @Shadow @Final private Holder<MobEffect> effect;
     @Shadow private int duration;
 
-    @Unique private @Nullable Entity dragonSurvival$applier;
-    @Unique private @Nullable UUID dragonSurvival$applierUUID;
+    @Unique @Nullable private Entity dragonSurvival$applier;
+    @Unique @Nullable private UUID dragonSurvival$applierUUID;
     // Only temporarily referenced for the magic source effect
-    @Unique private @Nullable ThreadLocal<Player> dragonSurvival$entity;
+    @Unique @Nullable private ThreadLocal<Player> dragonSurvival$entity;
 
     @Override
     public void dragonSurvival$setApplier(final Entity applier) {
@@ -89,7 +89,7 @@ public abstract class MobEffectInstanceMixin implements AdditionalEffectData {
             if (dragonSurvival$entity == null) {
                 dragonSurvival$entity = new ThreadLocal<>();
             }
-            
+
             dragonSurvival$entity.set(player);
         }
     }

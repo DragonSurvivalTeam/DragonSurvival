@@ -12,8 +12,8 @@ import java.util.Optional;
  * Animations for the ability
  *
  * @param startAndCharging Animations that play when casting the ability; can be a compound animation of a starting animation that leads into a looping animation after
- * @param looping Animation that loops while the ability is active
- * @param end Animation that plays when the ability ends (this is also useful for instant abilities, e.g. mouth opening to shoot out a fireball)
+ * @param looping          Animation that loops while the ability is active
+ * @param end              Animation that plays when the ability ends (this is also useful for instant abilities, e.g. mouth opening to shoot out a fireball)
  */
 public record Animations(
         Optional<Either<CompoundAbilityAnimation, SimpleAbilityAnimation>> startAndCharging,

@@ -1,10 +1,10 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.UnlockableBehavior;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscResources;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierType;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.UnlockableBehavior;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;

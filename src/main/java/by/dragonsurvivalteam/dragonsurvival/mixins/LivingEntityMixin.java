@@ -19,7 +19,12 @@ import net.minecraft.core.Holder;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -73,14 +78,15 @@ public abstract class LivingEntityMixin extends Entity {
     @ModifyExpressionValue(method = "getPassengerRidingPosition", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getDimensions(Lnet/minecraft/world/entity/Pose;)Lnet/minecraft/world/entity/EntityDimensions;"))
     public EntityDimensions dragonSurvival$useCorrectDimensionsForPassengerRidingCalculation(EntityDimensions original) {
         LivingEntity self = (LivingEntity) (Object) this;
-        if(DragonStateProvider.isDragon(self) && self instanceof Player player) {
+        if (DragonStateProvider.isDragon(self) && self instanceof Player player) {
             return DragonSizeHandler.calculateDimensions(DragonStateProvider.getData(player), player, DragonSizeHandler.getOverridePose(player));
         } else {
             return original;
         }
     }
 
-    @Unique private int dragonSurvival$getHumanOrDragonUseDuration(int original) {
+    @Unique
+    private int dragonSurvival$getHumanOrDragonUseDuration(int original) {
         if ((Object) this instanceof Player player) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
 
@@ -236,7 +242,12 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
-    @Shadow public abstract ItemStack getItemBySlot(EquipmentSlot pSlot);
-    @Shadow public abstract double getAttributeValue(Holder<Attribute> attribute);
-    @Shadow protected abstract float getWaterSlowDown();
+    @Shadow
+    public abstract ItemStack getItemBySlot(EquipmentSlot pSlot);
+
+    @Shadow
+    public abstract double getAttributeValue(Holder<Attribute> attribute);
+
+    @Shadow
+    protected abstract float getWaterSlowDown();
 }

@@ -43,7 +43,7 @@ public record SimpleActivation(
 
     @Override
     public float getInitialManaCost(final int level) {
-        return initialManaCost.map(cost ->cost.calculate(level))
+        return initialManaCost.map(cost -> cost.calculate(level))
                 .orElseGet(() -> Activation.super.getInitialManaCost(level));
     }
 

@@ -97,8 +97,10 @@ public interface ClientEffectProvider {
     }
 
     Component getDescription();
+
     ClientData clientData();
 
     int getDuration();
+
     int currentDuration();
 }

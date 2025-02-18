@@ -15,7 +15,14 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record SyncBreathParticles(int playerId, float spread, float speedPerGrowth, int numParticles, ParticleOptions mainParticle, ParticleOptions secondaryParticle) implements CustomPacketPayload {
+public record SyncBreathParticles(
+        int playerId,
+        float spread,
+        float speedPerGrowth,
+        int numParticles,
+        ParticleOptions mainParticle,
+        ParticleOptions secondaryParticle
+) implements CustomPacketPayload {
     public static final Type<SyncBreathParticles> TYPE = new Type<>(DragonSurvival.res("sync_breath_particles"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncBreathParticles> STREAM_CODEC = StreamCodec.composite(
@@ -64,7 +71,7 @@ public record SyncBreathParticles(int playerId, float spread, float speedPerGrow
                 spawnParticle(packet.secondaryParticle(), entity, position, yaw, pitch, speed, packet.spread());
             }
 
-            for (int i = 0; i <  packet.numParticles() / 2; i++) {
+            for (int i = 0; i < packet.numParticles() / 2; i++) {
                 spawnParticle(packet.mainParticle(), entity, position, yaw, pitch, speed, packet.spread());
             }
         });

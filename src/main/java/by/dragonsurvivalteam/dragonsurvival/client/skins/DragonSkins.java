@@ -57,7 +57,7 @@ public class DragonSkins {
         String skinKey = playerName + "_" + dragonStage.location().getPath();
 
         if (SKIN_CACHE.containsKey(skinKey) && SKIN_CACHE.get(skinKey) != null) {
-            if(SKIN_CACHE.get(skinKey).isDone()) {
+            if (SKIN_CACHE.get(skinKey).isDone()) {
                 return SKIN_CACHE.get(skinKey).join();
             }
         }
@@ -73,7 +73,7 @@ public class DragonSkins {
         String skinKey = playerName + "_" + dragonStage.location().getPath();
 
         if (GLOW_CACHE.containsKey(skinKey) && GLOW_CACHE.get(skinKey) != null) {
-            if(GLOW_CACHE.get(skinKey).isDone()) {
+            if (GLOW_CACHE.get(skinKey).isDone()) {
                 return GLOW_CACHE.get(skinKey).join();
             }
         } else {
@@ -90,7 +90,7 @@ public class DragonSkins {
 
         if ((ClientDragonRenderer.renderOtherPlayerSkins || player == DragonSurvival.PROXY.getLocalPlayer()) && renderCustomSkin) {
             if (SKIN_CACHE.containsKey(playerKey) && SKIN_CACHE.get(playerKey) != null) {
-                if(SKIN_CACHE.get(playerKey).isDone()) {
+                if (SKIN_CACHE.get(playerKey).isDone()) {
                     return SKIN_CACHE.get(playerKey).join();
                 }
             }
@@ -204,7 +204,7 @@ public class DragonSkins {
 
         if ((ClientDragonRenderer.renderOtherPlayerSkins || player == DragonSurvival.PROXY.getLocalPlayer()) && SKIN_CACHE.containsKey(playerKey) && renderCustomSkin) {
             if (GLOW_CACHE.containsKey(playerKey)) {
-                if(GLOW_CACHE.get(playerKey).isDone()) {
+                if (GLOW_CACHE.get(playerKey).isDone()) {
                     return GLOW_CACHE.get(playerKey).join();
                 }
             } else {
@@ -274,7 +274,7 @@ public class DragonSkins {
             }
 
             ResourceKey<DragonStage> dragonStage = parseResourceKeyFromName(skin.name);
-            if(dragonStage == null) {
+            if (dragonStage == null) {
                 return;
             }
 

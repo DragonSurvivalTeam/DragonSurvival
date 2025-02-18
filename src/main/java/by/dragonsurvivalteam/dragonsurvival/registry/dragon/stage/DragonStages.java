@@ -106,7 +106,7 @@ public class DragonStages {
                         Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 1, AttributeModifier.Operation.ADD_VALUE),
                         /* Per growth */
                         Modifier.precisePerWithBase(Attributes.SCALE, -0.05f, 0.025f, AttributeModifier.Operation.ADD_VALUE),
-                        Modifier.perWithBase(Attributes.MAX_HEALTH, 10.0f,0.5f, AttributeModifier.Operation.ADD_VALUE),
+                        Modifier.perWithBase(Attributes.MAX_HEALTH, 10.0f, 0.5f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.perWithBase(DSAttributes.DRAGON_BREATH_RANGE, 5.5f, 0.4f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.per(Attributes.ENTITY_INTERACTION_RANGE, 0.05f, AttributeModifier.Operation.ADD_VALUE),
                         Modifier.per(Attributes.BLOCK_INTERACTION_RANGE, 0.05f, AttributeModifier.Operation.ADD_VALUE)

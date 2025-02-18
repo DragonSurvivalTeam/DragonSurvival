@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class LightningBoltMixin {
     @Inject(method = "spawnFire", at = @At("HEAD"), cancellable = true)
     private void preventFireFromSpawningFromDataAttachment(int extraIgnitions, CallbackInfo ci) {
-        Entity entity = (Entity)(Object)this;
+        Entity entity = (Entity) (Object) this;
         if (!entity.getData(DSDataAttachments.LIGHTNING_BOLT).spawnsFire) {
             ci.cancel();
         }

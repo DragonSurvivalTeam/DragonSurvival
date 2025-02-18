@@ -224,41 +224,41 @@ public class DragonAbilityScreen extends Screen {
             constantPassives.sort(comparator);
         });
 
-        if(actives.size() % 4 != 0) {
+        if (actives.size() % 4 != 0) {
             int size = 4 - actives.size() % 4;
-            for(int i = 0; i < size; i++) {
+            for (int i = 0; i < size; i++) {
                 actives.add(null);
             }
         }
 
-        if(upgradablePassives.size() % 4 != 0) {
+        if (upgradablePassives.size() % 4 != 0) {
             int size = 4 - upgradablePassives.size() % 4;
-            for(int i = 0; i < size; i++) {
+            for (int i = 0; i < size; i++) {
                 upgradablePassives.add(null);
             }
         }
 
-        if(constantPassives.size() % 4 != 0) {
+        if (constantPassives.size() % 4 != 0) {
             int size = 4 - constantPassives.size() % 4;
-            for(int i = 0; i < size; i++) {
+            for (int i = 0; i < size; i++) {
                 constantPassives.add(null);
             }
         }
 
-        if(!actives.isEmpty()) {
+        if (!actives.isEmpty()) {
             scrollableComponents.add(new AbilityColumnsComponent(this, guiLeft + 35, guiTop, 40, 20, 0.8f, 0.5f, actives));
         }
 
-        if(!upgradablePassives.isEmpty()) {
+        if (!upgradablePassives.isEmpty()) {
             scrollableComponents.add(new AbilityColumnsComponent(this, guiLeft + 111, guiTop, 40, 20, 0.8f, 0.5f, upgradablePassives));
         }
 
-        if(!constantPassives.isEmpty()) {
+        if (!constantPassives.isEmpty()) {
             scrollableComponents.add(new AbilityColumnsComponent(this, guiLeft + 186, guiTop, 40, 20, 0.8f, 0.5f, constantPassives));
         }
 
         // Left panel (hotbar)
-        if(!actives.isEmpty()) {
+        if (!actives.isEmpty()) {
             for (int i = 0; i < MagicData.HOTBAR_SLOTS; i++) {
                 AbstractWidget widget = new AbilityButton(guiLeft - 35, guiTop + i * 40, data.fromSlot(i), this, true, i);
                 addRenderableWidget(widget);
@@ -273,7 +273,7 @@ public class DragonAbilityScreen extends Screen {
 
             addRenderableWidget(new ClickHoverButton(guiLeft, guiTop + 69, 10, 17, 0, 1, 18, 18, Component.empty(), button -> {
                 leftWindowOpen = !leftWindowOpen;
-                for(AbstractWidget widget : leftWindowWidgets) {
+                for (AbstractWidget widget : leftWindowWidgets) {
                     widget.visible = leftWindowOpen;
                 }
             }, LEFT_PANEL_ARROW_CLICK, LEFT_PANEL_ARROW_HOVER, LEFT_PANEL_ARROW_MAIN));

@@ -55,7 +55,7 @@ public class CustomizationFileHandler {
         public static SavedCustomization fromNbt(HolderLookup.Provider provider, CompoundTag nbt) {
             SavedCustomization customization = new SavedCustomization();
             customization.deserializeNBT(provider, nbt);
-            if(customization.customization == null || customization.dragonSpecies == null || customization.dragonModel == null) {
+            if (customization.customization == null || customization.dragonSpecies == null || customization.dragonModel == null) {
                 return null;
             }
 

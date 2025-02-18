@@ -121,7 +121,9 @@ public class ClientFlightHandler {
 
     private static final ActionWithTimedCooldown HUNGER_MESSAGE_WITH_COOLDOWN = new ActionWithTimedCooldown(30_000, () -> {
         Player localPlayer = DragonSurvival.PROXY.getLocalPlayer();
-        if (localPlayer == null) return;
+        if (localPlayer == null) {
+            return;
+        }
         localPlayer.sendSystemMessage(Component.translatable(LangKey.MESSAGE_NO_HUNGER));
     });
 
@@ -147,8 +149,8 @@ public class ClientFlightHandler {
 
         DragonStateProvider.getOptional(DragonSurvival.PROXY.getLocalPlayer()).ifPresent(handler -> {
             if (handler.isDragon()) {
-                float visualScale = (float)handler.getVisualScale(DragonSurvival.PROXY.getLocalPlayer(), Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false));
-                if(disableSizeCameraModifications) {
+                float visualScale = (float) handler.getVisualScale(DragonSurvival.PROXY.getLocalPlayer(), Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false));
+                if (disableSizeCameraModifications) {
                     event.setDistance((event.getDistance()) / event.getEntityScalingFactor() * visualScale);
                 } else {
                     event.setDistance((event.getDistance() + baseDragonCameraOffset) / event.getEntityScalingFactor() * Math.max(visualScale, dragonCameraMinimumScale) * dragonCameraScaleFactor + flatDragonCameraOffset);

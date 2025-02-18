@@ -15,14 +15,11 @@ import by.dragonsurvivalteam.dragonsurvival.network.particle.SyncParticleTrail;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
-import org.jetbrains.annotations.Nullable;
-import org.openjdk.nashorn.internal.runtime.linker.LinkerCallSite;
 
 import java.util.List;
 import java.util.Optional;
@@ -63,7 +60,7 @@ public class ClientProxy {
 
     public static void openDragonEditor(final List<UnlockableBehavior.BodyEntry> entries, ResourceKey<DragonSpecies> species, boolean fromAltar) {
         Optional<Holder.Reference<DragonSpecies>> speciesHolder = ResourceHelper.get(null, species);
-        if(speciesHolder.isEmpty()) {
+        if (speciesHolder.isEmpty()) {
             Minecraft.getInstance().setScreen(null);
         } else {
             Minecraft.getInstance().setScreen(new DragonEditorScreen(speciesHolder.get(), entries, fromAltar));

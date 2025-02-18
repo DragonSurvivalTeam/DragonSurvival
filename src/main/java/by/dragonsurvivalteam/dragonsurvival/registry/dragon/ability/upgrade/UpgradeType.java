@@ -98,8 +98,10 @@ public interface UpgradeType<T> {
     }
 
     boolean apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final T input);
+
     MutableComponent getDescription(int abilityLevel);
 
     int maxLevel();
+
     MapCodec<? extends UpgradeType<?>> codec();
 }

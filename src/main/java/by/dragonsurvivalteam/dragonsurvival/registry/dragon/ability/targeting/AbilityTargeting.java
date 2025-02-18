@@ -144,7 +144,10 @@ public interface AbilityTargeting {
     default void remove(final ServerPlayer dragon, final DragonAbilityInstance ability) { /* Nothing to do */ }
 
     MutableComponent getDescription(final Player dragon, final DragonAbilityInstance ability);
+
     void apply(final ServerPlayer dragon, final DragonAbilityInstance ability);
+
     MapCodec<? extends AbilityTargeting> codec();
+
     Either<BlockTargeting, EntityTargeting> target();
 }

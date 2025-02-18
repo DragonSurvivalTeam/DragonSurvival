@@ -21,7 +21,6 @@ import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
-import java.util.concurrent.locks.Lock;
 
 public class DragonBodyButton extends ExtendedButton implements HoverDisableable {
     @Translation(comments = "You can only change the body type in the altar when changing the dragon's species.")
@@ -122,11 +121,11 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
             state = HOVERED;
         }
 
-        if(!noTooltip) {
-            if(state == LOCKED) {
-                if(lockedReason == LockedReason.NOT_IN_ALTAR) {
+        if (!noTooltip) {
+            if (state == LOCKED) {
+                if (lockedReason == LockedReason.NOT_IN_ALTAR) {
                     setTooltip(Tooltip.create(Component.translatable(UNAVAILABLE)));
-                } else if(lockedReason == LockedReason.NOT_UNLOCKED) {
+                } else if (lockedReason == LockedReason.NOT_UNLOCKED) {
                     setTooltip(Tooltip.create(Component.translatable(NOT_UNLOCKED)));
                 }
             } else {
@@ -134,7 +133,7 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
             }
         }
 
-        if(this.useBackground) {
+        if (this.useBackground) {
             ResourceLocation background = state == SELECTED ? SELECTED_BACKGROUND : DESELECTED_BACKGROUND;
             graphics.blit(background, getX(), getY(), 0, 0, this.width, this.height, 35, 35);
             graphics.blit(icon, getX() + 5, getY() + 5, 0, state * 25, 25, 25, 32, 104);

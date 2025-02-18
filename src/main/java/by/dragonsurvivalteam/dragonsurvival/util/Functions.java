@@ -41,7 +41,7 @@ public class Functions {
     }
 
     public static int secondsToTicks(double seconds) {
-        return (int)(seconds * 20);
+        return (int) (seconds * 20);
     }
 
     public static double ticksToHours(int ticks) {
@@ -131,8 +131,12 @@ public class Functions {
      * @return Value, limited to be within +-halfRange of center.
      */
     public static double limitAngleDelta(double value, double center, double halfRange) {
-        if (halfRange <= 0) return Mth.wrapDegrees(center);
-        if (halfRange >= 180) return Mth.wrapDegrees(value);
+        if (halfRange <= 0) {
+            return Mth.wrapDegrees(center);
+        }
+        if (halfRange >= 180) {
+            return Mth.wrapDegrees(value);
+        }
 
         var delta = angleDifference(center, value);
         delta = Math.clamp(delta, -halfRange, halfRange);
@@ -187,20 +191,23 @@ public class Functions {
 
     /**
      * Inverse of lerp - the `t` from lerp(t, start, end). Not clamped.
+     *
      * @param value Input value
      * @param start Range start
-     * @param end Range end
+     * @param end   Range end
      * @return Normalized position of value between start and end, not clamped (extrapolated). 0 at start, 1 at end.
      * Divides by zero when start == end - will return an infinity or NaN.
      */
     public static double inverseLerp(double value, double start, double end) {
         return (value - start) / (end - start);
     }
+
     /**
      * Inverse of lerp - the `t` from lerp(t, start, end). Clamped to 0..1.
+     *
      * @param value Input value
      * @param start Range start
-     * @param end Range end
+     * @param end   Range end
      * @return Normalized position of value between start and end, clamped to 0..1.
      * Divides by zero when start == end - will return an infinity or NaN.
      */
@@ -210,9 +217,10 @@ public class Functions {
 
     /**
      * Inverse of lerp - the `t` from lerp(t, start, end). Clamped to 0..1. Returns 0 if start == end.
+     *
      * @param value Input value
      * @param start Range start
-     * @param end Range end
+     * @param end   Range end
      * @return Normalized position of value between start and end, clamped to 0..1.
      * Does NOT divide by zero when start == end, and falls back to 0.
      */
@@ -229,7 +237,8 @@ public class Functions {
      * When within the negative or positive range from deadzone to maxRange, the output is an inverse lerp
      * between -1..0 and 0..1 respectively.
      * The result is clamped to -1..1
-     * @param value Input value
+     *
+     * @param value    Input value
      * @param deadzone Minimum in both directions - deadzone
      * @param maxRange Maximum in both directions
      * @return Clamped inverse lerp of value between -maxRange..maxRange, with 0 offset by deadzone.
@@ -283,13 +292,13 @@ public class Functions {
 
         double calculationBase = instance.getBaseValue();
 
-        for (double amount: addition) {
+        for (double amount : addition) {
             calculationBase += amount;
         }
 
         double result = calculationBase;
 
-        for (double amount: multiplyBase) {
+        for (double amount : multiplyBase) {
             result += calculationBase * amount;
         }
 

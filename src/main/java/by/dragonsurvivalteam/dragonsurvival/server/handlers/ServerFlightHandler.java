@@ -220,7 +220,7 @@ public class ServerFlightHandler {
         // TODO: Some strange choices on what is run clientside here. Are we sure this is safe?
         FlightData spin = FlightData.getData(player);
         if (!player.level().isClientSide()) {
-            if(spin.duration > 0) {
+            if (spin.duration > 0) {
                 if (!isFlying(player) && !canSwimSpin(player)) {
                     spin.duration = 0;
                     PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SpinDurationAndCooldown(player.getId(), spin.duration, spin.cooldown));

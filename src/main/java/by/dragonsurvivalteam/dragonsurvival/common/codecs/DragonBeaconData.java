@@ -22,7 +22,7 @@ public record DragonBeaconData(List<Effect> effects, PaymentData paymentData) {
                 Codec.INT.optionalFieldOf("amplifier_modification", 0).forGetter(PaymentData::amplifierModification)
         ).apply(instance, PaymentData::new));
     }
-    
+
     public record Effect(Holder<MobEffect> effect, int duration, int amplifier) {
         public static final Codec<Effect> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 BuiltInRegistries.MOB_EFFECT.holderByNameCodec().fieldOf("effect").forGetter(Effect::effect),

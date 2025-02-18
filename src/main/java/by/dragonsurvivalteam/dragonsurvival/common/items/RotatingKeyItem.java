@@ -61,8 +61,9 @@ public class RotatingKeyItem extends TooltipItem implements GeoItem {
 
             @Override
             public BlockEntityWithoutLevelRenderer getGeoItemRenderer() {
-                if (this.renderer == null)
+                if (this.renderer == null) {
                     this.renderer = new RotatingKeyRenderer();
+                }
 
 
                 return this.renderer;

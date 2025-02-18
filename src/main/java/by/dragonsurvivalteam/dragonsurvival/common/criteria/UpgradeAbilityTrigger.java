@@ -34,7 +34,11 @@ public class UpgradeAbilityTrigger extends SimpleCriterionTrigger<UpgradeAbility
         return UpgradeAbilityInstance.CODEC;
     }
 
-    public record UpgradeAbilityInstance(Optional<ContextAwarePredicate> player, Optional<ResourceKey<DragonAbility>> ability, Optional<Integer> level) implements SimpleCriterionTrigger.SimpleInstance {
+    public record UpgradeAbilityInstance(
+            Optional<ContextAwarePredicate> player,
+            Optional<ResourceKey<DragonAbility>> ability,
+            Optional<Integer> level
+    ) implements SimpleCriterionTrigger.SimpleInstance {
         public static final Codec<UpgradeAbilityInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(UpgradeAbilityInstance::player),
                 ResourceKey.codec(DragonAbility.REGISTRY).optionalFieldOf("ability").forGetter(UpgradeAbilityInstance::ability),

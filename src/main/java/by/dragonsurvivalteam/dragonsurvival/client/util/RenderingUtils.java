@@ -34,7 +34,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.IOException;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)

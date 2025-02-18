@@ -109,7 +109,7 @@ public class BarComponent implements ScrollableComponent {
                 } else {
                     widget.setX(xPos + (index - scrollAmount) * (widget.getWidth() + spacing));
                 }
-                
+
                 widget.setY(yPos);
             }
         }

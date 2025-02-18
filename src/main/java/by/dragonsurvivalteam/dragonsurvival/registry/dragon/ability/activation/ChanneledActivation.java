@@ -53,7 +53,7 @@ public record ChanneledActivation(
         return castTime.map(time -> (int) time.calculate(level))
                 .orElseGet(() -> Activation.super.getCastTime(level));
     }
-    
+
     @Override
     public int getCooldown(final int level) {
         return cooldown.map(cooldown -> (int) cooldown.calculate(level))

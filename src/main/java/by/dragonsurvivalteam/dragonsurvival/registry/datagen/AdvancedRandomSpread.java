@@ -137,8 +137,11 @@ public class AdvancedRandomSpread extends RandomSpreadStructurePlacement {
         return DSStructurePlacementTypes.ADVANCED_RANDOM_SPREAD.get();
     }
 
-    public record SuperExclusionZone(HolderSet<StructureSet> otherSet, int chunkCount,
-                                    Optional<Integer> allowedChunkCount) {
+    public record SuperExclusionZone(
+            HolderSet<StructureSet> otherSet,
+            int chunkCount,
+            Optional<Integer> allowedChunkCount
+    ) {
         public static final Codec<AdvancedRandomSpread.SuperExclusionZone> CODEC = RecordCodecBuilder.create(builder -> builder.group(
                 RegistryCodecs.homogeneousList(Registries.STRUCTURE_SET, StructureSet.DIRECT_CODEC).fieldOf("other_set").forGetter(AdvancedRandomSpread.SuperExclusionZone::otherSet),
                 Codec.intRange(1, Integer.MAX_VALUE).fieldOf("chunk_count").forGetter(AdvancedRandomSpread.SuperExclusionZone::chunkCount),

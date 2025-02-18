@@ -13,8 +13,8 @@ import java.util.Collections;
 public class ModifierRenderingGUIHandler implements IGlobalGuiHandler {
     @Override
     public @NotNull Collection<Rect2i> getGuiExtraAreas() {
-        if(Minecraft.getInstance().screen instanceof EffectRenderingInventoryScreen<?> containerScreen) {
-            return ((EffectRenderingInventoryScreenAccessor)containerScreen).dragonSurvival$areasBlockedByModifierUIForJEI();
+        if (Minecraft.getInstance().screen instanceof EffectRenderingInventoryScreen<?> containerScreen) {
+            return ((EffectRenderingInventoryScreenAccessor) containerScreen).dragonSurvival$areasBlockedByModifierUIForJEI();
         }
 
         return Collections.emptyList();

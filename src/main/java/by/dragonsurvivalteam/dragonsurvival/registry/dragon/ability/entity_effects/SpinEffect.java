@@ -77,7 +77,7 @@ public record SpinEffect(int levelRequirement, Optional<HolderSet<FluidType>> fl
     @Override
     public List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
         List<MutableComponent> components = new ArrayList<>();
-        
+
         if (ability.level() >= levelRequirement) {
             components.add(Component.translatable(SPIN));
         }

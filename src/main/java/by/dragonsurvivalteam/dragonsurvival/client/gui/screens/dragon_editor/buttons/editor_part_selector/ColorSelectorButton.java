@@ -51,11 +51,11 @@ public class ColorSelectorButton extends ExtendedButton {
         active = !screen.preset.get(Objects.requireNonNull(screen.stage.getKey())).get().defaultSkin;
 
         DragonPart part = DragonEditorHandler.getDragonPart(layer, screen.preset.get(screen.stage.getKey()).get().layerSettings.get(layer).get().partKey, DragonEditorScreen.HANDLER.speciesKey());
-        visible = part != null && !Objects.equals(part.key(), DefaultPartLoader.NO_PART) &&  part.isColorable();
+        visible = part != null && !Objects.equals(part.key(), DefaultPartLoader.NO_PART) && part.isColorable();
 
         if (visible) {
             LayerSettings layerSettings = screen.preset.get(Objects.requireNonNull(screen.stage.getKey())).get().layerSettings.get(layer).get();
-            if(layerSettings.modifiedColor || layerSettings.glowing) {
+            if (layerSettings.modifiedColor || layerSettings.glowing) {
                 guiGraphics.blit(BUTTON_HUE_CHANGED, getX(), getY(), 0, 0, width, height, width, height);
             } else {
                 guiGraphics.blit(BUTTON_HUE_UNCHANGED, getX(), getY(), 0, 0, width, height, width, height);
@@ -99,14 +99,14 @@ public class ColorSelectorButton extends ExtendedButton {
             };
 
             int xOffset;
-            if(opensRight) {
+            if (opensRight) {
                 xOffset = getX() + xSize;
             } else {
                 xOffset = getX() - 120;
             }
 
             int yOffset;
-            if(opensUp) {
+            if (opensUp) {
                 yOffset = 0;
             } else {
                 yOffset = -60;

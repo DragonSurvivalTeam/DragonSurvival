@@ -72,7 +72,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
         LayerSettings settings = settingsSupplier.get();
         DragonPart dragonPart = DragonEditorHandler.getDragonPart(layer, settings.partKey, DragonEditorScreen.HANDLER.speciesKey());
 
-        glowing = new ExtendedButton(x + 4, y - 25, 27, 25, Component.empty(),button -> {
+        glowing = new ExtendedButton(x + 4, y - 25, 27, 25, Component.empty(), button -> {
             final Function<Boolean, Boolean> setGlowingAction = value -> {
                 settingsSupplier.get().glowing = value;
                 DragonEditorScreen.HANDLER.recompileCurrentSkin();
@@ -81,7 +81,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
             };
 
             screen.actionHistory.add(new DragonEditorScreen.EditorAction<>(setGlowingAction, !settingsSupplier.get().glowing));
-        }){
+        }) {
             @Override
             public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 ResourceLocation texture = settingsSupplier.get().glowing ? GLOW_ON : GLOW_OFF;
@@ -135,10 +135,10 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
                     this.isHovered = mouseX >= getX() && mouseY >= getY() && mouseX < getX() + getWidth() && mouseY < getY() + getHeight();
                     RenderingUtils.renderPureColorSquare(guiGraphics.pose(), getX() + 1, getY() + 1, getWidth() - 1, getHeight() - 1);
                     guiGraphics.renderOutline(getX() + 1, getY() + 1, getWidth() - 1, getHeight() - 1, Color.black.getRGB());
-                    if(this.isHovered) {
-                        guiGraphics.blit(SLIDER_HOVER, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0 ,0, 12, 26, 26, 26);
+                    if (this.isHovered) {
+                        guiGraphics.blit(SLIDER_HOVER, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
                     } else {
-                        guiGraphics.blit(SLIDER_MAIN, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0 ,0, 12, 26, 26, 26);
+                        guiGraphics.blit(SLIDER_MAIN, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
                     }
                 }
             }
@@ -194,10 +194,10 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
 
                     RenderingUtils.drawGradientRect(guiGraphics.pose().last().pose(), 0, getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, new int[]{col2, col1, col1, col2});
                     guiGraphics.renderOutline(getX() + 1, getY() + 1, getWidth() - 1, getHeight() - 1, Color.black.getRGB());
-                    if(this.isHovered) {
-                        guiGraphics.blit(SLIDER_HOVER, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0 ,0, 12, 26, 26, 26);
+                    if (this.isHovered) {
+                        guiGraphics.blit(SLIDER_HOVER, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
                     } else {
-                        guiGraphics.blit(SLIDER_MAIN, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0 ,0, 12, 26, 26, 26);
+                        guiGraphics.blit(SLIDER_MAIN, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
                     }
                 }
             }
@@ -217,7 +217,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
 
         saturationReset = new HoverButton(x + 3 + xSize - 26, y + INITIAL_BAR_OFFSET + GAP_BETWEEN_BARS - 1, 24, 24, 24, 24, RESET_SETTINGS_MAIN, RESET_SETTINGS_HOVER, button -> saturationSlider.setValue(180));
 
-        brightnessSlider = new ExtendedSlider(x + 3, y + INITIAL_BAR_OFFSET +  GAP_BETWEEN_BARS * 2, xSize - 26, 20, Component.empty(), Component.empty(), 0, 360, hsb[2] * 360, true) {
+        brightnessSlider = new ExtendedSlider(x + 3, y + INITIAL_BAR_OFFSET + GAP_BETWEEN_BARS * 2, xSize - 26, 20, Component.empty(), Component.empty(), 0, 360, hsb[2] * 360, true) {
             private int previousBrightness = 0;
 
             private final Function<Integer, Integer> setBrightnessAction = value -> {
@@ -253,10 +253,10 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
 
                     RenderingUtils.drawGradientRect(guiGraphics.pose().last().pose(), 0, getX() + 1, getY() + 1, getX() + getWidth() - 1, getY() + getHeight() - 1, new int[]{col2, col1, col1, col2});
                     guiGraphics.renderOutline(getX() + 1, getY() + 1, getWidth() - 1, getHeight() - 1, Color.black.getRGB());
-                    if(this.isHovered) {
-                        guiGraphics.blit(SLIDER_HOVER, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0 ,0, 12, 26, 26, 26);
+                    if (this.isHovered) {
+                        guiGraphics.blit(SLIDER_HOVER, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
                     } else {
-                        guiGraphics.blit(SLIDER_MAIN, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0 ,0, 12, 26, 26, 26);
+                        guiGraphics.blit(SLIDER_MAIN, this.getX() + (int) (this.value * (double) (this.width - 8)), this.getY() - 3, 0, 0, 12, 26, 26, 26);
                     }
                 }
             }
@@ -274,7 +274,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
             }
         };
 
-        brightnessReset = new HoverButton(x + 3 + xSize - 26, y + INITIAL_BAR_OFFSET +  GAP_BETWEEN_BARS * 2 - 1, 24, 24, 24, 24, RESET_SETTINGS_MAIN, RESET_SETTINGS_HOVER, button -> brightnessSlider.setValue(180));
+        brightnessReset = new HoverButton(x + 3 + xSize - 26, y + INITIAL_BAR_OFFSET + GAP_BETWEEN_BARS * 2 - 1, 24, 24, 24, 24, RESET_SETTINGS_MAIN, RESET_SETTINGS_HOVER, button -> brightnessSlider.setValue(180));
     }
 
     @Override
@@ -294,7 +294,7 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
         guiGraphics.pose().translate(0, 0, 150);
 
         // Background for glow button
-        guiGraphics.fill(x + 2, y - 25, x + 32, y + 5,  BACKGROUND_COLOR);
+        guiGraphics.fill(x + 2, y - 25, x + 32, y + 5, BACKGROUND_COLOR);
         guiGraphics.renderOutline(x + 2, y - 26, 30, 31, Color.black.getRGB());
         guiGraphics.renderOutline(x + 3, y - 25, 28, 29, INNER_BORDER_COLOR);
 

@@ -80,7 +80,7 @@ public class ResourceHelper {
             return null;
         }
 
-        return ResourceKey.codec(key.registryKey()).encodeStart(actualProvider.createSerializationContext(NbtOps.INSTANCE), key).mapOrElse(Function.identity(),error -> {
+        return ResourceKey.codec(key.registryKey()).encodeStart(actualProvider.createSerializationContext(NbtOps.INSTANCE), key).mapOrElse(Function.identity(), error -> {
             DragonSurvival.LOGGER.error(error.message());
             return null;
         });

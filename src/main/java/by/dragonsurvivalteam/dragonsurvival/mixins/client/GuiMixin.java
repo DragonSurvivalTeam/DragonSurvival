@@ -73,7 +73,8 @@ public abstract class GuiMixin {
         }
     }
 
-    @Unique private static @Nullable ResourceLocation dragonSurvival$getSpriteForAirBubble(boolean burst) {
+    @Unique
+    private static @Nullable ResourceLocation dragonSurvival$getSpriteForAirBubble(boolean burst) {
         Player player = Minecraft.getInstance().player;
 
         //noinspection DataFlowIssue -> player is present

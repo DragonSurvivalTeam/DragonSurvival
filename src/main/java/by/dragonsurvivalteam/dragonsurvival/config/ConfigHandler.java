@@ -375,6 +375,7 @@ public class ConfigHandler {
     /**
      * If {@link ConfigType} is used then said config entries will go through here <br>
      * This also means it cannot be used if the config entries contain additional information (e.g. like the food configs)
+     *
      * @param registry Registry to check data for
      * @param location Value to parse
      * @param <T>      Types which can be used in a registry (e.g. Item or Block)
@@ -441,8 +442,8 @@ public class ConfigHandler {
     }
 
     /**
-     * @param field The class field which dictates the type to set
-     * @param value The value (from {@link net.neoforged.neoforge.common.ModConfigSpec.ConfigValue}) which will be converted to the class field type
+     * @param field        The class field which dictates the type to set
+     * @param value        The value (from {@link net.neoforged.neoforge.common.ModConfigSpec.ConfigValue}) which will be converted to the class field type
      * @param registryType (Optional) The type of registry object (e.g. {@link Block})
      * @return The converted value for the field
      */
@@ -540,8 +541,9 @@ public class ConfigHandler {
     /**
      * Update the {@link ModConfigSpec.ConfigValue} and class field with the new value <br>
      * (Currently only used for the ui when enabling / disabling claws e.g.)
+     *
      * @param configKey The config key of the {@link ConfigOption}
-     * @param newValue Thew value that will be set
+     * @param newValue  Thew value that will be set
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static void updateConfigValue(final String configKey, final Object newValue) {
@@ -581,6 +583,7 @@ public class ConfigHandler {
 
     /**
      * Get the relevant data that is supposed to be stored in the {@link ModConfigSpec.ConfigValue} field
+     *
      * @return The result of {@link ConfigHandler#getRelevantConfigValue(Object)} (lists will convert their entries using that method)
      */
     private static Object convertToConfigValue(final Object object) {
@@ -603,6 +606,7 @@ public class ConfigHandler {
 
     /**
      * Get the relevant data that is supposed to be stored in the {@link ModConfigSpec.ConfigValue} field <br>
+     *
      * @return Most likely a string or number value
      */
     @SuppressWarnings("deprecation") // ignore

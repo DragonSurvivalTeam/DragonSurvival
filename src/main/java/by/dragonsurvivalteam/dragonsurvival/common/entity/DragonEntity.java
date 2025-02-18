@@ -140,7 +140,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     }
 
     public int getTicksForEmote(int slot) {
-        if(animationTickTimer.isPresent("emote_" + slot)) {
+        if (animationTickTimer.isPresent("emote_" + slot)) {
             return (int) Math.ceil(animationTickTimer.getDuration("emote_" + slot));
         }
 
@@ -165,7 +165,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     }
 
     public void beginPlayingEmote(DragonEmote emote) {
-        if(emote == null) {
+        if (emote == null) {
             return;
         }
 
@@ -176,12 +176,12 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
                 continue;
             }
 
-            if(currentlyPlayingEmotes[i] == null) {
+            if (currentlyPlayingEmotes[i] == null) {
                 continue;
             }
 
             // Remove any emotes from conflicting layers (non-blend removes other non-blends)
-            if(!currentlyPlayingEmotes[i].blend() && !emote.blend()) {
+            if (!currentlyPlayingEmotes[i].blend() && !emote.blend()) {
                 currentlyPlayingEmotes[i] = null;
                 animationTickTimer.putAnimation("emote_" + i, 0.0);
             }
@@ -191,14 +191,14 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             if (currentlyPlayingEmotes[i] == null) {
                 currentlyPlayingEmotes[i] = emote;
 
-                if(emote.duration() != DragonEmote.NO_DURATION) {
-                    animationTickTimer.putAnimation("emote_" + i, (double)emote.duration());
+                if (emote.duration() != DragonEmote.NO_DURATION) {
+                    animationTickTimer.putAnimation("emote_" + i, (double) emote.duration());
                 } else {
                     animationTickTimer.putAnimation("emote_" + i, animationDuration(getPlayer(), emote.animationKey()));
                 }
 
-                if(emote.sound().isPresent()) {
-                    if(getPlayer() != null) {
+                if (emote.sound().isPresent()) {
+                    if (getPlayer() != null) {
                         emote.sound().get().playSound(getPlayer());
                     }
                 }
@@ -214,6 +214,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
 
     /**
      * Checks all non-null (i.e. playing) emotes for the predicate
+     *
      * @return 'true' if the predicate is 'true' for any emote
      */
     private boolean checkAllEmotes(final Predicate<DragonEmote> predicate) {
@@ -235,7 +236,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     }
 
     public void setCurrentAbilityAnimation(Pair<AbilityAnimation, AnimationType> currentAbilityAnimation) {
-        if(this.currentAbilityAnimation != null) {
+        if (this.currentAbilityAnimation != null) {
             animationTickTimer.putAnimation(this.currentAbilityAnimation.getFirst().getName(), 0.0);
         }
         this.currentAbilityAnimation = currentAbilityAnimation;
@@ -249,14 +250,14 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             begunPlayingAbilityAnimation = true;
             state.getController().setAnimationSpeed(1.0);
             currentAbilityAnimation.getFirst().play(state, currentAbilityAnimation.getSecond());
-            if(currentAbilityAnimation.getSecond() == AnimationType.PLAY_ONCE) {
+            if (currentAbilityAnimation.getSecond() == AnimationType.PLAY_ONCE) {
                 // Only trigger use a timer for PLAY_ONCE animations, as the others are intended to await a future packet to stop them
                 animationTickTimer.putAnimation(currentAbilityAnimation.getFirst().getName(), animationDuration(getPlayer(), currentAbilityAnimation.getFirst().getName()));
             }
-        } else if(begunPlayingAbilityAnimation && isNotPlayingCurrentAbilityAnimation && currentAbilityAnimation.getSecond() == AnimationType.PLAY_ONCE) {
+        } else if (begunPlayingAbilityAnimation && isNotPlayingCurrentAbilityAnimation && currentAbilityAnimation.getSecond() == AnimationType.PLAY_ONCE) {
             begunPlayingAbilityAnimation = false;
             currentAbilityAnimation = null;
-        } else if(begunPlayingAbilityAnimation && currentAbilityLayer == layer) {
+        } else if (begunPlayingAbilityAnimation && currentAbilityLayer == layer) {
             state.getController().setAnimationSpeed(1.0);
             return true;
         }
@@ -363,7 +364,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     }
 
     private double animationDuration(final Player player, final String animation) {
-        if(!doesAnimationExist(player, animation)) {
+        if (!doesAnimationExist(player, animation)) {
             return 0;
         }
 
@@ -382,16 +383,16 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             DragonEmote emote = currentlyPlayingEmotes[slot];
 
             double duration = animationTickTimer.getDuration("emote_" + slot);
-            if(duration > 0 || emote.loops()) {
+            if (duration > 0 || emote.loops()) {
                 state.getController().setAnimationSpeed(emote.speed());
 
                 if (!emote.loops()) {
                     return state.setAndContinue(RawAnimation.begin().thenPlay(emote.animationKey()));
                 } else {
                     // If the emote loops, we need to check if the duration is set to 0, and if so, set it to the default duration so that the sounds can keep playing properly
-                    if(duration <= 0) {
-                        if(emote.duration() != DragonEmote.NO_DURATION) {
-                            animationTickTimer.putAnimation("emote_" + slot, (double)emote.duration());
+                    if (duration <= 0) {
+                        if (emote.duration() != DragonEmote.NO_DURATION) {
+                            animationTickTimer.putAnimation("emote_" + slot, (double) emote.duration());
                         } else {
                             animationTickTimer.putAnimation("emote_" + slot, animationDuration(getPlayer(), emote.animationKey()));
                         }
@@ -464,9 +465,10 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         clearVerticalVelocity = true;
     }
 
-     /** Is used to determine if the player is considered swimming for animation purposes.
-     /* We also want to disable head bob and walking sound effect in this case.
-     /* See dragonSurvival$modifyWalkSoundsWhenWalkingUnderwater and dragonSurvival$consideredSwimmingEvenWhenGroundedInWater
+    /**
+     * Is used to determine if the player is considered swimming for animation purposes.
+     * /* We also want to disable head bob and walking sound effect in this case.
+     * /* See dragonSurvival$modifyWalkSoundsWhenWalkingUnderwater and dragonSurvival$consideredSwimmingEvenWhenGroundedInWater
      */
     public static boolean isConsideredSwimmingForAnimation(Player player) {
         boolean isInFluid = player.canSwimInFluidType(player.getInBlockState().getFluidState().getFluidType());
@@ -601,7 +603,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             }
         } else if (AnimationUtils.isAnimationPlaying(animationController, FLY_LAND)) {
             state.setAnimation(FLY_LAND_END);
-            if(!FLY_LAND_END.getAnimationStages().isEmpty()) {
+            if (!FLY_LAND_END.getAnimationStages().isEmpty()) {
                 animationTickTimer.putAnimation(FLY_LAND_END, animationDuration(player, FLY_LAND_END.getAnimationStages().getFirst().animationName()));
             }
             animationController.transitionLength(2);
@@ -656,7 +658,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         }
         AnimationUtils.setAnimationSpeed(finalAnimationSpeed, state.getAnimationTick(), animationController);
 
-        if(isPlayingAnyEmote()) {
+        if (isPlayingAnyEmote()) {
             // This means we are playing a blend emote; so we want to pass on the head/tail locked state
             neckLocked = checkAllEmotes(DragonEmote::locksHead);
             tailLocked = checkAllEmotes(DragonEmote::locksTail);

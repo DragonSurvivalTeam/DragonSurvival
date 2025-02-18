@@ -105,7 +105,9 @@ public class DSItems {
 
     @Translation(type = Translation.Type.ITEM, comments = "Charged Soup")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 A concoction of various cave dragon delicacies. Heats up the body enough to protect it from the damaging effects of water.")
-    public static final Holder<Item> CHARGED_SOUP = REGISTRY.register("charged_soup", location -> new CustomOnFinishEffectItem(new Properties(), location.getPath(), entity -> { entity.addEffect(new MobEffectInstance(DSEffects.FIRE, Functions.minutesToTicks(5))); }));
+    public static final Holder<Item> CHARGED_SOUP = REGISTRY.register("charged_soup", location -> new CustomOnFinishEffectItem(new Properties(), location.getPath(), entity -> {
+        entity.addEffect(new MobEffectInstance(DSEffects.FIRE, Functions.minutesToTicks(5)));
+    }));
 
     @Translation(type = Translation.Type.ITEM, comments = "Charred Meat")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 A cave dragon's 'medium rare'.")

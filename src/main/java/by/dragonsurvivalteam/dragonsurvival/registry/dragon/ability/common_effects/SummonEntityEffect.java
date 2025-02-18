@@ -265,6 +265,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
 
         /**
          * Removes the entity from the instance (if applicable)
+         *
          * @return 'true' if the instance has no remaining summoned entities
          */
         public boolean removeSummon(final Entity summon) {

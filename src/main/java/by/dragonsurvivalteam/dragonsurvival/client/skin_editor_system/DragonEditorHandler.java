@@ -41,7 +41,7 @@ import net.neoforged.neoforge.client.GlStateBackup;
 import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,17 +58,17 @@ public class DragonEditorHandler {
             return getDragonPartLocation(SkinLayer.EXTRA, partKey, type);
         }
 
-        if(DragonPartLoader.DRAGON_PARTS.get(type) == null) {
+        if (DragonPartLoader.DRAGON_PARTS.get(type) == null) {
             DragonSurvival.LOGGER.error("Part type map missing for dragon type {}", type);
             return null;
         }
 
-        if(DragonPartLoader.DRAGON_PARTS.get(type).get(layer) == null) {
+        if (DragonPartLoader.DRAGON_PARTS.get(type).get(layer) == null) {
             DragonSurvival.LOGGER.error("Dragon part layer {} not found", layer.name);
             return null;
         }
 
-        if(DragonPartLoader.DRAGON_PARTS.get(type).get(layer).isEmpty()) {
+        if (DragonPartLoader.DRAGON_PARTS.get(type).get(layer).isEmpty()) {
             DragonSurvival.LOGGER.error("Dragon part layer {} is empty", layer.name);
             return null;
         }
@@ -96,17 +96,17 @@ public class DragonEditorHandler {
             return getDragonPart(SkinLayer.EXTRA, partKey, type);
         }
 
-        if(DragonPartLoader.DRAGON_PARTS.get(type) == null) {
+        if (DragonPartLoader.DRAGON_PARTS.get(type) == null) {
             DragonSurvival.LOGGER.error("Part type map missing for dragon type {}", type);
             return null;
         }
 
-        if(DragonPartLoader.DRAGON_PARTS.get(type).get(layer) == null) {
+        if (DragonPartLoader.DRAGON_PARTS.get(type).get(layer) == null) {
             DragonSurvival.LOGGER.error("Dragon part layer {} not found", layer.name);
             return null;
         }
 
-        if(DragonPartLoader.DRAGON_PARTS.get(type).get(layer).isEmpty()) {
+        if (DragonPartLoader.DRAGON_PARTS.get(type).get(layer).isEmpty()) {
             DragonSurvival.LOGGER.error("Dragon part layer {} is empty", layer.name);
             return null;
         }
@@ -135,19 +135,19 @@ public class DragonEditorHandler {
         }
 
         ArrayList<String> keys = new ArrayList<>();
-        if(DragonPartLoader.DRAGON_PARTS.get(type.getKey()) == null) {
+        if (DragonPartLoader.DRAGON_PARTS.get(type.getKey()) == null) {
             DragonSurvival.LOGGER.error("Part type map missing for dragon type {}", type);
             keys.add(DefaultPartLoader.NO_PART);
             return keys;
         }
 
-        if(DragonPartLoader.DRAGON_PARTS.get(type.getKey()).get(layer) == null) {
+        if (DragonPartLoader.DRAGON_PARTS.get(type.getKey()).get(layer) == null) {
             DragonSurvival.LOGGER.error("Dragon part layer {} not found", layer.name);
             keys.add(DefaultPartLoader.NO_PART);
             return keys;
         }
 
-        if(DragonPartLoader.DRAGON_PARTS.get(type.getKey()).get(layer).isEmpty()) {
+        if (DragonPartLoader.DRAGON_PARTS.get(type.getKey()).get(layer).isEmpty()) {
             DragonSurvival.LOGGER.error("Dragon part layer {} is empty", layer.name);
             keys.add(DefaultPartLoader.NO_PART);
             return keys;

@@ -49,6 +49,7 @@ public interface Activation {
     }
 
     Type type();
+
     MapCodec<? extends Activation> codec();
 
     default float getInitialManaCost(int level) {

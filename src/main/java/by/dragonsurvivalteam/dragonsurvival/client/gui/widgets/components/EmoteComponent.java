@@ -66,7 +66,7 @@ public class EmoteComponent {
                 // Copied from ExtendedButton#renderWidget, we only want to render the text for this one
                 final FormattedText buttonText = Minecraft.getInstance().font.ellipsize(this.getMessage(), this.width + 26); // Remove 6 pixels so that the text is always contained within the button's borders
                 int color;
-                if(this.isHovered()) {
+                if (this.isHovered()) {
                     color = 0xFFFFA0;
                 } else {
                     color = getFGColor();
@@ -90,7 +90,7 @@ public class EmoteComponent {
                 dragon.beginPlayingEmote(emote);
                 PacketDistributor.sendToServer(new SyncEmote(Minecraft.getInstance().player.getId(), emote, false));
             }
-        }){
+        }) {
             @Override
             public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 //noinspection DataFlowIssue -> player is present
@@ -100,7 +100,7 @@ public class EmoteComponent {
         };
         keybindingButton = new ExtendedButton(xPos + 126, yPos - 1, 6, 6, Component.empty(), button -> {
             screen.currentlyKeybinding = emote.key();
-        }){
+        }) {
             @Override
             public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 ResourceLocation texture = emote.key().equals(screen.currentlyKeybinding) ? KEYBIND_ON : KEYBIND_OFF;
@@ -109,14 +109,14 @@ public class EmoteComponent {
         };
         refreshKeybinding();
 
-        ((ScreenAccessor)screen).dragonSurvival$addRenderableWidget(isPlayingButton);
-        ((ScreenAccessor)screen).dragonSurvival$addRenderableWidget(keybindingButton);
-        ((ScreenAccessor)screen).dragonSurvival$addRenderableWidget(emoteButton);
+        ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(isPlayingButton);
+        ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(keybindingButton);
+        ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(emoteButton);
     }
 
     public void refreshKeybinding() {
         int keyCode = DSEmoteKeybindings.EMOTE_KEYBINDS.getKey(emote.key());
-        if(keyCode != DragonEmoteScreen.NO_KEY) {
+        if (keyCode != DragonEmoteScreen.NO_KEY) {
             InputConstants.Key input = InputConstants.Type.KEYSYM.getOrCreate(keyCode);
             keybindingButton.setTooltip(Tooltip.create(Component.translatable(BOUND_TO, input.getDisplayName())));
         } else {

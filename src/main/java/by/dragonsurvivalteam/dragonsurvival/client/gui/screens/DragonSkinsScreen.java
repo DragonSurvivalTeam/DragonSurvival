@@ -217,7 +217,7 @@ public class DragonSkinsScreen extends Screen {
 
         //noinspection DataFlowIssue -> key is present
         if (dragonStage != null && !DragonSkins.playerSkinOrGlowFetchingInProgress(playerName, dragonStage.getKey()) && (showYourSkin || !Objects.equals(playerName, minecraft.player.getGameProfile().getName()))) {
-            if(!DragonSkins.fetchHasFailed(playerName, dragonStage.getKey()) || Objects.equals(playerName, minecraft.player.getGameProfile().getName())) {
+            if (!DragonSkins.fetchHasFailed(playerName, dragonStage.getKey()) || Objects.equals(playerName, minecraft.player.getGameProfile().getName())) {
                 if (handler.stage() == null) {
                     boolean alreadyUsingDefaults = handler.getCurrentSkinPreset().isStageUsingDefaultSkin(dragonStage.getKey());
                     handler.setGrowth(null, handler.species().value().getStartingGrowth(minecraft.player.registryAccess()));
@@ -235,7 +235,7 @@ public class DragonSkinsScreen extends Screen {
             } else {
                 drawNonShadowString(guiGraphics, minecraft.font, Component.translatable(NO_SKIN).withStyle(ChatFormatting.RED), startX + 21, startY + 40, -1);
             }
-        } else if(!showYourSkin && Objects.equals(playerName, minecraft.player.getGameProfile().getName())) {
+        } else if (!showYourSkin && Objects.equals(playerName, minecraft.player.getGameProfile().getName())) {
             drawNonShadowString(guiGraphics, minecraft.font, Component.translatable(CUSTOM_MODEL_WARNING_1).withStyle(ChatFormatting.RED), startX + 26, startY + 40, -1);
             drawNonShadowString(guiGraphics, minecraft.font, Component.translatable(CUSTOM_MODEL_WARNING_2).withStyle(ChatFormatting.RED), startX + 26, startY + 50, -1);
         }

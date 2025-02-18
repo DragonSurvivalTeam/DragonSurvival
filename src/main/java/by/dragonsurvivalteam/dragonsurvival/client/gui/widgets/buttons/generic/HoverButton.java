@@ -42,7 +42,7 @@ public class HoverButton extends ExtendedButton implements HoverDisableable {
     public HoverButton(int x, int y, int width, int height, int textureWidth, int textureHeight, final ResourceLocation main, final ResourceLocation hover, final OnPress onPress) {
         this(x, y, width, height, textureWidth, textureHeight, 0, 0, main, hover, onPress, null);
     }
-    
+
     public HoverButton(int x, int y, int width, int height, int textureWidth, int textureHeight, int uOffset, int vOffset, final ResourceLocation main, final ResourceLocation hover, final OnPress onPress, final Supplier<List<Either<FormattedText, TooltipComponent>>> customTooltip) {
         super(x, y, width, height, Component.empty(), onPress);
         this.main = main;

@@ -1,16 +1,14 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons;
 
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAltarScreen;
-import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.DragonEditorScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.DietComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverDisableable;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.UnlockableBehavior;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.StageResources;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.UnlockableBehavior;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
-import by.dragonsurvivalteam.dragonsurvival.network.container.OpenDragonEditor;
 import by.dragonsurvivalteam.dragonsurvival.network.status.SyncAltarCooldown;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_maps.DietEntryCache;
@@ -39,7 +37,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 

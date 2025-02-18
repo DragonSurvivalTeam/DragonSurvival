@@ -239,7 +239,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                     Holder<DragonSpecies> handler1PreviousSpecies = handler1.species();
                     Holder<DragonSpecies> handler2PreviousSpecies = handler2.species();
 
-                    Holder<DragonSpecies> species = button.speciesEntry != null? button.speciesEntry.species() : null;
+                    Holder<DragonSpecies> species = button.speciesEntry != null ? button.speciesEntry.species() : null;
                     handler1.setSpecies(null, species);
                     handler2.setSpecies(null, species);
 
@@ -444,7 +444,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
                 ALTAR_ARROW_LEFT_HOVER, ALTAR_ARROW_LEFT_MAIN, ALTAR_ARROW_RIGHT_HOVER, ALTAR_ARROW_RIGHT_MAIN));
 
         DragonStateHandler handler = DragonStateProvider.getData(Objects.requireNonNull(minecraft).player);
-        if(handler.isDragon()) {
+        if (handler.isDragon()) {
             ResourceKey<DragonSpecies> species = handler.speciesKey();
             addRenderableWidget(new ExtendedButton(xPos + 32, height - 25, 150, 20, Component.translatable(LangKey.GUI_DRAGON_EDITOR), action -> ClientProxy.openDragonEditor(species, true)));
         }

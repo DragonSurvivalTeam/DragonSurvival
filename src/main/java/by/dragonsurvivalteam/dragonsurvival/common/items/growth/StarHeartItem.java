@@ -23,7 +23,7 @@ public class StarHeartItem extends TooltipItem {
     @Translation(comments = "Star heart state is §2active§r")
     private static final String ACTIVE = Translation.Type.GUI.wrap("message.star_heart_active");
 
-    public StarHeartItem(final Properties properties, final String key){
+    public StarHeartItem(final Properties properties, final String key) {
         super(properties, key);
     }
 

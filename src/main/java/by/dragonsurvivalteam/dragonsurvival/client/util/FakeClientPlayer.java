@@ -99,7 +99,7 @@ public class FakeClientPlayer extends AbstractClientPlayer {
     }
 
     @Override
-    @Nullable public MinecraftServer getServer() {
+    public @Nullable MinecraftServer getServer() {
         return Minecraft.getInstance().getSingleplayerServer();
     }
 

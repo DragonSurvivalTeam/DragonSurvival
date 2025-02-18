@@ -30,7 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier, LevelBasedValue duration, LevelBasedValue probability, boolean effectParticles, boolean showIcon) {
+public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier, LevelBasedValue duration, LevelBasedValue probability, boolean effectParticles,
+                         boolean showIcon) {
     public static final LevelBasedValue DEFAULT_PROBABILITY = LevelBasedValue.constant(1);
 
     public static final MapCodec<PotionData> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -173,7 +174,7 @@ public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier
             this.duration = LevelBasedValue.perLevel(Functions.secondsToTicks(duration));
             return this;
         }
-    
+
         public Builder probability(final float probability) {
             this.probability = LevelBasedValue.constant(probability);
             return this;
@@ -183,17 +184,17 @@ public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier
             this.probability = LevelBasedValue.perLevel(probability);
             return this;
         }
-    
+
         public Builder showParticles() {
             this.effectParticles = true;
             return this;
         }
-    
+
         public Builder hideIcon() {
             this.showIcon = false;
             return this;
         }
-    
+
         public PotionData build() {
             return new PotionData(effects, amplifier, duration, probability, effectParticles, showIcon);
         }

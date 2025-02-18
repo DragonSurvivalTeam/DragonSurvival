@@ -81,7 +81,7 @@ public class BackgroundColorButton extends ExtendedButton {
         }
 
         if (visible) {
-            if(isHovered()) {
+            if (isHovered()) {
                 guiGraphics.blit(BACKGROUND_COLOR_HOVER, getX(), getY(), 0, 0, width, height, width, height);
             } else {
                 guiGraphics.blit(BACKGROUND_COLOR_MAIN, getX(), getY(), 0, 0, width, height, width, height);

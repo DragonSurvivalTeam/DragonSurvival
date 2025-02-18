@@ -204,7 +204,7 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
         HoverButton configButton = new HoverButton(leftPos + 177, topPos + 102, 18, 16, 18, 18, CONFIG_MAIN, CONFIG_HOVER, button -> {
             Minecraft minecraft = Minecraft.getInstance();
             // Copied from ConfigHelper.java
-            Optional<Screen> configScreen =  ModList.get()
+            Optional<Screen> configScreen = ModList.get()
                     .getModContainerById(MODID)
                     .flatMap(m -> {
                         IModInfo modInfo = m.getModInfo();

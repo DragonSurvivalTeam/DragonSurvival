@@ -21,6 +21,7 @@ public interface ProjectileBlockEffect extends ProjectileEffect<BlockPos> {
     Registry<MapCodec<? extends ProjectileBlockEffect>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();
 
     Codec<ProjectileBlockEffect> CODEC = REGISTRY.byNameCodec().dispatch("block_effect", ProjectileBlockEffect::codec, Function.identity());
+
     MapCodec<? extends ProjectileBlockEffect> codec();
 
     @SubscribeEvent

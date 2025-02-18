@@ -101,7 +101,7 @@ public record DragonBody(
             return new MountingOffsets(humanOffset, dragonOffset, scale);
         }
     }
-    
+
     public record BackpackOffsets(Vec3 posOffset, Vec3 rotOffset, Vec3 scale) {
         public static final Codec<BackpackOffsets> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Vec3.CODEC.optionalFieldOf("position_offset", Vec3.ZERO).forGetter(BackpackOffsets::posOffset),

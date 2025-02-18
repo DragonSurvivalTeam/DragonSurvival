@@ -56,7 +56,8 @@ public class EffectRenderingInventoryScreenMixin {
         storedEvent.set(event);
     }
 
-    @Unique private void dragonSurvival$renderAbilityBackgroundsAndIcons(final GuiGraphics graphics, int renderX, int yOffset, int initialYOffset, final List<ClientEffectProvider> providers, boolean isCompact) {
+    @Unique
+    private void dragonSurvival$renderAbilityBackgroundsAndIcons(final GuiGraphics graphics, int renderX, int yOffset, int initialYOffset, final List<ClientEffectProvider> providers, boolean isCompact) {
         EffectRenderingInventoryScreen<?> self = (EffectRenderingInventoryScreen<?>) (Object) this;
         int topPos = ((AbstractContainerScreenAccessor) self).dragonSurvival$getTopPos() + initialYOffset;
         int width = isCompact ? 32 : 120;
@@ -69,7 +70,8 @@ public class EffectRenderingInventoryScreenMixin {
         }
     }
 
-    @Unique private void dragonSurvival$renderAbilityLabels(final GuiGraphics graphics, int renderX, int yOffset, int initialYOffset, final List<ClientEffectProvider> providers) {
+    @Unique
+    private void dragonSurvival$renderAbilityLabels(final GuiGraphics graphics, int renderX, int yOffset, int initialYOffset, final List<ClientEffectProvider> providers) {
         EffectRenderingInventoryScreen<?> self = (EffectRenderingInventoryScreen<?>) (Object) this;
         int topPos = ((AbstractContainerScreenAccessor) self).dragonSurvival$getTopPos() + initialYOffset;
 
@@ -83,7 +85,8 @@ public class EffectRenderingInventoryScreenMixin {
     }
 
     // Duration text is added because the width-difference looks weird otherwise when a tooltip description is present
-    @Unique private static Component dragonSurvival$formatDuration(final ClientEffectProvider effect, float ticksPerSecond) {
+    @Unique
+    private static Component dragonSurvival$formatDuration(final ClientEffectProvider effect, float ticksPerSecond) {
         if (effect.isInfiniteDuration()) {
             return Component.translatable(LangKey.DURATION, DSColors.dynamicValue(Component.translatable("effect.duration.infinite")));
         } else {

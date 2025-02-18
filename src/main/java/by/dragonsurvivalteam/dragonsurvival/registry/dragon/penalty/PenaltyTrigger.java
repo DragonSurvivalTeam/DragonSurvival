@@ -25,10 +25,16 @@ public interface PenaltyTrigger {
     Codec<PenaltyTrigger> CODEC = REGISTRY.byNameCodec().dispatch("penalty_trigger", PenaltyTrigger::codec, Function.identity());
 
     /** If this returns 'false' it will be applied per player tick */
-    default boolean hasCustomTrigger() { return false; }
-    default MutableComponent getDescription(final Player player) { return Component.empty(); }
+    default boolean hasCustomTrigger() {
+        return false;
+    }
+
+    default MutableComponent getDescription(final Player player) {
+        return Component.empty();
+    }
 
     MapCodec<? extends PenaltyTrigger> codec();
+
     boolean matches(final ServerPlayer dragon, boolean conditionMatched);
 
     static PenaltyTrigger instant() {

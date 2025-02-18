@@ -171,7 +171,7 @@ public class DragonSpeciesScreen extends Screen {
         speciesBanner.render(graphics, mouseX, mouseY, partialTick);
 
         for (Renderable renderable : this.renderables) {
-            if(renderable != speciesBanner) {
+            if (renderable != speciesBanner) {
                 renderable.render(graphics, mouseX, mouseY, partialTick);
             }
         }
@@ -201,7 +201,7 @@ public class DragonSpeciesScreen extends Screen {
         DragonStateHandler data = DragonStateProvider.getData(minecraft.player);
 
         if (DietEntryCache.isEmpty(species)) {
-            ExtendedButton noDietText = new ExtendedButton(startX + 77, startY + 30, 140, 20, Component.empty(), button -> {}){
+            ExtendedButton noDietText = new ExtendedButton(startX + 77, startY + 30, 140, 20, Component.empty(), button -> {}) {
                 @Override
                 public void renderWidget(@NotNull final GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
                     final FormattedText buttonText = Minecraft.getInstance().font.ellipsize(this.getMessage(), this.width + 26); // Remove 6 pixels so that the text is always contained within the button's borders
@@ -217,7 +217,7 @@ public class DragonSpeciesScreen extends Screen {
         }
 
         // Dragon species banner
-        speciesBanner = new ExtendedButton(startX + 17, startY - 22, 49, 147, Component.empty(), button -> {}){
+        speciesBanner = new ExtendedButton(startX + 17, startY - 22, 49, 147, Component.empty(), button -> {}) {
             private boolean isTop(double mouseY) {
                 return mouseY > getY() + 6 && mouseY < getY() + 100;
             }
@@ -296,7 +296,7 @@ public class DragonSpeciesScreen extends Screen {
 
         // Riding button
         HoverButton ridingButton = new HoverButton(startX + 186, startY - 18, 16, RIDING_MAIN, RIDING_HOVER);
-        if(data.body().value().mountingOffsets().isPresent()) {
+        if (data.body().value().mountingOffsets().isPresent()) {
             ridingButton.setTooltip(Tooltip.create(Component.translatable(RIDING_INFO, String.format("%.2f", (minecraft.player.getScale() * DragonRidingHandler.PLAYER_RIDING_SCALE_RATIO)), String.format("%.2f", (minecraft.player.getScale() * DragonRidingHandler.DRAGON_RIDING_SCALE_RATIO)))));
         } else {
             ridingButton.setTooltip(Tooltip.create(Component.translatable(RIDING_DISABLED)));

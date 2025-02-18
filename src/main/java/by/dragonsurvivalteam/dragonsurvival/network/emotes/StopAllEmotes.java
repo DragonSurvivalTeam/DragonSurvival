@@ -20,7 +20,7 @@ public record StopAllEmotes(int playerId) implements CustomPacketPayload {
 
     public static void handleServer(final StopAllEmotes packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
-            if(context.player().level().getEntity(packet.playerId()) instanceof Player player) {
+            if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 PacketDistributor.sendToPlayersTrackingEntity(player, packet);
             }
         });

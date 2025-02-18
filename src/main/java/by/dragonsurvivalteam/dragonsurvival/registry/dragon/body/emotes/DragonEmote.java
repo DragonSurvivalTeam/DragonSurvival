@@ -14,7 +14,19 @@ import net.minecraft.world.entity.player.Player;
 
 import java.util.Optional;
 
-public record DragonEmote(String animationKey, Optional<String> translationOverride, double speed, int duration, boolean loops, boolean blend, boolean locksHead, boolean locksTail, boolean thirdPerson, boolean canMove, Optional<Sound> sound) {
+public record DragonEmote(
+        String animationKey,
+        Optional<String> translationOverride,
+        double speed,
+        int duration,
+        boolean loops,
+        boolean blend,
+        boolean locksHead,
+        boolean locksTail,
+        boolean thirdPerson,
+        boolean canMove,
+        Optional<Sound> sound
+) {
     public static final double DEFAULT_SPEED = 1;
     public static final int NO_DURATION = -1;
 
@@ -133,7 +145,7 @@ public record DragonEmote(String animationKey, Optional<String> translationOverr
             return this;
         }
 
-        public DragonEmote build(){
+        public DragonEmote build() {
             return new DragonEmote(animationKey, Optional.ofNullable(translationOverride), speed, duration, loops, blend, locksHead, locksTail, thirdPerson, canMove, Optional.ofNullable(sound));
         }
     }

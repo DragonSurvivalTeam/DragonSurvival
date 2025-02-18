@@ -10,10 +10,10 @@ import java.util.Optional;
 /**
  * Sound effects for the ability
  *
- * @param start Sound effect that plays when the ability finishes charging
+ * @param start    Sound effect that plays when the ability finishes charging
  * @param charging Sound effect that loops while the ability is being charged
- * @param looping Sound effect that loops while the ability is active
- * @param end Sound effect that plays when the ability ends
+ * @param looping  Sound effect that loops while the ability is active
+ * @param end      Sound effect that plays when the ability ends
  */
 public record Sound(Optional<SoundEvent> start, Optional<SoundEvent> charging, Optional<SoundEvent> looping,
                     Optional<SoundEvent> end) {
