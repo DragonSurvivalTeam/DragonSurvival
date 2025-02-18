@@ -160,19 +160,20 @@ public record DragonBody(
         event.dataPackRegistry(REGISTRY, DIRECT_CODEC, DIRECT_CODEC);
     }
 
+    public static boolean bodyIsValidForSpecies(final Holder<DragonBody> body, @Nullable Holder<DragonSpecies> species) {
+        if (species == null || species.value().bodies().size() == 0) {
+            return body.value().isDefault();
+        } else {
+            return species.value().bodies().contains(body);
+        }
+    }
+
     public static Holder<DragonBody> getRandomUnlocked(final ServerPlayer player) {
         return getRandomUnlocked(DragonStateProvider.getData(player).species(), getBodies(player, false));
     }
 
     public static Holder<DragonBody> getRandomUnlocked(@Nullable final Holder<DragonSpecies> species, List<UnlockableBehavior.BodyEntry> unlockedBodies) {
-        List<Holder<DragonBody>> validBodiesForSpecies = unlockedBodies.stream().filter(bodyEntry -> {
-            if (species == null || species.value().bodies().size() == 0) {
-                return bodyEntry.body().value().isDefault() && bodyEntry.isUnlocked();
-            } else {
-                return species.value().bodies().contains(bodyEntry.body()) && bodyEntry.isUnlocked();
-            }
-        }).map(UnlockableBehavior.BodyEntry::body).toList();
-
+        List<Holder<DragonBody>> validBodiesForSpecies = unlockedBodies.stream().filter(bodyEntry -> bodyIsValidForSpecies(bodyEntry.body(), species) && bodyEntry.isUnlocked()).map(UnlockableBehavior.BodyEntry::body).toList();
         return validBodiesForSpecies.get(RANDOM.nextInt(validBodiesForSpecies.size()));
     }
 

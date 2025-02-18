@@ -691,7 +691,9 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         List<AbstractWidget> dragonBodyWidgets = new ArrayList<>();
 
         unlockedBodies.forEach(bodyEntry -> {
-            dragonBodyWidgets.add(createButton(bodyEntry.body(), bodyEntry.isUnlocked(), 0, 0));
+            if(DragonBody.bodyIsValidForSpecies(bodyEntry.body(), species)) {
+                dragonBodyWidgets.add(createButton(bodyEntry.body(), bodyEntry.isUnlocked(), 0, 0));
+            }
         });
 
         dragonBodyBar = new BarComponent(this,
