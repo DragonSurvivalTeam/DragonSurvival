@@ -402,6 +402,17 @@ public class ClientDragonRenderer {
         return new Vector3f(x * scale, 0, z * scale);
     }
 
+    public static Vector3f getModelShadowOffset(final Player player, float partialRenderTick) {
+        float angle = -(float) MovementData.getData(player).bodyYaw * ((float) Math.PI / 180);
+        float x = Mth.sin(angle);
+        float z = Mth.cos(angle);
+
+        DragonStateHandler handler = DragonStateProvider.getData(player);
+        float scale = (float) handler.getVisualScale(player, partialRenderTick) * (float) handler.body().value().shadowOffset();
+
+        return new Vector3f(x * scale, 0, z * scale);
+    }
+
     @SubscribeEvent
     public static void spin(InputEvent.InteractionKeyMappingTriggered keyInputEvent) {
         LocalPlayer player = Minecraft.getInstance().player;

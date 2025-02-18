@@ -45,6 +45,7 @@ public record DragonBody(
         List<String> bonesToHideForToggle,
         Holder<DragonEmoteSet> emotes,
         ScalingProportions scalingProportions,
+        double shadowOffset,
         double crouchHeightRatio,
         Optional<MountingOffsets> mountingOffsets,
         Optional<BackpackOffsets> backpackOffsets,
@@ -63,6 +64,7 @@ public record DragonBody(
             Codec.STRING.listOf().optionalFieldOf("bones_to_hide_for_toggle", List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight")).forGetter(DragonBody::bonesToHideForToggle),
             DragonEmoteSet.CODEC.fieldOf("emotes").forGetter(DragonBody::emotes),
             ScalingProportions.CODEC.fieldOf("scaling_proportions").forGetter(DragonBody::scalingProportions),
+            Codec.DOUBLE.fieldOf("shadow_offset").forGetter(DragonBody::shadowOffset),
             // TODO :: limit to max. 1
             Codec.DOUBLE.fieldOf("crouch_height_ratio").forGetter(DragonBody::crouchHeightRatio),
             MountingOffsets.CODEC.optionalFieldOf("mounting_offset").forGetter(DragonBody::mountingOffsets),
