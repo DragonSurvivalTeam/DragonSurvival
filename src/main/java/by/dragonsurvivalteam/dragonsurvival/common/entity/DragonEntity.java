@@ -520,7 +520,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         boolean isSwimming = isConsideredSwimmingForAnimation(player);
 
         // TODO: The transition length of animations doesn't work correctly when the framerate varies too much from 60 FPS
-        if (!movement.isMoving() && handler.isOnMagicSource) {
+        if (!movement.isMovingHorizontally() && handler.isOnMagicSource) {
             // TODO :: does this need to be synchronized to other players?
             return state.setAndContinue(SIT_ON_MAGIC_SOURCE);
         } else if (player.isSleeping() || treasureRest.isResting()) {
@@ -551,7 +551,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
                     animationController.transitionLength(4);
                 }
             } else {
-                if (player.isShiftKeyDown() && deltaMovement.y < 0 && distanceFromGround < 10 && deltaMovement.length() < 4) {
+                if (movement.desiredMoveVec.y < 0 && deltaMovement.y < 0 && distanceFromGround < 10 && deltaMovement.length() < 4) {
                     state.setAnimation(FLY_LAND);
                     animationController.transitionLength(2);
                 } else if (ServerFlightHandler.isSpin(player)) {
@@ -559,7 +559,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
                     state.setAnimation(FLY_SPIN);
                     animationController.transitionLength(2);
                 } else {
-                    if (movement.desiredMoveVec.z > 0) {
+                    if (movement.desiredMoveVec.y > 0) {
                         animationSpeed = 2;
                     }
                     state.setAnimation(FLY);
@@ -615,7 +615,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             animationController.transitionLength(3);
         } else if (player.isShiftKeyDown() || !DragonSizeHandler.canPoseFit(player, Pose.STANDING) && DragonSizeHandler.canPoseFit(player, Pose.CROUCHING)) {
             // Player is Sneaking
-            if (movement.isMoving()) {
+            if (movement.isMovingHorizontally()) {
                 useDynamicScaling = true;
                 baseSpeed = DEFAULT_SNEAK_SPEED;
                 state.setAnimation(SNEAK_WALK);
@@ -632,7 +632,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             baseSpeed = DEFAULT_SPRINT_SPEED;
             state.setAnimation(RUN);
             animationController.transitionLength(4);
-        } else if (movement.isMoving()) {
+        } else if (movement.isMovingHorizontally()) {
             useDynamicScaling = true;
             state.setAnimation(WALK);
             animationController.transitionLength(2);

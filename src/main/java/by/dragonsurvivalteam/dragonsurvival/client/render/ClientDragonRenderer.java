@@ -447,7 +447,7 @@ public class ClientDragonRenderer {
         movement.setFirstPerson(Minecraft.getInstance().options.getCameraType().isFirstPerson());
         movement.setFreeLook(Keybind.FREE_LOOK.consumeClick()); // FIXME :: handle this properly
         float vertical = input.jumping && input.shiftKeyDown ? 0 : input.jumping ? 1 : input.shiftKeyDown ? -1 : 0;
-        movement.setDesiredMoveVec(new Vec3(input.leftImpulse, input.forwardImpulse, vertical));
+        movement.setDesiredMoveVec(new Vec3(input.leftImpulse, vertical, input.forwardImpulse));
 
         if (player.isPassenger()) {
             // Prevent animation problems while we are riding an entity
@@ -575,7 +575,7 @@ public class ClientDragonRenderer {
             if (hasMoveInput) {
 
                 // When providing move input, turn the body towards the input direction
-                var targetAngle = Math.toDegrees(Math.atan2(-rawInput.x, rawInput.y)) + viewYRot;
+                var targetAngle = Math.toDegrees(Math.atan2(-rawInput.x, rawInput.z)) + viewYRot;
 
                 // If in first person and moving back when not flying, flip the target angle
                 // Checks dragon flight or creative/spectator flight

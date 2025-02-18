@@ -38,6 +38,10 @@ public class MovementData {
         return desiredMoveVec.lengthSqr() > INPUT_EPSILON * INPUT_EPSILON;
     }
 
+    public boolean isMovingHorizontally() {
+        return desiredMoveVec.x * desiredMoveVec.x + desiredMoveVec.z * desiredMoveVec.z > INPUT_EPSILON * INPUT_EPSILON;
+    }
+
     public void setFreeLook(boolean isFreeLook) {
         this.wasFreeLook = this.isFreeLook;
         this.isFreeLook = isFreeLook;
