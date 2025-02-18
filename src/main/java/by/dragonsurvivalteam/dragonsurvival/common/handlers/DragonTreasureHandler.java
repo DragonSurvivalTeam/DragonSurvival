@@ -94,7 +94,12 @@ public class DragonTreasureHandler {
         }
 
         if (treasureData.isResting()) {
-            treasureData.sleepingTicks++;
+            if (player.level().isDay()) {
+                treasureData.sleepingTicks = 0;
+            } else {
+                treasureData.sleepingTicks++;
+            }
+
             handleResting(player, treasureData);
         }
     }
