@@ -101,7 +101,7 @@ public class ClientFlightHandler {
     @ConfigRange(min = 0.0f, max = 32.0f)
     @Translation(key = "flat_dragon_camera_offset", type = Translation.Type.CONFIGURATION, comments = "Flat offset for the dragon's third person camera (is added after all other factors are combined)")
     @ConfigOption(side = ConfigSide.CLIENT, category = {"rendering"}, key = "flat_dragon_camera_offset")
-    public static Float flatDragonCameraOffset = 1.0f;
+    public static Float flatDragonCameraOffset = 2.0f;
 
     @ConfigRange(min = 0.0f, max = 1.0f)
     @Translation(key = "dragon_camera_minimum_scale", type = Translation.Type.CONFIGURATION, comments = "The scale at which the dragon's third person camera will stop zooming in")
