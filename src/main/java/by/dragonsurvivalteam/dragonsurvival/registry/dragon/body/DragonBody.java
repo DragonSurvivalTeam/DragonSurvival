@@ -45,7 +45,6 @@ public record DragonBody(
         List<String> bonesToHideForToggle,
         Holder<DragonEmoteSet> emotes,
         ScalingProportions scalingProportions,
-        double shadowOffset,
         double crouchHeightRatio,
         Optional<MountingOffsets> mountingOffsets,
         Optional<BackpackOffsets> backpackOffsets,
@@ -64,7 +63,6 @@ public record DragonBody(
             Codec.STRING.listOf().optionalFieldOf("bones_to_hide_for_toggle", List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight")).forGetter(DragonBody::bonesToHideForToggle),
             DragonEmoteSet.CODEC.fieldOf("emotes").forGetter(DragonBody::emotes),
             ScalingProportions.CODEC.fieldOf("scaling_proportions").forGetter(DragonBody::scalingProportions),
-            Codec.DOUBLE.fieldOf("shadow_offset").forGetter(DragonBody::shadowOffset),
             // TODO :: limit to max. 1
             Codec.DOUBLE.fieldOf("crouch_height_ratio").forGetter(DragonBody::crouchHeightRatio),
             MountingOffsets.CODEC.optionalFieldOf("mounting_offset").forGetter(DragonBody::mountingOffsets),
@@ -77,17 +75,18 @@ public record DragonBody(
 
     private static final RandomSource RANDOM = RandomSource.create();
 
-    public record ScalingProportions(double width, double height, double eyeHeight, double offset) {
+    public record ScalingProportions(double width, double height, double eyeHeight, double offset, double shadowOffset) {
         public static final Codec<ScalingProportions> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 // TODO :: validate (at least 0)?
                 Codec.DOUBLE.fieldOf("width").forGetter(ScalingProportions::width),
                 Codec.DOUBLE.fieldOf("height").forGetter(ScalingProportions::height),
                 Codec.DOUBLE.fieldOf("eye_height").forGetter(ScalingProportions::eyeHeight),
-                Codec.DOUBLE.fieldOf("offset").forGetter(ScalingProportions::offset)
+                Codec.DOUBLE.fieldOf("offset").forGetter(ScalingProportions::offset),
+                Codec.DOUBLE.fieldOf("shadow_offset").forGetter(ScalingProportions::shadowOffset)
         ).apply(instance, ScalingProportions::new));
 
-        public static ScalingProportions of(final double width, final double height, final double eyeHeight, final double offset) {
-            return new ScalingProportions(width, height, eyeHeight, offset);
+        public static ScalingProportions of(final double width, final double height, final double eyeHeight, final double offset, final double shadowOffset) {
+            return new ScalingProportions(width, height, eyeHeight, offset, shadowOffset);
         }
     }
 
