@@ -290,17 +290,20 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
     // setHueAction, setSaturationAction, setBrightnessAction in HueSelectorComponent.Java
     // setDragonSlotAction in DragonEditorSlotButton.Java
+    private void refreshPartComponents() {
+        HashMap<SkinLayer, Lazy<LayerSettings>> layerSettingsMap = HANDLER.getCurrentStageCustomization().layerSettings;
+
+        for (SkinLayer layer : layerSettingsMap.keySet()) {
+            if(partComponents.containsKey(layer)) {
+                partComponents.get(layer).setSelectedPart(layerSettingsMap.get(layer).get().partKey);
+            }
+        }
+    }
 
     // FIXME :: Known issue: if I switch to a body type that invalidates my preset, my preset data will be lost even if I undo
     public final Function<CompoundTag, CompoundTag> setSkinPresetAction = tag -> {
         CompoundTag prevTag = HANDLER.getCurrentSkinPreset().serializeNBT(Objects.requireNonNull(Minecraft.getInstance().player).registryAccess());
         HANDLER.getCurrentSkinPreset().deserializeNBT(Minecraft.getInstance().player.registryAccess(), tag);
-        HashMap<SkinLayer, Lazy<LayerSettings>> layerSettingsMap = HANDLER.getCurrentStageCustomization().layerSettings;
-
-        for (SkinLayer layer : layerSettingsMap.keySet()) {
-            partComponents.get(layer).setSelectedPart(layerSettingsMap.get(layer).get().partKey);
-        }
-
         HANDLER.recompileCurrentSkin();
         update();
         return prevTag;
@@ -1014,7 +1017,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         HANDLER.setBody(null, body);
         HANDLER.setCurrentSkinPreset(preset);
         HANDLER.setDesiredGrowth(null, stage.value().growthRange().min());
-
+        refreshPartComponents();
     }
 
     private void initDragonRender() {
