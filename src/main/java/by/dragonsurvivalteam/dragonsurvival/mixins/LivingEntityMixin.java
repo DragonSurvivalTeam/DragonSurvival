@@ -108,7 +108,7 @@ public abstract class LivingEntityMixin extends Entity {
             DragonStateHandler handler = DragonStateProvider.getData(player);
 
             if (handler.isDragon()) {
-                return (DragonFoodHandler.isEdible(handler.species(), stack) && original != UseAnim.DRINK) ? UseAnim.EAT : original;
+                return (DragonFoodHandler.isEdible(player, stack) && original != UseAnim.DRINK) ? UseAnim.EAT : original;
             }
         }
 
