@@ -573,8 +573,6 @@
   "dragonsurvival.configuration.collision_damage_speed_factor.tooltip": "How much does the change in horizontal speed impact the damage taken from a collision whilst flying?",
   "dragonsurvival.configuration.collision_damage_threshold": "Collision Damage Threshold",
   "dragonsurvival.configuration.collision_damage_threshold.tooltip": "The amount of damage subtracted from the base damage when a collision occurs whilst flying.",
-  "dragonsurvival.configuration.consume_experience_as_mana": "Consume Experience As Mana",
-  "dragonsurvival.configuration.consume_experience_as_mana.tooltip": "If enabled experience will be used to substitute for missing mana (10 experience points equals 1 mana point)",
   "dragonsurvival.configuration.crushing_interval": "Crushing Interval",
   "dragonsurvival.configuration.crushing_interval.tooltip": "The amount of ticks (20 ticks = 1 second) before an entity can be crushed again",
   "dragonsurvival.configuration.crushing_size_ratio": "Crushing Size Ratio",

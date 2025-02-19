@@ -1,7 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.hud;
 
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonFoodHandler;
-import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
@@ -42,7 +41,7 @@ public class HUDHandler {
             if (wasRendered) {
                 event.setCanceled(true);
             }
-        } else if (ServerConfig.consumeExperienceAsMana && !vanillaExperienceBar && id == VanillaGuiLayers.EXPERIENCE_BAR) {
+        } else if (!vanillaExperienceBar && id == VanillaGuiLayers.EXPERIENCE_BAR) {
             boolean wasRendered = MagicHUD.renderExperienceBar(event.getGuiGraphics(), screenWidth);
 
             if (wasRendered) {

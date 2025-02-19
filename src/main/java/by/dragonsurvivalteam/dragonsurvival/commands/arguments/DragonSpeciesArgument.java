@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.commands.arguments;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ManaHandling;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -25,7 +26,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class DragonSpeciesArgument implements ArgumentType<Holder<DragonSpecies>> {
     public static final String ID = "dragon_species";
-    public static final DragonSpecies EMPTY = new DragonSpecies(Optional.empty(), Optional.empty(), Optional.empty(), HolderSet.empty(), HolderSet.empty(), HolderSet.empty(), null);
+    public static final DragonSpecies EMPTY = new DragonSpecies(Optional.empty(), Optional.empty(), ManaHandling.DEFAULT, Optional.empty(), HolderSet.empty(), HolderSet.empty(), HolderSet.empty(), null);
 
     private static final ResourceLocation HUMAN = DragonSurvival.res("human");
     private final HolderLookup.RegistryLookup<DragonSpecies> lookup;

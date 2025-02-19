@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ManaHandling;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscResources;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierType;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.UnlockableBehavior;
@@ -44,6 +45,7 @@ public class DragonSpecies implements AttributeModifierSupplier {
     public static final Codec<DragonSpecies> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.DOUBLE.validate(value -> value >= 1 ? DataResult.success(value) : DataResult.error(() -> "Starting growth must be at least 1")).optionalFieldOf("starting_growth").forGetter(DragonSpecies::startingGrowth),
             UnlockableBehavior.CODEC.optionalFieldOf("unlockable_behavior").forGetter(DragonSpecies::unlockableBehavior),
+            ManaHandling.CODEC.optionalFieldOf("mana_handling", ManaHandling.DEFAULT).forGetter(DragonSpecies::manaHandling),
             RegistryCodecs.homogeneousList(DragonStage.REGISTRY).optionalFieldOf("custom_stage_progression").forGetter(DragonSpecies::stages),
             RegistryCodecs.homogeneousList(DragonBody.REGISTRY).optionalFieldOf("bodies", HolderSet.empty()).forGetter(DragonSpecies::bodies),
             RegistryCodecs.homogeneousList(DragonAbility.REGISTRY).optionalFieldOf("abilities", HolderSet.empty()).forGetter(DragonSpecies::abilities),
@@ -56,15 +58,26 @@ public class DragonSpecies implements AttributeModifierSupplier {
 
     private final Optional<Double> startingGrowth;
     private final Optional<UnlockableBehavior> unlockableBehavior;
+    private final ManaHandling manaHandling;
     private final Optional<HolderSet<DragonStage>> customStageProgression;
     private final HolderSet<DragonBody> bodies;
     private final HolderSet<DragonAbility> abilities;
     private final HolderSet<DragonPenalty> penalties;
     private final MiscResources miscResources;
 
-    public DragonSpecies(final Optional<Double> startingGrowth, final Optional<UnlockableBehavior> unlockableBehavior, final Optional<HolderSet<DragonStage>> customStageProgression, final HolderSet<DragonBody> bodies, final HolderSet<DragonAbility> abilities, final HolderSet<DragonPenalty> penalties, final MiscResources miscResources) {
+    public DragonSpecies(
+            final Optional<Double> startingGrowth,
+            final Optional<UnlockableBehavior> unlockableBehavior,
+            final ManaHandling manaHandling,
+            final Optional<HolderSet<DragonStage>> customStageProgression,
+            final HolderSet<DragonBody> bodies,
+            final HolderSet<DragonAbility> abilities,
+            final HolderSet<DragonPenalty> penalties,
+            final MiscResources miscResources
+    ) {
         this.startingGrowth = startingGrowth;
         this.unlockableBehavior = unlockableBehavior;
+        this.manaHandling = manaHandling;
         this.customStageProgression = customStageProgression;
         this.bodies = bodies;
         this.abilities = abilities;
@@ -187,6 +200,10 @@ public class DragonSpecies implements AttributeModifierSupplier {
 
     public Optional<UnlockableBehavior> unlockableBehavior() {
         return unlockableBehavior;
+    }
+
+    public ManaHandling manaHandling() {
+        return manaHandling;
     }
 
     public Optional<HolderSet<DragonStage>> stages() {

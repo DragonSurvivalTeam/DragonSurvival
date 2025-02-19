@@ -113,10 +113,9 @@ public class MagicHUD {
 
         DragonStateHandler handler = DragonStateProvider.getData(localPlayer);
 
-        if (!handler.isDragon()) {
+        if (!handler.isDragon() || handler.species().value().manaHandling().manaXpConversion() == 0) {
             return false;
         }
-
 
         Window window = Minecraft.getInstance().getWindow();
         int guiScaledWidth = window.getGuiScaledWidth();
