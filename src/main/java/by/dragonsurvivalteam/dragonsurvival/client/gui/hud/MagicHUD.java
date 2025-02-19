@@ -48,7 +48,7 @@ public class MagicHUD {
     @ConfigRange(min = 0, max = 20)
     @Translation(key = "mark_disabled_abilities_red_delay", type = Translation.Type.CONFIGURATION, comments = "How long until the red overlay activates if an ability is disabled.")
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "magic"}, key = "mark_disabled_abilities_red_delay")
-    public static double markDisabledAbilitiesRedDelay = 0.8;
+    public static double disabledColorDelay = 0.8;
 
     @ConfigRange(min = -1000, max = 1000)
     @Translation(key = "cast_bar_x_offset", type = Translation.Type.CONFIGURATION, comments = "Offset for the x position of the cast bar")
@@ -101,7 +101,7 @@ public class MagicHUD {
     }
 
     private static boolean initializedDisabledAbilitiesColor = false;
-    private static final OutlineColorData[] disabledAbilitiesColor = new OutlineColorData[MagicData.HOTBAR_SLOTS];
+    private static final OutlineColorData[] colors = new OutlineColorData[MagicData.HOTBAR_SLOTS];
 
     public static boolean renderExperienceBar(GuiGraphics guiGraphics, int screenWidth) {
         Player localPlayer = DragonSurvival.PROXY.getLocalPlayer();
@@ -178,22 +178,23 @@ public class MagicHUD {
     private static boolean reverseCounter;
 
     private static void lerpToColor(int slot, Color color) {
-        disabledAbilitiesColor[slot].delay -= AnimationUtils.getDeltaSeconds();
-        if (disabledAbilitiesColor[slot].delay <= 0) {
-            disabledAbilitiesColor[slot].pastDelay = true;
+        colors[slot].delay -= AnimationUtils.getDeltaSeconds();
+
+        if (colors[slot].delay <= 0) {
+            colors[slot].pastDelay = true;
         }
 
-        if (!disabledAbilitiesColor[slot].pastDelay) {
+        if (!colors[slot].pastDelay) {
             return;
         }
 
-        Color currentColor = disabledAbilitiesColor[slot].color;
+        Color currentColor = colors[slot].color;
         float lerpSpeed = (float) markDisabledAbilitiesRedLerpSpeed;
         float red = Mth.lerp(lerpSpeed, currentColor.getRedFloat(), color.getRedFloat());
         float green = Mth.lerp(lerpSpeed, currentColor.getGreenFloat(), color.getGreenFloat());
         float blue = Mth.lerp(lerpSpeed, currentColor.getBlueFloat(), color.getBlueFloat());
         float alpha = Mth.lerp(lerpSpeed, currentColor.getAlphaFloat(), color.getAlphaFloat());
-        disabledAbilitiesColor[slot].color = Color.ofRGBA(red, green, blue, alpha);
+        colors[slot].color = Color.ofRGBA(red, green, blue, alpha);
     }
 
     public static void render(@NotNull final GuiGraphics graphics, @NotNull final DeltaTracker tracker) {
@@ -219,7 +220,7 @@ public class MagicHUD {
 
         if (!initializedDisabledAbilitiesColor) {
             for (int i = 0; i < MagicData.HOTBAR_SLOTS; i++) {
-                disabledAbilitiesColor[i] = new OutlineColorData(Color.ofRGBA(1.f, 1.f, 1.f, 1.f), markDisabledAbilitiesRedDelay, false);
+                colors[i] = new OutlineColorData(Color.ofRGBA(1f, 1f, 1f, 1f), disabledColorDelay, false);
             }
 
             initializedDisabledAbilitiesColor = true;
@@ -249,27 +250,32 @@ public class MagicHUD {
 
         if (magic.shouldRenderAbilities()) {
             if (!magic.getActiveAbilities().isEmpty()) {
-                graphics.setColor(1, 0, 0, 1);
                 graphics.setColor(1, 1, 1, 1);
 
                 for (int x = 0; x < MagicData.HOTBAR_SLOTS; x++) {
                     DragonAbilityInstance ability = magic.fromSlot(x);
+
                     if (ability != null) {
                         if (!ability.isEnabled()) {
-                            if (disabledAbilitiesColor[x].pastDelay && disabledAbilitiesColor[x].color.equals(Color.ofOpaque(-2314))) {
-                                disabledAbilitiesColor[x].delay = markDisabledAbilitiesRedDelay;
-                                disabledAbilitiesColor[x].pastDelay = false;
+                            // TODO :: what color is this and what is this check for?
+                            if (colors[x].pastDelay && colors[x].color.equals(Color.ofOpaque(-2314))) {
+                                colors[x].delay = disabledColorDelay;
+                                colors[x].pastDelay = false;
                             }
+
                             lerpToColor(x, Color.RED);
+                        } else if (!ability.hasEnoughMana(player)) {
+                            lerpToColor(x, Color.YELLOW);
                         } else {
-                            disabledAbilitiesColor[x].pastDelay = true;
-                            disabledAbilitiesColor[x].delay = 0;
+                            colors[x].pastDelay = true;
+                            colors[x].delay = 0;
                             lerpToColor(x, Color.WHITE);
                         }
-                        Color outlineColor = disabledAbilitiesColor[x].color;
+
+                        Color outlineColor = colors[x].color;
                         graphics.setColor(outlineColor.getRedFloat(), outlineColor.getGreenFloat(), outlineColor.getBlueFloat(), outlineColor.getAlphaFloat());
                         graphics.blit(VANILLA_WIDGETS, posX + x * 20, posY - 2, -50, x * 20, 0, 21, 22, 256, 256);
-                        graphics.setColor(1.f, 1.f, 1.f, 1.f);
+                        graphics.setColor(1f, 1f, 1f, 1f);
 
                         graphics.blitSprite(ability.getIcon(), posX + x * sizeX + 3, posY + 1, 0, 16, 16);
 
@@ -290,15 +296,14 @@ public class MagicHUD {
                 }
 
                 if (magic.getSelectedAbility() != null) {
-                    Color outlineColor = disabledAbilitiesColor[magic.getSelectedAbilitySlot()].color;
+                    Color outlineColor = colors[magic.getSelectedAbilitySlot()].color;
                     graphics.setColor(outlineColor.getRedFloat(), outlineColor.getGreenFloat(), outlineColor.getBlueFloat(), outlineColor.getAlphaFloat());
                 }
+
                 graphics.blit(VANILLA_WIDGETS, posX + sizeX * magic.getSelectedAbilitySlot() - 1, posY - 3, 2, 0, 22, 24, 24, 256, 256);
-                graphics.setColor(1.f, 1.f, 1.f, 1.f);
+                graphics.setColor(1f, 1f, 1f, 1f);
             }
 
-            // Don't render more than two rows (1 icon = 1 mana point)
-            // This makes the mana bars also stop just before the emote button when the chat window is open
             float reservedMana = ManaHandler.getReservedMana(player);
             float maxMana = ManaHandler.getMaxMana(player);
             float currentMana = Math.min(maxMana, ManaHandler.getCurrentMana(player));
@@ -308,6 +313,7 @@ public class MagicHUD {
 
             manaX += manabarXOffset;
             manaY += manabarYOffset;
+
             if (magic.getActiveAbilities().isEmpty()) {
                 // Move the bar down a bit if there are no abilities to show
                 manaY += 20;
@@ -329,6 +335,7 @@ public class MagicHUD {
                 blue = color.blue();
             }
 
+            // Render up to 3 rows with 9 mana icons max.
             for (int row = 0; row < 3; row++) {
                 for (int point = 0; point < 9; point++) {
                     int slot = row * 9 + point;

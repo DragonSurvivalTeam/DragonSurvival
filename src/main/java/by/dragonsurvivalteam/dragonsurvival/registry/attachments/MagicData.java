@@ -365,7 +365,12 @@ public class MagicData implements INBTSerializable<CompoundTag> {
             return false;
         }
 
-        return instance.canBeCast() && instance.hasEnoughMana(dragon);
+        if (!instance.hasEnoughMana(dragon)) {
+            instance.handleNotEnoughMana(dragon);
+            return false;
+        }
+
+        return instance.canBeCast();
     }
 
     public boolean shouldRenderAbilities() {

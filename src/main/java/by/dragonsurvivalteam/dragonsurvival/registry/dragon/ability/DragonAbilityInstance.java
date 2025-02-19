@@ -182,25 +182,23 @@ public class DragonAbilityInstance {
         return manaCost.manaCost().calculate(level);
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted") // ignore
     public boolean hasEnoughMana(final Player dragon) {
         float manaCost = value().activation().getInitialManaCost(level);
+        return ManaHandler.hasEnoughMana(dragon, manaCost);
+    }
 
-        if (!ManaHandler.hasEnoughMana(dragon, manaCost)) {
-            currentTick = 0;
+    public void handleNotEnoughMana(final Player dragon) {
+        currentTick = 0;
 
-            if (dragon.level().isClientSide()) {
-                MagicData magic = MagicData.getData(dragon);
-                magic.setErrorMessageSent(true);
+        if (dragon.level().isClientSide()) {
+            MagicData magic = MagicData.getData(dragon);
+            magic.setErrorMessageSent(true);
 
-                if (value().activation().notification().notEnoughMana().getContents() != PlainTextContents.EMPTY) {
-                    MagicHUD.castingError(value().activation().notification().notEnoughMana());
-                }
+            if (value().activation().notification().notEnoughMana().getContents() != PlainTextContents.EMPTY) {
+                MagicHUD.castingError(value().activation().notification().notEnoughMana());
             }
-
-            return false;
         }
-
-        return true;
     }
 
     public boolean isApplyingEffects() {
