@@ -64,12 +64,13 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
             HashMap<EquipmentSlot, NativeImage> masks = new HashMap<>();
 
             for (EquipmentSlot slot : EquipmentSlot.values()) {
-                if (slot.isArmor()) {
+                if (slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
                     String texture = "textures/armor/" + key.getPath() + "/armor_trims/masks/" + slot.getName() + "_mask.png";
                     ResourceLocation resource = ResourceLocation.fromNamespaceAndPath(key.getNamespace(), texture);
                     Optional<Resource> armorFile = Minecraft.getInstance().getResourceManager().getResource(resource);
 
                     if (armorFile.isEmpty()) {
+                        DragonSurvival.LOGGER.error("Armor mask {} missing for model {}", texture, model.getPath());
                         continue;
                     }
 
@@ -255,11 +256,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
 
                         Color armorColor = new Color(armorImage.getPixelRGBA(x, y), true);
 
-                        if (hasTrim) {
-                            if (trimImage == null) {
-                                continue;
-                            }
-
+                        if (hasTrim && trimImage != null) {
                             Color trimColor = new Color(trimImage.getPixelRGBA(x, y), true);
                             Color.RGBtoHSB(trimColor.getRed(), trimColor.getGreen(), trimColor.getBlue(), trimHSB);
 
