@@ -197,7 +197,7 @@ public class RenderingUtils {
         try {
             image = NativeImage.read(Minecraft.getInstance().getResourceManager().getResource(location).get().open());
         } catch (Exception exception) {
-            DragonSurvival.LOGGER.error("Texture resource {} not found!", location.getPath(), exception);
+            DragonSurvival.LOGGER.warn("Texture resource {} not found!", location.getPath(), exception);
         }
 
         return image;
