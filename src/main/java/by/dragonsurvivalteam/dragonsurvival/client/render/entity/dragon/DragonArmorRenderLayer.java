@@ -468,11 +468,12 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
             }
 
             int defense = armorItem.getDefense();
+            texture = "textures/armor/" + handler.getModel().getPath() + "/";
             switch (equipmentSlot) {
-                case FEET -> texture = Mth.clamp(defense, 1, 4) + "_dragon_boots";
-                case CHEST -> texture = Mth.clamp(defense / 2, 1, 4) + "_dragon_chestplate";
-                case HEAD -> texture = Mth.clamp(defense, 1, 4) + "_dragon_helmet";
-                case LEGS -> texture = Mth.clamp((int) (defense / 1.5), 1, 4) + "_dragon_leggings";
+                case FEET -> texture += Mth.clamp(defense, 1, 4) + "_dragon_boots";
+                case CHEST -> texture += Mth.clamp(defense / 2, 1, 4) + "_dragon_chestplate";
+                case HEAD -> texture += Mth.clamp(defense, 1, 4) + "_dragon_helmet";
+                case LEGS -> texture += Mth.clamp((int) (defense / 1.5), 1, 4) + "_dragon_leggings";
             }
 
             texture += ".png";
