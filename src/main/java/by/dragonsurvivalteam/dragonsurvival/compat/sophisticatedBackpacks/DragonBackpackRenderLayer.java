@@ -35,8 +35,7 @@ public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
     }
 
     @Override
-    public void renderForBone(PoseStack poseStack, DragonEntity animatable, GeoBone bone, RenderType renderType,
-                              MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+    public void renderForBone(PoseStack poseStack, DragonEntity animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
         if (!renderBackpack) {
             return;
         }
@@ -76,7 +75,7 @@ public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
             if (handler.body().value().backpackOffsets().isPresent()) {
                 DragonBody.BackpackOffsets backpackOffsets = handler.body().value().backpackOffsets().get();
 
-                scale = backpackOffsets.scale();
+                scale = backpackOffsets .scale();
                 posOffset = posOffset.add(backpackOffsets.posOffset());
                 rotOffset = backpackOffsets.rotOffset();
             }

@@ -7,12 +7,11 @@ import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
-import by.dragonsurvivalteam.dragonsurvival.common.items.armor.DarkDragonArmorItem;
-import by.dragonsurvivalteam.dragonsurvival.common.items.armor.LightDragonArmorItem;
 import by.dragonsurvivalteam.dragonsurvival.compat.car.CosmeticArmorReworkedHelper;
 import by.dragonsurvivalteam.dragonsurvival.compat.iris.InnerWrappedRenderType;
 import by.dragonsurvivalteam.dragonsurvival.compat.iris.LayeringStates;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -26,11 +25,9 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ArmorMaterials;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -405,88 +402,49 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
     }
 
     private static ResourceLocation generateArmorTextureResourceLocation(Player player, EquipmentSlot equipmentSlot) {
-        ItemStack stack = CosmeticArmorReworkedHelper.getItemVisibleInSlot(player, equipmentSlot);
-        Item item = stack.getItem();
         DragonStateHandler handler = DragonStateProvider.getData(player);
+        Item item = CosmeticArmorReworkedHelper.getItemVisibleInSlot(player, equipmentSlot).getItem();
         ResourceLocation armorResource = toArmorResource(handler.getModel(), item);
 
-        if (armorResource != null) {
-            if (Minecraft.getInstance().getResourceManager().getResource(armorResource).isPresent()) {
-                return armorResource;
-            }
+        if (armorResource != null && Minecraft.getInstance().getResourceManager().getResource(armorResource).isPresent()) {
+            return armorResource;
         }
 
         String texture = "textures/armor/" + handler.getModel().getPath() + "/";
 
         if (item instanceof ArmorItem armorItem) {
-            Holder<ArmorMaterial> armorMaterial = armorItem.getMaterial();
-            boolean isVanillaArmor = false;
-            boolean isDyeable = false;
-            if (armorMaterial == ArmorMaterials.NETHERITE) {
-                isVanillaArmor = true;
-                texture += "netherite_";
-            } else if (armorMaterial == ArmorMaterials.DIAMOND) {
-                isVanillaArmor = true;
-                texture += "diamond_";
-            } else if (armorMaterial == ArmorMaterials.IRON) {
-                isVanillaArmor = true;
-                texture += "iron_";
-            } else if (armorMaterial == ArmorMaterials.LEATHER) {
-                isVanillaArmor = true;
-                isDyeable = true;
-                texture += "leather_";
-            } else if (armorMaterial == ArmorMaterials.GOLD) {
-                isVanillaArmor = true;
-                texture += "gold_";
-            } else if (armorMaterial == ArmorMaterials.CHAIN) {
-                isVanillaArmor = true;
-                texture += "chainmail_";
-            } else if (armorMaterial == ArmorMaterials.TURTLE) {
-                isVanillaArmor = true;
-                texture += "turtle_";
-            }
+            //noinspection DataFlowIssue -> key is present
+            ResourceLocation materialResource = armorItem.getMaterial().getKey().location();
+            texture += materialResource.getNamespace() + "/materials/" + materialResource.getPath() + "/" + equipmentSlot.getName();
 
-            if (isVanillaArmor || item instanceof DarkDragonArmorItem || item instanceof LightDragonArmorItem) {
-                if (isVanillaArmor) {
-                    texture += "dragon_";
-                } else if (item instanceof DarkDragonArmorItem) {
-                    texture += "dark_dragon_";
-                } else if (item instanceof LightDragonArmorItem) {
-                    texture += "light_dragon_";
-                }
-
-                switch (equipmentSlot) {
-                    case HEAD -> texture += "helmet";
-                    case CHEST -> texture += "chestplate";
-                    case LEGS -> texture += "leggings";
-                    case FEET -> texture += "boots";
-                }
-
+            if (armorItem.getMaterial() == ArmorMaterials.LEATHER && player.getItemBySlot(equipmentSlot).get(DataComponents.DYED_COLOR) == null) {
                 // TODO :: Do we really have to make a special case for this? Do items not have a way to signify "can be dyed?"
-                if (isDyeable && player.getItemBySlot(equipmentSlot).get(DataComponents.DYED_COLOR) == null) {
-                    texture += "_undyed";
-                }
-
-                texture += ".png";
-                ResourceLocation resource = ResourceLocation.fromNamespaceAndPath(handler.getModel().getNamespace(), texture);
-                if(Minecraft.getInstance().getResourceManager().getResource(resource).isPresent()) {
-                    return resource;
-                } else {
-                    DragonSurvival.LOGGER.warn("Missing vanilla armor texture for {} in model {}, falling back to generic armor.", texture, handler.getModel().getPath());
-                }
+                texture += "_undyed";
             }
 
-            int defense = armorItem.getDefense();
-            texture = "textures/armor/" + handler.getModel().getPath() + "/";
-            switch (equipmentSlot) {
-                case FEET -> texture += Mth.clamp(defense, 1, 4) + "_dragon_boots";
-                case CHEST -> texture += Mth.clamp(defense / 2, 1, 4) + "_dragon_chestplate";
-                case HEAD -> texture += Mth.clamp(defense, 1, 4) + "_dragon_helmet";
-                case LEGS -> texture += Mth.clamp((int) (defense / 1.5), 1, 4) + "_dragon_leggings";
+            ResourceLocation resource = ResourceLocation.fromNamespaceAndPath(handler.getModel().getNamespace(), texture + ".png");
+
+            if (Minecraft.getInstance().getResourceManager().getResource(resource).isPresent()) {
+                return resource;
+            } else if (materialResource.getNamespace().equals(ResourceLocation.DEFAULT_NAMESPACE)) {
+                DragonSurvival.LOGGER.warn("Missing vanilla armor texture for {} in model {}, falling back to generic armor.", resource.getPath(), handler.getModel().getPath());
             }
 
-            texture += ".png";
-            return ResourceLocation.fromNamespaceAndPath(handler.getModel().getNamespace(), texture);
+            String prefix;
+            //noinspection deprecation -> ignore
+            Holder.Reference<Item> holder = item.builtInRegistryHolder();
+
+            if (holder.is(DSItemTags.EPIC_ARMOR)) {
+                prefix = "epic";
+            } else if (holder.is(DSItemTags.RARE_ARMOR)) {
+                prefix = "rare";
+            } else if (holder.is(DSItemTags.UNCOMMON_ARMOR)) {
+                prefix = "uncommon";
+            } else {
+                prefix = "default";
+            }
+
+            return ResourceLocation.fromNamespaceAndPath(handler.getModel().getNamespace(), "textures/armor/" + handler.getModel().getPath() + "/" + prefix + "_" + equipmentSlot.getName() + ".png");
         }
 
         // Since this is just an empty image it should be applicable to all models
