@@ -152,16 +152,19 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
     }
 
     private static NativeImage compileArmorTexture(final Player player) {
-        NativeImage image = new NativeImage(512, 512, true);
         DragonStateHandler handler = DragonStateProvider.getData(player);
         ResourceLocation currentDragonModel = handler.getModel();
 
         if (!armorMasksPerModel.containsKey(currentDragonModel)) {
-            return image;
+            return new NativeImage(512, 512, true);
         }
 
         HashMap<EquipmentSlot, NativeImage> armorMasks = armorMasksPerModel.get(currentDragonModel);
+        if(armorMasks.isEmpty()) {
+            return new NativeImage(512, 512, true);
+        }
 
+        NativeImage image = new NativeImage(armorMasks.values().stream().findFirst().get().getWidth(), armorMasks.values().stream().findFirst().get().getHeight(), true);
         for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
             if (!armorMasks.containsKey(equipmentSlot)) {
                 continue;
