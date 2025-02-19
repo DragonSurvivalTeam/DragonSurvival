@@ -630,9 +630,11 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         HANDLER.setDesiredGrowth(null, stage.value().growthRange().min());
         HANDLER.setBody(null, body);
         SkinPreset skinPreset = localHandler.getSkinPresetForSpecies(species, body);
+        SkinPreset copy = new SkinPreset();
+        copy.deserializeNBT(minecraft.player.registryAccess(), skinPreset.serializeNBT(minecraft.player.registryAccess()));
 
-        if (skinPreset.getModel().equals(body.value().model())) {
-            HANDLER.setCurrentSkinPreset(skinPreset);
+        if (copy.getModel().equals(body.value().model())) {
+            HANDLER.setCurrentSkinPreset(copy);
         } else {
             HANDLER.refreshSkinPresetForSpecies(species, body);
         }
@@ -831,8 +833,10 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
                 keys.removeIf(key -> {
                     DragonPart part = DragonEditorHandler.getDragonPart(layer, key, species.getKey());
 
-                    if (part == null) {
+                    if (part == null && !key.equals("none")) {
                         DragonSurvival.LOGGER.error("Key {} not found!", key);
+                        return true;
+                    } else if (part == null) {
                         return true;
                     }
 
