@@ -10,7 +10,7 @@ import java.util.Map;
 
 // TODO :: Remove when https://github.com/neoforged/NeoForge/issues/1867 is fixed
 @Mixin(BaseMappedRegistry.class)
-public interface BaseMappedRegistryAccess<T> {
+public interface BaseMappedRegistryAccess {
     @Accessor("dataMaps")
-    Map<DataMapType<T, ?>, Map<ResourceKey<T>, ?>> dragonSurvival$getDataMaps();
+    Map<DataMapType<?, ?>, Map<ResourceKey<?>, ?>> dragonSurvival$getDataMaps();
 }
