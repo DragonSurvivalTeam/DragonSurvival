@@ -36,7 +36,7 @@ public class DragonGrowthHandler {
             return;
         }
 
-        double growth = getGrowth(handler, event.getItemStack().getItem());
+        double growth = getGrowth(player, handler, event.getItemStack().getItem());
 
         if (growth == 0) {
             return;
@@ -54,10 +54,11 @@ public class DragonGrowthHandler {
         event.getItemStack().consume(1, player);
     }
 
-    public static double getGrowth(final DragonStateHandler handler, final Item item) {
+    public static double getGrowth(final Player player, final DragonStateHandler handler, final Item item) {
         int growth = 0;
 
-        for (GrowthItem growthItem : handler.stage().value().growthItems()) {
+        // Get stage from desired growth, so that you are prevented from spamming growth items intended for an earlier stage as you grow
+        for (GrowthItem growthItem : handler.stageFromDesiredSize(player).value().growthItems()) {
             if (!growthItem.canBeUsed(handler, item)) {
                 continue;
             }

@@ -319,6 +319,10 @@ public class DragonStateHandler extends EntityStateHandler {
         return dragonStage;
     }
 
+    public Holder<DragonStage> stageFromDesiredSize(Player player) {
+        return DragonStage.get(dragonSpecies.value().getStages(player.registryAccess()), desiredGrowth);
+    }
+
     /** Should only be called if the player is a dragon */
     public ResourceKey<DragonStage> stageKey() {
         return stage().getKey();

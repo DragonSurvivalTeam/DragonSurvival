@@ -81,7 +81,7 @@ public class GrowthHUD {
         float targetProgress;
 
         if (progressDiffIsSmall) {
-            targetProgress = (float) dragonStage.value().getProgress(handler.getGrowth() + DragonGrowthHandler.getGrowth(handler, stack.getItem()));
+            targetProgress = (float) dragonStage.value().getProgress(handler.getGrowth() + DragonGrowthHandler.getGrowth(Minecraft.getInstance().player, handler, stack.getItem()));
         } else {
             targetProgress = desiredProgress;
         }
