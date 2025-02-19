@@ -180,6 +180,12 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
                     continue;
                 }
 
+                if(armorImage.getWidth() != image.getWidth() || armorImage.getHeight() != image.getHeight()) {
+                    DragonSurvival.LOGGER.error("Armor texture {} does not match the expected size of {}x{} given by the mask!", existingArmorLocation, image.getWidth(), image.getHeight());
+                    armorImage.close();
+                    continue;
+                }
+
                 ArmorTrim trim = stack.get(DataComponents.TRIM);
                 boolean hasTrim = false;
                 float[] trimBaseHSB = new float[3];
