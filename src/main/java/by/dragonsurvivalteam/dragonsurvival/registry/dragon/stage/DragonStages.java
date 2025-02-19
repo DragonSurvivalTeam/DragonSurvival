@@ -61,7 +61,8 @@ public class DragonStages {
                         GrowthItem.create(Functions.hoursToTicks(1), DSItems.ELDER_DRAGON_HEART.value()),
                         GrowthItem.create(Functions.minutesToTicks(30), DSItems.WEAK_DRAGON_HEART.value()),
                         GrowthItem.create(Functions.minutesToTicks(10), DSItems.DRAGON_HEART_SHARD.value()),
-                        GrowthItem.create(Functions.hoursToTicks(-1), DSItems.STAR_BONE.value())
+                        GrowthItem.create(Functions.hoursToTicks(-1), DSItems.STAR_BONE.value()),
+                        GrowthItem.create(0, DSItems.STAR_HEART.value())
                 ),
                 Optional.of(EntityCondition.defaultNaturalGrowthBlocker()),
                 Optional.empty()
@@ -86,7 +87,8 @@ public class DragonStages {
                 List.of(
                         GrowthItem.create(Functions.hoursToTicks(1), DSItems.ELDER_DRAGON_HEART.value()),
                         GrowthItem.create(Functions.minutesToTicks(30), DSItems.WEAK_DRAGON_HEART.value()),
-                        GrowthItem.create(Functions.hoursToTicks(-1), DSItems.STAR_BONE.value())
+                        GrowthItem.create(Functions.hoursToTicks(-1), DSItems.STAR_BONE.value()),
+                        GrowthItem.create(0, DSItems.STAR_HEART.value())
                 ),
                 Optional.of(EntityCondition.defaultNaturalGrowthBlocker()),
                 Optional.empty()
@@ -113,7 +115,8 @@ public class DragonStages {
                 ),
                 List.of(
                         GrowthItem.create(Functions.hoursToTicks(1), DSItems.ELDER_DRAGON_HEART.value()),
-                        GrowthItem.create(Functions.hoursToTicks(-1), DSItems.STAR_BONE.value())
+                        GrowthItem.create(Functions.hoursToTicks(-1), DSItems.STAR_BONE.value()),
+                        GrowthItem.create(0, DSItems.STAR_HEART.value())
                 ),
                 Optional.of(EntityCondition.defaultNaturalGrowthBlocker()),
                 Optional.empty()

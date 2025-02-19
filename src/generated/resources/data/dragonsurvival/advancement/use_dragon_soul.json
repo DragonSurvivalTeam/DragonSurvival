@@ -1,5 +1,5 @@
 {
-  "parent": "dragonsurvival:use_star_heart",
+  "parent": "dragonsurvival:stop_natural_growth",
   "criteria": {
     "criterion_0": {
       "trigger": "dragonsurvival:use_dragon_soul"

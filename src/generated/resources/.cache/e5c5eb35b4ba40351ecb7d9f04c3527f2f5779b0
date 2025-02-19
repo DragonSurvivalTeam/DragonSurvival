@@ -1,4 +1,4 @@
-// 1.21.1	2025-02-10T17:17:24.8858239	Advancements
+// 1.21.1	2025-02-19T18:54:09.6302964	Advancements
 1a7d4520fc656360fe5fccecd785f600641927d3 data/dragonsurvival/advancement/be_adult_dragon.json
 550afd5ed2eeeeefe5bfaff761df685a793a5978 data/dragonsurvival/advancement/be_dragon.json
 a52fbc87e18b5cfd6830774af942373c963d546f data/dragonsurvival/advancement/be_young_dragon.json
@@ -51,6 +51,6 @@ fd81d20ebaa4bca53aad79cdf8e9e0850d6039c5 data/dragonsurvival/advancement/sea/rai
 6ecc26d591db82431d0485b1652b827fb2e7476a data/dragonsurvival/advancement/sleep_on_hoard.json
 db04888e2352eff9a4658b254e75fe7afc362549 data/dragonsurvival/advancement/sleep_on_massive_hoard.json
 e051c64fef9a3d769730f06bbb943256f9e7556c data/dragonsurvival/advancement/sleep_on_treasure.json
-64a75ff5bec54f5d2109596771769a7f2d111c12 data/dragonsurvival/advancement/use_dragon_soul.json
+1f23d03e5929ef98a482203ac4ba60d5a7f4f7d5 data/dragonsurvival/advancement/stop_natural_growth.json
+1d57f74a4486bb058eeb3be4634c33273c1d5f80 data/dragonsurvival/advancement/use_dragon_soul.json
 960fb9e8ab5ad8e8b494c2ccb9505dd3ce97b240 data/dragonsurvival/advancement/use_memory_block.json
-3dd444ee1a084fb350f08a28046066f6a172dc09 data/dragonsurvival/advancement/use_star_heart.json

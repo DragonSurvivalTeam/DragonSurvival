@@ -7,7 +7,6 @@ import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.Sk
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
-import by.dragonsurvivalteam.dragonsurvival.common.items.growth.StarHeartItem;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncMagicData;
@@ -84,7 +83,7 @@ public class DragonStateHandler extends EntityStateHandler {
     // (Preferably it would not but the additional checks may not be worth it)
     private final Map<ResourceKey<DragonStage>, Map<Item, Integer>> usedGrowthItems = new HashMap<>();
 
-    public StarHeartItem.State starHeartState = StarHeartItem.State.INACTIVE;
+    public boolean isGrowthStopped;
     public boolean isGrowing = true;
 
     public int magicSource;
@@ -543,7 +542,7 @@ public class DragonStateHandler extends EntityStateHandler {
             tag.putString(DRAGON_BODY, bodyId().toString());
             tag.putString(DRAGON_STAGE, stageId().toString());
             tag.putDouble(GROWTH, growth);
-            tag.putString(STAR_HEART_STATE, starHeartState.name());
+            tag.putBoolean(IS_GROWTH_STOPPED, isGrowthStopped);
             tag.putBoolean(IS_GROWING, isGrowing);
             tag.putBoolean(DESTRUCTION_ENABLED, destructionEnabled);
             tag.putBoolean(MARKED_BY_ENDER_DRAGON, markedByEnderDragon);
@@ -635,7 +634,7 @@ public class DragonStateHandler extends EntityStateHandler {
             desiredGrowth = growth;
             destructionEnabled = tag.getBoolean(DESTRUCTION_ENABLED);
             isGrowing = !tag.contains(IS_GROWING) || tag.getBoolean(IS_GROWING);
-            starHeartState = Functions.getEnum(StarHeartItem.State.class, tag.getString(STAR_HEART_STATE));
+            isGrowthStopped = tag.getBoolean(IS_GROWTH_STOPPED);
             markedByEnderDragon = tag.getBoolean(MARKED_BY_ENDER_DRAGON);
             flightWasGranted = tag.getBoolean(WINGS_WAS_GRANTED);
             spinWasGranted = tag.getBoolean(SPIN_WAS_GRANTED);
@@ -806,7 +805,7 @@ public class DragonStateHandler extends EntityStateHandler {
     private static final String MULTI_MINING = "multi_mining";
     private static final String GIANT_DRAGON_DESTRUCTION = "giant_dragon_destruction";
 
-    private static final String STAR_HEART_STATE = "star_heart_state";
+    private static final String IS_GROWTH_STOPPED = "is_growth_stopped";
     private static final String MARKED_BY_ENDER_DRAGON = "marked_by_ender_dragon";
     private static final String SPIN_WAS_GRANTED = "spin_was_granted";
     private static final String WINGS_WAS_GRANTED = "wings_was_granted";

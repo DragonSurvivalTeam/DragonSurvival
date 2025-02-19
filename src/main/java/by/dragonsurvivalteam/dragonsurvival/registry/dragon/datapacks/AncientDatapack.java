@@ -51,7 +51,8 @@ public class AncientDatapack {
                 ),
                 List.of(
                         GrowthItem.create(Functions.hoursToTicks(1), DSItems.ELDER_DRAGON_HEART.value()),
-                        GrowthItem.create(Functions.hoursToTicks(-1), DSItems.STAR_BONE.value())
+                        GrowthItem.create(Functions.hoursToTicks(-1), DSItems.STAR_BONE.value()),
+                        GrowthItem.create(0, DSItems.STAR_HEART.value())
                 ),
                 Optional.of(EntityCondition.defaultNaturalGrowthBlocker()),
                 Optional.of(new MiscCodecs.DestructionData(EntityPredicate.Builder.entity().build(), BlockPredicate.matchesTag(DSBlockTags.LARGE_DRAGON_DESTRUCTIBLE), 120, 120, 0.05))
