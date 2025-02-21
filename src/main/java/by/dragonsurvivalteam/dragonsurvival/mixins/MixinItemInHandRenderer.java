@@ -30,6 +30,10 @@ public class MixinItemInHandRenderer{
 
 	@Inject( at = @At( value = "HEAD" ), method = "applyEatTransform", cancellable = true, expect = 1 )
 	public void applyDragonEatTransform(PoseStack p_228398_1_, float p_228398_2_, HumanoidArm p_228398_3_, ItemStack p_228398_4_, CallbackInfo ci){
+		if (DragonFoodHandler.disableDragonFoodHandling) {
+			return;
+		}
+
 		DragonStateProvider.getCap(minecraft.player).ifPresent(dragonStateHandler -> {
 			if(dragonStateHandler.isDragon()){
 				float f = (float)minecraft.player.getUseItemRemainingTicks() - p_228398_2_ + 1.0F;
@@ -53,6 +57,10 @@ public class MixinItemInHandRenderer{
 
 	@Inject( at = @At( value = "INVOKE", target = "Lnet/minecraft/client/renderer/ItemInHandRenderer;applyItemArmTransform(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/entity/HumanoidArm;F)V", ordinal = 2 ), method = "renderArmWithItem", cancellable = true )
 	public void renderDragonArmWithItem(AbstractClientPlayer p_228405_1_, float p_228405_2_, float p_228405_3_, InteractionHand p_228405_4_, float p_228405_5_, ItemStack p_228405_6_, float p_228405_7_, PoseStack p_228405_8_, MultiBufferSource pBuffer, int pCombinedLight, CallbackInfo ci){
+		if (DragonFoodHandler.disableDragonFoodHandling) {
+			return;
+		}
+
 		DragonStateProvider.getCap(minecraft.player).ifPresent(dragonStateHandler -> {
 			if(dragonStateHandler.isDragon() && DragonFoodHandler.isDragonEdible(p_228405_6_.getItem(), dragonStateHandler.getType())){
 				applyEatTransform(p_228405_8_, p_228405_2_, p_228405_4_ == InteractionHand.MAIN_HAND ? p_228405_1_.getMainArm() : p_228405_1_.getMainArm().getOpposite(), p_228405_6_);

@@ -80,6 +80,10 @@ public abstract class MixinLivingEntity extends Entity{
 
 	@Inject( at = @At( "HEAD" ), method = "eat", cancellable = true )
 	public void dragonEat(Level level, ItemStack itemStack, CallbackInfoReturnable<ItemStack> ci){
+		if(DragonFoodHandler.disableDragonFoodHandling){
+			return;
+		}
+
 		Object self = this;
 
 		if (self instanceof Player) {
@@ -110,6 +114,10 @@ public abstract class MixinLivingEntity extends Entity{
 
 	@Inject( at = @At( "HEAD" ), method = "addEatEffect", cancellable = true )
 	public void addDragonEatEffect(ItemStack itemStack, Level level, LivingEntity livingEntity, CallbackInfo ci){
+		if(DragonFoodHandler.disableDragonFoodHandling){
+			return;
+		}
+
 		Object self = this;
 
 		if (self instanceof Player) {
@@ -145,6 +153,10 @@ public abstract class MixinLivingEntity extends Entity{
 
 	@Inject( at = @At( "HEAD" ), method = "shouldTriggerItemUseEffects", cancellable = true )
 	public void shouldDragonTriggerItemUseEffects(CallbackInfoReturnable<Boolean> ci) {
+		if(DragonFoodHandler.disableDragonFoodHandling){
+			return;
+		}
+
 		Object self = this;
 
 		if (self instanceof Player) {
@@ -167,6 +179,10 @@ public abstract class MixinLivingEntity extends Entity{
 
 	@Inject( at = @At( value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getUseDuration()I", shift = Shift.AFTER ), method = "onSyncedDataUpdated" )
 	public void onDragonSyncedDataUpdated(EntityDataAccessor<?> data, CallbackInfo ci){
+		if(DragonFoodHandler.disableDragonFoodHandling){
+			return;
+		}
+
 		Object self = this;
 
 		if (self instanceof Player) {
@@ -180,6 +196,10 @@ public abstract class MixinLivingEntity extends Entity{
 
 	@Inject( at = @At( value = "HEAD" ), method = "triggerItemUseEffects", cancellable = true )
 	public void triggerDragonItemUseEffects(ItemStack stack, int count, CallbackInfo ci){
+		if(DragonFoodHandler.disableDragonFoodHandling){
+			return;
+		}
+
 		Object self = this;
 
 		if (self instanceof Player) {

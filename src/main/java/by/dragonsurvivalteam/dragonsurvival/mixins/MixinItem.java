@@ -18,6 +18,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinItem{
 	@Inject( at = @At( "HEAD" ), method = "use", cancellable = true )
 	public void dragonUse(Level level, Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResultHolder<ItemStack>> ci){
+		if (DragonFoodHandler.disableDragonFoodHandling) {
+			return;
+		}
+
 		DragonStateProvider.getCap(player).ifPresent(dragonStateHandler -> {
 			if(dragonStateHandler.isDragon()){
 				if(DragonFoodHandler.isDragonEdible((Item)(Object)this, dragonStateHandler.getType())){
@@ -37,6 +41,10 @@ public class MixinItem{
 
 	@Inject( at = @At( "HEAD" ), method = "finishUsingItem", cancellable = true )
 	public void dragonFinishUsingItem(ItemStack item, Level level, LivingEntity player, CallbackInfoReturnable<ItemStack> ci){
+		if (DragonFoodHandler.disableDragonFoodHandling) {
+			return;
+		}
+
 		DragonStateProvider.getCap(player).ifPresent(dragonStateHandler -> {
 			if(dragonStateHandler.isDragon()){
 				ci.setReturnValue(DragonFoodHandler.isDragonEdible((Item)(Object)this, dragonStateHandler.getType()) ? player.eat(level, item) : item);

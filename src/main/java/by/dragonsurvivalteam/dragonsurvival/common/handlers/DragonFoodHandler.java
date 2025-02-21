@@ -55,6 +55,9 @@ public class DragonFoodHandler {
 	@ConfigOption(side = ConfigSide.SERVER, category = "food", key = "dragonFoods", comment = "Force dragons to eat a unique diet for their type.")
 	public static Boolean customDragonFoods = true;
 
+	@ConfigOption(side = ConfigSide.SERVER, category = "food", key = "disable_dragon_food_handling", comment = "Disables the custom dragon food handling.")
+	public static boolean disableDragonFoodHandling = false;
+
 	// Dragon Food List
 	@ConfigType(Item.class)
 	@ConfigOption(side = ConfigSide.SERVER, category = "food", key = "caveDragon", comment = {"Dragon food formatting: mod_id:item_id:nutrition:saturation", "Nutrition / saturation values are optional as the human values will be used if missing.", "Saturation can be defined with decimals (e.g. 0.3)"})
@@ -352,7 +355,7 @@ public class DragonFoodHandler {
 			return;
 		}
 
-		if (!customDragonFoods || vanillaFoodLevel || !DragonUtils.isDragon(player)) {
+		if (!customDragonFoods || vanillaFoodLevel || !DragonUtils.isDragon(player) || disableDragonFoodHandling) {
 			ForgeIngameGui.FOOD_LEVEL_ELEMENT.render(forgeGUI, poseStack, partialTicks, width, height);
 			return;
 		}
@@ -400,6 +403,10 @@ public class DragonFoodHandler {
 
 	@SubscribeEvent
 	public void onItemUseStart(final LivingEntityUseItemEvent.Start event) {
+		if (disableDragonFoodHandling) {
+			return;
+		}
+
 		DragonStateProvider.getCap(event.getEntity()).ifPresent(handler -> {
 			if (handler.isDragon()) {
 				event.setDuration(getUseDuration(event.getItem(), handler.getType()));
@@ -408,6 +415,10 @@ public class DragonFoodHandler {
 	}
 
 	public static int getUseDuration(final ItemStack item, final AbstractDragonType type) {
+		if (disableDragonFoodHandling) {
+			return item.getUseDuration();
+		}
+
 		if (isDragonEdible(item.getItem(), type)) {
 			return item.getItem().getFoodProperties() != null && item.getItem().getFoodProperties().isFastFood() ? 16 : 32;
 		} else {
@@ -417,6 +428,10 @@ public class DragonFoodHandler {
 
 	@SubscribeEvent
 	public void onItemRightClick(final PlayerInteractEvent.RightClickItem event) {
+		if (disableDragonFoodHandling) {
+			return;
+		}
+
 		DragonStateProvider.getCap(event.getEntity()).ifPresent(handler -> {
 			if (handler.isDragon()) {
 				if (event.getSide() == LogicalSide.SERVER) {

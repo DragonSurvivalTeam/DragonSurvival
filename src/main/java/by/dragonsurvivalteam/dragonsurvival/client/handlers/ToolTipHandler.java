@@ -74,6 +74,10 @@ public class ToolTipHandler{
 
 	@SubscribeEvent
 	public static void checkIfDragonFood(ItemTooltipEvent tooltipEvent){
+		if(DragonFoodHandler.disableDragonFoodHandling) {
+			return;
+		}
+
 		if(tooltipEvent.getEntity() != null){
 			Item item = tooltipEvent.getItemStack().getItem();
 			List<Component> toolTip = tooltipEvent.getToolTip();
@@ -296,7 +300,7 @@ public class ToolTipHandler{
 
 	@SubscribeEvent
 	public static void onTooltipColorEvent(RenderTooltipEvent.Color event){
-		if(!tooltipChanges){
+		if(!tooltipChanges || DragonFoodHandler.disableDragonFoodHandling){
 			return;
 		}
 		boolean render = isHelpText();

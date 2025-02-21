@@ -93,6 +93,10 @@ public abstract class MixinPlayerEntity extends LivingEntity{
 
 	@Inject(at = @At("HEAD"), method = "eat", cancellable = true)
 	public void dragonEat(final Level level, final ItemStack itemStack, final CallbackInfoReturnable<ItemStack> callback) {
+		if (DragonFoodHandler.disableDragonFoodHandling) {
+			return;
+		}
+
 		DragonStateProvider.getCap(this).ifPresent(handler -> {
 			if (handler.isDragon()) {
 				DragonFoodHandler.dragonEat(getFoodData(), itemStack.getItem(), handler.getType());
