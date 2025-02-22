@@ -63,7 +63,6 @@
   "icon": "dragonsurvival:abilities/forest/fear_of_darkness",
   "trigger": {
     "penalty_trigger": "dragonsurvival:supply",
-    "recovery_items": [],
     "reduction_rate": 1.0,
     "regeneration_rate": 0.013,
     "supply_type": "dragonsurvival:stress_supply",

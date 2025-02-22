@@ -112,9 +112,11 @@ public class DragonPenalties {
                         1,
                         0.013f,
                         List.of(
-                                new SupplyTrigger.RecoveryItems(
-                                        HolderSet.direct(Items.MILK_BUCKET.builtInRegistryHolder(), DSItems.FROZEN_RAW_FISH),
-                                        HolderSet.direct(Potions.WATER),
+                                new SupplyTrigger.RecoveryItem(
+                                        List.of(
+                                                ItemCondition.is(Items.MILK_BUCKET, DSItems.FROZEN_RAW_FISH.value()),
+                                                ItemCondition.hasPotion(Potions.WATER)
+                                        ),
                                         0.5f
                                 )
                         ),
@@ -165,7 +167,7 @@ public class DragonPenalties {
                 Optional.empty(),
                 Optional.empty(),
                 new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.WATER_BURN), 2),
-                new HitByProjectileTrigger(EntityType.SNOWBALL)
+                new HitByProjectileTrigger(HolderSet.direct(EntityType.SNOWBALL.builtInRegistryHolder()))
         ));
     }
 

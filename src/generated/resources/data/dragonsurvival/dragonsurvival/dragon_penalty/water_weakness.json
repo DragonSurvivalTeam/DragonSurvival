@@ -28,8 +28,8 @@
     ]
   },
   "effect": {
-    "type": "dragonsurvival:water_burn",
     "amount": 1.0,
+    "damage_type": "dragonsurvival:water_burn",
     "penalty_type": "dragonsurvival:take_damage"
   },
   "icon": "dragonsurvival:abilities/cave/water_weakness",
