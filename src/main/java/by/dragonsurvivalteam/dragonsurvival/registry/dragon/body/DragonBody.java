@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.body;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierType;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.UnlockableBehavior;
@@ -63,8 +64,7 @@ public record DragonBody(
             Codec.STRING.listOf().optionalFieldOf("bones_to_hide_for_toggle", List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight")).forGetter(DragonBody::bonesToHideForToggle),
             DragonEmoteSet.CODEC.fieldOf("emotes").forGetter(DragonBody::emotes),
             ScalingProportions.CODEC.fieldOf("scaling_proportions").forGetter(DragonBody::scalingProportions),
-            // TODO :: limit to max. 1
-            Codec.DOUBLE.fieldOf("crouch_height_ratio").forGetter(DragonBody::crouchHeightRatio),
+            MiscCodecs.doubleRange(0, 1).fieldOf("crouch_height_ratio").forGetter(DragonBody::crouchHeightRatio),
             MountingOffsets.CODEC.optionalFieldOf("mounting_offset").forGetter(DragonBody::mountingOffsets),
             BackpackOffsets.CODEC.optionalFieldOf("backpack_offset").forGetter(DragonBody::backpackOffsets),
             ResourceLocation.CODEC.optionalFieldOf("default_icon").forGetter(DragonBody::defaultIcon)
@@ -75,14 +75,13 @@ public record DragonBody(
 
     private static final RandomSource RANDOM = RandomSource.create();
 
-    public record ScalingProportions(double width, double height, double eyeHeight, double offset, double shadowOffset) {
+    public record ScalingProportions(double width, double height, double eyeHeight, double scaleMultiplier, double shadowMultiplier) {
         public static final Codec<ScalingProportions> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                // TODO :: validate (at least 0)?
-                Codec.DOUBLE.fieldOf("width").forGetter(ScalingProportions::width),
-                Codec.DOUBLE.fieldOf("height").forGetter(ScalingProportions::height),
-                Codec.DOUBLE.fieldOf("eye_height").forGetter(ScalingProportions::eyeHeight),
-                Codec.DOUBLE.fieldOf("offset").forGetter(ScalingProportions::offset),
-                Codec.DOUBLE.fieldOf("shadow_offset").forGetter(ScalingProportions::shadowOffset)
+                MiscCodecs.doubleRange(0, Double.MAX_VALUE).fieldOf("width").forGetter(ScalingProportions::width),
+                MiscCodecs.doubleRange(0, Double.MAX_VALUE).fieldOf("height").forGetter(ScalingProportions::height),
+                MiscCodecs.doubleRange(0, Double.MAX_VALUE).fieldOf("eye_height").forGetter(ScalingProportions::eyeHeight),
+                MiscCodecs.doubleRange(0, Double.MAX_VALUE).optionalFieldOf("scale_multiplier", 1.0).forGetter(ScalingProportions::scaleMultiplier),
+                MiscCodecs.doubleRange(0, Double.MAX_VALUE).optionalFieldOf("shadow_multiplier", 1.0).forGetter(ScalingProportions::shadowMultiplier)
         ).apply(instance, ScalingProportions::new));
 
         public static ScalingProportions of(final double width, final double height, final double eyeHeight, final double offset, final double shadowOffset) {

@@ -397,7 +397,7 @@ public class ClientDragonRenderer {
         float z = Mth.cos(angle);
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
-        float scale = (float) handler.getVisualScale(player, partialRenderTick) * (float) handler.body().value().scalingProportions().offset();
+        float scale = (float) handler.getVisualScale(player, partialRenderTick) * (float) handler.body().value().scalingProportions().scaleMultiplier();
 
         return new Vector3f(x * scale, 0, z * scale);
     }
@@ -408,7 +408,7 @@ public class ClientDragonRenderer {
         float z = Mth.cos(angle);
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
-        float scale = (float) handler.getVisualScale(player, partialRenderTick) * (float) handler.body().value().scalingProportions().shadowOffset();
+        float scale = (float) handler.getVisualScale(player, partialRenderTick) * (float) handler.body().value().scalingProportions().shadowMultiplier();
 
         return new Vector3f(x * scale, 0, z * scale);
     }
