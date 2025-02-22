@@ -13,7 +13,14 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.enchantment.effects.SpawnParticlesEffect;
 import net.minecraft.world.phys.Vec3;
 
-public record SpawnParticles(ParticleOptions particle, SpawnParticlesEffect.PositionSource horizontalPosition, SpawnParticlesEffect.PositionSource verticalPosition, SpawnParticlesEffect.VelocitySource horizontalVelocity, SpawnParticlesEffect.VelocitySource verticalVelocity, FloatProvider speed) {
+public record SpawnParticles(
+        ParticleOptions particle,
+        SpawnParticlesEffect.PositionSource horizontalPosition,
+        SpawnParticlesEffect.PositionSource verticalPosition,
+        SpawnParticlesEffect.VelocitySource horizontalVelocity,
+        SpawnParticlesEffect.VelocitySource verticalVelocity,
+        FloatProvider speed
+) {
     public static final Codec<SpawnParticles> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ParticleTypes.CODEC.fieldOf("particle").forGetter(SpawnParticles::particle),
             SpawnParticlesEffect.PositionSource.CODEC.fieldOf("horizontal_position").forGetter(SpawnParticles::horizontalPosition),
@@ -40,7 +47,7 @@ public record SpawnParticles(ParticleOptions particle, SpawnParticlesEffect.Posi
     }
 
     public void apply(ServerLevel level, BlockPos blockPos, int count) {
-        for(int i = 0; i < count; ++i) {
+        for (int i = 0; i < count; ++i) {
             level.sendParticles(
                     this.particle,
                     blockPos.getX() + this.horizontalPosition.getCoordinate(0.5D, 0.5D, 1.0F, level.random),
@@ -61,11 +68,11 @@ public record SpawnParticles(ParticleOptions particle, SpawnParticlesEffect.Posi
         Vec3 vec3 = entity.getKnownMovement();
         float width = entity.getBbWidth();
         float height = entity.getBbHeight();
-        for(int i = 0; i < count; ++i) {
+        for (int i = 0; i < count; ++i) {
             level.sendParticles(
                     this.particle,
                     this.horizontalPosition.getCoordinate(origin.x(), origin.x(), width, randomsource),
-                    this.verticalPosition.getCoordinate(origin.y(), origin.y() + (double)(height / 2.0F), height, randomsource),
+                    this.verticalPosition.getCoordinate(origin.y(), origin.y() + (double) (height / 2.0F), height, randomsource),
                     this.horizontalPosition.getCoordinate(origin.z(), origin.z(), width, randomsource),
                     1,
                     this.horizontalVelocity.getVelocity(vec3.x(), randomsource),

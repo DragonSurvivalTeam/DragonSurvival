@@ -1,6 +1,7 @@
 {
   "values": [
     "minecraft:villager",
+    "minecraft:iron_golem",
     "dragonsurvival:hunter_ambusher",
     "dragonsurvival:hunter_griffin",
     "dragonsurvival:hunter_hound",

@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen.data_maps;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DietEntry;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSConditions;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDataMaps;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
@@ -26,9 +27,9 @@ public class DietEntryProvider extends DataMapProvider {
     @Override
     protected void gather() {
         builder(DSDataMaps.DIET_ENTRIES)
-                .add(BuiltInDragonSpecies.CAVE_DRAGON, caveDiet(), false)
-                .add(BuiltInDragonSpecies.FOREST_DRAGON, forestDiet(), false)
-                .add(BuiltInDragonSpecies.SEA_DRAGON, seaDiet(), false);
+                .add(BuiltInDragonSpecies.CAVE_DRAGON, caveDiet(), false, DSConditions.CAVE_DRAGON_LOADED)
+                .add(BuiltInDragonSpecies.FOREST_DRAGON, forestDiet(), false, DSConditions.FOREST_DRAGON_LOADED)
+                .add(BuiltInDragonSpecies.SEA_DRAGON, seaDiet(), false, DSConditions.SEA_DRAGON_LOADED);
     }
 
     public static List<DietEntry> caveDiet() {

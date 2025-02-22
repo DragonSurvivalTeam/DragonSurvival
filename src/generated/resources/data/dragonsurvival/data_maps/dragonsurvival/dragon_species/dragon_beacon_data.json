@@ -1,6 +1,13 @@
 {
   "values": {
     "dragonsurvival:cave_dragon": {
+      "neoforge:conditions": [
+        {
+          "type": "dragonsurvival:registered",
+          "registry": "dragonsurvival:dragon_species",
+          "value": "dragonsurvival:cave_dragon"
+        }
+      ],
       "effects": [
         {
           "amplifier": 0,
@@ -19,6 +26,13 @@
       }
     },
     "dragonsurvival:forest_dragon": {
+      "neoforge:conditions": [
+        {
+          "type": "dragonsurvival:registered",
+          "registry": "dragonsurvival:dragon_species",
+          "value": "dragonsurvival:forest_dragon"
+        }
+      ],
       "effects": [
         {
           "amplifier": 0,
@@ -37,6 +51,13 @@
       }
     },
     "dragonsurvival:sea_dragon": {
+      "neoforge:conditions": [
+        {
+          "type": "dragonsurvival:registered",
+          "registry": "dragonsurvival:dragon_species",
+          "value": "dragonsurvival:sea_dragon"
+        }
+      ],
       "effects": [
         {
           "amplifier": 0,

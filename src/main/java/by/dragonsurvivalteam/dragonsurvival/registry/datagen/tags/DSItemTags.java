@@ -44,6 +44,13 @@ public class DSItemTags extends ItemTagsProvider {
     @Translation(comments = "Activates Dragon Beacon")
     public static final TagKey<Item> ACTIVATES_DRAGON_BEACON = key("activates_dragon_beacon");
 
+    @Translation(comments = "Uncommon Armor (Texture)")
+    public static final TagKey<Item> UNCOMMON_ARMOR = key("uncommon_armor");
+    @Translation(comments = "Rare Armor (Texture)")
+    public static final TagKey<Item> RARE_ARMOR = key("rare_armor");
+    @Translation(comments = "Epic Armor (Texture)")
+    public static final TagKey<Item> EPIC_ARMOR = key("epic_armor");
+
     // Used in recipes
     @Translation(comments = "Dragon Altars")
     public static final TagKey<Item> DRAGON_ALTARS = key("dragon_altars");
@@ -94,6 +101,10 @@ public class DSItemTags extends ItemTagsProvider {
 
         tag(ACTIVATES_DRAGON_BEACON)
                 .add(DSItems.BEACON_ACTIVATOR.value());
+
+        tag(UNCOMMON_ARMOR);
+        tag(RARE_ARMOR);
+        tag(EPIC_ARMOR);
 
         tag(CHARRED_FOOD)
                 .add(DSItems.CHARGED_COAL.value())

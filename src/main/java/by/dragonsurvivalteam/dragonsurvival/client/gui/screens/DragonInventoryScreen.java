@@ -187,9 +187,9 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
 
             new BarComponent(this,
                     leftPos + 124, topPos + 6, 4,
-                    crystals, 10,
-                    -11, 39, 1, 12, 16, 12, 16,
-                    textures.growthLeftArrow().hoverIcon(), textures.growthLeftArrow().icon(), textures.growthRightArrow().hoverIcon(), textures.growthRightArrow().icon(), false);
+                    crystals, 2,
+                    -11, 39, 1, 12, 16,
+                    textures.growthLeftArrow().hoverIcon(), textures.growthLeftArrow().icon(), textures.growthRightArrow().hoverIcon(), textures.growthRightArrow().icon());
         }
 
         // Vanilla inventory
@@ -204,7 +204,7 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
         HoverButton configButton = new HoverButton(leftPos + 177, topPos + 102, 18, 16, 18, 18, CONFIG_MAIN, CONFIG_HOVER, button -> {
             Minecraft minecraft = Minecraft.getInstance();
             // Copied from ConfigHelper.java
-            Optional<Screen> configScreen =  ModList.get()
+            Optional<Screen> configScreen = ModList.get()
                     .getModContainerById(MODID)
                     .flatMap(m -> {
                         IModInfo modInfo = m.getModInfo();

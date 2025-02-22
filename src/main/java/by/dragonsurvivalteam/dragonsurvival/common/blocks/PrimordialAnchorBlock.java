@@ -110,7 +110,7 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
 
     @Override // TODO :: set state here when it is charged (to enable flight and / or wings)?
     protected @NotNull InteractionResult useWithoutItem(final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final BlockHitResult hitResult) {
-        if(state.getValue(BLOODY)) {
+        if (state.getValue(BLOODY)) {
             for (int i = 0; i < 10; i++) {
                 spawnParticles(position, level, ParticleTypes.SOUL);
             }
@@ -150,24 +150,24 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
             handler.markedByEnderDragon = false;
             boolean flightWasActuallyGranted = false;
             boolean spinWasActuallyGranted = false;
-            if(anchorGivesFlightGrantState) {
+            if (anchorGivesFlightGrantState) {
                 flightWasActuallyGranted = true;
                 handler.flightWasGranted = true;
             }
-            if(anchorGivesSpinGrantState) {
+            if (anchorGivesSpinGrantState) {
                 spinWasActuallyGranted = true;
                 handler.spinWasGranted = true;
             }
 
-            if(flightWasActuallyGranted && spinWasActuallyGranted) {
+            if (flightWasActuallyGranted && spinWasActuallyGranted) {
                 player.sendSystemMessage(Component.translatable(PRIMORDIAL_ANCHOR_GRANTED_FLIGHT_SPIN));
-            } else if(flightWasActuallyGranted) {
+            } else if (flightWasActuallyGranted) {
                 player.sendSystemMessage(Component.translatable(PRIMORDIAL_ANCHOR_GRANTED_FLIGHT));
-            } else if(spinWasActuallyGranted) {
+            } else if (spinWasActuallyGranted) {
                 player.sendSystemMessage(Component.translatable(PRIMORDIAL_ANCHOR_GRANTED_SPIN));
             }
 
-            PacketDistributor.sendToPlayer((ServerPlayer)player, new SyncEnderDragonMark(false));
+            PacketDistributor.sendToPlayer((ServerPlayer) player, new SyncEnderDragonMark(false));
         }
 
         return InteractionResult.CONSUME;
@@ -300,14 +300,14 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
         BlockState blockstate = state.setValue(CHARGED, true);
         level.setBlock(position, blockstate, 3);
         level.gameEvent(GameEvent.BLOCK_CHANGE, position, GameEvent.Context.of(player, blockstate));
-        level.playSound(player, (double)position.getX() + 0.5, (double)position.getY() + 0.5, (double)position.getZ() + 0.5, SoundEvents.RESPAWN_ANCHOR_CHARGE, SoundSource.BLOCKS, 1, 1);
+        level.playSound(player, (double) position.getX() + 0.5, (double) position.getY() + 0.5, (double) position.getZ() + 0.5, SoundEvents.RESPAWN_ANCHOR_CHARGE, SoundSource.BLOCKS, 1, 1);
     }
 
     private void expendCharge(@Nullable final Player player, final Level level, final BlockPos position, final BlockState state) {
         BlockState blockstate = state.setValue(CHARGED, false);
         level.setBlock(position, blockstate, 3);
         level.gameEvent(GameEvent.BLOCK_CHANGE, position, GameEvent.Context.of(player, blockstate));
-        level.playSound(player, (double)position.getX() + 0.5, (double)position.getY() + 0.5, (double)position.getZ() + 0.5, SoundEvents.RESPAWN_ANCHOR_DEPLETE, SoundSource.BLOCKS, 1, 1);
+        level.playSound(player, (double) position.getX() + 0.5, (double) position.getY() + 0.5, (double) position.getZ() + 0.5, SoundEvents.RESPAWN_ANCHOR_DEPLETE, SoundSource.BLOCKS, 1, 1);
     }
 
     private void spawnParticles(final BlockPos position, final Level level, final SimpleParticleType particle) {
@@ -324,7 +324,7 @@ public class PrimordialAnchorBlock extends Block implements EntityBlock {
     }
 
     @Override
-    @Nullable public <T extends BlockEntity> BlockEntityTicker<T> getTicker(final Level level, @NotNull final BlockState state, @NotNull final BlockEntityType<T> type) {
+    public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(final Level level, @NotNull final BlockState state, @NotNull final BlockEntityType<T> type) {
         return level.isClientSide ? null : BaseEntityBlock.createTickerHelper(type, DSBlockEntities.PRIMORDIAL_ANCHOR.get(), PrimordialAnchorBlockEntity::serverTick);
     }
 }

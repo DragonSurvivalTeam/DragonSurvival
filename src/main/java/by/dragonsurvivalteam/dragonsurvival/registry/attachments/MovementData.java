@@ -1,7 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
 public class MovementData {
@@ -23,7 +22,7 @@ public class MovementData {
     public float prevXRot = 0;
     public float prevZRot = 0;
 
-    public Vec2 desiredMoveVec = Vec2.ZERO;
+    public Vec3 desiredMoveVec = Vec3.ZERO;
 
     public boolean isFirstPerson;
     public boolean isFreeLook;
@@ -36,7 +35,11 @@ public class MovementData {
     public boolean dig;
 
     public boolean isMoving() {
-        return desiredMoveVec.lengthSquared() > INPUT_EPSILON * INPUT_EPSILON;
+        return desiredMoveVec.lengthSqr() > INPUT_EPSILON * INPUT_EPSILON;
+    }
+
+    public boolean isMovingHorizontally() {
+        return desiredMoveVec.x * desiredMoveVec.x + desiredMoveVec.z * desiredMoveVec.z > INPUT_EPSILON * INPUT_EPSILON;
     }
 
     public void setFreeLook(boolean isFreeLook) {
@@ -52,7 +55,7 @@ public class MovementData {
         this.bite = bite;
     }
 
-    public void setDesiredMoveVec(Vec2 desiredMoveVec) {
+    public void setDesiredMoveVec(Vec3 desiredMoveVec) {
         this.desiredMoveVec = desiredMoveVec;
     }
 

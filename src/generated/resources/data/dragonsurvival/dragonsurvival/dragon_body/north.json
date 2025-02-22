@@ -64,6 +64,7 @@
     "eye_height": 0.99,
     "height": 1.1,
     "offset": 1.0,
+    "shadow_offset": 1.0,
     "width": 0.6
   }
 }

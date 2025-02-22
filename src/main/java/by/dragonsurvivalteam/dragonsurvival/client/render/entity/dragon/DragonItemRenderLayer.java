@@ -22,10 +22,12 @@ public class DragonItemRenderLayer extends BlockAndItemGeoLayer<DragonEntity> {
 
     @Override
     protected ItemDisplayContext getTransformTypeForStack(GeoBone bone, ItemStack stack, DragonEntity animatable) {
-        if (bone.getName().equals("RightItem"))
+        if (bone.getName().equals("RightItem")) {
             return ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
-        if (bone.getName().equals("LeftItem"))
+        }
+        if (bone.getName().equals("LeftItem")) {
             return ItemDisplayContext.THIRD_PERSON_LEFT_HAND;
+        }
 
         return ItemDisplayContext.GROUND;
     }

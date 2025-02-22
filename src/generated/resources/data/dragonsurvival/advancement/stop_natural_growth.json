@@ -2,19 +2,19 @@
   "parent": "dragonsurvival:be_dragon",
   "criteria": {
     "criterion_0": {
-      "trigger": "dragonsurvival:use_star_heart"
+      "trigger": "dragonsurvival:stop_natural_growth"
     }
   },
   "display": {
     "description": {
-      "translate": "dragonsurvival.advancement.use_star_heart.desc"
+      "translate": "dragonsurvival.advancement.stop_natural_growth.desc"
     },
     "icon": {
       "count": 1,
       "id": "dragonsurvival:star_heart"
     },
     "title": {
-      "translate": "dragonsurvival.advancement.use_star_heart"
+      "translate": "dragonsurvival.advancement.stop_natural_growth"
     }
   },
   "requirements": [

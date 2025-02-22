@@ -51,7 +51,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -403,6 +402,17 @@ public class ClientDragonRenderer {
         return new Vector3f(x * scale, 0, z * scale);
     }
 
+    public static Vector3f getModelShadowOffset(final Player player, float partialRenderTick) {
+        float angle = -(float) MovementData.getData(player).bodyYaw * ((float) Math.PI / 180);
+        float x = Mth.sin(angle);
+        float z = Mth.cos(angle);
+
+        DragonStateHandler handler = DragonStateProvider.getData(player);
+        float scale = (float) handler.getVisualScale(player, partialRenderTick) * (float) handler.body().value().scalingProportions().shadowOffset();
+
+        return new Vector3f(x * scale, 0, z * scale);
+    }
+
     @SubscribeEvent
     public static void spin(InputEvent.InteractionKeyMappingTriggered keyInputEvent) {
         LocalPlayer player = Minecraft.getInstance().player;
@@ -417,9 +427,11 @@ public class ClientDragonRenderer {
     }
 
     public static void setDragonMovementData(Player player, float realtimeDeltaTick) {
-        if (player == null) return;
+        if (player == null) {
+            return;
+        }
 
-        if(DragonStateProvider.isDragon(player)) {
+        if (DragonStateProvider.isDragon(player)) {
             MovementData movement = MovementData.getData(player);
 
             Vec3 moveVector;
@@ -447,7 +459,8 @@ public class ClientDragonRenderer {
         MovementData movement = MovementData.getData(player);
         movement.setFirstPerson(Minecraft.getInstance().options.getCameraType().isFirstPerson());
         movement.setFreeLook(Keybind.FREE_LOOK.consumeClick()); // FIXME :: handle this properly
-        movement.setDesiredMoveVec(new Vec2(input.leftImpulse, input.forwardImpulse));
+        float vertical = input.jumping && input.shiftKeyDown ? 0 : input.jumping ? 1 : input.shiftKeyDown ? -1 : 0;
+        movement.setDesiredMoveVec(new Vec3(input.leftImpulse, vertical, input.forwardImpulse));
 
         if (player.isPassenger()) {
             // Prevent animation problems while we are riding an entity
@@ -569,13 +582,13 @@ public class ClientDragonRenderer {
             boolean hasPosDelta = posDelta.horizontalDistanceSqr() > MOVE_DELTA_EPSILON * MOVE_DELTA_EPSILON;
 
             var rawInput = movement.desiredMoveVec;
-            var hasMoveInput = rawInput.lengthSquared() > MovementData.INPUT_EPSILON * MovementData.INPUT_EPSILON;
+            var hasMoveInput = rawInput.lengthSqr() > MovementData.INPUT_EPSILON * MovementData.INPUT_EPSILON;
             boolean isInputBack = rawInput.y < 0;
 
             if (hasMoveInput) {
 
                 // When providing move input, turn the body towards the input direction
-                var targetAngle = Math.toDegrees(Math.atan2(-rawInput.x, rawInput.y)) + viewYRot;
+                var targetAngle = Math.toDegrees(Math.atan2(-rawInput.x, rawInput.z)) + viewYRot;
 
                 // If in first person and moving back when not flying, flip the target angle
                 // Checks dragon flight or creative/spectator flight

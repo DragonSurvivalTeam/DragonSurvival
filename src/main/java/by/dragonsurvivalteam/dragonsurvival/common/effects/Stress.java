@@ -18,7 +18,7 @@ public class Stress extends MobEffect {
     @ConfigRange(min = 0, max = 100)
     @Translation(key = "stress_exhaustion", type = Translation.Type.CONFIGURATION, comments = "The amount of exhaustion applied every 20 ticks while stressed. Each amplifier level cuts the delay in half.")
     @ConfigOption(side = ConfigSide.SERVER, category = {"effects", "stress"}, key = "stress_exhaustion")
-    public static Float stressExhaustion =  1f;
+    public static Float stressExhaustion = 1f;
 
     public Stress(int color) {
         super(MobEffectCategory.HARMFUL, color);

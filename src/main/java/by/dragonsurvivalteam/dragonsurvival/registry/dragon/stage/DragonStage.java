@@ -212,7 +212,8 @@ public record DragonStage(
         return largest;
     }
 
-    /** TODO :: is this even usable? it could select a stage that is not valid for the current species
+    /**
+     * TODO :: is this even usable? it could select a stage that is not valid for the current species
      * Tries to retrieve a valid stage for the provided size <br>
      * If no size range matches either the smallest or largest stage will be returned <br>
      * (Depending on whose min. size is closer to the provided size)
@@ -287,7 +288,7 @@ public record DragonStage(
     }
 
     public String getTimeToGrowFormatted(boolean growthStopped) {
-        if(growthStopped) {
+        if (growthStopped) {
             return "§4--:--:--§r";
         }
 

@@ -12,7 +12,13 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.Map;
 import java.util.Optional;
 
-public record DefaultPart(ResourceKey<DragonSpecies> species, ResourceKey<DragonStage> stage, Optional<ResourceKey<DragonBody>> body, Optional<ResourceLocation> model, Map<SkinLayer, String> parts) {
+public record DefaultPart(
+        ResourceKey<DragonSpecies> species,
+        ResourceKey<DragonStage> stage,
+        Optional<ResourceKey<DragonBody>> body,
+        Optional<ResourceLocation> model,
+        Map<SkinLayer, String> parts
+) {
     public static final Codec<DefaultPart> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ResourceKey.codec(DragonSpecies.REGISTRY).fieldOf("species").forGetter(DefaultPart::species),
             ResourceKey.codec(DragonStage.REGISTRY).fieldOf("stage").forGetter(DefaultPart::stage),

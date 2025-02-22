@@ -267,7 +267,7 @@
     }
   ],
   "activation": {
-    "type": "active_simple",
+    "activation_type": "dragonsurvival:simple",
     "animations": {
       "end": {
         "animation_key": "mass_buff",

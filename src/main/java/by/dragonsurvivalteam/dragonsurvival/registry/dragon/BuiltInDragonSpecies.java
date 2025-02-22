@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ManaHandling;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscResources;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
@@ -60,6 +61,8 @@ public class BuiltInDragonSpecies {
         context.register(CAVE_DRAGON, new DragonSpecies(
                 Optional.empty(),
                 Optional.empty(),
+                ManaHandling.DEFAULT,
+                Optional.empty(),
                 HolderSet.empty(),
                 context.lookup(DragonAbility.REGISTRY).getOrThrow(DSDragonAbilityTags.CAVE),
                 context.lookup(DragonPenalty.REGISTRY).getOrThrow(DSDragonPenaltyTags.CAVE),
@@ -95,6 +98,8 @@ public class BuiltInDragonSpecies {
         context.register(SEA_DRAGON, new DragonSpecies(
                 Optional.empty(),
                 Optional.empty(),
+                ManaHandling.DEFAULT,
+                Optional.empty(),
                 HolderSet.empty(),
                 context.lookup(DragonAbility.REGISTRY).getOrThrow(DSDragonAbilityTags.SEA),
                 context.lookup(DragonPenalty.REGISTRY).getOrThrow(DSDragonPenaltyTags.SEA),
@@ -129,6 +134,8 @@ public class BuiltInDragonSpecies {
 
         context.register(FOREST_DRAGON, new DragonSpecies(
                 Optional.empty(),
+                Optional.empty(),
+                ManaHandling.DEFAULT,
                 Optional.empty(),
                 HolderSet.empty(),
                 context.lookup(DragonAbility.REGISTRY).getOrThrow(DSDragonAbilityTags.FOREST),

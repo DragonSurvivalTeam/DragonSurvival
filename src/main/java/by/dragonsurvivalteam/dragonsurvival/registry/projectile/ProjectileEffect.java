@@ -95,7 +95,11 @@ public interface ProjectileEffect<T> {
         return false;
     }
 
-    default List<MutableComponent> getDescription(final Player dragon, final int level) { return List.of(); }
+    default List<MutableComponent> getDescription(final Player dragon, final int level) {
+        return List.of();
+    }
+
     void apply(final Projectile projectile, final T target, final int level);
+
     MapCodec<? extends ProjectileEffect<T>> codec();
 }

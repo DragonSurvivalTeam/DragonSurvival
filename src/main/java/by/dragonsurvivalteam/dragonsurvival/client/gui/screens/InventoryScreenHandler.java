@@ -97,7 +97,6 @@ public class InventoryScreenHandler {
     }
 
 
-
     // We need to constantly update the position of these buttons in case the crafting tab gets opened and causes the screen to shift
     @SubscribeEvent
     public static void moveButtonsIfCraftingTabIsOpened(ScreenEvent.Render.Pre renderEvent) {

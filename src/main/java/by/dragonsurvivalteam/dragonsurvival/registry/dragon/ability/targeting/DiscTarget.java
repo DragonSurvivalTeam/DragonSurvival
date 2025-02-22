@@ -53,7 +53,7 @@ public record DiscTarget(Either<BlockTargeting, EntityTargeting> target, LevelBa
         target.ifLeft(blockTarget -> {
             BlockPos.betweenClosedStream(calculateAffectedArea(dragon.position(), radius, height)).forEach(position -> {
                 if (blockTarget.matches(dragon, position)) {
-                    blockTarget.effect().forEach(target -> target.apply(dragon, ability, position, null));
+                    blockTarget.effects().forEach(target -> target.apply(dragon, ability, position, null));
                 }
             });
         }).ifRight(entityTarget -> {

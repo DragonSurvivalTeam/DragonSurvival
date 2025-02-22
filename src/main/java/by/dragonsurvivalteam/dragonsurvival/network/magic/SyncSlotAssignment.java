@@ -15,9 +15,9 @@ public record SyncSlotAssignment(ResourceKey<DragonAbility> abilityToMove, int n
     public static final Type<SyncSlotAssignment> TYPE = new CustomPacketPayload.Type<>(DragonSurvival.res("sync_slot_assignment"));
 
     public static final StreamCodec<FriendlyByteBuf, SyncSlotAssignment> STREAM_CODEC = StreamCodec.composite(
-        ResourceKey.streamCodec(DragonAbility.REGISTRY), SyncSlotAssignment::abilityToMove,
-        ByteBufCodecs.VAR_INT, SyncSlotAssignment::newSlot,
-        SyncSlotAssignment::new
+            ResourceKey.streamCodec(DragonAbility.REGISTRY), SyncSlotAssignment::abilityToMove,
+            ByteBufCodecs.VAR_INT, SyncSlotAssignment::newSlot,
+            SyncSlotAssignment::new
     );
 
     public static void handleServer(final SyncSlotAssignment packet, final IPayloadContext context) {

@@ -1,8 +1,11 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.body;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ModifierType;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.UnlockableBehavior;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.AttributeModifierSupplier;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
@@ -19,6 +22,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -26,12 +30,14 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public record DragonBody(
         boolean isDefault,
+        Optional<UnlockableBehavior> unlockableBehavior,
         List<Modifier> modifiers,
         boolean canHideWings,
         ResourceLocation model,
@@ -49,6 +55,7 @@ public record DragonBody(
 
     public static final Codec<DragonBody> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.BOOL.optionalFieldOf("is_default", false).forGetter(DragonBody::isDefault),
+            UnlockableBehavior.CODEC.optionalFieldOf("unlockable_behavior").forGetter(DragonBody::unlockableBehavior),
             Modifier.CODEC.listOf().fieldOf("modifiers").forGetter(DragonBody::modifiers),
             Codec.BOOL.optionalFieldOf("can_hide_wings", true).forGetter(DragonBody::canHideWings),
             ResourceLocation.CODEC.optionalFieldOf("model", DEFAULT_MODEL).forGetter(DragonBody::model),
@@ -68,17 +75,18 @@ public record DragonBody(
 
     private static final RandomSource RANDOM = RandomSource.create();
 
-    public record ScalingProportions(double width, double height, double eyeHeight, double offset) {
+    public record ScalingProportions(double width, double height, double eyeHeight, double offset, double shadowOffset) {
         public static final Codec<ScalingProportions> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 // TODO :: validate (at least 0)?
                 Codec.DOUBLE.fieldOf("width").forGetter(ScalingProportions::width),
                 Codec.DOUBLE.fieldOf("height").forGetter(ScalingProportions::height),
                 Codec.DOUBLE.fieldOf("eye_height").forGetter(ScalingProportions::eyeHeight),
-                Codec.DOUBLE.fieldOf("offset").forGetter(ScalingProportions::offset)
+                Codec.DOUBLE.fieldOf("offset").forGetter(ScalingProportions::offset),
+                Codec.DOUBLE.fieldOf("shadow_offset").forGetter(ScalingProportions::shadowOffset)
         ).apply(instance, ScalingProportions::new));
 
-        public static ScalingProportions of(final double width, final double height, final double eyeHeight, final double offset) {
-            return new ScalingProportions(width, height, eyeHeight, offset);
+        public static ScalingProportions of(final double width, final double height, final double eyeHeight, final double offset, final double shadowOffset) {
+            return new ScalingProportions(width, height, eyeHeight, offset, shadowOffset);
         }
     }
 
@@ -93,7 +101,7 @@ public record DragonBody(
             return new MountingOffsets(humanOffset, dragonOffset, scale);
         }
     }
-    
+
     public record BackpackOffsets(Vec3 posOffset, Vec3 rotOffset, Vec3 scale) {
         public static final Codec<BackpackOffsets> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Vec3.CODEC.optionalFieldOf("position_offset", Vec3.ZERO).forGetter(BackpackOffsets::posOffset),
@@ -106,12 +114,71 @@ public record DragonBody(
         }
     }
 
+    /**
+     * Returns the list of relevant bodies for the player <br>
+     * It may contain locked bodies, depending on how the bodies' altar visibility is configured
+     */
+    public static List<UnlockableBehavior.BodyEntry> getBodies(final ServerPlayer player, boolean isEditor) {
+        List<UnlockableBehavior.BodyEntry> entries = new ArrayList<>();
+
+        ResourceHelper.all(player.registryAccess(), REGISTRY).forEach(body -> {
+            UnlockableBehavior behaviour = body.value().unlockableBehavior().orElse(null);
+
+            if (behaviour == null) {
+                entries.add(new UnlockableBehavior.BodyEntry(body, true));
+                return;
+            }
+
+            boolean isUnlocked = behaviour.unlockCondition().map(condition -> condition.test(Condition.entityContext(player.serverLevel(), player))).orElse(true);
+            UnlockableBehavior.Visibility visibility = behaviour.visibility().orElse(null);
+
+            if (isEditor) {
+                if (visibility == UnlockableBehavior.Visibility.ALWAYS_VISIBLE) {
+                    entries.add(new UnlockableBehavior.BodyEntry(body, isUnlocked));
+                    return;
+                }
+
+                if (visibility == UnlockableBehavior.Visibility.ALWAYS_HIDDEN) {
+                    return;
+                }
+            }
+
+            if (isUnlocked) {
+                entries.add(new UnlockableBehavior.BodyEntry(body, true));
+                return;
+            }
+
+            if (isEditor && visibility == UnlockableBehavior.Visibility.VISIBLE_IF_LOCKED) {
+                entries.add(new UnlockableBehavior.BodyEntry(body, false));
+            }
+        });
+
+        return entries;
+    }
+
     @SubscribeEvent
     public static void register(final DataPackRegistryEvent.NewRegistry event) {
         event.dataPackRegistry(REGISTRY, DIRECT_CODEC, DIRECT_CODEC);
     }
 
-    public static Holder<DragonBody> random(@Nullable final HolderLookup.Provider provider, @Nullable final Holder<DragonSpecies> species) {
+    public static boolean bodyIsValidForSpecies(final Holder<DragonBody> body, @Nullable Holder<DragonSpecies> species) {
+        if (species == null || species.value().bodies().size() == 0) {
+            return body.value().isDefault();
+        } else {
+            return species.value().bodies().contains(body);
+        }
+    }
+
+    public static Holder<DragonBody> getRandomUnlocked(final ServerPlayer player) {
+        return getRandomUnlocked(DragonStateProvider.getData(player).species(), getBodies(player, false));
+    }
+
+    public static Holder<DragonBody> getRandomUnlocked(@Nullable final Holder<DragonSpecies> species, List<UnlockableBehavior.BodyEntry> unlockedBodies) {
+        List<Holder<DragonBody>> validBodiesForSpecies = unlockedBodies.stream().filter(bodyEntry -> bodyIsValidForSpecies(bodyEntry.body(), species) && bodyEntry.isUnlocked()).map(UnlockableBehavior.BodyEntry::body).toList();
+        return validBodiesForSpecies.get(RANDOM.nextInt(validBodiesForSpecies.size()));
+    }
+
+    public static Holder<DragonBody> getRandom(@Nullable final HolderLookup.Provider provider, @Nullable final Holder<DragonSpecies> species) {
         List<Holder.Reference<DragonBody>> all = ResourceHelper.all(provider, REGISTRY);
 
         if (species == null || species.value().bodies().size() == 0) {

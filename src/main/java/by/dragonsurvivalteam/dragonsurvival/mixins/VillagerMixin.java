@@ -76,7 +76,12 @@ public abstract class VillagerMixin {
         }
     }
 
-    @Shadow public abstract void setLastHurtByMob(@Nullable LivingEntity pLivingBase);
-    @Shadow protected abstract SoundEvent getHurtSound(DamageSource pDamageSource);
-    @Shadow protected abstract void setUnhappy();
+    @Shadow
+    public abstract void setLastHurtByMob(@Nullable LivingEntity pLivingBase);
+
+    @Shadow
+    protected abstract SoundEvent getHurtSound(DamageSource pDamageSource);
+
+    @Shadow
+    protected abstract void setUnhappy();
 }

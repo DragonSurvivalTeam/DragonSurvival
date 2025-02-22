@@ -64,15 +64,15 @@ public class BackgroundColorSelectorComponent extends AbstractContainerEventHand
         if (visible) {
             guiGraphics.pose().pushPose();
             guiGraphics.pose().translate(0, 0, 100);
-           // guiGraphics.fill(x, y, x + xSize, y + ySize, Color.black.getRGB());
+            // guiGraphics.fill(x, y, x + xSize, y + ySize, Color.black.getRGB());
             // Background for reset button
-            guiGraphics.fill(x + 2, y - 10, x + 32, y + 35,  BACKGROUND_COLOR);
+            guiGraphics.fill(x + 2, y - 10, x + 32, y + 35, BACKGROUND_COLOR);
             guiGraphics.renderOutline(x + 2, y - 11, 30, 41, Color.black.getRGB());
             guiGraphics.renderOutline(x + 3, y - 10, 28, 39, INNER_BORDER_COLOR);
             guiGraphics.pose().translate(0, 0, 100);
 
             // Background for color picker
-            guiGraphics.fill(x, y + 15, x + xSize, y + ySize - 5,  BACKGROUND_COLOR);
+            guiGraphics.fill(x, y + 15, x + xSize, y + ySize - 5, BACKGROUND_COLOR);
             guiGraphics.renderOutline(x, y + 14, xSize, ySize - 18, Color.black.getRGB());
             guiGraphics.renderOutline(x + 1, y + 15, xSize - 2, ySize - 20, INNER_BORDER_COLOR);
 

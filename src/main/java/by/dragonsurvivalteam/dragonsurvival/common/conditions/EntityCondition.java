@@ -4,7 +4,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.CustomPredi
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.DragonPredicate;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.EntityCheckPredicate;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.NearbyEntityPredicate;
-import by.dragonsurvivalteam.dragonsurvival.common.items.growth.StarHeartItem;
 import net.minecraft.advancements.critereon.BlockPredicate;
 import net.minecraft.advancements.critereon.EntityFlagsPredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
@@ -28,7 +27,7 @@ import net.neoforged.neoforge.fluids.FluidType;
 public class EntityCondition {
     public static EntityPredicate defaultNaturalGrowthBlocker() {
         return EntityPredicate.Builder.entity().subPredicate(
-                DragonPredicate.Builder.dragon().starHeart(StarHeartItem.State.ACTIVE).build()
+                DragonPredicate.Builder.dragon().growthStopped(true).build()
         ).build();
     }
 

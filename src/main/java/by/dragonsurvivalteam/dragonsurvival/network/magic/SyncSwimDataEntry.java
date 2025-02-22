@@ -16,10 +16,10 @@ public record SyncSwimDataEntry(int maxOxygen, Holder<FluidType> fluidType, bool
     public static final Type<SyncSwimDataEntry> TYPE = new CustomPacketPayload.Type<>(DragonSurvival.res("sync_swim_data_entry"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncSwimDataEntry> STREAM_CODEC = StreamCodec.composite(
-        ByteBufCodecs.INT, SyncSwimDataEntry::maxOxygen,
-        ByteBufCodecs.fromCodecWithRegistries(NeoForgeRegistries.FLUID_TYPES.holderByNameCodec()), SyncSwimDataEntry::fluidType,
-        ByteBufCodecs.BOOL, SyncSwimDataEntry::remove,
-        SyncSwimDataEntry::new
+            ByteBufCodecs.INT, SyncSwimDataEntry::maxOxygen,
+            ByteBufCodecs.fromCodecWithRegistries(NeoForgeRegistries.FLUID_TYPES.holderByNameCodec()), SyncSwimDataEntry::fluidType,
+            ByteBufCodecs.BOOL, SyncSwimDataEntry::remove,
+            SyncSwimDataEntry::new
     );
 
     public static void handleClient(final SyncSwimDataEntry packet, final IPayloadContext context) {

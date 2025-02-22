@@ -15,9 +15,9 @@ public record SyncPenaltySupplyAmount(ResourceLocation supplyType, float amount)
     public static final Type<SyncPenaltySupplyAmount> TYPE = new CustomPacketPayload.Type<>(DragonSurvival.res("sync_penalty_supply_amount"));
 
     public static final StreamCodec<FriendlyByteBuf, SyncPenaltySupplyAmount> STREAM_CODEC = StreamCodec.composite(
-        ResourceLocation.STREAM_CODEC, SyncPenaltySupplyAmount::supplyType,
-        ByteBufCodecs.FLOAT, SyncPenaltySupplyAmount::amount,
-        SyncPenaltySupplyAmount::new
+            ResourceLocation.STREAM_CODEC, SyncPenaltySupplyAmount::supplyType,
+            ByteBufCodecs.FLOAT, SyncPenaltySupplyAmount::amount,
+            SyncPenaltySupplyAmount::new
     );
 
     public static void handleClient(final SyncPenaltySupplyAmount packet, final IPayloadContext context) {

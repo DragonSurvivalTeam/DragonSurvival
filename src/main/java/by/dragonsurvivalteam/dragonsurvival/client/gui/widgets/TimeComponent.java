@@ -19,6 +19,9 @@ public record TimeComponent(Item item, int ticks, BiFunction<Item, Integer, Comp
     @Translation(comments = "%s %s")
     private static final String TIME = Translation.Type.GUI.wrap("time_of");
 
+    @Translation(comments = "Stops or starts natural growth")
+    private static final String SWITCHES_GROWTH = Translation.Type.GUI.wrap("switches_growth");
+
     public static final BiFunction<Item, Integer, Component> DEFAULT = (item, ticks) -> Component.translatable(item.getDescriptionId()).append(": ").append(translateTime(ticks));
 
     public static final BiFunction<Item, Integer, Component> GROWTH = (item, ticks) -> {
@@ -29,8 +32,10 @@ public record TimeComponent(Item item, int ticks, BiFunction<Item, Integer, Comp
         //noinspection deprecation,OptionalGetWithoutIsPresent -> ignore / the item is expected to be part of the entries at this point
         GrowthItem growthItem = handler.stage().value().growthItems().stream().filter(entry -> entry.items().contains(item.builtInRegistryHolder())).findFirst().get();
 
+        Component growthInfo = ticks == 0 ? Component.translatable(SWITCHES_GROWTH) : translateTime(ticks);
+
         if (growthItem.maximumUsages() == GrowthItem.INFINITE_USAGES) {
-            return Component.translatable(item.getDescriptionId()).append(": ").append(translateTime(ticks));
+            return Component.translatable(item.getDescriptionId()).append(": ").append(growthInfo);
         }
 
         int numberOfUses = handler.getGrowthUses(item);
@@ -40,7 +45,7 @@ public record TimeComponent(Item item, int ticks, BiFunction<Item, Integer, Comp
             usage = usage.withStyle(ChatFormatting.DARK_GRAY);
         }
 
-        return Component.translatable(item.getDescriptionId()).append(": ").append(translateTime(ticks)).append(usage);
+        return Component.translatable(item.getDescriptionId()).append(": ").append(growthInfo).append(usage);
     };
 
     private static Component translateTime(int ticks) {

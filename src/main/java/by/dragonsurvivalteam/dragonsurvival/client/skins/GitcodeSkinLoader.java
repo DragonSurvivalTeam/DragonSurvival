@@ -43,8 +43,9 @@ public class GitcodeSkinLoader extends NetSkinLoader {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(internetGetStream(url, GITCODE_HEADER, 2 * 1000)));
                 SkinListApiResponse skinListResponse = gson.fromJson(reader, SkinListApiResponse.class);
                 reader.close();
-                if (skinListResponse.content.length == 0)
+                if (skinListResponse.content.length == 0) {
                     break;
+                }
                 result.addAll(Arrays.asList(skinListResponse.content));
                 ++page;
             }

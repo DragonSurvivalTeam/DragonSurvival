@@ -217,7 +217,9 @@ public class ClawToolHandler {
     /** Handle tool breaking for the dragon */
     @SubscribeEvent
     public static void onToolBreak(final PlayerDestroyItemEvent event) {
-        if (event.getHand() == null) return;
+        if (event.getHand() == null) {
+            return;
+        }
         Player player = event.getEntity();
 
         if (DragonStateProvider.isDragon(player)) {

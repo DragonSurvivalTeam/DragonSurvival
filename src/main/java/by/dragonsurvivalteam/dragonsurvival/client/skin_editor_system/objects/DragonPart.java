@@ -14,7 +14,16 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.List;
 
 /** Part data read from the 'skin/parts/*.json' files */
-public record DragonPart(String key, ResourceLocation texture, List<ResourceKey<DragonSpecies>> applicableSpecies, List<ResourceKey<DragonBody>> applicableBodies, float averageHue, boolean isColorable, boolean includeInRandomizer, boolean isHueRandomizable) {
+public record DragonPart(
+        String key,
+        ResourceLocation texture,
+        List<ResourceKey<DragonSpecies>> applicableSpecies,
+        List<ResourceKey<DragonBody>> applicableBodies,
+        float averageHue,
+        boolean isColorable,
+        boolean includeInRandomizer,
+        boolean isHueRandomizable
+) {
     public static final Codec<DragonPart> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("key").forGetter(DragonPart::key),
             ResourceLocation.CODEC.fieldOf("texture").forGetter(DragonPart::texture),

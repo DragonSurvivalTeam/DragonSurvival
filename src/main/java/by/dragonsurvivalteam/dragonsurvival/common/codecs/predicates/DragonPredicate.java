@@ -2,7 +2,6 @@ package by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.common.items.growth.StarHeartItem;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
@@ -27,7 +26,7 @@ public record DragonPredicate(
         Optional<HolderSet<DragonSpecies>> dragonSpecies,
         Optional<DragonStagePredicate> dragonStage,
         Optional<HolderSet<DragonBody>> dragonBody,
-        Optional<StarHeartItem.State> starHeartState,
+        Optional<Boolean> isGrowthStopped,
         Optional<Boolean> markedByEnderDragon,
         Optional<Boolean> flightWasGranted,
         Optional<Boolean> spinWasGranted
@@ -36,7 +35,7 @@ public record DragonPredicate(
             RegistryCodecs.homogeneousList(DragonSpecies.REGISTRY).optionalFieldOf("dragon_species").forGetter(DragonPredicate::dragonSpecies),
             DragonStagePredicate.CODEC.optionalFieldOf("stage_specific").forGetter(DragonPredicate::dragonStage),
             RegistryCodecs.homogeneousList(DragonBody.REGISTRY).optionalFieldOf("dragon_body").forGetter(DragonPredicate::dragonBody),
-            StarHeartItem.State.CODEC.optionalFieldOf("star_heart_state").forGetter(DragonPredicate::starHeartState),
+            Codec.BOOL.optionalFieldOf("is_growth_stopped").forGetter(DragonPredicate::isGrowthStopped),
             Codec.BOOL.optionalFieldOf("marked_by_ender_dragon").forGetter(DragonPredicate::markedByEnderDragon),
             Codec.BOOL.optionalFieldOf("flight_was_granted").forGetter(DragonPredicate::flightWasGranted),
             Codec.BOOL.optionalFieldOf("spin_was_granted").forGetter(DragonPredicate::spinWasGranted)
@@ -49,37 +48,37 @@ public record DragonPredicate(
             return false;
         }
 
-        DragonStateHandler data = DragonStateProvider.getData(player);
+        DragonStateHandler handler = DragonStateProvider.getData(player);
 
-        if (!data.isDragon()) {
+        if (!handler.isDragon()) {
             return false;
         }
 
-        if (dragonSpecies().isPresent() && !dragonSpecies().get().contains(data.species())) {
+        if (dragonSpecies().isPresent() && !dragonSpecies().get().contains(handler.species())) {
             return false;
         }
 
-        if (dragonStage().isPresent() && !dragonStage().get().matches(data.stage(), data.getGrowth())) {
+        if (dragonStage().isPresent() && !dragonStage().get().matches(handler.stage(), handler.getGrowth())) {
             return false;
         }
 
-        if (dragonBody().isPresent() && !dragonBody().get().contains(data.body())) {
+        if (dragonBody().isPresent() && !dragonBody().get().contains(handler.body())) {
             return false;
         }
 
-        if (starHeartState().isPresent() && starHeartState().get() != data.starHeartState) {
+        if (isGrowthStopped().isPresent() && isGrowthStopped().get() != handler.isGrowthStopped) {
             return false;
         }
 
-        if(markedByEnderDragon().isPresent() && markedByEnderDragon().get() != data.markedByEnderDragon) {
+        if (markedByEnderDragon().isPresent() && markedByEnderDragon().get() != handler.markedByEnderDragon) {
             return false;
         }
 
-        if(flightWasGranted().isPresent() && flightWasGranted().get() != data.flightWasGranted) {
+        if (flightWasGranted().isPresent() && flightWasGranted().get() != handler.flightWasGranted) {
             return false;
         }
 
-        if(spinWasGranted().isPresent() && spinWasGranted().get() != data.spinWasGranted) {
+        if (spinWasGranted().isPresent() && spinWasGranted().get() != handler.spinWasGranted) {
             return false;
         }
 
@@ -96,7 +95,7 @@ public record DragonPredicate(
         private Optional<HolderSet<DragonSpecies>> dragonSpecies = Optional.empty();
         private Optional<DragonStagePredicate> dragonStage = Optional.empty();
         private Optional<HolderSet<DragonBody>> dragonBody = Optional.empty();
-        private Optional<StarHeartItem.State> starHeartState = Optional.empty();
+        private Optional<Boolean> isGrowthStopped = Optional.empty();
         private Optional<Boolean> markedByEnderDragon = Optional.empty();
         private Optional<Boolean> flightWasGranted = Optional.empty();
         private Optional<Boolean> spinWasGranted = Optional.empty();
@@ -130,8 +129,8 @@ public record DragonPredicate(
             return this;
         }
 
-        public DragonPredicate.Builder starHeart(final StarHeartItem.State starHeartState) {
-            this.starHeartState = Optional.of(starHeartState);
+        public DragonPredicate.Builder growthStopped(final boolean isGrowthStopped) {
+            this.isGrowthStopped = Optional.of(isGrowthStopped);
             return this;
         }
 
@@ -151,7 +150,7 @@ public record DragonPredicate(
         }
 
         public DragonPredicate build() {
-            return new DragonPredicate(dragonSpecies, dragonStage, dragonBody, starHeartState, markedByEnderDragon, flightWasGranted, spinWasGranted);
+            return new DragonPredicate(dragonSpecies, dragonStage, dragonBody, isGrowthStopped, markedByEnderDragon, flightWasGranted, spinWasGranted);
         }
     }
 }

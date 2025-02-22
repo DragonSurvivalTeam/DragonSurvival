@@ -29,7 +29,16 @@ import net.minecraft.world.item.alchemy.Potion;
 import java.util.List;
 import java.util.Optional;
 
-public record SupplyTrigger(ResourceLocation supplyType, Holder<Attribute> attributeToUseAsBase, int triggerRate, float reductionRateMultiplier, float regenerationRate, List<RecoveryItems> recoveryItems, boolean displayLikeHungerBar, Optional<ParticleOptions> particlesOnTrigger) implements PenaltyTrigger {
+public record SupplyTrigger(
+        ResourceLocation supplyType,
+        Holder<Attribute> attributeToUseAsBase,
+        int triggerRate,
+        float reductionRateMultiplier,
+        float regenerationRate,
+        List<RecoveryItems> recoveryItems,
+        boolean displayLikeHungerBar,
+        Optional<ParticleOptions> particlesOnTrigger
+) implements PenaltyTrigger {
     @Translation(comments = " every %s seconds")
     private static final String PENALTY_SUPPLY_TRIGGER = Translation.Type.GUI.wrap("penalty.supply_trigger");
 
@@ -68,7 +77,7 @@ public record SupplyTrigger(ResourceLocation supplyType, Holder<Attribute> attri
         if (dragon.level().getGameTime() % triggerRate() == 0) {
             particlesOnTrigger.ifPresent(particle -> {
                 for (int i = 0; i < 2; i++) {
-                    ((ServerLevel)dragon.level()).sendParticles(particle, dragon.getX() + (dragon.getRandom().nextDouble() - 0.5D) * 0.5D, dragon.getEyeY() +  (dragon.getRandom().nextDouble() - 0.5D) * 0.5D, dragon.getZ() + (dragon.getRandom().nextDouble() - 0.5D) * 0.5D, 1, 0, -dragon.getRandom().nextDouble() * 0.25D, 0, 0.025F);
+                    ((ServerLevel) dragon.level()).sendParticles(particle, dragon.getX() + (dragon.getRandom().nextDouble() - 0.5D) * 0.5D, dragon.getEyeY() + (dragon.getRandom().nextDouble() - 0.5D) * 0.5D, dragon.getZ() + (dragon.getRandom().nextDouble() - 0.5D) * 0.5D, 1, 0, -dragon.getRandom().nextDouble() * 0.25D, 0, 0.025F);
                 }
             });
             return !penaltySupply.hasSupply(supplyType);

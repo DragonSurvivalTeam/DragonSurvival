@@ -30,7 +30,7 @@ public class EffectModifications extends Storage<EffectModification.Instance> {
         int duration = effect.getDuration();
 
         for (EffectModification.Instance instance : all()) {
-            if (instance.baseData().effects().contains( effect.getEffect())) {
+            if (instance.baseData().effects().contains(effect.getEffect())) {
                 duration = instance.calculateDuration(duration);
             }
         }
@@ -42,7 +42,7 @@ public class EffectModifications extends Storage<EffectModification.Instance> {
         int amplifier = effect.getAmplifier();
 
         for (EffectModification.Instance instance : all()) {
-            if (instance.baseData().effects().contains( effect.getEffect())) {
+            if (instance.baseData().effects().contains(effect.getEffect())) {
                 amplifier = instance.calculateAmplifier(amplifier);
             }
         }

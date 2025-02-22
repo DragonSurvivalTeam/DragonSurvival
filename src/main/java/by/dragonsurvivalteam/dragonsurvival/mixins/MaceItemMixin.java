@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public class MaceItemMixin {
     @ModifyReturnValue(method = "canSmashAttack", at = @At(value = "RETURN"))
     private static boolean disallowFlyingDragonsFromSmashAttacking(boolean original, @Local(argsOnly = true) LivingEntity entity) {
-        if(entity instanceof Player player) {
+        if (entity instanceof Player player) {
             return original && !ServerFlightHandler.isFlying(player);
         } else {
             return original;

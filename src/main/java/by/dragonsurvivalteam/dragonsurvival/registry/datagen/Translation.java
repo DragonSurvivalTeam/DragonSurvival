@@ -86,6 +86,7 @@ public @interface Translation {
         DRAGON_SPECIES("dragon_species." + DragonSurvival.MODID + ".", ""),
         DRAGON_SPECIES_ALTAR_DESCRIPTION("dragon_species." + DragonSurvival.MODID + ".", ".altar.desc"),
         DRAGON_SPECIES_INVENTORY_DESCRIPTION("dragon_species." + DragonSurvival.MODID + ".", ".banner.desc"),
+        DRAGON_SPECIES_LOCKED("dragon_species." + DragonSurvival.MODID + ".", ".locked"),
 
         PENALTY("dragon_penalty." + DragonSurvival.MODID + ".", ""),
         PENALTY_DESCRIPTION("dragon_penalty." + DragonSurvival.MODID + ".", ".desc"),
@@ -124,6 +125,12 @@ public @interface Translation {
 
         public String wrap(final String key) {
             return prefix + key + suffix;
+        }
+
+        /** See {@link Translation.Type#wrap(String, String)} */
+        public String wrap(final Holder<?> key) {
+            //noinspection DataFlowIssue -> key is present
+            return wrap(key.getKey().location());
         }
 
         /** See {@link Translation.Type#wrap(String, String)} */

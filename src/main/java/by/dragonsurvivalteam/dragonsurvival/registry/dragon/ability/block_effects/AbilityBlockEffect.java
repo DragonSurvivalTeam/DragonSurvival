@@ -31,9 +31,12 @@ public interface AbilityBlockEffect {
 
     Codec<AbilityBlockEffect> CODEC = REGISTRY.byNameCodec().dispatch("effect_type", AbilityBlockEffect::blockCodec, Function.identity());
 
-    default List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) { return List.of(); }
+    default List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
+        return List.of();
+    }
 
     void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final BlockPos position, @Nullable final Direction direction);
+
     MapCodec<? extends AbilityBlockEffect> blockCodec();
 
     @SubscribeEvent

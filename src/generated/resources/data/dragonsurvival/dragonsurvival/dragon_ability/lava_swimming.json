@@ -22,7 +22,7 @@
     }
   ],
   "activation": {
-    "type": "passive"
+    "activation_type": "dragonsurvival:passive"
   },
   "can_be_manually_disabled": false,
   "icon": {

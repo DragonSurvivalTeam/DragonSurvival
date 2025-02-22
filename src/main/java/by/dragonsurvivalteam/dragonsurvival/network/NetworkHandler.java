@@ -7,7 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawMenuToggl
 import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawRender;
 import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawsMenu;
 import by.dragonsurvivalteam.dragonsurvival.network.container.OpenDragonAltar;
-import by.dragonsurvivalteam.dragonsurvival.network.container.RequestOpenDragonEditor;
+import by.dragonsurvivalteam.dragonsurvival.network.container.OpenDragonEditor;
 import by.dragonsurvivalteam.dragonsurvival.network.container.RequestOpenDragonInventory;
 import by.dragonsurvivalteam.dragonsurvival.network.container.RequestOpenVanillaInventory;
 import by.dragonsurvivalteam.dragonsurvival.network.container.SortInventory;
@@ -22,6 +22,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncFlyingPlayerAbili
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncSpinStatus;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncWingIcon;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncWingsSpread;
+import by.dragonsurvivalteam.dragonsurvival.network.flight.ToggleFlight;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.AttemptManualUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncAbilityLevel;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncAddPenaltySupply;
@@ -83,7 +84,6 @@ public class NetworkHandler {
         // Generic packets
         registrar.playToClient(SyncPlayerJump.TYPE, SyncPlayerJump.STREAM_CODEC, SyncPlayerJump::handleClient);
         registrar.playToClient(RefreshDragon.TYPE, RefreshDragon.STREAM_CODEC, RefreshDragon::handleClient);
-        registrar.playToClient(OpenDragonAltar.TYPE, OpenDragonAltar.STREAM_CODEC, OpenDragonAltar::handleClient);
         registrar.playToClient(SyncBrokenTool.TYPE, SyncBrokenTool.STREAM_CODEC, SyncBrokenTool::handleClient);
         registrar.playToClient(SyncFlyingPlayerAbility.TYPE, SyncFlyingPlayerAbility.STREAM_CODEC, SyncFlyingPlayerAbility::handleClient);
         registrar.playToClient(SyncEffectModification.TYPE, SyncEffectModification.STREAM_CODEC, SyncEffectModification::handleClient);
@@ -96,15 +96,17 @@ public class NetworkHandler {
         registrar.playToServer(RequestOpenVanillaInventory.TYPE, RequestOpenVanillaInventory.STREAM_CODEC, RequestOpenVanillaInventory::handleServer);
         registrar.playToServer(SyncLargeDragonDestruction.TYPE, SyncLargeDragonDestruction.STREAM_CODEC, SyncLargeDragonDestruction::handleServer);
 
+        registrar.playBidirectional(OpenDragonEditor.TYPE, OpenDragonEditor.STREAM_CODEC, new DirectionalPayloadHandler<>(OpenDragonEditor::handleClient, OpenDragonEditor::handleServer));
+        registrar.playBidirectional(OpenDragonAltar.TYPE, OpenDragonAltar.STREAM_CODEC, new DirectionalPayloadHandler<>(OpenDragonAltar::handleClient, OpenDragonAltar::handleServer));
         registrar.playBidirectional(FlightStatus.TYPE, FlightStatus.STREAM_CODEC, new DirectionalPayloadHandler<>(FlightStatus::handleClient, FlightStatus::handleServer));
         registrar.playBidirectional(SyncDragonMovement.TYPE, SyncDragonMovement.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncDragonMovement::handleClient, SyncDragonMovement::handleServer));
         registrar.playBidirectional(SyncComplete.TYPE, SyncComplete.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncComplete::handleClient, SyncComplete::handleServer));
+        registrar.playBidirectional(ToggleFlight.TYPE, ToggleFlight.STREAM_CODEC, new DirectionalPayloadHandler<>(ToggleFlight::handleClient, ToggleFlight::handleServer));
 
         // Status
         registrar.playToClient(SyncGrowthState.TYPE, SyncGrowthState.STREAM_CODEC, SyncGrowthState::handleClient);
         registrar.playToClient(SyncGrowth.TYPE, SyncGrowth.STREAM_CODEC, SyncGrowth::handleClient);
         registrar.playToClient(SyncDesiredGrowth.TYPE, SyncDesiredGrowth.STREAM_CODEC, SyncDesiredGrowth::handleClient);
-        registrar.playToClient(RequestOpenDragonEditor.TYPE, RequestOpenDragonEditor.STREAM_CODEC, RequestOpenDragonEditor::handleClient);
         registrar.playToClient(SyncEnderDragonMark.TYPE, SyncEnderDragonMark.STREAM_CODEC, SyncEnderDragonMark::handleClient);
         registrar.playToClient(SyncAltarState.TYPE, SyncAltarState.STREAM_CODEC, SyncAltarState::handleClient);
 

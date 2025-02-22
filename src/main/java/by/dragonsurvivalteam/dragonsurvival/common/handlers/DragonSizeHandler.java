@@ -164,7 +164,7 @@ public class DragonSizeHandler {
         Player player = event.getEntity();
         DragonStateHandler data = DragonStateProvider.getData(player);
 
-        boolean isDragon = data.isDragon();
+        boolean isDragon = data.isDragon(); // TODO :: remove and handle it when reverted to human
         Boolean wasDragon = WAS_DRAGON.put(getKey(player), isDragon);
 
         if (wasDragon != null && wasDragon && !isDragon) {
@@ -172,6 +172,9 @@ public class DragonSizeHandler {
             player.refreshDimensions();
         } else if (isDragon) {
             data.lerpGrowth(player);
+
+            // Required for smooth transitions of the pose (e.g. sneaking)
+            DragonSizeHandler.overridePose(event.getEntity());
         }
     }
 

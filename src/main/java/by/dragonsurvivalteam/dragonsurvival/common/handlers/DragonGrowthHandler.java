@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.GrowthItem;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncGrowthState;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
@@ -21,6 +22,12 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 @EventBusSubscriber(modid = DragonSurvival.MODID)
 public class DragonGrowthHandler {
+    @Translation(comments = "Natural growth is §cinactive§r")
+    private static final String INACTIVE = Translation.Type.GUI.wrap("message.natural_growth_inactive");
+
+    @Translation(comments = "Natural growth is §2active§r")
+    private static final String ACTIVE = Translation.Type.GUI.wrap("message.natural_growth_active");
+
     @Translation(comments = "You have reached the largest growth")
     private static final String REACHED_LARGEST = Translation.Type.GUI.wrap("system.reached_largest");
 
@@ -36,9 +43,23 @@ public class DragonGrowthHandler {
             return;
         }
 
-        double growth = getGrowth(handler, event.getItemStack().getItem());
+        Double growth = getGrowth(player, handler, event.getItemStack().getItem());
 
-        if (growth == 0) {
+        if (growth.isNaN()) {
+            if (player instanceof ServerPlayer serverPlayer) {
+                DSAdvancementTriggers.STOP_NATURAL_GROWTH.get().trigger(serverPlayer);
+            }
+
+            handler.isGrowthStopped = !handler.isGrowthStopped;
+            event.getItemStack().consume(1, player);
+
+            if (player.level().isClientSide()) {
+                String message = handler.isGrowthStopped ? INACTIVE : ACTIVE;
+                player.displayClientMessage(Component.translatable(message), true);
+            }
+
+            return;
+        } else if (growth == 0d) {
             return;
         }
 
@@ -54,21 +75,21 @@ public class DragonGrowthHandler {
         event.getItemStack().consume(1, player);
     }
 
-    public static double getGrowth(final DragonStateHandler handler, final Item item) {
-        int growth = 0;
-
-        for (GrowthItem growthItem : handler.stage().value().growthItems()) {
+    public static Double getGrowth(final Player player, final DragonStateHandler handler, final Item item) {
+        // Get stage from desired growth, so that you are prevented from spamming growth items intended for an earlier stage as you grow
+        for (GrowthItem growthItem : handler.stageFromDesiredSize(player).value().growthItems()) {
             if (!growthItem.canBeUsed(handler, item)) {
                 continue;
             }
 
-            // Select the largest number (independent on positive / negative)
-            if ((growth == 0 || Math.abs(growthItem.growthInTicks()) > Math.abs(growth))) {
-                growth = growthItem.growthInTicks();
+            if (growthItem.growthInTicks() == 0) {
+                return Double.NaN;
             }
+
+            return handler.stage().value().ticksToGrowth(growthItem.growthInTicks());
         }
 
-        return handler.stage().value().ticksToGrowth(growth);
+        return 0d;
     }
 
     @SubscribeEvent

@@ -69,7 +69,7 @@ public class MiscCodecs {
                 }
             }
 
-           return isValid ? DataResult.success(value) : DataResult.error(() -> "Percentage check must be between 0 and 1: [" + value + "]");
+            return isValid ? DataResult.success(value) : DataResult.error(() -> "Percentage check must be between 0 and 1: [" + value + "]");
         });
     }
 
@@ -101,7 +101,8 @@ public class MiscCodecs {
         });
     }
 
-    public record DestructionData(EntityPredicate entityPredicate, BlockPredicate blockPredicate, double crushingGrowth, double blockDestructionGrowth, double crushingDamageScalar) {
+    public record DestructionData(EntityPredicate entityPredicate, BlockPredicate blockPredicate, double crushingGrowth, double blockDestructionGrowth,
+                                  double crushingDamageScalar) {
         public static final Codec<DestructionData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 EntityPredicate.CODEC.fieldOf("entity_predicate").forGetter(DestructionData::entityPredicate),
                 BlockPredicate.CODEC.fieldOf("block_predicate").forGetter(DestructionData::blockPredicate),

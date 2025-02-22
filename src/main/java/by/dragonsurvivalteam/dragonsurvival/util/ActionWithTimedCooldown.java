@@ -31,7 +31,9 @@ public class ActionWithTimedCooldown {
      * @return True if the action was run, false if the cooldown hasn't passed yet.
      */
     public boolean tryRun() {
-        if (timedCooldown.isOnCooldown()) return false;
+        if (timedCooldown.isOnCooldown()) {
+            return false;
+        }
 
         forceRun();
         return true;

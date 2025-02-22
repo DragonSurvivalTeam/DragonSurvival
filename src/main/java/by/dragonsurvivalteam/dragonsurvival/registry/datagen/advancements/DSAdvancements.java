@@ -7,9 +7,9 @@ import by.dragonsurvivalteam.dragonsurvival.common.criteria.BeDragonTrigger;
 import by.dragonsurvivalteam.dragonsurvival.common.criteria.ConvertItemFromAbility;
 import by.dragonsurvivalteam.dragonsurvival.common.criteria.MineBlockUnderLavaTrigger;
 import by.dragonsurvivalteam.dragonsurvival.common.criteria.SleepOnTreasureTrigger;
+import by.dragonsurvivalteam.dragonsurvival.common.criteria.StopNaturalGrowthTrigger;
 import by.dragonsurvivalteam.dragonsurvival.common.criteria.UpgradeAbilityTrigger;
 import by.dragonsurvivalteam.dragonsurvival.common.criteria.UseDragonSoulTrigger;
-import by.dragonsurvivalteam.dragonsurvival.common.criteria.UseStarHeartTrigger;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
@@ -357,11 +357,11 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
     private void buildBeDragonChildren(final AdvancementHolder parent) {
         // --- Parent: be_dragon --- //
 
-        AdvancementHolder useStarHeart = createWithToast(parent, LangKey.USE_STAR_HEART, DSItems.STAR_HEART.value(), useStarHeart(), 30);
+        AdvancementHolder stopNaturalGrowth = createWithToast(parent, LangKey.STOP_NATURAL_GROWTH, DSItems.STAR_HEART.value(), useStarHeart(), 30);
 
-        // --- Parent: use_star_heart --- //
+        // --- Parent: stop_natural_growth --- //
 
-        createWithToast(useStarHeart, LangKey.USE_DRAGON_SOUL, DSItems.DRAGON_SOUL.value(), useDragonSoul(), 120);
+        createWithToast(stopNaturalGrowth, LangKey.USE_DRAGON_SOUL, DSItems.DRAGON_SOUL.value(), useDragonSoul(), 120);
     }
 
     private void buildCollectDustChildren(final AdvancementHolder parent) {
@@ -648,8 +648,8 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
     // --- Use Star Heart --- //
 
-    public Criterion<UseStarHeartTrigger.UseStarHeartInstance> useStarHeart() {
-        return DSAdvancementTriggers.USE_STAR_HEART.get().createCriterion(new UseStarHeartTrigger.UseStarHeartInstance(Optional.empty()));
+    public Criterion<StopNaturalGrowthTrigger.Instance> useStarHeart() {
+        return DSAdvancementTriggers.STOP_NATURAL_GROWTH.get().createCriterion(new StopNaturalGrowthTrigger.Instance(Optional.empty()));
     }
 
 

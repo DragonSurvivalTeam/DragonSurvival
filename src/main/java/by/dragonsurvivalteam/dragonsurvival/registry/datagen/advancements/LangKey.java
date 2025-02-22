@@ -96,8 +96,8 @@ public class LangKey {
     // --- Parent: Be Dragon --- //
 
     @Translation(type = Translation.Type.ADVANCEMENT, comments = "Forever Young")
-    @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Use a Star Heart to stop your growth.")
-    protected static final String USE_STAR_HEART = "use_star_heart";
+    @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Stop your natural growth by using a specific growth item.")
+    protected static final String STOP_NATURAL_GROWTH = "stop_natural_growth";
 
     @Translation(type = Translation.Type.ADVANCEMENT, comments = "Soul of a Dragon")
     @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Use a Dragon Soul to store all your stats. You can pass it on to another player or keep it for yourself!")

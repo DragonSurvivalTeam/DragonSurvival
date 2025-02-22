@@ -48,7 +48,7 @@
     }
   ],
   "activation": {
-    "type": "passive"
+    "activation_type": "dragonsurvival:passive"
   },
   "icon": {
     "texture_entries": [

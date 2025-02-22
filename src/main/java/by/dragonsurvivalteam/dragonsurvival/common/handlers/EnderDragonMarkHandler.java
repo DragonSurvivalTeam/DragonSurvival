@@ -29,7 +29,9 @@ public class EnderDragonMarkHandler {
 
     @SubscribeEvent
     public static void onEnderDragonHealthChanged(LivingDamageEvent.Post event) {
-        if (event.getEntity().level().isClientSide()) return;
+        if (event.getEntity().level().isClientSide()) {
+            return;
+        }
 
         if (event.getEntity() instanceof EnderDragon enderDragon) {
             if (event.getSource().getEntity() instanceof Player player) {

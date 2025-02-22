@@ -23,7 +23,7 @@ public record SyncEmote(int playerId, DragonEmote emote, boolean stop) implement
 
     public static void handleServer(final SyncEmote packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
-            if(context.player().level().getEntity(packet.playerId()) instanceof Player player) {
+            if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 PacketDistributor.sendToPlayersTrackingEntity(player, packet);
             }
         });
@@ -32,7 +32,7 @@ public record SyncEmote(int playerId, DragonEmote emote, boolean stop) implement
     public static void handleClient(final SyncEmote packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
-                if(!packet.stop) {
+                if (!packet.stop) {
                     DragonSurvival.PROXY.beginPlayingEmote(player.getId(), packet.emote);
                 } else {
                     DragonSurvival.PROXY.stopEmote(player.getId(), packet.emote);

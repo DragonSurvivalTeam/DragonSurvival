@@ -15,7 +15,13 @@ import net.minecraft.server.level.ServerPlayer;
 import java.util.Optional;
 import java.util.UUID;
 
-public record CommonData(ClientEffectProvider.ClientData clientData, Optional<ResourceKey<DragonAbility>> ability, Optional<UUID> source, int appliedAbilityLevel, boolean removeAutomatically) {
+public record CommonData(
+        ClientEffectProvider.ClientData clientData,
+        Optional<ResourceKey<DragonAbility>> ability,
+        Optional<UUID> source,
+        int appliedAbilityLevel,
+        boolean removeAutomatically
+) {
     public static final Codec<CommonData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ClientEffectProvider.ClientData.CODEC.fieldOf("client_data").forGetter(CommonData::clientData),
             ResourceKey.codec(DragonAbility.REGISTRY).optionalFieldOf("ability").forGetter(CommonData::ability),

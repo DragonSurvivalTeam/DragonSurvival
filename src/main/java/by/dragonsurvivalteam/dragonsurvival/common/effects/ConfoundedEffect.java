@@ -15,7 +15,9 @@ import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 @SuppressWarnings("unused")
 @EventBusSubscriber
 public class ConfoundedEffect extends ModifiableMobEffect {
-    public ConfoundedEffect(MobEffectCategory type, int color, boolean incurable) { super(type, color, incurable); }
+    public ConfoundedEffect(MobEffectCategory type, int color, boolean incurable) {
+        super(type, color, incurable);
+    }
 
     @SubscribeEvent
     public static void reflectDamage(LivingDamageEvent.Post damageEvent) {

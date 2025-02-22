@@ -20,7 +20,7 @@ public record SelfTarget(Either<BlockTargeting, EntityTargeting> target) impleme
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability) {
         target().ifLeft(blockTarget -> {
             if (blockTarget.matches(dragon, dragon.blockPosition())) {
-                blockTarget.effect().forEach(target -> target.apply(dragon, ability, dragon.blockPosition(), null));
+                blockTarget.effects().forEach(target -> target.apply(dragon, ability, dragon.blockPosition(), null));
             }
         }).ifRight(entityTarget -> {
             if (entityTarget.matches(dragon, dragon, dragon.position())) {

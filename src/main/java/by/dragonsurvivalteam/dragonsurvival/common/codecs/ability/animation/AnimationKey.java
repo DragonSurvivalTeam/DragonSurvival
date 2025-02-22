@@ -15,7 +15,7 @@ public enum AnimationKey {
 
     private final String name;
 
-    AnimationKey(final String name){
+    AnimationKey(final String name) {
         this.name = name;
     }
 

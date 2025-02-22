@@ -165,7 +165,7 @@ public class DragonBeacon extends Block implements SimpleWaterloggedBlock, Entit
     }
 
     @Override
-    @Nullable public <T extends BlockEntity> BlockEntityTicker<T> getTicker(final Level level, @NotNull final BlockState state, @NotNull final BlockEntityType<T> type) {
+    public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(final Level level, @NotNull final BlockState state, @NotNull final BlockEntityType<T> type) {
         return level.isClientSide ? null : BaseEntityBlock.createTickerHelper(type, DSBlockEntities.DRAGON_BEACON.get(), DragonBeaconBlockEntity::serverTick);
     }
 }

@@ -22,8 +22,9 @@ public class SpawningUtils {
             int y = level.getHeight(Heightmap.Types.WORLD_SURFACE, (int) x, (int) z);
             blockPos.set(x, y, z);
 
-            if (level.hasChunksAt(blockPos.getX() - 10, blockPos.getY() - 10, blockPos.getZ() - 10, blockPos.getX() + 10, blockPos.getY() + 10, blockPos.getZ() + 10))
+            if (level.hasChunksAt(blockPos.getX() - 10, blockPos.getY() - 10, blockPos.getZ() - 10, blockPos.getX() + 10, blockPos.getY() + 10, blockPos.getZ() + 10)) {
                 return blockPos;
+            }
         }
 
         return null;

@@ -15,7 +15,7 @@ import org.joml.Vector3f;
 public record SyncParticleTrail(Vector3f source, Vector3f target, ParticleOptions trailParticle) implements CustomPacketPayload {
     public static final Type<SyncParticleTrail> TYPE = new Type<>(DragonSurvival.res("sync_particle_trail"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf,SyncParticleTrail> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<RegistryFriendlyByteBuf, SyncParticleTrail> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VECTOR3F, SyncParticleTrail::source,
             ByteBufCodecs.VECTOR3F, SyncParticleTrail::target,
             ParticleTypes.STREAM_CODEC, SyncParticleTrail::trailParticle,

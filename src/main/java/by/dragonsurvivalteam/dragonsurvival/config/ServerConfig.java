@@ -127,10 +127,6 @@ public class ServerConfig {
 
     // --- Magic --- //
 
-    @Translation(key = "consume_experience_as_mana", type = Translation.Type.CONFIGURATION, comments = "If enabled experience will be used to substitute for missing mana (10 experience points equals 1 mana point)")
-    @ConfigOption(side = ConfigSide.SERVER, category = "magic", key = "consume_experience_as_mana")
-    public static Boolean consumeExperienceAsMana = true;
-
     @Translation(key = "save_all_abilities", type = Translation.Type.CONFIGURATION, comments = {
             "If enabled all abilities will remain when changing dragon species",
             "This does not mean that the other dragon species gains these abilities",

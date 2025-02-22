@@ -18,7 +18,7 @@ public record ProjectileBlockRunFunctionEffect(ResourceLocation function) implem
 
     @Override
     public void apply(Projectile projectile, BlockPos target, int level) {
-        ServerLevel serverLevel = (ServerLevel)projectile.level();
+        ServerLevel serverLevel = (ServerLevel) projectile.level();
         MinecraftServer server = serverLevel.getServer();
         ServerFunctionManager manager = server.getFunctions();
 

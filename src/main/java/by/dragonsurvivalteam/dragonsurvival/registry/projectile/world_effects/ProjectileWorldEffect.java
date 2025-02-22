@@ -20,6 +20,7 @@ public interface ProjectileWorldEffect extends ProjectileEffect<Void> {
     Registry<MapCodec<? extends ProjectileWorldEffect>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();
 
     Codec<ProjectileWorldEffect> CODEC = REGISTRY.byNameCodec().dispatch("world_effect", ProjectileWorldEffect::codec, Function.identity());
+
     MapCodec<? extends ProjectileWorldEffect> codec();
 
     @SubscribeEvent

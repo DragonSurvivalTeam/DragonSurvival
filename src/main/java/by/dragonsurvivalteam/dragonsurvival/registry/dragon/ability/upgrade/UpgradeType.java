@@ -84,6 +84,7 @@ public interface UpgradeType<T> {
         return false;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     default boolean canUpgrade(final ServerPlayer dragon, final DragonAbilityInstance ability) {
         return ability.level() < maxLevel();
     }
@@ -97,8 +98,10 @@ public interface UpgradeType<T> {
     }
 
     boolean apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final T input);
+
     MutableComponent getDescription(int abilityLevel);
 
     int maxLevel();
+
     MapCodec<? extends UpgradeType<?>> codec();
 }

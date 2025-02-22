@@ -57,7 +57,7 @@ public class DragonPenaltyHandler {
     }
 
     @SubscribeEvent
-    public static void applyItemConsumedPenalties(final LivingEntityUseItemEvent.Finish event){
+    public static void applyItemConsumedPenalties(final LivingEntityUseItemEvent.Finish event) {
         if (!(event.getEntity() instanceof ServerPlayer serverPlayer)) {
             return;
         }

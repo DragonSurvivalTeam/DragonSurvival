@@ -27,6 +27,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayerUtils;
 import by.dragonsurvivalteam.dragonsurvival.client.util.TextRenderUtil;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.UnlockableBehavior;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
@@ -38,7 +39,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryDa
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonBodyTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
@@ -191,21 +191,19 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     public boolean confirmation;
     public boolean showUi = true;
 
-    /** Dragon type of {@link DragonEditorScreen#HANDLER} */
-    public Holder<DragonSpecies> dragonSpecies;
+    /** Dragon species of {@link DragonEditorScreen#HANDLER} */
+    public Holder<DragonSpecies> species;
 
     /** Dragon body of {@link DragonEditorScreen#HANDLER} */
-    public Holder<DragonBody> dragonBody;
+    public Holder<DragonBody> body;
 
-    /** Dragon level of {@link DragonEditorScreen#HANDLER} */
-    public Holder<DragonStage> dragonStage;
+    /** Dragon stage of {@link DragonEditorScreen#HANDLER} */
+    public Holder<DragonStage> stage;
 
     public SkinPreset preset;
     public int selectedSaveSlot = CustomizationFileHandler.STARTING_SLOT;
 
     public int backgroundColor = -804253680;
-
-    private final Screen source;
     private int guiLeft;
 
     private final String[] animations = {"sit_dentist", "sit", "idle", "fly", "swim", "run", "spinning_on_back"};
@@ -225,7 +223,9 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     private int curAnimation;
     private int selectedDragonStage;
     private boolean hasInit;
-    private boolean isEditor;
+    private final boolean fromAltar;
+
+    private final List<UnlockableBehavior.BodyEntry> unlockedBodies;
 
     private enum SlotDisplayMessage {
         INVALID_FOR_TYPE,
@@ -248,15 +248,11 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     private float tickWhenSlotDisplayMessageSet = -1;
     private SlotDisplayMessage slotDisplayMessage = SlotDisplayMessage.NONE;
 
-    public DragonEditorScreen(Screen source) {
-        this(source, null);
-        this.isEditor = true;
-    }
-
-    public DragonEditorScreen(Screen source, Holder<DragonSpecies> dragonSpecies) {
+    public DragonEditorScreen(Holder<DragonSpecies> species, List<UnlockableBehavior.BodyEntry> unlockedBodies, boolean fromAltar) {
         super(Component.translatable(LangKey.GUI_DRAGON_EDITOR));
-        this.source = source;
-        this.dragonSpecies = dragonSpecies;
+        this.fromAltar = fromAltar;
+        this.species = species;
+        this.unlockedBodies = unlockedBodies;
     }
 
     public record EditorAction<T>(Function<T, T> action, T value) {
@@ -282,10 +278,10 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     }
 
     public final Function<Holder<DragonStage>, Holder<DragonStage>> selectStageAction = newStage -> {
-        Holder<DragonStage> previousLevel = dragonStage;
-        dragonStage = newStage;
-        dragonRender.zoom = setZoom(dragonStage);
-        HANDLER.setStage(null, dragonStage);
+        Holder<DragonStage> previousLevel = stage;
+        stage = newStage;
+        dragonRender.zoom = setZoom(stage);
+        HANDLER.setStage(null, stage);
         HANDLER.recompileCurrentSkin();
         update();
 
@@ -294,45 +290,48 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
     // setHueAction, setSaturationAction, setBrightnessAction in HueSelectorComponent.Java
     // setDragonSlotAction in DragonEditorSlotButton.Java
+    private void refreshPartComponents() {
+        HashMap<SkinLayer, Lazy<LayerSettings>> layerSettingsMap = HANDLER.getCurrentStageCustomization().layerSettings;
+
+        for (SkinLayer layer : layerSettingsMap.keySet()) {
+            if (partComponents.containsKey(layer)) {
+                partComponents.get(layer).setSelectedPart(layerSettingsMap.get(layer).get().partKey);
+            }
+        }
+    }
 
     // FIXME :: Known issue: if I switch to a body type that invalidates my preset, my preset data will be lost even if I undo
     public final Function<CompoundTag, CompoundTag> setSkinPresetAction = tag -> {
         CompoundTag prevTag = HANDLER.getCurrentSkinPreset().serializeNBT(Objects.requireNonNull(Minecraft.getInstance().player).registryAccess());
         HANDLER.getCurrentSkinPreset().deserializeNBT(Minecraft.getInstance().player.registryAccess(), tag);
-        HashMap<SkinLayer, Lazy<LayerSettings>> layerSettingsMap = HANDLER.getCurrentStageCustomization().layerSettings;
-
-        for (SkinLayer layer : layerSettingsMap.keySet()) {
-            partComponents.get(layer).setSelectedPart(layerSettingsMap.get(layer).get().partKey);
-        }
-
         HANDLER.recompileCurrentSkin();
         update();
         return prevTag;
     };
 
     public final Function<Holder<DragonBody>, Holder<DragonBody>> dragonBodySelectAction = dragonBody -> {
-        Holder<DragonBody> previousBody = this.dragonBody;
-        this.dragonBody = dragonBody;
+        Holder<DragonBody> previousBody = this.body;
+        this.body = dragonBody;
         update();
         return previousBody;
     };
 
     public List<String> getPartsFromLayer(SkinLayer layer) {
-        return DragonEditorHandler.getDragonPartKeys(dragonSpecies, dragonBody, layer);
+        return DragonEditorHandler.getDragonPartKeys(species, body, layer);
     }
 
     public final Function<Pair<SkinLayer, String>, Pair<SkinLayer, String>> dragonPartSelectAction = pair -> {
-        Pair<SkinLayer, String> previousPair = new Pair<>(pair.getFirst(), preset.get(Objects.requireNonNull(dragonStage.getKey())).get().layerSettings.get(pair.getFirst()).get().partKey);
+        Pair<SkinLayer, String> previousPair = new Pair<>(pair.getFirst(), preset.get(Objects.requireNonNull(stage.getKey())).get().layerSettings.get(pair.getFirst()).get().partKey);
 
         SkinLayer layer = pair.getFirst();
         String value = pair.getSecond();
         partComponents.get(layer).setSelectedPart(value);
-        preset.get(dragonStage.getKey()).get().layerSettings.get(layer).get().partKey = value;
+        preset.get(stage.getKey()).get().layerSettings.get(layer).get().partKey = value;
 
         // Make sure that when we change a part, the color is properly updated to the default color of the new part
-        LayerSettings settings = preset.get(dragonStage.getKey()).get().layerSettings.get(layer).get();
+        LayerSettings settings = preset.get(stage.getKey()).get().layerSettings.get(layer).get();
 
-        DragonPart part = DragonEditorHandler.getDragonPart(layer, settings.partKey, dragonSpecies.getKey());
+        DragonPart part = DragonEditorHandler.getDragonPart(layer, settings.partKey, species.getKey());
         if (part != null && !settings.modifiedColor) {
             settings.hue = part.averageHue();
         }
@@ -344,8 +343,8 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     };
 
     public final Function<Boolean, Boolean> checkWingsButtonAction = (selected) -> {
-        boolean prevSelected = preset.get(Objects.requireNonNull(dragonStage.getKey())).get().wings;
-        preset.get(Objects.requireNonNull(dragonStage.getKey())).get().wings = selected;
+        boolean prevSelected = preset.get(Objects.requireNonNull(stage.getKey())).get().wings;
+        preset.get(Objects.requireNonNull(stage.getKey())).get().wings = selected;
         HANDLER.recompileCurrentSkin();
         update();
         return prevSelected;
@@ -555,7 +554,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         renderBackground(graphics, mouseX, mouseY, partialTick);
         children().stream().filter(DragonUIRenderComponent.class::isInstance).toList().forEach(s -> ((DragonUIRenderComponent) s).render(graphics, mouseX, mouseY, partialTick));
         DragonAltarScreen.renderBorders(graphics, BACKGROUND_TEXTURE, 0, width, 32, height - 32, width, height);
-        TextRenderUtil.drawCenteredScaledText(graphics, width / 2, 10, 2f, DragonStage.translatableName(Objects.requireNonNull(dragonStage.getKey())).getString().toUpperCase(), DyeColor.WHITE.getTextColor());
+        TextRenderUtil.drawCenteredScaledText(graphics, width / 2, 10, 2f, DragonStage.translatableName(Objects.requireNonNull(stage.getKey())).getString().toUpperCase(), DyeColor.WHITE.getTextColor());
 
         if (slotDisplayMessage != SlotDisplayMessage.NONE) {
             int color;
@@ -580,15 +579,15 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
             if (renderable instanceof AbstractWidget widget && widget != uiButton) {
                 if (widget == wingsButton) {
-                    if (dragonBody != null && dragonBody.value().canHideWings() && widget == wingsButton) {
+                    if (body != null && body.value().canHideWings() && widget == wingsButton) {
                         wingsButton.visible = showUi;
-                        wingsButton.setTooltip(Tooltip.create(Component.translatable(DragonBody.getWingButtonDescription(dragonBody))));
-                        wingsButton.setMessage(Component.translatable(DragonBody.getWingButtonName(dragonBody)));
+                        wingsButton.setTooltip(Tooltip.create(Component.translatable(DragonBody.getWingButtonDescription(body))));
+                        wingsButton.setMessage(Component.translatable(DragonBody.getWingButtonName(body)));
                     } else {
                         wingsButton.visible = false;
                     }
                 } else {
-                    if (dragonBodyBar.currentlyHiddenWidgets().contains(widget)) {
+                    if (dragonBodyBar.isHidden(widget)) {
                         widget.visible = false;
                     } else {
                         widget.visible = showUi;
@@ -608,50 +607,53 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     }
 
     private void initDummyDragon(final DragonStateHandler localHandler) {
-        if (dragonSpecies == null && localHandler.isDragon()) {
-            dragonSpecies = localHandler.species();
-            dragonStage = localHandler.stage();
-            dragonBody = localHandler.body();
-        } else if (dragonSpecies != null) {
-            if (dragonStage == null) {
-                dragonStage = dragonSpecies.value().getStartingStage(null);
+        if (species == null && localHandler.isDragon()) {
+            species = localHandler.species();
+            stage = localHandler.stage();
+            body = localHandler.body();
+        } else if (species != null) {
+            if (stage == null) {
+                stage = species.value().getStartingStage(null);
             }
 
             // body is null, or we are not a dragon, or the body is not valid for the species (is not default and species has bodies, or body is not in species' bodies)
-            if (dragonBody == null && (!localHandler.isDragon() || !((dragonSpecies.value().bodies().size() == 0 && localHandler.body().value().isDefault()) || dragonSpecies.value().bodies().contains(localHandler.body())))) {
-                dragonBody = DragonBody.random(null, dragonSpecies);
+            if (body == null && (!localHandler.isDragon() || !((species.value().bodies().size() == 0 && localHandler.body().value().isDefault()) || species.value().bodies().contains(localHandler.body())))) {
+                body = DragonBody.getRandomUnlocked(species, unlockedBodies);
             } else {
-                dragonBody = localHandler.body();
+                body = localHandler.body();
             }
         } else {
             return;
         }
 
-        HANDLER.setSpecies(null, dragonSpecies);
-        HANDLER.setDesiredGrowth(null, dragonStage.value().growthRange().min());
-        HANDLER.setBody(null, dragonBody);
-        SkinPreset skinPreset = localHandler.getSkinPresetForSpecies(dragonSpecies.getKey());
-        if (skinPreset.getModel().equals(dragonBody.value().model())) {
-            HANDLER.setCurrentSkinPreset(skinPreset);
+        HANDLER.setSpecies(null, species);
+        HANDLER.setDesiredGrowth(null, stage.value().growthRange().min());
+        HANDLER.setBody(null, body);
+        SkinPreset skinPreset = localHandler.getSkinPresetForSpecies(species, body);
+        SkinPreset copy = new SkinPreset();
+        copy.deserializeNBT(minecraft.player.registryAccess(), skinPreset.serializeNBT(minecraft.player.registryAccess()));
+
+        if (copy.getModel().equals(body.value().model())) {
+            HANDLER.setCurrentSkinPreset(copy);
         } else {
-            HANDLER.refreshSkinPresetForSpecies(dragonSpecies.getKey());
+            HANDLER.refreshSkinPresetForSpecies(species, body);
         }
 
         this.preset = HANDLER.getCurrentSkinPreset();
 
-        dragonRender.zoom = setZoom(dragonStage);
+        dragonRender.zoom = setZoom(stage);
     }
 
     private boolean dragonSpeciesWouldChange(DragonStateHandler handler) {
-        return handler.species() != null && !handler.species().equals(dragonSpecies);
+        return handler.species() != null && !handler.species().equals(species);
     }
 
     private boolean dragonBodyWouldChange(DragonStateHandler handler) {
-        return handler.body() != null && !handler.body().equals(dragonBody);
+        return handler.body() != null && !handler.body().equals(body);
     }
 
     public boolean dragonWouldChange(DragonStateHandler handler) {
-        return (handler.species() != null && !handler.species().equals(dragonSpecies)) || (handler.body() != null && !handler.body().equals(dragonBody));
+        return (handler.species() != null && !handler.species().equals(species)) || (handler.body() != null && !handler.body().equals(body));
     }
 
     @Override
@@ -675,18 +677,16 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             hasInit = true;
         }
 
-        // TODO :: use tag to order the species? otherwise it might not be consistent
-        //noinspection SuspiciousMethodCalls -> type matches
-        selectedDragonStage = dragonSpecies.value().getStages(null).stream().toList().indexOf(dragonStage);
+        selectedDragonStage = species.value().getStages(null).stream().toList().indexOf(stage);
         HoverButton leftArrow = new HoverButton(width / 2 - 100, 10, 18, 20, 20, 20, LEFT_ARROW_MAIN, LEFT_ARROW_HOVER, button -> {
-            List<Holder<DragonStage>> stages = dragonSpecies.value().getStages(null).stream().toList();
+            List<Holder<DragonStage>> stages = species.value().getStages(null).stream().toList();
             selectedDragonStage = Functions.wrap(selectedDragonStage - 1, 0, stages.size() - 1);
             actionHistory.add(new EditorAction<>(selectStageAction, stages.get(selectedDragonStage)));
         });
         addRenderableWidget(leftArrow);
 
         HoverButton rightArrow = new HoverButton(width / 2 + 83, 10, 18, 20, 20, 20, RIGHT_ARROW_MAIN, RIGHT_ARROW_HOVER, button -> {
-            List<Holder<DragonStage>> stages = dragonSpecies.value().getStages(null).stream().toList();
+            List<Holder<DragonStage>> stages = species.value().getStages(null).stream().toList();
             selectedDragonStage = Functions.wrap(selectedDragonStage + 1, 0, stages.size() - 1);
             actionHistory.add(new EditorAction<>(selectStageAction, stages.get(selectedDragonStage)));
         });
@@ -694,16 +694,18 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
         // Add scrollable list of dragon bodies
         List<AbstractWidget> dragonBodyWidgets = new ArrayList<>();
-        for (Holder<DragonBody> dragonBodyHolder : DSDragonBodyTags.getOrdered(null)) {
-            if (dragonSpecies.value().isValidForBody(dragonBodyHolder)) {
-                dragonBodyWidgets.add(createButton(dragonBodyHolder, 0, 0));
+
+        unlockedBodies.forEach(bodyEntry -> {
+            if (DragonBody.bodyIsValidForSpecies(bodyEntry.body(), species)) {
+                dragonBodyWidgets.add(createButton(bodyEntry.body(), bodyEntry.isUnlocked(), 0, 0));
             }
-        }
+        });
+
         dragonBodyBar = new BarComponent(this,
-                width / 2 - 38, height / 2 + 30, 5,
-                dragonBodyWidgets, 25,
-                -16, 82, 4, 18, 20, 20, 20,
-                SMALL_LEFT_ARROW_HOVER, SMALL_LEFT_ARROW_MAIN, SMALL_RIGHT_ARROW_HOVER, SMALL_RIGHT_ARROW_MAIN, true);
+                width / 2 - 43, height / 2 + 30, 3,
+                dragonBodyWidgets, 5,
+                -15, 92, 4, 10, 16,
+                SMALL_LEFT_ARROW_HOVER, SMALL_LEFT_ARROW_MAIN, SMALL_RIGHT_ARROW_HOVER, SMALL_RIGHT_ARROW_MAIN);
 
         int maxWidth = -1;
 
@@ -714,13 +716,13 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
         int row = 0;
         for (SkinLayer layer : SkinLayer.values()) {
-            ArrayList<String> valueList = DragonEditorHandler.getDragonPartKeys(dragonSpecies, dragonBody, layer);
+            ArrayList<String> valueList = DragonEditorHandler.getDragonPartKeys(species, body, layer);
 
             if (layer != SkinLayer.BASE) {
                 valueList.addFirst(DefaultPartLoader.NO_PART);
             }
 
-            String partKey = preset.get(dragonStage.getKey()).get().layerSettings.get(layer).get().partKey;
+            String partKey = preset.get(stage.getKey()).get().layerSettings.get(layer).get().partKey;
             EditorPartComponent editorPartComponent = new EditorPartComponent(this, row < 8 ? width / 2 - 184 : width / 2 + 74, guiTop - 24 + (row >= 8 ? (row - 8) * 21 : row * 21), partKey, layer, row < 8, (row / 4 % 2) == 0);
             scrollableComponents.add(editorPartComponent);
             partComponents.put(layer, editorPartComponent);
@@ -731,7 +733,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         animationNameButton.setMessage(Component.empty().append(WordUtils.capitalize(animations[curAnimation].replace("_", " "))));
         addRenderableWidget(animationNameButton);
 
-        HoverButton leftAnimationArrow = new HoverButton(width / 2 - 57, height / 2 + 65, 9, 16, 20, 20, SMALL_LEFT_ARROW_MAIN, SMALL_LEFT_ARROW_HOVER, button -> {
+        HoverButton leftAnimationArrow = new HoverButton(width / 2 - 57, height / 2 + 65, 10, 16, 10, 16, SMALL_LEFT_ARROW_MAIN, SMALL_LEFT_ARROW_HOVER, button -> {
             curAnimation -= 1;
 
             if (curAnimation < 0) {
@@ -741,7 +743,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         });
         addRenderableWidget(leftAnimationArrow);
 
-        HoverButton rightAnimationArrow = new HoverButton(width / 2 + 48, height / 2 + 65, 9, 16, 20, 20, SMALL_RIGHT_ARROW_MAIN, SMALL_RIGHT_ARROW_HOVER, button -> {
+        HoverButton rightAnimationArrow = new HoverButton(width / 2 + 48, height / 2 + 65, 10, 16, 10, 16, SMALL_RIGHT_ARROW_MAIN, SMALL_RIGHT_ARROW_HOVER, button -> {
             curAnimation += 1;
 
             if (curAnimation >= animations.length) {
@@ -782,8 +784,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
                 if (confirmation) {
                     if (!toggled) {
-                        renderButton = new ExtendedButton(0, 0, 0, 0, Component.empty(), b -> {
-                        }) {
+                        renderButton = new ExtendedButton(0, 0, 0, 0, Component.empty(), button -> { /* Nothing to do */ }) {
                             @Override
                             public void renderWidget(@NotNull final GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
                                 if (confirmComponent != null && confirmation) {
@@ -798,42 +799,49 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
                     }
                     toggled = !toggled;
                 } else {
-                    children().removeIf(s -> s == confirmComponent);
-                    renderables.removeIf(s -> s == renderButton);
+                    children().removeIf(listener -> listener == confirmComponent);
+                    renderables.removeIf(renderable -> renderable == renderButton);
                 }
             }
         };
         saveButton.setMessage(Component.translatable(LangKey.GUI_CONFIRM));
         addRenderableWidget(saveButton);
 
-        ExtendedButton discardButton = new HoverButton(width / 2 + 1, height - 30, 60, 20, 60, 20, CANCEL_MAIN, CANCEL_HOVER, btn -> Minecraft.getInstance().setScreen(source));
+        ExtendedButton discardButton = new HoverButton(width / 2 + 1, height - 30, 60, 20, 60, 20, CANCEL_MAIN, CANCEL_HOVER, btn -> Minecraft.getInstance().setScreen(null));
         discardButton.setMessage(Component.translatable(LangKey.GUI_CANCEL));
         addRenderableWidget(discardButton);
 
         RegistryAccess access = Objects.requireNonNull(Minecraft.getInstance().player).registryAccess();
 
         HoverButton randomButton = new HoverButton(width / 2 - 8, 40, 16, 17, 20, 20, RANDOM_MAIN, RANDOM_HOVER, btn -> {
+            // Since there are multiple 'EXTRA' field for the editor
             ArrayList<String> extraKeys = DragonEditorHandler.getDragonPartKeys(FakeClientPlayerUtils.getFakePlayer(0, HANDLER), SkinLayer.EXTRA);
-
-            extraKeys.removeIf(partKey -> {
-                DragonPart text = DragonEditorHandler.getDragonPart(SkinLayer.EXTRA, partKey, dragonSpecies.getKey());
-                if (text == null) {
-                    DragonSurvival.LOGGER.error("Key {} not found!", partKey);
-                    return true;
-                }
-                return !text.includeInRandomizer();
-            });
 
             // Don't actually modify the skin preset here, do it inside setSkinPresetAction
             SkinPreset preset = new SkinPreset();
             preset.deserializeNBT(access, this.preset.serializeNBT(access));
 
             for (SkinLayer layer : SkinLayer.values()) {
-                ArrayList<String> keys = DragonEditorHandler.getDragonPartKeys(FakeClientPlayerUtils.getFakePlayer(0, HANDLER), layer);
+                ArrayList<String> keys;
 
                 if (Objects.equals(layer.name, "Extra")) {
                     keys = extraKeys;
+                } else {
+                    keys = DragonEditorHandler.getDragonPartKeys(FakeClientPlayerUtils.getFakePlayer(0, HANDLER), layer);
                 }
+
+                keys.removeIf(key -> {
+                    DragonPart part = DragonEditorHandler.getDragonPart(layer, key, species.getKey());
+
+                    if (part == null && !key.equals("none")) {
+                        DragonSurvival.LOGGER.error("Key {} not found!", key);
+                        return true;
+                    } else if (part == null) {
+                        return true;
+                    }
+
+                    return !part.includeInRandomizer();
+                });
 
                 if (layer != SkinLayer.BASE) {
                     keys.add(DefaultPartLoader.NO_PART);
@@ -846,9 +854,9 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
                         extraKeys.remove(key);
                     }
 
-                    LayerSettings settings = preset.get(dragonStage.getKey()).get().layerSettings.get(layer).get();
+                    LayerSettings settings = preset.get(stage.getKey()).get().layerSettings.get(layer).get();
                     settings.partKey = key;
-                    DragonPart text = DragonEditorHandler.getDragonPart(layer, key, dragonSpecies.getKey());
+                    DragonPart text = DragonEditorHandler.getDragonPart(layer, key, species.getKey());
 
                     if (text != null && text.isHueRandomizable()) {
                         settings.hue = minecraft.player.getRandom().nextFloat();
@@ -879,7 +887,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
         // Copy to all stages button
         HoverButton copyToAllStagesButton = new HoverButton(guiLeft - 75, 10, 18, 18, 18, 18, COPY_ALL_MAIN, COPY_ALL_HOVER, button -> {
-            Lazy<DragonStageCustomization> lazy = preset.get(Objects.requireNonNull(dragonStage.getKey()));
+            Lazy<DragonStageCustomization> lazy = preset.get(Objects.requireNonNull(stage.getKey()));
             CompoundTag storedPresetData = lazy.get().serializeNBT(access);
 
             for (Holder<DragonStage> stage : ResourceHelper.all(access, DragonStage.REGISTRY)) {
@@ -897,18 +905,17 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         addRenderableWidget(copyToAllStagesButton);
 
         // Help button
-        HoverButton helpButton = new HoverButton(guiLeft - 75, height - 30, 20, 20, 20, 20, INFO_MAIN, INFO_HOVER, button -> {
-        });
+        HoverButton helpButton = new HoverButton(guiLeft - 75, height - 30, 20, 20, 20, 20, INFO_MAIN, INFO_HOVER, button -> { /* Nothing to do */ });
         helpButton.setTooltip(Tooltip.create(Component.translatable(CUSTOMIZATION)));
         addRenderableWidget(helpButton);
 
         // Wings button
-        wingsButton = new ExtendedButton(guiLeft - 35, height - 30, 20, 20, Component.translatable(DragonBody.getWingButtonDescription(dragonBody)), button -> {
-            actionHistory.add(new EditorAction<>(checkWingsButtonAction, !preset.get(Objects.requireNonNull(dragonStage.getKey())).get().wings));
+        wingsButton = new ExtendedButton(guiLeft - 35, height - 30, 20, 20, Component.translatable(DragonBody.getWingButtonDescription(body)), button -> {
+            actionHistory.add(new EditorAction<>(checkWingsButtonAction, !preset.get(Objects.requireNonNull(stage.getKey())).get().wings));
         }) {
             @Override
             public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-                ResourceLocation texture = preset.get(Objects.requireNonNull(dragonStage.getKey())).get().wings ? ALTERNATIVE_ON : ALTERNATIVE_OFF;
+                ResourceLocation texture = preset.get(Objects.requireNonNull(stage.getKey())).get().wings ? ALTERNATIVE_ON : ALTERNATIVE_OFF;
                 guiGraphics.pose().pushPose();
                 guiGraphics.pose().translate(0, 0, 100);
                 guiGraphics.blit(texture, getX(), getY(), 0, 0, 20, 20, 20, 20);
@@ -918,9 +925,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         addRenderableWidget(wingsButton);
 
         // Show UI button
-        uiButton = new ExtendedButton(guiLeft - 13, height - 30, 20, 20, Component.translatable(SHOW_UI), button -> {
-            showUi = !showUi;
-        }) {
+        uiButton = new ExtendedButton(guiLeft - 13, height - 30, 20, 20, Component.translatable(SHOW_UI), button -> showUi = !showUi) {
             @Override
             public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                 ResourceLocation texture = showUi ? SHOW_UI_ON : SHOW_UI_OFF;
@@ -939,7 +944,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             SkinPreset preset = new SkinPreset();
 
             preset.deserializeNBT(access, this.preset.serializeNBT(access));
-            preset.put(dragonStage.getKey(), Lazy.of(() -> new DragonStageCustomization(dragonStage.getKey(), dragonSpecies.getKey(), dragonBody.value().model())));
+            preset.put(stage.getKey(), Lazy.of(() -> new DragonStageCustomization(stage.getKey(), species.getKey(), body.value().model())));
             actionHistory.add(new EditorAction<>(setSkinPresetAction, preset.serializeNBT(access)));
         });
         resetButton.setTooltip(Tooltip.create(Component.translatable(RESET)));
@@ -970,13 +975,13 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
                 return;
             }
 
-            if (!savedCustomization.getDragonModel().equals(dragonBody.value().model())) {
+            if (!savedCustomization.getDragonModel().equals(body.value().model())) {
                 slotDisplayMessage = SlotDisplayMessage.INVALID_FOR_MODEL;
                 tickWhenSlotDisplayMessageSet = tick;
                 return;
             }
 
-            if (savedCustomization.getDragonSpecies() != dragonSpecies.getKey()) {
+            if (savedCustomization.getDragonSpecies() != species.getKey()) {
                 slotDisplayMessage = SlotDisplayMessage.INVALID_FOR_TYPE;
                 tickWhenSlotDisplayMessageSet = tick;
                 return;
@@ -997,13 +1002,14 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
     }
 
-    private DragonBodyButton createButton(Holder<DragonBody> dragonBody, int x, int y) {
-        return new DragonBodyButton(this, x, y, 25, 25, dragonBody, isEditor, button -> {
-            if (!((DragonBodyButton) button).isLocked()) {
-                if (dragonBody.value() != this.dragonBody.value()) {
+    private DragonBodyButton createButton(Holder<DragonBody> dragonBody, boolean unlocked, int x, int y) {
+        DragonBodyButton.LockedReason lockedReason = !fromAltar ? DragonBodyButton.LockedReason.NOT_IN_ALTAR : !unlocked ? DragonBodyButton.LockedReason.NOT_UNLOCKED : DragonBodyButton.LockedReason.NONE;
+        return new DragonBodyButton(this, x, y, 25, 25, dragonBody, lockedReason, button -> {
+            if (((DragonBodyButton) button).lockedReason() == DragonBodyButton.LockedReason.NONE) {
+                if (dragonBody.value() != this.body.value()) {
                     actionHistory.add(new DragonEditorScreen.EditorAction<>(dragonBodySelectAction, dragonBody));
 
-                    if (dragonBody.value().model() != this.dragonBody.value().model()) {
+                    if (dragonBody.value().model() != this.body.value().model()) {
                         // We don't support undo-redo behavior when swapping between body types that have different custom models
                         actionHistory.clear();
                     }
@@ -1013,14 +1019,14 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     }
 
     public void update() {
-        if (dragonSpecies != null) {
-            HANDLER.setSpecies(null, dragonSpecies);
+        if (species != null) {
+            HANDLER.setSpecies(null, species);
         }
 
-        HANDLER.setBody(null, dragonBody);
+        HANDLER.setBody(null, body);
         HANDLER.setCurrentSkinPreset(preset);
-        HANDLER.setDesiredGrowth(null, dragonStage.value().growthRange().min());
-
+        HANDLER.setDesiredGrowth(null, stage.value().growthRange().min());
+        refreshPartComponents();
     }
 
     private void initDragonRender() {
@@ -1062,17 +1068,17 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         minecraft.player.level().playSound(minecraft.player, minecraft.player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 1, 0.7f);
 
         if (!data.isDragon() || dragonWouldChange(data)) {
-            if (dragonSpecies == null && data.species() != null) {
+            if (species == null && data.species() != null) {
                 ClawInventoryData.reInsertClawTools(minecraft.player);
             }
 
-            data.setBody(minecraft.player, dragonBody);
-            data.setSpecies(minecraft.player, dragonSpecies);
+            data.setBody(minecraft.player, body);
+            data.setSpecies(minecraft.player, species);
 
             double savedSize = data.getSavedDragonAge(data.speciesKey());
 
             if (!ServerConfig.saveGrowthStage || savedSize == DragonStateHandler.NO_GROWTH) {
-                data.setGrowth(minecraft.player, dragonSpecies.value().getStartingGrowth(minecraft.player.registryAccess()));
+                data.setGrowth(minecraft.player, species.value().getStartingGrowth(minecraft.player.registryAccess()));
             } else {
                 data.setDesiredGrowth(minecraft.player, savedSize);
             }

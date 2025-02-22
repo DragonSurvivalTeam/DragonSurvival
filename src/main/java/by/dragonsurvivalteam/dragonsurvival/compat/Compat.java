@@ -26,7 +26,7 @@ public class Compat {
                 return true;
             }
 
-            for (String alias : ALIAS.getOrDefault(key, List.of())){
+            for (String alias : ALIAS.getOrDefault(key, List.of())) {
                 if (check(alias)) {
                     return true;
                 }

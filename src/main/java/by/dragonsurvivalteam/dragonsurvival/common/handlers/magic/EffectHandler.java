@@ -98,7 +98,7 @@ public class EffectHandler {
 
                 AttributeInstance armorIgnoreChance = attacker.getAttribute(DSAttributes.ARMOR_IGNORE_CHANCE);
                 if (armorIgnoreChance != null && armorIgnoreChance.getValue() > 0) {
-                    if(armorIgnoreChance.getValue() < target.level().random.nextDouble()) {
+                    if (armorIgnoreChance.getValue() < target.level().random.nextDouble()) {
                         event.addReductionModifier(DamageContainer.Reduction.ARMOR, (container, reductionIn) -> 0);
                     }
                 }

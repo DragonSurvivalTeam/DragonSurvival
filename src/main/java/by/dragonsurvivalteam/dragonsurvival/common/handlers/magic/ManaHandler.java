@@ -1,8 +1,8 @@
 package by.dragonsurvivalteam.dragonsurvival.common.handlers.magic;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ManaHandling;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
-import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
@@ -17,19 +17,6 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 @EventBusSubscriber
 public class ManaHandler {
-    /**
-     * Ratio for converting experience to mana and vice versa <br> <br>
-     * Level  5:   55 experience points <br>
-     * Level 10:  160 experience points <br>
-     * Level 20:  550 experience points <br>
-     * Level 30: 1395 experience points <br>
-     */
-    private static final float EXPERIENCE_TO_MANA = 10;
-    private static final float LEVELS_TO_MANA = 4;
-
-    public static final int MAX_MANA_FROM_ABILITY = 10;
-    private static final int MAX_MANA_FROM_LEVELS = 9;
-
     @SubscribeEvent
     public static void playerTick(final PlayerTickEvent.Post event) {
         Player player = event.getEntity();
@@ -54,11 +41,7 @@ public class ManaHandler {
             return true;
         }
 
-        float currentMana = getCurrentMana(player);
-
-        if (ServerConfig.consumeExperienceAsMana) {
-            currentMana += getManaFromExperience(player);
-        }
+        float currentMana = getCurrentMana(player) + getManaFromExperience(player);
 
         // If we query by mana cost and the player has no mana we should consider them as not having enough
         // No mana should be a state of not being able to cast magic
@@ -84,8 +67,9 @@ public class ManaHandler {
         }
 
         float pureMana = getCurrentMana(player);
+        ManaHandling manaHandling = DragonStateProvider.getData(player).species().value().manaHandling();
 
-        if (ServerConfig.consumeExperienceAsMana && player.level().isClientSide()) {
+        if (manaHandling.manaXpConversion() > 0 && player.level().isClientSide()) {
             // Check if experience would be consumed as part of the mana cost
             if (pureMana < manaCost && getCurrentMana(player) + getManaFromExperience(player) >= manaCost) {
                 player.playSound(SoundEvents.EXPERIENCE_ORB_PICKUP, 0.01F, 0.01F);
@@ -94,10 +78,10 @@ public class ManaHandler {
 
         MagicData magic = MagicData.getData(player);
 
-        if (ServerConfig.consumeExperienceAsMana) {
+        if (manaHandling.manaXpConversion() > 0) {
             if (pureMana < manaCost) {
                 float missingMana = pureMana - manaCost;
-                player.giveExperiencePoints(convertMana(missingMana));
+                player.giveExperiencePoints(convertMana(missingMana, manaHandling.manaXpConversion()));
                 magic.setCurrentMana(0);
             } else {
                 magic.setCurrentMana(pureMana - manaCost);
@@ -125,26 +109,27 @@ public class ManaHandler {
     }
 
     public static float getBonusManaFromExperience(final Player player) {
-        return Math.min(MAX_MANA_FROM_LEVELS, convertLevels(player.experienceLevel));
+        ManaHandling manaHandling = DragonStateProvider.getData(player).species().value().manaHandling();
+
+        if (manaHandling.maxManaFromLevels() == 0) {
+            return 0;
+        }
+
+        return (float) Math.min(manaHandling.maxManaFromLevels(), player.experienceLevel * manaHandling.manaPerLevel());
     }
 
     public static float getManaFromExperience(final Player player) {
-        return convertExperience(ExperienceUtils.getTotalExperience(player));
+        ManaHandling manaHandling = DragonStateProvider.getData(player).species().value().manaHandling();
+
+        if (manaHandling.manaXpConversion() == 0) {
+            return 0;
+        }
+
+        return (float) (ExperienceUtils.getTotalExperience(player) * manaHandling.manaXpConversion());
     }
 
-    /** Convert experience points to mana based on the {@link ManaHandler#LEVELS_TO_MANA} ratio */
-    private static float convertLevels(int levels) {
-        return levels / LEVELS_TO_MANA;
-    }
-
-    /** Convert experience points to mana based on the {@link ManaHandler#EXPERIENCE_TO_MANA} ratio */
-    private static float convertExperience(int experience) {
-        return experience / EXPERIENCE_TO_MANA;
-    }
-
-    /** Convert mana to experience points based on the {@link ManaHandler#EXPERIENCE_TO_MANA} ratio */
-    private static int convertMana(float mana) {
-        float converted = mana * EXPERIENCE_TO_MANA;
+    private static int convertMana(float mana, double manaXpConversion) {
+        double converted = mana / manaXpConversion;
 
         if (converted > 0) {
             return Mth.ceil(converted);

@@ -14,8 +14,8 @@ public record SyncRemovePenaltySupply(ResourceLocation id) implements CustomPack
     public static final Type<SyncRemovePenaltySupply> TYPE = new CustomPacketPayload.Type<>(DragonSurvival.res("sync_remove_penalty_supply"));
 
     public static final StreamCodec<FriendlyByteBuf, SyncRemovePenaltySupply> STREAM_CODEC = StreamCodec.composite(
-        ResourceLocation.STREAM_CODEC, SyncRemovePenaltySupply::id,
-        SyncRemovePenaltySupply::new
+            ResourceLocation.STREAM_CODEC, SyncRemovePenaltySupply::id,
+            SyncRemovePenaltySupply::new
     );
 
     public static void handleClient(final SyncRemovePenaltySupply packet, final IPayloadContext context) {

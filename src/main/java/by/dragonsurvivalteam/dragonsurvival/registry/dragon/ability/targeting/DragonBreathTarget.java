@@ -40,7 +40,7 @@ public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target,
 
             BlockPos.betweenClosedStream(calculateBreathArea(dragon, ability)).forEach(position -> {
                 if (blockTarget.matches(dragon, position)) {
-                    blockTarget.effect().forEach(target -> target.apply(dragon, ability, position, direction));
+                    blockTarget.effects().forEach(target -> target.apply(dragon, ability, position, direction));
                 }
             });
         }).ifRight(entityTarget -> {

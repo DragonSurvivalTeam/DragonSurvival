@@ -5,10 +5,12 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.animation.RawAnimation;
 
-/** A compound ability animation is for when the user wants to play a starting animation that leads into a looping animation after.
+/**
+ * A compound ability animation is for when the user wants to play a starting animation that leads into a looping animation after.
  * In practice, this would be used if you want an initial cast animation that leads into a looping charge animation before an ability is cast.
- * */
-public record CompoundAbilityAnimation(String startingAnimationKey, String loopingAnimationKey, AnimationLayer layer, int transitionLength, boolean locksNeck, boolean locksTail) implements AbilityAnimation {
+ */
+public record CompoundAbilityAnimation(String startingAnimationKey, String loopingAnimationKey, AnimationLayer layer, int transitionLength, boolean locksNeck,
+                                       boolean locksTail) implements AbilityAnimation {
 
     public static final Codec<CompoundAbilityAnimation> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("starting_animation_key").forGetter(CompoundAbilityAnimation::startingAnimationKey),

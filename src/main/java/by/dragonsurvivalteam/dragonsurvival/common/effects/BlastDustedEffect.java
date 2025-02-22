@@ -36,7 +36,9 @@ public class BlastDustedEffect extends ModifiableMobEffect {
     @ConfigOption(side = ConfigSide.SERVER, category = {"effects", "blast_dust"}, key = "blast_dust_explosion_radius")
     public static Float blastDustExplosionRadius = 0.6f;
 
-    public BlastDustedEffect(MobEffectCategory type, int color, boolean incurable) { super(type, color, incurable); }
+    public BlastDustedEffect(MobEffectCategory type, int color, boolean incurable) {
+        super(type, color, incurable);
+    }
 
     @Override
     public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {

@@ -15,6 +15,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.concurrent.CompletableFuture;
 
 public class DSDragonSpeciesTags extends TagsProvider<DragonSpecies> {
+    @Translation(comments = "Dragon Species Sorting Order")
+    public static final TagKey<DragonSpecies> ORDER = key("order");
+
     @Translation(comments = "No Dragon Species")
     public static final TagKey<DragonSpecies> NONE = key("none");
     @Translation(comments = "All Dragon Species")
@@ -33,6 +36,8 @@ public class DSDragonSpeciesTags extends TagsProvider<DragonSpecies> {
 
     @Override
     protected void addTags(@NotNull final HolderLookup.Provider provider) {
+        tag(ORDER).add(BuiltInDragonSpecies.CAVE_DRAGON).add(BuiltInDragonSpecies.FOREST_DRAGON).add(BuiltInDragonSpecies.SEA_DRAGON);
+
         tag(ALL).add(BuiltInDragonSpecies.CAVE_DRAGON).add(BuiltInDragonSpecies.FOREST_DRAGON).add(BuiltInDragonSpecies.SEA_DRAGON);
         tag(NONE);
 

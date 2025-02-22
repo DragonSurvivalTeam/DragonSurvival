@@ -27,7 +27,9 @@ public class TimedCooldown {
      * @return True if the cooldown was set. False if it was already active.
      */
     public boolean trySet() {
-        if (isOnCooldown()) return false;
+        if (isOnCooldown()) {
+            return false;
+        }
 
         forceSet();
         return true;

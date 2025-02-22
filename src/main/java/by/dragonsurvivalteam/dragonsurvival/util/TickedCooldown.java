@@ -28,7 +28,9 @@ public class TickedCooldown {
      * @return True if the cooldown was set. False if it was already active.
      */
     public boolean trySet() {
-        if (counter > 0) return false;
+        if (counter > 0) {
+            return false;
+        }
 
         forceSet();
         return true;
@@ -44,7 +46,9 @@ public class TickedCooldown {
      * @return True if the cooldown has just expired.
      */
     public boolean tick() {
-        if (counter == 0) return false;
+        if (counter == 0) {
+            return false;
+        }
         counter--;
         return counter == 0;
     }

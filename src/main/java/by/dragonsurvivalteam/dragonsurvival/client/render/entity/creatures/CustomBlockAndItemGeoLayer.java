@@ -55,8 +55,8 @@ public class CustomBlockAndItemGeoLayer<T extends GeoAnimatable> extends BlockAn
         return ItemDisplayContext.NONE;
     }
 
-    @Nullable @Override
-    protected ItemStack getStackForBone(final GeoBone bone, final T animatable) {
+    @Override
+    protected @Nullable ItemStack getStackForBone(final GeoBone bone, final T animatable) {
         if (bone != null && animatable instanceof LivingEntity livingEntity) {
             if (bone.getName().equalsIgnoreCase("left_item")) {
                 return livingEntity.getOffhandItem();

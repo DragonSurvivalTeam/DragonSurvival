@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen.data_maps;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonBeaconData;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSConditions;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDataMaps;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
@@ -24,15 +25,15 @@ public class DragonBeaconDataProvider extends DataMapProvider {
                 .add(BuiltInDragonSpecies.CAVE_DRAGON, new DragonBeaconData(
                         DragonBeaconData.createEffects(Functions.secondsToTicks(20), 0, DSEffects.FIRE, DSEffects.STURDY_SKIN),
                         new DragonBeaconData.PaymentData(60, 30, 0)
-                ), false)
+                ), false, DSConditions.CAVE_DRAGON_LOADED)
                 .add(BuiltInDragonSpecies.FOREST_DRAGON, new DragonBeaconData(
                         DragonBeaconData.createEffects(Functions.secondsToTicks(20), 0, DSEffects.PEACE, DSEffects.ANIMAL_PEACE),
                         new DragonBeaconData.PaymentData(60, 30, 0)
-                ), false)
+                ), false, DSConditions.FOREST_DRAGON_LOADED)
                 .add(BuiltInDragonSpecies.SEA_DRAGON, new DragonBeaconData(
                         DragonBeaconData.createEffects(Functions.secondsToTicks(20), 0, DSEffects.MAGIC, MobEffects.DIG_SPEED),
                         new DragonBeaconData.PaymentData(60, 30, 0)
-                ), false);
+                ), false, DSConditions.SEA_DRAGON_LOADED);
     }
 
     @Override

@@ -59,10 +59,10 @@ public interface AbilityTargeting {
         return Either.right(new EntityTargeting(Optional.ofNullable(targetConditions), effects, targetingMode));
     }
 
-    record BlockTargeting(Optional<LootItemCondition> targetConditions, List<AbilityBlockEffect> effect) {
+    record BlockTargeting(Optional<LootItemCondition> targetConditions, List<AbilityBlockEffect> effects) {
         public static final Codec<BlockTargeting> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 LootItemCondition.DIRECT_CODEC.optionalFieldOf("target_conditions").forGetter(BlockTargeting::targetConditions),
-                AbilityBlockEffect.CODEC.listOf().fieldOf("block_effect").forGetter(BlockTargeting::effect)
+                AbilityBlockEffect.CODEC.listOf().fieldOf("block_effect").forGetter(BlockTargeting::effects)
         ).apply(instance, BlockTargeting::new));
 
         public boolean matches(final ServerPlayer dragon, final BlockPos position) {
@@ -110,7 +110,7 @@ public interface AbilityTargeting {
         List<MutableComponent> descriptions = new ArrayList<>();
         MutableComponent targetDescription = getDescription(dragon, ability);
 
-        target().ifLeft(blockTargeting -> blockTargeting.effect().forEach(effect -> {
+        target().ifLeft(blockTargeting -> blockTargeting.effects().forEach(effect -> {
             List<MutableComponent> abilityEffectDescriptions = effect.getDescription(dragon, ability);
 
             if (!effect.getDescription(dragon, ability).isEmpty()) {
@@ -144,7 +144,10 @@ public interface AbilityTargeting {
     default void remove(final ServerPlayer dragon, final DragonAbilityInstance ability) { /* Nothing to do */ }
 
     MutableComponent getDescription(final Player dragon, final DragonAbilityInstance ability);
+
     void apply(final ServerPlayer dragon, final DragonAbilityInstance ability);
+
     MapCodec<? extends AbilityTargeting> codec();
+
     Either<BlockTargeting, EntityTargeting> target();
 }

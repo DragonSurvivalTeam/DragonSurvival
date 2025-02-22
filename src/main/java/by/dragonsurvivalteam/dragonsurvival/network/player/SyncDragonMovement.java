@@ -8,12 +8,12 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record SyncDragonMovement(int playerId, boolean isFirstPerson, boolean bite, boolean isFreeLook, Vec2 movement) implements CustomPacketPayload {
+public record SyncDragonMovement(int playerId, boolean isFirstPerson, boolean bite, boolean isFreeLook, Vec3 movement) implements CustomPacketPayload {
     public static final Type<SyncDragonMovement> TYPE = new Type<>(DragonSurvival.res("sync_dragon_movement"));
 
     public static final StreamCodec<FriendlyByteBuf, SyncDragonMovement> STREAM_CODEC = StreamCodec.composite(
@@ -21,7 +21,7 @@ public record SyncDragonMovement(int playerId, boolean isFirstPerson, boolean bi
             ByteBufCodecs.BOOL, SyncDragonMovement::isFirstPerson,
             ByteBufCodecs.BOOL, SyncDragonMovement::bite,
             ByteBufCodecs.BOOL, SyncDragonMovement::isFreeLook,
-            MiscCodecs.VEC2_STREAM_CODEC, SyncDragonMovement::movement,
+            MiscCodecs.VEC3_STREAM_CODEC, SyncDragonMovement::movement,
             SyncDragonMovement::new
     );
 

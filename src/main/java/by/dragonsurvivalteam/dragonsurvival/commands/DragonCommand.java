@@ -6,12 +6,12 @@ import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonStageArgume
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.PlayerLoginHandler;
-import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import com.mojang.brigadier.tree.ArgumentCommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.minecraft.commands.CommandSourceStack;
@@ -19,6 +19,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -27,10 +28,20 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class DragonCommand {
+    @Translation(comments = "There are no available (unlocked) species present")
+    private static final String NO_UNLOCKED_SPECIES = Translation.Type.GUI.wrap("message.no_unlocked_species");
+
     public static void register(final RegisterCommandsEvent event) {
         LiteralCommandNode<CommandSourceStack> dragon = Commands.literal("dragon").requires(source -> source.hasPermission(Commands.LEVEL_GAMEMASTERS)).executes(context -> {
-            Holder<DragonSpecies> species = ResourceHelper.random(context.getSource().registryAccess(), DragonSpecies.REGISTRY);
-            return runCommand(species, null, null, context.getSource().getPlayerOrException());
+            ServerPlayer player = context.getSource().getPlayerOrException();
+            Holder<DragonSpecies> species = DragonSpecies.getRandom(player);
+
+            if (species == null) {
+                context.getSource().sendFailure(Component.translatable(NO_UNLOCKED_SPECIES));
+                return 0;
+            }
+
+            return runCommand(species, null, null, player);
         }).build();
 
         ArgumentCommandNode<CommandSourceStack, Holder<DragonSpecies>> dragonSpecies = Commands.argument(DragonSpeciesArgument.ID, new DragonSpeciesArgument(event.getBuildContext())).executes(context -> {
@@ -86,7 +97,7 @@ public class DragonCommand {
         handler.setSpecies(player, species);
 
         if (dragonBody == null) {
-            dragonBody = DragonBody.random(player.registryAccess(), species);
+            dragonBody = DragonBody.getRandomUnlocked(player);
         }
 
         handler.setBody(player, dragonBody);

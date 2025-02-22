@@ -257,7 +257,7 @@ public class DSBlockTags extends BlockTagsProvider {
                 .addTag(IS_GRASSY)
                 .add(Blocks.GRASS_BLOCK);
     }
-    
+
     private void addToVanillaTags() {
         tag(BlockTags.MINEABLE_WITH_AXE)
                 .addTag(WOODEN_DRAGON_DOORS)
@@ -302,7 +302,7 @@ public class DSBlockTags extends BlockTagsProvider {
                 .add(DSBlocks.HUMAN_PRESSURE_PLATE.value())
                 .add(DSBlocks.SEA_DRAGON_PRESSURE_PLATE.value())
                 .add(DSBlocks.CAVE_DRAGON_PRESSURE_PLATE.value());
-        
+
         tag(BlockTags.NEEDS_STONE_TOOL)
                 .add(DSBlocks.GOLD_DRAGON_TREASURE.value())
                 .add(DSBlocks.EMERALD_DRAGON_TREASURE.value())
@@ -317,7 +317,7 @@ public class DSBlockTags extends BlockTagsProvider {
                 .add(DSBlocks.GRAY_KNIGHT_HELMET.value())
                 .add(DSBlocks.GOLDEN_KNIGHT_HELMET.value())
                 .add(DSBlocks.BLACK_KNIGHT_HELMET.value());
-        
+
         tag(BlockTags.NEEDS_IRON_TOOL)
                 .add(DSBlocks.DRAGON_BEACON.value())
                 .add(DSBlocks.DRAGON_MEMORY_BLOCK.value());

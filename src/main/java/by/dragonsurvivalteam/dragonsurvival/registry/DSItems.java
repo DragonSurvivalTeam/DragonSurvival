@@ -15,7 +15,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.items.armor.DarkDragonArmorIt
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.DragonHunterWeapon;
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.LightDragonArmorItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.food.CustomOnFinishEffectItem;
-import by.dragonsurvivalteam.dragonsurvival.common.items.growth.StarHeartItem;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataComponents;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
@@ -60,7 +59,7 @@ public class DSItems {
     public static final Holder<Item> STAR_BONE = REGISTRY.register("star_bone", location -> new TooltipItem(new Properties(), location.getPath()));
 
     @Translation(type = Translation.Type.ITEM, comments = "Star Heart")
-    public static final Holder<Item> STAR_HEART = REGISTRY.register("star_heart", location -> new StarHeartItem(new Properties(), location.getPath()));
+    public static final Holder<Item> STAR_HEART = REGISTRY.register("star_heart", () -> new Item(new Properties()));
 
     @Translation(type = Translation.Type.DESCRIPTION, comments = {
             "§6■ Part of the Elder dragon.§r",
@@ -105,7 +104,9 @@ public class DSItems {
 
     @Translation(type = Translation.Type.ITEM, comments = "Charged Soup")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 A concoction of various cave dragon delicacies. Heats up the body enough to protect it from the damaging effects of water.")
-    public static final Holder<Item> CHARGED_SOUP = REGISTRY.register("charged_soup", location -> new CustomOnFinishEffectItem(new Properties(), location.getPath(), entity -> { entity.addEffect(new MobEffectInstance(DSEffects.FIRE, Functions.minutesToTicks(5))); }));
+    public static final Holder<Item> CHARGED_SOUP = REGISTRY.register("charged_soup", location -> new CustomOnFinishEffectItem(new Properties(), location.getPath(), entity -> {
+        entity.addEffect(new MobEffectInstance(DSEffects.FIRE, Functions.minutesToTicks(5)));
+    }));
 
     @Translation(type = Translation.Type.ITEM, comments = "Charred Meat")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 A cave dragon's 'medium rare'.")

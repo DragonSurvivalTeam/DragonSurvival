@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.hud;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.registry.data_maps.DietEntryCache;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -26,6 +27,10 @@ public class FoodBar {
         DragonStateHandler handler = DragonStateProvider.getData(localPlayer);
 
         if (!handler.isDragon()) {
+            return false;
+        }
+
+        if (DietEntryCache.isEmpty(handler.species())) {
             return false;
         }
 

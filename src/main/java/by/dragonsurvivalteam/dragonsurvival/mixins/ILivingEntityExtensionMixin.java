@@ -36,5 +36,6 @@ public interface ILivingEntityExtensionMixin {
         return canDrownIn;
     }
 
-    @Shadow LivingEntity self();
+    @Shadow
+    LivingEntity self();
 }

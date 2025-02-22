@@ -16,7 +16,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilit
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.SupplyTrigger;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
-import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -47,13 +46,18 @@ public class PlayerLoginHandler {
 
     @SubscribeEvent
     public static void onLogin(final PlayerEvent.PlayerLoggedInEvent event) {
-        DragonStateHandler handler = DragonStateProvider.getData(event.getEntity());
+        if (!(event.getEntity() instanceof ServerPlayer player)) {
+            // Is only fired server-side, check is just to have a safe cast
+            return;
+        }
+
+        DragonStateHandler handler = DragonStateProvider.getData(player);
 
         // Remove any existing penalty supplies that may no longer be relevant (due to datapack changes)
-        event.getEntity().getExistingData(DSDataAttachments.PENALTY_SUPPLY).ifPresent(data -> {
+        player.getExistingData(DSDataAttachments.PENALTY_SUPPLY).ifPresent(data -> {
             if (!handler.isDragon()) {
                 // In case the species was removed
-                event.getEntity().removeData(DSDataAttachments.PENALTY_SUPPLY);
+                player.removeData(DSDataAttachments.PENALTY_SUPPLY);
                 return;
             }
 
@@ -65,12 +69,12 @@ public class PlayerLoginHandler {
         });
 
         if (ServerConfig.noHumansAllowed && !handler.isDragon()) {
-            handler.setSpecies(event.getEntity(), ResourceHelper.random(event.getEntity().registryAccess(), DragonSpecies.REGISTRY));
-            handler.setBody(event.getEntity(), DragonBody.random(event.getEntity().registryAccess(), handler.species()));
-            handler.setGrowth(event.getEntity(), handler.species().value().getStartingGrowth(event.getEntity().registryAccess()));
+            handler.setSpecies(player, DragonSpecies.getRandom(player));
+            handler.setBody(player, DragonBody.getRandomUnlocked(player));
+            handler.setGrowth(player, handler.species().value().getStartingGrowth(player.registryAccess()));
         }
 
-        syncComplete(event.getEntity());
+        syncComplete(player);
     }
 
     @SubscribeEvent
@@ -102,7 +106,7 @@ public class PlayerLoginHandler {
             return;
         }
 
-        PacketDistributor.sendToPlayer(serverPlayer, OpenDragonAltar.INSTANCE);
+        PacketDistributor.sendToPlayer(serverPlayer, new OpenDragonAltar(DragonSpecies.getSpecies(serverPlayer, true)));
         data.isInAltar = true;
     }
 

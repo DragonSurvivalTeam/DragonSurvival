@@ -98,7 +98,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
                 }
             }
 
-            while(true) {
+            while (true) {
                 boolean removedElement = false;
 
                 if (dragon.bodyYawHistory.size() > removeSize) {

@@ -41,10 +41,12 @@ public abstract class EntityMixin {
             return original;
         }
 
-        if(mount instanceof Player player && DragonStateProvider.isDragon(player)) {
+        if (mount instanceof Player player && DragonStateProvider.isDragon(player)) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
             MovementData movement = MovementData.getData(player);
-            if(handler.body().value().mountingOffsets().isEmpty()) return original;
+            if (handler.body().value().mountingOffsets().isEmpty()) {
+                return original;
+            }
             Vec3 offset = DragonStateProvider.isDragon(passenger) ? handler.body().value().mountingOffsets().get().dragonOffset() : handler.body().value().mountingOffsets().get().humanOffset();
             Vec3 offsetPerScaleAboveOne = handler.body().value().mountingOffsets().get().scale();
             float scale = player.getScale();
@@ -64,7 +66,8 @@ public abstract class EntityMixin {
         return original;
     }
 
-    @ModifyReturnValue(method = "getPassengerRidingPosition", at = @At("RETURN")) // TODO :: might be enough to add our offset only to this one (since 'getPassengerAttachmentPoint' seems to only be called by it and nowhere else)
+    @ModifyReturnValue(method = "getPassengerRidingPosition", at = @At("RETURN"))
+    // TODO :: might be enough to add our offset only to this one (since 'getPassengerAttachmentPoint' seems to only be called by it and nowhere else)
     protected Vec3 dragonSurvival$modifyPassengerRidingPosition(Vec3 original, @Local(argsOnly = true, index = 0) Entity entity) {
         Entity mount = (Entity) (Object) this;
         if (entity instanceof Player passenger && hasPassenger(passenger) && DragonStateProvider.isDragon(passenger) && !DragonStateProvider.isDragon(mount)) {
@@ -91,7 +94,7 @@ public abstract class EntityMixin {
         }
 
         MovementData vehicleMovement = MovementData.getData(vehicle);
-        if(DragonStateProvider.isDragon(passenger)) {
+        if (DragonStateProvider.isDragon(passenger)) {
             MovementData passengerMovement = MovementData.getData(passenger);
             float facing = (float) Mth.wrapDegrees(passenger.getYRot() - vehicleMovement.bodyYawLastFrame);
             float facingClamped = Mth.clamp(facing, -150.0F, 150.0F);
@@ -243,8 +246,15 @@ public abstract class EntityMixin {
         }
     }
 
-    @Shadow public abstract double getX();
-    @Shadow public abstract double getY();
-    @Shadow public abstract double getZ();
-    @Shadow public abstract boolean hasPassenger(Entity entity);
+    @Shadow
+    public abstract double getX();
+
+    @Shadow
+    public abstract double getY();
+
+    @Shadow
+    public abstract double getZ();
+
+    @Shadow
+    public abstract boolean hasPassenger(Entity entity);
 }
