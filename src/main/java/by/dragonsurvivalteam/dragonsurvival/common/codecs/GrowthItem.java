@@ -8,6 +8,7 @@ import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
 
 import java.util.Arrays;
@@ -18,7 +19,7 @@ public record GrowthItem(HolderSet<Item> items, int growthInTicks, int maximumUs
     public static final Codec<GrowthItem> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             RegistryCodecs.homogeneousList(Registries.ITEM).fieldOf("items").forGetter(GrowthItem::items),
             Codec.INT.fieldOf("growth_in_ticks").forGetter(GrowthItem::growthInTicks),
-            Codec.INT.optionalFieldOf("maximum_usages", INFINITE_USAGES).forGetter(GrowthItem::maximumUsages)
+            ExtraCodecs.intRange(INFINITE_USAGES, Integer.MAX_VALUE).optionalFieldOf("maximum_usages",INFINITE_USAGES).forGetter(GrowthItem::maximumUsages)
     ).apply(instance, instance.stable(GrowthItem::new)));
 
     public boolean canBeUsed(final DragonStateHandler handler, final Item item) {
