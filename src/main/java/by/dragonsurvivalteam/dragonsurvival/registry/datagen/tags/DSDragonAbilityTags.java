@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.concurrent.CompletableFuture;
 
 public class DSDragonAbilityTags extends TagsProvider<DragonAbility> {
-    @Translation(comments = "Dragon Ability Sorting Order")
+    @Translation(comments = "Ability Sorting Order")
     public static final TagKey<DragonAbility> ORDER = key("order");
 
     @Translation(comments = "Cave Dragon Abilities")

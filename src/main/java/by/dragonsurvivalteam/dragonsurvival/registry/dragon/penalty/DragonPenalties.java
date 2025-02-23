@@ -5,7 +5,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.PotionData;
 import by.dragonsurvivalteam.dragonsurvival.common.conditions.EntityCondition;
 import by.dragonsurvivalteam.dragonsurvival.common.conditions.ItemCondition;
-import by.dragonsurvivalteam.dragonsurvival.common.conditions.MatchItem;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
@@ -23,6 +22,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.storage.loot.predicates.AnyOfCondition;
@@ -112,9 +112,11 @@ public class DragonPenalties {
                         1,
                         0.013f,
                         List.of(
-                                new SupplyTrigger.RecoveryItems(
-                                        HolderSet.direct(Items.MILK_BUCKET.builtInRegistryHolder(), DSItems.FROZEN_RAW_FISH),
-                                        HolderSet.direct(Potions.WATER),
+                                new SupplyTrigger.RecoveryItem(
+                                        List.of(
+                                                ItemCondition.is(Items.MILK_BUCKET, DSItems.FROZEN_RAW_FISH.value()),
+                                                ItemCondition.hasPotion(Potions.WATER)
+                                        ),
                                         0.5f
                                 )
                         ),
@@ -137,7 +139,7 @@ public class DragonPenalties {
                         Condition.thisEntity(EntityCondition.hasEffect(DSEffects.MAGIC)),
                         Condition.thisEntity(EntityCondition.hasEffect(MobEffects.GLOWING)),
                         Condition.tool(ItemCondition.is(DSItemTags.LIGHT_SOURCE)),
-                        MatchItem.build(ItemCondition.is(DSItemTags.LIGHT_SOURCE), MatchItem.Slot.OFFHAND),
+                        Condition.thisEntity(EntityCondition.isItemEquipped(EquipmentSlot.OFFHAND, DSItemTags.LIGHT_SOURCE)),
                         Condition.thisEntity(EntityCondition.isInLight(3))
                 ).invert().build()),
                 new MobEffectPenalty(PotionData.create(DSEffects.STRESS).duration(10).showParticles().build()),
@@ -165,7 +167,7 @@ public class DragonPenalties {
                 Optional.empty(),
                 Optional.empty(),
                 new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.WATER_BURN), 2),
-                new HitByProjectileTrigger(EntityType.SNOWBALL)
+                new HitByProjectileTrigger(HolderSet.direct(EntityType.SNOWBALL.builtInRegistryHolder()))
         ));
     }
 

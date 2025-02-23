@@ -53,8 +53,8 @@
     }
   },
   "effect": {
-    "type": "dragonsurvival:dehydration",
     "amount": 1.0,
+    "damage_type": "dragonsurvival:dehydration",
     "penalty_type": "dragonsurvival:take_damage"
   },
   "icon": "dragonsurvival:abilities/sea/thin_skin",
@@ -63,12 +63,20 @@
     "penalty_trigger": "dragonsurvival:supply",
     "recovery_items": [
       {
-        "items": [
-          "minecraft:milk_bucket",
-          "dragonsurvival:frozen_raw_fish"
+        "item_predicates": [
+          {
+            "items": [
+              "minecraft:milk_bucket",
+              "dragonsurvival:frozen_raw_fish"
+            ]
+          },
+          {
+            "predicates": {
+              "minecraft:potion_contents": "minecraft:water"
+            }
+          }
         ],
-        "percent_restored": 0.5,
-        "potions": "minecraft:water"
+        "percent_restored": 0.5
       }
     ],
     "reduction_rate": 1.0,

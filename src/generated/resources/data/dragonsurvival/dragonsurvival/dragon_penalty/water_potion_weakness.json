@@ -1,12 +1,11 @@
 {
   "effect": {
-    "type": "dragonsurvival:water_burn",
     "amount": 2.0,
+    "damage_type": "dragonsurvival:water_burn",
     "penalty_type": "dragonsurvival:take_damage"
   },
   "trigger": {
-    "penalty_trigger": "dragonsurvival:item_used",
-    "predicates": [
+    "item_predicates": [
       {
         "predicates": {
           "minecraft:potion_contents": "minecraft:water"
@@ -15,6 +14,7 @@
       {
         "items": "minecraft:milk_bucket"
       }
-    ]
+    ],
+    "penalty_trigger": "dragonsurvival:item_used"
   }
 }

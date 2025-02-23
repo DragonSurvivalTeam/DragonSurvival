@@ -29,11 +29,15 @@
           }
         },
         {
-          "condition": "dragonsurvival:match_item",
+          "condition": "minecraft:entity_properties",
+          "entity": "this",
           "predicate": {
-            "items": "#dragonsurvival:light_source"
-          },
-          "slot": "offhand"
+            "equipment": {
+              "offhand": {
+                "items": "#dragonsurvival:light_source"
+              }
+            }
+          }
         },
         {
           "condition": "minecraft:entity_properties",
@@ -63,7 +67,6 @@
   "icon": "dragonsurvival:abilities/forest/fear_of_darkness",
   "trigger": {
     "penalty_trigger": "dragonsurvival:supply",
-    "recovery_items": [],
     "reduction_rate": 1.0,
     "regeneration_rate": 0.013,
     "supply_type": "dragonsurvival:stress_supply",

@@ -58,7 +58,7 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 /** Used in pair with {@link ServerFlightHandler} */
 @EventBusSubscriber(Dist.CLIENT)
 public class ClientFlightHandler {
-    @Translation(comments = "You have §cno levitation skill§r. Use a §cPrimordial Anchor§r in The End to learn this skill.")
+    @Translation(comments = "You can't fly. Read more in the skill description.")
     private static final String FLIGHT_EFFECT_DISABLED = Translation.Type.GUI.wrap("message.flight_effect_disabled");
 
     @Translation(comments = "Your species does not have the ability to fly")

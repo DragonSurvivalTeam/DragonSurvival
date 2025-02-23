@@ -50,6 +50,11 @@ public record SyncBreathParticles(
                 if (handler.isDragon()) {
                     positionOffset = handler.getGrowth() / 30;
                     speedMultiplier = handler.getGrowth();
+
+                    // FIXME :: breath start is weirdly offset too high / too the side?
+//                    DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(player.getId());
+//                    Vector3d breathPosition = dragon.getAnimatableInstanceCache().getManagerForId(dragon.getId()).getBoneSnapshotCollection().get("BreathSource").getBone().getWorldPosition();
+//                    position = new Vec3(breathPosition.x(), breathPosition.y(), breathPosition.z());
                 }
             }
 
@@ -57,15 +62,8 @@ public record SyncBreathParticles(
             float pitch = (float) Math.toRadians(-entity.getXRot());
             float speed = (float) (packet.speedPerGrowth() * speedMultiplier);
 
-            Vec3 eyePos = entity.getEyePosition();
-            Vec3 lookAngle = entity.getLookAngle();
-            int scale = 1;
-
-            if (entity instanceof Player player && player.getAbilities().flying) {
-                scale = 2;
-            }
-
-            Vec3 position = eyePos.add(lookAngle.scale(scale)).add(0, -0.1 - 0.2 * positionOffset, 0);
+            int scale = entity instanceof Player player && player.getAbilities().flying ? 2 : 1;
+            Vec3 position = entity.getEyePosition().add(entity.getLookAngle().scale(scale)).add(0, -0.1 - 0.2 * positionOffset, 0);
 
             for (int i = 0; i < packet.numParticles(); i++) {
                 spawnParticle(packet.secondaryParticle(), entity, position, yaw, pitch, speed, packet.spread());

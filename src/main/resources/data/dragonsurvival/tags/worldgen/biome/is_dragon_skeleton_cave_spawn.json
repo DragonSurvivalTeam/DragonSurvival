@@ -52,6 +52,10 @@
         {
             "id": "#byg:is_badlands",
             "required": false
+        },
+        {
+            "id": "#dragonsurvival:compat_is_wythers",
+            "required": false
         }
 	]
 }

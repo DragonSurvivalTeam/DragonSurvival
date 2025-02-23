@@ -30,7 +30,7 @@ public class GrowthHUD {
     private static final Color OUTLINE_COLOR = new Color(125, 125, 125);
     private static final Color ADD_COLOR = new Color(0, 200, 0);
     private static final Color SUBTRACT_COLOR = new Color(200, 0, 0);
-    private static final Color GROWTH_STOPPED_COLOR = new Color(229, 200, 28);
+    private static final Color GROWTH_STOPPED_COLOR = new Color(255, 255, 255);
 
     @ConfigRange(min = -1000, max = 1000)
     @Translation(key = "growth_x_offset", type = Translation.Type.CONFIGURATION, comments = "Offset for the x position of the item growth icon")

@@ -32,6 +32,7 @@ public class DSDataMaps {
     public static final AdvancedDataMapType<DragonSpecies, List<DietEntry>, DietEntryRemover> DIET_ENTRIES = AdvancedDataMapType.builder(DragonSurvival.res("diet_entries"), DragonSpecies.REGISTRY, DietEntry.CODEC.listOf())
             .merger(new DietEntryMerger()).remover(DietEntryRemover.CODEC).synced(DietEntry.CODEC.listOf(), true).build();
 
+    // TODO :: make it a client resource? server never interacts with it
     public static final AdvancedDataMapType<DragonSpecies, Map<ResourceKey<DragonStage>, StageResources.StageResource>, StageResourceRemover> STAGE_RESOURCES = AdvancedDataMapType.builder(DragonSurvival.res("stage_resources"), DragonSpecies.REGISTRY, StageResources.CODEC)
             .merger(DataMapValueMerger.mapMerger()).remover(StageResourceRemover.CODEC).synced(StageResources.CODEC, true).build();
 
@@ -41,6 +42,7 @@ public class DSDataMaps {
 
     // --- Dragon Body --- //
 
+    // TODO :: make it a client resource? server never interacts with it
     public static final AdvancedDataMapType<DragonBody, Map<ResourceKey<DragonSpecies>, ResourceLocation>, BodyIconRemover> BODY_ICONS = AdvancedDataMapType.builder(DragonSurvival.res("body_icons"), DragonBody.REGISTRY, BodyIcons.CODEC)
             .merger(DataMapValueMerger.mapMerger()).remover(BodyIconRemover.CODEC).synced(BodyIcons.CODEC, true).build();
 

@@ -116,7 +116,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     private static final String RESET = Translation.Type.GUI.wrap("dragon_editor.reset");
 
     @Translation(comments = {
-            "■ The texture from this editor is only visible if your §6custom§r skins are turned off in Skin Tab (dragon inventory). You can learn how to create your own custom skins on the §6Github Wiki§r or Dragon Survival discord.",
+            "■ The texture from this editor is only visible if your §6custom§r skins are turned off in Skin Tab (dragon inventory). You can learn how to create your own custom skins or commission it on the §6Github Wiki§r or Dragon Survival discord.",
             "§r-§7 Dragon Survival works with shaders, but they can affect the appearance of glowing textures.§r"
     })
     private static final String CUSTOMIZATION = Translation.Type.GUI.wrap("dragon_editor.customization");

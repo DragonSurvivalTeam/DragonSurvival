@@ -62,7 +62,7 @@ import java.util.stream.Collectors;
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class DragonAltarScreen extends Screen implements ConfirmableScreen {
-    @Translation(comments = "Choose a Dragon Species")
+    @Translation(comments = "Choose a Species")
     private static final String CHOOSE_SPECIES = Translation.Type.GUI.wrap("altar.choose_species");
 
     @Translation(comments = {

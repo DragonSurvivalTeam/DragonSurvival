@@ -10,12 +10,10 @@
       ],
       "effects": [
         {
-          "amplifier": 0,
           "duration": 400,
           "effect": "dragonsurvival:cave_fire"
         },
         {
-          "amplifier": 0,
           "duration": 400,
           "effect": "dragonsurvival:sturdy_skin"
         }
@@ -35,12 +33,10 @@
       ],
       "effects": [
         {
-          "amplifier": 0,
           "duration": 400,
           "effect": "dragonsurvival:sea_peace"
         },
         {
-          "amplifier": 0,
           "duration": 400,
           "effect": "dragonsurvival:animal_peace"
         }
@@ -60,12 +56,10 @@
       ],
       "effects": [
         {
-          "amplifier": 0,
           "duration": 400,
           "effect": "dragonsurvival:forest_magic"
         },
         {
-          "amplifier": 0,
           "duration": 400,
           "effect": "minecraft:haste"
         }
