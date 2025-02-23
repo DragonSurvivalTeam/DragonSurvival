@@ -30,10 +30,10 @@ public record SmeltItemEffect(Optional<ItemPredicate> itemPredicate, Optional<Le
     @Translation(comments = "§6■ Smelts items§r %s as fast as a furnace")
     private static final String CUSTOM_SPEED = Translation.Type.GUI.wrap("smelting_effect.custom_speed");
 
-    @Translation(comments = "§6■§r Smelts items§r at the speed of a furnace")
+    @Translation(comments = "§6■ Smelts items§r at the speed of a furnace")
     private static final String FURNACE_SPEED = Translation.Type.GUI.wrap("smelting_effect.furnace_speed");
 
-    @Translation(comments = "§6■§r Smelts items§r instantly")
+    @Translation(comments = "§6■ Smelts items§r instantly")
     private static final String INSTANT = Translation.Type.GUI.wrap("smelting_effect.instant");
 
     public static final MapCodec<SmeltItemEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(

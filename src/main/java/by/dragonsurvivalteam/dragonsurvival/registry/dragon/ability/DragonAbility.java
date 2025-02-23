@@ -3,9 +3,11 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Activation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.PassiveActivation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.UpgradeType;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
@@ -41,6 +43,9 @@ public record DragonAbility(
         boolean canBeManuallyDisabled,
         LevelBasedResource icon
 ) {
+    @Translation(comments = "§6■ Trigger:§r %s")
+    private static final String ACTIVATION_TRIGGER = Translation.Type.GUI.wrap("ability.activation_trigger");
+
     public static final ResourceKey<Registry<DragonAbility>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_ability"));
 
     public static final Codec<DragonAbility> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -72,6 +77,11 @@ public record DragonAbility(
 
     public List<Component> getInfo(final Player dragon, final DragonAbilityInstance instance) {
         List<Component> info = new ArrayList<>();
+
+        if (activation instanceof PassiveActivation passive) {
+            info.add(Component.translatable(ACTIVATION_TRIGGER, DSLanguageProvider.enumValue(passive.trigger().type())));
+        }
+
         int castTime = activation.getCastTime(instance.level());
 
         if (castTime > 0) {

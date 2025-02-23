@@ -47,13 +47,15 @@ public class DragonModel extends GeoModel<DragonEntity> {
 
     @Override
     public void applyMolangQueries(final AnimationState<DragonEntity> animationState, double currentTick) {
-        super.applyMolangQueries(animationState, currentTick);
         DragonEntity dragon = animationState.getAnimatable();
         Player player = dragon.getPlayer();
 
         if (player == null) {
             return;
         }
+
+        dragon.setPos(player.position()); // TODO :: Should technically not require an extra sync
+        super.applyMolangQueries(animationState, currentTick);
 
         float deltaTick = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks();
         float partialDeltaTick = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);

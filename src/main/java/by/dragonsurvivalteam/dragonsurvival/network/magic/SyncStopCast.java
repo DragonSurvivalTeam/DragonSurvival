@@ -29,7 +29,7 @@ public record SyncStopCast(int playerId, boolean forceWasApplyingEffects) implem
                 MagicData magic = MagicData.getData(player);
 
                 if (packet.forceWasApplyingEffects()) {
-                    magic.stopCasting(player, true);
+                    magic.stopCasting(player, magic.getCurrentlyCasting(), true);
                 } else {
                     magic.stopCasting(player);
                 }

@@ -29,11 +29,15 @@
           }
         },
         {
-          "condition": "dragonsurvival:match_item",
+          "condition": "minecraft:entity_properties",
+          "entity": "this",
           "predicate": {
-            "items": "#dragonsurvival:light_source"
-          },
-          "slot": "offhand"
+            "equipment": {
+              "offhand": {
+                "items": "#dragonsurvival:light_source"
+              }
+            }
+          }
         },
         {
           "condition": "minecraft:entity_properties",

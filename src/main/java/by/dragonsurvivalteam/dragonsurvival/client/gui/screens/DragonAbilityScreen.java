@@ -206,8 +206,8 @@ public class DragonAbilityScreen extends Screen {
         //noinspection DataFlowIssue -> player is present
         MagicData data = MagicData.getData(minecraft.player);
         List<DragonAbilityInstance> actives = data.getActiveAbilities();
-        List<DragonAbilityInstance> upgradablePassives = data.getPassiveAbilities(UpgradeType.IS_MANUAL);
-        List<DragonAbilityInstance> constantPassives = data.getPassiveAbilities(UpgradeType.IS_MANUAL.negate());
+        List<DragonAbilityInstance> upgradablePassives = data.filterPassiveByUpgrade(UpgradeType.IS_MANUAL);
+        List<DragonAbilityInstance> constantPassives = data.filterPassiveByUpgrade(UpgradeType.IS_MANUAL.negate());
 
         //noinspection DataFlowIssue -> access is expected to be present
         DragonSurvival.PROXY.getAccess().registryOrThrow(DragonAbility.REGISTRY).getTag(DSDragonAbilityTags.ORDER).ifPresent(order -> {
