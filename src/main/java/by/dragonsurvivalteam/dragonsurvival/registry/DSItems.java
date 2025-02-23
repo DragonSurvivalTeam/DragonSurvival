@@ -3,14 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.SourceOfMagicData;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
-import by.dragonsurvivalteam.dragonsurvival.common.items.BolasArrowItem;
-import by.dragonsurvivalteam.dragonsurvival.common.items.ChargedCoalItem;
-import by.dragonsurvivalteam.dragonsurvival.common.items.DragonSoulItem;
-import by.dragonsurvivalteam.dragonsurvival.common.items.FlightGrantItem;
-import by.dragonsurvivalteam.dragonsurvival.common.items.RotatingKeyItem;
-import by.dragonsurvivalteam.dragonsurvival.common.items.SourceOfMagicItem;
-import by.dragonsurvivalteam.dragonsurvival.common.items.SpinGrantItem;
-import by.dragonsurvivalteam.dragonsurvival.common.items.TooltipItem;
+import by.dragonsurvivalteam.dragonsurvival.common.items.*;
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.DarkDragonArmorItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.DragonHunterWeapon;
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.LightDragonArmorItem;
@@ -49,6 +42,7 @@ import org.joml.Vector3f;
 import java.util.List;
 import java.util.function.Consumer;
 
+@SuppressWarnings("unused")
 public class DSItems {
     public static final DeferredRegister<Item> REGISTRY = DeferredRegister.create(BuiltInRegistries.ITEM, DragonSurvival.MODID);
     private static final Consumer<LivingEntity> REMOVE_EFFECTS_CURED_BY_MILK = entity -> entity.removeEffectsCuredBy(EffectCures.MILK);
@@ -377,7 +371,7 @@ public class DSItems {
 
     @Translation(type = Translation.Type.ITEM, comments = "Light Key")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 An enchanted key that unlocks the Light Vault. Purchased from the dragon rider villager.")
-    public static final Holder<Item> LIGHT_KEY = REGISTRY.register(LIGHT_KEY_ID, () -> new RotatingKeyItem(
+    public static final Holder<Item> LIGHT_KEY = REGISTRY.register(LIGHT_KEY_ID, () -> new LightKeyItem(
             new Item.Properties().rarity(Rarity.UNCOMMON).component(DSDataComponents.TARGET_POSITION, new Vector3f()),
             DragonSurvival.res("geo/" + LIGHT_KEY_ID + ".geo.json"),
             DragonSurvival.res("textures/item/" + LIGHT_KEY_ID + ".png"),
@@ -387,7 +381,7 @@ public class DSItems {
 
     @Translation(type = Translation.Type.ITEM, comments = "Dark Key")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 An enchanted key that unlocks the Dark Vault in Nether. Drops if you kill a dragon hunter knight.")
-    public static final Holder<Item> DARK_KEY = REGISTRY.register(DARK_KEY_ID, () -> new RotatingKeyItem(
+    public static final Holder<Item> DARK_KEY = REGISTRY.register(DARK_KEY_ID, () -> new DarkKeyItem(
             new Item.Properties().rarity(Rarity.UNCOMMON).component(DSDataComponents.TARGET_POSITION, new Vector3f()),
             DragonSurvival.res("geo/" + DARK_KEY_ID + ".geo.json"),
             DragonSurvival.res("textures/item/" + DARK_KEY_ID + ".png"),
@@ -397,7 +391,7 @@ public class DSItems {
 
     @Translation(type = Translation.Type.ITEM, comments = "Hunter Key")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 An enchanted key that unlocks a treasure vault for dragon hunters. Can be purchased from the Hunter Leader in the Hunter Castle.")
-    public static final Holder<Item> HUNTER_KEY = REGISTRY.register(HUNTER_KEY_ID, () -> new RotatingKeyItem(
+    public static final Holder<Item> HUNTER_KEY = REGISTRY.register(HUNTER_KEY_ID, () -> new HunterKeyItem(
             new Item.Properties().rarity(Rarity.UNCOMMON).component(DSDataComponents.TARGET_POSITION, new Vector3f()),
             DragonSurvival.res("geo/" + HUNTER_KEY_ID + ".geo.json"),
             DragonSurvival.res("textures/item/" + HUNTER_KEY_ID + ".png"),
