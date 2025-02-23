@@ -541,7 +541,6 @@ public class ClientDragonRenderer {
             // Handle bodyYaw
             double bodyYaw = movement.bodyYaw;
             boolean isFreeLook = movement.isFreeLook;
-            boolean wasFreeLook = movement.wasFreeLook; // TODO: what's this for?
             boolean isFirstPerson = movement.isFirstPerson;
             boolean hasPosDelta = posDelta.horizontalDistanceSqr() > MOVE_DELTA_EPSILON * MOVE_DELTA_EPSILON;
 

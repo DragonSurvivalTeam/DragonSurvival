@@ -29,7 +29,6 @@ public class MovementData {
 
     public boolean isFirstPerson;
     public boolean isFreeLook;
-    public boolean wasFreeLook;
 
     //TODO: Biting is not correctly synced,
     // since we are setting it inside of the clientside animation
@@ -46,7 +45,6 @@ public class MovementData {
     }
 
     public void setFreeLook(boolean isFreeLook) {
-        this.wasFreeLook = this.isFreeLook;
         this.isFreeLook = isFreeLook;
     }
 
