@@ -228,7 +228,7 @@ public class ClientFlightHandler {
         }
 
         FlightData spin = FlightData.getData(player);
-        if (spin.hasSpin && spin.cooldown > 0) {
+        if (spin.hasSpin && spin.cooldown > 0 && !Minecraft.getInstance().options.hideGui) {
             if (event.getName() == VanillaGuiLayers.AIR_LEVEL) {
                 Window window = Minecraft.getInstance().getWindow();
 

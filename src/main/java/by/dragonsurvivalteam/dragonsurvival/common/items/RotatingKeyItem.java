@@ -22,7 +22,6 @@ import net.minecraft.world.level.levelgen.structure.StructureStart;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 import software.bernie.geckolib.animatable.GeoItem;
-import software.bernie.geckolib.animatable.SingletonGeoAnimatable;
 import software.bernie.geckolib.animatable.client.GeoRenderProvider;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
@@ -51,7 +50,6 @@ public class RotatingKeyItem extends TooltipItem implements GeoItem {
         this.target = TagKey.create(Registries.STRUCTURE, target);
         this.model = model;
         this.texture = texture;
-        SingletonGeoAnimatable.registerSyncedAnimatable(this);
     }
 
     @Override

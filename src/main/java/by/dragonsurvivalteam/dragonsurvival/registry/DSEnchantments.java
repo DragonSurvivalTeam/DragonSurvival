@@ -26,7 +26,7 @@ public class DSEnchantments {
     @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "Inflict increased damage to dragons. If you kill a dragon who has the Hunter's Omen effect, they will lose some growth progress. Damages dragons who hold it.")
     public static ResourceKey<Enchantment> DRAGONSBANE = register("dragonsbane");
 
-    @Translation(type = Translation.Type.ENCHANTMENT, comments = "Dragonsboon")
+    /*@Translation(type = Translation.Type.ENCHANTMENT, comments = "Dragonsboon")
     @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "Test enchantment - should not be available. Attacks heal dragons and apply a regeneration effect.")
     public static ResourceKey<Enchantment> DRAGONSBOON = register("dragonsboon");
 
@@ -36,7 +36,7 @@ public class DSEnchantments {
 
     @Translation(type = Translation.Type.ENCHANTMENT, comments = "Dragon Shrinker")
     @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "Test enchantment - should not be available. Causes the user to become smaller.")
-    public static ResourceKey<Enchantment> SHRINK = register("shrink");
+    public static ResourceKey<Enchantment> SHRINK = register("shrink");*/
 
     @Translation(type = Translation.Type.ENCHANTMENT, comments = "Blood Siphon")
     @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "Dark Set. Has a chance to apply Blood Siphon to the enemy when you get hit, allowing you to recover a portion of the damage done.")
