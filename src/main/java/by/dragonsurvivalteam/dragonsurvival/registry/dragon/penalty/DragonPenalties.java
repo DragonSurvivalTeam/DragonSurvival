@@ -5,7 +5,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.PotionData;
 import by.dragonsurvivalteam.dragonsurvival.common.conditions.EntityCondition;
 import by.dragonsurvivalteam.dragonsurvival.common.conditions.ItemCondition;
-import by.dragonsurvivalteam.dragonsurvival.common.conditions.MatchItem;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
@@ -23,6 +22,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.storage.loot.predicates.AnyOfCondition;
@@ -139,7 +139,7 @@ public class DragonPenalties {
                         Condition.thisEntity(EntityCondition.hasEffect(DSEffects.MAGIC)),
                         Condition.thisEntity(EntityCondition.hasEffect(MobEffects.GLOWING)),
                         Condition.tool(ItemCondition.is(DSItemTags.LIGHT_SOURCE)),
-                        MatchItem.build(ItemCondition.is(DSItemTags.LIGHT_SOURCE), MatchItem.Slot.OFFHAND),
+                        Condition.thisEntity(EntityCondition.isItemEquipped(EquipmentSlot.OFFHAND, DSItemTags.LIGHT_SOURCE)),
                         Condition.thisEntity(EntityCondition.isInLight(3))
                 ).invert().build()),
                 new MobEffectPenalty(PotionData.create(DSEffects.STRESS).duration(10).showParticles().build()),

@@ -34,6 +34,11 @@
       "operation": "add_multiplied_total"
     },
     {
+      "amount": 1.0,
+      "attribute": "minecraft:generic.safe_fall_distance",
+      "operation": "add_value"
+    },
+    {
       "amount": -0.2,
       "attribute": "neoforge:swim_speed",
       "operation": "add_value"

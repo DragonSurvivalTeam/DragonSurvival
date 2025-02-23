@@ -11,12 +11,14 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachmen
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.EffectModifications;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonedEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnTargetKilled;
 import by.dragonsurvivalteam.dragonsurvival.util.ToolUtils;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.core.Holder;
 import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -50,6 +52,12 @@ public abstract class LivingEntityMixin extends Entity {
 
     public LivingEntityMixin(final EntityType<?> type, final Level level) {
         super(type, level);
+    }
+
+    /** Happens here so that the trigger can occur after the loot has been dropped */
+    @Inject(method = "die", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;dropAllDeathLoot(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;)V", shift = At.Shift.AFTER))
+    private void dragonSurvival$triggerOnTargetKilled(final DamageSource source, final CallbackInfo callback) {
+        OnTargetKilled.trigger((LivingEntity) (Object) this, source);
     }
 
     /** Slightly apply lava swim speed to other entities as well (doesn't include up or down movement) */

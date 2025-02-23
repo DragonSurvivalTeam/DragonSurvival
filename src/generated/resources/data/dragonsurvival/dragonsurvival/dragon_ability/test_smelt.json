@@ -1,0 +1,33 @@
+{
+  "actions": [
+    {
+      "target_selection": {
+        "applied_effects": {
+          "entity_effect": [
+            {
+              "effect_type": "dragonsurvival:smelting"
+            }
+          ],
+          "targeting_mode": "items"
+        },
+        "radius": 5.0,
+        "target_type": "dragonsurvival:area"
+      },
+      "trigger_rate": 1.0
+    }
+  ],
+  "activation": {
+    "activation_type": "dragonsurvival:passive",
+    "trigger": {
+      "trigger_type": "dragonsurvival:on_target_killed"
+    }
+  },
+  "icon": {
+    "texture_entries": [
+      {
+        "from_level": 0,
+        "texture_resource": "dragonsurvival:test"
+      }
+    ]
+  }
+}

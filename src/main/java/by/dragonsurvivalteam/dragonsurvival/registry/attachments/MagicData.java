@@ -14,6 +14,8 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.PassiveActivation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.ActivationTrigger;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ExperiencePointsUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.InputData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.UpgradeType;
@@ -180,6 +182,13 @@ public class MagicData implements INBTSerializable<CompoundTag> {
                 });
             }
 
+            ability.tickCooldown(event.getEntity());
+
+            if (ability.value().activation() instanceof PassiveActivation passive && passive.trigger().type() != ActivationTrigger.TriggerType.CONSTANT) {
+                // Passive activations with non-constant triggers are handled elsewhere
+                continue;
+            }
+
             ability.tick(event.getEntity());
         }
 
@@ -298,34 +307,37 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         return true;
     }
 
-    public void stopCasting(final Player player, boolean withCooldown) {
-        DragonAbilityInstance currentlyCasting = getCurrentlyCasting();
-
-        if (currentlyCasting != null) {
-            currentlyCasting.stopSound(player);
+    public void stopCasting(final Player player, @Nullable final DragonAbilityInstance instance, boolean withCooldown) {
+        if (instance != null) {
+            instance.stopSound(player);
 
             if (withCooldown) {
-                currentlyCasting.release(player);
-                currentlyCasting.value().activation().playEndSound(player);
+                instance.release(player);
+                instance.value().activation().playEndSound(player);
 
-                if (currentlyCasting.hasEndAnimation()) {
-                    currentlyCasting.value().activation().playEndAnimation(player);
-                } else {
+                if (instance.hasEndAnimation()) {
+                    instance.value().activation().playEndAnimation(player);
+                } else if (!instance.isPassive()) {
                     DragonSurvival.PROXY.setCurrentAbilityAnimation(player.getId(), null);
                 }
-            } else {
+            } else if (!instance.isPassive()) {
                 DragonSurvival.PROXY.setCurrentAbilityAnimation(player.getId(), null);
             }
 
-            currentlyCasting.setActive(player, false);
+            instance.setActive(player, false);
         }
 
-        isCasting = false;
+        if (instance == null || !instance.isPassive()) {
+            isCasting = false;
+        }
     }
 
     public void stopCasting(final Player player) {
-        DragonAbilityInstance currentlyCasting = getCurrentlyCasting();
-        stopCasting(player, currentlyCasting != null && currentlyCasting.isApplyingEffects());
+        stopCasting(player, getCurrentlyCasting());
+    }
+
+    public void stopCasting(final Player player, @Nullable final DragonAbilityInstance instance) {
+        stopCasting(player, instance, instance != null && instance.isApplyingEffects());
     }
 
     public void setErrorMessageSent(boolean errorMessageSent) {
@@ -473,8 +485,12 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         return getAbilities().values().stream().filter(instance -> !instance.isPassive()).collect(Collectors.toList());
     }
 
-    public List<DragonAbilityInstance> getPassiveAbilities(final Predicate<Optional<UpgradeType<?>>> predicate) {
+    public List<DragonAbilityInstance> filterPassiveByUpgrade(final Predicate<Optional<UpgradeType<?>>> predicate) {
         return getAbilities().values().stream().filter(instance -> instance.isPassive() && predicate.test(instance.value().upgrade())).collect(Collectors.toList());
+    }
+
+    public List<DragonAbilityInstance> filterPassiveByTrigger(final Predicate<ActivationTrigger> predicate) {
+        return getAbilities().values().stream().filter(instance -> instance.value().activation() instanceof PassiveActivation passive && predicate.test(passive.trigger())).collect(Collectors.toList());
     }
 
     /** Returns the amount of experience gained / lost when down- or upgrading the ability */

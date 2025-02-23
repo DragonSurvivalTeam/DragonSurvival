@@ -32,16 +32,6 @@ public record SimpleActivation(
     ).apply(instance, SimpleActivation::new));
 
     @Override
-    public Type type() {
-        return Type.SIMPLE;
-    }
-
-    @Override
-    public MapCodec<? extends Activation> codec() {
-        return CODEC;
-    }
-
-    @Override
     public float getInitialManaCost(final int level) {
         return initialManaCost.map(cost -> cost.calculate(level))
                 .orElseGet(() -> Activation.super.getInitialManaCost(level));
@@ -57,5 +47,15 @@ public record SimpleActivation(
     public int getCooldown(final int level) {
         return cooldown.map(cooldown -> (int) cooldown.calculate(level))
                 .orElseGet(() -> Activation.super.getCooldown(level));
+    }
+
+    @Override
+    public Type type() {
+        return Type.SIMPLE;
+    }
+
+    @Override
+    public MapCodec<? extends Activation> codec() {
+        return CODEC;
     }
 }
