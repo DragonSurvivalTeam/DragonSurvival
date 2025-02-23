@@ -218,6 +218,7 @@ public class ClientDragonRenderer {
             return;
         }
 
+        partialTick = event.getPartialTick();
         event.setCanceled(true);
 
         if (dragonNameTags && player != Minecraft.getInstance().player) {
