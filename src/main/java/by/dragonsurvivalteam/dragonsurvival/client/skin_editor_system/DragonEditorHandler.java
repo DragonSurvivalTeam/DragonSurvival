@@ -184,6 +184,7 @@ public class DragonEditorHandler {
         }
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
+        DragonBody.TextureSize textureSize = handler.body().value().textureSize();
 
         GlStateBackup state = new GlStateBackup();
         RenderSystem.backupGlState(state);
@@ -195,8 +196,8 @@ public class DragonEditorHandler {
         int currentViewportWidth = GlStateManager.Viewport.width();
         int currentViewportHeight = GlStateManager.Viewport.height();
 
-        RenderTarget normalTarget = new TextureTarget(512, 512, false, Minecraft.ON_OSX);
-        RenderTarget glowTarget = new TextureTarget(512, 512, false, Minecraft.ON_OSX);
+        RenderTarget normalTarget = new TextureTarget(textureSize.width(), textureSize.height(), false, Minecraft.ON_OSX);
+        RenderTarget glowTarget = new TextureTarget(textureSize.width(), textureSize.height(), false, Minecraft.ON_OSX);
         normalTarget.setClearColor(0.0F, 0.0F, 0.0F, 0.0F);
         glowTarget.setClearColor(0.0F, 0.0F, 0.0F, 0.0F);
         normalTarget.clear(true);
@@ -287,8 +288,9 @@ public class DragonEditorHandler {
         DragonStateHandler handler = DragonStateProvider.getData(player);
         List<Pair<NativeImage, ResourceLocation>> texturesToRegister = new ArrayList<>();
         DragonStageCustomization customization = handler.getCurrentStageCustomization();
-        NativeImage normal = new NativeImage(512, 512, true);
-        NativeImage glow = new NativeImage(512, 512, true);
+        DragonBody.TextureSize textureSize = handler.body().value().textureSize();
+        NativeImage normal = new NativeImage(textureSize.width(), textureSize.height(), true);
+        NativeImage glow = new NativeImage(textureSize.width(), textureSize.height(), true);
 
         for (SkinLayer layer : SkinLayer.values()) {
             LayerSettings settings = customization.layerSettings.get(layer).get();

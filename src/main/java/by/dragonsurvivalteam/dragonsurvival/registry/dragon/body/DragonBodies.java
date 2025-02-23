@@ -70,6 +70,7 @@ public class DragonBodies {
                 Modifier.constant(DSAttributes.FLIGHT_SPEED, 0.2f, AttributeModifier.Operation.ADD_VALUE)
         ), false,
                 DragonBody.DEFAULT_MODEL,
+                new DragonBody.TextureSize(512, 512),
                 DragonSurvival.res("dragon_center"),
                 List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"),
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
@@ -94,6 +95,7 @@ public class DragonBodies {
                 Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, -0.2f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
         ), true,
                 DragonBody.DEFAULT_MODEL,
+                new DragonBody.TextureSize(512, 512),
                 DragonSurvival.res("dragon_east"),
                 List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"),
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
@@ -114,6 +116,7 @@ public class DragonBodies {
                 Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, -0.1f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
         ), true,
                 DragonBody.DEFAULT_MODEL,
+                new DragonBody.TextureSize(512, 512),
                 DragonSurvival.res("dragon_north"),
                 List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"),
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
@@ -135,6 +138,7 @@ public class DragonBodies {
                 Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, -0.5f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
         ), true,
                 DragonBody.DEFAULT_MODEL,
+                new DragonBody.TextureSize(512, 512),
                 DragonSurvival.res("dragon_south"),
                 List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"),
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
@@ -155,6 +159,7 @@ public class DragonBodies {
                 Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, 1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
         ), false,
                 DragonBody.DEFAULT_MODEL,
+                new DragonBody.TextureSize(512, 512),
                 DragonSurvival.res("dragon_west"),
                 List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"),
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),

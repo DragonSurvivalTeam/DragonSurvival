@@ -25,6 +25,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -42,6 +43,7 @@ public record DragonBody(
         List<Modifier> modifiers,
         boolean canHideWings,
         ResourceLocation model,
+        TextureSize textureSize,
         ResourceLocation animation,
         List<String> bonesToHideForToggle,
         Holder<DragonEmoteSet> emotes,
@@ -60,6 +62,7 @@ public record DragonBody(
             Modifier.CODEC.listOf().fieldOf("modifiers").forGetter(DragonBody::modifiers),
             Codec.BOOL.optionalFieldOf("can_hide_wings", true).forGetter(DragonBody::canHideWings),
             ResourceLocation.CODEC.optionalFieldOf("model", DEFAULT_MODEL).forGetter(DragonBody::model),
+            TextureSize.CODEC.optionalFieldOf("texture_size", new TextureSize(512, 512)).forGetter(DragonBody::textureSize),
             ResourceLocation.CODEC.fieldOf("animation").forGetter(DragonBody::animation),
             Codec.STRING.listOf().optionalFieldOf("bones_to_hide_for_toggle", List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight")).forGetter(DragonBody::bonesToHideForToggle),
             DragonEmoteSet.CODEC.fieldOf("emotes").forGetter(DragonBody::emotes),
@@ -74,6 +77,13 @@ public record DragonBody(
     public static final StreamCodec<RegistryFriendlyByteBuf, Holder<DragonBody>> STREAM_CODEC = ByteBufCodecs.holderRegistry(REGISTRY);
 
     private static final RandomSource RANDOM = RandomSource.create();
+
+    public record TextureSize(int width, int height) {
+        public static final Codec<TextureSize> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.INT.fieldOf("width").forGetter(TextureSize::width),
+                Codec.INT.fieldOf("height").forGetter(TextureSize::height)
+        ).apply(instance, TextureSize::new));
+    }
 
     public record ScalingProportions(double width, double height, double eyeHeight, double scaleMultiplier, double shadowMultiplier) { // TODO :: scaling_offset
         public static final Codec<ScalingProportions> CODEC = RecordCodecBuilder.create(instance -> instance.group(
