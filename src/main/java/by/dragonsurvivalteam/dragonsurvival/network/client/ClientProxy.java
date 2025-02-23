@@ -6,7 +6,6 @@ import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.UnlockableBehavior;
-import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawRender;
 import by.dragonsurvivalteam.dragonsurvival.network.container.OpenDragonAltar;
 import by.dragonsurvivalteam.dragonsurvival.network.container.OpenDragonEditor;
@@ -15,6 +14,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.dragon_editor.SyncPlayerSkin
 import by.dragonsurvivalteam.dragonsurvival.network.particle.SyncBreathParticles;
 import by.dragonsurvivalteam.dragonsurvival.network.particle.SyncParticleTrail;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
@@ -25,8 +25,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
-import org.joml.Vector3d;
-import org.joml.Vector3f;
 
 import java.util.List;
 import java.util.Optional;
@@ -107,16 +105,8 @@ public class ClientProxy {
                 positionOffset = handler.getGrowth() / 30;
                 speedMultiplier = handler.getGrowth();
 
-                // FIXME :: enable once the flight logic is fixed
-                if (false && Minecraft.getInstance().options.getCameraType() != CameraType.FIRST_PERSON) {
-                    // Two problems with first person:
-                    // - GeckoLib cannot update the bone positions iff ClientDragonRenderer#renderInFirstPerson is not enabled
-                    // - Even if it is enabled the position won't be correct - unsure as to why
-                    DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(player.getId());
-                    Vector3d breathPosition = dragon.getAnimatableInstanceCache().getManagerForId(dragon.getId()).getBoneSnapshotCollection().get("BreathSource").getBone().getWorldPosition();
-
-                    Vector3f offset = ClientDragonRenderer.getModelOffset(player, 1);
-                    position = new Vec3(breathPosition.x(), breathPosition.y(), breathPosition.z()).add(-offset.x(), offset.y(), -offset.z());
+                if (Minecraft.getInstance().options.getCameraType() != CameraType.FIRST_PERSON) {
+                    position = Functions.getBonePosition(player, "BreathSource");
                 }
             }
         }
