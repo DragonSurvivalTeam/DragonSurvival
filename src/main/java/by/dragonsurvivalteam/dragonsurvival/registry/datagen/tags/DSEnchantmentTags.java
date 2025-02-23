@@ -25,9 +25,9 @@ public class DSEnchantmentTags extends EnchantmentTagsProvider {
 
         // Used in enchantments
         tag(exclusiveSet("anti_dragon"))
-                .add(DSEnchantments.DRAGONSBANE)
-                .add(DSEnchantments.DRAGONSBONK)
-                .add(DSEnchantments.DRAGONSBOON);
+                .add(DSEnchantments.DRAGONSBANE);
+                //.add(DSEnchantments.DRAGONSBONK)
+                //.add(DSEnchantments.DRAGONSBOON)
 
         // Used in enchantments
         tag(exclusiveSet("dark_dragon"))
@@ -46,8 +46,8 @@ public class DSEnchantmentTags extends EnchantmentTagsProvider {
                 .add(DSEnchantments.CURSE_OF_KINDNESS);
 
         // Used in enchantments
-        tag(exclusiveSet("size_changing")) // FIXME :: rename here and in the enchantments
-                .add(DSEnchantments.SHRINK);
+        /*tag(exclusiveSet("size_changing")) // FIXME :: rename here and in the enchantments
+                .add(DSEnchantments.SHRINK);*/
     }
 
     private void addToVanillaTags() {
