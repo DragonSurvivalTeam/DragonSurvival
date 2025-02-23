@@ -1,56 +1,52 @@
 {
 	"replace": false,
 	"values": [
-        {
-            "id": "#minecraft:is_desert",
+		{
+            "id": "#minecraft:is_taiga",
             "required": false
         },
         {
-            "id": "#minecraft:is_badlands",
+            "id": "minecraft:taiga",
             "required": false
         },
         {
-            "id": "minecraft:desert",
+            "id": "minecraft:old_growth_pine_taiga",
             "required": false
         },
         {
-            "id": "minecraft:badlands",
+            "id": "minecraft:old_growth_spruce_taiga",
             "required": false
         },
         {
-            "id": "minecraft:wooded_badlands",
+            "id": "minecraft:dark_forest",
             "required": false
         },
         {
-            "id": "minecraft:eroded_badlands",
+            "id": "#forge:is_spooky",
             "required": false
         },
         {
-            "id": "#forge:is_desert",
+            "id": "#forge:is_taiga",
             "required": false
         },
         {
-            "id": "#forge:is_badlands",
+            "id": "#c:is_spooky",
             "required": false
         },
         {
-            "id": "#neoforge:is_desert",
+            "id": "#c:is_taiga",
             "required": false
         },
         {
-            "id": "#neoforge:is_badlands",
+            "id": "#byg:is_spooky",
+            "required": false
+        },
+		{
+            "id": "#byg:is_taiga",
             "required": false
         },
         {
-            "id": "#byg:is_wasteland",
-            "required": false
-        },
-        {
-            "id": "#byg:is_desert",
-            "required": false
-        },
-        {
-            "id": "#byg:is_badlands",
+            "id": "#dragonsurvival:compat_is_wythers",
             "required": false
         }
 	]

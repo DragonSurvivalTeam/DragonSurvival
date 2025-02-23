@@ -18,9 +18,9 @@ public class DSDragonSpeciesTags extends TagsProvider<DragonSpecies> {
     @Translation(comments = "Dragon Species Sorting Order")
     public static final TagKey<DragonSpecies> ORDER = key("order");
 
-    @Translation(comments = "No Dragon Species")
+    @Translation(comments = "No Species")
     public static final TagKey<DragonSpecies> NONE = key("none");
-    @Translation(comments = "All Dragon Species")
+    @Translation(comments = "All Species")
     public static final TagKey<DragonSpecies> ALL = key("all");
 
     @Translation(comments = "Cave Dragons")

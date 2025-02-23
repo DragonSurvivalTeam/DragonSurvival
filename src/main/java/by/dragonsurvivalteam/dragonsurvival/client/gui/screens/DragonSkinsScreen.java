@@ -69,7 +69,7 @@ public class DragonSkinsScreen extends Screen {
     @Translation(comments = "Skin Settings")
     private static final String SETTINGS = Translation.Type.GUI.wrap("skin_screen.settings");
 
-    @Translation(comments = "■ This is a link to our §6Wiki§r dedicated to making your own skin!§7 Remember that this will be very difficult, and requires knowledge of graphic editors.")
+    @Translation(comments = "■ This is a link to our §6Wiki§r dedicated to making your own skin!§7 Remember that this will be very difficult, and requires knowledge of graphic editors. You can order a skin or a custom species from the author and thus support the project!")
     private static final String WIKI = Translation.Type.GUI.wrap("skin_screen.wiki");
 
     @Translation(comments = {

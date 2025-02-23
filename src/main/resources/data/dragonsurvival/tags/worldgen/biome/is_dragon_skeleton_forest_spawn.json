@@ -96,6 +96,10 @@
         {
             "id": "#byg:is_hill",
             "required": false
+        },
+        {
+            "id": "#dragonsurvival:compat_is_wythers",
+            "required": false
         }
 	]
 }

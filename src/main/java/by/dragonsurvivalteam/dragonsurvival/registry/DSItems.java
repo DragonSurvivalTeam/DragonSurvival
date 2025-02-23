@@ -408,11 +408,11 @@ public class DSItems {
     public static final Holder<Item> SPEARMAN_PROMOTION = REGISTRY.register("spearman_promotion", location -> new TooltipItem(new Properties().rarity(Rarity.COMMON), location.getPath()));
 
     @Translation(type = Translation.Type.ITEM, comments = "Flight Grant")
-    @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 This item gives your dragon the ability to fly. Consumed on use.")
+    @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 This item gives you the ability to fly. Consumed on use.")
     public static final Holder<Item> FLIGHT_GRANT_ITEM = REGISTRY.register("wing_grant", location -> new FlightGrantItem(new Properties(), location.getPath()));
 
     @Translation(type = Translation.Type.ITEM, comments = "Spin Grant")
-    @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 This item gives your dragon the ability to spin while flying. Consumed on use.")
+    @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 This item gives you dragon the ability to spin while flying. Consumed on use.")
     public static final Holder<Item> SPIN_GRANT_ITEM = REGISTRY.register("spin_grant", location -> new SpinGrantItem(new Properties(), location.getPath()));
 
     // --- Spawn eggs --- //
