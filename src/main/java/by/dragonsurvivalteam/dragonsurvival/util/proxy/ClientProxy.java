@@ -130,6 +130,11 @@ public class ClientProxy implements Proxy {
     }
 
     @Override
+    public float getPartialTick() {
+        return ClientDragonRenderer.partialTick;
+    }
+
+    @Override
     public boolean isOnRenderThread() {
         return RenderSystem.isOnRenderThread();
     }

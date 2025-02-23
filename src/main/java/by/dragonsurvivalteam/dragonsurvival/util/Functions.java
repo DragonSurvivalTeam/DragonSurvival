@@ -134,11 +134,12 @@ public class Functions {
         if (halfRange <= 0) {
             return Mth.wrapDegrees(center);
         }
+
         if (halfRange >= 180) {
             return Mth.wrapDegrees(value);
         }
 
-        var delta = angleDifference(center, value);
+        double delta = angleDifference(center, value);
         delta = Math.clamp(delta, -halfRange, halfRange);
 
         return center + delta;
@@ -157,7 +158,7 @@ public class Functions {
      */
     public static double limitAngleDeltaSoft(double value, double center, double halfRange, double pullCoeff) {
         pullCoeff = Math.clamp(pullCoeff, 0, 1);
-        var targetAngle = limitAngleDelta(value, center, halfRange);
+        double targetAngle = limitAngleDelta(value, center, halfRange);
         return RenderUtil.lerpYaw(pullCoeff, value, targetAngle);
     }
 
@@ -178,9 +179,10 @@ public class Functions {
 
         start = Mth.wrapDegrees(start);
         end = Mth.wrapDegrees(end);
+
         double diff = Mth.wrapDegrees(end - start);
         double avoidDiff = Mth.wrapDegrees(avoidAngle - start);
-        var flipDir = Math.signum(diff) == Math.signum(avoidDiff) && Math.abs(diff) > Math.abs(avoidDiff);
+        boolean flipDir = Math.signum(diff) == Math.signum(avoidDiff) && Math.abs(diff) > Math.abs(avoidDiff);
 
         if (flipDir) {
             diff = Math.copySign(360 - Math.abs(diff), -diff);

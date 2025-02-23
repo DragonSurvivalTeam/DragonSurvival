@@ -75,7 +75,7 @@ public record DragonBody(
 
     private static final RandomSource RANDOM = RandomSource.create();
 
-    public record ScalingProportions(double width, double height, double eyeHeight, double scaleMultiplier, double shadowMultiplier) {
+    public record ScalingProportions(double width, double height, double eyeHeight, double scaleMultiplier, double shadowMultiplier) { // TODO :: scaling_offset
         public static final Codec<ScalingProportions> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 MiscCodecs.doubleRange(0, Double.MAX_VALUE).fieldOf("width").forGetter(ScalingProportions::width),
                 MiscCodecs.doubleRange(0, Double.MAX_VALUE).fieldOf("height").forGetter(ScalingProportions::height),

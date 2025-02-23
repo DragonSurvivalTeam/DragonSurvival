@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.entity;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.models.DragonModel;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.util.AnimationTickTimer;
@@ -16,9 +17,9 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.TreasureRestDat
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEmote;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
@@ -86,7 +87,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     public double currentTailMotionUp;
 
     public AnimationController<DragonEntity> mainAnimationController;
-    public PoseStack.Pose currentlyRenderedPose;
 
     /** This reference must be updated whenever player is remade, for example, when changing dimensions */
     public volatile Integer playerId;
@@ -423,6 +423,32 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public float getScale() {
+        Player player = getPlayer();
+
+        if (player == null) {
+            return super.getScale();
+        }
+
+        if (player.level().isClientSide()) {
+            return (float) DragonStateProvider.getData(player).getVisualScale(player, DragonSurvival.PROXY.getPartialTick());
+        }
+
+        return player.getScale();
+    }
+
+    @Override
+    protected @NotNull EntityDimensions getDefaultDimensions(@NotNull final Pose pose) {
+        Player player = getPlayer();
+
+        if (player == null) {
+            return super.getDefaultDimensions(pose);
+        }
+
+        return player.getDimensions(pose);
     }
 
     @Override

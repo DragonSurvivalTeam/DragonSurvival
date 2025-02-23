@@ -44,6 +44,10 @@ public interface Proxy {
         return 1;
     }
 
+    default float getPartialTick() {
+        return 1;
+    }
+
     /** This will always return 'false' when in production */
     default boolean isOnRenderThread() {
         return false;
