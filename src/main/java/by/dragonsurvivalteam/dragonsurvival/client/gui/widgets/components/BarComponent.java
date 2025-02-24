@@ -103,9 +103,12 @@ public class BarComponent implements ScrollableComponent {
 
             if (widget.visible) {
                 if (widgets.size() < displayAmount) {
-                    int totalWidth = widgets.size() * (widget.getWidth() + spacing) - spacing;
-                    int centeredX = xPos + (displayAmount * (widget.getWidth() + spacing) - spacing - totalWidth) / 2;
-                    widget.setX(centeredX + index * (widget.getWidth() + spacing));
+                    int elementWidth = widget.getWidth() + spacing;
+
+                    int totalWidth = widgets.size() * elementWidth;
+                    int centeredX = xPos + (displayAmount * elementWidth - totalWidth) / 2;
+
+                    widget.setX(centeredX + index * elementWidth + spacing / 2);
                 } else {
                     widget.setX(xPos + (index - scrollAmount) * (widget.getWidth() + spacing));
                 }

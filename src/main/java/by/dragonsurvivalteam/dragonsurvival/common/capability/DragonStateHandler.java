@@ -70,6 +70,9 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class DragonStateHandler extends EntityStateHandler {
+    @Translation(comments = "You cannot turn into a human in this world")
+    private static final String NO_HUMANS = Translation.Type.GUI.wrap("message.no_humans");
+
     public static final double NO_GROWTH = -1;
 
     private static final double AGE_LERP_SPEED = 0.1; // 10% per tick
@@ -717,6 +720,11 @@ public class DragonStateHandler extends EntityStateHandler {
     }
 
     public void revertToHumanForm(final Player player, boolean isDragonSoul) {
+        if (ServerConfig.noHumansAllowed) {
+            player.displayClientMessage(Component.translatable(NO_HUMANS), true);
+            return;
+        }
+
         // Don't set the saved dragon growth if we are reverting from a soul, as we already are storing the growth of the dragon in the soul
         if (ServerConfig.saveGrowthStage && !isDragonSoul && dragonSpecies != null) {
             savedGrowth.put(speciesKey(), getGrowth());

@@ -430,20 +430,16 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
             altarButtons.add(humanButton);
         }
 
-        int extraOffset = 0;
-
-        if (altarButtons.size() == 3) {
-            extraOffset += 27;
-        }
-
         // TODO :: display message if no unlocked are present
         scrollableComponents.add(new BarComponent(this,
-                xPos + extraOffset, guiTop + 30, 4,
+                xPos, guiTop + 30, 4,
                 altarButtons, 5,
                 -13, 215, 60, 12, 19,
                 ALTAR_ARROW_LEFT_HOVER, ALTAR_ARROW_LEFT_MAIN, ALTAR_ARROW_RIGHT_HOVER, ALTAR_ARROW_RIGHT_MAIN));
 
-        DragonStateHandler handler = DragonStateProvider.getData(Objects.requireNonNull(minecraft).player);
+        //noinspection DataFlowIssue -> player is present
+        DragonStateHandler handler = DragonStateProvider.getData(minecraft.player);
+
         if (handler.isDragon()) {
             ResourceKey<DragonSpecies> species = handler.speciesKey();
             addRenderableWidget(new ExtendedButton(xPos + 32, height - 25, 150, 20, Component.translatable(LangKey.GUI_DRAGON_EDITOR), action -> ClientProxy.openDragonEditor(species, true)));

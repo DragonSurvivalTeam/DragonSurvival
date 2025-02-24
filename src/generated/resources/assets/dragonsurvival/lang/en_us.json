@@ -1024,6 +1024,7 @@
   "dragonsurvival.gui.message.natural_growth_active": "Natural growth is §2active§r",
   "dragonsurvival.gui.message.natural_growth_inactive": "Natural growth is §cinactive§r",
   "dragonsurvival.gui.message.no_flight_effect": "Your species does not have the ability to fly",
+  "dragonsurvival.gui.message.no_humans": "You cannot turn into a human in this world",
   "dragonsurvival.gui.message.no_hunger": "Hunger has exhausted you, and you can't fly.",
   "dragonsurvival.gui.message.no_unlocked_species": "There are no available (unlocked) species present",
   "dragonsurvival.gui.message.not_crouching": "The creature you are trying to ride must be crouching for you to mount them.",
