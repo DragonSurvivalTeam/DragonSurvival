@@ -94,7 +94,7 @@ public class LangKey {
     protected static final String FIND_END_PLATFORM = "find_end_platform";
 
     @Translation(type = Translation.Type.ADVANCEMENT, comments = "Draconic Secrets")
-    @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Find a special structure in The End to get the Dragon Soul and Spin ability.")
+    @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Find a special structure in The End to get the Dragon Soul or Spin ability.")
     protected static final String FIND_END_STRUCTURES = "find_end_structures";
 
     @Translation(type = Translation.Type.ADVANCEMENT, comments = "Knowledge is Power")
