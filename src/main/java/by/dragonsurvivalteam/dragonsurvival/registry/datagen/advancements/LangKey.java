@@ -23,7 +23,7 @@ public class LangKey {
     @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Place a Dragon Altar to change the species or appearance of a dragon.")
     protected static final String PLACE_ALTAR = "place_altar";
 
-    @Translation(type = Translation.Type.ADVANCEMENT, comments = "Path Choice")
+    @Translation(type = Translation.Type.ADVANCEMENT, comments = "Here be Villagers")
     @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Find a villager and decide their fate.")
     protected static final String PATH_CHOICE = "path_choice";
 
@@ -80,6 +80,22 @@ public class LangKey {
     @Translation(type = Translation.Type.ADVANCEMENT, comments = "Echoes of Elder")
     @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Find the burial place of the Elder Dragon's children.")
     protected static final String FIND_BONES = "find_bones";
+
+    @Translation(type = Translation.Type.ADVANCEMENT, comments = "The Sleeping")
+    @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Find any dragon statue in The Overworld.")
+    protected static final String FIND_OVERWORLD_STRUCTURES = "find_overworld_structures";
+
+    @Translation(type = Translation.Type.ADVANCEMENT, comments = "Peaceful on Fire")
+    @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Find any dragon statue in The Nether.")
+    protected static final String FIND_NETHER_STRUCTURES = "find_nether_structures";
+
+    @Translation(type = Translation.Type.ADVANCEMENT, comments = "Don't jump into The Void!")
+    @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Find any structures in The End to get the Dragon Soul or Spin Flight skill.")
+    protected static final String FIND_END_PLATFORM = "find_end_platform";
+
+    @Translation(type = Translation.Type.ADVANCEMENT, comments = "Dragon Secrets")
+    @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Find any structures in The End to get the Dragon Soul or Spin Flight skill.")
+    protected static final String FIND_END_STRUCTURES = "find_end_structures";
 
     @Translation(type = Translation.Type.ADVANCEMENT, comments = "Knowledge is Power")
     @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Place any Dragon Beacon on top of the Memory Block.")
