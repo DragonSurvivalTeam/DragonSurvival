@@ -128,9 +128,14 @@ public @interface Translation {
         }
 
         /** See {@link Translation.Type#wrap(String, String)} */
-        public String wrap(final Holder<?> key) {
+        public String wrap(final Holder<?> holder) {
             //noinspection DataFlowIssue -> key is present
-            return wrap(key.getKey().location());
+            return wrap(holder.getKey());
+        }
+
+        /** See {@link Translation.Type#wrap(String, String)} */
+        public String wrap(final ResourceKey<?> key) {
+            return wrap(key.location());
         }
 
         /** See {@link Translation.Type#wrap(String, String)} */

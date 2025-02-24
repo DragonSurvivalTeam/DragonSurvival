@@ -6,10 +6,12 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.FlightEffect;
+import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -36,7 +38,7 @@ public record ToggleFlight(Activation activation, Result result) implements Cust
                 return Result.ALREADY_ENABLED;
             }
 
-            if (!context.player().isCreative() && !ClientFlightHandler.hasEnoughFoodToStartFlight(context.player())) {
+            if (!context.player().isCreative() && !hasEnoughFoodToStartFlight(context.player())) {
                 return Result.NO_HUNGER;
             }
 
@@ -62,6 +64,10 @@ public record ToggleFlight(Activation activation, Result result) implements Cust
                 return Result.SUCCESS_DISABLED;
             }
         }).thenAccept(result -> PacketDistributor.sendToPlayer((ServerPlayer) context.player(), new ToggleFlight(packet.activation(), result)));
+    }
+
+    public static boolean hasEnoughFoodToStartFlight(final Player player) {
+        return player.getFoodData().getFoodLevel() > ServerFlightHandler.flightHungerThreshold;
     }
 
     public enum Activation {

@@ -25,26 +25,13 @@
               }
             },
             {
-              "condition": "minecraft:all_of",
-              "terms": [
-                {
-                  "condition": "minecraft:entity_properties",
-                  "entity": "this",
-                  "predicate": {
-                    "type": "minecraft:player"
-                  }
-                },
-                {
-                  "condition": "minecraft:inverted",
-                  "term": {
-                    "condition": "minecraft:entity_properties",
-                    "entity": "this",
-                    "predicate": {
-                      "nbt": "{'neoforge:attachments':{'dragonsurvival:dragon_handler': {'type': none}}}"
-                    }
-                  }
+              "condition": "minecraft:entity_properties",
+              "entity": "this",
+              "predicate": {
+                "type_specific": {
+                  "type": "dragonsurvival:dragon_predicate"
                 }
-              ]
+              }
             }
           ]
         }
@@ -67,36 +54,34 @@
         },
         "enchanted": "attacker",
         "requirements": {
-          "condition": "minecraft:any_of",
+          "condition": "minecraft:all_of",
           "terms": [
             {
-              "condition": "minecraft:entity_properties",
-              "entity": "this",
-              "predicate": {
-                "type": "minecraft:ender_dragon"
-              }
-            },
-            {
-              "condition": "minecraft:all_of",
+              "condition": "minecraft:any_of",
               "terms": [
                 {
-                  "condition": "minecraft:inverted",
-                  "term": {
-                    "condition": "minecraft:entity_properties",
-                    "entity": "this",
-                    "predicate": {
-                      "nbt": "{'neoforge:attachments':{'dragonsurvival:dragon_handler': {'type': none}}}"
-                    }
+                  "condition": "minecraft:entity_properties",
+                  "entity": "this",
+                  "predicate": {
+                    "type": "minecraft:ender_dragon"
                   }
                 },
                 {
                   "condition": "minecraft:entity_properties",
                   "entity": "this",
                   "predicate": {
-                    "type": "minecraft:player"
+                    "type_specific": {
+                      "type": "dragonsurvival:dragon_predicate"
+                    }
                   }
                 }
               ]
+            },
+            {
+              "condition": "minecraft:damage_source_properties",
+              "predicate": {
+                "is_direct": true
+              }
             }
           ]
         }
@@ -110,30 +95,26 @@
             {
               "type": "minecraft:damage_entity",
               "damage_type": "dragonsurvival:anti_dragon",
-              "min_damage": 0.5,
-              "max_damage": 0.5
+              "max_damage": 0.5,
+              "min_damage": 0.5
             },
             {
               "type": "minecraft:damage_item",
-              "amount": 1
+              "amount": 1.0
             },
             {
               "type": "minecraft:apply_mob_effect",
               "max_amplifier": 1.0,
-              "max_duration": {
-                "type": "minecraft:linear",
-                "base": 1.5,
-                "per_level_above_first": 0.5
-              },
+              "max_duration": 5.0,
               "min_amplifier": 1.0,
-              "min_duration": 1.5,
+              "min_duration": 5.0,
               "to_apply": "minecraft:slowness"
             },
             {
               "type": "minecraft:play_sound",
+              "pitch": 1.0,
               "sound": "dragonsurvival:bonk",
-              "volume": 1,
-              "pitch": 1
+              "volume": 1.0
             }
           ]
         },
@@ -141,24 +122,16 @@
           "condition": "minecraft:all_of",
           "terms": [
             {
+              "condition": "minecraft:time_check",
+              "period": 100,
+              "value": 0
+            },
+            {
               "condition": "minecraft:entity_properties",
               "entity": "this",
               "predicate": {
-                "type": "minecraft:player"
-              }
-            },
-            {
-              "condition": "minecraft:time_check",
-              "value": 0,
-              "period": 100
-            },
-            {
-              "condition": "minecraft:inverted",
-              "term": {
-                "condition": "minecraft:entity_properties",
-                "entity": "this",
-                "predicate": {
-                  "nbt": "{'neoforge:attachments':{'dragonsurvival:dragon_handler': {'type': none}}}"
+                "type_specific": {
+                  "type": "dragonsurvival:dragon_predicate"
                 }
               }
             }

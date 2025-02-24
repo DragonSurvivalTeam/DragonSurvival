@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEnchantments;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
@@ -15,6 +16,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.concurrent.CompletableFuture;
 
 public class DSEnchantmentTags extends EnchantmentTagsProvider {
+    @Translation(comments = "Anti-Dragon (Exclusive Set)")
+    public static final TagKey<Enchantment> ANTI_DRAGON = exclusiveSet("anti_dragon");
+
     public DSEnchantmentTags(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
         super(output, lookupProvider, DragonSurvival.MODID, existingFileHelper);
     }
@@ -24,7 +28,7 @@ public class DSEnchantmentTags extends EnchantmentTagsProvider {
         addToVanillaTags();
 
         // Used in enchantments
-        tag(exclusiveSet("anti_dragon"))
+        tag(ANTI_DRAGON)
                 .add(DSEnchantments.DRAGONSBANE);
 
         // Used in enchantments

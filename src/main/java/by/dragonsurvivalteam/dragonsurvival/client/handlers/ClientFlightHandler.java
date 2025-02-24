@@ -318,7 +318,7 @@ public class ClientFlightHandler {
                         if (FlightData.getData(player).isWingsSpread()) {
                             Input movement = player.input;
 
-                            if (!hasEnoughFoodToStartFlight(player) || player.isCreative()) {
+                            if (!ToggleFlight.hasEnoughFoodToStartFlight(player) || player.isCreative()) {
                                 ay = Mth.clamp(Math.abs(ay * 4), -0.4 * ServerFlightHandler.maxFlightSpeed, 0.4 * ServerFlightHandler.maxFlightSpeed);
                             }
 
@@ -460,7 +460,7 @@ public class ClientFlightHandler {
                                             deltaMovement = new Vec3(deltaMovement.x, -0.5 + deltaMovement.y, deltaMovement.z);
                                             player.setDeltaMovement(deltaMovement);
                                         } else if (wasFlying) { // Don't activate on a regular jump
-                                            double yMotion = hasEnoughFoodToStartFlight(player) ? -gravity + ay : -(gravity * 4) + ay;
+                                            double yMotion = ToggleFlight.hasEnoughFoodToStartFlight(player) ? -gravity + ay : -(gravity * 4) + ay;
                                             deltaMovement = new Vec3(deltaMovement.x, yMotion, deltaMovement.z);
                                             player.setDeltaMovement(deltaMovement);
                                         }
@@ -605,10 +605,6 @@ public class ClientFlightHandler {
             double posZ = player.position().z + player.getDeltaMovement().z + d2;
             player.level().addParticle(particleData, posX, posY, posZ, player.getDeltaMovement().x * -1, player.getDeltaMovement().y * -1, player.getDeltaMovement().z * -1);
         }
-    }
-
-    public static boolean hasEnoughFoodToStartFlight(Player player) {
-        return player.getFoodData().getFoodLevel() > ServerFlightHandler.flightHungerThreshold;
     }
 
     public static Vec3 getInputVector(final Vec3 movement, float frictionSpeed, float yRot) {

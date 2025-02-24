@@ -1,4 +1,4 @@
-// 1.21.1	2025-02-23T03:34:15.2084276	Registries
+// 1.21.1	2025-02-24T10:44:04.2114107	Registries
 011b2ee382ec961722c100bbf059b4aa460f44b0 data/dragonsurvival/damage_type/anti_dragon.json
 d8c3135ecd1879e98a21e83ec1bcfd68c5fc3296 data/dragonsurvival/damage_type/ball_lightning.json
 3bca57c58e2307adb52a4b6e18ea88aae7e2d8d7 data/dragonsurvival/damage_type/blast_dust.json
@@ -84,4 +84,5 @@ d626b30c79461868bd731fdcce03cf3e6cd5830e data/dragonsurvival/dragonsurvival/drag
 a5fa436d963ed5a6bcb4ba63ce559a7f330f5717 data/dragonsurvival/dragonsurvival/projectile_data/bouncy_ball_lightning.json
 0a333a51657e76e993f39519428025b58eb6a99e data/dragonsurvival/dragonsurvival/projectile_data/fireball.json
 51ba2324a76f960cad1b2d5a1ee27d8eec9e2f0c data/dragonsurvival/dragonsurvival/projectile_data/spike.json
-af16c6fd6045f7a95654506a3b0c0bef505e6c33 data/dragonsurvival/enchantment/bolas.json
+5c15e3b0cbdd1d5065563153c03e97a0951a3b48 data/dragonsurvival/enchantment/bolas.json
+4ba6912c6bd5a5873ce83d8e226c108583492a7b data/dragonsurvival/enchantment/dragonsbane.json

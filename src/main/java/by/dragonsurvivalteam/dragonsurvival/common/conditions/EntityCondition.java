@@ -174,4 +174,16 @@ public class EntityCondition {
 
         return EntityPredicate.Builder.entity().equipment(builder.build()).build();
     }
+
+    public static EntityPredicate isType(final EntityType<?> type) {
+        return EntityPredicate.Builder.entity().of(type).build();
+    }
+
+    public static EntityPredicate isType(final TagKey<EntityType<?>> tag) {
+        return EntityPredicate.Builder.entity().of(tag).build();
+    }
+
+    public static EntityPredicate isDragon() {
+        return EntityPredicate.Builder.entity().subPredicate(DragonPredicate.Builder.dragon().build()).build();
+    }
 }
