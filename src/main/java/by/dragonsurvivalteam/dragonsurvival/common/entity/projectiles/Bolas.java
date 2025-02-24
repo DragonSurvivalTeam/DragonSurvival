@@ -13,9 +13,13 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@EventBusSubscriber
 public class Bolas extends AbstractArrow {
     public Bolas(Level world) {
         super(DSEntities.BOLAS_ENTITY.get(), world);
@@ -23,6 +27,13 @@ public class Bolas extends AbstractArrow {
 
     public Bolas(double x, double y, double z, final Level level, final ItemStack pickup, @Nullable final ItemStack firedFrom) {
         super(DSEntities.BOLAS_ENTITY.value(), x, y, z, level, pickup, firedFrom);
+    }
+
+    @SubscribeEvent
+    public static void causeFall(final EntityTickEvent.Pre event) {
+        if (event.getEntity() instanceof LivingEntity entity && entity.hasEffect(DSEffects.TRAPPED)) {
+            entity.setDeltaMovement(entity.getDeltaMovement().add(0, -0.25, 0));
+        }
     }
 
     @Override

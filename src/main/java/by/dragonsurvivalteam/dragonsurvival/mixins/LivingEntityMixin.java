@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonFoodHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.EffectHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.EffectModifications;
@@ -19,6 +20,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.core.Holder;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -35,6 +37,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForgeMod;
+import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -46,6 +49,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LivingEntity.class)
+@Debug(export = true)
 public abstract class LivingEntityMixin extends Entity {
     @Shadow protected boolean jumping;
     @Shadow protected ItemStack useItem;
@@ -64,6 +68,15 @@ public abstract class LivingEntityMixin extends Entity {
     @ModifyArg(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;moveRelative(FLnet/minecraft/world/phys/Vec3;)V", ordinal = 1))
     private float dragonSurvival$modifyLavaSwimSpeed(float original) {
         return (float) (original * getAttributeValue(DSAttributes.LAVA_SWIM_SPEED));
+    }
+
+    @ModifyExpressionValue(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hasEffect(Lnet/minecraft/core/Holder;)Z", ordinal = 2))
+    private boolean dragonSurvival$disableLevitationWhenTrapped(final boolean hasLevitation) {
+        if (hasEffect(DSEffects.TRAPPED)) {
+            return false;
+        }
+
+        return hasLevitation;
     }
 
     @SuppressWarnings("ConstantValue") // both checks in the if statement are valid
@@ -249,12 +262,8 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
-    @Shadow
-    public abstract ItemStack getItemBySlot(EquipmentSlot pSlot);
-
-    @Shadow
-    public abstract double getAttributeValue(Holder<Attribute> attribute);
-
-    @Shadow
-    protected abstract float getWaterSlowDown();
+    @Shadow public abstract ItemStack getItemBySlot(EquipmentSlot pSlot);
+    @Shadow public abstract double getAttributeValue(Holder<Attribute> attribute);
+    @Shadow public abstract boolean hasEffect(final Holder<MobEffect> effect);
+    @Shadow protected abstract float getWaterSlowDown();
 }

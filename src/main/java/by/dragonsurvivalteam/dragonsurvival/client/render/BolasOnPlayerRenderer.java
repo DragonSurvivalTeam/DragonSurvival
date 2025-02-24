@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.render;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
@@ -18,35 +19,56 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderLivingEvent;
+import software.bernie.geckolib.event.GeoRenderEvent;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class BolasOnPlayerRenderer {
     private static ItemStack BOLAS;
 
     @SubscribeEvent
-    public static void renderTrap(RenderLivingEvent.Pre<LivingEntity, EntityModel<LivingEntity>> event) {
-        LivingEntity entity = event.getEntity();
+    public static void renderTrap(final GeoRenderEvent.Entity.Post event) {
+        if (event.getEntity() instanceof DragonEntity dragon) {
+            Player player = dragon.getPlayer();
 
-        if (entity.hasEffect(DSEffects.TRAPPED)) {
-            int light = event.getPackedLight();
-            int overlayCoords = LivingEntityRenderer.getOverlayCoords(entity, 0);
-            MultiBufferSource buffers = event.getMultiBufferSource();
-            PoseStack matrixStack = event.getPoseStack();
-            float scale = entity.getEyeHeight();
-
-            if (entity instanceof Player player) {
-                DragonStateHandler handler = DragonStateProvider.getData(player);
-
-                if (handler.isDragon()) {
-                    scale = (float) DragonSizeHandler.calculateDragonEyeHeight(handler, player);
-                }
+            if (player == null) {
+                return;
             }
 
-            renderBolas(light, overlayCoords, buffers, matrixStack, scale);
+            renderBolas(player, event.getPoseStack(), event.getBufferSource(), event.getPackedLight());
+        } else if (event.getEntity() instanceof LivingEntity entity) {
+            renderBolas(entity, event.getPoseStack(), event.getBufferSource(), event.getPackedLight());
         }
     }
 
-    public static void renderBolas(int light, int overlayCoords, MultiBufferSource buffers, PoseStack matrixStack, float eyeHeight) {
+    @SubscribeEvent
+    public static void renderTrap(RenderLivingEvent.Pre<LivingEntity, EntityModel<LivingEntity>> event) {
+        renderBolas(event.getEntity(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight());
+    }
+
+    public static void renderBolas(final LivingEntity entity, final PoseStack pose, final MultiBufferSource bufferSource, final int packedLight) {
+        if (!entity.hasEffect(DSEffects.TRAPPED)) {
+            return;
+        }
+
+        int overlayCoords = LivingEntityRenderer.getOverlayCoords(entity, 0);
+        float scale = entity.getEyeHeight();
+
+        if (entity instanceof Player player) {
+            if (player.isSpectator()) {
+                return;
+            }
+
+            DragonStateHandler handler = DragonStateProvider.getData(player);
+
+            if (handler.isDragon()) {
+                scale = (float) DragonSizeHandler.calculateDragonEyeHeight(handler, player);
+            }
+        }
+
+        renderBolas(packedLight, overlayCoords, bufferSource, pose, scale);
+    }
+
+    private static void renderBolas(int light, int overlayCoords, MultiBufferSource buffers, PoseStack matrixStack, float eyeHeight) {
         matrixStack.pushPose();
         matrixStack.translate(0, 0.9f + eyeHeight / 8.f, 0);
         matrixStack.scale(1.6f + eyeHeight / 8.f, 1.6f + eyeHeight / 8.f, 1.6f + eyeHeight / 8.f);

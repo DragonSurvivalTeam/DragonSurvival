@@ -30,7 +30,7 @@ public class DSEffects {
     @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "This net prevents you from escaping into the sky.")
     public static Holder<MobEffect> TRAPPED = REGISTRY.register("trapped",
             () -> new WingDisablingEffect(MobEffectCategory.HARMFUL, 0xdddddd, true)
-                    .addAttributeModifier(Attributes.MOVEMENT_SPEED, DragonSurvival.res("slow_movement"), -0.5, Operation.ADD_MULTIPLIED_TOTAL)
+                    .addAttributeModifier(Attributes.MOVEMENT_SPEED, DragonSurvival.res("slow_movement"), -0.75, Operation.ADD_MULTIPLIED_TOTAL)
     );
 
     /** Some effects are handled in {@link by.dragonsurvivalteam.dragonsurvival.client.handlers.ClientFlightHandler} */

@@ -6,7 +6,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
-import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.input.Keybind;
@@ -14,7 +13,6 @@ import by.dragonsurvivalteam.dragonsurvival.mixins.client.EntityRendererAccessor
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.LivingRendererAccessor;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncDeltaMovement;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDragonMovement;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
@@ -37,7 +35,6 @@ import net.minecraft.client.player.Input;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Tuple;
@@ -256,20 +253,6 @@ public class ClientDragonRenderer {
             handleFlightMovement(player, dragon, movement, partialTick);
 
             Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(dragon).render(dragon, player.getViewYRot(partialTick), partialTick, event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight());
-        }
-
-        if (!player.isSpectator()) {
-            int combinedOverlayIn = LivingEntityRenderer.getOverlayCoords(player, 0);
-
-            if (player.hasEffect(DSEffects.TRAPPED)) {
-                float bolasScale = player.getEyeHeight();
-
-                if (handler.isDragon()) {
-                    bolasScale = (float) DragonSizeHandler.calculateDragonEyeHeight(handler, player);
-                }
-
-                BolasOnPlayerRenderer.renderBolas(event.getPackedLight(), combinedOverlayIn, event.getMultiBufferSource(), event.getPoseStack(), bolasScale);
-            }
         }
 
         dragonModel.setOverrideTexture(null);
