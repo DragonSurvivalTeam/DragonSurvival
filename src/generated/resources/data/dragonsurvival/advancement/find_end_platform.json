@@ -1,5 +1,5 @@
 {
-  "parent": "dragonsurvival:find_bones",
+  "parent": "dragonsurvival:find_nether_structures",
   "criteria": {
     "criterion_0": {
       "conditions": {
@@ -9,7 +9,7 @@
             "entity": "this",
             "predicate": {
               "location": {
-                "structures": "#dragonsurvival:light_treasure"
+                "dimension": "minecraft:the_end"
               }
             }
           }
@@ -20,14 +20,14 @@
   },
   "display": {
     "description": {
-      "translate": "dragonsurvival.advancement.find_overworld_structures.desc"
+      "translate": "dragonsurvival.advancement.find_end_platform.desc"
     },
     "icon": {
       "count": 1,
-      "id": "minecraft:grass_block"
+      "id": "minecraft:ender_pearl"
     },
     "title": {
-      "translate": "dragonsurvival.advancement.find_overworld_structures"
+      "translate": "dragonsurvival.advancement.find_end_platform"
     }
   },
   "requirements": [
@@ -36,7 +36,7 @@
     ]
   ],
   "rewards": {
-    "experience": 24
+    "experience": 32
   },
   "sends_telemetry_event": true
 }

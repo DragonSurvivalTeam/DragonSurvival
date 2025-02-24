@@ -375,9 +375,24 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         TagKey<Structure> tag = TagKey.create(Registries.STRUCTURE, DragonSurvival.res("dragon_skeletons")); // FIXME :: use tag from data generation
         createWithToast(parent, LangKey.FIND_BONES, DSItems.STAR_BONE.value(), PlayerTrigger.TriggerInstance.located(inStructure(tag)), 12);
+        buildFindBonesChildren(parent);
 
         AdvancementHolder useMemoryBlock = createWithToast(parent, LangKey.USE_MEMORY_BLOCK, DSBlocks.DRAGON_MEMORY_BLOCK.value(), itemUsedOnBlock(DSBlocks.DRAGON_MEMORY_BLOCK.value(), DSBlocks.DRAGON_BEACON.value()), 10);
         buildUseMemoryBlockChildren(useMemoryBlock);
+    }
+
+    private void buildFindBonesChildren(final AdvancementHolder parent) {
+        // --- Parent: find_bones --- //
+        TagKey<Structure> tag = TagKey.create(Registries.STRUCTURE, DragonSurvival.res("light_treasure")); // FIXME :: use tag from data generation
+        AdvancementHolder findOverworldStructure = createWithToast(parent, LangKey.FIND_OVERWORLD_STRUCTURES, Blocks.GRASS_BLOCK, PlayerTrigger.TriggerInstance.located(inStructure(tag)), 24);
+
+        TagKey<Structure> tag2 = TagKey.create(Registries.STRUCTURE, DragonSurvival.res("dark_treasure")); // FIXME :: use tag from data generation
+        AdvancementHolder findNetherStructure = createWithToast(findOverworldStructure, LangKey.FIND_NETHER_STRUCTURES, Blocks.NETHERRACK, PlayerTrigger.TriggerInstance.located(inStructure(tag2)), 36);
+
+        AdvancementHolder findEndPlatform = createWithToast(findNetherStructure, LangKey.FIND_END_PLATFORM, Items.ENDER_PEARL, PlayerTrigger.TriggerInstance.located(inDimension(Level.END)), 32);
+
+        TagKey<Structure> tag3 = TagKey.create(Registries.STRUCTURE, DragonSurvival.res("treasure_end")); // FIXME :: use tag from data generation
+        createWithToast(findEndPlatform, LangKey.FIND_END_STRUCTURES, DSItems.SPIN_GRANT_ITEM.value(), PlayerTrigger.TriggerInstance.located(inStructure(tag3)), 64);
     }
 
     private void buildUseMemoryBlockChildren(final AdvancementHolder parent) {

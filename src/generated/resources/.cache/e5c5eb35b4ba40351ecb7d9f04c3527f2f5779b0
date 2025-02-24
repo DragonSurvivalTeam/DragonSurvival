@@ -1,4 +1,4 @@
-// 1.21.1	2025-02-19T18:54:09.6302964	Advancements
+// 1.21.1	2025-02-23T20:07:52.8191224	Advancements
 1a7d4520fc656360fe5fccecd785f600641927d3 data/dragonsurvival/advancement/be_adult_dragon.json
 550afd5ed2eeeeefe5bfaff761df685a793a5978 data/dragonsurvival/advancement/be_dragon.json
 a52fbc87e18b5cfd6830774af942373c963d546f data/dragonsurvival/advancement/be_young_dragon.json
@@ -19,6 +19,10 @@ cb0123a5eb343c9570ae8723a8bd0467033316ff data/dragonsurvival/advancement/collect
 88e42bd497e6db47e06e9c98d32258e9a93caaa1 data/dragonsurvival/advancement/dark/get_armor_set.json
 ec932c42b79e9005950bc927e11e7344301c90e5 data/dragonsurvival/advancement/dark/open_vault.json
 f46b80512271536a871e46ee5a9bd89694006182 data/dragonsurvival/advancement/find_bones.json
+b22a09e429883cc93fe5c8385c5241f060374a6f data/dragonsurvival/advancement/find_end_platform.json
+b07553908486a297266d9ac5caf4252034705be8 data/dragonsurvival/advancement/find_end_structures.json
+5f5ddfc22e8c3c5b0652ff6e6554fcc0371dd7af data/dragonsurvival/advancement/find_nether_structures.json
+49ff2184be45832f1ab4cb2416e4c926f109c044 data/dragonsurvival/advancement/find_overworld_structures.json
 b396d905fadd7ad0de607896ea384cb8afea59c5 data/dragonsurvival/advancement/forest/be_dragon.json
 7e47a6ed726d10576e8f8e5212e2407dab8dd430 data/dragonsurvival/advancement/forest/be_old_dragon.json
 6322654ca128b878232380a6a16add857ec0d656 data/dragonsurvival/advancement/forest/master_all_passives.json
