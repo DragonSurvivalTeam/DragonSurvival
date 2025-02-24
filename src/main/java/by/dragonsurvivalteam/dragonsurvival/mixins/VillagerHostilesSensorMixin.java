@@ -9,6 +9,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.sensing.VillagerHostilesSensor;
+import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -29,7 +30,15 @@ public class VillagerHostilesSensorMixin {
     }
 
     @ModifyReturnValue(method = "isHostile", at = @At(value = "RETURN"))
-    public boolean dragonSurvival$setHunterOmenAsHostile(boolean original, @Local(argsOnly = true) LivingEntity entity) {
-        return original || entity.hasEffect(DSEffects.HUNTER_OMEN);
+    public boolean dragonSurvival$setHunterOmenAsHostile(final boolean isHostile, @Local(argsOnly = true) final LivingEntity entity) {
+        if (isHostile) {
+            return true;
+        }
+
+        if (entity instanceof Player player && (player.isCreative() || player.isSpectator())) {
+            return false;
+        }
+
+        return entity.hasEffect(DSEffects.HUNTER_OMEN);
     }
 }

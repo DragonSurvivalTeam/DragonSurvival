@@ -19,11 +19,15 @@ public class EntityHandler {
     public static void attachAvoidDragonGoal(final EntityJoinLevelEvent event) {
         if (event.getEntity() instanceof Animal animal && !animal.getType().is(DSEntityTypeTags.ANIMAL_AVOID_BLACKLIST)) {
             animal.goalSelector.addGoal(5, new AvoidEntityGoal<>(animal, Player.class, entity -> {
-                if (!ServerConfig.dragonsAreScary || entity.hasEffect(DSEffects.ANIMAL_PEACE)) {
+                if (!ServerConfig.dragonsAreScary) {
+                    return false;
+                }
+                
+                if (entity instanceof Player player && (player.isCreative() || player.isSpectator())) {
                     return false;
                 }
 
-                if (HunterData.hasMaxHunterStacks(entity)) {
+                if (entity.hasEffect(DSEffects.ANIMAL_PEACE) || HunterData.hasMaxHunterStacks(entity)) {
                     return false;
                 }
 

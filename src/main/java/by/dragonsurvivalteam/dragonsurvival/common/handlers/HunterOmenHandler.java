@@ -10,7 +10,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
 import by.dragonsurvivalteam.dragonsurvival.util.EnchantmentUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -31,6 +30,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MapItem;
 import net.minecraft.world.item.component.MapDecorations;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -44,7 +44,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("unused")
 @EventBusSubscriber
 public class HunterOmenHandler {
     @SubscribeEvent
@@ -57,103 +56,102 @@ public class HunterOmenHandler {
         }
     }
 
-    public static boolean isNearbyPlayerWithHunterOmen(double detectionRadius, Level level, Entity entity) {
-        List<Player> players = level.getEntitiesOfClass(Player.class, entity.getBoundingBox().inflate(detectionRadius));
-
-        for (Player player : players) {
-            if (player.hasEffect(DSEffects.HUNTER_OMEN)) {
-                return true;
-            }
-        }
-        return false;
+    public static boolean isNearbyPlayerWithHunterOmen(final double detectionRadius, final Level level, final Entity entity) {
+        return !level.getEntitiesOfClass(Player.class, entity.getBoundingBox().inflate(detectionRadius), player -> !player.isCreative() && !player.isSpectator() && player.hasEffect(DSEffects.HUNTER_OMEN)).isEmpty();
     }
 
-    public static ObjectArrayList<ItemStack> getVillagerLoot(AbstractVillager villager, Level level, @Nullable Player player, boolean wasKilled) {
-        List<ItemStack> nonEmeraldTrades = new ArrayList<>();
-        villager.getOffers().stream().filter(merchantOffer -> merchantOffer.getResult().getItem() != Items.EMERALD).forEach(merchantOffer -> {
-            // Be careful to copy the stack, since otherwise if we use this function when the villager is alive (when we steal from them)
-            // we will modify the villager's trades and crash the game due to empty stacks.
-            nonEmeraldTrades.add(merchantOffer.getResult().copy());
-        });
+    public static List<ItemStack> generateVillagerLoot(final AbstractVillager genericVillager, final Level level, @Nullable final Player player, boolean wasKilled) {
+        List<ItemStack> trades = new ArrayList<>();
 
-        ObjectArrayList<ItemStack> loot = new ObjectArrayList<>();
-        if (!nonEmeraldTrades.isEmpty()) {
-            int lootingLevel = 0;
-            if (player != null) {
-                lootingLevel = EnchantmentUtils.getLevel(player, Enchantments.LOOTING);
+        for (MerchantOffer offer : genericVillager.getOffers()) {
+            if (offer.getResult().getItem() == Items.EMERALD) {
+                continue;
             }
-            int numRolls = Math.min(lootingLevel + 1, nonEmeraldTrades.size());
-            for (int i = 0; i < numRolls; i++) {
-                int roll = level.getRandom().nextInt(nonEmeraldTrades.size());
-                loot.add(nonEmeraldTrades.get(roll));
-                nonEmeraldTrades.remove(roll);
-            }
+
+            trades.add(offer.getResult().copy());
+        }
+
+        int looting = player != null ? EnchantmentUtils.getLevel(player, Enchantments.LOOTING) : 0;
+        int rolls = Math.min(looting + 1, trades.size());
+        List<ItemStack> loot = new ArrayList<>();
+
+        for (int i = 0; i < rolls; i++) {
+            int roll = level.getRandom().nextInt(trades.size());
+            loot.add(trades.remove(roll));
+        }
+
+        if (!wasKilled || !(genericVillager instanceof Villager villager)) {
+            return loot;
         }
 
         // Have the cartographer drop a hunter's castle map if the player kills them (but not from stealing)
-        if (wasKilled && villager instanceof Villager realVillager) {
-            if (realVillager.getVillagerData().getProfession() == VillagerProfession.CARTOGRAPHER) {
-                ServerLevel serverlevel = (ServerLevel) level;
-                BlockPos blockpos = serverlevel.findNearestMapStructure(DSTrades.ON_DRAGON_HUNTERS_CASTLE_MAPS, realVillager.blockPosition(), 100, true);
-                if (blockpos != null) {
-                    ItemStack itemstack = MapItem.create(serverlevel, blockpos.getX(), blockpos.getZ(), (byte) 2, true, true);
-                    MapItem.renderBiomePreviewMap(serverlevel, itemstack);
-                    MapItemSavedData.addTargetDecoration(itemstack, blockpos, "+", DSMapDecorationTypes.DRAGON_HUNTER);
-                    itemstack.set(DataComponents.ITEM_NAME, Component.translatable(LangKey.ITEM_KINGDOM_EXPLORER_MAP));
-                    boolean lootHasMapOfSameType = loot.stream().anyMatch(stack -> {
-                        if (stack.getItem() == itemstack.getItem()) {
-                            MapDecorations mapDecorations = stack.get(DataComponents.MAP_DECORATIONS);
-                            if (mapDecorations != null) {
-                                return mapDecorations.decorations().values().stream().anyMatch(
-                                        mapDecoration -> mapDecoration.type() == DSMapDecorationTypes.DRAGON_HUNTER
-                                );
-                            }
-                        }
-                        return false;
-                    });
+        if (level instanceof ServerLevel serverLevel && villager.getVillagerData().getProfession() == VillagerProfession.CARTOGRAPHER) {
+            for (ItemStack stack : loot) {
+                if (stack.getItem() != Items.MAP) {
+                    continue;
+                }
 
-                    if (!lootHasMapOfSameType) {
-                        loot.add(itemstack);
+                MapDecorations decorations = stack.get(DataComponents.MAP_DECORATIONS);
+
+                if (decorations == null) {
+                    continue;
+                }
+
+                for (MapDecorations.Entry entry : decorations.decorations().values()) {
+                    if (entry.type() == DSMapDecorationTypes.DRAGON_HUNTER) {
+                        // Map is already part of the loot
+                        return loot;
                     }
                 }
             }
+
+            BlockPos castlePosition = serverLevel.findNearestMapStructure(DSTrades.ON_DRAGON_HUNTERS_CASTLE_MAPS, villager.blockPosition(), 100, true);
+
+            if (castlePosition == null) {
+                return loot;
+            }
+
+            ItemStack map = MapItem.create(serverLevel, castlePosition.getX(), castlePosition.getZ(), (byte) 2, true, true);
+            map.set(DataComponents.ITEM_NAME, Component.translatable(LangKey.ITEM_KINGDOM_EXPLORER_MAP));
+
+            MapItem.renderBiomePreviewMap(serverLevel, map);
+            MapItemSavedData.addTargetDecoration(map, castlePosition, "+", DSMapDecorationTypes.DRAGON_HUNTER);
+
+            loot.add(map);
         }
 
         return loot;
     }
 
-    // I want to use a loot modifier here, but it isn't possible since the villagers don't have an initial loot table to begin with.
-    @SubscribeEvent
-    public static void modifyDropsForVillagers(LivingDeathEvent deathEvent) {
-        Entity entity = deathEvent.getEntity();
-        Entity killer = deathEvent.getSource().getEntity();
-        if (killer instanceof Player player) {
-            if (entity instanceof AbstractVillager abstractVillager) {
-                ObjectArrayList<ItemStack> loot = getVillagerLoot(abstractVillager, player.level(), player, true);
-                for (ItemStack stack : loot) {
-                    entity.spawnAtLocation(stack);
-                }
-
-                int experience;
-                if (entity instanceof Villager villager) {
-                    experience = (int) Math.pow(2.0, villager.getVillagerData().getLevel());
-                } else {
-                    // This happens with the wandering trader in vanilla.
-                    experience = 4;
-                }
-                player.level().addFreshEntity(new ExperienceOrb(player.level(), entity.getX(), entity.getY() + 0.5, entity.getZ(), experience));
-            }
+    @SubscribeEvent // Loot modifier cannot be used since villagers do not have a loot table
+    public static void modifyDropsForVillagers(final LivingDeathEvent event) {
+        if (!(event.getEntity() instanceof AbstractVillager genericVillager) || !(event.getSource().getEntity() instanceof Player player)) {
+            return;
         }
+
+        generateVillagerLoot(genericVillager, player.level(), player, true).forEach(genericVillager::spawnAtLocation);
+        int experience;
+
+        if (genericVillager instanceof Villager villager) {
+            experience = (int) Math.pow(2, villager.getVillagerData().getLevel());
+        } else {
+            // This happens with the wandering trader in vanilla.
+            experience = 4;
+        }
+
+        player.level().addFreshEntity(new ExperienceOrb(player.level(), genericVillager.getX(), genericVillager.getY() + 0.5, genericVillager.getZ(), experience));
     }
 
     @SubscribeEvent
-    public static void preserveHunterOmenOnRespawn(LivingDeathEvent deathEvent) {
-        LivingEntity livingEntity = deathEvent.getEntity();
-        if (livingEntity instanceof Player player) {
-            EffectsMaintainedThroughDeath effectsMaintainedThroughDeath = EffectsMaintainedThroughDeath.getData(player);
-            if (player.hasEffect(DSEffects.HUNTER_OMEN)) {
-                effectsMaintainedThroughDeath.addEffect(player.getEffect(DSEffects.HUNTER_OMEN));
-            }
+    public static void preserveHunterOmenOnRespawn(final LivingDeathEvent event) {
+        if (!(event.getEntity() instanceof Player player)) {
+            return;
+        }
+
+        EffectsMaintainedThroughDeath effects = EffectsMaintainedThroughDeath.getData(player);
+
+        if (player.hasEffect(DSEffects.HUNTER_OMEN)) {
+            effects.addEffect(player.getEffect(DSEffects.HUNTER_OMEN));
         }
     }
 
@@ -166,19 +164,18 @@ public class HunterOmenHandler {
     }
 
     @SubscribeEvent
-    public static void voidsHunterOmen(MobEffectEvent.Added potionAddedEvent) {
-        MobEffectInstance effectInstance = potionAddedEvent.getEffectInstance();
-        LivingEntity livingEntity = potionAddedEvent.getEntity();
-        if (effectInstance != null && effectInstance.getEffect() == MobEffects.HERO_OF_THE_VILLAGE) {
-            livingEntity.removeEffect(DSEffects.HUNTER_OMEN);
+    public static void voidsHunterOmen(final MobEffectEvent.Added event) {
+        if (event.getEffectInstance().getEffect() == MobEffects.HERO_OF_THE_VILLAGE) {
+            event.getEntity().removeEffect(DSEffects.HUNTER_OMEN);
         }
     }
 
     @SubscribeEvent
-    public static void ironGolemTargetsMarkedPlayers(EntityJoinLevelEvent joinWorldEvent) {
-        Entity entity = joinWorldEvent.getEntity();
-        if (entity instanceof IronGolem golemEntity) {
-            golemEntity.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(golemEntity, Player.class, 0, true, false, livingEntity -> livingEntity.hasEffect(DSEffects.HUNTER_OMEN)));
+    public static void ironGolemTargetsMarkedPlayers(final EntityJoinLevelEvent event) {
+        Entity entity = event.getEntity();
+
+        if (entity instanceof IronGolem golem) {
+            golem.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(golem, Player.class, 0, true, false, livingEntity -> livingEntity.hasEffect(DSEffects.HUNTER_OMEN)));
         }
     }
 
