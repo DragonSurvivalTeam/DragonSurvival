@@ -1,5 +1,5 @@
 {
-  "parent": "dragonsurvival:collect_dust",
+  "parent": "dragonsurvival:find_bones",
   "criteria": {
     "criterion_0": {
       "conditions": {

@@ -374,8 +374,8 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         buildSleepOnTreasureChildren(sleepOnTreasure);
 
         TagKey<Structure> tag = TagKey.create(Registries.STRUCTURE, DragonSurvival.res("dragon_skeletons")); // FIXME :: use tag from data generation
-        createWithToast(parent, LangKey.FIND_BONES, DSItems.STAR_BONE.value(), PlayerTrigger.TriggerInstance.located(inStructure(tag)), 12);
-        buildFindBonesChildren(parent);
+        AdvancementHolder findBones = createWithToast(parent, LangKey.FIND_BONES, DSItems.STAR_BONE.value(), PlayerTrigger.TriggerInstance.located(inStructure(tag)), 12);
+        buildFindBonesChildren(findBones);
 
         AdvancementHolder useMemoryBlock = createWithToast(parent, LangKey.USE_MEMORY_BLOCK, DSBlocks.DRAGON_MEMORY_BLOCK.value(), itemUsedOnBlock(DSBlocks.DRAGON_MEMORY_BLOCK.value(), DSBlocks.DRAGON_BEACON.value()), 10);
         buildUseMemoryBlockChildren(useMemoryBlock);
