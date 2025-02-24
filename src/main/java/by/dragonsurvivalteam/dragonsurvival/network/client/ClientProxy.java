@@ -115,7 +115,7 @@ public class ClientProxy {
         float pitch = (float) Math.toRadians(-entity.getXRot());
         float speed = (float) (packet.speedPerGrowth() * speedMultiplier);
 
-        if (position == null) {
+        if (position == null || position == Vec3.ZERO) {
             int scale = entity instanceof Player player && player.getAbilities().flying ? 2 : 1;
             position = entity.getEyePosition().add(entity.getLookAngle().scale(scale)).add(0, -0.1 - 0.2 * positionOffset, 0);
         }

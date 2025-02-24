@@ -60,6 +60,7 @@ import net.neoforged.neoforge.client.event.RenderPlayerEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.TriState;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
+import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.joml.Vector3f;
 import software.bernie.geckolib.animation.AnimationState;
@@ -127,12 +128,13 @@ public class ClientDragonRenderer {
     @SubscribeEvent
     public static void removeEntry(final EntityLeaveLevelEvent event) {
         if (event.getEntity() instanceof Player player) {
-            if (player == Minecraft.getInstance().player) {
-                PLAYER_DRAGON_MAP.clear();
-            } else {
-                PLAYER_DRAGON_MAP.remove(player.getId());
-            }
+            PLAYER_DRAGON_MAP.remove(player.getId());
         }
+    }
+
+    @SubscribeEvent
+    public static void clearEntries(final LevelEvent.Unload event) {
+        PLAYER_DRAGON_MAP.clear();
     }
 
     @SubscribeEvent
