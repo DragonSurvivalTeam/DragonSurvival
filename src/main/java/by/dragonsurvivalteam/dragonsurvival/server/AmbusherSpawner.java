@@ -1,7 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.server;
 
 import by.dragonsurvivalteam.dragonsurvival.common.entity.creatures.AmbusherEntity;
-import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -39,9 +38,9 @@ public class AmbusherSpawner implements CustomSpawner {
         }
 
         // The random is used to vary the spawn rate a bit
-        nextTick = nextTick + ServerConfig.ambusherSpawnAttemptFrequency + level.getRandom().nextInt(ServerConfig.ambusherSpawnAttemptFrequency / 10);
+        nextTick = nextTick + AmbusherEntity.SPAWN_FREQUENCY + level.getRandom().nextInt(AmbusherEntity.SPAWN_FREQUENCY / 10);
 
-        if (!level.isDay() || level.getRandom().nextDouble() < ServerConfig.ambusherSpawnChance) {
+        if (!level.isDay() || level.getRandom().nextDouble() > AmbusherEntity.SPAWN_CHANCE) {
             return 0;
         }
 

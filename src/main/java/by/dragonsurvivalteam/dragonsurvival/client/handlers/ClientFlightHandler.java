@@ -51,6 +51,8 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.joml.Vector3f;
 
+import java.util.Objects;
+
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 /** Used in pair with {@link ServerFlightHandler} */
@@ -81,12 +83,12 @@ public class ClientFlightHandler {
     @ConfigOption(side = ConfigSide.CLIENT, category = "flight", key = "flight_camera_movement")
     public static Boolean flightCameraMovement = true;
 
-    @ConfigRange(min = -1000, max = 1000)
+    @ConfigRange
     @Translation(key = "spin_cooldown_x_offset", type = Translation.Type.CONFIGURATION, comments = "Offset to the x position of the spin cooldown indicator")
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "spin"}, key = "spin_cooldown_x_offset")
     public static Integer spinCooldownXOffset = 0;
 
-    @ConfigRange(min = -1000, max = 1000)
+    @ConfigRange
     @Translation(key = "spin_cooldown_y_offset", type = Translation.Type.CONFIGURATION, comments = "Offset to the y position of the spin cooldown indicator")
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "spin"}, key = "spin_cooldown_y_offset")
     public static Integer spinCooldownYOffset = 0;
@@ -490,7 +492,7 @@ public class ClientFlightHandler {
             return;
         }
 
-        PacketDistributor.sendToServer(new ToggleFlight(data.getFirst().getId(), ToggleFlight.Activation.MANUAL, ToggleFlight.Result.NONE));
+        PacketDistributor.sendToServer(new ToggleFlight(ToggleFlight.Activation.MANUAL, ToggleFlight.Result.NONE));
     }
 
     /**
@@ -515,16 +517,11 @@ public class ClientFlightHandler {
             return;
         }
 
-        PacketDistributor.sendToServer(new ToggleFlight(player.getId(), ToggleFlight.Activation.JUMP, ToggleFlight.Result.NONE));
+        PacketDistributor.sendToServer(new ToggleFlight(ToggleFlight.Activation.JUMP, ToggleFlight.Result.NONE));
     }
 
-    public static void handleToggleResult(final int playerId, final ToggleFlight.Activation activation, final ToggleFlight.Result result) {
-        //noinspection DataFlowIssue -> level is present
-        if (!(Minecraft.getInstance().level.getEntity(playerId) instanceof Player player)) {
-            return;
-        }
-
-        FlightData flight = FlightData.getData(player);
+    public static void handleToggleResult(final ToggleFlight.Activation activation, final ToggleFlight.Result result) {
+        Player player = Objects.requireNonNull(Minecraft.getInstance().player);
 
         if (activation == ToggleFlight.Activation.MANUAL) {
             switch (result) {
@@ -535,11 +532,6 @@ public class ClientFlightHandler {
             }
         } else if (result == ToggleFlight.Result.NO_HUNGER) {
             HUNGER_MESSAGE_WITH_COOLDOWN.tryRun();
-        }
-
-        switch (result) {
-            case WINGS_BLOCKED, NO_WINGS, NO_HUNGER, SUCCESS_DISABLED, ALREADY_DISABLED -> flight.areWingsSpread = false;
-            case SUCCESS_ENABLED, ALREADY_ENABLED -> flight.areWingsSpread = true;
         }
     }
 

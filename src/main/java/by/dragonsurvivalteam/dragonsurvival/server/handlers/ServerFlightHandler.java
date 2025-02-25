@@ -62,12 +62,12 @@ public class ServerFlightHandler {
     @ConfigOption(side = ConfigSide.SERVER, category = "wings", key = "fold_wings_on_land")
     public static Boolean foldWingsOnLand = false;
 
-    @ConfigRange(min = 0, max = /* 1 hour */ 3600)
+    @ConfigRange(min = 0)
     @Translation(key = "flight_spin_cooldown", type = Translation.Type.CONFIGURATION, comments = "Cooldown (in seconds) of the spin attack during flight")
     @ConfigOption(side = ConfigSide.SERVER, category = "wings", key = "flight_spin_cooldown")
     public static Integer flightSpinCooldown = 5;
 
-    @ConfigRange(min = 1, max = /* 1 hour */ 72_000)
+    @ConfigRange(min = 1)
     @Translation(key = "flight_hunger_ticks", type = Translation.Type.CONFIGURATION, comments = "Determines the amount of ticks (20 ticks = 1 second) it takes for one hunger point to be drained while flying")
     @ConfigOption(side = ConfigSide.SERVER, category = "wings", key = "flight_hunger_ticks")
     public static int flightHungerTicks = 50;

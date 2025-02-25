@@ -54,7 +54,10 @@ public class Bolas extends AbstractArrow {
 
         if (entity instanceof LivingEntity living) {
             living.hurt(damageSources().arrow(this, getOwner()), 1);
-            living.addEffect(new MobEffectInstance(DSEffects.TRAPPED, Functions.secondsToTicks(ServerConfig.hunterTrappedDebuffDuration), 0, false, false), getOwner());
+
+            if (ServerConfig.hunterTrappedDebuffDuration > 0) {
+                living.addEffect(new MobEffectInstance(DSEffects.TRAPPED, Functions.secondsToTicks(ServerConfig.hunterTrappedDebuffDuration), 0, false, false), getOwner());
+            }
         }
     }
 

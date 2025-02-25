@@ -19,5 +19,7 @@ public @interface ConfigOption {
     /** The category the option will be found in - the array defines a path (e.g. {"a", "b", "c"} results in the path a.b.c.key) */
     String[] category() default {};
 
-    boolean requiresRestart() default false;
+    boolean worldRestart() default false;
+
+    boolean gameRestart() default false;
 }

@@ -1,13 +1,10 @@
 package by.dragonsurvivalteam.dragonsurvival.config;
 
-import by.dragonsurvivalteam.dragonsurvival.common.entity.creatures.AmbusherEntity;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
-import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.neoforged.neoforge.common.ModConfigSpec;
-
 
 public class ServerConfig {
     ServerConfig(final ModConfigSpec.Builder builder) {
@@ -18,7 +15,7 @@ public class ServerConfig {
     @ConfigOption(side = ConfigSide.SERVER, category = "debug", key = "force_vault_state_updates")
     public static Boolean forceStateUpdatingOnVaults = false;
 
-    @ConfigRange(min = 0, max = 1000)
+    @ConfigRange(min = 0)
     @Translation(key = "altar_cooldown", type = Translation.Type.CONFIGURATION, comments = "Cooldown (in seconds) after using an altar")
     @ConfigOption(side = ConfigSide.SERVER, category = "general", key = "altar_cooldown")
     public static Integer altarUsageCooldown = 0;
@@ -82,17 +79,17 @@ public class ServerConfig {
 
     // --- Item drops --- //
 
-    @ConfigRange(min = 0.0, max = 1.0)
+    @ConfigRange(min = 0, max = 1)
     @Translation(key = "dragon_heart_shard_chance", type = Translation.Type.CONFIGURATION, comments = "Determines the chance (in %) of dragon heart shards dropping from entities with a maximum health between 14 and 20")
     @ConfigOption(side = ConfigSide.SERVER, category = "drops", key = "dragon_heart_shard_chance")
     public static Double dragonHeartShardChance = 0.03;
 
-    @ConfigRange(min = 0.0, max = 1.0)
+    @ConfigRange(min = 0, max = 1)
     @Translation(key = "weak_dragon_heart_chance", type = Translation.Type.CONFIGURATION, comments = "Determines the chance (in %) of weak dragon hearts dropping from entities with a maximum health between 20 and 50")
     @ConfigOption(side = ConfigSide.SERVER, category = "drops", key = "weak_dragon_heart_chance")
     public static Double weakDragonHeartChance = 0.01;
 
-    @ConfigRange(min = 0.0, max = 1.0)
+    @ConfigRange(min = 0, max = 1)
     @Translation(key = "elder_dragon_heart_chance", type = Translation.Type.CONFIGURATION, comments = "Determines the chance (in %) of elder dragon hearts dropping from entities with a maximum health above 50")
     @ConfigOption(side = ConfigSide.SERVER, category = "drops", key = "elder_dragon_heart_chance")
     public static Double elderDragonHeartChance = 0.01;
@@ -137,166 +134,13 @@ public class ServerConfig {
 
     // --- Dragon hunters --- //
 
-    @ConfigRange(min = 1, max = 1000)
+    @ConfigRange(min = 0)
     @Translation(key = "pillager_experience_gain", type = Translation.Type.CONFIGURATION, comments = "How many experience points are gained when stealing from villagers")
     @ConfigOption(side = ConfigSide.SERVER, category = "dragon_hunters", key = "pillager_experience_gain")
     public static Integer pillageXPGain = 4;
 
-    @ConfigRange(min = 10d, max = 100)
-    @Translation(key = "knight_health", type = Translation.Type.CONFIGURATION, comments = "Amount of health the knight has")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "knight"}, key = "knight_health")
-    public static Double knightHealth = 40d;
-
-    @ConfigRange(min = 1d, max = 40)
-    @Translation(key = "knight_damage", type = Translation.Type.CONFIGURATION, comments = "Amount of damage the knight deals")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "knight"}, key = "knight_damage")
-    public static Double knightDamage = 12d;
-
-    @ConfigRange(min = 0d, max = 30d)
-    @Translation(key = "knight_armor", type = Translation.Type.CONFIGURATION, comments = "Amount of armor the knight has")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "knight"}, key = "knight_armor")
-    public static Double knightArmor = 10d;
-
-    @ConfigRange(min = 0.1d, max = 1)
-    @Translation(key = "knight_speed", type = Translation.Type.CONFIGURATION, comments = "Knight speed")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "knight"}, key = "knight_speed")
-    public static Double knightSpeed = 0.3d;
-
-    @ConfigRange(min = 0.0d, max = 1d)
-    @Translation(key = "knight_shield_chance", type = Translation.Type.CONFIGURATION, comments = "Determines the chance (in %) of knights having a shield")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "knight"}, key = "knight_shield_chance")
-    public static Double knightShieldChance = 0.1d;
-
-    @ConfigRange(min = 60, max = 1_200_000)
-    @Translation(key = "ambusher_spawn_frequency", type = Translation.Type.CONFIGURATION, comments = "Determines the amount of time (in ticks) (20 ticks = 1 second) that needs to pass be fore another ambusher spawn attempt is made")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "ambusher"}, key = "ambusher_spawn_frequency")
-    public static int ambusherSpawnAttemptFrequency = Functions.minutesToTicks(10);
-
-    @ConfigRange(min = 0.0, max = 1.0)
-    @Translation(key = "amusher_spawn_chance", type = Translation.Type.CONFIGURATION, comments = {
-            "Determines the chance (in %) of an ambusher spawning",
-            "The spawn frequency will reset even if no actual spawn occurs due to this chance not being met"
-    })
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "ambusher"}, key = "amusher_spawn_chance")
-    public static double ambusherSpawnChance = 0.2;
-
-    @ConfigRange(min = 10d, max = 100)
-    @Translation(key = "ambusher_health", type = Translation.Type.CONFIGURATION, comments = "Amount of health the ambusher has")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "ambusher"}, key = "ambusher_health")
-    public static Double ambusherHealth = 40d;
-
-    @ConfigRange(min = 1, max = 20)
-    @Translation(key = "ambusher_damage", type = Translation.Type.CONFIGURATION, comments = "Amount of damage the ambusher deals")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "ambusher"}, key = "ambusher_damage")
-    public static Integer ambusherDamage = 12;
-
-    @ConfigRange(min = 0d, max = 30d)
-    @Translation(key = "ambusher_armor", type = Translation.Type.CONFIGURATION, comments = "Amount of armor the ambusher has")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "ambusher"}, key = "ambusher_armor")
-    public static Double ambusherArmor = 10d;
-
-    @ConfigRange(min = 0.1d, max = 1)
-    @Translation(key = "ambusher_speed", type = Translation.Type.CONFIGURATION, comments = "Speed of the ambusher")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "ambusher"}, key = "ambusher_speed")
-    public static Double ambusherSpeed = 0.3d;
-
-    @ConfigRange(min = AmbusherEntity.CROSSBOW_SHOOT_AND_RELOAD_TIME + 5, max = 1000)
-    @Translation(key = "ambusher_attack_interval", type = Translation.Type.CONFIGURATION, comments = "Determines the crossbow attack rate (in ticks) (20 ticks = 1 second) of the ambusher")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "ambusher"}, key = "ambusher_attack_interval")
-    public static Integer ambusherAttackInterval = 65;
-
-    @ConfigRange(min = 0, max = 10)
-    @Translation(key = "spearman_reinforcement_count", type = Translation.Type.CONFIGURATION, comments = "Determines how many spearman reinforce the ambusher when he is attacked")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "ambusher"}, key = "spearman_reinforcement_count")
-    public static Integer ambusherSpearmanReinforcementCount = 4;
-
-    @ConfigRange(min = 0, max = 10)
-    @Translation(key = "hound_reinforcement_count", type = Translation.Type.CONFIGURATION, comments = "Determines how many hounds reinforce the ambusher when he is attacked")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "ambusher"}, key = "hound_reinforcement_count")
-    public static Integer ambusherHoundReinforcementCount = 2;
-
-    @ConfigRange(min = 8d, max = 100)
-    @Translation(key = "hound_health", type = Translation.Type.CONFIGURATION, comments = "Amount of health the knight hound has")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "hound"}, key = "hound_health")
-    public static Double houndHealth = 10d;
-
-    @ConfigRange(min = 1d, max = 20)
-    @Translation(key = "hound_damage", type = Translation.Type.CONFIGURATION, comments = "Amount of damage the knight hound deals")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "hound"}, key = "hound_damage")
-    public static Double houndDamage = 2d;
-
-    @ConfigRange(min = 0.1d, max = 1)
-    @Translation(key = "hound_speed", type = Translation.Type.CONFIGURATION, comments = "Knight hound speed")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "hound"}, key = "hound_speed")
-    public static Double houndSpeed = 0.45d;
-
-    @ConfigRange(min = 0.1d, max = 1.0d)
-    @Translation(key = "hound_slowdown_chance", type = Translation.Type.CONFIGURATION, comments = "Determines the chance (in %) of the knight hound applying the slowness effect when they attack")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "hound"}, key = "hound_slowdown_chance")
-    public static Double houndSlowdownChance = 0.5d;
-
-    @ConfigRange(min = 8d, max = 100)
-    @Translation(key = "griffin_health", type = Translation.Type.CONFIGURATION, comments = "Amount of health of the griffin")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "griffin"}, key = "griffin_health")
-    public static Double griffinHealth = 10d;
-
-    @ConfigRange(min = 1d, max = 20d)
-    @Translation(key = "griffin_damage", type = Translation.Type.CONFIGURATION, comments = "Amount of damage the griffin deals")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "griffin"}, key = "griffin_damage")
-    public static Double griffinDamage = 2d;
-
-    @ConfigRange(min = 0.1d, max = 1)
-    @Translation(key = "griffin_speed", type = Translation.Type.CONFIGURATION, comments = "Speed of the griffin")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "griffin"}, key = "griffin_speed")
-    public static Double griffinSpeed = 0.2d;
-
-    @ConfigRange(min = 0.1d, max = 2.0d)
-    @Translation(key = "griffin_range", type = Translation.Type.CONFIGURATION, comments = "Determines the attack radius of the griffin")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "griffin"}, key = "griffin_range")
-    public static Double griffinRange = 0.9d;
-
-    @ConfigRange(min = 1.0, max = 60.0)
+    @ConfigRange(min = 0)
     @Translation(key = "trapped_effect_duration", type = Translation.Type.CONFIGURATION, comments = "Determines how long (in seconds) the trapped effect lasts")
     @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters"}, key = "trapped_effect_duration")
     public static Double hunterTrappedDebuffDuration = 5.0;
-
-    @ConfigRange(min = 10d, max = 100)
-    @Translation(key = "spearman_health", type = Translation.Type.CONFIGURATION, comments = "Amount of health the spearman has")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "spearman"}, key = "spearman_health")
-    public static Double spearmanHealth = 24d;
-
-    @ConfigRange(min = 2d, max = 20d)
-    @Translation(key = "spearman_damage", type = Translation.Type.CONFIGURATION, comments = "Amount of damage the spearman deals")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "spearman"}, key = "spearman_damage")
-    public static Double spearmanDamage = 6d;
-
-    @ConfigRange(min = 0.1d, max = 1)
-    @Translation(key = "spearman_speed", type = Translation.Type.CONFIGURATION, comments = "Speed of the spearman")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "spearman"}, key = "spearman_speed")
-    public static Double spearmanSpeed = 0.35d;
-
-    @ConfigRange(min = 0d, max = 20d)
-    @Translation(key = "spearman_armor", type = Translation.Type.CONFIGURATION, comments = "Amount of armor the spearman has")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "spearman"}, key = "spearman_armor")
-    public static Double spearmanArmor = 2d;
-
-    @ConfigRange(min = 0d, max = 20d)
-    @Translation(key = "spearman_bonus_horizontal_reach", type = Translation.Type.CONFIGURATION, comments = "Additional horizontal reach for the spearman")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "spearman"}, key = "spearman_bonus_horizontal_reach")
-    public static Double spearmanBonusHorizontalReach = 0.5d;
-
-    @ConfigRange(min = 0d, max = 20d)
-    @Translation(key = "spearman_bonus_vertical_reach", type = Translation.Type.CONFIGURATION, comments = "Additional vertical reach for the spearman")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "spearman"}, key = "spearman_bonus_vertical_reach")
-    public static Double spearmanBonusVerticalReach = 2.5d;
-
-    @ConfigRange(min = 0.1d, max = 1)
-    @Translation(key = "leader_speed", type = Translation.Type.CONFIGURATION, comments = "Speed of the leader")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "leader"}, key = "leader_speed")
-    public static Double leaderSpeed = 0.35d;
-
-    @ConfigRange(min = 10d, max = 100)
-    @Translation(key = "leader_health", type = Translation.Type.CONFIGURATION, comments = "Amount of health the leader has")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "leader"}, key = "leader_health")
-    public static Double leaderHealth = 24d;
 }

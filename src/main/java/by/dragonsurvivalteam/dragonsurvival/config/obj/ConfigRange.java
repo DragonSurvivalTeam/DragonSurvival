@@ -8,7 +8,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface ConfigRange {
-    double min() default -1;
+    /** Defaults to the min. value of the field data type */
+    double min() default Double.NaN;
 
-    double max() default -1;
+    /** Defaults to the max. value of the field data type */
+    double max() default Double.NaN;
 }

@@ -45,37 +45,37 @@ public class MagicHUD {
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "magic"}, key = "mark_disabled_abilities_red_lerp_speed")
     public static double markDisabledAbilitiesRedLerpSpeed = 0.05;
 
-    @ConfigRange(min = 0, max = 20)
+    @ConfigRange(min = 0)
     @Translation(key = "mark_disabled_abilities_red_delay", type = Translation.Type.CONFIGURATION, comments = "How long until the red overlay activates if an ability is disabled.")
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "magic"}, key = "mark_disabled_abilities_red_delay")
     public static double disabledColorDelay = 0.8;
 
-    @ConfigRange(min = -1000, max = 1000)
+    @ConfigRange
     @Translation(key = "cast_bar_x_offset", type = Translation.Type.CONFIGURATION, comments = "Offset for the x position of the cast bar")
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "magic"}, key = "cast_bar_x_offset")
     public static Integer castbarXOffset = 0;
 
-    @ConfigRange(min = -1000, max = 1000)
+    @ConfigRange
     @Translation(key = "cast_bar_y_offset", type = Translation.Type.CONFIGURATION, comments = "Offset for the y position of the cast bar")
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "magic"}, key = "casterBarYPos")
     public static Integer castbarYOffset = 0;
 
-    @ConfigRange(min = -1000, max = 1000)
+    @ConfigRange
     @Translation(key = "skill_bar_x_offset", type = Translation.Type.CONFIGURATION, comments = "Offset for the x position of the skill bar")
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "magic"}, key = "skill_bar_x_offset")
     public static Integer skillbarXOffset = 0;
 
-    @ConfigRange(min = -1000, max = 1000)
+    @ConfigRange
     @Translation(key = "skill_bar_y_offset", type = Translation.Type.CONFIGURATION, comments = "Offset for the x position of the skill bar")
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "magic"}, key = "skill_bar_y_offset")
     public static Integer skillbarYOffset = 0;
 
-    @ConfigRange(min = -1000, max = 1000)
+    @ConfigRange
     @Translation(key = "mana_bar_x_offset", type = Translation.Type.CONFIGURATION, comments = "Offset for the x position of the mana bar")
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "magic"}, key = "mana_bar_x_offset")
     public static Integer manabarXOffset = 0;
 
-    @ConfigRange(min = -1000, max = 1000)
+    @ConfigRange
     @Translation(key = "mana_bar_y_offset", type = Translation.Type.CONFIGURATION, comments = "Offset for the y position of the mana bar")
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "magic"}, key = "mana_bar_y_offset")
     public static Integer manabarYOffset = 0;

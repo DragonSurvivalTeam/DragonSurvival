@@ -2,11 +2,15 @@ package by.dragonsurvivalteam.dragonsurvival.common.entity.creatures;
 
 import by.dragonsurvivalteam.dragonsurvival.client.render.util.AnimationTickTimer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.util.RandomAnimationPicker;
-import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.SpawningUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -35,14 +39,103 @@ import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
 
 public class AmbusherEntity extends Hunter implements RangedAttackMob {
+    @ConfigRange(min = 1)
+    @Translation(key = "ambusher_spawn_frequency", type = Translation.Type.CONFIGURATION, comments = "Determines the amount of time (in ticks) (20 ticks = 1 second) that needs to pass before another ambusher spawn attempt is made")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "ambusher"}, key = "ambusher_spawn_frequency")
+    public static int SPAWN_FREQUENCY = Functions.minutesToTicks(10);
 
-    private boolean isRandomIdleAnimSet = false;
-    private boolean hasPlayedReleaseAnimation = false;
-    private boolean hasPlayedReinforcementsAnimation = false;
-    private boolean isFirstClientTick = true;
-    private float nextArrowVelocity = 0.0f;
-    private RawAnimation currentIdleAnim;
-    private final AnimationTickTimer ambusherTickTimer = new AnimationTickTimer();
+    @ConfigRange(min = 0, max = 1)
+    @Translation(key = "amusher_spawn_chance", type = Translation.Type.CONFIGURATION, comments = {
+            "Determines the chance (in %) of an ambusher spawning",
+            "The spawn frequency will reset even if no actual spawn occurs due to this chance not being met"
+    })
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "ambusher"}, key = "amusher_spawn_chance")
+    public static double SPAWN_CHANCE = 0.2;
+
+    @ConfigRange(min = 1)
+    @Translation(key = "ambusher_health", type = Translation.Type.CONFIGURATION, comments = "Base value for the max health attribute")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "ambusher"}, key = "ambusher_health")
+    public static double MAX_HEALTH = 40;
+
+    @Override
+    public double maxHealthConfig() {
+        return MAX_HEALTH;
+    }
+
+    @ConfigRange(min = 0)
+    @Translation(key = "ambusher_attack_damage", type = Translation.Type.CONFIGURATION, comments = "Base value for the attack damage attribute")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "ambusher"}, key = "ambusher_damage")
+    public static int ATTACK_DAMAGE = 12;
+
+    @Override
+    public double attackDamageConfig() {
+        return ATTACK_DAMAGE;
+    }
+
+    @ConfigRange(min = 0)
+    @Translation(key = "ambusher_attack_knockback", type = Translation.Type.CONFIGURATION, comments = "Base value for the attack knockback attribute")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "ambusher"}, key = "ambusher_attack_knockback")
+    public static int ATTACK_KNOCKBACK = 0;
+
+    @Override
+    public double attackKnockback() {
+        return ATTACK_KNOCKBACK;
+    }
+
+    @ConfigRange(min = 0)
+    @Translation(key = "ambusher_movement_speed", type = Translation.Type.CONFIGURATION, comments = "Base value for the movement speed attribute")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "ambusher"}, key = "ambusher_movement_speed")
+    public static double MOVEMENT_SPEED = 0.3;
+
+    @Override
+    public double movementSpeedConfig() {
+        return MOVEMENT_SPEED;
+    }
+
+    @ConfigRange(min = 0)
+    @Translation(key = "ambusher_armor", type = Translation.Type.CONFIGURATION, comments = "Base value for the armor attribute")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "ambusher"}, key = "ambusher_armor")
+    public static double ARMOR = 10;
+
+    @Override
+    public double armorConfig() {
+        return ARMOR;
+    }
+
+    @ConfigRange(min = 0)
+    @Translation(key = "ambusher_armor_toughness", type = Translation.Type.CONFIGURATION, comments = "Base value for the armor toughness attribute")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "ambusher"}, key = "ambusher_armor_toughness")
+    public static double ARMOR_TOUGHNESS = 0;
+
+    @Override
+    public double armorToughnessConfig() {
+        return ARMOR_TOUGHNESS;
+    }
+
+    @ConfigRange(min = 0)
+    @Translation(key = "ambusher_knockback_resistance", type = Translation.Type.CONFIGURATION, comments = "Base value for the knockback resistance attribute")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "ambusher"}, key = "ambusher_knockback_resistance")
+    public static double KNOCKBACK_RESISTANCE = 0;
+
+    @Override
+    public double knockbackResistanceConfig() {
+        return KNOCKBACK_RESISTANCE;
+    }
+
+    @ConfigRange(min = AmbusherEntity.CROSSBOW_SHOOT_AND_RELOAD_TIME + 5)
+    @Translation(key = "ambusher_attack_interval", type = Translation.Type.CONFIGURATION, comments = "Determines the crossbow attack rate (in ticks) (20 ticks = 1 second) of the ambusher")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "ambusher"}, key = "ambusher_attack_interval")
+    public static int ATTACK_INTERVAL = 65;
+
+    @ConfigRange(min = 0, max = 256)
+    @Translation(key = "spearman_reinforcement_count", type = Translation.Type.CONFIGURATION, comments = "Determines how many spearman reinforce the ambusher when he is attacked")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "ambusher"}, key = "spearman_reinforcement_count")
+    public static int SPEARMAN_REINFORCEMENT_COUNT = 4;
+
+    @ConfigRange(min = 0, max = 256)
+    @Translation(key = "hound_reinforcement_count", type = Translation.Type.CONFIGURATION, comments = "Determines how many hounds reinforce the ambusher when he is attacked")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "ambusher"}, key = "hound_reinforcement_count")
+    public static int HOUND_REINFORCEMENT_COUNT = 2;
 
     private static final EntityDataAccessor<Boolean> HAS_RELEASED_GRIFFIN = SynchedEntityData.defineId(AmbusherEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> NEARBY_DRAGON_PLAYER = SynchedEntityData.defineId(AmbusherEntity.class, EntityDataSerializers.BOOLEAN);
@@ -52,6 +145,14 @@ public class AmbusherEntity extends Hunter implements RangedAttackMob {
     private static final EntityDataAccessor<Integer> AMBUSH_HORN_AND_RELOAD_TIMER = SynchedEntityData.defineId(AmbusherEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> GRIFFIN_RELEASE_RELOAD_TIMER = SynchedEntityData.defineId(AmbusherEntity.class, EntityDataSerializers.INT);
 
+    private boolean isRandomIdleAnimSet = false;
+    private boolean hasPlayedReleaseAnimation = false;
+    private boolean hasPlayedReinforcementsAnimation = false;
+    private boolean isFirstClientTick = true;
+    private float nextArrowVelocity = 0.0f;
+    private RawAnimation currentIdleAnim;
+    private final AnimationTickTimer ambusherTickTimer = new AnimationTickTimer();
+
     public AmbusherEntity(EntityType<? extends PathfinderMob> entityType, Level world) {
         super(entityType, world);
     }
@@ -59,7 +160,7 @@ public class AmbusherEntity extends Hunter implements RangedAttackMob {
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(3, new RangedAttackGoal(this, 1, ServerConfig.ambusherAttackInterval, 5.f) {
+        this.goalSelector.addGoal(3, new RangedAttackGoal(this, 1, ATTACK_INTERVAL, 5.f) {
             @Override
             public boolean canUse() {
                 // Don't go after the player whilst calling reinforcements
@@ -99,6 +200,7 @@ public class AmbusherEntity extends Hunter implements RangedAttackMob {
         if (getRangedAttackTimer() == CROSSBOW_ATTACK_START_TIME) {
             fireArrow();
         }
+
         if (getRangedAttackTimer() == CROSSBOW_RELOAD_CHARGE_SOUND_TIME) {
             this.playSound(SoundEvents.CROSSBOW_LOADING_MIDDLE.value(), 1.0F, 1.0F);
         }
@@ -107,7 +209,7 @@ public class AmbusherEntity extends Hunter implements RangedAttackMob {
             this.playSound(SoundEvents.CROSSBOW_LOADING_END.value(), 1.0F, 1.0F);
         }
 
-        if (getRangedAttackTimer() < ServerConfig.ambusherAttackInterval && getRangedAttackTimer() >= 0) {
+        if (getRangedAttackTimer() < ATTACK_INTERVAL && getRangedAttackTimer() >= 0) {
             setRangedAttackTimer(getRangedAttackTimer() + 1);
         } else {
             setRangedAttackTimer(-1);
@@ -151,8 +253,7 @@ public class AmbusherEntity extends Hunter implements RangedAttackMob {
         CrossbowItem tempCrossbowitem = (CrossbowItem) Items.CROSSBOW;
         ItemStack tempCrossbowItemStack = new ItemStack(tempCrossbowitem, 1);
         CrossbowItem.tryLoadProjectiles(this, tempCrossbowItemStack);
-        tempCrossbowitem.setDamage(tempCrossbowItemStack, ServerConfig.ambusherDamage);
-        tempCrossbowitem.performShooting(this.level(), this, InteractionHand.MAIN_HAND, tempCrossbowItemStack, nextArrowVelocity, 1.0f, this.getTarget());
+        tempCrossbowitem.performShooting(this.level(), this, InteractionHand.MAIN_HAND, tempCrossbowItemStack, nextArrowVelocity, 1, this.getTarget());
     }
 
     @Override
@@ -170,13 +271,13 @@ public class AmbusherEntity extends Hunter implements RangedAttackMob {
     }
 
     private void summonReinforcements() {
-        for (int i = 0; i < ServerConfig.ambusherSpearmanReinforcementCount; i++) {
+        for (int i = 0; i < SPEARMAN_REINFORCEMENT_COUNT; i++) {
             Mob mob = DSEntities.HUNTER_SPEARMAN.get().create(this.level());
             SpawningUtils.spawn(mob, this.position(), this.level(), MobSpawnType.MOB_SUMMONED, 20, 3.0f, true);
             mob.setTarget(this.getTarget());
         }
 
-        for (int i = 0; i < ServerConfig.ambusherHoundReinforcementCount; i++) {
+        for (int i = 0; i < HOUND_REINFORCEMENT_COUNT; i++) {
             Mob mob = DSEntities.HUNTER_HOUND.get().create(this.level());
             SpawningUtils.spawn(mob, this.position(), this.level(), MobSpawnType.MOB_SUMMONED, 20, 3.0f, true);
             mob.setTarget(this.getTarget());

@@ -28,10 +28,10 @@ import org.jetbrains.annotations.NotNull;
 
 @EventBusSubscriber
 public class BlastDustedEffect extends ModifiableMobEffect {
-    @ConfigRange(max = 50)
-    @Translation(key = "blast_dust_explosion_radius", type = Translation.Type.CONFIGURATION, comments = "The explosion radius of Blast Dust")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"effects", "blast_dust"}, key = "blast_dust_explosion_radius")
-    public static Float blastDustExplosionRadius = 0.6f;
+    @ConfigRange(min = 0, max = 256)
+    @Translation(key = "blast_dust_explosion_multiplier", type = Translation.Type.CONFIGURATION, comments = "A multiplier to the amplifier which determines the explosion radius of the blast dust effect")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"effects", "blast_dust"}, key = "blast_dust_explosion_multiplier")
+    public static Float radiusMultiplier = 0.6f;
 
     public BlastDustedEffect(MobEffectCategory type, int color, boolean incurable) {
         super(type, color, incurable);
@@ -79,7 +79,11 @@ public class BlastDustedEffect extends ModifiableMobEffect {
             effectApplier = ((AdditionalEffectData) entity.getEffect(DSEffects.BLAST_DUSTED)).dragonSurvival$getApplier(serverLevel);
         }
 
-        entity.level().explode(entity, new DamageSource(DSDamageTypes.get(entity.level(), DSDamageTypes.BLAST_DUST), effectApplier), null, entity.getX(), entity.getY(), entity.getZ(), blastDustExplosionRadius * (amplifier + 1), true, Level.ExplosionInteraction.MOB);
+        float radius = (amplifier + 1) * radiusMultiplier;
+
+        if (radius > 0) {
+            entity.level().explode(entity, new DamageSource(DSDamageTypes.get(entity.level(), DSDamageTypes.BLAST_DUST), effectApplier), null, entity.getX(), entity.getY(), entity.getZ(), radius, true, Level.ExplosionInteraction.MOB);
+        }
     }
 
     @SubscribeEvent

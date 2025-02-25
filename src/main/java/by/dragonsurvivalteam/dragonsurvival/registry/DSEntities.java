@@ -11,18 +11,18 @@ import by.dragonsurvivalteam.dragonsurvival.common.entity.creatures.SpearmanEnti
 import by.dragonsurvivalteam.dragonsurvival.common.entity.projectiles.Bolas;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.projectiles.GenericArrowEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.projectiles.GenericBallEntity;
-import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.animal.Wolf;
-import net.minecraft.world.entity.monster.Vindicator;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -130,13 +130,20 @@ public class DSEntities {
 
     @SubscribeEvent
     public static void attributeCreationEvent(final EntityAttributeCreationEvent event) {
-        event.put(DRAGON.value(), DragonEntity.createLivingAttributes().build());
-        event.put(HUNTER_HOUND.value(), Wolf.createAttributes().add(Attributes.MOVEMENT_SPEED, ServerConfig.houndSpeed).add(Attributes.ATTACK_DAMAGE, ServerConfig.houndDamage).add(Attributes.MAX_HEALTH, ServerConfig.houndHealth).build());
-        event.put(HUNTER_SPEARMAN.value(), Vindicator.createAttributes().add(Attributes.MOVEMENT_SPEED, ServerConfig.spearmanSpeed).add(Attributes.ATTACK_DAMAGE, ServerConfig.spearmanDamage).add(Attributes.ARMOR, ServerConfig.spearmanArmor).add(Attributes.MAX_HEALTH, ServerConfig.spearmanHealth).build());
-        event.put(HUNTER_KNIGHT.value(), KnightEntity.createMobAttributes().add(Attributes.MOVEMENT_SPEED, ServerConfig.knightSpeed).add(Attributes.ATTACK_DAMAGE, ServerConfig.knightDamage).add(Attributes.ARMOR, ServerConfig.knightArmor).add(Attributes.MAX_HEALTH, ServerConfig.knightHealth).build());
-        event.put(HUNTER_AMBUSHER.value(), AmbusherEntity.createMobAttributes().add(Attributes.MOVEMENT_SPEED, ServerConfig.ambusherSpeed).add(Attributes.ATTACK_DAMAGE, ServerConfig.ambusherDamage).add(Attributes.ARMOR, ServerConfig.ambusherArmor).add(Attributes.MAX_HEALTH, ServerConfig.ambusherHealth).build());
-        event.put(HUNTER_GRIFFIN.value(), GriffinEntity.createMobAttributes().add(Attributes.MOVEMENT_SPEED, ServerConfig.griffinSpeed).add(Attributes.FLYING_SPEED, ServerConfig.griffinSpeed).add(Attributes.ATTACK_DAMAGE, ServerConfig.griffinDamage).add(Attributes.MAX_HEALTH, ServerConfig.griffinHealth).build());
-        event.put(HUNTER_LEADER.value(), LeaderEntity.createMobAttributes().add(Attributes.MOVEMENT_SPEED, ServerConfig.leaderSpeed).add(Attributes.MAX_HEALTH, ServerConfig.leaderHealth).build());
+        event.put(DRAGON.value(), LivingEntity.createLivingAttributes().build());
+
+        // There is no reason to set values here since it will always be the default config values
+        // We set the correct values on entity creation through 'finalizeSpawn' (this also means no restart is required)
+        event.put(HUNTER_HOUND.value(), hunterAttributes());
+        event.put(HUNTER_SPEARMAN.value(), hunterAttributes());
+        event.put(HUNTER_KNIGHT.value(), hunterAttributes());
+        event.put(HUNTER_AMBUSHER.value(), hunterAttributes());
+        event.put(HUNTER_GRIFFIN.value(), hunterAttributes());
+        event.put(HUNTER_LEADER.value(), hunterAttributes());
+    }
+
+    private static AttributeSupplier hunterAttributes() {
+        return Mob.createMobAttributes().add(Attributes.ATTACK_DAMAGE).build();
     }
 
     @SubscribeEvent
