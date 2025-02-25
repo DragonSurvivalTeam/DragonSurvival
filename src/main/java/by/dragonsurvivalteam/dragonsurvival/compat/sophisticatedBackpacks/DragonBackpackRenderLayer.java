@@ -37,7 +37,7 @@ public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
     @ConfigOption(side = ConfigSide.CLIENT, category = "rendering", key = "render_backpack")
     public static Boolean SHOULD_RENDER = true;
 
-    @Translation(key = "backpack_slot", type = Translation.Type.CONFIGURATION, comments = "The curios slot which contains the backpack (if Curios is installed)")
+    @Translation(key = "backpack_slot", type = Translation.Type.CONFIGURATION, comments = "The curios slot which may contain the backpack (if Curios is installed)")
     @ConfigOption(side = ConfigSide.CLIENT, category = "rendering", key = "backpack_slot")
     public static String CURIOS_SLOT = "back";
     

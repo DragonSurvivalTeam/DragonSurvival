@@ -381,6 +381,11 @@ public class Functions {
      */
     public static Vec3 getBonePosition(final Player player, final String name) {
         DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(player.getId());
+
+        if (dragon == null) {
+            return Vec3.ZERO;
+        }
+
         BoneSnapshot snapshot = dragon.getAnimatableInstanceCache().getManagerForId(dragon.getId()).getBoneSnapshotCollection().get(name);
 
         if (snapshot == null) {

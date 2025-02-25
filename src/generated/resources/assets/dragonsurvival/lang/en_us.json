@@ -517,6 +517,8 @@
   "dragonsurvival.configuration.amusher_spawn_chance.tooltip": "Determines the chance (in %) of an ambusher spawning\nThe spawn frequency will reset even if no actual spawn occurs due to this chance not being met",
   "dragonsurvival.configuration.anchor_has_bloody_state": "Anchor Has Bloody State",
   "dragonsurvival.configuration.anchor_has_bloody_state.tooltip": "If enabled, the primordial anchor will become unusuable as long as the ender dragon is dead.",
+  "dragonsurvival.configuration.backpack_slot": "Backpack Slot",
+  "dragonsurvival.configuration.backpack_slot.tooltip": "The curios slot which may contain the backpack (if Curios is installed)",
   "dragonsurvival.configuration.bad_food_poison_chance": "Bad Food Poison Chance",
   "dragonsurvival.configuration.bad_food_poison_chance.tooltip": "Chance of getting poisoned from eating non-dragon food",
   "dragonsurvival.configuration.base_dragon_camera_offset": "Base Dragon Camera Offset",
