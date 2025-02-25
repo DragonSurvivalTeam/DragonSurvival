@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render;
 
 import by.dragonsurvivalteam.dragonsurvival.client.models.DragonModel;
+import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.DragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.skins.DragonSkins;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
@@ -125,13 +126,18 @@ public class ClientDragonRenderer {
     @SubscribeEvent
     public static void removeEntry(final EntityLeaveLevelEvent event) {
         if (event.getEntity() instanceof Player player) {
-            PLAYER_DRAGON_MAP.remove(player.getId());
+            DragonEntity dragon = PLAYER_DRAGON_MAP.remove(player.getId());
+
+            if (dragon != null) {
+                DragonRenderer.BONE_POSITIONS.remove(dragon.getId());
+            }
         }
     }
 
     @SubscribeEvent
     public static void clearEntries(final LevelEvent.Unload event) {
         PLAYER_DRAGON_MAP.clear();
+        DragonRenderer.BONE_POSITIONS.clear();
     }
 
     @SubscribeEvent
@@ -230,16 +236,17 @@ public class ClientDragonRenderer {
             }
         }
 
+        ResourceLocation customTexture;
+
+        if (handler.getModel().equals(DragonBody.DEFAULT_MODEL)) {
+            customTexture = DragonSkins.getPlayerSkin(player, handler.stageKey());
+        } else {
+            customTexture = null;
+        }
+
+        dragonModel.setOverrideTexture(customTexture);
+
         if (player != Minecraft.getInstance().player || !Minecraft.getInstance().options.getCameraType().isFirstPerson() || !ServerFlightHandler.isGliding(player) || renderFirstPersonFlight) {
-            ResourceLocation customTexture;
-
-            if (handler.getModel().equals(DragonBody.DEFAULT_MODEL)) {
-                customTexture = DragonSkins.getPlayerSkin(player, handler.stageKey());
-            } else {
-                customTexture = null;
-            }
-
-            dragonModel.setOverrideTexture(customTexture);
             DragonEntity dragon = getDragon(player);
 
             if (!ClientDragonRenderer.isOverridingMovementData) {
@@ -247,13 +254,12 @@ public class ClientDragonRenderer {
             }
 
             MovementData movement = MovementData.getData(player);
-
-            movement.updateDragon(player, dragon);
             handleFlightMovement(player, dragon, movement, partialTick);
 
             Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(dragon).render(dragon, player.getViewYRot(partialTick), partialTick, event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight());
-            dragonModel.setOverrideTexture(null);
         }
+
+        dragonModel.setOverrideTexture(null);
     }
 
     private static void handleFlightMovement(final Player player, final DragonEntity dragon, final MovementData movement, final float partialTick) {

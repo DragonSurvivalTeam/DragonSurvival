@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.network.client;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAltarScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.DragonEditorScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
+import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.DragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.UnlockableBehavior;
@@ -14,7 +15,6 @@ import by.dragonsurvivalteam.dragonsurvival.network.dragon_editor.SyncPlayerSkin
 import by.dragonsurvivalteam.dragonsurvival.network.particle.SyncBreathParticles;
 import by.dragonsurvivalteam.dragonsurvival.network.particle.SyncParticleTrail;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
-import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
@@ -105,8 +105,8 @@ public class ClientProxy {
                 positionOffset = handler.getGrowth() / 30;
                 speedMultiplier = handler.getGrowth();
 
-                if (Minecraft.getInstance().options.getCameraType() != CameraType.FIRST_PERSON) {
-                    position = Functions.getBonePosition(player, "BreathSource");
+                if (player != Minecraft.getInstance().player || Minecraft.getInstance().options.getCameraType() != CameraType.FIRST_PERSON) {
+                    position = DragonRenderer.getBonePosition(player, "BreathSource");
                 }
             }
         }

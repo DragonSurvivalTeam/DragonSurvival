@@ -699,7 +699,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     }
 
     @SubscribeEvent
-    public static void tickEntity(RenderFrameEvent.Pre event) {
+    public static void tickEntity(final RenderFrameEvent.Pre event) {
         globalTickCount += event.getPartialTick().getRealtimeDeltaTicks();
     }
 
@@ -707,6 +707,17 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     public double getTick(Object obj) { // using 'getPlayer' breaks animations even though it returns the same entity...?
         // Prevent being on a negative tick (will cause t-posing!) by adding 200 here
         return (playerId != null ? level().getEntity(playerId).tickCount : globalTickCount) + 200;
+    }
+
+    @Override
+    public @NotNull Vec3 position() {
+        Player player = getPlayer();
+
+        if (player == null) {
+            return super.position();
+        }
+
+        return player.position();
     }
 
     @Override

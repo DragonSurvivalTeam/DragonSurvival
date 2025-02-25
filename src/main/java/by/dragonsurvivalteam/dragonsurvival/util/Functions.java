@@ -1,9 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.util;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
-import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
@@ -19,11 +17,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.common.Tags;
-import org.joml.Vector3d;
-import software.bernie.geckolib.animation.state.BoneSnapshot;
 import software.bernie.geckolib.util.RenderUtil;
 
 import java.text.NumberFormat;
@@ -372,28 +367,6 @@ public class Functions {
         int nextIndex = (currentIndex + 1) % colors.size();
 
         return FastColor.ARGB32.lerp(sizeIndex - currentIndex, DSColors.withAlpha(colors.get(currentIndex), 255), DSColors.withAlpha(colors.get(nextIndex), 255));
-    }
-
-    /**
-     * Note: Position does not work in first person <br>
-     * - GeckoLib cannot update the bone positions iff ClientDragonRenderer#renderInFirstPerson is not enabled <br>
-     * - Even if it is enabled the position won't be correct - unsure as to why
-     */
-    public static Vec3 getBonePosition(final Player player, final String name) {
-        DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(player.getId());
-
-        if (dragon == null) {
-            return Vec3.ZERO;
-        }
-
-        BoneSnapshot snapshot = dragon.getAnimatableInstanceCache().getManagerForId(dragon.getId()).getBoneSnapshotCollection().get(name);
-
-        if (snapshot == null) {
-            return Vec3.ZERO;
-        }
-
-        Vector3d position = snapshot.getBone().getWorldPosition();
-        return new Vec3(position.x(), position.y(), position.z()).subtract(ClientDragonRenderer.getModelOffset(dragon, 1));
     }
 
     /** Makes sure to return an enum value (instead of an exception) */

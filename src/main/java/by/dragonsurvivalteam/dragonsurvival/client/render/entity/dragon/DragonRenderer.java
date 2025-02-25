@@ -20,20 +20,27 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3d;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.util.Color;
 
-public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
-    public ResourceLocation glowTexture = null;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-    public boolean shouldRenderLayers = true;
-    public boolean isRenderLayers = false;
+public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
+    public static Map<Integer, Map<String, Vec3>> BONE_POSITIONS = new HashMap<>();
+    private static final List<String> BONES = List.of("BreathSource");
 
     private static final Color RENDER_COLOR = Color.ofRGB(255, 255, 255);
     private static final Color TRANSPARENT_RENDER_COLOR = Color.ofRGBA(1, 1, 1, HunterHandler.MIN_ALPHA);
+
+    public ResourceLocation glowTexture;
+    public boolean isRenderingLayer;
+    public boolean shouldRenderLayers = true;
 
     public DragonRenderer(final EntityRendererProvider.Context context, final GeoModel<DragonEntity> model) {
         super(context, model);
@@ -54,6 +61,27 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         }
     }
 
+    /**
+     * Note: Position does not work in first person <br>
+     * - GeckoLib cannot update the bone positions iff ClientDragonRenderer#renderInFirstPerson is not enabled <br>
+     * - Even if it is enabled the position won't be correct - unsure as to why
+     */
+    public static Vec3 getBonePosition(final Player player, final String name) {
+        DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(player.getId());
+
+        if (dragon == null) {
+            return Vec3.ZERO;
+        }
+
+        Map<String, Vec3> positions = BONE_POSITIONS.get(dragon.getId());
+
+        if (positions == null) {
+            return Vec3.ZERO;
+        }
+
+        return positions.getOrDefault(name, Vec3.ZERO);
+    }
+
     @Override
     public void preRender(final PoseStack poseStack, final DragonEntity animatable, final BakedGeoModel model, final MultiBufferSource bufferSource, final VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int color) {
         Minecraft.getInstance().getProfiler().push("player_dragon");
@@ -64,6 +92,14 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
     public void postRender(final PoseStack poseStack, final DragonEntity animatable, final BakedGeoModel model, final MultiBufferSource bufferSource, final VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int color) {
         super.postRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, color);
         Minecraft.getInstance().getProfiler().pop();
+
+        // Need to store the positions per entity ourselves
+        // Since the model is a singleton, and it stores the bones
+        BONES.forEach(name -> model.getBone(name).ifPresent(bone -> {
+            Vector3d worldPosition = bone.getWorldPosition();
+            Vec3 position = new Vec3(worldPosition.x(), worldPosition.y(), worldPosition.z()).subtract(ClientDragonRenderer.getModelOffset(animatable, 1));
+            BONE_POSITIONS.computeIfAbsent(animatable.getId(), key -> new HashMap<>()).put(bone.getName(), position);
+        }));
     }
 
     @Override
