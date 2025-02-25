@@ -1,0 +1,42 @@
+{
+  "parent": "dragonsurvival:find_end_platform",
+  "criteria": {
+    "criterion_0": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structures": "#dragonsurvival:treasure_end"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "dragonsurvival.advancement.find_end_structures.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "dragonsurvival:spin_grant"
+    },
+    "title": {
+      "translate": "dragonsurvival.advancement.find_end_structures"
+    }
+  },
+  "requirements": [
+    [
+      "criterion_0"
+    ]
+  ],
+  "rewards": {
+    "experience": 64
+  },
+  "sends_telemetry_event": true
+}

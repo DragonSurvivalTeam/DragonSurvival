@@ -35,7 +35,7 @@ public class AbilityColumnsComponent implements ScrollableComponent {
     private int nextColumn = 0;
     // How long until we just fully hide the button in position 3 (behind the front icon) so that it doesn't show itself when there is no icon in the center
 
-    private record ButtonTemplateState(float scale, float alpha, boolean interactable, boolean visible) { /* Nothing to do */ }
+    private record ButtonTemplateState(float scale, float alpha, boolean interactable, boolean visible) {}
 
     public AbilityColumnsComponent(DragonAbilityScreen parentScreen, int xPos, int yPos, int verticalSpacing, int sideColumnSpacing, float sideColumnScale, float sideColumnOpacity, List<DragonAbilityInstance> abilities) {
         // Set all the button positions to be what the center column would be; this is because the buttons are only interactable when they are in the center column

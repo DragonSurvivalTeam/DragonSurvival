@@ -60,7 +60,7 @@ public class DragonTreasureHandler {
 
     @Translation(key = "effects_on_sleep", type = Translation.Type.CONFIGURATION, comments = {
             "Effects that are granted when skipping a night when sleeping on treasures",
-            "Format: resource;duration;amplifier;duration_multiplier;amplifier_multiplier",
+            "Format: resource/tag;duration;amplifier;duration_multiplier;amplifier_multiplier",
             "The resource can also be defined using regular expressions (for both namespace and path)",
             "the multipliers are applied per nearby treasure ('max_treasure_for_rate_reduction' is used as limit)",
             "(amplifier is calculated with +1, the +1 is subtracted for the final result)"
@@ -94,7 +94,12 @@ public class DragonTreasureHandler {
         }
 
         if (treasureData.isResting()) {
-            treasureData.sleepingTicks++;
+            if (player.level().isDay()) {
+                treasureData.sleepingTicks = 0;
+            } else {
+                treasureData.sleepingTicks++;
+            }
+
             handleResting(player, treasureData);
         }
     }

@@ -21,9 +21,9 @@ import net.p3pp3rf1y.sophisticatedbackpacks.backpack.wrapper.BackpackWrapper;
 import net.p3pp3rf1y.sophisticatedbackpacks.backpack.wrapper.IBackpackWrapper;
 import net.p3pp3rf1y.sophisticatedbackpacks.client.render.BackpackModelManager;
 import net.p3pp3rf1y.sophisticatedbackpacks.client.render.IBackpackModel;
-import net.p3pp3rf1y.sophisticatedbackpacks.util.PlayerInventoryProvider;
-import org.joml.*;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Math;
+import org.joml.Quaternionf;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
@@ -31,45 +31,54 @@ import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotResult;
 
 import java.util.List;
-import java.util.Optional;
-
 
 public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
-
     @Translation(key = "render_backpack", type = Translation.Type.CONFIGURATION, comments = "enable / disable backpack rendering")
     @ConfigOption(side = ConfigSide.CLIENT, category = "rendering", key = "render_backpack")
-    public static Boolean renderBackpack = true;
+    public static Boolean SHOULD_RENDER = true;
 
+    @Translation(key = "backpack_slot", type = Translation.Type.CONFIGURATION, comments = "The curios slot which contains the backpack (if Curios is installed)")
+    @ConfigOption(side = ConfigSide.CLIENT, category = "rendering", key = "backpack_slot")
+    public static String CURIOS_SLOT = "back";
+    
+    private static final String BONE = "BackpackBone";
+    
     private final boolean isCurioLoaded;
 
     public DragonBackpackRenderLayer(GeoEntityRenderer<DragonEntity> renderer) {
-
         super(renderer);
 
         isCurioLoaded = Compat.isModLoaded(Compat.CURIOS);
     }
 
     @Override
-    public void renderForBone(PoseStack poseStack, DragonEntity animatable, GeoBone bone, RenderType renderType,
-                              MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+    public void renderForBone(PoseStack poseStack, DragonEntity animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+        if (!SHOULD_RENDER) {
+            return;
+        }
 
-        if(!renderBackpack) return;
-
-        if(!bone.getName().equalsIgnoreCase("BackpackBone")) return;
+        if (!bone.getName().equals(BONE)) {
+            return;
+        }
 
         Player player = animatable.getPlayer();
 
-        if(player == null) return;
+        if (player == null) {
+            return;
+        }
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
 
-        Optional<PlayerInventoryProvider.RenderInfo> backpackRenderInfo = getRenderInfo(player);
+        if (!handler.isDragon()) {
+            return;
+        }
 
-        if(backpackRenderInfo.isEmpty()) return;
+        ItemStack backpack = getBackpack(player);
 
-        poseStack.pushPose();
+        if (backpack == null) {
+            return;
+        }
 
-        ItemStack backpack = backpackRenderInfo.get().getBackpack();
         IBackpackWrapper wrapper = BackpackWrapper.fromStack(backpack);
 
         int clothColor = wrapper.getMainColor();
@@ -77,13 +86,10 @@ public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
         IBackpackModel model = BackpackModelManager.getBackpackModel(backpack.getItem());
 
         Vec3 posOffset = new Vec3(bone.getPivotX(), bone.getPivotY(), bone.getPivotZ());
-
         Vec3 rotOffset = Vec3.ZERO;
-
         Vec3 scale = new Vec3(1, 1, 1);
 
-
-        if(handler.body().value().backpackOffsets().isPresent()) {
+        if (handler.body().value().backpackOffsets().isPresent()) {
             DragonBody.BackpackOffsets backpackOffsets = handler.body().value().backpackOffsets().get();
 
             scale = backpackOffsets.scale();
@@ -91,89 +97,65 @@ public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
             rotOffset = backpackOffsets.rotOffset();
         }
 
-
-        transformModel(poseStack, posOffset, rotOffset, scale);
+        transformModel(poseStack, posOffset.scale(1 / 32f), rotOffset, scale);
 
         model.render(null, player, poseStack, bufferSource, packedLight, clothColor, borderColor, backpack.getItem(), wrapper.getRenderInfo());
         poseStack.popPose();
-
     }
 
-
-    private void transformModel(PoseStack poseStack, Vec3 posOffset, Vec3 rotOffset, Vec3 scale) {
-
+    private void transformModel(final PoseStack poseStack, final Vec3 posOffset, final Vec3 rotOffset, final Vec3 scale) {
         Vec3 rot = rotOffset.add(0, 0, 180);
-
         Quaternionf quat = new Quaternionf().rotationZYX((float) Math.toRadians(rot.x), (float) Math.toRadians(rot.y), (float) Math.toRadians(rot.z));
-
         poseStack.rotateAround(quat, 0, 1.1f, 0);
-
-        posOffset = posOffset.scale(1 / 32f);
 
         // The backpack rendering is slightly offset to center the pivot in back middle
         poseStack.translate(posOffset.x, -posOffset.y + 0.5, -posOffset.z - 0.1);
-
         poseStack.scale((float) scale.x, (float) scale.y, (float) scale.z);
-
     }
 
-    private Optional<PlayerInventoryProvider.RenderInfo> getRenderInfo(Player player) {
+    private @Nullable ItemStack getBackpack(final Player player) {
+        ItemStack backpack = null;
 
-        Optional<ItemStack> backpackStack = Optional.empty();
-        boolean isArmorSlot = false;
-
-        if(isCurioLoaded) {
-            backpackStack = getBackpackFromCurios(player);
-        }
-
-        if(backpackStack.isEmpty()) {
-            backpackStack = getBackpackFromChestSlot(player);
-            isArmorSlot = true;
-        }
-
-        if(backpackStack.isPresent()) {
-            return Optional.of(new PlayerInventoryProvider.RenderInfo(backpackStack.get(), isArmorSlot));
-        }
-
-        return Optional.empty();
-
-    }
-
-
-    private Optional<ItemStack> getBackpackFromCurios(Player player) {
-
-        if(CuriosApi.getCuriosInventory(player).isPresent()) {
-
-            List<SlotResult> curioBackSlots = CuriosApi.getCuriosInventory(player).get().findCurios("back");
-
-            for(SlotResult backpackItem : curioBackSlots) {
-
-                if(!backpackItem.slotContext().visible())
-                    continue;
-
-                ItemStack itemStack = backpackItem.stack();
-
-                if(itemStack.getItem() instanceof BackpackItem) {
-                    return Optional.of(itemStack);
-                }
-
-                return Optional.empty();
-            }
+        if (isCurioLoaded) {
+            backpack = getBackpackFromCurios(player);
         }
         
-        return Optional.empty();
-
-    }
-
-    private Optional<ItemStack> getBackpackFromChestSlot(Player player) {
-
-        ItemStack armorSlot = player.getInventory().armor.get(EquipmentSlot.CHEST.getIndex());
-
-        if(armorSlot.getItem() instanceof BackpackItem) {
-            return Optional.of(armorSlot);
+        if (backpack == null) {
+            return getBackpackFromChestSlot(player);
         }
 
-        return Optional.empty();
+        return backpack;
+    }
+    
+    private @Nullable ItemStack getBackpackFromCurios(final Player player) {
+        if (CuriosApi.getCuriosInventory(player).isPresent()) {
+            List<SlotResult> curioBackSlots = CuriosApi.getCuriosInventory(player).get().findCurios(CURIOS_SLOT);
 
+            for (SlotResult slotItem : curioBackSlots) {
+                if (!slotItem.slotContext().visible()) {
+                    continue;
+                }
+
+                ItemStack stack = slotItem.stack();
+
+                if (stack.getItem() instanceof BackpackItem) {
+                    return stack;
+                }
+
+                return null;
+            }
+        }
+
+        return null;
+    }
+
+    private ItemStack getBackpackFromChestSlot(final Player player) {
+        ItemStack stack = player.getItemBySlot(EquipmentSlot.CHEST);
+
+        if (stack.getItem() instanceof BackpackItem) {
+            return stack;
+        }
+
+        return null;
     }
 }

@@ -2,8 +2,10 @@ package by.dragonsurvivalteam.dragonsurvival.registry.projectile.targeting;
 
 import by.dragonsurvivalteam.dragonsurvival.network.particle.SyncParticleTrail;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AbilityTargeting;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AreaTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.TargetingMode;
+import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -94,10 +96,11 @@ public record ProjectileAreaTarget(GeneralData generalData, LevelBasedValue radi
 
     @Override
     public MutableComponent getDescription(final Player dragon, int level) {
-        MutableComponent description = Component.translatable(AreaTarget.AREA_TARGET_ENTITY, TargetingMode.ALL.translation(), radius().calculate(level));
+        String radius = AbilityTargeting.FORMAT.format(this.radius.calculate(level));
+        MutableComponent description = Component.translatable(AreaTarget.AREA_TARGET_ENTITY, DSColors.dynamicValue(TargetingMode.ALL.translation()), DSColors.dynamicValue(radius));
 
         if (generalData.tickRate() > 1) {
-            description.append(Component.translatable(LangKey.ABILITY_X_SECONDS, Functions.ticksToSeconds(generalData.tickRate())));
+            description.append(Component.translatable(LangKey.ABILITY_X_SECONDS, DSColors.dynamicValue(Functions.ticksToSeconds(generalData.tickRate()))));
         }
 
         return description;

@@ -83,23 +83,22 @@ dependencies {
 	compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
 	runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
 
+	compileOnly "curse.maven:sophisticated-backpacks-422301:6086611"
+	compileOnly "curse.maven:sophisticated-core-618298:6119300"
+
+	compileOnly "curse.maven:cosmetic-armor-reworked-237307:5610814"
+
 	// Test
 	implementation "curse.maven:spark-361579:5759671" // 1.10.109
 	implementation "curse.maven:jade-324717:6011258" // 15.9.2
 
-	implementation "curse.maven:cosmetic-armor-reworked-237307:5610814"
-
 //	implementation "curse.maven:emi-580555:6075440" // 1.1.19
 
-	implementation "maven.modrinth:sodium:mc1.21.1-0.6.5-neoforge"
+//	implementation "maven.modrinth:sodium:mc1.21.1-0.6.5-neoforge"
 //	implementation "curse.maven:irisshaders-455508:5957827" // 1.8.1
 
-	implementation "curse.maven:apothic-attributes-898963:5751458" // 2.4.0
-	implementation "curse.maven:placebo-283644:5869769" // 9.5.4
-
-
-	implementation "curse.maven:sophisticated-backpacks-422301:6086611"
-	implementation "curse.maven:sophisticated-core-618298:6119300"
+//	implementation "curse.maven:apothic-attributes-898963:5751458" // 2.4.0
+//	implementation "curse.maven:placebo-283644:5869769" // 9.5.4
 
 	// Curios testing
 //     runtimeOnly "top.theillusivec4.curios:curios-neoforge:9.2.2+1.21.1"

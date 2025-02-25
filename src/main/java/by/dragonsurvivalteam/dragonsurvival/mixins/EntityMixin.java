@@ -13,7 +13,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonedEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
+import by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonRidingHandler;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -41,10 +41,12 @@ public abstract class EntityMixin {
             return original;
         }
 
-        if(mount instanceof Player player && DragonStateProvider.isDragon(player)) {
+        if (mount instanceof Player player && DragonStateProvider.isDragon(player)) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
             MovementData movement = MovementData.getData(player);
-            if(handler.body().value().mountingOffsets().isEmpty()) return original;
+            if (handler.body().value().mountingOffsets().isEmpty()) {
+                return original;
+            }
             Vec3 offset = DragonStateProvider.isDragon(passenger) ? handler.body().value().mountingOffsets().get().dragonOffset() : handler.body().value().mountingOffsets().get().humanOffset();
             Vec3 offsetPerScaleAboveOne = handler.body().value().mountingOffsets().get().scale();
             float scale = player.getScale();
@@ -58,13 +60,14 @@ public abstract class EntityMixin {
             // Handle dragon riding normal mounts (e.g. boats)
             // The vanilla player hitbox actually clips through most mounts, but the dragon player does not.
             // So we need to push it up such that it meets the point at which the vanilla player's actual model starts
-            return original.add(DragonBody.getMountingOffsetForEntity(mount));
+            return original.add(DragonRidingHandler.getMountingOffsetForEntity(mount));
         }
 
         return original;
     }
 
     @ModifyReturnValue(method = "getPassengerRidingPosition", at = @At("RETURN"))
+    // TODO :: might be enough to add our offset only to this one (since 'getPassengerAttachmentPoint' seems to only be called by it and nowhere else)
     protected Vec3 dragonSurvival$modifyPassengerRidingPosition(Vec3 original, @Local(argsOnly = true, index = 0) Entity entity) {
         Entity mount = (Entity) (Object) this;
         if (entity instanceof Player passenger && hasPassenger(passenger) && DragonStateProvider.isDragon(passenger) && !DragonStateProvider.isDragon(mount)) {
@@ -72,7 +75,7 @@ public abstract class EntityMixin {
             // Handle dragon riding normal mounts (e.g. boats)
             // The vanilla player hitbox actually clips through most mounts, but the dragon player does not.
             // So we need to push it up such that it meets the point at which the vanilla player's actual model starts
-            return original.add(DragonBody.getMountingOffsetForEntity(mount));
+            return original.add(DragonRidingHandler.getMountingOffsetForEntity(mount));
         }
 
         return original;
@@ -91,7 +94,7 @@ public abstract class EntityMixin {
         }
 
         MovementData vehicleMovement = MovementData.getData(vehicle);
-        if(DragonStateProvider.isDragon(passenger)) {
+        if (DragonStateProvider.isDragon(passenger)) {
             MovementData passengerMovement = MovementData.getData(passenger);
             float facing = (float) Mth.wrapDegrees(passenger.getYRot() - vehicleMovement.bodyYawLastFrame);
             float facingClamped = Mth.clamp(facing, -150.0F, 150.0F);
@@ -127,15 +130,21 @@ public abstract class EntityMixin {
         }
     }
 
-    /** Prevent dragons from riding certain vehicles */
-    @SuppressWarnings("ConstantValue") // the if statement checks are valid
+    /**
+     * Prevent dragons from riding certain vehicles
+     */
     @ModifyReturnValue(method = "canRide", at = @At(value = "RETURN"))
-    public boolean dragonSurvival$canRide(boolean original, @Local(argsOnly = true, ordinal = 0) Entity entity) {
-        if (ServerConfig.limitedRiding && DragonStateProvider.isDragon((Entity) (Object) this) && /* Still allow riding dragons */ !DragonStateProvider.isDragon(entity)) {
-            return entity.getType().is(DSEntityTypeTags.VEHICLE_WHITELIST);
+    private boolean dragonSurvival$canRide(boolean canRide, final Entity mount) {
+        if (!canRide) {
+            return false;
         }
 
-        return original;
+        //noinspection ConstantValue -> the check is valid
+        if (ServerConfig.limitedRiding && DragonStateProvider.isDragon((Entity) (Object) this) && /* Still allow riding dragons */ !DragonStateProvider.isDragon(mount)) {
+            return mount.getType().is(DSEntityTypeTags.VEHICLE_WHITELIST);
+        }
+
+        return canRide;
     }
 
     /** To just skip rendering entirely instead of rendering with a 0 alpha value */
@@ -237,8 +246,15 @@ public abstract class EntityMixin {
         }
     }
 
-    @Shadow public abstract double getX();
-    @Shadow public abstract double getY();
-    @Shadow public abstract double getZ();
-    @Shadow public abstract boolean hasPassenger(Entity entity);
+    @Shadow
+    public abstract double getX();
+
+    @Shadow
+    public abstract double getY();
+
+    @Shadow
+    public abstract double getZ();
+
+    @Shadow
+    public abstract boolean hasPassenger(Entity entity);
 }

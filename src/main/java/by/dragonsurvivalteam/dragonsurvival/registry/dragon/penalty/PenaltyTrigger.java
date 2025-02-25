@@ -19,16 +19,22 @@ import java.util.function.Function;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public interface PenaltyTrigger {
-    ResourceKey<Registry<MapCodec<? extends PenaltyTrigger>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("penalty_triggers"));
+    ResourceKey<Registry<MapCodec<? extends PenaltyTrigger>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("penalty_trigger"));
     Registry<MapCodec<? extends PenaltyTrigger>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();
 
     Codec<PenaltyTrigger> CODEC = REGISTRY.byNameCodec().dispatch("penalty_trigger", PenaltyTrigger::codec, Function.identity());
 
     /** If this returns 'false' it will be applied per player tick */
-    default boolean hasCustomTrigger() { return false; }
-    default MutableComponent getDescription(final Player player) { return Component.empty(); }
+    default boolean hasCustomTrigger() {
+        return false;
+    }
+
+    default MutableComponent getDescription(final Player player) {
+        return Component.empty();
+    }
 
     MapCodec<? extends PenaltyTrigger> codec();
+
     boolean matches(final ServerPlayer dragon, boolean conditionMatched);
 
     static PenaltyTrigger instant() {

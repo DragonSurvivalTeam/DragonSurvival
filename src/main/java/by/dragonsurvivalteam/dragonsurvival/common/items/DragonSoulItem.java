@@ -2,6 +2,9 @@ package by.dragonsurvivalteam.dragonsurvival.common.items;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonSpeciesTags;
@@ -44,7 +47,7 @@ public class DragonSoulItem extends Item {
     @Translation(comments = "■§7 This vessel holds the dragon's soul. Use it to become a dragon. Replaces your current stats if you are a dragon.\n")
     private static final String DESCRIPTION = Translation.Type.DESCRIPTION.wrap("dragon_soul");
 
-    @Translation(comments = "§6■ Species:§r %s\n§6■ Growth Stage:§r %s\n§6■ Size:§r %s\n")
+    @Translation(comments = "§6■ Species:§r %s\n§6■ Growth Stage:§r %s\n§6■ Growth:§r %s\n")
     private static final String INFO = Translation.Type.DESCRIPTION.wrap("dragon_soul.info");
 
     @Translation(comments = "■§7 An empty dragon's soul. With this item, you can store all your dragon's characteristics. After using it, you become human.")
@@ -52,6 +55,11 @@ public class DragonSoulItem extends Item {
 
     @Translation(comments = "Invalid dragon type")
     private static final String INVALID_DRAGON_TYPE = Translation.Type.DESCRIPTION.wrap("dragon_soul.invalid_type");
+
+    @ConfigRange(min = 0, max = Integer.MAX_VALUE)
+    @Translation(key = "dragon_soul_cooldown", type = Translation.Type.CONFIGURATION, comments = "Cooldown (in ticks) (20 ticks = 1 second) that occurs after using the dragon soul")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"items", "dragon_soul"}, key = "dragon_soul_cooldown")
+    public static int COOLDOWN = Functions.secondsToTicks(10);
 
     public DragonSoulItem(final Properties properties) {
         super(properties);
@@ -67,8 +75,9 @@ public class DragonSoulItem extends Item {
         }
     }
 
+    // TODO :: make compatible with custom species
     private static int getCustomModelData(@NotNull final HolderLookup.Provider provider, final CompoundTag tag) {
-        ResourceKey<DragonSpecies> species = ResourceHelper.decodeKey(provider, DragonSpecies.REGISTRY, tag, SPECIES);
+        ResourceKey<DragonSpecies> species = ResourceHelper.decodeKey(provider, DragonSpecies.REGISTRY, tag, DragonStateHandler.DRAGON_SPECIES);
 
         if (species == null) {
             return 0;
@@ -130,6 +139,8 @@ public class DragonSoulItem extends Item {
             handler.revertToHumanForm(player, true);
         }
 
+        player.getCooldowns().addCooldown(stack.getItem(), COOLDOWN);
+
         // This will require an explicit magic data sync (when switching between the same species)
         // (If the dragon soul is ever made to also switch abilities)
         PlayerLoginHandler.syncHandler(player);
@@ -167,7 +178,7 @@ public class DragonSoulItem extends Item {
             CompoundTag tag = stack.get(DataComponents.CUSTOM_DATA).getUnsafe();
             tooltips.add(Component.translatable(DESCRIPTION));
 
-            ResourceKey<DragonSpecies> species = ResourceHelper.decodeKey(provider, DragonSpecies.REGISTRY, tag, SPECIES);
+            ResourceKey<DragonSpecies> species = ResourceHelper.decodeKey(provider, DragonSpecies.REGISTRY, tag, DragonStateHandler.DRAGON_SPECIES);
             Component name;
 
             if (species != null) {
@@ -176,11 +187,11 @@ public class DragonSoulItem extends Item {
                 name = Component.translatable(INVALID_DRAGON_TYPE);
             }
 
-            double size = tag.getDouble(SIZE);
-            Holder<DragonStage> stage = DragonStage.get(provider, size);
+            double growth = tag.getDouble(DragonStateHandler.GROWTH);
+            Holder<DragonStage> stage = DragonStage.get(provider, growth);
 
             //noinspection DataFlowIssue -> key is present
-            tooltips.add(Component.translatable(INFO, name, DragonStage.translatableName(stage.getKey()), String.format("%.0f", size)));
+            tooltips.add(Component.translatable(INFO, name, DragonStage.translatableName(stage.getKey()), String.format("%.0f", growth)));
         } else {
             tooltips.add(Component.translatable(IS_EMPTY));
         }
@@ -201,7 +212,7 @@ public class DragonSoulItem extends Item {
     public @NotNull Component getName(@NotNull final ItemStack stack) {
         if (stack.has(DataComponents.CUSTOM_DATA)) {
             //noinspection DataFlowIssue, deprecation -> tag isn't modified, no need to create a copy
-            ResourceKey<DragonSpecies> species = ResourceHelper.decodeKey(null, DragonSpecies.REGISTRY, stack.get(DataComponents.CUSTOM_DATA).getUnsafe(), SPECIES);
+            ResourceKey<DragonSpecies> species = ResourceHelper.decodeKey(null, DragonSpecies.REGISTRY, stack.get(DataComponents.CUSTOM_DATA).getUnsafe(), DragonStateHandler.DRAGON_SPECIES);
 
             if (species != null) {
                 return Component.translatable(Translation.Type.DRAGON_SPECIES.wrap(species.location())).append(Component.translatable(SOUL));
@@ -210,7 +221,4 @@ public class DragonSoulItem extends Item {
 
         return Component.translatable(EMPTY_DRAGON_SOUL);
     }
-
-    public static final String SPECIES = "dragon_species";
-    public static final String SIZE = "size";
 }

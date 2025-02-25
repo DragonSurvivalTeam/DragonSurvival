@@ -52,7 +52,7 @@ public abstract class PlayerMixin extends LivingEntity {
         if (!isDeadOrDying() && !isSleeping()) {
             MagicData data = MagicData.getData((Player) (Object) this);
 
-            if (data.getCurrentlyCasting() != null && !data.getCurrentlyCasting().canMoveWhileCasting()) {
+            if (data.getCurrentlyCasting() != null && !data.getCurrentlyCasting().value().activation().canMoveWhileCasting()) {
                 callback.setReturnValue(true);
             }
         }

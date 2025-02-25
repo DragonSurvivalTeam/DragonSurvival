@@ -18,6 +18,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -25,18 +26,16 @@ import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
-
-@SuppressWarnings("unused")
 @EventBusSubscriber
 public class BlastDustedEffect extends ModifiableMobEffect {
-
     @ConfigRange(max = 50)
     @Translation(key = "blast_dust_explosion_radius", type = Translation.Type.CONFIGURATION, comments = "The explosion radius of Blast Dust")
     @ConfigOption(side = ConfigSide.SERVER, category = {"effects", "blast_dust"}, key = "blast_dust_explosion_radius")
     public static Float blastDustExplosionRadius = 0.6f;
 
-    public BlastDustedEffect(MobEffectCategory type, int color, boolean incurable) { super(type, color, incurable); }
+    public BlastDustedEffect(MobEffectCategory type, int color, boolean incurable) {
+        super(type, color, incurable);
+    }
 
     @Override
     public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
@@ -44,51 +43,70 @@ public class BlastDustedEffect extends ModifiableMobEffect {
     }
 
     @Override
-    public boolean applyEffectTick(@NotNull LivingEntity livingEntity, int amplifier) {
-        if ((DragonStateProvider.getOptional(livingEntity).isPresent() && DragonStateProvider.getOptional(livingEntity).get().species().is(DSDragonSpeciesTags.CAVE_DRAGONS)) || livingEntity.isEyeInFluidType(NeoForgeMod.WATER_TYPE.value()) || livingEntity.isInWaterRainOrBubble()) {
+    public boolean applyEffectTick(@NotNull final LivingEntity entity, final int amplifier) {
+        if (entity instanceof Player player) {
+            DragonStateHandler handler = DragonStateProvider.getData(player);
+
+            if (handler.isDragon() && handler.species().is(DSDragonSpeciesTags.CAVE_DRAGONS)) {
+                return false;
+            }
+        }
+
+        if (entity.isEyeInFluidType(NeoForgeMod.WATER_TYPE.value()) || entity.isInWaterRainOrBubble()) {
             return false;
         }
-        return super.applyEffectTick(livingEntity, amplifier);
+
+        return super.applyEffectTick(entity, amplifier);
     }
 
     @Override
-    public void onMobHurt(@NotNull LivingEntity livingEntity, int amplifier, DamageSource damageSource, float amount) {
+    public void onMobHurt(@NotNull final LivingEntity entity, final int amplifier, @NotNull final DamageSource damageSource, final float amount) {
+        if (entity.level().isClientSide()) {
+            return;
+        }
+
         if (damageSource.is(DamageTypeTags.IS_FIRE)) {
-            if (!livingEntity.level().isClientSide()) {
-                explode(livingEntity, amplifier);
-                livingEntity.removeEffect(DSEffects.BLAST_DUSTED);
-            }
+            explode(entity, amplifier);
+            entity.removeEffect(DSEffects.BLAST_DUSTED);
         }
     }
 
-    public static void explode(LivingEntity livingEntity, int amplifier) {
-        if (!livingEntity.level().isClientSide()) {
-            Entity effectApplier = null;
-            if (livingEntity.level() instanceof ServerLevel serverLevel) {
-                //noinspection DataFlowIssue
-                effectApplier = ((AdditionalEffectData) livingEntity.getEffect(DSEffects.BLAST_DUSTED)).dragonSurvival$getApplier(serverLevel);
-            }
-            livingEntity.level().explode(livingEntity, new DamageSource(DSDamageTypes.get(livingEntity.level(), DSDamageTypes.BLAST_DUST), effectApplier), null, livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(), blastDustExplosionRadius * (amplifier + 1), true, Level.ExplosionInteraction.MOB);
-        }
-    }
+    public static void explode(final LivingEntity entity, final int amplifier) {
+        Entity effectApplier = null;
 
-    @SubscribeEvent
-    public static void onEffectRemoved(final MobEffectEvent.Remove removeEvent) {
-        LivingEntity livingEntity = removeEvent.getEntity();
-        if (!(DragonStateProvider.isDragon(livingEntity))) {
-            Optional<DragonStateHandler> optional = DragonStateProvider.getOptional(livingEntity);
-            if (optional.isEmpty() || !optional.get().species().is(DSDragonSpeciesTags.CAVE_DRAGONS)) {
-                removeEvent.getEntity().level().playLocalSound(livingEntity.position().x(), livingEntity.position().y(), livingEntity.position().z(), SoundEvents.GENERIC_EXTINGUISH_FIRE, SoundSource.PLAYERS, 1f, 1f, false);
-            }
+        if (entity.level() instanceof ServerLevel serverLevel) {
+            //noinspection DataFlowIssue -> effect should be present
+            effectApplier = ((AdditionalEffectData) entity.getEffect(DSEffects.BLAST_DUSTED)).dragonSurvival$getApplier(serverLevel);
         }
+
+        entity.level().explode(entity, new DamageSource(DSDamageTypes.get(entity.level(), DSDamageTypes.BLAST_DUST), effectApplier), null, entity.getX(), entity.getY(), entity.getZ(), blastDustExplosionRadius * (amplifier + 1), true, Level.ExplosionInteraction.MOB);
     }
 
     @SubscribeEvent
-    public static void onEffectExpired(final MobEffectEvent.Expired expiredEvent) {
-        if (expiredEvent.getEffectInstance() != null && expiredEvent.getEffectInstance().is(DSEffects.BLAST_DUSTED)) {
-            if (!expiredEvent.getEntity().level().isClientSide) {
-                explode(expiredEvent.getEntity(), expiredEvent.getEffectInstance().getAmplifier());
+    public static void onEffectRemoved(final MobEffectEvent.Remove event) {
+        if (event.getEffect() != DSEffects.BLAST_DUSTED) {
+            return;
+        }
+
+        if (event.getEntity() instanceof Player player) {
+            DragonStateHandler handler = DragonStateProvider.getData(player);
+
+            if (handler.isDragon() && handler.species().is(DSDragonSpeciesTags.CAVE_DRAGONS)) {
+                return;
             }
+        }
+
+        event.getEntity().level().playLocalSound(event.getEntity().position().x(), event.getEntity().position().y(), event.getEntity().position().z(), SoundEvents.GENERIC_EXTINGUISH_FIRE, SoundSource.PLAYERS, 1f, 1f, false);
+    }
+
+    @SubscribeEvent
+    public static void onEffectExpired(final MobEffectEvent.Expired event) {
+        if (event.getEntity().level().isClientSide()) {
+            return;
+        }
+
+        if (event.getEffectInstance() != null && event.getEffectInstance().is(DSEffects.BLAST_DUSTED)) {
+            explode(event.getEntity(), event.getEffectInstance().getAmplifier());
         }
     }
 }

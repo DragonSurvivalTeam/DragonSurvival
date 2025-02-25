@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
+import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.ClientConfig;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
@@ -26,17 +27,14 @@ public abstract class GameRendererMixin {
         return ClientConfig.stableNightVision ? 1 : original;
     }
 
-    /** To prevent clipping issues (with blocks) at small sizes */
+    /**
+     * Small scale values have camera / x-ray issues (if the near plane is too far away) <br>
+     * - First person: You can view through the block in front of you, if you're too close <br>
+     * - Third person: You can view through the blocks to your side, if you're too close
+     */
     @ModifyArg(method = "getProjectionMatrix", at = @At(value = "INVOKE", target = "Lorg/joml/Matrix4f;perspective(FFFF)Lorg/joml/Matrix4f;"), index = 2)
     private float dragonSurvival$adjustNearPlane(float original) {
-        //noinspection DataFlowIssue -> player is present
-        float scale = Minecraft.getInstance().player.getScale();
-
-        if (scale < 1) {
-            return original * scale;
-        }
-
-        return original;
+        return RenderingUtils.getNearPlane(original);
     }
 
     /** Adjust intensity of the bobbing animation while walking based on the current scale */

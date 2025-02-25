@@ -10,6 +10,7 @@ import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -21,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
+import java.util.UUID;
 
 /** Useful general checks which are missing in the normal entity predicate */
 public record CustomPredicates(
@@ -28,14 +30,16 @@ public record CustomPredicates(
         Optional<WeatherPredicate> weatherPredicate,
         Optional<MinMaxBounds.Ints> sunLightLevel,
         Optional<ResourceLocation> hasAbilityEffect,
-        Optional<NearbyEntityPredicate> isNearbyEntity
+        Optional<NearbyEntityPredicate> isNearbyEntity,
+        Optional<UUID> hasUUID
 ) implements EntitySubPredicate {
     public static final MapCodec<CustomPredicates> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             RegistryCodecs.homogeneousList(NeoForgeRegistries.FLUID_TYPES.key()).optionalFieldOf("eye_in_fluid").forGetter(CustomPredicates::eyeInFluid),
             WeatherPredicate.CODEC.optionalFieldOf("weather_predicate").forGetter(CustomPredicates::weatherPredicate),
             MinMaxBounds.Ints.CODEC.optionalFieldOf("sun_light_level").forGetter(CustomPredicates::sunLightLevel),
             ResourceLocation.CODEC.optionalFieldOf("has_ability_effect").forGetter(CustomPredicates::hasAbilityEffect),
-            NearbyEntityPredicate.CODEC.optionalFieldOf("is_nearby_entity").forGetter(CustomPredicates::isNearbyEntity)
+            NearbyEntityPredicate.CODEC.optionalFieldOf("is_nearby_entity").forGetter(CustomPredicates::isNearbyEntity),
+            UUIDUtil.LENIENT_CODEC.optionalFieldOf("has_uuid").forGetter(CustomPredicates::hasUUID)
     ).apply(instance, CustomPredicates::new));
 
     @Override
@@ -78,6 +82,10 @@ public record CustomPredicates(
             return false;
         }
 
+        if (!hasUUID.map(uuid -> uuid.equals(entity.getUUID())).orElse(true)) {
+            return false;
+        }
+
         return true;
     }
 
@@ -97,6 +105,7 @@ public record CustomPredicates(
         private Optional<MinMaxBounds.Ints> sunLightLevel = Optional.empty();
         private Optional<ResourceLocation> hasAbilityEffect = Optional.empty();
         private Optional<NearbyEntityPredicate> isNearbyEntity = Optional.empty();
+        private Optional<UUID> hasUUID = Optional.empty();
 
         public static CustomPredicates.Builder start() {
             return new CustomPredicates.Builder();
@@ -147,8 +156,13 @@ public record CustomPredicates(
             return this;
         }
 
+        public CustomPredicates.Builder hasUUID(final UUID uuid) {
+            this.hasUUID = Optional.of(uuid);
+            return this;
+        }
+
         public CustomPredicates build() {
-            return new CustomPredicates(eyeInFluid, Optional.of(new WeatherPredicate(isRaining, isThundering, isSnowing, isRainingOrSnowing)), sunLightLevel, hasAbilityEffect, isNearbyEntity);
+            return new CustomPredicates(eyeInFluid, Optional.of(new WeatherPredicate(isRaining, isThundering, isSnowing, isRainingOrSnowing)), sunLightLevel, hasAbilityEffect, isNearbyEntity, hasUUID);
         }
     }
 }

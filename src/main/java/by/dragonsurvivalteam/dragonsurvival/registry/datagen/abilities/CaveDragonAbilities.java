@@ -12,7 +12,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.PotionData;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.SpawnParticles;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.TargetDirection;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationKey;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationLayer;
@@ -30,6 +29,12 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBlockTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Animations;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.ChanneledActivation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Notification;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.PassiveActivation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.SimpleActivation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Sound;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.BlockBreakEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.FireEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.ParticleEffect;
@@ -43,6 +48,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effec
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.OnAttackEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.PotionEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.ProjectileEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.SmeltItemEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.SpinEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.SwimEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AbilityTargeting;
@@ -94,6 +100,15 @@ public class CaveDragonAbilities {
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Shoots out a fireball that §cexplodes§r and sets the area on §cfire§r.")
     @Translation(type = Translation.Type.ABILITY, comments = "Fireball")
     public static final ResourceKey<DragonAbility> FIRE_BALL = DragonAbilities.key("fire_ball");
+
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
+            "■ §2Melts items§r§7 on the ground.\n",
+            "■ The melting rate is §ffaster§r§7 when there are fewer items in the stack. Items §fretain§r§7 their melting degree for a short duration if you stop casting, but §fpicking up§r§7 the item will discard all progress.\n",
+            "■ Inflicts §clittle damage§r§7 compared to Nether Breath.\n",
+            "■ §8Cannot be used under water, and during rain.§r"
+    })
+    @Translation(type = Translation.Type.ABILITY, comments = "Furnace Heat")
+    public static final ResourceKey<DragonAbility> FURNACE_HEAT = DragonAbilities.key("furnace_heat");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Gives you and your allies additional §2armor points§r§7.")
     @Translation(type = Translation.Type.ABILITY, comments = "Sturdy Skin")
@@ -156,7 +171,7 @@ public class CaveDragonAbilities {
     @Translation(type = Translation.Type.ABILITY, comments = "Friendly Fire")
     public static final ResourceKey<DragonAbility> FRIENDLY_FIRE = DragonAbilities.key("friendly_fire");
 
-    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ ■ Cave dragons can §2swim in lava§r§7, but they can't stay here too long because the §ftemperature§r§7 is too high.")
+    @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = "■ Cave dragons can §2swim in lava§r§7, but they can't stay here too long because the §ftemperature§r§7 is too high.")
     @Translation(type = Translation.Type.ABILITY, comments = "Lava Swimming")
     public static final ResourceKey<DragonAbility> LAVA_SWIMMING = DragonAbilities.key("lava_swimming");
 
@@ -167,15 +182,15 @@ public class CaveDragonAbilities {
 
     private static void registerActiveAbilities(final BootstrapContext<DragonAbility> context) {
         context.register(NETHER_BREATH, new DragonAbility(
-                new Activation(
-                        Activation.Type.ACTIVE_CHANNELED,
+                new ChanneledActivation(
                         Optional.empty(),
                         Optional.of(ManaCost.ticking(LevelBasedValue.constant(0.025f))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(1))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(2))),
+                        Notification.DEFAULT,
                         true,
-                        Activation.Sound.create().start(DSSounds.FIRE_BREATH_START.get()).looping(DSSounds.FIRE_BREATH_LOOP.get()).end(DSSounds.FIRE_BREATH_END.get()).optional(),
-                        Activation.Animations.create()
+                        Sound.create().start(DSSounds.FIRE_BREATH_START.get()).looping(DSSounds.FIRE_BREATH_LOOP.get()).end(DSSounds.FIRE_BREATH_END.get()).optional(),
+                        Animations.create()
                                 .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).transitionLength(5).build())
                                 .looping(SimpleAbilityAnimation.create(AnimationKey.BREATH, AnimationLayer.BREATH).transitionLength(5).build())
                                 .optional()
@@ -217,16 +232,62 @@ public class CaveDragonAbilities {
                 ))
         ));
 
-        context.register(FIRE_BALL, new DragonAbility(
-                new Activation(
-                        Activation.Type.ACTIVE_SIMPLE,
-                        Optional.of(LevelBasedValue.constant(1)),
+        context.register(FURNACE_HEAT, new DragonAbility(
+                new ChanneledActivation(
                         Optional.empty(),
+                        Optional.of(ManaCost.ticking(LevelBasedValue.constant(0.030f))),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(1))),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(2))),
+                        Notification.DEFAULT,
+                        true,
+                        Sound.create().start(DSSounds.FIRE_BREATH_START.get()).looping(DSSounds.FIRE_BREATH_LOOP.get()).end(DSSounds.FIRE_BREATH_END.get()).optional(),
+                        Animations.create()
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).transitionLength(5).build())
+                                .looping(SimpleAbilityAnimation.create(AnimationKey.BREATH, AnimationLayer.BREATH).transitionLength(5).build())
+                                .optional()
+                ),
+                Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 12f, 32f, 64f), LevelBasedValue.perLevel(15)))),
+                Optional.of(Condition.thisEntity(EntityCondition.isEyeInFluid(NeoForgeMod.WATER_TYPE)).or(Condition.thisEntity(EntityCondition.isInRainOrSnow())).build()),
+                List.of(
+                        new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(List.of(
+                                new SmeltItemEffect(Optional.empty(), Optional.of(LevelBasedValue.perLevel(1.0f)), true)
+                        ), TargetingMode.ITEMS), LevelBasedValue.constant(1)), LevelBasedValue.constant(1)),
+                        new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
+                                Condition.thisEntity(EntityCondition.isLiving()).build(),
+                                List.of(
+                                        new DamageEffect(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.FIRE_BREATH), LevelBasedValue.perLevel(0.5f)),
+                                        new IgniteEffect(LevelBasedValue.perLevel(Functions.secondsToTicks(1)))
+                                ),
+                                TargetingMode.NON_ALLIES
+                        ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
+                        new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                                List.of(new BreathParticlesEffect(
+                                        0.04f,
+                                        0.02f,
+                                        new SmallFireParticleOption(12, true),
+                                        new SmallFireParticleOption(27, true)
+                                )),
+                                TargetingMode.ALL
+                        )), LevelBasedValue.constant(1))),
+                true,
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/furnace_heat_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/furnace_heat_1"), 1),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/furnace_heat_2"), 2),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/furnace_heat_3"), 3),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/furnace_heat_3"), 4)
+                ))
+        ));
+
+        context.register(FIRE_BALL, new DragonAbility(
+                new SimpleActivation(
+                        Optional.of(LevelBasedValue.constant(1)),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(2))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(7))),
+                        Notification.DEFAULT,
                         true,
-                        Activation.Sound.create().end(SoundEvents.FIRECHARGE_USE).optional(),
-                        Activation.Animations.create().startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).transitionLength(5).build()).optional()
+                        Sound.create().end(SoundEvents.FIRECHARGE_USE).optional(),
+                        Animations.create().startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).transitionLength(5).build()).optional()
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 20f, 40f, 45f), LevelBasedValue.perLevel(15)))),
                 // Disable underwater
@@ -253,15 +314,14 @@ public class CaveDragonAbilities {
         ));
 
         context.register(STURDY_SKIN, new DragonAbility(
-                new Activation(
-                        Activation.Type.ACTIVE_SIMPLE,
+                new SimpleActivation(
                         Optional.of(LevelBasedValue.constant(2)),
-                        Optional.empty(),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(3))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
+                        Notification.DEFAULT,
                         false,
-                        Activation.Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
-                        Activation.Animations.create()
+                        Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
+                        Animations.create()
                                 .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MASS_BUFF, AnimationLayer.BASE).transitionLength(2).locksNeck().locksTail().build())
                                 .end(SimpleAbilityAnimation.create(AnimationKey.MASS_BUFF, AnimationLayer.BASE).locksNeck().locksTail().build())
                                 .optional()
@@ -288,15 +348,14 @@ public class CaveDragonAbilities {
         ));
 
         context.register(FRIENDLY_FIRE, new DragonAbility(
-                new Activation(
-                        Activation.Type.ACTIVE_SIMPLE,
+                new SimpleActivation(
                         Optional.of(LevelBasedValue.constant(4)),
-                        Optional.empty(),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(4))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
+                        Notification.DEFAULT,
                         false,
-                        Activation.Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
-                        Activation.Animations.create()
+                        Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
+                        Animations.create()
                                 .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MASS_BUFF, AnimationLayer.BASE).transitionLength(2).locksNeck().locksTail().build())
                                 .end(SimpleAbilityAnimation.create(AnimationKey.MASS_BUFF, AnimationLayer.BASE).locksNeck().locksTail().build())
                                 .optional()
@@ -323,15 +382,14 @@ public class CaveDragonAbilities {
         ));
 
         context.register(LAVA_VISION, new DragonAbility(
-                new Activation(
-                        Activation.Type.ACTIVE_SIMPLE,
+                new SimpleActivation(
                         Optional.of(LevelBasedValue.constant(1)),
-                        Optional.empty(),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(2))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
+                        Notification.DEFAULT,
                         false,
-                        Activation.Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
-                        Activation.Animations.create()
+                        Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
+                        Animations.create()
                                 .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MAGIC_ALT, AnimationLayer.BASE).transitionLength(5).build())
                                 .end(SimpleAbilityAnimation.create(AnimationKey.MAGIC_ALT, AnimationLayer.BASE).transitionLength(4).build())
                                 .optional()
@@ -357,7 +415,7 @@ public class CaveDragonAbilities {
 
     private static void registerPassiveAbilities(final BootstrapContext<DragonAbility> context) {
         context.register(CAVE_MAGIC, new DragonAbility(
-                Activation.passive(),
+                PassiveActivation.DEFAULT,
                 Optional.of(new ExperiencePointsUpgrade(10, LevelBasedValue.perLevel(36))),
                 Optional.empty(),
                 List.of(
@@ -404,7 +462,7 @@ public class CaveDragonAbilities {
         ));
 
         context.register(CAVE_ATHLETICS, new DragonAbility(
-                Activation.passive(),
+                PassiveActivation.DEFAULT,
                 Optional.of(new ExperiencePointsUpgrade(5, LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -425,7 +483,7 @@ public class CaveDragonAbilities {
         ));
 
         context.register(CONTRAST_SHOWER, new DragonAbility(
-                Activation.passive(),
+                PassiveActivation.DEFAULT,
                 Optional.of(new ExperiencePointsUpgrade(8, LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -450,7 +508,7 @@ public class CaveDragonAbilities {
         ));
 
         context.register(BURN, new DragonAbility(
-                Activation.passive(),
+                PassiveActivation.DEFAULT,
                 Optional.of(new ExperiencePointsUpgrade(4, LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -468,7 +526,7 @@ public class CaveDragonAbilities {
         ));
 
         context.register(CAVE_CLAWS_AND_TEETH, new DragonAbility(
-                Activation.passive(),
+                PassiveActivation.DEFAULT,
                 Optional.of(new DragonGrowthUpgrade(4, LevelBasedValue.lookup(List.of(0f, 25f, 40f, 60f), LevelBasedValue.perLevel(15)))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -495,14 +553,10 @@ public class CaveDragonAbilities {
         ));
 
         context.register(CAVE_WINGS, new DragonAbility(
-                Activation.passive(),
+                PassiveActivation.DEFAULT,
                 Optional.of(new ConditionUpgrade(List.of(Condition.thisEntity(EntityCondition.flightWasGranted(true)).build()), false)),
-                // Disable when marked by the ender dragon or when trapped / wings are broken
-                Optional.of(AnyOfCondition.anyOf(
-                        Condition.thisEntity(EntityCondition.isMarked(true)),
-                        Condition.thisEntity(EntityCondition.hasEffect(DSEffects.TRAPPED)),
-                        Condition.thisEntity(EntityCondition.hasEffect(DSEffects.BROKEN_WINGS))
-                ).build()),
+                // Disable when marked by the ender dragon
+                Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         List.of(new FlightEffect(1, DragonSurvival.res("textures/ability_effect/cave_dragon_wings.png"))),
                         TargetingMode.ALLIES_AND_SELF
@@ -515,7 +569,7 @@ public class CaveDragonAbilities {
         ));
 
         context.register(CAVE_SPIN, new DragonAbility(
-                Activation.passive(),
+                PassiveActivation.DEFAULT,
                 Optional.of(new ConditionUpgrade(List.of(Condition.thisEntity(EntityCondition.spinWasGranted(true)).build()), false)),
                 // Disable when marked by the ender dragon
                 Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
@@ -531,7 +585,7 @@ public class CaveDragonAbilities {
         ));
 
         context.register(FIRE_IMMUNITY, new DragonAbility(
-                Activation.passive(),
+                PassiveActivation.DEFAULT,
                 Optional.empty(),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -550,7 +604,7 @@ public class CaveDragonAbilities {
         ));
 
         context.register(LAVA_SWIMMING, new DragonAbility(
-                Activation.passive(),
+                PassiveActivation.DEFAULT,
                 Optional.empty(),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(

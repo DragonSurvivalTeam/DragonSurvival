@@ -12,7 +12,7 @@ import net.minecraft.world.SimpleMenuProvider;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public class RequestOpenDragonInventory implements CustomPacketPayload {
+public record RequestOpenDragonInventory() implements CustomPacketPayload {
     public static final Type<RequestOpenDragonInventory> TYPE = new Type<>(DragonSurvival.res("open_dragon_inventory"));
 
     public static final RequestOpenDragonInventory INSTANCE = new RequestOpenDragonInventory();

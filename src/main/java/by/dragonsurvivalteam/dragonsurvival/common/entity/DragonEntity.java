@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.entity;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.models.DragonModel;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.util.AnimationTickTimer;
@@ -16,9 +17,9 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.TreasureRestDat
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEmote;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
@@ -86,7 +87,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     public double currentTailMotionUp;
 
     public AnimationController<DragonEntity> mainAnimationController;
-    public PoseStack.Pose currentlyRenderedPose;
 
     /** This reference must be updated whenever player is remade, for example, when changing dimensions */
     public volatile Integer playerId;
@@ -140,7 +140,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     }
 
     public int getTicksForEmote(int slot) {
-        if(animationTickTimer.isPresent("emote_" + slot)) {
+        if (animationTickTimer.isPresent("emote_" + slot)) {
             return (int) Math.ceil(animationTickTimer.getDuration("emote_" + slot));
         }
 
@@ -165,6 +165,10 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     }
 
     public void beginPlayingEmote(DragonEmote emote) {
+        if (emote == null) {
+            return;
+        }
+
         for (int i = 0; i < MAX_EMOTES; i++) {
             if (currentlyPlayingEmotes[i] == emote) {
                 currentlyPlayingEmotes[i] = null;
@@ -172,12 +176,12 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
                 continue;
             }
 
-            if(currentlyPlayingEmotes[i] == null) {
+            if (currentlyPlayingEmotes[i] == null) {
                 continue;
             }
 
             // Remove any emotes from conflicting layers (non-blend removes other non-blends)
-            if(!currentlyPlayingEmotes[i].blend() && !emote.blend()) {
+            if (!currentlyPlayingEmotes[i].blend() && !emote.blend()) {
                 currentlyPlayingEmotes[i] = null;
                 animationTickTimer.putAnimation("emote_" + i, 0.0);
             }
@@ -187,14 +191,14 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             if (currentlyPlayingEmotes[i] == null) {
                 currentlyPlayingEmotes[i] = emote;
 
-                if(emote.duration() != DragonEmote.NO_DURATION) {
-                    animationTickTimer.putAnimation("emote_" + i, (double)emote.duration());
+                if (emote.duration() != DragonEmote.NO_DURATION) {
+                    animationTickTimer.putAnimation("emote_" + i, (double) emote.duration());
                 } else {
                     animationTickTimer.putAnimation("emote_" + i, animationDuration(getPlayer(), emote.animationKey()));
                 }
 
-                if(emote.sound().isPresent()) {
-                    if(getPlayer() != null) {
+                if (emote.sound().isPresent()) {
+                    if (getPlayer() != null) {
                         emote.sound().get().playSound(getPlayer());
                     }
                 }
@@ -210,6 +214,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
 
     /**
      * Checks all non-null (i.e. playing) emotes for the predicate
+     *
      * @return 'true' if the predicate is 'true' for any emote
      */
     private boolean checkAllEmotes(final Predicate<DragonEmote> predicate) {
@@ -231,7 +236,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     }
 
     public void setCurrentAbilityAnimation(Pair<AbilityAnimation, AnimationType> currentAbilityAnimation) {
-        if(this.currentAbilityAnimation != null) {
+        if (this.currentAbilityAnimation != null) {
             animationTickTimer.putAnimation(this.currentAbilityAnimation.getFirst().getName(), 0.0);
         }
         this.currentAbilityAnimation = currentAbilityAnimation;
@@ -245,14 +250,14 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             begunPlayingAbilityAnimation = true;
             state.getController().setAnimationSpeed(1.0);
             currentAbilityAnimation.getFirst().play(state, currentAbilityAnimation.getSecond());
-            if(currentAbilityAnimation.getSecond() == AnimationType.PLAY_ONCE) {
+            if (currentAbilityAnimation.getSecond() == AnimationType.PLAY_ONCE) {
                 // Only trigger use a timer for PLAY_ONCE animations, as the others are intended to await a future packet to stop them
                 animationTickTimer.putAnimation(currentAbilityAnimation.getFirst().getName(), animationDuration(getPlayer(), currentAbilityAnimation.getFirst().getName()));
             }
-        } else if(begunPlayingAbilityAnimation && isNotPlayingCurrentAbilityAnimation && currentAbilityAnimation.getSecond() == AnimationType.PLAY_ONCE) {
+        } else if (begunPlayingAbilityAnimation && isNotPlayingCurrentAbilityAnimation && currentAbilityAnimation.getSecond() == AnimationType.PLAY_ONCE) {
             begunPlayingAbilityAnimation = false;
             currentAbilityAnimation = null;
-        } else if(begunPlayingAbilityAnimation && currentAbilityLayer == layer) {
+        } else if (begunPlayingAbilityAnimation && currentAbilityLayer == layer) {
             state.getController().setAnimationSpeed(1.0);
             return true;
         }
@@ -310,7 +315,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             // When the player is using an item
             movement.bite = false;
             return state.setAndContinue(USE_ITEM);
-        } else if (!ClientDragonRenderer.renderItemsInMouth && doesAnimationExist(player, "eat_item_right") && player.isUsingItem() && DragonFoodHandler.isEdible(handler.species(), player.getMainHandItem()) || animationTickTimer.getDuration("eat_item_right") > 0) {
+        } else if (!ClientDragonRenderer.renderItemsInMouth && doesAnimationExist(player, "eat_item_right") && player.isUsingItem() && DragonFoodHandler.isEdible(player, player.getMainHandItem()) || animationTickTimer.getDuration("eat_item_right") > 0) {
             // When the player is eating the main hand item
             if (animationTickTimer.getDuration("eat_item_right") <= 0) {
                 movement.bite = false;
@@ -318,7 +323,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             }
 
             return state.setAndContinue(EAT_ITEM_RIGHT);
-        } else if (!ClientDragonRenderer.renderItemsInMouth && doesAnimationExist(player, "eat_item_left") && player.isUsingItem() && DragonFoodHandler.isEdible(handler.species(), player.getMainHandItem()) || animationTickTimer.getDuration("eat_item_right") > 0) {
+        } else if (!ClientDragonRenderer.renderItemsInMouth && doesAnimationExist(player, "eat_item_left") && player.isUsingItem() && DragonFoodHandler.isEdible(player, player.getMainHandItem()) || animationTickTimer.getDuration("eat_item_right") > 0) {
             // When the player is eating the offhand item
             if (animationTickTimer.getDuration("eat_item_left") <= 0) {
                 movement.bite = false;
@@ -359,7 +364,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     }
 
     private double animationDuration(final Player player, final String animation) {
-        if(!doesAnimationExist(player, animation)) {
+        if (!doesAnimationExist(player, animation)) {
             return 0;
         }
 
@@ -378,16 +383,16 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             DragonEmote emote = currentlyPlayingEmotes[slot];
 
             double duration = animationTickTimer.getDuration("emote_" + slot);
-            if(duration > 0 || emote.loops()) {
+            if (duration > 0 || emote.loops()) {
                 state.getController().setAnimationSpeed(emote.speed());
 
                 if (!emote.loops()) {
                     return state.setAndContinue(RawAnimation.begin().thenPlay(emote.animationKey()));
                 } else {
                     // If the emote loops, we need to check if the duration is set to 0, and if so, set it to the default duration so that the sounds can keep playing properly
-                    if(duration <= 0) {
-                        if(emote.duration() != DragonEmote.NO_DURATION) {
-                            animationTickTimer.putAnimation("emote_" + slot, (double)emote.duration());
+                    if (duration <= 0) {
+                        if (emote.duration() != DragonEmote.NO_DURATION) {
+                            animationTickTimer.putAnimation("emote_" + slot, (double) emote.duration());
                         } else {
                             animationTickTimer.putAnimation("emote_" + slot, animationDuration(getPlayer(), emote.animationKey()));
                         }
@@ -418,6 +423,32 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public float getScale() {
+        Player player = getPlayer();
+
+        if (player == null) {
+            return super.getScale();
+        }
+
+        if (player.level().isClientSide()) {
+            return (float) DragonStateProvider.getData(player).getVisualScale(player, DragonSurvival.PROXY.getPartialTick());
+        }
+
+        return player.getScale();
+    }
+
+    @Override
+    protected @NotNull EntityDimensions getDefaultDimensions(@NotNull final Pose pose) {
+        Player player = getPlayer();
+
+        if (player == null) {
+            return super.getDefaultDimensions(pose);
+        }
+
+        return player.getDimensions(pose);
     }
 
     @Override
@@ -460,9 +491,10 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         clearVerticalVelocity = true;
     }
 
-     /** Is used to determine if the player is considered swimming for animation purposes.
-     /* We also want to disable head bob and walking sound effect in this case.
-     /* See dragonSurvival$modifyWalkSoundsWhenWalkingUnderwater and dragonSurvival$consideredSwimmingEvenWhenGroundedInWater
+    /**
+     * Is used to determine if the player is considered swimming for animation purposes.
+     * /* We also want to disable head bob and walking sound effect in this case.
+     * /* See dragonSurvival$modifyWalkSoundsWhenWalkingUnderwater and dragonSurvival$consideredSwimmingEvenWhenGroundedInWater
      */
     public static boolean isConsideredSwimmingForAnimation(Player player) {
         boolean isInFluid = player.canSwimInFluidType(player.getInBlockState().getFluidState().getFluidType());
@@ -516,7 +548,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         boolean isSwimming = isConsideredSwimmingForAnimation(player);
 
         // TODO: The transition length of animations doesn't work correctly when the framerate varies too much from 60 FPS
-        if (!movement.isMoving() && handler.isOnMagicSource) {
+        if (!movement.isMovingHorizontally() && handler.isOnMagicSource) {
             // TODO :: does this need to be synchronized to other players?
             return state.setAndContinue(SIT_ON_MAGIC_SOURCE);
         } else if (player.isSleeping() || treasureRest.isResting()) {
@@ -547,7 +579,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
                     animationController.transitionLength(4);
                 }
             } else {
-                if (player.isShiftKeyDown() && deltaMovement.y < 0 && distanceFromGround < 10 && deltaMovement.length() < 4) {
+                if (movement.desiredMoveVec.y < 0 && deltaMovement.y < 0 && distanceFromGround < 10 && deltaMovement.length() < 4) {
                     state.setAnimation(FLY_LAND);
                     animationController.transitionLength(2);
                 } else if (ServerFlightHandler.isSpin(player)) {
@@ -555,7 +587,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
                     state.setAnimation(FLY_SPIN);
                     animationController.transitionLength(2);
                 } else {
-                    if (deltaMovement.y > 0) {
+                    if (movement.desiredMoveVec.y > 0) {
                         animationSpeed = 2;
                     }
                     state.setAnimation(FLY);
@@ -597,7 +629,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             }
         } else if (AnimationUtils.isAnimationPlaying(animationController, FLY_LAND)) {
             state.setAnimation(FLY_LAND_END);
-            if(!FLY_LAND_END.getAnimationStages().isEmpty()) {
+            if (!FLY_LAND_END.getAnimationStages().isEmpty()) {
                 animationTickTimer.putAnimation(FLY_LAND_END, animationDuration(player, FLY_LAND_END.getAnimationStages().getFirst().animationName()));
             }
             animationController.transitionLength(2);
@@ -611,7 +643,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             animationController.transitionLength(3);
         } else if (player.isShiftKeyDown() || !DragonSizeHandler.canPoseFit(player, Pose.STANDING) && DragonSizeHandler.canPoseFit(player, Pose.CROUCHING)) {
             // Player is Sneaking
-            if (movement.isMoving()) {
+            if (movement.isMovingHorizontally()) {
                 useDynamicScaling = true;
                 baseSpeed = DEFAULT_SNEAK_SPEED;
                 state.setAnimation(SNEAK_WALK);
@@ -628,7 +660,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             baseSpeed = DEFAULT_SPRINT_SPEED;
             state.setAnimation(RUN);
             animationController.transitionLength(4);
-        } else if (movement.isMoving()) {
+        } else if (movement.isMovingHorizontally()) {
             useDynamicScaling = true;
             state.setAnimation(WALK);
             animationController.transitionLength(2);
@@ -652,7 +684,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         }
         AnimationUtils.setAnimationSpeed(finalAnimationSpeed, state.getAnimationTick(), animationController);
 
-        if(isPlayingAnyEmote()) {
+        if (isPlayingAnyEmote()) {
             // This means we are playing a blend emote; so we want to pass on the head/tail locked state
             neckLocked = checkAllEmotes(DragonEmote::locksHead);
             tailLocked = checkAllEmotes(DragonEmote::locksTail);

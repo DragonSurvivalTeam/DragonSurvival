@@ -30,11 +30,18 @@ public interface AbilityEntityEffect {
     Codec<AbilityEntityEffect> CODEC = REGISTRY.byNameCodec().dispatch("effect_type", AbilityEntityEffect::entityCodec, Function.identity());
 
     void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target);
+
     MapCodec<? extends AbilityEntityEffect> entityCodec();
 
-    default List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) { return List.of(); }
+    default List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
+        return List.of();
+    }
+
     default void remove(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity entity, boolean isAutoRemoval) { /* Nothing to do */ }
-    default boolean shouldRemoveAutomatically() { return false; }
+
+    default boolean shouldRemoveAutomatically() {
+        return false;
+    }
 
     @SubscribeEvent
     static void register(final NewRegistryEvent event) {
@@ -64,6 +71,8 @@ public interface AbilityEntityEffect {
             event.register(REGISTRY_KEY, DragonSurvival.res("oxygen_bonus"), () -> OxygenBonusEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("block_vision"), () -> BlockVisionEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("run_function"), () -> RunFunctionEffect.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("smelting"), () -> SmeltItemEffect.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("heal"), () -> HealEffect.CODEC);
         }
     }
 }

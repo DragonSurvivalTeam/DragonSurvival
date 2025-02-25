@@ -67,7 +67,7 @@ public class LightningHandler implements INBTSerializable<CompoundTag> {
             }
         }
 
-        if(!handler.canHurtSelf) {
+        if (!handler.canHurtSelf) {
             if (target == bolt.getCause()) {
                 event.setCanceled(true);
             }

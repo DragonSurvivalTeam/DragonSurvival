@@ -52,7 +52,7 @@ public record DragonStage(
     public static final Codec<DragonStage> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.BOOL.optionalFieldOf("is_default", false).forGetter(DragonStage::isDefault),
             MiscCodecs.bounds().fieldOf("growth_range").forGetter(DragonStage::growthRange),
-            ExtraCodecs.intRange(Functions.secondsToTicks(1), Functions.daysToTicks(365)).fieldOf("ticks_until_grown").forGetter(DragonStage::ticksUntilGrown),
+            ExtraCodecs.intRange(1, Functions.daysToTicks(365)).fieldOf("ticks_until_grown").forGetter(DragonStage::ticksUntilGrown),
             Modifier.CODEC.listOf().optionalFieldOf("modifiers", List.of()).forGetter(DragonStage::modifiers),
             GrowthItem.CODEC.listOf().optionalFieldOf("growth_items", List.of()).forGetter(DragonStage::growthItems),
             EntityPredicate.CODEC.optionalFieldOf("is_natural_growth_stopped").forGetter(DragonStage::isNaturalGrowthStopped),
@@ -212,7 +212,8 @@ public record DragonStage(
         return largest;
     }
 
-    /** TODO :: is this even usable? it could select a stage that is not valid for the current species
+    /**
+     * TODO :: is this even usable? it could select a stage that is not valid for the current species
      * Tries to retrieve a valid stage for the provided size <br>
      * If no size range matches either the smallest or largest stage will be returned <br>
      * (Depending on whose min. size is closer to the provided size)
@@ -235,7 +236,7 @@ public record DragonStage(
         }
 
         if (fallback != null) {
-            DragonSurvival.LOGGER.warn("No matching dragon level found for size [{}] - using [{}] as fallback", growth, fallback.getRegisteredName());
+            DragonSurvival.LOGGER.warn("No matching dragon level found for growth [{}] - using [{}] as fallback", growth, fallback.getRegisteredName());
             return fallback;
         }
 
@@ -287,7 +288,7 @@ public record DragonStage(
     }
 
     public String getTimeToGrowFormatted(boolean growthStopped) {
-        if(growthStopped) {
+        if (growthStopped) {
             return "§4--:--:--§r";
         }
 

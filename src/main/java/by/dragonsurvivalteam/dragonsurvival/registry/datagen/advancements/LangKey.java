@@ -23,7 +23,7 @@ public class LangKey {
     @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Place a Dragon Altar to change the species or appearance of a dragon.")
     protected static final String PLACE_ALTAR = "place_altar";
 
-    @Translation(type = Translation.Type.ADVANCEMENT, comments = "Path Choice")
+    @Translation(type = Translation.Type.ADVANCEMENT, comments = "Here be Villagers")
     @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Find a villager and decide their fate.")
     protected static final String PATH_CHOICE = "path_choice";
 
@@ -77,16 +77,32 @@ public class LangKey {
     @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Build yourself a hoard of 240 treasure blocks and experience regeneration while you sleep!")
     protected static final String SLEEP_ON_MASSIVE_HOARD = "sleep_on_massive_hoard";
 
-    @Translation(type = Translation.Type.ADVANCEMENT, comments = "Echoes of Elder")
+    @Translation(type = Translation.Type.ADVANCEMENT, comments = "Echoes of The Elder")
     @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Find the burial place of the Elder Dragon's children.")
     protected static final String FIND_BONES = "find_bones";
+
+    @Translation(type = Translation.Type.ADVANCEMENT, comments = "Slumbering Dragons")
+    @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Find any dragon statue in The Overworld.")
+    protected static final String FIND_OVERWORLD_STRUCTURES = "find_overworld_structures";
+
+    @Translation(type = Translation.Type.ADVANCEMENT, comments = "Peaceful Flames")
+    @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Find any dragon statue in The Nether.")
+    protected static final String FIND_NETHER_STRUCTURES = "find_nether_structures";
+
+    @Translation(type = Translation.Type.ADVANCEMENT, comments = "Don't jump into The Void!")
+    @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Venture forth into The End as a dragon")
+    protected static final String FIND_END_PLATFORM = "find_end_platform";
+
+    @Translation(type = Translation.Type.ADVANCEMENT, comments = "Draconic Secrets")
+    @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Find a special structure in The End to get the Dragon Soul or Spin ability.")
+    protected static final String FIND_END_STRUCTURES = "find_end_structures";
 
     @Translation(type = Translation.Type.ADVANCEMENT, comments = "Knowledge is Power")
     @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Place any Dragon Beacon on top of the Memory Block.")
     protected static final String USE_MEMORY_BLOCK = "use_memory_block";
 
     @Translation(type = Translation.Type.ADVANCEMENT, comments = "Unity of Species")
-    @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Upgrade the Empty Dragon Beacon with Netherite ingot, Gold block or Diamond block.")
+    @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Upgrade the Empty Dragon Beacon with special item.")
     protected static final String CHANGE_BEACON = "change_beacon";
 
     @Translation(type = Translation.Type.ADVANCEMENT, comments = "Zmei Gorynich")
@@ -96,8 +112,8 @@ public class LangKey {
     // --- Parent: Be Dragon --- //
 
     @Translation(type = Translation.Type.ADVANCEMENT, comments = "Forever Young")
-    @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Use a Star Heart to stop your growth.")
-    protected static final String USE_STAR_HEART = "use_star_heart";
+    @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Stop your natural growth by using a specific growth item.")
+    protected static final String STOP_NATURAL_GROWTH = "stop_natural_growth";
 
     @Translation(type = Translation.Type.ADVANCEMENT, comments = "Soul of a Dragon")
     @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Use a Dragon Soul to store all your stats. You can pass it on to another player or keep it for yourself!")

@@ -6,20 +6,29 @@ import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonFoodHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.EffectHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.EffectModifications;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonedEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnTargetKilled;
 import by.dragonsurvivalteam.dragonsurvival.util.ToolUtils;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.core.Holder;
 import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -28,6 +37,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForgeMod;
+import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -39,6 +49,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LivingEntity.class)
+@Debug(export = true)
 public abstract class LivingEntityMixin extends Entity {
     @Shadow protected boolean jumping;
     @Shadow protected ItemStack useItem;
@@ -47,10 +58,25 @@ public abstract class LivingEntityMixin extends Entity {
         super(type, level);
     }
 
+    /** Happens here so that the trigger can occur after the loot has been dropped */
+    @Inject(method = "die", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;dropAllDeathLoot(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;)V", shift = At.Shift.AFTER))
+    private void dragonSurvival$triggerOnTargetKilled(final DamageSource source, final CallbackInfo callback) {
+        OnTargetKilled.trigger((LivingEntity) (Object) this, source);
+    }
+
     /** Slightly apply lava swim speed to other entities as well (doesn't include up or down movement) */
     @ModifyArg(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;moveRelative(FLnet/minecraft/world/phys/Vec3;)V", ordinal = 1))
     private float dragonSurvival$modifyLavaSwimSpeed(float original) {
         return (float) (original * getAttributeValue(DSAttributes.LAVA_SWIM_SPEED));
+    }
+
+    @ModifyExpressionValue(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;hasEffect(Lnet/minecraft/core/Holder;)Z", ordinal = 2))
+    private boolean dragonSurvival$disableLevitationWhenTrapped(final boolean hasLevitation) {
+        if (hasEffect(DSEffects.TRAPPED)) {
+            return false;
+        }
+
+        return hasLevitation;
     }
 
     @SuppressWarnings("ConstantValue") // both checks in the if statement are valid
@@ -73,7 +99,7 @@ public abstract class LivingEntityMixin extends Entity {
     @ModifyExpressionValue(method = "getPassengerRidingPosition", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getDimensions(Lnet/minecraft/world/entity/Pose;)Lnet/minecraft/world/entity/EntityDimensions;"))
     public EntityDimensions dragonSurvival$useCorrectDimensionsForPassengerRidingCalculation(EntityDimensions original) {
         LivingEntity self = (LivingEntity) (Object) this;
-        if(DragonStateProvider.isDragon(self) && self instanceof Player player) {
+        if (DragonStateProvider.isDragon(self) && self instanceof Player player) {
             return DragonSizeHandler.calculateDimensions(DragonStateProvider.getData(player), player, DragonSizeHandler.getOverridePose(player));
         } else {
             return original;
@@ -85,7 +111,7 @@ public abstract class LivingEntityMixin extends Entity {
             DragonStateHandler handler = DragonStateProvider.getData(player);
 
             if (handler != null && handler.isDragon()) {
-                return DragonFoodHandler.getUseDuration(useItem, player);
+                return DragonFoodHandler.getUseDuration(useItem, player, original);
             }
         }
 
@@ -108,7 +134,7 @@ public abstract class LivingEntityMixin extends Entity {
             DragonStateHandler handler = DragonStateProvider.getData(player);
 
             if (handler.isDragon()) {
-                return (DragonFoodHandler.isEdible(handler.species(), stack) && original != UseAnim.DRINK) ? UseAnim.EAT : original;
+                return (DragonFoodHandler.isEdible(player, stack) && original != UseAnim.DRINK) ? UseAnim.EAT : original;
             }
         }
 
@@ -238,5 +264,6 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Shadow public abstract ItemStack getItemBySlot(EquipmentSlot pSlot);
     @Shadow public abstract double getAttributeValue(Holder<Attribute> attribute);
+    @Shadow public abstract boolean hasEffect(final Holder<MobEffect> effect);
     @Shadow protected abstract float getWaterSlowDown();
 }

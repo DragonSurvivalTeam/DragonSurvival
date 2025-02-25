@@ -7,9 +7,9 @@ import by.dragonsurvivalteam.dragonsurvival.common.criteria.BeDragonTrigger;
 import by.dragonsurvivalteam.dragonsurvival.common.criteria.ConvertItemFromAbility;
 import by.dragonsurvivalteam.dragonsurvival.common.criteria.MineBlockUnderLavaTrigger;
 import by.dragonsurvivalteam.dragonsurvival.common.criteria.SleepOnTreasureTrigger;
+import by.dragonsurvivalteam.dragonsurvival.common.criteria.StopNaturalGrowthTrigger;
 import by.dragonsurvivalteam.dragonsurvival.common.criteria.UpgradeAbilityTrigger;
 import by.dragonsurvivalteam.dragonsurvival.common.criteria.UseDragonSoulTrigger;
-import by.dragonsurvivalteam.dragonsurvival.common.criteria.UseStarHeartTrigger;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
@@ -357,11 +357,11 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
     private void buildBeDragonChildren(final AdvancementHolder parent) {
         // --- Parent: be_dragon --- //
 
-        AdvancementHolder useStarHeart = createWithToast(parent, LangKey.USE_STAR_HEART, DSItems.STAR_HEART.value(), useStarHeart(), 30);
+        AdvancementHolder stopNaturalGrowth = createWithToast(parent, LangKey.STOP_NATURAL_GROWTH, DSItems.STAR_HEART.value(), useStarHeart(), 30);
 
-        // --- Parent: use_star_heart --- //
+        // --- Parent: stop_natural_growth --- //
 
-        createWithToast(useStarHeart, LangKey.USE_DRAGON_SOUL, DSItems.DRAGON_SOUL.value(), useDragonSoul(), 120);
+        createWithToast(stopNaturalGrowth, LangKey.USE_DRAGON_SOUL, DSItems.DRAGON_SOUL.value(), useDragonSoul(), 120);
     }
 
     private void buildCollectDustChildren(final AdvancementHolder parent) {
@@ -374,16 +374,31 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         buildSleepOnTreasureChildren(sleepOnTreasure);
 
         TagKey<Structure> tag = TagKey.create(Registries.STRUCTURE, DragonSurvival.res("dragon_skeletons")); // FIXME :: use tag from data generation
-        createWithToast(parent, LangKey.FIND_BONES, DSItems.STAR_BONE.value(), PlayerTrigger.TriggerInstance.located(inStructure(tag)), 12);
+        AdvancementHolder findBones = createWithToast(parent, LangKey.FIND_BONES, DSItems.STAR_BONE.value(), PlayerTrigger.TriggerInstance.located(inStructure(tag)), 12);
+        buildFindBonesChildren(findBones);
 
         AdvancementHolder useMemoryBlock = createWithToast(parent, LangKey.USE_MEMORY_BLOCK, DSBlocks.DRAGON_MEMORY_BLOCK.value(), itemUsedOnBlock(DSBlocks.DRAGON_MEMORY_BLOCK.value(), DSBlocks.DRAGON_BEACON.value()), 10);
         buildUseMemoryBlockChildren(useMemoryBlock);
     }
 
+    private void buildFindBonesChildren(final AdvancementHolder parent) {
+        // --- Parent: find_bones --- //
+        TagKey<Structure> tag = TagKey.create(Registries.STRUCTURE, DragonSurvival.res("light_treasure")); // FIXME :: use tag from data generation
+        AdvancementHolder findOverworldStructure = createWithToast(parent, LangKey.FIND_OVERWORLD_STRUCTURES, Blocks.GRASS_BLOCK, PlayerTrigger.TriggerInstance.located(inStructure(tag)), 24);
+
+        TagKey<Structure> tag2 = TagKey.create(Registries.STRUCTURE, DragonSurvival.res("dark_treasure")); // FIXME :: use tag from data generation
+        AdvancementHolder findNetherStructure = createWithToast(findOverworldStructure, LangKey.FIND_NETHER_STRUCTURES, Blocks.NETHERRACK, PlayerTrigger.TriggerInstance.located(inStructure(tag2)), 36);
+
+        AdvancementHolder findEndPlatform = createWithToast(findNetherStructure, LangKey.FIND_END_PLATFORM, Items.ENDER_PEARL, List.of(PlayerTrigger.TriggerInstance.located(inDimension(Level.END)), beDragon()), 32);
+
+        TagKey<Structure> tag3 = TagKey.create(Registries.STRUCTURE, DragonSurvival.res("treasure_end")); // FIXME :: use tag from data generation
+        createWithToast(findEndPlatform, LangKey.FIND_END_STRUCTURES, DSItems.SPIN_GRANT_ITEM.value(), PlayerTrigger.TriggerInstance.located(inStructure(tag3)), 64);
+    }
+
     private void buildUseMemoryBlockChildren(final AdvancementHolder parent) {
         // --- Parent: use_memory_block --- //
 
-        AdvancementHolder changeBeacon = createWithToast(parent, LangKey.CHANGE_BEACON, Items.NETHERITE_INGOT, itemUsedOnBlock(DSBlocks.DRAGON_BEACON.value(), Items.DIAMOND_BLOCK, Items.GOLD_BLOCK, Items.NETHERITE_INGOT), 10);
+        AdvancementHolder changeBeacon = createWithToast(parent, LangKey.CHANGE_BEACON, DSItems.BEACON_ACTIVATOR.value(), itemUsedOnBlock(DSBlocks.DRAGON_BEACON.value(), DSItems.BEACON_ACTIVATOR.value()), 10);
 
         // --- Parent: change_beacon --- //
 
@@ -648,8 +663,8 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
     // --- Use Star Heart --- //
 
-    public Criterion<UseStarHeartTrigger.UseStarHeartInstance> useStarHeart() {
-        return DSAdvancementTriggers.USE_STAR_HEART.get().createCriterion(new UseStarHeartTrigger.UseStarHeartInstance(Optional.empty()));
+    public Criterion<StopNaturalGrowthTrigger.Instance> useStarHeart() {
+        return DSAdvancementTriggers.STOP_NATURAL_GROWTH.get().createCriterion(new StopNaturalGrowthTrigger.Instance(Optional.empty()));
     }
 
 

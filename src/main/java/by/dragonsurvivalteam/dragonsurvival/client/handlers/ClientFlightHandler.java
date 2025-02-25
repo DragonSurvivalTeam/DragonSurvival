@@ -9,10 +9,9 @@ import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.input.Keybind;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SpinDurationAndCooldown;
-import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncWingsSpread;
+import by.dragonsurvivalteam.dragonsurvival.network.flight.ToggleFlight;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
@@ -52,13 +51,21 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.joml.Vector3f;
 
+import java.util.Objects;
+
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 /** Used in pair with {@link ServerFlightHandler} */
 @EventBusSubscriber(Dist.CLIENT)
 public class ClientFlightHandler {
-    @Translation(comments = "You have §cno levitation skill§r. Use a §cPrimordial Anchor§r in The End to learn this skill.")
-    private static final String NO_WINGS = Translation.Type.GUI.wrap("message.no_wings");
+    @Translation(comments = "You can't fly. Read more in the skill description.")
+    private static final String FLIGHT_EFFECT_DISABLED = Translation.Type.GUI.wrap("message.flight_effect_disabled");
+
+    @Translation(comments = "Your species does not have the ability to fly")
+    private static final String NO_FLIGHT_EFFECT = Translation.Type.GUI.wrap("message.no_flight_effect");
+
+    @Translation(comments = "Your wings are blocked or broken")
+    private static final String WINGS_BLOCKED = Translation.Type.GUI.wrap("message.wings_blocked");
 
     @Translation(key = "jump_to_fly", type = Translation.Type.CONFIGURATION, comments = "If enabled flight will be activated when jumping in the air")
     @ConfigOption(side = ConfigSide.CLIENT, category = "flight", key = "jump_to_fly")
@@ -86,11 +93,37 @@ public class ClientFlightHandler {
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "spin"}, key = "spin_cooldown_y_offset")
     public static Integer spinCooldownYOffset = 0;
 
+    @ConfigRange(min = 0.0f, max = 32.0f)
+    @Translation(key = "base_dragon_camera_offset", type = Translation.Type.CONFIGURATION, comments = "Base offset for the dragon's third person camera (is multiplied and scaled by the other factors)")
+    @ConfigOption(side = ConfigSide.CLIENT, category = {"rendering"}, key = "base_dragon_camera_offset")
+    public static Float baseDragonCameraOffset = 16.0f;
+
+    @ConfigRange(min = 0.0f, max = 32.0f)
+    @Translation(key = "flat_dragon_camera_offset", type = Translation.Type.CONFIGURATION, comments = "Flat offset for the dragon's third person camera (is added after all other factors are combined)")
+    @ConfigOption(side = ConfigSide.CLIENT, category = {"rendering"}, key = "flat_dragon_camera_offset")
+    public static Float flatDragonCameraOffset = 2.0f;
+
+    @ConfigRange(min = 0.0f, max = 1.0f)
+    @Translation(key = "dragon_camera_minimum_scale", type = Translation.Type.CONFIGURATION, comments = "The scale at which the dragon's third person camera will stop zooming in")
+    @ConfigOption(side = ConfigSide.CLIENT, category = {"rendering"}, key = "dragon_camera_minimum_scale")
+    public static Float dragonCameraMinimumScale = 0.5f;
+
+    @ConfigRange(min = 0.0f, max = 2.0f)
+    @Translation(key = "dragon_camera_scale_factor", type = Translation.Type.CONFIGURATION, comments = "How much scale impacts the third person camera distance")
+    @ConfigOption(side = ConfigSide.CLIENT, category = {"rendering"}, key = "dragon_camera_scale_factor")
+    public static Float dragonCameraScaleFactor = 0.15f;
+
+    @Translation(key = "disable_size_camera_modifications", type = Translation.Type.CONFIGURATION, comments = "Disable all size-based camera modifications from DS")
+    @ConfigOption(side = ConfigSide.CLIENT, category = {"rendering"}, key = "disable_camera_modifications")
+    public static Boolean disableSizeCameraModifications = false;
+
     private static final ResourceLocation SPIN_COOLDOWN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spin_cooldown.png");
 
     private static final ActionWithTimedCooldown HUNGER_MESSAGE_WITH_COOLDOWN = new ActionWithTimedCooldown(30_000, () -> {
         Player localPlayer = DragonSurvival.PROXY.getLocalPlayer();
-        if (localPlayer == null) return;
+        if (localPlayer == null) {
+            return;
+        }
         localPlayer.sendSystemMessage(Component.translatable(LangKey.MESSAGE_NO_HUNGER));
     });
 
@@ -113,10 +146,15 @@ public class ClientFlightHandler {
 
     @SubscribeEvent
     public static void flightCamera(CalculateDetachedCameraDistanceEvent event) {
+
         DragonStateProvider.getOptional(DragonSurvival.PROXY.getLocalPlayer()).ifPresent(handler -> {
             if (handler.isDragon()) {
-                float visualScale = (float)handler.getVisualScale(DragonSurvival.PROXY.getLocalPlayer(), Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false));
-                event.setDistance((event.getDistance() + 16.0f) / event.getEntityScalingFactor() * Math.max(visualScale, 0.5f) * 0.15f);
+                float visualScale = (float) handler.getVisualScale(DragonSurvival.PROXY.getLocalPlayer(), Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false));
+                if (disableSizeCameraModifications) {
+                    event.setDistance((event.getDistance()) / event.getEntityScalingFactor() * visualScale);
+                } else {
+                    event.setDistance((event.getDistance() + baseDragonCameraOffset) / event.getEntityScalingFactor() * Math.max(visualScale, dragonCameraMinimumScale) * dragonCameraScaleFactor + flatDragonCameraOffset);
+                }
             }
         });
     }
@@ -132,7 +170,6 @@ public class ClientFlightHandler {
 
             if (ServerFlightHandler.isGliding(currentPlayer)) {
                 if (setup.getCamera().isDetached()) {
-
                     if (flightCameraMovement) {
                         Vec3 lookVec = currentPlayer.getLookAngle();
                         float increase = (float) Mth.clamp(lookVec.y * 10, 0, lookVec.y * 5);
@@ -191,7 +228,7 @@ public class ClientFlightHandler {
         }
 
         FlightData spin = FlightData.getData(player);
-        if (spin.hasSpin && spin.cooldown > 0) {
+        if (spin.hasSpin && spin.cooldown > 0 && !Minecraft.getInstance().options.hideGui) {
             if (event.getName() == VanillaGuiLayers.AIR_LEVEL) {
                 Window window = Minecraft.getInstance().getWindow();
 
@@ -281,7 +318,7 @@ public class ClientFlightHandler {
                         if (FlightData.getData(player).isWingsSpread()) {
                             Input movement = player.input;
 
-                            if (!hasEnoughFoodToStartFlight(player) || player.isCreative()) {
+                            if (!ToggleFlight.hasEnoughFoodToStartFlight(player) || player.isCreative()) {
                                 ay = Mth.clamp(Math.abs(ay * 4), -0.4 * ServerFlightHandler.maxFlightSpeed, 0.4 * ServerFlightHandler.maxFlightSpeed);
                             }
 
@@ -423,7 +460,7 @@ public class ClientFlightHandler {
                                             deltaMovement = new Vec3(deltaMovement.x, -0.5 + deltaMovement.y, deltaMovement.z);
                                             player.setDeltaMovement(deltaMovement);
                                         } else if (wasFlying) { // Don't activate on a regular jump
-                                            double yMotion = hasEnoughFoodToStartFlight(player) ? -gravity + ay : -(gravity * 4) + ay;
+                                            double yMotion = ToggleFlight.hasEnoughFoodToStartFlight(player) ? -gravity + ay : -(gravity * 4) + ay;
                                             deltaMovement = new Vec3(deltaMovement.x, yMotion, deltaMovement.z);
                                             player.setDeltaMovement(deltaMovement);
                                         }
@@ -455,7 +492,53 @@ public class ClientFlightHandler {
             return;
         }
 
-        toggleWingsManual(data.getFirst());
+        PacketDistributor.sendToServer(new ToggleFlight(ToggleFlight.Activation.MANUAL, ToggleFlight.Result.NONE));
+    }
+
+    /**
+     * Checks the conditions for jumping to start flight, and tries to enable wings if successful. <br>
+     * Handles error messages.
+     */
+    private static void tryJumpToFly(final Player player) {
+        if (!jumpToFly) {
+            return;
+        }
+
+        // This only handles the requirements to trigger jump-to-fly. Other conditions are handled by enableWings()
+        if (player.isCreative() || player.isSpectator()) {
+            return;
+        }
+
+        if (lookAtSkyForFlight && player.getLookAngle().y() <= 0.8) {
+            return;
+        }
+
+        if (player.isInLava() || player.isInWater()) {
+            return;
+        }
+
+        PacketDistributor.sendToServer(new ToggleFlight(ToggleFlight.Activation.JUMP, ToggleFlight.Result.NONE));
+    }
+
+    public static void handleToggleResult(final ToggleFlight.Activation activation, final ToggleFlight.Result result) {
+        LocalPlayer player = Objects.requireNonNull(Minecraft.getInstance().player);
+        FlightData flight = FlightData.getData(player);
+
+        if (activation == ToggleFlight.Activation.MANUAL) {
+            switch (result) {
+                case NO_WINGS -> player.sendSystemMessage(Component.translatable(NO_FLIGHT_EFFECT));
+                case ALREADY_DISABLED -> player.sendSystemMessage(Component.translatable(FLIGHT_EFFECT_DISABLED));
+                case WINGS_BLOCKED -> player.sendSystemMessage(Component.translatable(WINGS_BLOCKED));
+                case NO_HUNGER -> player.sendSystemMessage(Component.translatable(LangKey.MESSAGE_NO_HUNGER));
+            }
+        } else if (result == ToggleFlight.Result.NO_HUNGER) {
+            HUNGER_MESSAGE_WITH_COOLDOWN.tryRun();
+        }
+
+        switch (result) {
+            case WINGS_BLOCKED, NO_WINGS, NO_HUNGER, SUCCESS_DISABLED, ALREADY_DISABLED -> flight.areWingsSpread = false;
+            case SUCCESS_ENABLED, ALREADY_ENABLED -> flight.areWingsSpread = true;
+        }
     }
 
     @SubscribeEvent
@@ -483,13 +566,11 @@ public class ClientFlightHandler {
             return;
         }
 
-        FlightData data = FlightData.getData(player);
-
         jumpFlyCooldown.tick();
         boolean isJumping = Minecraft.getInstance().options.keyJump.isDown();
 
         if (isJumping && !lastJumpInputState && /* Check for double jump */ !jumpFlyCooldown.trySet()) {
-            tryJumpToFly(player, data);
+            tryJumpToFly(player);
         }
 
         lastJumpInputState = isJumping;
@@ -524,144 +605,6 @@ public class ClientFlightHandler {
             double posZ = player.position().z + player.getDeltaMovement().z + d2;
             player.level().addParticle(particleData, posX, posY, posZ, player.getDeltaMovement().x * -1, player.getDeltaMovement().y * -1, player.getDeltaMovement().z * -1);
         }
-    }
-
-    @SuppressWarnings({"DuplicateBranchesInSwitch", "UnusedReturnValue"})
-    private static void toggleWingsManual(final Player player) {
-        FlightData flight = FlightData.getData(player);
-        WingsToggleResult result = flight.isWingsSpread() ? disableWings(player, flight) : enableWings(player, flight);
-
-        switch (result) {
-            case SUCCESS_ENABLED -> flight.areWingsSpread = true;
-            case SUCCESS_DISABLED -> flight.areWingsSpread = false;
-            case ALREADY_ENABLED, ALREADY_DISABLED -> { /* Nothing to do */ }
-            case NO_WINGS -> {
-                if(MagicData.getData(player).hasFlightGrantingAbility()) {
-                    player.sendSystemMessage(Component.translatable(NO_WINGS));
-                }
-                flight.areWingsSpread = false;
-            }
-            case NO_HUNGER -> {
-                player.sendSystemMessage(Component.translatable(LangKey.MESSAGE_NO_HUNGER));
-                flight.areWingsSpread = false;
-            }
-            case WINGS_DISABLED -> flight.areWingsSpread = false;
-            default -> throw new IllegalStateException("Unexpected value: " + result);
-        }
-    }
-
-    enum WingsToggleResult {
-        SUCCESS_ENABLED,
-        SUCCESS_DISABLED,
-        ALREADY_ENABLED,
-        ALREADY_DISABLED,
-        NO_WINGS,
-        NO_HUNGER,
-        WINGS_DISABLED
-    }
-
-    /**
-     * Tries to enable wings. Returns the result of the attempt. <br>
-     * Requires the player to have flight, and either be in creative, or have enough food. <br>
-     * Won't trigger if wings are already enabled. <br>
-     * Does not send error messages - use the return value to handle that.
-     *
-     * @return Result of the attempt. One of:
-     * <ul>
-     *     <li>{@link WingsToggleResult#NO_WINGS NO_WINGS}</li>
-     *     <li>{@link WingsToggleResult#WINGS_DISABLED TRAPPED}</li>
-     *     <li>{@link WingsToggleResult#NO_HUNGER NO_HUNGER}</li>
-     *     <li>{@link WingsToggleResult#ALREADY_ENABLED ALREADY_ENABLED}</li>
-     *     <li>{@link WingsToggleResult#SUCCESS_ENABLED SUCCESS_ENABLED}</li>
-     * </ul>
-     */
-    private static WingsToggleResult enableWings(final Player player, final FlightData data) {
-        if (!data.hasFlight()) {
-            // Could technically trigger if the player somehow has wings spread but has no flight
-            return WingsToggleResult.NO_WINGS;
-        }
-
-        if (data.isWingsSpread()) {
-            return WingsToggleResult.ALREADY_ENABLED;
-        }
-
-        // Non-creative players need enough food to start flying
-        if (!player.isCreative() && !hasEnoughFoodToStartFlight(player)) {
-            return WingsToggleResult.NO_HUNGER;
-        }
-
-        PacketDistributor.sendToServer(new SyncWingsSpread(player.getId(), true));
-        return WingsToggleResult.SUCCESS_ENABLED;
-    }
-
-    /**
-     * Disables wings. Works every time if the player has flight. <br>
-     * Won't trigger if wings are already disabled. <br>
-     * Does not send error messages - use the return value to handle that.
-     *
-     * @return Result of the attempt. One of:
-     * <ul>
-     *     <li>{@link WingsToggleResult#NO_WINGS NO_WINGS}</li>
-     *     <li>{@link WingsToggleResult#ALREADY_DISABLED ALREADY_DISABLED}</li>
-     *     <li>{@link WingsToggleResult#SUCCESS_DISABLED SUCCESS_DISABLED}</li>
-     * </ul>
-     */
-    private static WingsToggleResult disableWings(final Player player, final FlightData data) {
-        if (!data.hasFlight()) {
-            // Could technically trigger if the player somehow has wings spread but has no flight
-            return WingsToggleResult.NO_WINGS;
-        }
-
-        if (!data.isWingsSpread()) return WingsToggleResult.ALREADY_DISABLED;
-
-        // Always allow disabling wings (if the player has flight)
-        PacketDistributor.sendToServer(new SyncWingsSpread(player.getId(), false));
-        return WingsToggleResult.SUCCESS_DISABLED;
-    }
-
-    /**
-     * Checks the conditions for jumping to start flight, and tries to enable wings if successful. <br>
-     * Handles error messages.
-     *
-     * @return True if wings were enabled.
-     */
-    @SuppressWarnings("UnusedReturnValue")
-    private static boolean tryJumpToFly(LocalPlayer player, FlightData data) {
-        if (!jumpToFly) return false;
-
-        // This only handles the requirements to trigger jump-to-fly. Other conditions are handled by enableWings()
-        if (player.isCreative() || player.isSpectator()) return false;
-
-        Vec3 lookVec = player.getLookAngle();
-        if (lookAtSkyForFlight && lookVec.y <= 0.8) return false;
-
-        if (player.isInLava() || player.isInWater()) return false;
-
-        switch (enableWings(player, data)) {
-            case SUCCESS_ENABLED -> {
-                return true;
-            }
-            case ALREADY_ENABLED -> {
-                return false;
-            }
-            case NO_WINGS -> {
-                // Silent fail
-                return false;
-            }
-            case NO_HUNGER -> {
-                HUNGER_MESSAGE_WITH_COOLDOWN.tryRun();
-                return false;
-            }
-            case WINGS_DISABLED -> {
-                // Silent fail
-                return false;
-            }
-            default -> throw new IllegalStateException("Unexpected value: " + enableWings(player, data));
-        }
-    }
-
-    private static boolean hasEnoughFoodToStartFlight(Player player) {
-        return player.getFoodData().getFoodLevel() > ServerFlightHandler.flightHungerThreshold;
     }
 
     public static Vec3 getInputVector(final Vec3 movement, float frictionSpeed, float yRot) {

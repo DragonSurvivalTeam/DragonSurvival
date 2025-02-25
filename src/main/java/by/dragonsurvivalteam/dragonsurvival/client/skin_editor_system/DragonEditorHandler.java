@@ -41,7 +41,7 @@ import net.neoforged.neoforge.client.GlStateBackup;
 import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +56,21 @@ public class DragonEditorHandler {
     private static @Nullable ResourceLocation getDragonPartLocation(final SkinLayer layer, final String partKey, final ResourceKey<DragonSpecies> type) {
         if (Objects.equals(layer.name, "Extra") && layer != SkinLayer.EXTRA) {
             return getDragonPartLocation(SkinLayer.EXTRA, partKey, type);
+        }
+
+        if (DragonPartLoader.DRAGON_PARTS.get(type) == null) {
+            DragonSurvival.LOGGER.error("Part type map missing for dragon type {}", type);
+            return null;
+        }
+
+        if (DragonPartLoader.DRAGON_PARTS.get(type).get(layer) == null) {
+            DragonSurvival.LOGGER.error("Dragon part layer {} not found", layer.name);
+            return null;
+        }
+
+        if (DragonPartLoader.DRAGON_PARTS.get(type).get(layer).isEmpty()) {
+            DragonSurvival.LOGGER.error("Dragon part layer {} is empty", layer.name);
+            return null;
         }
 
         if (layer == SkinLayer.BASE && partKey.equalsIgnoreCase(DefaultPartLoader.NO_PART)) {
@@ -79,6 +94,21 @@ public class DragonEditorHandler {
     public static @Nullable DragonPart getDragonPart(final SkinLayer layer, final String partKey, final ResourceKey<DragonSpecies> type) {
         if (Objects.equals(layer.name, "Extra") && layer != SkinLayer.EXTRA) {
             return getDragonPart(SkinLayer.EXTRA, partKey, type);
+        }
+
+        if (DragonPartLoader.DRAGON_PARTS.get(type) == null) {
+            DragonSurvival.LOGGER.error("Part type map missing for dragon type {}", type);
+            return null;
+        }
+
+        if (DragonPartLoader.DRAGON_PARTS.get(type).get(layer) == null) {
+            DragonSurvival.LOGGER.error("Dragon part layer {} not found", layer.name);
+            return null;
+        }
+
+        if (DragonPartLoader.DRAGON_PARTS.get(type).get(layer).isEmpty()) {
+            DragonSurvival.LOGGER.error("Dragon part layer {} is empty", layer.name);
+            return null;
         }
 
         if (layer == SkinLayer.BASE && partKey.equalsIgnoreCase(DefaultPartLoader.NO_PART)) {
@@ -105,6 +135,24 @@ public class DragonEditorHandler {
         }
 
         ArrayList<String> keys = new ArrayList<>();
+        if (DragonPartLoader.DRAGON_PARTS.get(type.getKey()) == null) {
+            DragonSurvival.LOGGER.error("Part type map missing for dragon type {}", type);
+            keys.add(DefaultPartLoader.NO_PART);
+            return keys;
+        }
+
+        if (DragonPartLoader.DRAGON_PARTS.get(type.getKey()).get(layer) == null) {
+            DragonSurvival.LOGGER.error("Dragon part layer {} not found", layer.name);
+            keys.add(DefaultPartLoader.NO_PART);
+            return keys;
+        }
+
+        if (DragonPartLoader.DRAGON_PARTS.get(type.getKey()).get(layer).isEmpty()) {
+            DragonSurvival.LOGGER.error("Dragon part layer {} is empty", layer.name);
+            keys.add(DefaultPartLoader.NO_PART);
+            return keys;
+        }
+
         List<DragonPart> parts = DragonPartLoader.DRAGON_PARTS.get(type.getKey()).get(layer);
 
         for (DragonPart part : parts) {
@@ -136,6 +184,7 @@ public class DragonEditorHandler {
         }
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
+        DragonBody.TextureSize textureSize = handler.body().value().textureSize();
 
         GlStateBackup state = new GlStateBackup();
         RenderSystem.backupGlState(state);
@@ -147,8 +196,8 @@ public class DragonEditorHandler {
         int currentViewportWidth = GlStateManager.Viewport.width();
         int currentViewportHeight = GlStateManager.Viewport.height();
 
-        RenderTarget normalTarget = new TextureTarget(512, 512, false, Minecraft.ON_OSX);
-        RenderTarget glowTarget = new TextureTarget(512, 512, false, Minecraft.ON_OSX);
+        RenderTarget normalTarget = new TextureTarget(textureSize.width(), textureSize.height(), false, Minecraft.ON_OSX);
+        RenderTarget glowTarget = new TextureTarget(textureSize.width(), textureSize.height(), false, Minecraft.ON_OSX);
         normalTarget.setClearColor(0.0F, 0.0F, 0.0F, 0.0F);
         glowTarget.setClearColor(0.0F, 0.0F, 0.0F, 0.0F);
         normalTarget.clear(true);
@@ -239,8 +288,9 @@ public class DragonEditorHandler {
         DragonStateHandler handler = DragonStateProvider.getData(player);
         List<Pair<NativeImage, ResourceLocation>> texturesToRegister = new ArrayList<>();
         DragonStageCustomization customization = handler.getCurrentStageCustomization();
-        NativeImage normal = new NativeImage(512, 512, true);
-        NativeImage glow = new NativeImage(512, 512, true);
+        DragonBody.TextureSize textureSize = handler.body().value().textureSize();
+        NativeImage normal = new NativeImage(textureSize.width(), textureSize.height(), true);
+        NativeImage glow = new NativeImage(textureSize.width(), textureSize.height(), true);
 
         for (SkinLayer layer : SkinLayer.values()) {
             LayerSettings settings = customization.layerSettings.get(layer).get();

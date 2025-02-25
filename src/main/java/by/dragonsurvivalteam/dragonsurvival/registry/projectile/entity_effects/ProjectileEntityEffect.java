@@ -21,6 +21,7 @@ public interface ProjectileEntityEffect extends ProjectileEffect<Entity> {
     Registry<MapCodec<? extends ProjectileEntityEffect>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();
 
     Codec<ProjectileEntityEffect> CODEC = REGISTRY.byNameCodec().dispatch("entity_effect", ProjectileEntityEffect::codec, Function.identity());
+
     MapCodec<? extends ProjectileEntityEffect> codec();
 
     @SubscribeEvent

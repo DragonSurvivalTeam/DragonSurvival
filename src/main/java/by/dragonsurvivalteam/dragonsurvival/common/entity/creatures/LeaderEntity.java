@@ -182,7 +182,7 @@ public class LeaderEntity extends Villager implements GeoEntity {
     }
 
     @Override
-    @Nullable protected SoundEvent getAmbientSound() {
+    protected @Nullable SoundEvent getAmbientSound() {
         return null;
     }
 

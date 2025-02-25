@@ -11,7 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
 public record SelfTarget(Either<BlockTargeting, EntityTargeting> target) implements AbilityTargeting {
-    @Translation(comments = "to self")
+    @Translation(comments = "Targets self")
     private static final String SELF_TARGET = Translation.Type.GUI.wrap("ability_target.self_target");
 
     public static final MapCodec<SelfTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> AbilityTargeting.codecStart(instance).apply(instance, SelfTarget::new));
@@ -20,7 +20,7 @@ public record SelfTarget(Either<BlockTargeting, EntityTargeting> target) impleme
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability) {
         target().ifLeft(blockTarget -> {
             if (blockTarget.matches(dragon, dragon.blockPosition())) {
-                blockTarget.effect().forEach(target -> target.apply(dragon, ability, dragon.blockPosition(), null));
+                blockTarget.effects().forEach(target -> target.apply(dragon, ability, dragon.blockPosition(), null));
             }
         }).ifRight(entityTarget -> {
             if (entityTarget.matches(dragon, dragon, dragon.position())) {

@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import org.jetbrains.annotations.NotNull;
 
-public class PenaltyButton extends ExtendedButton  {
+public class PenaltyButton extends ExtendedButton {
     private static final int SIZE = 35;
 
     private final Holder<DragonPenalty> penalty;

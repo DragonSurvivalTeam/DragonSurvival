@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.commands;
 
 import by.dragonsurvivalteam.dragonsurvival.network.container.OpenDragonAltar;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -19,7 +20,7 @@ public class DragonAltarCommand {
     }
 
     private static int runCommand(final ServerPlayer player) {
-        PacketDistributor.sendToPlayer(player, OpenDragonAltar.INSTANCE);
+        PacketDistributor.sendToPlayer(player, new OpenDragonAltar(DragonSpecies.getSpecies(player, true)));
         return 1;
     }
 }

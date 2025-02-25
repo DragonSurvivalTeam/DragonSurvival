@@ -1,7 +1,13 @@
 package by.dragonsurvivalteam.dragonsurvival.registry;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.effects.*;
+import by.dragonsurvivalteam.dragonsurvival.common.effects.BlastDustedEffect;
+import by.dragonsurvivalteam.dragonsurvival.common.effects.BurnEffect;
+import by.dragonsurvivalteam.dragonsurvival.common.effects.ChargedEffect;
+import by.dragonsurvivalteam.dragonsurvival.common.effects.DrainEffect;
+import by.dragonsurvivalteam.dragonsurvival.common.effects.ModifiableMobEffect;
+import by.dragonsurvivalteam.dragonsurvival.common.effects.Stress;
+import by.dragonsurvivalteam.dragonsurvival.common.effects.WingDisablingEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -24,7 +30,7 @@ public class DSEffects {
     @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "This net prevents you from escaping into the sky.")
     public static Holder<MobEffect> TRAPPED = REGISTRY.register("trapped",
             () -> new WingDisablingEffect(MobEffectCategory.HARMFUL, 0xdddddd, true)
-                    .addAttributeModifier(Attributes.MOVEMENT_SPEED, DragonSurvival.res("slow_movement"), -0.5, Operation.ADD_MULTIPLIED_TOTAL)
+                    .addAttributeModifier(Attributes.MOVEMENT_SPEED, DragonSurvival.res("slow_movement"), -0.75, Operation.ADD_MULTIPLIED_TOTAL)
     );
 
     /** Some effects are handled in {@link by.dragonsurvivalteam.dragonsurvival.client.handlers.ClientFlightHandler} */

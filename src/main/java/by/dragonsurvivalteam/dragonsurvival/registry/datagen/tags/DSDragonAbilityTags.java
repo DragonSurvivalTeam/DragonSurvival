@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.concurrent.CompletableFuture;
 
 public class DSDragonAbilityTags extends TagsProvider<DragonAbility> {
-    @Translation(comments = "Dragon Ability Sorting Order")
+    @Translation(comments = "Ability Sorting Order")
     public static final TagKey<DragonAbility> ORDER = key("order");
 
     @Translation(comments = "Cave Dragon Abilities")
@@ -37,6 +37,7 @@ public class DSDragonAbilityTags extends TagsProvider<DragonAbility> {
                 // Active
                 .add(CaveDragonAbilities.NETHER_BREATH)
                 .add(CaveDragonAbilities.FIRE_BALL)
+                .add(CaveDragonAbilities.FURNACE_HEAT)
                 .add(CaveDragonAbilities.LAVA_VISION)
                 .add(CaveDragonAbilities.STURDY_SKIN)
                 .add(CaveDragonAbilities.FRIENDLY_FIRE)
@@ -75,10 +76,10 @@ public class DSDragonAbilityTags extends TagsProvider<DragonAbility> {
         tag(FOREST)
                 // Active
                 .add(ForestDragonAbilities.FOREST_BREATH)
-                .add(ForestDragonAbilities.SUN_BREATH)
                 .add(ForestDragonAbilities.SPIKE)
-                .add(ForestDragonAbilities.INSPIRATION)
                 .add(ForestDragonAbilities.HUNTER)
+                .add(ForestDragonAbilities.SUN_BREATH)
+                .add(ForestDragonAbilities.INSPIRATION)
                 // Passive (manual leveling)
                 .add(ForestDragonAbilities.FOREST_MAGIC)
                 .add(ForestDragonAbilities.FOREST_ATHLETICS)
@@ -94,6 +95,7 @@ public class DSDragonAbilityTags extends TagsProvider<DragonAbility> {
                 // Cave :: active
                 .add(CaveDragonAbilities.NETHER_BREATH)
                 .add(CaveDragonAbilities.FIRE_BALL)
+                .add(CaveDragonAbilities.FURNACE_HEAT)
                 .add(CaveDragonAbilities.LAVA_VISION)
                 .add(CaveDragonAbilities.STURDY_SKIN)
                 .add(CaveDragonAbilities.FRIENDLY_FIRE)
@@ -110,10 +112,10 @@ public class DSDragonAbilityTags extends TagsProvider<DragonAbility> {
                 .add(CaveDragonAbilities.CAVE_SPIN)
                 // Forest :: active
                 .add(ForestDragonAbilities.FOREST_BREATH)
-                .add(ForestDragonAbilities.SUN_BREATH)
                 .add(ForestDragonAbilities.SPIKE)
-                .add(ForestDragonAbilities.INSPIRATION)
                 .add(ForestDragonAbilities.HUNTER)
+                .add(ForestDragonAbilities.SUN_BREATH)
+                .add(ForestDragonAbilities.INSPIRATION)
                 // Forest :: passive (manual leveling)
                 .add(ForestDragonAbilities.FOREST_MAGIC)
                 .add(ForestDragonAbilities.FOREST_ATHLETICS)

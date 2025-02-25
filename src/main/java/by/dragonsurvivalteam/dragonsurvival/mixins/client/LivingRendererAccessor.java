@@ -12,7 +12,7 @@ import java.util.List;
 @Mixin(LivingEntityRenderer.class)
 public interface LivingRendererAccessor {
     @Accessor("layers")
-    @SuppressWarnings("rawtypes") // ignore
+    @SuppressWarnings("rawtypes")
     List<RenderLayer> dragonSurvival$getRenderLayers();
 
     @Invoker("shouldShowName")

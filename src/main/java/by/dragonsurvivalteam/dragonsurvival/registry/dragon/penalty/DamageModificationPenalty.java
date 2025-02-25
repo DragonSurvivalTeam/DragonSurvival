@@ -2,20 +2,21 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DamageModification;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.CommonData;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DamageModifications;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ExtraCodecs;
 
 import java.util.Optional;
 
 public record DamageModificationPenalty(DamageModification modification, int duration) implements PenaltyEffect {
     public static final MapCodec<DamageModificationPenalty> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             DamageModification.CODEC.fieldOf("modification").forGetter(DamageModificationPenalty::modification),
-            Codec.INT.fieldOf("duration").forGetter(DamageModificationPenalty::duration)
+            ExtraCodecs.intRange(DurationInstance.INFINITE_DURATION, Integer.MAX_VALUE).fieldOf("duration").forGetter(DamageModificationPenalty::duration)
     ).apply(instance, DamageModificationPenalty::new));
 
     @Override

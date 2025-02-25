@@ -19,6 +19,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.event.entity.EntityInvulnerabilityCheckEvent;
 import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.living.LivingExperienceDropEvent;
@@ -198,6 +199,21 @@ public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
         if (hasSummonRelationship(event.getEntity(), event.getSource().getEntity())) {
             event.setInvulnerable(true);
         }
+    }
+
+    @SubscribeEvent
+    public static void markPlayerDamage(final LivingDamageEvent.Post event) {
+        Entity entity = event.getSource().getEntity();
+
+        if (entity == null) {
+            return;
+        }
+
+        entity.getExistingData(DSDataAttachments.SUMMON).ifPresent(data -> {
+            if (data.isAllied && data.getOwner(entity.level()) instanceof Player player) {
+                event.getEntity().setLastHurtByPlayer(player);
+            }
+        });
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)

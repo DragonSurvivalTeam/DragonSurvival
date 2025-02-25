@@ -46,9 +46,9 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class GenericBallEntity extends AbstractHurtingProjectile implements GeoEntity, IEntityWithComplexSpawn {
     private static final EntityDataAccessor<Boolean> LINGERING = SynchedEntityData.defineId(GenericBallEntity.class, EntityDataSerializers.BOOLEAN);
-    
+
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
-    
+
     private ProjectileData.GeneralData generalData;
     private ProjectileData.GenericBallData typeData;
     private int projectileLevel;
@@ -105,11 +105,11 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
     @Override
     public void addAdditionalSaveData(@NotNull final CompoundTag tag) {
         super.addAdditionalSaveData(tag);
-        
+
         RegistryOps<Tag> context = level().registryAccess().createSerializationContext(NbtOps.INSTANCE);
         ProjectileData.GeneralData.CODEC.encodeStart(context, generalData).ifSuccess(data -> tag.put(GENERAL_DATA, data));
         ProjectileData.GenericBallData.CODEC.encodeStart(context, typeData).ifSuccess(data -> tag.put(TYPE_DATA, data));
-        
+
         tag.putInt(PROJECTILE_LEVEL, projectileLevel);
         tag.putFloat(MOVEMENT_DISTANCE, movementDistance);
         tag.putInt(LINGERING_TICKS, lingerTicks);
@@ -183,11 +183,11 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
         if (!super.canHitEntity(target)) {
             return false;
         }
-        
+
         if (level() instanceof ServerLevel serverLevel && generalData.entityHitCondition().isPresent()) {
             return generalData.entityHitCondition().get().test(Condition.projectileContext(serverLevel, this, target));
         }
-        
+
         return true;
     }
 
@@ -195,7 +195,7 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
         if (level().isClientSide()) {
             return;
         }
-     
+
         for (ProjectileTargeting effect : typeData.onDestroyEffects()) {
             effect.apply(this, projectileLevel);
         }
@@ -222,7 +222,7 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
     @Override
     public void tick() {
         super.tick();
-        
+
         movementDistance += (float) getDeltaMovement().length();
         lifespan++;
 
@@ -415,7 +415,7 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
 
     private static final String GENERAL_DATA = "general_data";
     private static final String TYPE_DATA = "type_data";
-    
+
     private static final String PROJECTILE_LEVEL = "projectile_level";
     private static final String MOVEMENT_DISTANCE = "movement_distance";
     private static final String LINGERING_TICKS = "lingering_ticks";

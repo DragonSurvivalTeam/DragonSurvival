@@ -4,8 +4,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -67,7 +69,7 @@ public class MiscCodecs {
                 }
             }
 
-           return isValid ? DataResult.success(value) : DataResult.error(() -> "Percentage check must be between 0 and 1: [" + value + "]");
+            return isValid ? DataResult.success(value) : DataResult.error(() -> "Percentage check must be between 0 and 1: [" + value + "]");
         });
     }
 
@@ -99,11 +101,12 @@ public class MiscCodecs {
         });
     }
 
-    public record DestructionData(double crushingGrowth, double blockDestructionGrowth, double crushingDamageScalar) {
+    public record DestructionData(EntityPredicate entityPredicate, BlockPredicate blockPredicate, double crushingGrowth, double blockDestructionGrowth,
+                                  double crushingDamageScalar) {
         public static final Codec<DestructionData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                // TODO :: add fields to specify applicable entities
+                EntityPredicate.CODEC.fieldOf("entity_predicate").forGetter(DestructionData::entityPredicate),
+                BlockPredicate.CODEC.fieldOf("block_predicate").forGetter(DestructionData::blockPredicate),
                 Codec.DOUBLE.fieldOf("crushing_growth").forGetter(DestructionData::crushingGrowth),
-                // TODO :: add fields to specify applicable blocks
                 Codec.DOUBLE.fieldOf("block_destruction_growth").forGetter(DestructionData::blockDestructionGrowth),
                 Codec.DOUBLE.fieldOf("crushing_damage_scalar").forGetter(DestructionData::crushingDamageScalar)
         ).apply(instance, instance.stable(DestructionData::new)));

@@ -31,6 +31,7 @@ public abstract class ClientLevelMixin extends Level {
     }
 
     // TODO :: there is probably an event which could be used instead
+
     /** Keep track of which block is currently being broken to render the overlay for additional blocks if needed */
     @SuppressWarnings("DataFlowIssue") // level should not be null
     @Inject(method = "destroyBlockProgress", at = @At("RETURN"))

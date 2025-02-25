@@ -54,6 +54,7 @@ import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
@@ -72,7 +73,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 
 public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, SummonEntityEffect.Instance> implements AbilityEntityEffect, AbilityBlockEffect {
-    @Translation(comments = "§6■ Can summon up to§r %s §6entities:§r")
+    @Translation(comments = "§6■ Summon up to§r %s §6entities:§r")
     private static final String SUMMON = Translation.Type.GUI.wrap("summon_entity_effect.summon");
 
     @Translation(comments = "\n- %s (%s)")
@@ -105,6 +106,10 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
                 if (instance != null) {
                     ResourceLocation id = ModifierType.CUSTOM.randomId(attribute, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
                     instance.addPermanentModifier(new AttributeModifier(id, scale, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+                }
+
+                if (attribute == Attributes.MAX_HEALTH) {
+                    entity.setHealth(entity.getMaxHealth());
                 }
             }
         }
@@ -260,6 +265,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
 
         /**
          * Removes the entity from the instance (if applicable)
+         *
          * @return 'true' if the instance has no remaining summoned entities
          */
         public boolean removeSummon(final Entity summon) {
@@ -292,15 +298,16 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
                 }
 
                 spawnPosition = positions.remove(storageHolder.getRandom().nextInt(positions.size()));
+                // TODO :: store valid spawn positions so it can be used for the remaining attempts?
                 summon(storageHolder, spawnPosition, summonData);
             }
 
-            while (entityUUIDs.size() < maxSummons) {
+            for (int attempt = 0; attempt < maxSummons - entityUUIDs.size(); attempt++) {
                 summon(storageHolder, spawnPosition, summonData);
             }
 
             positions = null;
-            return true;
+            return !entityUUIDs.isEmpty();
         }
 
         private void summon(final ServerPlayer storageHolder, final BlockPos spawnPosition, final SummonedEntities summonData) {
@@ -317,11 +324,17 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
             BlockState state = storageHolder.level().getBlockState(spawnPosition);
 
             //noinspection deprecation -> ignore
-            if (!state.blocksMotion() || !storageHolder.level().getBlockState(spawnPosition.above()).isAir()) {
+            if (!state.blocksMotion()) {
                 return;
             }
 
-            Entity entity = type.spawn(storageHolder.serverLevel(), spawnPosition, MobSpawnType.TRIGGERED);
+            for (int i = 1; i <= Math.max(1, type.getHeight()); i++) {
+                if (!storageHolder.level().getBlockState(spawnPosition.above(i)).isAir()) {
+                    return;
+                }
+            }
+
+            Entity entity = type.spawn(storageHolder.serverLevel(), spawnPosition.above(), MobSpawnType.TRIGGERED);
 
             if (entity == null) {
                 return;
@@ -351,7 +364,6 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
             summon.attackBehaviour = summonData.attackBehaviour;
             summon.movementBehaviour = summonData.movementBehaviour;
 
-            entity.moveTo(spawnPosition.getX(), spawnPosition.getY() + 1, spawnPosition.getZ(), entity.getYRot(), entity.getXRot());
             entityUUIDs.add(entity.getUUID());
         }
 
@@ -397,12 +409,16 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
             }
 
             entityUUIDs.forEach(uuid -> {
-                Entity summonedEntity = serverLevel.getEntity(uuid);
+                // Go through all levels in case the summoner or the summons are in different dimensions
+                for (ServerLevel level : serverLevel.getServer().getAllLevels()) {
+                    Entity summonedEntity = level.getEntity(uuid);
 
-                if (summonedEntity != null) {
-                    // Since the entry is already removed from the storage we don't need any behaviour based on the owner
-                    summonedEntity.getData(DSDataAttachments.SUMMON).setOwnerUUID(null);
-                    summonedEntity.discard();
+                    if (summonedEntity != null) {
+                        // Since the entry is already removed from the storage we don't need any behaviour based on the owner
+                        summonedEntity.getData(DSDataAttachments.SUMMON).setOwnerUUID(null);
+                        summonedEntity.discard();
+                        break;
+                    }
                 }
             });
 

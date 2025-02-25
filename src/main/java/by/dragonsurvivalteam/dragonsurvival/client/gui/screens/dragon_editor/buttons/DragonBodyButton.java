@@ -26,6 +26,9 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
     @Translation(comments = "You can only change the body type in the altar when changing the dragon's species.")
     private static final String UNAVAILABLE = Translation.Type.GUI.wrap("dragon_body_button.unavailable");
 
+    @Translation(comments = "This body type has not been unlocked yet.")
+    private static final String NOT_UNLOCKED = Translation.Type.GUI.wrap("dragon_body_button.not_unlocked");
+
     private static final ResourceLocation SELECTED_BACKGROUND = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/icon_skin_on.png");
     private static final ResourceLocation DESELECTED_BACKGROUND = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/skin/icon_skin_off.png");
 
@@ -37,20 +40,27 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
     private final Holder<DragonBody> dragonBody;
     private final ResourceLocation icon;
     private final ResourceLocation bodyLocation;
-    private final boolean locked;
     private boolean disableHover;
     private final boolean useBackground;
     private final boolean noTooltip;
 
-    public DragonBodyButton(Screen screen, int x, int y, int xSize, int ySize, final Holder<DragonBody> dragonBody, boolean locked, OnPress action) {
+    public enum LockedReason {
+        NOT_UNLOCKED,
+        NOT_IN_ALTAR,
+        NONE
+    }
+
+    private final LockedReason lockedReason;
+
+    public DragonBodyButton(Screen screen, int x, int y, int xSize, int ySize, final Holder<DragonBody> dragonBody, LockedReason locked, OnPress action) {
         this(screen, x, y, xSize, ySize, dragonBody, Objects.requireNonNull(dragonBody.getKey()).location(), locked, action, false, false);
     }
 
-    public DragonBodyButton(Screen screen, int x, int y, int xSize, int ySize, final Holder<DragonBody> dragonBody, boolean locked, OnPress action, boolean useBackground, boolean noTooltip) {
+    public DragonBodyButton(Screen screen, int x, int y, int xSize, int ySize, final Holder<DragonBody> dragonBody, LockedReason locked, OnPress action, boolean useBackground, boolean noTooltip) {
         this(screen, x, y, xSize, ySize, dragonBody, Objects.requireNonNull(dragonBody.getKey()).location(), locked, action, useBackground, noTooltip);
     }
 
-    private DragonBodyButton(Screen screen, int x, int y, int xSize, int ySize, final Holder<DragonBody> dragonBody, final ResourceLocation location, boolean locked, OnPress action, boolean useBackground, boolean noTooltip) {
+    private DragonBodyButton(Screen screen, int x, int y, int xSize, int ySize, final Holder<DragonBody> dragonBody, final ResourceLocation location, LockedReason locked, OnPress action, boolean useBackground, boolean noTooltip) {
         super(x, y, xSize, ySize, Component.empty(), action, DEFAULT_NARRATION);
 
         if (!noTooltip) {
@@ -60,9 +70,9 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
         ResourceKey<DragonSpecies> species = null;
 
         if (screen instanceof DragonEditorScreen dragonEditorScreen) {
-            species = dragonEditorScreen.dragonSpecies.getKey();
+            species = dragonEditorScreen.species.getKey();
         } else if (screen instanceof DragonSpeciesScreen dragonSpeciesScreen) {
-            species = dragonSpeciesScreen.dragonSpecies.getKey();
+            species = dragonSpeciesScreen.species.getKey();
         }
 
         if (species == null) {
@@ -74,7 +84,7 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
         this.screen = screen;
         this.dragonBody = dragonBody;
         this.bodyLocation = location;
-        this.locked = locked;
+        this.lockedReason = locked;
         this.useBackground = useBackground;
         this.noTooltip = noTooltip;
     }
@@ -95,8 +105,8 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
         return !disableHover && super.isFocused();
     }
 
-    public boolean isLocked() {
-        return locked;
+    public LockedReason lockedReason() {
+        return lockedReason;
     }
 
     @Override
@@ -105,21 +115,25 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
 
         if (isSelected()) {
             state = SELECTED;
-        } else if (locked) {
+        } else if (lockedReason != LockedReason.NONE) {
             state = LOCKED;
         } else if (isHoveredOrFocused()) {
             state = HOVERED;
         }
 
-        if(!noTooltip) {
-            if(state == LOCKED) {
-                setTooltip(Tooltip.create(Component.translatable(UNAVAILABLE)));
+        if (!noTooltip) {
+            if (state == LOCKED) {
+                if (lockedReason == LockedReason.NOT_IN_ALTAR) {
+                    setTooltip(Tooltip.create(Component.translatable(UNAVAILABLE)));
+                } else if (lockedReason == LockedReason.NOT_UNLOCKED) {
+                    setTooltip(Tooltip.create(Component.translatable(NOT_UNLOCKED)));
+                }
             } else {
                 setTooltip(Tooltip.create(Component.translatable(Translation.Type.BODY_DESCRIPTION.wrap(bodyLocation))));
             }
         }
 
-        if(this.useBackground) {
+        if (this.useBackground) {
             ResourceLocation background = state == SELECTED ? SELECTED_BACKGROUND : DESELECTED_BACKGROUND;
             graphics.blit(background, getX(), getY(), 0, 0, this.width, this.height, 35, 35);
             graphics.blit(icon, getX() + 5, getY() + 5, 0, state * 25, 25, 25, 32, 104);
@@ -130,7 +144,7 @@ public class DragonBodyButton extends ExtendedButton implements HoverDisableable
 
     private boolean isSelected() {
         if (screen instanceof DragonEditorScreen dragonEditorScreen) {
-            return DragonUtils.isBody(dragonBody, dragonEditorScreen.dragonBody);
+            return DragonUtils.isBody(dragonBody, dragonEditorScreen.body);
         }
 
         if (screen instanceof DragonSkinsScreen skinsScreen) {

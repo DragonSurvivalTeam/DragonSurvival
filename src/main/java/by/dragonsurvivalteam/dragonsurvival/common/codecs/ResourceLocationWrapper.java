@@ -22,10 +22,12 @@ import java.util.stream.Collectors;
  * - normal {@link ResourceLocation} <br>
  * - tags by prefixing a {@link ResourceLocation} with '#' (e.g. '#minecraft:doors') <br>
  * - Regex in namespace and / or path (e.g. '.*:.*_bow')
- * */
+ */
 public class ResourceLocationWrapper {
     /** These are the regex meta characters that can start a valid regular expression */
     private static final List<Character> VALID_REGEX_START = List.of('.', '^', '[', '(', '\\');
+    private static final int NAMESPACE = 0;
+    private static final int PATH = 1;
 
     public static <T> Set<ResourceLocation> getEntries(final String location, final Registry<T> registry) {
         if (location.startsWith("#")) {
@@ -41,10 +43,15 @@ public class ResourceLocationWrapper {
                 return Set.of(parsed);
             } else {
                 String[] split = location.split(":");
-                String namespace = split[0];
+
+                if (split.length != 2) {
+                    return Set.of();
+                }
+
+                String namespace = split[NAMESPACE];
 
                 Pattern namespacePattern = ResourceLocation.isValidNamespace(namespace) ? null : Pattern.compile(namespace);
-                Pattern pathPattern = Pattern.compile(split[1]);
+                Pattern pathPattern = Pattern.compile(split[PATH]);
 
                 Set<ResourceLocation> locations = new HashSet<>();
                 Predicate<String> namespaceValidation = toCheck -> namespacePattern == null ? toCheck.equals(namespace) : namespacePattern.matcher(toCheck).matches();
@@ -100,6 +107,11 @@ public class ResourceLocationWrapper {
         }
 
         String namespace = data[0];
+
+        if (namespace.startsWith("#")) {
+            namespace = namespace.substring(1);
+        }
+
         String path = data[1];
 
         if (ResourceLocation.tryParse(location) != null) {

@@ -19,14 +19,17 @@ import java.util.function.Function;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public interface PenaltyEffect {
-    ResourceKey<Registry<MapCodec<? extends PenaltyEffect>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("penalty_effects"));
+    ResourceKey<Registry<MapCodec<? extends PenaltyEffect>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("penalty_effect"));
     Registry<MapCodec<? extends PenaltyEffect>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();
 
     Codec<PenaltyEffect> CODEC = REGISTRY.byNameCodec().dispatch("penalty_type", PenaltyEffect::codec, Function.identity());
 
-    default MutableComponent getDescription() { return Component.empty(); }
+    default MutableComponent getDescription() {
+        return Component.empty();
+    }
 
     void apply(final ServerPlayer player, final Holder<DragonPenalty> penalty);
+
     MapCodec<? extends PenaltyEffect> codec();
 
     @SubscribeEvent
@@ -41,6 +44,9 @@ public interface PenaltyEffect {
             event.register(REGISTRY_KEY, DragonSurvival.res("mob_effect"), () -> MobEffectPenalty.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("item_blacklist"), () -> ItemBlacklistPenalty.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("damage_modification"), () -> DamageModificationPenalty.CODEC);
+
+            // TODO :: attribute modification
+            // TODO :: implement animal fear as penalty
         }
     }
 }

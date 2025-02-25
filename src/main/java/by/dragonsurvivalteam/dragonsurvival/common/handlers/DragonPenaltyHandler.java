@@ -57,7 +57,7 @@ public class DragonPenaltyHandler {
     }
 
     @SubscribeEvent
-    public static void applyItemConsumedPenalties(final LivingEntityUseItemEvent.Finish event){
+    public static void applyItemConsumedPenalties(final LivingEntityUseItemEvent.Finish event) {
         if (!(event.getEntity() instanceof ServerPlayer serverPlayer)) {
             return;
         }
@@ -89,7 +89,7 @@ public class DragonPenaltyHandler {
 
         for (Holder<DragonPenalty> penalty : handler.species().value().penalties()) {
             //noinspection DeconstructionCanBeUsed -> spotless is too stupid to handle this
-            if (penalty.value().trigger() instanceof HitByProjectileTrigger trigger && trigger.projectile() == event.getProjectile().getType()) {
+            if (penalty.value().trigger() instanceof HitByProjectileTrigger trigger && event.getProjectile().getType().is(trigger.projectiles())) {
                 penalty.value().apply(serverPlayer, penalty);
             }
         }

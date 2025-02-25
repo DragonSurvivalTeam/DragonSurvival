@@ -30,7 +30,6 @@ import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.loading.math.MathParser;
 import software.bernie.geckolib.model.GeoModel;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class DragonModel extends GeoModel<DragonEntity> {
@@ -40,6 +39,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
     /** Factor to multiply the delta movement by, needed for scaling for the animations */
     private static final double DELTA_MOVEMENT_FACTOR = 10;
 
+    // FIXME 'dragon_dragon'?
     private final ResourceLocation defaultTexture = DragonSurvival.res("textures/dragon_dragon/newborn.png");
 
     private ResourceLocation overrideTexture;
@@ -48,6 +48,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
     @Override
     public void applyMolangQueries(final AnimationState<DragonEntity> animationState, double currentTick) {
         super.applyMolangQueries(animationState, currentTick);
+
         DragonEntity dragon = animationState.getAnimatable();
         Player player = dragon.getPlayer();
 
@@ -55,9 +56,9 @@ public class DragonModel extends GeoModel<DragonEntity> {
             return;
         }
 
+        MovementData movement = MovementData.getData(player);
         float deltaTick = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks();
         float partialDeltaTick = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
-        MovementData movement = MovementData.getData(player);
 
         if (dragon.neckLocked) {
             MathParser.setVariable("query.head_yaw", () -> 0);
@@ -98,7 +99,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
                 }
             }
 
-            while(true) {
+            while (true) {
                 boolean removedElement = false;
 
                 if (dragon.bodyYawHistory.size() > removeSize) {
@@ -181,7 +182,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
 
     @Override
     public ResourceLocation getTextureResource(final DragonEntity dragon) {
-        if (overrideTexture != null) {
+        if (overrideTexture != null && RenderingUtils.hasTexture(overrideTexture)) {
             return overrideTexture;
         }
 
@@ -209,14 +210,14 @@ public class DragonModel extends GeoModel<DragonEntity> {
         if (handler.getSkinData().recompileSkin.getOrDefault(stageKey, true)) {
             if (ClientConfig.forceCPUSkinGeneration) {
                 if (textureRegisterFuture.isDone()) {
-                    CompletableFuture<List<Pair<NativeImage, ResourceLocation>>> imageGenerationFuture = DragonEditorHandler.generateSkinTextures(dragon);
-                    textureRegisterFuture = imageGenerationFuture.thenRunAsync(() -> {
+                    textureRegisterFuture = DragonEditorHandler.generateSkinTextures(dragon).thenAcceptAsync(entries -> {
                         handler.getSkinData().isCompiled.put(stageKey, true);
                         handler.getSkinData().recompileSkin.put(stageKey, false);
-                        for (Pair<NativeImage, ResourceLocation> pair : imageGenerationFuture.join()) {
+
+                        for (Pair<NativeImage, ResourceLocation> pair : entries) {
                             RenderingUtils.uploadTexture(pair.getFirst(), pair.getSecond());
                         }
-                    }, Minecraft.getInstance());
+                    });
                 }
             } else {
                 DragonEditorHandler.generateSkinTexturesGPU(dragon);
@@ -225,12 +226,14 @@ public class DragonModel extends GeoModel<DragonEntity> {
             }
         }
 
+        ResourceLocation texture = dynamicTexture(player, handler, false);
+
         // Show the default skin while we are compiling if we haven't already compiled the skin
-        if (customization.defaultSkin || !handler.getSkinData().isCompiled.getOrDefault(stageKey, false)) {
+        if (customization.defaultSkin || !handler.getSkinData().isCompiled.getOrDefault(stageKey, false) || !RenderingUtils.hasTexture(texture)) {
             return StageResources.getDefaultSkin(handler.species(), handler.stageKey(), false);
         }
 
-        return dynamicTexture(player, handler, false);
+        return texture;
     }
 
     public static ResourceLocation dynamicTexture(final Player player, final DragonStateHandler handler, boolean isGlowLayer) {

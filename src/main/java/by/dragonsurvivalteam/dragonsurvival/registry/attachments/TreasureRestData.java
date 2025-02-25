@@ -18,7 +18,7 @@ public class TreasureRestData implements INBTSerializable<CompoundTag> {
     private boolean isResting;
 
     public boolean canSleep() {
-        return isResting && restingTicks >= TICKS_TO_SLEEP;
+        return isResting && sleepingTicks >= TICKS_TO_SLEEP;
     }
 
     public boolean isResting() {

@@ -86,6 +86,7 @@ public @interface Translation {
         DRAGON_SPECIES("dragon_species." + DragonSurvival.MODID + ".", ""),
         DRAGON_SPECIES_ALTAR_DESCRIPTION("dragon_species." + DragonSurvival.MODID + ".", ".altar.desc"),
         DRAGON_SPECIES_INVENTORY_DESCRIPTION("dragon_species." + DragonSurvival.MODID + ".", ".banner.desc"),
+        DRAGON_SPECIES_LOCKED("dragon_species." + DragonSurvival.MODID + ".", ".locked"),
 
         PENALTY("dragon_penalty." + DragonSurvival.MODID + ".", ""),
         PENALTY_DESCRIPTION("dragon_penalty." + DragonSurvival.MODID + ".", ".desc"),
@@ -104,7 +105,7 @@ public @interface Translation {
         STAGE("dragon_stage." + DragonSurvival.MODID + ".", ""),
         STAGE_DESCRIPTION("dragon_stage." + DragonSurvival.MODID + ".", ".desc"),
 
-        COMMAND("command." + DragonSurvival.MODID + ".", ""),
+        COMMAND("command." + DragonSurvival.MODID + ".", ""), // TODO :: replace with 'gui'
         VILLAGER_PROFESSION("entity.minecraft.villager." + DragonSurvival.MODID + ".", ""),
 
         /**
@@ -124,6 +125,17 @@ public @interface Translation {
 
         public String wrap(final String key) {
             return prefix + key + suffix;
+        }
+
+        /** See {@link Translation.Type#wrap(String, String)} */
+        public String wrap(final Holder<?> holder) {
+            //noinspection DataFlowIssue -> key is present
+            return wrap(holder.getKey());
+        }
+
+        /** See {@link Translation.Type#wrap(String, String)} */
+        public String wrap(final ResourceKey<?> key) {
+            return wrap(key.location());
         }
 
         /** See {@link Translation.Type#wrap(String, String)} */

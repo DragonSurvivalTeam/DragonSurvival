@@ -30,20 +30,22 @@ public class DragonFoodHandler {
     @ConfigOption(side = ConfigSide.SERVER, category = {"food"}, key = "bad_food_poison_chance")
     public static Float badFoodPoisonChance = 0.5F;
 
-    public static @Nullable FoodProperties getDragonFoodProperties(final Holder<DragonSpecies> species, final ItemStack stack) {
+    public static @Nullable FoodProperties getDragonFoodProperties(final Holder<DragonSpecies> species, final ItemStack stack, @Nullable final FoodProperties original) {
+        if (DietEntryCache.isEmpty(species)) {
+            return original;
+        }
+
         FoodProperties properties = DietEntryCache.getDiet(species, stack.getItem());
 
         if (properties != null) {
             return properties;
         }
 
-        FoodProperties baseProperties = stack.getFoodProperties(null);
-
-        if (baseProperties != null) {
+        if (original != null) {
             if (requireDragonFood) {
                 return getBadFoodProperties();
             } else {
-                return baseProperties;
+                return original;
             }
         }
 
@@ -51,22 +53,17 @@ public class DragonFoodHandler {
     }
 
     /** Checks if the item can be eaten (not whether it makes sense, see {@link DragonFoodHandler#getBadFoodProperties()}) */
-    public static boolean isEdible(final Holder<DragonSpecies> species, final ItemStack stack) {
-        if (stack.getFoodProperties(null) != null) {
-            return true;
-        }
-
-        // The mixin in 'IItemExtensionMixin' would require player context so we check this separately here
-        return DietEntryCache.getDiet(species, stack.getItem()) != null;
+    public static boolean isEdible(final Player player, final ItemStack stack) {
+        return stack.getFoodProperties(player) != null;
     }
 
-    public static int getUseDuration(final ItemStack stack, final Player entity) {
-        FoodProperties properties = getDragonFoodProperties(DragonStateProvider.getData(entity).species(), stack);
+    public static int getUseDuration(final ItemStack stack, final Player entity, int original) {
+        FoodProperties properties = getDragonFoodProperties(DragonStateProvider.getData(entity).species(), stack, null);
 
         if (properties != null) {
             return properties.eatDurationTicks();
         } else {
-            return stack.getUseDuration(entity);
+            return original;
         }
     }
 
@@ -77,12 +74,11 @@ public class DragonFoodHandler {
         }
 
         DragonStateHandler data = DragonStateProvider.getData(player);
-
-        if (!data.isDragon() || !DragonFoodHandler.isEdible(data.species(), event.getItem())) {
+        if (!data.isDragon() || !DragonFoodHandler.isEdible(player, event.getItem())) {
             return;
         }
 
-        event.setDuration(getUseDuration(event.getItem(), player));
+        event.setDuration(getUseDuration(event.getItem(), player, event.getDuration()));
     }
 
     private static FoodProperties getBadFoodProperties() {

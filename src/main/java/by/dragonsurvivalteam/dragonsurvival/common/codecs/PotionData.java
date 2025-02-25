@@ -30,7 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier, LevelBasedValue duration, LevelBasedValue probability, boolean effectParticles, boolean showIcon) {
+public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier, LevelBasedValue duration, LevelBasedValue probability, boolean effectParticles,
+                         boolean showIcon) {
     public static final LevelBasedValue DEFAULT_PROBABILITY = LevelBasedValue.constant(1);
 
     public static final MapCodec<PotionData> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -49,9 +50,9 @@ public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier
     }
 
     public void apply(@Nullable final ServerPlayer dragon, final int level, final Entity target) {
-        if (target instanceof LivingEntity livingEntity) {
+        if (target instanceof LivingEntity livingTarget) {
             effects().forEach(effect -> {
-                MobEffectInstance instance = livingEntity.getEffect(effect);
+                MobEffectInstance instance = livingTarget.getEffect(effect);
                 Calculated calculated = Calculated.from(this, level);
 
                 if (instance != null && (instance.getAmplifier() >= calculated.amplifier() && instance.getDuration() >= calculated.duration())) {
@@ -61,8 +62,14 @@ public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier
                     return;
                 }
 
-                if (livingEntity.getRandom().nextDouble() < calculated.probability()) {
-                    livingEntity.addEffect(new MobEffectInstance(effect, calculated.duration(), calculated.amplifier(), false, effectParticles, showIcon), dragon);
+                if (livingTarget.getRandom().nextDouble() > calculated.probability()) {
+                    return;
+                }
+
+                if (effect.value().isInstantenous()) {
+                    effect.value().applyInstantenousEffect(dragon, null, livingTarget, calculated.amplifier(), /* Seems to be the effect strength */ 1);
+                } else {
+                    livingTarget.addEffect(new MobEffectInstance(effect, calculated.duration(), calculated.amplifier(), false, effectParticles, showIcon), dragon);
                 }
             });
         }
@@ -173,7 +180,7 @@ public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier
             this.duration = LevelBasedValue.perLevel(Functions.secondsToTicks(duration));
             return this;
         }
-    
+
         public Builder probability(final float probability) {
             this.probability = LevelBasedValue.constant(probability);
             return this;
@@ -183,17 +190,17 @@ public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier
             this.probability = LevelBasedValue.perLevel(probability);
             return this;
         }
-    
+
         public Builder showParticles() {
             this.effectParticles = true;
             return this;
         }
-    
+
         public Builder hideIcon() {
             this.showIcon = false;
             return this;
         }
-    
+
         public PotionData build() {
             return new PotionData(effects, amplifier, duration, probability, effectParticles, showIcon);
         }

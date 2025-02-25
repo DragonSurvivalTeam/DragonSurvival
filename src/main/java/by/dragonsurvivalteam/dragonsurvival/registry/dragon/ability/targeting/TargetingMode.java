@@ -10,6 +10,7 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +32,9 @@ public enum TargetingMode implements StringRepresentable {
     @Translation(comments = "neutral entities")
     NEUTRAL("neutral"),
     @Translation(comments = "enemies")
-    ENEMIES("enemies");
+    ENEMIES("enemies"),
+    @Translation(comments = "items")
+    ITEMS("items");
 
     @Translation(key = "player_targeting_handling", type = Translation.Type.CONFIGURATION, comments = {
             "Determines how players are handled for the initial targeting of abilities",
@@ -58,6 +61,10 @@ public enum TargetingMode implements StringRepresentable {
 
         if (player == target) {
             return this == TargetingMode.ALLIES_AND_SELF;
+        }
+
+        if (target instanceof ItemEntity) {
+            return this == TargetingMode.ITEMS;
         }
 
         if (isFriendly(player, target)) {

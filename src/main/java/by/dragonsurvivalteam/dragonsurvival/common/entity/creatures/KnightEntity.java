@@ -140,7 +140,8 @@ public class KnightEntity extends Hunter {
         return false;
     }
 
-    @Nullable public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor serverWorld, @NotNull DifficultyInstance difficultyInstance, @NotNull MobSpawnType spawnReason, @Nullable SpawnGroupData entityData) {
+    @Override
+    public @Nullable SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor serverWorld, @NotNull DifficultyInstance difficultyInstance, @NotNull MobSpawnType spawnReason, @Nullable SpawnGroupData entityData) {
         populateDefaultEquipmentSlots(random, difficultyInstance);
         return super.finalizeSpawn(serverWorld, difficultyInstance, spawnReason, entityData);
     }

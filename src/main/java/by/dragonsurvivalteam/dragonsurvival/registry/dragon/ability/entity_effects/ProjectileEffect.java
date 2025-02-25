@@ -28,7 +28,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-public record ProjectileEffect(Holder<ProjectileData> projectileData, TargetDirection targetDirection, LevelBasedValue numberOfProjectiles, LevelBasedValue projectileSpread, LevelBasedValue speed) implements AbilityEntityEffect {
+public record ProjectileEffect(
+        Holder<ProjectileData> projectileData,
+        TargetDirection targetDirection,
+        LevelBasedValue numberOfProjectiles,
+        LevelBasedValue projectileSpread,
+        LevelBasedValue speed
+) implements AbilityEntityEffect {
     @Translation(comments = "§6■ Number of projectiles:§r %s")
     private static final String ABILITY_PROJECTILE_COUNT = Translation.Type.GUI.wrap("projectile.count");
 

@@ -2,6 +2,9 @@ package by.dragonsurvivalteam.dragonsurvival.server.handlers;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.config.OffsetConfig;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDragonPassengerID;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import net.minecraft.network.chat.Component;
@@ -12,24 +15,40 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.text.NumberFormat;
+import java.util.List;
 
 @EventBusSubscriber
 public class DragonRidingHandler {
-    @Translation(comments = "You are too big to mount on this dragon. You must be at most %s the scale of the dragon you are trying to ride or smaller, but you are scale %s and the dragon is scale %s.")
+    @Translation(key = "riding_offsets", type = Translation.Type.CONFIGURATION, comments = {
+            "Offset the riding position per entity type",
+            "Format: resource/tag;x_offset;y_offset;z_offset",
+            "The resource can also be defined using regular expressions (for both namespace and path)",
+    })
+    @ConfigOption(side = ConfigSide.SERVER, category = "riding", key = "riding_offsets")
+    public static List<OffsetConfig> OFFSETS = List.of(
+            // To avoid touching the water
+            OffsetConfig.create(Tags.EntityTypes.BOATS, new Vec3(0, 0.9, 0))
+    );
+
+    @Translation(comments = "You are too big to mount on this creature. You must be at most %s the scale of the creature you are trying to ride or smaller, but you are scale %s and the creature is scale %s.")
     private static final String SELF_TOO_BIG = Translation.Type.GUI.wrap("message.self_too_big");
 
-    @Translation(comments = "The dragon you are trying to ride must be crouching for you to mount them.")
+    @Translation(comments = "The creature you are trying to ride must be crouching for you to mount them.")
     private static final String NOT_CROUCHING = Translation.Type.GUI.wrap("message.not_crouching");
 
     public static final int NO_PASSENGER = -1;
+
+    public static final Vec3 BASE_MOUNTING_OFFSET = new Vec3(0, 0.63, 0);
     public static final float PLAYER_RIDING_SCALE_RATIO = 0.8F;
     public static final float DRAGON_RIDING_SCALE_RATIO = 0.5F;
 
@@ -38,6 +57,19 @@ public class DragonRidingHandler {
         NOT_CROUCHING,
         OTHER,
         SUCCESS
+    }
+
+    public static Vec3 getMountingOffsetForEntity(final Entity entity) {
+        for (OffsetConfig config : DragonRidingHandler.OFFSETS) {
+            //noinspection deprecation -> ignore
+            Vec3 offset = config.getOffset(entity.getType().builtInRegistryHolder().key());
+
+            if (offset != null) {
+                return offset;
+            }
+        }
+
+        return BASE_MOUNTING_OFFSET;
     }
 
     private static DragonRideAttemptResult playerCanRideDragon(Player rider, Player mount) {
@@ -109,7 +141,7 @@ public class DragonRidingHandler {
                 if (passenger == null || !player.hasPassenger(passenger) || passenger.getRootVehicle() != player.getRootVehicle() || !player.isVehicle()) {
                     dragonStateHandler.setPassengerId(NO_PASSENGER);
                     PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncDragonPassengerID(player.getId(), NO_PASSENGER));
-                    if(passenger != null) {
+                    if (passenger != null) {
                         passenger.stopRiding();
                     }
                     player.connection.send(new ClientboundSetPassengersPacket(player));

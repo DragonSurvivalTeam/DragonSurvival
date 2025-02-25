@@ -16,9 +16,9 @@ public record SyncAbilityLevel(ResourceKey<DragonAbility> ability, int level) im
     public static final Type<SyncAbilityLevel> TYPE = new Type<>(DragonSurvival.res("sync_ability_level"));
 
     public static final StreamCodec<FriendlyByteBuf, SyncAbilityLevel> STREAM_CODEC = StreamCodec.composite(
-        ResourceKey.streamCodec(DragonAbility.REGISTRY), SyncAbilityLevel::ability,
-        ByteBufCodecs.VAR_INT, SyncAbilityLevel::level,
-        SyncAbilityLevel::new
+            ResourceKey.streamCodec(DragonAbility.REGISTRY), SyncAbilityLevel::ability,
+            ByteBufCodecs.VAR_INT, SyncAbilityLevel::level,
+            SyncAbilityLevel::new
     );
 
     public static void handleClient(final SyncAbilityLevel packet, final IPayloadContext context) {

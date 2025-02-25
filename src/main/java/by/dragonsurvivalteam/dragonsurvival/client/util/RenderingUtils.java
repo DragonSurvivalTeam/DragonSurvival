@@ -1,7 +1,9 @@
 package by.dragonsurvivalteam.dragonsurvival.client.util;
 
-
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import com.mojang.blaze3d.Blaze3D;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
@@ -18,8 +20,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -34,16 +39,14 @@ import java.io.IOException;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class RenderingUtils {
-    static final double PI_TWO = Math.PI * 2.0;
+    @Translation(key = "min_near_plane", type = Translation.Type.CONFIGURATION, comments = {
+            "Lower values prevent x-ray through blocks when using a small entity scale",
+            "A value that is too low may cause issues when rendering chunks when certain (unknown) mods are present"
+    })
+    @ConfigOption(side = ConfigSide.CLIENT, category = "rendering", key = "min_near_plane")
+    public static float MIN_NEAR_PLANE = 0.02f;
+
     private static ShaderInstance growthCircleShader;
-
-
-    public static void drawRect(@NotNull final GuiGraphics guiGraphics, int x, int y, int width, int height, int color) {
-        guiGraphics.hLine(x, x + width, y, color);
-        guiGraphics.hLine(x, x + width, y + height, color);
-        guiGraphics.vLine(x, y, y + height, color);
-        guiGraphics.vLine(x + width, y, y + height, color);
-    }
 
     public static void drawGradientRect(Matrix4f mat, int zLevel, int left, int top, int right, int bottom, int[] color) {
         float[] alpha = new float[4];
@@ -61,7 +64,6 @@ public class RenderingUtils {
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         RenderSystem.enableBlend();
-//		RenderSystem.disableTexture();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         bufferbuilder.addVertex(mat, right, top, zLevel).setColor(red[0], green[0], blue[0], alpha[0]);
@@ -69,7 +71,6 @@ public class RenderingUtils {
         bufferbuilder.addVertex(mat, left, bottom, zLevel).setColor(red[2], green[2], blue[2], alpha[2]);
         bufferbuilder.addVertex(mat, right, bottom, zLevel).setColor(red[3], green[3], blue[3], alpha[3]);
         BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
-//		RenderSystem.enableTexture();
         RenderSystem.disableBlend();
     }
 
@@ -79,7 +80,6 @@ public class RenderingUtils {
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.TRIANGLE_STRIP, DefaultVertexFormat.POSITION_COLOR);
         RenderSystem.enableBlend();
-//		RenderSystem.disableTexture();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
@@ -99,7 +99,6 @@ public class RenderingUtils {
         Matrix4f mat = guiGraphics.pose().last().pose();
         int zLevel = 0;
         RenderSystem.enableBlend();
-//		RenderSystem.disableTexture();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         Tesselator tesselator = Tesselator.getInstance();
@@ -124,7 +123,6 @@ public class RenderingUtils {
         }
 
         BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
-//		RenderSystem.enableTexture();
         RenderSystem.disableBlend();
     }
 
@@ -150,7 +148,6 @@ public class RenderingUtils {
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         RenderSystem.enableBlend();
-//		RenderSystem.disableTexture();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         bufferbuilder.addVertex(pMatrix, (float) pMinX, (float) pMaxY, 0.0F).setColor(f, f1, f2, f3);
@@ -158,7 +155,6 @@ public class RenderingUtils {
         bufferbuilder.addVertex(pMatrix, (float) pMaxX, (float) pMinY, 0.0F).setColor(f, f1, f2, f3);
         bufferbuilder.addVertex(pMatrix, (float) pMinX, (float) pMinY, 0.0F).setColor(f, f1, f2, f3);
         BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
-//		RenderSystem.enableTexture();
         RenderSystem.disableBlend();
     }
 
@@ -173,7 +169,9 @@ public class RenderingUtils {
             //}
 
             // the other 'getTexture' call tries to register the texture immediately
-            if (Minecraft.getInstance().getTextureManager().getTexture(key, null) instanceof DynamicTexture texture) {
+            DynamicTexture missing = MissingTextureAtlasSprite.getTexture();
+
+            if (Minecraft.getInstance().getTextureManager().getTexture(key, missing) instanceof DynamicTexture texture && texture != missing) {
                 texture.setPixels(image);
                 texture.upload();
             } else {
@@ -193,16 +191,31 @@ public class RenderingUtils {
         uploadTexture(image, key);
     }
 
-    @Nullable public static NativeImage getImageFromResource(ResourceLocation location) {
+    public static @Nullable NativeImage getImageFromResource(ResourceLocation location) {
         NativeImage image = null;
 
         try {
             image = NativeImage.read(Minecraft.getInstance().getResourceManager().getResource(location).get().open());
         } catch (Exception exception) {
-            DragonSurvival.LOGGER.error("Texture resource {} not found!", location.getPath(), exception);
+            DragonSurvival.LOGGER.warn("Texture resource {} not found!", location.getPath(), exception);
         }
 
         return image;
+    }
+
+    public static boolean hasTexture(final ResourceLocation resource) {
+        DynamicTexture missing = MissingTextureAtlasSprite.getTexture();
+        AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(resource, missing);
+        return texture != missing;
+    }
+
+    public static void setShaderColor(int color) {
+        float alpha = FastColor.ARGB32.alpha(color) / 255f;
+        float red = FastColor.ARGB32.red(color) / 255f;
+        float green = FastColor.ARGB32.green(color) / 255f;
+        float blue = FastColor.ARGB32.blue(color) / 255f;
+
+        RenderSystem.setShaderColor(red, green, blue, alpha);
     }
 
     public static void drawGrowthCircle(final GuiGraphics guiGraphics, float x, float y, float radius, int sides, float lineWidthPercent, float percent, float targetPercent, Color innerColor, Color outlineColor, Color addColor, Color subtractColor) {
@@ -251,6 +264,18 @@ public class RenderingUtils {
 
         RenderSystem.restoreProjectionMatrix();
         RenderSystem.restoreGlState(state);
+    }
+
+    public static float getNearPlane(float original) {
+        //noinspection DataFlowIssue -> player is present
+        float scale = Minecraft.getInstance().player.getScale();
+
+        if (scale < 1) {
+            // Some mods have issues if the near plane is too close (0.016 seems to work)
+            return Math.max(MIN_NEAR_PLANE, original * scale);
+        }
+
+        return original;
     }
 
     @SubscribeEvent

@@ -30,6 +30,7 @@ public class GrowthHUD {
     private static final Color OUTLINE_COLOR = new Color(125, 125, 125);
     private static final Color ADD_COLOR = new Color(0, 200, 0);
     private static final Color SUBTRACT_COLOR = new Color(200, 0, 0);
+    private static final Color GROWTH_STOPPED_COLOR = new Color(255, 255, 255);
 
     @ConfigRange(min = -1000, max = 1000)
     @Translation(key = "growth_x_offset", type = Translation.Type.CONFIGURATION, comments = "Offset for the x position of the item growth icon")
@@ -79,14 +80,21 @@ public class GrowthHUD {
         circleY += growthYOffset;
 
         float targetProgress;
+        Double growth = DragonGrowthHandler.getGrowth(Minecraft.getInstance().player, handler, stack.getItem());
 
-        if (progressDiffIsSmall) {
-            targetProgress = (float) dragonStage.value().getProgress(handler.getGrowth() + DragonGrowthHandler.getGrowth(handler, stack.getItem()));
+        Color addColor = ADD_COLOR;
+
+        if (growth.isNaN()) {
+            currentProgress = 0;
+            targetProgress = 1;
+            addColor = GROWTH_STOPPED_COLOR;
+        } else if (progressDiffIsSmall) {
+            targetProgress = (float) dragonStage.value().getProgress(handler.getGrowth() + growth);
         } else {
             targetProgress = desiredProgress;
         }
 
-        RenderingUtils.drawGrowthCircle(graphics, circleX, circleY, radius, 6, 0.13f, currentProgress, targetProgress, CENTER_COLOR, OUTLINE_COLOR, ADD_COLOR, SUBTRACT_COLOR);
+        RenderingUtils.drawGrowthCircle(graphics, circleX, circleY, radius, 6, 0.13f, currentProgress, targetProgress, CENTER_COLOR, OUTLINE_COLOR, addColor, SUBTRACT_COLOR);
 
         graphics.pose().pushPose();
         graphics.pose().translate(0, 0, 300);

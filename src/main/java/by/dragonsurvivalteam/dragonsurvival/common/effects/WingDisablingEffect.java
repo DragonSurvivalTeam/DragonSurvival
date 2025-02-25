@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.common.effects;
 
-import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncWingsSpread;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
@@ -15,15 +14,10 @@ public class WingDisablingEffect extends ModifiableMobEffect {
     }
 
     @Override
-    public void onEffectStarted(final LivingEntity entity, int strength) {
-        if (!entity.level().isClientSide() && entity instanceof Player player) {
-            DragonStateHandler handler = DragonStateProvider.getData(player);
-
-            if (handler.isDragon()) {
-                FlightData data = FlightData.getData(player);
-                data.areWingsSpread = false;
-                PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncWingsSpread(player.getId(), false));
-            }
+    public void onEffectStarted(final LivingEntity entity, int amplifier) {
+        if (!entity.level().isClientSide() && entity instanceof Player player && DragonStateProvider.getData(player).isDragon()) {
+            FlightData.getData(player).areWingsSpread = false;
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncWingsSpread(player.getId(), false));
         }
     }
 }

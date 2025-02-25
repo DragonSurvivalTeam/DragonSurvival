@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen.data_maps;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DietEntry;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSConditions;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDataMaps;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
@@ -26,9 +27,9 @@ public class DietEntryProvider extends DataMapProvider {
     @Override
     protected void gather() {
         builder(DSDataMaps.DIET_ENTRIES)
-                .add(BuiltInDragonSpecies.CAVE_DRAGON, caveDiet(), false)
-                .add(BuiltInDragonSpecies.FOREST_DRAGON, forestDiet(), false)
-                .add(BuiltInDragonSpecies.SEA_DRAGON, seaDiet(), false);
+                .add(BuiltInDragonSpecies.CAVE_DRAGON, caveDiet(), false, DSConditions.CAVE_DRAGON_LOADED)
+                .add(BuiltInDragonSpecies.FOREST_DRAGON, forestDiet(), false, DSConditions.FOREST_DRAGON_LOADED)
+                .add(BuiltInDragonSpecies.SEA_DRAGON, seaDiet(), false, DSConditions.SEA_DRAGON_LOADED);
     }
 
     public static List<DietEntry> caveDiet() {
@@ -73,12 +74,11 @@ public class DietEntryProvider extends DataMapProvider {
                 DietEntry.from(Tags.Items.FOODS_RAW_MEAT, new FoodProperties(6, 4, false, 1.2f, Optional.empty(), List.of())),
                 DietEntry.from(Tags.Items.FOODS_BERRY, new FoodProperties(1, 1, false, 1.2f, Optional.empty(), List.of())),
                 DietEntry.from(Tags.Items.MUSHROOMS, new FoodProperties(1, 1, false, 0.8f, Optional.empty(), List.of())),
-                DietEntry.from(Tags.Items.EGGS, new FoodProperties(2, 2, false, 0.8f, Optional.empty(), List.of())),
                 DietEntry.from(Items.SWEET_BERRIES, new FoodProperties(2, 2, false, 0.6f, Optional.empty(), List.of())),
                 DietEntry.from(Items.ROTTEN_FLESH, new FoodProperties(2, 4, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
                 DietEntry.from(Items.SPIDER_EYE, new FoodProperties(6, 8, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
                 DietEntry.from(Items.RABBIT, new FoodProperties(7, 8, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
-                DietEntry.from(Items.POISONOUS_POTATO, new FoodProperties(7, 8, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
+                DietEntry.from(Items.POISONOUS_POTATO, new FoodProperties(2, 4, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
                 DietEntry.from(Items.CHORUS_FRUIT, new FoodProperties(9, 8, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
                 DietEntry.from(Items.BROWN_MUSHROOM, new FoodProperties(2, 1, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
                 DietEntry.from(Items.RED_MUSHROOM, new FoodProperties(2, 3, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
@@ -185,7 +185,6 @@ public class DietEntryProvider extends DataMapProvider {
         return List.of(
                 DietEntry.from(Tags.Items.FOODS_RAW_FISH, new FoodProperties(1, 1, false, 1.2f, Optional.empty(), List.of())),
                 DietEntry.from(Items.KELP, new FoodProperties(1, 1, false, 1.0f, Optional.empty(), List.of())),
-                DietEntry.from(Tags.Items.EGGS, new FoodProperties(2, 2, false, 0.8f, Optional.empty(), List.of())),
                 DietEntry.from(Items.PUFFERFISH, new FoodProperties(8, 8, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
                 DietEntry.from(DSItems.SEA_DRAGON_TREAT.value(), new FoodProperties(4, 8, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
                 DietEntry.from(DSItems.SEASONED_FISH.value(), new FoodProperties(12, 10, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),

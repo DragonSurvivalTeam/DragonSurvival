@@ -31,7 +31,6 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,13 +38,13 @@ import org.jetbrains.annotations.Nullable;
 import java.text.NumberFormat;
 
 public class DamageModification extends DurationInstanceBase<DamageModifications, DamageModification.Instance> {
-    @Translation(comments = "§6■ Immune§r to ")
+    @Translation(comments = "§6■ Immune§r to %s")
     private static final String ABILITY_IMMUNITY = Translation.Type.GUI.wrap("damage_modification.immunity");
 
-    @Translation(comments = "§6■ %s% §r reduced damage taken from ")
+    @Translation(comments = "§6■ %s reduced damage taken§r from %s")
     private static final String ABILITY_DAMAGE_REDUCTION = Translation.Type.GUI.wrap("damage_modification.damage_reduction");
 
-    @Translation(comments = "§6■ %s% §r increased damage taken from ")
+    @Translation(comments = "§6■ %s increased damage taken§r from %s")
     private static final String ABILITY_DAMAGE_INCREASE = Translation.Type.GUI.wrap("damage_modification.damage_increase");
 
     public static final Codec<DamageModification> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -85,40 +84,24 @@ public class DamageModification extends DurationInstanceBase<DamageModifications
         float amount = multiplier.calculate(abilityLevel);
         String difference = NumberFormat.getPercentInstance().format(Math.abs(amount - 1));
 
-        MutableComponent name;
+        MutableComponent damageType = Functions.translateHolderSet(damageTypes, Translation.Type.DAMAGE_TYPE);
+        MutableComponent description;
 
         if (amount == 0) {
-            name = Component.translatable(ABILITY_IMMUNITY);
+            description = Component.translatable(ABILITY_IMMUNITY, damageType);
         } else if (amount < 1) {
-            name = Component.translatable(ABILITY_DAMAGE_REDUCTION, DSColors.dynamicValue(difference));
+            description = Component.translatable(ABILITY_DAMAGE_REDUCTION, DSColors.dynamicValue(difference), damageType);
         } else {
-            name = Component.translatable(ABILITY_DAMAGE_INCREASE, DSColors.dynamicValue(difference));
-        }
-
-        if (damageTypes instanceof HolderSet.Named<DamageType> named) {
-            name.append(DSColors.dynamicValue(Component.translatable(Tags.getTagTranslationKey(named.key()))));
-        } else {
-            int count = 0;
-
-            for (Holder<DamageType> damageType : damageTypes) {
-                //noinspection DataFlowIssue -> key is present
-                name.append(DSColors.dynamicValue(Component.translatable(Translation.Type.DAMAGE_TYPE.wrap(damageType.getKey().location()))));
-
-                if (count < damageTypes.size() - 1) {
-                    name.append(", ");
-                }
-
-                count++;
-            }
+            description = Component.translatable(ABILITY_DAMAGE_INCREASE, DSColors.dynamicValue(difference), damageType);
         }
 
         float duration = duration().calculate(abilityLevel);
 
         if (duration != DurationInstance.INFINITE_DURATION) {
-            name.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.dynamicValue(Functions.ticksToSeconds((int) duration))));
+            description.append(Component.translatable(LangKey.ABILITY_EFFECT_DURATION, DSColors.dynamicValue(Functions.ticksToSeconds((int) duration))));
         }
 
-        return name;
+        return description;
     }
 
     @Override

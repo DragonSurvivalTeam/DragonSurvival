@@ -28,6 +28,11 @@
       "operation": "add_multiplied_total"
     },
     {
+      "amount": 1.0,
+      "attribute": "minecraft:generic.safe_fall_distance",
+      "operation": "add_value"
+    },
+    {
       "amount": 0.5,
       "attribute": "neoforge:swim_speed",
       "operation": "add_value"
@@ -63,7 +68,6 @@
   "scaling_proportions": {
     "eye_height": 0.99,
     "height": 1.1,
-    "offset": 1.0,
     "width": 0.6
   }
 }

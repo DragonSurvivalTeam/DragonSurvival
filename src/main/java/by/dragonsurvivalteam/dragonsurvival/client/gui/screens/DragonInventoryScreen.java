@@ -63,7 +63,7 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
     private static final String TOGGLE_CONFIG = Translation.Type.GUI.wrap("inventory.toggle_config");
 
     @Translation(comments = {
-            "■ A dragon is §6born§r with strong claws and teeth, but you can make them even better! Just put §6any tools§r§f here in your claw slots and your bare paw will borrow their aspect as long as they are intact.",
+            "■ Just put §6any tools§r§f here in your claw slots and your bare paw will borrow their aspect as long as they are intact.",
             "§7■ Does not stack with §2«Claws and Teeth»§r§7 skill, which only applies if these slots are empty."
     })
     private static final String HELP_CLAWS = Translation.Type.GUI.wrap("help.claws");
@@ -187,9 +187,9 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
 
             new BarComponent(this,
                     leftPos + 124, topPos + 6, 4,
-                    crystals, 10,
-                    -11, 39, 1, 12, 16, 12, 16,
-                    textures.growthLeftArrow().hoverIcon(), textures.growthLeftArrow().icon(), textures.growthRightArrow().hoverIcon(), textures.growthRightArrow().icon(), false);
+                    crystals, 2,
+                    -11, 39, 1, 12, 16,
+                    textures.growthLeftArrow().hoverIcon(), textures.growthLeftArrow().icon(), textures.growthRightArrow().hoverIcon(), textures.growthRightArrow().icon());
         }
 
         // Vanilla inventory
@@ -204,7 +204,7 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
         HoverButton configButton = new HoverButton(leftPos + 177, topPos + 102, 18, 16, 18, 18, CONFIG_MAIN, CONFIG_HOVER, button -> {
             Minecraft minecraft = Minecraft.getInstance();
             // Copied from ConfigHelper.java
-            Optional<Screen> configScreen =  ModList.get()
+            Optional<Screen> configScreen = ModList.get()
                     .getModContainerById(MODID)
                     .flatMap(m -> {
                         IModInfo modInfo = m.getModInfo();

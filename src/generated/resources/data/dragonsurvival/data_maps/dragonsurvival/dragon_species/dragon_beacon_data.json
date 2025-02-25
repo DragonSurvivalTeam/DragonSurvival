@@ -1,14 +1,19 @@
 {
   "values": {
     "dragonsurvival:cave_dragon": {
+      "neoforge:conditions": [
+        {
+          "type": "dragonsurvival:registered",
+          "registry": "dragonsurvival:dragon_species",
+          "value": "dragonsurvival:cave_dragon"
+        }
+      ],
       "effects": [
         {
-          "amplifier": 0,
           "duration": 400,
           "effect": "dragonsurvival:cave_fire"
         },
         {
-          "amplifier": 0,
           "duration": 400,
           "effect": "dragonsurvival:sturdy_skin"
         }
@@ -19,14 +24,19 @@
       }
     },
     "dragonsurvival:forest_dragon": {
+      "neoforge:conditions": [
+        {
+          "type": "dragonsurvival:registered",
+          "registry": "dragonsurvival:dragon_species",
+          "value": "dragonsurvival:forest_dragon"
+        }
+      ],
       "effects": [
         {
-          "amplifier": 0,
           "duration": 400,
           "effect": "dragonsurvival:sea_peace"
         },
         {
-          "amplifier": 0,
           "duration": 400,
           "effect": "dragonsurvival:animal_peace"
         }
@@ -37,14 +47,19 @@
       }
     },
     "dragonsurvival:sea_dragon": {
+      "neoforge:conditions": [
+        {
+          "type": "dragonsurvival:registered",
+          "registry": "dragonsurvival:dragon_species",
+          "value": "dragonsurvival:sea_dragon"
+        }
+      ],
       "effects": [
         {
-          "amplifier": 0,
           "duration": 400,
           "effect": "dragonsurvival:forest_magic"
         },
         {
-          "amplifier": 0,
           "duration": 400,
           "effect": "minecraft:haste"
         }

@@ -17,7 +17,7 @@ public class TextRenderUtil {
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(x - x * scale, y - y * scale, zLevel);
         guiGraphics.pose().scale(scale, scale, 1);
-        guiGraphics.drawString(Minecraft.getInstance().font, text, x, y, color, /* TODO 1.20 :: Check */ false);
+        guiGraphics.drawString(Minecraft.getInstance().font, text, x, y, color, false);
         guiGraphics.pose().popPose();
     }
 

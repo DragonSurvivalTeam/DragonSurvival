@@ -18,7 +18,7 @@ import java.util.Base64;
 import java.util.Collection;
 
 public class GithubSkinLoader extends NetSkinLoader {
-    public static final String SKIN_LIST_API = "https://api.github.com/repositories/280658566/git/trees/6597d654e16568d2d9e2cdf0dc372041cb081c35?ref=master";
+    public static final String SKIN_LIST_API = "https://api.github.com/repos/DragonSurvivalTeam/DragonSurvival/git/trees/30268eb7e0b3ae65e803b0c71437b6a1f85901ff?ref=master";
     public static final String SKIN = "https://raw.githubusercontent.com/DragonSurvivalTeam/DragonSurvival/master/src/test/resources/";
     private static final String SKINS_PING = "https://raw.githubusercontent.com/DragonSurvivalTeam/DragonSurvival/master/README.md";
 
@@ -89,10 +89,12 @@ public class GithubSkinLoader extends NetSkinLoader {
     private static final String GLOW = "_glow";
 
     public InputStream querySkinImage(final String skinName, final ResourceKey<DragonStage> dragonStage) {
+        boolean isGlow = skinName.endsWith(GLOW);
+
         try {
             String fetchName;
 
-            if (skinName.endsWith(GLOW)) {
+            if (isGlow) {
                 fetchName = skinName.replace(GLOW, "");
                 fetchName = SKIN + fetchName + "_" + dragonStage.location().getPath() + GLOW + ".png";
             } else {
@@ -102,7 +104,9 @@ public class GithubSkinLoader extends NetSkinLoader {
             URL url = new URL(fetchName);
             return internetGetStream(url, 15 * 1000);
         } catch (IOException exception) {
-            DragonSurvival.LOGGER.error("Failed to get skin information in GitHub: [{}]", exception.getMessage());
+            if (!isGlow) {
+                DragonSurvival.LOGGER.error("Failed to get skin information in GitHub: [{}]", exception.getMessage());
+            }
         }
 
         return null;

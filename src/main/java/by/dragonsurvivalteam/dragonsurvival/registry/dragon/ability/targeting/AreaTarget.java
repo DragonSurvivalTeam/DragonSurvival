@@ -18,27 +18,22 @@ import net.minecraft.world.phys.AABB;
 
 // TODO :: optional direction parameter
 public record AreaTarget(Either<BlockTargeting, EntityTargeting> target, LevelBasedValue radius) implements AbilityTargeting {
-    @Translation(comments = " in a %s block radius")
+    @Translation(comments = "Targets a %s block radius")
     private static final String AREA_TARGET_BLOCK = Translation.Type.GUI.wrap("ability_target.area_target.block");
 
-    @Translation(comments = " to %s in a %s block radius")
+    @Translation(comments = "Targets %s in a %s block radius")
     public static final String AREA_TARGET_ENTITY = Translation.Type.GUI.wrap("ability_target.area_target.entity");
 
     public static final MapCodec<AreaTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> AbilityTargeting.codecStart(instance)
             .and(LevelBasedValue.CODEC.fieldOf("radius").forGetter(AreaTarget::radius)).apply(instance, AreaTarget::new)
     );
 
-    // TODO :: not sure if some sort of 'only visible blocks / entities' check is realistic
-    //  using clip() would be unreliable because there might be a proper path / open area for the position
-    //  but clip() fails because there is a single block between the clip start and the targeted position
-    //  same case for the targeted entity
-
     @Override
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability) {
         target().ifLeft(blockTarget -> {
             BlockPos.betweenClosedStream(calculateAffectedArea(dragon, ability)).forEach(position -> {
                 if (blockTarget.matches(dragon, position)) {
-                    blockTarget.effect().forEach(target -> target.apply(dragon, ability, position, null));
+                    blockTarget.effects().forEach(target -> target.apply(dragon, ability, position, null));
                 }
             });
         }).ifRight(entityTarget -> { // TODO :: for auto removal the search for relevant entities would have to be different
@@ -51,11 +46,12 @@ public record AreaTarget(Either<BlockTargeting, EntityTargeting> target, LevelBa
     @Override
     public MutableComponent getDescription(final Player dragon, final DragonAbilityInstance ability) {
         Component targetingComponent = target.map(block -> null, entity -> entity.targetingMode().translation());
+        MutableComponent area = DSColors.dynamicValue(FORMAT.format(getArea(ability)));
 
         if (targetingComponent == null) {
-            return Component.translatable(AREA_TARGET_BLOCK, DSColors.dynamicValue(getArea(ability)));
+            return Component.translatable(AREA_TARGET_BLOCK, area);
         } else {
-            return Component.translatable(AREA_TARGET_ENTITY, DSColors.dynamicValue(targetingComponent), DSColors.dynamicValue(getArea(ability)));
+            return Component.translatable(AREA_TARGET_ENTITY, DSColors.dynamicValue(targetingComponent), area);
         }
     }
 

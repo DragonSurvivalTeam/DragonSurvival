@@ -12,7 +12,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.PotionData;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.SpawnParticles;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.TargetDirection;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.Activation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationKey;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationLayer;
@@ -33,6 +32,12 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBlockTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Animations;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.ChanneledActivation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Notification;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.PassiveActivation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.SimpleActivation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Sound;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.BlockBreakEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.BlockConversionEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.BonemealEffect;
@@ -77,7 +82,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.storage.loot.predicates.AnyOfCondition;
 import net.neoforged.neoforge.common.NeoForgeMod;
 
 import java.util.List;
@@ -167,15 +171,15 @@ public class ForestDragonAbilities {
 
     private static void registerActiveAbilities(final BootstrapContext<DragonAbility> context) {
         context.register(FOREST_BREATH, new DragonAbility(
-                new Activation(
-                        Activation.Type.ACTIVE_CHANNELED,
+                new ChanneledActivation(
                         Optional.empty(),
                         Optional.of(ManaCost.ticking(LevelBasedValue.constant(0.025f))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(1))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(2))),
+                        Notification.DEFAULT,
                         true,
-                        Activation.Sound.create().start(DSSounds.FOREST_BREATH_START.get()).looping(DSSounds.FOREST_BREATH_LOOP.get()).end(DSSounds.FOREST_BREATH_END.get()).optional(),
-                        Activation.Animations.create()
+                        Sound.create().start(DSSounds.FOREST_BREATH_START.get()).looping(DSSounds.FOREST_BREATH_LOOP.get()).end(DSSounds.FOREST_BREATH_END.get()).optional(),
+                        Animations.create()
                                 .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).transitionLength(5).build())
                                 .looping(SimpleAbilityAnimation.create(AnimationKey.BREATH, AnimationLayer.BREATH).transitionLength(5).build())
                                 .optional()
@@ -211,74 +215,72 @@ public class ForestDragonAbilities {
                 ))
         ));
 
-            context.register(SUN_BREATH, new DragonAbility(
-                    new Activation(
-                            Activation.Type.ACTIVE_CHANNELED,
-                            Optional.empty(),
-                            Optional.of(ManaCost.ticking(LevelBasedValue.constant(0.04f))),
-                            Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(1))),
-                            Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(2))),
-                            true,
-                            Activation.Sound.create().start(DSSounds.FOREST_BREATH_START.get()).looping(DSSounds.FOREST_BREATH_LOOP.get()).end(DSSounds.FOREST_BREATH_END.get()).optional(),
-                            Activation.Animations.create()
-                                    .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).transitionLength(5).build())
-                                    .looping(SimpleAbilityAnimation.create(AnimationKey.BREATH, AnimationLayer.BREATH).transitionLength(5).build())
-                                    .optional()
-                    ),
-                    Optional.of(new ExperienceLevelUpgrade(2, LevelBasedValue.lookup(List.of(0f, 24f), LevelBasedValue.perLevel(15)))),
-                    // Disable when affected by the 'STRESS' effect
-                    Optional.of(Condition.thisEntity(EntityCondition.hasEffect(DSEffects.STRESS)).build()),
-                    List.of(
-                            new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
-                                    Condition.thisEntity(EntityCondition.isItem()).build(),
-                                    List.of(new ItemConversionEffect(
-                                            List.of(new ItemConversionEffect.ItemConversionData(ItemCondition.is(Items.POTATO), WeightedRandomList.create(ItemConversionEffect.ItemTo.of(Items.POISONOUS_POTATO)))),
-                                            LevelBasedValue.constant(0.5f)
-                                    )),
-                                    TargetingMode.ALL
-                            ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
-                            new ActionContainer(new DragonBreathTarget(AbilityTargeting.block(
-                                    List.of(
-                                            new BonemealEffect(LevelBasedValue.constant(2), LevelBasedValue.perLevel(0.5f)),
-                                            new BlockConversionEffect(List.of(new BlockConversionEffect.BlockConversionData(
-                                                    BlockCondition.blocks(Blocks.DIRT, Blocks.COARSE_DIRT),
-                                                    SimpleWeightedRandomList.create(
-                                                            new BlockConversionEffect.BlockTo(Blocks.GRASS_BLOCK.defaultBlockState(), 25),
-                                                            new BlockConversionEffect.BlockTo(Blocks.PODZOL.defaultBlockState(), 5),
-                                                            new BlockConversionEffect.BlockTo(Blocks.MYCELIUM.defaultBlockState(), 1),
-                                                            new BlockConversionEffect.BlockTo(Blocks.COARSE_DIRT.defaultBlockState(), 3)
-                                                    ))
-                                            ), LevelBasedValue.constant(0.2f)),
-                                            new BlockBreakEffect(BlockCondition.blocks(Blocks.POTATOES), LevelBasedValue.constant(0.2f), true)
-                                    )
-                            ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
-                            new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                                    List.of(new BreathParticlesEffect(
-                                            0.02f,
-                                            0.02f,
-                                            new SmallSunParticleOption(37, true),
-                                            new LargeSunParticleOption(37, false)
-                                    )),
-                                    TargetingMode.ALL
-                            )), LevelBasedValue.constant(1))),
-                    true,
-                    new LevelBasedResource(List.of(
-                            new LevelBasedResource.Entry(DragonSurvival.res("abilities/forest/sun_breath_0"), 0),
-                            new LevelBasedResource.Entry(DragonSurvival.res("abilities/forest/sun_breath_1"), 1),
-                            new LevelBasedResource.Entry(DragonSurvival.res("abilities/forest/sun_breath_2"), 2)
-                    ))
-            ));
+        context.register(SUN_BREATH, new DragonAbility(
+                new ChanneledActivation(
+                        Optional.empty(),
+                        Optional.of(ManaCost.ticking(LevelBasedValue.constant(0.04f))),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(1))),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(2))),
+                        Notification.DEFAULT,
+                        true,
+                        Sound.create().start(DSSounds.FOREST_BREATH_START.get()).looping(DSSounds.FOREST_BREATH_LOOP.get()).end(DSSounds.FOREST_BREATH_END.get()).optional(),
+                        Animations.create()
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).transitionLength(5).build())
+                                .looping(SimpleAbilityAnimation.create(AnimationKey.BREATH, AnimationLayer.BREATH).transitionLength(5).build())
+                                .optional()
+                ),
+                Optional.of(new ExperienceLevelUpgrade(2, LevelBasedValue.lookup(List.of(0f, 24f), LevelBasedValue.perLevel(15)))),
+                // Disable when affected by the 'STRESS' effect
+                Optional.of(Condition.thisEntity(EntityCondition.hasEffect(DSEffects.STRESS)).build()),
+                List.of(
+                        new ActionContainer(new DragonBreathTarget(AbilityTargeting.entity(
+                                List.of(new ItemConversionEffect(
+                                        List.of(new ItemConversionEffect.ItemConversionData(ItemCondition.is(Items.POTATO), WeightedRandomList.create(ItemConversionEffect.ItemTo.of(Items.POISONOUS_POTATO)))),
+                                        LevelBasedValue.constant(0.5f)
+                                )),
+                                TargetingMode.ITEMS
+                        ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
+                        new ActionContainer(new DragonBreathTarget(AbilityTargeting.block(
+                                List.of(
+                                        new BonemealEffect(LevelBasedValue.constant(2), LevelBasedValue.perLevel(0.5f)),
+                                        new BlockConversionEffect(List.of(new BlockConversionEffect.BlockConversionData(
+                                                BlockCondition.blocks(Blocks.DIRT, Blocks.COARSE_DIRT),
+                                                SimpleWeightedRandomList.create(
+                                                        new BlockConversionEffect.BlockTo(Blocks.GRASS_BLOCK.defaultBlockState(), 25),
+                                                        new BlockConversionEffect.BlockTo(Blocks.PODZOL.defaultBlockState(), 5),
+                                                        new BlockConversionEffect.BlockTo(Blocks.MYCELIUM.defaultBlockState(), 1),
+                                                        new BlockConversionEffect.BlockTo(Blocks.COARSE_DIRT.defaultBlockState(), 3)
+                                                ))
+                                        ), LevelBasedValue.constant(0.2f)),
+                                        new BlockBreakEffect(BlockCondition.blocks(Blocks.POTATOES), LevelBasedValue.constant(0.2f), true)
+                                )
+                        ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
+                        new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                                List.of(new BreathParticlesEffect(
+                                        0.02f,
+                                        0.02f,
+                                        new SmallSunParticleOption(37, true),
+                                        new LargeSunParticleOption(37, false)
+                                )),
+                                TargetingMode.ALL
+                        )), LevelBasedValue.constant(1))),
+                true,
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/forest/sun_breath_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/forest/sun_breath_1"), 1),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/forest/sun_breath_2"), 2)
+                ))
+        ));
 
         context.register(SPIKE, new DragonAbility(
-                new Activation(
-                        Activation.Type.ACTIVE_SIMPLE,
+                new SimpleActivation(
                         Optional.of(LevelBasedValue.constant(1)),
-                        Optional.empty(),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(0.1))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(3))),
+                        Notification.DEFAULT,
                         true,
-                        Activation.Sound.create().end(SoundEvents.ARROW_SHOOT).optional(),
-                        Activation.Animations.create().startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).transitionLength(5).build()).optional()
+                        Sound.create().end(SoundEvents.ARROW_SHOOT).optional(),
+                        Animations.create().startAndCharging(SimpleAbilityAnimation.create(AnimationKey.SPELL_CHARGE, AnimationLayer.BREATH).transitionLength(5).build()).optional()
                 ),
                 Optional.of(new ExperienceLevelUpgrade(4, LevelBasedValue.lookup(List.of(0f, 20f, 30f, 40f), LevelBasedValue.perLevel(15)))),
                 Optional.empty(),
@@ -306,15 +308,14 @@ public class ForestDragonAbilities {
         ));
 
         context.register(INSPIRATION, new DragonAbility(
-                new Activation(
-                        Activation.Type.ACTIVE_SIMPLE,
+                new SimpleActivation(
                         Optional.of(LevelBasedValue.constant(2)),
-                        Optional.empty(),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(4))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
+                        Notification.DEFAULT,
                         false,
-                        Activation.Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
-                        Activation.Animations.create()
+                        Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
+                        Animations.create()
                                 .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MASS_BUFF, AnimationLayer.BASE).transitionLength(2).locksNeck().locksTail().build())
                                 .end(SimpleAbilityAnimation.create(AnimationKey.MASS_BUFF, AnimationLayer.BASE).locksNeck().locksTail().build())
                                 .optional()
@@ -341,15 +342,14 @@ public class ForestDragonAbilities {
         ));
 
         context.register(HUNTER, new DragonAbility(
-                new Activation(
-                        Activation.Type.ACTIVE_SIMPLE,
+                new SimpleActivation(
                         Optional.of(LevelBasedValue.constant(3)),
-                        Optional.empty(),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(3))),
                         Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))),
+                        Notification.DEFAULT,
                         false,
-                        Activation.Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
-                        Activation.Animations.create()
+                        Sound.create().end(SoundEvents.UI_TOAST_IN).optional(),
+                        Animations.create()
                                 .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MASS_BUFF, AnimationLayer.BASE).transitionLength(2).locksNeck().locksTail().build())
                                 .end(SimpleAbilityAnimation.create(AnimationKey.MASS_BUFF, AnimationLayer.BASE).locksNeck().locksTail().build())
                                 .optional()
@@ -379,7 +379,7 @@ public class ForestDragonAbilities {
 
     private static void registerPassiveAbilities(final BootstrapContext<DragonAbility> context) {
         context.register(FOREST_MAGIC, new DragonAbility(
-                Activation.passive(),
+                PassiveActivation.DEFAULT,
                 Optional.of(new ExperiencePointsUpgrade(10, LevelBasedValue.perLevel(36))),
                 Optional.empty(),
                 List.of(
@@ -419,7 +419,7 @@ public class ForestDragonAbilities {
         ));
 
         context.register(FOREST_ATHLETICS, new DragonAbility(
-                Activation.passive(),
+                PassiveActivation.DEFAULT,
                 Optional.of(new ExperiencePointsUpgrade(5, LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -440,7 +440,7 @@ public class ForestDragonAbilities {
         ));
 
         context.register(LIGHT_IN_DARKNESS, new DragonAbility(
-                Activation.passive(),
+                PassiveActivation.DEFAULT,
                 Optional.of(new ExperiencePointsUpgrade(8, LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -465,7 +465,7 @@ public class ForestDragonAbilities {
         ));
 
         context.register(CLIFFHANGER, new DragonAbility(
-                Activation.passive(),
+                PassiveActivation.DEFAULT,
                 Optional.of(new ExperiencePointsUpgrade(6, LevelBasedValue.perLevel(16))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -488,7 +488,7 @@ public class ForestDragonAbilities {
         ));
 
         context.register(FOREST_CLAWS_AND_TEETH, new DragonAbility(
-                Activation.passive(),
+                PassiveActivation.DEFAULT,
                 Optional.of(new DragonGrowthUpgrade(4, LevelBasedValue.lookup(List.of(0f, 25f, 40f, 60f), LevelBasedValue.perLevel(15)))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -515,14 +515,10 @@ public class ForestDragonAbilities {
         ));
 
         context.register(FOREST_WINGS, new DragonAbility(
-                Activation.passive(),
+                PassiveActivation.DEFAULT,
                 Optional.of(new ConditionUpgrade(List.of(Condition.thisEntity(EntityCondition.flightWasGranted(true)).build()), false)),
-                // Disable when marked by the ender dragon or when trapped / wings are broken
-                Optional.of(AnyOfCondition.anyOf(
-                        Condition.thisEntity(EntityCondition.isMarked(true)),
-                        Condition.thisEntity(EntityCondition.hasEffect(DSEffects.TRAPPED)),
-                        Condition.thisEntity(EntityCondition.hasEffect(DSEffects.BROKEN_WINGS))
-                ).build()),
+                // Disable when marked by the ender dragon
+                Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                         List.of(new FlightEffect(1, DragonSurvival.res("textures/ability_effect/forest_dragon_wings.png"))),
                         TargetingMode.ALLIES_AND_SELF
@@ -535,7 +531,7 @@ public class ForestDragonAbilities {
         ));
 
         context.register(FOREST_SPIN, new DragonAbility(
-                Activation.passive(),
+                PassiveActivation.DEFAULT,
                 Optional.of(new ConditionUpgrade(List.of(Condition.thisEntity(EntityCondition.spinWasGranted(true)).build()), false)),
                 // Disable when marked by the ender dragon
                 Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
@@ -551,7 +547,7 @@ public class ForestDragonAbilities {
         ));
 
         context.register(FOREST_IMMUNITY, new DragonAbility(
-                Activation.passive(),
+                PassiveActivation.DEFAULT,
                 Optional.empty(),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(

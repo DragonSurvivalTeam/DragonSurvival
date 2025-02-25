@@ -5,12 +5,12 @@
         "applied_effects": {
           "entity_effect": [
             {
-              "type": "dragonsurvival:fire_breath",
               "amount": {
                 "type": "minecraft:linear",
                 "base": 3.0,
                 "per_level_above_first": 3.0
               },
+              "damage_type": "dragonsurvival:fire_breath",
               "effect_type": "dragonsurvival:damage"
             },
             {
@@ -117,7 +117,7 @@
     }
   ],
   "activation": {
-    "type": "active_channeled",
+    "activation_type": "dragonsurvival:channeled",
     "animations": {
       "looping": {
         "animation_key": "breath",

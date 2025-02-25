@@ -51,7 +51,7 @@ public class OxygenBonus extends DurationInstanceBase<OxygenBonuses, OxygenBonus
 
     public static final Codec<OxygenBonus> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             DurationInstanceBase.CODEC.fieldOf("base").forGetter(identity -> identity),
-            RegistryCodecs.homogeneousList(NeoForgeRegistries.Keys.FLUID_TYPES).optionalFieldOf("fluid_types").forGetter(OxygenBonus::fluids),
+            RegistryCodecs.homogeneousList(NeoForgeRegistries.Keys.FLUID_TYPES).optionalFieldOf("fluid_types").forGetter(OxygenBonus::fluidTypes),
             LevelBasedValue.CODEC.fieldOf("oxygen_bonus").forGetter(OxygenBonus::oxygenBonus)
     ).apply(instance, OxygenBonus::new));
 
@@ -99,7 +99,7 @@ public class OxygenBonus extends DurationInstanceBase<OxygenBonuses, OxygenBonus
         return DSDataAttachments.OXYGEN_BONUSES.value();
     }
 
-    public Optional<HolderSet<FluidType>> fluids() {
+    public Optional<HolderSet<FluidType>> fluidTypes() {
         return fluids;
     }
 
@@ -117,7 +117,7 @@ public class OxygenBonus extends DurationInstanceBase<OxygenBonuses, OxygenBonus
         }
 
         public float getOxygenBonus(final Holder<FluidType> fluid) {
-            if (!baseData().fluids().map(set -> set.contains(fluid)).orElse(true)) {
+            if (!baseData().fluidTypes().map(set -> set.contains(fluid)).orElse(true)) {
                 return OxygenBonus.NONE;
             }
 

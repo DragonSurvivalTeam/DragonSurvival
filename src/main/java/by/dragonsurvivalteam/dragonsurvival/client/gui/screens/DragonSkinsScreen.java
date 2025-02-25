@@ -15,6 +15,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.config.ConfigHandler;
+import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
 import by.dragonsurvivalteam.dragonsurvival.network.dragon_editor.SyncDragonSkinSettings;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
@@ -68,7 +69,7 @@ public class DragonSkinsScreen extends Screen {
     @Translation(comments = "Skin Settings")
     private static final String SETTINGS = Translation.Type.GUI.wrap("skin_screen.settings");
 
-    @Translation(comments = "■ This is a link to our §6Wiki§r dedicated to making your own skin!§7 Remember that this will be very difficult, and requires knowledge of graphic editors.")
+    @Translation(comments = "■ This is a link to our §6Wiki§r dedicated to making your own skin!§7 Remember that this will be very difficult, and requires knowledge of graphic editors. You can order a skin or a custom species from the author and thus support the project!")
     private static final String WIKI = Translation.Type.GUI.wrap("skin_screen.wiki");
 
     @Translation(comments = {
@@ -216,7 +217,7 @@ public class DragonSkinsScreen extends Screen {
 
         //noinspection DataFlowIssue -> key is present
         if (dragonStage != null && !DragonSkins.playerSkinOrGlowFetchingInProgress(playerName, dragonStage.getKey()) && (showYourSkin || !Objects.equals(playerName, minecraft.player.getGameProfile().getName()))) {
-            if(!DragonSkins.fetchHasFailed(playerName, dragonStage.getKey()) || Objects.equals(playerName, minecraft.player.getGameProfile().getName())) {
+            if (!DragonSkins.fetchHasFailed(playerName, dragonStage.getKey()) || Objects.equals(playerName, minecraft.player.getGameProfile().getName())) {
                 if (handler.stage() == null) {
                     boolean alreadyUsingDefaults = handler.getCurrentSkinPreset().isStageUsingDefaultSkin(dragonStage.getKey());
                     handler.setGrowth(null, handler.species().value().getStartingGrowth(minecraft.player.registryAccess()));
@@ -234,7 +235,7 @@ public class DragonSkinsScreen extends Screen {
             } else {
                 drawNonShadowString(guiGraphics, minecraft.font, Component.translatable(NO_SKIN).withStyle(ChatFormatting.RED), startX + 21, startY + 40, -1);
             }
-        } else if(!showYourSkin && Objects.equals(playerName, minecraft.player.getGameProfile().getName())) {
+        } else if (!showYourSkin && Objects.equals(playerName, minecraft.player.getGameProfile().getName())) {
             drawNonShadowString(guiGraphics, minecraft.font, Component.translatable(CUSTOM_MODEL_WARNING_1).withStyle(ChatFormatting.RED), startX + 26, startY + 40, -1);
             drawNonShadowString(guiGraphics, minecraft.font, Component.translatable(CUSTOM_MODEL_WARNING_2).withStyle(ChatFormatting.RED), startX + 26, startY + 50, -1);
         }
@@ -315,9 +316,9 @@ public class DragonSkinsScreen extends Screen {
 
         new BarComponent(this,
                 startX + 128 + 4, height / 2 + 14, 4,
-                dragonBodyWidgets, 40,
-                -15, 160, 7, 18, 20, 20, 20,
-                BODY_ARROW_LEFT_HOVER, BODY_ARROW_LEFT_MAIN, BODY_ARROW_RIGHT_HOVER, BODY_ARROW_RIGHT_MAIN, false);
+                dragonBodyWidgets, 5,
+                -15, 160, 7, 18, 20,
+                BODY_ARROW_LEFT_HOVER, BODY_ARROW_LEFT_MAIN, BODY_ARROW_RIGHT_HOVER, BODY_ARROW_RIGHT_MAIN);
 
         playerNameDisplay = new HoverButton(startX - 62, startY - 50, 165, 22, 165, 22, BUTTON_BACKGROUND_WHITE, BUTTON_BACKGROUND_WHITE, button -> { /* Nothing to do */ });
         playerNameDisplay.setMessage(Component.literal(Objects.requireNonNull(player).getGameProfile().getName()));
@@ -462,11 +463,13 @@ public class DragonSkinsScreen extends Screen {
         randomSkinButton.setTooltip(Tooltip.create(Component.translatable(RANDOM_INFO)));
         addRenderableWidget(randomSkinButton);
 
-        HoverButton openEditorButton = new HoverButton(startX + 128, startY + 115, 165, 22, 165, 22, OPEN_EDITOR_MAIN, OPEN_EDITOR_HOVER, button -> {
-            minecraft.setScreen(new DragonEditorScreen(this));
-        });
-        openEditorButton.setMessage(Component.translatable(OPEN_EDITOR));
-        addRenderableWidget(openEditorButton);
+        if (handler.isDragon()) {
+            HoverButton openEditorButton = new HoverButton(startX + 128, startY + 115, 165, 22, 165, 22, OPEN_EDITOR_MAIN, OPEN_EDITOR_HOVER, button -> {
+                ClientProxy.openDragonEditor(handler.speciesKey(), false);
+            });
+            openEditorButton.setMessage(Component.translatable(OPEN_EDITOR));
+            addRenderableWidget(openEditorButton);
+        }
 
         HoverButton additionsBackground = new HoverButton(startX + 128 + 44, startY + 128 + 16, 69, 22, 69, 22, ADDITIONS_BACKGROUND, ADDITIONS_BACKGROUND, button -> { /* Nothing to do */ });
         addRenderableOnly(additionsBackground);
@@ -497,7 +500,7 @@ public class DragonSkinsScreen extends Screen {
     }
 
     private DragonBodyButton createButton(final Holder<DragonBody> dragonBody, int x, int y) {
-        return new DragonBodyButton(this, x, y, 35, 35, dragonBody, false, button -> handler.setBody(null, dragonBody), true, true);
+        return new DragonBodyButton(this, x, y, 35, 35, dragonBody, DragonBodyButton.LockedReason.NONE, button -> handler.setBody(null, dragonBody), true, true);
     }
 
     private void setTextures() {

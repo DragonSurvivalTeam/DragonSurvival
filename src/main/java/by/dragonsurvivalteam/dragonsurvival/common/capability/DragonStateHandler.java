@@ -4,11 +4,9 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.TimeComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.SkinPreset;
-import by.dragonsurvivalteam.dragonsurvival.commands.DragonCommand;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
-import by.dragonsurvivalteam.dragonsurvival.common.items.growth.StarHeartItem;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncMagicData;
@@ -72,6 +70,9 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class DragonStateHandler extends EntityStateHandler {
+    @Translation(comments = "You cannot turn into a human in this world")
+    private static final String NO_HUMANS = Translation.Type.GUI.wrap("message.no_humans");
+
     public static final double NO_GROWTH = -1;
 
     private static final double AGE_LERP_SPEED = 0.1; // 10% per tick
@@ -85,7 +86,7 @@ public class DragonStateHandler extends EntityStateHandler {
     // (Preferably it would not but the additional checks may not be worth it)
     private final Map<ResourceKey<DragonStage>, Map<Item, Integer>> usedGrowthItems = new HashMap<>();
 
-    public StarHeartItem.State starHeartState = StarHeartItem.State.INACTIVE;
+    public boolean isGrowthStopped;
     public boolean isGrowing = true;
 
     public int magicSource;
@@ -171,13 +172,11 @@ public class DragonStateHandler extends EntityStateHandler {
             } else {
                 visualGrowth = Mth.lerp(AGE_LERP_SPEED, visualGrowth, desiredGrowth);
             }
+        } else if (Math.abs(growth - desiredGrowth) < AGE_EPSILON) {
+            setGrowth(player, desiredGrowth);
+            DragonSizeHandler.overridePose(player);
         } else {
-            if (Math.abs(growth - desiredGrowth) < AGE_EPSILON) {
-                setGrowth(player, desiredGrowth);
-                DragonSizeHandler.overridePose(player);
-            } else {
-                setGrowth(player, Mth.lerp(AGE_LERP_SPEED, growth, desiredGrowth));
-            }
+            setGrowth(player, Mth.lerp(AGE_LERP_SPEED, growth, desiredGrowth));
         }
     }
 
@@ -196,11 +195,18 @@ public class DragonStateHandler extends EntityStateHandler {
         }
 
         if (oldGrowth == this.growth && oldStage != null && dragonStage.is(oldStage)) {
+            // There is no need to refresh the dimensions / fudge the position in this case
+            // the visual size is only for the client (rendering) and therefor doesn't cause position desync
             return;
         }
 
         // Update modifiers before refreshing the dimensions, as the growth modifiers may affect them
         DSModifiers.updateGrowthModifiers(player, this);
+
+        // We need to do this special handling so that the pose update looks smooth
+        // (without updating using poses that are actually incorrect)
+        // (when doing the pose / refresh_size calculations on the server)
+        DragonSizeHandler.overridePose(player);
         player.refreshDimensions();
 
         if (player instanceof ServerPlayer serverPlayer) {
@@ -251,7 +257,7 @@ public class DragonStateHandler extends EntityStateHandler {
         dragonStage = dragonSpecies != null ? DragonStage.get(dragonSpecies.value().getStages(provider), growth) : null;
         this.growth = clampGrowth(provider, growth);
 
-        if (dragonSpecies != null && this.desiredGrowth == dragonSpecies.value().getStartingGrowth(provider)) {
+        if (dragonSpecies != null && this.growth == dragonSpecies.value().getStartingGrowth(provider)) {
             // Allow the player to re-use growth items if their growth is reset
             // Don't clear if the player is a human in case the growth is saved
             // It will be cleared once they turn into a dragon, and its growth matches the requirements
@@ -315,6 +321,10 @@ public class DragonStateHandler extends EntityStateHandler {
         return dragonStage;
     }
 
+    public Holder<DragonStage> stageFromDesiredSize(Player player) {
+        return DragonStage.get(dragonSpecies.value().getStages(player.registryAccess()), desiredGrowth);
+    }
+
     /** Should only be called if the player is a dragon */
     public ResourceKey<DragonStage> stageKey() {
         return stage().getKey();
@@ -365,11 +375,15 @@ public class DragonStateHandler extends EntityStateHandler {
 
         if (hasChanged) {
             if (body() == null || !species.value().isValidForBody(body())) {
-                setBody(player, DragonBody.random(player != null ? player.registryAccess() : null, species));
+                if (player instanceof ServerPlayer serverPlayer) {
+                    setBody(serverPlayer, DragonBody.getRandomUnlocked(serverPlayer));
+                } else {
+                    setBody(player, DragonBody.getRandom(player != null ? player.registryAccess() : null, species));
+                }
             }
 
             if (skinData.skinPresets.get().get(speciesKey()).isEmpty()) {
-                refreshSkinPresetForSpecies(speciesKey());
+                refreshSkinPresetForSpecies(dragonSpecies, dragonBody);
                 recompileCurrentSkin();
             }
         }
@@ -401,7 +415,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
             if (oldBody != null && this.dragonBody.value().model() != oldBody.value().model()) {
                 // If the model has changed, just override the skin preset with the default one as a failsafe
-                refreshSkinPresetForSpecies(speciesKey());
+                refreshSkinPresetForSpecies(dragonSpecies, this.dragonBody);
 
                 recompileCurrentSkin();
             }
@@ -487,18 +501,20 @@ public class DragonStateHandler extends EntityStateHandler {
         return skinData.skinPresets.get().get(speciesKey());
     }
 
-    public void refreshSkinPresetForSpecies(final ResourceKey<DragonSpecies> dragonSpecies) {
+    public void refreshSkinPresetForSpecies(final Holder<DragonSpecies> species, final Holder<DragonBody> body) {
         SkinPreset freshSkinPreset = new SkinPreset();
-        freshSkinPreset.initDefaults(dragonSpecies, dragonBody != null ? dragonBody.value().model() : DragonBody.DEFAULT_MODEL);
-        skinData.skinPresets.get().put(dragonSpecies, freshSkinPreset);
+        freshSkinPreset.initDefaults(species, body != null ? body.value().model() : DragonBody.DEFAULT_MODEL);
+        skinData.skinPresets.get().put(species.getKey(), freshSkinPreset);
     }
 
-    public SkinPreset getSkinPresetForSpecies(final ResourceKey<DragonSpecies> dragonSpecies) {
-        SkinPreset skinPreset = skinData.skinPresets.get().get(dragonSpecies);
-        if(skinPreset.isEmpty()) {
-            refreshSkinPresetForSpecies(dragonSpecies);
+    public SkinPreset getSkinPresetForSpecies(final Holder<DragonSpecies> species, final Holder<DragonBody> body) {
+        SkinPreset skinPreset = skinData.skinPresets.get().get(species.getKey());
+
+        if (skinPreset.isEmpty()) {
+            refreshSkinPresetForSpecies(species, body);
         }
-        return skinData.skinPresets.get().get(dragonSpecies);
+
+        return skinData.skinPresets.get().get(species.getKey());
     }
 
     public void recompileCurrentSkin() {
@@ -529,7 +545,7 @@ public class DragonStateHandler extends EntityStateHandler {
             tag.putString(DRAGON_BODY, bodyId().toString());
             tag.putString(DRAGON_STAGE, stageId().toString());
             tag.putDouble(GROWTH, growth);
-            tag.putString(STAR_HEART_STATE, starHeartState.name());
+            tag.putBoolean(IS_GROWTH_STOPPED, isGrowthStopped);
             tag.putBoolean(IS_GROWING, isGrowing);
             tag.putBoolean(DESTRUCTION_ENABLED, destructionEnabled);
             tag.putBoolean(MARKED_BY_ENDER_DRAGON, markedByEnderDragon);
@@ -611,8 +627,9 @@ public class DragonStateHandler extends EntityStateHandler {
 
         if (dragonSpecies != null) {
             if (dragonBody == null) {
-                // This can happen if a dragon body gets removed
-                dragonBody = DragonBody.random(provider, dragonSpecies);
+                // This can happen if a dragon body gets removed; we pick a random one, which will cause a desync between clients
+                // But this situation should only happen during testing; the end user should not be removing body types once real gameplay is occurring
+                dragonBody = DragonBody.getRandom(provider, dragonSpecies);
             }
 
             // Makes sure that the set growth matches the previously set stage
@@ -620,7 +637,7 @@ public class DragonStateHandler extends EntityStateHandler {
             desiredGrowth = growth;
             destructionEnabled = tag.getBoolean(DESTRUCTION_ENABLED);
             isGrowing = !tag.contains(IS_GROWING) || tag.getBoolean(IS_GROWING);
-            starHeartState = Functions.getEnum(StarHeartItem.State.class, tag.getString(STAR_HEART_STATE));
+            isGrowthStopped = tag.getBoolean(IS_GROWTH_STOPPED);
             markedByEnderDragon = tag.getBoolean(MARKED_BY_ENDER_DRAGON);
             flightWasGranted = tag.getBoolean(WINGS_WAS_GRANTED);
             spinWasGranted = tag.getBoolean(SPIN_WAS_GRANTED);
@@ -644,22 +661,22 @@ public class DragonStateHandler extends EntityStateHandler {
         this.usedGrowthItems.clear();
 
         CompoundTag usedGrowthItems = tag.getCompound(USED_GROWTH_ITEMS);
-        usedGrowthItems.getAllKeys().forEach(key -> {
-            ResourceLocation resource = ResourceLocation.tryParse(key);;
+        usedGrowthItems.getAllKeys().forEach(growthItemStage -> {
+            ResourceLocation stageResource = ResourceLocation.tryParse(growthItemStage);
 
-            if (resource == null) {
+            if (stageResource == null) {
                 // Just to be safe - would normally not occur
                 return;
             }
 
-            CompoundTag perStage = usedGrowthItems.getCompound(key);
-            ResourceKey<DragonStage> stageKey = ResourceKey.create(DragonStage.REGISTRY, resource);
+            CompoundTag perStage = usedGrowthItems.getCompound(growthItemStage);
+            ResourceKey<DragonStage> stageKey = ResourceKey.create(DragonStage.REGISTRY, stageResource);
 
-            perStage.getAllKeys().forEach(itemKey -> {
-                Item item = BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(key));
+            perStage.getAllKeys().forEach(itemResource -> {
+                Item item = BuiltInRegistries.ITEM.get(ResourceLocation.tryParse(itemResource));
 
                 if (item != Items.AIR) {
-                    this.usedGrowthItems.computeIfAbsent(stageKey, ignored -> new HashMap<>()).put(item, perStage.getInt(itemKey));
+                    this.usedGrowthItems.computeIfAbsent(stageKey, ignored -> new HashMap<>()).put(item, perStage.getInt(itemResource));
                 }
             });
         });
@@ -703,13 +720,18 @@ public class DragonStateHandler extends EntityStateHandler {
     }
 
     public void revertToHumanForm(final Player player, boolean isDragonSoul) {
+        if (ServerConfig.noHumansAllowed) {
+            player.displayClientMessage(Component.translatable(NO_HUMANS), true);
+            return;
+        }
+
         // Don't set the saved dragon growth if we are reverting from a soul, as we already are storing the growth of the dragon in the soul
         if (ServerConfig.saveGrowthStage && !isDragonSoul && dragonSpecies != null) {
             savedGrowth.put(speciesKey(), getGrowth());
         }
 
         // Drop everything in your claw slots
-        DragonCommand.reInsertClawTools(player);
+        ClawInventoryData.reInsertClawTools(player);
 
         setSpecies(player, null);
         setBody(player, null);
@@ -775,21 +797,23 @@ public class DragonStateHandler extends EntityStateHandler {
         @Translation(comments = "Disabled")
         DISABLED
     }
-    
-    private static final String DRAGON_SPECIES = "dragon_species";
+
+    // Used by the dragon soul item
+    public static final String DRAGON_SPECIES = "dragon_species";
+    public static final String GROWTH = "growth";
+
     private static final String DRAGON_BODY = "dragon_body";
     private static final String DRAGON_STAGE = "dragon_stage";
 
     private static final String ENTITY_STATE = "entity_state";
     private static final String SKIN_DATA = "skin_data";
 
-    private static final String GROWTH = "growth";
     private static final String SAVED_GROWTH_SUFFIX = "_saved_growth";
 
     private static final String MULTI_MINING = "multi_mining";
     private static final String GIANT_DRAGON_DESTRUCTION = "giant_dragon_destruction";
 
-    private static final String STAR_HEART_STATE = "star_heart_state";
+    private static final String IS_GROWTH_STOPPED = "is_growth_stopped";
     private static final String MARKED_BY_ENDER_DRAGON = "marked_by_ender_dragon";
     private static final String SPIN_WAS_GRANTED = "spin_was_granted";
     private static final String WINGS_WAS_GRANTED = "wings_was_granted";

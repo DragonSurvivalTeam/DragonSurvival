@@ -1,12 +1,16 @@
 package by.dragonsurvivalteam.dragonsurvival.magic;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.AbilityTooltipPositioner;
+import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AbilityTargeting;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.UpgradeType;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -24,10 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2ic;
 import software.bernie.geckolib.util.Color;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class AbilityAndPenaltyTooltipRenderer {
     @Translation(comments = "Hold 'Shift' for info")
@@ -36,7 +37,8 @@ public class AbilityAndPenaltyTooltipRenderer {
     @Translation(comments = "§4Manually disabled§r")
     private static final String MANUALLY_DISABLED = Translation.Type.GUI.wrap("general.manually_disabled");
 
-    private static final ResourceLocation BARS = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/widget_bars.png");
+    private static final ResourceLocation EFFECT_HEADER = DragonSurvival.res("ability_effect_header");
+    private static final ResourceLocation BARS = DragonSurvival.res("textures/gui/widget_bars.png");
 
     private static final int MAX_SHOWN_LINES = 15;
     private static int maxScrollAmount = Integer.MAX_VALUE;
@@ -69,20 +71,12 @@ public class AbilityAndPenaltyTooltipRenderer {
         maxScrollAmount = lines.size();
         scrollAmount = Math.clamp(scrollAmount, 0, maxScroll());
 
-        List<FormattedCharSequence> shownLines = new ArrayList<>();
-
-        for (int line = scrollAmount; line < lines.size(); line++) {
-            if (shownLines.size() == MAX_SHOWN_LINES) {
-                break;
-            }
-
-            shownLines.add(lines.get(line));
-        }
+        boolean skipFirstLine = !lines.isEmpty() && isEffectHeader(lines.getFirst());
 
         int backgroundWidth = 150 + 5;
         int backgroundHeight = 35 + 24 + description.size() * 9;
         int sideWidth = Screen.hasShiftDown() ? maxLineWidth : 15;
-        int sideHeight = Screen.hasShiftDown() ? 36 + shownLines.size() * 9 : backgroundHeight - 10;
+        int sideHeight = Screen.hasShiftDown() ? 36 + Math.min(skipFirstLine ? lines.size() - 1 : lines.size(), MAX_SHOWN_LINES) * 9 : backgroundHeight - 10;
 
         ClientTooltipPositioner positioner = new AbilityTooltipPositioner(Screen.hasShiftDown() ? sideWidth : 0);
         Vector2ic position = positioner.positionTooltip(graphics.guiWidth(), graphics.guiHeight(), x, y, backgroundWidth, Math.max(sideHeight, backgroundHeight));
@@ -98,16 +92,38 @@ public class AbilityAndPenaltyTooltipRenderer {
 
             if (Screen.hasShiftDown()) {
                 graphics.drawString(Minecraft.getInstance().font, Component.translatable(LangKey.INFO), trueX - maxLineWidth + 10, trueY + 15, -1);
+                int counter = 0;
 
-                for (int line = 0; line < shownLines.size(); line++) {
-                    graphics.drawString(Minecraft.getInstance().font, shownLines.get(line), trueX - maxLineWidth + 5, trueY + 5 + 28 + line * 9, DSColors.GRAY);
+                for (int line = scrollAmount; line < lines.size(); line++) {
+                    FormattedCharSequence text = lines.get(line);
+
+                    int startPosition = trueX - maxLineWidth + 5;
+                    int textY = trueY + 5 + 28 + counter * 9;
+
+                    if (line == 0 && skipFirstLine) {
+                        continue;
+                    }
+
+                    if (isEffectHeader(text)) {
+                        RenderingUtils.setShaderColor(DSColors.withAlpha(DSColors.GOLD, 1));
+                        graphics.blitSprite(EFFECT_HEADER, startPosition, textY - 4, maxLineWidth - 10, 9);
+                        RenderSystem.setShaderColor(1, 1, 1, 1);
+                    } else {
+                        graphics.drawString(Minecraft.getInstance().font, text, startPosition, textY, DSColors.GRAY);
+                    }
+
+                    counter++;
+
+                    if (counter == MAX_SHOWN_LINES) {
+                        break;
+                    }
                 }
             }
         }
 
-        // Background
+        // Background of the main description
         graphics.blitWithBorder(BARS, trueX - 2, trueY - 4, 40, 20, backgroundWidth, backgroundHeight, 20, 20, 3, 3, 3, 3);
-        // Top bar
+        // Top bar of the main description
         graphics.blitWithBorder(BARS, trueX, trueY + 3, colorXPos, colorYPos, 150, 20, 20, 20, 3);
         // Backing square for ability icon
         graphics.blitWithBorder(BARS, trueX, trueY, 0, 100, 26, 26, 24, 24, 3);
@@ -121,7 +137,7 @@ public class AbilityAndPenaltyTooltipRenderer {
             graphics.drawCenteredString(Minecraft.getInstance().font, name, trueX + 150 / 2 + 10, trueY + 9, -1);
         }
 
-        for (int line = 0; line < description.size(); ++line) {
+        for (int line = 0; line < description.size(); line++) {
             graphics.drawString(Minecraft.getInstance().font, description.get(line), trueX + 5, trueY + 47 + line * 9, -5592406);
         }
 
@@ -130,6 +146,17 @@ public class AbilityAndPenaltyTooltipRenderer {
         }
 
         graphics.blitSprite(icon, trueX + 5, trueY + 5, 16, 16);
+    }
+
+    private static boolean isEffectHeader(final FormattedCharSequence text) {
+        StringBuilder builder = new StringBuilder();
+
+        text.accept((charPosition, style, character) -> {
+            builder.append(Character.toString(character));
+            return true;
+        });
+
+        return builder.toString().equals(AbilityTargeting.EFFECT_HEADER);
     }
 
     private static FormattedText formatText(final List<Component> shiftInfo) {

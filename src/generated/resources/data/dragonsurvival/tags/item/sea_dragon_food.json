@@ -9,10 +9,6 @@
       "required": false
     },
     {
-      "id": "#c:eggs",
-      "required": false
-    },
-    {
       "id": "minecraft:pufferfish",
       "required": false
     },

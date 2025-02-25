@@ -52,6 +52,10 @@
         {
             "id": "#byg:is_badlands",
             "required": false
+        },
+        {
+            "id": "#wythers:is_desert",
+            "required": false
         }
 	]
 }

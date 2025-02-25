@@ -1,7 +1,8 @@
 package by.dragonsurvivalteam.dragonsurvival.commands;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.network.container.RequestOpenDragonEditor;
+import by.dragonsurvivalteam.dragonsurvival.network.container.OpenDragonEditor;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -22,7 +23,7 @@ public class DragonEditorCommand {
 
     private static int runCommand(final ServerPlayer player) {
         if (DragonStateProvider.isDragon(player)) {
-            PacketDistributor.sendToPlayer(player, RequestOpenDragonEditor.INSTANCE);
+            PacketDistributor.sendToPlayer(player, new OpenDragonEditor(DragonStateProvider.getData(player).speciesKey(), DragonBody.getBodies(player, true), false));
         }
 
         return 1;

@@ -6,7 +6,6 @@ import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncPenaltySupply;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncPenaltySupplyAmount;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.SupplyTrigger;
-import by.dragonsurvivalteam.dragonsurvival.util.PotionUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -14,7 +13,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.alchemy.Potion;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.util.INBTSerializable;
@@ -162,34 +160,24 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
         DragonStateHandler handler = DragonStateProvider.getData(player);
 
         supplyData.forEach((supplyType, data) -> {
-            // Get the matching penalty trigger
+            if (stack.isEmpty() || data.currentSupply == data.maximumSupply) {
+                return;
+            }
+
             Optional<Holder<DragonPenalty>> penalty = getMatchingPenalty(supplyType, handler);
 
             if (penalty.isEmpty()) {
                 return;
             }
 
-            // Check if the item stack is in the recovery items list
-            if (penalty.get().value().trigger() instanceof SupplyTrigger supplyTrigger) {
-                List<SupplyTrigger.RecoveryItems> recoveryList = supplyTrigger.recoveryItems();
-
-                PotionUtils.getPotion(stack).ifPresentOrElse(potion -> {
-                    for (SupplyTrigger.RecoveryItems recoveryItems : recoveryList) {
-                        for (Holder<Potion> potions : recoveryItems.potions()) {
-                            if (potions.value() == potion) {
-                                regenerateManual(player, supplyType, recoveryItems.percentRestored());
-                                break;
-                            }
-                        }
+            if (penalty.get().value().trigger() instanceof SupplyTrigger trigger) {
+                for (SupplyTrigger.RecoveryItem recovery : trigger.recoveryItems()) {
+                    if (recovery.itemPredicates().stream().anyMatch(predicate -> predicate.test(stack))) {
+                        regenerateManual(player, supplyType, recovery.percentRestored());
+                        stack.consume(1, player);
+                        break;
                     }
-                }, () -> {
-                    for (SupplyTrigger.RecoveryItems recoveryItems : recoveryList) {
-                        if (recoveryItems.items().contains(stack.getItemHolder())) {
-                            regenerateManual(player, supplyType, recoveryItems.percentRestored());
-                            break;
-                        }
-                    }
-                });
+                }
             }
         });
     }
@@ -227,19 +215,19 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
     private static class Data {
         private static final String MAXIMUM_SUPPLY = "maximum_supply";
         private static final String CURRENT_SUPPLY = "current_supply";
-        private static final String REDUCTION_RATE_MULTIPLIER = "reduction_rate_multiplier";
+        private static final String REDUCTION_RATE = "reduction_rate";
         private static final String REGENERATION_RATE = "regeneration_rate";
 
         private final float maximumSupply;
         private float currentSupply;
 
-        private final float reductionRateMultiplier;
+        private final float reductionRate;
         private final float regenerationRate;
 
-        public Data(float maximumSupply, float currentSupply, float reductionRateMultiplier, float regenerationRate) {
+        public Data(float maximumSupply, float currentSupply, float reductionRate, float regenerationRate) {
             this.maximumSupply = maximumSupply;
             this.currentSupply = currentSupply;
-            this.reductionRateMultiplier = reductionRateMultiplier;
+            this.reductionRate = reductionRate;
             this.regenerationRate = regenerationRate;
         }
 
@@ -253,7 +241,7 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
 
         public boolean reduce() {
             float oldSupply = currentSupply;
-            currentSupply = Math.max(0, currentSupply - reductionRateMultiplier);
+            currentSupply = Math.max(0, currentSupply - reductionRate);
             return oldSupply != currentSupply;
         }
 
@@ -271,7 +259,7 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
             CompoundTag tag = new CompoundTag();
             tag.putFloat(MAXIMUM_SUPPLY, maximumSupply);
             tag.putFloat(CURRENT_SUPPLY, currentSupply);
-            tag.putFloat(REDUCTION_RATE_MULTIPLIER, reductionRateMultiplier);
+            tag.putFloat(REDUCTION_RATE, reductionRate);
             tag.putFloat(REGENERATION_RATE, regenerationRate);
 
             return tag;
@@ -280,7 +268,7 @@ public class PenaltySupply implements INBTSerializable<CompoundTag> {
         public static Data deserializeNBT(@NotNull final CompoundTag tag) {
             float maximumSupply = tag.getFloat(MAXIMUM_SUPPLY);
             float currentSupply = tag.getFloat(CURRENT_SUPPLY);
-            float reductionRate = tag.getFloat(REDUCTION_RATE_MULTIPLIER);
+            float reductionRate = tag.getFloat(REDUCTION_RATE);
             float regenerationRate = tag.getFloat(REGENERATION_RATE);
 
             return new Data(maximumSupply, currentSupply, reductionRate, regenerationRate);

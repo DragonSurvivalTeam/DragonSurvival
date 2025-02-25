@@ -22,17 +22,7 @@
               "probability": 0.5
             }
           ],
-          "target_conditions": {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "type_specific": {
-                "type": "dragonsurvival:entity_check_predicate",
-                "check_for": "item"
-              }
-            }
-          },
-          "targeting_mode": "all"
+          "targeting_mode": "items"
         },
         "range_multiplier": 1.0,
         "target_type": "dragonsurvival:dragon_breath"
@@ -146,7 +136,7 @@
     }
   ],
   "activation": {
-    "type": "active_channeled",
+    "activation_type": "dragonsurvival:channeled",
     "animations": {
       "looping": {
         "animation_key": "breath",

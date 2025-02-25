@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.projectile.world_effects;
 
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -16,7 +17,16 @@ import net.minecraft.world.level.Level;
 
 import java.util.List;
 
-public record ProjectileExplosionEffect(Holder<DamageType> damageType, LevelBasedValue explosionPower, boolean fire, boolean breakBlocks, boolean canDamageSelf) implements ProjectileWorldEffect {
+public record ProjectileExplosionEffect(
+        Holder<DamageType> damageType,
+        LevelBasedValue explosionPower,
+        boolean fire,
+        boolean breakBlocks,
+        boolean canDamageSelf
+) implements ProjectileWorldEffect {
+    @Translation(comments = "§6■ Explosion Power:§r %s")
+    private static final String POWER = Translation.Type.GUI.wrap("explosion_effect.power");
+
     public static final MapCodec<ProjectileExplosionEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             DamageType.CODEC.fieldOf("damage_type").forGetter(ProjectileExplosionEffect::damageType),
             LevelBasedValue.CODEC.fieldOf("explosion_power").forGetter(ProjectileExplosionEffect::explosionPower),
@@ -46,7 +56,7 @@ public record ProjectileExplosionEffect(Holder<DamageType> damageType, LevelBase
 
     @Override
     public List<MutableComponent> getDescription(final Player dragon, final int level) {
-        return List.of(Component.translatable(LangKey.ABILITY_EXPLOSION_POWER, Component.translatable(LangKey.ABILITY_PROJECTILE), explosionPower().calculate(level)));
+        return List.of(Component.translatable(POWER, DSColors.dynamicValue(explosionPower.calculate(level))));
     }
 
     public MapCodec<? extends ProjectileWorldEffect> codec() {

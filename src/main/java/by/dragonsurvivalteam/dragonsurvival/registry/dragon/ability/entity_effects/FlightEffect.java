@@ -42,7 +42,7 @@ public record FlightEffect(int levelRequirement, ResourceLocation icon) implemen
         data.hasFlight = ability.level() >= levelRequirement;
 
         if (hadFlight != data.hasFlight) {
-             PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverTarget, new FlightStatus(serverTarget.getId(), data.hasFlight));
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverTarget, new FlightStatus(serverTarget.getId(), data.hasFlight));
         }
 
         if (data.icon == null || !data.icon.equals(icon)) {

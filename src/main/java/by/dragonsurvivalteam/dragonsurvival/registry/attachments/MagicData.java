@@ -4,7 +4,9 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.MagicHUD;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonAbilityHolder;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncMagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSSounds;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataComponents;
@@ -12,7 +14,8 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.FlightEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.PassiveActivation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.ActivationTrigger;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ExperiencePointsUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.InputData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.UpgradeType;
@@ -22,6 +25,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -30,6 +34,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -177,6 +182,13 @@ public class MagicData implements INBTSerializable<CompoundTag> {
                 });
             }
 
+            ability.tickCooldown(event.getEntity());
+
+            if (ability.value().activation() instanceof PassiveActivation passive && passive.trigger().type() != ActivationTrigger.TriggerType.CONSTANT) {
+                // Passive activations with non-constant triggers are handled elsewhere
+                continue;
+            }
+
             ability.tick(event.getEntity());
         }
 
@@ -272,7 +284,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
             return false;
         }
 
-        if (!canCastAbility(player, instance)) {
+        if (!checkCast(player, instance)) {
             int cooldown = instance.getCooldown();
 
             if (!errorMessageSent && player.level().isClientSide() && cooldown != DragonAbilityInstance.NO_COOLDOWN) {
@@ -295,34 +307,37 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         return true;
     }
 
-    public void stopCasting(final Player player, boolean withCooldown) {
-        DragonAbilityInstance currentlyCasting = getCurrentlyCasting();
-
-        if (currentlyCasting != null) {
-            currentlyCasting.stopSound(player);
+    public void stopCasting(final Player player, @Nullable final DragonAbilityInstance instance, boolean withCooldown) {
+        if (instance != null) {
+            instance.stopSound(player);
 
             if (withCooldown) {
-                currentlyCasting.release(player);
-                currentlyCasting.value().activation().playEndSound(player);
+                instance.release(player);
+                instance.value().activation().playEndSound(player);
 
-                if (currentlyCasting.hasEndAnimation()) {
-                    currentlyCasting.value().activation().playEndAnimation(player);
-                } else {
+                if (instance.hasEndAnimation()) {
+                    instance.value().activation().playEndAnimation(player);
+                } else if (!instance.isPassive()) {
                     DragonSurvival.PROXY.setCurrentAbilityAnimation(player.getId(), null);
                 }
-            } else {
+            } else if (!instance.isPassive()) {
                 DragonSurvival.PROXY.setCurrentAbilityAnimation(player.getId(), null);
             }
 
-            currentlyCasting.setActive(player, false);
+            instance.setActive(player, false);
         }
 
-        isCasting = false;
+        if (instance == null || !instance.isPassive()) {
+            isCasting = false;
+        }
     }
 
     public void stopCasting(final Player player) {
-        DragonAbilityInstance currentlyCasting = getCurrentlyCasting();
-        stopCasting(player, currentlyCasting != null && currentlyCasting.isApplyingEffects());
+        stopCasting(player, getCurrentlyCasting());
+    }
+
+    public void stopCasting(final Player player, @Nullable final DragonAbilityInstance instance) {
+        stopCasting(player, instance, instance != null && instance.isApplyingEffects());
     }
 
     public void setErrorMessageSent(boolean errorMessageSent) {
@@ -337,7 +352,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         }
 
         isCasting = true;
-        castTimer = instance.value().getChargeTime(instance.level());
+        castTimer = instance.value().activation().getCastTime(instance.level());
         instance.setActive(player, true);
     }
 
@@ -345,8 +360,29 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         return isCasting && getCurrentlyCasting() != null;
     }
 
-    private boolean canCastAbility(final Player dragon, final DragonAbilityInstance instance) {
-        return instance.canBeCast() && instance.hasEnoughMana(dragon);
+    /** Also sends the error message (if present) when the ability is automatically blocked or the player doesn't have enough mana */
+    private boolean checkCast(final Player dragon, final DragonAbilityInstance instance) {
+        if (instance.isDisabled(false)) {
+            if (dragon.level().isClientSide()) {
+                MagicData magic = MagicData.getData(dragon);
+                magic.setErrorMessageSent(true);
+
+                Optional<Component> message = instance.value().activation().notification().usageBlocked();
+
+                if (message.isPresent() && message.get().getContents() != PlainTextContents.EMPTY) {
+                    MagicHUD.castingError(message.get());
+                }
+            }
+
+            return false;
+        }
+
+        if (!instance.hasEnoughMana(dragon)) {
+            instance.handleNotEnoughMana(dragon);
+            return false;
+        }
+
+        return instance.canBeCast();
     }
 
     public boolean shouldRenderAbilities() {
@@ -399,11 +435,12 @@ public class MagicData implements INBTSerializable<CompoundTag> {
             upgrade.attempt(player, instance, growthInput);
         }
 
-
-        for (int i = 0; i < HOTBAR_SLOTS; i++) {
-            if (!getHotbar().containsKey(i)) {
-                getHotbar().put(i, ability.getKey());
-                break;
+        if (!instance.isPassive()) {
+            for (int i = 0; i < HOTBAR_SLOTS; i++) {
+                if (!getHotbar().containsKey(i)) {
+                    getHotbar().put(i, ability.getKey());
+                    break;
+                }
             }
         }
 
@@ -448,8 +485,12 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         return getAbilities().values().stream().filter(instance -> !instance.isPassive()).collect(Collectors.toList());
     }
 
-    public List<DragonAbilityInstance> getPassiveAbilities(final Predicate<Optional<UpgradeType<?>>> predicate) {
+    public List<DragonAbilityInstance> filterPassiveByUpgrade(final Predicate<Optional<UpgradeType<?>>> predicate) {
         return getAbilities().values().stream().filter(instance -> instance.isPassive() && predicate.test(instance.value().upgrade())).collect(Collectors.toList());
+    }
+
+    public List<DragonAbilityInstance> filterPassiveByTrigger(final Predicate<ActivationTrigger> predicate) {
+        return getAbilities().values().stream().filter(instance -> instance.value().activation() instanceof PassiveActivation passive && predicate.test(passive.trigger())).collect(Collectors.toList());
     }
 
     /** Returns the amount of experience gained / lost when down- or upgrading the ability */
@@ -480,12 +521,45 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         }
     }
 
-    public boolean hasFlightGrantingAbility() {
-        return getAbilities().values().stream().anyMatch(abilityInstance ->
-                abilityInstance.value().actions().stream()
-                        .anyMatch(action -> action.effect().target().right()
-                                .map(entityTargeting -> entityTargeting.effects().stream()
-                                        .anyMatch(effect -> effect instanceof FlightEffect)).orElse(false)));
+    /**
+     * Checks the abilities for effects <br>
+     * Note that {@link AbilityCheck#IS_EFFECT_UNLOCKED} can only be checked using a {@link ServerPlayer}
+     */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    public boolean checkAbility(final Player player, final Class<?> effectType, final AbilityCheck check) {
+        for (DragonAbilityInstance instance : getAbilities().values()) {
+            for (ActionContainer action : instance.value().actions()) {
+                if (action.effect().target().map(
+                        target -> checkEffects(player, effectType, check, instance, target.effects(), target.targetConditions().orElse(null)),
+                        target -> checkEffects(player, effectType, check, instance, target.effects(), target.targetConditions().orElse(null))
+                )) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private <T> boolean checkEffects(final Player player, final Class<?> effectType, final AbilityCheck check, final DragonAbilityInstance instance, final List<T> effects, @Nullable final LootItemCondition condition) {
+        for (T effect : effects) {
+            if (effectType.isInstance(effect)) {
+                if (check == AbilityCheck.HAS_EFFECT) {
+                    return true;
+                }
+
+                if (player instanceof ServerPlayer serverPlayer && check == AbilityCheck.IS_EFFECT_UNLOCKED && instance.isApplyingEffects()) {
+                    return condition == null || condition.test(Condition.abilityContext(serverPlayer));
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public enum AbilityCheck {
+        HAS_EFFECT,
+        IS_EFFECT_UNLOCKED
     }
 
     @Override

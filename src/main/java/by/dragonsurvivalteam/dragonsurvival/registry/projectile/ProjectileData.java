@@ -81,7 +81,14 @@ public record ProjectileData(GeneralData generalData, Either<GenericBallData, Ge
         ).apply(instance, GenericBallData::new));
     }
 
-    public record BehaviourData(LevelBasedValue width, LevelBasedValue height, LevelBasedValue maxBounces, LevelBasedValue maxLingeringTicks, LevelBasedValue maxMovementDistance, LevelBasedValue maxLifespan) {
+    public record BehaviourData(
+            LevelBasedValue width,
+            LevelBasedValue height,
+            LevelBasedValue maxBounces,
+            LevelBasedValue maxLingeringTicks,
+            LevelBasedValue maxMovementDistance,
+            LevelBasedValue maxLifespan
+    ) {
         public static final Codec<BehaviourData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 LevelBasedValue.CODEC.fieldOf("width").forGetter(BehaviourData::width),
                 LevelBasedValue.CODEC.fieldOf("height").forGetter(BehaviourData::height),

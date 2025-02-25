@@ -21,10 +21,10 @@ import net.minecraft.world.phys.Vec3;
 
 // TODO :: add sub entity predicate for easy is ally / team check (and tamable animals) / spectator
 public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target, LevelBasedValue rangeMultiplier) implements AbilityTargeting {
-    @Translation(comments = " in a %s block cone")
+    @Translation(comments = "Targets a %s block cone")
     private static final String CONE_TARGET_BLOCK = Translation.Type.GUI.wrap("ability_target.cone_target.block");
 
-    @Translation(comments = " to %s in a %s block cone")
+    @Translation(comments = "Targets %s in a %s block cone")
     private static final String CONE_TARGET_ENTITY = Translation.Type.GUI.wrap("ability_target.cone_target.entity");
 
     public static final MapCodec<DragonBreathTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> AbilityTargeting.codecStart(instance)
@@ -40,7 +40,7 @@ public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target,
 
             BlockPos.betweenClosedStream(calculateBreathArea(dragon, ability)).forEach(position -> {
                 if (blockTarget.matches(dragon, position)) {
-                    blockTarget.effect().forEach(target -> target.apply(dragon, ability, position, direction));
+                    blockTarget.effects().forEach(target -> target.apply(dragon, ability, position, direction));
                 }
             });
         }).ifRight(entityTarget -> {
@@ -53,11 +53,12 @@ public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target,
     @Override
     public MutableComponent getDescription(final Player dragon, final DragonAbilityInstance ability) {
         Component targetingComponent = target.map(block -> null, entity -> entity.targetingMode().translation());
+        MutableComponent range = DSColors.dynamicValue(FORMAT.format(getRange(dragon, ability)));
 
         if (targetingComponent == null) {
-            return Component.translatable(CONE_TARGET_BLOCK, DSColors.dynamicValue(getRange(dragon, ability)));
+            return Component.translatable(CONE_TARGET_BLOCK, range);
         } else {
-            return Component.translatable(CONE_TARGET_ENTITY, DSColors.dynamicValue(targetingComponent), DSColors.dynamicValue(getRange(dragon, ability)));
+            return Component.translatable(CONE_TARGET_ENTITY, DSColors.dynamicValue(targetingComponent), range);
         }
     }
 

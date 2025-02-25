@@ -64,12 +64,6 @@ public class DragonSizeHandler {
         event.setNewSize(new EntityDimensions(newDimensions.width(), newDimensions.height(), newDimensions.eyeHeight(), event.getOldSize().attachments(), event.getOldSize().fixed()));
     }
 
-    public static double calculateDragonHeight(final DragonStateHandler handler, final Player player) {
-        double scale = player.getAttributeValue(Attributes.SCALE);
-        double height = handler.body().value().scalingProportions().height();
-        return applyPose(height * scale, overridePose(player), handler.body().value().crouchHeightRatio());
-    }
-
     public static double calculateDragonEyeHeight(final DragonStateHandler handler, final Player player) {
         double scale = player.getAttributeValue(Attributes.SCALE);
         double eyeHeight = handler.body().value().scalingProportions().eyeHeight();
@@ -170,7 +164,7 @@ public class DragonSizeHandler {
         Player player = event.getEntity();
         DragonStateHandler data = DragonStateProvider.getData(player);
 
-        boolean isDragon = data.isDragon();
+        boolean isDragon = data.isDragon(); // TODO :: remove and handle it when reverted to human
         Boolean wasDragon = WAS_DRAGON.put(getKey(player), isDragon);
 
         if (wasDragon != null && wasDragon && !isDragon) {
@@ -179,11 +173,8 @@ public class DragonSizeHandler {
         } else if (isDragon) {
             data.lerpGrowth(player);
 
-            // We need to do this special handling so that the pose update looks smooth
-            // (without updating using poses that are actually incorrect)
-            // (when doing the pose / refresh_size calculations on the server)
-            DragonSizeHandler.overridePose(player);
-            player.refreshDimensions();
+            // Required for smooth transitions of the pose (e.g. sneaking)
+            DragonSizeHandler.overridePose(event.getEntity());
         }
     }
 

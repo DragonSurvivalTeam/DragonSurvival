@@ -38,7 +38,7 @@ public abstract class VillagerMixin {
                 }
 
                 setLastHurtByMob(player); // To increase the prices when players are stealing
-                HunterOmenHandler.getVillagerLoot(villager, player.level(), null, false).forEach(player.getInventory()::add);
+                HunterOmenHandler.generateVillagerLoot(villager, player.level(), null, false).forEach(player.getInventory()::add);
                 villager.makeSound(getHurtSound(null));
                 player.level().broadcastEntityEvent(villager, EntityEvent.VILLAGER_ANGRY);
                 dragonSurvival$pillagedTimer = Functions.secondsToTicks(600);

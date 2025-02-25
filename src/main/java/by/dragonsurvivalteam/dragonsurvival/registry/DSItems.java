@@ -3,19 +3,11 @@ package by.dragonsurvivalteam.dragonsurvival.registry;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.SourceOfMagicData;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
-import by.dragonsurvivalteam.dragonsurvival.common.items.BolasArrowItem;
-import by.dragonsurvivalteam.dragonsurvival.common.items.ChargedCoalItem;
-import by.dragonsurvivalteam.dragonsurvival.common.items.DragonSoulItem;
-import by.dragonsurvivalteam.dragonsurvival.common.items.FlightGrantItem;
-import by.dragonsurvivalteam.dragonsurvival.common.items.RotatingKeyItem;
-import by.dragonsurvivalteam.dragonsurvival.common.items.SourceOfMagicItem;
-import by.dragonsurvivalteam.dragonsurvival.common.items.SpinGrantItem;
-import by.dragonsurvivalteam.dragonsurvival.common.items.TooltipItem;
+import by.dragonsurvivalteam.dragonsurvival.common.items.*;
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.DarkDragonArmorItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.DragonHunterWeapon;
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.LightDragonArmorItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.food.CustomOnFinishEffectItem;
-import by.dragonsurvivalteam.dragonsurvival.common.items.growth.StarHeartItem;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataComponents;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
@@ -50,6 +42,7 @@ import org.joml.Vector3f;
 import java.util.List;
 import java.util.function.Consumer;
 
+@SuppressWarnings("unused")
 public class DSItems {
     public static final DeferredRegister<Item> REGISTRY = DeferredRegister.create(BuiltInRegistries.ITEM, DragonSurvival.MODID);
     private static final Consumer<LivingEntity> REMOVE_EFFECTS_CURED_BY_MILK = entity -> entity.removeEffectsCuredBy(EffectCures.MILK);
@@ -60,7 +53,7 @@ public class DSItems {
     public static final Holder<Item> STAR_BONE = REGISTRY.register("star_bone", location -> new TooltipItem(new Properties(), location.getPath()));
 
     @Translation(type = Translation.Type.ITEM, comments = "Star Heart")
-    public static final Holder<Item> STAR_HEART = REGISTRY.register("star_heart", location -> new StarHeartItem(new Properties(), location.getPath()));
+    public static final Holder<Item> STAR_HEART = REGISTRY.register("star_heart", () -> new Item(new Properties()));
 
     @Translation(type = Translation.Type.DESCRIPTION, comments = {
             "§6■ Part of the Elder dragon.§r",
@@ -105,7 +98,9 @@ public class DSItems {
 
     @Translation(type = Translation.Type.ITEM, comments = "Charged Soup")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 A concoction of various cave dragon delicacies. Heats up the body enough to protect it from the damaging effects of water.")
-    public static final Holder<Item> CHARGED_SOUP = REGISTRY.register("charged_soup", location -> new CustomOnFinishEffectItem(new Properties(), location.getPath(), entity -> { entity.addEffect(new MobEffectInstance(DSEffects.FIRE, Functions.minutesToTicks(5))); }));
+    public static final Holder<Item> CHARGED_SOUP = REGISTRY.register("charged_soup", location -> new CustomOnFinishEffectItem(new Properties(), location.getPath(), entity -> {
+        entity.addEffect(new MobEffectInstance(DSEffects.FIRE, Functions.minutesToTicks(5)));
+    }));
 
     @Translation(type = Translation.Type.ITEM, comments = "Charred Meat")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 A cave dragon's 'medium rare'.")
@@ -376,7 +371,7 @@ public class DSItems {
 
     @Translation(type = Translation.Type.ITEM, comments = "Light Key")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 An enchanted key that unlocks the Light Vault. Purchased from the dragon rider villager.")
-    public static final Holder<Item> LIGHT_KEY = REGISTRY.register(LIGHT_KEY_ID, () -> new RotatingKeyItem(
+    public static final Holder<Item> LIGHT_KEY = REGISTRY.register(LIGHT_KEY_ID, () -> new LightKeyItem(
             new Item.Properties().rarity(Rarity.UNCOMMON).component(DSDataComponents.TARGET_POSITION, new Vector3f()),
             DragonSurvival.res("geo/" + LIGHT_KEY_ID + ".geo.json"),
             DragonSurvival.res("textures/item/" + LIGHT_KEY_ID + ".png"),
@@ -386,7 +381,7 @@ public class DSItems {
 
     @Translation(type = Translation.Type.ITEM, comments = "Dark Key")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 An enchanted key that unlocks the Dark Vault in Nether. Drops if you kill a dragon hunter knight.")
-    public static final Holder<Item> DARK_KEY = REGISTRY.register(DARK_KEY_ID, () -> new RotatingKeyItem(
+    public static final Holder<Item> DARK_KEY = REGISTRY.register(DARK_KEY_ID, () -> new DarkKeyItem(
             new Item.Properties().rarity(Rarity.UNCOMMON).component(DSDataComponents.TARGET_POSITION, new Vector3f()),
             DragonSurvival.res("geo/" + DARK_KEY_ID + ".geo.json"),
             DragonSurvival.res("textures/item/" + DARK_KEY_ID + ".png"),
@@ -396,7 +391,7 @@ public class DSItems {
 
     @Translation(type = Translation.Type.ITEM, comments = "Hunter Key")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 An enchanted key that unlocks a treasure vault for dragon hunters. Can be purchased from the Hunter Leader in the Hunter Castle.")
-    public static final Holder<Item> HUNTER_KEY = REGISTRY.register(HUNTER_KEY_ID, () -> new RotatingKeyItem(
+    public static final Holder<Item> HUNTER_KEY = REGISTRY.register(HUNTER_KEY_ID, () -> new HunterKeyItem(
             new Item.Properties().rarity(Rarity.UNCOMMON).component(DSDataComponents.TARGET_POSITION, new Vector3f()),
             DragonSurvival.res("geo/" + HUNTER_KEY_ID + ".geo.json"),
             DragonSurvival.res("textures/item/" + HUNTER_KEY_ID + ".png"),
@@ -407,11 +402,11 @@ public class DSItems {
     public static final Holder<Item> SPEARMAN_PROMOTION = REGISTRY.register("spearman_promotion", location -> new TooltipItem(new Properties().rarity(Rarity.COMMON), location.getPath()));
 
     @Translation(type = Translation.Type.ITEM, comments = "Flight Grant")
-    @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 This item gives your dragon the ability to fly. Consumed on use.")
+    @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 This item gives you the ability to fly. Consumed on use.")
     public static final Holder<Item> FLIGHT_GRANT_ITEM = REGISTRY.register("wing_grant", location -> new FlightGrantItem(new Properties(), location.getPath()));
 
     @Translation(type = Translation.Type.ITEM, comments = "Spin Grant")
-    @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 This item gives your dragon the ability to spin while flying. Consumed on use.")
+    @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 This item gives you dragon the ability to spin while flying. Consumed on use.")
     public static final Holder<Item> SPIN_GRANT_ITEM = REGISTRY.register("spin_grant", location -> new SpinGrantItem(new Properties(), location.getPath()));
 
     // --- Spawn eggs --- //

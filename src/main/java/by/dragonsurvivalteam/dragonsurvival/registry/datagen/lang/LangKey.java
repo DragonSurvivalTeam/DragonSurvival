@@ -50,9 +50,6 @@ public class LangKey {
     @Translation(comments = "Hunger has exhausted you, and you can't fly.")
     public static final String MESSAGE_NO_HUNGER = Translation.Type.GUI.wrap("message.no_hunger");
 
-    @Translation(comments = "§8I'll get you to the islands with Ender Dragon magic if you feed me a pearl.")
-    public static final String MESSAGE_ANCHOR = Translation.Type.GUI.wrap("message.anchor");
-
     @Translation(comments = "■ Join our §6discord server§r!§7 Read the Rules, FAQ and Wiki before you ask anything.")
     public static final String DISCORD = Translation.Type.GUI.wrap("general.discord");
 
@@ -100,14 +97,11 @@ public class LangKey {
     @Translation(comments = " on hit")
     public static final String ABILITY_ON_HIT = Translation.Type.GUI.wrap("ability.on_hit");
 
-    @Translation(comments = "§6■ Applies %s")
+    @Translation(comments = "§6■ Applies§r %s")
     public static final String ABILITY_APPLIES = Translation.Type.GUI.wrap("ability.applies");
 
-    @Translation(comments = "§6■ %s §6Damage:§r %s")
+    @Translation(comments = "§6■ Deals %s %s damage§r")
     public static final String ABILITY_DAMAGE = Translation.Type.GUI.wrap("ability.x_damage");
-
-    @Translation(comments = "§6■%s§6Explosion Power:§r %s")
-    public static final String ABILITY_EXPLOSION_POWER = Translation.Type.GUI.wrap("ability.explosion_power");
 
     @Translation(comments = "§6■ Cooldown:§r %ss")
     public static final String ABILITY_COOLDOWN = Translation.Type.GUI.wrap("ability.cooldown_of_x");
@@ -129,9 +123,6 @@ public class LangKey {
 
     @Translation(comments = "All blocks")
     public static final String ALL_BLOCKS = Translation.Type.GUI.wrap("ability.all_blocks");
-
-    @Translation(comments = "Various Blocks (%s)")
-    public static final String VARIOUS_BLOCKS = Translation.Type.GUI.wrap("ability.various_blocks");
 
     @Translation(comments = "None")
     public static final String NONE = Translation.Type.GUI.wrap("ability.none");

@@ -1,8 +1,10 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
+import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 public class MovementData {
     /// Minimum magnitude for player input to consider the player to be moving
@@ -23,11 +25,10 @@ public class MovementData {
     public float prevXRot = 0;
     public float prevZRot = 0;
 
-    public Vec2 desiredMoveVec = Vec2.ZERO;
+    public Vec3 desiredMoveVec = Vec3.ZERO;
 
     public boolean isFirstPerson;
     public boolean isFreeLook;
-    public boolean wasFreeLook;
 
     //TODO: Biting is not correctly synced,
     // since we are setting it inside of the clientside animation
@@ -36,11 +37,14 @@ public class MovementData {
     public boolean dig;
 
     public boolean isMoving() {
-        return desiredMoveVec.lengthSquared() > INPUT_EPSILON * INPUT_EPSILON;
+        return desiredMoveVec.lengthSqr() > INPUT_EPSILON * INPUT_EPSILON;
+    }
+
+    public boolean isMovingHorizontally() {
+        return desiredMoveVec.x * desiredMoveVec.x + desiredMoveVec.z * desiredMoveVec.z > INPUT_EPSILON * INPUT_EPSILON;
     }
 
     public void setFreeLook(boolean isFreeLook) {
-        this.wasFreeLook = this.isFreeLook;
         this.isFreeLook = isFreeLook;
     }
 
@@ -52,7 +56,7 @@ public class MovementData {
         this.bite = bite;
     }
 
-    public void setDesiredMoveVec(Vec2 desiredMoveVec) {
+    public void setDesiredMoveVec(Vec3 desiredMoveVec) {
         this.desiredMoveVec = desiredMoveVec;
     }
 
@@ -66,6 +70,23 @@ public class MovementData {
         this.headYaw = headYaw;
         this.headPitch = headPitch;
         this.deltaMovement = deltaMovement;
+    }
+
+    public void updateDragon(final Player player, @Nullable final DragonEntity dragon) {
+        if (dragon == null) {
+            return;
+        }
+
+        dragon.setPos(player.position());
+//        dragon.yBodyRot = (float) bodyYaw;
+//        dragon.yBodyRotO = (float) bodyYawLastFrame;
+//        dragon.yHeadRot = (float) headYaw;
+//        dragon.yHeadRotO = (float) headYawLastFrame;
+
+//        dragon.setYRot((float) bodyYaw);
+//        dragon.yRotO = (float) bodyYawLastFrame;
+//        dragon.setXRot((float) headPitch);
+//        dragon.xRotO = (float) headPitchLastFrame;
     }
 
     public static MovementData getData(final Entity entity) {

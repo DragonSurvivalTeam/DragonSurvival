@@ -7,14 +7,19 @@ import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
 import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
 import by.dragonsurvivalteam.dragonsurvival.compat.sophisticatedBackpacks.DragonBackpackRenderLayer;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
+import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.GeoModel;
@@ -43,8 +48,8 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
             }
             return null;
         }, (bone, animatable) -> null));
-        
-        if(Compat.isModLoaded(Compat.SOPHISTICATED_BACKPACKS)) {
+
+        if (Compat.isModLoaded(Compat.SOPHISTICATED_BACKPACKS)) {
             getRenderLayers().add(new DragonBackpackRenderLayer(this));
         }
     }
@@ -70,6 +75,9 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
             return;
         }
 
+        poseStack.pushPose();
+        setupRender(player, poseStack, partialTick);
+
         DragonStateHandler handler = DragonStateProvider.getData(player);
         boolean hasWings = !handler.body().value().canHideWings() || handler.getCurrentStageCustomization().wings;
 
@@ -84,6 +92,25 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         }
 
         super.actuallyRender(poseStack, animatable, model, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, color);
+        poseStack.popPose();
+    }
+
+    private void setupRender(final Player player, final PoseStack pose, final float partialTick) {
+        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
+        MovementData movement = MovementData.getData(player);
+
+        // This is normally used in EntityRenderDispatcher#render but that isn't triggered for 'DragonEntity'
+        Vec3 offset = getRenderOffset(dragon, partialTick);
+        pose.translate(-offset.x(), -offset.y(), -offset.z());
+
+        pose.mulPose(Axis.YN.rotationDegrees((float) movement.bodyYaw));
+
+        if (ServerFlightHandler.isGliding(player) || (player.isPassenger() && DragonStateProvider.isDragon(player.getVehicle()) && ServerFlightHandler.isGliding((Player) player.getVehicle()))) {
+            // Responsible for the pitch (rotating entity downward / upward)
+            pose.mulPose(Axis.XN.rotationDegrees(dragon.prevXRot));
+            // Responsible for the roll (rotating entity to the side)
+            pose.mulPose(Axis.ZP.rotation(dragon.prevZRot));
+        }
     }
 
     @Override // Also used by the layers
@@ -99,5 +126,10 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         }
 
         return HunterHandler.modifyAlpha(animatable.getPlayer(), color);
+    }
+
+    @Override
+    public @NotNull Vec3 getRenderOffset(@NotNull final DragonEntity dragon, final float partialTicks) {
+        return ClientDragonRenderer.getModelOffset(dragon, partialTicks);
     }
 }

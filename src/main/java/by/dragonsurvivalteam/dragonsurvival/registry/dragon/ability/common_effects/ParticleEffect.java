@@ -26,7 +26,7 @@ public record ParticleEffect(SpawnParticles particleData, LevelBasedValue partic
 
     @Override
     public void apply(ServerPlayer dragon, DragonAbilityInstance ability, BlockPos position, @Nullable Direction direction) {
-        particleData.apply((ServerLevel) dragon.level(), position, (int)particleCount.calculate(ability.level()));
+        particleData.apply((ServerLevel) dragon.level(), position, (int) particleCount.calculate(ability.level()));
     }
 
     @Override
@@ -36,7 +36,7 @@ public record ParticleEffect(SpawnParticles particleData, LevelBasedValue partic
 
     @Override
     public void apply(ServerPlayer dragon, DragonAbilityInstance ability, Entity target) {
-        particleData.apply((ServerLevel) dragon.level(), target, (int)particleCount.calculate(ability.level()));
+        particleData.apply((ServerLevel) dragon.level(), target, (int) particleCount.calculate(ability.level()));
     }
 
     @Override
