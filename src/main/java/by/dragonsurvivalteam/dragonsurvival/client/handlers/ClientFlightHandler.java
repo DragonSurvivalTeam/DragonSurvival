@@ -51,8 +51,6 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.joml.Vector3f;
 
-import java.util.Objects;
-
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 /** Used in pair with {@link ServerFlightHandler} */
@@ -492,7 +490,7 @@ public class ClientFlightHandler {
             return;
         }
 
-        PacketDistributor.sendToServer(new ToggleFlight(ToggleFlight.Activation.MANUAL, ToggleFlight.Result.NONE));
+        PacketDistributor.sendToServer(new ToggleFlight(data.getFirst().getId(), ToggleFlight.Activation.MANUAL, ToggleFlight.Result.NONE));
     }
 
     /**
@@ -517,11 +515,15 @@ public class ClientFlightHandler {
             return;
         }
 
-        PacketDistributor.sendToServer(new ToggleFlight(ToggleFlight.Activation.JUMP, ToggleFlight.Result.NONE));
+        PacketDistributor.sendToServer(new ToggleFlight(player.getId(), ToggleFlight.Activation.JUMP, ToggleFlight.Result.NONE));
     }
 
-    public static void handleToggleResult(final ToggleFlight.Activation activation, final ToggleFlight.Result result) {
-        LocalPlayer player = Objects.requireNonNull(Minecraft.getInstance().player);
+    public static void handleToggleResult(final int playerId, final ToggleFlight.Activation activation, final ToggleFlight.Result result) {
+        //noinspection DataFlowIssue -> level is present
+        if (!(Minecraft.getInstance().level.getEntity(playerId) instanceof Player player)) {
+            return;
+        }
+
         FlightData flight = FlightData.getData(player);
 
         if (activation == ToggleFlight.Activation.MANUAL) {

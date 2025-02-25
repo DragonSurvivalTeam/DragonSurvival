@@ -8,51 +8,56 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.FlightEffect;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record ToggleFlight(Activation activation, Result result) implements CustomPacketPayload {
+public record ToggleFlight(int playerId, Activation activation, Result result) implements CustomPacketPayload {
     public static final Type<ToggleFlight> TYPE = new Type<>(DragonSurvival.res("toggle_flight"));
 
     public static final StreamCodec<FriendlyByteBuf, ToggleFlight> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, ToggleFlight::playerId,
             NeoForgeStreamCodecs.enumCodec(Activation.class), ToggleFlight::activation,
             NeoForgeStreamCodecs.enumCodec(Result.class), ToggleFlight::result,
             ToggleFlight::new
     );
 
     public static void handleClient(final ToggleFlight packet, final IPayloadContext context) {
-        context.enqueueWork(() -> ClientFlightHandler.handleToggleResult(packet.activation(), packet.result()));
+        context.enqueueWork(() -> ClientFlightHandler.handleToggleResult(packet.playerId(), packet.activation(), packet.result()));
     }
 
     public static void handleServer(final ToggleFlight packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
-            FlightData flight = FlightData.getData(context.player());
+            if (!(context.player().level().getEntity(packet.playerId()) instanceof Player player)) {
+                return Result.NONE;
+            }
+
+            FlightData flight = FlightData.getData(player);
 
             if (packet.activation() == Activation.JUMP && flight.areWingsSpread) {
                 return Result.ALREADY_ENABLED;
             }
 
-            if (!context.player().isCreative() && !hasEnoughFoodToStartFlight(context.player())) {
+            if (!player.isCreative() && !hasEnoughFoodToStartFlight(player)) {
                 return Result.NO_HUNGER;
             }
 
-            MagicData magic = MagicData.getData(context.player());
+            MagicData magic = MagicData.getData(player);
 
-            if (!magic.checkAbility(context.player(), FlightEffect.class, MagicData.AbilityCheck.HAS_EFFECT)) {
+            if (!magic.checkAbility(player, FlightEffect.class, MagicData.AbilityCheck.HAS_EFFECT)) {
                 return Result.NO_WINGS;
             }
 
-            if (context.player().hasEffect(DSEffects.TRAPPED) || context.player().hasEffect(DSEffects.BROKEN_WINGS)) {
+            if (player.hasEffect(DSEffects.TRAPPED) || player.hasEffect(DSEffects.BROKEN_WINGS)) {
                 return Result.WINGS_BLOCKED;
             }
 
-            if (!magic.checkAbility(context.player(), FlightEffect.class, MagicData.AbilityCheck.IS_EFFECT_UNLOCKED)) {
+            if (!magic.checkAbility(player, FlightEffect.class, MagicData.AbilityCheck.IS_EFFECT_UNLOCKED)) {
                 return Result.ALREADY_DISABLED;
             }
 
@@ -63,7 +68,7 @@ public record ToggleFlight(Activation activation, Result result) implements Cust
             } else {
                 return Result.SUCCESS_DISABLED;
             }
-        }).thenAccept(result -> PacketDistributor.sendToPlayer((ServerPlayer) context.player(), new ToggleFlight(packet.activation(), result)));
+        }).thenAccept(result -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(context.player(), new ToggleFlight(packet.playerId(), packet.activation(), result)));
     }
 
     public static boolean hasEnoughFoodToStartFlight(final Player player) {
