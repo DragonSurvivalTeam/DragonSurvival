@@ -783,6 +783,8 @@
   "dragonsurvival.configuration.skill_bar_y_offset.tooltip": "Offset for the x position of the skill bar",
   "dragonsurvival.configuration.small_size_animation_speed_factor": "Small Size Animation Speed Factor",
   "dragonsurvival.configuration.small_size_animation_speed_factor.tooltip": "The factor by which the additional animation speed from being smaller is multiplied. 1.0 represents the speed accurately reflecting the size of the dragon.",
+  "dragonsurvival.configuration.source_of_magic_max_duration": "Source Of Magic Max Duration",
+  "dragonsurvival.configuration.source_of_magic_max_duration.tooltip": "Max. duration (in ticks) (20 ticks = 1 second) the source of magic effect can stack up to",
   "dragonsurvival.configuration.spearman_armor": "Spearman Armor",
   "dragonsurvival.configuration.spearman_armor.tooltip": "Amount of armor the spearman has",
   "dragonsurvival.configuration.spearman_bonus_horizontal_reach": "Spearman Bonus Horizontal Reach",

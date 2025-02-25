@@ -56,7 +56,7 @@ public class DragonSoulItem extends Item {
     @Translation(comments = "Invalid dragon type")
     private static final String INVALID_DRAGON_TYPE = Translation.Type.DESCRIPTION.wrap("dragon_soul.invalid_type");
 
-    @ConfigRange(min = 0, max = Integer.MAX_VALUE)
+    @ConfigRange(min = 0)
     @Translation(key = "dragon_soul_cooldown", type = Translation.Type.CONFIGURATION, comments = "Cooldown (in ticks) (20 ticks = 1 second) that occurs after using the dragon soul")
     @ConfigOption(side = ConfigSide.SERVER, category = {"items", "dragon_soul"}, key = "dragon_soul_cooldown")
     public static int COOLDOWN = Functions.secondsToTicks(10);

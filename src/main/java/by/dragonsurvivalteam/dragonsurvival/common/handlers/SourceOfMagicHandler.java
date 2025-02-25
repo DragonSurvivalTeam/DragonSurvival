@@ -9,7 +9,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 @EventBusSubscriber
@@ -44,14 +43,5 @@ public class SourceOfMagicHandler {
         }
 
         return player.level().getBlockEntity(player.blockPosition()) instanceof SourceOfMagicBlockEntity source && source.isApplicableFor(handler);
-    }
-
-    @SubscribeEvent
-    public static void resetTimer(final LivingDamageEvent.Post event) {
-        // TODO :: would need a whole new packet just to sync a number
-        //  not sure if that is even worth it
-        if (event.getEntity() instanceof Player player) {
-
-        }
     }
 }

@@ -3,6 +3,9 @@ package by.dragonsurvivalteam.dragonsurvival.common.blocks;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
@@ -77,6 +80,11 @@ import java.util.function.Function;
 public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements SimpleWaterloggedBlock, EntityBlock {
     @Translation(comments = "You need a 3x3 area to place %s")
     private static final String OCCUPIED = Translation.Type.GUI.wrap("message.occupied");
+
+    @ConfigRange(min = 0)
+    @Translation(key = "source_of_magic_max_duration", type = Translation.Type.CONFIGURATION, comments = "Max. duration (in ticks) (20 ticks = 1 second) the source of magic effect can stack up to")
+    @ConfigOption(side = ConfigSide.SERVER, category = "magic", key = "source_of_magic_max_duration")
+    public static int MAX_DURATION = Functions.minutesToTicks(30);
 
     public static final BooleanProperty PRIMARY_BLOCK = BooleanProperty.create("primary");
     public static final BooleanProperty FILLED = BooleanProperty.create("filled");
@@ -360,7 +368,6 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
     @Override
     public void entityInside(@NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Entity entity) {
         super.entityInside(state, level, position, entity);
-
         BlockPos sourcePosition = position;
 
         if (level.getBlockEntity(position) instanceof SourceOfMagicPlaceholder placeholder) {
@@ -405,9 +412,10 @@ public class SourceOfMagicBlock extends HorizontalDirectionalBlock implements Si
 
                 if (instance == null) {
                     player.addEffect(new MobEffectInstance(DSEffects.SOURCE_OF_MAGIC, duration, 0, true, false));
+                } else if (instance.getDuration() < MAX_DURATION) {
+                    player.addEffect(new MobEffectInstance(DSEffects.SOURCE_OF_MAGIC, Math.min(MAX_DURATION, instance.getDuration() + duration), 0, true, false));
                 } else {
-                    // TODO :: should there be a max. duration?
-                    player.addEffect(new MobEffectInstance(DSEffects.SOURCE_OF_MAGIC, instance.getDuration() + duration, 0, true, false));
+                    return;
                 }
 
                 player.playNotifySound(SoundEvents.BEACON_POWER_SELECT, SoundSource.NEUTRAL, 1, 1);
