@@ -9,7 +9,9 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.ForestDra
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.SeaDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.PassiveActivation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnDeath;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnSelfHit;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnTargetKilled;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.RunFunctionEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.HealEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.SmeltItemEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AbilityTargeting;
@@ -53,6 +55,19 @@ public class DragonAbilities {
                 List.of(
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(List.of(
                                 new HealEffect(LevelBasedValue.constant(0.3f))
+                        ), TargetingMode.ALLIES_AND_SELF)), LevelBasedValue.constant(1))
+                ),
+                true,
+                new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
+        ));
+
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_function")), new DragonAbility(
+                new PassiveActivation(Optional.empty(), Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(5))), new OnSelfHit(Optional.empty())),
+                Optional.empty(),
+                Optional.empty(),
+                List.of(
+                        new ActionContainer(new SelfTarget(AbilityTargeting.entity(List.of(
+                                new RunFunctionEffect(DragonSurvival.res("test"))
                         ), TargetingMode.ALLIES_AND_SELF)), LevelBasedValue.constant(1))
                 ),
                 true,
