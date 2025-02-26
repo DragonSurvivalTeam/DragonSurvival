@@ -551,11 +551,17 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         if (!movement.isMovingHorizontally() && handler.isOnMagicSource) {
             // TODO :: does this need to be synchronized to other players?
             return state.setAndContinue(SIT_ON_MAGIC_SOURCE);
-        } else if (player.isSleeping() || treasureRest.isResting()) {
+        }
+
+        if (player.isSleeping() || treasureRest.isResting()) {
             return state.setAndContinue(SLEEP);
-        } else if (player.isPassenger()) {
+        }
+
+        if (player.isPassenger()) {
             return state.setAndContinue(SIT);
-        } else if (player.getAbilities().flying || ServerFlightHandler.isFlying(player)) {
+        }
+
+        if (player.getAbilities().flying || ServerFlightHandler.isFlying(player)) {
             if (ServerFlightHandler.isGliding(player)) {
                 if (ServerFlightHandler.isSpin(player)) {
                     animationSpeed = 2;
@@ -590,6 +596,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
                     if (movement.desiredMoveVec.y > 0) {
                         animationSpeed = 2;
                     }
+
                     state.setAnimation(FLY);
                     animationController.transitionLength(2);
                 }
@@ -629,12 +636,22 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             }
         } else if (AnimationUtils.isAnimationPlaying(animationController, FLY_LAND)) {
             state.setAnimation(FLY_LAND_END);
+
             if (!FLY_LAND_END.getAnimationStages().isEmpty()) {
                 animationTickTimer.putAnimation(FLY_LAND_END, animationDuration(player, FLY_LAND_END.getAnimationStages().getFirst().animationName()));
             }
+
             animationController.transitionLength(2);
         } else if (animationTickTimer.getDuration(FLY_LAND_END) > 0) {
             // Don't add any animation
+        } else if (player.onClimbable()) {
+            if (movement.deltaMovement.y() < 0) {
+                state.setAnimation(CLIMBING_DOWN);
+            } else {
+                state.setAnimation(CLIMBING_UP);
+            }
+
+            animationController.transitionLength(2);
         } else if (DRAGON_JUMP_TICKS.getOrDefault(this.playerId, 0) > 0) {
             state.setAnimation(JUMP);
             animationController.transitionLength(2);
@@ -800,6 +817,8 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     private static final RawAnimation WALK = RawAnimation.begin().thenLoop("walk");
     private static final RawAnimation IDLE = RawAnimation.begin().thenLoop("idle");
     private static final RawAnimation DIG = RawAnimation.begin().thenLoop("dig");
+    private static final RawAnimation CLIMBING_UP = RawAnimation.begin().thenLoop("climbing_up");
+    private static final RawAnimation CLIMBING_DOWN = RawAnimation.begin().thenLoop("climbing_down");
 
     private static final RawAnimation JUMP = RawAnimation.begin().then("jump", Animation.LoopType.PLAY_ONCE).thenLoop("fall_loop");
     private static final RawAnimation FLY_LAND_END = RawAnimation.begin().then("fly_land_end", Animation.LoopType.PLAY_ONCE).thenLoop("idle");
