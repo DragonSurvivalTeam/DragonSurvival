@@ -114,10 +114,6 @@ public class ServerConfig {
 
     // --- Penalties --- //
 
-    @Translation(key = "dragons_are_scary", type = Translation.Type.CONFIGURATION, comments = "If enabled animals will try run away from dragons")
-    @ConfigOption(side = ConfigSide.SERVER, category = "penalties", key = "dragons_are_scary")
-    public static Boolean dragonsAreScary = true;
-
     @Translation(key = "limited_riding", type = Translation.Type.CONFIGURATION, comments = "If enabled dragons will be limited to riding the entities in the entity tag 'dragonsurvival:vehicle_whitelist'")
     @ConfigOption(side = ConfigSide.SERVER, category = "penalties", key = "limited_riding")
     public static Boolean limitedRiding = true;

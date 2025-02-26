@@ -621,8 +621,6 @@
   "dragonsurvival.configuration.dragon_ore_dust_chance.tooltip": "Determines the chance (in %) of dust dropping when a dragon harvests an ore block",
   "dragonsurvival.configuration.dragon_soul_cooldown": "Dragon Soul Cooldown",
   "dragonsurvival.configuration.dragon_soul_cooldown.tooltip": "Cooldown (in ticks) (20 ticks = 1 second) that occurs after using the dragon soul",
-  "dragonsurvival.configuration.dragons_are_scary": "Dragons Are Scary",
-  "dragonsurvival.configuration.dragons_are_scary.tooltip": "If enabled animals will try run away from dragons",
   "dragonsurvival.configuration.drain_effect_damage": "Drain Effect Damage",
   "dragonsurvival.configuration.drain_effect_damage.tooltip": "Determines the damage dealt by the drain effect",
   "dragonsurvival.configuration.effects_on_sleep": "Effects On Sleep",
