@@ -14,7 +14,7 @@
     ],
     "penalty_type": "dragonsurvival:item_blacklist"
   },
-  "icon": "dragonsurvival:abilities/cave/item_blacklist",
+  "icon": "dragonsurvival:penalties/general/item_blacklist",
   "trigger": {
     "penalty_trigger": "dragonsurvival:instant",
     "trigger_rate": 1

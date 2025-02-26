@@ -44,9 +44,9 @@ public interface PenaltyEffect {
             event.register(REGISTRY_KEY, DragonSurvival.res("mob_effect"), () -> MobEffectPenalty.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("item_blacklist"), () -> ItemBlacklistPenalty.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("damage_modification"), () -> DamageModificationPenalty.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("fear"), () -> FearPenalty.CODEC);
 
-            // TODO :: attribute modification
-            // TODO :: implement animal fear as penalty
+            // TODO :: attribute modification, effect modification
         }
     }
 }

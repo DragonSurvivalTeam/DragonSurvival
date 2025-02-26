@@ -36,11 +36,11 @@ public class EntityCondition {
     }
 
     public static EntityPredicate isLiving() {
-        return EntityPredicate.Builder.entity().subPredicate(EntityCheckPredicate.Builder.start().living().build()).build();
+        return isType(EntityCheckPredicate.Type.LIVING_ENTITY);
     }
 
-    public static EntityPredicate isItem() {
-        return EntityPredicate.Builder.entity().subPredicate(EntityCheckPredicate.Builder.start().item().build()).build();
+    public static EntityPredicate isType(final EntityCheckPredicate.Type type) {
+        return EntityPredicate.Builder.entity().subPredicate(EntityCheckPredicate.Builder.start().type(type).build()).build();
     }
 
     public static EntityPredicate isOnBlock(final TagKey<Block> tag) {

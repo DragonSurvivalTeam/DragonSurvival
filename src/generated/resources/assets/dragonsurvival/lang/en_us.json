@@ -353,6 +353,8 @@
   "dragon_emote.dragonsurvival.vibing_standing": "§3Fun:§r Dance",
   "dragon_penalty.dragonsurvival.cold_weakness": "Cold Weakness",
   "dragon_penalty.dragonsurvival.cold_weakness.desc": "■ Cave dragons slowly take §cdamage§r while in snow or rain due to their fiery nature.\n\n■ The skill §2«Contrast Shower»§r §7could make your life easier.\n",
+  "dragon_penalty.dragonsurvival.fear": "Fear",
+  "dragon_penalty.dragonsurvival.fear.desc": "■ Dragons are scary creatures. Animals will try to avoid them.",
   "dragon_penalty.dragonsurvival.fear_of_darkness": "Fear of Darkness",
   "dragon_penalty.dragonsurvival.fear_of_darkness.desc": "■ The predatory plants in your body dislike §dDarkness§r. If the light level around you is lower than 4, you may receive the §c«Stress»§r effect, rapidly draining your food gauge.\n\n■ The skill §2«Light the Dark» §7and effect §2«Forest Magic» §7could make your life easier.",
   "dragon_penalty.dragonsurvival.item_blacklist": "Item Blacklist",

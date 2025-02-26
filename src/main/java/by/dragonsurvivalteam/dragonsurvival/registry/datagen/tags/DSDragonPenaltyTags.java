@@ -34,15 +34,18 @@ public class DSDragonPenaltyTags extends TagsProvider<DragonPenalty> {
                 .add(DragonPenalties.ITEM_BLACKLIST)
                 .add(DragonPenalties.WATER_POTION_WEAKNESS)
                 .add(DragonPenalties.SNOWBALL_WEAKNESS)
-                .add(DragonPenalties.WATER_SPLASH_POTION_WEAKNESS);
+                .add(DragonPenalties.WATER_SPLASH_POTION_WEAKNESS)
+                .add(DragonPenalties.FEAR);
 
         tag(SEA)
                 .add(DragonPenalties.THIN_SKIN)
-                .add(DragonPenalties.ITEM_BLACKLIST);
+                .add(DragonPenalties.ITEM_BLACKLIST)
+                .add(DragonPenalties.FEAR);
 
         tag(FOREST)
                 .add(DragonPenalties.FEAR_OF_DARKNESS)
-                .add(DragonPenalties.ITEM_BLACKLIST);
+                .add(DragonPenalties.ITEM_BLACKLIST)
+                .add(DragonPenalties.FEAR);
     }
 
     public static TagKey<DragonPenalty> key(final String path) {

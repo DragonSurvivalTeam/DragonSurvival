@@ -57,7 +57,7 @@
     "damage_type": "dragonsurvival:dehydration",
     "penalty_type": "dragonsurvival:take_damage"
   },
-  "icon": "dragonsurvival:abilities/sea/thin_skin",
+  "icon": "dragonsurvival:penalties/sea/thin_skin",
   "trigger": {
     "display_like_hunger_bar": true,
     "penalty_trigger": "dragonsurvival:supply",

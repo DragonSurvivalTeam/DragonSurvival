@@ -64,7 +64,7 @@
       "effects": "dragonsurvival:stress"
     }
   },
-  "icon": "dragonsurvival:abilities/forest/fear_of_darkness",
+  "icon": "dragonsurvival:penalties/forest/fear_of_darkness",
   "trigger": {
     "penalty_trigger": "dragonsurvival:supply",
     "reduction_rate": 1.0,

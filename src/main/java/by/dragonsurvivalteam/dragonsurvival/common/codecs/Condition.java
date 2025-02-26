@@ -48,7 +48,7 @@ public class Condition {
     private static final LootContextParamSet ENTITY_CONTEXT = new LootContextParamSet.Builder()
             .required(LootContextParams.THIS_ENTITY)
             .required(LootContextParams.ORIGIN)
-            .required(LootContextParams.TOOL)
+            .optional(LootContextParams.TOOL)
             .build();
 
     private static final LootContextParamSet PROJECTILE_CONTEXT = new LootContextParamSet.Builder()
@@ -70,7 +70,7 @@ public class Condition {
         LootParams parameters = new LootParams.Builder(serverLevel)
                 .withParameter(LootContextParams.THIS_ENTITY, entity)
                 .withParameter(LootContextParams.ORIGIN, entity.position())
-                .withParameter(LootContextParams.TOOL, entity instanceof LivingEntity livingEntity ? livingEntity.getMainHandItem() : Objects.requireNonNullElse(entity.getWeaponItem(), ItemStack.EMPTY))
+                .withOptionalParameter(LootContextParams.TOOL, entity instanceof LivingEntity livingEntity ? livingEntity.getMainHandItem() : Objects.requireNonNullElse(entity.getWeaponItem(), ItemStack.EMPTY))
                 .create(ENTITY_CONTEXT);
         return new LootContext.Builder(parameters).create(Optional.empty());
     }
@@ -79,7 +79,7 @@ public class Condition {
         LootParams parameters = new LootParams.Builder(dragon.serverLevel())
                 .withParameter(LootContextParams.THIS_ENTITY, dragon)
                 .withParameter(LootContextParams.ORIGIN, dragon.position())
-                .withParameter(LootContextParams.TOOL, dragon.getMainHandItem())
+                .withOptionalParameter(LootContextParams.TOOL, dragon.getMainHandItem())
                 .create(ENTITY_CONTEXT);
         return new LootContext.Builder(parameters).create(Optional.empty());
     }
