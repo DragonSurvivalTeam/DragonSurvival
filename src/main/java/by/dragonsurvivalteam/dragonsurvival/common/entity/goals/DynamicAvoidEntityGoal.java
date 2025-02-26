@@ -18,6 +18,9 @@ import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 
 @EventBusSubscriber
 public class DynamicAvoidEntityGoal extends Goal {
+    // For performance reasons
+    private static final int MAX_DISTANCE = 64 * 64;
+
     private final PathfinderMob mob;
     private final TargetingConditions avoidCondition;
     private final PathNavigation navigation;
@@ -108,7 +111,7 @@ public class DynamicAvoidEntityGoal extends Goal {
 
             double distanceTo = player.position().distanceToSqr(mob.position());
 
-            if (distanceTo > closestDistanceTo) {
+            if (distanceTo > closestDistanceTo || distanceTo > MAX_DISTANCE) {
                 continue;
             }
 
