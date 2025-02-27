@@ -651,6 +651,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
                 state.setAnimation(CLIMBING_UP);
             }
 
+            useDynamicScaling = true;
             animationController.transitionLength(2);
         } else if (DRAGON_JUMP_TICKS.getOrDefault(this.playerId, 0) > 0) {
             state.setAnimation(JUMP);

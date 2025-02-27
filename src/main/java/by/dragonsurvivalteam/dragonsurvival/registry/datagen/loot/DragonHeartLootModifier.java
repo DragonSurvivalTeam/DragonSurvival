@@ -67,6 +67,7 @@ public class DragonHeartLootModifier extends LootModifier {
 
         int lootingLevel = EnchantmentUtils.getLevel(player, Enchantments.LOOTING);
 
+        // TODO :: why divide by 4?
         if (canDropWeakDragonHeart && context.getRandom().nextInt(100) <= ServerConfig.weakDragonHeartChance * 100 + lootingLevel * (ServerConfig.weakDragonHeartChance * 100 / 4)) {
             generatedLoot.add(new ItemStack(DSItems.WEAK_DRAGON_HEART));
         }

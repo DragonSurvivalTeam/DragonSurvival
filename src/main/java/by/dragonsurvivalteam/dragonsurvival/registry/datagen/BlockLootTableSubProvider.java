@@ -10,8 +10,11 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.VaultBlock;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -20,10 +23,14 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.AlternativesEntry;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.LootPoolSingletonContainer;
+import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
+import net.minecraft.world.level.storage.loot.functions.EnchantedCountIncreaseFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
+import net.minecraft.world.level.storage.loot.providers.number.BinomialDistributionGenerator;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 
@@ -67,7 +74,22 @@ public class BlockLootTableSubProvider extends BlockLootSubProvider {
                                     .when(LootItemEntityPropertyCondition.entityPresent(LootContext.EntityTarget.THIS))
                                     .add(AlternativesEntry.alternatives(AlternativesEntry.alternatives(arr))
                                             .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block))));
-                } else if (block instanceof SkeletonPieceBlock) {
+                } else if (block instanceof SkeletonPieceBlock skeleton) {
+                    if (skeleton.type() == SkeletonPieceBlock.Types.CHEST) {
+                        Item starBone = DSItems.STAR_BONE.value();
+
+                        if (false) {
+                            // TODO :: remove
+                            LootPoolSingletonContainer.Builder<?> loot = LootItem.lootTableItem(starBone)
+                                    .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
+                                    .apply(ApplyBonusCount.addOreBonusCount(registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE)));
+
+                            return LootTable.lootTable().withPool(applyExplosionCondition(starBone, LootPool.lootPool().setRolls(ConstantValue.exactly(1)).add(loot)));
+                        }
+
+                        return createSingleItemTable(starBone, UniformGenerator.between(1, 6));
+                    }
+
                     return createSingleItemTable(DSItems.STAR_BONE.value());
                 } else if (block instanceof DragonBeacon) {
                     // We want all dragon beacons to drop empty dragon beacons instead
