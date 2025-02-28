@@ -52,7 +52,7 @@ public class AbilityAndPenaltyTooltipRenderer {
             int x,
             int y,
             final List<Component> shiftInfo,
-            final List<FormattedCharSequence> description,
+            final FormattedText rawDescription,
             int colorXPos,
             int colorYPos,
             final String headerTranslationKey,
@@ -73,13 +73,16 @@ public class AbilityAndPenaltyTooltipRenderer {
 
         boolean skipFirstLine = !lines.isEmpty() && isEffectHeader(lines.getFirst());
 
-        int backgroundWidth = 150 + 5;
+        // '65' is roughly the amount of space needed for the other components so that the name and level can be centered without overlap
+        int backgroundWidth = Math.max(150, Minecraft.getInstance().font.width(name) + 65);
+        List<FormattedCharSequence> description = Minecraft.getInstance().font.split(rawDescription, backgroundWidth - 7);
+
         int backgroundHeight = 35 + 24 + description.size() * 9;
         int sideWidth = Screen.hasShiftDown() ? maxLineWidth : 15;
         int sideHeight = Screen.hasShiftDown() ? 36 + Math.min(skipFirstLine ? lines.size() - 1 : lines.size(), MAX_SHOWN_LINES) * 9 : backgroundHeight - 10;
 
         ClientTooltipPositioner positioner = new AbilityTooltipPositioner(Screen.hasShiftDown() ? sideWidth : 0);
-        Vector2ic position = positioner.positionTooltip(graphics.guiWidth(), graphics.guiHeight(), x, y, backgroundWidth, Math.max(sideHeight, backgroundHeight));
+        Vector2ic position = positioner.positionTooltip(graphics.guiWidth(), graphics.guiHeight(), x, y, maxLineWidth + 5, Math.max(sideHeight, backgroundHeight));
 
         int trueX = position.x();
         int trueY = position.y();
@@ -122,19 +125,19 @@ public class AbilityAndPenaltyTooltipRenderer {
         }
 
         // Background of the main description
-        graphics.blitWithBorder(BARS, trueX - 2, trueY - 4, 40, 20, backgroundWidth, backgroundHeight, 20, 20, 3, 3, 3, 3);
+        graphics.blitWithBorder(BARS, trueX - 2, trueY - 4, 40, 20, backgroundWidth + 5, backgroundHeight, 20, 20, 3, 3, 3, 3);
         // Top bar of the main description
-        graphics.blitWithBorder(BARS, trueX, trueY + 3, colorXPos, colorYPos, 150, 20, 20, 20, 3);
+        graphics.blitWithBorder(BARS, trueX, trueY + 3, colorXPos, colorYPos, backgroundWidth, 20, 20, 20, 3);
         // Backing square for ability icon
         graphics.blitWithBorder(BARS, trueX, trueY, 0, 100, 26, 26, 24, 24, 3);
 
-        graphics.drawCenteredString(Minecraft.getInstance().font, Component.translatable(headerTranslationKey), trueX + 150 / 2, trueY + 30, tooltipBackgroundColor.getColor());
+        graphics.drawCenteredString(Minecraft.getInstance().font, Component.translatable(headerTranslationKey), trueX + backgroundWidth / 2, trueY + 30, tooltipBackgroundColor.getColor());
 
         if (maxLevel > DragonAbilityInstance.MIN_LEVEL) {
-            graphics.drawCenteredString(Minecraft.getInstance().font, Component.empty().append(abilityLevel + "/" + maxLevel), trueX + 150 - 18, trueY + 9, -1);
-            graphics.drawCenteredString(Minecraft.getInstance().font, name, trueX + 150 / 2, trueY + 9, -1);
+            graphics.drawCenteredString(Minecraft.getInstance().font, Component.empty().append(abilityLevel + "/" + maxLevel), trueX + backgroundWidth - 18, trueY + 9, -1);
+            graphics.drawCenteredString(Minecraft.getInstance().font, name, trueX + backgroundWidth / 2, trueY + 9, -1);
         } else {
-            graphics.drawCenteredString(Minecraft.getInstance().font, name, trueX + 150 / 2 + 10, trueY + 9, -1);
+            graphics.drawCenteredString(Minecraft.getInstance().font, name, trueX + backgroundWidth / 2 + 10, trueY + 9, -1);
         }
 
         for (int line = 0; line < description.size(); line++) {
@@ -142,7 +145,7 @@ public class AbilityAndPenaltyTooltipRenderer {
         }
 
         if (!shiftInfo.isEmpty()) {
-            graphics.drawCenteredString(Minecraft.getInstance().font, Component.translatable(INFO_SHIFT).withStyle(ChatFormatting.DARK_GRAY), trueX + 150 / 2, trueY + 47 + (description.size() - 1) * 9, 0);
+            graphics.drawCenteredString(Minecraft.getInstance().font, Component.translatable(INFO_SHIFT).withStyle(ChatFormatting.DARK_GRAY), trueX + backgroundWidth / 2, trueY + 47 + (description.size() - 1) * 9, 0);
         }
 
         graphics.blitSprite(icon, trueX + 5, trueY + 5, 16, 16);
@@ -209,9 +212,8 @@ public class AbilityAndPenaltyTooltipRenderer {
             rawDescription = FormattedText.composite(rawDescription, Component.empty().append("\n\n"));
         }
 
-        List<FormattedCharSequence> description = Minecraft.getInstance().font.split(rawDescription, 150 - 7);
         Color color = ability.isPassive() ? new Color(DSColors.withAlpha(DSColors.PASSIVE_BACKGROUND, 1f)) : new Color(DSColors.withAlpha(DSColors.ACTIVE_BACKGROUND, 1f));
-        drawTooltip(guiGraphics, x, y, info, description, colorXPos, colorYPos, ability.isPassive() ? LangKey.PASSIVE_ABILITY : LangKey.ACTIVE_ABILITY, ability.getName(), color, ability.getMaxLevel(), ability.level(), ability.getIcon(), scrollAmount);
+        drawTooltip(guiGraphics, x, y, info, rawDescription, colorXPos, colorYPos, ability.isPassive() ? LangKey.PASSIVE_ABILITY : LangKey.ACTIVE_ABILITY, ability.getName(), color, ability.getMaxLevel(), ability.level(), ability.getIcon(), scrollAmount);
     }
 
     public static void drawPenaltyTooltip(@NotNull final GuiGraphics guiGraphics, int x, int y, final Holder<DragonPenalty> penalty) {
@@ -234,9 +236,8 @@ public class AbilityAndPenaltyTooltipRenderer {
             description = FormattedText.composite(description, Component.empty().append("\n\n"));
         }
 
-        List<FormattedCharSequence> formattedDescription = Minecraft.getInstance().font.split(description, 150 - 7);
         Component name = Component.translatable(Translation.Type.PENALTY.wrap(penalty.getKey().location()));
         ResourceLocation icon = penalty.value().icon().orElse(MissingTextureAtlasSprite.getLocation());
-        drawTooltip(guiGraphics, x, y, components, formattedDescription, colorXPos, colorYPos, LangKey.PENALTY, name, Color.ofRGB(145, 46, 46), -1, -1, icon, 0);
+        drawTooltip(guiGraphics, x, y, components, description, colorXPos, colorYPos, LangKey.PENALTY, name, Color.ofRGB(145, 46, 46), -1, -1, icon, 0);
     }
 }
