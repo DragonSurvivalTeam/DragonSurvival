@@ -3,10 +3,10 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "minecraft:beacon"
+      "item": "dragonsurvival:star_heart"
     },
     {
-      "tag": "dragonsurvival:dragon_altars"
+      "tag": "dragonsurvival:beacon_activator"
     }
   ],
   "result": {

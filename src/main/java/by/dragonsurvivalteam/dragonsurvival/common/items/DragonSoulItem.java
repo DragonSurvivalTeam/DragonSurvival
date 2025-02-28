@@ -59,7 +59,7 @@ public class DragonSoulItem extends Item {
     @ConfigRange(min = 0)
     @Translation(key = "dragon_soul_cooldown", type = Translation.Type.CONFIGURATION, comments = "Cooldown (in ticks) (20 ticks = 1 second) that occurs after using the dragon soul")
     @ConfigOption(side = ConfigSide.SERVER, category = {"items", "dragon_soul"}, key = "dragon_soul_cooldown")
-    public static int COOLDOWN = Functions.secondsToTicks(10);
+    public static int COOLDOWN = Functions.secondsToTicks(60);
 
     public DragonSoulItem(final Properties properties) {
         super(properties);

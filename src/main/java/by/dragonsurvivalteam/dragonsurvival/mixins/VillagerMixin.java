@@ -71,7 +71,7 @@ public abstract class VillagerMixin {
     private void dragonSurvival$triggerSweatEvent(final CallbackInfo callback) {
         Villager villager = (Villager) (Object) this;
 
-        if (!villager.isNoAi() && HunterOmenHandler.isNearbyPlayerWithHunterOmen(8, villager.level(), villager)) {
+        if (!villager.isNoAi() && HunterOmenHandler.isNearbyPlayerWithHunterOmen(3, villager.level(), villager)) {
             villager.level().broadcastEntityEvent(villager, EntityEvent.VILLAGER_SWEAT);
         }
     }

@@ -678,14 +678,14 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         }
 
         selectedDragonStage = species.value().getStages(null).stream().toList().indexOf(stage);
-        HoverButton leftArrow = new HoverButton(width / 2 - 100, 10, 18, 20, 20, 20, LEFT_ARROW_MAIN, LEFT_ARROW_HOVER, button -> {
+        HoverButton leftArrow = new HoverButton(width / 2 - 120, 10, 18, 20, 20, 20, LEFT_ARROW_MAIN, LEFT_ARROW_HOVER, button -> {
             List<Holder<DragonStage>> stages = species.value().getStages(null).stream().toList();
             selectedDragonStage = Functions.wrap(selectedDragonStage - 1, 0, stages.size() - 1);
             actionHistory.add(new EditorAction<>(selectStageAction, stages.get(selectedDragonStage)));
         });
         addRenderableWidget(leftArrow);
 
-        HoverButton rightArrow = new HoverButton(width / 2 + 83, 10, 18, 20, 20, 20, RIGHT_ARROW_MAIN, RIGHT_ARROW_HOVER, button -> {
+        HoverButton rightArrow = new HoverButton(width / 2 + 103, 10, 18, 20, 20, 20, RIGHT_ARROW_MAIN, RIGHT_ARROW_HOVER, button -> {
             List<Holder<DragonStage>> stages = species.value().getStages(null).stream().toList();
             selectedDragonStage = Functions.wrap(selectedDragonStage + 1, 0, stages.size() - 1);
             actionHistory.add(new EditorAction<>(selectStageAction, stages.get(selectedDragonStage)));

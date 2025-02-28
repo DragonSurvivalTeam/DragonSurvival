@@ -52,8 +52,8 @@ public class DragonPenalties {
     public static final ResourceKey<DragonPenalty> WATER_WEAKNESS = DragonPenalties.key("water_weakness");
 
     @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
-            "■ If sea dragon are outside of the water for too long, they will dehydrate and suffer damage. Being in rain, ice or snow or drinking water bottles rehydrates you.\n",
-            "■ The skill §2«Hydration Capacity»§r §7could make your life easier.\n",
+            "■ If sea dragon are outside of the water for too long, they will §ddehydrate§r§7 and suffer §ddamage§r§7.\n",
+            "■ Being in rain, ice or snow or drinking water bottles rehydrates you. The skill §2«Hydration Capacity»§r §7could make your life easier.\n",
     })
     @Translation(type = Translation.Type.PENALTY, comments = "Thin Skin")
     public static final ResourceKey<DragonPenalty> THIN_SKIN = DragonPenalties.key("thin_skin");
@@ -73,7 +73,10 @@ public class DragonPenalties {
     public static final ResourceKey<DragonPenalty> WATER_SPLASH_POTION_WEAKNESS = DragonPenalties.key("water_splash_potion_weakness");
     public static final ResourceKey<DragonPenalty> SNOWBALL_WEAKNESS = DragonPenalties.key("snowball_weakness");
 
-    @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = "■ Dragons are scary creatures. Animals will try to avoid them.")
+    @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
+            "■ Dragons are §dscary§r§7  creatures. Animals will try to §cavoid§r them.\n",
+            "■ Build the §2«Beacon»§7 to become more attractive.",
+    })
     @Translation(type = Translation.Type.PENALTY, comments = "Fear")
     public static final ResourceKey<DragonPenalty> FEAR = DragonPenalties.key("fear");
 
