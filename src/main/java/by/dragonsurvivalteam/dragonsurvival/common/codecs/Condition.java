@@ -13,7 +13,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -26,21 +25,18 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyC
 import net.minecraft.world.level.storage.loot.predicates.MatchTool;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.Objects;
 import java.util.Optional;
 
 public class Condition {
     private static final LootContextParamSet ABILITY_CONTEXT = new LootContextParamSet.Builder()
             .required(LootContextParams.THIS_ENTITY)
             .required(LootContextParams.ORIGIN)
-            .required(LootContextParams.TOOL)
             .required(LootContextParams.ATTACKING_ENTITY)
             .build();
 
     private static final LootContextParamSet BLOCK_CONTEXT = new LootContextParamSet.Builder()
             .required(LootContextParams.THIS_ENTITY)
             .required(LootContextParams.ORIGIN)
-            .required(LootContextParams.TOOL)
             .required(LootContextParams.BLOCK_STATE)
             .optional(LootContextParams.BLOCK_ENTITY)
             .build();
@@ -48,7 +44,6 @@ public class Condition {
     private static final LootContextParamSet ENTITY_CONTEXT = new LootContextParamSet.Builder()
             .required(LootContextParams.THIS_ENTITY)
             .required(LootContextParams.ORIGIN)
-            .optional(LootContextParams.TOOL)
             .build();
 
     private static final LootContextParamSet PROJECTILE_CONTEXT = new LootContextParamSet.Builder()
@@ -70,7 +65,6 @@ public class Condition {
         LootParams parameters = new LootParams.Builder(serverLevel)
                 .withParameter(LootContextParams.THIS_ENTITY, entity)
                 .withParameter(LootContextParams.ORIGIN, entity.position())
-                .withOptionalParameter(LootContextParams.TOOL, entity instanceof LivingEntity livingEntity ? livingEntity.getMainHandItem() : Objects.requireNonNullElse(entity.getWeaponItem(), ItemStack.EMPTY))
                 .create(ENTITY_CONTEXT);
         return new LootContext.Builder(parameters).create(Optional.empty());
     }
@@ -79,7 +73,6 @@ public class Condition {
         LootParams parameters = new LootParams.Builder(dragon.serverLevel())
                 .withParameter(LootContextParams.THIS_ENTITY, dragon)
                 .withParameter(LootContextParams.ORIGIN, dragon.position())
-                .withOptionalParameter(LootContextParams.TOOL, dragon.getMainHandItem())
                 .create(ENTITY_CONTEXT);
         return new LootContext.Builder(parameters).create(Optional.empty());
     }
@@ -93,7 +86,6 @@ public class Condition {
                 .withParameter(LootContextParams.ATTACKING_ENTITY, attacker)
                 .withParameter(LootContextParams.THIS_ENTITY, entity)
                 .withParameter(LootContextParams.ORIGIN, origin)
-                .withParameter(LootContextParams.TOOL, entity instanceof LivingEntity livingEntity ? livingEntity.getMainHandItem() : Objects.requireNonNullElse(entity.getWeaponItem(), ItemStack.EMPTY))
                 .create(ABILITY_CONTEXT);
         return new LootContext.Builder(parameters).create(Optional.empty());
     }
@@ -105,7 +97,6 @@ public class Condition {
     public static LootContext blockContext(final ServerPlayer dragon, final BlockPos position, final BlockState state) {
         LootParams parameters = new LootParams.Builder(dragon.serverLevel())
                 .withParameter(LootContextParams.THIS_ENTITY, dragon)
-                .withParameter(LootContextParams.TOOL, dragon.getMainHandItem())
                 .withParameter(LootContextParams.BLOCK_STATE, state)
                 .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(position))
                 .withOptionalParameter(LootContextParams.BLOCK_ENTITY, dragon.serverLevel().getBlockEntity(position))

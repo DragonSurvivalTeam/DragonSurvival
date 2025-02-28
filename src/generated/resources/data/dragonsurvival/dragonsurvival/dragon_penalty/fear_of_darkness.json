@@ -23,9 +23,14 @@
           }
         },
         {
-          "condition": "minecraft:match_tool",
+          "condition": "minecraft:entity_properties",
+          "entity": "this",
           "predicate": {
-            "items": "#dragonsurvival:light_source"
+            "equipment": {
+              "mainhand": {
+                "items": "#dragonsurvival:light_source"
+              }
+            }
           }
         },
         {

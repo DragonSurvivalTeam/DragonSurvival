@@ -148,7 +148,7 @@ public class DragonPenalties {
                 Optional.of(AnyOfCondition.anyOf(
                         Condition.thisEntity(EntityCondition.hasEffect(DSEffects.MAGIC)),
                         Condition.thisEntity(EntityCondition.hasEffect(MobEffects.GLOWING)),
-                        Condition.tool(ItemCondition.is(DSItemTags.LIGHT_SOURCE)),
+                        Condition.thisEntity(EntityCondition.isItemEquipped(EquipmentSlot.MAINHAND, DSItemTags.LIGHT_SOURCE)),
                         Condition.thisEntity(EntityCondition.isItemEquipped(EquipmentSlot.OFFHAND, DSItemTags.LIGHT_SOURCE)),
                         Condition.thisEntity(EntityCondition.isInLight(3))
                 ).invert().build()),

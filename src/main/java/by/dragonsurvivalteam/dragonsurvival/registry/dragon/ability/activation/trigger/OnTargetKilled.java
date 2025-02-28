@@ -27,7 +27,7 @@ public record OnTargetKilled(Optional<LootItemCondition> condition) implements A
                 return;
             }
 
-            LootContext context = Condition.damageContext(player.serverLevel(), entity, source, player.getMainHandItem());
+            LootContext context = Condition.damageContext(player.serverLevel(), entity, source, null);
             MagicData.getData(player).filterPassiveByTrigger(trigger -> trigger.type() == TriggerType.ON_TARGET_KILLED && trigger.test(context)).forEach(ability -> ability.tick(player));
         }
     }
