@@ -29,7 +29,7 @@ public record CustomPredicates(
         Optional<HolderSet<FluidType>> eyeInFluid,
         Optional<WeatherPredicate> weatherPredicate,
         Optional<MinMaxBounds.Ints> sunLightLevel,
-        Optional<ResourceLocation> hasAbilityEffect,
+        Optional<ResourceLocation> hasDurationEffect,
         Optional<NearbyEntityPredicate> isNearbyEntity,
         Optional<UUID> hasUUID
 ) implements EntitySubPredicate {
@@ -37,7 +37,7 @@ public record CustomPredicates(
             RegistryCodecs.homogeneousList(NeoForgeRegistries.FLUID_TYPES.key()).optionalFieldOf("eye_in_fluid").forGetter(CustomPredicates::eyeInFluid),
             WeatherPredicate.CODEC.optionalFieldOf("weather_predicate").forGetter(CustomPredicates::weatherPredicate),
             MinMaxBounds.Ints.CODEC.optionalFieldOf("sun_light_level").forGetter(CustomPredicates::sunLightLevel),
-            ResourceLocation.CODEC.optionalFieldOf("has_ability_effect").forGetter(CustomPredicates::hasAbilityEffect),
+            ResourceLocation.CODEC.optionalFieldOf("has_duration_effect").forGetter(CustomPredicates::hasDurationEffect),
             NearbyEntityPredicate.CODEC.optionalFieldOf("is_nearby_entity").forGetter(CustomPredicates::isNearbyEntity),
             UUIDUtil.LENIENT_CODEC.optionalFieldOf("has_uuid").forGetter(CustomPredicates::hasUUID)
     ).apply(instance, CustomPredicates::new));
@@ -62,8 +62,8 @@ public record CustomPredicates(
             return false;
         }
 
-        if (hasAbilityEffect.isPresent()) {
-            ResourceLocation abilityEffect = hasAbilityEffect.get();
+        if (hasDurationEffect.isPresent()) {
+            ResourceLocation abilityEffect = hasDurationEffect.get();
             boolean isPresent = false;
 
             for (Storage<?> storage : DSDataAttachments.getStorages(entity)) {
@@ -103,7 +103,7 @@ public record CustomPredicates(
         private Optional<Boolean> isSnowing = Optional.empty();
         private Optional<Boolean> isRainingOrSnowing = Optional.empty();
         private Optional<MinMaxBounds.Ints> sunLightLevel = Optional.empty();
-        private Optional<ResourceLocation> hasAbilityEffect = Optional.empty();
+        private Optional<ResourceLocation> hasDurationEffect = Optional.empty();
         private Optional<NearbyEntityPredicate> isNearbyEntity = Optional.empty();
         private Optional<UUID> hasUUID = Optional.empty();
 
@@ -146,8 +146,8 @@ public record CustomPredicates(
             return this;
         }
 
-        public CustomPredicates.Builder hasAbilityEffect(final ResourceLocation abilityEffect) {
-            this.hasAbilityEffect = Optional.of(abilityEffect);
+        public CustomPredicates.Builder hasDurationEffect(final ResourceLocation abilityEffect) {
+            this.hasDurationEffect = Optional.of(abilityEffect);
             return this;
         }
 
@@ -162,7 +162,7 @@ public record CustomPredicates(
         }
 
         public CustomPredicates build() {
-            return new CustomPredicates(eyeInFluid, Optional.of(new WeatherPredicate(isRaining, isThundering, isSnowing, isRainingOrSnowing)), sunLightLevel, hasAbilityEffect, isNearbyEntity, hasUUID);
+            return new CustomPredicates(eyeInFluid, Optional.of(new WeatherPredicate(isRaining, isThundering, isSnowing, isRainingOrSnowing)), sunLightLevel, hasDurationEffect, isNearbyEntity, hasUUID);
         }
     }
 }
