@@ -87,7 +87,133 @@ public class BlockLootTableSubProvider extends BlockLootSubProvider {
                             return LootTable.lootTable().withPool(applyExplosionCondition(starBone, LootPool.lootPool().setRolls(ConstantValue.exactly(1)).add(loot)));
                         }
 
-                        return createSingleItemTable(starBone, UniformGenerator.between(1, 6));
+                        return createSingleItemTable(starBone, UniformGenerator.between(3, 6));
+                    }
+                    if (skeleton.type() == SkeletonPieceBlock.Types.LEG_1) {
+                        Item starBone = DSItems.STAR_BONE.value();
+
+                        if (false) {
+                            // TODO :: remove
+                            LootPoolSingletonContainer.Builder<?> loot = LootItem.lootTableItem(starBone)
+                                    .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
+                                    .apply(ApplyBonusCount.addOreBonusCount(registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE)));
+
+                            return LootTable.lootTable().withPool(applyExplosionCondition(starBone, LootPool.lootPool().setRolls(ConstantValue.exactly(1)).add(loot)));
+                        }
+
+                        return createSingleItemTable(starBone, UniformGenerator.between(1, 3));
+                    }
+                    if (skeleton.type() == SkeletonPieceBlock.Types.LEG_2) {
+                        Item starBone = DSItems.STAR_BONE.value();
+
+                        if (false) {
+                            // TODO :: remove
+                            LootPoolSingletonContainer.Builder<?> loot = LootItem.lootTableItem(starBone)
+                                    .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
+                                    .apply(ApplyBonusCount.addOreBonusCount(registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE)));
+
+                            return LootTable.lootTable().withPool(applyExplosionCondition(starBone, LootPool.lootPool().setRolls(ConstantValue.exactly(1)).add(loot)));
+                        }
+
+                        return createSingleItemTable(starBone, UniformGenerator.between(1, 2));
+                    }
+                    if (skeleton.type() == SkeletonPieceBlock.Types.LEG_3) {
+                        Item starBone = DSItems.STAR_BONE.value();
+
+                        if (false) {
+                            // TODO :: remove
+                            LootPoolSingletonContainer.Builder<?> loot = LootItem.lootTableItem(starBone)
+                                    .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
+                                    .apply(ApplyBonusCount.addOreBonusCount(registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE)));
+
+                            return LootTable.lootTable().withPool(applyExplosionCondition(starBone, LootPool.lootPool().setRolls(ConstantValue.exactly(1)).add(loot)));
+                        }
+
+                        return createSingleItemTable(starBone, UniformGenerator.between(1, 1));
+                    }
+                    if (skeleton.type() == SkeletonPieceBlock.Types.NECK_1) {
+                        Item starBone = DSItems.STAR_BONE.value();
+
+                        if (false) {
+                            // TODO :: remove
+                            LootPoolSingletonContainer.Builder<?> loot = LootItem.lootTableItem(starBone)
+                                    .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
+                                    .apply(ApplyBonusCount.addOreBonusCount(registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE)));
+
+                            return LootTable.lootTable().withPool(applyExplosionCondition(starBone, LootPool.lootPool().setRolls(ConstantValue.exactly(1)).add(loot)));
+                        }
+
+                        return createSingleItemTable(starBone, UniformGenerator.between(1, 2));
+                    }
+                    if (skeleton.type() == SkeletonPieceBlock.Types.NECK_2) {
+                        Item starBone = DSItems.STAR_BONE.value();
+
+                        if (false) {
+                            // TODO :: remove
+                            LootPoolSingletonContainer.Builder<?> loot = LootItem.lootTableItem(starBone)
+                                    .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
+                                    .apply(ApplyBonusCount.addOreBonusCount(registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE)));
+
+                            return LootTable.lootTable().withPool(applyExplosionCondition(starBone, LootPool.lootPool().setRolls(ConstantValue.exactly(1)).add(loot)));
+                        }
+
+                        return createSingleItemTable(starBone, UniformGenerator.between(1, 3));
+                    }
+                    if (skeleton.type() == SkeletonPieceBlock.Types.NECK_3) {
+                        Item starBone = DSItems.STAR_BONE.value();
+
+                        if (false) {
+                            // TODO :: remove
+                            LootPoolSingletonContainer.Builder<?> loot = LootItem.lootTableItem(starBone)
+                                    .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
+                                    .apply(ApplyBonusCount.addOreBonusCount(registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE)));
+
+                            return LootTable.lootTable().withPool(applyExplosionCondition(starBone, LootPool.lootPool().setRolls(ConstantValue.exactly(1)).add(loot)));
+                        }
+
+                        return createSingleItemTable(starBone, UniformGenerator.between(1, 4));
+                    }
+                    if (skeleton.type() == SkeletonPieceBlock.Types.PELVIS) {
+                        Item starBone = DSItems.STAR_BONE.value();
+
+                        if (false) {
+                            // TODO :: remove
+                            LootPoolSingletonContainer.Builder<?> loot = LootItem.lootTableItem(starBone)
+                                    .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
+                                    .apply(ApplyBonusCount.addOreBonusCount(registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE)));
+
+                            return LootTable.lootTable().withPool(applyExplosionCondition(starBone, LootPool.lootPool().setRolls(ConstantValue.exactly(1)).add(loot)));
+                        }
+
+                        return createSingleItemTable(starBone, UniformGenerator.between(2, 4));
+                    }
+                    if (skeleton.type() == SkeletonPieceBlock.Types.SKULL_1) {
+                        Item starBone = DSItems.STAR_BONE.value();
+
+                        if (false) {
+                            // TODO :: remove
+                            LootPoolSingletonContainer.Builder<?> loot = LootItem.lootTableItem(starBone)
+                                    .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
+                                    .apply(ApplyBonusCount.addOreBonusCount(registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE)));
+
+                            return LootTable.lootTable().withPool(applyExplosionCondition(starBone, LootPool.lootPool().setRolls(ConstantValue.exactly(1)).add(loot)));
+                        }
+
+                        return createSingleItemTable(starBone, UniformGenerator.between(1, 5));
+                    }
+                    if (skeleton.type() == SkeletonPieceBlock.Types.SKULL_2) {
+                        Item starBone = DSItems.STAR_BONE.value();
+
+                        if (false) {
+                            // TODO :: remove
+                            LootPoolSingletonContainer.Builder<?> loot = LootItem.lootTableItem(starBone)
+                                    .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))
+                                    .apply(ApplyBonusCount.addOreBonusCount(registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE)));
+
+                            return LootTable.lootTable().withPool(applyExplosionCondition(starBone, LootPool.lootPool().setRolls(ConstantValue.exactly(1)).add(loot)));
+                        }
+
+                        return createSingleItemTable(starBone, UniformGenerator.between(1, 5));
                     }
 
                     return createSingleItemTable(DSItems.STAR_BONE.value());
