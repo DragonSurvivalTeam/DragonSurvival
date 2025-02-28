@@ -53,6 +53,7 @@
     "client.EffectRenderingInventoryScreenMixin",
     "client.EntityRenderDispatcherMixin",
     "client.EntityRendererAccessor",
+    "client.EntityRendererMixin",
     "client.FrustumAccess",
     "client.GameRendererMixin",
     "client.GuiAccessor",
