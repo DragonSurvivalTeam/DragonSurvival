@@ -167,10 +167,10 @@ public class DSRecipes extends RecipeProvider {
     private void buildDragonBeacons(final RecipeOutput output, final HolderLookup.Provider lookup) {
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.MISC, DSBlocks.DRAGON_BEACON.value())
-                .requires(Items.BEACON)
-                .requires(DSItemTags.DRAGON_ALTARS)
+                .requires(DSItems.STAR_HEART.value())
+                .requires(DSItemTags.ACTIVATES_DRAGON_BEACON)
                 .unlockedBy(getHasName(Items.BEACON), has(Items.BEACON))
-                .save(output, DragonSurvival.res("dragon_beacon_from_dragon_altars"));
+                .save(output);
     }
 
     private void buildDragonAltars(final RecipeOutput output, final HolderLookup.Provider lookup) {

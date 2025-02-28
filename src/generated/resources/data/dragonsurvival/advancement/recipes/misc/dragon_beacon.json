@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dragonsurvival:dragon_beacon_from_dragon_altars"
+        "recipe": "dragonsurvival:dragon_beacon"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "dragonsurvival:dragon_beacon_from_dragon_altars"
+      "dragonsurvival:dragon_beacon"
     ]
   }
 }
