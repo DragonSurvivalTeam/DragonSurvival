@@ -65,6 +65,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     private static final double DEFAULT_SPRINT_SPEED = 0.165;
     private static final double DEFAULT_SWIM_SPEED = 0.051;
     private static final double DEFAULT_FAST_SWIM_SPEED = 0.13;
+    private static final double DEFAULT_CLIMB_SPEED = 0.03;
 
     // Base "scale" to use when determining animation speed
     private static final double BASE_SCALE = 1.0;
@@ -652,6 +653,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             }
 
             useDynamicScaling = true;
+            baseSpeed = DEFAULT_CLIMB_SPEED;
             animationController.transitionLength(2);
         } else if (DRAGON_JUMP_TICKS.getOrDefault(this.playerId, 0) > 0) {
             state.setAnimation(JUMP);
