@@ -201,7 +201,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
         DragonStateHandler handler = DragonStateProvider.getData(player);
         DragonStageCustomization customization = handler.getCurrentStageCustomization();
 
-        if (dragon.isOverridingMovementData && handler.getModel().equals(DragonBody.DEFAULT_MODEL)) {
+        if (dragon.overrideUUIDWithLocalPlayerForTextureFetch && handler.getModel().equals(DragonBody.DEFAULT_MODEL)) {
             ResourceLocation skin = DragonSkins.getPlayerSkin(player, handler.stageKey());
 
             if (RenderingUtils.hasTexture(skin)) {
