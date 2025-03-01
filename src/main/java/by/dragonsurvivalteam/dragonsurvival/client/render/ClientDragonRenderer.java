@@ -61,7 +61,6 @@ import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.joml.Vector3f;
-import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.util.RenderUtil;
 
 import java.util.HashMap;
@@ -70,12 +69,6 @@ import java.util.Map;
 @EventBusSubscriber(Dist.CLIENT)
 public class ClientDragonRenderer {
     public static DragonModel dragonModel = new DragonModel();
-
-    /**
-     * Used for inventory rendering - when set to true changed movement data will not be tracked <br>
-     * See {@link ClientDragonRenderer#setDragonMovementData(Player, float)} and {@link DragonModel#applyMolangQueries(AnimationState, double)}
-     */
-    public static boolean isOverridingMovementData = false;
 
     /** Instances used for rendering third-person dragon models */
     public static final Map<Integer, DragonEntity> PLAYER_DRAGON_MAP = new HashMap<>();
@@ -249,7 +242,7 @@ public class ClientDragonRenderer {
         if (player != Minecraft.getInstance().player || !Minecraft.getInstance().options.getCameraType().isFirstPerson() || !ServerFlightHandler.isGliding(player) || renderFirstPersonFlight) {
             DragonEntity dragon = getDragon(player);
 
-            if (!ClientDragonRenderer.isOverridingMovementData) {
+            if (!dragon.isOverridingMovementData) {
                 ClientDragonRenderer.setDragonMovementData(player, Minecraft.getInstance().getTimer().getRealtimeDeltaTicks());
             }
 

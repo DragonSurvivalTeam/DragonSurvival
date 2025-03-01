@@ -102,6 +102,12 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     // The dragon displayed in the editor doesn't want to mirror the local player's UUID, so this isn't used there either
     public boolean overrideUUIDWithLocalPlayerForTextureFetch;
 
+    /**
+     * Used for inventory rendering - when set to true changed movement data will not be tracked <br>
+     * See {@link ClientDragonRenderer#setDragonMovementData(Player, float)} and {@link DragonModel#applyMolangQueries(AnimationState, double)}
+     */
+    public boolean isOverridingMovementData;
+
     public boolean clearVerticalVelocity;
 
     private final DragonEmote[] currentlyPlayingEmotes = new DragonEmote[MAX_EMOTES];

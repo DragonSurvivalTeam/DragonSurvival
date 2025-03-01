@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
-import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
@@ -43,8 +42,9 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
     private static void dragon_survival$dragonScreenEntityRender(final Runnable runnable, @Local(argsOnly = true) LivingEntity entity) {
         LivingEntity newEntity;
 
-        if (entity instanceof DragonEntity de) {
-            newEntity = de.getPlayer();
+        if (entity instanceof DragonEntity dragon) {
+            dragon.isOverridingMovementData = true;
+            newEntity = dragon.getPlayer();
         } else {
             newEntity = entity;
         }
@@ -63,9 +63,7 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
             movement.deltaMovement = Vec3.ZERO;
             movement.deltaMovementLastFrame = Vec3.ZERO;
 
-            ClientDragonRenderer.isOverridingMovementData = true;
             RenderSystem.runAsFancy(runnable);
-            ClientDragonRenderer.isOverridingMovementData = false;
 
             dragon_survival$storedXAngle = 0;
             dragon_survival$storedYAngle = 0;
@@ -77,6 +75,10 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
             movement.deltaMovementLastFrame = deltaMovementLastFrame;
         } else {
             RenderSystem.runAsFancy(runnable);
+        }
+
+        if (entity instanceof DragonEntity dragon) {
+            dragon.isOverridingMovementData = false;
         }
     }
 

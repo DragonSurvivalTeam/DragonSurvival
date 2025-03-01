@@ -2,7 +2,6 @@ package by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
-import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayer;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
@@ -99,14 +98,13 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
             initArmorMasks(handler.getModel());
         }
 
-        if (!(player instanceof FakeClientPlayer)) {
-            if (hasAnyArmorEquipped(player) || ClawInventoryData.getData(player).shouldRenderClaws) {
-                Optional<ResourceLocation> armorTexture = constructTrimmedDragonArmorTexture(player);
-                if (armorTexture.isPresent()) {
-                    ((DragonRenderer) renderer).isRenderingLayer = true;
-                    renderArmor(poseStack, animatable, bakedModel, bufferSource, partialTick, packedLight, armorTexture.get());
-                    ((DragonRenderer) renderer).isRenderingLayer = false;
-                }
+        if (hasAnyArmorEquipped(player) || ClawInventoryData.getData(player).shouldRenderClaws) {
+            Optional<ResourceLocation> armorTexture = constructTrimmedDragonArmorTexture(player);
+
+            if (armorTexture.isPresent()) {
+                ((DragonRenderer) renderer).isRenderingLayer = true;
+                renderArmor(poseStack, animatable, bakedModel, bufferSource, partialTick, packedLight, armorTexture.get());
+                ((DragonRenderer) renderer).isRenderingLayer = false;
             }
         }
     }
@@ -125,6 +123,8 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
             VertexConsumer vertexConsumer = bufferSource.getBuffer(wrappedType);
             renderer.actuallyRender(poseStack, animatable, bakedModel, wrappedType, bufferSource, vertexConsumer, true, partialTick, packedLight, OverlayTexture.NO_OVERLAY, renderer.getRenderColor(animatable, partialTick, packedLight).getColor());
         }
+
+        ClientDragonRenderer.dragonModel.setOverrideTexture(null);
     }
 
     private static Optional<ResourceLocation> constructTrimmedDragonArmorTexture(final Player player) {
@@ -343,14 +343,13 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         }
     }
 
-    private static boolean hasAnyArmorEquipped(Player pPlayer) {
+    private static boolean hasAnyArmorEquipped(final Player player) {
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             if (!slot.isArmor()) {
                 continue;
             }
 
-            ItemStack itemstack = pPlayer.getItemBySlot(slot);
-            if (!itemstack.is(Items.AIR)) {
+            if (!player.getItemBySlot(slot).is(Items.AIR)) {
                 return true;
             }
         }
