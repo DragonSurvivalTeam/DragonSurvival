@@ -225,6 +225,10 @@ public class LangKey {
     @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "After a lot of killing, the dragon hunters are interested in you.")
     protected static final String DARK_AFFECTED_BY_HUNTER_OMEN = "dark/affected_by_hunter_omen";
 
+    @Translation(type = Translation.Type.ADVANCEMENT, comments = "Villager Pillager")
+    @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Put your infamy to use by demanding tribute from the Villagers.")
+    protected static final String DARK_STEAL_FROM_VILLAGER = "dark/steal_from_villager";
+
     @Translation(type = Translation.Type.ADVANCEMENT, comments = "Path of Destruction")
     @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Tear a Dark Key from a hunter knight. Blood will have to be spilled.")
     protected static final String DARK_COLLECT_KEY = "dark/collect_key";

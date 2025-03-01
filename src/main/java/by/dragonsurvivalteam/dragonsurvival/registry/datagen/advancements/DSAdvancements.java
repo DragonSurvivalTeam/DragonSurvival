@@ -3,13 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.datagen.advancements;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.DragonPredicate;
-import by.dragonsurvivalteam.dragonsurvival.common.criteria.BeDragonTrigger;
-import by.dragonsurvivalteam.dragonsurvival.common.criteria.ConvertItemFromAbility;
-import by.dragonsurvivalteam.dragonsurvival.common.criteria.MineBlockUnderLavaTrigger;
-import by.dragonsurvivalteam.dragonsurvival.common.criteria.SleepOnTreasureTrigger;
-import by.dragonsurvivalteam.dragonsurvival.common.criteria.StopNaturalGrowthTrigger;
-import by.dragonsurvivalteam.dragonsurvival.common.criteria.UpgradeAbilityTrigger;
-import by.dragonsurvivalteam.dragonsurvival.common.criteria.UseDragonSoulTrigger;
+import by.dragonsurvivalteam.dragonsurvival.common.criteria.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
@@ -93,7 +87,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-@SuppressWarnings("deprecation") // ignore
+@SuppressWarnings({"deprecation", "unused"}) // ignore
 public class DSAdvancements implements AdvancementProvider.AdvancementGenerator {
     private HolderLookup.Provider registries;
     private Consumer<AdvancementHolder> saver;
@@ -151,6 +145,8 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
         AdvancementHolder affectedByHunterOmen = createWithToast(parent, LangKey.DARK_AFFECTED_BY_HUNTER_OMEN, Items.OMINOUS_BOTTLE, effectWithMinDuration(DSEffects.HUNTER_OMEN, 300), 6);
 
         // --- Parent: dark/affected_by_hunter_omen --- //
+
+        AdvancementHolder stealFromVillager = createWithToast(affectedByHunterOmen, LangKey.DARK_STEAL_FROM_VILLAGER, DSItems.PARTISAN.value(), stealFromVillager(), 0);
 
         AdvancementHolder collectKey = createWithToast(affectedByHunterOmen, LangKey.DARK_COLLECT_KEY, DSItems.DARK_KEY.value(), InventoryChangeTrigger.TriggerInstance.hasItems(DSItems.DARK_KEY.value()), 0);
 
@@ -708,5 +704,11 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
     public Criterion<BeDragonTrigger.Instance> beDragon(final EntityPredicate.Builder builder) {
         return DSAdvancementTriggers.BE_DRAGON.get().createCriterion(new BeDragonTrigger.Instance(Optional.of(EntityPredicate.wrap(builder.build()))));
+    }
+
+    // -- Steal From Villagers -- //
+
+    public Criterion<StealFromVillagerTrigger.Instance> stealFromVillager() {
+        return DSAdvancementTriggers.STEAL_FROM_VILLAGER.get().createCriterion(new StealFromVillagerTrigger.Instance(Optional.empty()));
     }
 }

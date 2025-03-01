@@ -1,13 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.criteria.BeDragonTrigger;
-import by.dragonsurvivalteam.dragonsurvival.common.criteria.ConvertItemFromAbility;
-import by.dragonsurvivalteam.dragonsurvival.common.criteria.MineBlockUnderLavaTrigger;
-import by.dragonsurvivalteam.dragonsurvival.common.criteria.SleepOnTreasureTrigger;
-import by.dragonsurvivalteam.dragonsurvival.common.criteria.StopNaturalGrowthTrigger;
-import by.dragonsurvivalteam.dragonsurvival.common.criteria.UpgradeAbilityTrigger;
-import by.dragonsurvivalteam.dragonsurvival.common.criteria.UseDragonSoulTrigger;
+import by.dragonsurvivalteam.dragonsurvival.common.criteria.*;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.core.registries.Registries;
@@ -32,4 +26,5 @@ public class DSAdvancementTriggers {
     public static final Supplier<StopNaturalGrowthTrigger> STOP_NATURAL_GROWTH = REGISTRY.register("stop_natural_growth", StopNaturalGrowthTrigger::new);
     public static final Supplier<UpgradeAbilityTrigger> UPGRADE_ABILITY = REGISTRY.register("upgrade_ability", UpgradeAbilityTrigger::new);
     public static final Supplier<ConvertItemFromAbility> CONVERT_ITEM_FROM_ABILITY = REGISTRY.register("convert_item_from_ability", ConvertItemFromAbility::new);
+    public static final Supplier<StealFromVillagerTrigger> STEAL_FROM_VILLAGER = REGISTRY.register("steal_from_villager", StealFromVillagerTrigger::new);
 }

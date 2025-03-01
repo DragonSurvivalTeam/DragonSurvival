@@ -1,0 +1,26 @@
+{
+  "parent": "dragonsurvival:dark/affected_by_hunter_omen",
+  "criteria": {
+    "criterion_0": {
+      "trigger": "dragonsurvival:steal_from_villager"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "dragonsurvival.advancement.dark/steal_from_villager.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "dragonsurvival:hunter_partisan"
+    },
+    "title": {
+      "translate": "dragonsurvival.advancement.dark/steal_from_villager"
+    }
+  },
+  "requirements": [
+    [
+      "criterion_0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

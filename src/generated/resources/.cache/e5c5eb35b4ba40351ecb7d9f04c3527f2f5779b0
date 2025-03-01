@@ -1,4 +1,4 @@
-// 1.21.1	2025-02-23T20:45:03.3854094	Advancements
+// 1.21.1	2025-03-01T10:08:28.7248708	Advancements
 1a7d4520fc656360fe5fccecd785f600641927d3 data/dragonsurvival/advancement/be_adult_dragon.json
 550afd5ed2eeeeefe5bfaff761df685a793a5978 data/dragonsurvival/advancement/be_dragon.json
 a52fbc87e18b5cfd6830774af942373c963d546f data/dragonsurvival/advancement/be_young_dragon.json
@@ -18,6 +18,7 @@ cb0123a5eb343c9570ae8723a8bd0467033316ff data/dragonsurvival/advancement/collect
 2f86788c50e57afbe57e2b7407fe5d3cf148e466 data/dragonsurvival/advancement/dark/get_armor_item.json
 88e42bd497e6db47e06e9c98d32258e9a93caaa1 data/dragonsurvival/advancement/dark/get_armor_set.json
 ec932c42b79e9005950bc927e11e7344301c90e5 data/dragonsurvival/advancement/dark/open_vault.json
+50e9038a846d361da177b99c52cd708aeb48b264 data/dragonsurvival/advancement/dark/steal_from_villager.json
 f46b80512271536a871e46ee5a9bd89694006182 data/dragonsurvival/advancement/find_bones.json
 f249e33affff16e35bc5b1be9d25ae9be725a514 data/dragonsurvival/advancement/find_end_platform.json
 b07553908486a297266d9ac5caf4252034705be8 data/dragonsurvival/advancement/find_end_structures.json
