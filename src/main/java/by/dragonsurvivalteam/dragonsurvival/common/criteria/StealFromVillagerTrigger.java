@@ -10,19 +10,19 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public class StealFromVillagerTrigger extends SimpleCriterionTrigger<by.dragonsurvivalteam.dragonsurvival.common.criteria.StealFromVillagerTrigger.Instance> {
+public class StealFromVillagerTrigger extends SimpleCriterionTrigger<StealFromVillagerTrigger.Instance> {
     public void trigger(ServerPlayer player) {
         this.trigger(player, instance -> true);
     }
 
     @Override
-    public @NotNull Codec<by.dragonsurvivalteam.dragonsurvival.common.criteria.StealFromVillagerTrigger.Instance> codec() {
-        return by.dragonsurvivalteam.dragonsurvival.common.criteria.StealFromVillagerTrigger.Instance.CODEC;
+    public @NotNull Codec<Instance> codec() {
+        return Instance.CODEC;
     }
 
     public record Instance(Optional<ContextAwarePredicate> player) implements SimpleCriterionTrigger.SimpleInstance {
-        public static final Codec<by.dragonsurvivalteam.dragonsurvival.common.criteria.StealFromVillagerTrigger.Instance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(by.dragonsurvivalteam.dragonsurvival.common.criteria.StealFromVillagerTrigger.Instance::player)
-        ).apply(instance, by.dragonsurvivalteam.dragonsurvival.common.criteria.StealFromVillagerTrigger.Instance::new));
+        public static final Codec<Instance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(Instance::player)
+        ).apply(instance, Instance::new));
     }
 }

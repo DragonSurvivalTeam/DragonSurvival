@@ -87,7 +87,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-@SuppressWarnings({"deprecation", "unused"}) // ignore
+@SuppressWarnings("deprecation") // ignore
 public class DSAdvancements implements AdvancementProvider.AdvancementGenerator {
     private HolderLookup.Provider registries;
     private Consumer<AdvancementHolder> saver;
@@ -426,8 +426,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         // --- Parent: collect_heart_from_monster --- //
 
-        // TODO :: used beacon texture previously
-        AdvancementHolder beOldCaveDragon = createWithToast(collectHeartFromMonster, LangKey.CAVE_BE_OLD_DRAGON, Items.DIRT, beDragon(registries.holderOrThrow(BuiltInDragonSpecies.CAVE_DRAGON), registries.holderOrThrow(DragonStages.adult), 1), 120);
+        AdvancementHolder beOldCaveDragon = createWithToast(collectHeartFromMonster, LangKey.CAVE_BE_OLD_DRAGON, DSItems.CAVE_BEACON.value(), beDragon(registries.holderOrThrow(BuiltInDragonSpecies.CAVE_DRAGON), registries.holderOrThrow(DragonStages.adult), 1), 120);
 
         // --- Parent: cave/be_old_dragon --- //
 
@@ -438,8 +437,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
                 upgradeAbilityMax(registries.holderOrThrow(CaveDragonAbilities.CAVE_MAGIC))
         ), 150);
 
-        // TODO :: used beacon texture previously
-        AdvancementHolder beOldSeaDragon = createWithToast(collectHeartFromMonster, LangKey.SEA_BE_OLD_DRAGON, Items.DIRT, beDragon(registries.holderOrThrow(BuiltInDragonSpecies.SEA_DRAGON), registries.holderOrThrow(DragonStages.adult), 1), 120);
+        AdvancementHolder beOldSeaDragon = createWithToast(collectHeartFromMonster, LangKey.SEA_BE_OLD_DRAGON, DSItems.SEA_BEACON.value(), beDragon(registries.holderOrThrow(BuiltInDragonSpecies.SEA_DRAGON), registries.holderOrThrow(DragonStages.adult), 1), 120);
 
         // --- Parent: sea/be_old_dragon --- //
 
@@ -450,8 +448,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
                 upgradeAbilityMax(registries.holderOrThrow(SeaDragonAbilities.SEA_MAGIC))
         ), 150);
 
-        // TODO :: used beacon texture previously
-        AdvancementHolder beOldForestDragon = createWithToast(collectHeartFromMonster, LangKey.FOREST_BE_OLD_DRAGON, Items.DIRT, beDragon(registries.holderOrThrow(BuiltInDragonSpecies.FOREST_DRAGON), registries.holderOrThrow(DragonStages.adult), 1), 120);
+        AdvancementHolder beOldForestDragon = createWithToast(collectHeartFromMonster, LangKey.FOREST_BE_OLD_DRAGON, DSItems.FOREST_BEACON.value(), beDragon(registries.holderOrThrow(BuiltInDragonSpecies.FOREST_DRAGON), registries.holderOrThrow(DragonStages.adult), 1), 120);
 
         // --- Parent: forest/be_old_dragon --- //
 

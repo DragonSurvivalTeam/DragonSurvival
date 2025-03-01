@@ -8,6 +8,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.SwordItem;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
@@ -54,7 +55,8 @@ public class DataItemModelProvider extends ItemModelProvider {
 
                     getBuilder(blockItem.toString())
                             .parent(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + split[0])))
-                            .texture("skeleton_texture", ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + "skeleton_dragon_" + skin));
+                            .texture("skeleton_texture", ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + "skeleton_dragon_" + skin))
+                            .transforms().transform(ItemDisplayContext.GUI).rotation(30, 160, 0).scale(0.5f).end();
                 } else if (blockItem.toString().contains("vault")) {
                     getBuilder(blockItem.toString()).parent(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + holder.getId().getPath()) + "_inactive"));
                 } else if (blockItem.getBlock() instanceof TreasureBlock) {
