@@ -10,6 +10,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
@@ -67,9 +68,15 @@ public abstract class VillagerMixin extends AbstractVillager {
     private void dragonSurvival$triggerSweatEvent(final CallbackInfo callback) {
         Villager villager = (Villager) (Object) this;
 
-        if (!villager.isNoAi() && HunterOmenHandler.isNearbyPlayerWithHunterOmen(3, villager.level(), villager)) {
-            villager.level().broadcastEntityEvent(villager, EntityEvent.VILLAGER_SWEAT);
-        }
+        // Get their memories of visible living entities, then find the nearest threatening player
+        villager.getBrain().getMemory(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES).flatMap(visibleLivingEntities -> visibleLivingEntities.findClosest(
+                entity -> entity instanceof Player playerEntity && !playerEntity.isCreative() && !playerEntity.isSpectator() && playerEntity.hasEffect(DSEffects.HUNTER_OMEN)
+        )).ifPresent(nearestPlayer -> {
+            if (!villager.isNoAi() && villager.getRandom().nextInt(100) >= villager.distanceToSqr(nearestPlayer)) {
+                // 💦💦💦 (more often if the player is closer)
+                villager.level().broadcastEntityEvent(villager, EntityEvent.VILLAGER_SWEAT);
+            }
+        });
     }
 
     @Shadow public abstract void setLastHurtByMob(@Nullable final LivingEntity entity);
