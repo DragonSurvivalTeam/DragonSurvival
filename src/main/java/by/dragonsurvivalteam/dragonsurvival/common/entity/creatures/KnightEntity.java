@@ -200,12 +200,12 @@ public class KnightEntity extends Hunter {
     }
 
     private void applyMagicDisabledDebuff() {
-        double detectionRadius = 8.0;
+        double detectionRadius = 12.0;
         List<Player> players = this.level().getEntitiesOfClass(Player.class, this.getBoundingBox().inflate(detectionRadius));
 
         for (Player player : players) {
             if (DragonStateProvider.isDragon(player)) {
-                player.addEffect(new MobEffectInstance(DSEffects.MAGIC_DISABLED, 100, 0, false, false));
+                player.addEffect(new MobEffectInstance(DSEffects.MAGIC_DISABLED, 240, 0, false, true));
             }
         }
     }
