@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:find_nether_structures",
   "criteria": {
-    "criterion_0": {
+    "enter_end_as_dragon": {
       "conditions": {
         "player": [
           {
@@ -15,9 +15,6 @@
           }
         ]
       },
-      "trigger": "minecraft:location"
-    },
-    "criterion_1": {
       "trigger": "dragonsurvival:be_dragon"
     }
   },
@@ -35,10 +32,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
-    ],
-    [
-      "criterion_1"
+      "enter_end_as_dragon"
     ]
   ],
   "rewards": {

@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:forest/be_dragon",
   "criteria": {
-    "criterion_0": {
+    "convert_potato": {
       "conditions": {
         "item_from": "minecraft:potato",
         "item_to": "minecraft:poisonous_potato",
@@ -37,7 +37,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "convert_potato"
     ]
   ],
   "rewards": {

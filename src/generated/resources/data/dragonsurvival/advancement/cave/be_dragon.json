@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:place_altar",
   "criteria": {
-    "criterion_0": {
+    "be_cave_dragon": {
       "conditions": {
         "player": [
           {
@@ -24,6 +24,9 @@
       "translate": "dragonsurvival.advancement.cave/be_dragon.desc"
     },
     "icon": {
+      "components": {
+        "minecraft:custom_model_data": 2
+      },
       "count": 1,
       "id": "dragonsurvival:dragon_soul"
     },
@@ -33,7 +36,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "be_cave_dragon"
     ]
   ],
   "rewards": {

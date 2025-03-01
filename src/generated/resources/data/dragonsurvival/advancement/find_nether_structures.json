@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:find_overworld_structures",
   "criteria": {
-    "criterion_0": {
+    "find_dark_treasure": {
       "conditions": {
         "player": [
           {
@@ -32,7 +32,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "find_dark_treasure"
     ]
   ],
   "rewards": {

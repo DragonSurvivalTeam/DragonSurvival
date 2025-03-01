@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:dark/affected_by_hunter_omen",
   "criteria": {
-    "criterion_0": {
+    "steal_from_villager": {
       "trigger": "dragonsurvival:steal_from_villager"
     }
   },
@@ -19,7 +19,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "steal_from_villager"
     ]
   ],
   "sends_telemetry_event": true

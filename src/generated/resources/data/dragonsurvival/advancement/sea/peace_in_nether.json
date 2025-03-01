@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:sea/place_snow_in_nether",
   "criteria": {
-    "criterion_0": {
+    "be_safe_in_nether": {
       "conditions": {
         "player": [
           {
@@ -41,7 +41,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "be_safe_in_nether"
     ]
   ],
   "sends_telemetry_event": true

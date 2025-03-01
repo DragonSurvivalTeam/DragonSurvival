@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:forest/meat_eater",
   "criteria": {
-    "criterion_0": {
+    "place_chorus_fruit": {
       "conditions": {
         "location": [
           {
@@ -44,7 +44,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "place_chorus_fruit"
     ]
   ],
   "rewards": {

@@ -17,12 +17,14 @@ import net.minecraft.advancements.critereon.MobEffectsPredicate;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
@@ -146,7 +148,11 @@ public class EntityCondition {
     public static EntityPredicate isNearbyTo(int radius, final EntityType<?>... types) {
         return EntityPredicate.Builder.entity().subPredicate(CustomPredicates.Builder.start().isNearbyEntity(NearbyEntityPredicate.of(radius, EntityType.BEE)).build()).build();
     }
-
+    
+    public static EntityPredicate inDimension(final ResourceKey<Level> dimension) {
+        return EntityPredicate.Builder.entity().located(LocationPredicate.Builder.location().setDimension(dimension)).build();
+    }
+    
     @SafeVarargs
     public static EntityPredicate hasEffect(final Holder<MobEffect>... effects) {
         MobEffectsPredicate.Builder builder = MobEffectsPredicate.Builder.effects();

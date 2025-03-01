@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:find_bones",
   "criteria": {
-    "criterion_0": {
+    "find_light_treasure": {
       "conditions": {
         "player": [
           {
@@ -32,7 +32,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "find_light_treasure"
     ]
   ],
   "rewards": {

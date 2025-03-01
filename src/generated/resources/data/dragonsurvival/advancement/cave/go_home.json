@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:cave/diamonds_in_lava",
   "criteria": {
-    "criterion_0": {
+    "explore_nether_lava_sea": {
       "conditions": {
         "player": [
           {
@@ -42,7 +42,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "explore_nether_lava_sea"
     ]
   ],
   "rewards": {

@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:root",
   "criteria": {
-    "criterion_0": {
+    "collect_elder_dragon_dust": {
       "conditions": {
         "items": [
           {
@@ -28,7 +28,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "collect_elder_dragon_dust"
     ]
   ],
   "rewards": {

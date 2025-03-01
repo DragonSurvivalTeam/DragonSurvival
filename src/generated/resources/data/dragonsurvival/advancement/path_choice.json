@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:root",
   "criteria": {
-    "criterion_0": {
+    "interact_with_villager": {
       "conditions": {
         "entity": [
           {
@@ -32,7 +32,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "interact_with_villager"
     ]
   ],
   "rewards": {

@@ -1,31 +1,31 @@
 {
   "parent": "dragonsurvival:forest/be_old_dragon",
   "criteria": {
-    "criterion_0": {
+    "master_cliffhanger": {
       "conditions": {
         "ability": "dragonsurvival:cliffhanger",
         "level": 6
       },
       "trigger": "dragonsurvival:upgrade_ability"
     },
-    "criterion_1": {
+    "master_forest_athletics": {
       "conditions": {
         "ability": "dragonsurvival:forest_athletics",
         "level": 5
       },
       "trigger": "dragonsurvival:upgrade_ability"
     },
-    "criterion_2": {
-      "conditions": {
-        "ability": "dragonsurvival:light_in_darkness",
-        "level": 8
-      },
-      "trigger": "dragonsurvival:upgrade_ability"
-    },
-    "criterion_3": {
+    "master_forest_magic": {
       "conditions": {
         "ability": "dragonsurvival:forest_magic",
         "level": 10
+      },
+      "trigger": "dragonsurvival:upgrade_ability"
+    },
+    "master_light_in_darkness": {
+      "conditions": {
+        "ability": "dragonsurvival:light_in_darkness",
+        "level": 8
       },
       "trigger": "dragonsurvival:upgrade_ability"
     }
@@ -44,16 +44,16 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "master_cliffhanger"
     ],
     [
-      "criterion_1"
+      "master_forest_athletics"
     ],
     [
-      "criterion_2"
+      "master_light_in_darkness"
     ],
     [
-      "criterion_3"
+      "master_forest_magic"
     ]
   ],
   "rewards": {

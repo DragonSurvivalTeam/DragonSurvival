@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:dark/open_vault",
   "criteria": {
-    "criterion_0": {
+    "collect_dark_armor": {
       "conditions": {
         "items": [
           {
@@ -35,7 +35,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "collect_dark_armor"
     ]
   ],
   "sends_telemetry_event": true

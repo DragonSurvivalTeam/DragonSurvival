@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:use_memory_block",
   "criteria": {
-    "criterion_0": {
+    "activate_beacon": {
       "conditions": {
         "location": [
           {
@@ -37,7 +37,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "activate_beacon"
     ]
   ],
   "rewards": {

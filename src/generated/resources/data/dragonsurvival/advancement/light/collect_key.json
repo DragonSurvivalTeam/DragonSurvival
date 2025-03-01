@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:light/dragon_rider_workbench",
   "criteria": {
-    "criterion_0": {
+    "collect_light_key": {
       "conditions": {
         "items": [
           {
@@ -26,7 +26,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "collect_light_key"
     ]
   ],
   "sends_telemetry_event": true

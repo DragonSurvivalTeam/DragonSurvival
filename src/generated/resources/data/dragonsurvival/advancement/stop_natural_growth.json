@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:be_dragon",
   "criteria": {
-    "criterion_0": {
+    "stop_natural_growth": {
       "trigger": "dragonsurvival:stop_natural_growth"
     }
   },
@@ -19,7 +19,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "stop_natural_growth"
     ]
   ],
   "rewards": {

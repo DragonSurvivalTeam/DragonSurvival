@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:root",
   "criteria": {
-    "criterion_0": {
+    "place_dragon_altar": {
       "conditions": {
         "location": [
           {
@@ -31,7 +31,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "place_dragon_altar"
     ]
   ],
   "rewards": {

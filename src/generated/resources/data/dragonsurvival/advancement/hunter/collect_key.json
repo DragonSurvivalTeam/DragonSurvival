@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:hunter/promotion",
   "criteria": {
-    "criterion_0": {
+    "collect_hunter_key": {
       "conditions": {
         "items": [
           {
@@ -26,7 +26,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "collect_hunter_key"
     ]
   ],
   "sends_telemetry_event": true

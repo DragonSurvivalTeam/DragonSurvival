@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:cave/swim_in_lava",
   "criteria": {
-    "criterion_0": {
+    "mine_diamond_in_lava": {
       "conditions": {
         "block": "#c:ores/diamond",
         "player": [
@@ -41,7 +41,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "mine_diamond_in_lava"
     ]
   ],
   "rewards": {

@@ -1,7 +1,15 @@
 {
   "parent": "dragonsurvival:cave/be_dragon",
   "criteria": {
-    "criterion_0": {
+    "consume_cave_dragon_treat": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:cave_dragon_treat"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "consume_charged_coal": {
       "conditions": {
         "item": {
           "items": "dragonsurvival:charged_coal"
@@ -9,7 +17,7 @@
       },
       "trigger": "minecraft:consume_item"
     },
-    "criterion_1": {
+    "consume_charged_soup": {
       "conditions": {
         "item": {
           "items": "dragonsurvival:charged_soup"
@@ -17,7 +25,7 @@
       },
       "trigger": "minecraft:consume_item"
     },
-    "criterion_2": {
+    "consume_charred_meat": {
       "conditions": {
         "item": {
           "items": "dragonsurvival:charred_meat"
@@ -25,7 +33,7 @@
       },
       "trigger": "minecraft:consume_item"
     },
-    "criterion_3": {
+    "consume_charred_seafood": {
       "conditions": {
         "item": {
           "items": "dragonsurvival:charred_seafood"
@@ -33,31 +41,7 @@
       },
       "trigger": "minecraft:consume_item"
     },
-    "criterion_4": {
-      "conditions": {
-        "item": {
-          "items": "dragonsurvival:hot_dragon_rod"
-        }
-      },
-      "trigger": "minecraft:consume_item"
-    },
-    "criterion_5": {
-      "conditions": {
-        "item": {
-          "items": "dragonsurvival:explosive_copper"
-        }
-      },
-      "trigger": "minecraft:consume_item"
-    },
-    "criterion_6": {
-      "conditions": {
-        "item": {
-          "items": "dragonsurvival:quartz_explosive_copper"
-        }
-      },
-      "trigger": "minecraft:consume_item"
-    },
-    "criterion_7": {
+    "consume_double_quartz": {
       "conditions": {
         "item": {
           "items": "dragonsurvival:double_quartz"
@@ -65,10 +49,26 @@
       },
       "trigger": "minecraft:consume_item"
     },
-    "criterion_8": {
+    "consume_explosive_copper": {
       "conditions": {
         "item": {
-          "items": "dragonsurvival:cave_dragon_treat"
+          "items": "dragonsurvival:explosive_copper"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "consume_hot_dragon_rod": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:hot_dragon_rod"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "consume_quartz_explosive_copper": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:quartz_explosive_copper"
         }
       },
       "trigger": "minecraft:consume_item"
@@ -90,31 +90,31 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "consume_charged_coal"
     ],
     [
-      "criterion_1"
+      "consume_charged_soup"
     ],
     [
-      "criterion_2"
+      "consume_charred_meat"
     ],
     [
-      "criterion_3"
+      "consume_charred_seafood"
     ],
     [
-      "criterion_4"
+      "consume_hot_dragon_rod"
     ],
     [
-      "criterion_5"
+      "consume_explosive_copper"
     ],
     [
-      "criterion_6"
+      "consume_quartz_explosive_copper"
     ],
     [
-      "criterion_7"
+      "consume_double_quartz"
     ],
     [
-      "criterion_8"
+      "consume_cave_dragon_treat"
     ]
   ],
   "rewards": {

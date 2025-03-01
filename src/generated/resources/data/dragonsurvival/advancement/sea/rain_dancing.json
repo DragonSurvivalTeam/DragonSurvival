@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:sea/be_dragon",
   "criteria": {
-    "criterion_0": {
+    "experience_rain_and_thunder": {
       "conditions": {
         "player": [
           {
@@ -16,27 +16,7 @@
           },
           {
             "condition": "minecraft:weather_check",
-            "raining": true
-          }
-        ]
-      },
-      "trigger": "minecraft:location"
-    },
-    "criterion_1": {
-      "conditions": {
-        "player": [
-          {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "type_specific": {
-                "type": "dragonsurvival:dragon_predicate",
-                "dragon_species": "dragonsurvival:sea_dragon"
-              }
-            }
-          },
-          {
-            "condition": "minecraft:weather_check",
+            "raining": true,
             "thundering": true
           }
         ]
@@ -60,10 +40,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
-    ],
-    [
-      "criterion_1"
+      "experience_rain_and_thunder"
     ]
   ],
   "rewards": {

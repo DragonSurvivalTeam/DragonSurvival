@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:path_choice",
   "criteria": {
-    "criterion_0": {
+    "affected_by_hunter_omen": {
       "conditions": {
         "effects": {
           "dragonsurvival:hunter_omen": {
@@ -19,8 +19,13 @@
       "translate": "dragonsurvival.advancement.dark/affected_by_hunter_omen.desc"
     },
     "icon": {
+      "components": {
+        "minecraft:profile": {
+          "name": "MHF_Villager"
+        }
+      },
       "count": 1,
-      "id": "minecraft:ominous_bottle"
+      "id": "minecraft:player_head"
     },
     "title": {
       "translate": "dragonsurvival.advancement.dark/affected_by_hunter_omen"
@@ -28,7 +33,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "affected_by_hunter_omen"
     ]
   ],
   "rewards": {

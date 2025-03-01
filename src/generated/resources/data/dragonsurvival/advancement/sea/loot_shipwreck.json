@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:sea/be_dragon",
   "criteria": {
-    "criterion_0": {
+    "explore_beached_shipwreck": {
       "conditions": {
         "player": [
           {
@@ -9,7 +9,7 @@
             "entity": "this",
             "predicate": {
               "location": {
-                "structures": "minecraft:shipwreck"
+                "structures": "minecraft:shipwreck_beached"
               },
               "type_specific": {
                 "type": "dragonsurvival:dragon_predicate",
@@ -21,7 +21,7 @@
       },
       "trigger": "minecraft:location"
     },
-    "criterion_1": {
+    "explore_shipwreck": {
       "conditions": {
         "player": [
           {
@@ -29,7 +29,7 @@
             "entity": "this",
             "predicate": {
               "location": {
-                "structures": "minecraft:shipwreck_beached"
+                "structures": "minecraft:shipwreck"
               },
               "type_specific": {
                 "type": "dragonsurvival:dragon_predicate",
@@ -58,10 +58,10 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "explore_shipwreck"
     ],
     [
-      "criterion_1"
+      "explore_beached_shipwreck"
     ]
   ],
   "rewards": {

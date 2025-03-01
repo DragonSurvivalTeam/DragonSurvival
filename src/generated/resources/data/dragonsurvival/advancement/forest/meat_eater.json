@@ -1,23 +1,7 @@
 {
   "parent": "dragonsurvival:forest/poisonous_potato",
   "criteria": {
-    "criterion_0": {
-      "conditions": {
-        "item": {
-          "items": "dragonsurvival:sweet_sour_rabbit"
-        }
-      },
-      "trigger": "minecraft:consume_item"
-    },
-    "criterion_1": {
-      "conditions": {
-        "item": {
-          "items": "dragonsurvival:luminous_ointment"
-        }
-      },
-      "trigger": "minecraft:consume_item"
-    },
-    "criterion_2": {
+    "consume_diamond_chorus": {
       "conditions": {
         "item": {
           "items": "dragonsurvival:diamond_chorus"
@@ -25,23 +9,23 @@
       },
       "trigger": "minecraft:consume_item"
     },
-    "criterion_3": {
+    "consume_forest_dragon_treat": {
       "conditions": {
         "item": {
-          "items": "dragonsurvival:smelly_meat_porridge"
+          "items": "dragonsurvival:forest_dragon_treat"
         }
       },
       "trigger": "minecraft:consume_item"
     },
-    "criterion_4": {
+    "consume_luminous_ointment": {
       "conditions": {
         "item": {
-          "items": "dragonsurvival:meat_wild_berries"
+          "items": "dragonsurvival:luminous_ointment"
         }
       },
       "trigger": "minecraft:consume_item"
     },
-    "criterion_5": {
+    "consume_meat_chorus_mix": {
       "conditions": {
         "item": {
           "items": "dragonsurvival:meat_chorus_mix"
@@ -49,10 +33,26 @@
       },
       "trigger": "minecraft:consume_item"
     },
-    "criterion_6": {
+    "consume_meat_wilderness": {
       "conditions": {
         "item": {
-          "items": "dragonsurvival:forest_dragon_treat"
+          "items": "dragonsurvival:meat_wild_berries"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "consume_smelly_meat_porridge": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:smelly_meat_porridge"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "consume_sweet_sour_rabbit": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:sweet_sour_rabbit"
         }
       },
       "trigger": "minecraft:consume_item"
@@ -74,25 +74,25 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "consume_sweet_sour_rabbit"
     ],
     [
-      "criterion_1"
+      "consume_luminous_ointment"
     ],
     [
-      "criterion_2"
+      "consume_diamond_chorus"
     ],
     [
-      "criterion_3"
+      "consume_smelly_meat_porridge"
     ],
     [
-      "criterion_4"
+      "consume_meat_wilderness"
     ],
     [
-      "criterion_5"
+      "consume_meat_chorus_mix"
     ],
     [
-      "criterion_6"
+      "consume_forest_dragon_treat"
     ]
   ],
   "rewards": {

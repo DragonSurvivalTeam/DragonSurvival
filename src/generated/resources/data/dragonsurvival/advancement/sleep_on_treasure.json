@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:collect_dust",
   "criteria": {
-    "criterion_0": {
+    "sleep_on_small_treasure_hoard": {
       "conditions": {
         "nearby_treasure_amount": 10
       },
@@ -23,7 +23,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "sleep_on_small_treasure_hoard"
     ]
   ],
   "rewards": {

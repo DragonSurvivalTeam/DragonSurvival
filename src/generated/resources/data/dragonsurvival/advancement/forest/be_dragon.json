@@ -24,6 +24,9 @@
       "translate": "dragonsurvival.advancement.forest/be_dragon.desc"
     },
     "icon": {
+      "components": {
+        "minecraft:custom_model_data": 1
+      },
       "count": 1,
       "id": "dragonsurvival:dragon_soul"
     },

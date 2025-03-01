@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:root",
   "criteria": {
-    "criterion_0": {
+    "be_dragon": {
       "trigger": "dragonsurvival:be_dragon"
     }
   },
@@ -21,7 +21,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "be_dragon"
     ]
   ],
   "rewards": {

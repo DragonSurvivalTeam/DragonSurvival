@@ -1,31 +1,31 @@
 {
   "parent": "dragonsurvival:sea/be_old_dragon",
   "criteria": {
-    "criterion_0": {
-      "conditions": {
-        "ability": "dragonsurvival:spectral_impact",
-        "level": 3
-      },
-      "trigger": "dragonsurvival:upgrade_ability"
-    },
-    "criterion_1": {
-      "conditions": {
-        "ability": "dragonsurvival:sea_athletics",
-        "level": 5
-      },
-      "trigger": "dragonsurvival:upgrade_ability"
-    },
-    "criterion_2": {
+    "master_hydration": {
       "conditions": {
         "ability": "dragonsurvival:hydration",
         "level": 7
       },
       "trigger": "dragonsurvival:upgrade_ability"
     },
-    "criterion_3": {
+    "master_sea_athletics": {
+      "conditions": {
+        "ability": "dragonsurvival:sea_athletics",
+        "level": 5
+      },
+      "trigger": "dragonsurvival:upgrade_ability"
+    },
+    "master_sea_magic": {
       "conditions": {
         "ability": "dragonsurvival:sea_magic",
         "level": 10
+      },
+      "trigger": "dragonsurvival:upgrade_ability"
+    },
+    "master_spectral_impact": {
+      "conditions": {
+        "ability": "dragonsurvival:spectral_impact",
+        "level": 3
       },
       "trigger": "dragonsurvival:upgrade_ability"
     }
@@ -44,16 +44,16 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "master_spectral_impact"
     ],
     [
-      "criterion_1"
+      "master_sea_athletics"
     ],
     [
-      "criterion_2"
+      "master_hydration"
     ],
     [
-      "criterion_3"
+      "master_sea_magic"
     ]
   ],
   "rewards": {

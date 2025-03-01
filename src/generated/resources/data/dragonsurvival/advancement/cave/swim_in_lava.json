@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:cave/be_dragon",
   "criteria": {
-    "criterion_0": {
+    "swim_in_lava": {
       "conditions": {
         "player": [
           {
@@ -40,7 +40,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "swim_in_lava"
     ]
   ],
   "rewards": {

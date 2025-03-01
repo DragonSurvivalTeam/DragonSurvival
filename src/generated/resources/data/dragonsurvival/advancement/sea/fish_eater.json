@@ -1,31 +1,7 @@
 {
   "parent": "dragonsurvival:sea/loot_shipwreck",
   "criteria": {
-    "criterion_0": {
-      "conditions": {
-        "item": {
-          "items": "minecraft:kelp"
-        }
-      },
-      "trigger": "minecraft:consume_item"
-    },
-    "criterion_1": {
-      "conditions": {
-        "item": {
-          "items": "dragonsurvival:seasoned_fish"
-        }
-      },
-      "trigger": "minecraft:consume_item"
-    },
-    "criterion_2": {
-      "conditions": {
-        "item": {
-          "items": "dragonsurvival:golden_coral_pufferfish"
-        }
-      },
-      "trigger": "minecraft:consume_item"
-    },
-    "criterion_3": {
+    "consume_frozen_raw_fish": {
       "conditions": {
         "item": {
           "items": "dragonsurvival:frozen_raw_fish"
@@ -33,7 +9,15 @@
       },
       "trigger": "minecraft:consume_item"
     },
-    "criterion_4": {
+    "consume_golden_coral_pufferfish": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:golden_coral_pufferfish"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "consume_golden_turtle_egg": {
       "conditions": {
         "item": {
           "items": "dragonsurvival:golden_turtle_egg"
@@ -41,10 +25,26 @@
       },
       "trigger": "minecraft:consume_item"
     },
-    "criterion_5": {
+    "consume_kelp": {
+      "conditions": {
+        "item": {
+          "items": "minecraft:kelp"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "consume_sea_dragon_treat": {
       "conditions": {
         "item": {
           "items": "dragonsurvival:sea_dragon_treat"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "consume_seasoned_fish": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:seasoned_fish"
         }
       },
       "trigger": "minecraft:consume_item"
@@ -66,22 +66,22 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "consume_kelp"
     ],
     [
-      "criterion_1"
+      "consume_seasoned_fish"
     ],
     [
-      "criterion_2"
+      "consume_golden_coral_pufferfish"
     ],
     [
-      "criterion_3"
+      "consume_frozen_raw_fish"
     ],
     [
-      "criterion_4"
+      "consume_golden_turtle_egg"
     ],
     [
-      "criterion_5"
+      "consume_sea_dragon_treat"
     ]
   ],
   "rewards": {

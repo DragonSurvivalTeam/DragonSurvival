@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:hunter/open_vault",
   "criteria": {
-    "criterion_0": {
+    "fire_bolas": {
       "conditions": {
         "item": {
           "items": "#c:tools/crossbow",
@@ -36,7 +36,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "fire_bolas"
     ]
   ],
   "sends_telemetry_event": true

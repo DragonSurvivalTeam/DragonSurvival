@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:forest/be_dragon",
   "criteria": {
-    "criterion_0": {
+    "stand_on_sweet_berries": {
       "conditions": {
         "player": [
           {
@@ -40,7 +40,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "stand_on_sweet_berries"
     ]
   ],
   "rewards": {

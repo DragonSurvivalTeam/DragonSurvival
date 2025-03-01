@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:find_end_platform",
   "criteria": {
-    "criterion_0": {
+    "find_end_structures": {
       "conditions": {
         "player": [
           {
@@ -32,7 +32,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "find_end_structures"
     ]
   ],
   "rewards": {

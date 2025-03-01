@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:collect_heart_from_monster",
   "criteria": {
-    "criterion_0": {
+    "be_fully_grown_adult": {
       "conditions": {
         "player": [
           {
@@ -39,7 +39,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "be_fully_grown_adult"
     ]
   ],
   "rewards": {

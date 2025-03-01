@@ -28,6 +28,15 @@ public class EntityStateHandler implements INBTSerializable<CompoundTag> {
     @ConfigOption(side = ConfigSide.SERVER, category = "misc", key = "pillage_cooldown")
     public static int PILLAGE_COOLDOWN = Functions.secondsToTicks(300);
 
+    @Translation(comments = "You have to wait %s seconds until you can steal from this villager")
+    public static final String PILLAGE_ON_COOLDOWN = Translation.Type.GUI.wrap("message.pillage_on_cooldown");
+
+    @Translation(comments = "This villager had no items you could steal")
+    public static final String PILLAGE_UNSUCCESSFUL = Translation.Type.GUI.wrap("message.pillage_unsuccessful");
+
+    @Translation(comments = "This villager has nothing you can steal")
+    public static final String CANNOT_PILLAGE = Translation.Type.GUI.wrap("message.cannot_pillage");
+
     // To handle the burn effect damage
     public Vec3 lastPos;
     // Amount of times the last chain attack has chained

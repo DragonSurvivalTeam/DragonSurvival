@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:sea/rain_dancing",
   "criteria": {
-    "criterion_0": {
+    "place_snow_in_nether": {
       "conditions": {
         "location": [
           {
@@ -44,7 +44,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "place_snow_in_nether"
     ]
   ],
   "rewards": {

@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:collect_dust",
   "criteria": {
-    "criterion_0": {
+    "find_dragon_bones": {
       "conditions": {
         "player": [
           {
@@ -32,7 +32,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "find_dragon_bones"
     ]
   ],
   "rewards": {

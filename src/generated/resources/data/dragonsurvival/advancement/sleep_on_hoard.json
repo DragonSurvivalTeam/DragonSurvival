@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:sleep_on_treasure",
   "criteria": {
-    "criterion_0": {
+    "sleep_on_treasure_hoard": {
       "conditions": {
         "nearby_treasure_amount": 100
       },
@@ -22,7 +22,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "sleep_on_treasure_hoard"
     ]
   ],
   "rewards": {

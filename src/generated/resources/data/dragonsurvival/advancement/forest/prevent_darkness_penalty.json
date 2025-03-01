@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:forest/stand_on_sweet_berries",
   "criteria": {
-    "criterion_0": {
+    "be_safe_in_darkness": {
       "conditions": {
         "player": [
           {
@@ -46,7 +46,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "be_safe_in_darkness"
     ]
   ],
   "rewards": {

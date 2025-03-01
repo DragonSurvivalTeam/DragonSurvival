@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:collect_dust",
   "criteria": {
-    "criterion_0": {
+    "place_beacon_on_memory_block": {
       "conditions": {
         "location": [
           {
@@ -37,7 +37,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "place_beacon_on_memory_block"
     ]
   ],
   "rewards": {

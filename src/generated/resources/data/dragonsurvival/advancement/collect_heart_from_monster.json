@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:be_adult_dragon",
   "criteria": {
-    "criterion_0": {
+    "collect_elder_dragon_heart": {
       "conditions": {
         "items": [
           {
@@ -28,7 +28,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "collect_elder_dragon_heart"
     ]
   ],
   "rewards": {

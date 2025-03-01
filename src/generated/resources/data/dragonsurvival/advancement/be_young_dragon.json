@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:collect_dust",
   "criteria": {
-    "criterion_0": {
+    "reach_young_stage": {
       "conditions": {
         "player": [
           {
@@ -35,7 +35,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "reach_young_stage"
     ]
   ],
   "rewards": {

@@ -6,8 +6,8 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 public class LangKey {
     // --- Root --- //
 
-    @Translation(comments = "Dragon Survival")
-    protected static final String ROOT = Translation.Type.ADVANCEMENT.wrap("root");
+    @Translation(type = Translation.Type.ADVANCEMENT, comments = "Dragon Survival")
+    protected static final String ROOT = "root";
 
     // --- Parent: Root --- //
 

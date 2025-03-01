@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:stop_natural_growth",
   "criteria": {
-    "criterion_0": {
+    "use_dragon_soul": {
       "trigger": "dragonsurvival:use_dragon_soul"
     }
   },
@@ -19,7 +19,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "use_dragon_soul"
     ]
   ],
   "rewards": {

@@ -1,7 +1,7 @@
 {
   "parent": "dragonsurvival:dark/collect_key",
   "criteria": {
-    "criterion_0": {
+    "open_dark_vault": {
       "conditions": {
         "location": [
           {
@@ -37,7 +37,7 @@
   },
   "requirements": [
     [
-      "criterion_0"
+      "open_dark_vault"
     ]
   ],
   "rewards": {
