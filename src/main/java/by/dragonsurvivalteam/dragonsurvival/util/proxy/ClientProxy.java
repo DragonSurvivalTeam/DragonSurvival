@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.util.proxy;
 import by.dragonsurvivalteam.dragonsurvival.client.DragonSurvivalClient;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.sounds.FollowEntitySound;
+import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AbilityAnimation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationType;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
@@ -137,6 +138,15 @@ public class ClientProxy implements Proxy {
     @Override
     public boolean isOnRenderThread() {
         return RenderSystem.isOnRenderThread();
+    }
+
+    @Override
+    public boolean isFakePlayer(final Player player) {
+        if (Proxy.super.isFakePlayer(player)) {
+            return true;
+        }
+
+        return player instanceof FakeClientPlayer;
     }
 
     @Override

@@ -42,7 +42,13 @@ public class DragonGlowLayerRenderer extends GeoRenderLayer<DragonEntity> {
             return;
         }
 
-        Player player = animatable.getPlayer();
+        Player player;
+
+        if (animatable.overrideUUIDWithLocalPlayerForTextureFetch) {
+            player = Minecraft.getInstance().player;
+        } else {
+            player = animatable.getPlayer();
+        }
 
         if (player == null) {
             return;
