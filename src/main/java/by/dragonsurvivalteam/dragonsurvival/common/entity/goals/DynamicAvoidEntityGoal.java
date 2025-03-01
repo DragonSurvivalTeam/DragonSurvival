@@ -2,7 +2,6 @@ package by.dragonsurvivalteam.dragonsurvival.common.entity.goals;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FearData;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -121,7 +120,7 @@ public class DynamicAvoidEntityGoal extends Goal {
                 continue;
             }
 
-            if (avoidCondition.range(data.distance()).selector(entity -> !HunterData.hasMaxHunterStacks(entity)).test(mob, player)) {
+            if (avoidCondition.range(data.distance()).test(mob, player)) {
                 toAvoid = player;
                 walkSpeed = data.walkSpeed();
                 sprintSpeed = data.sprintSpeed();

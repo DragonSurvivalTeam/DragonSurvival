@@ -18,7 +18,6 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
@@ -134,15 +133,6 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
         if (instance != null && instance.getEffect().is(DSEffects.HUNTER)) {
             clearHunterStacks(event.getEntity());
         }
-    }
-
-    @SubscribeEvent
-    public static void avoidTarget(final LivingChangeTargetEvent event) {
-        event.getEntity().getExistingData(DSDataAttachments.HUNTER).ifPresent(data -> {
-            if (data.hasMaxHunterStacks()) {
-                event.setNewAboutToBeSetTarget(null);
-            }
-        });
     }
 
     @SubscribeEvent // Does not use the critical event since projectiles owned by the player don't trigger it

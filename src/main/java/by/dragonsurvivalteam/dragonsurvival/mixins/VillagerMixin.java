@@ -68,14 +68,17 @@ public abstract class VillagerMixin extends AbstractVillager {
     private void dragonSurvival$triggerSweatEvent(final CallbackInfo callback) {
         Villager villager = (Villager) (Object) this;
 
-        // Get their memories of visible living entities, then find the nearest threatening player
-        villager.getBrain().getMemory(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES).flatMap(visibleLivingEntities -> visibleLivingEntities.findClosest(
-                entity -> entity instanceof Player playerEntity && !playerEntity.isCreative() && !playerEntity.isSpectator() && playerEntity.hasEffect(DSEffects.HUNTER_OMEN)
-        )).ifPresent(nearestPlayer -> {
-            if (!villager.isNoAi() && villager.getRandom().nextInt(100) >= villager.distanceToSqr(nearestPlayer)) {
-                // 💦💦💦 (more often if the player is closer)
-                villager.level().broadcastEntityEvent(villager, EntityEvent.VILLAGER_SWEAT);
+        if (villager.isNoAi()) {
+            return;
+        }
+
+        villager.getBrain().getMemory(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES).flatMap(entities -> entities.findClosest(player -> HunterOmenHandler.avoidPlayer(villager, player))).ifPresent(player -> {
+            if (villager.getRandom().nextInt(100) < villager.distanceToSqr(player)) {
+                // Trigger the action less often if the player is further away
+                return;
             }
+
+            villager.level().broadcastEntityEvent(villager, EntityEvent.VILLAGER_SWEAT);
         });
     }
 

@@ -44,7 +44,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("unused")
 @EventBusSubscriber
 public class HunterOmenHandler {
     @SubscribeEvent
@@ -57,12 +56,20 @@ public class HunterOmenHandler {
         }
     }
 
-    public static List<Player> getNearbyPlayersWithHunterOmen(final double detectionRadius, final Level level, final Entity entity) {
-        return level.getEntitiesOfClass(Player.class, entity.getBoundingBox().inflate(detectionRadius), player -> !player.isCreative() && !player.isSpectator() && player.hasEffect(DSEffects.HUNTER_OMEN));
-    }
+    public static boolean avoidPlayer(final LivingEntity villager, final LivingEntity target) {
+        if (!(target instanceof Player player)) {
+            return false;
+        }
 
-    public static boolean isNearbyPlayerWithHunterOmen(final double detectionRadius, final Level level, final Entity entity) {
-        return !getNearbyPlayersWithHunterOmen(detectionRadius, level, entity).isEmpty();
+        // Copied from TargetingConditions
+        double visibilityPercent = player.getVisibilityPercent(villager);
+        double visibleRange = Math.max(8 * visibilityPercent, 2);
+
+        if (villager.distanceToSqr(player) > visibleRange * visibleRange) {
+            return false;
+        }
+
+        return !player.isCreative() && player.canBeSeenByAnyone() && player.hasEffect(DSEffects.HUNTER_OMEN);
     }
 
     public static List<ItemStack> generateVillagerLoot(final AbstractVillager genericVillager, final Level level, @Nullable final Player player, boolean wasKilled) {

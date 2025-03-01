@@ -10,6 +10,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.EffectModifications;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonedEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnTargetKilled;
@@ -77,6 +78,15 @@ public abstract class LivingEntityMixin extends Entity {
         }
 
         return hasLevitation;
+    }
+
+    @ModifyReturnValue(method = "canBeSeenByAnyone", at = @At("RETURN"))
+    private boolean dragonSurvival$hasMaxHunterStacks(boolean canBeSeen) {
+        if (!canBeSeen) {
+            return false;
+        }
+
+        return !HunterData.hasMaxHunterStacks((LivingEntity) (Object) this);
     }
 
     @SuppressWarnings("ConstantValue") // both checks in the if statement are valid
