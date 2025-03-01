@@ -26,7 +26,12 @@ public class DSCreativeTabs {
             DSItems.HUNTING_NET,
             DSItems.LIGHTNING_TEXTURE_ITEM,
             DSItems.BOLAS,
-            DSItems.ACTIVATED_DRAGON_BEACON
+            DSItems.FOREST_ICON,
+            DSItems.CAVE_ICON,
+            DSItems.SEA_ICON,
+            DSItems.FOREST_FULL_ICON,
+            DSItems.CAVE_FULL_ICON,
+            DSItems.SEA_FULL_ICON
     );
 
     private static final CreativeModeTab.DisplayItemsGenerator BLOCK_ITEM_GENERATOR = (parameters, output) -> Stream.of(DSBlocks.REGISTRY).forEach(holder -> holder.getEntries().forEach(entry -> output.accept(entry.value())));

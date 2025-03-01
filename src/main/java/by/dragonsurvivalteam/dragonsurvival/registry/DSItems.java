@@ -436,6 +436,12 @@ public class DSItems {
     public static final Holder<Item> BOLAS = REGISTRY.register("bolas", () -> new BolasArrowItem(new Item.Properties()));
     public static final Holder<Item> HUNTING_NET = REGISTRY.register("dragon_hunting_mesh", () -> new Item(new Item.Properties()));
     public static final Holder<Item> LIGHTNING_TEXTURE_ITEM = REGISTRY.register("lightning", () -> new Item(new Item.Properties()));
+    public static final Holder<Item> FOREST_ICON = REGISTRY.register("forest_icon", () -> new Item(new Item.Properties()));
+    public static final Holder<Item> CAVE_ICON = REGISTRY.register("cave_icon", () -> new Item(new Item.Properties()));
+    public static final Holder<Item> SEA_ICON = REGISTRY.register("sea_icon", () -> new Item(new Item.Properties()));
+    public static final Holder<Item> FOREST_FULL_ICON = REGISTRY.register("forest_full_icon", () -> new Item(new Item.Properties()));
+    public static final Holder<Item> CAVE_FULL_ICON = REGISTRY.register("cave_full_icon", () -> new Item(new Item.Properties()));
+    public static final Holder<Item> SEA_FULL_ICON = REGISTRY.register("sea_full_icon", () -> new Item(new Item.Properties()));
 
     // TODO :: Only here for easy rendering in 'DragonBeaconBlockEntity' (active beacon is not a different block, it's handled by a block state)
     //  Unsure if there is another way to do this

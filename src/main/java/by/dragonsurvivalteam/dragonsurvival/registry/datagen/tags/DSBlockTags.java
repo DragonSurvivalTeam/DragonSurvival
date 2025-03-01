@@ -132,7 +132,13 @@ public class DSBlockTags extends BlockTagsProvider {
                 .add(Blocks.SMALL_DRIPLEAF);
 
         tag(DRAGON_ORE_DROP)
-                .addTag(Tags.Blocks.ORES);
+                .addTag(Tags.Blocks.ORES_QUARTZ)
+                .addTag(Tags.Blocks.ORES_COAL)
+                .addTag(Tags.Blocks.ORES_REDSTONE)
+                .addTag(Tags.Blocks.ORES_LAPIS)
+                .add(Blocks.NETHER_GOLD_ORE)
+                .addTag(Tags.Blocks.ORES_DIAMOND)
+                .addTag(Tags.Blocks.ORES_EMERALD);
 
         tag(GENERAL_ORES)
                 .addTag(Tags.Blocks.ORES)

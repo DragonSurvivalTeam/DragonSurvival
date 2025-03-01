@@ -1,4 +1,4 @@
-// 1.21.1	2025-01-29T10:53:52.869697	Dragon Survival Item models
+// 1.21.1	2025-03-01T16:51:38.2844179	Dragon Survival Item models
 3103bf7bf2acab8c6053dd037bfd4f26275aad26 assets/dragonsurvival/models/item/acacia_dragon_door.json
 4c7b8102022c425a86140eada246eaed8be93446 assets/dragonsurvival/models/item/activated_dragon_beacon.json
 63ec6c618a3a23eab4cab9c52d7d3250de9b516e assets/dragonsurvival/models/item/ambusher_spawn_egg.json
@@ -11,6 +11,8 @@ a732bc36bf1ee71edd2564ffb55f06531359a067 assets/dragonsurvival/models/item/bolas
 de6862341b19b55133fb27bb9e4374f18d637c7f assets/dragonsurvival/models/item/cave_dragon_door.json
 4146f09370ea6f037b80e280e7ac9d2006506a85 assets/dragonsurvival/models/item/cave_dragon_pressure_plate.json
 0e3457edd99d6f37832482faa87de8dd5da1ca6d assets/dragonsurvival/models/item/cave_dragon_treat.json
+056408bac25a433c09b005a4233dbf337edf4d97 assets/dragonsurvival/models/item/cave_full_icon.json
+7affed947bdad1cc264532d4653298cf3a20be53 assets/dragonsurvival/models/item/cave_icon.json
 298c88596d14c12273bc0c9d1beeab2d707923fe assets/dragonsurvival/models/item/cave_source_of_magic.json
 5828f990e558ba608768d0d4f7bb8c811d010e5a assets/dragonsurvival/models/item/charged_coal.json
 467662a044877c8caacf6423595ff39e7eb873f4 assets/dragonsurvival/models/item/charged_soup.json
@@ -44,6 +46,8 @@ c4f2c6ebd5444061e717b2c11fd7f91eb9f63d11 assets/dragonsurvival/models/item/elder
 b7fe3bf3ca542d5aab5858e28c9df76d131c499e assets/dragonsurvival/models/item/forest_dragon_door.json
 e3d640c339581750eaf745d9aa36772708633841 assets/dragonsurvival/models/item/forest_dragon_pressure_plate.json
 086a84c336b4a2d26baee2826691ff20520929b9 assets/dragonsurvival/models/item/forest_dragon_treat.json
+2eb3668b449ab80b1fe0670bcc8945b75bd5cd2f assets/dragonsurvival/models/item/forest_full_icon.json
+961a756a60d4af3c9f434001aa5132e822150320 assets/dragonsurvival/models/item/forest_icon.json
 69c675547e27e73b60834578326c9e203e71cb34 assets/dragonsurvival/models/item/forest_source_of_magic.json
 86069a38744e0e72d7c156fa2151ec7eec591b32 assets/dragonsurvival/models/item/frozen_raw_fish.json
 fdbe6397e13d59d173cfdb484130a3b765380702 assets/dragonsurvival/models/item/golden_coral_pufferfish.json
@@ -87,6 +91,8 @@ ef51112b91dee43b03a5f830d571db5092219bf7 assets/dragonsurvival/models/item/sands
 456b9d5b30d505a75e5abffb720966142a223c3c assets/dragonsurvival/models/item/sea_dragon_door.json
 35a70d70231c0b795a224ef4959f1485afc07b43 assets/dragonsurvival/models/item/sea_dragon_pressure_plate.json
 cc109024c84a1f4bafb24512b7b8b61502fef7b8 assets/dragonsurvival/models/item/sea_dragon_treat.json
+4a3a4bc027b629660bb40ed5ca24147f8a5155c8 assets/dragonsurvival/models/item/sea_full_icon.json
+97df8fd7f18e2997cb6fe2cf67b5fd42a0177b46 assets/dragonsurvival/models/item/sea_icon.json
 8f74a8dc1d397b5a860ab72c33d03e4dc7acc697 assets/dragonsurvival/models/item/sea_source_of_magic.json
 e608331a3ca946af83967a3f442aa63eabeaeadb assets/dragonsurvival/models/item/skeleton_dragon_chest_skin1.json
 1b8e25d169db9e364c57d4cc02d30dc3359fbd99 assets/dragonsurvival/models/item/skeleton_dragon_chest_skin2.json

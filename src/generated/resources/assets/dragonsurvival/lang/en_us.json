@@ -271,7 +271,7 @@
   "dragon_ability.dragonsurvival.sturdy_skin": "Sturdy Skin",
   "dragon_ability.dragonsurvival.sturdy_skin.desc": "■ Gives you and your allies additional §2armor points§r§7.",
   "dragon_ability.dragonsurvival.sun_breath": "Sun Breath",
-  "dragon_ability.dragonsurvival.sun_breath.desc": "■ Breathe out solar energy stored within you, helping §2plants grow faster§r§7. Turns §fdirt§r§7 into other blocks with a small chance.\n\n■ §fRange§r§7 depends on age of the dragon.\n\n■ §8Cannot be used while affected by «Stress».§r",
+  "dragon_ability.dragonsurvival.sun_breath.desc": "■ Breathe out solar energy stored within you, helping §2plants grow faster§r§7. Turns §fdirt§r§7 into other blocks with a small chance. It also §fpoisons§r§7 potatoes.\n\n■ §fRange§r§7 depends on age of the dragon.\n\n■ §8Cannot be used while affected by «Stress».§r",
   "dragon_body.dragonsurvival.center": "Center",
   "dragon_body.dragonsurvival.center.desc": "§6■ Central Type§r\n■ Inhabitants of all biomes, and the most common type of dragon. They are the most balanced type of dragon, having no particular strengths or weaknesses.",
   "dragon_body.dragonsurvival.center.wings": "Show wings",

@@ -99,7 +99,7 @@ public class ForestDragonAbilities {
     public static final ResourceKey<DragonAbility> FOREST_BREATH = DragonAbilities.key("forest_breath");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ Breathe out solar energy stored within you, helping §2plants grow faster§r§7. Turns §fdirt§r§7 into other blocks with a small chance.\n",
+            "■ Breathe out solar energy stored within you, helping §2plants grow faster§r§7. Turns §fdirt§r§7 into other blocks with a small chance. It also §fpoisons§r§7 potatoes.\n",
             "■ §fRange§r§7 depends on age of the dragon.\n",
             "■ §8Cannot be used while affected by «Stress».§r"
     })
@@ -251,8 +251,7 @@ public class ForestDragonAbilities {
                                                         new BlockConversionEffect.BlockTo(Blocks.MYCELIUM.defaultBlockState(), 1),
                                                         new BlockConversionEffect.BlockTo(Blocks.COARSE_DIRT.defaultBlockState(), 3)
                                                 ))
-                                        ), LevelBasedValue.constant(0.2f)),
-                                        new BlockBreakEffect(BlockCondition.blocks(Blocks.POTATOES), LevelBasedValue.constant(0.2f), true)
+                                        ), LevelBasedValue.constant(0.2f))
                                 )
                         ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
