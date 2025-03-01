@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.mixins;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.EntityStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.HunterOmenHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,8 +24,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import static by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers.STEAL_FROM_VILLAGER;
 
 @Mixin(Villager.class)
 public abstract class VillagerMixin extends AbstractVillager {
@@ -53,7 +52,7 @@ public abstract class VillagerMixin extends AbstractVillager {
                 player.level().broadcastEntityEvent(villager, EntityEvent.VILLAGER_ANGRY);
 
                 if (player instanceof ServerPlayer serverPlayer) {
-                    STEAL_FROM_VILLAGER.get().trigger(serverPlayer);
+                    DSAdvancementTriggers.STEAL_FROM_VILLAGER.get().trigger(serverPlayer);
                 }
 
                 handler.setPillageCooldown();

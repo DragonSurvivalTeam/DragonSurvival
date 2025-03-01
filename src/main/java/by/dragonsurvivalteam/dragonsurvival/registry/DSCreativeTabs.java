@@ -1,7 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.items.armor.PermanentEnchantmentItem;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -21,17 +20,19 @@ public class DSCreativeTabs {
 
     public static final DeferredRegister<CreativeModeTab> REGISTRY = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, DragonSurvival.MODID);
 
-    // TODO :: handle this by an annotation?
     private static final List<Holder<Item>> HIDDEN = Arrays.asList(
             DSItems.HUNTING_NET,
             DSItems.LIGHTNING_TEXTURE_ITEM,
             DSItems.BOLAS,
-            DSItems.ACTIVATED_DRAGON_BEACON
+            DSItems.ACTIVATED_DRAGON_BEACON,
+            DSItems.CAVE_BEACON,
+            DSItems.FOREST_BEACON,
+            DSItems.SEA_BEACON
     );
 
     private static final CreativeModeTab.DisplayItemsGenerator BLOCK_ITEM_GENERATOR = (parameters, output) -> Stream.of(DSBlocks.REGISTRY).forEach(holder -> holder.getEntries().forEach(entry -> output.accept(entry.value())));
     private static final CreativeModeTab.DisplayItemsGenerator ITEM_GENERATOR = (parameters, output) -> Stream.of(DSItems.REGISTRY).forEach(holder -> holder.getEntries().forEach(entry -> {
-        if (entry.value() instanceof PermanentEnchantmentItem || !(HIDDEN.contains(entry) || entry.value().toString().contains("skeleton"))) {
+        if (!HIDDEN.contains(entry)) {
             output.accept(entry.value());
         }
     }));

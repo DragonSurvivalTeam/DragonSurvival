@@ -364,6 +364,10 @@ public class DSItems {
 
     // --- Misc --- //
 
+    @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 By combining the basic elements of dragons, you have the item to activate the beacon. Depending what species of dragon you are, the beacon will have different effects.")
+    @Translation(type = Translation.Type.ITEM, comments = "Beacon Activator")
+    public static final Holder<Item> BEACON_ACTIVATOR = REGISTRY.register("beacon_activator", location -> new TooltipItem(new Item.Properties(), location.getPath()));
+
     @Translation(type = Translation.Type.ITEM, comments = "Dragon Soul")
     public static final Holder<Item> DRAGON_SOUL = REGISTRY.register("dragon_soul", () -> new DragonSoulItem(new Properties().rarity(Rarity.EPIC)));
 
@@ -431,20 +435,13 @@ public class DSItems {
 
     // --- Not shown in creative tab --- //
 
-    // TODO :: currently have no translation
-
     public static final Holder<Item> BOLAS = REGISTRY.register("bolas", () -> new BolasArrowItem(new Item.Properties()));
     public static final Holder<Item> HUNTING_NET = REGISTRY.register("dragon_hunting_mesh", () -> new Item(new Item.Properties()));
     public static final Holder<Item> LIGHTNING_TEXTURE_ITEM = REGISTRY.register("lightning", () -> new Item(new Item.Properties()));
 
-    // TODO :: Only here for easy rendering in 'DragonBeaconBlockEntity' (active beacon is not a different block, it's handled by a block state)
-    //  Unsure if there is another way to do this
     public static final Holder<Item> ACTIVATED_DRAGON_BEACON = REGISTRY.register("activated_dragon_beacon", () -> new Item(new Item.Properties()));
-
-    @Translation(type = Translation.Type.DESCRIPTION, comments = {
-            "■§7 By combining the basic elements of dragons, you have the item to activate the beacon. Depending what species of dragon you are, the beacon will have different effects."
-    })
-    @Translation(type = Translation.Type.ITEM, comments = "Beacon Activator")
-    public static final Holder<Item> BEACON_ACTIVATOR = REGISTRY.register("beacon_activator", location -> new TooltipItem(new Item.Properties(), location.getPath()));
+    public static final Holder<Item> CAVE_BEACON = REGISTRY.register("cave_beacon", () -> new Item(new Item.Properties()));
+    public static final Holder<Item> FOREST_BEACON = REGISTRY.register("forest_beacon", () -> new Item(new Item.Properties()));
+    public static final Holder<Item> SEA_BEACON = REGISTRY.register("sea_beacon", () -> new Item(new Item.Properties()));
 
 }
