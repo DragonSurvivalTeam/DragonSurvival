@@ -848,8 +848,8 @@ public class DSBlocks {
     }
 
     static {
-        for (int i = 1; i < 9; i++) { // TODO :: what does he 9 indicate
-            for (SkeletonPieceBlock.Type type : SkeletonPieceBlock.Types.values()) {
+        for (int i = 1; i < 9; i++) { // TODO :: what does the 9 indicate
+            for (SkeletonPieceBlock.Type type : SkeletonPieceBlock.Type.values()) {
                 DeferredHolder<Block, SkeletonPieceBlock> block = REGISTRY.register(type.getSerializedName() + "_skin" + i,
                         () -> new SkeletonPieceBlock(type, BlockBehaviour.Properties.of()
                                 .mapColor(MapColor.CLAY)
