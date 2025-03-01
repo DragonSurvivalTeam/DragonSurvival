@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.models;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.DragonEditorHandler;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
+import by.dragonsurvivalteam.dragonsurvival.client.skins.DragonSkins;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
@@ -199,6 +200,14 @@ public class DragonModel extends GeoModel<DragonEntity> {
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
         DragonStageCustomization customization = handler.getCurrentStageCustomization();
+
+        if (dragon.isOverridingMovementData && handler.getModel().equals(DragonBody.DEFAULT_MODEL)) {
+            ResourceLocation skin = DragonSkins.getPlayerSkin(player, handler.stageKey());
+
+            if (RenderingUtils.hasTexture(skin)) {
+                return skin;
+            }
+        }
 
         if (handler.getSkinData().blankSkin) {
             return DragonSurvival.res("textures/dragon/" + handler.speciesId().getPath() + "/blank_skin.png");
