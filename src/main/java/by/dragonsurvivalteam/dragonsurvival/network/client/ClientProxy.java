@@ -93,16 +93,13 @@ public class ClientProxy {
             return;
         }
 
-        double positionOffset = 0.6;
         double speedMultiplier = 20;
-
         Vec3 position = null;
 
         if (entity instanceof Player player) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
 
             if (handler.isDragon()) {
-                positionOffset = handler.getGrowth() / 30;
                 speedMultiplier = handler.getGrowth();
 
                 if (player != Minecraft.getInstance().player || Minecraft.getInstance().options.getCameraType() != CameraType.FIRST_PERSON) {
@@ -115,9 +112,15 @@ public class ClientProxy {
         float pitch = (float) Math.toRadians(-entity.getXRot());
         float speed = (float) (packet.speedPerGrowth() * speedMultiplier);
 
+        // Used to place the breath further in front of the dragon when moving fast
+        // To avoid spawning the particles in the position of the entity's head
+        double movement = 1 + entity.getDeltaMovement().horizontalDistanceSqr();
+        Vec3 angle = entity.getLookAngle();
+
         if (position == null || position == Vec3.ZERO) {
-            int scale = entity instanceof Player player && player.getAbilities().flying ? 2 : 1;
-            position = entity.getEyePosition().add(entity.getLookAngle().scale(scale)).add(0, -0.1 - 0.2 * positionOffset, 0);
+            position = entity.getEyePosition().add(angle.scale(movement));
+        } else {
+            position = position.subtract(angle).add(angle.scale(movement));
         }
 
         for (int i = 0; i < packet.numParticles(); i++) {
