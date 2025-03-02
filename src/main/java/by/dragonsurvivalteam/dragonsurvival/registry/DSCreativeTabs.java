@@ -1,10 +1,12 @@
 package by.dragonsurvivalteam.dragonsurvival.registry;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.blocks.SkeletonPieceBlock;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -12,7 +14,6 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class DSCreativeTabs {
     @Translation(comments = "Dragon Survival")
@@ -37,12 +38,25 @@ public class DSCreativeTabs {
             DSItems.SEA_BEACON
     );
 
-    private static final CreativeModeTab.DisplayItemsGenerator BLOCK_ITEM_GENERATOR = (parameters, output) -> Stream.of(DSBlocks.REGISTRY).forEach(holder -> holder.getEntries().forEach(entry -> output.accept(entry.value())));
-    private static final CreativeModeTab.DisplayItemsGenerator ITEM_GENERATOR = (parameters, output) -> Stream.of(DSItems.REGISTRY).forEach(holder -> holder.getEntries().forEach(entry -> {
-        if (!HIDDEN.contains(entry)) {
-            output.accept(entry.value());
+    private static final CreativeModeTab.DisplayItemsGenerator BLOCK_ITEM_GENERATOR = (parameters, output) -> DSBlocks.REGISTRY.getEntries().forEach(entry -> {
+       if (entry.value() instanceof SkeletonPieceBlock) {
+           return;
+       }
+
+       output.accept(entry.value());
+    });
+
+    private static final CreativeModeTab.DisplayItemsGenerator ITEM_GENERATOR = (parameters, output) -> DSItems.REGISTRY.getEntries().forEach(entry -> {
+        if (HIDDEN.contains(entry)) {
+            return;
         }
-    }));
+
+        if (entry.value() instanceof BlockItem blockItem && blockItem.getBlock() instanceof SkeletonPieceBlock) {
+            return;
+        }
+
+        output.accept(entry.value());
+    });
 
     public static Holder<CreativeModeTab> DS_TAB = REGISTRY.register("dragon_survival", () -> CreativeModeTab.builder()
             .icon(() -> new ItemStack(DSItems.ELDER_DRAGON_BONE))
