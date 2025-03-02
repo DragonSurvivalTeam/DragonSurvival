@@ -171,7 +171,7 @@ public class HunterOmenHandler {
         MobEffectInstance instance = player.getEffect(DSEffects.HUNTER_OMEN);
         int duration = instance != null ? instance.getDuration() : 0;
 
-        // Double the duration unless it would add more than 30 minutes to the timer, but add a minimum of 1 minute
+        // Double the duration unless it would add more than 30 minutes to the timer, but add a minimum of 12 minutes
         player.addEffect(new MobEffectInstance(DSEffects.HUNTER_OMEN, Math.max(Functions.minutesToTicks(12), Math.min(duration * 2, Functions.minutesToTicks(30))), 0, false, false, true));
     }
 
