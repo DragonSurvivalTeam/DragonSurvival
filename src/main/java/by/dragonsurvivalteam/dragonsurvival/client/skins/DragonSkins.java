@@ -108,11 +108,18 @@ public class DragonSkins {
         String[] text = ArrayUtils.addAll(new String[]{playerKey}, extra);
 
         String resourceName = StringUtils.join(text, "_");
-        ResourceLocation resourceLocation = ResourceLocation.fromNamespaceAndPath(MODID, resourceName.toLowerCase(Locale.ENGLISH));
+        ResourceLocation resource;
 
-        try (SimpleTexture simpleTexture = new SimpleTexture(resourceLocation)) {
-            if (Minecraft.getInstance().getTextureManager().getTexture(resourceLocation, simpleTexture) != simpleTexture) {
-                return resourceLocation;
+        try {
+            resource = ResourceLocation.fromNamespaceAndPath(MODID, resourceName.toLowerCase(Locale.ENGLISH));
+        } catch (ResourceLocationException exception) {
+            DragonSurvival.LOGGER.error(exception);
+            return null;
+        }
+
+        try (SimpleTexture simpleTexture = new SimpleTexture(resource)) {
+            if (Minecraft.getInstance().getTextureManager().getTexture(resource, simpleTexture) != simpleTexture) {
+                return resource;
             }
         }
 
@@ -143,7 +150,7 @@ public class DragonSkins {
         // Only use the API to get the names (for the random button)
         if (skinLoader instanceof GithubSkinLoader gitHubOld) {
             try (InputStream imageStream = gitHubOld.querySkinImage(skinName, stage)) {
-                return readSkin(imageStream, resourceLocation);
+                return readSkin(imageStream, resource);
             } catch (IOException exception) {
                 return fetchSkinResource(playerName, stage, extra, exception, playerKey);
             }
@@ -154,7 +161,7 @@ public class DragonSkins {
         }
 
         try (InputStream imageStream = skinLoader.querySkinImage(skin)) {
-            return readSkin(imageStream, resourceLocation);
+            return readSkin(imageStream, resource);
         } catch (IOException exception) {
             return fetchSkinResource(playerName, stage, extra, exception, playerKey);
         }
