@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -21,7 +22,7 @@ public abstract class EntityRenderDispatcherMixin {
 
     @Inject(method = "renderShadow", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;last()Lcom/mojang/blaze3d/vertex/PoseStack$Pose;"))
     private static void dragonSurvival$modifyShadow(PoseStack poseStack, MultiBufferSource buffer, Entity entity, float weight, float partialTicks, LevelReader level, float size, CallbackInfo callback) {
-        if (entity instanceof Player player && DragonStateProvider.isDragon(player)) {
+        if (entity instanceof Player player && DragonStateProvider.isDragon(player) && !DragonSurvival.PROXY.dragonRenderingWasCancelled(player)) {
             Vector3f offset = ClientDragonRenderer.getModelShadowOffset(player, partialTicks).negate();
             poseStack.pushPose();
             poseStack.translate(offset.x(), offset.y(), offset.z());
