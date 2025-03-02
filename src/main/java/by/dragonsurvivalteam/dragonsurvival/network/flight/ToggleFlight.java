@@ -33,28 +33,32 @@ public record ToggleFlight(Activation activation, Result result) implements Cust
     public static void handleServer(final ToggleFlight packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
             Player player = context.player();
+
             FlightData flight = FlightData.getData(player);
-
-            if (packet.activation() == Activation.JUMP && flight.areWingsSpread) {
-                return Result.ALREADY_ENABLED;
-            }
-
-            if (!player.isCreative() && !hasEnoughFoodToStartFlight(player)) {
-                return Result.NO_HUNGER;
-            }
-
             MagicData magic = MagicData.getData(player);
 
             if (!magic.checkAbility(player, FlightEffect.class, MagicData.AbilityCheck.HAS_EFFECT)) {
                 return Result.NO_WINGS;
             }
 
-            if (player.hasEffect(DSEffects.TRAPPED) || player.hasEffect(DSEffects.BROKEN_WINGS)) {
-                return Result.WINGS_BLOCKED;
+            if (packet.activation() == Activation.JUMP && flight.areWingsSpread) {
+                return Result.ALREADY_ENABLED;
             }
 
-            if (!magic.checkAbility(player, FlightEffect.class, MagicData.AbilityCheck.IS_EFFECT_UNLOCKED)) {
-                return Result.ALREADY_DISABLED;
+            if (!flight.areWingsSpread) {
+                // Attempting to open wings
+
+                if (!player.isCreative() && !hasEnoughFoodToStartFlight(player)) {
+                    return Result.NO_HUNGER;
+                }
+
+                if (player.hasEffect(DSEffects.TRAPPED) || player.hasEffect(DSEffects.BROKEN_WINGS)) {
+                    return Result.WINGS_BLOCKED;
+                }
+
+                if (!magic.checkAbility(player, FlightEffect.class, MagicData.AbilityCheck.IS_EFFECT_UNLOCKED)) {
+                    return Result.DISABLED;
+                }
             }
 
             flight.areWingsSpread = !flight.areWingsSpread;
@@ -81,7 +85,7 @@ public record ToggleFlight(Activation activation, Result result) implements Cust
         SUCCESS_ENABLED,
         SUCCESS_DISABLED,
         ALREADY_ENABLED,
-        ALREADY_DISABLED,
+        DISABLED,
         WINGS_BLOCKED,
         NO_WINGS,
         NO_HUNGER,

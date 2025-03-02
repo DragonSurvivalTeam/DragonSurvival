@@ -526,7 +526,7 @@ public class ClientFlightHandler {
         if (activation == ToggleFlight.Activation.MANUAL) {
             switch (result) {
                 case NO_WINGS -> player.sendSystemMessage(Component.translatable(NO_FLIGHT_EFFECT));
-                case ALREADY_DISABLED -> player.sendSystemMessage(Component.translatable(FLIGHT_EFFECT_DISABLED));
+                case DISABLED -> player.sendSystemMessage(Component.translatable(FLIGHT_EFFECT_DISABLED));
                 case WINGS_BLOCKED -> player.sendSystemMessage(Component.translatable(WINGS_BLOCKED));
                 case NO_HUNGER -> player.sendSystemMessage(Component.translatable(LangKey.MESSAGE_NO_HUNGER));
             }
