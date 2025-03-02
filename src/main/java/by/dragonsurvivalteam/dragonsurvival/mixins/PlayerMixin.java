@@ -3,6 +3,8 @@ package by.dragonsurvivalteam.dragonsurvival.mixins;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
+import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
+import by.dragonsurvivalteam.dragonsurvival.compat.create.CardboardBoxHelper;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
@@ -72,7 +74,7 @@ public abstract class PlayerMixin extends LivingEntity {
     /** Make sure to consider the actual dragon hitbox when doing checks like these */
     @ModifyReturnValue(method = "canPlayerFitWithinBlocksAndEntitiesWhen", at = @At("RETURN"))
     private boolean dragonSurvival$checkDragonHitbox(boolean returnValue, @Local(argsOnly = true) Pose pose) {
-        if (DragonStateProvider.isDragon(this)) {
+        if (DragonStateProvider.isDragon(this) && Compat.entityHasBeenModelSwapped(this)) {
             return DragonSizeHandler.canPoseFit((Player) (Object) this, pose);
         } else {
             return returnValue;

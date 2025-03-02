@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
@@ -33,7 +34,7 @@ public abstract class PlayerRendererMixin {
 
     @ModifyReturnValue(method = "getRenderOffset(Lnet/minecraft/client/player/AbstractClientPlayer;F)Lnet/minecraft/world/phys/Vec3;", at = @At(value = "RETURN"))
     private Vec3 dragonSurvival$removeRenderOffsetForDragons(Vec3 original, @Local(argsOnly = true) AbstractClientPlayer player) {
-        if (DragonStateProvider.isDragon(player)) {
+        if (DragonStateProvider.isDragon(player) && !DragonSurvival.PROXY.dragonRenderingWasCancelled(player)) {
             return Vec3.ZERO;
         }
 

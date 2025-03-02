@@ -201,7 +201,7 @@ public class ClientDragonRenderer {
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(receiveCanceled = true)
     public static void renderDragon(final RenderPlayerEvent.Pre event) {
         if (!(event.getEntity() instanceof AbstractClientPlayer player)) {
             return;
@@ -210,6 +210,12 @@ public class ClientDragonRenderer {
         DragonStateHandler handler = DragonStateProvider.getData(player);
 
         if (!handler.isDragon()) {
+            return;
+        }
+
+        DragonEntity dragon = getDragon(player);
+        dragon.renderingWasCancelled = event.isCanceled();
+        if(event.isCanceled()) {
             return;
         }
 
@@ -227,8 +233,6 @@ public class ClientDragonRenderer {
         }
 
         if (player != Minecraft.getInstance().player || !Minecraft.getInstance().options.getCameraType().isFirstPerson() || !ServerFlightHandler.isGliding(player) || renderFirstPersonFlight) {
-            DragonEntity dragon = getDragon(player);
-
             if (!dragon.isOverridingMovementData) {
                 ClientDragonRenderer.setDragonMovementData(player, Minecraft.getInstance().getTimer().getRealtimeDeltaTicks());
             }

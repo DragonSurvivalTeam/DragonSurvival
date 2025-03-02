@@ -116,6 +116,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
 
     private Pair<AbilityAnimation, AnimationType> currentAbilityAnimation;
     private boolean begunPlayingAbilityAnimation;
+    public boolean renderingWasCancelled;
 
     public DragonEntity(EntityType<? extends LivingEntity> type, Level worldIn) {
         super(type, worldIn);

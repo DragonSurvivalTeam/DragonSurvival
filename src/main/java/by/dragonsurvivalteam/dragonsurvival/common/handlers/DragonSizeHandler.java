@@ -3,6 +3,8 @@ package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
+import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
+import by.dragonsurvivalteam.dragonsurvival.compat.create.CardboardBoxHelper;
 import by.dragonsurvivalteam.dragonsurvival.mixins.EntityAccessor;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import net.minecraft.server.level.ServerPlayer;
@@ -15,6 +17,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityEvent;
@@ -43,7 +46,10 @@ public class DragonSizeHandler {
         }
     }
 
-    @SubscribeEvent
+    // This needs to fire as early as possible, since it is the "baseline" for the size of the player
+    // Other mods might throw out this baseline or modify it further, but when the player is a dragon
+    // that should be the initial size to work with
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void getDragonSize(final EntityEvent.Size event) {
         if (!(event.getEntity() instanceof Player player)) {
             return;
@@ -91,11 +97,15 @@ public class DragonSizeHandler {
     }
 
     public static Pose overridePose(final Player player) {
+        Pose overridePose = getOverridePose(player);
         if (player == null) {
-            return Pose.STANDING;
+            return overridePose;
         }
 
-        Pose overridePose = getOverridePose(player);
+        if(Compat.entityHasBeenModelSwapped(player)) {
+            player.setForcedPose(null);
+            return overridePose;
+        }
 
         if (player.getForcedPose() != overridePose) {
             player.setForcedPose(overridePose);

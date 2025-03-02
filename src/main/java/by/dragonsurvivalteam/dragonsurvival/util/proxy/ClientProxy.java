@@ -164,4 +164,15 @@ public class ClientProxy implements Proxy {
     public boolean isMining(final Player player) {
         return Minecraft.getInstance().gameMode != null && Minecraft.getInstance().gameMode.isDestroying();
     }
+
+    @Override
+    public boolean dragonRenderingWasCancelled(final Player player) {
+        DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(player.getId());
+
+        if (dragon == null) {
+            return false;
+        }
+
+        return dragon.renderingWasCancelled;
+    }
 }

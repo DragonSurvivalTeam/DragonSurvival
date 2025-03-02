@@ -55,6 +55,12 @@ runs {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
+	maven { url = "https://maven.createmod.net" } // Create
+	// Needed for testing create compat
+	/*maven { url = "https://mvn.devos.one/snapshots" } // Registrate (needed for create)
+	maven { url = "https://maven.saps.dev/releases" } // FTB Mods (needed for create)
+	maven { url = "https://maven.architectury.dev" } // Arch API (needed for create)
+	maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven" } // NeoForge config api port (needed for create)*/
 	maven {
 		name = 'GeckoLib'
 		url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
@@ -87,6 +93,20 @@ dependencies {
 	compileOnly "curse.maven:sophisticated-core-618298:6119300"
 
 	compileOnly "curse.maven:cosmetic-armor-reworked-237307:5610814"
+
+
+	// Create (change to implementation to test compat)
+	compileOnly "com.simibubi.create:create-${minecraft_version}:${create_version}"
+
+	// Needed for testing create compat
+	/*implementation "com.tterrag.registrate:Registrate:${registrate_version}"
+	implementation "net.createmod.ponder:Ponder-NeoForge-${minecraft_version}:${ponder_version}"
+	compileOnly "dev.engine-room.flywheel:flywheel-neoforge-api-${minecraft_version}:${flywheel_version}"
+	runtimeOnly "dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheel_version}"
+	runtimeOnly "dev.architectury:architectury-neoforge:13.0.8"
+	implementation "dev.ftb.mods:ftb-chunks-neoforge:2101.1.1"
+	implementation "dev.ftb.mods:ftb-teams-neoforge:2101.1.0"
+	implementation "dev.ftb.mods:ftb-library-neoforge:2101.1.3"*/
 
 	// Test
 	implementation "curse.maven:spark-361579:5759671" // 1.10.109

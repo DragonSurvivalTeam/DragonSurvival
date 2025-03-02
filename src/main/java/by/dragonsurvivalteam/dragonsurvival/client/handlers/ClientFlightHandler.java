@@ -39,6 +39,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.CalculateDetachedCameraDistanceEvent;
@@ -144,8 +145,12 @@ public class ClientFlightHandler {
     private static final TickedCooldown jumpFlyCooldown = new TickedCooldown(7);
     private static boolean lastJumpInputState; // We need to track the rising edge manually
 
-    @SubscribeEvent
+    // Run this somewhat early, but not extremely early so that if another mod messes with camera rendering, it will recieve DS's changes first.
+    @SubscribeEvent(priority = EventPriority.LOW)
     public static void flightCamera(CalculateDetachedCameraDistanceEvent event) {
+        if(DragonSurvival.PROXY.dragonRenderingWasCancelled(DragonSurvival.PROXY.getLocalPlayer())) {
+            return;
+        }
 
         DragonStateProvider.getOptional(DragonSurvival.PROXY.getLocalPlayer()).ifPresent(handler -> {
             if (handler.isDragon()) {
@@ -159,8 +164,13 @@ public class ClientFlightHandler {
         });
     }
 
-    @SubscribeEvent
+    // Run this somewhat early, but not extremely early so that if another mod messes with camera rendering, it will recieve DS's changes first.
+    @SubscribeEvent(priority = EventPriority.LOW)
     public static void flightCamera(ViewportEvent.ComputeCameraAngles setup) {
+        if(DragonSurvival.PROXY.dragonRenderingWasCancelled(DragonSurvival.PROXY.getLocalPlayer())) {
+            return;
+        }
+
         Minecraft minecraft = Minecraft.getInstance();
         LocalPlayer currentPlayer = minecraft.player;
         Camera info = setup.getCamera();

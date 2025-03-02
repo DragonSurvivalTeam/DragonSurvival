@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.compat;
 
+import by.dragonsurvivalteam.dragonsurvival.compat.create.CardboardBoxHelper;
+import net.minecraft.world.entity.Entity;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.LoadingModList;
 
@@ -13,6 +15,8 @@ public class Compat {
     public static final String COSMETIC_ARMOR_REWORKED = "cosmeticarmorreworked";
     public static final String SOPHISTICATED_BACKPACKS = "sophisticatedbackpacks";
     public static final String CURIOS = "curios";
+    // TODO :: Custom "chain-riding" animation state?
+    public static final String CREATE = "create";
 
     private static final Map<String, List<String>> ALIAS = Map.of(
             IRIS, List.of("oculus"),
@@ -45,5 +49,9 @@ public class Compat {
         }
 
         return LoadingModList.get().getModFileById(modid) != null;
+    }
+
+    public static boolean entityHasBeenModelSwapped(final Entity entity) {
+        return CardboardBoxHelper.testForStealth(entity);
     }
 }

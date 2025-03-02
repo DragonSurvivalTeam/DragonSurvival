@@ -58,6 +58,8 @@ public interface Proxy {
         return player instanceof FakePlayer;
     }
 
+    default boolean dragonRenderingWasCancelled(final Player player) { return false; }
+
     @Nullable RegistryAccess getAccess();
 
     boolean isMining(final Player player);
