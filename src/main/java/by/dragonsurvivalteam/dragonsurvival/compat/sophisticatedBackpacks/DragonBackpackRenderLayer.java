@@ -97,6 +97,7 @@ public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
             rotOffset = backpackOffsets.rotOffset();
         }
 
+        poseStack.pushPose();
         transformModel(poseStack, posOffset.scale(1 / 32f), rotOffset, scale);
 
         model.render(null, player, poseStack, bufferSource, packedLight, clothColor, borderColor, backpack.getItem(), wrapper.getRenderInfo());
