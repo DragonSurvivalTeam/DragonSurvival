@@ -11,6 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.Anim
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationType;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonFoodHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
+import by.dragonsurvivalteam.dragonsurvival.compat.create.SkyhookRendererHelper;
 import by.dragonsurvivalteam.dragonsurvival.config.ClientConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.TreasureRestData;
@@ -565,6 +566,10 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             return state.setAndContinue(SLEEP);
         }
 
+        if (SkyhookRendererHelper.isPlayerRidingSkyhook(player.getUUID()) && doesAnimationExist(player, "create_skyhook_riding")) {
+            return state.setAndContinue(CREATE_SKYHOOK_RIDING);
+        }
+
         if (player.isPassenger()) {
             return state.setAndContinue(SIT);
         }
@@ -835,4 +840,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
 
     private static final RawAnimation TAIL_TURN = RawAnimation.begin().thenLoop("tail_turn");
     private static final RawAnimation HEAD_TURN = RawAnimation.begin().thenLoop("head_turn");
+
+    // Special create animation
+    private static final RawAnimation CREATE_SKYHOOK_RIDING = RawAnimation.begin().thenLoop("create_skyhook_riding");
 }
