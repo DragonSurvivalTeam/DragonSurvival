@@ -134,16 +134,16 @@ public class DSEntities {
 
         // There is no reason to set values here since it will always be the default config values
         // We set the correct values on entity creation through 'finalizeSpawn' (this also means no restart is required)
-        event.put(HUNTER_HOUND.value(), hunterAttributes());
-        event.put(HUNTER_SPEARMAN.value(), hunterAttributes());
-        event.put(HUNTER_KNIGHT.value(), hunterAttributes());
-        event.put(HUNTER_AMBUSHER.value(), hunterAttributes());
-        event.put(HUNTER_GRIFFIN.value(), hunterAttributes());
-        event.put(HUNTER_LEADER.value(), hunterAttributes());
+        event.put(HUNTER_HOUND.value(), hunterAttributes().build());
+        event.put(HUNTER_SPEARMAN.value(), hunterAttributes().build());
+        event.put(HUNTER_KNIGHT.value(), hunterAttributes().build());
+        event.put(HUNTER_AMBUSHER.value(), hunterAttributes().build());
+        event.put(HUNTER_GRIFFIN.value(), hunterAttributes().add(Attributes.FLYING_SPEED).build());
+        event.put(HUNTER_LEADER.value(), hunterAttributes().build());
     }
 
-    private static AttributeSupplier hunterAttributes() {
-        return Mob.createMobAttributes().add(Attributes.ATTACK_DAMAGE).build();
+    private static AttributeSupplier.Builder hunterAttributes() {
+        return Mob.createMobAttributes().add(Attributes.ATTACK_DAMAGE);
     }
 
     @SubscribeEvent
