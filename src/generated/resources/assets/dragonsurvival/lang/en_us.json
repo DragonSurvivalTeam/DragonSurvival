@@ -671,6 +671,8 @@
   "dragonsurvival.configuration.griffin_attack_damage.tooltip": "Base value for the attack damage attribute",
   "dragonsurvival.configuration.griffin_attack_knockback": "Griffin Attack Knockback",
   "dragonsurvival.configuration.griffin_attack_knockback.tooltip": "Base value for the attack knockback attribute",
+  "dragonsurvival.configuration.griffin_flying_speed": "Griffin Flying Speed",
+  "dragonsurvival.configuration.griffin_flying_speed.tooltip": "Base value for the flying speed attribute",
   "dragonsurvival.configuration.griffin_health": "Griffin Health",
   "dragonsurvival.configuration.griffin_health.tooltip": "Base value for the max health attribute",
   "dragonsurvival.configuration.griffin_knockback_resistance": "Griffin Knockback Resistance",

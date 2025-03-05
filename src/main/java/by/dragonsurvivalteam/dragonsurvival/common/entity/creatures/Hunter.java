@@ -38,7 +38,6 @@ public abstract class Hunter extends PathfinderMob implements GeoEntity, Configu
     @SuppressWarnings("deprecation") // ignore deprecated
     public @Nullable SpawnGroupData finalizeSpawn(@NotNull final ServerLevelAccessor level, @NotNull final DifficultyInstance difficulty, @NotNull final MobSpawnType spawnType, @Nullable final SpawnGroupData spawnGroupData) {
         setAttributes();
-
         return super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
     }
 

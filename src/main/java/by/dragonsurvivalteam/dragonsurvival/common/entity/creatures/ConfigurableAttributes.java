@@ -21,7 +21,7 @@ public interface ConfigurableAttributes {
         setBaseValue(Attributes.KNOCKBACK_RESISTANCE, knockbackResistanceConfig());
     }
     
-    private void setBaseValue(final Holder<Attribute> attribute, final double value) {
+    default void setBaseValue(final Holder<Attribute> attribute, final double value) {
         if (Double.isNaN(value)) {
             return;
         }

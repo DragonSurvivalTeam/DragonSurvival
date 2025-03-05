@@ -34,6 +34,8 @@ public class DragonGrowthHandler {
     @Translation(comments = "You have reached the smallest growth")
     private static final String REACHED_SMALLEST = Translation.Type.GUI.wrap("system.reached_smallest");
 
+    private static final int INTERVAL = Functions.secondsToTicks(1);
+
     @SubscribeEvent
     public static void onItemUse(final PlayerInteractEvent.RightClickItem event) {
         Player player = event.getEntity();
@@ -98,30 +100,30 @@ public class DragonGrowthHandler {
             return;
         }
 
-        DragonStateHandler data = DragonStateProvider.getData(serverPlayer);
+        DragonStateHandler handler = DragonStateProvider.getData(serverPlayer);
 
-        if (!data.isDragon()) {
+        if (!handler.isDragon()) {
             return;
         }
 
-        if (serverPlayer.tickCount % getInterval() == 0) {
-            DragonStage dragonStage = data.stage().value();
-            double oldGrowth = data.getDesiredGrowth();
-            data.setDesiredGrowth(serverPlayer, data.getDesiredGrowth() + dragonStage.ticksToGrowth(getInterval()));
+        if (serverPlayer.tickCount % INTERVAL == 0) {
+            DragonStage dragonStage = handler.stage().value();
+            double oldGrowth = handler.getDesiredGrowth();
+            double desiredGrowth = handler.getDesiredGrowth() + dragonStage.ticksToGrowth(INTERVAL);
 
-            if (oldGrowth == data.getDesiredGrowth() || dragonStage.isNaturalGrowthStopped().map(condition -> condition.matches(serverPlayer.serverLevel(), serverPlayer.position(), serverPlayer)).orElse(false)) {
-                if (data.isGrowing) {
-                    data.isGrowing = false;
+            if (oldGrowth == desiredGrowth || dragonStage.isNaturalGrowthStopped().map(condition -> condition.matches(serverPlayer.serverLevel(), serverPlayer.position(), serverPlayer)).orElse(false)) {
+                if (handler.isGrowing) {
+                    handler.isGrowing = false;
                     PacketDistributor.sendToPlayer(serverPlayer, new SyncGrowthState(false));
                 }
-            } else if (!data.isGrowing) {
-                data.isGrowing = true;
+
+                return;
+            } else if (!handler.isGrowing) {
+                handler.isGrowing = true;
                 PacketDistributor.sendToPlayer(serverPlayer, new SyncGrowthState(true));
             }
-        }
-    }
 
-    public static int getInterval() {
-        return Functions.secondsToTicks(1);
+            handler.setDesiredGrowth(serverPlayer, desiredGrowth);
+        }
     }
 }
