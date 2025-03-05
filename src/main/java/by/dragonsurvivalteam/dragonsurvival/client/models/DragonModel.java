@@ -12,6 +12,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.config.ClientConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
@@ -177,7 +178,16 @@ public class DragonModel extends GeoModel<DragonEntity> {
             model = DragonStateProvider.getData(dragon.getPlayer()).getModel();
         }
 
-        return model.withPrefix("geo/").withSuffix(".geo.json");
+        model = model.withPrefix("geo/").withSuffix(".geo.json");
+
+        try {
+            getBakedModel(model);
+        } catch (Exception e) {
+            DragonSurvival.LOGGER.error("Model not found for dragon species: {}", Translation.Type.DRAGON_SPECIES.wrap(DragonStateProvider.getData(dragon.getPlayer()).speciesKey().location()));
+            return DragonBody.DEFAULT_MODEL;
+        }
+
+        return model;
     }
 
     @Override
