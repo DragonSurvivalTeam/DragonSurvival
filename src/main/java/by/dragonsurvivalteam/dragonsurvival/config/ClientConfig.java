@@ -48,8 +48,4 @@ public class ClientConfig {
     @Translation(key = "min_animation_speed", type = Translation.Type.CONFIGURATION, comments = "The minimum animation speed allowed for dragons.")
     @ConfigOption(side = ConfigSide.CLIENT, category = "animation", key = "min_animation_speed")
     public static Double minAnimationSpeed = 0.2;
-
-    @Translation(key = "force_cpu_skin_generation", type = Translation.Type.CONFIGURATION, comments = {"If enabled the skin generation will occur on the CPU instead of GPU", "Should only be needed if there are issues with your current graphics driver / graphics card"})
-    @ConfigOption(side = ConfigSide.CLIENT, category = "misc", key = "force_cpu_skin_generation")
-    public static Boolean forceCPUSkinGeneration = false;
 }

@@ -168,15 +168,7 @@ public class DragonEditorHandler {
         return getDragonPartKeys(DragonStateProvider.getData(player).species(), DragonUtils.getBody(player), layer);
     }
 
-    public static CompletableFuture<List<Pair<NativeImage, ResourceLocation>>> generateSkinTextures(final DragonEntity dragon) {
-        return CompletableFuture.supplyAsync(() -> generateTextures(dragon), Util.backgroundExecutor());
-    }
-
-    public static void generateSkinTexturesGPU(final DragonEntity dragon) {
-        genTexturesGPU(dragon);
-    }
-
-    private static void genTexturesGPU(final DragonEntity dragon) {
+    public static void generateSkinTextures(final DragonEntity dragon) {
         Player player = dragon.getPlayer();
 
         if (player == null) {
@@ -276,86 +268,6 @@ public class DragonEditorHandler {
         RenderSystem.restoreProjectionMatrix();
         GlStateManager._glBindFramebuffer(GlConst.GL_FRAMEBUFFER, currentFrameBuffer);
         GlStateManager._viewport(currentViewportX, currentViewportY, currentViewportWidth, currentViewportHeight);
-    }
-
-    private static List<Pair<NativeImage, ResourceLocation>> generateTextures(final DragonEntity dragon) {
-        Player player = dragon.getPlayer();
-
-        if (player == null) {
-            return List.of();
-        }
-
-        DragonStateHandler handler = DragonStateProvider.getData(player);
-        List<Pair<NativeImage, ResourceLocation>> texturesToRegister = new ArrayList<>();
-        DragonStageCustomization customization = handler.getCurrentStageCustomization();
-        DragonBody.TextureSize textureSize = handler.body().value().textureSize();
-        NativeImage normal = new NativeImage(textureSize.width(), textureSize.height(), true);
-        NativeImage glow = new NativeImage(textureSize.width(), textureSize.height(), true);
-
-        for (SkinLayer layer : SkinLayer.values()) {
-            LayerSettings settings = customization.layerSettings.get(layer).get();
-            String selectedSkin = settings.partKey;
-
-            if (selectedSkin != null) {
-                DragonPart skinTexture = getDragonPart(layer, selectedSkin, handler.speciesKey());
-
-                if (skinTexture != null) {
-                    float hue = settings.hue - skinTexture.averageHue();
-                    float saturation = settings.saturation;
-                    float brightness = settings.brightness;
-
-                    ResourceLocation textureLocation = getDragonPartLocation(layer, selectedSkin, handler.speciesKey());
-                    NativeImage skinImage = RenderingUtils.getImageFromResource(textureLocation);
-
-                    for (int x = 0; x < skinImage.getWidth(); x++) {
-                        for (int y = 0; y < skinImage.getHeight(); y++) {
-                            Color baseColor = new Color(skinImage.getPixelRGBA(x, y), true);
-                            Color hueAdjustedColor = getHueAdjustedColor(settings.glowing, skinTexture.isColorable(), hue, saturation, brightness, baseColor);
-
-                            if (hueAdjustedColor == null) {
-                                continue;
-                            }
-
-                            if (hueAdjustedColor.getAlpha() != 0) {
-                                Supplier<NativeImage> target = settings.glowing ? () -> glow : () -> normal;
-                                target.get().setPixelRGBA(x, y, hueAdjustedColor.getRGB());
-
-                                if (settings.glowing && layer == SkinLayer.BASE) {
-                                    normal.setPixelRGBA(x, y, hueAdjustedColor.getRGB());
-                                }
-                            }
-                        }
-                    }
-
-                    skinImage.close();
-                }
-            }
-        }
-
-        texturesToRegister.add(new Pair<>(normal, DragonModel.dynamicTexture(player, handler, false)));
-        texturesToRegister.add(new Pair<>(glow, DragonModel.dynamicTexture(player, handler, true)));
-
-        return texturesToRegister;
-    }
-
-    private static @Nullable Color getHueAdjustedColor(boolean glowing, boolean colorable, float hue, float saturation, float brightness, Color baseColor) {
-        if (!colorable) {
-            return baseColor;
-        }
-
-        float[] hsb = new float[3];
-        Color.RGBtoHSB(baseColor.getRed(), baseColor.getGreen(), baseColor.getBlue(), hsb);
-
-        if (glowing && hsb[0] == 0.5f && hsb[1] == 0.5f) {
-            return null;
-        }
-
-        hsb[0] = hsb[0] - hue;
-        hsb[1] = Mth.lerp(Math.abs(saturation - 0.5f) * 2.0f, hsb[1], saturation > 0.5f ? 1.0f : 0.0f);
-        hsb[2] = Mth.lerp(Math.abs(brightness - 0.5f) * 2.0f, hsb[2], brightness > 0.5f ? 1.0f : 0.0f);
-
-        Color adjustedColor = new Color(Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]));
-        return new Color(adjustedColor.getRed(), adjustedColor.getGreen(), adjustedColor.getBlue(), baseColor.getAlpha());
     }
 
     @SubscribeEvent

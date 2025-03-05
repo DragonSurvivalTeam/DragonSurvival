@@ -44,7 +44,6 @@ public class DragonModel extends GeoModel<DragonEntity> {
     private final ResourceLocation defaultTexture = DragonSurvival.res("textures/dragon_dragon/newborn.png");
 
     private ResourceLocation overrideTexture;
-    private CompletableFuture<Void> textureRegisterFuture = CompletableFuture.completedFuture(null);
 
     @Override
     public void applyMolangQueries(final AnimationState<DragonEntity> animationState, double currentTick) {
@@ -225,22 +224,9 @@ public class DragonModel extends GeoModel<DragonEntity> {
 
         ResourceKey<DragonStage> stageKey = handler.stageKey();
         if (handler.needsSkinRecompilation()) {
-            if (ClientConfig.forceCPUSkinGeneration) {
-                if (textureRegisterFuture.isDone()) {
-                    textureRegisterFuture = DragonEditorHandler.generateSkinTextures(dragon).thenAcceptAsync(entries -> {
-                        handler.getSkinData().isCompiled.put(stageKey, true);
-                        handler.getSkinData().recompileSkin.put(stageKey, false);
-
-                        for (Pair<NativeImage, ResourceLocation> pair : entries) {
-                            RenderingUtils.uploadTexture(pair.getFirst(), pair.getSecond());
-                        }
-                    });
-                }
-            } else {
-                DragonEditorHandler.generateSkinTexturesGPU(dragon);
-                handler.getSkinData().isCompiled.put(handler.stageKey(), true);
-                handler.getSkinData().recompileSkin.put(handler.stageKey(), false);
-            }
+            DragonEditorHandler.generateSkinTextures(dragon);
+            handler.getSkinData().isCompiled.put(handler.stageKey(), true);
+            handler.getSkinData().recompileSkin.put(handler.stageKey(), false);
         }
 
         ResourceLocation texture = dynamicTexture(player, handler, false);
