@@ -70,6 +70,7 @@ import java.util.Map;
 @Mod(value = DragonSurvival.MODID, dist = Dist.CLIENT)
 public class DragonSurvivalClient {
     public static float timer;
+    public static DragonRenderer dragonRenderer; // Needed for access in LevelRendererMixin
 
     public DragonSurvivalClient(final IEventBus bus, final ModContainer container) {
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
@@ -102,8 +103,10 @@ public class DragonSurvivalClient {
 
             // GeckoLib renderers
             EntityRenderers.register(DSEntities.GENERIC_BALL_ENTITY.get(), manager -> new GenericBallRenderer(manager, new GenericBallModel()));
-
-            EntityRenderers.register(DSEntities.DRAGON.get(), manager -> new DragonRenderer(manager, ClientDragonRenderer.dragonModel));
+            EntityRenderers.register(DSEntities.DRAGON.get(), manager -> {
+                dragonRenderer = new DragonRenderer(manager, ClientDragonRenderer.dragonModel);
+                return dragonRenderer;
+            });
             EntityRenderers.register(DSEntities.HUNTER_KNIGHT.get(), manager -> new KnightRenderer(manager, new KnightModel()));
             EntityRenderers.register(DSEntities.HUNTER_SPEARMAN.get(), manager -> new SpearmanRenderer(manager, new SpearmanModel()));
             EntityRenderers.register(DSEntities.HUNTER_AMBUSHER.get(), manager -> new AmbusherRenderer(manager, new AmbusherModel()));

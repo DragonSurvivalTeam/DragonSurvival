@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
+import by.dragonsurvivalteam.dragonsurvival.client.DragonSurvivalClient;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
@@ -76,6 +77,20 @@ public abstract class LevelRendererMixin {
         if (neckAndHead != null) {
             neckAndHead.setHidden(false);
         }
+    }
+
+    @Inject(method = "renderLevel", at = @At(value = "HEAD"))
+    public void renderLevel(DeltaTracker deltaTracker, boolean renderBlockOutline, Camera camera, GameRenderer renderer, LightTexture light, Matrix4f frustum, Matrix4f projection, CallbackInfo callback) {
+        // Attempt to generate skins for all players right at the start of level rendering, to prevent any sort of issues from injecting into the renderer in the middle of its work
+        ClientDragonRenderer.PLAYER_DRAGON_MAP.forEach(
+            (uuid, dragon) -> {
+                if(dragon.getPlayer() != null) {
+                    if(DragonStateProvider.getData(dragon.getPlayer()).needsSkinRecompilation()) {
+                        DragonSurvivalClient.dragonRenderer.getTextureLocation(dragon);
+                    }
+                }
+            }
+        );
     }
 
     @Shadow

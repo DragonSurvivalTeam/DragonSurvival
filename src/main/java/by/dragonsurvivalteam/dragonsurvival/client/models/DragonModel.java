@@ -224,8 +224,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
         }
 
         ResourceKey<DragonStage> stageKey = handler.stageKey();
-
-        if (handler.getSkinData().recompileSkin.getOrDefault(stageKey, true)) {
+        if (handler.needsSkinRecompilation()) {
             if (ClientConfig.forceCPUSkinGeneration) {
                 if (textureRegisterFuture.isDone()) {
                     textureRegisterFuture = DragonEditorHandler.generateSkinTextures(dragon).thenAcceptAsync(entries -> {
