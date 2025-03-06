@@ -562,6 +562,52 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         IS_EFFECT_UNLOCKED
     }
 
+    public CompoundTag serializeNBTForCurrentSpecies(@NotNull final HolderLookup.Provider provider) {
+        CompoundTag tag = new CompoundTag();
+
+        CompoundTag speciesAbilities = new CompoundTag();
+        abilities.get(this.currentSpecies).values().forEach(instance -> speciesAbilities.put(instance.key().location().toString(), instance.save(provider)));
+
+        CompoundTag speciesHotbar = new CompoundTag();
+        hotbar.get(this.currentSpecies).forEach((slot, key) -> speciesHotbar.putInt(key.location().toString(), slot));
+
+        tag.put(ABILITIES, speciesAbilities);
+        tag.put(HOTBARS, speciesHotbar);
+
+        return tag;
+    }
+
+    public void deserializeNBTForCurrentSpecies(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag tag) {
+        abilities.get(this.currentSpecies).clear();
+        hotbar.get(this.currentSpecies).clear();
+
+        if (tag.contains(ABILITIES)) {
+            CompoundTag storedAbilities = tag.getCompound(ABILITIES);
+            storedAbilities.getAllKeys().forEach(abilityLocation -> {
+                CompoundTag abilityTag = storedAbilities.getCompound(abilityLocation);
+                DragonAbilityInstance instance = DragonAbilityInstance.load(provider, abilityTag);
+
+                if (instance != null) {
+                    abilities.get(this.currentSpecies).put(instance.key(), instance);
+                }
+            });
+        }
+
+        if (tag.contains(HOTBARS)) {
+            CompoundTag storedHotbar = tag.getCompound(HOTBARS);
+            storedHotbar.getAllKeys().forEach(abilityLocation -> {
+                int slot = storedHotbar.getInt(abilityLocation);
+                ResourceKey<DragonAbility> key = ResourceKey.create(DragonAbility.REGISTRY, ResourceLocation.parse(abilityLocation));
+
+                if (provider.holder(key).isEmpty()) {
+                    return;
+                }
+
+                hotbar.get(this.currentSpecies).put(slot, key);
+            });
+        }
+    }
+
     @Override
     public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
