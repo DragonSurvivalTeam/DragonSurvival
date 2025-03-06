@@ -72,13 +72,14 @@ public class DragonBodies {
                 DragonBody.DEFAULT_MODEL,
                 new DragonBody.TextureSize(512, 512),
                 DragonSurvival.res("dragon_center"),
+                Optional.of(DragonSurvival.res("textures/gui/custom/body/center/default.png")),
                 List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"),
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
                 DragonBody.ScalingProportions.of(0.6, 2.0, 1.8, 1.0, 1.0),
                 0.83333333,
                 Optional.of(DEFAULT_MOUNTING_OFFSETS),
                 Optional.of(DragonBody.BackpackOffsets.of(Vec3.ZERO, Vec3.ZERO, new Vec3(0.9, 0.9, 0.9))),
-                Optional.of(DragonSurvival.res("textures/gui/custom/body/center/default.png"))
+                -3
         ));
 
         context.register(EAST, new DragonBody(true, Optional.empty(), List.of(
@@ -97,13 +98,14 @@ public class DragonBodies {
                 DragonBody.DEFAULT_MODEL,
                 new DragonBody.TextureSize(512, 512),
                 DragonSurvival.res("dragon_east"),
+                Optional.of(DragonSurvival.res("textures/gui/custom/body/east/default.png")),
                 List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"),
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
                 DragonBody.ScalingProportions.of(0.6, 2.0, 1.8, 1.0, 1.0),
                 0.83333333,
                 Optional.of(DEFAULT_MOUNTING_OFFSETS),
                 Optional.of(DragonBody.BackpackOffsets.of(new Vec3(0, -6.5, 0), Vec3.ZERO, new Vec3(0.9, 0.9, 0.9))),
-                Optional.of(DragonSurvival.res("textures/gui/custom/body/east/default.png"))
+                -3
         ));
 
         context.register(NORTH, new DragonBody(true, Optional.empty(), List.of(
@@ -118,13 +120,14 @@ public class DragonBodies {
                 DragonBody.DEFAULT_MODEL,
                 new DragonBody.TextureSize(512, 512),
                 DragonSurvival.res("dragon_north"),
+                Optional.of(DragonSurvival.res("textures/gui/custom/body/north/default.png")),
                 List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"),
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
                 DragonBody.ScalingProportions.of(0.6, 1.1, 0.99, 1.0, 1.0),
                 0.5,
                 Optional.of(DEFAULT_MOUNTING_OFFSETS),
                 Optional.of(DragonBody.BackpackOffsets.of(Vec3.ZERO, Vec3.ZERO, new Vec3(0.85, 0.85, 0.85))),
-                Optional.of(DragonSurvival.res("textures/gui/custom/body/north/default.png"))
+                8
         ));
 
         context.register(SOUTH, new DragonBody(true, Optional.empty(), List.of(
@@ -140,13 +143,14 @@ public class DragonBodies {
                 DragonBody.DEFAULT_MODEL,
                 new DragonBody.TextureSize(512, 512),
                 DragonSurvival.res("dragon_south"),
+                Optional.of(DragonSurvival.res("textures/gui/custom/body/south/default.png")),
                 List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"),
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
                 DragonBody.ScalingProportions.of(0.6, 2.0, 1.8, 1.0, 1.0),
                 0.83333333,
                 Optional.of(DEFAULT_MOUNTING_OFFSETS),
                 Optional.of(DragonBody.BackpackOffsets.of(new Vec3(0, -6.5, 0), Vec3.ZERO, new Vec3(0.9, 0.9, 0.9))),
-                Optional.of(DragonSurvival.res("textures/gui/custom/body/south/default.png"))
+                -3
         ));
 
         context.register(WEST, new DragonBody(true, Optional.empty(), List.of(
@@ -161,13 +165,14 @@ public class DragonBodies {
                 DragonBody.DEFAULT_MODEL,
                 new DragonBody.TextureSize(512, 512),
                 DragonSurvival.res("dragon_west"),
+                Optional.of(DragonSurvival.res("textures/gui/custom/body/west/default.png")),
                 List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"),
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
                 DragonBody.ScalingProportions.of(0.6, 2.0, 1.8, 1.0, 1.0),
                 0.83333333,
                 Optional.of(DEFAULT_MOUNTING_OFFSETS),
                 Optional.of(DragonBody.BackpackOffsets.of(new Vec3(0, 3.2, 0), Vec3.ZERO, new Vec3(0.9, 0.9, 0.9))),
-                Optional.of(DragonSurvival.res("textures/gui/custom/body/west/default.png"))
+                -3
         ));
     }
 

@@ -44,13 +44,14 @@ public record DragonBody(
         ResourceLocation model,
         TextureSize textureSize,
         ResourceLocation animation,
+        Optional<ResourceLocation> defaultIcon,
         List<String> bonesToHideForToggle,
         Holder<DragonEmoteSet> emotes,
         ScalingProportions scalingProportions,
         double crouchHeightRatio,
         Optional<MountingOffsets> mountingOffsets,
         Optional<BackpackOffsets> backpackOffsets,
-        Optional<ResourceLocation> defaultIcon
+        double betterCombatWeaponOffset
 ) implements AttributeModifierSupplier {
     public static final ResourceKey<Registry<DragonBody>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_body"));
     public static final ResourceLocation DEFAULT_MODEL = DragonSurvival.res("dragon_model");
@@ -63,13 +64,14 @@ public record DragonBody(
             ResourceLocation.CODEC.optionalFieldOf("model", DEFAULT_MODEL).forGetter(DragonBody::model),
             TextureSize.CODEC.optionalFieldOf("texture_size", new TextureSize(512, 512)).forGetter(DragonBody::textureSize),
             ResourceLocation.CODEC.fieldOf("animation").forGetter(DragonBody::animation),
+            ResourceLocation.CODEC.optionalFieldOf("default_icon").forGetter(DragonBody::defaultIcon),
             Codec.STRING.listOf().optionalFieldOf("bones_to_hide_for_toggle", List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight")).forGetter(DragonBody::bonesToHideForToggle),
             DragonEmoteSet.CODEC.fieldOf("emotes").forGetter(DragonBody::emotes),
             ScalingProportions.CODEC.fieldOf("scaling_proportions").forGetter(DragonBody::scalingProportions),
             MiscCodecs.doubleRange(0, 1).fieldOf("crouch_height_ratio").forGetter(DragonBody::crouchHeightRatio),
             MountingOffsets.CODEC.optionalFieldOf("mounting_offset").forGetter(DragonBody::mountingOffsets),
             BackpackOffsets.CODEC.optionalFieldOf("backpack_offset").forGetter(DragonBody::backpackOffsets),
-            ResourceLocation.CODEC.optionalFieldOf("default_icon").forGetter(DragonBody::defaultIcon)
+            Codec.DOUBLE.optionalFieldOf("bettercombat_weapon_offset", 0d).forGetter(DragonBody::betterCombatWeaponOffset)
     ).apply(instance, instance.stable(DragonBody::new)));
 
     public static final Codec<Holder<DragonBody>> CODEC = RegistryFixedCodec.create(REGISTRY);

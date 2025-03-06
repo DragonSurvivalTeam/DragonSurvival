@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
+import by.dragonsurvivalteam.dragonsurvival.compat.bettercombat.BetterCombat;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.input.Keybind;
@@ -220,8 +221,13 @@ public class ClientDragonRenderer {
             return;
         }
 
+        if (BetterCombat.isAttacking(player)) {
+            event.getRenderer().getModel().setAllVisible(false);
+        } else {
+            event.setCanceled(true);
+        }
+
         partialTick = event.getPartialTick();
-        event.setCanceled(true);
 
         if (dragonNameTags && player != Minecraft.getInstance().player) {
             //noinspection UnstableApiUsage -> intentional

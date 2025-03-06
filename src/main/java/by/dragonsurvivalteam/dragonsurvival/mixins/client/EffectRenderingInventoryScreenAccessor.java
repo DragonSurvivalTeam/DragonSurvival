@@ -12,10 +12,14 @@ import java.util.List;
 @Mixin(EffectRenderingInventoryScreen.class)
 public interface EffectRenderingInventoryScreenAccessor {
     @Accessor("EFFECT_BACKGROUND_LARGE_SPRITE")
-    ResourceLocation dragonSurvival$getEffectBackgroundLargeSprite();
+    static ResourceLocation dragonSurvival$getEffectBackgroundLargeSprite() {
+        throw new AssertionError();
+    }
 
     @Accessor("EFFECT_BACKGROUND_SMALL_SPRITE")
-    ResourceLocation dragonSurvival$getEffectBackgroundSmallSprite();
+    static ResourceLocation dragonSurvival$getEffectBackgroundSmallSprite() {
+        throw new AssertionError();
+    }
 
     @Dynamic
     @Accessor("dragonSurvival$areasBlockedByModifierUIForJEI")

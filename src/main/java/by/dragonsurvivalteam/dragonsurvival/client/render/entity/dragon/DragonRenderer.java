@@ -1,11 +1,13 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon;
 
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
+import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
 import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
+import by.dragonsurvivalteam.dragonsurvival.compat.bettercombat.BetterCombat;
 import by.dragonsurvivalteam.dragonsurvival.compat.sophisticatedBackpacks.DragonBackpackRenderLayer;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
@@ -32,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
-    public static Map<Integer, Map<String, Vec3>> BONE_POSITIONS = new HashMap<>();
+    public static final Map<Integer, Map<String, Vec3>> BONE_POSITIONS = new HashMap<>();
     private static final List<String> BONES = List.of("BreathSource");
 
     private static final Color RENDER_COLOR = Color.ofRGB(255, 255, 255);
@@ -41,6 +43,8 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
     public ResourceLocation glowTexture;
     public boolean isRenderingLayer;
     public boolean shouldRenderLayers = true;
+
+    private boolean wasNeckHidden;
 
     public DragonRenderer(final EntityRendererProvider.Context context, final GeoModel<DragonEntity> model) {
         super(context, model);
@@ -85,13 +89,29 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
     @Override
     public void preRender(final PoseStack poseStack, final DragonEntity animatable, final BakedGeoModel model, final MultiBufferSource bufferSource, final VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int color) {
         Minecraft.getInstance().getProfiler().push("player_dragon");
+        Player player = animatable.getPlayer();
+
+        wasNeckHidden = model.getBone("Neck").map(bone -> {
+            boolean wasHidden = bone.isHidden();
+
+            if (!wasHidden && RenderingUtils.isFirstPerson(player) && BetterCombat.isAttacking(player)) {
+                bone.setHidden(true);
+            }
+
+            return !wasHidden;
+        }).orElse(false);
+
         super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, color);
     }
 
     @Override
     public void postRender(final PoseStack poseStack, final DragonEntity animatable, final BakedGeoModel model, final MultiBufferSource bufferSource, final VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int color) {
         super.postRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, color);
-        Minecraft.getInstance().getProfiler().pop();
+
+        if (wasNeckHidden) {
+            model.getBone("Neck").ifPresent(bone -> bone.setHidden(false));
+            wasNeckHidden = false;
+        }
 
         // Need to store the positions per entity ourselves
         // Since the model is a singleton, and it stores the bones
@@ -100,6 +120,8 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
             Vec3 position = new Vec3(worldPosition.x(), worldPosition.y(), worldPosition.z()).subtract(ClientDragonRenderer.getModelOffset(animatable, 1));
             BONE_POSITIONS.computeIfAbsent(animatable.getId(), key -> new HashMap<>()).put(bone.getName(), position);
         }));
+
+        Minecraft.getInstance().getProfiler().pop();
     }
 
     @Override

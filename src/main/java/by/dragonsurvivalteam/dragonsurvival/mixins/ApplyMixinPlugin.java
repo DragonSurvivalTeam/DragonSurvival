@@ -30,7 +30,7 @@ public class ApplyMixinPlugin implements IMixinConfigPlugin {
 
         if (elements.length == 2) {
             String modid = elements[0];
-            Compat.isModLoaded(modid);
+            return Compat.isModLoaded(modid);
         }
 
         if (mixinClassName.equals(PREFIX + "HolderSetCodecMixin") || mixinClassName.equals(PREFIX + "Holder$ReferenceAccess")) {

@@ -2,7 +2,9 @@ package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
 import by.dragonsurvivalteam.dragonsurvival.client.DragonSurvivalClient;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
+import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.compat.bettercombat.BetterCombat;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.GlowData;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -17,6 +19,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
@@ -51,7 +54,17 @@ public abstract class LevelRendererMixin {
     /** Render the dragon body (except the head) in first person */
     @Inject(method = "renderLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;checkPoseStack(Lcom/mojang/blaze3d/vertex/PoseStack;)V", ordinal = 0, shift = At.Shift.BEFORE))
     public void render(DeltaTracker deltaTracker, boolean renderBlockOutline, Camera camera, GameRenderer renderer, LightTexture light, Matrix4f frustum, Matrix4f projection, CallbackInfo callback, @Local PoseStack poseStack) {
-        if (camera.isDetached() || !ClientDragonRenderer.renderInFirstPerson || !DragonStateProvider.isDragon(camera.getEntity())) {
+        if (!(camera.getEntity() instanceof Player player)) {
+            return;
+        }
+
+        if (camera.isDetached() || !ClientDragonRenderer.renderInFirstPerson || !DragonStateProvider.isDragon(player)) {
+            return;
+        }
+
+        if (RenderingUtils.isFirstPerson(player) && BetterCombat.isAttacking(player)) {
+            // Causes the weapon to be rendered twice towards the end of the animation
+            // Currently unclear as to why
             return;
         }
 
@@ -71,7 +84,7 @@ public abstract class LevelRendererMixin {
 
         MultiBufferSource immediate = renderBuffers.bufferSource();
         manager.setRenderHitBoxes(false);
-        renderEntity(camera.getEntity(), x, y, z, deltaTracker.getGameTimeDeltaPartialTick(false), poseStack, immediate);
+        renderEntity(player, x, y, z, deltaTracker.getGameTimeDeltaPartialTick(false), poseStack, immediate);
         manager.setRenderHitBoxes(renderHitboxes);
 
         if (neckAndHead != null) {

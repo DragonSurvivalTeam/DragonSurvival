@@ -62,6 +62,7 @@ repositories {
 			includeGroup("software.bernie.geckolib")
 		}
 	}
+	maven { /* Mixin Squared */ url "https://maven.bawnorton.com/releases" }
 	maven { /* JEI */ url "https://maven.blamejared.com" }
 	maven { /* Curios */ url "https://maven.theillusivec4.top/" }
 	maven {
@@ -90,6 +91,10 @@ dependencies {
 
 	compileOnly "curse.maven:create-328085:6255497" // 6.0.1
 
+	compileOnly "curse.maven:better-combat-by-daedelus-639842:6097296" // 2.1.3
+	compileOnly "curse.maven:cloth-config-348521:5729127" // 15.0.140
+	compileOnly "curse.maven:playeranimator-658587:6024462" // 2.0.1
+
 	// Test
 	implementation "curse.maven:spark-361579:5759671" // 1.10.109
 	implementation "curse.maven:jade-324717:6011258" // 15.9.2
@@ -108,6 +113,11 @@ dependencies {
 
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:${mixin_squared_version}"))
+	implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-forge:${mixin_squared_version}")) {
+		jarJar.ranged(it, "[${mixin_squared_version},)")
+	}
 }
 
 tasks.withType(ProcessResources).configureEach {

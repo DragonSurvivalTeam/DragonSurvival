@@ -63,7 +63,7 @@ public class EffectRenderingInventoryScreenMixin {
 
         for (ClientEffectProvider provider : providers) {
             dragonSurvival$areasBlockedByModifierUIForJEI.add(new Rect2i(renderX, topPos, width, 32));
-            graphics.blitSprite(isCompact ? ((EffectRenderingInventoryScreenAccessor) self).dragonSurvival$getEffectBackgroundSmallSprite() : ((EffectRenderingInventoryScreenAccessor) self).dragonSurvival$getEffectBackgroundLargeSprite(), renderX, topPos, width, 32);
+            graphics.blitSprite(isCompact ? EffectRenderingInventoryScreenAccessor.dragonSurvival$getEffectBackgroundSmallSprite() :EffectRenderingInventoryScreenAccessor.dragonSurvival$getEffectBackgroundLargeSprite(), renderX, topPos, width, 32);
             graphics.blit(provider.clientData().texture(), renderX + (isCompact ? 6 : 7), topPos + 7, 0, 0, 0, 18, 18, 18, 18);
             topPos += yOffset;
         }

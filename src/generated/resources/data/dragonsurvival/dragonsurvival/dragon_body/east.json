@@ -12,6 +12,7 @@
       0.9
     ]
   },
+  "bettercombat_weapon_offset": -3.0,
   "crouch_height_ratio": 0.83333333,
   "default_icon": "dragonsurvival:textures/gui/custom/body/east/default.png",
   "emotes": "dragonsurvival:default_emotes",
