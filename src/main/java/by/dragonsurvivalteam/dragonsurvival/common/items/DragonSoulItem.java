@@ -110,61 +110,59 @@ public class DragonSoulItem extends Item {
         DragonStateHandler handler = DragonStateProvider.getData(player);
         MagicData magicData  = MagicData.getData(player);
 
-        if (player instanceof ServerPlayer serverPlayer) {
-            if (stack.has(DataComponents.CUSTOM_DATA)) {
-                if (handler.isDragon()) {
-                    CompoundTag tag = stack.get(DataComponents.CUSTOM_DATA).copyTag();
+        if (stack.has(DataComponents.CUSTOM_DATA)) {
+            if (handler.isDragon()) {
+                CompoundTag tag = stack.get(DataComponents.CUSTOM_DATA).copyTag();
 
-                    // Swap the player's dragon data with the item's NBT
-                    CompoundTag storedDragonData = tag.getCompound(DRAGON);
-                    CompoundTag currentDragonData = handler.serializeNBT(level.registryAccess(), true);
-                    // Preserve spin/flight grant state
-                    boolean flightGranted = handler.flightWasGranted;
-                    boolean spinGranted = handler.spinWasGranted;
-                    handler.deserializeNBT(level.registryAccess(), storedDragonData, true);
-                    handler.flightWasGranted = flightGranted;
-                    handler.spinWasGranted = spinGranted;
-
-                    CompoundTag storedAbilityData = tag.getCompound(ABILITIES);
-                    CompoundTag currentAbilityData = magicData.serializeNBTForCurrentSpecies(level.registryAccess());
-
-                    handler.refreshMagicData(serverPlayer, true);
-                    magicData.deserializeNBTForCurrentSpecies(level.registryAccess(), storedAbilityData);
-
-                    CompoundTag combinedData = new CompoundTag();
-                    combinedData.put(DRAGON, currentDragonData);
-                    combinedData.put(ABILITIES, currentAbilityData);
-
-                    stack.set(DataComponents.CUSTOM_DATA, CustomData.of(combinedData));
-                    stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(getCustomModelData(level.registryAccess(), currentDragonData)));
-                } else {
-                    CompoundTag tag = stack.get(DataComponents.CUSTOM_DATA).copyTag();
-
-                    // Preserve spin/flight grant state
-                    boolean flightGranted = handler.flightWasGranted;
-                    boolean spinGranted = handler.spinWasGranted;
-                    handler.deserializeNBT(level.registryAccess(), tag.getCompound(DRAGON), true);
-                    handler.flightWasGranted = flightGranted;
-                    handler.spinWasGranted = spinGranted;
-
-                    handler.refreshMagicData(serverPlayer, true);
-                    magicData.deserializeNBTForCurrentSpecies(level.registryAccess(), tag.getCompound(ABILITIES));
-
-                    stack.set(DataComponents.CUSTOM_DATA, null);
-                    stack.set(DataComponents.CUSTOM_MODEL_DATA, null);
-                }
-            } else if (handler.isDragon()) {
+                // Swap the player's dragon data with the item's NBT
+                CompoundTag storedDragonData = tag.getCompound(DRAGON);
                 CompoundTag currentDragonData = handler.serializeNBT(level.registryAccess(), true);
-                CompoundTag currentAbilityData = magicData.serializeNBTForCurrentSpecies(level.registryAccess());
-                CompoundTag combinedData = new CompoundTag();
+                // Preserve spin/flight grant state
+                boolean flightGranted = handler.flightWasGranted;
+                boolean spinGranted = handler.spinWasGranted;
+                handler.deserializeNBT(level.registryAccess(), storedDragonData, true);
+                handler.flightWasGranted = flightGranted;
+                handler.spinWasGranted = spinGranted;
 
+                CompoundTag storedAbilityData = tag.getCompound(ABILITIES);
+                CompoundTag currentAbilityData = magicData.serializeNBTForCurrentSpecies(level.registryAccess());
+
+                magicData.setCurrentSpecies(player, handler.speciesKey());
+                magicData.deserializeNBTForCurrentSpecies(level.registryAccess(), storedAbilityData);
+
+                CompoundTag combinedData = new CompoundTag();
                 combinedData.put(DRAGON, currentDragonData);
                 combinedData.put(ABILITIES, currentAbilityData);
 
                 stack.set(DataComponents.CUSTOM_DATA, CustomData.of(combinedData));
                 stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(getCustomModelData(level.registryAccess(), currentDragonData)));
-                handler.revertToHumanForm(player, true);
+            } else {
+                CompoundTag tag = stack.get(DataComponents.CUSTOM_DATA).copyTag();
+
+                // Preserve spin/flight grant state
+                boolean flightGranted = handler.flightWasGranted;
+                boolean spinGranted = handler.spinWasGranted;
+                handler.deserializeNBT(level.registryAccess(), tag.getCompound(DRAGON), true);
+                handler.flightWasGranted = flightGranted;
+                handler.spinWasGranted = spinGranted;
+
+                magicData.setCurrentSpecies(player, handler.speciesKey());
+                magicData.deserializeNBTForCurrentSpecies(level.registryAccess(), tag.getCompound(ABILITIES));
+
+                stack.set(DataComponents.CUSTOM_DATA, null);
+                stack.set(DataComponents.CUSTOM_MODEL_DATA, null);
             }
+        } else if (handler.isDragon()) {
+            CompoundTag currentDragonData = handler.serializeNBT(level.registryAccess(), true);
+            CompoundTag currentAbilityData = magicData.serializeNBTForCurrentSpecies(level.registryAccess());
+            CompoundTag combinedData = new CompoundTag();
+
+            combinedData.put(DRAGON, currentDragonData);
+            combinedData.put(ABILITIES, currentAbilityData);
+
+            stack.set(DataComponents.CUSTOM_DATA, CustomData.of(combinedData));
+            stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(getCustomModelData(level.registryAccess(), currentDragonData)));
+            handler.revertToHumanForm(player, true);
         }
 
         player.getCooldowns().addCooldown(stack.getItem(), COOLDOWN);
@@ -238,7 +236,7 @@ public class DragonSoulItem extends Item {
     public @NotNull Component getName(@NotNull final ItemStack stack) {
         if (stack.has(DataComponents.CUSTOM_DATA)) {
             //noinspection DataFlowIssue, deprecation -> tag isn't modified, no need to create a copy
-            ResourceKey<DragonSpecies> species = ResourceHelper.decodeKey(null, DragonSpecies.REGISTRY, stack.get(DataComponents.CUSTOM_DATA).getUnsafe(), DragonStateHandler.DRAGON_SPECIES);
+            ResourceKey<DragonSpecies> species = ResourceHelper.decodeKey(null, DragonSpecies.REGISTRY, stack.get(DataComponents.CUSTOM_DATA).getUnsafe().getCompound(DRAGON), DragonStateHandler.DRAGON_SPECIES);
 
             if (species != null) {
                 return Component.translatable(Translation.Type.DRAGON_SPECIES.wrap(species.location())).append(Component.translatable(SOUL));
