@@ -102,7 +102,7 @@ public class DSItems {
     // --- Food --- //
 
     @Translation(type = Translation.Type.ITEM, comments = "Charged Coal")
-    @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 Removes all effects. Can also be used to smelt a large number of items. More efficient than a block of coal.")
+    @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 Removes all effects. Can also be used to smelt a large number of items.")
     public static final Holder<Item> CHARGED_COAL = REGISTRY.register("charged_coal", location -> new ChargedCoalItem(new Properties(), location.getPath(), REMOVE_EFFECTS_CURED_BY_MILK));
 
     @Translation(type = Translation.Type.ITEM, comments = "Charged Soup")
