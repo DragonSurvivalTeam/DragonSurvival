@@ -130,7 +130,7 @@ public enum Keybind {
     public boolean matches(final InputConstants.Key input, final boolean checkModifiers) {
         KeyMapping mapping = get();
 
-        if (checkModifiers && !mapping.getKeyModifier().isActive(mapping.getKeyConflictContext())) {
+        if (checkModifiers && !mapping.isConflictContextAndModifierActive()) {
             return false;
         }
 
