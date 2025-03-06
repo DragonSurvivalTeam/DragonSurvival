@@ -275,16 +275,29 @@ public class MagicHUD {
                         graphics.setColor(outlineColor.getRedFloat(), outlineColor.getGreenFloat(), outlineColor.getBlueFloat(), outlineColor.getAlphaFloat());
 
                         int uOffset;
-                        if(x != MagicData.HOTBAR_SLOTS - 1)
+                        int uWidth;
+                        int xPos;
+                        int xIconPos;
+                        if(x == 0 )
                         {
-                            uOffset = x * 20;
+                            uOffset = 0;
+                            uWidth = 21;
+                            xPos = posX;
+                        }
+                        else if (x != MagicData.HOTBAR_SLOTS - 1)
+                        {
+                            uOffset = 21;
+                            uWidth = 20;
+                            xPos = posX + x * 20 + 1;
                         }
                         else
                         {
-                            uOffset = 159;
+                            uOffset = 161;
+                            uWidth = 21;
+                            xPos = posX + x * 20 + 1;
                         }
 
-                        graphics.blit(VANILLA_WIDGETS, posX + x * 20 - 1, posY - 2, -50, uOffset, 0, 23, 22, 256, 256);
+                        graphics.blit(VANILLA_WIDGETS, xPos, posY - 2, -50, uOffset, 0, uWidth, 22, 256, 256);
                         graphics.setColor(1f, 1f, 1f, 1f);
 
                         graphics.blitSprite(ability.getIcon(), posX + x * sizeX + 3, posY + 1, 0, 16, 16);
