@@ -123,17 +123,27 @@ public enum Keybind {
         return get().consumeClick();
     }
 
-    public boolean matches(final InputConstants.Key input) {
-        return matches(input, true);
+    public boolean isReleased(final InputConstants.Key input) {
+        KeyMapping mapping = get();
+        return mapping.getKey().equals(input) || mapping.getKeyModifier().matches(input);
     }
 
-    public boolean matches(final InputConstants.Key input, final boolean checkModifiers) {
+    public boolean matches(final InputConstants.Key input) {
+        return matches(input, false);
+    }
+
+    public boolean matches(final InputConstants.Key input, final boolean isGui) {
         KeyMapping mapping = get();
 
-        if (checkModifiers && !mapping.isConflictContextAndModifierActive()) {
+        if (!mapping.isConflictContextAndModifierActive()) {
             return false;
         }
 
-        return mapping.getKey().equals(input);
+        if (mapping.getKey().equals(input)) {
+            // GUI can't check for click consumption
+            return input.getType() == InputConstants.Type.MOUSE || isGui || mapping.consumeClick();
+        }
+
+        return false;
     }
 }

@@ -207,34 +207,34 @@ public class InventoryScreenHandler {
         }
     }
 
-    private static void switchOrClose(final InputConstants.Key key, final Screen screen) {
+    private static void switchOrClose(final InputConstants.Key input, final Screen screen) {
         LocalPlayer player = Objects.requireNonNull(Minecraft.getInstance().player);
 
-        if (Keybind.DRAGON_INVENTORY.matches(key)) {
+        if (Keybind.DRAGON_INVENTORY.matches(input, true)) {
             if (screen instanceof DragonInventoryScreen) {
                 player.closeContainer();
             } else {
                 PacketDistributor.sendToServer(RequestOpenDragonInventory.INSTANCE);
             }
-        } else if (Keybind.ABILITY_MENU.matches(key)) {
+        } else if (Keybind.ABILITY_MENU.matches(input, true)) {
             if (screen instanceof DragonAbilityScreen) {
                 player.closeContainer();
             } else {
                 Minecraft.getInstance().setScreen(new DragonAbilityScreen());
             }
-        } else if (Keybind.SPECIES_MENU.matches(key)) {
+        } else if (Keybind.SPECIES_MENU.matches(input, true)) {
             if (screen instanceof DragonSpeciesScreen) {
                 player.closeContainer();
             } else {
                 Minecraft.getInstance().setScreen(new DragonSpeciesScreen());
             }
-        } else if (Keybind.SKINS_MENU.matches(key)) {
+        } else if (Keybind.SKINS_MENU.matches(input, true)) {
             if (screen instanceof DragonSkinsScreen) {
                 player.closeContainer();
             } else {
                 Minecraft.getInstance().setScreen(new DragonSkinsScreen());
             }
-        } else if (Keybind.EMOTE_MENU.matches(key)) {
+        } else if (Keybind.EMOTE_MENU.matches(input, true)) {
             if (screen instanceof DragonEmoteScreen) {
                 player.closeContainer();
             } else {

@@ -3,7 +3,6 @@ package by.dragonsurvivalteam.dragonsurvival.client.handlers;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
-import by.dragonsurvivalteam.dragonsurvival.input.Keybind;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.LevelRendererAccess;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncLargeDragonDestruction;
 import by.dragonsurvivalteam.dragonsurvival.network.status.SyncMultiMining;
@@ -129,7 +128,6 @@ public class DragonDestructionHandler {
         data.getFirst().displayClientMessage(KeyHandler.cycledEnum(handler.largeDragonDestruction), true);
 
         PacketDistributor.sendToServer(new SyncLargeDragonDestruction(handler.largeDragonDestruction));
-        Keybind.TOGGLE_LARGE_DRAGON_DESTRUCTION.consumeClick();
     }
 
     public static void toggleMultiMining(@Nullable final Pair<Player, DragonStateHandler> data) {
@@ -146,6 +144,5 @@ public class DragonDestructionHandler {
         data.getFirst().displayClientMessage(KeyHandler.cycledEnum(handler.multiMining), true);
 
         PacketDistributor.sendToServer(new SyncMultiMining(handler.multiMining));
-        Keybind.TOGGLE_MULTI_MINING.consumeClick();
     }
 }

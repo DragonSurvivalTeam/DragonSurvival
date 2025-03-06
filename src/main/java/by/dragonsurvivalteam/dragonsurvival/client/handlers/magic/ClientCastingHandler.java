@@ -109,9 +109,8 @@ public class ClientCastingHandler {
     /** Stops the cast if the relevant key is released */
     private static void stopCast(final Player player, final InputConstants.Key input) {
         MagicData magicData = MagicData.getData(player);
-        Keybind keybind = getKey(magicData.getSelectedAbilitySlot());
 
-        if (/* Just the "main" key */ keybind.matches(input, false) || keybind.get().getKeyModifier().matches(input)) {
+        if (getKey(magicData.getSelectedAbilitySlot()).isReleased(input)) {
             if (magicData.isCasting()) {
                 magicData.stopCasting(player);
                 PacketDistributor.sendToServer(new SyncStopCast(player.getId(), false));
