@@ -112,6 +112,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     public boolean clearVerticalVelocity;
 
     private final DragonEmote[] currentlyPlayingEmotes = new DragonEmote[MAX_EMOTES];
+    private final boolean[] soundForEmoteHasAlreadyPlayedThisTick = new boolean[MAX_EMOTES];
     private final AnimationTickTimer animationTickTimer = new AnimationTickTimer();
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
@@ -154,6 +155,19 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         }
 
         return -1;
+    }
+
+    public void clearSoundsPlayedThisTick() {
+        Arrays.fill(soundForEmoteHasAlreadyPlayedThisTick, false);
+    }
+
+    public boolean markEmoteSoundPlayedThisTick(int slot) {
+        if (soundForEmoteHasAlreadyPlayedThisTick[slot]) {
+            return false;
+        }
+
+        soundForEmoteHasAlreadyPlayedThisTick[slot] = true;
+        return true;
     }
 
     public void stopEmote(int slot) {

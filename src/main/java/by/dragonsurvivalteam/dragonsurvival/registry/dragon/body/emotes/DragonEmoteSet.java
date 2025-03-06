@@ -33,6 +33,6 @@ public record DragonEmoteSet(List<DragonEmote> emotes) {
     }
 
     public DragonEmote getEmote(String animationKey) {
-        return emotes.stream().filter(emote -> emote.animationKey().equals(animationKey)).findFirst().orElse(null);
+        return emotes.stream().filter(emote -> emote.key().equals(animationKey)).findFirst().orElse(null);
     }
 }

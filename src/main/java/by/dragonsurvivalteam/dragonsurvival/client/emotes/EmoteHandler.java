@@ -34,6 +34,8 @@ public class EmoteHandler {
             return;
         }
 
+        dragon.clearSoundsPlayedThisTick();
+
         boolean isForLocalPlayer = player == Minecraft.getInstance().player;
         if ((player.isCrouching() || player.swinging) && isForLocalPlayer) {
             dragon.stopAllEmotes();
@@ -47,7 +49,7 @@ public class EmoteHandler {
             if (currentlyPlayingEmotes[i] != null) {
                 if (currentlyPlayingEmotes[i].sound().isPresent()) {
                     DragonEmote.Sound sound = currentlyPlayingEmotes[i].sound().get();
-                    if (dragon.getTicksForEmote(i) % sound.interval() == 0 && dragon.getTicksForEmote(i) != -1) {
+                    if (dragon.getTicksForEmote(i) % sound.interval() == 0 && dragon.markEmoteSoundPlayedThisTick(i)) {
                         sound.playSound(player);
                     }
                 }
