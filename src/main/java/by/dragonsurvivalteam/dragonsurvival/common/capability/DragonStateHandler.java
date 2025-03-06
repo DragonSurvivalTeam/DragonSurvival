@@ -181,6 +181,14 @@ public class DragonStateHandler extends EntityStateHandler {
     }
 
     public void setGrowth(@Nullable final Player player, final double growth) {
+        setGrowth(player, growth, false);
+    }
+
+    /**
+     * @param forceUpdate Bypass the check that could result in skipping updating modifiers / synchronizing the state to the client <br>
+     * Needed after de-serialization of the data (since that had no player context)
+     */
+    public void setGrowth(@Nullable final Player player, final double growth, final boolean forceUpdate) {
         double oldGrowth = this.growth;
         Holder<DragonStage> oldStage = dragonStage;
         updateGrowthAndStage(player != null ? player.registryAccess() : null, growth);
@@ -194,7 +202,7 @@ public class DragonStateHandler extends EntityStateHandler {
             return;
         }
 
-        if (oldGrowth == this.growth && oldStage != null && dragonStage.is(oldStage)) {
+        if (!forceUpdate && oldGrowth == this.growth && oldStage != null && dragonStage.is(oldStage)) {
             // There is no need to refresh the dimensions / fudge the position in this case
             // the visual size is only for the client (rendering) and therefor doesn't cause position desync
             return;

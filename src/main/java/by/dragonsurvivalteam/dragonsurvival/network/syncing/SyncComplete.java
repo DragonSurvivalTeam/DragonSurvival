@@ -34,6 +34,7 @@ public record SyncComplete(int playerId, CompoundTag data) implements CustomPack
         player.refreshDimensions();
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
+        handler.setGrowth(player, handler.getGrowth(), true);
 
         if (refreshMagicData) {
             handler.refreshMagicData(player, true);

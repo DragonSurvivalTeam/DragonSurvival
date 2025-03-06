@@ -40,7 +40,7 @@ public class DragonSizeHandler {
             DragonStateHandler data = DragonStateProvider.getData(serverPlayer);
 
             if (data.isDragon()) {
-                data.setDesiredGrowth(serverPlayer, data.getGrowth());
+                data.setGrowth(serverPlayer, data.getGrowth(), true);
             }
         }
     }

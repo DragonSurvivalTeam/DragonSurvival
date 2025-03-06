@@ -167,8 +167,15 @@ public class DragonSoulItem extends Item {
             handler.revertToHumanForm(player, true);
         }
 
-        player.getCooldowns().addCooldown(stack.getItem(), COOLDOWN);
+        if (!player.isCreative()) {
+            player.getCooldowns().addCooldown(stack.getItem(), COOLDOWN);
+        }
+
         PlayerLoginHandler.syncHandler(player);
+
+        if (handler.isDragon()) {
+            handler.setGrowth(player, handler.getGrowth(), true);
+        }
 
         if (player instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayer(serverPlayer, new SyncMagicData(magicData.serializeNBT(player.registryAccess())));
