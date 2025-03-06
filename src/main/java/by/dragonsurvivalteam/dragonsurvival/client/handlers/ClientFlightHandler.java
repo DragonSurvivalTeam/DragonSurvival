@@ -546,7 +546,23 @@ public class ClientFlightHandler {
             return;
         }
 
-        doSpin(data.getFirst());
+        Player player = data.getFirst();
+
+        if (ServerFlightHandler.isSpin(player)) {
+            return;
+        }
+
+        FlightData spin = FlightData.getData(player);
+
+        if (!spin.hasSpin || spin.cooldown > 0) {
+            return;
+        }
+
+        if (ServerFlightHandler.isFlying(player) || ServerFlightHandler.canSwimSpin(player)) {
+            spin.duration = ServerFlightHandler.SPIN_DURATION;
+            spin.cooldown = Functions.secondsToTicks(ServerFlightHandler.flightSpinCooldown);
+            PacketDistributor.sendToServer(new SpinDurationAndCooldown(player.getId(), spin.duration, spin.cooldown));
+        }
     }
 
     @SubscribeEvent
@@ -571,24 +587,6 @@ public class ClientFlightHandler {
         }
 
         lastJumpInputState = isJumping;
-    }
-
-    private static void doSpin(final Player player) {
-        if (ServerFlightHandler.isSpin(player)) {
-            return;
-        }
-
-        FlightData spin = FlightData.getData(player);
-
-        if (!spin.hasSpin || spin.cooldown > 0) {
-            return;
-        }
-
-        if (ServerFlightHandler.isFlying(player) || ServerFlightHandler.canSwimSpin(player)) {
-            spin.duration = ServerFlightHandler.SPIN_DURATION;
-            spin.cooldown = Functions.secondsToTicks(ServerFlightHandler.flightSpinCooldown);
-            PacketDistributor.sendToServer(new SpinDurationAndCooldown(player.getId(), spin.duration, spin.cooldown));
-        }
     }
 
     private static void spawnSpinParticle(Player player, ParticleOptions particleData) {
