@@ -41,13 +41,13 @@
     "VaultBlockEntityServerMixin",
     "VillagerHostilesSensorMixin",
     "VillagerMixin",
-    "bettercombat.AnimationApplierMixin",
     "create.PlayerSkyhookRendererAccessor",
     "tool_swap.ServerPlayerGameModeEndMixin",
     "tool_swap.ServerPlayerGameModeStartMixin"
   ],
   "client": [
     "bettercombat.AbstractClientPlayerMixin",
+    "bettercombat.AnimationApplierMixin",
     "bettercombat.HumanoidArmorLayerMixin",
     "bettercombat.PlayerModelMixin",
     "client.AbstractContainerScreenAccessor",
