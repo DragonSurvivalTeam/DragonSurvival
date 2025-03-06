@@ -247,7 +247,16 @@ public class DragonEmoteScreen extends Screen {
     }
 
     @SubscribeEvent
-    public static void onKey(InputEvent.Key keyInputEvent) {
+    public static void onKey(InputEvent.MouseButton.Pre event) {
+        onKey(event.getButton());
+    }
+
+    @SubscribeEvent
+    public static void onKey(InputEvent.Key event) {
+        onKey(event.getKey());
+    }
+
+    private static void onKey(int keyCode) {
         Minecraft instance = Minecraft.getInstance();
         if (instance.player == null || instance.level == null) {
             return;
@@ -258,7 +267,6 @@ public class DragonEmoteScreen extends Screen {
             return;
         }
 
-        int keyCode = keyInputEvent.getKey();
         if (keyCode == NO_KEY) {
             return;
         }

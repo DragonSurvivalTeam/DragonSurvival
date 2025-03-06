@@ -115,8 +115,15 @@ public class DragonDestructionHandler {
 
     @SubscribeEvent
     public static void toggleDestructionMode(final InputEvent.Key event) {
-        Pair<Player, DragonStateHandler> data = KeyHandler.checkAndGet(event, Keybind.TOGGLE_LARGE_DRAGON_DESTRUCTION, true);
+        toggleDestructionMode(KeyHandler.checkAndGet(event, Keybind.TOGGLE_LARGE_DRAGON_DESTRUCTION, true));
+    }
 
+    @SubscribeEvent
+    public static void toggleDestructionMode(final InputEvent.MouseButton.Pre event) {
+        toggleDestructionMode(KeyHandler.checkAndGet(event, Keybind.TOGGLE_MULTI_MINING, true));
+    }
+
+    private static void toggleDestructionMode(Pair<Player, DragonStateHandler> data) {
         if (data == null) {
             return;
         }
@@ -137,8 +144,15 @@ public class DragonDestructionHandler {
 
     @SubscribeEvent
     public static void toggleMultiMining(final InputEvent.Key event) {
-        Pair<Player, DragonStateHandler> data = KeyHandler.checkAndGet(event, Keybind.TOGGLE_MULTI_MINING, false);
+        toggleMultiMining(KeyHandler.checkAndGet(event, Keybind.TOGGLE_MULTI_MINING, true));
+    }
 
+    @SubscribeEvent
+    public static void toggleMultiMining(final InputEvent.MouseButton.Pre event) {
+        toggleMultiMining(KeyHandler.checkAndGet(event, Keybind.TOGGLE_MULTI_MINING, true));
+    }
+
+    private static void toggleMultiMining(Pair<Player, DragonStateHandler> data) {
         if (data == null) {
             return;
         }

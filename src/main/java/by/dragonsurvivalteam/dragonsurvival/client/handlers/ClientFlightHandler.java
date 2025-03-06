@@ -495,9 +495,16 @@ public class ClientFlightHandler {
     }
 
     @SubscribeEvent
-    public static void toggleWings(final InputEvent.Key event) {
-        Pair<Player, DragonStateHandler> data = KeyHandler.checkAndGet(event, Keybind.TOGGLE_FLIGHT, true);
+    public static void toggleWings(final InputEvent.MouseButton.Pre event) {
+        toggleWings(KeyHandler.checkAndGet(event, Keybind.TOGGLE_FLIGHT, true));
+    }
 
+    @SubscribeEvent
+    public static void toggleWings(final InputEvent.Key event) {
+        toggleWings(KeyHandler.checkAndGet(event, Keybind.TOGGLE_FLIGHT, true));
+    }
+
+    private static void toggleWings(Pair<Player, DragonStateHandler> data) {
         if (data == null) {
             return;
         }
@@ -547,13 +554,12 @@ public class ClientFlightHandler {
 
     @SubscribeEvent
     public static void triggerSpin(final InputEvent.Key event) {
-        Pair<Player, DragonStateHandler> data = KeyHandler.checkAndGet(event, Keybind.SPIN_ABILITY, true);
+        doSpin(KeyHandler.checkAndGet(event, Keybind.SPIN_ABILITY, true));
+    }
 
-        if (data == null) {
-            return;
-        }
-
-        doSpin(data.getFirst());
+    @SubscribeEvent
+    public static void triggerSpin(final InputEvent.MouseButton.Pre event) {
+        doSpin(KeyHandler.checkAndGet(event, Keybind.SPIN_ABILITY, true));
     }
 
     @SubscribeEvent
@@ -580,7 +586,12 @@ public class ClientFlightHandler {
         lastJumpInputState = isJumping;
     }
 
-    private static void doSpin(final Player player) {
+    private static void doSpin(Pair<Player, DragonStateHandler> data) {
+        if (data == null) {
+            return;
+        }
+
+        Player player = data.getFirst();
         if (ServerFlightHandler.isSpin(player)) {
             return;
         }

@@ -26,31 +26,17 @@ public class ClientCastingHandler {
 
     @SubscribeEvent
     private static void handleCastingInputs(final InputEvent.MouseButton.Pre event) {
-        Minecraft instance = Minecraft.getInstance();
-
-        if (instance.screen != null || instance.player == null || instance.level == null) {
-            return;
-        }
-
-        Player player = instance.player;
-
-        if (player.isSpectator() || !DragonStateProvider.isDragon(player)) {
-            return;
-        }
-
         InputConstants.Key key = InputConstants.Type.MOUSE.getOrCreate(event.getButton());
-
-        if (event.getAction() == InputConstants.PRESS) {
-            handleVisibilityToggle(player, key);
-            handleSlotSelection(player, key);
-            beginCast(player, key);
-        } else if (event.getAction() == InputConstants.RELEASE) {
-            stopCast(player, true);
-        }
+        handleCastingInputs(key, event.getAction());
     }
 
     @SubscribeEvent
     private static void handleCastingInputs(final InputEvent.Key event) {
+        InputConstants.Key key = InputConstants.getKey(event.getKey(), event.getScanCode());
+        handleCastingInputs(key, event.getAction());
+    }
+
+    private static void handleCastingInputs(InputConstants.Key key, int action) {
         Minecraft instance = Minecraft.getInstance();
 
         if (instance.screen != null || instance.player == null || instance.level == null) {
@@ -63,13 +49,11 @@ public class ClientCastingHandler {
             return;
         }
 
-        InputConstants.Key key = InputConstants.getKey(event.getKey(), event.getScanCode());
-
-        if (event.getAction() == InputConstants.PRESS) {
+        if (action == InputConstants.PRESS) {
             handleVisibilityToggle(player, key);
             handleSlotSelection(player, key);
             beginCast(player, key);
-        } else if (event.getAction() == InputConstants.RELEASE) {
+        } else if (action == InputConstants.RELEASE) {
             stopCast(player, false);
         }
     }

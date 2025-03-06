@@ -34,8 +34,15 @@ public class KeyHandler {
 
     @SubscribeEvent
     public static void toggleSummonBehaviour(final InputEvent.Key event) {
-        Pair<Player, DragonStateHandler> data = checkAndGet(event, Keybind.TOGGLE_SUMMON_BEHAVIOUR, true);
+        toggleSummonBehavior(checkAndGet(event, Keybind.TOGGLE_SUMMON_BEHAVIOUR, true));
+    }
 
+    @SubscribeEvent
+    public static void toggleSummonBehaviour(final InputEvent.MouseButton.Pre event) {
+        toggleSummonBehavior(checkAndGet(event, Keybind.TOGGLE_SUMMON_BEHAVIOUR, true));
+    }
+
+    private static void toggleSummonBehavior(Pair<Player, DragonStateHandler> data) {
         if (data == null) {
             return;
         }
@@ -62,6 +69,33 @@ public class KeyHandler {
      */
     public static @Nullable Pair<Player, DragonStateHandler> checkAndGet(final InputEvent.Key event, final Keybind keybind, boolean dragonOnly) {
         if (Minecraft.getInstance().screen != null || event.getAction() != InputConstants.PRESS || !keybind.isDown(InputConstants.getKey(event.getKey(), event.getScanCode()))) {
+            return null;
+        }
+
+        Player player = Minecraft.getInstance().player;
+
+        if (player == null) {
+            return null;
+        }
+
+        DragonStateHandler data = DragonStateProvider.getData(player);
+
+        if (dragonOnly && !data.isDragon()) {
+            return null;
+        }
+
+        return Pair.of(player, data);
+    }
+
+    /**
+     * Returns 'null' if: <br>
+     * - The player has a screen open <br>
+     * - They key is not {@link InputConstants#PRESS} <br>
+     * - The pressed key does not match the passed keybind <br>
+     * - The player is null or the player is not a dragon
+     */
+    public static @Nullable Pair<Player, DragonStateHandler> checkAndGet(final InputEvent.MouseButton.Pre event, final Keybind keybind, boolean dragonOnly) {
+        if (Minecraft.getInstance().screen != null || event.getAction() != InputConstants.PRESS || !keybind.isDown(InputConstants.Type.MOUSE.getOrCreate(event.getButton()))) {
             return null;
         }
 
