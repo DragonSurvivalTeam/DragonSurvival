@@ -58,7 +58,9 @@ public interface Proxy {
         return player instanceof FakePlayer;
     }
 
-    default boolean dragonRenderingWasCancelled(final Player player) { return false; }
+    default boolean dragonRenderingWasCancelled(final Player player) {
+        return false;
+    }
 
     @Nullable RegistryAccess getAccess();
 

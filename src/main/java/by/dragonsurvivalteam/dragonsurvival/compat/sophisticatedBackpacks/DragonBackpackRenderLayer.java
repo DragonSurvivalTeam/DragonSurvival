@@ -40,9 +40,9 @@ public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
     @Translation(key = "backpack_slot", type = Translation.Type.CONFIGURATION, comments = "The curios slot which may contain the backpack (if Curios is installed)")
     @ConfigOption(side = ConfigSide.CLIENT, category = "rendering", key = "backpack_slot")
     public static String CURIOS_SLOT = "back";
-    
+
     private static final String BONE = "BackpackBone";
-    
+
     private final boolean isCurioLoaded;
 
     public DragonBackpackRenderLayer(GeoEntityRenderer<DragonEntity> renderer) {
@@ -120,14 +120,14 @@ public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
         if (isCurioLoaded) {
             backpack = getBackpackFromCurios(player);
         }
-        
+
         if (backpack == null) {
             return getBackpackFromChestSlot(player);
         }
 
         return backpack;
     }
-    
+
     private @Nullable ItemStack getBackpackFromCurios(final Player player) {
         if (CuriosApi.getCuriosInventory(player).isPresent()) {
             List<SlotResult> curioBackSlots = CuriosApi.getCuriosInventory(player).get().findCurios(CURIOS_SLOT);

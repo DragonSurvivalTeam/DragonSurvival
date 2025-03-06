@@ -16,7 +16,7 @@ import net.minecraft.world.item.enchantment.LevelBasedValue;
 import java.text.NumberFormat;
 import java.util.List;
 
-/** Exists mainly because the instant health mob effect uses {@link LivingEntity#heal(float)} which is skipped if the health is at 0*/
+/** Exists mainly because the instant health mob effect uses {@link LivingEntity#heal(float)} which is skipped if the health is at 0 */
 public record HealEffect(LevelBasedValue percentage) implements AbilityEntityEffect {
     @Translation(comments = "§6■ Heals§r the target for %s of their maximum health")
     private static final String HEALS_FOR = Translation.Type.GUI.wrap("heals_for");

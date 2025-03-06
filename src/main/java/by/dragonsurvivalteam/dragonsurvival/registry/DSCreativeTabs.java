@@ -39,11 +39,11 @@ public class DSCreativeTabs {
     );
 
     private static final CreativeModeTab.DisplayItemsGenerator BLOCK_ITEM_GENERATOR = (parameters, output) -> DSBlocks.REGISTRY.getEntries().forEach(entry -> {
-       if (entry.value() instanceof SkeletonPieceBlock) {
-           return;
-       }
+        if (entry.value() instanceof SkeletonPieceBlock) {
+            return;
+        }
 
-       output.accept(entry.value());
+        output.accept(entry.value());
     });
 
     private static final CreativeModeTab.DisplayItemsGenerator ITEM_GENERATOR = (parameters, output) -> DSItems.REGISTRY.getEntries().forEach(entry -> {

@@ -277,21 +277,16 @@ public class MagicHUD {
                         int uOffset;
                         int uWidth;
                         int xPos;
-                        int xIconPos;
-                        if(x == 0 )
-                        {
+
+                        if (x == 0) {
                             uOffset = 0;
                             uWidth = 21;
                             xPos = posX;
-                        }
-                        else if (x != MagicData.HOTBAR_SLOTS - 1)
-                        {
+                        } else if (x != MagicData.HOTBAR_SLOTS - 1) {
                             uOffset = 21;
                             uWidth = 20;
                             xPos = posX + x * 20 + 1;
-                        }
-                        else
-                        {
+                        } else {
                             uOffset = 161;
                             uWidth = 21;
                             xPos = posX + x * 20 + 1;

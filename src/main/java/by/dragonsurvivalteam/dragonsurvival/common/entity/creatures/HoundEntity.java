@@ -109,7 +109,7 @@ public class HoundEntity extends Hunter {
 
     private static final EntityDataAccessor<Integer> VARIETY = SynchedEntityData.defineId(HoundEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> DID_SLOWDOWN_ATTACK = SynchedEntityData.defineId(HoundEntity.class, EntityDataSerializers.BOOLEAN);
-    
+
     private RawAnimation currentIdleAnim;
     private boolean isIdleAnimSet = false;
 

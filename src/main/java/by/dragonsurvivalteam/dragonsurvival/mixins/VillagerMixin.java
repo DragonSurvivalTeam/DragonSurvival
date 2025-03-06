@@ -112,7 +112,12 @@ public abstract class VillagerMixin extends AbstractVillager {
         });
     }
 
-    @Shadow public abstract void setLastHurtByMob(@Nullable final LivingEntity entity);
-    @Shadow protected abstract SoundEvent getHurtSound(@NotNull final DamageSource damageSource);
-    @Shadow protected abstract void setUnhappy();
+    @Shadow
+    public abstract void setLastHurtByMob(@Nullable final LivingEntity entity);
+
+    @Shadow
+    protected abstract SoundEvent getHurtSound(@NotNull final DamageSource damageSource);
+
+    @Shadow
+    protected abstract void setUnhappy();
 }

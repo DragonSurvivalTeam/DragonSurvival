@@ -3,7 +3,16 @@ package by.dragonsurvivalteam.dragonsurvival.registry;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.SourceOfMagicData;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
-import by.dragonsurvivalteam.dragonsurvival.common.items.*;
+import by.dragonsurvivalteam.dragonsurvival.common.items.BolasArrowItem;
+import by.dragonsurvivalteam.dragonsurvival.common.items.ChargedCoalItem;
+import by.dragonsurvivalteam.dragonsurvival.common.items.DarkKeyItem;
+import by.dragonsurvivalteam.dragonsurvival.common.items.DragonSoulItem;
+import by.dragonsurvivalteam.dragonsurvival.common.items.FlightGrantItem;
+import by.dragonsurvivalteam.dragonsurvival.common.items.HunterKeyItem;
+import by.dragonsurvivalteam.dragonsurvival.common.items.LightKeyItem;
+import by.dragonsurvivalteam.dragonsurvival.common.items.SourceOfMagicItem;
+import by.dragonsurvivalteam.dragonsurvival.common.items.SpinGrantItem;
+import by.dragonsurvivalteam.dragonsurvival.common.items.TooltipItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.DarkDragonArmorItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.DragonHunterWeapon;
 import by.dragonsurvivalteam.dragonsurvival.common.items.armor.LightDragonArmorItem;
@@ -93,7 +102,7 @@ public class DSItems {
     // --- Food --- //
 
     @Translation(type = Translation.Type.ITEM, comments = "Charged Coal")
-    @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 Removes all effects. Can also be used to smelt a large number of items. More efficient than a block of coal.")
+    @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 Removes all effects. Can also be used to smelt a large number of items.")
     public static final Holder<Item> CHARGED_COAL = REGISTRY.register("charged_coal", location -> new ChargedCoalItem(new Properties(), location.getPath(), REMOVE_EFFECTS_CURED_BY_MILK));
 
     @Translation(type = Translation.Type.ITEM, comments = "Charged Soup")

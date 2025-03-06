@@ -272,8 +272,15 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
-    @Shadow public abstract ItemStack getItemBySlot(EquipmentSlot pSlot);
-    @Shadow public abstract double getAttributeValue(Holder<Attribute> attribute);
-    @Shadow public abstract boolean hasEffect(final Holder<MobEffect> effect);
-    @Shadow protected abstract float getWaterSlowDown();
+    @Shadow
+    public abstract ItemStack getItemBySlot(EquipmentSlot pSlot);
+
+    @Shadow
+    public abstract double getAttributeValue(Holder<Attribute> attribute);
+
+    @Shadow
+    public abstract boolean hasEffect(final Holder<MobEffect> effect);
+
+    @Shadow
+    protected abstract float getWaterSlowDown();
 }

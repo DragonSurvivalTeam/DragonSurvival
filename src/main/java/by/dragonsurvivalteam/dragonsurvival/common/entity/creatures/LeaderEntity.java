@@ -96,7 +96,7 @@ public class LeaderEntity extends Villager implements GeoEntity, ConfigurableAtt
     public double knockbackResistanceConfig() {
         return KNOCKBACK_RESISTANCE;
     }
-    
+
     private static final EntityDataAccessor<Integer> RESTOCK_TIMER = SynchedEntityData.defineId(LeaderEntity.class, EntityDataSerializers.INT);
     private static final int TOTAL_RESTOCK_TIME = Functions.minutesToTicks(10);
 

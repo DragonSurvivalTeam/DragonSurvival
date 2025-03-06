@@ -148,7 +148,7 @@ public class ClientFlightHandler {
     // Run this somewhat early, but not extremely early so that if another mod messes with camera rendering, it will recieve DS's changes first.
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void flightCamera(CalculateDetachedCameraDistanceEvent event) {
-        if(DragonSurvival.PROXY.dragonRenderingWasCancelled(DragonSurvival.PROXY.getLocalPlayer())) {
+        if (DragonSurvival.PROXY.dragonRenderingWasCancelled(DragonSurvival.PROXY.getLocalPlayer())) {
             return;
         }
 
@@ -167,7 +167,7 @@ public class ClientFlightHandler {
     // Run this somewhat early, but not extremely early so that if another mod messes with camera rendering, it will recieve DS's changes first.
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void flightCamera(ViewportEvent.ComputeCameraAngles setup) {
-        if(DragonSurvival.PROXY.dragonRenderingWasCancelled(DragonSurvival.PROXY.getLocalPlayer())) {
+        if (DragonSurvival.PROXY.dragonRenderingWasCancelled(DragonSurvival.PROXY.getLocalPlayer())) {
             return;
         }
 

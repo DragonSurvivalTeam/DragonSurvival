@@ -110,7 +110,7 @@ public class SpearmanEntity extends Hunter {
     @Translation(key = "spearman_bonus_vertical_reach", type = Translation.Type.CONFIGURATION, comments = "Additional vertical reach for the spearman")
     @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "spearman"}, key = "spearman_bonus_vertical_reach")
     public static double VERTICAL_REACH = 2.5;
-    
+
     public SpearmanEntity(EntityType<? extends PathfinderMob> entityType, Level world) {
         super(entityType, world);
     }
