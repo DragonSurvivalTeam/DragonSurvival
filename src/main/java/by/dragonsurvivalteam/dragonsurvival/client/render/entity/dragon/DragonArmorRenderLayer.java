@@ -158,7 +158,8 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         }
 
         HashMap<EquipmentSlot, NativeImage> armorMasks = armorMasksPerModel.get(currentDragonModel);
-        if(armorMasks.isEmpty()) {
+
+        if (armorMasks.isEmpty()) {
             return new NativeImage(textureSize.width(), textureSize.height(), true);
         }
 
@@ -178,7 +179,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
                     continue;
                 }
 
-                if(armorImage.getWidth() != image.getWidth() || armorImage.getHeight() != image.getHeight()) {
+                if (armorImage.getWidth() != image.getWidth() || armorImage.getHeight() != image.getHeight()) {
                     DragonSurvival.LOGGER.error("Armor texture {} does not match the expected size of {}x{} given by the mask!", existingArmorLocation, image.getWidth(), image.getHeight());
                     armorImage.close();
                     continue;

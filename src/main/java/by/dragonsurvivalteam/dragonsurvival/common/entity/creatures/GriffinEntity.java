@@ -120,7 +120,7 @@ public class GriffinEntity extends Hunter {
     @Translation(key = "griffin_range", type = Translation.Type.CONFIGURATION, comments = "Determines the attack radius of the griffin")
     @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "griffin"}, key = "griffin_range")
     public static Double RANGE = 0.9d;
-    
+
     private static final EntityDataAccessor<Integer> CURRENT_ATTACK = SynchedEntityData.defineId(GriffinEntity.class, EntityDataSerializers.INT);
 
     private enum GriffinAttackTypes {

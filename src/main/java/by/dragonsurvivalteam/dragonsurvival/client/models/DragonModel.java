@@ -9,7 +9,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.StageResources;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
-import by.dragonsurvivalteam.dragonsurvival.config.ClientConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
@@ -17,8 +16,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
-import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Holder;
@@ -30,8 +27,6 @@ import net.minecraft.world.entity.player.Player;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.loading.math.MathParser;
 import software.bernie.geckolib.model.GeoModel;
-
-import java.util.concurrent.CompletableFuture;
 
 public class DragonModel extends GeoModel<DragonEntity> {
     /** Factor to multiply the delta yaw and pitch by, needed for scaling for the animations */

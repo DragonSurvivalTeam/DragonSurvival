@@ -107,7 +107,7 @@ public class KnightEntity extends Hunter {
     @Translation(key = "knight_shield_chance", type = Translation.Type.CONFIGURATION, comments = "Determines the chance (in %) of knights having a shield")
     @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "knight"}, key = "knight_shield_chance")
     public static double SHIELD_CHANCE = 0.1;
-    
+
     public KnightEntity(final EntityType<? extends PathfinderMob> type, final Level level) {
         super(type, level);
     }
@@ -227,7 +227,7 @@ public class KnightEntity extends Hunter {
     @Override
     protected void populateDefaultEquipmentSlots(@NotNull RandomSource randomSource, @NotNull DifficultyInstance difficultyInstance) {
         setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
-        
+
         if (random.nextDouble() < SHIELD_CHANCE) {
             setItemInHand(InteractionHand.OFF_HAND, new ItemStack(Items.SHIELD));
         }

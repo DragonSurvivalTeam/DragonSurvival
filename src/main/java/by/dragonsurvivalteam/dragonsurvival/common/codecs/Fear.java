@@ -71,7 +71,7 @@ public class Fear extends DurationInstanceBase<FearData, Fear.Instance> {
         private final int distance;
         private final float walkSpeed;
         private final float sprintSpeed;
-        
+
         public Instance(final Fear baseData, final CommonData commonData, final int currentDuration, final int distance, final float walkSpeed, final float sprintSpeed) {
             super(baseData, commonData, currentDuration);
             this.distance = distance;

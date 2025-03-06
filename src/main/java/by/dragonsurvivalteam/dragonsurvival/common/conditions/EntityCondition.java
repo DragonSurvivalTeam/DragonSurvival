@@ -148,11 +148,11 @@ public class EntityCondition {
     public static EntityPredicate isNearbyTo(int radius, final EntityType<?>... types) {
         return EntityPredicate.Builder.entity().subPredicate(CustomPredicates.Builder.start().isNearbyEntity(NearbyEntityPredicate.of(radius, EntityType.BEE)).build()).build();
     }
-    
+
     public static EntityPredicate inDimension(final ResourceKey<Level> dimension) {
         return EntityPredicate.Builder.entity().located(LocationPredicate.Builder.location().setDimension(dimension)).build();
     }
-    
+
     @SafeVarargs
     public static EntityPredicate hasEffect(final Holder<MobEffect>... effects) {
         MobEffectsPredicate.Builder builder = MobEffectsPredicate.Builder.effects();

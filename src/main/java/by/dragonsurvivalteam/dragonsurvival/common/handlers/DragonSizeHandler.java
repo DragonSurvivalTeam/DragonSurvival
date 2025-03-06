@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
-import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
+import by.dragonsurvivalteam.dragonsurvival.compat.create.CardboardBoxHelper;
 import by.dragonsurvivalteam.dragonsurvival.mixins.EntityAccessor;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import net.minecraft.server.level.ServerPlayer;
@@ -101,7 +101,7 @@ public class DragonSizeHandler {
             return overridePose;
         }
 
-        if(Compat.entityHasBeenModelSwapped(player)) {
+        if (CardboardBoxHelper.testForStealth(player)) {
             player.setForcedPose(null);
             return overridePose;
         }

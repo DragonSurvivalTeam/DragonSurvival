@@ -215,7 +215,8 @@ public class ClientDragonRenderer {
 
         DragonEntity dragon = getDragon(player);
         dragon.renderingWasCancelled = event.isCanceled();
-        if(event.isCanceled()) {
+
+        if (event.isCanceled()) {
             return;
         }
 

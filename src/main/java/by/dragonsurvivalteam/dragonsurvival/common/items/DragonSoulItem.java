@@ -168,8 +168,8 @@ public class DragonSoulItem extends Item {
         }
 
         player.getCooldowns().addCooldown(stack.getItem(), COOLDOWN);
-
         PlayerLoginHandler.syncHandler(player);
+
         if (player instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayer(serverPlayer, new SyncMagicData(magicData.serializeNBT(player.registryAccess())));
         }
