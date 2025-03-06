@@ -25,6 +25,31 @@ public class ClientCastingHandler {
     };
 
     @SubscribeEvent
+    private static void handleCastingInputs(final InputEvent.MouseButton.Pre event) {
+        Minecraft instance = Minecraft.getInstance();
+
+        if (instance.screen != null || instance.player == null || instance.level == null) {
+            return;
+        }
+
+        Player player = instance.player;
+
+        if (player.isSpectator() || !DragonStateProvider.isDragon(player)) {
+            return;
+        }
+
+        InputConstants.Key key = InputConstants.Type.MOUSE.getOrCreate(event.getButton());
+
+        if (event.getAction() == InputConstants.PRESS) {
+            handleVisibilityToggle(player, key);
+            handleSlotSelection(player, key);
+            beginCast(player, key);
+        } else if (event.getAction() == InputConstants.RELEASE) {
+            stopCast(player, true);
+        }
+    }
+
+    @SubscribeEvent
     private static void handleCastingInputs(final InputEvent.Key event) {
         Minecraft instance = Minecraft.getInstance();
 
@@ -45,7 +70,7 @@ public class ClientCastingHandler {
             handleSlotSelection(player, key);
             beginCast(player, key);
         } else if (event.getAction() == InputConstants.RELEASE) {
-            stopCast(player);
+            stopCast(player, false);
         }
     }
 
@@ -100,11 +125,11 @@ public class ClientCastingHandler {
     }
 
     /** Stops the cast if the relevant key is released */
-    private static void stopCast(final Player player) {
+    private static void stopCast(final Player player, boolean isFromMouse) {
         MagicData magicData = MagicData.getData(player);
 
         // Released the ability key, stop casting
-        if (!getKey(magicData.getSelectedAbilitySlot()).isDown()) {
+        if (!getKey(magicData.getSelectedAbilitySlot()).isDown() || isFromMouse) {
             if (magicData.isCasting()) {
                 magicData.stopCasting(player);
                 PacketDistributor.sendToServer(new SyncStopCast(player.getId(), false));

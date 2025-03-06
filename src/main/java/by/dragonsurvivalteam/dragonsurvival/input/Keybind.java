@@ -132,7 +132,11 @@ public enum Keybind {
         KeyMapping mapping = get();
 
         if (mapping.getKey().equals(input) && mapping.getKeyModifier().isActive(mapping.getKeyConflictContext())) {
-            return mapping.isDown();
+            if(mapping.getKey().getType().equals(InputConstants.Type.MOUSE)) {
+                return true;
+            } else {
+                return mapping.isDown();
+            }
         } else {
             return false;
         }
