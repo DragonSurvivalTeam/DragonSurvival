@@ -170,8 +170,17 @@ public class InventoryScreenHandler {
     }
 
     @SubscribeEvent
+    public static void handleMouse(final InputEvent.MouseButton.Pre event) {
+        handleInput(InputConstants.Type.MOUSE.getOrCreate(event.getButton()), event.getAction());
+    }
+
+    @SubscribeEvent
     public static void handleKey(final InputEvent.Key event) {
-        if (event.getAction() != InputConstants.PRESS) {
+        handleInput(InputConstants.getKey(event.getKey(), event.getScanCode()), event.getAction());
+    }
+
+    private static void handleInput(final InputConstants.Key input, final int action) {
+        if (action != InputConstants.PRESS) {
             return;
         }
 
@@ -180,22 +189,21 @@ public class InventoryScreenHandler {
         }
 
         Screen screen = Minecraft.getInstance().screen;
-        InputConstants.Key key = InputConstants.getKey(event.getKey(), event.getScanCode());
 
         if (screen == null) {
-            if (Keybind.DRAGON_INVENTORY.isDown(key)) {
+            if (Keybind.DRAGON_INVENTORY.matches(input)) {
                 PacketDistributor.sendToServer(RequestOpenDragonInventory.INSTANCE);
-            } else if (Keybind.SKINS_MENU.isDown(key)) {
+            } else if (Keybind.SKINS_MENU.matches(input)) {
                 Minecraft.getInstance().setScreen(new DragonSkinsScreen());
-            } else if (Keybind.ABILITY_MENU.isDown(key)) {
+            } else if (Keybind.ABILITY_MENU.matches(input)) {
                 Minecraft.getInstance().setScreen(new DragonAbilityScreen());
-            } else if (Keybind.SPECIES_MENU.isDown(key)) {
+            } else if (Keybind.SPECIES_MENU.matches(input)) {
                 Minecraft.getInstance().setScreen(new DragonSpeciesScreen());
-            } else if (Keybind.EMOTE_MENU.isDown(key)) {
+            } else if (Keybind.EMOTE_MENU.matches(input)) {
                 Minecraft.getInstance().setScreen(new DragonEmoteScreen());
             }
         } else if (isInventoryTab(screen)) {
-            switchOrClose(key, screen);
+            switchOrClose(input, screen);
         }
     }
 

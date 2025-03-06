@@ -7,7 +7,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
-import by.dragonsurvivalteam.dragonsurvival.input.Keybind;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SpinDurationAndCooldown;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.ToggleFlight;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
@@ -44,12 +43,12 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.CalculateDetachedCameraDistanceEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.Objects;
@@ -494,17 +493,7 @@ public class ClientFlightHandler {
         }
     }
 
-    @SubscribeEvent
-    public static void toggleWings(final InputEvent.MouseButton.Pre event) {
-        toggleWings(KeyHandler.checkAndGet(event, Keybind.TOGGLE_FLIGHT, true));
-    }
-
-    @SubscribeEvent
-    public static void toggleWings(final InputEvent.Key event) {
-        toggleWings(KeyHandler.checkAndGet(event, Keybind.TOGGLE_FLIGHT, true));
-    }
-
-    private static void toggleWings(Pair<Player, DragonStateHandler> data) {
+    public static void toggleWings(@Nullable final Pair<Player, DragonStateHandler> data) {
         if (data == null) {
             return;
         }
@@ -552,14 +541,12 @@ public class ClientFlightHandler {
         }
     }
 
-    @SubscribeEvent
-    public static void triggerSpin(final InputEvent.Key event) {
-        doSpin(KeyHandler.checkAndGet(event, Keybind.SPIN_ABILITY, true));
-    }
+    public static void triggerSpin(@Nullable final Pair<Player, DragonStateHandler> data) {
+        if (data == null) {
+            return;
+        }
 
-    @SubscribeEvent
-    public static void triggerSpin(final InputEvent.MouseButton.Pre event) {
-        doSpin(KeyHandler.checkAndGet(event, Keybind.SPIN_ABILITY, true));
+        doSpin(data.getFirst());
     }
 
     @SubscribeEvent
@@ -586,12 +573,7 @@ public class ClientFlightHandler {
         lastJumpInputState = isJumping;
     }
 
-    private static void doSpin(Pair<Player, DragonStateHandler> data) {
-        if (data == null) {
-            return;
-        }
-
-        Player player = data.getFirst();
+    private static void doSpin(final Player player) {
         if (ServerFlightHandler.isSpin(player)) {
             return;
         }

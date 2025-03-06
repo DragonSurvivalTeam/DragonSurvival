@@ -29,10 +29,10 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
 import java.util.SortedSet;
@@ -113,17 +113,7 @@ public class DragonDestructionHandler {
         }
     }
 
-    @SubscribeEvent
-    public static void toggleDestructionMode(final InputEvent.Key event) {
-        toggleDestructionMode(KeyHandler.checkAndGet(event, Keybind.TOGGLE_LARGE_DRAGON_DESTRUCTION, true));
-    }
-
-    @SubscribeEvent
-    public static void toggleDestructionMode(final InputEvent.MouseButton.Pre event) {
-        toggleDestructionMode(KeyHandler.checkAndGet(event, Keybind.TOGGLE_MULTI_MINING, true));
-    }
-
-    private static void toggleDestructionMode(Pair<Player, DragonStateHandler> data) {
+    public static void toggleDestructionMode(@Nullable final Pair<Player, DragonStateHandler> data) {
         if (data == null) {
             return;
         }
@@ -142,17 +132,7 @@ public class DragonDestructionHandler {
         Keybind.TOGGLE_LARGE_DRAGON_DESTRUCTION.consumeClick();
     }
 
-    @SubscribeEvent
-    public static void toggleMultiMining(final InputEvent.Key event) {
-        toggleMultiMining(KeyHandler.checkAndGet(event, Keybind.TOGGLE_MULTI_MINING, true));
-    }
-
-    @SubscribeEvent
-    public static void toggleMultiMining(final InputEvent.MouseButton.Pre event) {
-        toggleMultiMining(KeyHandler.checkAndGet(event, Keybind.TOGGLE_MULTI_MINING, true));
-    }
-
-    private static void toggleMultiMining(Pair<Player, DragonStateHandler> data) {
+    public static void toggleMultiMining(@Nullable final Pair<Player, DragonStateHandler> data) {
         if (data == null) {
             return;
         }
