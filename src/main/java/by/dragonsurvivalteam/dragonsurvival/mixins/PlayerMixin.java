@@ -75,7 +75,7 @@ public abstract class PlayerMixin extends LivingEntity {
     private boolean dragonSurvival$checkDragonHitbox(boolean returnValue, @Local(argsOnly = true) Pose pose) {
         Player self = (Player) (Object) this;
 
-        if (DragonStateProvider.isDragon(self) && Compat.hasModelSwap(self)) {
+        if (DragonStateProvider.isDragon(self) && !Compat.hasModelSwap(self)) {
             return DragonSizeHandler.canPoseFit(self, pose);
         } else {
             return returnValue;
