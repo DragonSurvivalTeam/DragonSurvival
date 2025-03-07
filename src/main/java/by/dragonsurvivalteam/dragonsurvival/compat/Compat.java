@@ -1,5 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.compat;
 
+import by.dragonsurvivalteam.dragonsurvival.compat.create.CardboardBoxHelper;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.LoadingModList;
 
@@ -36,6 +38,14 @@ public class Compat {
 
             return false;
         });
+    }
+
+    /**
+     * Generic in case compatibility for other mods will be added <br>
+     * (Which have the ability to swap the player's model)
+     */
+    public static boolean hasModelSwap(final Player player) {
+        return CardboardBoxHelper.testForStealth(player);
     }
 
     private static boolean check(final String modid) {
