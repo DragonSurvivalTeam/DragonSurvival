@@ -174,7 +174,6 @@ public class DragonStateHandler extends EntityStateHandler {
             }
         } else if (Math.abs(growth - desiredGrowth) < AGE_EPSILON) {
             setGrowth(player, desiredGrowth);
-            DragonSizeHandler.overridePose(player);
         } else {
             setGrowth(player, Mth.lerp(AGE_LERP_SPEED, growth, desiredGrowth));
         }
