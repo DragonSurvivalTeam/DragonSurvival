@@ -210,12 +210,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
         // Update modifiers before refreshing the dimensions, as the growth modifiers may affect them
         DSModifiers.updateGrowthModifiers(player, this);
-
-        // We need to do this special handling so that the pose update looks smooth
-        // (without updating using poses that are actually incorrect)
-        // (when doing the pose / refresh_size calculations on the server)
         player.refreshDimensions();
-        DragonSizeHandler.overridePose(player);
 
         if (player instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncGrowth(serverPlayer.getId(), getGrowth()));
