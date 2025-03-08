@@ -32,7 +32,7 @@ public class PlayerStartMixin {
             player.setItemInHand(InteractionHand.MAIN_HAND, toolSlot);
 
             ClawInventoryData clawInventory = ClawInventoryData.getData(player);
-            clawInventory.getContainer().setItem(0, ItemStack.EMPTY);
+            clawInventory.getContainer().setItem(ClawInventoryData.Slot.SWORD.ordinal(), ItemStack.EMPTY);
             clawInventory.storedMainHandWeapon = mainHand;
             clawInventory.switchedWeapon = true;
         }

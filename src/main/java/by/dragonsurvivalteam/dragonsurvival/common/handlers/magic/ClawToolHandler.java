@@ -217,9 +217,11 @@ public class ClawToolHandler {
     /** Handle tool breaking for the dragon */
     @SubscribeEvent
     public static void onToolBreak(final PlayerDestroyItemEvent event) {
-        if (event.getHand() == null) {
+        if (event.getHand() != InteractionHand.MAIN_HAND) {
+            // Claw tools only interact with the mainhand
             return;
         }
+
         Player player = event.getEntity();
 
         if (DragonStateProvider.isDragon(player)) {
@@ -231,8 +233,9 @@ public class ClawToolHandler {
                 ClawInventoryData clawInventory = ClawInventoryData.getData(player);
 
                 if (clawInventory.switchedTool || clawInventory.switchedWeapon) {
+                    // When attacking minecraft checks if the stack is the same java object as the mainhand stack - meaning we cannot modify that slot here
+                    // Otherwise it will think it was the offhand item that broke and delete it
                     player.level().playSound(null, player.blockPosition(), SoundEvents.ITEM_BREAK, SoundSource.PLAYERS, 1, 1);
-                    player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
                     PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new SyncBrokenTool(player.getId(), clawInventory.switchedTool ? clawInventory.switchedToolSlot : ClawInventoryData.Slot.SWORD.ordinal()));
                 }
             }

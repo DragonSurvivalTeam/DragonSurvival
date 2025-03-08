@@ -30,7 +30,7 @@ public class PlayerEndMixin {
 
             player.setItemInHand(InteractionHand.MAIN_HAND, originalMainHand);
 
-            clawInventory.getContainer().setItem(0, originalToolSlot);
+            clawInventory.getContainer().setItem(ClawInventoryData.Slot.SWORD.ordinal(), originalToolSlot);
             clawInventory.storedMainHandWeapon = ItemStack.EMPTY;
             clawInventory.switchedWeapon = false;
         }
