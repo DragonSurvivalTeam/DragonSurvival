@@ -16,9 +16,9 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.Dragon
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components.ScrollableComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.CustomizationFileHandler;
-import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.DragonEditorHandler;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.SkinLayer;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DefaultPartLoader;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DragonPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonPart;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.LayerSettings;
@@ -75,7 +75,6 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -316,10 +315,6 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         return previousBody;
     };
 
-    public List<String> getPartsFromLayer(SkinLayer layer) {
-        return DragonEditorHandler.getDragonPartKeys(species, body, layer);
-    }
-
     public final Function<Pair<SkinLayer, String>, Pair<SkinLayer, String>> dragonPartSelectAction = pair -> {
         Pair<SkinLayer, String> previousPair = new Pair<>(pair.getFirst(), preset.get(Objects.requireNonNull(stage.getKey())).get().layerSettings.get(pair.getFirst()).get().partKey);
 
@@ -331,7 +326,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         // Make sure that when we change a part, the color is properly updated to the default color of the new part
         LayerSettings settings = preset.get(stage.getKey()).get().layerSettings.get(layer).get();
 
-        DragonPart part = DragonEditorHandler.getDragonPart(layer, settings.partKey, species.getKey());
+        DragonPart part = DragonPartLoader.getDragonPart(layer, species.getKey(), body, settings.partKey);
         if (part != null && !settings.modifiedColor) {
             settings.hue = part.averageHue();
         }
@@ -359,8 +354,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     };
 
     public static class UndoRedoList {
-        private record UndoRedoPair(EditorAction<?> undo, EditorAction<?> redo) { /* Nothing to do */
-        }
+        private record UndoRedoPair(EditorAction<?> undo, EditorAction<?> redo) {}
 
         private final List<UndoRedoPair> delegate = new ArrayList<>();
         private final int maxSize;
@@ -607,7 +601,8 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     }
 
     private void initDummyDragon(final DragonStateHandler localHandler) {
-        if (species == null && localHandler.isDragon()) {
+        if (stage == null && localHandler.isDragon()) {
+            // Species should already be set when opening the screen
             species = localHandler.species();
             stage = localHandler.stage();
             body = localHandler.body();
@@ -631,6 +626,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         HANDLER.setBody(null, body);
         SkinPreset skinPreset = localHandler.getSkinPresetForSpecies(species, body);
         SkinPreset copy = new SkinPreset();
+        //noinspection DataFlowIssue -> player is present
         copy.deserializeNBT(minecraft.player.registryAccess(), skinPreset.serializeNBT(minecraft.player.registryAccess()));
 
         if (copy.getModel().equals(body.value().model())) {
@@ -642,6 +638,15 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         this.preset = HANDLER.getCurrentSkinPreset();
 
         dragonRender.zoom = setZoom(stage);
+    }
+
+    @Override
+    public void onClose() {
+        super.onClose();
+
+        species = null;
+        stage = null;
+        body = null;
     }
 
     private boolean dragonSpeciesWouldChange(DragonStateHandler handler) {
@@ -715,15 +720,19 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         }
 
         int row = 0;
+
         for (SkinLayer layer : SkinLayer.values()) {
-            ArrayList<String> valueList = DragonEditorHandler.getDragonPartKeys(species, body, layer);
+            Map<String, DragonPart> parts = DragonPartLoader.getDragonParts(layer, species.getKey(), body);
 
             if (layer != SkinLayer.BASE) {
-                valueList.addFirst(DefaultPartLoader.NO_PART);
+                parts.put(DefaultPartLoader.NO_PART, null);
             }
 
             String partKey = preset.get(stage.getKey()).get().layerSettings.get(layer).get().partKey;
-            EditorPartComponent editorPartComponent = new EditorPartComponent(this, row < 8 ? width / 2 - 184 : width / 2 + 74, guiTop - 24 + (row >= 8 ? (row - 8) * 21 : row * 21), partKey, layer, row < 8, (row / 4 % 2) == 0);
+            int x = row < 8 ? width / 2 - 184 : width / 2 + 74;
+            int y = guiTop - 24 + (row >= 8 ? (row - 8) * 21 : row * 21);
+
+            EditorPartComponent editorPartComponent = new EditorPartComponent(this, x, y, parts, partKey, layer, row < 8, (row / 4 % 2) == 0);
             scrollableComponents.add(editorPartComponent);
             partComponents.put(layer, editorPartComponent);
             row++;
@@ -815,65 +824,53 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
         HoverButton randomButton = new HoverButton(width / 2 - 8, 40, 16, 17, 20, 20, RANDOM_MAIN, RANDOM_HOVER, btn -> {
             // Since there are multiple 'EXTRA' field for the editor
-            ArrayList<String> extraKeys = DragonEditorHandler.getDragonPartKeys(FakeClientPlayerUtils.getFakePlayer(0, HANDLER), SkinLayer.EXTRA);
+            Map<String, DragonPart> extraParts = DragonPartLoader.getDragonParts(FakeClientPlayerUtils.getFakePlayer(0, HANDLER), SkinLayer.EXTRA);
 
             // Don't actually modify the skin preset here, do it inside setSkinPresetAction
             SkinPreset preset = new SkinPreset();
             preset.deserializeNBT(access, this.preset.serializeNBT(access));
 
             for (SkinLayer layer : SkinLayer.values()) {
-                ArrayList<String> keys;
+                Map<String, DragonPart> parts;
 
                 if (Objects.equals(layer.name, "Extra")) {
-                    keys = extraKeys;
+                    parts = extraParts;
                 } else {
-                    keys = DragonEditorHandler.getDragonPartKeys(FakeClientPlayerUtils.getFakePlayer(0, HANDLER), layer);
+                    parts = DragonPartLoader.getDragonParts(FakeClientPlayerUtils.getFakePlayer(0, HANDLER), layer);
                 }
 
-                keys.removeIf(key -> {
-                    DragonPart part = DragonEditorHandler.getDragonPart(layer, key, species.getKey());
+                List<String> partKeys = getPartKeys(layer, parts);
 
-                    if (part == null && !key.equals("none")) {
-                        DragonSurvival.LOGGER.error("Key {} not found!", key);
-                        return true;
-                    } else if (part == null) {
-                        return true;
-                    }
-
-                    return !part.includeInRandomizer();
-                });
-
-                if (layer != SkinLayer.BASE) {
-                    keys.add(DefaultPartLoader.NO_PART);
+                if (parts.isEmpty()) {
+                    continue;
                 }
 
-                if (!keys.isEmpty()) {
-                    String key = keys.get(Objects.requireNonNull(minecraft.player).getRandom().nextInt(keys.size()));
+                String partKey = partKeys.get(minecraft.player.getRandom().nextInt(partKeys.size()));
 
-                    if (Objects.equals(layer.name, "Extra")) {
-                        extraKeys.remove(key);
-                    }
-
-                    LayerSettings settings = preset.get(stage.getKey()).get().layerSettings.get(layer).get();
-                    settings.partKey = key;
-                    DragonPart text = DragonEditorHandler.getDragonPart(layer, key, species.getKey());
-
-                    if (text != null && text.isHueRandomizable()) {
-                        settings.hue = minecraft.player.getRandom().nextFloat();
-                        settings.saturation = 0.25f + minecraft.player.getRandom().nextFloat() * 0.5f;
-                        settings.brightness = 0.3f + minecraft.player.getRandom().nextFloat() * 0.3f;
-                    } else {
-                        settings.hue = text != null ? text.averageHue() : 0;
-                        settings.saturation = 0.5f;
-                        settings.brightness = 0.5f;
-                    }
-
-                    settings.modifiedColor = true;
+                if (Objects.equals(layer.name, "Extra")) {
+                    extraParts.remove(partKey);
                 }
+
+                DragonPart part = DragonPartLoader.getDragonPart(layer, species.getKey(), body, partKey);
+                LayerSettings settings = preset.get(stage.getKey()).get().layerSettings.get(layer).get();
+                settings.partKey = partKey;
+
+                if (part != null && part.isHueRandomizable()) {
+                    settings.hue = minecraft.player.getRandom().nextFloat();
+                    settings.saturation = 0.25f + minecraft.player.getRandom().nextFloat() * 0.5f;
+                    settings.brightness = 0.3f + minecraft.player.getRandom().nextFloat() * 0.3f;
+                } else {
+                    settings.hue = part != null ? part.averageHue() : 0;
+                    settings.saturation = 0.5f;
+                    settings.brightness = 0.5f;
+                }
+
+                settings.modifiedColor = true;
             }
 
             actionHistory.add(new EditorAction<>(setSkinPresetAction, preset.serializeNBT(access)));
         });
+
         randomButton.setTooltip(Tooltip.create(Component.translatable(RANDOMIZE)));
         addRenderableWidget(randomButton);
 
@@ -1002,6 +999,29 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
     }
 
+    private static @NotNull List<String> getPartKeys(final SkinLayer layer, final Map<String, DragonPart> parts) {
+        List<String> partKeys = new ArrayList<>(parts.keySet());
+
+        partKeys.removeIf(key -> {
+            DragonPart part = parts.get(key);
+
+            if (part == null && !key.equals("none")) {
+                DragonSurvival.LOGGER.error("Key {} not found!", key);
+                return true;
+            } else if (part == null) {
+                return true;
+            }
+
+            return !part.includeInRandomizer();
+        });
+
+        if (layer != SkinLayer.BASE) {
+            partKeys.add(DefaultPartLoader.NO_PART);
+        }
+
+        return partKeys;
+    }
+
     private DragonBodyButton createButton(Holder<DragonBody> dragonBody, boolean unlocked, int x, int y) {
         DragonBodyButton.LockedReason lockedReason = !fromAltar ? DragonBodyButton.LockedReason.NOT_IN_ALTAR : !unlocked ? DragonBodyButton.LockedReason.NOT_UNLOCKED : DragonBodyButton.LockedReason.NONE;
         return new DragonBodyButton(this, x, y, 25, 25, dragonBody, lockedReason, button -> {
@@ -1110,10 +1130,6 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         }
 
         return super.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
-    }
-
-    public static String partToTranslation(final String part) { // TODO :: the part should be able to provide its translation by itself
-        return Translation.Type.SKIN_PART.wrap(DragonEditorScreen.HANDLER.speciesId().getPath() + "." + part.toLowerCase(Locale.ENGLISH));
     }
 
     @SubscribeEvent

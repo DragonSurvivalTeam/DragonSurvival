@@ -2,7 +2,6 @@ package by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.models.DragonModel;
-import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DefaultPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DragonPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonPart;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
@@ -11,9 +10,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
-import by.dragonsurvivalteam.dragonsurvival.util.DragonUtils;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.platform.GlConst;
@@ -26,140 +23,18 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.texture.AbstractTexture;
-import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.GlStateBackup;
 import net.neoforged.neoforge.client.event.RegisterShadersEvent;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class DragonEditorHandler {
     private static ShaderInstance skinGenerationShader;
-
-    private static @Nullable ResourceLocation getDragonPartLocation(final SkinLayer layer, final String partKey, final ResourceKey<DragonSpecies> type) {
-        if (Objects.equals(layer.name, "Extra") && layer != SkinLayer.EXTRA) {
-            return getDragonPartLocation(SkinLayer.EXTRA, partKey, type);
-        }
-
-        if (DragonPartLoader.DRAGON_PARTS.get(type) == null) {
-            DragonSurvival.LOGGER.error("Part type map missing for dragon type {}", type);
-            return null;
-        }
-
-        if (DragonPartLoader.DRAGON_PARTS.get(type).get(layer) == null) {
-            DragonSurvival.LOGGER.error("Dragon part layer {} not found", layer.name);
-            return null;
-        }
-
-        if (DragonPartLoader.DRAGON_PARTS.get(type).get(layer).isEmpty()) {
-            DragonSurvival.LOGGER.error("Dragon part layer {} is empty", layer.name);
-            return null;
-        }
-
-        if (layer == SkinLayer.BASE && partKey.equalsIgnoreCase(DefaultPartLoader.NO_PART)) {
-            // Without a base the dragon will be invisible
-            // TODO :: return a sort of full-textured missingno texture?
-            return DragonPartLoader.DRAGON_PARTS.get(type).get(layer).getFirst().texture();
-        }
-
-        List<DragonPart> parts = DragonPartLoader.DRAGON_PARTS.get(type).get(layer);
-
-        for (DragonPart part : parts) {
-            if (Objects.equals(part.key(), partKey)) {
-                return part.texture();
-            }
-        }
-
-        // TODO :: return no part?
-        return null;
-    }
-
-    public static @Nullable DragonPart getDragonPart(final SkinLayer layer, final String partKey, final ResourceKey<DragonSpecies> type) {
-        if (Objects.equals(layer.name, "Extra") && layer != SkinLayer.EXTRA) {
-            return getDragonPart(SkinLayer.EXTRA, partKey, type);
-        }
-
-        if (DragonPartLoader.DRAGON_PARTS.get(type) == null) {
-            DragonSurvival.LOGGER.error("Part type map missing for dragon type {}", type);
-            return null;
-        }
-
-        if (DragonPartLoader.DRAGON_PARTS.get(type).get(layer) == null) {
-            DragonSurvival.LOGGER.error("Dragon part layer {} not found", layer.name);
-            return null;
-        }
-
-        if (DragonPartLoader.DRAGON_PARTS.get(type).get(layer).isEmpty()) {
-            DragonSurvival.LOGGER.error("Dragon part layer {} is empty", layer.name);
-            return null;
-        }
-
-        if (layer == SkinLayer.BASE && partKey.equalsIgnoreCase(DefaultPartLoader.NO_PART)) {
-            // Without a base the dragon will be invisible
-            // TODO :: return a sort of full-textured missingno texture?
-            return DragonPartLoader.DRAGON_PARTS.get(type).get(layer).getFirst();
-        }
-
-        List<DragonPart> parts = DragonPartLoader.DRAGON_PARTS.get(type).get(layer);
-
-        for (DragonPart part : parts) {
-            if (Objects.equals(part.key(), partKey)) {
-                return part;
-            }
-        }
-
-        // TODO :: return no part?
-        return null;
-    }
-
-    public static ArrayList<String> getDragonPartKeys(final Holder<DragonSpecies> type, final Holder<DragonBody> body, final SkinLayer layer) {
-        if (Objects.equals(layer.name, "Extra") && layer != SkinLayer.EXTRA) {
-            return getDragonPartKeys(type, body, SkinLayer.EXTRA);
-        }
-
-        ArrayList<String> keys = new ArrayList<>();
-        if (DragonPartLoader.DRAGON_PARTS.get(type.getKey()) == null) {
-            DragonSurvival.LOGGER.error("Part type map missing for dragon type {}", type);
-            keys.add(DefaultPartLoader.NO_PART);
-            return keys;
-        }
-
-        if (DragonPartLoader.DRAGON_PARTS.get(type.getKey()).get(layer) == null) {
-            DragonSurvival.LOGGER.error("Dragon part layer {} not found", layer.name);
-            keys.add(DefaultPartLoader.NO_PART);
-            return keys;
-        }
-
-        if (DragonPartLoader.DRAGON_PARTS.get(type.getKey()).get(layer).isEmpty()) {
-            DragonSurvival.LOGGER.error("Dragon part layer {} is empty", layer.name);
-            keys.add(DefaultPartLoader.NO_PART);
-            return keys;
-        }
-
-        List<DragonPart> parts = DragonPartLoader.DRAGON_PARTS.get(type.getKey()).get(layer);
-
-        for (DragonPart part : parts) {
-            if (part.applicableBodies().isEmpty() && body.value().model() == DragonBody.DEFAULT_MODEL || part.applicableBodies().contains(body.getKey())) {
-                keys.add(part.key());
-            }
-        }
-
-        return keys;
-    }
-
-    public static ArrayList<String> getDragonPartKeys(final Player player, final SkinLayer layer) {
-        return getDragonPartKeys(DragonStateProvider.getData(player).species(), DragonUtils.getBody(player), layer);
-    }
 
     public static void generateSkinTextures(final DragonEntity dragon) {
         Player player = dragon.getPlayer();
@@ -192,18 +67,23 @@ public class DragonEditorHandler {
 
         for (SkinLayer layer : SkinLayer.values()) {
             LayerSettings settings = customization.layerSettings.get(layer).get();
-            String selectedSkin = settings.partKey;
+            String partKey = settings.partKey;
 
-            if (selectedSkin != null) {
-                DragonPart skinTexture = getDragonPart(layer, selectedSkin, handler.speciesKey());
+            if (partKey != null) {
+                DragonPart skinTexture = DragonPartLoader.getDragonPart(layer, handler.speciesKey(), handler.body(), partKey);
 
                 if (skinTexture != null) {
                     float hueVal = settings.hue - skinTexture.averageHue();
                     float satVal = settings.saturation;
                     float brightVal = settings.brightness;
 
-                    ResourceLocation location = getDragonPartLocation(layer, selectedSkin, handler.speciesKey());
-                    AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(location);
+                    DragonPart part = DragonPartLoader.getDragonPart(layer, handler.speciesKey(), handler.body(), partKey);
+
+                    if (part == null) {
+                        continue;
+                    }
+
+                    AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(part.texture());
 
                     if (settings.glowing) {
                         glowTarget.bindWrite(true);

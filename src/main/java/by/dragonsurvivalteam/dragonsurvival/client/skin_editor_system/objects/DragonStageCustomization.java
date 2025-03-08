@@ -15,7 +15,6 @@ import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /** Saved customization per dragon level */
@@ -34,24 +33,16 @@ public class DragonStageCustomization implements INBTSerializable<CompoundTag> {
         for (SkinLayer layer : SkinLayer.values()) {
             // Convert the numbered 'EXTRA' layer to the generic 'EXTRA' layer
             SkinLayer actualLayer = SkinLayer.valueOf(layer.getNameUpperCase());
-            Map<SkinLayer, List<DragonPart>> partMap = DragonPartLoader.DRAGON_PARTS.get(species);
 
-            if (partMap != null) {
-                List<DragonPart> parts = partMap.get(actualLayer);
-                String partKey = DefaultPartLoader.getDefaultPartKey(species, stage, Either.right(customModel), layer);
+            Map<String, DragonPart> parts = DragonPartLoader.getDragonParts(actualLayer, species, null);
+            String partKey = DefaultPartLoader.getDefaultPartKey(species, stage, Either.right(customModel), layer);
+            DragonPart defaultPart = parts.get(partKey);
 
-                if (parts != null) {
-                    for (DragonPart part : parts) {
-                        if (part.key().equals(partKey)) {
-                            layerSettings.put(layer, Lazy.of(() -> new LayerSettings(partKey, part.averageHue())));
-                            break;
-                        }
-                    }
-                } else {
-                    layerSettings.put(layer, Lazy.of(() -> new LayerSettings(partKey, 0.5f)));
-                }
+            if (defaultPart != null) {
+                layerSettings.put(layer, Lazy.of(() -> new LayerSettings(partKey, defaultPart.averageHue())));
             } else {
-                layerSettings.put(layer, Lazy.of(LayerSettings::new));
+                // TODO :: Why exactly are we doing this?
+                layerSettings.put(layer, Lazy.of(() -> new LayerSettings(partKey, 0.5f)));
             }
         }
     }
