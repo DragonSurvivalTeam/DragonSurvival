@@ -66,6 +66,7 @@ import java.util.Map;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class ClientDragonRenderer {
+    // FIXME :: remove this completely (currently only used for override texture)
     public static DragonModel dragonModel = new DragonModel();
 
     /** Instances used for rendering third-person dragon models */

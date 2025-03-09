@@ -7,7 +7,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
 import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
-import by.dragonsurvivalteam.dragonsurvival.compat.bettercombat.BetterCombat;
 import by.dragonsurvivalteam.dragonsurvival.compat.sophisticatedBackpacks.DragonBackpackRenderLayer;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
@@ -24,7 +23,6 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3d;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
-import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 import software.bernie.geckolib.util.Color;
@@ -44,7 +42,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
     public boolean isRenderingLayer;
     public boolean shouldRenderLayers = true;
 
-    private boolean wasNeckHidden;
+    private boolean wasNeckVisible;
 
     public DragonRenderer(final EntityRendererProvider.Context context, final GeoModel<DragonEntity> model) {
         super(context, model);
@@ -91,14 +89,16 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         Minecraft.getInstance().getProfiler().push("player_dragon");
         Player player = animatable.getPlayer();
 
-        wasNeckHidden = model.getBone("Neck").map(bone -> {
-            boolean wasHidden = bone.isHidden();
+        wasNeckVisible = model.getBone("Neck").map(bone -> {
+            if (bone.isHidden()) {
+                return false;
+            }
 
-            if (!wasHidden && RenderingUtils.isFirstPerson(player) && BetterCombat.isAttacking(player)) {
+            if (RenderingUtils.isFirstPerson(player)) {
                 bone.setHidden(true);
             }
 
-            return !wasHidden;
+            return true;
         }).orElse(false);
 
         super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, color);
@@ -108,9 +108,9 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
     public void postRender(final PoseStack poseStack, final DragonEntity animatable, final BakedGeoModel model, final MultiBufferSource bufferSource, final VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int color) {
         super.postRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, color);
 
-        if (wasNeckHidden) {
+        if (wasNeckVisible) {
             model.getBone("Neck").ifPresent(bone -> bone.setHidden(false));
-            wasNeckHidden = false;
+            wasNeckVisible = false;
         }
 
         // Need to store the positions per entity ourselves
@@ -140,11 +140,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         boolean hasWings = !handler.body().value().canHideWings() || handler.getCurrentStageCustomization().wings;
 
         for (String boneName : handler.body().value().bonesToHideForToggle()) {
-            GeoBone bone = ClientDragonRenderer.dragonModel.getAnimationProcessor().getBone(boneName);
-
-            if (bone != null) {
-                bone.setHidden(!hasWings);
-            }
+            model.getBone(boneName).ifPresent(bone -> bone.setHidden(!hasWings));
         }
 
         super.actuallyRender(poseStack, animatable, model, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, color);

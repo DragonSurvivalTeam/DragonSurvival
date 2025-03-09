@@ -29,7 +29,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import software.bernie.geckolib.cache.object.GeoBone;
 
 @Mixin(LevelRenderer.class)
 public abstract class LevelRendererMixin {
@@ -68,12 +67,6 @@ public abstract class LevelRendererMixin {
             return;
         }
 
-        final GeoBone neckAndHead = ClientDragonRenderer.dragonModel.getAnimationProcessor().getBone("Neck");
-
-        if (neckAndHead != null) {
-            neckAndHead.setHidden(true);
-        }
-
         EntityRenderDispatcher manager = Minecraft.getInstance().getEntityRenderDispatcher();
         boolean renderHitboxes = manager.shouldRenderHitBoxes();
 
@@ -86,10 +79,6 @@ public abstract class LevelRendererMixin {
         manager.setRenderHitBoxes(false);
         renderEntity(player, x, y, z, deltaTracker.getGameTimeDeltaPartialTick(false), poseStack, immediate);
         manager.setRenderHitBoxes(renderHitboxes);
-
-        if (neckAndHead != null) {
-            neckAndHead.setHidden(false);
-        }
     }
 
     @Inject(method = "renderLevel", at = @At(value = "HEAD"))

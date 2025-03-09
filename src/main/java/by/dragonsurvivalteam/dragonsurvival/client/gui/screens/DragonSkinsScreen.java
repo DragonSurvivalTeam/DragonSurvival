@@ -52,7 +52,6 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-import software.bernie.geckolib.cache.object.GeoBone;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -193,12 +192,6 @@ public class DragonSkinsScreen extends Screen {
 
         int startX = guiLeft;
         int startY = guiTop;
-
-        final GeoBone neckandHead = ClientDragonRenderer.dragonModel.getAnimationProcessor().getBone("Neck");
-
-        if (neckandHead != null) {
-            neckandHead.setHidden(false);
-        }
 
         setTextures();
 

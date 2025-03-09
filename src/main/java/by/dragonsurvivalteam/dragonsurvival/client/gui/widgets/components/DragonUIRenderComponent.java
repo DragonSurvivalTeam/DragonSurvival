@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.components;
 
-import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import com.google.common.collect.ImmutableList;
 import com.mojang.math.Axis;
@@ -14,7 +13,6 @@ import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-import software.bernie.geckolib.cache.object.GeoBone;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -40,12 +38,6 @@ public class DragonUIRenderComponent extends AbstractContainerEventHandler imple
     public void render(@NotNull final GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTicks) {
         if (isMouseOver(pMouseX, pMouseY)) {
             screen.setFocused(this);
-        }
-
-        final GeoBone neckAndHead = ClientDragonRenderer.dragonModel.getAnimationProcessor().getBone("Neck");
-
-        if (neckAndHead != null) {
-            neckAndHead.setHidden(false);
         }
 
         float scale = zoom;
