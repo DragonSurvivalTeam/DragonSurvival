@@ -1,0 +1,17 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "#C#",
+        "#P#",
+        "###"
+    ],
+    "key": {
+        "#": "minecraft:diamond",
+        "C": "dragonsurvival:dark_upgrade",
+        "P": "minecraft:ominous_bottle"
+    },
+    "result": {
+        "id": "dragonsurvival:dark_upgrade",
+        "count": 2
+    }
+}

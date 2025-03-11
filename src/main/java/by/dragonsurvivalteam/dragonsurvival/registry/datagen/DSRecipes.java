@@ -15,6 +15,7 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
@@ -176,7 +177,7 @@ public class DSRecipes extends RecipeProvider {
     private void buildDragonAltars(final RecipeOutput output, final HolderLookup.Provider lookup) {
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.MISC, DSBlocks.BIRCH_DRAGON_ALTAR.value())
-                .requires(Items.BIRCH_LOG)
+                .requires(Items.BIRCH_PLANKS)
                 .requires(DSItems.ELDER_DRAGON_BONE.value())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
                 .save(output);
@@ -197,14 +198,14 @@ public class DSRecipes extends RecipeProvider {
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.MISC, DSBlocks.NETHER_BRICK_DRAGON_ALTAR.value())
-                .requires(Items.NETHER_BRICK)
+                .requires(Items.NETHER_BRICKS)
                 .requires(DSItems.ELDER_DRAGON_BONE.value())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
                 .save(output);
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.MISC, DSBlocks.OAK_DRAGON_ALTAR.value())
-                .requires(Items.OAK_LOG)
+                .requires(Items.OAK_PLANKS)
                 .requires(DSItems.ELDER_DRAGON_BONE.value())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
                 .save(output);
@@ -233,6 +234,146 @@ public class DSRecipes extends RecipeProvider {
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.MISC, DSBlocks.STONE_DRAGON_ALTAR.value())
                 .requires(Items.STONE)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.BONE_DRAGON_ALTAR.value())
+                .requires(Items.BONE_BLOCK)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.QUARTZ_DRAGON_ALTAR.value())
+                .requires(Items.QUARTZ_BLOCK)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.ICE_DRAGON_ALTAR.value())
+                .requires(Items.PACKED_ICE)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.NETHERACK_DRAGON_ALTAR.value())
+                .requires(Items.NETHERRACK)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.OBSIDIAN_DRAGON_ALTAR.value())
+                .requires(Items.OBSIDIAN)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.AMETHYST_DRAGON_ALTAR.value())
+                .requires(Items.AMETHYST_BLOCK)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.MUDBRICK_DRAGON_ALTAR.value())
+                .requires(Items.PACKED_MUD)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.PRISMARINE_DRAGON_ALTAR.value())
+                .requires(Items.PRISMARINE_BRICKS)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.RED_NETHER_BRICK_DRAGON_ALTAR.value())
+                .requires(Items.RED_NETHER_BRICKS)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.ENDSTONE_DRAGON_ALTAR.value())
+                .requires(Items.END_STONE)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.DEEPSLATE_DRAGON_ALTAR.value())
+                .requires(Items.DEEPSLATE)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.TUFF_DRAGON_ALTAR.value())
+                .requires(Items.TUFF)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.CRIMSON_DRAGON_ALTAR.value())
+                .requires(Items.CRIMSON_PLANKS)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.WARPED_DRAGON_ALTAR.value())
+                .requires(Items.WARPED_PLANKS)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.MANGROVE_DRAGON_ALTAR.value())
+                .requires(Items.MANGROVE_PLANKS)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.CHERRY_DRAGON_ALTAR.value())
+                .requires(Items.CHERRY_PLANKS)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.ACACIA_DRAGON_ALTAR.value())
+                .requires(Items.ACACIA_PLANKS)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.DARK_OAK_DRAGON_ALTAR.value())
+                .requires(Items.DARK_OAK_PLANKS)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.JUNGLE_DRAGON_ALTAR.value())
+                .requires(Items.JUNGLE_PLANKS)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.SPRUCE_DRAGON_ALTAR.value())
+                .requires(Items.SPRUCE_PLANKS)
                 .requires(DSItems.ELDER_DRAGON_BONE.value())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
                 .save(output);

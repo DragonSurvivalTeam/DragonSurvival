@@ -447,101 +447,182 @@ public class DSBlocks {
     @Translation(type = Translation.Type.BLOCK, comments = "Stone Dragon Altar")
     public static final DeferredHolder<Block, Block> STONE_DRAGON_ALTAR = register(
             "stone_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.of()
-                    .mapColor(MapColor.STONE)
-                    .instrument(NoteBlockInstrument.BASEDRUM)
-                    .strength(1.5f)
-                    .sound(SoundType.STONE)
-                    .requiresCorrectToolForDrops())
-    );
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.STONE)
+            ));
 
     @Translation(type = Translation.Type.BLOCK, comments = "Sandstone Dragon Altar")
     public static final DeferredHolder<Block, Block> SANDSTONE_DRAGON_ALTAR = register(
             "sandstone_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.of()
-                    .mapColor(MapColor.STONE)
-                    .instrument(NoteBlockInstrument.BASEDRUM)
-                    .strength(0.8f)
-                    .sound(SoundType.STONE)
-                    .requiresCorrectToolForDrops())
-    );
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.SANDSTONE)
+            ));
 
     @Translation(type = Translation.Type.BLOCK, comments = "Red Sandstone Dragon Altar")
     public static final DeferredHolder<Block, Block> RED_SANDSTONE_DRAGON_ALTAR = register(
             "red_sandstone_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.of()
-                    .mapColor(MapColor.STONE)
-                    .instrument(NoteBlockInstrument.BASEDRUM)
-                    .strength(0.8f)
-                    .sound(SoundType.STONE)
-                    .requiresCorrectToolForDrops())
-    );
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.RED_SANDSTONE)
+            ));
 
     @Translation(type = Translation.Type.BLOCK, comments = "Purpur Dragon Altar")
     public static final DeferredHolder<Block, Block> PURPUR_DRAGON_ALTAR = register(
             "purpur_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.of()
-                    .mapColor(MapColor.STONE)
-                    .instrument(NoteBlockInstrument.BASEDRUM)
-                    .strength(1.5f)
-                    .sound(SoundType.STONE)
-                    .requiresCorrectToolForDrops())
-    );
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.PURPUR_BLOCK)
+            ));
 
     @Translation(type = Translation.Type.BLOCK, comments = "Oak Dragon Altar")
     public static final DeferredHolder<Block, Block> OAK_DRAGON_ALTAR = register(
             "oak_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.of()
-                    .mapColor(MapColor.WOOD)
-                    .ignitedByLava()
-                    .instrument(NoteBlockInstrument.BASS)
-                    .strength(2f)
-                    .sound(SoundType.WOOD))
-    );
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.OAK_PLANKS)
+            ));
 
     @Translation(type = Translation.Type.BLOCK, comments = "Birch Dragon Altar")
     public static final DeferredHolder<Block, Block> BIRCH_DRAGON_ALTAR = register(
             "birch_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.of()
-                    .mapColor(MapColor.WOOD)
-                    .ignitedByLava()
-                    .instrument(NoteBlockInstrument.BASS)
-                    .strength(2f)
-                    .sound(SoundType.WOOD))
-    );
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.BIRCH_PLANKS)
+            ));
 
     @Translation(type = Translation.Type.BLOCK, comments = "Nether Brick Dragon Altar")
     public static final DeferredHolder<Block, Block> NETHER_BRICK_DRAGON_ALTAR = register(
             "nether_brick_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.of()
-                    .mapColor(MapColor.STONE)
-                    .instrument(NoteBlockInstrument.BASEDRUM)
-                    .strength(0.4f)
-                    .sound(SoundType.NETHER_BRICKS)
-                    .requiresCorrectToolForDrops())
-    );
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.NETHER_BRICKS)
+            ));
 
     @Translation(type = Translation.Type.BLOCK, comments = "Mossy Dragon Altar")
     public static final DeferredHolder<Block, Block> MOSSY_DRAGON_ALTAR = register(
             "mossy_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.of()
-                    .mapColor(MapColor.STONE)
-                    .instrument(NoteBlockInstrument.BASEDRUM)
-                    .strength(2f)
-                    .sound(SoundType.STONE)
-                    .requiresCorrectToolForDrops())
-    );
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.MOSSY_COBBLESTONE)
+            ));
 
     @Translation(type = Translation.Type.BLOCK, comments = "Blackstone Dragon Altar")
     public static final DeferredHolder<Block, Block> BLACKSTONE_DRAGON_ALTAR = register(
             "blackstone_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.of()
-                    .mapColor(MapColor.STONE)
-                    .instrument(NoteBlockInstrument.BASEDRUM)
-                    .strength(1.5f)
-                    .sound(SoundType.STONE)
-                    .requiresCorrectToolForDrops())
-    );
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.BLACKSTONE)
+            ));
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Pale Oak Dragon Altar")
+    public static final DeferredHolder<Block, Block> PALE_OAK_DRAGON_ALTAR = register(
+            "pale_oak_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.OAK_PLANKS)
+            ));
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Bone Dragon Altar")
+    public static final DeferredHolder<Block, Block> BONE_DRAGON_ALTAR = register(
+            "bone_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.BONE_BLOCK)
+            ));
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Quartz Dragon Altar")
+    public static final DeferredHolder<Block, Block> QUARTZ_DRAGON_ALTAR = register(
+            "quartz_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.QUARTZ_BLOCK)
+            ));
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Ice Dragon Altar")
+    public static final DeferredHolder<Block, Block> ICE_DRAGON_ALTAR = register(
+            "ice_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.PACKED_ICE)
+    ));
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Netherack Dragon Altar")
+    public static final DeferredHolder<Block, Block> NETHERACK_DRAGON_ALTAR = register(
+            "netherack_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.NETHERRACK)
+            ));
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Obsidian Dragon Altar")
+    public static final DeferredHolder<Block, Block> OBSIDIAN_DRAGON_ALTAR = register(
+            "obsidian_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.OBSIDIAN)
+            ));
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Amethyst Dragon Altar")
+    public static final DeferredHolder<Block, Block> AMETHYST_DRAGON_ALTAR = register(
+            "amethyst_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.AMETHYST_BLOCK)
+            ));
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Mudbrick Dragon Altar")
+    public static final DeferredHolder<Block, Block> MUDBRICK_DRAGON_ALTAR = register(
+            "mudbrick_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.PACKED_MUD)
+            ));
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Prismarine Dragon Altar")
+    public static final DeferredHolder<Block, Block> PRISMARINE_DRAGON_ALTAR = register(
+            "prismarine_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.PRISMARINE_BRICKS)
+            ));
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Red Nether Brick Dragon Altar")
+    public static final DeferredHolder<Block, Block> RED_NETHER_BRICK_DRAGON_ALTAR = register(
+            "red_nether_brick_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.RED_NETHER_BRICKS)
+            ));
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Endstone Dragon Altar")
+    public static final DeferredHolder<Block, Block> ENDSTONE_DRAGON_ALTAR = register(
+            "endstone_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.END_STONE)
+            ));
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Deepslate Dragon Altar")
+    public static final DeferredHolder<Block, Block> DEEPSLATE_DRAGON_ALTAR = register(
+            "deepslate_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.DEEPSLATE)
+            ));
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Tuff Dragon Altar")
+    public static final DeferredHolder<Block, Block> TUFF_DRAGON_ALTAR = register(
+            "tuff_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.TUFF)
+            ));
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Crimson Dragon Altar")
+    public static final DeferredHolder<Block, Block> CRIMSON_DRAGON_ALTAR = register(
+            "crimson_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.CRIMSON_PLANKS)
+            ));
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Warped Dragon Altar")
+    public static final DeferredHolder<Block, Block> WARPED_DRAGON_ALTAR = register(
+            "warped_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.WARPED_PLANKS)
+            ));
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Mangrove Dragon Altar")
+    public static final DeferredHolder<Block, Block> MANGROVE_DRAGON_ALTAR = register(
+            "mangrove_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.MANGROVE_PLANKS)
+            ));
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Cherry Dragon Altar")
+    public static final DeferredHolder<Block, Block> CHERRY_DRAGON_ALTAR = register(
+            "cherry_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.CHERRY_PLANKS)
+            ));
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Acacia Dragon Altar")
+    public static final DeferredHolder<Block, Block> ACACIA_DRAGON_ALTAR = register(
+            "acacia_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.ACACIA_PLANKS)
+            ));
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Dark Oak Dragon Altar")
+    public static final DeferredHolder<Block, Block> DARK_OAK_DRAGON_ALTAR = register(
+            "dark_oak_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.DARK_OAK_PLANKS)
+            ));
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Jungle Dragon Altar")
+    public static final DeferredHolder<Block, Block> JUNGLE_DRAGON_ALTAR = register(
+            "jungle_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.JUNGLE_PLANKS)
+            ));
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Spruce Dragon Altar")
+    public static final DeferredHolder<Block, Block> SPRUCE_DRAGON_ALTAR = register(
+            "spruce_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.SPRUCE_PLANKS)
+            ));
 
     // --- Dragon Beacons --- //
 
