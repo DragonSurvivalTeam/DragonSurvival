@@ -35,16 +35,21 @@ import by.dragonsurvivalteam.dragonsurvival.client.render.entity.projectiles.Gen
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.projectiles.GenericBallRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DefaultPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DragonPartLoader;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.mixins.client.LocalPlayerAccessor;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
+import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -83,6 +88,7 @@ public class DragonSurvivalClient {
         bus.addListener(this::registerItemExtensions);
 
         NeoForge.EVENT_BUS.addListener(this::incrementTimer);
+        NeoForge.EVENT_BUS.addListener(this::preventThirdPersonWhenSuffocating);
     }
 
     private void incrementTimer(final ClientTickEvent.Post event) {
@@ -130,6 +136,18 @@ public class DragonSurvivalClient {
     private void registerTooltips(final RegisterClientTooltipComponentFactoriesEvent event) {
         event.register(DietComponent.class, ClientDietComponent::new);
         event.register(TimeComponent.class, ClientTimeComponent::new);
+    }
+
+    private void preventThirdPersonWhenSuffocating(final ClientTickEvent.Post event) {
+        Player player = DragonSurvival.PROXY.getLocalPlayer();
+
+        if (!DragonStateProvider.isDragon(player)) {
+            return;
+        }
+
+        if (((LocalPlayerAccessor) player).dragonSurvival$suffocatesAt(BlockPos.containing(player.position()))) {
+            Minecraft.getInstance().options.setCameraType(CameraType.FIRST_PERSON);
+        }
     }
 
     private void registerItemExtensions(RegisterClientExtensionsEvent event) {
