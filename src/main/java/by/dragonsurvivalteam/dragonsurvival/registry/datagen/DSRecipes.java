@@ -15,7 +15,6 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
@@ -260,7 +259,7 @@ public class DSRecipes extends RecipeProvider {
                 .save(output);
 
         ShapelessRecipeBuilder
-                .shapeless(RecipeCategory.MISC, DSBlocks.NETHERACK_DRAGON_ALTAR.value())
+                .shapeless(RecipeCategory.MISC, DSBlocks.NETHERRACK_DRAGON_ALTAR.value())
                 .requires(Items.NETHERRACK)
                 .requires(DSItems.ELDER_DRAGON_BONE.value())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
@@ -339,6 +338,13 @@ public class DSRecipes extends RecipeProvider {
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.MISC, DSBlocks.MANGROVE_DRAGON_ALTAR.value())
                 .requires(Items.MANGROVE_PLANKS)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.BAMBOO_DRAGON_ALTAR.value())
+                .requires(Items.BAMBOO_BLOCK)
                 .requires(DSItems.ELDER_DRAGON_BONE.value())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
                 .save(output);

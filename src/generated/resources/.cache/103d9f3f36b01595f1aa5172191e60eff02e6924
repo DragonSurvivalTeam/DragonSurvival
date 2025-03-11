@@ -1,4 +1,4 @@
-// 1.21.1	2025-03-11T23:23:44.9203273	Registries
+// 1.21.1	2025-03-12T00:01:32.7475111	Registries
 011b2ee382ec961722c100bbf059b4aa460f44b0 data/dragonsurvival/damage_type/anti_dragon.json
 d8c3135ecd1879e98a21e83ec1bcfd68c5fc3296 data/dragonsurvival/damage_type/ball_lightning.json
 3bca57c58e2307adb52a4b6e18ea88aae7e2d8d7 data/dragonsurvival/damage_type/blast_dust.json
@@ -72,7 +72,7 @@ e872815a948e9f4ffa609438afb5a9f37b4d2abd data/dragonsurvival/dragonsurvival/drag
 7b7fed5b137ff07a4e9b4fb354792f31f8d0e626 data/dragonsurvival/dragonsurvival/dragon_penalty/fear_of_darkness.json
 38f8d169661c5c2923821075c54d56c4aef18a55 data/dragonsurvival/dragonsurvival/dragon_penalty/item_blacklist.json
 3d280e150666dc6858d096ea8a33f7fd593b19e8 data/dragonsurvival/dragonsurvival/dragon_penalty/snowball_weakness.json
-cbc99dafec962054fdeb216de29fa7ef029b8e20 data/dragonsurvival/dragonsurvival/dragon_penalty/thin_skin.json
+167a2cbc81b9d6d880deb1864a99566f6c0317b4 data/dragonsurvival/dragonsurvival/dragon_penalty/thin_skin.json
 73400240ca48a06d163264fd7608613a19e19b37 data/dragonsurvival/dragonsurvival/dragon_penalty/water_potion_weakness.json
 72b1a291b7032a26cf194857b8bc6f51b89e6fa7 data/dragonsurvival/dragonsurvival/dragon_penalty/water_splash_potion_weakness.json
 7edd8f3c0fe1e046ded11967093a8af5ba3254d7 data/dragonsurvival/dragonsurvival/dragon_penalty/water_weakness.json

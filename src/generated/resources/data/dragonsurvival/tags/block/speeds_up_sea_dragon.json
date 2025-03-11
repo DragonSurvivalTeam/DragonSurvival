@@ -8,6 +8,18 @@
     "#dragonsurvival:is_wet",
     "minecraft:dirt_path",
     "minecraft:sand",
+    "minecraft:clay",
+    "minecraft:dripstone_block",
+    "minecraft:prismarine",
+    "minecraft:prismarine_slab",
+    "minecraft:prismarine_stairs",
+    "minecraft:prismarine_wall",
+    "minecraft:prismarine_bricks",
+    "minecraft:prismarine_brick_slab",
+    "minecraft:prismarine_brick_stairs",
+    "minecraft:dark_prismarine",
+    "minecraft:dark_prismarine_slab",
+    "minecraft:dark_prismarine_stairs",
     "minecraft:mud"
   ]
 }

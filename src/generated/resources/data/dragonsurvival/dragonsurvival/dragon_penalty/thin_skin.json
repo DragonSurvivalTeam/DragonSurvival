@@ -65,10 +65,7 @@
       {
         "item_predicates": [
           {
-            "items": [
-              "minecraft:milk_bucket",
-              "dragonsurvival:frozen_raw_fish"
-            ]
+            "items": "dragonsurvival:frozen_raw_fish"
           },
           {
             "predicates": {

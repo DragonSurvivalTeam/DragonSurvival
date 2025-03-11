@@ -22,16 +22,36 @@ import java.util.Map;
 
 @EventBusSubscriber
 public class BlockInteractionHandler {
-    private static final Lazy<Map<Block, Block>> ALTAR_MAP = Lazy.of(() -> Map.of(
-            Blocks.STONE, DSBlocks.STONE_DRAGON_ALTAR.get(),
-            Blocks.MOSSY_COBBLESTONE, DSBlocks.MOSSY_DRAGON_ALTAR.get(),
-            Blocks.SANDSTONE, DSBlocks.SANDSTONE_DRAGON_ALTAR.get(),
-            Blocks.RED_SANDSTONE, DSBlocks.RED_SANDSTONE_DRAGON_ALTAR.get(),
-            Blocks.OAK_LOG, DSBlocks.OAK_DRAGON_ALTAR.get(),
-            Blocks.BIRCH_LOG, DSBlocks.BIRCH_DRAGON_ALTAR.get(),
-            Blocks.PURPUR_BLOCK, DSBlocks.PURPUR_DRAGON_ALTAR.get(),
-            Blocks.NETHER_BRICKS, DSBlocks.NETHER_BRICK_DRAGON_ALTAR.get(),
-            Blocks.BLACKSTONE, DSBlocks.BLACKSTONE_DRAGON_ALTAR.get()
+    private static final Lazy<Map<Block, Block>> ALTAR_MAP = Lazy.of(() -> Map.ofEntries(
+            Map.entry(Blocks.STONE, DSBlocks.STONE_DRAGON_ALTAR.get()),
+            Map.entry(Blocks.MOSSY_COBBLESTONE, DSBlocks.MOSSY_DRAGON_ALTAR.get()),
+            Map.entry(Blocks.SANDSTONE, DSBlocks.SANDSTONE_DRAGON_ALTAR.get()),
+            Map.entry(Blocks.RED_SANDSTONE, DSBlocks.RED_SANDSTONE_DRAGON_ALTAR.get()),
+            Map.entry(Blocks.OAK_LOG, DSBlocks.OAK_DRAGON_ALTAR.get()),
+            Map.entry(Blocks.BIRCH_LOG, DSBlocks.BIRCH_DRAGON_ALTAR.get()),
+            Map.entry(Blocks.PURPUR_BLOCK, DSBlocks.PURPUR_DRAGON_ALTAR.get()),
+            Map.entry(Blocks.NETHER_BRICKS, DSBlocks.NETHER_BRICK_DRAGON_ALTAR.get()),
+            Map.entry(Blocks.BLACKSTONE, DSBlocks.BLACKSTONE_DRAGON_ALTAR.get()),
+            Map.entry(Blocks.BONE_BLOCK, DSBlocks.BONE_DRAGON_ALTAR.get()),
+            Map.entry(Blocks.ICE, DSBlocks.ICE_DRAGON_ALTAR.get()),
+            Map.entry(Blocks.QUARTZ_BLOCK, DSBlocks.QUARTZ_DRAGON_ALTAR.get()),
+            Map.entry(Blocks.OBSIDIAN, DSBlocks.OBSIDIAN_DRAGON_ALTAR.get()),
+            Map.entry(Blocks.AMETHYST_BLOCK, DSBlocks.AMETHYST_DRAGON_ALTAR.get()),
+            Map.entry(Blocks.MUD_BRICKS, DSBlocks.MUDBRICK_DRAGON_ALTAR.get()),
+            Map.entry(Blocks.PRISMARINE, DSBlocks.PRISMARINE_DRAGON_ALTAR.get()),
+            Map.entry(Blocks.RED_NETHER_BRICKS, DSBlocks.RED_NETHER_BRICK_DRAGON_ALTAR.get()),
+            Map.entry(Blocks.END_STONE, DSBlocks.ENDSTONE_DRAGON_ALTAR.get()),
+            Map.entry(Blocks.DEEPSLATE, DSBlocks.DEEPSLATE_DRAGON_ALTAR.get()),
+            Map.entry(Blocks.TUFF, DSBlocks.TUFF_DRAGON_ALTAR.get()),
+            Map.entry(Blocks.BAMBOO_BLOCK, DSBlocks.BAMBOO_DRAGON_ALTAR.get()),
+            Map.entry(Blocks.CRIMSON_PLANKS, DSBlocks.CRIMSON_DRAGON_ALTAR.get()),
+            Map.entry(Blocks.WARPED_PLANKS, DSBlocks.WARPED_DRAGON_ALTAR.get()),
+            Map.entry(Blocks.MANGROVE_PLANKS, DSBlocks.MANGROVE_DRAGON_ALTAR.get()),
+            Map.entry(Blocks.CHERRY_PLANKS, DSBlocks.CHERRY_DRAGON_ALTAR.get()),
+            Map.entry(Blocks.ACACIA_PLANKS, DSBlocks.ACACIA_DRAGON_ALTAR.get()),
+            Map.entry(Blocks.DARK_OAK_PLANKS, DSBlocks.DARK_OAK_DRAGON_ALTAR.get()),
+            Map.entry(Blocks.JUNGLE_PLANKS, DSBlocks.JUNGLE_DRAGON_ALTAR.get()),
+            Map.entry(Blocks.SPRUCE_PLANKS, DSBlocks.SPRUCE_DRAGON_ALTAR.get())
     ));
 
     @SubscribeEvent
