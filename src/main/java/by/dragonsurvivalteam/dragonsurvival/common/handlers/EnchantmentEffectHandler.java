@@ -11,10 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEffectTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.util.EnchantmentUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
-import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -28,8 +25,6 @@ import net.minecraft.world.item.ArrowItem;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ChargedProjectiles;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.damagesource.DamageContainer;
@@ -41,7 +36,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @EventBusSubscriber
 public class EnchantmentEffectHandler {
@@ -138,43 +132,34 @@ public class EnchantmentEffectHandler {
 
     @SubscribeEvent
     public static void livingHurt(final LivingIncomingDamageEvent event) {
-        if (event.getEntity() instanceof LivingEntity target) {
-            if (event.getSource().getEntity() instanceof LivingEntity attacker) {
-                MobEffectInstance siphon = target.getEffect(DSEffects.BLOOD_SIPHON);
+        if (event.getEntity() instanceof LivingEntity target && event.getSource().getEntity() instanceof LivingEntity attacker) {
+            MobEffectInstance siphon = target.getEffect(DSEffects.BLOOD_SIPHON);
 
-                if (siphon != null) {
-                    float percentage = 0.01f * (siphon.getAmplifier() + 1);
-                    attacker.heal(event.getAmount() * percentage);
-                }
+            if (siphon != null) {
+                float percentage = 0.01f * (siphon.getAmplifier() + 1);
+                attacker.heal(event.getAmount() * percentage);
+            }
 
-                if (event.getEntity().level().registryAccess().registry(Registries.ENCHANTMENT).isPresent()) {
-                    Registry<Enchantment> enchantments = event.getEntity().level().registryAccess().registry(Registries.ENCHANTMENT).get();
-                    if (event.getSource().is(DSDamageTypeTags.DRAGON_MAGIC)) {
-                        Optional<Holder.Reference<Enchantment>> draconicSuperiority = enchantments.getHolder(DSEnchantments.DRACONIC_SUPERIORITY);
-                        if (draconicSuperiority.isPresent()) {
-                            int level = EnchantmentHelper.getEnchantmentLevel(draconicSuperiority.get(), attacker);
-                            if(level > 0) {
-                                event.setAmount(event.getAmount() * 1.2f + (0.08f * level));
-                            }
-                        }
-                    }
-                    if (event.getEntity().getHealth() == event.getEntity().getMaxHealth()) {
-                        Optional<Holder.Reference<Enchantment>> murderersCunning = enchantments.getHolder(DSEnchantments.MURDERERS_CUNNING);
-                        if(murderersCunning.isPresent()) {
-                            int level = EnchantmentHelper.getEnchantmentLevel(murderersCunning.get(), attacker);
-                            if(level > 0) {
-                                event.setAmount(event.getAmount() * 1.4f + (0.2f * level));
-                            }
-                        }
-                    }
-                }
+            if (event.getSource().is(DSDamageTypeTags.DRAGON_MAGIC)) {
+                int level = EnchantmentUtils.getLevel(attacker, DSEnchantments.DRACONIC_SUPERIORITY);
 
-                AttributeInstance armorIgnoreChance = attacker.getAttribute(DSAttributes.ARMOR_IGNORE_CHANCE);
-                if (armorIgnoreChance != null && armorIgnoreChance.getValue() > 0) {
-                    if (armorIgnoreChance.getValue() < target.level().random.nextDouble()) {
-                        event.addReductionModifier(DamageContainer.Reduction.ARMOR, (container, reductionIn) -> 0);
-                    }
+                if (level > 0) {
+                    event.setAmount(event.getAmount() * 1.2f + (0.08f * level));
                 }
+            }
+
+            if (event.getEntity().getHealth() == event.getEntity().getMaxHealth()) {
+                int level = EnchantmentUtils.getLevel(attacker, DSEnchantments.MURDERERS_CUNNING);
+
+                if (level > 0) {
+                    event.setAmount(event.getAmount() * 1.4f + (0.2f * level));
+                }
+            }
+
+            AttributeInstance armorIgnoreChance = attacker.getAttribute(DSAttributes.ARMOR_IGNORE_CHANCE);
+
+            if (armorIgnoreChance != null && target.getRandom().nextDouble() < armorIgnoreChance.getValue()) {
+                event.addReductionModifier(DamageContainer.Reduction.ARMOR, (container, reductionIn) -> 0);
             }
         }
     }
