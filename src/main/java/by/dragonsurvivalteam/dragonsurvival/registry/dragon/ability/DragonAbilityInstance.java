@@ -9,6 +9,8 @@ import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncDisableAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Activation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.PassiveActivation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.ActivationTrigger;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
@@ -214,7 +216,7 @@ public class DragonAbilityInstance {
     public void setActive(final Player player, boolean isActive) {
         this.isActive = isActive;
 
-        if (player instanceof ServerPlayer serverPlayer && !isActive && isPassive()) {
+        if (!isActive && player instanceof ServerPlayer serverPlayer && value().activation() instanceof PassiveActivation passive && passive.trigger().type() == ActivationTrigger.TriggerType.CONSTANT) {
             // Also makes sure to remove any affects that are applied by the ability
             ability.value().actions().forEach(action -> action.remove(serverPlayer, this));
         }

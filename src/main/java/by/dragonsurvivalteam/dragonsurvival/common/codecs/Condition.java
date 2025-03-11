@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.DragonStage
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
+import net.minecraft.advancements.critereon.DamageSourcePredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.BlockPos;
@@ -20,6 +21,7 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.level.storage.loot.predicates.DamageSourceCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.MatchTool;
@@ -127,6 +129,10 @@ public class Condition {
 
     public static LootItemCondition.Builder thisEntity(final EntityPredicate predicate) {
         return LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS, predicate);
+    }
+
+    public static LootItemCondition.Builder damageSource(final DamageSourcePredicate.Builder builder) {
+        return DamageSourceCondition.hasDamageSource(builder);
     }
 
     public static LootItemCondition.Builder tool(final ItemPredicate predicate) {

@@ -308,6 +308,8 @@ public class ConfigHandler {
                     CONFIG_VALUES.put(key, configList);
                 } else if (defaultValues instanceof CustomConfig value) {
                     CONFIG_VALUES.put(key, builder.define(configOption.key(), value.convert()));
+                } else if (defaultValues instanceof String value) {
+                    CONFIG_VALUES.put(key, builder.define(configOption.key(), value));
                 } else {
                     // This will likely run into a 'com.electronwill.nightconfig.core.io.WritingException: Unsupported value type' exception
                     ModConfigSpec.ConfigValue<Object> value = builder.define(configOption.key(), defaultValues);
