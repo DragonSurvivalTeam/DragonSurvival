@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class ServerConfig {
@@ -129,6 +130,14 @@ public class ServerConfig {
     public static Boolean saveAllAbilities = false;
 
     // --- Dragon hunters --- //
+
+    @Translation(key = "pillage_cooldown", type = Translation.Type.CONFIGURATION, comments = "Cooldown in ticks (20 ticks = 1 second) before the entity can be pillaged again")
+    @ConfigOption(side = ConfigSide.SERVER, category = "dragon_hunters", key = "pillage_cooldown")
+    public static int PILLAGE_COOLDOWN = Functions.secondsToTicks(300);
+
+    @Translation(key = "max_pillage_render_distance", type = Translation.Type.CONFIGURATION, comments = "Max. distance the pillage icon will be rendered at (0 means it will be disabled)")
+    @ConfigOption(side = ConfigSide.SERVER, category = "dragon_hunters", key = "max_pillage_render_distance")
+    public static int MAX_RENDER_DISTANCE = 32;
 
     @ConfigRange(min = 0)
     @Translation(key = "pillager_experience_gain", type = Translation.Type.CONFIGURATION, comments = "How many experience points are gained when stealing from villagers")

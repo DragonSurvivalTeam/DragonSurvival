@@ -22,7 +22,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
+@EventBusSubscriber(Dist.CLIENT)
 public class DSEmoteKeybindings {
     public static EmoteKeybinds EMOTE_KEYBINDS = new EmoteKeybinds();
     private static final String FILE_NAME = "emote_bindings.json";

@@ -1,7 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.capability;
 
-import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
-import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
+import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncData;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
@@ -24,10 +23,6 @@ import org.jetbrains.annotations.Nullable;
 
 @EventBusSubscriber
 public class EntityStateHandler implements INBTSerializable<CompoundTag> {
-    @Translation(key = "pillage_cooldown", type = Translation.Type.CONFIGURATION, comments = "Cooldown in ticks (20 ticks = 1 second) before the entity can be pillaged again")
-    @ConfigOption(side = ConfigSide.SERVER, category = "misc", key = "pillage_cooldown")
-    public static int PILLAGE_COOLDOWN = Functions.secondsToTicks(300);
-
     @Translation(comments = "You have to wait %s seconds until you can steal from this villager")
     public static final String PILLAGE_ON_COOLDOWN = Translation.Type.GUI.wrap("message.pillage_on_cooldown");
 
@@ -60,7 +55,7 @@ public class EntityStateHandler implements INBTSerializable<CompoundTag> {
     }
 
     public void setPillageCooldown() {
-        pillageCooldown = PILLAGE_COOLDOWN;
+        pillageCooldown = ServerConfig.PILLAGE_COOLDOWN;
     }
 
     /** If no player is specified it will be sent to all tracking players */

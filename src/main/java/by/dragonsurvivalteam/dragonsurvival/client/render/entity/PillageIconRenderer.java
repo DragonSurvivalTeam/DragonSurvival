@@ -2,9 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.render.entity;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.EntityStateHandler;
-import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
-import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
@@ -24,15 +22,11 @@ import net.neoforged.neoforge.client.GlStateBackup;
 import org.joml.Matrix4f;
 
 public class PillageIconRenderer {
-    @Translation(key = "max_pillage_render_distance", type = Translation.Type.CONFIGURATION, comments = "Max. distance the pillage icon will be rendered at (0 means it will be disabled)")
-    @ConfigOption(side = ConfigSide.SERVER, category = "rendering", key = "max_pillage_render_distance")
-    public static int MAX_RENDER_DISTANCE = 32;
-
     private static final ResourceLocation ICON = DragonSurvival.res("textures/icons/pillage_icon.png");
     private static final int SIZE = 16;
 
     public static void renderIcon(final Entity entity, final PoseStack poseStack, final double distance) {
-        if (MAX_RENDER_DISTANCE == 0 || distance > MAX_RENDER_DISTANCE * MAX_RENDER_DISTANCE) {
+        if (ServerConfig.MAX_RENDER_DISTANCE == 0 || distance > ServerConfig.MAX_RENDER_DISTANCE * ServerConfig.MAX_RENDER_DISTANCE) {
             return;
         }
 
