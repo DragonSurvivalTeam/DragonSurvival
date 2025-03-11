@@ -4,7 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonFoodHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
-import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.EffectHandler;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.EnchantmentEffectHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
@@ -156,7 +156,7 @@ public abstract class LivingEntityMixin extends Entity {
         MobEffectInstance newInstance = instance;
 
         if (self instanceof Player affected) {
-            newInstance = EffectHandler.modifyEffect(affected, instance, applier);
+            newInstance = EnchantmentEffectHandler.modifyEffect(affected, instance, applier);
         }
 
         EffectModifications data = self.getExistingData(DSDataAttachments.EFFECT_MODIFICATIONS).orElse(null);
