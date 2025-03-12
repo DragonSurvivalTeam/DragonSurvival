@@ -1,4 +1,4 @@
-// 1.21.1	2025-03-12T00:03:15.1156663	Dragon Survival Block tags
+// 1.21.1	2025-03-12T14:01:03.0336226	Dragon Survival Block tags
 a7b74a44670ded912a5ee3127986ece356dcb643 data/dragonsurvival/tags/block/dragon_altars.json
 f9a6a5f3b67bb79883689bdd154a227493642cf6 data/dragonsurvival/tags/block/dragon_bones.json
 a6767fc6d26bc9adadcc7fb5e58fa3ee25cc2ef7 data/dragonsurvival/tags/block/dragon_ore_drop.json
@@ -15,7 +15,7 @@ b2a1859bc5bc92c559338ae3dc1772d40a411a14 data/dragonsurvival/tags/block/speeds_u
 c9afee88969711e08d5410ca0958812a8971f8ea data/dragonsurvival/tags/block/speeds_up_sea_dragon.json
 8b8e15de5c8095afcefd622705a67798e8629264 data/dragonsurvival/tags/block/warm_blocks.json
 8b0d8659326e1f6e12cf4ad7fa75e1044e477f3e data/dragonsurvival/tags/block/wooden_dragon_doors.json
-169131f118cef67e68e93c1799b1d1fb22e8c66c data/minecraft/tags/block/mineable/axe.json
-27780fe6f3e9a31cfeb09657c1d25923d8f6bd33 data/minecraft/tags/block/mineable/pickaxe.json
+eb22e78482ca838cf6f28410e2e24cc149bd6b5c data/minecraft/tags/block/mineable/axe.json
+40976b06f027808127fd41d02719012f3e546064 data/minecraft/tags/block/mineable/pickaxe.json
 abcff0fa11e7039406e895a343f43423443542c9 data/minecraft/tags/block/needs_iron_tool.json
 8b67b6e568583b903af15f0ff1285da6e35b7982 data/minecraft/tags/block/needs_stone_tool.json

@@ -1,17 +1,23 @@
+
 {
     "type": "minecraft:crafting_shaped",
     "pattern": [
-        "#C#",
-        "#P#",
+        "#G#",
+        "#O#",
         "###"
     ],
     "key": {
-        "#": "minecraft:diamond",
-        "C": "dragonsurvival:light_upgrade",
-        "P": "minecraft:torchflower_seeds"
+        "#": {
+            "item": "minecraft:diamond"
+        },
+        "G": {
+            "item": "dragonsurvival:light_upgrade"
+        },
+        "O": {
+            "item": "minecraft:torchflower_seeds"
+        }
     },
     "result": {
         "id": "dragonsurvival:light_upgrade",
-        "count": 2
-    }
+        "count": 2}
 }

@@ -567,7 +567,7 @@ public class DSBlocks {
     @Translation(type = Translation.Type.BLOCK, comments = "Deepslate Dragon Altar")
     public static final DeferredHolder<Block, Block> DEEPSLATE_DRAGON_ALTAR = register(
             "deepslate_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.DEEPSLATE))
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.COBBLED_DEEPSLATE))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Tuff Dragon Altar")
@@ -597,7 +597,7 @@ public class DSBlocks {
     @Translation(type = Translation.Type.BLOCK, comments = "Bamboo Dragon Altar")
     public static final DeferredHolder<Block, Block> BAMBOO_DRAGON_ALTAR = register(
             "bamboo_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.BAMBOO_BLOCK).mapColor(MapColor.COLOR_YELLOW))
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.BAMBOO_PLANKS).mapColor(MapColor.COLOR_YELLOW))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Cherry Dragon Altar")

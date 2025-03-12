@@ -309,7 +309,7 @@ public class DSRecipes extends RecipeProvider {
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.MISC, DSBlocks.DEEPSLATE_DRAGON_ALTAR.value())
-                .requires(Items.DEEPSLATE)
+                .requires(Items.COBBLED_DEEPSLATE)
                 .requires(DSItems.ELDER_DRAGON_BONE.value())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
                 .save(output);
@@ -344,7 +344,7 @@ public class DSRecipes extends RecipeProvider {
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.MISC, DSBlocks.BAMBOO_DRAGON_ALTAR.value())
-                .requires(Items.BAMBOO_BLOCK)
+                .requires(Items.BAMBOO_PLANKS)
                 .requires(DSItems.ELDER_DRAGON_BONE.value())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
                 .save(output);

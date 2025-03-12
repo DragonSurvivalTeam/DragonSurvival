@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "minecraft:deepslate"
+      "item": "minecraft:cobbled_deepslate"
     },
     {
       "item": "dragonsurvival:elder_dragon_bone"
