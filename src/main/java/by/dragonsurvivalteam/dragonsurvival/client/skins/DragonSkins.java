@@ -54,7 +54,6 @@ public class DragonSkins {
     }
 
     public static @Nullable ResourceLocation getPlayerSkin(String playerName, ResourceKey<DragonStage> dragonStage) {
-        //init();
         String skinKey = playerName + "_" + dragonStage.location().getPath();
 
         if (SKIN_CACHE.containsKey(skinKey) && SKIN_CACHE.get(skinKey) != null) {
@@ -86,7 +85,6 @@ public class DragonSkins {
 
 
     public static @Nullable ResourceLocation getPlayerSkin(Player player, ResourceKey<DragonStage> dragonStage) {
-        //init();
         String playerKey = player.getGameProfile().getName() + "_" + dragonStage.location().getPath();
         boolean renderCustomSkin = DragonStateProvider.getData(player).getSkinData().renderCustomSkin;
 
