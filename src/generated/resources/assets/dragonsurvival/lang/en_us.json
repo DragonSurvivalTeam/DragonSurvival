@@ -777,6 +777,8 @@
   "dragonsurvival.configuration.nearby_treasure_rate_reduction.tooltip": "The amount of ticks (20 ticks = 1 second) each nearby treasure reduces the health regeneration time by\n(i.e. it increases the rate of regeneration)",
   "dragonsurvival.configuration.no_humans_allowed": "No Humans Allowed",
   "dragonsurvival.configuration.no_humans_allowed.tooltip": "If enabled, players will start as a dragon and will never be allowed to be a human.",
+  "dragonsurvival.configuration.no_speed_requirement_for_vertical_acceleration": "No Speed Requirement For Vertical Acceleration",
+  "dragonsurvival.configuration.no_speed_requirement_for_vertical_acceleration.tooltip": "Dragons always accelerate vertically when flying, even when they aren't moving fast enough.",
   "dragonsurvival.configuration.pillage_cooldown": "Pillage Cooldown",
   "dragonsurvival.configuration.pillage_cooldown.tooltip": "Cooldown in ticks (20 ticks = 1 second) before the entity can be pillaged again",
   "dragonsurvival.configuration.pillager_experience_gain": "Pillager Experience Gain",

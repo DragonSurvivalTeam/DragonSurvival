@@ -396,7 +396,7 @@ public class ClientFlightHandler {
                                     if (ServerFlightHandler.isGliding(player)) {
                                         if (viewVector.y < 0) {
                                             deltaMovement = deltaMovement.add(ax, 0, az);
-                                        } else if (Math.abs(horizontalMovement) > 0.4) {
+                                        } else if (Math.abs(horizontalMovement) > 0.4 || ServerFlightHandler.noSpeedRequirementForVerticalAcceleration) {
                                             deltaMovement = deltaMovement.add(ax, ay, az);
                                         } else {
                                             deltaMovement = deltaMovement.add(ax, ay * horizontalMovement, az);

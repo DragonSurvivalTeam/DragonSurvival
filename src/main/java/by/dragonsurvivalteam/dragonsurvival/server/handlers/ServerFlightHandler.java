@@ -92,6 +92,10 @@ public class ServerFlightHandler {
     @ConfigOption(side = ConfigSide.SERVER, category = "wings", key = "enable_flight_fall_damage")
     public static boolean enableFlightFallDamage = true;
 
+    @Translation(key = "no_speed_requirement_for_vertical_acceleration", type = Translation.Type.CONFIGURATION, comments = "Dragons always accelerate vertically when flying, even when they aren't moving fast enough.")
+    @ConfigOption(side = ConfigSide.SERVER, category = "wings", key = "no_speed_requirement_for_vertical_acceleration")
+    public static Boolean noSpeedRequirementForVerticalAcceleration = false;
+
     @SubscribeEvent(receiveCanceled = true) // Unsure if this is needed
     public static void handleLanding(final LivingFallEvent event) {
         if (event.getEntity() instanceof Player player) {
