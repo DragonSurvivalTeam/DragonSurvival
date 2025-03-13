@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
-import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.GlowData;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
@@ -28,7 +28,7 @@ public abstract class MinecraftMixin {
 
     @ModifyReturnValue(method = "useShaderTransparency", at = @At("RETURN"))
     private static boolean dragonSurvival$enableTranslucencyFix(boolean isEnabled) {
-        if (Compat.isModLoaded(Compat.IRIS)) {
+        if (ModCheck.isModLoaded(ModCheck.IRIS)) {
             // Iris doesn't properly work with Fabulous! mode
             // (the translucency sorting feature) (it causes particles to be invisible)
             return isEnabled;

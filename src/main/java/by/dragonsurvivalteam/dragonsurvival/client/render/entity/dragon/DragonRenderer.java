@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
 import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
 import by.dragonsurvivalteam.dragonsurvival.compat.sophisticatedBackpacks.DragonBackpackRenderLayer;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
@@ -42,7 +43,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
     public boolean isRenderingLayer;
     public boolean shouldRenderLayers = true;
 
-    private boolean wasNeckVisible;
+    private boolean resetNeckVisibility;
 
     public DragonRenderer(final EntityRendererProvider.Context context, final GeoModel<DragonEntity> model) {
         super(context, model);
@@ -58,7 +59,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
             return null;
         }, (bone, animatable) -> null));
 
-        if (Compat.isModLoaded(Compat.SOPHISTICATED_BACKPACKS)) {
+        if (ModCheck.isModLoaded(ModCheck.SOPHISTICATED_BACKPACKS)) {
             getRenderLayers().add(new DragonBackpackRenderLayer(this));
         }
     }
@@ -89,13 +90,19 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         Minecraft.getInstance().getProfiler().push("player_dragon");
         Player player = animatable.getPlayer();
 
-        wasNeckVisible = model.getBone("Neck").map(bone -> {
+        resetNeckVisibility = model.getBone("Neck").map(bone -> {
             if (bone.isHidden()) {
+                return false;
+            }
+
+            if (animatable.isInInventory || Compat.displayNeck()) {
                 return false;
             }
 
             if (RenderingUtils.isFirstPerson(player)) {
                 bone.setHidden(true);
+            } else {
+                return false;
             }
 
             return true;
@@ -108,9 +115,9 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
     public void postRender(final PoseStack poseStack, final DragonEntity animatable, final BakedGeoModel model, final MultiBufferSource bufferSource, final VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int color) {
         super.postRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, color);
 
-        if (wasNeckVisible) {
+        if (resetNeckVisibility) {
             model.getBone("Neck").ifPresent(bone -> bone.setHidden(false));
-            wasNeckVisible = false;
+            resetNeckVisibility = false;
         }
 
         // Need to store the positions per entity ourselves

@@ -95,14 +95,14 @@ dependencies {
 	compileOnly "curse.maven:cloth-config-348521:5729127" // 15.0.140
 	compileOnly "curse.maven:playeranimator-658587:6024462" // 2.0.1
 
+//	implementation "maven.modrinth:sodium:mc1.21.1-0.6.9-neoforge"
+	compileOnly "curse.maven:irisshaders-455508:6213632" // 1.8.8
+
 	// Test
 	implementation "curse.maven:spark-361579:5759671" // 1.10.109
 	implementation "curse.maven:jade-324717:6011258" // 15.9.2
 
 //	implementation "curse.maven:emi-580555:6075440" // 1.1.19
-
-//	implementation "maven.modrinth:sodium:mc1.21.1-0.6.9-neoforge"
-//	implementation "curse.maven:irisshaders-455508:6213632" // 1.8.8
 
 //	implementation "curse.maven:apothic-attributes-898963:5751458" // 2.4.0
 //	implementation "curse.maven:placebo-283644:5869769" // 9.5.4

@@ -104,10 +104,12 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     public boolean overrideUUIDWithLocalPlayerForTextureFetch;
 
     /**
-     * Used for inventory rendering - when set to true changed movement data will not be tracked <br>
-     * See {@link ClientDragonRenderer#setDragonMovementData(Player, float)} and {@link DragonModel#applyMolangQueries(AnimationState, double)}
+     * Used for inventory / smithing screen rendering - when set to true changed movement data will not be tracked <br>
+     * - Does not set the movement data <br>
+     * - Does not apply the molang history (of head pitch, body yaw, etc.) <br>
+     * - Does not hide the head when in first person
      */
-    public boolean isOverridingMovementData;
+    public boolean isInInventory;
 
     public boolean clearVerticalVelocity;
 

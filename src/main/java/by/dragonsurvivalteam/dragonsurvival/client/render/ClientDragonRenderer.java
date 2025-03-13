@@ -241,7 +241,7 @@ public class ClientDragonRenderer {
         }
 
         if (player != Minecraft.getInstance().player || !Minecraft.getInstance().options.getCameraType().isFirstPerson() || !ServerFlightHandler.isGliding(player) || renderFirstPersonFlight) {
-            if (!dragon.isOverridingMovementData) {
+            if (!dragon.isInInventory) {
                 ClientDragonRenderer.setDragonMovementData(player, Minecraft.getInstance().getTimer().getRealtimeDeltaTicks());
             }
 

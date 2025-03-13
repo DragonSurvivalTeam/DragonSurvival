@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.compat.car;
 
-import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
 import lain.mods.cos.api.CosArmorAPI;
 import lain.mods.cos.impl.inventory.InventoryCosArmor;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -10,7 +10,7 @@ import net.minecraft.world.item.Items;
 
 public class CosmeticArmorReworkedHelper {
     public static ItemStack getItemVisibleInSlot(Player player, EquipmentSlot slot) {
-        if (Compat.isModLoaded(Compat.COSMETIC_ARMOR_REWORKED)) {
+        if (ModCheck.isModLoaded(ModCheck.COSMETIC_ARMOR_REWORKED)) {
             InventoryCosArmor CAItems = (InventoryCosArmor) CosArmorAPI.getCAStacksClient(player.getUUID());
             ItemStack item = CAItems.getItem(slot.getIndex());
             if (CAItems.isSkinArmor(slot.getIndex())) {

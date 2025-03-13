@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
+import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
@@ -40,24 +41,27 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
     // This is to angle the dragon entity (including its head) to correctly follow the angle specified when rendering.
     @Redirect(method = "renderEntityInInventory", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;runAsFancy(Ljava/lang/Runnable;)V"))
     private static void dragon_survival$dragonScreenEntityRender(final Runnable runnable, @Local(argsOnly = true) LivingEntity entity) {
-        LivingEntity newEntity;
+        LivingEntity entityToRender;
 
         if (entity instanceof DragonEntity dragon) {
-            dragon.isOverridingMovementData = true;
-            newEntity = dragon.getPlayer();
+            dragon.isInInventory = true;
+            entityToRender = dragon.getPlayer();
+        } else if (entity instanceof Player player) {
+            entityToRender = player;
+            ClientDragonRenderer.getDragon(player).isInInventory = true;
         } else {
-            newEntity = entity;
+            entityToRender = entity;
         }
 
-        if (DragonStateProvider.isDragon(newEntity)) {
-            MovementData movement = MovementData.getData(newEntity);
+        if (DragonStateProvider.isDragon(entityToRender)) {
+            MovementData movement = MovementData.getData(entityToRender);
             double bodyYaw = movement.bodyYaw;
             double headYaw = movement.headYaw;
             double headPitch = movement.headPitch;
             Vec3 deltaMovement = movement.deltaMovement;
             Vec3 deltaMovementLastFrame = movement.deltaMovementLastFrame;
 
-            movement.bodyYaw = newEntity.yBodyRot;
+            movement.bodyYaw = entityToRender.yBodyRot;
             movement.headYaw = -Math.toDegrees(dragon_survival$storedXAngle);
             movement.headPitch = -Math.toDegrees(dragon_survival$storedYAngle);
             movement.deltaMovement = Vec3.ZERO;
@@ -78,7 +82,9 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
         }
 
         if (entity instanceof DragonEntity dragon) {
-            dragon.isOverridingMovementData = false;
+            dragon.isInInventory = false;
+        } else if (entity instanceof Player player) {
+            ClientDragonRenderer.getDragon(player).isInInventory = false;
         }
     }
 

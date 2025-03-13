@@ -3,7 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.compat.sophisticatedBackpacks;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
-import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
@@ -48,7 +48,7 @@ public class DragonBackpackRenderLayer extends GeoRenderLayer<DragonEntity> {
     public DragonBackpackRenderLayer(GeoEntityRenderer<DragonEntity> renderer) {
         super(renderer);
 
-        isCurioLoaded = Compat.isModLoaded(Compat.CURIOS);
+        isCurioLoaded = ModCheck.isModLoaded(ModCheck.CURIOS);
     }
 
     @Override

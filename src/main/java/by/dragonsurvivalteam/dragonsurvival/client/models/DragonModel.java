@@ -71,7 +71,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
         double headPitchAvg;
         double verticalVelocityAvg;
 
-        if (!dragon.isOverridingMovementData) {
+        if (!dragon.isInInventory) {
             double bodyYawChange = Functions.angleDifference(movement.bodyYaw, movement.bodyYawLastFrame) / deltaTick * DELTA_YAW_PITCH_FACTOR;
             double headYawChange = Functions.angleDifference(movement.headYaw, movement.headYawLastFrame) / deltaTick * DELTA_YAW_PITCH_FACTOR;
             double headPitchChange = Functions.angleDifference(movement.headPitch, movement.headPitchLastFrame) / deltaTick * DELTA_YAW_PITCH_FACTOR;

@@ -443,6 +443,7 @@ public class DSBlocks {
     );
 
     // --- Dragon Altars --- //
+    // TODO :: `ofFullCopy` also copies the loot table defined in `drops` (currently not used by the copied blocks)
 
     @Translation(type = Translation.Type.BLOCK, comments = "Stone Dragon Altar")
     public static final DeferredHolder<Block, Block> STONE_DRAGON_ALTAR = register(

@@ -1,6 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins;
 
-import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -30,7 +30,7 @@ public class ApplyMixinPlugin implements IMixinConfigPlugin {
 
         if (elements.length == 2) {
             String modid = elements[0];
-            return Compat.isModLoaded(modid);
+            return ModCheck.isModLoaded(modid);
         }
 
         if (mixinClassName.equals(PREFIX + "HolderSetCodecMixin") || mixinClassName.equals(PREFIX + "Holder$ReferenceAccess")) {

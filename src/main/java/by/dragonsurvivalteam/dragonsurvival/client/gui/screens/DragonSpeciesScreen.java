@@ -13,7 +13,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscResources;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.StageResources;
-import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
 import by.dragonsurvivalteam.dragonsurvival.compat.jei.JEIPlugin;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.FlightData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
@@ -130,7 +130,7 @@ public class DragonSpeciesScreen extends Screen {
 
     @Override
     public boolean keyPressed(final int keyCode, final int scanCode, final int modifiers) {
-        if (dietMenu != null && dietMenu.getHovered() != null && Compat.isModLoaded(Compat.JEI)) {
+        if (dietMenu != null && dietMenu.getHovered() != null && ModCheck.isModLoaded(ModCheck.JEI)) {
             return JEIPlugin.handleKeyPress(InputConstants.getKey(keyCode, scanCode), dietMenu.getHovered());
         }
 

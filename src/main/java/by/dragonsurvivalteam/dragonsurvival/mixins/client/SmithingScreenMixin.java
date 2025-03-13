@@ -63,7 +63,7 @@ public abstract class SmithingScreenMixin {
     private LivingEntity dragonSurvival$renderDragon(final LivingEntity armorStand) {
         if (dragonSurvival$dragon != null && DragonStateProvider.isDragon(Minecraft.getInstance().player)) {
             dragonSurvival$dragon.overrideUUIDWithLocalPlayerForTextureFetch = true;
-            dragonSurvival$dragon.isOverridingMovementData = true;
+            dragonSurvival$dragon.isInInventory = true;
             dragonSurvival$dragon.yBodyRot = 210;
             dragonSurvival$dragon.setXRot(25);
             return dragonSurvival$dragon;
@@ -76,7 +76,7 @@ public abstract class SmithingScreenMixin {
     private void dragonSurvival$resetUUIDOverwriteFlag(final CallbackInfo callback) {
         if (dragonSurvival$dragon != null) {
             dragonSurvival$dragon.overrideUUIDWithLocalPlayerForTextureFetch = false;
-            dragonSurvival$dragon.isOverridingMovementData = false;
+            dragonSurvival$dragon.isInInventory = false;
             dragonSurvival$dragon.yBodyRot = 0;
             dragonSurvival$dragon.setXRot(0);
         }
