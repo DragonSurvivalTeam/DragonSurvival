@@ -57,10 +57,17 @@ public class DSItems {
     private static final Consumer<LivingEntity> REMOVE_EFFECTS_CURED_BY_MILK = entity -> entity.removeEffectsCuredBy(EffectCures.MILK);
 
     // --- Growth --- //
-
+    @Translation(type = Translation.Type.DESCRIPTION, comments = {
+            "§7■ Deformed part of the Elder dragon.§r",
+            "■§f The energy absorbing dragon magic had captured this bone. Makes the dragon smaller."
+    })
     @Translation(type = Translation.Type.ITEM, comments = "Star Bone")
     public static final Holder<Item> STAR_BONE = REGISTRY.register("star_bone", location -> new TooltipItem(new Properties(), location.getPath()));
 
+    @Translation(type = Translation.Type.DESCRIPTION, comments = {
+            "§7■ Deformed part of the Elder dragon.§r",
+            "■§f The energy absorbing dragon magic had captured this heart. It is able to change the dragon's growth many times."
+    })
     @Translation(type = Translation.Type.ITEM, comments = "Star Heart")
     public static final Holder<Item> STAR_HEART = REGISTRY.register("star_heart", () -> new Item(new Properties()));
 
@@ -102,7 +109,7 @@ public class DSItems {
     // --- Food --- //
 
     @Translation(type = Translation.Type.ITEM, comments = "Charged Coal")
-    @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 Removes all effects. Can also be used to smelt a large number of items.")
+    @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 Removes all effects.")
     public static final Holder<Item> CHARGED_COAL = REGISTRY.register("charged_coal", location -> new ChargedCoalItem(new Properties(), location.getPath(), REMOVE_EFFECTS_CURED_BY_MILK));
 
     @Translation(type = Translation.Type.ITEM, comments = "Charged Soup")
@@ -292,7 +299,7 @@ public class DSItems {
             DataComponents.ATTRIBUTE_MODIFIERS,
             ItemAttributeModifiers.builder()
                     .add(Attributes.ATTACK_DAMAGE, new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID, 6, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
-                    .add(Attributes.ATTACK_SPEED, new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, -3.2f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+                    .add(Attributes.ATTACK_SPEED, new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, -2.6f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                     .add(Attributes.BLOCK_INTERACTION_RANGE, new AttributeModifier(DragonSurvival.res("partisan_block_reach"), 1f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                     .add(Attributes.ENTITY_INTERACTION_RANGE, new AttributeModifier(DragonSurvival.res("partisan_attack_reach"), 1f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                     .build()
@@ -305,7 +312,7 @@ public class DSItems {
             DataComponents.ATTRIBUTE_MODIFIERS,
             ItemAttributeModifiers.builder()
                     .add(Attributes.ATTACK_DAMAGE, new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID, 7, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
-                    .add(Attributes.ATTACK_SPEED, new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, -3.2f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+                    .add(Attributes.ATTACK_SPEED, new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, -2.6f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                     .add(Attributes.BLOCK_INTERACTION_RANGE, new AttributeModifier(DragonSurvival.res("partisan_block_reach"), 1f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                     .add(Attributes.ENTITY_INTERACTION_RANGE, new AttributeModifier(DragonSurvival.res("partisan_attack_reach"), 1f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                     .build()
@@ -318,7 +325,7 @@ public class DSItems {
             DataComponents.ATTRIBUTE_MODIFIERS,
             ItemAttributeModifiers.builder()
                     .add(Attributes.ATTACK_DAMAGE, new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID, 8, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
-                    .add(Attributes.ATTACK_SPEED, new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, -3.2f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+                    .add(Attributes.ATTACK_SPEED, new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, -2.6f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                     .add(Attributes.BLOCK_INTERACTION_RANGE, new AttributeModifier(DragonSurvival.res("partisan_block_reach"), 1f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                     .add(Attributes.ENTITY_INTERACTION_RANGE, new AttributeModifier(DragonSurvival.res("partisan_attack_reach"), 1f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                     .build()

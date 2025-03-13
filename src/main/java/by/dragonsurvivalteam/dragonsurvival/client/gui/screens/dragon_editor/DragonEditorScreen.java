@@ -603,7 +603,6 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     private void initDummyDragon(final DragonStateHandler localHandler) {
         if (stage == null && localHandler.isDragon()) {
             // Species should already be set when opening the screen
-            species = localHandler.species();
             stage = localHandler.stage();
             body = localHandler.body();
         } else if (species != null) {

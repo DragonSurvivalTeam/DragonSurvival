@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 
-import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.GrowthItem;
@@ -20,7 +19,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-@EventBusSubscriber(modid = DragonSurvival.MODID)
+@EventBusSubscriber
 public class DragonGrowthHandler {
     @Translation(comments = "Natural growth is §cinactive§r")
     private static final String INACTIVE = Translation.Type.GUI.wrap("message.natural_growth_inactive");

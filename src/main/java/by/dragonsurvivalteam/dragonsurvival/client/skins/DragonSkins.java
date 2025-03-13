@@ -126,17 +126,19 @@ public class DragonSkins {
         HashMap<String, SkinObject> playerSkinMap = USER_SKINS.getOrDefault(stage, null);
 
         // Wait an increasing amount of time depending on the number of failed attempts
-        if (playerSkinMap == null && lastSkinFetchAttemptTime + numSkinFetchAttempts < Blaze3D.getTime() && numSkinFetchAttempts < 10) {
-            DragonSurvival.LOGGER.warn("Customs skins are not yet fetched, re-fetching...");
-            init();
+        while (numSkinFetchAttempts < 10 && playerSkinMap == null) {
+            if (lastSkinFetchAttemptTime + numSkinFetchAttempts < Blaze3D.getTime()) {
+                DragonSurvival.LOGGER.warn("Customs skins are not yet fetched, re-fetching...");
+                init();
 
-            numSkinFetchAttempts++;
-            lastSkinFetchAttemptTime = Blaze3D.getTime();
+                numSkinFetchAttempts++;
+                lastSkinFetchAttemptTime = Blaze3D.getTime();
 
-            playerSkinMap = USER_SKINS.getOrDefault(stage, null);
+                playerSkinMap = USER_SKINS.getOrDefault(stage, null);
 
-            if (playerSkinMap == null) {
-                DragonSurvival.LOGGER.error("Custom skins could not be fetched");
+                if (playerSkinMap == null) {
+                    DragonSurvival.LOGGER.error("Custom skins could not be fetched");
+                }
             }
         }
 

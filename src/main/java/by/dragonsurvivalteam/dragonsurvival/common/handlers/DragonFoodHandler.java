@@ -27,7 +27,7 @@ public class DragonFoodHandler {
 
     @ConfigRange(min = 0, max = 1)
     @Translation(key = "bad_food_poison_chance", type = Translation.Type.CONFIGURATION, comments = "Chance of getting poisoned from eating non-dragon food")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"food"}, key = "bad_food_poison_chance")
+    @ConfigOption(side = ConfigSide.SERVER, category = "food", key = "bad_food_poison_chance")
     public static Float badFoodPoisonChance = 0.5F;
 
     public static @Nullable FoodProperties getDragonFoodProperties(final Holder<DragonSpecies> species, final ItemStack stack, @Nullable final FoodProperties original) {
