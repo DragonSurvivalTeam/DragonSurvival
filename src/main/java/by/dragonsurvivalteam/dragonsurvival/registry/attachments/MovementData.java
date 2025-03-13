@@ -25,6 +25,7 @@ public class MovementData {
     public Vec3 desiredMoveVec = Vec3.ZERO;
 
     public boolean isFirstPerson;
+    /** Prevents the body from rotating when moving the camera */
     public boolean isFreeLook;
 
     //TODO: Biting is not correctly synced,

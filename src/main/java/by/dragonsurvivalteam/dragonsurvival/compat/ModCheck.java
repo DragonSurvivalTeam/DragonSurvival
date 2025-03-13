@@ -15,6 +15,7 @@ public class ModCheck {
     public static final String SOPHISTICATED_BACKPACKS = "sophisticatedbackpacks";
     public static final String CURIOS = "curios";
     public static final String CREATE = "create";
+    public static final String FREECAM = "freecam";
 
     private static final Map<String, List<String>> ALIAS = Map.of(
             IRIS, List.of("oculus"),

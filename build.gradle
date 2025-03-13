@@ -98,6 +98,8 @@ dependencies {
 //	implementation "maven.modrinth:sodium:mc1.21.1-0.6.9-neoforge"
 	compileOnly "curse.maven:irisshaders-455508:6213632" // 1.8.8
 
+	compileOnly "curse.maven:free-cam-557076:5572364" // 1.3.0
+
 	// Test
 	implementation "curse.maven:spark-361579:5759671" // 1.10.109
 	implementation "curse.maven:jade-324717:6011258" // 15.9.2
