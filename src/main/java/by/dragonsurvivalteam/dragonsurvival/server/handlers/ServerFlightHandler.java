@@ -147,7 +147,7 @@ public class ServerFlightHandler {
             DragonStateProvider.getOptional(livingEntity).ifPresent(handler -> {
                 FlightData data = FlightData.getData(player);
                 // Don't use the helper functions here, as isFlying() will return false if the player is grounded
-                if (handler.isDragon() && data.hasFlight() && data.isWingsSpread() && player.isSprinting()) {
+                if (handler.isDragon() && data.hasFlight() && data.isWingsSpread() && player.isSprinting() && !player.isPassenger()) {
                     if (!enableFlightFallDamage || verticalFlightSpeed <= 1 || (livingEntity.isPassenger() && DragonStateProvider.isDragon(livingEntity.getVehicle()))) {
                         event.setCanceled(true);
                         return;
@@ -166,7 +166,7 @@ public class ServerFlightHandler {
 
     public static boolean isFlying(final Player player) {
         FlightData data = FlightData.getData(player);
-        return data.hasFlight() && data.isWingsSpread() && !player.onGround() && /* TODO :: more universal check for fluids */ !player.isInWater() && !player.isInLava();
+        return data.hasFlight() && data.isWingsSpread() && !player.onGround() && /* TODO :: more universal check for fluids */ !player.isInWater() && !player.isInLava() && !player.isPassenger();
     }
 
     @SubscribeEvent
