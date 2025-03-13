@@ -54,6 +54,7 @@ public class DragonSkins {
     }
 
     public static @Nullable ResourceLocation getPlayerSkin(String playerName, ResourceKey<DragonStage> dragonStage) {
+        init();
         String skinKey = playerName + "_" + dragonStage.location().getPath();
 
         if (SKIN_CACHE.containsKey(skinKey) && SKIN_CACHE.get(skinKey) != null) {
@@ -62,7 +63,7 @@ public class DragonSkins {
             }
         }
 
-        if (!hasFailedFetch.contains(skinKey) && !SKIN_CACHE.containsKey(skinKey)) {
+        if (!hasFailedFetch.contains(skinKey) && !SKIN_CACHE.containsKey(skinKey) && !USER_SKINS.isEmpty()) {
             SKIN_CACHE.put(skinKey, CompletableFuture.supplyAsync(() -> fetchSkinFile(playerName, dragonStage)));
         }
 
@@ -85,6 +86,7 @@ public class DragonSkins {
 
 
     public static @Nullable ResourceLocation getPlayerSkin(Player player, ResourceKey<DragonStage> dragonStage) {
+        init();
         String playerKey = player.getGameProfile().getName() + "_" + dragonStage.location().getPath();
         boolean renderCustomSkin = DragonStateProvider.getData(player).getSkinData().renderCustomSkin;
 
@@ -95,7 +97,7 @@ public class DragonSkins {
                 }
             }
 
-            if (!hasFailedFetch.contains(playerKey) && !SKIN_CACHE.containsKey(playerKey)) {
+            if (!hasFailedFetch.contains(playerKey) && !SKIN_CACHE.containsKey(playerKey) && !USER_SKINS.isEmpty()) {
                 SKIN_CACHE.put(playerKey, CompletableFuture.supplyAsync(() -> fetchSkinFile(player, dragonStage)));
             }
         }
