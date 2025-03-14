@@ -71,8 +71,8 @@ public class ClientProxy implements Proxy {
     }
 
     @Override
-    public void setCurrentAbilityAnimation(int playerId, final Pair<AbilityAnimation, AnimationType> animation) {
-        DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(playerId);
+    public void setCurrentAbilityAnimation(final Player player, final Pair<AbilityAnimation, AnimationType> animation) {
+        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
 
         if (dragon == null) {
             return;
@@ -82,8 +82,8 @@ public class ClientProxy implements Proxy {
     }
 
     @Override
-    public void stopEmote(int playerId, final DragonEmote emote) {
-        DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(playerId);
+    public void stopEmote(final Player player, final DragonEmote emote) {
+        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
 
         if (dragon == null) {
             return;
@@ -93,8 +93,8 @@ public class ClientProxy implements Proxy {
     }
 
     @Override
-    public void beginPlayingEmote(int playerId, final DragonEmote emote) {
-        DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(playerId);
+    public void beginPlayingEmote(final Player player, final DragonEmote emote) {
+        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
 
         if (dragon == null) {
             return;
@@ -104,8 +104,8 @@ public class ClientProxy implements Proxy {
     }
 
     @Override
-    public void stopAllEmotes(int playerId) {
-        DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(playerId);
+    public void stopAllEmotes(final Player player) {
+        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
 
         if (dragon == null) {
             return;
@@ -115,8 +115,8 @@ public class ClientProxy implements Proxy {
     }
 
     @Override
-    public boolean isPlayingEmote(int playerId, final DragonEmote emote) {
-        DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(playerId);
+    public boolean isPlayingEmote(final Player player, final DragonEmote emote) {
+        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
 
         if (dragon == null) {
             return false;
@@ -167,7 +167,7 @@ public class ClientProxy implements Proxy {
 
     @Override
     public boolean dragonRenderingWasCancelled(final Player player) {
-        DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(player.getId());
+        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
 
         if (dragon == null) {
             return false;

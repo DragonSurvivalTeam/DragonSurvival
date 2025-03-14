@@ -39,7 +39,7 @@ public record SyncAbilityAnimation(int playerId, AnimationType animationType, Ei
                 return;
             }
 
-            DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(player.getId());
+            DragonEntity dragon = ClientDragonRenderer.getDragon(player);
 
             if (dragon == null) {
                 return;

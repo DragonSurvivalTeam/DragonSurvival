@@ -29,15 +29,15 @@ public interface Proxy {
 
     default void stopTickingSound(final ResourceLocation id) { /* Nothing to do */ }
 
-    default void setCurrentAbilityAnimation(int playerId, Pair<AbilityAnimation, AnimationType> animation) { /* Nothing to do */ }
+    default void setCurrentAbilityAnimation(final Player player, final Pair<AbilityAnimation, AnimationType> animation) { /* Nothing to do */ }
 
-    default void stopEmote(int playerId, DragonEmote emote) { /* Nothing to do */ }
+    default void stopEmote(final Player player, final DragonEmote emote) { /* Nothing to do */ }
 
-    default void beginPlayingEmote(int playerId, DragonEmote emote) { /* Nothing to do */ }
+    default void beginPlayingEmote(final Player player, final DragonEmote emote) { /* Nothing to do */ }
 
-    default void stopAllEmotes(int playerId) { /* Nothing to do */ }
+    default void stopAllEmotes(final Player player) { /* Nothing to do */ }
 
-    default boolean isPlayingEmote(int playerId, DragonEmote emote) {
+    default boolean isPlayingEmote(final Player player, final DragonEmote emote) {
         return false;
     }
 

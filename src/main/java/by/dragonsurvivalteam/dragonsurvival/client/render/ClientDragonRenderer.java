@@ -58,19 +58,24 @@ import net.neoforged.neoforge.common.util.TriState;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 import software.bernie.geckolib.util.RenderUtil;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class ClientDragonRenderer {
     // FIXME :: remove this completely (currently only used for override texture)
     public static DragonModel dragonModel = new DragonModel();
 
+    // FIXME :: figure out at what point it can be called from other threads - that shouldn't happen but it does?
+    //  See: https://github.com/DragonSurvivalTeam/DragonSurvival/issues/763
+    //  (revert back to normal map once this is properly fixed)
     /** Instances used for rendering third-person dragon models */
-    public static final Map<Integer, DragonEntity> PLAYER_DRAGON_MAP = new HashMap<>();
+    private static final Map<Integer, DragonEntity> PLAYER_DRAGON_MAP = new ConcurrentHashMap<>();
 
     @Translation(key = "render_dragon_in_first_person", type = Translation.Type.CONFIGURATION, comments = "If enabled the dragon body will be visible in first person")
     @ConfigOption(side = ConfigSide.CLIENT, category = "rendering", key = "render_dragon_in_first_person")
@@ -106,13 +111,21 @@ public class ClientDragonRenderer {
 
     public static float partialTick = 1;
 
-    public static DragonEntity getDragon(final Player player) {
+    public static DragonEntity getOrCreateDragon(final Player player) {
         return ClientDragonRenderer.PLAYER_DRAGON_MAP.computeIfAbsent(player.getId(), key -> {
             DragonEntity newDragon = DSEntities.DRAGON.get().create(player.level());
             //noinspection DataFlowIssue -> dragon should not be null
             newDragon.playerId = key;
             return newDragon;
         });
+    }
+
+    public static @Nullable DragonEntity getDragon(final Player player) {
+        return PLAYER_DRAGON_MAP.get(player.getId());
+    }
+
+    public static void process(final Consumer<DragonEntity> processor) {
+        PLAYER_DRAGON_MAP.values().forEach(processor);
     }
 
     @SubscribeEvent
@@ -215,7 +228,7 @@ public class ClientDragonRenderer {
             return;
         }
 
-        DragonEntity dragon = getDragon(player);
+        DragonEntity dragon = getOrCreateDragon(player);
         dragon.renderingWasCancelled = event.isCanceled();
 
         if (event.isCanceled()) {

@@ -318,10 +318,10 @@ public class MagicData implements INBTSerializable<CompoundTag> {
                 if (instance.hasEndAnimation()) {
                     instance.value().activation().playEndAnimation(player);
                 } else if (!instance.isPassive()) {
-                    DragonSurvival.PROXY.setCurrentAbilityAnimation(player.getId(), null);
+                    DragonSurvival.PROXY.setCurrentAbilityAnimation(player, null);
                 }
             } else if (!instance.isPassive()) {
-                DragonSurvival.PROXY.setCurrentAbilityAnimation(player.getId(), null);
+                DragonSurvival.PROXY.setCurrentAbilityAnimation(player, null);
             }
 
             instance.setActive(player, false);

@@ -29,7 +29,8 @@ public class EmoteHandler {
         }
 
         Player player = event.getEntity();
-        DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(player.getId());
+        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
+
         if (dragon == null) {
             return;
         }
@@ -87,7 +88,7 @@ public class EmoteHandler {
         }
 
         if (event.getEntity() instanceof Player player && DragonStateProvider.isDragon(player)) {
-            DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(player.getId());
+            DragonEntity dragon = ClientDragonRenderer.getDragon(player);
 
             if (dragon == null) {
                 return;

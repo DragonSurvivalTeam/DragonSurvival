@@ -21,7 +21,7 @@ public record StopAbilityAnimation(int playerId) implements CustomPacketPayload 
     public static void handleClient(final StopAbilityAnimation packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
-                DragonSurvival.PROXY.setCurrentAbilityAnimation(player.getId(), null);
+                DragonSurvival.PROXY.setCurrentAbilityAnimation(player, null);
             }
         });
     }

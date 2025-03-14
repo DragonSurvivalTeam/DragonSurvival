@@ -70,7 +70,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
      * - Even if it is enabled the position won't be correct - unsure as to why
      */
     public static Vec3 getBonePosition(final Player player, final String name) {
-        DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(player.getId());
+        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
 
         if (dragon == null) {
             return Vec3.ZERO;
@@ -141,7 +141,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         }
 
         poseStack.pushPose();
-        setupRender(player, poseStack, partialTick);
+        setupRender(animatable, player, poseStack, partialTick);
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
         boolean hasWings = !handler.body().value().canHideWings() || handler.getCurrentStageCustomization().wings;
@@ -154,8 +154,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         poseStack.popPose();
     }
 
-    private void setupRender(final Player player, final PoseStack pose, final float partialTick) {
-        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
+    private void setupRender(final DragonEntity dragon, final Player player, final PoseStack pose, final float partialTick) {
         MovementData movement = MovementData.getData(player);
 
         // This is normally used in EntityRenderDispatcher#render but that isn't triggered for 'DragonEntity'

@@ -130,7 +130,7 @@ public interface Activation {
                         compound -> compound
                 );
                 // If it is simple, we just loop. If it is compound, then we ignore the AnimationType anyway, and go from a single play of start into looping charging.
-                DragonSurvival.PROXY.setCurrentAbilityAnimation(dragon.getId(), new Pair<>(abilityAnimation, AnimationType.LOOPING));
+                DragonSurvival.PROXY.setCurrentAbilityAnimation(dragon, new Pair<>(abilityAnimation, AnimationType.LOOPING));
             } else {
                 PacketDistributor.sendToPlayersTrackingEntity(dragon, new SyncAbilityAnimation(dragon.getId(), AnimationType.LOOPING, startAndCharging));
             }
@@ -140,7 +140,7 @@ public interface Activation {
     default void playLoopingAnimation(final Player dragon) {
         animations().flatMap(Animations::looping).ifPresent(looping -> {
             if (dragon.level().isClientSide()) {
-                DragonSurvival.PROXY.setCurrentAbilityAnimation(dragon.getId(), new Pair<>(looping, AnimationType.LOOPING));
+                DragonSurvival.PROXY.setCurrentAbilityAnimation(dragon, new Pair<>(looping, AnimationType.LOOPING));
             } else {
                 PacketDistributor.sendToPlayersTrackingEntity(dragon, new SyncAbilityAnimation(dragon.getId(), AnimationType.LOOPING, Either.right(looping)));
             }
@@ -150,7 +150,7 @@ public interface Activation {
     default void playEndAnimation(final Player dragon) {
         animations().flatMap(Animations::end).ifPresent(end -> {
             if (dragon.level().isClientSide()) {
-                DragonSurvival.PROXY.setCurrentAbilityAnimation(dragon.getId(), new Pair<>(end, AnimationType.PLAY_ONCE));
+                DragonSurvival.PROXY.setCurrentAbilityAnimation(dragon, new Pair<>(end, AnimationType.PLAY_ONCE));
             } else {
                 PacketDistributor.sendToPlayersTrackingEntity(dragon, new SyncAbilityAnimation(dragon.getId(), AnimationType.PLAY_ONCE, Either.right(end)));
             }

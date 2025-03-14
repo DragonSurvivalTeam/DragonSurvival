@@ -58,7 +58,6 @@ import by.dragonsurvivalteam.dragonsurvival.network.player.SyncGrowthState;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncLargeDragonDestruction;
 import by.dragonsurvivalteam.dragonsurvival.network.sound.StartTickingSound;
 import by.dragonsurvivalteam.dragonsurvival.network.sound.StopTickingSound;
-import by.dragonsurvivalteam.dragonsurvival.network.status.RefreshDragon;
 import by.dragonsurvivalteam.dragonsurvival.network.status.SyncAltarCooldown;
 import by.dragonsurvivalteam.dragonsurvival.network.status.SyncAltarState;
 import by.dragonsurvivalteam.dragonsurvival.network.status.SyncEnderDragonMark;
@@ -83,7 +82,6 @@ public class NetworkHandler {
 
         // Generic packets
         registrar.playToClient(SyncPlayerJump.TYPE, SyncPlayerJump.STREAM_CODEC, SyncPlayerJump::handleClient);
-        registrar.playToClient(RefreshDragon.TYPE, RefreshDragon.STREAM_CODEC, RefreshDragon::handleClient);
         registrar.playToClient(SyncBrokenTool.TYPE, SyncBrokenTool.STREAM_CODEC, SyncBrokenTool::handleClient);
         registrar.playToClient(SyncFlyingPlayerAbility.TYPE, SyncFlyingPlayerAbility.STREAM_CODEC, SyncFlyingPlayerAbility::handleClient);
         registrar.playToClient(SyncEffectModification.TYPE, SyncEffectModification.STREAM_CODEC, SyncEffectModification::handleClient);
