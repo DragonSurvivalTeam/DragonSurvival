@@ -80,7 +80,11 @@ public class TreasureBlock extends FallingBlock implements SimpleWaterloggedBloc
     }
 
     @Override
-    public @NotNull InteractionResult useWithoutItem(final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, final Player player, @NotNull final BlockHitResult hitResult) {
+    public @NotNull InteractionResult useWithoutItem(@NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final BlockHitResult hitResult) {
+        if (!DragonStateProvider.isDragon(player)) {
+            return InteractionResult.PASS;
+        }
+
         if (player.getBlockStateOn().getBlock() == state.getBlock()) {
             TreasureRestData treasureData = TreasureRestData.getData(player);
             treasureData.setResting(true);
