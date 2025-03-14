@@ -2,9 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PenaltySupply;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.HitByProjectileTrigger;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.ItemUsedTrigger;
@@ -107,35 +105,6 @@ public class DragonPenaltyHandler {
 
         if (data.isDragon() && data.species().value().isItemBlacklisted(stack.getItem())) {
             event.setCanceled(true);
-            return;
-        }
-
-        boolean isLightArmor = stack.is(DSItemTags.LIGHT_ARMOR);
-
-        if (isLightArmor && player.hasEffect(DSEffects.HUNTER_OMEN)) {
-            event.setCanceled(true);
-            return;
-        }
-
-        boolean isDarkArmor = stack.is(DSItemTags.DARK_ARMOR);
-
-        for (ItemStack armor : player.getArmorSlots()) {
-            if (armor.isEmpty()) {
-                continue;
-            }
-
-            boolean isActionInvalid = false;
-
-            if (isDarkArmor && armor.is(DSItemTags.LIGHT_ARMOR)) {
-                isActionInvalid = true;
-            } else if (isLightArmor && (armor.is(DSItemTags.DARK_ARMOR))) {
-                isActionInvalid = true;
-            }
-
-            if (isActionInvalid) {
-                event.setCanceled(true);
-                return;
-            }
         }
     }
 }
