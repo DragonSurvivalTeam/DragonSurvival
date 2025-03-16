@@ -106,5 +106,7 @@ public class DragonPenaltyHandler {
         if (data.isDragon() && data.species().value().isItemBlacklisted(stack.getItem())) {
             event.setCanceled(true);
         }
+
+        // TODO :: this doesn't check for shift-click-equipping items
     }
 }

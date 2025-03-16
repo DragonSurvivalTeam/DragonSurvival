@@ -34,7 +34,7 @@
       "effects": [
         {
           "duration": 400,
-          "effect": "dragonsurvival:sea_peace"
+          "effect": "dragonsurvival:forest_magic"
         },
         {
           "duration": 400,
@@ -57,7 +57,7 @@
       "effects": [
         {
           "duration": 400,
-          "effect": "dragonsurvival:forest_magic"
+          "effect": "dragonsurvival:sea_peace"
         },
         {
           "duration": 400,
