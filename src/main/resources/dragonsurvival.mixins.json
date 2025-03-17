@@ -42,6 +42,7 @@
     "VillagerHostilesSensorMixin",
     "VillagerMixin",
     "create.PlayerSkyhookRendererAccessor",
+    "create.TreasureBlockMixin",
     "tool_swap.ServerPlayerGameModeEndMixin",
     "tool_swap.ServerPlayerGameModeStartMixin"
   ],
