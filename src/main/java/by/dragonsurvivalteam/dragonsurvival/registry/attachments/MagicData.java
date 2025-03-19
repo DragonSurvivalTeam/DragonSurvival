@@ -423,6 +423,11 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
     /** This does not automatically synchronize the change to the client */
     public void addAbility(final ServerPlayer player, final Holder<DragonAbility> ability) {
+        // Don't do anything if we already have this ability
+        if(getAbilities().containsKey(ability.getKey())) {
+            return;
+        }
+
         UpgradeType<?> upgrade = ability.value().upgrade().orElse(null);
         DragonAbilityInstance instance;
 
