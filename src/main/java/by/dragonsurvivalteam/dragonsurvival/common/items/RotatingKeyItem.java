@@ -95,6 +95,8 @@ public class RotatingKeyItem extends TooltipItem implements GeoItem {
         }
 
         if (!(level instanceof ServerLevel serverLevel)) {
+            playerHoldingItem = player;
+            currentTarget = stack.get(DSDataComponents.TARGET_POSITION);
             return;
         }
 
