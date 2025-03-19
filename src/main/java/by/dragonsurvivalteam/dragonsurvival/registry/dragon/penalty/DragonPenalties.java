@@ -83,10 +83,6 @@ public class DragonPenalties {
     public static void registerPenalties(final BootstrapContext<DragonPenalty> context) {
         context.register(COLD_WEAKNESS, new DragonPenalty(
                 Optional.of(DragonSurvival.res("penalties/cave/cold_weakness")),
-                // Enable when:
-                // - in rain / snow
-                // - on / within said block tag
-                // (except when affected by the 'FIRE' effect)
                 Optional.of(AnyOfCondition.anyOf(
                         Condition.thisEntity(EntityCondition.isInRainOrSnow()),
                         Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_WET)),
@@ -98,7 +94,6 @@ public class DragonPenalties {
 
         context.register(WATER_WEAKNESS, new DragonPenalty(
                 Optional.of(DragonSurvival.res("penalties/cave/water_weakness")),
-                // Enable when water (except when affected by the 'FIRE' effect)
                 Optional.of(Condition.thisEntity(EntityCondition.isInFluid(context.lookup(Registries.FLUID).getOrThrow(FluidTags.WATER)))
                         .and(Condition.thisEntity(EntityCondition.hasEffect(DSEffects.FIRE)).invert()).build()),
                 new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.WATER_BURN), 1),
@@ -107,12 +102,12 @@ public class DragonPenalties {
 
         context.register(THIN_SKIN, new DragonPenalty(
                 Optional.of(DragonSurvival.res("penalties/sea/thin_skin")),
-                // Enable when in water, in rain or on (or within) said block tag
                 Optional.of(AnyOfCondition.anyOf(
+                        Condition.thisEntity(EntityCondition.hasEffect(DSEffects.PEACE)),
                         Condition.thisEntity(EntityCondition.isInFluid(context.lookup(Registries.FLUID).getOrThrow(FluidTags.WATER))),
-                        Condition.thisEntity(EntityCondition.isInRainOrSnow()),
                         Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_WET)),
-                        Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_WET))
+                        Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_WET)),
+                        Condition.thisEntity(EntityCondition.isInRainOrSnow())
                 ).invert().build()),
                 new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.DEHYDRATION), 1),
                 new SupplyTrigger(
@@ -144,7 +139,6 @@ public class DragonPenalties {
 
         context.register(FEAR_OF_DARKNESS, new DragonPenalty(
                 Optional.of(DragonSurvival.res("penalties/forest/fear_of_darkness")),
-                // Disable when within a light strength of at least 3 or when affected by the 'MAGIC' or 'GLOWING' effects
                 Optional.of(AnyOfCondition.anyOf(
                         Condition.thisEntity(EntityCondition.hasEffect(DSEffects.MAGIC)),
                         Condition.thisEntity(EntityCondition.hasEffect(MobEffects.GLOWING)),

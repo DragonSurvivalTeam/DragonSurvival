@@ -8,10 +8,8 @@
           "condition": "minecraft:entity_properties",
           "entity": "this",
           "predicate": {
-            "location": {
-              "fluid": {
-                "fluids": "#minecraft:water"
-              }
+            "effects": {
+              "dragonsurvival:sea_peace": {}
             }
           }
         },
@@ -19,10 +17,9 @@
           "condition": "minecraft:entity_properties",
           "entity": "this",
           "predicate": {
-            "type_specific": {
-              "type": "dragonsurvival:custom_predicates",
-              "weather_predicate": {
-                "is_raining_or_snowing": true
+            "location": {
+              "fluid": {
+                "fluids": "#minecraft:water"
               }
             }
           }
@@ -45,6 +42,18 @@
             "location": {
               "block": {
                 "blocks": "#dragonsurvival:is_wet"
+              }
+            }
+          }
+        },
+        {
+          "condition": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "type_specific": {
+              "type": "dragonsurvival:custom_predicates",
+              "weather_predicate": {
+                "is_raining_or_snowing": true
               }
             }
           }
