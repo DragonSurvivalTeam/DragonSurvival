@@ -130,7 +130,7 @@ public class DragonEmoteSets {
     @Translation(type = Translation.Type.EMOTE, comments = "§3Fun:§r Spin")
     public static final String FUN_SPIN = "spinning_on_back";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§3Fun:§r Fast Spin")
+    @Translation(type = Translation.Type.EMOTE, comments = "§3Fun:§r FAST SPIN")
     public static final String FUN_SPIN_FAST = "spinning_on_back_fast";
 
     @Translation(type = Translation.Type.EMOTE, comments = "§3Fun:§r Sit Vibing")
