@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.server.tileentity;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.SourceOfMagicBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.SourceOfMagicData;
@@ -82,7 +83,7 @@ public class SourceOfMagicBlockEntity extends BlockEntity implements Container, 
 
     public List<SourceOfMagicData.Consumable> getConsumables() {
         if (consumables == null) {
-            return List.of();
+            return new ArrayList<>();
         }
 
         return consumables.entrySet().stream().map(entry -> new SourceOfMagicData.Consumable(entry.getKey(), entry.getValue())).collect(Collectors.toList());
@@ -167,12 +168,21 @@ public class SourceOfMagicBlockEntity extends BlockEntity implements Container, 
         ContainerHelper.loadAllItems(tag, inputItem, provider);
 
         if (tag.contains(SOURCE_OF_MAGIC_DATA)) {
-            SourceOfMagicData.CODEC.decode(provider.createSerializationContext(NbtOps.INSTANCE), tag.getCompound(SOURCE_OF_MAGIC_DATA)).ifSuccess(data -> {
-                SourceOfMagicData sourceOfMagicData = data.getFirst();
-                setConsumables(sourceOfMagicData.consumables());
-                setApplicableSpecies(sourceOfMagicData.applicableSpecies());
-            });
+            SourceOfMagicData.CODEC.decode(provider.createSerializationContext(NbtOps.INSTANCE), tag.getCompound(SOURCE_OF_MAGIC_DATA))
+                    .resultOrPartial(DragonSurvival.LOGGER::error)
+                    .ifPresent(data -> {
+                        SourceOfMagicData sourceOfMagicData = data.getFirst();
+                        setConsumables(sourceOfMagicData.consumables());
+                        setApplicableSpecies(sourceOfMagicData.applicableSpecies());
+                    });
         }
+    }
+
+    @Override // Make sure client receives the data when re-joining the world
+    public @NotNull CompoundTag getUpdateTag(@NotNull final HolderLookup.Provider registries) {
+        CompoundTag tag = super.getUpdateTag(registries);
+        saveAdditional(tag, registries);
+        return tag;
     }
 
     @Override
@@ -188,7 +198,9 @@ public class SourceOfMagicBlockEntity extends BlockEntity implements Container, 
         }
 
         SourceOfMagicData sourceOfMagicData = new SourceOfMagicData(consumables, applicableSpecies);
-        SourceOfMagicData.CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), sourceOfMagicData).result().ifPresent(compound -> tag.put(SOURCE_OF_MAGIC_DATA, compound));
+        SourceOfMagicData.CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), sourceOfMagicData)
+                .resultOrPartial(DragonSurvival.LOGGER::error)
+                .ifPresent(compound -> tag.put(SOURCE_OF_MAGIC_DATA, compound));
     }
 
     @Override
