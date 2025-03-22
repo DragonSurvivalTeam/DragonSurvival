@@ -153,7 +153,6 @@ public class ClawToolHandler {
         }
 
         ItemStack harvestTool = mainStack;
-        DragonStateHandler handler = DragonStateProvider.getData(player);
         int toolSlot = -1;
 
         SimpleContainer clawInventory = ClawInventoryData.getData(player).getContainer();

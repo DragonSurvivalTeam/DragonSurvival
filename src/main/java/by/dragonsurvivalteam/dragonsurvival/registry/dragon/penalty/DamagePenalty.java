@@ -12,6 +12,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.entity.Entity;
 
 public record DamagePenalty(Holder<DamageType> damageType, float damage) implements PenaltyEffect {
     public static final MapCodec<DamagePenalty> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -21,7 +22,9 @@ public record DamagePenalty(Holder<DamageType> damageType, float damage) impleme
 
     @Override
     public void apply(final ServerPlayer player, final Holder<DragonPenalty> penalty) {
-        player.hurt(new DamageSource(damageType, player), damage);
+        // If the player is used, then pvp-logic may result in no damage being applied
+        // (It wouldn't make sense to use the player in the first place, since they're not doing the damaging)
+        player.hurt(new DamageSource(damageType, (Entity) null), damage);
     }
 
     @Override
