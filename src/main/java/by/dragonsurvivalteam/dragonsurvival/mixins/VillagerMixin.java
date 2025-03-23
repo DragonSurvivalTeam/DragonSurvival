@@ -36,6 +36,9 @@ import java.util.List;
 
 @Mixin(Villager.class)
 public abstract class VillagerMixin extends AbstractVillager {
+    @Shadow public boolean increaseProfessionLevelOnUpdate;
+    @Shadow public int updateMerchantTimer;
+
     public VillagerMixin(final EntityType<? extends AbstractVillager> entityType, final Level level) {
         super(entityType, level);
     }
@@ -50,19 +53,24 @@ public abstract class VillagerMixin extends AbstractVillager {
     @Inject(method = "startTrading", at = @At("HEAD"), cancellable = true)
     private void dragonSurvival$preventTradingWithMarkedPlayers(final Player player, final CallbackInfo callback) {
         if (player.hasEffect(DSEffects.HUNTER_OMEN)) {
+            if (EntityStateHandler.cannotPillageProfession((Villager) (Object) this)) {
+                player.displayClientMessage(Component.translatable(EntityStateHandler.CANNOT_PILLAGE), true);
+                callback.cancel();
+                return;
+            }
+
             EntityStateHandler handler = getData(DSDataAttachments.ENTITY_HANDLER);
 
             if (handler.pillageCooldown == 0) {
-                Villager villager = (Villager) (Object) this;
                 // To level up trades for players which are stealing
-                villager.setVillagerXp(villager.getVillagerXp() + ServerConfig.pillageXPGain);
+                setVillagerXp(getVillagerXp() + ServerConfig.pillageXPGain);
 
-                if (villager.shouldIncreaseLevel()) {
-                    villager.updateMerchantTimer = 40;
-                    villager.increaseProfessionLevelOnUpdate = true;
+                if (shouldIncreaseLevel()) {
+                    updateMerchantTimer = 40;
+                    increaseProfessionLevelOnUpdate = true;
                 }
 
-                List<ItemStack> loot = HunterOmenHandler.generateVillagerLoot(villager, player.level(), null, false);
+                List<ItemStack> loot = HunterOmenHandler.generateVillagerLoot(this, player.level(), null, false);
 
                 if (loot.isEmpty()) {
                     player.displayClientMessage(Component.translatable(EntityStateHandler.PILLAGE_UNSUCCESSFUL), true);
@@ -75,8 +83,8 @@ public abstract class VillagerMixin extends AbstractVillager {
                 }
 
                 setLastHurtByMob(player); // To increase the prices when players are stealing
-                villager.makeSound(getHurtSound(damageSources().generic()));
-                player.level().broadcastEntityEvent(villager, EntityEvent.VILLAGER_ANGRY);
+                makeSound(getHurtSound(damageSources().generic()));
+                player.level().broadcastEntityEvent(this, EntityEvent.VILLAGER_ANGRY);
 
                 handler.setPillageCooldown();
                 handler.sync(this, null);
@@ -111,6 +119,15 @@ public abstract class VillagerMixin extends AbstractVillager {
             villager.level().broadcastEntityEvent(villager, EntityEvent.VILLAGER_SWEAT);
         });
     }
+
+    @Shadow
+    public abstract boolean shouldIncreaseLevel();
+
+    @Shadow
+    public abstract int getVillagerXp();
+
+    @Shadow
+    public abstract void setVillagerXp(final int villagerXp);
 
     @Shadow
     public abstract void setLastHurtByMob(@Nullable final LivingEntity entity);

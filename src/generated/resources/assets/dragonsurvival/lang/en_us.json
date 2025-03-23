@@ -1096,7 +1096,7 @@
   "dragonsurvival.gui.inventory.toggle_dragon_altar": "Open dragon altar",
   "dragonsurvival.gui.inventory.toggle_dragon_inventory": "Open dragon inventory screen",
   "dragonsurvival.gui.message.altar_cooldown": "The altar is on cooldown for: %s",
-  "dragonsurvival.gui.message.cannot_pillage": "This villager has nothing you can steal",
+  "dragonsurvival.gui.message.cannot_pillage": "You cannot steal from this villager",
   "dragonsurvival.gui.message.flight_effect_disabled": "You can't fly. Read more in the skill description.",
   "dragonsurvival.gui.message.natural_growth_active": "Natural growth is §2active§r",
   "dragonsurvival.gui.message.natural_growth_inactive": "Natural growth is §cinactive§r",
