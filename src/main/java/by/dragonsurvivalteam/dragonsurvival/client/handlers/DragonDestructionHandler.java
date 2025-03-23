@@ -81,7 +81,7 @@ public class DragonDestructionHandler {
                 return;
             }
 
-            float centerSpeed = access.dragonSurvival$getLevel().getBlockState(centerOfDestruction).getDestroySpeed(player.level(), centerOfDestruction);
+            float centerSpeed = access.dragonSurvival$getLevel().getBlockState(centerOfDestruction).getDestroySpeed(access.dragonSurvival$getLevel(), centerOfDestruction);
 
             BlockPos.betweenClosedStream(AABB.ofSize(centerOfDestruction.getCenter(), radius, radius, radius)).forEach(offsetPosition -> {
                 double xDistance = (double) offsetPosition.getX() - x;
