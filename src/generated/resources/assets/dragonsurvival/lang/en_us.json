@@ -2114,6 +2114,7 @@
   "tag.enchantment.dragonsurvival.exclusive_set.anti_dragon": "Anti-Dragon (Exclusive Set)",
   "tag.entity_type.dragonsurvival.animal_avoid_blacklist": "Animal Avoid Blacklist for Dragons",
   "tag.entity_type.dragonsurvival.charged_spread_blacklist": "Charged Effect Spread Blacklist",
+  "tag.entity_type.dragonsurvival.dragons": "Dragons",
   "tag.entity_type.dragonsurvival.drops_elder_dragon_heart": "Drops Elder Dragon Heart",
   "tag.entity_type.dragonsurvival.drops_normal_dragon_heart": "Drops Normal Dragon Heart",
   "tag.entity_type.dragonsurvival.drops_weak_dragon_heart": "Drops Weak Dragon Heart",
@@ -2137,5 +2138,6 @@
   "tag.item.dragonsurvival.sea_dragon_food": "Sea Dragon Food",
   "tag.item.dragonsurvival.small_wooden_dragon_doors": "Small Wooden Dragon Doors",
   "tag.item.dragonsurvival.uncommon_armor": "Uncommon Armor (Texture)",
-  "tag.item.dragonsurvival.wooden_dragon_doors": "Wooden Dragon Doors"
+  "tag.item.dragonsurvival.wooden_dragon_doors": "Wooden Dragon Doors",
+  "tag.villager_profession.dragonsurvival.pillage_blacklist": "Professions that cannot be pillaged"
 }

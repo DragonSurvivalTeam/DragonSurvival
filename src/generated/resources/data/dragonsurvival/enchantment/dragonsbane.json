@@ -21,7 +21,7 @@
               "condition": "minecraft:entity_properties",
               "entity": "this",
               "predicate": {
-                "type": "minecraft:ender_dragon"
+                "type": "#dragonsurvival:dragons"
               }
             },
             {
