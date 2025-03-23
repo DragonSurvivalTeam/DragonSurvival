@@ -605,6 +605,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
                 .displayItem(DSBlocks.DRAGON_MEMORY_BLOCK.value())
                 .showToast()
                 .announceChat()
+                // TODO :: check for the other way as well (place memory block under a beacon)
                 .criteria("place_beacon_on_memory_block", itemUsedOnBlock(DSBlocks.DRAGON_MEMORY_BLOCK.value(), DSBlocks.DRAGON_BEACON.value()))
                 .experienceReward(10)
                 .build(saver, helper);
