@@ -45,7 +45,7 @@ public abstract class VillagerMixin extends AbstractVillager {
 
     @Inject(method = "mobInteract", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/trading/MerchantOffers;isEmpty()Z", shift = At.Shift.BY, by = 2))
     private void dragonSurvival$displayPillageInfo(final Player player, final InteractionHand hand, final CallbackInfoReturnable<InteractionResult> callback, @Local boolean hasNoOffers) {
-        if (hasNoOffers) {
+        if (hasNoOffers && player.hasEffect(DSEffects.HUNTER_OMEN)) {
             player.displayClientMessage(Component.translatable(EntityStateHandler.CANNOT_PILLAGE), true);
         }
     }
