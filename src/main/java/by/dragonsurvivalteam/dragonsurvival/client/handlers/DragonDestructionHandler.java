@@ -7,7 +7,6 @@ import by.dragonsurvivalteam.dragonsurvival.mixins.client.LevelRendererAccess;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncLargeDragonDestruction;
 import by.dragonsurvivalteam.dragonsurvival.network.status.SyncMultiMining;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
@@ -23,6 +22,7 @@ import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.BlockDestructionProgress;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
@@ -39,18 +39,6 @@ import java.util.SortedSet;
 /** See {@link by.dragonsurvivalteam.dragonsurvival.server.handlers.DragonDestructionHandler} for server-specific handling */
 @EventBusSubscriber(Dist.CLIENT)
 public class DragonDestructionHandler {
-    @Translation(comments = "Destruction mode enabled")
-    private static final String ENABLED = Translation.Type.GUI.wrap("destruction.enabled");
-
-    @Translation(comments = "Destruction mode disabled")
-    private static final String DISABLED = Translation.Type.GUI.wrap("destruction.disabled");
-
-    @Translation(comments = "Multiblock mining enabled")
-    private static final String MULTIBLOCK_MINING_ENABLED = Translation.Type.GUI.wrap("multiblock_mining.enabled");
-
-    @Translation(comments = "Multiblock mining disabled")
-    private static final String MULTIBLOCK_MINING_DISABLED = Translation.Type.GUI.wrap("multiblock_mining.disabled");
-
     /** Currently this is only tracked for the local player */
     public static BlockPos centerOfDestruction = BlockPos.ZERO;
 
@@ -93,6 +81,8 @@ public class DragonDestructionHandler {
                 return;
             }
 
+            float centerSpeed = access.dragonSurvival$getLevel().getBlockState(centerOfDestruction).getDestroySpeed(player.level(), centerOfDestruction);
+
             BlockPos.betweenClosedStream(AABB.ofSize(centerOfDestruction.getCenter(), radius, radius, radius)).forEach(offsetPosition -> {
                 double xDistance = (double) offsetPosition.getX() - x;
                 double yDistance = (double) offsetPosition.getY() - y;
@@ -100,12 +90,19 @@ public class DragonDestructionHandler {
 
                 // Check if the position is close enough to be rendered
                 if (!(xDistance * xDistance + yDistance * yDistance + zDistance * zDistance > 1024)) {
+                    BlockState state = access.dragonSurvival$getLevel().getBlockState(offsetPosition);
+                    float speed = state.getDestroySpeed(access.dragonSurvival$getLevel(), offsetPosition);
+
+                    if (speed == /* Bedrock strength */ -1 || speed > centerSpeed) {
+                        return;
+                    }
+
                     event.getPoseStack().pushPose();
                     event.getPoseStack().translate((double) offsetPosition.getX() - x, (double) offsetPosition.getY() - y, (double) offsetPosition.getZ() - z);
                     PoseStack.Pose lastPose = event.getPoseStack().last();
                     VertexConsumer consumer = new SheetedDecalTextureGenerator(access.dragonSurvival$getRenderBuffers().crumblingBufferSource().getBuffer(ModelBakery.DESTROY_TYPES.get(progress)), lastPose, 1.0F);
                     ModelData modelData = access.dragonSurvival$getLevel().getModelData(offsetPosition);
-                    Minecraft.getInstance().getBlockRenderer().renderBreakingTexture(access.dragonSurvival$getLevel().getBlockState(offsetPosition), offsetPosition, access.dragonSurvival$getLevel(), event.getPoseStack(), consumer, modelData);
+                    Minecraft.getInstance().getBlockRenderer().renderBreakingTexture(state, offsetPosition, access.dragonSurvival$getLevel(), event.getPoseStack(), consumer, modelData);
                     event.getPoseStack().popPose();
                 }
             });
