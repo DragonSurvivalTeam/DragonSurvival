@@ -18,7 +18,6 @@ import by.dragonsurvivalteam.dragonsurvival.util.ActionWithTimedCooldown;
 import by.dragonsurvivalteam.dragonsurvival.util.EnchantmentUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.TickedCooldown;
-import com.mojang.blaze3d.platform.Window;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -29,7 +28,6 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -43,9 +41,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.CalculateDetachedCameraDistanceEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
-import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
@@ -53,7 +49,6 @@ import org.joml.Vector3f;
 
 import java.util.Objects;
 
-import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 /** Used in pair with {@link ServerFlightHandler} */
 @EventBusSubscriber(Dist.CLIENT)
@@ -83,16 +78,6 @@ public class ClientFlightHandler {
     @ConfigOption(side = ConfigSide.CLIENT, category = "flight", key = "flight_camera_movement")
     public static Boolean flightCameraMovement = true;
 
-    @ConfigRange
-    @Translation(key = "spin_cooldown_x_offset", type = Translation.Type.CONFIGURATION, comments = "Offset to the x position of the spin cooldown indicator")
-    @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "spin"}, key = "spin_cooldown_x_offset")
-    public static Integer spinCooldownXOffset = 0;
-
-    @ConfigRange
-    @Translation(key = "spin_cooldown_y_offset", type = Translation.Type.CONFIGURATION, comments = "Offset to the y position of the spin cooldown indicator")
-    @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "spin"}, key = "spin_cooldown_y_offset")
-    public static Integer spinCooldownYOffset = 0;
-
     @ConfigRange(min = 0.0f, max = 32.0f)
     @Translation(key = "base_dragon_camera_offset", type = Translation.Type.CONFIGURATION, comments = "Base offset for the dragon's third person camera (is multiplied and scaled by the other factors)")
     @ConfigOption(side = ConfigSide.CLIENT, category = {"rendering"}, key = "base_dragon_camera_offset")
@@ -116,8 +101,6 @@ public class ClientFlightHandler {
     @Translation(key = "disable_size_camera_modifications", type = Translation.Type.CONFIGURATION, comments = "Disable all size-based camera modifications from DS")
     @ConfigOption(side = ConfigSide.CLIENT, category = {"rendering"}, key = "disable_camera_modifications")
     public static Boolean disableSizeCameraModifications = false;
-
-    private static final ResourceLocation SPIN_COOLDOWN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spin_cooldown.png");
 
     private static final ActionWithTimedCooldown HUNGER_MESSAGE_WITH_COOLDOWN = new ActionWithTimedCooldown(30_000, () -> {
         Player localPlayer = DragonSurvival.PROXY.getLocalPlayer();
@@ -213,46 +196,6 @@ public class ClientFlightHandler {
                         gameRenderer.zoom = lastZoom;
                     }
                 }
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public static void renderFlightCooldown(RenderGuiLayerEvent.Post event) {
-        Minecraft minecraft = Minecraft.getInstance();
-        Player player = minecraft.player;
-
-        if (player == null || player.isSpectator()) {
-            return;
-        }
-
-        DragonStateHandler handler = DragonStateProvider.getData(player);
-
-        if (!handler.isDragon()) {
-            return;
-        }
-
-        if (!ServerFlightHandler.isFlying(player) && !ServerFlightHandler.canSwimSpin(player)) {
-            return;
-        }
-
-        FlightData spin = FlightData.getData(player);
-        if (spin.hasSpin && spin.cooldown > 0 && !Minecraft.getInstance().options.hideGui) {
-            if (event.getName() == VanillaGuiLayers.AIR_LEVEL) {
-                Window window = Minecraft.getInstance().getWindow();
-
-                int cooldown = ServerFlightHandler.flightSpinCooldown * 20;
-                float cooldownProgress = ((float) cooldown - (float) spin.cooldown) / (float) cooldown;
-
-                int x = window.getGuiScaledWidth() / 2 - 66 / 2;
-                int y = window.getGuiScaledHeight() - 96;
-
-                x += spinCooldownXOffset;
-                y += spinCooldownYOffset;
-
-                int width = (int) (cooldownProgress * 62);
-                event.getGuiGraphics().blit(SPIN_COOLDOWN, x, y, 0, 0, 66, 21, 256, 256);
-                event.getGuiGraphics().blit(SPIN_COOLDOWN, x + 4, y + 1, 4, 21, width, 21, 256, 256);
             }
         }
     }
