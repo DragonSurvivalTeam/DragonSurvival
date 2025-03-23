@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.compat.car.CosmeticArmorReworkedHelper;
+import by.dragonsurvivalteam.dragonsurvival.compat.curios.CurioAPIHelper;
 import by.dragonsurvivalteam.dragonsurvival.compat.iris.InnerWrappedRenderType;
 import by.dragonsurvivalteam.dragonsurvival.compat.iris.LayeringStates;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
@@ -40,9 +41,7 @@ import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
@@ -325,6 +324,16 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
             }
         }
 
+        ArrayList<ItemStack> visibleCurios = CurioAPIHelper.getVisibleCurioItems(player);
+        if (visibleCurios != null) {
+            for (ItemStack itemStack : visibleCurios) {
+                ResourceLocation curioResource = toArmorResource(handler.getModel(), itemStack.getItem());
+                if (curioResource != null && Minecraft.getInstance().getResourceManager().getResource(curioResource).isPresent()) {
+                    copyPixels(image, RenderingUtils.getImageFromResource(curioResource));
+                }
+            }
+        }
+
         return image;
     }
 
@@ -397,6 +406,13 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
 
         if (ClawInventoryData.getData(player).shouldRenderClaws) {
             armorTotal.append(separator).append(ClawsAndTeeth.constructClawTexture(player)).append(separator).append(ClawsAndTeeth.constructTeethTexture(player));
+        }
+
+        ArrayList<ItemStack> visibleCurios = CurioAPIHelper.getVisibleCurioItems(player);
+        if (visibleCurios != null) {
+            for (ItemStack curio : visibleCurios) {
+                armorTotal.append(separator).append(curio.getDisplayName());
+            }
         }
 
         return UUID.nameUUIDFromBytes(armorTotal.toString().getBytes()).toString();
