@@ -1,4 +1,4 @@
-// 1.21.1	2025-03-12T00:03:15.1081182	Loot Tables
+// 1.21.1	2025-03-25T22:02:59.6487526	Loot Tables
 daebe5a31e131aafd8cd5ad717023b1486bf46f5 data/dragonsurvival/loot_table/blocks/acacia_dragon_altar.json
 6d9ed87da9516e134f0c759cd6158d7cceb46deb data/dragonsurvival/loot_table/blocks/acacia_dragon_door.json
 5bac002bbf720c008375e2488056a7e7070dc476 data/dragonsurvival/loot_table/blocks/amethyst_dragon_altar.json
@@ -12,6 +12,7 @@ bd207e5254a372485b7047f00035bc5d656e9f71 data/dragonsurvival/loot_table/blocks/b
 48401a839b78de6edc8dc31f0789443cb1b39c8b data/dragonsurvival/loot_table/blocks/cave_dragon_pressure_plate.json
 59c70cf5379e37b76ed2ed35ddfa6c01936458a4 data/dragonsurvival/loot_table/blocks/cave_source_of_magic.json
 9aa91dd5fa3f19e08e54837294d61cf68e3ad49e data/dragonsurvival/loot_table/blocks/cherry_dragon_altar.json
+2e6e840adb3ec0160a7d869fd8bdeb5605362fbf data/dragonsurvival/loot_table/blocks/chocolate_dragon_treasure.json
 169ad2f71a5ffc108eef15ea1e61ff9eae16470a data/dragonsurvival/loot_table/blocks/copper_dragon_treasure.json
 040b2305a975877fc36895aa80e922ffd4bc4d64 data/dragonsurvival/loot_table/blocks/crimson_dragon_altar.json
 bcd92522a2ea2967ea02e5713d9ed552778cd312 data/dragonsurvival/loot_table/blocks/crimson_dragon_door.json

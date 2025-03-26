@@ -72,6 +72,7 @@ repositories {
 		}
 	}
 	maven { url "https://api.modrinth.com/maven" }
+	maven { url = "https://mvn.devos.one/snapshots" } // Registrate
 }
 
 dependencies {
@@ -89,6 +90,7 @@ dependencies {
 
 	compileOnly "curse.maven:cosmetic-armor-reworked-237307:5610814" // v1
 
+	jarJar(compileOnly("com.tterrag.registrate:Registrate:MC1.21-1.3.0+62"))
 	compileOnly "curse.maven:create-328085:6255497" // 6.0.1
 
 	compileOnly "curse.maven:better-combat-by-daedelus-639842:6097296" // 2.1.3
@@ -110,7 +112,7 @@ dependencies {
 //	implementation "curse.maven:placebo-283644:5869769" // 9.5.4
 
 	// Curios testing
-//     runtimeOnly "top.theillusivec4.curios:curios-neoforge:9.2.2+1.21.1"
+    runtimeOnly "top.theillusivec4.curios:curios-neoforge:9.2.2+1.21.1"
 	compileOnly "top.theillusivec4.curios:curios-neoforge:9.2.2+1.21.1:api"
 
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'

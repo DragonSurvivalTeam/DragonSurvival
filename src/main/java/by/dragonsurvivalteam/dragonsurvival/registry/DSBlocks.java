@@ -12,6 +12,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.blocks.SkeletonPieceBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.SmallDragonDoor;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.SourceOfMagicBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.TreasureBlock;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonSpeciesTags;
 import by.dragonsurvivalteam.dragonsurvival.util.CompoundTagBuilder;
@@ -728,6 +729,17 @@ public class DSBlocks {
                             .strength(0.5F))
     );
 
+    public static final DeferredHolder<Block, TreasureBlock> CHOCOLATE_DRAGON_TREASURE = registerModCheck(
+            "chocolate_dragon_treasure",
+            () -> new TreasureBlock(FastColor.ARGB32.color(255, 113, 54,0),
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.DIRT)
+                            .noOcclusion()
+                            .sound(DSSounds.TREASURE_METAL)
+                            .strength(0.5F)),
+            ModCheck.CREATE
+    );
+
     // --- Dragon Treasure Plates --- //
 
     @Translation(type = Translation.Type.BLOCK, comments = "Dragon Pressure Plate")
@@ -935,8 +947,17 @@ public class DSBlocks {
         return holder;
     }
 
+    private static <B extends Block> DeferredHolder<Block, B> registerModCheck(final String name, final Supplier<B> supplier, final String modID) {
+        if (ModCheck.isModLoaded(modID)) {
+            DeferredHolder<Block, B> holder = REGISTRY.register(name, supplier);
+            DSItems.REGISTRY.register(name, () -> new BlockItem(holder.value(), new Item.Properties()));
+            return holder;
+        }
+        return null;
+    }
+
     static {
-        for (int i = 1; i < 9; i++) { // TODO :: what does the 9 indicate
+        for (int i = 1; i < 9; i++) { // 8 total types, one for each color
             for (SkeletonPieceBlock.Type type : SkeletonPieceBlock.Type.values()) {
                 DeferredHolder<Block, SkeletonPieceBlock> block = REGISTRY.register(type.getSerializedName() + "_skin" + i,
                         () -> new SkeletonPieceBlock(type, BlockBehaviour.Properties.of()

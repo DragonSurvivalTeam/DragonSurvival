@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "create:bar_of_chocolate"
+    },
+    {
+      "item": "dragonsurvival:elder_dragon_dust"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "dragonsurvival:chocolate_dragon_treasure"
+  }
+}

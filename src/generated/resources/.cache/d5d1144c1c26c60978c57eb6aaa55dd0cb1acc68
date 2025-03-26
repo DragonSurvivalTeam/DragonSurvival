@@ -1,4 +1,4 @@
-// 1.21.1	2025-03-12T00:03:15.1101329	Dragon Survival Item models
+// 1.21.1	2025-03-25T22:02:59.6527414	Dragon Survival Item models
 a66a6309dc6b29797f46e2ca4ab14ef3a245a65f assets/dragonsurvival/models/item/acacia_dragon_altar.json
 3103bf7bf2acab8c6053dd037bfd4f26275aad26 assets/dragonsurvival/models/item/acacia_dragon_door.json
 4c7b8102022c425a86140eada246eaed8be93446 assets/dragonsurvival/models/item/activated_dragon_beacon.json
@@ -26,6 +26,7 @@ a1a2d1b34db6aa1b7f9d2759f7bc8c0a57f9e3a8 assets/dragonsurvival/models/item/charr
 b4756603c246c4df6f758251251f98bc7a02dc92 assets/dragonsurvival/models/item/charred_seafood.json
 0857a099cdd6e3c14816b9c2ae63d72282a5d350 assets/dragonsurvival/models/item/charred_vegetable.json
 c9204495bf672cf36f7734ae73befae6d9c04226 assets/dragonsurvival/models/item/cherry_dragon_altar.json
+68195db9fe0d25e3b97e3fdbcbc87fe74c07f996 assets/dragonsurvival/models/item/chocolate_dragon_treasure.json
 7551057a1c7a2c10c6e4d3115e6605748810e401 assets/dragonsurvival/models/item/copper_dragon_treasure.json
 4b37eb6efe57a7040f77ec8286c0e400a3212678 assets/dragonsurvival/models/item/crimson_dragon_altar.json
 13f22ccf537254c858a920e60cb91fd1eb075184 assets/dragonsurvival/models/item/crimson_dragon_door.json
