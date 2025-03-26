@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.server.tileentity;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonBeaconData;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
@@ -86,16 +87,18 @@ public class DragonBeaconBlockEntity extends BlockEntity {
     @Override
     public void loadAdditional(@NotNull final CompoundTag tag, @NotNull final HolderLookup.Provider provider) {
         if (tag.contains(DRAGON_BEACON_DATA)) {
-            DragonBeaconData.CODEC.decode(provider.createSerializationContext(NbtOps.INSTANCE), tag.getCompound(DRAGON_BEACON_DATA)).ifSuccess(data -> {
-                this.data = data.getFirst();
-            });
+            DragonBeaconData.CODEC.decode(provider.createSerializationContext(NbtOps.INSTANCE), tag.getCompound(DRAGON_BEACON_DATA))
+                    .resultOrPartial(DragonSurvival.LOGGER::error)
+                    .ifPresent(data -> this.data = data.getFirst());
         }
     }
 
     @Override
     public void saveAdditional(@NotNull final CompoundTag tag, @NotNull final HolderLookup.Provider provider) {
         if (data != null) {
-            DragonBeaconData.CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), data).result().ifPresent(compound -> tag.put(DRAGON_BEACON_DATA, compound));
+            DragonBeaconData.CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), data)
+                    .resultOrPartial(DragonSurvival.LOGGER::error)
+                    .ifPresent(compound -> tag.put(DRAGON_BEACON_DATA, compound));
         }
     }
 }

@@ -21,6 +21,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEnchantmentT
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSPoiTypeTags;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSProfessionTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilities;
@@ -122,6 +123,7 @@ public class DataGeneration {
         generator.addProvider(event.includeServer(), new DSEntityTypeTags(output, lookup, helper));
         generator.addProvider(event.includeServer(), new DSEffectTags(output, lookup, helper));
         generator.addProvider(event.includeServer(), new DSPoiTypeTags(output, lookup, helper));
+        generator.addProvider(event.includeServer(), new DSProfessionTags(output, lookup, helper));
         generator.addProvider(event.includeServer(), new DSEnchantmentTags(output, lookup, helper));
         generator.addProvider(event.includeServer(), new DSDragonBodyTags(output, lookup, helper));
         generator.addProvider(event.includeServer(), new DSDragonAbilityTags(output, lookup, helper));

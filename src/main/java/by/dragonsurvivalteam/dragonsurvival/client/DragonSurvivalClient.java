@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.extensions.ShakeWhenUsedExten
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.DragonPenaltyHUD;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.GrowthHUD;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.MagicHUD;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.SpinHUD;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.ClientDietComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.ClientTimeComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.DietComponent;
@@ -131,6 +132,7 @@ public class DragonSurvivalClient {
         event.registerAbove(VanillaGuiLayers.AIR_LEVEL, DragonPenaltyHUD.ID, DragonPenaltyHUD::render);
         event.registerAbove(DragonPenaltyHUD.ID, MagicHUD.ID, MagicHUD::render);
         event.registerAbove(MagicHUD.ID, GrowthHUD.ID, GrowthHUD::render);
+        event.registerAbove(MagicHUD.ID, SpinHUD.ID, SpinHUD::render);
     }
 
     private void registerTooltips(final RegisterClientTooltipComponentFactoriesEvent event) {

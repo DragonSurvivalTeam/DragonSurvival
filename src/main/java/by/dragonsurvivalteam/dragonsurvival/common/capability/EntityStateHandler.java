@@ -5,12 +5,19 @@ import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncData;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSProfessionTags;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -29,7 +36,7 @@ public class EntityStateHandler implements INBTSerializable<CompoundTag> {
     @Translation(comments = "This villager had no items you could steal")
     public static final String PILLAGE_UNSUCCESSFUL = Translation.Type.GUI.wrap("message.pillage_unsuccessful");
 
-    @Translation(comments = "This villager has nothing you can steal")
+    @Translation(comments = "You cannot steal from this villager")
     public static final String CANNOT_PILLAGE = Translation.Type.GUI.wrap("message.cannot_pillage");
 
     // To handle the burn effect damage
@@ -38,9 +45,20 @@ public class EntityStateHandler implements INBTSerializable<CompoundTag> {
     public int chainCount;
 
     public int pillageCooldown;
+    
+    public static boolean cannotPillageProfession(final Villager villager) {
+        VillagerProfession profession = villager.getVillagerData().getProfession();
+        ResourceLocation key = BuiltInRegistries.VILLAGER_PROFESSION.getKey(profession);
+        Holder.Reference<VillagerProfession> holder = BuiltInRegistries.VILLAGER_PROFESSION.getHolderOrThrow(ResourceKey.create(BuiltInRegistries.VILLAGER_PROFESSION.key(), key));
+        return BuiltInRegistries.VILLAGER_PROFESSION.getOrCreateTag(DSProfessionTags.PILLAGE_BLACKLIST).contains(holder);
+    }
 
     public static boolean canPillage(final Entity target, final Player player) {
         if (!player.hasEffect(DSEffects.HUNTER_OMEN)) {
+            return false;
+        }
+
+        if (target instanceof Villager villager && cannotPillageProfession(villager)) {
             return false;
         }
 
@@ -53,7 +71,7 @@ public class EntityStateHandler implements INBTSerializable<CompoundTag> {
 
         return handler.pillageCooldown == 0;
     }
-
+    
     public void setPillageCooldown() {
         pillageCooldown = ServerConfig.PILLAGE_COOLDOWN;
     }

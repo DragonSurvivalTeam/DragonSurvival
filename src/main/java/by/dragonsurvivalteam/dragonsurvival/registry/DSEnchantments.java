@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.conditions.EntityCondition;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEnchantmentTags;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
 import net.minecraft.advancements.critereon.DamageSourcePredicate;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.component.DataComponentMap;
@@ -47,18 +48,6 @@ public class DSEnchantments {
     @Translation(type = Translation.Type.ENCHANTMENT, comments = "Dragonsbane")
     @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "Inflict increased damage to dragons. If you kill a dragon who has the Hunter's Omen effect, they will lose some growth progress. Damages dragons who hold it.")
     public static ResourceKey<Enchantment> DRAGONSBANE = register("dragonsbane");
-
-    /*@Translation(type = Translation.Type.ENCHANTMENT, comments = "Dragonsboon")
-    @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "Test enchantment - should not be available. Attacks heal dragons and apply a regeneration effect.")
-    public static ResourceKey<Enchantment> DRAGONSBOON = register("dragonsboon");
-
-    @Translation(type = Translation.Type.ENCHANTMENT, comments = "Dragonsbonk")
-    @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "Test enchantment - should not be available")
-    public static ResourceKey<Enchantment> DRAGONSBONK = register("dragonsbonk");
-
-    @Translation(type = Translation.Type.ENCHANTMENT, comments = "Dragon Shrinker")
-    @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "Test enchantment - should not be available. Causes the user to become smaller.")
-    public static ResourceKey<Enchantment> SHRINK = register("shrink");*/
 
     @Translation(type = Translation.Type.ENCHANTMENT, comments = "Blood Siphon")
     @Translation(type = Translation.Type.ENCHANTMENT_DESCRIPTION, comments = "Dark Set. Has a chance to apply Blood Siphon to the enemy when you get hit, allowing you to recover a portion of the damage done.")
@@ -138,7 +127,7 @@ public class DSEnchantments {
                         new AddValue(LevelBasedValue.perLevel(2.5f)),
                         // this -> attacked entity
                         AnyOfCondition.anyOf(
-                                Condition.thisEntity(EntityCondition.isType(EntityType.ENDER_DRAGON)),
+                                Condition.thisEntity(EntityCondition.isType(DSEntityTypeTags.DRAGONS)),
                                 Condition.thisEntity(EntityCondition.isDragon())
                         )
                 )
