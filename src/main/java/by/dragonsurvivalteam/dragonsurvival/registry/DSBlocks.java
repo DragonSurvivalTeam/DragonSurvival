@@ -729,13 +729,14 @@ public class DSBlocks {
                             .strength(0.5F))
     );
 
+    @Translation(type = Translation.Type.BLOCK, comments = "Chocolate Dragon Treasure")
     public static final DeferredHolder<Block, TreasureBlock> CHOCOLATE_DRAGON_TREASURE = registerModCheck(
             "chocolate_dragon_treasure",
             () -> new TreasureBlock(FastColor.ARGB32.color(255, 113, 54,0),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.DIRT)
                             .noOcclusion()
-                            .sound(DSSounds.TREASURE_METAL)
+                            .sound(SoundType.PACKED_MUD)
                             .strength(0.5F)),
             ModCheck.CREATE
     );
