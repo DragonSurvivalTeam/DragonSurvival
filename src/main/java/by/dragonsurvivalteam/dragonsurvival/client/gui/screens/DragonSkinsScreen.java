@@ -294,7 +294,7 @@ public class DragonSkinsScreen extends Screen {
 
         handler.setStage(null, dragonStage);
         handler.setCurrentStageCustomization(DragonStateProvider.getData(player).getCustomizationForStage(dragonStage.getKey()));
-        handler.getCurrentSkinPreset().setAllStagesToUseDefaultSkin(false);
+        handler.getCurrentSkinPreset().setAllStagesToUseDefaultSkin(playerHandler.getCurrentSkinPreset().isAnyStageUsingDefaultSkin());
 
         TabButton.addTabButtonsToScreen(this, startX + 138, startY - 26, TabButton.TabButtonType.SKINS_TAB);
 
@@ -468,7 +468,11 @@ public class DragonSkinsScreen extends Screen {
         addRenderableOnly(additionsBackground);
 
         ExtendedButton oldTextureButton = new ExtendedButton(startX + 176, startY + 128 + 20, 14, 14, Component.empty(), button -> {
-            handler.getCurrentSkinPreset().setAllStagesToUseDefaultSkin(!handler.getCurrentSkinPreset().isAnyStageUsingDefaultSkin());
+            boolean alreadyUsingDefaults = handler.getCurrentSkinPreset().isStageUsingDefaultSkin(dragonStage.getKey());
+            handler.getCurrentSkinPreset().setAllStagesToUseDefaultSkin(!alreadyUsingDefaults);
+            // Special case: Also set the actual player's handler as well
+            playerHandler.getCurrentSkinPreset().setAllStagesToUseDefaultSkin(!alreadyUsingDefaults);
+            ClientProxy.sendClientData();
         }, Supplier::get) {
             @Override
             public void renderWidget(@NotNull final GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
