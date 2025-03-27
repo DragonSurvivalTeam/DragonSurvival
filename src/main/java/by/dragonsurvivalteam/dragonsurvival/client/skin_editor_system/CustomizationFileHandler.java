@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
@@ -49,7 +50,11 @@ public class CustomizationFileHandler {
         public SavedCustomization() {}
 
         public static SavedCustomization fromHandler(DragonStateHandler handler) {
-            return new SavedCustomization(handler.getCurrentStageCustomization(), handler.speciesKey(), handler.body().value().model());
+            // Create a new customization object, otherwise we'll end up entangling pointers together and cause some weird behavior
+            DragonStageCustomization newCustomization = new DragonStageCustomization();
+            //noinspection DataFlowIssue -> proxy is expected to be present
+            newCustomization.deserializeNBT(DragonSurvival.PROXY.getAccess(), handler.getCurrentStageCustomization().serializeNBT(DragonSurvival.PROXY.getAccess()));
+            return new SavedCustomization(newCustomization, handler.speciesKey(), handler.body().value().model());
         }
 
         public static SavedCustomization fromNbt(HolderLookup.Provider provider, CompoundTag nbt) {
@@ -171,7 +176,7 @@ public class CustomizationFileHandler {
             DragonSurvival.LOGGER.error("An error occurred while trying to save the dragon skin", exception);
         }
 
-        savedCustomizations.put(slot, savedCustomization);
+         savedCustomizations.put(slot, savedCustomization);
     }
 
     public static SavedCustomization load(int slot) {
