@@ -20,8 +20,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -42,6 +44,14 @@ public class PlayerLoginHandler {
         Player tracker = event.getEntity();
         Entity tracked = event.getTarget();
         stopTickingSounds(tracker, tracked);
+    }
+
+    // This needs to happen before the call to cancel casting on MagicData, otherwise the sound will not be stopped
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void onDeath(final LivingDeathEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            stopTickingSoundsForAllPlayers(player);
+        }
     }
 
     @SubscribeEvent
@@ -118,6 +128,15 @@ public class PlayerLoginHandler {
             if (currentlyCasting != null) {
                 PacketDistributor.sendToPlayer(trackerPlayer, new StopTickingSound(currentlyCasting.location().withSuffix(trackedPlayer.getStringUUID())));
             }
+        }
+    }
+
+    private static void stopTickingSoundsForAllPlayers(final ServerPlayer player) {
+        MagicData magicData = MagicData.getData(player);
+        DragonAbilityInstance currentlyCasting = magicData.getCurrentlyCasting();
+
+        if (currentlyCasting != null) {
+            PacketDistributor.sendToAllPlayers(new StopTickingSound(currentlyCasting.location().withSuffix(player.getStringUUID())));
         }
     }
 
