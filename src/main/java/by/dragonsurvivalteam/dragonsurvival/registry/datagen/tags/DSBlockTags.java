@@ -74,7 +74,14 @@ public class DSBlockTags extends BlockTagsProvider {
 
             switch (block) {
                 case DragonAltarBlock ignored -> tag(DRAGON_ALTARS).add(block);
-                case TreasureBlock ignored -> tag(DRAGON_TREASURES).add(block);
+                case TreasureBlock ignored -> {
+                    // FIXME :: better support for conditionally added blocks if we really want to do this
+                    if (ignored == DSBlocks.CHOCOLATE_DRAGON_TREASURE.value()) {
+                        tag(DRAGON_TREASURES).addOptional(DSBlocks.CHOCOLATE_DRAGON_TREASURE.getId());
+                    } else {
+                        tag(DRAGON_TREASURES).add(block);
+                    }
+                }
                 case SkeletonPieceBlock ignored -> tag(key("dragon_bones")).add(block);
                 default -> { /* Nothing to do */ }
             }

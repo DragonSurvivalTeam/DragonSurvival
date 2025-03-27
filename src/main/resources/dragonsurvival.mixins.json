@@ -19,7 +19,6 @@
     "HolderSetCodecMixin",
     "IItemExtensionMixin",
     "ILivingEntityExtensionMixin",
-    "InventoryMixin",
     "ItemEntityMixin",
     "ItemStackMixin",
     "LightningBoltMixin",

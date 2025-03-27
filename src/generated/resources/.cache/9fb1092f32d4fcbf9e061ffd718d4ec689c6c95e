@@ -1,4 +1,5 @@
-// 1.21.1	2025-03-26T23:14:21.770207	Recipes
+// 1.21.1	2025-03-27T10:21:47.3445387	Recipes
+0f9281f6aa101b66c0c6b2f66e4f71b7cf10a820 data/dragonsurvival/advancement/recipes/decorations/chocolate_dragon_treasure.json
 7a91eb1fde552cb42e81df78ee2bf46390ea0209 data/dragonsurvival/advancement/recipes/decorations/copper_dragon_treasure.json
 df13f8d180fa97e6111cab606bb90ebffe142062 data/dragonsurvival/advancement/recipes/decorations/debris_dragon_treasure.json
 b6e138dac556a42c23a453915e7ccb160b54efa3 data/dragonsurvival/advancement/recipes/decorations/diamond_dragon_treasure.json
@@ -89,6 +90,7 @@ d392409f8cf08e06cd0e481e0ec457dd488fc1af data/dragonsurvival/recipe/bone_dragon_
 44ad8e8509eb58034c9d412dd456d749a4c6605a data/dragonsurvival/recipe/charged_coal_from_bulb.json
 e0dfc969aeae4e3188bba11a877c6a6d25c13ae3 data/dragonsurvival/recipe/charged_coal_from_dust.json
 af800615dc8ff2b9a36e42327cce65704a6324cd data/dragonsurvival/recipe/cherry_dragon_altar.json
+c1c4da7278ac28621739e9081ce36db811aaedee data/dragonsurvival/recipe/chocolate_dragon_treasure.json
 e6d5e85d9b267005a9855e54a10cba2e9c206a03 data/dragonsurvival/recipe/copper_dragon_treasure.json
 298839dfc8252b083919ca41acc0c41c3e39c58a data/dragonsurvival/recipe/crimson_dragon_altar.json
 1c085eed77cd6c43707ae32ed124e0ffdb7527d4 data/dragonsurvival/recipe/crimson_dragon_door.json

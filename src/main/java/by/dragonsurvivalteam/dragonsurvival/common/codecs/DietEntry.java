@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+// TODO :: add ability to retain the original effects of the item (through a flag?)
 public record DietEntry(String items, Optional<FoodProperties> properties) {
     // Copied from FoodProperties.java. Trying to AT this didn't work out well.
     public static final float DEFAULT_EAT_SECONDS = 1.6f;

@@ -6,7 +6,6 @@ import by.dragonsurvivalteam.dragonsurvival.mixins.Holder$ReferenceAccess;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
-import com.simibubi.create.AllItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -25,8 +24,6 @@ import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
 import org.jetbrains.annotations.NotNull;
-
-import com.tterrag.registrate.util.entry.ItemEntry;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -161,14 +158,14 @@ public class DSRecipes extends RecipeProvider {
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
                 .save(output);
 
-        if (ModCheck.isModLoaded(ModCheck.CREATE)) {
-            ShapelessRecipeBuilder
-                    .shapeless(RecipeCategory.DECORATIONS, DSBlocks.CHOCOLATE_DRAGON_TREASURE.value())
-                    .requires(AllItems.BAR_OF_CHOCOLATE.get())
-                    .requires(DSItems.ELDER_DRAGON_DUST.value())
-                    .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
-                    .save(output);
-        }
+        ProxyItem barOfChocolate = new ProxyItem(ModCheck.CREATE, "bar_of_chocolate");
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.DECORATIONS, DSBlocks.CHOCOLATE_DRAGON_TREASURE.value())
+                .requires(barOfChocolate)
+                .requires(DSItems.ELDER_DRAGON_DUST.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
+                .save(output.withConditions(new ModLoadedCondition(ModCheck.CREATE)));
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.MISC, DSItems.ELDER_DRAGON_DUST.value())

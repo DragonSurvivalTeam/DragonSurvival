@@ -95,6 +95,8 @@ public class DragonStateHandler extends EntityStateHandler {
     public boolean spinWasGranted;
 
     public boolean refreshBody;
+    /** Currently only set when the dimension refresh occurs due to a size (scale) change */
+    public boolean shouldFudgePosition;
 
     /** Last timestamp the server synchronized the player */
     public int lastSync;
@@ -120,8 +122,6 @@ public class DragonStateHandler extends EntityStateHandler {
     public Vec3 preCollisionDeltaMovement = Vec3.ZERO;
 
     private static final RandomSource RANDOM = RandomSource.create();
-
-    public static boolean sizeRefreshIsFromGrowth = false;
 
     public void setRandomValidStage(@Nullable final Player player) {
         if (dragonSpecies == null) {
@@ -210,9 +210,9 @@ public class DragonStateHandler extends EntityStateHandler {
 
         // Update modifiers before refreshing the dimensions, as the growth modifiers may affect them
         DSModifiers.updateGrowthModifiers(player, this);
-        sizeRefreshIsFromGrowth = true;
+        shouldFudgePosition = true;
         player.refreshDimensions();
-        sizeRefreshIsFromGrowth = false;
+        shouldFudgePosition = false;
 
         if (player instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncGrowth(serverPlayer.getId(), getGrowth()));

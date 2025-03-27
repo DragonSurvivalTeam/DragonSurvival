@@ -231,9 +231,10 @@ public abstract class EntityMixin {
                 return;
             }
 
-            if (DragonStateHandler.sizeRefreshIsFromGrowth) {
+            if (handler.shouldFudgePosition) {
                 DragonSizeHandler.fudgePositionAfterSizeChange(player, entitydimensions);
             }
+
             DragonSizeHandler.overridePose(player);
         }
     }
