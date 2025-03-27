@@ -12,13 +12,17 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -95,6 +99,19 @@ public class ClawInventoryData implements INBTSerializable<CompoundTag> {
         if (toolSlot != -1 && !switchedTool) {
             player.setItemInHand(InteractionHand.MAIN_HAND, dragonHarvestTool);
 
+            // Copied from collectEquipmentChanges() in LivingEntity.java
+            dragonHarvestTool.forEachModifier(EquipmentSlot.MAINHAND, (attributeHolder, attributeModifier) -> {
+                AttributeInstance attributeinstance = player.getAttributes().getInstance(attributeHolder);
+                if (attributeinstance != null) {
+                    attributeinstance.removeModifier(attributeModifier.id());
+                    attributeinstance.addTransientModifier(attributeModifier);
+                }
+
+                if (player.level() instanceof ServerLevel serverlevel) {
+                    EnchantmentHelper.runLocationChangedEffects(serverlevel, dragonHarvestTool, player, EquipmentSlot.MAINHAND);
+                }
+            });
+
             clawsInventory.setItem(toolSlot, ItemStack.EMPTY);
             storedMainHandTool = mainHand;
             switchedTool = true;
@@ -120,6 +137,16 @@ public class ClawInventoryData implements INBTSerializable<CompoundTag> {
         if (switchedTool && toolSwapLayer == 0) {
             ItemStack originalMainHand = storedMainHandTool;
             ItemStack originalToolSlot = player.getItemInHand(InteractionHand.MAIN_HAND);
+
+            // Copied from collectEquipmentChanges() in LivingEntity.java
+            originalToolSlot.forEachModifier(EquipmentSlot.MAINHAND, (attributeHolder, attributeModifier) -> {
+                AttributeInstance attributeinstance = player.getAttributes().getInstance(attributeHolder);
+                if (attributeinstance != null) {
+                    attributeinstance.removeModifier(attributeModifier);
+                }
+
+                EnchantmentHelper.stopLocationBasedEffects(originalToolSlot, player, EquipmentSlot.MAINHAND);
+            });
 
             player.setItemInHand(InteractionHand.MAIN_HAND, originalMainHand);
 
