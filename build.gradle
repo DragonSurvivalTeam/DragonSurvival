@@ -89,7 +89,7 @@ dependencies {
 
 	compileOnly "curse.maven:cosmetic-armor-reworked-237307:5610814" // v1
 
-	compileOnly "curse.maven:create-328085:6255497" // 6.0.1
+	implementation "curse.maven:create-328085:6255497" // 6.0.1
 
 	compileOnly "curse.maven:better-combat-by-daedelus-639842:6097296" // 2.1.3
 	compileOnly "curse.maven:cloth-config-348521:5729127" // 15.0.140

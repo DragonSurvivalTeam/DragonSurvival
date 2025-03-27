@@ -1,7 +1,49 @@
 {
-  "parent": "minecraft:block/snow_height2",
+  "parent": "minecraft:block/orientable_with_bottom",
+  "elements": [
+    {
+      "faces": {
+        "down": {
+          "cullface": "down",
+          "texture": "#bottom"
+        },
+        "east": {
+          "cullface": "east",
+          "texture": "#side"
+        },
+        "north": {
+          "cullface": "north",
+          "texture": "#side"
+        },
+        "south": {
+          "cullface": "south",
+          "texture": "#side"
+        },
+        "up": {
+          "cullface": "up",
+          "texture": "#top"
+        },
+        "west": {
+          "cullface": "west",
+          "texture": "#side"
+        }
+      },
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        2,
+        16
+      ]
+    }
+  ],
   "textures": {
-    "particle": "dragonsurvival:block/chocolate_dragon_treasure",
-    "texture": "dragonsurvival:block/chocolate_dragon_treasure"
+    "bottom": "dragonsurvival:block/chocolate_dragon_treasure_bottom",
+    "front": "dragonsurvival:block/chocolate_dragon_treasure_side",
+    "side": "dragonsurvival:block/chocolate_dragon_treasure_side",
+    "top": "dragonsurvival:block/chocolate_dragon_treasure"
   }
 }
