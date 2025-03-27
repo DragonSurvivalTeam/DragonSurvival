@@ -64,7 +64,7 @@
       "operation": "add_value"
     },
     {
-      "amount": 0.2,
+      "amount": -0.2,
       "attribute": "dragonsurvival:flight_speed",
       "operation": "add_value"
     },

@@ -38,6 +38,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
+import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.NotNull;
@@ -949,7 +950,8 @@ public class DSBlocks {
     }
 
     private static <B extends Block> DeferredHolder<Block, B> registerModCheck(final String name, final Supplier<B> supplier, final String modID) {
-        if (ModCheck.isModLoaded(modID)) {
+        // We need an isProduction check here, since this needs to be loaded when doing datagen, even if the mod isn't present
+        if (ModCheck.isModLoaded(modID) || !FMLLoader.isProduction()) {
             DeferredHolder<Block, B> holder = REGISTRY.register(name, supplier);
             DSItems.REGISTRY.register(name, () -> new BlockItem(holder.value(), new Item.Properties()));
             return holder;
