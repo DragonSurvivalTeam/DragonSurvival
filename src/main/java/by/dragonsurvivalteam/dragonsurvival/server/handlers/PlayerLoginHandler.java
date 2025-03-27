@@ -141,15 +141,13 @@ public class PlayerLoginHandler {
     }
 
     /** Synchronizes the dragon data to the player and all tracking players */
-    public static void syncHandler(final Player player) {
-        if (player instanceof ServerPlayer serverPlayer) {
-            DragonStateHandler handler = DragonStateProvider.getData(serverPlayer);
-            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncComplete(serverPlayer.getId(), handler.serializeNBT(serverPlayer.registryAccess())));
+    public static void syncHandler(final ServerPlayer serverPlayer ) {
+        DragonStateHandler handler = DragonStateProvider.getData(serverPlayer);
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncComplete(serverPlayer.getId(), handler.serializeNBT(serverPlayer.registryAccess())));
 
-            serverPlayer.getExistingData(DSDataAttachments.FLIGHT).ifPresent(data ->
-                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncData(serverPlayer.getId(), DSDataAttachments.FLIGHT.getId(), data.serializeNBT(serverPlayer.registryAccess())))
-            );
-        }
+        serverPlayer.getExistingData(DSDataAttachments.FLIGHT).ifPresent(data ->
+                PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncData(serverPlayer.getId(), DSDataAttachments.FLIGHT.getId(), data.serializeNBT(serverPlayer.registryAccess())))
+        );
     }
 
     /** Synchronizes the dragon data of the newly tracked player to the tracking player */

@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncMagicData;
+import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
@@ -171,7 +172,10 @@ public class DragonSoulItem extends Item {
             player.getCooldowns().addCooldown(stack.getItem(), COOLDOWN);
         }
 
-        PlayerLoginHandler.syncHandler(player);
+        if (player instanceof ServerPlayer serverPlayer) {
+            SyncComplete.handleDragonSync(serverPlayer, false);
+            PlayerLoginHandler.syncHandler(serverPlayer);
+        }
 
         if (handler.isDragon()) {
             handler.setGrowth(player, handler.getGrowth(), true);
