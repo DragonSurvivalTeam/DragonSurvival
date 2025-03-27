@@ -23,7 +23,7 @@ public abstract class LocalPlayerMixin {
     @ModifyExpressionValue(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isShiftKeyDown()Z", ordinal = 0))
     private boolean dragonSurvival$DisallowCrouchingWhenFlying(boolean original) {
         LocalPlayer self = (LocalPlayer) (Object) this;
-        if (DragonStateProvider.isDragon(self) && FlightData.getData(self).isWingsSpread()) {
+        if (DragonStateProvider.isDragon(self) && FlightData.getData(self).isWingsSpread() && !self.onGround()) {
             return false;
         }
 
