@@ -121,6 +121,8 @@ public class DragonStateHandler extends EntityStateHandler {
 
     private static final RandomSource RANDOM = RandomSource.create();
 
+    public static boolean sizeRefreshIsFromGrowth = false;
+
     public void setRandomValidStage(@Nullable final Player player) {
         if (dragonSpecies == null) {
             return;
@@ -208,7 +210,9 @@ public class DragonStateHandler extends EntityStateHandler {
 
         // Update modifiers before refreshing the dimensions, as the growth modifiers may affect them
         DSModifiers.updateGrowthModifiers(player, this);
+        sizeRefreshIsFromGrowth = true;
         player.refreshDimensions();
+        sizeRefreshIsFromGrowth = false;
 
         if (player instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncGrowth(serverPlayer.getId(), getGrowth()));
