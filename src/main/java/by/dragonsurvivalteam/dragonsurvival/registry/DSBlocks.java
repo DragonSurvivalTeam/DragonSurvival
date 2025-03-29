@@ -743,6 +743,18 @@ public class DSBlocks {
             ModCheck.CREATE
     );
 
+    @Translation(type = Translation.Type.BLOCK, comments = "Ruby Dragon Treasure")
+    public static final @Nullable DeferredHolder<Block, TreasureBlock> RUBY_DRAGON_TREASURE = registerModCheck(
+            "ruby_dragon_treasure",
+            () -> new TreasureBlock(FastColor.ARGB32.color(255, 113, 54,0),
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.DIRT)
+                            .noOcclusion()
+                            .sound(DSSounds.TREASURE_GEM)
+                            .strength(0.5F)),
+            ModCheck.SILENTGEMS
+    );
+
     // --- Dragon Treasure Plates --- //
 
     @Translation(type = Translation.Type.BLOCK, comments = "Dragon Pressure Plate")
