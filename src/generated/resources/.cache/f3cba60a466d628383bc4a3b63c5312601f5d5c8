@@ -1,4 +1,4 @@
-// 1.21.1	2025-03-29T10:23:14.68921	Dragon Survival Item tags
+// 1.21.1	2025-03-29T12:59:12.4146959	Dragon Survival Item tags
 c1a8f5f7e1b7fdbb87aa67f2d2f6bb806140a6bd data/dragonsurvival/tags/item/activates_dragon_beacon.json
 3ca4212cb7567983e1e3ad7ac7b6eb9cae3e1596 data/dragonsurvival/tags/item/cave_dragon_food.json
 98e47e9f5e29dfe7526d64d46c38d29fda2da305 data/dragonsurvival/tags/item/charred_food.json
@@ -6,7 +6,7 @@ c1a8f5f7e1b7fdbb87aa67f2d2f6bb806140a6bd data/dragonsurvival/tags/item/activates
 2e41bde741c6c9d625aeead589e829b9a90f90ac data/dragonsurvival/tags/item/cold_items.json
 2249e0faf0f9e98cc5ca4e007600368951da7a02 data/dragonsurvival/tags/item/dark_armor.json
 a7b74a44670ded912a5ee3127986ece356dcb643 data/dragonsurvival/tags/item/dragon_altars.json
-dc205c1f8e0858710e1de9a13fa39f28e52cf0f4 data/dragonsurvival/tags/item/dragon_treasures.json
+5fbc7361492724fcdb508b68c350529d0f3db212 data/dragonsurvival/tags/item/dragon_treasures.json
 a291334c6e7cf2a0595394a0593e82cca559418e data/dragonsurvival/tags/item/enchantable/chest_armor_and_elytra.json
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/dragonsurvival/tags/item/epic_armor.json
 bde5e91495bfac065a40d95f2e29c8ea4851bb65 data/dragonsurvival/tags/item/forest_dragon_food.json

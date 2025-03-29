@@ -13,6 +13,66 @@
     {
       "id": "dragonsurvival:ruby_dragon_treasure",
       "required": false
+    },
+    {
+      "id": "dragonsurvival:carnelian_dragon_treasure",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:topaz_dragon_treasure",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:citrine_dragon_treasure",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:heliodor_dragon_treasure",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:moldavite_dragon_treasure",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:peridot_dragon_treasure",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:turquoise_dragon_treasure",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:kyanite_dragon_treasure",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:sapphire_dragon_treasure",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:iolite_dragon_treasure",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:alexandrite_dragon_treasure",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:ammolite_dragon_treasure",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:rose_quartz_dragon_treasure",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:black_diamond_dragon_treasure",
+      "required": false
+    },
+    {
+      "id": "dragonsurvival:white_diamond_dragon_treasure",
+      "required": false
     }
   ]
 }

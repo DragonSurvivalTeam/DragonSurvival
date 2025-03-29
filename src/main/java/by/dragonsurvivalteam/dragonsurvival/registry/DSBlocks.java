@@ -831,7 +831,7 @@ public class DSBlocks {
 
     @Translation(type = Translation.Type.BLOCK, comments = "Turquoise Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> TURQUOISE_DRAGON_TREASURE = registerModCheck(
-            "turquiose_dragon_treasure",
+            "turquoise_dragon_treasure",
             () -> new TreasureBlock(FastColor.ARGB32.color(255, 61, 244,189),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.WARPED_WART_BLOCK)
