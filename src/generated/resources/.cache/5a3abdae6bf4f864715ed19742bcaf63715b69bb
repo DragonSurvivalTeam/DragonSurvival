@@ -1,8 +1,8 @@
-// 1.21.1	2025-03-27T10:39:49.8540179	Dragon Survival Block tags
+// 1.21.1	2025-03-29T10:23:14.6988271	Dragon Survival Block tags
 a7b74a44670ded912a5ee3127986ece356dcb643 data/dragonsurvival/tags/block/dragon_altars.json
 f9a6a5f3b67bb79883689bdd154a227493642cf6 data/dragonsurvival/tags/block/dragon_bones.json
 a6767fc6d26bc9adadcc7fb5e58fa3ee25cc2ef7 data/dragonsurvival/tags/block/dragon_ore_drop.json
-218b737ce446ca48f4c2ed10960e6771247449a5 data/dragonsurvival/tags/block/dragon_treasures.json
+dc205c1f8e0858710e1de9a13fa39f28e52cf0f4 data/dragonsurvival/tags/block/dragon_treasures.json
 0fd05ce24f7e0237534571ed952465bbb582b59d data/dragonsurvival/tags/block/enables_hunter_effect.json
 c52fb02fcfb2a371fa75473ed6337a80e6a38ca0 data/dragonsurvival/tags/block/end_platform_non_replaceable.json
 155a237be7067e5a1be26d414dfef84d8916c0d4 data/dragonsurvival/tags/block/general_ores.json

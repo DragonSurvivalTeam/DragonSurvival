@@ -1,4 +1,4 @@
-// 1.21.1	2025-03-25T22:02:59.6487526	Loot Tables
+// 1.21.1	2025-03-29T10:23:14.6861504	Loot Tables
 daebe5a31e131aafd8cd5ad717023b1486bf46f5 data/dragonsurvival/loot_table/blocks/acacia_dragon_altar.json
 6d9ed87da9516e134f0c759cd6158d7cceb46deb data/dragonsurvival/loot_table/blocks/acacia_dragon_door.json
 5bac002bbf720c008375e2488056a7e7070dc476 data/dragonsurvival/loot_table/blocks/amethyst_dragon_altar.json
@@ -59,6 +59,7 @@ bd6c4858a919c7744197df9fc0f0fe96f9ad7625 data/dragonsurvival/loot_table/blocks/p
 6166a34c33a883b389aaee5271c843264c248a95 data/dragonsurvival/loot_table/blocks/quartz_dragon_altar.json
 bb2ab43564d503955ac39d327cc5e142f2521b3f data/dragonsurvival/loot_table/blocks/red_nether_brick_dragon_altar.json
 7d465fad4d23389aa661ca901fae5f413b754e03 data/dragonsurvival/loot_table/blocks/red_sandstone_dragon_altar.json
+c02cb59d1d579baa554aca41c92930d9a73293ce data/dragonsurvival/loot_table/blocks/ruby_dragon_treasure.json
 6bf69f920ee90a71cac737069e504319be453e9b data/dragonsurvival/loot_table/blocks/sandstone_dragon_altar.json
 5a1b2b870b63776044a2ce50b6a02c40af76260a data/dragonsurvival/loot_table/blocks/sea_dragon_door.json
 0b57e1beb2153b390207c248ba200423b54682b9 data/dragonsurvival/loot_table/blocks/sea_dragon_pressure_plate.json

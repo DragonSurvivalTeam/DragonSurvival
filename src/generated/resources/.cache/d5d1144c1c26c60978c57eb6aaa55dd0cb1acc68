@@ -1,4 +1,4 @@
-// 1.21.1	2025-03-25T22:02:59.6527414	Dragon Survival Item models
+// 1.21.1	2025-03-29T10:23:14.6902281	Dragon Survival Item models
 a66a6309dc6b29797f46e2ca4ab14ef3a245a65f assets/dragonsurvival/models/item/acacia_dragon_altar.json
 3103bf7bf2acab8c6053dd037bfd4f26275aad26 assets/dragonsurvival/models/item/acacia_dragon_door.json
 4c7b8102022c425a86140eada246eaed8be93446 assets/dragonsurvival/models/item/activated_dragon_beacon.json
@@ -108,6 +108,7 @@ d2bdeff836ae3d8bbb7a5f88f13f07811edf48a8 assets/dragonsurvival/models/item/prism
 0fd90e288a0cd87dd344d7625555bbd4113b477c assets/dragonsurvival/models/item/quartz_explosive_copper.json
 13d555f9a40c12b39b13df939d5e784efce16306 assets/dragonsurvival/models/item/red_nether_brick_dragon_altar.json
 6c284930c4fd556aa7319760d619c69cd3cbfbe1 assets/dragonsurvival/models/item/red_sandstone_dragon_altar.json
+46c65cb799ce8471b87b922f8332558d7dec7733 assets/dragonsurvival/models/item/ruby_dragon_treasure.json
 ef51112b91dee43b03a5f830d571db5092219bf7 assets/dragonsurvival/models/item/sandstone_dragon_altar.json
 53cbbe8ff961bc590db580ec1b7233ce5e644ae3 assets/dragonsurvival/models/item/seasoned_fish.json
 039325c641520a3332f62478c2cc42b5d325d325 assets/dragonsurvival/models/item/sea_beacon.json

@@ -9,6 +9,10 @@
     {
       "id": "dragonsurvival:chocolate_dragon_treasure",
       "required": false
+    },
+    {
+      "id": "dragonsurvival:ruby_dragon_treasure",
+      "required": false
     }
   ]
 }
