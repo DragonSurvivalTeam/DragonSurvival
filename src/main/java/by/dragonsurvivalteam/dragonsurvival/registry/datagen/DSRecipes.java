@@ -167,6 +167,15 @@ public class DSRecipes extends RecipeProvider {
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
                 .save(output.withConditions(new ModLoadedCondition(ModCheck.CREATE)));
 
+        ProxyItem ruby = new ProxyItem(ModCheck.SILENTGEMS, "ruby");
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.DECORATIONS, DSBlocks.RUBY_DRAGON_TREASURE.value())
+                .requires(ruby)
+                .requires(DSItems.ELDER_DRAGON_DUST.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
+                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.MISC, DSItems.ELDER_DRAGON_DUST.value())
                 .requires(DSItemTags.DRAGON_TREASURES)
