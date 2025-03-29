@@ -1275,6 +1275,7 @@
   "enum.targeting_mode.items": "items",
   "enum.targeting_mode.neutral": "neutral entities",
   "enum.targeting_mode.non_allies": "non allies",
+  "enum.targeting_mode.non_enemies": "non enemies",
   "enum.tiers.diamond": "Diamond",
   "enum.tiers.gold": "Gold",
   "enum.tiers.iron": "Iron",

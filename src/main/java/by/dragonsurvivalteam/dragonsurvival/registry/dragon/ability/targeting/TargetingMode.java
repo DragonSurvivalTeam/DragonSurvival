@@ -29,6 +29,8 @@ public enum TargetingMode implements StringRepresentable {
     ALLIES_AND_SELF("allies_and_self"),
     @Translation(comments = "non allies")
     NON_ALLIES("non_allies"),
+    @Translation(comments = "non enemies")
+    NON_ENEMIES("non_enemies"),
     @Translation(comments = "neutral entities")
     NEUTRAL("neutral"),
     @Translation(comments = "enemies")
@@ -60,7 +62,7 @@ public enum TargetingMode implements StringRepresentable {
         }
 
         if (player == target) {
-            return this == TargetingMode.ALLIES_AND_SELF;
+            return this == TargetingMode.ALLIES_AND_SELF || this == TargetingMode.NON_ENEMIES;
         }
 
         if (target instanceof ItemEntity) {
@@ -68,14 +70,14 @@ public enum TargetingMode implements StringRepresentable {
         }
 
         if (isFriendly(player, target)) {
-            return this == TargetingMode.ALLIES_AND_SELF || this == TargetingMode.ALLIES;
+            return this == TargetingMode.ALLIES_AND_SELF || this == TargetingMode.ALLIES || this == TargetingMode.NON_ENEMIES;
         }
 
         if (isEnemy(player, target)) {
             return this == TargetingMode.ENEMIES || this == TargetingMode.NON_ALLIES;
         }
 
-        return this == TargetingMode.NEUTRAL || this == TargetingMode.NON_ALLIES;
+        return this == TargetingMode.NEUTRAL || this == TargetingMode.NON_ALLIES || this == TargetingMode.NON_ENEMIES;
     }
 
     private boolean isFriendly(final Player player, final Entity target) {
