@@ -44,6 +44,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
@@ -54,6 +55,7 @@ public class DSBlocks {
     public static final DeferredRegister<Block> REGISTRY = DeferredRegister.create(BuiltInRegistries.BLOCK, MODID);
     // TODO :: why are these stored in a map if the map is unused
     public static final HashMap<String, Pair<DeferredHolder<Block, SkeletonPieceBlock>, DeferredHolder<Item, BlockItem>>> SKELETON_PIECES = new HashMap<>();
+    public static final List<DeferredHolder<Block, ?>> OPTIONAL = new ArrayList<>();
 
     // --- Dragon Doors --- //
 
@@ -952,8 +954,8 @@ public class DSBlocks {
 
     private static <B extends Block> @Nullable DeferredHolder<Block, B> registerModCheck(final String name, final Supplier<B> supplier, final String modID) {
         if (ModCheck.isModLoaded(modID) || DatagenModLoader.isRunningDataGen()) {
-            DeferredHolder<Block, B> holder = REGISTRY.register(name, supplier);
-            DSItems.REGISTRY.register(name, () -> new BlockItem(holder.value(), new Item.Properties()));
+            DeferredHolder<Block, B> holder = register(name, supplier);
+            OPTIONAL.add(holder);
             return holder;
         }
 
