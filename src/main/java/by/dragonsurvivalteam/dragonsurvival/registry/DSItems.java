@@ -385,7 +385,7 @@ public class DSItems {
     public static final Holder<Item> BEACON_ACTIVATOR = REGISTRY.register("beacon_activator", location -> new TooltipItem(new Item.Properties(), location.getPath()));
 
     @Translation(type = Translation.Type.ITEM, comments = "Dragon Soul")
-    public static final Holder<Item> DRAGON_SOUL = REGISTRY.register("dragon_soul", () -> new DragonSoulItem(new Properties().rarity(Rarity.EPIC)));
+    public static final Holder<Item> DRAGON_SOUL = REGISTRY.register("dragon_soul", () -> new DragonSoulItem(new Properties().stacksTo(1).rarity(Rarity.EPIC)));
 
     public static final String LIGHT_KEY_ID = "light_key";
 
