@@ -392,6 +392,11 @@ public class MagicHUD {
 
             if (skillCastTime > 0) {
                 graphics.pose().pushPose();
+
+                // Call flush here, otherwise some mods that batch together blit calls will cause this to be rendered in an incorrect order
+                // This does nothing on vanilla code but is required for compatibility with other mods (e.g. immediatelyfast)
+                graphics.flush();
+
                 graphics.pose().scale(0.5F, 0.5F, 0);
 
                 int startX = graphics.guiWidth() / 2 - 49 + castbarXOffset;
