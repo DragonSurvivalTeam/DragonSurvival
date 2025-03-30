@@ -49,6 +49,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 
+/** These doors are 3 blocks high */
 public class DragonDoor extends Block implements SimpleWaterloggedBlock {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty OPEN = BlockStateProperties.OPEN;
@@ -215,11 +216,11 @@ public class DragonDoor extends Block implements SimpleWaterloggedBlock {
         BlockPos below = position.below();
         BlockState stateBelow = level.getBlockState(below);
 
-        if (state.getValue(PART) == Part.BOTTOM) {
-            return stateBelow.isFaceSturdy(level, below, Direction.UP);
-        } else {
-            return stateBelow.getBlock() == this;
-        }
+        return switch (state.getValue(PART)) {
+            case BOTTOM -> level.getBlockState(position.above()).getBlock() == this && stateBelow.isFaceSturdy(level, below, Direction.UP);
+            case MIDDLE -> stateBelow.getBlock() == this && level.getBlockState(position.above()).getBlock() == this;
+            case TOP -> stateBelow.getBlock() == this;
+        };
     }
 
     @Override
