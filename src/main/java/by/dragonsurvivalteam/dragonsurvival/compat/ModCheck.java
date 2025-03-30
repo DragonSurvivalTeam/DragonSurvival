@@ -16,6 +16,7 @@ public class ModCheck {
     public static final String CURIOS = "curios";
     public static final String CREATE = "create";
     public static final String FREECAM = "freecam";
+    public static final String SILENTGEMS = "silentgems";
 
     private static final Map<String, List<String>> ALIAS = Map.of(
             IRIS, List.of("oculus"),
