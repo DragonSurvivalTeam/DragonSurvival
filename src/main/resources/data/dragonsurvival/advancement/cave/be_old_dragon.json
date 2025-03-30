@@ -1,0 +1,49 @@
+{
+  "parent": "dragonsurvival:place_altar",
+  "criteria": {
+    "be_fully_grown_adult": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type_specific": {
+                "type": "dragonsurvival:dragon_predicate",
+                "dragon_species": "dragonsurvival:cave_dragon",
+                "stage_specific": {
+                  "dragon_stage": "dragonsurvival:adult",
+                  "growth_percentage": {
+                    "min": 1.0
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "dragonsurvival:be_dragon"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "dragonsurvival.advancement.cave/be_old_dragon.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "dragonsurvival:cave_full_icon"
+    },
+    "title": {
+      "translate": "dragonsurvival.advancement.cave/be_old_dragon"
+    }
+  },
+  "requirements": [
+    [
+      "be_fully_grown_adult"
+    ]
+  ],
+  "rewards": {
+    "experience": 120
+  },
+  "sends_telemetry_event": true
+}

@@ -336,7 +336,7 @@ public class CaveDragonAbilities {
                                         new SpawnParticles(ParticleTypes.MYCELIUM, SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.1f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.1f)), ConstantFloat.of(0.05f)),
                                         LevelBasedValue.constant(50)
                                 )),
-                        TargetingMode.ALLIES_AND_SELF
+                        TargetingMode.NON_ENEMIES
                 ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -370,7 +370,7 @@ public class CaveDragonAbilities {
                                         new SpawnParticles(ParticleTypes.LAVA, SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.1f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.1f)), ConstantFloat.of(0.1f)),
                                         LevelBasedValue.constant(20)
                                 )
-                        ), TargetingMode.ALLIES_AND_SELF
+                        ), TargetingMode.ALL
                 ), LevelBasedValue.constant(25)), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(

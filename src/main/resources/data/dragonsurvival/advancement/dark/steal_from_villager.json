@@ -1,0 +1,26 @@
+{
+  "parent": "dragonsurvival:dark/get_armor_set",
+  "criteria": {
+    "steal_from_villager": {
+      "trigger": "dragonsurvival:steal_from_villager"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "dragonsurvival.advancement.dark/steal_from_villager.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "dragonsurvival:hunter_partisan"
+    },
+    "title": {
+      "translate": "dragonsurvival.advancement.dark/steal_from_villager"
+    }
+  },
+  "requirements": [
+    [
+      "steal_from_villager"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

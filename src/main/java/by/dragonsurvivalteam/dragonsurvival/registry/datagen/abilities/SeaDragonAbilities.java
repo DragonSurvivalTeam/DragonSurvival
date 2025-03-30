@@ -397,7 +397,7 @@ public class SeaDragonAbilities {
                                 BlockVision.DisplayType.PARTICLES,
                                 List.of(TextColor.fromLegacyFormat(ChatFormatting.WHITE))
                         ))
-                ), TargetingMode.ALLIES_AND_SELF), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
+                ), TargetingMode.NON_ENEMIES), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/ore_glow_0"), 0),
@@ -434,7 +434,7 @@ public class SeaDragonAbilities {
                                         new SpawnParticles(ParticleTypes.SOUL, SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), ConstantFloat.of(0.05f)),
                                         LevelBasedValue.constant(20)
                                 )),
-                        TargetingMode.ALLIES_AND_SELF
+                        TargetingMode.NON_ENEMIES
                 ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
