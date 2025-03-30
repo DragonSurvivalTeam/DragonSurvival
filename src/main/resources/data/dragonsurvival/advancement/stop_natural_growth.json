@@ -1,0 +1,29 @@
+{
+  "parent": "dragonsurvival:collect_heart_from_monster",
+  "criteria": {
+    "stop_natural_growth": {
+      "trigger": "dragonsurvival:stop_natural_growth"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "dragonsurvival.advancement.stop_natural_growth.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "dragonsurvival:star_heart"
+    },
+    "title": {
+      "translate": "dragonsurvival.advancement.stop_natural_growth"
+    }
+  },
+  "requirements": [
+    [
+      "stop_natural_growth"
+    ]
+  ],
+  "rewards": {
+    "experience": 30
+  },
+  "sends_telemetry_event": true
+}
