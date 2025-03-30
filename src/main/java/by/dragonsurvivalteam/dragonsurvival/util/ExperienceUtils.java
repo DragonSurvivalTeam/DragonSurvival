@@ -3,29 +3,6 @@ package by.dragonsurvivalteam.dragonsurvival.util;
 import net.minecraft.world.entity.player.Player;
 
 public class ExperienceUtils {
-    /**
-     * <a href="https://github.com/Shadows-of-Fire/Placebo/blob/1.21/src/main/java/dev/shadowsoffire/placebo/util/EnchantmentUtils.java#L60">Taken from here</a>
-     * <br> <br>
-     * Calculates the amount of experience the passed level is worth - <a href="https://minecraft.wiki/w/Experience#Leveling_up">Reference</a> <br>
-     * It is intentionally different compared to {@link Player#getXpNeededForNextLevel()} <br>
-     * (Since it calculates the experience required to reach the passed level from the previous level) <br>
-     * (The player method returns the experience required for the next level from the passed level)
-     *
-     * @param level The target level
-     * @return The amount of experience required to reach the given level when starting from the previous level
-     */
-    public static int getExperienceForLevel(int level) {
-        if (level == 0) {
-            return 0;
-        }
-        if (level > 30) {
-            return 112 + (level - 31) * 9;
-        }
-        if (level > 15) {
-            return 37 + (level - 16) * 5;
-        }
-        return 7 + (level - 1) * 2;
-    }
 
     /** See {@link Player#getXpNeededForNextLevel()} */
     public static int getExperienceForLevelAfter(int level) {
@@ -37,48 +14,39 @@ public class ExperienceUtils {
     }
 
     /** Calculates the experience level the experience is worth */
+    // Integral math from https://minecraft.wiki/w/Experience
     public static int getLevel(int experience) {
-        int requiredExperience = 0;
-        int level = 0;
-
-        while (true) {
-            requiredExperience += getExperienceForLevelAfter(level);
-
-            if (requiredExperience > experience) {
-                return level;
-            }
-
-            level++;
+        int totalExperienceFor16 = 352;
+        int totalExperienceFor31 = 1507;
+        if (experience <= totalExperienceFor16) {
+            return (int) (Math.sqrt(experience + 9) - 3);
+        } else if (experience <= totalExperienceFor31) {
+            return (int) (Math.sqrt((2.f / 5.f) * (experience - 7839.f / 40.f)) + 81.f / 10.f);
+        } else {
+            return (int) (Math.sqrt((2.f / 9.f) * (experience - 54215.f / 72.f)) + 325.f / 18.f);
         }
     }
 
     /** See {@link ExperienceUtils#getLevel(int)} + also adds the progress to the next level (0..1) */
     public static double getLevelAndProgress(int experience) {
-        int requiredExperience = 0;
-        int level = 0;
+        int wholeLevel = getLevel(experience);
 
-        while (true) {
-            int requiredForNext = getExperienceForLevelAfter(level);
-            requiredExperience += requiredForNext;
-
-            if (requiredExperience > experience) {
-                double progress = (double) (experience - (requiredExperience - requiredForNext)) / requiredForNext;
-                return level + progress;
-            }
-
-            level++;
-        }
+        int requiredForNext = getLevel(wholeLevel + 1);
+        int requiredExperience = requiredForNext - experience;
+        double progress = (double) (experience - (requiredExperience - requiredForNext)) / requiredForNext;
+        return wholeLevel + progress;
     }
 
     /** Calculate the total experience a level is worth given experience levels */
+    // Integral math from https://minecraft.wiki/w/Experience
     public static int getTotalExperience(int targetLevel) {
-        int experience = 0;
-
-        for (int level = 1; level <= targetLevel; level++) {
-            experience += getExperienceForLevel(level);
+        if (targetLevel <= 16) {
+            return (targetLevel * targetLevel + (6 * targetLevel));
+        } else if (targetLevel <= 31) {
+            return (int) (2.5 * targetLevel * targetLevel - (40.5 * targetLevel) + 360);
+        } else {
+            return (int) (4.5 * targetLevel * targetLevel - (162.5 * targetLevel) + 2220);
         }
-
-        return experience;
     }
 
     /**
