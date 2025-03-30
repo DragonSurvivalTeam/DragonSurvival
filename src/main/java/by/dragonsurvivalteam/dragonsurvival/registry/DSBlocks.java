@@ -736,7 +736,7 @@ public class DSBlocks {
     @Translation(type = Translation.Type.BLOCK, comments = "Chocolate Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> CHOCOLATE_DRAGON_TREASURE = registerModCheck(
             "chocolate_dragon_treasure",
-            () -> new TreasureBlock(FastColor.ARGB32.color(255, 113, 54,0),
+            () -> new TreasureBlock(FastColor.ARGB32.color(0, 0, 0,0),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.DIRT)
                             .noOcclusion()
