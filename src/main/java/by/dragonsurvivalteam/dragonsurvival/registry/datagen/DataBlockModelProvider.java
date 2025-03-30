@@ -5,7 +5,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonAltarBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.HelmetBlock;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.model.generators.BlockModelProvider;

@@ -3,7 +3,6 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.datapacks;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.GrowthItem;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
-import by.dragonsurvivalteam.dragonsurvival.common.conditions.EntityCondition;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
