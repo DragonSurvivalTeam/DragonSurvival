@@ -602,16 +602,21 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
     private void initDummyDragon(final DragonStateHandler localHandler) {
         if (stage == null && localHandler.isDragon()) {
-            // Species should already be set when opening the screen
-            stage = localHandler.stage();
-            body = localHandler.body();
+            // We are currently a different dragon species than the one we are setting, and our current body type is invalid for that new species
+            if (species != null && !species.value().isValidForBody(localHandler.body())) {
+                body = DragonBody.getRandomUnlocked(species, unlockedBodies);
+                stage = species.value().getStartingStage(null);
+            } else {
+                body = localHandler.body();
+                stage = localHandler.stage();
+            }
         } else if (species != null) {
             if (stage == null) {
                 stage = species.value().getStartingStage(null);
             }
 
             // body is null, or we are not a dragon, or the body is not valid for the species (is not default and species has bodies, or body is not in species' bodies)
-            if (body == null && (!localHandler.isDragon() || !((species.value().bodies().size() == 0 && localHandler.body().value().isDefault()) || species.value().bodies().contains(localHandler.body())))) {
+            if (body == null && (!localHandler.isDragon() || !((species.value().bodies().size() == 0 && localHandler.body().value().isDefault()) || species.value().isValidForBody(localHandler.body())))) {
                 body = DragonBody.getRandomUnlocked(species, unlockedBodies);
             } else {
                 body = localHandler.body();
