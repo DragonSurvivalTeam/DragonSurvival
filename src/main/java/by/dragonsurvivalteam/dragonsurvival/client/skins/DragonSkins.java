@@ -149,14 +149,14 @@ public class DragonSkins {
             skin = playerSkinMap.getOrDefault(skinName, null);
         }
 
-        // Only use the API to get the names (for the random button)
-        if (skinLoader instanceof GithubSkinLoader gitHubOld) {
-            try (InputStream imageStream = gitHubOld.querySkinImage(skinName, stage)) {
-                return readSkin(imageStream, resource);
-            } catch (IOException exception) {
-                return fetchSkinResource(playerName, stage, extra, exception, playerKey);
-            }
-        }
+//        // Only use the API to get the names (for the random button)
+//        if (skinLoader instanceof GithubSkinLoader gitHubOld) {
+//            try (InputStream imageStream = gitHubOld.querySkinImage(skinName, stage)) {
+//                return readSkin(imageStream, resource);
+//            } catch (IOException exception) {
+//                return fetchSkinResource(playerName, stage, extra, exception, playerKey);
+//            }
+//        }
 
         if (skin == null) {
             return null;
