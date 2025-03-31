@@ -605,9 +605,14 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             // We are currently a different dragon species than the one we are setting, and our current body type is invalid for that new species
             if (species != null && !species.value().isValidForBody(localHandler.body())) {
                 body = DragonBody.getRandomUnlocked(species, unlockedBodies);
-                stage = species.value().getStartingStage(null);
             } else {
                 body = localHandler.body();
+            }
+
+            // We are currently a different dragon species than the one we are setting, and our current stage is invalid for that new species
+            if (species != null && species.value().stages().map(stages -> !stages.contains(localHandler.stage())).orElse(false)) {
+                stage = species.value().getStartingStage(null);
+            } else {
                 stage = localHandler.stage();
             }
         } else if (species != null) {
