@@ -18,9 +18,11 @@ import java.util.Base64;
 import java.util.Collection;
 
 public class GithubSkinLoader extends NetSkinLoader {
-    public static final String SKIN_LIST_API = "https://api.github.com/repos/DragonSurvivalTeam/DragonSurvival/git/trees/30268eb7e0b3ae65e803b0c71437b6a1f85901ff?ref=master";
+    public static final String SKIN_LIST_API = "https://api.github.com/repos/DragonSurvivalTeam/DragonSurvival/git/trees/master?recursive=1";
     public static final String SKIN = "https://raw.githubusercontent.com/DragonSurvivalTeam/DragonSurvival/master/src/test/resources/";
     private static final String SKINS_PING = "https://raw.githubusercontent.com/DragonSurvivalTeam/DragonSurvival/master/README.md";
+
+    private static final String SKIN_PATH_IN_REPO = "src/test/resources/";
 
     private static class SkinFileMetaInfo {
         String content;
@@ -49,11 +51,14 @@ public class GithubSkinLoader extends NetSkinLoader {
                 SkinListApiResponse skinListResponse = gson.fromJson(reader, SkinListApiResponse.class);
 
                 for (SkinResponseItem skinResponse : skinListResponse.tree) {
-                    SkinObject skinObject = new SkinObject();
-                    skinObject.name = skinResponse.path;
-                    skinObject.id = skinResponse.sha;
-                    skinObject.user_extra = skinResponse;
-                    result.add(skinObject);
+                    if (skinResponse.path.startsWith(SKIN_PATH_IN_REPO))
+                    {
+                        SkinObject skinObject = new SkinObject();
+                        skinObject.name = skinResponse.path.substring(SKIN_PATH_IN_REPO.length());
+                        skinObject.id = skinResponse.sha;
+                        skinObject.user_extra = skinResponse;
+                        result.add(skinObject);
+                    }
                 }
                 return result;
             } catch (IOException exception) {
@@ -86,29 +91,29 @@ public class GithubSkinLoader extends NetSkinLoader {
         }
     }
 
-    private static final String GLOW = "_glow";
+//    private static final String GLOW = "_glow";
 
-    public InputStream querySkinImage(final String skinName, final ResourceKey<DragonStage> dragonStage) {
-        boolean isGlow = skinName.endsWith(GLOW);
-
-        try {
-            String fetchName;
-
-            if (isGlow) {
-                fetchName = skinName.replace(GLOW, "");
-                fetchName = SKIN + fetchName + "_" + dragonStage.location().getPath() + GLOW + ".png";
-            } else {
-                fetchName = SKIN + skinName + "_" + dragonStage.location().getPath() + ".png";
-            }
-
-            URL url = new URL(fetchName);
-            return internetGetStream(url, 15 * 1000);
-        } catch (IOException exception) {
-            if (!isGlow) {
-                DragonSurvival.LOGGER.error("Failed to get skin information in GitHub: [{}]", exception.getMessage());
-            }
-        }
-
-        return null;
-    }
+//    public InputStream querySkinImage(final String skinName, final ResourceKey<DragonStage> dragonStage) {
+//        boolean isGlow = skinName.endsWith(GLOW);
+//
+//        try {
+//            String fetchName;
+//
+//            if (isGlow) {
+//                fetchName = skinName.replace(GLOW, "");
+//                fetchName = SKIN + fetchName + "_" + dragonStage.location().getPath() + GLOW + ".png";
+//            } else {
+//                fetchName = SKIN + skinName + "_" + dragonStage.location().getPath() + ".png";
+//            }
+//
+//            URL url = new URL(fetchName);
+//            return internetGetStream(url, 15 * 1000);
+//        } catch (IOException exception) {
+//            if (!isGlow) {
+//                DragonSurvival.LOGGER.error("Failed to get skin information in GitHub: [{}]", exception.getMessage());
+//            }
+//        }
+//
+//        return null;
+//    }
 }

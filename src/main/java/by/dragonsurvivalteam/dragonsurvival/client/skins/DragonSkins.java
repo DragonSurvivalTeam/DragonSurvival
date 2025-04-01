@@ -23,11 +23,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Locale;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
@@ -35,6 +33,8 @@ public class DragonSkins {
     public static final HashMap<ResourceKey<DragonStage>, HashMap<String, SkinObject>> USER_SKINS = new HashMap<>();
     public static final HashMap<String, CompletableFuture<ResourceLocation>> SKIN_CACHE = new HashMap<>();
     public static final HashMap<String, CompletableFuture<ResourceLocation>> GLOW_CACHE = new HashMap<>();
+
+    public static final List<Supplier<NetSkinLoader>> SKIN_LOADERS = List.of(GithubSkinLoader::new, GiteeSkinLoader::new);
 
     public static NetSkinLoader skinLoader = new GithubSkinLoaderAPI();
 
@@ -149,14 +149,14 @@ public class DragonSkins {
             skin = playerSkinMap.getOrDefault(skinName, null);
         }
 
-        // Only use the API to get the names (for the random button)
-        if (skinLoader instanceof GithubSkinLoader gitHubOld) {
-            try (InputStream imageStream = gitHubOld.querySkinImage(skinName, stage)) {
-                return readSkin(imageStream, resource);
-            } catch (IOException exception) {
-                return fetchSkinResource(playerName, stage, extra, exception, playerKey);
-            }
-        }
+//        // Only use the API to get the names (for the random button)
+//        if (skinLoader instanceof GithubSkinLoader gitHubOld) {
+//            try (InputStream imageStream = gitHubOld.querySkinImage(skinName, stage)) {
+//                return readSkin(imageStream, resource);
+//            } catch (IOException exception) {
+//                return fetchSkinResource(playerName, stage, extra, exception, playerKey);
+//            }
+//        }
 
         if (skin == null) {
             return null;
@@ -236,29 +236,21 @@ public class DragonSkins {
         initialized = true;
         Collection<SkinObject> skins;
         invalidateSkins();
-        String currentLanguage = Minecraft.getInstance().getLanguageManager().getSelected();
-        NetSkinLoader first, second;
-
-        if (currentLanguage.equals("zh_cn")) {
-            first = new GitcodeSkinLoader();
-            second = new GithubSkinLoader();
-        } else {
-            first = new GithubSkinLoader();
-            second = new GitcodeSkinLoader();
-        }
-
-        if (!first.ping()) {
-            if (!second.ping()) {
-                DragonSurvival.LOGGER.warn("Unable to connect to skin database.");
-                return;
+        for (Supplier<NetSkinLoader> loader : SKIN_LOADERS)
+        {
+            NetSkinLoader testLoader = loader.get();
+            if (testLoader.ping()){
+                skinLoader = testLoader;
+                break;
             }
-
-            first = second;
         }
-
-        skinLoader = first;
+        if (skinLoader == null)
+        {
+            skinLoader = new GithubSkinLoader();
+            DragonSurvival.LOGGER.warn("Unable to connect to skin database.");
+            return;
+        }
         skins = skinLoader.querySkinList();
-
         if (skins != null) {
             parseSkinObjects(skins);
         }
