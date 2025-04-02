@@ -118,7 +118,8 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
 
         // --- Parent: root --- //
 
-        AdvancementHolder beDragon = create(LangKey.BE_DRAGON)
+        // TODO :: Re-add this when we update to 1.22
+        /*AdvancementHolder beDragon = create(LangKey.BE_DRAGON)
                 .parent(root)
                 .displayItem(DSItems.STAR_BONE.value())
                 .criteria("be_dragon", beDragon())
@@ -150,7 +151,7 @@ public class DSAdvancements implements AdvancementProvider.AdvancementGenerator 
                 .build(saver, helper);
         buildHunterAdvancements(pathChoice);
         buildLightAdvancements(pathChoice);
-        buildDarkAdvancements(pathChoice);
+        buildDarkAdvancements(pathChoice);*/
     }
 
     private void buildDarkAdvancements(final AdvancementHolder parent) {

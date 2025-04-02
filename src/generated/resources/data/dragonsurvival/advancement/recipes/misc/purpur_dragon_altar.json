@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_elder_dragon_bone": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dragonsurvival:elder_dragon_bone"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dragonsurvival:purpur_dragon_altar"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_elder_dragon_bone"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dragonsurvival:purpur_dragon_altar"
+    ]
+  }
+}
