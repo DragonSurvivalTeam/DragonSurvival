@@ -136,7 +136,8 @@ public class DataGeneration {
         generator.addProvider(event.includeServer(), new BodyIconProvider(output, lookup));
 
         generator.addProvider(event.includeServer(), new DataBlockModelProvider(output, helper));
-        generator.addProvider(event.includeServer(), new AdvancementProvider(output, lookup, helper, List.of(new DSAdvancements())));
+        // TODO :: Re-add this when we update to 1.22
+//        generator.addProvider(event.includeServer(), new AdvancementProvider(output, lookup, helper, List.of(new DSAdvancements())));
 
         // Should run last due to doing weird registry things
         generator.addProvider(event.includeServer(), new DSRecipes(output, lookup));

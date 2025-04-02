@@ -77,47 +77,61 @@ repositories {
 dependencies {
 	implementation "net.neoforged:neoforge:${neo_version}"
 
-	// Dependencies
+	// --- Dependencies --- //
+
 	implementation "software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
 
-	// Compatibility
+	// --- Compatibility --- //
+
+	// JEI
 	compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
 	runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
 
+	// Curios
+	compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}:api"
+	runtimeOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}"
+
+	// Sophisticated Backpacks
 	compileOnly "curse.maven:sophisticated-backpacks-422301:6246606" // 3.2.4.1.1209
 	compileOnly "curse.maven:sophisticated-core-618298:6266804" // 1.3.2.900
 
+	// Cosmetic Armor Reworked
 	compileOnly "curse.maven:cosmetic-armor-reworked-237307:5610814" // v1
 
-	implementation "curse.maven:create-328085:6255497" // 6.0.1
+	// Create
+	compileOnly "curse.maven:create-328085:6255497" // 6.0.1
 
+	// Better Combat
 	compileOnly "curse.maven:better-combat-by-daedelus-639842:6097296" // 2.1.3
 	compileOnly "curse.maven:cloth-config-348521:5729127" // 15.0.140
 	compileOnly "curse.maven:playeranimator-658587:6024462" // 2.0.1
 
-	implementation "curse.maven:silentgems-220311:5846347" // 5.0.3
+	// Silent Gems
+	compileOnly "curse.maven:silentgems-220311:5846347" // 5.0.3
 	runtimeOnly "curse.maven:silentlib-242998:6285150" //10.4.0
 
 //	implementation "maven.modrinth:sodium:mc1.21.1-0.6.9-neoforge"
 	compileOnly "curse.maven:irisshaders-455508:6213632" // 1.8.8
 
+	// Free Cam
 	compileOnly "curse.maven:free-cam-557076:5572364" // 1.3.0
 
-	// Test
+	// --- Testing --- //
+
 	implementation "curse.maven:spark-361579:5759671" // 1.10.109
 	implementation "curse.maven:jade-324717:6011258" // 15.9.2
+
+//	implementation "curse.maven:immediatelyfast-686911:6368702"
 
 //	implementation "curse.maven:emi-580555:6075440" // 1.1.19
 
 //	implementation "curse.maven:apothic-attributes-898963:5751458" // 2.4.0
 //	implementation "curse.maven:placebo-283644:5869769" // 9.5.4
 
-	// Curios testing
-	runtimeOnly "top.theillusivec4.curios:curios-neoforge:9.2.2+1.21.1"
-	compileOnly "top.theillusivec4.curios:curios-neoforge:9.2.2+1.21.1:api"
-
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// --- Mixin --- //
 
 	implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:${mixin_squared_version}"))
 	implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-forge:${mixin_squared_version}")) {
