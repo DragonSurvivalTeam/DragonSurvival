@@ -119,7 +119,9 @@ public class DragonDoor extends Block implements SimpleWaterloggedBlock {
                     .setValue(POWERED, facingState.getValue(POWERED));
         }
 
-        return canSurvive(state, level, position) ? super.updateShape(state, facing, facingState, level, position, facingPosition) : Blocks.AIR.defaultBlockState();
+        boolean isBottomWithoutTopBlocks = state.getValue(PART) == Part.BOTTOM && level.getBlockState(position.above()).getBlock() != this;
+
+        return canSurvive(state, level, position) && !isBottomWithoutTopBlocks ? super.updateShape(state, facing, facingState, level, position, facingPosition) : Blocks.AIR.defaultBlockState();
     }
 
     @Override
@@ -144,6 +146,8 @@ public class DragonDoor extends Block implements SimpleWaterloggedBlock {
             if (hasPower != state.getValue(OPEN)) {
                 playSound(null, level, position, state, hasPower);
             }
+
+
 
             level.setBlock(position, state.setValue(POWERED, hasPower).setValue(OPEN, hasPower), Block.UPDATE_CLIENTS);
         }
@@ -217,7 +221,7 @@ public class DragonDoor extends Block implements SimpleWaterloggedBlock {
         BlockState stateBelow = level.getBlockState(below);
 
         return switch (state.getValue(PART)) {
-            case BOTTOM -> level.getBlockState(position.above()).getBlock() == this && stateBelow.isFaceSturdy(level, below, Direction.UP);
+            case BOTTOM -> stateBelow.isFaceSturdy(level, below, Direction.UP);
             case MIDDLE -> stateBelow.getBlock() == this && level.getBlockState(position.above()).getBlock() == this;
             case TOP -> stateBelow.getBlock() == this;
         };
