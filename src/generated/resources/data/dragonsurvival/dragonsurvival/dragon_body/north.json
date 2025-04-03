@@ -34,7 +34,7 @@
       "operation": "add_value"
     },
     {
-      "amount": 0.5,
+      "amount": 0.8,
       "attribute": "neoforge:swim_speed",
       "operation": "add_value"
     },

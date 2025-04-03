@@ -610,7 +610,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             }
 
             // We are currently a different dragon species than the one we are setting, and our current stage is invalid for that new species
-            if (species != null && species.value().stages().map(stages -> !stages.contains(localHandler.stage())).orElse(false)) {
+            if (species != null && species.value().stages().map(stages -> !stages.contains(localHandler.stage())).orElse(!localHandler.stage().value().isDefault())) {
                 stage = species.value().getStartingStage(null);
             } else {
                 stage = localHandler.stage();

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_dragon_treasures": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#dragonsurvival:dragon_treasures"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dragonsurvival:elder_dragon_dust_from_dragon_treasures"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_dragon_treasures"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dragonsurvival:elder_dragon_dust_from_dragon_treasures"
+    ]
+  }
+}

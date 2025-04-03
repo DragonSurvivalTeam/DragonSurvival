@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_spruce_dragon_door": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dragonsurvival:spruce_dragon_door"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dragonsurvival:small_spruce_dragon_door"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_spruce_dragon_door"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dragonsurvival:small_spruce_dragon_door"
+    ]
+  }
+}
