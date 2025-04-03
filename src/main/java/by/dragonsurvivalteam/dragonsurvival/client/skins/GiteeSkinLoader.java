@@ -52,9 +52,9 @@ public class GiteeSkinLoader extends NetSkinLoader{
             }
         }catch (IOException exception)
         {
-            return null;
+            return "";
         }
-        return null;
+        return "";
     }
 
     @Override
