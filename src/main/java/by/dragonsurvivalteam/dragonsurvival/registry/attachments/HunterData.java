@@ -14,6 +14,9 @@ public class HunterData implements INBTSerializable<CompoundTag> {
     private boolean transparencyDisabled;
 
     public static boolean hasTransparency(final LivingEntity entity) {
+        if (entity == null){
+            return false;
+        }
         HunterData data = entity.getExistingData(DSDataAttachments.HUNTER).orElse(null);
 
         if (data == null) {
