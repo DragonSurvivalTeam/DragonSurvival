@@ -186,7 +186,7 @@ public class DragonStateHandler extends EntityStateHandler {
 
     /**
      * @param forceUpdate Bypass the check that could result in skipping updating modifiers / synchronizing the state to the client <br>
-     * Needed after de-serialization of the data (since that had no player context)
+     *                    Needed after de-serialization of the data (since that had no player context)
      */
     public void setGrowth(@Nullable final Player player, final double growth, final boolean forceUpdate) {
         double oldGrowth = this.growth;

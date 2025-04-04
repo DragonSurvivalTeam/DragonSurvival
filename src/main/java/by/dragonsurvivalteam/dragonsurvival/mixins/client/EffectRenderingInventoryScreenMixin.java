@@ -56,20 +56,22 @@ public class EffectRenderingInventoryScreenMixin {
         storedEvent.set(event);
     }
 
-    @Unique private void dragonSurvival$renderAbilityBackgroundsAndIcons(final GuiGraphics graphics, int renderX, int yOffset, int initialYOffset, final List<ClientEffectProvider> providers, boolean isCompact) {
+    @Unique
+    private void dragonSurvival$renderAbilityBackgroundsAndIcons(final GuiGraphics graphics, int renderX, int yOffset, int initialYOffset, final List<ClientEffectProvider> providers, boolean isCompact) {
         EffectRenderingInventoryScreen<?> self = (EffectRenderingInventoryScreen<?>) (Object) this;
         int topPos = ((AbstractContainerScreenAccessor) self).dragonSurvival$getTopPos() + initialYOffset;
         int width = isCompact ? 32 : 120;
 
         for (ClientEffectProvider provider : providers) {
             dragonSurvival$areasBlockedByModifierUIForJEI.add(new Rect2i(renderX, topPos, width, 32));
-            graphics.blitSprite(isCompact ? EffectRenderingInventoryScreenAccessor.dragonSurvival$getEffectBackgroundSmallSprite() :EffectRenderingInventoryScreenAccessor.dragonSurvival$getEffectBackgroundLargeSprite(), renderX, topPos, width, 32);
+            graphics.blitSprite(isCompact ? EffectRenderingInventoryScreenAccessor.dragonSurvival$getEffectBackgroundSmallSprite() : EffectRenderingInventoryScreenAccessor.dragonSurvival$getEffectBackgroundLargeSprite(), renderX, topPos, width, 32);
             graphics.blit(provider.clientData().texture(), renderX + (isCompact ? 6 : 7), topPos + 7, 0, 0, 0, 18, 18, 18, 18);
             topPos += yOffset;
         }
     }
 
-    @Unique private void dragonSurvival$renderAbilityLabels(final GuiGraphics graphics, int renderX, int yOffset, int initialYOffset, final List<ClientEffectProvider> providers) {
+    @Unique
+    private void dragonSurvival$renderAbilityLabels(final GuiGraphics graphics, int renderX, int yOffset, int initialYOffset, final List<ClientEffectProvider> providers) {
         EffectRenderingInventoryScreen<?> self = (EffectRenderingInventoryScreen<?>) (Object) this;
         int topPos = ((AbstractContainerScreenAccessor) self).dragonSurvival$getTopPos() + initialYOffset;
 
@@ -83,7 +85,8 @@ public class EffectRenderingInventoryScreenMixin {
     }
 
     // Duration text is added because the width-difference looks weird otherwise when a tooltip description is present
-    @Unique private static Component dragonSurvival$formatDuration(final ClientEffectProvider effect, float ticksPerSecond) {
+    @Unique
+    private static Component dragonSurvival$formatDuration(final ClientEffectProvider effect, float ticksPerSecond) {
         if (effect.isInfiniteDuration()) {
             return Component.translatable(LangKey.DURATION, DSColors.dynamicValue(Component.translatable("effect.duration.infinite")));
         } else {

@@ -141,7 +141,7 @@ public class PlayerLoginHandler {
     }
 
     /** Synchronizes the dragon data to the player and all tracking players */
-    public static void syncHandler(final ServerPlayer serverPlayer ) {
+    public static void syncHandler(final ServerPlayer serverPlayer) {
         DragonStateHandler handler = DragonStateProvider.getData(serverPlayer);
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncComplete(serverPlayer.getId(), handler.serializeNBT(serverPlayer.registryAccess())));
 

@@ -30,7 +30,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public record PotionData(HolderSet<MobEffect> effects, LevelBasedValue amplifier, LevelBasedValue duration, LevelBasedValue probability, boolean effectParticles, boolean showIcon) {
+public record PotionData(
+        HolderSet<MobEffect> effects,
+        LevelBasedValue amplifier,
+        LevelBasedValue duration,
+        LevelBasedValue probability,
+        boolean effectParticles,
+        boolean showIcon
+) {
     public static final LevelBasedValue DEFAULT_PROBABILITY = LevelBasedValue.constant(1);
 
     public static final MapCodec<PotionData> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(

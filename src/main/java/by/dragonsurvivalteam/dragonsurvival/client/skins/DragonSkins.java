@@ -23,7 +23,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
@@ -236,16 +240,14 @@ public class DragonSkins {
         initialized = true;
         Collection<SkinObject> skins;
         invalidateSkins();
-        for (Supplier<NetSkinLoader> loader : SKIN_LOADERS)
-        {
+        for (Supplier<NetSkinLoader> loader : SKIN_LOADERS) {
             NetSkinLoader testLoader = loader.get();
-            if (testLoader.ping()){
+            if (testLoader.ping()) {
                 skinLoader = testLoader;
                 break;
             }
         }
-        if (skinLoader == null)
-        {
+        if (skinLoader == null) {
             skinLoader = new GithubSkinLoader();
             DragonSurvival.LOGGER.warn("Unable to connect to skin database.");
             return;

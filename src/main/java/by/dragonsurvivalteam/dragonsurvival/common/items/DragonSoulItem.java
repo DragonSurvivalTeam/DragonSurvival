@@ -111,7 +111,7 @@ public class DragonSoulItem extends Item {
         }
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
-        MagicData magicData  = MagicData.getData(player);
+        MagicData magicData = MagicData.getData(player);
 
         if (stack.has(DataComponents.CUSTOM_DATA)) {
             if (handler.isDragon()) {

@@ -114,7 +114,8 @@ public abstract class LivingEntityMixin extends Entity {
         }
     }
 
-    @Unique private int dragonSurvival$getHumanOrDragonUseDuration(int original) {
+    @Unique
+    private int dragonSurvival$getHumanOrDragonUseDuration(int original) {
         if ((Object) this instanceof Player player) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
 
