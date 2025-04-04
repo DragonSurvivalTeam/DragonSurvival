@@ -673,7 +673,6 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     @Override
     public void init() {
         super.init();
-        assert minecraft != null && minecraft.player != null;
 
         guiLeft = (width - 256) / 2;
         guiTop = (height - 120) / 2;
@@ -683,6 +682,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         confirmation = false;
         initDragonRender();
 
+        //noinspection DataFlowIssue -> player is present
         DragonStateHandler data = DragonStateProvider.getData(minecraft.player);
 
         if (!hasInit) {
