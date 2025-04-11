@@ -14,6 +14,7 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -31,6 +32,7 @@ public record CustomPredicates(
         Optional<MinMaxBounds.Ints> sunLightLevel,
         Optional<ResourceLocation> hasDurationEffect,
         Optional<NearbyEntityPredicate> isNearbyEntity,
+        Optional<MinMaxBounds.Ints> playerHunger,
         Optional<UUID> hasUUID
 ) implements EntitySubPredicate {
     public static final MapCodec<CustomPredicates> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -39,6 +41,7 @@ public record CustomPredicates(
             MinMaxBounds.Ints.CODEC.optionalFieldOf("sun_light_level").forGetter(CustomPredicates::sunLightLevel),
             ResourceLocation.CODEC.optionalFieldOf("has_duration_effect").forGetter(CustomPredicates::hasDurationEffect),
             NearbyEntityPredicate.CODEC.optionalFieldOf("is_nearby_entity").forGetter(CustomPredicates::isNearbyEntity),
+            MinMaxBounds.Ints.CODEC.optionalFieldOf("player_hunger").forGetter(CustomPredicates::playerHunger),
             UUIDUtil.LENIENT_CODEC.optionalFieldOf("has_uuid").forGetter(CustomPredicates::hasUUID)
     ).apply(instance, CustomPredicates::new));
 
@@ -82,6 +85,10 @@ public record CustomPredicates(
             return false;
         }
 
+        if (playerHunger.map(hunger -> hunger.matches(getPlayerHunger(entity))).orElse(true)) {
+            return false;
+        }
+
         if (!hasUUID.map(uuid -> uuid.equals(entity.getUUID())).orElse(true)) {
             return false;
         }
@@ -95,6 +102,14 @@ public record CustomPredicates(
         return (int) Math.round(light * Functions.getSunPosition(entity));
     }
 
+    public static int getPlayerHunger(final Entity entity) {
+        if (entity instanceof Player player) {
+            return player.getFoodData().getFoodLevel();
+        }
+        // Only players have hunger, so return 0 otherwise
+        return 0;
+    }
+
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // ignore
     public static class Builder {
         private Optional<HolderSet<FluidType>> eyeInFluid = Optional.empty();
@@ -106,6 +121,7 @@ public record CustomPredicates(
         private Optional<ResourceLocation> hasDurationEffect = Optional.empty();
         private Optional<NearbyEntityPredicate> isNearbyEntity = Optional.empty();
         private Optional<UUID> hasUUID = Optional.empty();
+        private Optional<MinMaxBounds.Ints> playerHunger = Optional.empty();
 
         public static CustomPredicates.Builder start() {
             return new CustomPredicates.Builder();
@@ -161,8 +177,13 @@ public record CustomPredicates(
             return this;
         }
 
+        public CustomPredicates.Builder hungerInRange(int min, int max) {
+            this.playerHunger = Optional.of(MinMaxBounds.Ints.between(min, max));
+            return this;
+        }
+
         public CustomPredicates build() {
-            return new CustomPredicates(eyeInFluid, Optional.of(new WeatherPredicate(isRaining, isThundering, isSnowing, isRainingOrSnowing)), sunLightLevel, hasDurationEffect, isNearbyEntity, hasUUID);
+            return new CustomPredicates(eyeInFluid, Optional.of(new WeatherPredicate(isRaining, isThundering, isSnowing, isRainingOrSnowing)), sunLightLevel, hasDurationEffect, isNearbyEntity, playerHunger, hasUUID);
         }
     }
 }
