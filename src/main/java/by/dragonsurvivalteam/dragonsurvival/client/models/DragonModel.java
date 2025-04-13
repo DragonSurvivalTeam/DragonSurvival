@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.DragonEditorHandler;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
 import by.dragonsurvivalteam.dragonsurvival.client.skins.DragonSkins;
+import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayer;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
@@ -205,7 +206,9 @@ public class DragonModel extends GeoModel<DragonEntity> {
         DragonStateHandler handler = DragonStateProvider.getData(player);
         DragonStageCustomization customization = handler.getCurrentStageCustomization();
 
-        if (handler.getModel().equals(DragonBody.DEFAULT_MODEL)) {
+        // Don't try to fetch skins if it is a fake client player; the only case where we need custom skins for a fake client player
+        // is in the dragon skins screen, and we already have special logic for that outside of this getTextureResource method
+        if (handler.getModel().equals(DragonBody.DEFAULT_MODEL) && !(player instanceof FakeClientPlayer)) {
             ResourceLocation skin = DragonSkins.getPlayerSkin(player, handler.stageKey());
 
             if (RenderingUtils.hasTexture(skin)) {

@@ -158,23 +158,19 @@ public class DragonSkins {
 //            }
 //        }
 
-        if (skin == null) {
-            return null;
+        if (skin == null && stage == AncientDatapack.ancient) {
+            DragonSurvival.LOGGER.warn("Failed to get skin information for ancient stage for {}. Falling back to using adult stage.", playerName);
+            return fetchSkinFile(playerName, DragonStages.adult, extra);
         }
 
         try (InputStream imageStream = skinLoader.querySkinImage(skin)) {
             return readSkin(imageStream, resource);
-        } catch (IOException exception) {
-            return fetchSkinResource(playerName, stage, extra, exception, playerKey);
+        } catch (Exception exception) {
+            return fetchSkinResource(extra, playerKey);
         }
     }
 
-    private static @Nullable ResourceLocation fetchSkinResource(final String playerName, final ResourceKey<DragonStage> stage, final String[] extra, final IOException exception, final String playerKey) {
-        if (stage == AncientDatapack.ancient) {
-            DragonSurvival.LOGGER.warn("Failed to get skin information for ancient stage: [{}]. Falling back to using adult stage.", exception.getMessage());
-            return fetchSkinFile(playerName, DragonStages.adult, extra);
-        }
-
+    private static @Nullable ResourceLocation fetchSkinResource(final String[] extra, final String playerKey) {
         boolean isNormalSkin = extra == null || extra.length == 0;
         handleSkinFetchError(playerKey, isNormalSkin);
         return null;

@@ -525,10 +525,6 @@ public class DragonSkinsScreen extends Screen {
         lastPlayerName = playerName;
     }
 
-    private void openLink(URI uri) {
-        Util.getPlatform().openUri(uri);
-    }
-
     @Override
     public boolean isPauseScreen() {
         return false;
