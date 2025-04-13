@@ -20,7 +20,6 @@ public enum ModifierType implements StringRepresentable {
 
     public static final Codec<ModifierType> CODEC = StringRepresentable.fromEnum(ModifierType::values);
 
-    private static final RandomSource RANDOM = RandomSource.create();
     private final String path;
 
     ModifierType(final String path) {
@@ -31,9 +30,9 @@ public enum ModifierType implements StringRepresentable {
         return path;
     }
 
-    public ResourceLocation randomId(final Holder<Attribute> attribute, final AttributeModifier.Operation operation) {
+    public ResourceLocation randomId(final Holder<Attribute> attribute, final AttributeModifier.Operation operation, final RandomSource random) {
         String attributeId = attribute.getRegisteredName().replace(":", ".");
-        int hash = Objects.hash(String.valueOf(RANDOM.nextInt(100_000)), operation.getSerializedName());
+        int hash = Objects.hash(String.valueOf(random.nextInt(100_000)), operation.getSerializedName());
         return DragonSurvival.res(path() + hash + "/" + attributeId);
     }
 

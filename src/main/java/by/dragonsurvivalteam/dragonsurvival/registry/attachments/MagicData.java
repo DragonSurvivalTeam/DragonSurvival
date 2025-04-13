@@ -583,8 +583,14 @@ public class MagicData implements INBTSerializable<CompoundTag> {
     }
 
     public void deserializeNBTForCurrentSpecies(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag tag) {
-        abilities.get(this.currentSpecies).clear();
-        hotbar.get(this.currentSpecies).clear();
+        if (currentSpecies == null) {
+            // Unsure in which cases this can occur (if at all) - maybe when the soul has a non-registered species?
+            DragonSurvival.LOGGER.warn("Current species is not set - ability data cannot be deserialized [{}]", tag);
+            return;
+        }
+
+        abilities.get(currentSpecies).clear();
+        hotbar.get(currentSpecies).clear();
 
         if (tag.contains(ABILITIES)) {
             CompoundTag storedAbilities = tag.getCompound(ABILITIES);
@@ -593,7 +599,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
                 DragonAbilityInstance instance = DragonAbilityInstance.load(provider, abilityTag);
 
                 if (instance != null) {
-                    abilities.get(this.currentSpecies).put(instance.key(), instance);
+                    abilities.get(currentSpecies).put(instance.key(), instance);
                 }
             });
         }
@@ -608,7 +614,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
                     return;
                 }
 
-                hotbar.get(this.currentSpecies).put(slot, key);
+                hotbar.get(currentSpecies).put(slot, key);
             });
         }
     }

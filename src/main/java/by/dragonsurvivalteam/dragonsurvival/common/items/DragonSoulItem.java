@@ -112,14 +112,17 @@ public class DragonSoulItem extends Item {
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
         MagicData magicData = MagicData.getData(player);
+        CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
 
-        if (stack.has(DataComponents.CUSTOM_DATA)) {
+        // Make sure dragon data is present, in case other mods add custom data to items
+        if (customData != null && !customData.getUnsafe().getCompound(DRAGON).isEmpty()) {
             if (handler.isDragon()) {
-                CompoundTag tag = stack.get(DataComponents.CUSTOM_DATA).copyTag();
+                CompoundTag tag = customData.copyTag();
 
                 // Swap the player's dragon data with the item's NBT
                 CompoundTag storedDragonData = tag.getCompound(DRAGON);
                 CompoundTag currentDragonData = handler.serializeNBT(level.registryAccess(), true);
+
                 // Preserve spin/flight grant state
                 boolean flightGranted = handler.flightWasGranted;
                 boolean spinGranted = handler.spinWasGranted;
@@ -140,7 +143,7 @@ public class DragonSoulItem extends Item {
                 stack.set(DataComponents.CUSTOM_DATA, CustomData.of(combinedData));
                 stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(getCustomModelData(level.registryAccess(), currentDragonData)));
             } else {
-                CompoundTag tag = stack.get(DataComponents.CUSTOM_DATA).copyTag();
+                CompoundTag tag = customData.copyTag();
 
                 // Preserve spin/flight grant state
                 boolean flightGranted = handler.flightWasGranted;
@@ -158,7 +161,7 @@ public class DragonSoulItem extends Item {
         } else if (handler.isDragon()) {
             CompoundTag currentDragonData = handler.serializeNBT(level.registryAccess(), true);
             CompoundTag currentAbilityData = magicData.serializeNBTForCurrentSpecies(level.registryAccess());
-            CompoundTag combinedData = new CompoundTag();
+            CompoundTag combinedData = customData == null ? new CompoundTag() : customData.copyTag();
 
             combinedData.put(DRAGON, currentDragonData);
             combinedData.put(ABILITIES, currentAbilityData);
