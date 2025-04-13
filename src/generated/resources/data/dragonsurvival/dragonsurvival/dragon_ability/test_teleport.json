@@ -1,0 +1,155 @@
+{
+  "actions": [
+    {
+      "target_selection": {
+        "applied_effects": {
+          "entity_effect": [
+            {
+              "effect_type": "dragonsurvival:teleport",
+              "target_direction": {
+                "direction": "looking_at"
+              },
+			  "range": {
+				  "type": "minecraft:linear",
+				  "base": 100.0,
+				  "per_level_above_first": 50.0
+			  }
+            },
+            {
+              "effect_type": "dragonsurvival:particle",
+              "particle_count": 20.0,
+              "particle_data": {
+                "horizontal_position": {
+                  "type": "in_bounding_box"
+                },
+                "horizontal_velocity": {
+                  "base": 0.05
+                },
+                "particle": {
+                  "type": "minecraft:portal"
+                },
+                "speed": 0.05,
+                "vertical_position": {
+                  "type": "in_bounding_box"
+                },
+                "vertical_velocity": {
+                  "base": 0.05
+                }
+              }
+            }
+          ],
+          "targeting_mode": "all_except_self"
+        },
+        "radius": 5.0,
+        "target_type": "dragonsurvival:area"
+      },
+      "trigger_rate": 1.0
+    },
+	{
+      "target_selection": {
+        "applied_effects": {
+          "entity_effect": [
+            {
+              "effect_type": "dragonsurvival:teleport",
+              "target_direction": {
+                "direction": "looking_at"
+              },
+			  "range": {
+				  "type": "minecraft:linear",
+				  "base": 100.0,
+				  "per_level_above_first": 50.0
+			  }
+            },
+            {
+              "effect_type": "dragonsurvival:particle",
+              "particle_count": 20.0,
+              "particle_data": {
+                "horizontal_position": {
+                  "type": "in_bounding_box"
+                },
+                "horizontal_velocity": {
+                  "base": 0.05
+                },
+                "particle": {
+                  "type": "minecraft:portal"
+                },
+                "speed": 0.05,
+                "vertical_position": {
+                  "type": "in_bounding_box"
+                },
+                "vertical_velocity": {
+                  "base": 0.05
+                }
+              }
+            }
+          ],
+          "targeting_mode": "all"
+        },
+        "target_type": "dragonsurvival:self"
+      },
+      "trigger_rate": 1.0
+    }
+  ],
+  "activation": {
+    "activation_type": "dragonsurvival:simple",
+    "animations": {
+      "end": {
+        "animation_key": "magic_alt",
+        "layer": "BASE",
+        "locks_neck": false,
+        "locks_tail": false
+      },
+      "start_and_charging": {
+        "animation_key": "cast_magic_alt",
+        "layer": "BASE",
+        "locks_neck": false,
+        "locks_tail": false,
+        "transition_length": 2
+      }
+    },
+    "can_move_while_casting": true,
+    "cast_time": 15.0,
+    "cooldown": 100.0,
+    "initial_mana_cost": 1.0,
+    "sound": {
+      "end": "minecraft:entity.player.teleport"
+    }
+  },
+  "icon": {
+    "texture_entries": [
+      {
+        "from_level": 0,
+        "texture_resource": "dragonsurvival:abilities/sea/revealing_the_soul_0"
+      },
+      {
+        "from_level": 1,
+        "texture_resource": "dragonsurvival:abilities/sea/revealing_the_soul_1"
+      },
+      {
+        "from_level": 2,
+        "texture_resource": "dragonsurvival:abilities/sea/revealing_the_soul_2"
+      },
+      {
+        "from_level": 3,
+        "texture_resource": "dragonsurvival:abilities/sea/revealing_the_soul_3"
+      }
+    ]
+  },
+  "upgrade": {
+    "level_requirement": {
+      "type": "minecraft:lookup",
+      "fallback": {
+        "type": "minecraft:linear",
+        "base": 15.0,
+        "per_level_above_first": 15.0
+      },
+      "values": [
+        12.0,
+        24.0,
+        36.0
+      ]
+    },
+    "maximum_level": 3,
+    "upgrade_type": "dragonsurvival:experience_levels"
+  }
+}

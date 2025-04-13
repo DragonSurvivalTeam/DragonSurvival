@@ -36,7 +36,9 @@ public enum TargetingMode implements StringRepresentable {
     @Translation(comments = "enemies")
     ENEMIES("enemies"),
     @Translation(comments = "items")
-    ITEMS("items");
+    ITEMS("items"),
+    @Translation(comments = "all except self")
+    ALL_EXCEPT_SELF("all_except_self");
 
     @Translation(key = "player_targeting_handling", type = Translation.Type.CONFIGURATION, comments = {
             "Determines how players are handled for the initial targeting of abilities",
@@ -47,7 +49,7 @@ public enum TargetingMode implements StringRepresentable {
             "4: Enabled Friendly fire on a team no longer flags players as 'enemy'"
     })
     @ConfigOption(side = ConfigSide.SERVER, category = "abilities", key = "player_targeting_handling")
-    public static int PLAYER_FLAG = 0;
+    public static final int PLAYER_FLAG = 0;
 
     public static final Codec<TargetingMode> CODEC = StringRepresentable.fromEnum(TargetingMode::values);
     private final String name;
@@ -62,7 +64,7 @@ public enum TargetingMode implements StringRepresentable {
         }
 
         if (player == target) {
-            return this == TargetingMode.ALLIES_AND_SELF || this == TargetingMode.NON_ENEMIES;
+            return this == TargetingMode.ALLIES_AND_SELF || this == TargetingMode.NON_ENEMIES || this != TargetingMode.ALL_EXCEPT_SELF;
         }
 
         if (target instanceof ItemEntity) {
@@ -77,7 +79,7 @@ public enum TargetingMode implements StringRepresentable {
             return this == TargetingMode.ENEMIES || this == TargetingMode.NON_ALLIES;
         }
 
-        return this == TargetingMode.NEUTRAL || this == TargetingMode.NON_ALLIES || this == TargetingMode.NON_ENEMIES;
+        return this == TargetingMode.NEUTRAL || this == TargetingMode.NON_ALLIES || this == TargetingMode.NON_ENEMIES || this == TargetingMode.ALL_EXCEPT_SELF;
     }
 
     private boolean isFriendly(final Player player, final Entity target) {
