@@ -56,10 +56,16 @@ public class ResourceHelper {
             return null;
         }
 
-        return ResourceKey.codec(registryKey).decode(actualProvider.createSerializationContext(NbtOps.INSTANCE), tag.get(key)).mapOrElse(Pair::getFirst, error -> {
+        ResourceKey<T> resource = ResourceKey.codec(registryKey).decode(actualProvider.createSerializationContext(NbtOps.INSTANCE), tag.get(key)).mapOrElse(Pair::getFirst, error -> {
             DragonSurvival.LOGGER.error(error.message());
             return null;
         });
+
+        if (resource != null && actualProvider.holder(resource).isEmpty()) {
+            return null;
+        }
+
+        return resource;
     }
 
     /**

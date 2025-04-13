@@ -41,7 +41,10 @@ import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {

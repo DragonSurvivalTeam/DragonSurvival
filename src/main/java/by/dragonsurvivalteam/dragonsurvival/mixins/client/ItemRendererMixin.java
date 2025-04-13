@@ -52,15 +52,18 @@ public abstract class ItemRendererMixin { // FIXME :: doesn't work with sodium s
         HunterHandler.itemTranslucency = HunterHandler.UNMODIFIED;
     }
 
-    @Unique private static boolean dragonSurvival$isThirdPerson(final ItemDisplayContext context) {
+    @Unique
+    private static boolean dragonSurvival$isThirdPerson(final ItemDisplayContext context) {
         return context == ItemDisplayContext.THIRD_PERSON_LEFT_HAND || context == ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
     }
 
-    @Unique private static boolean dragonSurvival$isFirstPerson(final ItemDisplayContext context) {
+    @Unique
+    private static boolean dragonSurvival$isFirstPerson(final ItemDisplayContext context) {
         return context == ItemDisplayContext.FIRST_PERSON_LEFT_HAND || context == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND;
     }
 
-    @Unique private static @Nullable LivingEntity dragonSurvival$getRelevantEntity(final LivingEntity entity) {
+    @Unique
+    private static @Nullable LivingEntity dragonSurvival$getRelevantEntity(final LivingEntity entity) {
         if (entity instanceof DragonEntity dragon) {
             Player player = dragon.getPlayer();
 
@@ -69,6 +72,6 @@ public abstract class ItemRendererMixin { // FIXME :: doesn't work with sodium s
             }
         }
 
-        return HunterData.hasTransparency(entity) ? entity : null;
+        return (entity != null && HunterData.hasTransparency(entity)) ? entity : null;
     }
 }

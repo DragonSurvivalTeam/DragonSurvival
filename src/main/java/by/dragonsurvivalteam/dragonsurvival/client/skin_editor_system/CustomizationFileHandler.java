@@ -175,7 +175,7 @@ public class CustomizationFileHandler {
             DragonSurvival.LOGGER.error("An error occurred while trying to save the dragon skin", exception);
         }
 
-         savedCustomizations.put(slot, savedCustomization);
+        savedCustomizations.put(slot, savedCustomization);
     }
 
     public static SavedCustomization load(int slot) {

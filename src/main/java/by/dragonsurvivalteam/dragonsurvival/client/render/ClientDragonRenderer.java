@@ -39,7 +39,12 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.*;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -533,7 +538,7 @@ public class ClientDragonRenderer {
             boolean hasPosDelta = posDelta.horizontalDistanceSqr() > MOVE_DELTA_EPSILON * MOVE_DELTA_EPSILON;
 
             Vec3 rawInput = movement.desiredMoveVec;
-            Vec2 horizontalMovement = new Vec2((float)rawInput.x, (float)rawInput.z);
+            Vec2 horizontalMovement = new Vec2((float) rawInput.x, (float) rawInput.z);
             boolean hasMoveInput = horizontalMovement.lengthSquared() > MovementData.INPUT_EPSILON * MovementData.INPUT_EPSILON;
             boolean isInputBack = horizontalMovement.y < 0;
 

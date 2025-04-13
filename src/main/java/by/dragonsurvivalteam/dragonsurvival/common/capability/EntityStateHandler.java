@@ -45,7 +45,7 @@ public class EntityStateHandler implements INBTSerializable<CompoundTag> {
     public int chainCount;
 
     public int pillageCooldown;
-    
+
     public static boolean cannotPillageProfession(final Villager villager) {
         VillagerProfession profession = villager.getVillagerData().getProfession();
         ResourceLocation key = BuiltInRegistries.VILLAGER_PROFESSION.getKey(profession);
@@ -71,7 +71,7 @@ public class EntityStateHandler implements INBTSerializable<CompoundTag> {
 
         return handler.pillageCooldown == 0;
     }
-    
+
     public void setPillageCooldown() {
         pillageCooldown = ServerConfig.PILLAGE_COOLDOWN;
     }

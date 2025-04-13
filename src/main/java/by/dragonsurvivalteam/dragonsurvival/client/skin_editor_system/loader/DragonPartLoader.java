@@ -19,7 +19,6 @@ import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -72,20 +71,19 @@ public class DragonPartLoader extends SimpleJsonResourceReloadListener {
         Map<SkinLayer, Map<String, DragonPart>> layers = DragonPartLoader.DRAGON_PARTS.get(species);
 
         if (layers == null) {
+            // Since at least 'BASE' should exist, we're still logging an error here
             DragonSurvival.LOGGER.error("Part type map missing for dragon type {}", species);
-            return Collections.emptyMap();
+            return new HashMap<>();
         }
 
         Map<String, DragonPart> parts = layers.get(layer);
 
         if (parts == null) {
-            DragonSurvival.LOGGER.error("Dragon part layer {} not found", layer.name);
-            return Collections.emptyMap();
+            return new HashMap<>();
         }
 
         if (parts.isEmpty()) {
-            DragonSurvival.LOGGER.error("Dragon part layer {} is empty", layer.name);
-            return Collections.emptyMap();
+            return new HashMap<>();
         }
 
         if (body != null) {

@@ -104,7 +104,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
                 AttributeInstance instance = entity.getAttribute(attribute);
 
                 if (instance != null) {
-                    ResourceLocation id = ModifierType.CUSTOM.randomId(attribute, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+                    ResourceLocation id = ModifierType.CUSTOM.randomId(attribute, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, entity.getRandom());
                     instance.addPermanentModifier(new AttributeModifier(id, scale, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
                 }
 

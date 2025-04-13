@@ -13,8 +13,8 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import java.util.List;
 
 public class DataBlockModelProvider extends BlockModelProvider {
-    private static final String PREFIX = BLOCK_FOLDER + "/"; 
-    
+    private static final String PREFIX = BLOCK_FOLDER + "/";
+
     public DataBlockModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
         super(output, DragonSurvival.MODID, existingFileHelper);
     }
