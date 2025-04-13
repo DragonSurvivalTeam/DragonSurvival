@@ -49,7 +49,7 @@ public enum TargetingMode implements StringRepresentable {
             "4: Enabled Friendly fire on a team no longer flags players as 'enemy'"
     })
     @ConfigOption(side = ConfigSide.SERVER, category = "abilities", key = "player_targeting_handling")
-    public static final int PLAYER_FLAG = 0;
+    public static int PLAYER_FLAG = 0;
 
     public static final Codec<TargetingMode> CODEC = StringRepresentable.fromEnum(TargetingMode::values);
     private final String name;
