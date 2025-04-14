@@ -16,7 +16,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Objects;
-import java.util.Optional;
 
 public class SkinPreset implements INBTSerializable<CompoundTag> {
     private static final String MODEL = "model";
@@ -96,17 +95,6 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
             tag.putString(SPECIES, species.location().toString());
         }
 
-        if (species != null) {
-            Optional<Holder.Reference<DragonSpecies>> speciesHolder = ResourceHelper.get(provider, species);
-            if(speciesHolder.isPresent()) {
-                for (Holder<DragonStage> dragonStage : speciesHolder.get().value().getStages(provider)) {
-                    tag.put(dragonStage.getKey().location().toString(), skins.get().getOrDefault(dragonStage.getKey(), Lazy.of(DragonStageCustomization::new)).get().serializeNBT(provider));
-                }
-
-                return tag;
-            }
-        }
-
         for (ResourceKey<DragonStage> dragonStage : ResourceHelper.keys(provider, DragonStage.REGISTRY)) {
             tag.put(dragonStage.location().toString(), skins.get().getOrDefault(dragonStage, Lazy.of(DragonStageCustomization::new)).get().serializeNBT(provider));
         }
@@ -128,10 +116,6 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
 
         this.species = ResourceKey.create(DragonSpecies.REGISTRY, ResourceLocation.parse(base.getString(SPECIES)));
         ResourceLocation.read(base.getString(MODEL)).ifSuccess(model -> this.model = model);
-    }
-
-    public void setSpecies(final ResourceKey<DragonSpecies> species) {
-        this.species = species;
     }
 
     public ResourceLocation getModel() {

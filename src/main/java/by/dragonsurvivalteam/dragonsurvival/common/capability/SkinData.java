@@ -30,9 +30,7 @@ public class SkinData implements INBTSerializable<CompoundTag> {
         HashMap<ResourceKey<DragonSpecies>, SkinPreset> presets = new HashMap<>();
 
         for (ResourceKey<DragonSpecies> dragonSpecies : ResourceHelper.keys(null, DragonSpecies.REGISTRY)) {
-            SkinPreset preset = new SkinPreset();
-            preset.setSpecies(dragonSpecies);
-            presets.put(dragonSpecies, preset);
+            presets.put(dragonSpecies, new SkinPreset());
         }
 
         return presets;
