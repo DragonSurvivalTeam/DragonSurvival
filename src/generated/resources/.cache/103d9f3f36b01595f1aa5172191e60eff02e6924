@@ -1,4 +1,4 @@
-// 1.21.1	2025-04-02T10:12:50.3857108	Registries
+// 1.21.1	2025-04-13T23:10:25.9506071	Registries
 011b2ee382ec961722c100bbf059b4aa460f44b0 data/dragonsurvival/damage_type/anti_dragon.json
 d8c3135ecd1879e98a21e83ec1bcfd68c5fc3296 data/dragonsurvival/damage_type/ball_lightning.json
 3bca57c58e2307adb52a4b6e18ea88aae7e2d8d7 data/dragonsurvival/damage_type/blast_dust.json
@@ -61,6 +61,8 @@ ac437b7c5444ea5e1f09454eb1dee0e104d8ac5e data/dragonsurvival/dragonsurvival/drag
 a531151a06e0abde4c7f7b41da94d7883f649ff4 data/dragonsurvival/dragonsurvival/dragon_ability/test_function.json
 f69e59fd4ebf75d388fdcaaf443947c721b2e29f data/dragonsurvival/dragonsurvival/dragon_ability/test_heal.json
 3c4c36ed4ff0d9ba3e27f621e7bda81b671864d9 data/dragonsurvival/dragonsurvival/dragon_ability/test_smelt.json
+5404a5392103454c71a425403ce42b146eb24547 data/dragonsurvival/dragonsurvival/dragon_ability/test_teleport.json
+468d44002a02226314c67be156bc3f39f69c7480 data/dragonsurvival/dragonsurvival/dragon_ability/test_teleport_directional.json
 24462688df5ff8c16a21b96fbbcd2a25a6948a3f data/dragonsurvival/dragonsurvival/dragon_body/center.json
 e9562fc1f4cfa6bd2158dc8a6bac42ec48cab047 data/dragonsurvival/dragonsurvival/dragon_body/east.json
 09e2a3c17d221ff8ee186b2393bb2da3cc963abc data/dragonsurvival/dragonsurvival/dragon_body/north.json
