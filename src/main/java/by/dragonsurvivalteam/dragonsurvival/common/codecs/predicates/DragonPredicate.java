@@ -29,7 +29,8 @@ public record DragonPredicate(
         Optional<Boolean> isGrowthStopped,
         Optional<Boolean> markedByEnderDragon,
         Optional<Boolean> flightWasGranted,
-        Optional<Boolean> spinWasGranted
+        Optional<Boolean> spinWasGranted,
+        Optional<Boolean> affectedByDragonsbane
 ) implements EntitySubPredicate {
     public static final MapCodec<DragonPredicate> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             RegistryCodecs.homogeneousList(DragonSpecies.REGISTRY).optionalFieldOf("dragon_species").forGetter(DragonPredicate::dragonSpecies),
@@ -38,7 +39,8 @@ public record DragonPredicate(
             Codec.BOOL.optionalFieldOf("is_growth_stopped").forGetter(DragonPredicate::isGrowthStopped),
             Codec.BOOL.optionalFieldOf("marked_by_ender_dragon").forGetter(DragonPredicate::markedByEnderDragon),
             Codec.BOOL.optionalFieldOf("flight_was_granted").forGetter(DragonPredicate::flightWasGranted),
-            Codec.BOOL.optionalFieldOf("spin_was_granted").forGetter(DragonPredicate::spinWasGranted)
+            Codec.BOOL.optionalFieldOf("spin_was_granted").forGetter(DragonPredicate::spinWasGranted),
+            Codec.BOOL.optionalFieldOf("affected_by_dragonsbane").forGetter(DragonPredicate::affectedByDragonsbane)
     ).apply(instance, DragonPredicate::new));
 
     @Override
@@ -82,6 +84,10 @@ public record DragonPredicate(
             return false;
         }
 
+        if (affectedByDragonsbane().isPresent() && !handler.species().value().affectedByDragonsbane().orElse(true)) {
+            return false;
+        }
+
         return true;
     }
 
@@ -99,6 +105,7 @@ public record DragonPredicate(
         private Optional<Boolean> markedByEnderDragon = Optional.empty();
         private Optional<Boolean> flightWasGranted = Optional.empty();
         private Optional<Boolean> spinWasGranted = Optional.empty();
+        private Optional<Boolean> affectedByDragonsbane = Optional.empty();
 
         public static DragonPredicate.Builder dragon() {
             return new DragonPredicate.Builder();
@@ -149,8 +156,13 @@ public record DragonPredicate(
             return this;
         }
 
+        public DragonPredicate.Builder affectedByDragonsbane(final boolean affectedByDragonsbane) {
+            this.affectedByDragonsbane = Optional.of(affectedByDragonsbane);
+            return this;
+        }
+
         public DragonPredicate build() {
-            return new DragonPredicate(dragonSpecies, dragonStage, dragonBody, isGrowthStopped, markedByEnderDragon, flightWasGranted, spinWasGranted);
+            return new DragonPredicate(dragonSpecies, dragonStage, dragonBody, isGrowthStopped, markedByEnderDragon, flightWasGranted, spinWasGranted, affectedByDragonsbane);
         }
     }
 }

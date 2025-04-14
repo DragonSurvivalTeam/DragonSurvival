@@ -128,7 +128,7 @@ public class DSEnchantments {
                         // this -> attacked entity
                         AnyOfCondition.anyOf(
                                 Condition.thisEntity(EntityCondition.isType(DSEntityTypeTags.DRAGONS)),
-                                Condition.thisEntity(EntityCondition.isDragon())
+                                Condition.thisEntity(EntityCondition.isAffectedByDragonsbane())
                         )
                 )
                 .withEffect(
@@ -145,7 +145,7 @@ public class DSEnchantments {
                         // this -> attacked entity
                         AnyOfCondition.anyOf(
                                 LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS, EntityCondition.isType(EntityType.ENDER_DRAGON)),
-                                LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS, EntityCondition.isDragon())
+                                LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS, EntityCondition.isAffectedByDragonsbane())
                         ).and(DamageSourceCondition.hasDamageSource(DamageSourcePredicate.Builder.damageType().isDirect(true)))
                 )
                 .withEffect(
@@ -166,7 +166,7 @@ public class DSEnchantments {
                                 ),
                                 new PlaySoundEffect(DSSounds.BONK, ConstantFloat.of(1), ConstantFloat.of(1))
                         ),
-                        TimeCheck.time(IntRange.exact(0)).setPeriod(100).and(Condition.thisEntity(EntityCondition.isDragon()))
+                        TimeCheck.time(IntRange.exact(0)).setPeriod(100).and(Condition.thisEntity(EntityCondition.isAffectedByDragonsbane()))
                 )
                 .build(DRAGONSBANE.location()));
     }

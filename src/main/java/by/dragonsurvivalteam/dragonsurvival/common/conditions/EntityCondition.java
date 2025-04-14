@@ -192,4 +192,8 @@ public class EntityCondition {
     public static EntityPredicate isDragon() {
         return EntityPredicate.Builder.entity().subPredicate(DragonPredicate.Builder.dragon().build()).build();
     }
+
+    public static EntityPredicate isAffectedByDragonsbane() {
+        return EntityPredicate.Builder.entity().subPredicate(DragonPredicate.Builder.dragon().affectedByDragonsbane(true).build()).build();
+    }
 }

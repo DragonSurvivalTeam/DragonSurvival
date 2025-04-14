@@ -29,7 +29,8 @@
               "entity": "this",
               "predicate": {
                 "type_specific": {
-                  "type": "dragonsurvival:dragon_predicate"
+                  "type": "dragonsurvival:dragon_predicate",
+                  "affected_by_dragonsbane": true
                 }
               }
             }
@@ -71,7 +72,8 @@
                   "entity": "this",
                   "predicate": {
                     "type_specific": {
-                      "type": "dragonsurvival:dragon_predicate"
+                      "type": "dragonsurvival:dragon_predicate",
+                      "affected_by_dragonsbane": true
                     }
                   }
                 }
@@ -131,7 +133,8 @@
               "entity": "this",
               "predicate": {
                 "type_specific": {
-                  "type": "dragonsurvival:dragon_predicate"
+                  "type": "dragonsurvival:dragon_predicate",
+                  "affected_by_dragonsbane": true
                 }
               }
             }

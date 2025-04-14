@@ -92,7 +92,8 @@ public class BuiltInDragonSpecies {
                         TextColor.fromRgb(0xE84141),
                         TextColor.fromRgb(0x730B0B),
                         ClawInventoryData.Slot.PICKAXE
-                )
+                ),
+                Optional.of(true)
         ));
 
         context.register(SEA_DRAGON, new DragonSpecies(
@@ -129,7 +130,8 @@ public class BuiltInDragonSpecies {
                         TextColor.fromRgb(0x2DA5E0),
                         TextColor.fromRgb(0x1D7099),
                         ClawInventoryData.Slot.SHOVEL
-                )
+                ),
+                 Optional.of(true)
         ));
 
         context.register(FOREST_DRAGON, new DragonSpecies(
@@ -166,7 +168,8 @@ public class BuiltInDragonSpecies {
                         TextColor.fromRgb(0x41CC48),
                         TextColor.fromRgb(0x117816),
                         ClawInventoryData.Slot.AXE
-                )
+                ),
+                 Optional.of(true)
         ));
     }
 
