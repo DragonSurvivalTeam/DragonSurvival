@@ -171,7 +171,7 @@ public record DragonBody(
         event.dataPackRegistry(REGISTRY, DIRECT_CODEC, DIRECT_CODEC);
     }
 
-    public static boolean bodyIsValidForSpecies(final Holder<DragonBody> body, @Nullable Holder<DragonSpecies> species) {
+    public static boolean bodyIsValidForSpecies(final Holder<DragonBody> body, @Nullable final Holder<DragonSpecies> species) {
         if (species == null || species.value().bodies().size() == 0) {
             return body.value().isDefault();
         } else {
