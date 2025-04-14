@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.commands.arguments;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -24,9 +25,11 @@ public class DragonBodyArgument implements ArgumentType<Holder<DragonBody>> {
     public static final String ID = "dragon_body";
 
     private final HolderLookup.RegistryLookup<DragonBody> lookup;
+    private final CommandBuildContext context;
 
     public DragonBodyArgument(final CommandBuildContext context) {
         lookup = context.lookupOrThrow(DragonBody.REGISTRY);
+        this.context = context;
     }
 
     @Override
@@ -43,7 +46,18 @@ public class DragonBodyArgument implements ArgumentType<Holder<DragonBody>> {
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
         List<String> suggestions = new ArrayList<>();
-        lookup.listElementIds().forEach(element -> suggestions.add(element.location().toString()));
+        Holder<DragonSpecies> species = DragonSpeciesArgument.get(context);
+
+        if (species != null) {
+            this.context.lookupOrThrow(DragonBody.REGISTRY).listElements().forEach(body -> {
+                if (DragonBody.bodyIsValidForSpecies(body, species)) {
+                    suggestions.add(body.getRegisteredName());
+                }
+            });
+        } else {
+            lookup.listElementIds().forEach(element -> suggestions.add(element.location().toString()));
+        }
+
         return SharedSuggestionProvider.suggest(suggestions, builder);
     }
 }
