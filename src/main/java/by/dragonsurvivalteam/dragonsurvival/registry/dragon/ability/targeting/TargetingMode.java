@@ -36,7 +36,9 @@ public enum TargetingMode implements StringRepresentable {
     @Translation(comments = "enemies")
     ENEMIES("enemies"),
     @Translation(comments = "items")
-    ITEMS("items");
+    ITEMS("items"),
+    @Translation(comments = "everyone except yourself")
+    ALL_EXCEPT_SELF("all_except_self");
 
     @Translation(key = "player_targeting_handling", type = Translation.Type.CONFIGURATION, comments = {
             "Determines how players are handled for the initial targeting of abilities",
@@ -62,7 +64,7 @@ public enum TargetingMode implements StringRepresentable {
         }
 
         if (player == target) {
-            return this == TargetingMode.ALLIES_AND_SELF || this == TargetingMode.NON_ENEMIES;
+            return this == TargetingMode.ALLIES_AND_SELF || this == TargetingMode.NON_ENEMIES || this != TargetingMode.ALL_EXCEPT_SELF;
         }
 
         if (target instanceof ItemEntity) {
@@ -77,7 +79,7 @@ public enum TargetingMode implements StringRepresentable {
             return this == TargetingMode.ENEMIES || this == TargetingMode.NON_ALLIES;
         }
 
-        return this == TargetingMode.NEUTRAL || this == TargetingMode.NON_ALLIES || this == TargetingMode.NON_ENEMIES;
+        return this == TargetingMode.NEUTRAL || this == TargetingMode.NON_ALLIES || this == TargetingMode.NON_ENEMIES || this == TargetingMode.ALL_EXCEPT_SELF;
     }
 
     private boolean isFriendly(final Player player, final Entity target) {

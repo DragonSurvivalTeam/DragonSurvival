@@ -28,11 +28,9 @@ import java.util.function.Function;
 /** Apply hunter stack alpha change to armor pieces (for human players) */
 @Mixin(HumanoidArmorLayer.class)
 public abstract class HumanoidArmorLayerMixin {
-    @Unique
-    private static final Function<ResourceLocation, RenderType> dragonSurvival$TRANSLUCENT_ARMOR_CUTOUT_NO_CULL = Util.memoize(texture -> dragonSurvival$createTranslucentArmorCutoutNoCull("translucent_armor_cutout_no_cull", texture, false));
+    @Unique private static final Function<ResourceLocation, RenderType> dragonSurvival$TRANSLUCENT_ARMOR_CUTOUT_NO_CULL = Util.memoize(texture -> dragonSurvival$createTranslucentArmorCutoutNoCull("translucent_armor_cutout_no_cull", texture, false));
 
-    @Unique
-    private static final Function<ResourceLocation, RenderType> dragonSurvival$TRANSLUCENT_ARMOR_DECAL_CUTOUT_NO_CULL = Util.memoize(texture -> dragonSurvival$createTranslucentArmorCutoutNoCull("translucent_armor_decal_cutout_no_cull", texture, true));
+    @Unique private static final Function<ResourceLocation, RenderType> dragonSurvival$TRANSLUCENT_ARMOR_DECAL_CUTOUT_NO_CULL = Util.memoize(texture -> dragonSurvival$createTranslucentArmorCutoutNoCull("translucent_armor_decal_cutout_no_cull", texture, true));
 
     /** Needed because there is no entity context at certain points - not an issue since the game is not multithreaded */
     @Unique private static int dragonSurvival$alpha = HunterHandler.UNMODIFIED;
@@ -83,8 +81,7 @@ public abstract class HumanoidArmorLayerMixin {
         original.call(instance, poseStack, vertexConsumer, packedLight, packedOverlay);
     }
 
-    @Unique
-    private static RenderType.CompositeRenderType dragonSurvival$createTranslucentArmorCutoutNoCull(final String name, final ResourceLocation texture, boolean equalDepthTest) {
+    @Unique private static RenderType.CompositeRenderType dragonSurvival$createTranslucentArmorCutoutNoCull(final String name, final ResourceLocation texture, boolean equalDepthTest) {
         RenderType.CompositeState state = RenderType.CompositeState.builder()
                 .setShaderState(RenderStateShard.RENDERTYPE_ARMOR_CUTOUT_NO_CULL_SHADER)
                 .setTextureState(new RenderStateShard.TextureStateShard(texture, false, false))

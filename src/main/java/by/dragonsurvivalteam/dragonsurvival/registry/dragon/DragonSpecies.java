@@ -50,7 +50,8 @@ public class DragonSpecies implements AttributeModifierSupplier {
             RegistryCodecs.homogeneousList(DragonBody.REGISTRY).optionalFieldOf("bodies", HolderSet.empty()).forGetter(DragonSpecies::bodies),
             RegistryCodecs.homogeneousList(DragonAbility.REGISTRY).optionalFieldOf("abilities", HolderSet.empty()).forGetter(DragonSpecies::abilities),
             RegistryCodecs.homogeneousList(DragonPenalty.REGISTRY).optionalFieldOf("penalties", HolderSet.empty()).forGetter(DragonSpecies::penalties),
-            MiscResources.CODEC.fieldOf("misc_resources").forGetter(DragonSpecies::miscResources)
+            MiscResources.CODEC.fieldOf("misc_resources").forGetter(DragonSpecies::miscResources),
+            Codec.BOOL.optionalFieldOf("affected_by_dragonsbane").forGetter(DragonSpecies::affectedByDragonsbane)
     ).apply(instance, instance.stable(DragonSpecies::new)));
 
     public static final Codec<Holder<DragonSpecies>> CODEC = RegistryFixedCodec.create(REGISTRY);
@@ -64,6 +65,7 @@ public class DragonSpecies implements AttributeModifierSupplier {
     private final HolderSet<DragonAbility> abilities;
     private final HolderSet<DragonPenalty> penalties;
     private final MiscResources miscResources;
+    private final Optional<Boolean> affectedByDragonsbane;
 
     public DragonSpecies(
             final Optional<Double> startingGrowth,
@@ -73,7 +75,8 @@ public class DragonSpecies implements AttributeModifierSupplier {
             final HolderSet<DragonBody> bodies,
             final HolderSet<DragonAbility> abilities,
             final HolderSet<DragonPenalty> penalties,
-            final MiscResources miscResources
+            final MiscResources miscResources,
+            final Optional<Boolean> affectedByDragonsbane
     ) {
         this.startingGrowth = startingGrowth;
         this.unlockableBehavior = unlockableBehavior;
@@ -83,6 +86,7 @@ public class DragonSpecies implements AttributeModifierSupplier {
         this.abilities = abilities;
         this.penalties = penalties;
         this.miscResources = miscResources;
+        this.affectedByDragonsbane = affectedByDragonsbane;
     }
 
     public static void validate(@Nullable final HolderLookup.Provider provider) {
@@ -220,6 +224,10 @@ public class DragonSpecies implements AttributeModifierSupplier {
 
     public MiscResources miscResources() {
         return miscResources;
+    }
+
+    public Optional<Boolean> affectedByDragonsbane() {
+        return affectedByDragonsbane;
     }
 
     public HolderSet<DragonPenalty> penalties() {
