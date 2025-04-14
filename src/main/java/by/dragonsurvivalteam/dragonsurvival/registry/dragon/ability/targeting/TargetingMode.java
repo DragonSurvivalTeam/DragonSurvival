@@ -37,7 +37,7 @@ public enum TargetingMode implements StringRepresentable {
     ENEMIES("enemies"),
     @Translation(comments = "items")
     ITEMS("items"),
-    @Translation(comments = "all except self")
+    @Translation(comments = "everyone except yourself")
     ALL_EXCEPT_SELF("all_except_self");
 
     @Translation(key = "player_targeting_handling", type = Translation.Type.CONFIGURATION, comments = {

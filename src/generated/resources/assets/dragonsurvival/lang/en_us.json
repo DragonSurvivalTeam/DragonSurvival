@@ -1285,6 +1285,7 @@
   "enum.tab_button_type.skins_tab": "Skin Info",
   "enum.tab_button_type.species_tab": "Species Info",
   "enum.targeting_mode.all": "all entities",
+  "enum.targeting_mode.all_except_self": "everyone except yourself",
   "enum.targeting_mode.allies": "allies",
   "enum.targeting_mode.allies_and_self": "allies and yourself",
   "enum.targeting_mode.enemies": "enemies",
