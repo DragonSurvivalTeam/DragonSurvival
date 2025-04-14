@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.CustomPredi
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.DragonPredicate;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.EntityCheckPredicate;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.NearbyEntityPredicate;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import net.minecraft.advancements.critereon.BlockPredicate;
 import net.minecraft.advancements.critereon.EntityEquipmentPredicate;
 import net.minecraft.advancements.critereon.EntityFlagsPredicate;
@@ -43,6 +44,10 @@ public class EntityCondition {
 
     public static EntityPredicate isType(final EntityCheckPredicate.Type type) {
         return EntityPredicate.Builder.entity().subPredicate(EntityCheckPredicate.Builder.start().type(type).build()).build();
+    }
+
+    public static EntityPredicate isSpecies(final HolderSet<DragonSpecies> species) {
+        return EntityPredicate.Builder.entity().subPredicate(DragonPredicate.Builder.dragon().species(species).build()).build();
     }
 
     public static EntityPredicate isOnBlock(final TagKey<Block> tag) {
@@ -191,9 +196,5 @@ public class EntityCondition {
 
     public static EntityPredicate isDragon() {
         return EntityPredicate.Builder.entity().subPredicate(DragonPredicate.Builder.dragon().build()).build();
-    }
-
-    public static EntityPredicate isAffectedByDragonsbane() {
-        return EntityPredicate.Builder.entity().subPredicate(DragonPredicate.Builder.dragon().affectedByDragonsbane(true).build()).build();
     }
 }

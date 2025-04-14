@@ -3,8 +3,10 @@ package by.dragonsurvivalteam.dragonsurvival.registry;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.conditions.EntityCondition;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonSpeciesTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEnchantmentTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import net.minecraft.advancements.critereon.DamageSourcePredicate;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.component.DataComponentMap;
@@ -30,10 +32,7 @@ import net.minecraft.world.item.enchantment.effects.DamageItem;
 import net.minecraft.world.item.enchantment.effects.PlaySoundEffect;
 import net.minecraft.world.level.storage.loot.IntRange;
 import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.predicates.AnyOfCondition;
-import net.minecraft.world.level.storage.loot.predicates.DamageSourceCondition;
-import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
-import net.minecraft.world.level.storage.loot.predicates.TimeCheck;
+import net.minecraft.world.level.storage.loot.predicates.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -128,7 +127,7 @@ public class DSEnchantments {
                         // this -> attacked entity
                         AnyOfCondition.anyOf(
                                 Condition.thisEntity(EntityCondition.isType(DSEntityTypeTags.DRAGONS)),
-                                Condition.thisEntity(EntityCondition.isAffectedByDragonsbane())
+                                Condition.thisEntity(EntityCondition.isSpecies(context.lookup(DragonSpecies.REGISTRY).getOrThrow(DSDragonSpeciesTags.TRUE_DRAGONS)))
                         )
                 )
                 .withEffect(
@@ -145,7 +144,8 @@ public class DSEnchantments {
                         // this -> attacked entity
                         AnyOfCondition.anyOf(
                                 LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS, EntityCondition.isType(EntityType.ENDER_DRAGON)),
-                                LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS, EntityCondition.isAffectedByDragonsbane())
+                                Condition.thisEntity(EntityCondition.isSpecies(context.lookup(DragonSpecies.REGISTRY).getOrThrow(DSDragonSpeciesTags.TRUE_DRAGONS)))
+
                         ).and(DamageSourceCondition.hasDamageSource(DamageSourcePredicate.Builder.damageType().isDirect(true)))
                 )
                 .withEffect(
@@ -166,7 +166,8 @@ public class DSEnchantments {
                                 ),
                                 new PlaySoundEffect(DSSounds.BONK, ConstantFloat.of(1), ConstantFloat.of(1))
                         ),
-                        TimeCheck.time(IntRange.exact(0)).setPeriod(100).and(Condition.thisEntity(EntityCondition.isAffectedByDragonsbane()))
+                        TimeCheck.time(IntRange.exact(0)).setPeriod(100).and(Condition.thisEntity(EntityCondition.isSpecies(context.lookup(DragonSpecies.REGISTRY).getOrThrow(DSDragonSpeciesTags.TRUE_DRAGONS)))
+                        )
                 )
                 .build(DRAGONSBANE.location()));
     }
