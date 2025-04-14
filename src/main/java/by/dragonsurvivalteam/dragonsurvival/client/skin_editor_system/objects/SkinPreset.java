@@ -15,6 +15,7 @@ import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -80,8 +81,16 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
     public HashMap<ResourceKey<DragonStage>, Lazy<DragonStageCustomization>> initialize() {
         HashMap<ResourceKey<DragonStage>, Lazy<DragonStageCustomization>> customizations = new HashMap<>();
 
-        for (ResourceKey<DragonStage> dragonStage : ResourceHelper.keys(null, DragonStage.REGISTRY)) {
-            customizations.computeIfAbsent(dragonStage, location -> Lazy.of(DragonStageCustomization::new));
+        List<ResourceKey<DragonStage>> stageKeys;
+        if (species != null) {
+            Optional<Holder.Reference<DragonSpecies>> speciesHolder = ResourceHelper.get(null, species);
+            stageKeys = speciesHolder.map(dragonSpeciesReference -> dragonSpeciesReference.value().getStages(null).stream().map(Holder::getKey).toList()).orElseGet(List::of);
+        } else {
+            stageKeys = ResourceHelper.keys(null, DragonStage.REGISTRY);
+        }
+
+        for (ResourceKey<DragonStage> dragonStage : stageKeys) {
+            customizations.computeIfAbsent(dragonStage, location -> Lazy.of(() -> new DragonStageCustomization(dragonStage, species, model)));
         }
 
         return customizations;
@@ -96,18 +105,15 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
             tag.putString(SPECIES, species.location().toString());
         }
 
+        List<ResourceKey<DragonStage>> stageKeys;
         if (species != null) {
             Optional<Holder.Reference<DragonSpecies>> speciesHolder = ResourceHelper.get(provider, species);
-            if(speciesHolder.isPresent()) {
-                for (Holder<DragonStage> dragonStage : speciesHolder.get().value().getStages(provider)) {
-                    tag.put(dragonStage.getKey().location().toString(), skins.get().getOrDefault(dragonStage.getKey(), Lazy.of(DragonStageCustomization::new)).get().serializeNBT(provider));
-                }
-
-                return tag;
-            }
+            stageKeys = speciesHolder.map(dragonSpeciesReference -> dragonSpeciesReference.value().getStages(provider).stream().map(Holder::getKey).toList()).orElseGet(List::of);
+        } else {
+            stageKeys = ResourceHelper.keys(provider, DragonStage.REGISTRY);
         }
 
-        for (ResourceKey<DragonStage> dragonStage : ResourceHelper.keys(provider, DragonStage.REGISTRY)) {
+        for (ResourceKey<DragonStage> dragonStage : stageKeys) {
             tag.put(dragonStage.location().toString(), skins.get().getOrDefault(dragonStage, Lazy.of(DragonStageCustomization::new)).get().serializeNBT(provider));
         }
 
@@ -116,18 +122,27 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
 
     @Override
     public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag base) {
-        for (ResourceKey<DragonStage> dragonStage : ResourceHelper.keys(provider, DragonStage.REGISTRY)) {
-            skins.get().put(dragonStage, Lazy.of(() -> {
-                        DragonStageCustomization group = new DragonStageCustomization();
-                        CompoundTag dragonStageData = base.getCompound(dragonStage.location().toString());
-                        group.deserializeNBT(provider, dragonStageData);
-                        return group;
-                    })
-            );
-        }
-
         this.species = ResourceKey.create(DragonSpecies.REGISTRY, ResourceLocation.parse(base.getString(SPECIES)));
         ResourceLocation.read(base.getString(MODEL)).ifSuccess(model -> this.model = model);
+
+        List<ResourceKey<DragonStage>> stageKeys;
+        if (species != null) {
+            Optional<Holder.Reference<DragonSpecies>> speciesHolder = ResourceHelper.get(provider, species);
+            stageKeys = speciesHolder.map(dragonSpeciesReference -> dragonSpeciesReference.value().getStages(provider).stream().map(Holder::getKey).toList()).orElseGet(List::of);
+        } else {
+            stageKeys = ResourceHelper.keys(provider, DragonStage.REGISTRY);
+        }
+
+        for (ResourceKey<DragonStage> dragonStage : stageKeys) {
+            if (base.contains(dragonStage.location().toString())) {
+                skins.get().put(dragonStage, Lazy.of(() -> {
+                    DragonStageCustomization group = new DragonStageCustomization();
+                    CompoundTag dragonStageData = base.getCompound(dragonStage.location().toString());
+                    group.deserializeNBT(provider, dragonStageData);
+                    return group;
+                }));
+            }
+        }
     }
 
     public void setSpecies(final ResourceKey<DragonSpecies> species) {

@@ -194,7 +194,7 @@ public class DragonSpecies implements AttributeModifierSupplier {
         return DragonStage.get(getStages(provider), getStartingGrowth(provider));
     }
 
-    public HolderSet<DragonStage> getStages(@Nullable final HolderLookup.Provider provider) {
+    public HolderSet<DragonStage>  getStages(@Nullable final HolderLookup.Provider provider) {
         return customStageProgression.orElseGet(() -> DragonStage.getDefaultStages(provider));
     }
 

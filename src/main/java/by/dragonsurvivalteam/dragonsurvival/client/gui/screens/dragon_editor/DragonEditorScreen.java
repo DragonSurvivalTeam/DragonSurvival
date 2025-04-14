@@ -837,6 +837,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
             // Don't actually modify the skin preset here, do it inside setSkinPresetAction
             SkinPreset preset = new SkinPreset();
+            preset.setSpecies(species.getKey());
             preset.deserializeNBT(access, this.preset.serializeNBT(access));
 
             for (SkinLayer layer : SkinLayer.values()) {
@@ -948,7 +949,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         HoverButton resetButton = new HoverButton(guiLeft + 9, height - 30, 20, 20, 20, 20, RESET_MAIN, RESET_HOVER, button -> {
             // Don't actually modify the skin preset here, do it inside setSkinPresetAction
             SkinPreset preset = new SkinPreset();
-
+            preset.setSpecies(species.getKey());
             preset.deserializeNBT(access, this.preset.serializeNBT(access));
             preset.put(stage.getKey(), Lazy.of(() -> new DragonStageCustomization(stage.getKey(), species.getKey(), body.value().model())));
             actionHistory.add(new EditorAction<>(setSkinPresetAction, preset.serializeNBT(access)));
