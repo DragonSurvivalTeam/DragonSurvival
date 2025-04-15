@@ -55,6 +55,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
@@ -387,9 +389,12 @@ public class DragonStateHandler extends EntityStateHandler {
                 }
             }
 
-            if (skinData.skinPresets.get().get(speciesKey()).isEmpty()) {
-                refreshSkinPresetForSpecies(dragonSpecies, dragonBody);
-                recompileCurrentSkin();
+            // The server doesn't need to check for skin preset refreshes; the client handles this
+            if(FMLLoader.getDist().isClient()) {
+                if (skinData.skinPresets.get().get(speciesKey()).isEmpty()) {
+                    refreshSkinPresetForSpecies(dragonSpecies, dragonBody);
+                    recompileCurrentSkin();
+                }
             }
         }
 
@@ -687,7 +692,7 @@ public class DragonStateHandler extends EntityStateHandler {
         });
 
         skinData = new SkinData();
-        skinData.deserializeNBT(provider, tag.getCompound(SKIN_DATA));
+        skinData.deserializeNBT(provider, tag.getCompound(SKIN_DATA), dragonBody);
         super.deserializeNBT(provider, tag.getCompound(ENTITY_STATE));
 
         if (isDragon()) {

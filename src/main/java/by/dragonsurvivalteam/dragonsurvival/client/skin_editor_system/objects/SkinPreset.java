@@ -10,6 +10,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
@@ -63,6 +65,12 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
     }
 
     public void initDefaults(final Holder<DragonSpecies> species, final ResourceLocation model) {
+        if (FMLLoader.getDist().isDedicatedServer()) {
+            // Don't try to initialize default data for skin presets when asked by the server, as the server doesn't have the part data
+            // to construct this data anyways
+            return;
+        }
+
         if (species == null) {
             return;
         }
@@ -73,12 +81,24 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
             this.model = model;
         }
 
-        for (Holder<DragonStage> dragonStage : species.value().getStages(null)) {
-            skins.get().put(dragonStage.getKey(), Lazy.of(() -> new DragonStageCustomization(dragonStage.getKey(), species.getKey(), this.model)));
+        if (this.model == null) {
+            for (Holder<DragonStage> dragonStage : species.value().getStages(null)) {
+                skins.get().put(dragonStage.getKey(), Lazy.of(DragonStageCustomization::new));
+            }
+        } else {
+            for (Holder<DragonStage> dragonStage : species.value().getStages(null)) {
+                skins.get().put(dragonStage.getKey(), Lazy.of(() -> new DragonStageCustomization(dragonStage.getKey(), species.getKey(), this.model)));
+            }
         }
     }
 
     public HashMap<ResourceKey<DragonStage>, Lazy<DragonStageCustomization>> initialize() {
+        if (FMLLoader.getDist().isDedicatedServer()) {
+            // Don't try to initialize default data for skin presets when asked by the server, as the server doesn't have the part data
+            // to construct this data anyways
+            return new HashMap<>();
+        }
+
         HashMap<ResourceKey<DragonStage>, Lazy<DragonStageCustomization>> customizations = new HashMap<>();
 
         List<ResourceKey<DragonStage>> stageKeys;
@@ -114,7 +134,9 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
         }
 
         for (ResourceKey<DragonStage> dragonStage : stageKeys) {
-            tag.put(dragonStage.location().toString(), skins.get().getOrDefault(dragonStage, Lazy.of(DragonStageCustomization::new)).get().serializeNBT(provider));
+            if(skins.get().containsKey(dragonStage)) {
+                tag.put(dragonStage.location().toString(), skins.get().getOrDefault(dragonStage, Lazy.of(DragonStageCustomization::new)).get().serializeNBT(provider));
+            }
         }
 
         return tag;
@@ -169,10 +191,6 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
                 }));
             }
         }
-    }
-
-    public void setSpecies(final ResourceKey<DragonSpecies> species) {
-        this.species = species;
     }
 
     public ResourceLocation getModel() {

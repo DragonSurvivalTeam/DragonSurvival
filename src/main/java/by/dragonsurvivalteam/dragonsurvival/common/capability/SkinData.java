@@ -1,14 +1,20 @@
 package by.dragonsurvivalteam.dragonsurvival.common.capability;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.SkinPreset;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
@@ -27,11 +33,17 @@ public class SkinData implements INBTSerializable<CompoundTag> {
     public boolean blankSkin;
 
     public HashMap<ResourceKey<DragonSpecies>, SkinPreset> initialize() {
+        if (FMLLoader.getDist().isDedicatedServer()) {
+            // Don't try to initialize default data for skin presets when asked by the server, as the server doesn't have the part data
+            // to construct this data anyways
+            return new HashMap<>();
+        }
+
         HashMap<ResourceKey<DragonSpecies>, SkinPreset> presets = new HashMap<>();
 
         for (ResourceKey<DragonSpecies> dragonSpecies : ResourceHelper.keys(null, DragonSpecies.REGISTRY)) {
             SkinPreset preset = new SkinPreset();
-            preset.setSpecies(dragonSpecies);
+            preset.initDefaults(ResourceHelper.get(null, dragonSpecies).get(), null);
             presets.put(dragonSpecies, preset);
         }
 
@@ -56,6 +68,32 @@ public class SkinData implements INBTSerializable<CompoundTag> {
         }
 
         return tag;
+    }
+
+    // Used when loading the dragon handler data to properly setup skin data on the client if the server sends empty skin data
+    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, final CompoundTag tag, final Holder<DragonBody> currentBody) {
+        renderCustomSkin = tag.getBoolean(RENDER_CUSTOM_SKIN);
+
+        for (String key : tag.getAllKeys()) {
+            ResourceKey<DragonSpecies> dragonSpecies = ResourceKey.create(DragonSpecies.REGISTRY, ResourceLocation.parse(key));
+
+            if (provider.lookup(DragonSpecies.REGISTRY).flatMap(lookup -> lookup.get(dragonSpecies)).isPresent()) {
+                SkinPreset preset = new SkinPreset();
+                preset.deserializeNBT(provider, tag.getCompound(key), dragonSpecies);
+                if(preset.isEmpty()) {
+                    Holder<DragonSpecies> speciesHolder = ResourceHelper.get(provider, dragonSpecies).get();
+                    HolderSet<DragonBody> bodiesForSpecies = speciesHolder.value().bodies();
+                    if (speciesHolder.value().isValidForBody(currentBody)) {
+                        preset.initDefaults(speciesHolder, currentBody.value().model());
+                    }else if (bodiesForSpecies.size() != 0) {
+                        preset.initDefaults(speciesHolder, speciesHolder.value().bodies().get(0).value().model());
+                    } else {
+                        DragonSurvival.LOGGER.error("Failed to load default skin data for species {}: no bodies found", dragonSpecies.location());
+                    }
+                }
+                skinPresets.get().put(dragonSpecies, preset);
+            }
+        }
     }
 
     @Override
