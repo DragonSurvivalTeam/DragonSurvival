@@ -120,6 +120,32 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
         return tag;
     }
 
+    // Special version of deserializeNBT to fix up broken data from an older version of the mod
+    // The tag encoding of the species was broken and was just giving "minecraft:" as the species instead of what it should be
+    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag base, ResourceKey<DragonSpecies> species) {
+        this.species = species;
+        ResourceLocation.read(base.getString(MODEL)).ifSuccess(model -> this.model = model);
+
+        List<ResourceKey<DragonStage>> stageKeys;
+        if (species != null) {
+            Optional<Holder.Reference<DragonSpecies>> speciesHolder = ResourceHelper.get(provider, species);
+            stageKeys = speciesHolder.map(dragonSpeciesReference -> dragonSpeciesReference.value().getStages(provider).stream().map(Holder::getKey).toList()).orElseGet(List::of);
+        } else {
+            stageKeys = ResourceHelper.keys(provider, DragonStage.REGISTRY);
+        }
+
+        for (ResourceKey<DragonStage> dragonStage : stageKeys) {
+            if (base.contains(dragonStage.location().toString())) {
+                skins.get().put(dragonStage, Lazy.of(() -> {
+                    DragonStageCustomization group = new DragonStageCustomization();
+                    CompoundTag dragonStageData = base.getCompound(dragonStage.location().toString());
+                    group.deserializeNBT(provider, dragonStageData);
+                    return group;
+                }));
+            }
+        }
+    }
+
     @Override
     public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag base) {
         this.species = ResourceKey.create(DragonSpecies.REGISTRY, ResourceLocation.parse(base.getString(SPECIES)));

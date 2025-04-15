@@ -67,7 +67,7 @@ public class SkinData implements INBTSerializable<CompoundTag> {
 
             if (provider.lookup(DragonSpecies.REGISTRY).flatMap(lookup -> lookup.get(dragonSpecies)).isPresent()) {
                 SkinPreset preset = new SkinPreset();
-                preset.deserializeNBT(provider, tag.getCompound(key));
+                preset.deserializeNBT(provider, tag.getCompound(key), dragonSpecies);
                 skinPresets.get().put(dragonSpecies, preset);
             }
         }
