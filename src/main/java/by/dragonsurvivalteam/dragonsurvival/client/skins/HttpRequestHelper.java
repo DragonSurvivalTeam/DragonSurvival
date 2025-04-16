@@ -63,4 +63,3 @@ public class HttpRequestHelper {
     public InputStream getResponseBody() { return responseStream; }
     public Map<String, List<String>> getResponseHeaders() { return responseHeaders; }
 }
-
