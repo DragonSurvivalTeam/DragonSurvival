@@ -40,7 +40,7 @@ public class DragonSkins {
 
     public static final List<Supplier<NetSkinLoader>> SKIN_LOADERS = List.of(GithubSkinLoader::new, GiteeSkinLoader::new);
 
-    public static NetSkinLoader skinLoader = new GithubSkinLoaderAPI();
+    public static NetSkinLoader skinLoader = new GithubSkinLoader();
 
     private static final ArrayList<String> hasFailedFetch = new ArrayList<>();
     private static double lastSkinFetchAttemptTime;
@@ -126,26 +126,11 @@ public class DragonSkins {
                 return resource;
             }
         }
-
-        HashMap<String, SkinObject> playerSkinMap = USER_SKINS.getOrDefault(stage, null);
-
-        // Wait an increasing amount of time depending on the number of failed attempts
-        while (numSkinFetchAttempts < 10 && playerSkinMap == null) {
-            if (lastSkinFetchAttemptTime + numSkinFetchAttempts < Blaze3D.getTime()) {
-                DragonSurvival.LOGGER.warn("Customs skins are not yet fetched, re-fetching...");
-                init();
-
-                numSkinFetchAttempts++;
-                lastSkinFetchAttemptTime = Blaze3D.getTime();
-
-                playerSkinMap = USER_SKINS.getOrDefault(stage, null);
-
-                if (playerSkinMap == null) {
-                    DragonSurvival.LOGGER.error("Custom skins could not be fetched");
-                }
-            }
+        if (USER_SKINS.isEmpty()) {
+            init();
         }
 
+        HashMap<String, SkinObject> playerSkinMap = USER_SKINS.getOrDefault(stage, null);
         String skinName = StringUtils.join(ArrayUtils.addAll(new String[]{playerName}, extra), "_");
         SkinObject skin = null;
 
@@ -153,30 +138,25 @@ public class DragonSkins {
             skin = playerSkinMap.getOrDefault(skinName, null);
         }
 
-//        // Only use the API to get the names (for the random button)
-//        if (skinLoader instanceof GithubSkinLoader gitHubOld) {
-//            try (InputStream imageStream = gitHubOld.querySkinImage(skinName, stage)) {
-//                return readSkin(imageStream, resource);
-//            } catch (IOException exception) {
-//                return fetchSkinResource(playerName, stage, extra, exception, playerKey);
-//            }
-//        }
-
-        if (skin == null && stage == AncientDatapack.ancient) {
-            DragonSurvival.LOGGER.warn("Failed to get skin information for ancient stage for {}. Falling back to using adult stage.", playerName);
-            return fetchSkinFile(playerName, DragonStages.adult, extra);
+        if (skin == null) {
+            if (stage == AncientDatapack.ancient){
+                DragonSurvival.LOGGER.warn("Failed to get skin information for ancient stage for {}. Falling back to using adult stage.", playerName);
+                return fetchSkinFile(playerName, DragonStages.adult, extra);
+            }else{
+                return fetchSkinResource(extra, playerKey, null);
+            }
         }
 
         try (InputStream imageStream = skinLoader.querySkinImage(skin)) {
             return readSkin(imageStream, resource);
         } catch (Exception exception) {
-            return fetchSkinResource(extra, playerKey);
+            return fetchSkinResource(extra, playerKey, exception);
         }
     }
 
-    private static @Nullable ResourceLocation fetchSkinResource(final String[] extra, final String playerKey) {
+    private static @Nullable ResourceLocation fetchSkinResource(final String[] extra, final String playerKey, @Nullable Exception exception) {
         boolean isNormalSkin = extra == null || extra.length == 0;
-        handleSkinFetchError(playerKey, isNormalSkin);
+        handleSkinFetchError(playerKey, isNormalSkin, exception);
         return null;
     }
 
@@ -193,11 +173,16 @@ public class DragonSkins {
         return location;
     }
 
-    private static void handleSkinFetchError(final String playerKey, boolean isNormalSkin) {
+    private static void handleSkinFetchError(final String playerKey, boolean isNormalSkin, @Nullable Exception exception) {
         // A failed attempt for fetching a glow skin should not result in no longer attempting to fetch the normal skin
         if (isNormalSkin) {
             if (!hasFailedFetch.contains(playerKey)) {
-                DragonSurvival.LOGGER.info("Custom skin for user {} doesn't exist", playerKey);
+                if (exception != null){
+                    DragonSurvival.LOGGER.info("Custom skin for user {} doesn't exist", playerKey, exception);
+                }
+                else{
+                    DragonSurvival.LOGGER.info("Custom skin for user {} doesn't exist", playerKey);
+                }
                 hasFailedFetch.add(playerKey);
             }
         }
@@ -228,13 +213,10 @@ public class DragonSkins {
         init(false);
     }
 
-    public static void init(boolean force) {
+    public static synchronized void init(boolean force) {
         if (initialized && !force) {
             return;
         }
-
-        initialized = true;
-        Collection<SkinObject> skins;
         invalidateSkins();
         for (Supplier<NetSkinLoader> loader : SKIN_LOADERS) {
             NetSkinLoader testLoader = loader.get();
@@ -248,9 +230,17 @@ public class DragonSkins {
             DragonSurvival.LOGGER.warn("Unable to connect to skin database.");
             return;
         }
-        skins = skinLoader.querySkinList();
-        if (skins != null) {
+        try {
+            Collection<SkinObject> skins = skinLoader.querySkinList();
+            if (skins == null) {
+                DragonSurvival.LOGGER.warn("Unable to connect to skin database.");
+                return;
+            }
             parseSkinObjects(skins);
+            initialized = true;
+        }
+        catch (IOException e) {
+            DragonSurvival.LOGGER.warn("Unable to connect to skin database.", e);
         }
     }
 
