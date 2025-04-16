@@ -20,6 +20,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.dragon_editor.SyncDragonSkin
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonBodyTags;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonSpeciesTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
@@ -212,7 +213,7 @@ public class DragonSkinsScreen extends Screen {
                 if (handler.stage() == null) {
                     boolean alreadyUsingDefaults = handler.getCurrentSkinPreset().isStageUsingDefaultSkin(dragonStage.getKey());
                     handler.setGrowth(null, handler.species().value().getStartingGrowth(minecraft.player.registryAccess()));
-                    handler.setCurrentStageCustomization(DragonStateProvider.getData(minecraft.player).getCustomizationForStage(dragonStage.getKey()));
+                    updateHandlerToUseCorrectSkinData();
                     handler.getCurrentSkinPreset().setAllStagesToUseDefaultSkin(alreadyUsingDefaults);
                     DragonSkinsScreen.dragonStage = handler.stage();
                 }
@@ -249,6 +250,17 @@ public class DragonSkinsScreen extends Screen {
 
     public static void drawNonShadowString(@NotNull final GuiGraphics guiGraphics, final Font font, final Component component, int x, int y, int color) {
         guiGraphics.drawString(font, Language.getInstance().getVisualOrder(component), x - font.width(component) / 2, y, color, false);
+    }
+
+    private void updateHandlerToUseCorrectSkinData() {
+        ResourceKey<DragonSpecies> speciesToUseForSkinData;
+        DragonStateHandler playerData = DragonStateProvider.getData(minecraft.player);
+        if (playerData.isDragon() && (playerData.species().is(BuiltInDragonSpecies.CAVE_DRAGON) || playerData.species().is(BuiltInDragonSpecies.FOREST_DRAGON) || playerData.species().is(BuiltInDragonSpecies.SEA_DRAGON))) {
+            speciesToUseForSkinData = playerData.speciesKey();
+        } else {
+            speciesToUseForSkinData = BuiltInDragonSpecies.CAVE_DRAGON;
+        }
+        handler.setCurrentStageCustomization(DragonStateProvider.getData(minecraft.player).getCustomizationForStageAndSpecies(speciesToUseForSkinData, dragonStage.getKey()));
     }
 
     @Override
@@ -291,7 +303,7 @@ public class DragonSkinsScreen extends Screen {
         }
 
         handler.setStage(null, dragonStage);
-        handler.setCurrentStageCustomization(DragonStateProvider.getData(player).getCustomizationForStage(dragonStage.getKey()));
+        updateHandlerToUseCorrectSkinData();
         handler.getCurrentSkinPreset().setAllStagesToUseDefaultSkin(playerHandler.getCurrentSkinPreset().isAnyStageUsingDefaultSkin());
 
         TabButton.addTabButtonsToScreen(this, startX + 138, startY - 26, TabButton.TabButtonType.SKINS_TAB);
@@ -340,7 +352,7 @@ public class DragonSkinsScreen extends Screen {
             boolean alreadyUsingDefaults = handler.getCurrentSkinPreset().isStageUsingDefaultSkin(dragonStage.getKey());
             dragonStage = Objects.requireNonNull(player).registryAccess().holderOrThrow(Objects.requireNonNull(nextLevel));
             handler.setStage(null, dragonStage);
-            handler.setCurrentStageCustomization(DragonStateProvider.getData(player).getCustomizationForStage(dragonStage.getKey()));
+            updateHandlerToUseCorrectSkinData();
             handler.getCurrentSkinPreset().setAllStagesToUseDefaultSkin(alreadyUsingDefaults);
         });
         addRenderableWidget(leftArrowButton);
@@ -366,7 +378,7 @@ public class DragonSkinsScreen extends Screen {
             boolean alreadyUsingDefaults = handler.getCurrentSkinPreset().isStageUsingDefaultSkin(dragonStage.getKey());
             dragonStage = Objects.requireNonNull(player).registryAccess().holderOrThrow(Objects.requireNonNull(nextLevel));
             handler.setStage(null, dragonStage);
-            handler.setCurrentStageCustomization(DragonStateProvider.getData(player).getCustomizationForStage(dragonStage.getKey()));
+            updateHandlerToUseCorrectSkinData();
             handler.getCurrentSkinPreset().setAllStagesToUseDefaultSkin(alreadyUsingDefaults);
         });
         addRenderableWidget(rightArrowButton);

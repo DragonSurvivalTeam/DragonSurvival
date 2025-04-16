@@ -542,8 +542,8 @@ public class DragonStateHandler extends EntityStateHandler {
         return skinData.get(speciesKey(), stageKey()).get();
     }
 
-    public DragonStageCustomization getCustomizationForStage(final ResourceKey<DragonStage> stage) {
-        return skinData.get(speciesKey(), stage).get();
+    public DragonStageCustomization getCustomizationForStageAndSpecies(final ResourceKey<DragonSpecies> species, final ResourceKey<DragonStage> stage) {
+        return skinData.get(species, stage).get();
     }
 
     public CompoundTag serializeNBT(HolderLookup.Provider provider, boolean isDragonSoul) {

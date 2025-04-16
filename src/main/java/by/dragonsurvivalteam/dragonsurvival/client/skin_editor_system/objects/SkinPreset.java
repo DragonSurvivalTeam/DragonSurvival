@@ -36,7 +36,12 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
 
     public void setAllStagesToUseDefaultSkin(boolean defaultSkin) {
         for (ResourceKey<DragonStage> dragonStage : ResourceHelper.keys(null, DragonStage.REGISTRY)) {
-            DragonStageCustomization stageCustomization = skins.get().get(dragonStage).get();
+            Lazy<DragonStageCustomization> customizationForStage = skins.get().get(dragonStage);
+            if(customizationForStage == null) {
+                continue;
+            }
+
+            DragonStageCustomization stageCustomization = customizationForStage.get();
             stageCustomization.defaultSkin = defaultSkin;
             skins.get().put(dragonStage, Lazy.of(() -> stageCustomization));
         }
@@ -44,7 +49,8 @@ public class SkinPreset implements INBTSerializable<CompoundTag> {
 
     public boolean isAnyStageUsingDefaultSkin() {
         for (ResourceKey<DragonStage> dragonStage : ResourceHelper.keys(null, DragonStage.REGISTRY)) {
-            if (skins.get().get(dragonStage).get().defaultSkin) {
+            Lazy<DragonStageCustomization> customizationForStage = skins.get().get(dragonStage);
+            if (customizationForStage != null && customizationForStage.get().defaultSkin) {
                 return true;
             }
         }
