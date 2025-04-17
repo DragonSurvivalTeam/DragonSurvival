@@ -1,6 +1,9 @@
 package by.dragonsurvivalteam.dragonsurvival.config;
 
-import by.dragonsurvivalteam.dragonsurvival.config.obj.*;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigType;
 import by.dragonsurvivalteam.dragonsurvival.util.DragonLevel;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
@@ -185,48 +188,6 @@ public class ServerConfig{
 	@ConfigRange( min = 0.0, max = 1000 )
 	@ConfigOption( side = ConfigSide.SERVER, category = {"growth", "standard_dragon"}, key = "maxGrowthModifier", comment = "A multiplier to change the growth rate from full sized adult to max size. The change in growth after the maximum adult size is measured in months and years." )
 	public static Double maxGrowthModifier = 1.0;
-
-	@ConfigRange( min = 0.0, max = 1.0 )
-	@ConfigOption( side = ConfigSide.SERVER, category = "drops", key = "dragonHeartShardChance", comment = "The chance for dragon heart shards to drop from any mobs with max health between 14-20" )
-	public static Double dragonHeartShardChance = 0.03;
-
-	@ConfigRange( min = 0.0, max = 1.0 )
-	@ConfigOption( side = ConfigSide.SERVER, category = "drops", key = "weakDragonHeartChance", comment = "The chance for weak dragon heart to drop from any mobs with max health between 20-50" )
-	public static Double weakDragonHeartChance = 0.01;
-
-	@ConfigRange( min = 0.0, max = 1.0 )
-	@ConfigOption( side = ConfigSide.SERVER, category = "drops", key = "elderDragonHeartChance", comment = "The chance for dragon heart to drop from any mobs with max health above 50" )
-	public static Double elderDragonHeartChance = 0.01;
-
-	@ConfigType(EntityType.class)
-	@ConfigOption( side = ConfigSide.SERVER, category = "drops", key = "dragonHeartEntityList", comment = "Decide which entities can drop dragon hearts" )
-	public static List<String> dragonHeartEntityList = List.of();
-
-	@ConfigType(EntityType.class)
-	@ConfigOption( side = ConfigSide.SERVER, category = "drops", key = "weakDragonHeartEntityList", comment = "Decide which entities can drop weak dragon hearts" )
-	public static List<String> weakDragonHeartEntityList = List.of();
-
-	@ConfigType(EntityType.class)
-	@ConfigOption( side = ConfigSide.SERVER, category = "drops", key = "elderDragonHeartEntityList", comment = "Decide which entities can drop elder dragon hearts" )
-	public static List<String> elderDragonHeartEntityList = List.of();
-
-	@ConfigOption( side = ConfigSide.SERVER, category = "drops", key = "dragonHeartWhiteList", comment = "Should the dragonHeartEntityList be treated as an allowlist rather than a block list?" )
-	public static Boolean dragonHeartWhiteList = false;
-
-	@ConfigOption( side = ConfigSide.SERVER, category = "drops", key = "weakDragonHeartWhiteList", comment = "Should the weakDragonHeartEntityList be treated as an allowlist rather than a block list?" )
-	public static Boolean weakDragonHeartWhiteList = false;
-
-	@ConfigOption( side = ConfigSide.SERVER, category = "drops", key = "elderDragonHeartWhiteList", comment = "Should the elderDragonHeartEntityList be treated as an allowlist rather than a block list?" )
-	public static Boolean elderDragonHeartWhiteList = false;
-
-	@ConfigOption( side = ConfigSide.SERVER, category = "drops", key = "dragonHeartUseList", comment = "Should the dragonHeartEntityList be used instead of the health requirement?" )
-	public static Boolean dragonHeartUseList = false;
-
-	@ConfigOption( side = ConfigSide.SERVER, category = "drops", key = "weakDragonHeartUseList", comment = "Should the weakDragonHeartUseList be used instead of the health requirement?" )
-	public static Boolean weakDragonHeartUseList = false;
-
-	@ConfigOption( side = ConfigSide.SERVER, category = "drops", key = "elderDragonHeartUseList", comment = "Should the elderDragonHeartUseList be used instead of the health requirement?" )
-	public static Boolean elderDragonHeartUseList = false;
 
 	@ConfigOption( side = ConfigSide.SERVER, category = "treasure", key = "treasureHealthRegen", comment = "Whether sleeping on treasure will recover health or not. " )
 	public static Boolean treasureHealthRegen = true;
@@ -481,27 +442,6 @@ public class ServerConfig{
 	@ConfigType(Item.class)
 	@ConfigOption( side = ConfigSide.SERVER, category  = {"penalties", "sea"}, key = "seaHydrationItems", comment = "Additional modded USEABLE items that restore water when used (called from LivingEntityUseItemEvent.Finish). Format: item/modid:id" )
 	public static List<String> seaAdditionalWaterUseables = List.of("immersive_weathering:icicle");
-
-	// Ore Loot
-	@ConfigRange( min = 0.0, max = 1.0 )
-	@ConfigOption( side = ConfigSide.SERVER, category = {"drops", "ore"}, key = "humanOreDustChance", comment = "The odds of dust dropping when a human harvests an ore." )
-	public static Double humanOreDustChance = 0.1;
-
-	@ConfigRange( min = 0.0, max = 1.0 )
-	@ConfigOption( side = ConfigSide.SERVER, category = {"drops", "ore"}, key = "dragonOreDustChance", comment = "The odds of dust dropping when a dragon harvests an ore." )
-	public static Double dragonOreDustChance = 0.2;
-
-	@ConfigRange( min = 0.0, max = 1.0 )
-	@ConfigOption( side = ConfigSide.SERVER, category = {"drops", "ore"}, key = "humanOreBoneChance", comment = "The odds of a bone dropping when a human harvests an ore." )
-	public static Double humanOreBoneChance = 0.0;
-
-	@ConfigRange( min = 0.0, max = 1.0 )
-	@ConfigOption( side = ConfigSide.SERVER, category = {"drops", "ore"}, key = "dragonOreBoneChance", comment = "The odds of a bone dropping when a dragon harvests an ore." )
-	public static Double dragonOreBoneChance = 0.01;
-
-	@ConfigType(Block.class)
-	@ConfigOption( side = ConfigSide.SERVER, category = {"drops", "ore"}, key = "oresTag", comment = "The tag that contains all ores that can drop dust/bones when harvested. Will not drop if the ore drops another of the items in this tag. Format: modid:id" )
-	public static String oresTag = "forge:ores";
 
 	@ConfigType(Item.class)
 	@ConfigOption( side = ConfigSide.SERVER, category = {"food", "cave_dragon", "other"}, key = "hurtfulToCaveDragon", comment = "Items which will cause damage to cave dragons when consumed. Formatting: item/modid:itemid:damage" )
