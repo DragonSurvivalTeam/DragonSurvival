@@ -17,6 +17,7 @@ import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -70,7 +71,7 @@ public class SkinData implements INBTSerializable<CompoundTag> {
     }
 
     // Used when loading the dragon handler data to properly setup skin data on the client if the server sends empty skin data
-    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, final CompoundTag tag, final Holder<DragonBody> currentBody) {
+    public void deserializeNBT(@NotNull final HolderLookup.Provider provider, final CompoundTag tag, @Nullable final Holder<DragonBody> currentBody) {
         renderCustomSkin = tag.getBoolean(RENDER_CUSTOM_SKIN);
 
         for (String key : tag.getAllKeys()) {
@@ -79,17 +80,20 @@ public class SkinData implements INBTSerializable<CompoundTag> {
             if (provider.lookup(DragonSpecies.REGISTRY).flatMap(lookup -> lookup.get(dragonSpecies)).isPresent()) {
                 SkinPreset preset = new SkinPreset();
                 preset.deserializeNBT(provider, tag.getCompound(key), dragonSpecies);
-                if(preset.isEmpty()) {
+
+                if (preset.isEmpty()) {
                     Holder<DragonSpecies> speciesHolder = ResourceHelper.get(provider, dragonSpecies).get();
                     HolderSet<DragonBody> bodiesForSpecies = speciesHolder.value().bodies();
-                    if (speciesHolder.value().isValidForBody(currentBody)) {
+
+                    if (currentBody != null && speciesHolder.value().isValidForBody(currentBody)) {
                         preset.initDefaults(speciesHolder, currentBody.value().model());
-                    }else if (bodiesForSpecies.size() != 0) {
+                    } else if (bodiesForSpecies.size() != 0) {
                         preset.initDefaults(speciesHolder, speciesHolder.value().bodies().get(0).value().model());
                     } else {
                         DragonSurvival.LOGGER.error("Failed to load default skin data for species {}: no bodies found", dragonSpecies.location());
                     }
                 }
+
                 skinPresets.get().put(dragonSpecies, preset);
             }
         }
