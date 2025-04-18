@@ -78,34 +78,6 @@ public class ServerConfig {
     @ConfigOption(side = ConfigSide.SERVER, category = {"growth"}, key = "save_growth_stage")
     public static Boolean saveGrowthStage = false;
 
-    // --- Item drops --- //
-
-    @ConfigRange(min = 0, max = 1)
-    @Translation(key = "dragon_heart_shard_chance", type = Translation.Type.CONFIGURATION, comments = "Determines the chance (in %) of dragon heart shards dropping from entities with a maximum health between 14 and 20")
-    @ConfigOption(side = ConfigSide.SERVER, category = "drops", key = "dragon_heart_shard_chance")
-    public static Double dragonHeartShardChance = 0.03;
-
-    @ConfigRange(min = 0, max = 1)
-    @Translation(key = "weak_dragon_heart_chance", type = Translation.Type.CONFIGURATION, comments = "Determines the chance (in %) of weak dragon hearts dropping from entities with a maximum health between 20 and 50")
-    @ConfigOption(side = ConfigSide.SERVER, category = "drops", key = "weak_dragon_heart_chance")
-    public static Double weakDragonHeartChance = 0.01;
-
-    @ConfigRange(min = 0, max = 1)
-    @Translation(key = "elder_dragon_heart_chance", type = Translation.Type.CONFIGURATION, comments = "Determines the chance (in %) of elder dragon hearts dropping from entities with a maximum health above 50")
-    @ConfigOption(side = ConfigSide.SERVER, category = "drops", key = "elder_dragon_heart_chance")
-    public static Double elderDragonHeartChance = 0.01;
-
-    @Translation(key = "dragon_heart_white_list", type = Translation.Type.CONFIGURATION, comments = "If enabled the entity list for dragon hearts acts as a whitelist - if disabled it acts as a blacklist")
-    @ConfigOption(side = ConfigSide.SERVER, category = "drops", key = "dragon_heart_white_list")
-    public static Boolean dragonHeartWhiteList = false;
-
-    @Translation(key = "weak_dragon_heart_white_list", type = Translation.Type.CONFIGURATION, comments = "If enabled the entity list for weak dragon hearts acts as a whitelist - if disabled it acts as a blacklist")
-    @ConfigOption(side = ConfigSide.SERVER, category = "drops", key = "weak_dragon_heart_white_list")
-    public static Boolean weakDragonHeartWhiteList = false;
-
-    @Translation(key = "elder_dragon_heart_white_list", type = Translation.Type.CONFIGURATION, comments = "If enabled the entity list for elder dragon hearts acts as a whitelist - if disabled it acts as a blacklist")
-    @ConfigOption(side = ConfigSide.SERVER, category = "drops", key = "elder_dragon_heart_white_list")
-    public static Boolean elderDragonHeartWhiteList = false;
 
     // --- Source of magic --- //
 
