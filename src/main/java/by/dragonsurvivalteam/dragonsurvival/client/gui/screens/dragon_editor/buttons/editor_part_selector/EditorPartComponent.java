@@ -94,6 +94,9 @@ public class EditorPartComponent implements ScrollableComponent {
         }
 
         int currentPart = sortedPartKeys.indexOf(selectedPart);
+        if (currentPart == -1) {
+            DragonSurvival.LOGGER.error("Part {} not found in sorted part keys. Did you forget to add the default parts to this species' part map?", selectedPart);
+        }
 
         if (currentPart < 0) {
             setSelectedPartInternal(sortedPartKeys.getLast());
@@ -110,6 +113,9 @@ public class EditorPartComponent implements ScrollableComponent {
         }
 
         int currentPart = sortedPartKeys.indexOf(selectedPart);
+        if (currentPart == -1) {
+            DragonSurvival.LOGGER.error("Part {} not found in sorted part keys. Did you forget to add the default parts to this species' part map?", selectedPart);
+        }
 
         if (currentPart < 0) {
             setSelectedPartInternal(sortedPartKeys.getFirst());
