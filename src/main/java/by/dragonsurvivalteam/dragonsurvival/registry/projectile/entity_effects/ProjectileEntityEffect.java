@@ -37,6 +37,7 @@ public interface ProjectileEntityEffect extends ProjectileEffect<Entity> {
             event.register(REGISTRY_KEY, DragonSurvival.res("lightning"), () -> ProjectileLightningEntityEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("particle"), () -> ProjectileEntityParticleEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("run_function"), () -> ProjectileEntityRunFunctionEffect.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("push"), () -> ProjectileEntityPushEffect.CODEC);
         }
     }
 }
