@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effe
 
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
+import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.Component;
@@ -12,7 +13,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -83,15 +83,15 @@ public record HungerEffect(
         hunger.ifPresent(value -> {
             float food = value.calculate(ability.level());
             if (food > 0) {
-                description.append(Component.translatable(ADD_FOOD, food).append("\n"));
+                description.append(Component.translatable(ADD_FOOD, DSColors.dynamicValue(food)).append("\n"));
             } else if (food < 0) {
-                description.append(Component.translatable(ADD_EXHAUSTION, food * -4).append("\n"));
+                description.append(Component.translatable(ADD_EXHAUSTION, DSColors.dynamicValue(food * -4)).append("\n"));
             }
         });
 
-        conversionRate.ifPresent(value -> description.append(Component.translatable(CONVERSION_RATE, value.calculate(ability.level()))).append("\n"));
-        saturation.ifPresent(value -> description.append(Component.translatable(SATURATION, value.calculate(ability.level()))).append("\n"));
-        maxSaturation.ifPresent(value -> description.append(Component.translatable(MAX_SATURATION, value.calculate(ability.level()))).append("\n"));
+        conversionRate.ifPresent(value -> description.append(Component.translatable(CONVERSION_RATE, DSColors.dynamicValue(value.calculate(ability.level())))).append("\n"));
+        saturation.ifPresent(value -> description.append(Component.translatable(SATURATION, DSColors.dynamicValue(value.calculate(ability.level())))).append("\n"));
+        maxSaturation.ifPresent(value -> description.append(Component.translatable(MAX_SATURATION, DSColors.dynamicValue(value.calculate(ability.level())))).append("\n"));
         return List.of(description);
     }
 
