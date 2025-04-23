@@ -1,22 +1,38 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.TargetDirection;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public record TeleportEffect(
         TargetDirection targetDirection,
         LevelBasedValue maxDistance
 ) implements AbilityEntityEffect {
+    @Translation(comments = "Teleport up to %s blocks.")
+    public static final String FACING = Translation.Type.GUI.wrap("teleport.facing");
+
+    @Translation(comments = "Teleport towards an entity up to %s blocks.")
+    public static final String TOWARDS_ENTITY = Translation.Type.GUI.wrap("teleport.towards");
+
+    @Translation(comments = "Teleport %s up to %s blocks.")
+    public static final String DIRECTION = Translation.Type.GUI.wrap("teleport.direction");
+
     public static final MapCodec<TeleportEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             TargetDirection.CODEC.fieldOf("target_direction").forGetter(TeleportEffect::targetDirection),
             LevelBasedValue.CODEC.fieldOf("range").forGetter(TeleportEffect::maxDistance)
@@ -58,6 +74,20 @@ public record TeleportEffect(
                 );
             }
         }
+    }
+
+    @Override
+    public List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
+        List<MutableComponent> components = new ArrayList<>();
+
+        if (targetDirection.direction().left().orElse(null) == TargetDirection.Type.LOOKING_AT) {
+            components.add(Component.translatable(FACING, maxDistance.calculate(ability.level())));
+        } else if (targetDirection.direction().left().orElse(null) == TargetDirection.Type.TOWARDS_ENTITY) {
+            components.add(Component.translatable(TOWARDS_ENTITY, maxDistance.calculate(ability.level())));
+        } else if (targetDirection.direction().right().isPresent()) {
+            components.add(Component.translatable(DIRECTION, targetDirection.direction().right().get().getName(), maxDistance.calculate(ability.level())));
+        }
+        return components;
     }
 
     @Override

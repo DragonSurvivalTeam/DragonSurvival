@@ -64,7 +64,7 @@ public enum TargetingMode implements StringRepresentable {
         }
 
         if (player == target) {
-            return this == TargetingMode.ALLIES_AND_SELF || this == TargetingMode.NON_ENEMIES || this != TargetingMode.ALL_EXCEPT_SELF;
+            return this == TargetingMode.ALLIES_AND_SELF || this == TargetingMode.NON_ENEMIES;
         }
 
         if (target instanceof ItemEntity) {

@@ -465,9 +465,9 @@ public class DragonSkinsScreen extends Screen {
         randomSkinButton.setTooltip(Tooltip.create(Component.translatable(RANDOM_INFO)));
         addRenderableWidget(randomSkinButton);
 
-        if (handler.isDragon()) {
+        if (playerHandler.isDragon()) {
             HoverButton openEditorButton = new HoverButton(startX + 128, startY + 115, 165, 22, 165, 22, OPEN_EDITOR_MAIN, OPEN_EDITOR_HOVER, button -> {
-                ClientProxy.openDragonEditor(handler.speciesKey(), false);
+                ClientProxy.openDragonEditor(playerHandler.speciesKey(), false);
             });
             openEditorButton.setMessage(Component.translatable(OPEN_EDITOR));
             addRenderableWidget(openEditorButton);
