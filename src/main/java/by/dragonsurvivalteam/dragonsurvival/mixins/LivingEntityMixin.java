@@ -87,6 +87,8 @@ public abstract class LivingEntityMixin extends Entity {
         return !HunterData.hasMaxHunterStacks((LivingEntity) (Object) this);
     }
 
+    // FIXME :: remove / replace by using attribute update logic used in tool swap for weapon swap
+    //          this causes the issue where a player is shown to hold the weapon in their hand when its actually in the claw slot
     @SuppressWarnings("ConstantValue") // both checks in the if statement are valid
     @Redirect(method = "collectEquipmentChanges", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getItemBySlot(Lnet/minecraft/world/entity/EquipmentSlot;)Lnet/minecraft/world/item/ItemStack;"))
     private ItemStack dragonSurvival$grantDragonSwordAttributes(LivingEntity entity, EquipmentSlot slot) {
