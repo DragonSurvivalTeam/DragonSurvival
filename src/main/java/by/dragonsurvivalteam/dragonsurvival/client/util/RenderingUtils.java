@@ -206,8 +206,13 @@ public class RenderingUtils {
 
     public static boolean hasTexture(final ResourceLocation resource) {
         DynamicTexture missing = MissingTextureAtlasSprite.getTexture();
-        AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(resource, missing);
-        return texture != missing;
+        if (resource != null) {
+            // TODO: Why does this not fetch the texture properly if you don't call this method at least once first?
+            Minecraft.getInstance().getTextureManager().getTexture(resource);
+            AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(resource, missing);
+            return texture != missing;
+        }
+        return false;
     }
 
     public static void setShaderColor(int color) {
