@@ -183,10 +183,10 @@ public class DragonSkins {
         if (isNormalSkin) {
             if (!hasFailedFetch.contains(playerKey)) {
                 if (exception != null){
-                    DragonSurvival.LOGGER.info("Custom skin for user {} doesn't exist.  If you do not have a skin registered under your username, ignore this message.", playerKey, exception);
+                    DragonSurvival.LOGGER.info("Custom skin for user {} doesn't exist.  If you do not have a skin registered under your username that has been uploaded to GitHub, ignore this message.", playerKey, exception);
                 }
                 else{
-                    DragonSurvival.LOGGER.info("Custom skin for user {} doesn't exist.  If you do not have a skin registered under your username, ignore this message.", playerKey);
+                    DragonSurvival.LOGGER.info("Custom skin for user {} doesn't exist.  If you do not have a skin registered under your username that has been uploaded to GitHub, ignore this message.", playerKey);
                 }
                 hasFailedFetch.add(playerKey);
             }
