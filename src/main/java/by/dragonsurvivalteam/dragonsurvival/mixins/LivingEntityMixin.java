@@ -7,14 +7,12 @@ import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.EnchantmentEffectHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.EffectModifications;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonedEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SwimData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnTargetKilled;
-import by.dragonsurvivalteam.dragonsurvival.util.ToolUtils;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -45,7 +43,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LivingEntity.class)
@@ -85,25 +82,6 @@ public abstract class LivingEntityMixin extends Entity {
         }
 
         return !HunterData.hasMaxHunterStacks((LivingEntity) (Object) this);
-    }
-
-    // FIXME :: remove / replace by using attribute update logic used in tool swap for weapon swap
-    //          this causes the issue where a player is shown to hold the weapon in their hand when its actually in the claw slot
-    @SuppressWarnings("ConstantValue") // both checks in the if statement are valid
-    @Redirect(method = "collectEquipmentChanges", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getItemBySlot(Lnet/minecraft/world/entity/EquipmentSlot;)Lnet/minecraft/world/item/ItemStack;"))
-    private ItemStack dragonSurvival$grantDragonSwordAttributes(LivingEntity entity, EquipmentSlot slot) {
-        if (slot == EquipmentSlot.MAINHAND && (Object) this instanceof Player player) {
-            if (DragonStateProvider.isDragon(entity) && ToolUtils.shouldUseDragonTools(player.getMainHandItem())) {
-                // Without this the item in the dragon slot for the sword would not grant any of its attributes
-                ItemStack sword = ClawInventoryData.getData(player).getContainer().getItem(ClawInventoryData.Slot.SWORD.ordinal());
-
-                if (!sword.isEmpty()) {
-                    return sword;
-                }
-            }
-        }
-
-        return getItemBySlot(slot);
     }
 
     @ModifyExpressionValue(method = "getPassengerRidingPosition", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getDimensions(Lnet/minecraft/world/entity/Pose;)Lnet/minecraft/world/entity/EntityDimensions;"))
