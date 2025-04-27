@@ -72,11 +72,11 @@ public enum TargetingMode implements StringRepresentable {
         }
 
         if (isFriendly(player, target)) {
-            return this == TargetingMode.ALLIES_AND_SELF || this == TargetingMode.ALLIES || this == TargetingMode.NON_ENEMIES;
+            return this == TargetingMode.ALLIES_AND_SELF || this == TargetingMode.ALLIES || this == TargetingMode.NON_ENEMIES || this == TargetingMode.ALL_EXCEPT_SELF;
         }
 
         if (isEnemy(player, target)) {
-            return this == TargetingMode.ENEMIES || this == TargetingMode.NON_ALLIES;
+            return this == TargetingMode.ENEMIES || this == TargetingMode.NON_ALLIES || this == TargetingMode.ALL_EXCEPT_SELF;
         }
 
         return this == TargetingMode.NEUTRAL || this == TargetingMode.NON_ALLIES || this == TargetingMode.NON_ENEMIES || this == TargetingMode.ALL_EXCEPT_SELF;
