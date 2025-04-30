@@ -8,6 +8,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonAbilityHolder;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncMagicData;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSSounds;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataComponents;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
@@ -180,6 +181,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
                     // There are too many ways the experience level field could be modified
                     upgrade.attempt(serverPlayer, ability, experienceLevels);
                 });
+                DSAdvancementTriggers.UPGRADE_ABILITY.get().trigger(serverPlayer, ability.key(), ability.level());
             }
 
             ability.tickCooldown(event.getEntity());

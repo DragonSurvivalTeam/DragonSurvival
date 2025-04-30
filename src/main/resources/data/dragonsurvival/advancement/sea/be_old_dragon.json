@@ -14,7 +14,7 @@
                 "stage_specific": {
                   "dragon_stage": "dragonsurvival:adult",
                   "growth_percentage": {
-                    "min": 1.0
+                    "min": 0.92
                   }
                 }
               }
