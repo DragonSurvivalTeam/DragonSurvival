@@ -1,7 +1,7 @@
 #version 150
 
 vec3 getHSB(vec3 color) {
-    // Use an epislon value here. Previously, we tried to check for zero directly, but this led to precision issues under specific cirecumstances.
+    // Use an epislon value here. Previously, we tried to check for zero directly, but this led to precision issues under specific circumstances.
     const float EPSILON = 1e-4;
 
     float hue, saturation, brightness;
@@ -40,7 +40,7 @@ vec3 getHSB(vec3 color) {
 }
 
 vec3 getRGB(vec3 hsb) {
-    // Use an epislon value here. Previously, we tried to check for zero directly, but this led to precision issues under specific cirecumstances.
+    // Use an epislon value here. Previously, we tried to check for zero directly, but this led to precision issues under specific circumstances.
     const float EPSILON = 1e-4;
 
     float hue = hsb.x;
