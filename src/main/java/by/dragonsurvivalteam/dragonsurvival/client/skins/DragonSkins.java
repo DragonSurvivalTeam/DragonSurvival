@@ -3,7 +3,6 @@ package by.dragonsurvivalteam.dragonsurvival.client.skins;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.datapacks.AncientDatapack;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
 import com.mojang.blaze3d.platform.NativeImage;
@@ -41,6 +40,8 @@ public class DragonSkins {
 
     public static NetSkinLoader skinLoader = new GithubSkinLoader();
 
+    public static final List<ResourceKey<DragonStage>> validStages = List.of(DragonStages.newborn, DragonStages.young, DragonStages.adult);
+
     private static final ArrayList<String> hasFailedFetch = new ArrayList<>();
     private static double lastSkinFetchAttemptTime;
     private static int numSkinFetchAttempts;
@@ -57,7 +58,12 @@ public class DragonSkins {
     }
 
     public static @Nullable ResourceLocation getPlayerSkin(String playerName, ResourceKey<DragonStage> dragonStage) {
-        String skinKey = playerName + "_" + dragonStage.location().getPath();
+        String skinKey;
+        if (validStages.contains(dragonStage)) {
+             skinKey = playerName + "_" + dragonStage.location().getPath();
+        } else {
+            skinKey = playerName + "_" + DragonStages.adult.location().getPath();
+        }
 
         if (SKIN_CACHE.containsKey(skinKey) && SKIN_CACHE.get(skinKey) != null) {
             if (SKIN_CACHE.get(skinKey).isDone()) {
@@ -138,8 +144,8 @@ public class DragonSkins {
         }
 
         if (skin == null) {
-            if (stage == AncientDatapack.ancient){
-                DragonSurvival.LOGGER.warn("Failed to get skin information for ancient stage for {}. Falling back to using adult stage.", playerName);
+            if (!validStages.contains(stage)){
+                DragonSurvival.LOGGER.debug("Failed to get skin information for custom stage {} for {}. Falling back to using adult stage.", stage, playerName);
                 return fetchSkinFile(playerName, DragonStages.adult, extra);
             }else{
                 return fetchSkinResource(extra, playerKey, null);
@@ -177,10 +183,10 @@ public class DragonSkins {
         if (isNormalSkin) {
             if (!hasFailedFetch.contains(playerKey)) {
                 if (exception != null){
-                    DragonSurvival.LOGGER.info("Custom skin for user {} doesn't exist", playerKey, exception);
+                    DragonSurvival.LOGGER.info("Custom skin for user {} doesn't exist.  If you do not have a skin registered under your username that has been uploaded to GitHub, ignore this message.", playerKey, exception);
                 }
                 else{
-                    DragonSurvival.LOGGER.info("Custom skin for user {} doesn't exist", playerKey);
+                    DragonSurvival.LOGGER.info("Custom skin for user {} doesn't exist.  If you do not have a skin registered under your username that has been uploaded to GitHub, ignore this message.", playerKey);
                 }
                 hasFailedFetch.add(playerKey);
             }

@@ -1,7 +1,9 @@
 package by.dragonsurvivalteam.dragonsurvival.client.skins;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.util.json.GsonFactory;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -60,13 +62,16 @@ public class GithubSkinLoader implements NetSkinLoader {
     public Collection<SkinObject> querySkinList() throws IOException {
         ArrayList<SkinObject> result = new ArrayList<>();
         Gson gson = GsonFactory.getDefault();
+
         HttpRequestHelper http = new HttpRequestHelper();
         http.url(SKIN_LIST_API).timeout(5000);
         http.execute();
         updateRateLimitFromRequest(http);
+
         if (http.getResponseCode() != 200) {
             throw new NetRateLimitException(http.getUrl(), this.getRateLimit());
         }
+
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(http.getResponseBody()))) {
             SkinListApiResponse skinListResponse = gson.fromJson(reader, SkinListApiResponse.class);
 
@@ -79,8 +84,12 @@ public class GithubSkinLoader implements NetSkinLoader {
                     result.add(skinObject);
                 }
             }
-            return result;
+        } catch (JsonSyntaxException exception) {
+            // Premature EOF error than can apparently occur on very slow internet connections
+            DragonSurvival.LOGGER.error("Invalid skin response from GitHub", exception);
         }
+
+        return result;
     }
 
     @Override

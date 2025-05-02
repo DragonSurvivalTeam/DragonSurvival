@@ -231,7 +231,7 @@ public class ClawToolHandler {
             } else if (!player.level().isClientSide()) {
                 ClawInventoryData clawInventory = ClawInventoryData.getData(player);
 
-                if (clawInventory.switchedTool || clawInventory.switchedWeapon) {
+                if (clawInventory.switchedTool) {
                     // When attacking minecraft checks if the stack is the same java object as the mainhand stack - meaning we cannot modify that slot here
                     // Otherwise it will think it was the offhand item that broke and delete it
                     player.level().playSound(null, player.blockPosition(), SoundEvents.ITEM_BREAK, SoundSource.PLAYERS, 1, 1);

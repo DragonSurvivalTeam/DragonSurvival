@@ -3,7 +3,6 @@ package by.dragonsurvivalteam.dragonsurvival.mixins;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ClawToolHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * The original main hand is transiently stored in the dragon data
  */
 @Mixin(value = Player.class, /* Make sure it happens at the start */ priority = 1)
-public class PlayerStartMixin {
+public abstract class PlayerStartMixin {
     @Inject(method = "attack", at = @At("HEAD"))
     public void dragonSurvival$switchStart(CallbackInfo callback) {
         Player player = (Player) (Object) this;
@@ -25,16 +24,12 @@ public class PlayerStartMixin {
             return;
         }
 
-        ItemStack toolSlot = ClawToolHandler.getDragonSword(player);
-        ItemStack mainHand = player.getItemInHand(InteractionHand.MAIN_HAND);
+        ItemStack tool = ClawToolHandler.getDragonSword(player);
 
-        if (toolSlot != ItemStack.EMPTY) {
-            player.setItemInHand(InteractionHand.MAIN_HAND, toolSlot);
-
-            ClawInventoryData clawInventory = ClawInventoryData.getData(player);
-            clawInventory.getContainer().setItem(ClawInventoryData.Slot.SWORD.ordinal(), ItemStack.EMPTY);
-            clawInventory.storedMainHandWeapon = mainHand;
-            clawInventory.switchedWeapon = true;
+        if (tool.isEmpty()) {
+            return;
         }
+
+        ClawInventoryData.getData(player).swapStart(player, tool, ClawInventoryData.Slot.SWORD.ordinal());
     }
 }

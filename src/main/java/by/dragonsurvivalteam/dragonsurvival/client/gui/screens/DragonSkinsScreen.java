@@ -341,11 +341,7 @@ public class DragonSkinsScreen extends Screen {
             } else if (dragonStage.is(DragonStages.young)) {
                 nextLevel = DragonStages.newborn;
             } else if (dragonStage.is(DragonStages.newborn)) {
-                if (player.registryAccess().holder(AncientDatapack.ancient).isPresent()) {
-                    nextLevel = AncientDatapack.ancient;
-                } else {
-                    nextLevel = DragonStages.adult;
-                }
+                nextLevel = DragonStages.adult;
             }
 
             boolean alreadyUsingDefaults = handler.getCurrentSkinPreset().isStageUsingDefaultSkin(dragonStage.getKey());
@@ -367,11 +363,7 @@ public class DragonSkinsScreen extends Screen {
             } else if (dragonStage.is(DragonStages.young)) {
                 nextLevel = DragonStages.adult;
             } else if (dragonStage.is(DragonStages.adult)) {
-                if (ancientDataPackExists) {
-                    nextLevel = AncientDatapack.ancient;
-                } else {
-                    nextLevel = DragonStages.newborn;
-                }
+                nextLevel = DragonStages.newborn;
             }
 
             boolean alreadyUsingDefaults = handler.getCurrentSkinPreset().isStageUsingDefaultSkin(dragonStage.getKey());

@@ -3,8 +3,6 @@ package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ClawToolHandler;
-import by.dragonsurvivalteam.dragonsurvival.mixins.PlayerEndMixin;
-import by.dragonsurvivalteam.dragonsurvival.mixins.PlayerStartMixin;
 import by.dragonsurvivalteam.dragonsurvival.network.claw.SyncDragonClawsMenu;
 import by.dragonsurvivalteam.dragonsurvival.util.ToolUtils;
 import com.mojang.datafixers.util.Pair;
@@ -27,7 +25,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 import java.util.Optional;
@@ -66,10 +63,6 @@ public class ClawInventoryData implements INBTSerializable<CompoundTag> {
 
     public boolean shouldRenderClaws = true;
 
-    /** Used in {@link PlayerStartMixin} and {@link PlayerEndMixin} */
-    public ItemStack storedMainHandWeapon = ItemStack.EMPTY;
-    public boolean switchedWeapon;
-
     public ItemStack storedMainHandTool = ItemStack.EMPTY;
     public boolean switchedTool;
     public int switchedToolSlot = -1;
@@ -79,51 +72,63 @@ public class ClawInventoryData implements INBTSerializable<CompoundTag> {
     /** To track the state if a tool swap is triggered within a tool swap (should only swap back if the last tool swap finishes) */
     private int toolSwapLayer;
 
+    public void swapStart(final Player player, final BlockState blockState) {
+        Pair<ItemStack, Integer> data = ClawToolHandler.getDragonHarvestToolAndSlot(player, blockState);
+        ItemStack dragonHarvestTool = data.getFirst();
+        int toolSlot = data.getSecond();
+
+        swapStart(player, dragonHarvestTool, toolSlot);
+    }
+
     /**
      * Puts the relevant claw tool in the main hand and stores said main hand in the dragon state handler<br>
      * This way modded enchantments etc. which check the currently held item will be directly compatible<br>
      * <br>
      * When using this make sure you call {@link ClawInventoryData#swapFinish(Player)} to restore the initial state
      */
-    public void swapStart(@Nullable final Player player, final BlockState blockState) {
-        if (player == null || player.isCreative() || player.isSpectator() || !DragonStateProvider.isDragon(player)) {
+    public void swapStart(final Player player, final ItemStack tool, final int slot) {
+        // TODO :: allow it in creative? maybe only weapon?
+        if (slot == -1 || player.isCreative() || player.isSpectator() || !DragonStateProvider.isDragon(player)) {
             return;
         }
 
-        Pair<ItemStack, Integer> data = ClawToolHandler.getDragonHarvestToolAndSlot(player, blockState);
-        ItemStack dragonHarvestTool = data.getFirst();
-        int toolSlot = data.getSecond();
-
         ItemStack mainHand = player.getItemInHand(InteractionHand.MAIN_HAND);
 
-        if (toolSlot != -1 && !switchedTool) {
-            player.setItemInHand(InteractionHand.MAIN_HAND, dragonHarvestTool);
+        if (!switchedTool) {
+            player.setItemInHand(InteractionHand.MAIN_HAND, tool);
 
             // Copied from collectEquipmentChanges() in LivingEntity.java
-            dragonHarvestTool.forEachModifier(EquipmentSlot.MAINHAND, (attributeHolder, attributeModifier) -> {
-                AttributeInstance attributeinstance = player.getAttributes().getInstance(attributeHolder);
-                if (attributeinstance != null) {
-                    attributeinstance.removeModifier(attributeModifier.id());
-                    attributeinstance.addTransientModifier(attributeModifier);
+            tool.forEachModifier(EquipmentSlot.MAINHAND, (attribute, modifier) -> {
+                AttributeInstance instance = player.getAttributes().getInstance(attribute);
+
+                if (instance != null) {
+                    instance.removeModifier(modifier.id());
+                    instance.addTransientModifier(modifier);
                 }
 
                 if (player.level() instanceof ServerLevel serverlevel) {
-                    EnchantmentHelper.runLocationChangedEffects(serverlevel, dragonHarvestTool, player, EquipmentSlot.MAINHAND);
+                    EnchantmentHelper.runLocationChangedEffects(serverlevel, tool, player, EquipmentSlot.MAINHAND);
                 }
             });
 
-            clawsInventory.setItem(toolSlot, ItemStack.EMPTY);
+            clawsInventory.setItem(slot, ItemStack.EMPTY);
             storedMainHandTool = mainHand;
             switchedTool = true;
-            switchedToolSlot = toolSlot;
+            switchedToolSlot = slot;
         }
 
         toolSwapLayer++;
     }
 
     /** Puts the stored main hand back into the main hand and the claw tool into its slot */
-    public void swapFinish(@Nullable final Player player) {
-        if (player == null || player.isCreative() || player.isSpectator() || !DragonStateProvider.isDragon(player)) {
+    public void swapFinish(final Player player) {
+        if (!switchedTool) {
+            toolSwapLayer = 0;
+            return;
+        }
+
+        // TODO :: allow it in creative? maybe only weapon?
+        if (player.isCreative() || player.isSpectator() || !DragonStateProvider.isDragon(player)) {
             return;
         }
 
@@ -134,7 +139,7 @@ public class ClawInventoryData implements INBTSerializable<CompoundTag> {
             toolSwapLayer = 0;
         }
 
-        if (switchedTool && toolSwapLayer == 0) {
+        if (toolSwapLayer == 0) {
             ItemStack originalMainHand = storedMainHandTool;
             ItemStack originalToolSlot = player.getItemInHand(InteractionHand.MAIN_HAND);
 
