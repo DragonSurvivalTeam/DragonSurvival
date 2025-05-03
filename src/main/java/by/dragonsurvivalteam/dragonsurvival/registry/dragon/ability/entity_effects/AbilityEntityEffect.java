@@ -77,6 +77,7 @@ public interface AbilityEntityEffect {
             event.register(REGISTRY_KEY, DragonSurvival.res("push"), () -> PushEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("hunger"), () -> HungerEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("effect_removal"), () -> MobEffectRemovalEffect.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("use_item"), () -> UseItemOnLivingEntityEffect.CODEC);
         }
     }
 }
