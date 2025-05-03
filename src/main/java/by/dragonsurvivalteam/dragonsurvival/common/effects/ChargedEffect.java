@@ -73,7 +73,7 @@ public class ChargedEffect extends ModifiableMobEffect {
 
     @Override
     public boolean applyEffectTick(final LivingEntity entity, int amplifier) {
-        entity.hurt(new DamageSource(DSDamageTypes.get(entity.level(), DSDamageTypes.ELECTRIC)), damage);
+        entity.hurt(new DamageSource(DSDamageTypes.get(entity.level(), DSDamageTypes.ELECTRIC)), damage * (amplifier + 1));
 
         if (!DragonStateProvider.isDragon(entity)) {
             ParticleOptions particle = new SmallLightningParticleOption(37F, false);
@@ -83,7 +83,7 @@ public class ChargedEffect extends ModifiableMobEffect {
             }
         }
 
-        chargedEffectChain(entity, damage);
+        chargedEffectChain(entity, damage * amplifier + 1);
         return super.applyEffectTick(entity, amplifier);
     }
 
