@@ -1,21 +1,22 @@
 #version 150
 
 vec3 getHSB(vec3 color) {
+    // Use an epislon value here. Previously, we tried to check for zero directly, but this led to precision issues under specific circumstances.
+    const float EPSILON = 1e-4;
+
     float hue, saturation, brightness;
-    vec3 hsbvals = vec3(0.0, 0.0, 0.0);
 
     float cmax = max(color.r, max(color.g, color.b));
     float cmin = min(color.r, min(color.g, color.b));
     brightness = cmax;
 
-    brightness = cmax;
-    if (cmax != 0.0) {
+    if (cmax > EPSILON) {
         saturation = (cmax - cmin) / cmax;
     } else {
         saturation = 0.0;
     }
 
-    if (saturation == 0.0) {
+    if (saturation < EPSILON) {
         hue = 0.0;
     } else {
         float redc = (cmax - color.r) / (cmax - cmin);
@@ -34,16 +35,20 @@ vec3 getHSB(vec3 color) {
             hue = hue + 1.0;
         }
     }
+
     return vec3(hue, saturation, brightness);
 }
 
 vec3 getRGB(vec3 hsb) {
+    // Use an epislon value here. Previously, we tried to check for zero directly, but this led to precision issues under specific circumstances.
+    const float EPSILON = 1e-4;
+
     float hue = hsb.x;
     float saturation = hsb.y;
     float brightness = hsb.z;
     float r = 0.0, g = 0.0, b = 0.0;
 
-    if (saturation == 0.0) {
+    if (saturation < EPSILON) {
         r = g = b = brightness;
     } else {
         float h = mod(hue, 1.0) * 6.0;
