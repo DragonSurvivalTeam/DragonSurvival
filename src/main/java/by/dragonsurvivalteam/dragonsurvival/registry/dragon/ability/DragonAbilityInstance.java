@@ -237,7 +237,7 @@ public class DragonAbilityInstance {
     }
 
     public void tickCooldown(final Player entity) { // TODO :: sync cooldown to client (maybe only relevant for passive?)
-        if (entity.hasInfiniteMaterials()) {
+        if (entity.hasInfiniteMaterials() && !(this.isPassive() && this.getCooldown() > 0)) {
             cooldown = NO_COOLDOWN;
         } else {
             cooldown = Math.max(NO_COOLDOWN, cooldown - 1);
