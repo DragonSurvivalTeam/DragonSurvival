@@ -24,6 +24,8 @@ public class DSEntityTypeTags extends EntityTypeTagsProvider {
     public static final TagKey<EntityType<?>> VEHICLE_WHITELIST = key("vehicle_whitelist");
     @Translation(comments = "Charged Effect Spread Blacklist")
     public static final TagKey<EntityType<?>> CHARGED_SPREAD_BLACKLIST = key("charged_spread_blacklist");
+    @Translation(comments = "Confounded Effect Target Redirection Blacklist")
+    public static final TagKey<EntityType<?>> CONFOUNDED_TARGET_BLACKLIST = key("confounded_target_blacklist");
 
     @Translation(comments = "Hunter Targets")
     public static final TagKey<EntityType<?>> HUNTER_TARGETS = key("hunter_targets");
