@@ -83,15 +83,12 @@ public class SkinData implements INBTSerializable<CompoundTag> {
 
                 if (preset.isEmpty()) {
                     Holder<DragonSpecies> speciesHolder = ResourceHelper.get(provider, dragonSpecies).get();
-                    HolderSet<DragonBody> bodiesForSpecies = speciesHolder.value().bodies();
 
                     if (currentBody != null && speciesHolder.value().isValidForBody(currentBody)) {
                         preset.initDefaults(speciesHolder, currentBody.value().model());
-                    } else if (bodiesForSpecies.size() != 0) {
-                        preset.initDefaults(speciesHolder, speciesHolder.value().bodies().get(0).value().model());
-                    } else {
-                        DragonSurvival.LOGGER.error("Failed to load default skin data for species {}: no bodies found", dragonSpecies.location());
                     }
+
+                    // Don't bother initializing defaults if the player isn't even a valid body type for the species in question
                 }
 
                 skinPresets.get().put(dragonSpecies, preset);

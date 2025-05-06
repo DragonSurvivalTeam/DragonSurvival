@@ -55,9 +55,7 @@ public class DragonGlowLayerRenderer extends GeoRenderLayer<DragonEntity> {
         }
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
-        SkinPreset preset = handler.getCurrentSkinPreset();
-
-        DragonStageCustomization customization = preset.get(handler.stageKey()).get();
+        DragonStageCustomization customization = handler.getCurrentStageCustomization();
         ResourceLocation glowTexture = null;
 
         // At the moment GitHub only contains textures based on the dragon model

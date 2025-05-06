@@ -16,6 +16,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -186,6 +187,28 @@ public record DragonBody(
     public static Holder<DragonBody> getRandomUnlocked(@Nullable final Holder<DragonSpecies> species, List<UnlockableBehavior.BodyEntry> unlockedBodies) {
         List<Holder<DragonBody>> validBodiesForSpecies = unlockedBodies.stream().filter(bodyEntry -> bodyIsValidForSpecies(bodyEntry.body(), species) && bodyEntry.isUnlocked()).map(UnlockableBehavior.BodyEntry::body).toList();
         return validBodiesForSpecies.get(RANDOM.nextInt(validBodiesForSpecies.size()));
+    }
+
+    public static HolderSet<DragonBody> getBodiesForSpecies(@Nullable final HolderLookup.Provider provider, @Nullable final Holder<DragonSpecies> species) {
+        if (species == null || species.value().bodies().size() == 0) {
+            return getDefaultBodies(provider);
+        } else {
+            List<Holder.Reference<DragonBody>> all = ResourceHelper.all(provider, REGISTRY);
+            List<Holder.Reference<DragonBody>> bodiesForSpecies = all.stream()
+                    .filter(body -> species.value().bodies().contains(body))
+                    .toList();
+            return HolderSet.direct(bodiesForSpecies);
+        }
+    }
+
+    private static HolderSet<DragonBody> getDefaultBodies(@Nullable final HolderLookup.Provider provider) {
+        List<Holder.Reference<DragonBody>> all = ResourceHelper.all(provider, REGISTRY);
+
+        List<Holder.Reference<DragonBody>> defaultBodies = all.stream()
+                .filter(body -> body.value().isDefault())
+                .toList();
+
+        return HolderSet.direct(defaultBodies);
     }
 
     public static Holder<DragonBody> getRandom(@Nullable final HolderLookup.Provider provider, @Nullable final Holder<DragonSpecies> species) {

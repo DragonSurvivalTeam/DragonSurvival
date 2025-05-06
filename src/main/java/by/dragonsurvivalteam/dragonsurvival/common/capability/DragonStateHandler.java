@@ -388,6 +388,9 @@ public class DragonStateHandler extends EntityStateHandler {
                 }
             }
 
+            // Also make sure we clamp our growth to a valid stage
+            updateGrowthAndStage(player != null ? player.registryAccess() : null, growth);
+
             // The server doesn't need to check for skin preset refreshes; the client handles this
             if(FMLLoader.getDist().isClient()) {
                 if (skinData.skinPresets.get().get(speciesKey()).isEmpty()) {
@@ -539,7 +542,13 @@ public class DragonStateHandler extends EntityStateHandler {
     }
 
     public DragonStageCustomization getCurrentStageCustomization() {
-        return skinData.get(speciesKey(), stageKey()).get();
+        Lazy<DragonStageCustomization> customizationLazy = skinData.get(speciesKey(), stageKey());
+        if (customizationLazy == null) {
+            DragonSurvival.LOGGER.error("Failed to get customization for species [{}] and stage [{}]. Returning empty customization.", speciesId(), stageId());
+            return new DragonStageCustomization(); // Return a default customization if none exists
+        }
+
+        return customizationLazy.get();
     }
 
     public DragonStageCustomization getCustomizationForStageAndSpecies(final ResourceKey<DragonSpecies> species, final ResourceKey<DragonStage> stage) {
