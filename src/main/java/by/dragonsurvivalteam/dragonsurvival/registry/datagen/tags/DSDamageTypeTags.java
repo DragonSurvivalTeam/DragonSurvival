@@ -28,6 +28,9 @@ public class DSDamageTypeTags extends DamageTypeTagsProvider {
     @Translation(comments = "Electric")
     public static final TagKey<DamageType> IS_ELECTRIC = key("is_electric");
 
+    @Translation(comments = "Water Burn")
+    public static final TagKey<DamageType> WATER_BURN = key("water_burn");
+
     public DSDamageTypeTags(final PackOutput output, final CompletableFuture<HolderLookup.Provider> provider, @Nullable final ExistingFileHelper helper) {
         super(output, provider, DragonSurvival.MODID, helper);
     }
@@ -57,6 +60,10 @@ public class DSDamageTypeTags extends DamageTypeTagsProvider {
                 .add(DSDamageTypes.BALL_LIGHTNING)
                 .add(DSDamageTypes.ELECTRIC)
                 .add(DamageTypes.LIGHTNING_BOLT);
+
+        tag(WATER_BURN)
+                .add(DSDamageTypes.WATER_BURN)
+                .add(DSDamageTypes.RAIN_BURN);
 
         // Used in enchantments
         tag(key("anti_dragon")).add(DSDamageTypes.ANTI_DRAGON);
