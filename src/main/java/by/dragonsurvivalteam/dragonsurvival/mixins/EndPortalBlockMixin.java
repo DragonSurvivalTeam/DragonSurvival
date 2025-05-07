@@ -3,7 +3,6 @@ package by.dragonsurvivalteam.dragonsurvival.mixins;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.structures.EndPlatformHandler;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonSpeciesTags;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -50,7 +49,7 @@ public class EndPortalBlockMixin {
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
 
-        if (!handler.isDragon() || !(handler.species().is(DSDragonSpeciesTags.CAVE_DRAGONS) || handler.species().is(DSDragonSpeciesTags.SEA_DRAGONS) || handler.species().is(DSDragonSpeciesTags.FOREST_DRAGONS))) {
+        if (!handler.isDragon()) {
             original.call(accessor, position, dropBlocks);
             return;
         }
