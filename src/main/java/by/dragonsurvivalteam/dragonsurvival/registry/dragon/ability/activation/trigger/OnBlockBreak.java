@@ -1,12 +1,10 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger;
 
-import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
@@ -46,7 +44,7 @@ public record OnBlockBreak(Optional<LootItemCondition> condition) implements Act
                 event.setCanceled(true);
                 return;
             }
-            if (split_abilities.containsKey(true)) {
+            if (split_abilities.containsKey(false)) {
                 split_abilities.get(false).forEach(ability -> ability.tick(player));
             }
         }
