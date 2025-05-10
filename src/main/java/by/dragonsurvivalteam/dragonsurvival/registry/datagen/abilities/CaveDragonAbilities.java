@@ -223,6 +223,7 @@ public class CaveDragonAbilities {
                                 TargetingMode.ALL
                         )), LevelBasedValue.constant(1))),
                 true,
+                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/nether_breath_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/nether_breath_1"), 1),
@@ -270,6 +271,7 @@ public class CaveDragonAbilities {
                                 TargetingMode.ALL
                         )), LevelBasedValue.constant(1))),
                 true,
+                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/furnace_heat_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/furnace_heat_1"), 1),
@@ -304,6 +306,7 @@ public class CaveDragonAbilities {
                         TargetingMode.ALL
                 )), LevelBasedValue.constant(1))),
                 true,
+                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/fireball_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/fireball_1"), 1),
@@ -339,6 +342,7 @@ public class CaveDragonAbilities {
                         TargetingMode.NON_ENEMIES
                 ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 true,
+                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/sturdy_skin_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/sturdy_skin_1"), 1),
@@ -373,6 +377,7 @@ public class CaveDragonAbilities {
                         ), TargetingMode.ALL
                 ), LevelBasedValue.constant(25)), LevelBasedValue.constant(1))),
                 true,
+                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/friendly_fire_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/friendly_fire_1"), 1),
@@ -403,6 +408,7 @@ public class CaveDragonAbilities {
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
                 true,
+                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/lava_vision_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/lava_vision_1"), 1),
@@ -446,6 +452,7 @@ public class CaveDragonAbilities {
                         )), LevelBasedValue.constant(1))
                 ),
                 true,
+                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_magic_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_magic_1"), 1),
@@ -472,6 +479,7 @@ public class CaveDragonAbilities {
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(Functions.secondsToTicks(1)))),
                 true,
+                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_athletics_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_athletics_1"), 1),
@@ -494,6 +502,7 @@ public class CaveDragonAbilities {
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
                 true,
+                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/contrast_shower_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/contrast_shower_1"), 1),
@@ -516,6 +525,7 @@ public class CaveDragonAbilities {
                         TargetingMode.ALL
                 )), LevelBasedValue.constant(1))),
                 true,
+                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/burn_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/burn_1"), 1),
@@ -543,6 +553,7 @@ public class CaveDragonAbilities {
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
                 true,
+                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_claws_and_teeth_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_claws_and_teeth_1"), 1),
@@ -562,6 +573,7 @@ public class CaveDragonAbilities {
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
                 true,
+                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_wings_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_wings_1"), 1)
@@ -578,6 +590,7 @@ public class CaveDragonAbilities {
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
                 true,
+                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_spin_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_spin_1"), 1)
@@ -597,6 +610,7 @@ public class CaveDragonAbilities {
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
                 true,
+                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_dragon_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_dragon_1"), 1)
@@ -612,6 +626,7 @@ public class CaveDragonAbilities {
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
                 false, // To prevent regaining oxygen
+                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/lava_swimming_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/lava_swimming_1"), 1)

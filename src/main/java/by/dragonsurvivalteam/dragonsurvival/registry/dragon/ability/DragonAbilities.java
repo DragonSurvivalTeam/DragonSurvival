@@ -55,6 +55,7 @@ public class DragonAbilities {
                         ), TargetingMode.ITEMS), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))
                 ),
                 true,
+                false,
                 new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
         ));
 
@@ -68,6 +69,7 @@ public class DragonAbilities {
                         ), TargetingMode.ALLIES_AND_SELF)), LevelBasedValue.constant(1))
                 ),
                 true,
+                false,
                 new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
         ));
 
@@ -81,6 +83,7 @@ public class DragonAbilities {
                         ), TargetingMode.ALLIES_AND_SELF)), LevelBasedValue.constant(1))
                 ),
                 true,
+                false,
                 new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
         ));
 
@@ -120,6 +123,7 @@ public class DragonAbilities {
                     ), LevelBasedValue.constant(1)
                 )),
                 true,
+                false,
                 new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
         ));
 
@@ -152,6 +156,7 @@ public class DragonAbilities {
                         ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))
                 ),
                 true,
+                false,
                 new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
         ));
     }
