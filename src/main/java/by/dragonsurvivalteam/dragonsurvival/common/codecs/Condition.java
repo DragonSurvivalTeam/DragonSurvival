@@ -127,6 +127,15 @@ public class Condition {
         return new LootContext.Builder(parameters).create(Optional.empty());
     }
 
+    public static LootContext eatContext(final ServerLevel level, final Entity entity, final ItemStack tool) {
+        LootParams parameters = new LootParams.Builder(level)
+                .withParameter(LootContextParams.THIS_ENTITY, entity)
+                .withParameter(LootContextParams.ORIGIN, entity.position())
+                .withParameter(LootContextParams.TOOL, tool)
+                .create(DAMAGE_CONTEXT);
+        return new LootContext.Builder(parameters).create(Optional.empty());
+    }
+
     public static LootItemCondition.Builder thisEntity(final EntityPredicate predicate) {
         return LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.THIS, predicate);
     }

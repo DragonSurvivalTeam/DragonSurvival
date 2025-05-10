@@ -25,6 +25,7 @@ public class UnlockWingsDatapack {
                 Optional.empty(),
                 wings.value().actions(),
                 wings.value().canBeManuallyDisabled(),
+                wings.value().cancel(),
                 wings.value().icon()
         ));
     }

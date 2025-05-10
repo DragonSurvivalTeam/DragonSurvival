@@ -205,6 +205,7 @@ public class ForestDragonAbilities {
                                 TargetingMode.ALL
                         )), LevelBasedValue.constant(1))),
                 true,
+                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/forest/poisonous_breath_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/forest/poisonous_breath_1"), 1),
@@ -263,6 +264,7 @@ public class ForestDragonAbilities {
                                 TargetingMode.ALL
                         )), LevelBasedValue.constant(1))),
                 true,
+                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/forest/sun_breath_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/forest/sun_breath_1"), 1),
@@ -294,6 +296,7 @@ public class ForestDragonAbilities {
                         TargetingMode.ALL
                 )), LevelBasedValue.constant(1))),
                 true,
+                false,
                 new LevelBasedResource(
                         List.of(
                                 new LevelBasedResource.Entry(DragonSurvival.res("abilities/forest/spike_0"), 0),
@@ -331,6 +334,7 @@ public class ForestDragonAbilities {
                         ), TargetingMode.NON_ENEMIES
                 ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 true,
+                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/forest/inspiration_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/forest/inspiration_1"), 1),
@@ -365,6 +369,7 @@ public class ForestDragonAbilities {
                         ), TargetingMode.NON_ENEMIES
                 ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 true,
+                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/forest/hunter_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/forest/hunter_1"), 1),
@@ -401,6 +406,7 @@ public class ForestDragonAbilities {
                         )), LevelBasedValue.constant(1))
                 ),
                 true,
+                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/forest/forest_magic_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/forest/forest_magic_1"), 1),
@@ -427,6 +433,7 @@ public class ForestDragonAbilities {
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(Functions.secondsToTicks(1)))),
                 true,
+                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/forest/forest_athletics_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/forest/forest_athletics_1"), 1),
@@ -449,6 +456,7 @@ public class ForestDragonAbilities {
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
                 true,
+                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/forest/light_in_darkness_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/forest/light_in_darkness_1"), 1),
@@ -474,6 +482,7 @@ public class ForestDragonAbilities {
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
                 true,
+                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/forest/cliffhanger_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/forest/cliffhanger_1"), 1),
@@ -503,6 +512,7 @@ public class ForestDragonAbilities {
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
                 true,
+                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/forest/forest_claws_and_teeth_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/forest/forest_claws_and_teeth_1"), 1),
@@ -522,6 +532,7 @@ public class ForestDragonAbilities {
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
                 true,
+                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/forest/forest_wings_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/forest/forest_wings_1"), 1)
@@ -538,6 +549,7 @@ public class ForestDragonAbilities {
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
                 true,
+                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/forest/forest_spin_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/forest/forest_spin_1"), 1)
@@ -562,6 +574,7 @@ public class ForestDragonAbilities {
                         TargetingMode.ALL
                 )), LevelBasedValue.constant(1))),
                 true,
+                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/forest/forest_dragon_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/forest/forest_dragon_1"), 1)
