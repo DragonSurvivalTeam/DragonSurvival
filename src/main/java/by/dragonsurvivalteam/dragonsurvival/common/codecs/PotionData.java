@@ -17,12 +17,14 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.NumberFormat;
@@ -124,12 +126,12 @@ public record PotionData(
         return components;
     }
 
-    public PotionContents toPotionContents(final ServerPlayer player, final int level) {
+    public PotionContents toPotionContents(final @NotNull RandomSource random, final int level) {
         List<MobEffectInstance> instances = new ArrayList<>();
         Calculated calculated = Calculated.from(this, level);
 
         for (Holder<MobEffect> effect : effects) {
-            if (player.getRandom().nextDouble() >= calculated.probability()) {
+            if (random.nextDouble() >= calculated.probability()) {
                 continue;
             }
 

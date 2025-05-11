@@ -29,7 +29,7 @@ public record AreaCloudEffect(PotionData potion, LevelBasedValue duration, Level
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final BlockPos position, @Nullable final Direction direction) {
         if (dragon.level().random.nextDouble() < probability.calculate(ability.level()) && dragon.level().getBlockState(position).isSolid()) {
             AreaEffectCloud cloud = new AreaEffectCloud(dragon.level(), position.above().getX(), position.above().getY(), position.above().getZ());
-            cloud.setPotionContents(potion.toPotionContents(dragon, ability.level()));
+            cloud.setPotionContents(potion.toPotionContents(dragon.getRandom(), ability.level()));
             cloud.setDuration((int) duration.calculate(ability.level()));
             cloud.setParticle(particle);
             cloud.setOwner(dragon);

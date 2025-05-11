@@ -29,9 +29,9 @@ public record ProjectileAreaCloudEffect(PotionData potion, LevelBasedValue durat
         if (projectile.level().random.nextDouble() < probability.calculate(level)) {
             AreaEffectCloud cloud = new AreaEffectCloud(projectile.level(), target.getX(), target.getY(), target.getZ());
             if (projectile.getOwner() instanceof ServerPlayer serverPlayer) {
-                cloud.setPotionContents(potion.toPotionContents(serverPlayer, level));
+                cloud.setPotionContents(potion.toPotionContents(serverPlayer.getRandom(), level));
             } else {
-                cloud.setPotionContents(potion.toPotionContents(null, level));
+                cloud.setPotionContents(potion.toPotionContents(projectile.getRandom(), level));
             }
             cloud.setDuration((int) duration.calculate(level));
             cloud.setParticle(particle);
