@@ -22,7 +22,7 @@ public record ProjectilePointTarget(GeneralData generalData) implements Projecti
             }
         }
 
-        generalData.effects().forEach(effect -> effect.apply((ServerLevel) projectile.level(), projectile, null, projectileLevel));
+        generalData.effects().forEach(effect -> effect.apply((ServerLevel) projectile.level(), projectile, projectile.blockPosition(), projectileLevel));
     }
 
     @Override
