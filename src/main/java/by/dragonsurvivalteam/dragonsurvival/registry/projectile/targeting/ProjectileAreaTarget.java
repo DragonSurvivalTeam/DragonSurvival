@@ -37,8 +37,10 @@ public record ProjectileAreaTarget(GeneralData generalData, LevelBasedValue radi
             return;
         }
 
-        if (projectile.level().getGameTime() % generalData.tickRate() != 0 || generalData.chance() < projectile.getRandom().nextDouble()) {
-            return;
+        if (generalData.tickRate() != 0) {
+            if (projectile.level().getGameTime() % generalData.tickRate() != 0 || generalData.chance() < projectile.getRandom().nextDouble()) {
+                return;
+            }
         }
 
         double radius = this.radius.calculate(level);
