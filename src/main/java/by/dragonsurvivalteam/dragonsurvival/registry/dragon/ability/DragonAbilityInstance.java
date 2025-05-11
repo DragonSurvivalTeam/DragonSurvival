@@ -11,7 +11,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Activation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.PassiveActivation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.ActivationTrigger;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnBlockBreak;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
@@ -45,8 +44,7 @@ public class DragonAbilityInstance {
     public static final Codec<DragonAbilityInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             DragonAbility.CODEC.fieldOf("ability").forGetter(DragonAbilityInstance::ability),
             Codec.INT.fieldOf("level").forGetter(DragonAbilityInstance::level),
-            Codec.BOOL.optionalFieldOf("is_manually_disabled", false).forGetter(ability -> ability.isManuallyDisabled),
-            Codec.BOOL.optionalFieldOf("cancel", false).forGetter(ability -> ability.cancel) // For use in onBlockBreak, maybe others?
+            Codec.BOOL.optionalFieldOf("is_manually_disabled", false).forGetter(ability -> ability.isManuallyDisabled)
     ).apply(instance, DragonAbilityInstance::new));
 
     private final Holder<DragonAbility> ability;
@@ -57,25 +55,18 @@ public class DragonAbilityInstance {
     private boolean isAutomaticallyDisabled;
     /** Indicates that the ability is able to apply its effects */
     private boolean isActive;
-    /** Indicates if the ability should cancel out of events, and if so how (varies on context) */
-    private boolean cancel;
 
     private int currentTick;
     private int cooldown;
 
     public DragonAbilityInstance(final Holder<DragonAbility> ability, int level) {
-        this(ability, level, ability.value().canBeManuallyDisabled(), ability.value().cancel());
+        this(ability, level, false);
     }
 
     public DragonAbilityInstance(final Holder<DragonAbility> ability, int level, boolean isManuallyDisabled) {
-        this(ability, level, isManuallyDisabled, ability.value().cancel());
-    }
-
-    public DragonAbilityInstance(final Holder<DragonAbility> ability, int level, boolean isManuallyDisabled, boolean cancel) {
         this.ability = ability;
         this.level = level;
         this.isManuallyDisabled = isManuallyDisabled;
-        this.cancel = cancel;
 
         if (isEnabled() && isPassive()) {
             this.isActive = true;
@@ -335,14 +326,6 @@ public class DragonAbilityInstance {
         } else {
             return isAutomaticallyDisabled;
         }
-    }
-
-    public void setCancel(boolean cancel) {
-        this.cancel = cancel;
-    }
-
-    public boolean isCancel() {
-        return this.cancel;
     }
 
     public boolean isEnabled() {

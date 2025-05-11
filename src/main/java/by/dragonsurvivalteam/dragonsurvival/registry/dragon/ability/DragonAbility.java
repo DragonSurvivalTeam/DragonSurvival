@@ -41,7 +41,6 @@ public record DragonAbility(
         Optional<LootItemCondition> usageBlocked,
         List<ActionContainer> actions,
         boolean canBeManuallyDisabled,
-        boolean cancel,
         LevelBasedResource icon
 ) {
     @Translation(comments = "§6■ Trigger:§r %s")
@@ -55,7 +54,6 @@ public record DragonAbility(
             LootItemCondition.DIRECT_CODEC.optionalFieldOf("usage_blocked").forGetter(DragonAbility::usageBlocked),
             ActionContainer.CODEC.listOf().optionalFieldOf("actions", List.of()).forGetter(DragonAbility::actions),
             Codec.BOOL.optionalFieldOf("can_be_manually_disabled", true).forGetter(DragonAbility::canBeManuallyDisabled),
-            Codec.BOOL.optionalFieldOf("cancel", false).forGetter(DragonAbility::cancel),
             LevelBasedResource.CODEC.fieldOf("icon").forGetter(DragonAbility::icon)
     ).apply(instance, instance.stable(DragonAbility::new)));
 

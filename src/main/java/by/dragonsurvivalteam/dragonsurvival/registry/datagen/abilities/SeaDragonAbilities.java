@@ -207,7 +207,6 @@ public class SeaDragonAbilities {
                                 TargetingMode.ALL
                         )), LevelBasedValue.constant(1))),
                 true,
-                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/storm_breath_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/storm_breath_1"), 1),
@@ -241,7 +240,6 @@ public class SeaDragonAbilities {
                         TargetingMode.ALL
                 )), LevelBasedValue.constant(1))),
                 true,
-                false,
                 new LevelBasedResource(
                         List.of(
                                 new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/ball_lightning_0"), 0),
@@ -275,7 +273,6 @@ public class SeaDragonAbilities {
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
                 true,
-                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_eyes_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_eyes_1"), 1),
@@ -402,7 +399,6 @@ public class SeaDragonAbilities {
                         ))
                 ), TargetingMode.NON_ENEMIES), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 true,
-                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/ore_glow_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/ore_glow_1"), 1),
@@ -441,7 +437,6 @@ public class SeaDragonAbilities {
                         TargetingMode.NON_ENEMIES
                 ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 true,
-                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/revealing_the_soul_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/revealing_the_soul_1"), 1),
@@ -477,7 +472,6 @@ public class SeaDragonAbilities {
                         )), LevelBasedValue.constant(1))
                 ),
                 true,
-                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_magic_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_magic_1"), 1),
@@ -504,7 +498,6 @@ public class SeaDragonAbilities {
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(Functions.secondsToTicks(1)))),
                 true,
-                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_athletics_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_athletics_1"), 1),
@@ -527,7 +520,6 @@ public class SeaDragonAbilities {
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
                 true,
-                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/water_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/water_1"), 1),
@@ -552,7 +544,6 @@ public class SeaDragonAbilities {
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
                 true,
-                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/spectral_impact_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/spectral_impact_1"), 1),
@@ -579,7 +570,6 @@ public class SeaDragonAbilities {
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
                 true,
-                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_claws_and_teeth_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_claws_and_teeth_1"), 1),
@@ -599,7 +589,6 @@ public class SeaDragonAbilities {
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
                 true,
-                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_wings_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_wings_1"), 1)
@@ -616,7 +605,6 @@ public class SeaDragonAbilities {
                         TargetingMode.ALLIES_AND_SELF
                 )), LevelBasedValue.constant(1))),
                 true,
-                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_spin_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_spin_1"), 1)
@@ -636,7 +624,6 @@ public class SeaDragonAbilities {
                         TargetingMode.ALL
                 )), LevelBasedValue.constant(1))),
                 true,
-                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_dragon_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_dragon_1"), 1)
@@ -673,7 +660,6 @@ public class SeaDragonAbilities {
                         )), LevelBasedValue.constant(1))
                 ),
                 true,
-                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/amphibian_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/amphibian_1"), 1)
@@ -694,7 +680,6 @@ public class SeaDragonAbilities {
                         )), LevelBasedValue.constant(1))
                 ),
                 true,
-                false,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/diver_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/diver_1"), 1)
