@@ -65,7 +65,7 @@ public record OnBlockBreak(Optional<LootItemCondition> condition, Optional<Cance
             if (silky || indestructible) {
                 if (silky) {
                     initializePickaxe();
-                    BlockEntity blockEntity =  blockState.hasBlockEntity() ? level.getBlockEntity(blockPos) : null;
+                    BlockEntity blockEntity = blockState.hasBlockEntity() ? level.getBlockEntity(blockPos) : null;
                     Block.dropResources(blockState, level, blockPos, blockEntity, player, pickaxe);
                     level.destroyBlock(blockPos, false);
                 }
