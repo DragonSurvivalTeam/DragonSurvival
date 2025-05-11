@@ -27,7 +27,7 @@ public record ProjectileAreaCloudEffect(PotionData potion, LevelBasedValue durat
     @Override
     public void apply(Projectile projectile, BlockPos target, int level) {
         if (projectile.level().random.nextDouble() < probability.calculate(level)) {
-            AreaEffectCloud cloud = new AreaEffectCloud(projectile.level(), target.getX(), target.getY(), target.getZ());
+            AreaEffectCloud cloud = new AreaEffectCloud(projectile.level(), target.getX(), projectile.level().getBlockState(target.below()).isSolid() ? target.above().getY() : target.getY(), target.getZ());
             if (projectile.getOwner() instanceof ServerPlayer serverPlayer) {
                 cloud.setPotionContents(potion.toPotionContents(serverPlayer.getRandom(), level));
             } else {
@@ -39,7 +39,7 @@ public record ProjectileAreaCloudEffect(PotionData potion, LevelBasedValue durat
                 cloud.setOwner(living);
             }
             cloud.setWaitTime((int) delay.orElse(LevelBasedValue.constant(0)).calculate(level));
-            cloud.setRadius((int) radius.orElse(LevelBasedValue.constant(1)).calculate(level));
+            cloud.setRadius(radius.orElse(LevelBasedValue.constant(1)).calculate(level));
 
             projectile.level().addFreshEntity(cloud);
         }
