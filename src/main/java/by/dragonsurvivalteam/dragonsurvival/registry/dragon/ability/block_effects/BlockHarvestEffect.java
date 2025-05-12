@@ -32,8 +32,6 @@ public record BlockHarvestEffect(BlockPredicate validBlocks, LevelBasedValue pro
     ).apply(instance, BlockHarvestEffect::new));
     /** TODO: Move Enchantment + level above into a new codec?  Also make enchant_level optional */
 
-    private static final ItemStack pickaxe = new ItemStack(Items.DIAMOND_PICKAXE, 1);
-
     @Override
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final BlockPos position, @Nullable final Direction direction) {
         if (probability.calculate(ability.level()) < dragon.getRandom().nextDouble()) {
@@ -42,7 +40,7 @@ public record BlockHarvestEffect(BlockPredicate validBlocks, LevelBasedValue pro
 
         ServerLevel level = dragon.serverLevel();
         if (validBlocks.test(level, position)) {
-            ItemStack blockTool = tool.orElse(pickaxe);
+            ItemStack blockTool = tool.orElse(new ItemStack(Items.DIAMOND_PICKAXE, 1));
             initializeTool(blockTool, enchantment.orElse(null), round(enchant_level().calculate(ability.level())));
             BlockState blockState = level.getBlockState(position);
             BlockEntity blockEntity = blockState.hasBlockEntity() ? level.getBlockEntity(position) : null;
