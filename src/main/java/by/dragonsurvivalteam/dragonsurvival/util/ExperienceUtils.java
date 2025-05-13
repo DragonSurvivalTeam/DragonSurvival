@@ -31,10 +31,9 @@ public class ExperienceUtils {
     public static double getLevelAndProgress(int experience) {
         int wholeLevel = getLevel(experience);
 
-        int requiredForNext = getLevel(wholeLevel + 1);
-        int requiredExperience = requiredForNext - experience;
-        double progress = (double) (experience - (requiredExperience - requiredForNext)) / requiredForNext;
-        return wholeLevel + progress;
+        int requiredForNext = getExperienceForLevelAfter(wholeLevel + 1); // EXP to next level
+        double progress = (double) (experience - getTotalExperience(wholeLevel)) / requiredForNext; // (exp - current level exp value) = current level progress
+        return wholeLevel + progress; // divide by next level requirement to get progress as a percent
     }
 
     /** Calculate the total experience a level is worth given experience levels */
