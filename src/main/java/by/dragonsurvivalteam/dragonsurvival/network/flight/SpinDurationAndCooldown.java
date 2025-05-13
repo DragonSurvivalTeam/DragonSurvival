@@ -28,9 +28,11 @@ public record SpinDurationAndCooldown(int playerId, int duration, int cooldown) 
 
     public static void handleClient(final SpinDurationAndCooldown packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
-            FlightData data = FlightData.getData(context.player());
-            data.duration = packet.duration();
-            data.cooldown = packet.cooldown();
+            if(context.player().level().getEntity(packet.playerId()) instanceof Player player) {
+                FlightData spin = FlightData.getData(player);
+                spin.cooldown = packet.cooldown();
+                spin.duration = packet.duration();
+            }
         });
     }
 
