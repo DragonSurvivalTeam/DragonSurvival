@@ -6,16 +6,24 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import org.jetbrains.annotations.Nullable;
 
-public record BlockBreakEffect(BlockPredicate validBlocks, LevelBasedValue probability, boolean dropLoot) implements AbilityBlockEffect {
+import java.util.Optional;
+
+public record BlockBreakEffect(BlockPredicate validBlocks, LevelBasedValue probability, boolean dropLoot, Optional<ItemStack> tool) implements AbilityBlockEffect {
     public static final MapCodec<BlockBreakEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             BlockPredicate.CODEC.fieldOf("valid_blocks").forGetter(BlockBreakEffect::validBlocks),
             LevelBasedValue.CODEC.fieldOf("probability").forGetter(BlockBreakEffect::probability),
-            Codec.BOOL.optionalFieldOf("drop_loot", false).forGetter(BlockBreakEffect::dropLoot)
+            Codec.BOOL.optionalFieldOf("drop_loot", false).forGetter(BlockBreakEffect::dropLoot),
+            ItemStack.CODEC.optionalFieldOf("tool").forGetter(BlockBreakEffect::tool)
     ).apply(instance, BlockBreakEffect::new));
 
     @Override
@@ -24,8 +32,16 @@ public record BlockBreakEffect(BlockPredicate validBlocks, LevelBasedValue proba
             return;
         }
 
-        if (validBlocks.test(dragon.serverLevel(), position)) {
-            dragon.serverLevel().destroyBlock(position, dropLoot);
+        ServerLevel level = dragon.serverLevel();
+        if (validBlocks.test(level, position)) {
+            if (tool.isPresent()) {
+                BlockState blockState = level.getBlockState(position);
+                BlockEntity blockEntity = blockState.hasBlockEntity() ? level.getBlockEntity(position) : null;
+                Block.dropResources(blockState, level, position, blockEntity, dragon, tool.orElse(ItemStack.EMPTY));
+            }
+            if (tool.isEmpty() || !dropLoot) {
+                level.destroyBlock(position, dropLoot);
+            }
         }
     }
 
