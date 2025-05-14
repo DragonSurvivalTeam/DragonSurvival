@@ -46,6 +46,7 @@ import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.cache.GeckoLibCache;
+import software.bernie.geckolib.loading.object.BakedAnimations;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.ArrayList;
@@ -385,7 +386,12 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     }
 
     private boolean doesAnimationExist(final Player player, final String animation) {
-        return GeckoLibCache.getBakedAnimations().get(DragonModel.getAnimationResource(player)).getAnimation(animation) != null;
+        BakedAnimations bakedAnimations = GeckoLibCache.getBakedAnimations().get(DragonModel.getAnimationResource(player));
+        if (bakedAnimations == null) {
+            return false;
+        }
+
+        return bakedAnimations.getAnimation(animation) != null;
     }
 
     private double animationDuration(final Player player, final String animation) {
