@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.effects;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonSpeciesTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.util.AdditionalEffectData;
@@ -71,7 +72,7 @@ public class ConfoundedEffect extends ModifiableMobEffect {
                 // Remove all forest dragons from potential targets
                 // Also remove self as target
                 list1 = list1.stream().filter(e -> {
-                    if (e instanceof Player p) { return (DragonStateProvider.getData(p).species().is(BuiltInDragonSpecies.FOREST_DRAGON)); }
+                    if (e instanceof Player p) { return !(DragonStateProvider.getData(p).species().is(DSDragonSpeciesTags.FOREST_DRAGONS)); }
                     else if (e == mob) return false;
                     else if (mob.getType().is(DSEntityTypeTags.CONFOUNDED_TARGET_BLACKLIST)) return false;
                     return true;

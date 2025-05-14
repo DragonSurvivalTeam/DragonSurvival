@@ -193,7 +193,9 @@ public class SeaDragonAbilities {
                                 List.of(new AreaCloudEffect(
                                         PotionData.create(DSEffects.CHARGED).duration(30).build(),
                                         LevelBasedValue.constant(Functions.secondsToTicks(2)),
-                                        0.3,
+                                        LevelBasedValue.constant(0.3f),
+                                        Optional.empty(),
+                                        Optional.empty(),
                                         new LargeLightningParticleOption(37, false)
                                 ))
                         ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
