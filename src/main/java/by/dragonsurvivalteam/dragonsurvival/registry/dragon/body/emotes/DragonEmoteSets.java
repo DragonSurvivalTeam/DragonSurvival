@@ -55,6 +55,15 @@ public class DragonEmoteSets {
     @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Talk")
     public static final String BLEND_TALK = "eat_item_left";
 
+    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Ro-sham-bo - Rock")
+    public static final String BLEND_HAND_ROCK = "blend_hand_rock";
+
+    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Ro-sham-bo - Paper")
+    public static final String BLEND_HAND_PAPER = "blend_hand_paper";
+
+    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Ro-sham-bo - Scissors")
+    public static final String BLEND_HAND_SCISSORS = "blend_hand_scissors";
+
     @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Open Mouth")
     public static final String BLEND_BREATH = "breath";
 
@@ -210,6 +219,9 @@ public class DragonEmoteSets {
                                 DragonEmote.Builder.of(BLEND_BITE).loops().canMove().blend().build(),
                                 DragonEmote.Builder.of(BLEND_ONE_BITE).blend().canMove().build(),
                                 DragonEmote.Builder.of(BLEND_TALK).loops().blend().canMove().build(),
+                                DragonEmote.Builder.of(BLEND_HAND_ROCK).blend().canMove().build(),
+                                DragonEmote.Builder.of(BLEND_HAND_PAPER).blend().canMove().build(),
+                                DragonEmote.Builder.of(BLEND_HAND_SCISSORS).blend().canMove().build(),
                                 DragonEmote.Builder.of(SIT).loops().canMove().build(),
                                 DragonEmote.Builder.of(SITTING_CURLED_L).loops().canMove().build(),
                                 DragonEmote.Builder.of(SITTING_CURLED_R).loops().canMove().build(),
