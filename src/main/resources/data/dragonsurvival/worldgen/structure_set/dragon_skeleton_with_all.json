@@ -17,6 +17,10 @@
     "type": "minecraft:random_spread",
     "salt": 814525156,
     "spacing": 36,
-    "separation": 1
+    "separation": 1,    
+	"super_exclusion_zone": {
+      "chunk_count": 1,
+      "other_set": "#dragonsurvival:underground_avoid"
+    }
   }
 }

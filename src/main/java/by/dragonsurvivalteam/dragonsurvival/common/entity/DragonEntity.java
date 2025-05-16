@@ -494,6 +494,39 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     }
 
     @Override
+    public @NotNull Vec3 getDeltaMovement() {
+        Player player = getPlayer();
+
+        if (player != null) {
+            return player.getDeltaMovement();
+        }
+
+        return super.getDeltaMovement();
+    }
+
+    @Override
+    public float getHealth() {
+        Player player = getPlayer();
+
+        if (player != null) {
+            return player.getHealth();
+        }
+
+        return super.getHealth();
+    }
+
+    @Override
+    public float getMaxHealth() {
+        Player player = getPlayer();
+
+        if (player != null) {
+            return player.getMaxHealth();
+        }
+
+        return super.getMaxHealth();
+    }
+
+    @Override
     public boolean isInvisible() {
         if (super.isInvisible()) {
             return true;
