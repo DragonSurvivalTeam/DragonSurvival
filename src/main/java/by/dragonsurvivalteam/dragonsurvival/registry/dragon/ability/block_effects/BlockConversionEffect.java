@@ -6,22 +6,18 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.util.random.Weight;
 import net.minecraft.util.random.WeightedEntry;
 import net.minecraft.util.random.WeightedRandomList;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Optional;
 
 public record BlockConversionEffect(List<BlockConversionData> blockConversions, LevelBasedValue probability) implements AbilityBlockEffect {
     public static final MapCodec<BlockConversionEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -36,11 +32,10 @@ public record BlockConversionEffect(List<BlockConversionData> blockConversions, 
         ).apply(instance, BlockConversionData::new));
     }
 
-    public record BlockTo(BlockState state, int weight, Optional<ItemStack> tool) implements WeightedEntry {
+    public record BlockTo(BlockState state, int weight) implements WeightedEntry {
         public static final Codec<BlockTo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 BlockState.CODEC.fieldOf("state").forGetter(BlockTo::state),
-                Codec.INT.fieldOf("weight").forGetter(BlockTo::weight),
-                ItemStack.CODEC.optionalFieldOf("tool").forGetter(BlockTo::tool)
+                Codec.INT.fieldOf("weight").forGetter(BlockTo::weight)
         ).apply(instance, BlockTo::new));
 
         @Override
@@ -55,10 +50,9 @@ public record BlockConversionEffect(List<BlockConversionData> blockConversions, 
             return;
         }
 
-        ServerLevel level = dragon.serverLevel();
         for (BlockConversionData data : blockConversions) {
-            if (data.fromPredicate().test(level, position)) {
-                data.blocksTo().getRandom(dragon.getRandom()).ifPresent(conversion -> handleConversion(conversion, level, position, dragon));
+            if (data.fromPredicate().test(dragon.serverLevel(), position)) {
+                data.blocksTo().getRandom(dragon.getRandom()).ifPresent(conversion -> dragon.serverLevel().setBlock(position, conversion.state(), Block.UPDATE_ALL));
             }
         }
     }
@@ -66,14 +60,5 @@ public record BlockConversionEffect(List<BlockConversionData> blockConversions, 
     @Override
     public MapCodec<? extends AbilityBlockEffect> blockCodec() {
         return CODEC;
-    }
-
-    private static void handleConversion(BlockConversionEffect.BlockTo conversion, ServerLevel level, BlockPos position, ServerPlayer dragon) {
-        if (conversion.tool.isPresent()) {
-            BlockState blockState = level.getBlockState(position);
-            BlockEntity blockEntity = blockState.hasBlockEntity() ? level.getBlockEntity(position) : null;
-            Block.dropResources(blockState, level, position, blockEntity, dragon, conversion.tool.orElse(ItemStack.EMPTY));
-        }
-        level.setBlock(position, conversion.state(), Block.UPDATE_ALL);
     }
 }

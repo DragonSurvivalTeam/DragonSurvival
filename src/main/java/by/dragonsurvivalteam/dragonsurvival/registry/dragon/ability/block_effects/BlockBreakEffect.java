@@ -39,7 +39,9 @@ public record BlockBreakEffect(BlockPredicate validBlocks, LevelBasedValue proba
                 BlockEntity blockEntity = blockState.hasBlockEntity() ? level.getBlockEntity(position) : null;
                 Block.dropResources(blockState, level, position, blockEntity, dragon, tool.orElse(ItemStack.EMPTY));
             }
-            level.destroyBlock(position, dropLoot);
+            if (tool.isEmpty() || !dropLoot) {
+                level.destroyBlock(position, dropLoot);
+            }
         }
     }
 
