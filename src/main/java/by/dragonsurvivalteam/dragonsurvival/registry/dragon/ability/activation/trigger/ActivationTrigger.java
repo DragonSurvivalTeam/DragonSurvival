@@ -32,7 +32,9 @@ public interface ActivationTrigger {
         @Translation(comments = "On Target Killed")
         ON_TARGET_KILLED,
         @Translation(comments = "On Death")
-        ON_DEATH
+        ON_DEATH,
+        @Translation(comments = "On Block Break")
+        ON_BLOCK_BREAK
     }
 
     @SubscribeEvent
@@ -48,6 +50,7 @@ public interface ActivationTrigger {
             event.register(REGISTRY_KEY, DragonSurvival.res("on_target_hit"), () -> OnTargetHit.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("on_target_killed"), () -> OnTargetKilled.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("on_death"), () -> OnDeath.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("on_block_break"), () -> OnBlockBreak.CODEC);
         }
     }
 
