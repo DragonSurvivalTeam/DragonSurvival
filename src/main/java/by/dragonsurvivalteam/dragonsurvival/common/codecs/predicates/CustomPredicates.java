@@ -14,6 +14,7 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.Vec3;
@@ -33,6 +34,7 @@ public record CustomPredicates(
         Optional<ResourceLocation> hasDurationEffect,
         Optional<NearbyEntityPredicate> isNearbyEntity,
         Optional<MinMaxBounds.Ints> playerHunger,
+        Optional<MinMaxBounds.Doubles> healthPercentage,
         Optional<UUID> hasUUID
 ) implements EntitySubPredicate {
     public static final MapCodec<CustomPredicates> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -42,6 +44,7 @@ public record CustomPredicates(
             ResourceLocation.CODEC.optionalFieldOf("has_duration_effect").forGetter(CustomPredicates::hasDurationEffect),
             NearbyEntityPredicate.CODEC.optionalFieldOf("is_nearby_entity").forGetter(CustomPredicates::isNearbyEntity),
             MinMaxBounds.Ints.CODEC.optionalFieldOf("player_hunger").forGetter(CustomPredicates::playerHunger),
+            MinMaxBounds.Doubles.CODEC.optionalFieldOf("health_percentage").forGetter(CustomPredicates::healthPercentage),
             UUIDUtil.LENIENT_CODEC.optionalFieldOf("has_uuid").forGetter(CustomPredicates::hasUUID)
     ).apply(instance, CustomPredicates::new));
 
@@ -89,6 +92,10 @@ public record CustomPredicates(
             return false;
         }
 
+        if (!healthPercentage.map(health -> health.matches(getHealthPercentage(entity))).orElse(true)) {
+            return false;
+        }
+
         if (!hasUUID.map(uuid -> uuid.equals(entity.getUUID())).orElse(true)) {
             return false;
         }
@@ -110,6 +117,14 @@ public record CustomPredicates(
         return 0;
     }
 
+    public static float getHealthPercentage(final Entity entity) {
+        if (entity instanceof LivingEntity living) {
+            return living.getHealth() / living.getMaxHealth();
+        }
+        // Not alive, doesn't have health
+        return 0;
+    }
+
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // ignore
     public static class Builder {
         private Optional<HolderSet<FluidType>> eyeInFluid = Optional.empty();
@@ -122,6 +137,7 @@ public record CustomPredicates(
         private Optional<NearbyEntityPredicate> isNearbyEntity = Optional.empty();
         private Optional<UUID> hasUUID = Optional.empty();
         private Optional<MinMaxBounds.Ints> playerHunger = Optional.empty();
+        private Optional<MinMaxBounds.Doubles> healthPercentage = Optional.empty();
 
         public static CustomPredicates.Builder start() {
             return new CustomPredicates.Builder();
@@ -182,8 +198,13 @@ public record CustomPredicates(
             return this;
         }
 
+        public CustomPredicates.Builder healthPercentage(double min, double max) {
+            this.healthPercentage = Optional.of(MinMaxBounds.Doubles.between(min, max));
+            return this;
+        }
+
         public CustomPredicates build() {
-            return new CustomPredicates(eyeInFluid, Optional.of(new WeatherPredicate(isRaining, isThundering, isSnowing, isRainingOrSnowing)), sunLightLevel, hasDurationEffect, isNearbyEntity, playerHunger, hasUUID);
+            return new CustomPredicates(eyeInFluid, Optional.of(new WeatherPredicate(isRaining, isThundering, isSnowing, isRainingOrSnowing)), sunLightLevel, hasDurationEffect, isNearbyEntity, playerHunger, healthPercentage, hasUUID);
         }
     }
 }
