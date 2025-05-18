@@ -93,6 +93,21 @@
       "loops": true
     },
     {
+      "animation_key": "blend_hand_rock",
+      "blend": true,
+      "can_move": true
+    },
+    {
+      "animation_key": "blend_hand_paper",
+      "blend": true,
+      "can_move": true
+    },
+    {
+      "animation_key": "blend_hand_scissors",
+      "blend": true,
+      "can_move": true
+    },
+    {
       "animation_key": "sit",
       "can_move": true,
       "loops": true

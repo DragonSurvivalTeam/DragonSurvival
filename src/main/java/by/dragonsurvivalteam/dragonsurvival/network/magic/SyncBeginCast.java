@@ -6,6 +6,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,7 +25,8 @@ public record SyncBeginCast(int playerId, int abilitySlot) implements CustomPack
 
             // The server can deny the cast if the player doesn't meet the entity predicate for the casting
             if (!magic.attemptCast(context.player(), packet.abilitySlot())) {
-                context.reply(new SyncStopCast(packet.playerId(), false));
+                // Send this deny packet to all players involved, not just the caster, as we may need to stop ticking sounds
+                PacketDistributor.sendToPlayersTrackingEntityAndSelf(context.player(), new SyncStopCast(context.player().getId(), false));
             }
         });
     }

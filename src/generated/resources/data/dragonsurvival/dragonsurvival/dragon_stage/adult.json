@@ -65,8 +65,8 @@
     {
       "amount": {
         "type": "minecraft:linear",
-        "base": 5.9,
-        "per_level_above_first": 0.4
+        "base": 5.55,
+        "per_level_above_first": 0.05
       },
       "attribute": "dragonsurvival:dragon_breath_range",
       "operation": "add_value"
