@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
@@ -26,7 +27,9 @@ public record DamageEffect(Holder<DamageType> damageType, LevelBasedValue amount
 
     @Override
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
-        target.hurt(new DamageSource(damageType, dragon), amount().calculate(ability.level()));
+        float damageAmount = amount().calculate(ability.level());
+        damageAmount *= (float) dragon.getAttributeValue(DSAttributes.DRAGON_ABILITY_DAMAGE);
+        target.hurt(new DamageSource(damageType, dragon), damageAmount);
 
         // Used by 'OwnerHurtTargetGoal'
         dragon.setLastHurtMob(target);

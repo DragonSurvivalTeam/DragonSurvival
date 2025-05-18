@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.projectile.entity_effects;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.serialization.MapCodec;
@@ -29,12 +30,20 @@ public record ProjectileDamageEffect(Holder<DamageType> damageType, LevelBasedVa
 
     @Override
     public void apply(final Projectile projectile, final Entity target, final int level) {
-        target.hurt(new DamageSource(damageType, projectile, projectile.getOwner()), amount.calculate(level));
+        LivingEntity owner = projectile.getOwner() instanceof LivingEntity entity ? entity : null;
 
-        if (projectile.getOwner() instanceof LivingEntity entity) {
-            // Used by 'OwnerHurtTargetGoal'
-            entity.setLastHurtMob(target);
+        float damageAmount = amount().calculate(level);
+        if (owner != null) {
+            damageAmount *= (float) owner.getAttributeValue(DSAttributes.DRAGON_ABILITY_DAMAGE);
         }
+
+        target.hurt(new DamageSource(damageType, projectile, owner), damageAmount);
+
+        if (owner != null) {
+            // Used by 'OwnerHurtTargetGoal'
+            owner.setLastHurtMob(target);
+        }
+
     }
 
     @Override

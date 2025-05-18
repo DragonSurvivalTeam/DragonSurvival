@@ -3,6 +3,8 @@
   "attribute.dragonsurvival.armor_ignore_chance.desc": "The chance to ignore armor when attacking",
   "attribute.dragonsurvival.block_break_radius": "Block Break Radius",
   "attribute.dragonsurvival.block_break_radius.desc": "Determines the radius that you can break blocks when mining",
+  "attribute.dragonsurvival.dragon_ability_damage": "Dragon Ability Damage",
+  "attribute.dragonsurvival.dragon_ability_damage.desc": "A multiplier to the damage of dragon abilities",
   "attribute.dragonsurvival.dragon_breath_range": "Breath Range",
   "attribute.dragonsurvival.dragon_breath_range.desc": "Determines the range of the breath ability (the range acts in terms of blocks)",
   "attribute.dragonsurvival.experience": "Experience",
