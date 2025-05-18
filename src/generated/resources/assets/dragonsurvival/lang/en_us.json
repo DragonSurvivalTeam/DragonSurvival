@@ -988,6 +988,7 @@
   "dragonsurvival.description.weak_dragon_heart": "§6■ Part of the Elder dragon.§r\n■§7 A strengthened, but still unstable Heart. Ideal for a young dragon's growth. Some monsters will rarely drop this when killed.",
   "dragonsurvival.description.wing_grant": "■§7 This item gives you the ability to fly. Consumed on use.",
   "dragonsurvival.gui.ability.activation_trigger": "§6■ Trigger:§r %s",
+  "dragonsurvival.gui.ability.additional_damage": " (%s additional damage from attributes)",
   "dragonsurvival.gui.ability.all_blocks": "All blocks",
   "dragonsurvival.gui.ability.applies": "§6■ Applies§r %s",
   "dragonsurvival.gui.ability.cast_time_of_x": "§6■ Cast time:§r %ss",

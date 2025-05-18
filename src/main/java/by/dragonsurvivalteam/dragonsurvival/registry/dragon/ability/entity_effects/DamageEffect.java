@@ -39,7 +39,15 @@ public record DamageEffect(Holder<DamageType> damageType, LevelBasedValue amount
     public List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
         //noinspection DataFlowIssue -> key is present
         MutableComponent damageType = Component.translatable(Translation.Type.DAMAGE_TYPE.wrap(this.damageType.getKey().location()));
-        return List.of(Component.translatable(LangKey.ABILITY_DAMAGE, DSColors.dynamicValue(amount.calculate(ability.level())), DSColors.dynamicValue(damageType)));
+        float damage = amount.calculate(ability.level());
+        MutableComponent abilityDamage = Component.translatable(LangKey.ABILITY_DAMAGE, DSColors.dynamicValue(damage), DSColors.dynamicValue(damageType));
+
+        float additionalDamage = damage * (float) dragon.getAttributeValue(DSAttributes.DRAGON_ABILITY_DAMAGE) - damage;
+        if (additionalDamage != 0) {
+            abilityDamage.append(Component.translatable(LangKey.ABILITY_ADDITIONAL_DAMAGE, DSColors.dynamicValue(additionalDamage)));
+        }
+
+        return List.of(abilityDamage);
     }
 
     @Override
