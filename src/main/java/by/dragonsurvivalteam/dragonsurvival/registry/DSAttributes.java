@@ -65,6 +65,10 @@ public class DSAttributes {
     @Translation(type = Translation.Type.ATTRIBUTE_DESCRIPTION, comments = "A multiplier to the damage the hunter faction takes from your attacks")
     public static final Holder<Attribute> HUNTER_FACTION_DAMAGE = REGISTRY.register("hunter_faction_damage", () -> new PercentageAttribute(Translation.Type.ATTRIBUTE.wrap("hunter_faction_damage"), 1, 0, 10).setSyncable(true));
 
+    @Translation(type = Translation.Type.ATTRIBUTE, comments = "Dragon Ability Damage")
+    @Translation(type = Translation.Type.ATTRIBUTE_DESCRIPTION, comments = "A multiplier to the damage of dragon abilities")
+    public static final Holder<Attribute> DRAGON_ABILITY_DAMAGE = REGISTRY.register("dragon_ability_damage", () -> new PercentageAttribute(Translation.Type.ATTRIBUTE.wrap("dragon_ability_damage"), 1, 0, 10).setSyncable(true));
+
     @SubscribeEvent
     public static void attachAttributes(final EntityAttributeModificationEvent event) {
         event.add(EntityType.PLAYER, FLIGHT_STAMINA_COST);
@@ -77,6 +81,7 @@ public class DSAttributes {
         event.add(EntityType.PLAYER, PENALTY_RESISTANCE_TIME);
         event.add(EntityType.PLAYER, ARMOR_IGNORE_CHANCE);
         event.add(EntityType.PLAYER, HUNTER_FACTION_DAMAGE);
+        event.add(EntityType.PLAYER, DRAGON_ABILITY_DAMAGE);
 
         event.getTypes().forEach(type -> event.add(type, LAVA_SWIM_SPEED));
     }
