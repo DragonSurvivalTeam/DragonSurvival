@@ -633,15 +633,12 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             if (ServerFlightHandler.isGliding(player)) {
                 if (ServerFlightHandler.isSpin(player)) {
                     animationSpeed = 2;
-                    lockTailAndNeck();
                     state.setAnimation(FLY_SPIN);
                     animationController.transitionLength(5);
                 } else if (deltaMovement.y < -1) {
-                    lockTailAndNeck();
                     state.setAnimation(FLY_DIVE_ALT);
                     animationController.transitionLength(4);
                 } else if (deltaMovement.y < -0.25) {
-                    lockTailAndNeck();
                     state.setAnimation(FLY_DIVE);
                     animationController.transitionLength(4);
                 } else if (deltaMovement.y > 0.5) {
@@ -657,7 +654,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
                     state.setAnimation(FLY_LAND);
                     animationController.transitionLength(2);
                 } else if (ServerFlightHandler.isSpin(player)) {
-                    lockTailAndNeck();
                     state.setAnimation(FLY_SPIN);
                     animationController.transitionLength(2);
                 } else {
@@ -671,7 +667,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             }
         } else if (player.getPose() == Pose.SWIMMING) {
             if (ServerFlightHandler.isSpin(player)) {
-                lockTailAndNeck();
                 state.setAnimation(FLY_SPIN);
                 animationController.transitionLength(2);
             } else {
@@ -688,7 +683,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         } else if (isSwimming) {
             if (ServerFlightHandler.isSpin(player)) {
                 animationSpeed = 2;
-                lockTailAndNeck();
                 state.setAnimation(FLY_SPIN);
                 animationController.transitionLength(2);
             } else {

@@ -38464,31 +38464,6 @@
 						"vector": [0, 0, 0]
 					}
 				},
-				"MolangHandlerTail5": {
-					"rotation": {
-						"vector": ["math.clamp(query.tail_motion_up*0.8,-5,5)", "math.clamp(query.body_yaw_change*5,-20,20)", 0]
-					}
-				},
-				"MolangHandlerTail4": {
-					"rotation": {
-						"vector": ["math.clamp(query.tail_motion_up*0.8,-10,10)", "math.clamp(query.body_yaw_change*5.5,-20,20)", 0]
-					}
-				},
-				"MolangHandlerTail3": {
-					"rotation": {
-						"vector": ["math.clamp(query.tail_motion_up*0.8,-10,10)", "math.clamp(query.body_yaw_change*6,-20,20)", 0]
-					}
-				},
-				"MolangHandlerTail2": {
-					"rotation": {
-						"vector": ["math.clamp(query.tail_motion_up*0.8,-10,10)", "math.clamp(query.body_yaw_change*6.5,-20,20)", 0]
-					}
-				},
-				"MolangHandlerTail1": {
-					"rotation": {
-						"vector": ["math.clamp(query.tail_motion_up*0.8,-10,10)", "math.clamp(query.body_yaw_change*7,-20,20)", 0]
-					}
-				},
 				"Magic": {
 					"scale": {
 						"0.0": {

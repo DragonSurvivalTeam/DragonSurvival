@@ -9,6 +9,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.projectile.ProjectileData;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.block_effects.ProjectileBlockEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.entity_effects.ProjectileEntityEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.targeting.ProjectileTargeting;
+import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -159,14 +160,14 @@ public record ProjectileEffect(
         }
 
         if (numberOfProjectiles.calculate(ability.level()) > 1) {
-            components.add(Component.translatable(ABILITY_PROJECTILE_COUNT, numberOfProjectiles.calculate(ability.level())));
+            components.add(Component.translatable(ABILITY_PROJECTILE_COUNT, DSColors.dynamicValue(numberOfProjectiles.calculate(ability.level()))));
         }
 
         if (projectileSpread.calculate(ability.level()) > 0) {
-            components.add(Component.translatable(ABILITY_PROJECTILE_SPREAD, projectileSpread.calculate(ability.level())));
+            components.add(Component.translatable(ABILITY_PROJECTILE_SPREAD, DSColors.dynamicValue(projectileSpread.calculate(ability.level()))));
         }
 
-        components.add(Component.translatable(ABILITY_PROJECTILE_SPEED, speed.calculate(ability.level())));
+        components.add(Component.translatable(ABILITY_PROJECTILE_SPEED, DSColors.dynamicValue(speed.calculate(ability.level()))));
 
         return components;
     }

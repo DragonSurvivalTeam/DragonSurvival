@@ -182,6 +182,11 @@ public class BlockVisionHandler {
     }
 
     public static void updateEntry(final BlockPos position, final BlockState oldState, final BlockState newState) {
+        if (oldState == null || newState == null) {
+            // Should not be the case but mods do weird things
+            return;
+        }
+
         LocalPlayer player = Minecraft.getInstance().player;
 
         if (player == null || vision == null) {
