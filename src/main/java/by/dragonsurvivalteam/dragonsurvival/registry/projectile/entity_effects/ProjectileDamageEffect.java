@@ -1,6 +1,8 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.projectile.entity_effects;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -29,19 +31,35 @@ public record ProjectileDamageEffect(Holder<DamageType> damageType, LevelBasedVa
 
     @Override
     public void apply(final Projectile projectile, final Entity target, final int level) {
-        target.hurt(new DamageSource(damageType, projectile, projectile.getOwner()), amount.calculate(level));
+        LivingEntity owner = projectile.getOwner() instanceof LivingEntity entity ? entity : null;
 
-        if (projectile.getOwner() instanceof LivingEntity entity) {
-            // Used by 'OwnerHurtTargetGoal'
-            entity.setLastHurtMob(target);
+        float damageAmount = amount().calculate(level);
+        if (owner != null) {
+            damageAmount *= (float) owner.getAttributeValue(DSAttributes.DRAGON_ABILITY_DAMAGE);
         }
+
+        target.hurt(new DamageSource(damageType, projectile, owner), damageAmount);
+
+        if (owner != null) {
+            // Used by 'OwnerHurtTargetGoal'
+            owner.setLastHurtMob(target);
+        }
+
     }
 
     @Override
     public List<MutableComponent> getDescription(final Player dragon, final int level) {
         //noinspection DataFlowIssue -> key is present
         MutableComponent translation = Component.translatable(Translation.Type.DAMAGE_TYPE.wrap(damageType.getKey().location()));
-        return List.of(Component.translatable(ABILITY_PROJECTILE_DAMAGE, translation.withColor(DSColors.GOLD), amount.calculate(level)));
+        float damage = amount.calculate(level);
+        MutableComponent abilityDamage = Component.translatable(ABILITY_PROJECTILE_DAMAGE, translation.withColor(DSColors.GOLD), DSColors.dynamicValue(damage));
+
+        float additionalDamage = damage * (float) dragon.getAttributeValue(DSAttributes.DRAGON_ABILITY_DAMAGE) - damage;
+        if (additionalDamage != 0) {
+            abilityDamage.append(Component.translatable(LangKey.ABILITY_ADDITIONAL_DAMAGE, DSColors.dynamicValue(additionalDamage)));
+        }
+
+        return List.of(abilityDamage);
     }
 
     @Override
