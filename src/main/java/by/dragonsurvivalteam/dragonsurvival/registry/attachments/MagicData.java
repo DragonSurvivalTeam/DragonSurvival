@@ -497,6 +497,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
     }
 
     public List<DragonAbilityInstance> filterPassiveByTrigger(final Predicate<ActivationTrigger> predicate) {
+        // TODO :: cache the passive abilities
         return getAbilities().values().stream().filter(instance -> instance.value().activation() instanceof PassiveActivation passive && predicate.test(passive.trigger())).collect(Collectors.toList());
     }
 
