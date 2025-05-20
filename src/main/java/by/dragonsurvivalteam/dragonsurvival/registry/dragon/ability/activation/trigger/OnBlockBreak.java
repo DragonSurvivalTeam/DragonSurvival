@@ -6,10 +6,10 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import cpw.mods.util.Lazy;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.event.level.BlockEvent;
 
 import java.util.Optional;
@@ -29,7 +29,7 @@ public record OnBlockBreak(Optional<LootItemCondition> condition) implements Act
             }
 
             AtomicBoolean triggeredAbility = new AtomicBoolean(false);
-            Lazy<LootContext> context = Lazy.of(Condition.blockContext(player, event.getPos(), event.getState()));
+            Lazy<LootContext> context = Lazy.of(() -> Condition.blockContext(player, event.getPos(), event.getState()));
 
             MagicData.getData(player).filterPassiveByTrigger(trigger -> trigger.type() == TriggerType.ON_BLOCK_BREAK && trigger.test(context.get()))
                     .forEach(ability -> {
