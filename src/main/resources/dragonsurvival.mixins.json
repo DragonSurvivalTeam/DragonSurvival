@@ -42,12 +42,14 @@
     "VaultBlockEntityServerMixin",
     "VillagerHostilesSensorMixin",
     "VillagerMixin",
+    "appleskin.FoodHelperMixin",
     "create.PlayerSkyhookRendererAccessor",
     "create.TreasureBlockMixin",
     "tool_swap.ServerPlayerGameModeEndMixin",
     "tool_swap.ServerPlayerGameModeStartMixin"
   ],
   "client": [
+    "appleskin.HUDOverlayHandlerMixin",
     "bettercombat.AbstractClientPlayerMixin",
     "bettercombat.AnimationApplierMixin",
     "bettercombat.HumanoidArmorLayerMixin",
