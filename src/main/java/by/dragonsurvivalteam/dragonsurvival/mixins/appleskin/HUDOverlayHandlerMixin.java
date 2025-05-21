@@ -18,15 +18,6 @@ import static squeek.appleskin.helpers.TextureHelper.*;
 
 @Mixin(HUDOverlayHandler.class)
 public class HUDOverlayHandlerMixin {
-    @ModifyArg(method="drawHungerOverlay(IILnet/minecraft/world/entity/player/Player;Lnet/minecraft/client/gui/GuiGraphics;IIFZI)V", at = @At(value="INVOKE",target="Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lnet/minecraft/resources/ResourceLocation;IIII)V"))
-    private static ResourceLocation dragonSurvival$changeFoodIcons(ResourceLocation sprite) {
-        ResourceLocation foodSprites = dragonSurvival$getDragonFoodSprites();
-        if (foodSprites != null) {
-            return foodSprites;
-        }
-        return sprite;
-    }
-
     @ModifyArg(method="drawSaturationOverlay(FFLnet/minecraft/world/entity/player/Player;Lnet/minecraft/client/gui/GuiGraphics;IIFI)V", at= @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blit(Lnet/minecraft/resources/ResourceLocation;IIIIII)V"))
     private static ResourceLocation dragonSurvival$changeSaturationIcons(ResourceLocation atlasLocation) {
         ResourceLocation foodSprites = dragonSurvival$getDragonFoodSprites();
@@ -54,7 +45,7 @@ public class HUDOverlayHandlerMixin {
             } else if (iconSprite.equals(FOOD_FULL_HUNGER_TEXTURE)) {
                 uOffset = 72;
             }
-            instance.blit(sprite, x, y, uOffset, 0, width, height);
+            instance.blit(foodSprites, x, y, uOffset, 0, width, height);
         } else {
             instance.blitSprite(sprite, x, y, width, height);
         }
