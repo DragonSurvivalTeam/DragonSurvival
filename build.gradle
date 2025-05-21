@@ -106,7 +106,7 @@ dependencies {
 	compileOnly "curse.maven:cloth-config-348521:5729127" // 15.0.140
 	compileOnly "curse.maven:playeranimator-658587:6024462" // 2.0.1
 
-	implementation "curse.maven:appleskin-248787:5525729" // 3.0.4
+	implementation "curse.maven:appleskin-248787:5586600" // 3.0.5
 
 	// Silent Gems
 	compileOnly "curse.maven:silentgems-220311:5846347" // 5.0.3

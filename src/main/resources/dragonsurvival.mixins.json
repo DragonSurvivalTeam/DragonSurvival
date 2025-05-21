@@ -42,7 +42,6 @@
     "VaultBlockEntityServerMixin",
     "VillagerHostilesSensorMixin",
     "VillagerMixin",
-    "appleskin.FoodHelperMixin",
     "create.PlayerSkyhookRendererAccessor",
     "create.TreasureBlockMixin",
     "tool_swap.ServerPlayerGameModeEndMixin",
