@@ -22,6 +22,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSSubPredicates;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSTrades;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataComponents;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnBlockBreak;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnDeath;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnSelfHit;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnTargetHit;
@@ -79,6 +80,7 @@ public class DragonSurvival {
         NeoForge.EVENT_BUS.addListener(OnSelfHit::trigger);
         NeoForge.EVENT_BUS.addListener(OnTargetHit::trigger);
         NeoForge.EVENT_BUS.addListener(OnDeath::trigger);
+        NeoForge.EVENT_BUS.addListener(OnBlockBreak::trigger);
     }
 
     /** Creates a {@link ResourceLocation} with the dragon survival namespace */
