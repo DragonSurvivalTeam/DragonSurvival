@@ -1328,6 +1328,7 @@
   "enum.tiers.stone": "Stone",
   "enum.tiers.wood": "Wood",
   "enum.trigger_type.constant": "Constant",
+  "enum.trigger_type.on_block_break": "On Block Break",
   "enum.trigger_type.on_death": "On Death",
   "enum.trigger_type.on_self_hit": "On Self Hit",
   "enum.trigger_type.on_target_hit": "On Target Hit",
