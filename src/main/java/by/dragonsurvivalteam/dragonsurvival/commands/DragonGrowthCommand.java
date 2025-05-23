@@ -4,9 +4,6 @@ import by.dragonsurvivalteam.dragonsurvival.commands.arguments.DragonGrowthArgum
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
-import com.mojang.brigadier.arguments.DoubleArgumentType;
-import com.mojang.brigadier.context.CommandContext;
-import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
@@ -30,72 +27,37 @@ public class DragonGrowthCommand {
                 .requires(sourceStack -> sourceStack.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(Commands.argument("targets", EntityArgument.players())
                         .then(Commands.argument(DragonGrowthArgument.ID, new DragonGrowthArgument(event.getBuildContext()))
-                                .executes(
-                                        source -> changeGrowth(
-                                                source,
-                                                EntityArgument.getPlayers(source, "targets"),
-                                                DragonGrowthArgument.get(source),
-                                                0
-                                        )
-                                ).then(
-                                        Commands.literal("add").then(
-                                                Commands.argument("amount", DoubleArgumentType.doubleArg()).executes(
-                                                        source -> changeGrowth(
-                                                                source,
-                                                                EntityArgument.getPlayers(source, "targets"),
-                                                                DoubleArgumentType.getDouble(source, "amount"),
-                                                                1
-                                                        )
-                                                )
-                                        )
-                                ).then(
-                                        Commands.literal("sub").then(
-                                                Commands.argument("amount", DoubleArgumentType.doubleArg()).executes(
-                                                        source -> changeGrowth(
-                                                                source,
-                                                                EntityArgument.getPlayers(source, "targets"),
-                                                                DoubleArgumentType.getDouble(source, "amount"),
-                                                                -1
-                                                        )
-                                                )
-                                        )
-                                )
+                                .executes(source -> {
+                                    Collection<? extends Player> players = EntityArgument.getPlayers(source, "targets");
+                                    double growth = DragonGrowthArgument.get(source);
+
+                                    int count = 0;
+
+                                    for (Player player : players) {
+                                        DragonStateHandler handler = DragonStateProvider.getData(player);
+
+                                        if (handler.isDragon()) {
+                                            handler.setDesiredGrowth(player, growth);
+                                            count++;
+                                        }
+                                    }
+
+                                    int finalCount = count;
+
+                                    if (players.size() == 1) {
+                                        if (count == 0) {
+                                            source.getSource().sendFailure(Component.translatable(FAILED_TO_SET_GROWTH));
+                                        } else {
+                                            source.getSource().sendSuccess(() -> Component.translatable(SET_GROWTH_TO_PLAYER, growth, players.iterator().next().getDisplayName()), true);
+                                        }
+                                    } else {
+                                        source.getSource().sendSuccess(() -> Component.translatable(SET_GROWTH_TO_PLAYERS, growth, finalCount), true);
+                                    }
+
+                                    return 1;
+                                })
                         )
                 )
         );
-    }
-
-    private static int changeGrowth(CommandContext<CommandSourceStack> source, Collection<? extends Player> players, double growth, int modify) {
-
-        int count = 0;
-        double target_growth;
-
-        for (Player player : players) {
-            DragonStateHandler handler = DragonStateProvider.getData(player);
-
-            if (handler.isDragon()) {
-                target_growth = growth;
-                if (modify != 0) {
-                    target_growth = growth * modify + handler.getGrowth();
-                }
-                handler.setDesiredGrowth(player, target_growth);
-                count++;
-            }
-        }
-
-        int finalCount = count;
-
-        // TODO: Different log messages for modifying growth instead of setting
-        if (players.size() == 1) {
-            if (count == 0) {
-                source.getSource().sendFailure(Component.translatable(FAILED_TO_SET_GROWTH));
-            } else {
-                source.getSource().sendSuccess(() -> Component.translatable(SET_GROWTH_TO_PLAYER, growth, players.iterator().next().getDisplayName()), true);
-            }
-        } else {
-            source.getSource().sendSuccess(() -> Component.translatable(SET_GROWTH_TO_PLAYERS, growth, finalCount), true);
-        }
-
-        return 1;
     }
 }
