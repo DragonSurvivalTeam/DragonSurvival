@@ -44,13 +44,17 @@ public record DragonGrowthEffect(DragonGrowthEffect.GrowthType growth_type, Drag
                 double maxSize = growthRange.max();
                 double minSize = growthRange.min();
                 // Maybe get maximum overall size instead of the current stage?
-                amount = amount * 0.01 * maxSize + amount * 0.01 * minSize;
+                if (growth_type == GrowthType.ADD) {
+                    amount = amount * 0.01 * (maxSize - minSize);
+                } else {
+                    amount = amount * 0.01 * (maxSize + minSize);
+                }
             }
 
             double targetGrowth = amount;
             if (growth_type == GrowthType.ADD) {
                 targetGrowth += handler.getGrowth();
-            };
+            }
 
             handler.setDesiredGrowth(targetPlayer, targetGrowth);
         }
