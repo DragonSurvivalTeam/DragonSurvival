@@ -54,7 +54,7 @@ public record DragonGrowthEffect(DragonGrowthEffect.GrowthType growth_type, Drag
                 double maxSize = growthRange.max();
                 double minSize = growthRange.min();
                 // Maybe get maximum overall size instead of the current stage?
-                difference = amount * 0.01 * (maxSize - minSize);
+                difference = amount * (maxSize - minSize);
                 if (growth_type == GrowthType.SET) {
                     base = minSize;
                 }
