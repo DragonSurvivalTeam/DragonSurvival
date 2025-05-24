@@ -37,27 +37,31 @@ public record DragonGrowthEffect(DragonGrowthEffect.GrowthType growth_type, Drag
                 return;
             }
 
+            // If FLAT, difference = amount
+            // If PERCENT, difference = percentage mapped to current stage
+            // If ADD, base = current growth
+            // If SET and FLAT, base = 0
+            // If SET and PERCENT, base = min size of current stage
             double amount = amount().calculate(ability.level());
+            double base = 0;
+            double difference = amount;
+            if (growth_type == GrowthType.ADD) {
+                base = handler.getGrowth();
+            }
             if (action_type == ActionType.PERCENT) {
                 Holder<DragonStage> dragonStage = handler.stage();
                 MiscCodecs.Bounds growthRange = dragonStage.value().growthRange();
                 double maxSize = growthRange.max();
                 double minSize = growthRange.min();
                 // Maybe get maximum overall size instead of the current stage?
-                double difference = amount * 0.01 * (maxSize - minSize);
+                difference = amount * 0.01 * (maxSize - minSize);
                 if (growth_type == GrowthType.SET) {
-                    amount = minSize + difference;
-                } else {
-                    amount = difference;
+                    base = minSize;
                 }
             }
 
-            double targetGrowth = amount;
-            if (growth_type == GrowthType.ADD) {
-                targetGrowth += handler.getGrowth();
-            }
 
-            handler.setDesiredGrowth(targetPlayer, targetGrowth);
+            handler.setDesiredGrowth(targetPlayer, (base + difference));
         }
     }
 
