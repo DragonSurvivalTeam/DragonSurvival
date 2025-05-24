@@ -142,9 +142,8 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             int finalSlot = slot;
             registrar.add(new AnimationController<>(this, "emote_" + slot, 0, state -> emotePredicate(state, finalSlot)));
         }
+
         registrar.add(new AnimationController<>(this, "bite", this::bitePredicate));
-        registrar.add(new AnimationController<>(this, "tail", this::tailPredicate));
-        registrar.add(new AnimationController<>(this, "head", this::headPredicate));
         registrar.add(new AnimationController<>(this, "breath", this::breathPredicate));
     }
 
@@ -305,22 +304,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         }
 
         return PlayState.STOP;
-    }
-
-    private PlayState tailPredicate(final AnimationState<DragonEntity> state) {
-        if (!tailLocked) {
-            return state.setAndContinue(TAIL_TURN);
-        } else {
-            return PlayState.STOP;
-        }
-    }
-
-    private PlayState headPredicate(final AnimationState<DragonEntity> state) {
-        if (!neckLocked) {
-            return state.setAndContinue(HEAD_TURN);
-        } else {
-            return PlayState.STOP;
-        }
     }
 
     private PlayState bitePredicate(final AnimationState<DragonEntity> state) {
@@ -886,9 +869,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
 
     private static final RawAnimation JUMP = RawAnimation.begin().then("jump", Animation.LoopType.PLAY_ONCE).thenLoop("fall_loop");
     private static final RawAnimation FLY_LAND_END = RawAnimation.begin().then("fly_land_end", Animation.LoopType.PLAY_ONCE).thenLoop("idle");
-
-    private static final RawAnimation TAIL_TURN = RawAnimation.begin().thenLoop("tail_turn");
-    private static final RawAnimation HEAD_TURN = RawAnimation.begin().thenLoop("head_turn");
 
     // Special create animation
     private static final RawAnimation CREATE_SKYHOOK_RIDING = RawAnimation.begin().thenLoop("create_skyhook_riding");
