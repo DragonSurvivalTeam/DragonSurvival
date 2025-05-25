@@ -4358,7 +4358,14 @@
 					"rotation": [10, 0, 0]
 				},
 				"CenterOfMass": {
-					"rotation": [0, 90, 90]
+					"rotation": {
+						"0.0": [0, 90, 90],
+						"4.2": [0, 90, 90]
+					},
+					"position": {
+						"0.0": [0, 9, 0],
+						"4.2": [0, 9, 0]
+					}
 				},
 				"MolangHandlerWingRight": {
 					"rotation": [0, 0, 0]
