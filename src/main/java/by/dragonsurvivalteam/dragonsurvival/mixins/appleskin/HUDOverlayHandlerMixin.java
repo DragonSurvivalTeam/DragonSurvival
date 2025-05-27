@@ -51,8 +51,7 @@ public class HUDOverlayHandlerMixin {
         }
     }
 
-    @Unique
-    private static ResourceLocation dragonSurvival$getDragonFoodSprites() {
+    @Unique private static ResourceLocation dragonSurvival$getDragonFoodSprites() {
         LocalPlayer localPlayer = Minecraft.getInstance().player;
         if (localPlayer != null) {
             DragonStateHandler handler = DragonStateProvider.getData(localPlayer);

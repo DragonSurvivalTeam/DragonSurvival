@@ -20,6 +20,7 @@ import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.neoforged.neoforge.client.ClientHooks;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -105,7 +106,7 @@ public class EffectRenderingInventoryScreenMixin {
             ScreenEvent.RenderInventoryMobEffects event = storedEvent.get();
 
             if (event == null) {
-                event = net.neoforged.neoforge.client.ClientHooks.onScreenPotionSize(self, width, isCompact, offset);
+                event = ClientHooks.onScreenPotionSize(self, width, isCompact, offset);
             }
 
             if (event.isCanceled()) {
@@ -125,7 +126,7 @@ public class EffectRenderingInventoryScreenMixin {
                 yOffset = 33;
             }
 
-            int renderedElements = mobEffects.stream().filter(net.neoforged.neoforge.client.ClientHooks::shouldRenderEffect).sorted().toList().size();
+            int renderedElements = mobEffects.stream().filter(ClientHooks::shouldRenderEffect).sorted().toList().size();
             int initialYOffset = yOffset * renderedElements;
 
             dragonSurvival$renderAbilityBackgroundsAndIcons(graphics, offset, yOffset, initialYOffset, dragonSurvival$providers, isCompact);
