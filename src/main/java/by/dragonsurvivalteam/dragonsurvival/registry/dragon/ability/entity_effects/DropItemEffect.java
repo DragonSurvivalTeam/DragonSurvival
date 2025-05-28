@@ -80,7 +80,7 @@ public record DropItemEffect(EntityEquipmentPredicate equipmentPredicate, LevelB
                 level.addFreshEntity(droppedStackEntity);
             }
 
-            sound.ifPresent(soundHolder -> dragon.level().playSound(null, target, soundHolder.value(), SoundSource.BLOCKS, 1, 1));
+            sound.ifPresent(soundHolder -> level.playSound(null, target, soundHolder.value(), SoundSource.BLOCKS, 1, 1));
         }
 
     }
