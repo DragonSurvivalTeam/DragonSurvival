@@ -139,6 +139,12 @@ public class DragonModel extends GeoModel<DragonEntity> {
             verticalVelocityAvg = 0;
         }
 
+        // Clear out any NaNs that may have been caused by the average calculation (I think this happens if we try to load data before the game logic has actually begun?
+        bodyYawAvg = Double.isNaN(bodyYawAvg) ? 0 : bodyYawAvg;
+        headYawAvg = Double.isNaN(headYawAvg) ? 0 : headYawAvg;
+        headPitchAvg = Double.isNaN(headPitchAvg) ? 0 : headPitchAvg;
+        verticalVelocityAvg = Double.isNaN(verticalVelocityAvg) ? 0 : verticalVelocityAvg;
+
         double lerpRate = Math.min(1, deltaTick);
         dragon.currentBodyYawChange = Mth.lerp(lerpRate, dragon.currentBodyYawChange, bodyYawAvg);
         dragon.currentHeadYawChange = Mth.lerp(lerpRate, dragon.currentHeadYawChange, headYawAvg);

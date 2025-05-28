@@ -87,7 +87,7 @@ public interface ProjectileEffect<T> {
             return true;
         }
 
-        if (this instanceof ProjectileWorldEffect worldEffect && target == null) {
+        if (this instanceof ProjectileWorldEffect worldEffect) {
             worldEffect.apply(projectile, null, level);
             return true;
         }

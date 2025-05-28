@@ -19,6 +19,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffects;
@@ -294,10 +295,14 @@ public class ServerFlightHandler {
             return false;
         }
 
-        FluidType fluid = player.getEyeInFluidType();
+        ResourceKey<FluidType> key = SwimData.key(player.getEyeInFluidType());
 
-        //noinspection DataFlowIssue -> fluid exists, therefor it cannot be null
-        return data.inFluid.contains(player.registryAccess().holderOrThrow(SwimData.key(fluid)));
+        if (key == null) {
+            // Architectury does not properly register fluid types
+            return false;
+        }
+
+        return data.inFluid.contains(player.registryAccess().holderOrThrow(key));
     }
 
     @SubscribeEvent

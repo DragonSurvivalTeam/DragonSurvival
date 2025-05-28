@@ -51,7 +51,7 @@ public record PushEffect(
 
     public List<MutableComponent> getDescription(final Player dragon, final DragonAbilityInstance ability) {
         if (targetDirection.direction().left().orElse(null) == TargetDirection.Type.LOOKING_AT) {
-            return List.of(Component.translatable(FACING, DSColors.dynamicValue(pushForce.calculate(ability.level()))));
+            return List.of(Component.translatable(FACING, targetDirection, DSColors.dynamicValue(pushForce.calculate(ability.level()))));
         } else if (targetDirection.direction().left().orElse(null) == TargetDirection.Type.TOWARDS_ENTITY) {
             if (pushForce.calculate(ability.level()) > 0) {
                 return List.of(Component.translatable(TOWARDS, DSColors.dynamicValue(pushForce.calculate(ability.level()))));

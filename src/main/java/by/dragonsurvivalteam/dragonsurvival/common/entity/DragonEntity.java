@@ -46,6 +46,7 @@ import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.cache.GeckoLibCache;
+import software.bernie.geckolib.loading.object.BakedAnimations;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.ArrayList;
@@ -141,9 +142,8 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             int finalSlot = slot;
             registrar.add(new AnimationController<>(this, "emote_" + slot, 0, state -> emotePredicate(state, finalSlot)));
         }
+
         registrar.add(new AnimationController<>(this, "bite", this::bitePredicate));
-        registrar.add(new AnimationController<>(this, "tail", this::tailPredicate));
-        registrar.add(new AnimationController<>(this, "head", this::headPredicate));
         registrar.add(new AnimationController<>(this, "breath", this::breathPredicate));
     }
 
@@ -306,22 +306,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         return PlayState.STOP;
     }
 
-    private PlayState tailPredicate(final AnimationState<DragonEntity> state) {
-        if (!tailLocked) {
-            return state.setAndContinue(TAIL_TURN);
-        } else {
-            return PlayState.STOP;
-        }
-    }
-
-    private PlayState headPredicate(final AnimationState<DragonEntity> state) {
-        if (!neckLocked) {
-            return state.setAndContinue(HEAD_TURN);
-        } else {
-            return PlayState.STOP;
-        }
-    }
-
     private PlayState bitePredicate(final AnimationState<DragonEntity> state) {
         Player player = getPlayer();
 
@@ -385,7 +369,12 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     }
 
     private boolean doesAnimationExist(final Player player, final String animation) {
-        return GeckoLibCache.getBakedAnimations().get(DragonModel.getAnimationResource(player)).getAnimation(animation) != null;
+        BakedAnimations bakedAnimations = GeckoLibCache.getBakedAnimations().get(DragonModel.getAnimationResource(player));
+        if (bakedAnimations == null) {
+            return false;
+        }
+
+        return bakedAnimations.getAnimation(animation) != null;
     }
 
     private double animationDuration(final Player player, final String animation) {
@@ -485,6 +474,39 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         }
 
         return super.getTeam();
+    }
+
+    @Override
+    public @NotNull Vec3 getDeltaMovement() {
+        Player player = getPlayer();
+
+        if (player != null) {
+            return player.getDeltaMovement();
+        }
+
+        return super.getDeltaMovement();
+    }
+
+    @Override
+    public float getHealth() {
+        Player player = getPlayer();
+
+        if (player != null) {
+            return player.getHealth();
+        }
+
+        return super.getHealth();
+    }
+
+    @Override
+    public float getMaxHealth() {
+        Player player = getPlayer();
+
+        if (player != null) {
+            return player.getMaxHealth();
+        }
+
+        return super.getMaxHealth();
     }
 
     @Override
@@ -594,15 +616,12 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             if (ServerFlightHandler.isGliding(player)) {
                 if (ServerFlightHandler.isSpin(player)) {
                     animationSpeed = 2;
-                    lockTailAndNeck();
                     state.setAnimation(FLY_SPIN);
                     animationController.transitionLength(5);
                 } else if (deltaMovement.y < -1) {
-                    lockTailAndNeck();
                     state.setAnimation(FLY_DIVE_ALT);
                     animationController.transitionLength(4);
                 } else if (deltaMovement.y < -0.25) {
-                    lockTailAndNeck();
                     state.setAnimation(FLY_DIVE);
                     animationController.transitionLength(4);
                 } else if (deltaMovement.y > 0.5) {
@@ -618,7 +637,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
                     state.setAnimation(FLY_LAND);
                     animationController.transitionLength(2);
                 } else if (ServerFlightHandler.isSpin(player)) {
-                    lockTailAndNeck();
                     state.setAnimation(FLY_SPIN);
                     animationController.transitionLength(2);
                 } else {
@@ -632,7 +650,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             }
         } else if (player.getPose() == Pose.SWIMMING) {
             if (ServerFlightHandler.isSpin(player)) {
-                lockTailAndNeck();
                 state.setAnimation(FLY_SPIN);
                 animationController.transitionLength(2);
             } else {
@@ -649,7 +666,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         } else if (isSwimming) {
             if (ServerFlightHandler.isSpin(player)) {
                 animationSpeed = 2;
-                lockTailAndNeck();
                 state.setAnimation(FLY_SPIN);
                 animationController.transitionLength(2);
             } else {
@@ -853,9 +869,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
 
     private static final RawAnimation JUMP = RawAnimation.begin().then("jump", Animation.LoopType.PLAY_ONCE).thenLoop("fall_loop");
     private static final RawAnimation FLY_LAND_END = RawAnimation.begin().then("fly_land_end", Animation.LoopType.PLAY_ONCE).thenLoop("idle");
-
-    private static final RawAnimation TAIL_TURN = RawAnimation.begin().thenLoop("tail_turn");
-    private static final RawAnimation HEAD_TURN = RawAnimation.begin().thenLoop("head_turn");
 
     // Special create animation
     private static final RawAnimation CREATE_SKYHOOK_RIDING = RawAnimation.begin().thenLoop("create_skyhook_riding");

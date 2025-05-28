@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.effects;
 
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
@@ -52,7 +53,8 @@ public class ConfoundedEffect extends ModifiableMobEffect {
     public boolean applyEffectTick(@NotNull LivingEntity livingEntity, int amplifier) {
         if (livingEntity instanceof Player player) {
             if (!player.level().isClientSide()) {
-                if (DragonStateProvider.getData(player).species().is(BuiltInDragonSpecies.FOREST_DRAGON)) { return false; }
+                DragonStateHandler handler = DragonStateProvider.getData(player);
+                if (handler.isDragon() && handler.species().is(BuiltInDragonSpecies.FOREST_DRAGON)) { return false; }
 
                 player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 100));
                 if (amplifier > 1) {
