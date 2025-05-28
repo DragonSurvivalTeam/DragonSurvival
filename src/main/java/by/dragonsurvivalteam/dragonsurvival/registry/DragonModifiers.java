@@ -23,6 +23,7 @@ import java.util.UUID;
 
 @EventBusSubscriber
 public class DragonModifiers{
+	/** Also used for attack range */
 	private static final UUID DRAGON_REACH_MODIFIER = UUID.fromString("7455d5c7-4e1f-4cca-ab46-d79353764020");
 	private static final UUID DRAGON_HEALTH_MODIFIER = UUID.fromString("03574e62-f9e4-4f1b-85ad-fde00915e446");
 	private static final UUID DRAGON_DAMAGE_MODIFIER = UUID.fromString("5bd3cebc-132e-4f9d-88ef-b686c7ad1e2c");
@@ -171,6 +172,12 @@ public class DragonModifiers{
 					max.removeModifier(oldMod);
 				}
 
+				oldMod = getAttackRangeModifier(player);
+				if (oldMod != null) {
+					AttributeInstance max = Objects.requireNonNull(player.getAttribute(ForgeMod.ATTACK_RANGE.get()));
+					max.removeModifier(oldMod);
+				}
+
 				oldMod = getStepHeightModifier(player);
 				if (oldMod != null) {
 					AttributeInstance max = Objects.requireNonNull(player.getAttribute(ForgeMod.STEP_HEIGHT_ADDITION.get()));
@@ -269,6 +276,11 @@ public class DragonModifiers{
 	}
 
 	@Nullable
+	public static AttributeModifier getAttackRangeModifier(Player player){
+		return Objects.requireNonNull(player.getAttribute(ForgeMod.ATTACK_RANGE.get())).getModifier(DRAGON_REACH_MODIFIER);
+	}
+
+	@Nullable
 	public static AttributeModifier getHealthModifier(Player player){
 		return Objects.requireNonNull(player.getAttribute(Attributes.MAX_HEALTH)).getModifier(DRAGON_HEALTH_MODIFIER);
 	}
@@ -301,6 +313,10 @@ public class DragonModifiers{
 		AttributeInstance entityReach = Objects.requireNonNull(player.getAttribute(ForgeMod.REACH_DISTANCE.get()));
 		entityReach.removeModifier(mod);
 		entityReach.addPermanentModifier(mod);
+
+		AttributeInstance attackRange = Objects.requireNonNull(player.getAttribute(ForgeMod.ATTACK_RANGE.get()));
+		attackRange.removeModifier(mod);
+		attackRange.addPermanentModifier(mod);
 	}
 
 	public static void updateHealthModifier(Player player, AttributeModifier mod){

@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = DragonSurvivalMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ForgeDataGen {
-	@SubscribeEvent
+	@SubscribeEvent // Currently not runnable in 1.19.2
 	public static void configureDataGen(GatherDataEvent event){
 		DataGenerator generator = event.getGenerator();
 		ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
@@ -34,5 +34,6 @@ public class ForgeDataGen {
 
 		generator.addProvider(event.includeServer(), new DragonOreLootModifierSerializer(generator, DragonSurvivalMod.MODID));
 		generator.addProvider(event.includeServer(), new DragonHeartLootModifierSerializer(generator, DragonSurvivalMod.MODID));
+		generator.addProvider(event.includeServer(), new DSEntityTypeTags(generator, existingFileHelper));
 	}
 }

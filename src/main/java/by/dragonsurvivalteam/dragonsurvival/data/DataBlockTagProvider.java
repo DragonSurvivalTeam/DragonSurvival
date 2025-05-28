@@ -10,17 +10,30 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Material;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
 public class DataBlockTagProvider extends BlockTagsProvider{
+	public static final TagKey<Block> DRAGON_ORE_DROP = mod("dragon_ore_drop");
+
 	public DataBlockTagProvider(DataGenerator pGenerator, String modId, @Nullable ExistingFileHelper existingFileHelper){
 		super(pGenerator, modId, existingFileHelper);
 	}
 
 	@Override
 	protected void addTags(){
+		tag(DRAGON_ORE_DROP)
+				.addTag(Tags.Blocks.ORES_COAL)
+				.addTag(Tags.Blocks.ORES_REDSTONE)
+				.addTag(Tags.Blocks.ORES_LAPIS)
+				.addTag(Tags.Blocks.ORES_DIAMOND)
+				.addTag(Tags.Blocks.ORES_EMERALD)
+				.addTag(Tags.Blocks.ORES_QUARTZ)
+				.add(Blocks.NETHER_GOLD_ORE);
+
 		tag(mod("wooden_dragon_doors")).add(DSBlocks.DS_BLOCKS.values().stream().filter(s -> s instanceof DragonDoor || s instanceof SmallDragonDoor).filter(s -> s.defaultBlockState().getMaterial() == Material.WOOD).toList().toArray(new Block[0]));
 
 		tag(BlockTags.MINEABLE_WITH_AXE).add(DSBlocks.DS_BLOCKS.values().stream().filter(s -> s.defaultBlockState().getMaterial() == Material.WOOD).toList().toArray(new Block[0]));
