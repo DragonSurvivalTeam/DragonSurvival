@@ -245,9 +245,13 @@ public class DragonModel extends AnimatedGeoModel<DragonEntity> {
 			dragon.currentTailMotionUp = Mth.lerp(lerpRate, dragon.currentTailMotionUp, -verticalVelocityAvg);
 		}
 
-		parser.setValue("query.body_yaw_change", () -> Mth.lerp(lerpRate, dragon.currentBodyYawChange, bodyYawAvg));
-		parser.setValue("query.head_yaw_change", () -> Mth.lerp(lerpRate, dragon.currentHeadPitchChange, headYawAvg));
-		parser.setValue("query.head_pitch_change", () -> Mth.lerp(lerpRate, dragon.currentHeadYawChange, headPitchAvg));
-		parser.setValue("query.tail_motion_up", () -> Mth.lerp(lerpRate, dragon.currentTailMotionUp, -verticalVelocityAvg));
+        double finalBodyYawAvg = bodyYawAvg;
+        double finalHeadYawAvg = headYawAvg;
+        double finalHeadPitchAvg = headPitchAvg;
+        double finalVerticalVelocityAvg = verticalVelocityAvg;
+        parser.setValue("query.body_yaw_change", () -> Mth.lerp(lerpRate, dragon.currentBodyYawChange, finalBodyYawAvg));
+        parser.setValue("query.head_yaw_change", () -> Mth.lerp(lerpRate, dragon.currentHeadPitchChange, finalHeadYawAvg));
+        parser.setValue("query.head_pitch_change", () -> Mth.lerp(lerpRate, dragon.currentHeadYawChange, finalHeadPitchAvg));
+        parser.setValue("query.tail_motion_up", () -> Mth.lerp(lerpRate, dragon.currentTailMotionUp, -finalVerticalVelocityAvg));
 	}
 }
