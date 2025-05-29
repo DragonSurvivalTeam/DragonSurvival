@@ -94,7 +94,7 @@ public record DropItemEffect(List<ItemSlot> items, MovementType movement, Option
                     ItemStack convertTo = item.convertTo().orElse(ItemStack.EMPTY);
                     entity.setItemSlot(item.slot(), convertTo);
                     numRemoved++;
-                    if (!item.dropOld().orElse(false)) {
+                    if (!item.dropOld().orElse(true)) {
                         continue;
                     }
                     entity.level().addFreshEntity(new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(), stack, delta.x(), delta.y(), delta.z()));
