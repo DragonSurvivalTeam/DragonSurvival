@@ -17,7 +17,6 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
@@ -77,7 +76,7 @@ public class SeaDragonType extends AbstractDragonType {
 		double oldWaterTime = timeWithoutWater;
 		
 		if(!world.isClientSide()) {
-			if ((player.hasEffect(DragonEffects.PEACE) || player.isEyeInFluid(FluidTags.WATER)) && player.getAirSupply() < player.getMaxAirSupply()) {
+			if ((player.hasEffect(DragonEffects.PEACE) || player.isInWater()) && player.getAirSupply() < player.getMaxAirSupply()) {
 				player.setAirSupply(player.getMaxAirSupply());
 			}
 		}
