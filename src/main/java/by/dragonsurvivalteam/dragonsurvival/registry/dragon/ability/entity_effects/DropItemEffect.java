@@ -15,15 +15,15 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
+import net.minecraft.world.level.Level;
 
 import java.util.List;
 import java.util.Optional;
 
-public record DropItemEffect(List<ItemSlot> items, Optional<LevelBasedValue> probability, Optional<Holder<SoundEvent>> sound) implements AbilityEntityEffect {
+public record DropItemEffect(List<ItemSlot> items, Optional<ConfigurableSound> sound) implements AbilityEntityEffect {
     public static final MapCodec<DropItemEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             ItemSlot.CODEC.listOf().fieldOf("items").forGetter(DropItemEffect::items),
-            LevelBasedValue.CODEC.optionalFieldOf("probability").forGetter(DropItemEffect::probability),
-            SoundEvent.CODEC.optionalFieldOf("sound").forGetter(DropItemEffect::sound)
+            ConfigurableSound.CODEC.optionalFieldOf("sound").forGetter(DropItemEffect::sound)
     ).apply(instance, DropItemEffect::new));
 
     public record ItemSlot(EquipmentSlot slot, Optional<ItemPredicate> predicate, Optional<LevelBasedValue> probability) {
@@ -48,22 +48,38 @@ public record DropItemEffect(List<ItemSlot> items, Optional<LevelBasedValue> pro
         }
     }
 
+    public record ConfigurableSound(Holder<SoundEvent> sound, Optional<LevelBasedValue> volume, Optional<LevelBasedValue> pitch) {
+        public static final Codec<ConfigurableSound> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            SoundEvent.CODEC.fieldOf("sound").forGetter(ConfigurableSound::sound),
+            LevelBasedValue.CODEC.optionalFieldOf("volume").forGetter(ConfigurableSound::volume),
+            LevelBasedValue.CODEC.optionalFieldOf("pitch").forGetter(ConfigurableSound::pitch)
+        ).apply(instance, ConfigurableSound::new));
+
+        public void playSound(final Entity target, final Level level, final int vol, final int pit) {
+            float resultVol = volume.map(volume -> volume.calculate(vol)).orElse(0.0F);
+            if (resultVol < 0) {
+                return;
+            }
+            float resultPit = pitch.map(pitch -> pitch.calculate(pit)).orElse(0.0F);
+            level.playSound(null, target, sound.value(), SoundSource.BLOCKS, resultVol, resultPit);
+        }
+    }
+
     @Override
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
         if (target instanceof LivingEntity entity) {
-            if (probability.map(probability -> dragon.getRandom().nextDouble() > probability.calculate(ability.level())).orElse(false)) {
-                return;
-            }
-
+            int numRemoved = 0;
             for (ItemSlot item : items) {
                 if (item.test(entity, ability.level())) {
                     ItemStack stack = entity.getItemBySlot(item.slot());
                     entity.setItemSlot(item.slot(), ItemStack.EMPTY);
                     entity.level().addFreshEntity(new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(), stack));
+                    numRemoved++;
                 }
             }
 
-            sound.ifPresent(soundHolder -> dragon.level().playSound(null, target, soundHolder.value(), SoundSource.BLOCKS, 1, 1));
+            int finalNumRemoved = numRemoved;
+            sound.ifPresent(configurableSound -> configurableSound.playSound(target, dragon.level(), finalNumRemoved, finalNumRemoved));
         }
     }
 
