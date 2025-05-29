@@ -27,7 +27,6 @@ import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.network.PacketDistributor;
 
 import java.util.List;
@@ -77,7 +76,7 @@ public class SeaDragonType extends AbstractDragonType {
 		double oldWaterTime = timeWithoutWater;
 		
 		if(!world.isClientSide()) {
-			if ((player.hasEffect(DragonEffects.PEACE) || player.isEyeInFluidType(ForgeMod.WATER_TYPE.get())) && player.getAirSupply() < player.getMaxAirSupply()) {
+			if ((player.hasEffect(DragonEffects.PEACE) || player.isInWater() && player.getAirSupply() < player.getMaxAirSupply())) {
 				player.setAirSupply(player.getMaxAirSupply());
 			}
 		}
