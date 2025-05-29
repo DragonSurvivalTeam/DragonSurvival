@@ -82,7 +82,7 @@ public record DropItemEffect(List<ItemSlot> items, MovementType movement, Option
 
             if (direction != 0) {
                 // Maybe normalize and add an intensity instead of using the distance?
-                delta = target.position().vectorTo(dragon.position()).multiply(direction, direction, direction);
+                delta = target.getEyePosition().subtract(dragon.getEyePosition()).multiply(direction, direction, direction);
             }
 
             int numRemoved = 0;
