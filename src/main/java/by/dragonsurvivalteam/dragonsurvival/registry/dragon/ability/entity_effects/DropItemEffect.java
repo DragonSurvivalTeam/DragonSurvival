@@ -9,6 +9,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -16,13 +17,16 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Optional;
 
-public record DropItemEffect(List<ItemSlot> items, Optional<ConfigurableSound> sound) implements AbilityEntityEffect {
+public record DropItemEffect(List<ItemSlot> items, MovementType movement, Optional<ConfigurableSound> sound) implements AbilityEntityEffect {
     public static final MapCodec<DropItemEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             ItemSlot.CODEC.listOf().fieldOf("items").forGetter(DropItemEffect::items),
+            MovementType.CODEC.fieldOf("direction").forGetter(DropItemEffect::movement),
             ConfigurableSound.CODEC.optionalFieldOf("sound").forGetter(DropItemEffect::sound)
     ).apply(instance, DropItemEffect::new));
 
@@ -57,7 +61,7 @@ public record DropItemEffect(List<ItemSlot> items, Optional<ConfigurableSound> s
 
         public void playSound(final Entity target, final Level level, final int vol, final int pit) {
             float resultVol = volume.map(volume -> volume.calculate(vol)).orElse(0.0F);
-            if (resultVol < 0) {
+            if (resultVol <= 0) {
                 return;
             }
             float resultPit = pitch.map(pitch -> pitch.calculate(pit)).orElse(0.0F);
@@ -68,18 +72,47 @@ public record DropItemEffect(List<ItemSlot> items, Optional<ConfigurableSound> s
     @Override
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
         if (target instanceof LivingEntity entity) {
+
+            Vec3 delta = Vec3.ZERO;
+            int direction = switch (movement) {
+                case MovementType.TOWARDS -> 1;
+                case MovementType.AWAY -> -1;
+                default -> 0;
+            };
+
+            if (direction != 0) {
+                // Maybe normalize and add an intensity instead of using the distance?
+                delta = target.position().vectorTo(dragon.position()).multiply(direction, direction, direction);
+            }
+
             int numRemoved = 0;
             for (ItemSlot item : items) {
                 if (item.test(entity, ability.level())) {
                     ItemStack stack = entity.getItemBySlot(item.slot());
                     entity.setItemSlot(item.slot(), ItemStack.EMPTY);
-                    entity.level().addFreshEntity(new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(), stack));
+                    entity.level().addFreshEntity(new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(), stack, delta.x(), delta.y(), delta.z()));
                     numRemoved++;
                 }
             }
 
             int finalNumRemoved = numRemoved;
             sound.ifPresent(configurableSound -> configurableSound.playSound(target, dragon.level(), finalNumRemoved, finalNumRemoved));
+        }
+    }
+
+    public enum MovementType implements StringRepresentable {
+        NONE("none"), TOWARDS("towards"), AWAY("away");
+
+        public static final Codec<MovementType> CODEC = StringRepresentable.fromEnum(MovementType::values);
+        private final String name;
+
+        MovementType(final String name) {
+            this.name = name;
+        }
+
+        @Override
+        public @NotNull String getSerializedName() {
+            return name;
         }
     }
 
