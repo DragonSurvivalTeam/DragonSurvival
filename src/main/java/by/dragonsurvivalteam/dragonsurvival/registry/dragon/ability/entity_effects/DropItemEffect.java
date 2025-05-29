@@ -62,11 +62,11 @@ public record DropItemEffect(List<ItemSlot> items, MovementType movement, Option
         ).apply(instance, ConfigurableSound::new));
 
         public void playSound(final Entity target, final Level level, final int vol, final int pit) {
-            float resultVol = volume.map(volume -> volume.calculate(vol)).orElse(0.0F);
+            float resultVol = volume.map(volume -> volume.calculate(vol)).orElse(1.0F);
             if (resultVol <= 0) {
                 return;
             }
-            float resultPit = pitch.map(pitch -> pitch.calculate(pit)).orElse(0.0F);
+            float resultPit = pitch.map(pitch -> pitch.calculate(pit)).orElse(1.0F);
             level.playSound(null, target, sound.value(), SoundSource.BLOCKS, resultVol, resultPit);
         }
     }
