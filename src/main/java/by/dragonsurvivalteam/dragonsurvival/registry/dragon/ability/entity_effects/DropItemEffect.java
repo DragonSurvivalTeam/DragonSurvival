@@ -30,10 +30,12 @@ public record DropItemEffect(List<ItemSlot> items, MovementType movement, Option
             ConfigurableSound.CODEC.optionalFieldOf("sound").forGetter(DropItemEffect::sound)
     ).apply(instance, DropItemEffect::new));
 
-    public record ItemSlot(EquipmentSlot slot, Optional<ItemPredicate> predicate, Optional<LevelBasedValue> probability) {
+    public record ItemSlot(EquipmentSlot slot, Optional<ItemPredicate> predicate, Optional<ItemStack> convertTo, Optional<Boolean> dropOld, Optional<LevelBasedValue> probability) {
         public static final Codec<ItemSlot> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 EquipmentSlot.CODEC.fieldOf("slot").forGetter(ItemSlot::slot),
                 ItemPredicate.CODEC.optionalFieldOf("predicate").forGetter(ItemSlot::predicate),
+                ItemStack.CODEC.optionalFieldOf("convert_to").forGetter(ItemSlot::convertTo),
+                Codec.BOOL.optionalFieldOf("drop_old").forGetter(ItemSlot::dropOld),
                 LevelBasedValue.CODEC.optionalFieldOf("probability").forGetter(ItemSlot::probability)
         ).apply(instance, ItemSlot::new));
 
@@ -89,9 +91,13 @@ public record DropItemEffect(List<ItemSlot> items, MovementType movement, Option
             for (ItemSlot item : items) {
                 if (item.test(entity, ability.level())) {
                     ItemStack stack = entity.getItemBySlot(item.slot());
-                    entity.setItemSlot(item.slot(), ItemStack.EMPTY);
-                    entity.level().addFreshEntity(new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(), stack, delta.x(), delta.y(), delta.z()));
+                    ItemStack convertTo = item.convertTo().orElse(ItemStack.EMPTY);
+                    entity.setItemSlot(item.slot(), convertTo);
                     numRemoved++;
+                    if (!item.dropOld().orElse(false)) {
+                        continue;
+                    }
+                    entity.level().addFreshEntity(new ItemEntity(entity.level(), entity.getX(), entity.getY(), entity.getZ(), stack, delta.x(), delta.y(), delta.z()));
                 }
             }
 
