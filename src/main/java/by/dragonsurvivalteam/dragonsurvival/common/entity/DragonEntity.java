@@ -699,6 +699,9 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             animationController.transitionLength(2);
             DRAGONS_JUMPING.remove(this.playerId);
         } else if (AnimationUtils.isAnimationPlaying(animationController, JUMP) && DRAGONS_JUMPING.getOrDefault(this.playerId, true)) {
+            // We test here if the jump animation has been flagged with a false value; if this is the case, that means cancel any ongoing jumps that are occurring
+            // This happens if we hit the ground
+            //
             // Let the jump animation complete
         } else if (!player.onGround()) {
             state.setAnimation(FALL_LOOP);
