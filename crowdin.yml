@@ -1,0 +1,3 @@
+files:
+  - source: src/main/resources/assets/dragonsurvival/lang/en_us.json
+    translation: src/main/resources/assets/dragonsurvival/lang/zh_cn.json
