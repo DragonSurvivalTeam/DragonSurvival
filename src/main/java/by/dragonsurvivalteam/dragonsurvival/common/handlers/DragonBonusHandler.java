@@ -33,9 +33,9 @@ public class DragonBonusHandler {
         }
 
         if (entity instanceof ServerPlayer serverPlayer) {
-            PacketDistributor.sendToPlayersTrackingEntity(serverPlayer, new SyncPlayerJump(entity.getId(), 18));
+            PacketDistributor.sendToPlayersTrackingEntity(serverPlayer, new SyncPlayerJump(entity.getId(), true));
         } else if (entity instanceof Player player) {
-            DragonEntity.DRAGON_JUMP_TICKS.put(player.getId(), 18);
+            DragonEntity.DRAGONS_JUMPING.put(player.getId(), true);
         }
     }
 

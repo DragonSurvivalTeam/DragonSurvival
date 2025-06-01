@@ -73,7 +73,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     private static final double BASE_SCALE = 1.0;
 
     /** Durations of jumps */
-    public static final ConcurrentHashMap<Integer, Integer> DRAGON_JUMP_TICKS = new ConcurrentHashMap<>();
+    public static final ConcurrentHashMap<Integer, Boolean> DRAGONS_JUMPING = new ConcurrentHashMap<>();
 
     private static double globalTickCount;
 
@@ -125,12 +125,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
 
     public DragonEntity(EntityType<? extends LivingEntity> type, Level worldIn) {
         super(type, worldIn);
-    }
-
-    @SubscribeEvent
-    public static void decreaseJumpDuration(PlayerTickEvent.Post playerTickEvent) {
-        Player player = playerTickEvent.getEntity();
-        DRAGON_JUMP_TICKS.computeIfPresent(player.getId(), (playerEntity1, integer) -> integer > 0 ? integer - 1 : integer);
     }
 
     @Override
@@ -699,9 +693,13 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             useDynamicScaling = true;
             baseSpeed = DEFAULT_CLIMB_SPEED;
             animationController.transitionLength(2);
-        } else if (DRAGON_JUMP_TICKS.getOrDefault(this.playerId, 0) > 0) {
+        } else if (DRAGONS_JUMPING.getOrDefault(this.playerId, false)) {
+            state.resetCurrentAnimation();
             state.setAnimation(JUMP);
             animationController.transitionLength(2);
+            DRAGONS_JUMPING.remove(this.playerId);
+        } else if (AnimationUtils.isAnimationPlaying(animationController, JUMP) && DRAGONS_JUMPING.getOrDefault(this.playerId, true)) {
+            // Let the jump animation complete
         } else if (!player.onGround()) {
             state.setAnimation(FALL_LOOP);
             animationController.transitionLength(3);
