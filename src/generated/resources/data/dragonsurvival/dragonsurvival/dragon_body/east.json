@@ -34,7 +34,7 @@
       "operation": "add_value"
     },
     {
-      "amount": 1.0,
+      "amount": 2.0,
       "attribute": "minecraft:generic.safe_fall_distance",
       "operation": "add_value"
     },
