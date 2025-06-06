@@ -31,7 +31,7 @@ public record UseItemOnBlockEffect(ItemStack item, LevelBasedValue probability, 
 
     @Override
     public void apply(ServerPlayer dragon, DragonAbilityInstance ability, BlockPos position, @Nullable Direction direction) {
-        if (dragon.getRandom().nextDouble() < probability().calculate(ability.level())) {
+        if (dragon.getRandom().nextDouble() > probability().calculate(ability.level())) {
             return;
         }
 
