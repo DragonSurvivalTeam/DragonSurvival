@@ -38,8 +38,9 @@ public record UseItemOnBlockEffect(ItemStack item, LevelBasedValue probability, 
         ServerLevel level = dragon.serverLevel();
         if (validBlocks.isEmpty() || validBlocks.get().test(dragon.serverLevel(), position)) {
 
-            InteractionResult ir = item.getItem().useOn(
-                    new UseOnContext(level, dragon, InteractionHand.MAIN_HAND, item,
+            ItemStack newStack = new ItemStack(item.getItem());
+            InteractionResult ir = newStack.useOn(
+                    new UseOnContext(level, dragon, InteractionHand.MAIN_HAND, newStack,
                     new BlockHitResult(dragon.position(), direction, position, false))
             );
             if (ir.consumesAction()) {
