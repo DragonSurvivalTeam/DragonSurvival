@@ -119,9 +119,9 @@ public class ServerFlightHandler {
         }
 
         if (player instanceof ServerPlayer serverPlayer) {
-            PacketDistributor.sendToPlayersTrackingEntity(serverPlayer, new SyncPlayerJump(player.getId(), 0));
+            PacketDistributor.sendToPlayersTrackingEntity(serverPlayer, new SyncPlayerJump(player.getId(), false));
         } else {
-            DragonEntity.DRAGON_JUMP_TICKS.put(player.getId(), 0);
+            DragonEntity.DRAGONS_JUMPING.put(player.getId(), false);
         }
 
         if (!foldWingsOnLand || player.level().isClientSide()) {

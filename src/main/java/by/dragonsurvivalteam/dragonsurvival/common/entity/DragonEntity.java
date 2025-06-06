@@ -34,7 +34,6 @@ import net.minecraft.world.scores.PlayerTeam;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
-import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -73,7 +72,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     private static final double BASE_SCALE = 1.0;
 
     /** Durations of jumps */
-    public static final ConcurrentHashMap<Integer, Integer> DRAGON_JUMP_TICKS = new ConcurrentHashMap<>();
+    public static final ConcurrentHashMap<Integer, Boolean> DRAGONS_JUMPING = new ConcurrentHashMap<>();
 
     private static double globalTickCount;
 
@@ -125,12 +124,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
 
     public DragonEntity(EntityType<? extends LivingEntity> type, Level worldIn) {
         super(type, worldIn);
-    }
-
-    @SubscribeEvent
-    public static void decreaseJumpDuration(PlayerTickEvent.Post playerTickEvent) {
-        Player player = playerTickEvent.getEntity();
-        DRAGON_JUMP_TICKS.computeIfPresent(player.getId(), (playerEntity1, integer) -> integer > 0 ? integer - 1 : integer);
     }
 
     @Override
@@ -699,12 +692,20 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             useDynamicScaling = true;
             baseSpeed = DEFAULT_CLIMB_SPEED;
             animationController.transitionLength(2);
-        } else if (DRAGON_JUMP_TICKS.getOrDefault(this.playerId, 0) > 0) {
+        } else if (DRAGONS_JUMPING.getOrDefault(this.playerId, false)) {
+            state.resetCurrentAnimation();
             state.setAnimation(JUMP);
             animationController.transitionLength(2);
+            animationTickTimer.putAnimation(JUMP, animationDuration(player, JUMP.getAnimationStages().getFirst().animationName()));
+            DRAGONS_JUMPING.remove(this.playerId);
+        } else if (animationTickTimer.isPresent(JUMP.getAnimationStages().getFirst().animationName()) && DRAGONS_JUMPING.getOrDefault(this.playerId, true)) {
+            // We test here if the jump animation has been flagged with a false value; if this is the case, that means cancel any ongoing jumps that are occurring
+            // This happens if we hit the ground
+            //
+            // Let the jump animation complete
         } else if (!player.onGround()) {
             state.setAnimation(FALL_LOOP);
-            animationController.transitionLength(3);
+            animationController.transitionLength(2);
         } else if (player.isShiftKeyDown() || !DragonSizeHandler.canPoseFit(player, Pose.STANDING) && DragonSizeHandler.canPoseFit(player, Pose.CROUCHING)) {
             // Player is Sneaking
             if (movement.isMovingHorizontally()) {
@@ -867,8 +868,8 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     private static final RawAnimation CLIMBING_UP = RawAnimation.begin().thenLoop("climbing_up");
     private static final RawAnimation CLIMBING_DOWN = RawAnimation.begin().thenLoop("climbing_down");
 
-    private static final RawAnimation JUMP = RawAnimation.begin().then("jump", Animation.LoopType.PLAY_ONCE).thenLoop("fall_loop");
-    private static final RawAnimation FLY_LAND_END = RawAnimation.begin().then("fly_land_end", Animation.LoopType.PLAY_ONCE).thenLoop("idle");
+    private static final RawAnimation JUMP = RawAnimation.begin().then("jump", Animation.LoopType.PLAY_ONCE);
+    private static final RawAnimation FLY_LAND_END = RawAnimation.begin().then("fly_land_end", Animation.LoopType.PLAY_ONCE);
 
     // Special create animation
     private static final RawAnimation CREATE_SKYHOOK_RIDING = RawAnimation.begin().thenLoop("create_skyhook_riding");
