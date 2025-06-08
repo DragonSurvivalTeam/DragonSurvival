@@ -22,6 +22,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,22 +60,20 @@ public record MobEffectRemovalEffect(
     @Override
     public void apply(ServerPlayer dragon, DragonAbilityInstance ability, Entity target) {
         if (target instanceof LivingEntity livingEntity) {
-            int removed = 0;
+            ArrayList<Holder<MobEffect>> effectsToRemove = new ArrayList<>();
             for (MobEffectInstance instance : livingEntity.getActiveEffects()) {
-                if (maxAmount.isPresent()) {
-                    if (maxAmount.get().calculate(ability.level()) < removed) {
-                        return;
-                    }
+                if (maxAmount.isPresent() && effectsToRemove.size() >= maxAmount.get().calculate(ability.level())) {
+                    break;
                 }
                 if (categories.isEmpty() || categories.get().contains(instance.getEffect().value().getCategory())) {
                     if (validEffects.isEmpty() || validEffects.get().contains(instance.getEffect())) {
                         if (maximumEffectLevel.isEmpty() || instance.getAmplifier() <= maximumEffectLevel.get().calculate(ability.level())) {
-                            livingEntity.removeEffect(instance.getEffect());
-                            removed++;
+                            effectsToRemove.add(instance.getEffect());
                         }
                     }
                 }
             }
+            effectsToRemove.forEach(livingEntity::removeEffect);
         }
     }
 
