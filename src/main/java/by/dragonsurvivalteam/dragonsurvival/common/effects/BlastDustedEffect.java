@@ -75,8 +75,10 @@ public class BlastDustedEffect extends ModifiableMobEffect {
         Entity effectApplier = null;
 
         if (entity.level() instanceof ServerLevel serverLevel) {
-            //noinspection DataFlowIssue -> effect should be present
-            effectApplier = ((AdditionalEffectData) entity.getEffect(DSEffects.BLAST_DUSTED)).dragonSurvival$getApplier(serverLevel);
+            AdditionalEffectData effectInstance = (AdditionalEffectData) entity.getEffect(DSEffects.BLAST_DUSTED);
+            if (effectInstance != null) {
+                effectApplier = effectInstance.dragonSurvival$getApplier(serverLevel);
+            }
         }
 
         float radius = (amplifier + 1) * radiusMultiplier;
