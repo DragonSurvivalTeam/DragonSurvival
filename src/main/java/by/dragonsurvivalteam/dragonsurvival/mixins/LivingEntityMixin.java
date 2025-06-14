@@ -16,7 +16,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.t
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.util.Mth;
@@ -35,13 +34,10 @@ import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.PowderSnowBlock;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import org.spongepowered.asm.mixin.Mixin;
@@ -53,22 +49,16 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import javax.annotation.Nullable;
+
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends Entity {
     @Shadow public abstract boolean onClimbable();
-
     @Shadow protected abstract Vec3 handleOnClimbable(Vec3 deltaMovement);
-
     @Shadow protected abstract float getFrictionInfluencedSpeed(float friction);
-
     @Shadow public abstract void calculateEntityAnimation(boolean includeHeight);
-
     @Shadow public abstract boolean shouldDiscardFriction();
-
     @Shadow @Nullable public abstract MobEffectInstance getEffect(Holder<MobEffect> effect);
-
-    @Shadow public abstract Vec3 handleRelativeFrictionAndCalculateMovement(Vec3 deltaMovement, float friction);
-
     @Shadow protected boolean jumping;
     @Shadow protected ItemStack useItem;
 
