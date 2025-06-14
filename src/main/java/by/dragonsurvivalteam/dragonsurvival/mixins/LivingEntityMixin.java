@@ -184,7 +184,7 @@ public abstract class LivingEntityMixin extends Entity {
      * This is a pretty disruptive mixin, but I'm not sure about the best way here to fix the order of operations here without messing up the vanilla logic
      * */
     @Inject(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getBlockPosBelowThatAffectsMyMovement()Lnet/minecraft/core/BlockPos;"), cancellable = true)
-    private void dragonSurvival$fixGravityBeingAppliedTooLate(final Vec3 travelVector, final CallbackInfo callback, @Local double gravity)
+    private void dragonSurvival$fixGravityBeingAppliedTooLateAndClampPosToWorldBorder(final Vec3 travelVector, final CallbackInfo callback, @Local double gravity)
     {
         //noinspection ConstantValue -> it's not always true
         if (!((Object) this instanceof Player player)) {
@@ -237,6 +237,16 @@ public abstract class LivingEntityMixin extends Entity {
                 postMoveCallDeltaMovement.x * (double)velocityDecay,
                 this instanceof FlyingAnimal ? postMoveCallDeltaMovement.y * (double)velocityDecay : postMoveCallDeltaMovement.y * 0.98F,
                 postMoveCallDeltaMovement.z * (double)velocityDecay);
+        }
+
+        // Clamp position to within world border
+        // This is because the player will just clip through the world border due to growth because of how
+        // fudgePositionAfterSizeChange works, so we need to clamp the position here
+        if (!this.level().getWorldBorder().isWithinBounds(this.getBoundingBox()))
+        {
+            double clampedX = Mth.clamp(this.getX(), this.level().getWorldBorder().getMinX(), this.level().getWorldBorder().getMaxX());
+            double clampedZ = Mth.clamp(this.getZ(), this.level().getWorldBorder().getMinZ(), this.level().getWorldBorder().getMaxZ());
+            this.setPos(clampedX, this.getY(), clampedZ);
         }
 
         this.calculateEntityAnimation(this instanceof FlyingAnimal);
