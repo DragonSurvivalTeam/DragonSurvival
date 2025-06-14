@@ -199,21 +199,37 @@ public class AbilityColumnsComponent implements ScrollableComponent {
 
     private int wrapInt(int value, int min, int max) {
         if (value < min) {
-            return max - (min - value) + 1;
+            return max + 1 + value;
         } else if (value > max) {
-            return min + (value - max) - 1;
-        } else {
-            return value;
+            return min - 1 + value;
         }
+        return value;
     }
 
-    private int convertIndexToColumnPhase(int index, int column) {
-        int signedDistanceFromCenter = column - index;
+    private int signedDistanceFromCenter(int index, int centerColumn) {
+        // Gets the signed distance from the center of the columns, given the index and the current center column
+        // Factors in the size of the column array as well
+        // For example, if index = 0 and column = 4, and the size of the columns array is 5, the signed distance would be -1
+        int size = columns.size();
+        int distance = index - centerColumn;
+
+        if (distance > size / 2) {
+            distance -= size;
+        } else if (distance < -size / 2) {
+            distance += size;
+        }
+
+        return distance;
+    }
+
+    private int convertIndexToColumnPhase(int index, int centerColumn) {
+        int signedDistanceFromCenter = signedDistanceFromCenter(index, centerColumn);
 
         if (columns.size() == 1) {
             return MIDDLE;
         } else {
-            return wrapInt(signedDistanceFromCenter + 1, 0, columns.size() - 1);
+            int wrap = wrapInt(signedDistanceFromCenter + 1, 0, NUM_COLUMN_PHASES);
+            return wrap < 0 || wrap >= NUM_COLUMN_PHASES ? BEHIND : wrap;
         }
     }
 }
