@@ -16,6 +16,8 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.t
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
+import javax.annotation.Nullable;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -29,11 +31,17 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.PowderSnowBlock;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import org.spongepowered.asm.mixin.Mixin;
@@ -47,6 +55,20 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends Entity {
+    @Shadow public abstract boolean onClimbable();
+
+    @Shadow protected abstract Vec3 handleOnClimbable(Vec3 deltaMovement);
+
+    @Shadow protected abstract float getFrictionInfluencedSpeed(float friction);
+
+    @Shadow public abstract void calculateEntityAnimation(boolean includeHeight);
+
+    @Shadow public abstract boolean shouldDiscardFriction();
+
+    @Shadow @Nullable public abstract MobEffectInstance getEffect(Holder<MobEffect> effect);
+
+    @Shadow public abstract Vec3 handleRelativeFrictionAndCalculateMovement(Vec3 deltaMovement, float friction);
+
     @Shadow protected boolean jumping;
     @Shadow protected ItemStack useItem;
 
@@ -155,6 +177,79 @@ public abstract class LivingEntityMixin extends Entity {
         }
 
         return !SummonedEntities.hasSummonRelationship(this, target);
+    }
+
+    /** Fixes a bug with vanilla where effects that modify the player's y-velocity were called too late, causing some problems with things like slime blocks.
+     * The issue isn't noticeable in vanilla, since vanilla doesn't rely on isOnGround() or not for logic that modifies the player's animations and hitbox.
+     * <p>
+     * For some more context, the bug would be the following:
+     * - The player is on a slime block and crouches
+     * - The change in hitbox causes a collision with the slime block, which causes the player to be pushed up
+     * - The next tick, the player uses their new upward velocity in the move() function (before gravity is applied), which causes isOnGround() to get set to false since the collision detection uses the upward velocity
+     * - The tick after that, the player now has gravity applied, so they fall down, but since we marked isOnGround() to false, we now trigger the slime block again
+     * - This causes the player to be pushed up again, which causes the player to be stuck in a loop of being pushed up and down
+     * <p>
+     * This also potentially fixes issues involving the dragon clipping through ceilings or floors with the levitation effect, as that effect was also applied post move() call in vanilla
+     * <p>
+     * This is a pretty disruptive mixin, but I'm not sure about the best way here to fix the order of operations here without messing up the vanilla logic
+     * */
+    @Inject(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getBlockPosBelowThatAffectsMyMovement()Lnet/minecraft/core/BlockPos;"), cancellable = true)
+    private void dragonSurvival$fixGravityBeingAppliedTooLate(final Vec3 travelVector, final CallbackInfo callback, @Local double gravity)
+    {
+        //noinspection ConstantValue -> it's not always true
+        if (!((Object) this instanceof Player player)) {
+            return;
+        }
+
+        DragonStateHandler data = DragonStateProvider.getData(player);
+
+        if (!data.isDragon()) {
+            return;
+        }
+
+        callback.cancel();
+
+        BlockPos blockpos = this.getBlockPosBelowThatAffectsMyMovement();
+        float blockFriction = this.level().getBlockState(this.getBlockPosBelowThatAffectsMyMovement()).getFriction(level(), this.getBlockPosBelowThatAffectsMyMovement(), this);
+        float velocityDecay = this.onGround() ? blockFriction * 0.91F : 0.91F;
+
+        // This is where we deviate from vanilla logic. What we are doing here is essentially calling handleRelativeFrictionAndCalculateMovement()
+        // but after handling the relative movement and the climbing logic, we apply the gravity to the y-velocity, then call move()
+        //
+        // Vanilla here would instead apply the gravity to the y-velocity after the move() call, which causes issues with the isOnGround() logic
+        this.moveRelative(this.getFrictionInfluencedSpeed(blockFriction), travelVector);
+        this.setDeltaMovement(this.handleOnClimbable(this.getDeltaMovement()));
+        double yVel = getDeltaMovement().y;
+        if (this.hasEffect(MobEffects.LEVITATION)) {
+            yVel += (0.05 * (double)(this.getEffect(MobEffects.LEVITATION).getAmplifier() + 1) - yVel) * 0.2;
+        } else if (!this.level().isClientSide || this.level().hasChunkAt(blockpos)) {
+            yVel -= gravity;
+        } else if (this.getY() > (double)this.level().getMinBuildHeight()) {
+            yVel = -0.1;
+        } else {
+            yVel = 0.0;
+        }
+
+        Vec3 postYModifierMovement = new Vec3(this.getDeltaMovement().x, yVel, this.getDeltaMovement().z);
+        this.setDeltaMovement(postYModifierMovement);
+
+        this.move(MoverType.SELF, this.getDeltaMovement());
+        Vec3 postMoveCallDeltaMovement = this.getDeltaMovement();
+        if ((this.horizontalCollision || this.jumping)
+            && (this.onClimbable() || this.getInBlockState().is(Blocks.POWDER_SNOW) && PowderSnowBlock.canEntityWalkOnPowderSnow(this))) {
+            postMoveCallDeltaMovement = new Vec3(postMoveCallDeltaMovement.x, 0.2, postMoveCallDeltaMovement.z);
+        }
+
+        if (this.shouldDiscardFriction()) {
+            this.setDeltaMovement(postYModifierMovement);
+        } else {
+            this.setDeltaMovement(
+                postMoveCallDeltaMovement.x * (double)velocityDecay,
+                this instanceof FlyingAnimal ? postMoveCallDeltaMovement.y * (double)velocityDecay : postMoveCallDeltaMovement.y * 0.98F,
+                postMoveCallDeltaMovement.z * (double)velocityDecay);
+        }
+
+        this.calculateEntityAnimation(this instanceof FlyingAnimal);
     }
 
     /** Enable cave dragons to properly swim in lava and also enables properly swimming up or down (for water and lava) */
