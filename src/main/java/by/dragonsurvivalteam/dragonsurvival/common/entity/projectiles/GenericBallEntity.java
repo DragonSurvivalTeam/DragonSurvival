@@ -1,16 +1,24 @@
 package by.dragonsurvivalteam.dragonsurvival.common.entity.projectiles;
 
+import java.util.List;
+import java.util.Optional;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.ProjectileData;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.block_effects.ProjectileBlockEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.entity_effects.ProjectileEntityEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.projectile.targeting.ProjectilePointTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.targeting.ProjectileTargeting;
+import by.dragonsurvivalteam.dragonsurvival.registry.projectile.world_effects.ProjectileExplosionEffect;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
@@ -28,6 +36,7 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
+import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -54,8 +63,8 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
     private int projectileLevel;
 
     private final Lazy<EntityDimensions> dimensions = Lazy.of(() -> EntityDimensions.scalable(
-            typeData.behaviourData().width().calculate(projectileLevel),
-            typeData.behaviourData().height().calculate(projectileLevel)
+            getTypeData().behaviourData().width().calculate(projectileLevel),
+            getTypeData().behaviourData().height().calculate(projectileLevel)
     ));
 
     private float movementDistance;
@@ -80,6 +89,40 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
         reapplyPosition();
     }
 
+    public ProjectileData.GeneralData getGeneralData() {
+        // It is possible for an entity to call this before we have properly deserialized the data; in this case just fallback to the generic data and bail
+        if (generalData == null) {
+            DragonSurvival.LOGGER.error("Attempted to get generalData for GenericBallEntity, but it was not initialized! Destroying projectile.");
+            discard();
+            return new ProjectileData.GeneralData(ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "generic_ball"), Optional.empty(), List.of(), List.of(), List.of(), List.of());
+        }
+
+        return generalData;
+    }
+
+    public ProjectileData.GenericBallData getTypeData() {
+        // It is possible for an entity to call this before we have properly deserialized the data; in this case just fallback to the generic data and bail
+        if (typeData == null) {
+            DragonSurvival.LOGGER.error("Attempted to get typeData for GenericBallEntity, but it was not initialized! Destroying projectile.");
+            discard();
+            return new ProjectileData.GenericBallData(
+                new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("generic_ball"), 1))),
+                Optional.empty(),
+                List.of(),
+                new ProjectileData.BehaviourData(
+                    LevelBasedValue.constant(1f),
+                    LevelBasedValue.constant(1f),
+                    LevelBasedValue.constant(0),
+                    LevelBasedValue.constant(0),
+                    LevelBasedValue.constant(32),
+                    LevelBasedValue.constant(100)
+                )
+            );
+        }
+
+        return typeData;
+    }
+
     // Not setting any values here because this should not be called when creating an actual instance of the projectile
     public GenericBallEntity(final EntityType<GenericBallEntity> type, final Level level) {
         super(type, level);
@@ -87,8 +130,8 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
 
     @Override
     public void writeSpawnData(@NotNull final RegistryFriendlyByteBuf buffer) {
-        ByteBufCodecs.fromCodecWithRegistries(ProjectileData.GeneralData.CODEC).encode(buffer, generalData);
-        ByteBufCodecs.fromCodecWithRegistries(ProjectileData.GenericBallData.CODEC).encode(buffer, typeData);
+        ByteBufCodecs.fromCodecWithRegistries(ProjectileData.GeneralData.CODEC).encode(buffer, getGeneralData());
+        ByteBufCodecs.fromCodecWithRegistries(ProjectileData.GenericBallData.CODEC).encode(buffer, getTypeData());
         buffer.writeVarInt(projectileLevel);
     }
 
@@ -107,8 +150,8 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
         super.addAdditionalSaveData(tag);
 
         RegistryOps<Tag> context = level().registryAccess().createSerializationContext(NbtOps.INSTANCE);
-        ProjectileData.GeneralData.CODEC.encodeStart(context, generalData).ifSuccess(data -> tag.put(GENERAL_DATA, data));
-        ProjectileData.GenericBallData.CODEC.encodeStart(context, typeData).ifSuccess(data -> tag.put(TYPE_DATA, data));
+        ProjectileData.GeneralData.CODEC.encodeStart(context, getGeneralData()).ifSuccess(data -> tag.put(GENERAL_DATA, data));
+        ProjectileData.GenericBallData.CODEC.encodeStart(context, getTypeData()).ifSuccess(data -> tag.put(TYPE_DATA, data));
 
         tag.putInt(PROJECTILE_LEVEL, projectileLevel);
         tag.putFloat(MOVEMENT_DISTANCE, movementDistance);
@@ -170,12 +213,14 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
 
     @Override
     protected @NotNull Component getTypeName() {
-        return Component.translatable(Translation.Type.PROJECTILE.wrap(generalData.name()));
+        // It is possible for an entity to call this before we have properly deserialized the data; in this case just fallback to the generic name
+
+        return Component.translatable(Translation.Type.PROJECTILE.wrap(getGeneralData().name()));
     }
 
     @Override
     protected ParticleOptions getTrailParticle() {
-        return typeData.trailParticle().orElse(null);
+        return getTypeData().trailParticle().orElse(null);
     }
 
     @Override
@@ -184,8 +229,8 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
             return false;
         }
 
-        if (level() instanceof ServerLevel serverLevel && generalData.entityHitCondition().isPresent()) {
-            return generalData.entityHitCondition().get().test(Condition.projectileContext(serverLevel, this, target));
+        if (level() instanceof ServerLevel serverLevel && getGeneralData().entityHitCondition().isPresent()) {
+            return getGeneralData().entityHitCondition().get().test(Condition.projectileContext(serverLevel, this, target));
         }
 
         return true;
@@ -196,7 +241,7 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
             return;
         }
 
-        for (ProjectileTargeting effect : typeData.onDestroyEffects()) {
+        for (ProjectileTargeting effect : getTypeData().onDestroyEffects()) {
             effect.apply(this, projectileLevel);
         }
 
@@ -234,7 +279,7 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
         }
 
         if (!level().isClientSide()) {
-            for (ProjectileTargeting effect : generalData.tickingEffects()) {
+            for (ProjectileTargeting effect : getGeneralData().tickingEffects()) {
                 effect.apply(this, projectileLevel);
             }
         }
@@ -258,7 +303,7 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
         super.onHitEntity(hitResult);
 
         if (!level().isClientSide()) {
-            for (ProjectileEntityEffect effect : generalData.entityHitEffects()) {
+            for (ProjectileEntityEffect effect : getGeneralData().entityHitEffects()) {
                 effect.apply(this, hitResult.getEntity(), projectileLevel);
             }
         }
@@ -281,7 +326,7 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
         super.onHitBlock(hitResult);
 
         if (!level().isClientSide()) {
-            for (ProjectileBlockEffect effect : generalData.blockHitEffects()) {
+            for (ProjectileBlockEffect effect : getGeneralData().blockHitEffects()) {
                 effect.apply(this, hitResult.getBlockPos(), projectileLevel);
             }
         }
@@ -321,7 +366,7 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
 
     public void onHitCommon(final Direction direction, boolean wasEntity) {
         if (!level().isClientSide()) {
-            for (ProjectileTargeting effect : generalData.commonHitEffects()) {
+            for (ProjectileTargeting effect : getGeneralData().commonHitEffects()) {
                 effect.apply(this, projectileLevel);
             }
 
@@ -355,31 +400,31 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
     }
 
     public ResourceLocation getTextureResource() {
-        return typeData.resources().get(projectileLevel);
+        return getTypeData().resources().get(projectileLevel);
     }
 
     public ResourceLocation getAnimationResource() {
-        return typeData.resources().get(projectileLevel);
+        return getTypeData().resources().get(projectileLevel);
     }
 
     public ResourceLocation getModelResource() {
-        return typeData.resources().get(projectileLevel);
+        return getTypeData().resources().get(projectileLevel);
     }
 
     private int getMaxBounces() {
-        return (int) typeData.behaviourData().maxBounces().calculate(projectileLevel);
+        return (int) getTypeData().behaviourData().maxBounces().calculate(projectileLevel);
     }
 
     public int getMaxLingeringTicks() {
-        return (int) typeData.behaviourData().maxLingeringTicks().calculate(projectileLevel);
+        return (int) getTypeData().behaviourData().maxLingeringTicks().calculate(projectileLevel);
     }
 
     public int getMaxMovementDistance() {
-        return (int) typeData.behaviourData().maxMovementDistance().calculate(projectileLevel);
+        return (int) getTypeData().behaviourData().maxMovementDistance().calculate(projectileLevel);
     }
 
     public int getMaxLifespan() {
-        return (int) typeData.behaviourData().maxLifespan().calculate(projectileLevel);
+        return (int) getTypeData().behaviourData().maxLifespan().calculate(projectileLevel);
     }
 
     @Override
