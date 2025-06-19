@@ -1,24 +1,17 @@
 package by.dragonsurvivalteam.dragonsurvival.common.entity.projectiles;
 
-import java.util.List;
-import java.util.Optional;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.ProjectileData;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.block_effects.ProjectileBlockEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.entity_effects.ProjectileEntityEffect;
-import by.dragonsurvivalteam.dragonsurvival.registry.projectile.targeting.ProjectilePointTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.targeting.ProjectileTargeting;
-import by.dragonsurvivalteam.dragonsurvival.registry.projectile.world_effects.ProjectileExplosionEffect;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
@@ -52,6 +45,9 @@ import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
+
+import java.util.List;
+import java.util.Optional;
 
 public class GenericBallEntity extends AbstractHurtingProjectile implements GeoEntity, IEntityWithComplexSpawn {
     private static final EntityDataAccessor<Boolean> LINGERING = SynchedEntityData.defineId(GenericBallEntity.class, EntityDataSerializers.BOOLEAN);
@@ -213,7 +209,11 @@ public class GenericBallEntity extends AbstractHurtingProjectile implements GeoE
 
     @Override
     protected @NotNull Component getTypeName() {
-        // It is possible for an entity to call this before we have properly deserialized the data; in this case just fallback to the generic name
+        if (generalData == null) {
+            // Some mods can cause this to be queried before the data was de-serialized
+            // It is not really a reason to discard the projectile, therefor provide a non-specific name
+            return super.getTypeName();
+        }
 
         return Component.translatable(Translation.Type.PROJECTILE.wrap(getGeneralData().name()));
     }
