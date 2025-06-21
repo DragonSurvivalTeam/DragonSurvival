@@ -273,7 +273,11 @@ public class RenderingUtils {
     }
 
     public static float getNearPlane(float original) {
-        //noinspection DataFlowIssue -> player is present
+        // There are some cases where mods call this function when the player is still null. We can't provide anything valid in this situation anyways, so just give the original and don't crash.
+        if (Minecraft.getInstance().player == null) {
+            return original;
+        }
+
         float scale = Minecraft.getInstance().player.getScale();
 
         if (scale < 1) {
