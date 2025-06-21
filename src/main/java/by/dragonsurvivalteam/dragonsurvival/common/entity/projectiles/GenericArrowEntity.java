@@ -1,7 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.common.entity.projectiles;
 
-import java.util.List;
-import java.util.Optional;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
@@ -43,6 +41,9 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.Optional;
 
 public class GenericArrowEntity extends AbstractArrow implements IEntityWithComplexSpawn {
     private ProjectileData.GeneralData generalData;
@@ -147,6 +148,12 @@ public class GenericArrowEntity extends AbstractArrow implements IEntityWithComp
 
     @Override
     protected @NotNull Component getTypeName() {
+        if (generalData == null) {
+            // Some mods can cause this to be queried before the data was de-serialized
+            // It is not really a reason to discard the projectile, therefor provide a non-specific name
+            return super.getTypeName();
+        }
+
         return Component.translatable(Translation.Type.PROJECTILE.wrap(getGeneralData().name()));
     }
 
