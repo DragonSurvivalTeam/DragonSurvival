@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.mixins.appleskin;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonFoodHandler;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -55,7 +56,7 @@ public class HUDOverlayHandlerMixin {
         LocalPlayer localPlayer = Minecraft.getInstance().player;
         if (localPlayer != null) {
             DragonStateHandler handler = DragonStateProvider.getData(localPlayer);
-            if (handler.isDragon()) {
+            if (handler.isDragon() && DragonFoodHandler.requireDragonFood) {
                 return handler.species().value().miscResources().foodSprites().orElse(null);
             }
         }

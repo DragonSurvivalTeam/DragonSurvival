@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.entity.projectiles;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.projectile.ProjectileData;
@@ -32,6 +33,7 @@ import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.ProjectileDeflection;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -39,6 +41,9 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.Optional;
 
 public class GenericArrowEntity extends AbstractArrow implements IEntityWithComplexSpawn {
     private ProjectileData.GeneralData generalData;
@@ -65,10 +70,35 @@ public class GenericArrowEntity extends AbstractArrow implements IEntityWithComp
         super(type, level);
     }
 
+    public ProjectileData.GeneralData getGeneralData() {
+        // It is possible for an entity to call this before we have properly deserialized the data; in this case just fallback to the generic data and bail
+        if (generalData == null) {
+            DragonSurvival.LOGGER.error("Attempted to get generalData for GenericArrowEntity, but it was not initialized! Destroying projectile.");
+            discard();
+            return new ProjectileData.GeneralData(ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "generic_ball"), Optional.empty(), List.of(), List.of(), List.of(), List.of());
+        }
+
+        return generalData;
+    }
+
+    public ProjectileData.GenericArrowData getTypeData() {
+        // It is possible for an entity to call this before we have properly deserialized the data; in this case just fallback to the generic data and bail
+        if (typeData == null) {
+            DragonSurvival.LOGGER.error("Attempted to get typeData for GenericArrowEntity, but it was not initialized! Destroying projectile.");
+            discard();
+            return new ProjectileData.GenericArrowData(
+                new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("generic_arrow"), 1))),
+                LevelBasedValue.constant(0)
+            );
+        }
+
+        return typeData;
+    }
+
     @Override
     public void writeSpawnData(@NotNull final RegistryFriendlyByteBuf buffer) {
-        ByteBufCodecs.fromCodecWithRegistries(ProjectileData.GeneralData.CODEC).encode(buffer, generalData);
-        ByteBufCodecs.fromCodecWithRegistries(ProjectileData.GenericArrowData.CODEC).encode(buffer, typeData);
+        ByteBufCodecs.fromCodecWithRegistries(ProjectileData.GeneralData.CODEC).encode(buffer, getGeneralData());
+        ByteBufCodecs.fromCodecWithRegistries(ProjectileData.GenericArrowData.CODEC).encode(buffer, getTypeData());
         buffer.writeVarInt(projectileLevel);
     }
 
@@ -84,8 +114,8 @@ public class GenericArrowEntity extends AbstractArrow implements IEntityWithComp
         super.addAdditionalSaveData(tag);
 
         RegistryOps<Tag> context = level().registryAccess().createSerializationContext(NbtOps.INSTANCE);
-        ProjectileData.GeneralData.CODEC.encodeStart(context, generalData).ifSuccess(data -> tag.put(GENERAL_DATA, data));
-        ProjectileData.GenericArrowData.CODEC.encodeStart(context, typeData).ifSuccess(data -> tag.put(TYPE_DATA, data));
+        ProjectileData.GeneralData.CODEC.encodeStart(context, getGeneralData()).ifSuccess(data -> tag.put(GENERAL_DATA, data));
+        ProjectileData.GenericArrowData.CODEC.encodeStart(context, getTypeData()).ifSuccess(data -> tag.put(TYPE_DATA, data));
 
         tag.putInt(PROJECTILE_LEVEL, projectileLevel);
     }
@@ -118,7 +148,13 @@ public class GenericArrowEntity extends AbstractArrow implements IEntityWithComp
 
     @Override
     protected @NotNull Component getTypeName() {
-        return Component.translatable(Translation.Type.PROJECTILE.wrap(generalData.name()));
+        if (generalData == null) {
+            // Some mods can cause this to be queried before the data was de-serialized
+            // It is not really a reason to discard the projectile, therefor provide a non-specific name
+            return super.getTypeName();
+        }
+
+        return Component.translatable(Translation.Type.PROJECTILE.wrap(getGeneralData().name()));
     }
 
     @Override
@@ -127,8 +163,8 @@ public class GenericArrowEntity extends AbstractArrow implements IEntityWithComp
             return false;
         }
 
-        if (level() instanceof ServerLevel serverLevel && generalData.entityHitCondition().isPresent()) {
-            return generalData.entityHitCondition().get().test(Condition.projectileContext(serverLevel, this, target));
+        if (level() instanceof ServerLevel serverLevel && getGeneralData().entityHitCondition().isPresent()) {
+            return getGeneralData().entityHitCondition().get().test(Condition.projectileContext(serverLevel, this, target));
         }
 
         return true;
@@ -139,7 +175,7 @@ public class GenericArrowEntity extends AbstractArrow implements IEntityWithComp
             return;
         }
 
-        for (ProjectileTargeting effect : generalData.commonHitEffects()) {
+        for (ProjectileTargeting effect : getGeneralData().commonHitEffects()) {
             effect.apply(this, projectileLevel);
         }
     }
@@ -152,7 +188,7 @@ public class GenericArrowEntity extends AbstractArrow implements IEntityWithComp
             return;
         }
 
-        for (ProjectileBlockEffect effect : generalData.blockHitEffects()) {
+        for (ProjectileBlockEffect effect : getGeneralData().blockHitEffects()) {
             effect.apply(this, result.getBlockPos(), projectileLevel);
         }
 
@@ -185,7 +221,7 @@ public class GenericArrowEntity extends AbstractArrow implements IEntityWithComp
         boolean targetIsImmune = false;
         boolean considerImmunityFrames = true;
 
-        for (ProjectileEntityEffect effect : generalData.entityHitEffects()) {
+        for (ProjectileEntityEffect effect : getGeneralData().entityHitEffects()) {
             if (effect instanceof ProjectileDamageEffect damageEffect) {
                 if (damageEffect.damageType().is(DamageTypeTags.BYPASSES_COOLDOWN)) {
                     considerImmunityFrames = false;
@@ -211,7 +247,7 @@ public class GenericArrowEntity extends AbstractArrow implements IEntityWithComp
             lastDeflectedBy = target;
         } else if (!isImmune) {
             // TODO :: immunity to a single damage type skips all entity effects here
-            for (ProjectileEntityEffect effect : generalData.entityHitEffects()) {
+            for (ProjectileEntityEffect effect : getGeneralData().entityHitEffects()) {
                 effect.apply(this, result.getEntity(), projectileLevel);
             }
 
@@ -235,13 +271,13 @@ public class GenericArrowEntity extends AbstractArrow implements IEntityWithComp
             return;
         }
 
-        for (ProjectileTargeting effect : generalData.tickingEffects()) {
+        for (ProjectileTargeting effect : getGeneralData().tickingEffects()) {
             effect.apply(this, projectileLevel);
         }
     }
 
     public ResourceLocation getResource() {
-        return typeData.texture().get(projectileLevel);
+        return getTypeData().texture().get(projectileLevel);
     }
 
     @Override

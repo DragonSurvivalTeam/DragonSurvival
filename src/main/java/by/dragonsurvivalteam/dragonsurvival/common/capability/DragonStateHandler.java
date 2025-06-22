@@ -373,8 +373,9 @@ public class DragonStateHandler extends EntityStateHandler {
         PacketDistributor.sendToPlayer(player, new SyncMagicData(magic.serializeNBT(player.registryAccess())));
     }
 
-    public void setSpecies(@Nullable final Player player, final Holder<DragonSpecies> species) {
+    public void setSpecies(@Nullable final Player player, final Holder<DragonSpecies> species, boolean savedForSoul) {
         Holder<DragonSpecies> oldSpecies = dragonSpecies;
+        double oldGrowth = growth;
         dragonSpecies = species;
 
         boolean hasChanged = species != null && !DragonUtils.isSpecies(oldSpecies, species);
@@ -389,7 +390,7 @@ public class DragonStateHandler extends EntityStateHandler {
             }
 
             // Also make sure we clamp our growth to a valid stage
-            updateGrowthAndStage(player != null ? player.registryAccess() : null, growth);
+            updateGrowthAndStage(player != null ? player.registryAccess() : null, getSavedDragonAge(speciesKey()));
 
             // The server doesn't need to check for skin preset refreshes; the client handles this
             if(FMLLoader.getDist().isClient()) {
@@ -398,6 +399,15 @@ public class DragonStateHandler extends EntityStateHandler {
                     recompileCurrentSkin();
                 }
             }
+        }
+
+
+        if (oldSpecies != null && !savedForSoul) {
+            // Save the growth for the previous species if we have changed and it isn't due to a soul save
+            savedGrowth.put(oldSpecies.getKey(), oldGrowth);
+        } else if (oldSpecies != null) {
+            // Clear out saved growth data if we are saving for soul, to prevent the player from getting their growth back and repeatedly saving to a soul
+            savedGrowth.remove(oldSpecies.getKey());
         }
 
         if (player == null) {
@@ -415,6 +425,10 @@ public class DragonStateHandler extends EntityStateHandler {
             PenaltySupply.clear(player);
             DSModifiers.clearModifiers(player);
         }
+    }
+
+    public void setSpecies(@Nullable final Player player, final Holder<DragonSpecies> species) {
+        setSpecies(player, species, false);
     }
 
     public void setBody(@Nullable final Player player, final Holder<DragonBody> dragonBody) {
@@ -579,13 +593,15 @@ public class DragonStateHandler extends EntityStateHandler {
 
         if (isDragonSoul && dragonSpecies != null) {
             // Only store the growth of the dragon the player is currently in if we are saving for the soul
-            storeSavedAge(speciesId(), tag);
+            storeSavedAge(speciesKey(), tag);
+            // Also, clear the saved growth for the current species in this case to prevent keeping growth data post-soul save
+            savedGrowth.remove(speciesKey());
         } else if (!isDragonSoul) {
             for (ResourceKey<DragonSpecies> type : ResourceHelper.keys(provider, DragonSpecies.REGISTRY)) {
                 boolean hasSavedGrowth = savedGrowth.containsKey(type);
 
                 if (hasSavedGrowth) {
-                    storeSavedAge(type.location(), tag);
+                    storeSavedAge(type, tag);
                 }
             }
         }
@@ -663,8 +679,8 @@ public class DragonStateHandler extends EntityStateHandler {
 
         if (dragonSpecies != null) {
             if (isDragonSoul) {
-                // Only load the growth of the dragon the player is currently in if we are loading for the soul
-                savedGrowth.put(speciesKey(), loadSavedStage(provider, speciesKey(), tag));
+                // Load the growth from the saved growth in the tag when loading from a soul, rather than referencing the saved stage status
+                savedGrowth.put(speciesKey(), growth);
             } else {
                 for (ResourceKey<DragonSpecies> type : ResourceHelper.keys(provider, DragonSpecies.REGISTRY)) {
                     CompoundTag compound = tag.getCompound(speciesId() + SAVED_GROWTH_SUFFIX);
@@ -726,10 +742,10 @@ public class DragonStateHandler extends EntityStateHandler {
         return compound.getDouble(GROWTH);
     }
 
-    private void storeSavedAge(final ResourceLocation dragonSpecies, final CompoundTag tag) {
+    private void storeSavedAge(final ResourceKey<DragonSpecies> speciesKey, final CompoundTag tag) {
         CompoundTag savedGrowthTag = new CompoundTag();
-        savedGrowthTag.putDouble(GROWTH, growth);
-        tag.put(dragonSpecies + SAVED_GROWTH_SUFFIX, savedGrowthTag);
+        savedGrowthTag.putDouble(GROWTH, getSavedDragonAge(speciesKey));
+        tag.put(speciesKey.location() + SAVED_GROWTH_SUFFIX, savedGrowthTag);
     }
 
     @Override
@@ -743,15 +759,10 @@ public class DragonStateHandler extends EntityStateHandler {
             return;
         }
 
-        // Don't set the saved dragon growth if we are reverting from a soul, as we already are storing the growth of the dragon in the soul
-        if (ServerConfig.saveGrowthStage && !isDragonSoul && dragonSpecies != null) {
-            savedGrowth.put(speciesKey(), getGrowth());
-        }
-
         // Drop everything in your claw slots
         ClawInventoryData.reInsertClawTools(player);
 
-        setSpecies(player, null);
+        setSpecies(player, null, isDragonSoul);
         setBody(player, null);
         setDesiredGrowth(player, NO_GROWTH);
 
