@@ -1030,6 +1030,8 @@
   "dragonsurvival.gui.damage_modification.damage_reduction": "§6■ %s reduced damage taken§r from %s",
   "dragonsurvival.gui.damage_modification.immunity": "§6■ Immune§r to %s",
   "dragonsurvival.gui.datapack.ancient_stage": "Adds the Ancient dragon stage to Dragon Survival",
+  "dragonsurvival.gui.datapack.create": "Adds loot tables to the Create treasures",
+  "dragonsurvival.gui.datapack.silentgems": "Adds loot tables to the Silent Gems treasures",
   "dragonsurvival.gui.datapack.unlock_wings": "Automatically unlocks dragon wings and prevents the ender dragon from disabling them in Dragon Survival",
   "dragonsurvival.gui.diet_menu.no_custom_diet": "There is no custom dragon diet",
   "dragonsurvival.gui.display.cycle_enum": "%s is now set to %s",

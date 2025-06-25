@@ -44,7 +44,6 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
@@ -55,7 +54,6 @@ public class DSBlocks {
     public static final DeferredRegister<Block> REGISTRY = DeferredRegister.create(BuiltInRegistries.BLOCK, MODID);
     // TODO :: why are these stored in a map if the map is unused
     public static final HashMap<String, Pair<DeferredHolder<Block, SkeletonPieceBlock>, DeferredHolder<Item, BlockItem>>> SKELETON_PIECES = new HashMap<>();
-    public static final List<DeferredHolder<Block, ?>> OPTIONAL = new ArrayList<>();
 
     // --- Dragon Doors --- //
 
@@ -736,204 +734,255 @@ public class DSBlocks {
     @Translation(type = Translation.Type.BLOCK, comments = "Chocolate Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> CHOCOLATE_DRAGON_TREASURE = registerModCheck(
             "chocolate_dragon_treasure",
-            () -> new TreasureBlock(FastColor.ARGB32.color(0, 0, 0, 0),
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(0, 0, 0, 0),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.DIRT)
                             .noOcclusion()
                             .sound(SoundType.PACKED_MUD)
-                            .strength(0.5F)),
+                            .strength(0.5F),
+                    ModCheck.CREATE
+            ),
             ModCheck.CREATE
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Ruby Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> RUBY_DRAGON_TREASURE = registerModCheck(
             "ruby_dragon_treasure",
-            () -> new TreasureBlock(FastColor.ARGB32.color(255, 230, 29, 29),
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 230, 29, 29),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.FIRE)
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_GEM)
-                            .strength(0.5F)),
+                            .strength(0.5F),
+                    ModCheck.SILENTGEMS
+            ),
             ModCheck.SILENTGEMS
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Carnelian Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> CARNELIAN_DRAGON_TREASURE = registerModCheck(
             "carnelian_dragon_treasure",
-            () -> new TreasureBlock(FastColor.ARGB32.color(255, 224, 71, 29),
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 224, 71, 29),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.NETHER)
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_GEM)
-                            .strength(0.5F)),
+                            .strength(0.5F),
+                    ModCheck.SILENTGEMS
+            ),
             ModCheck.SILENTGEMS
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Topaz Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> TOPAZ_DRAGON_TREASURE = registerModCheck(
             "topaz_dragon_treasure",
-            () -> new TreasureBlock(FastColor.ARGB32.color(255, 230, 113, 29),
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 230, 113, 29),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.COLOR_YELLOW)
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_GEM)
-                            .strength(0.5F)),
+                            .strength(0.5F),
+                    ModCheck.SILENTGEMS
+            ),
             ModCheck.SILENTGEMS
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Citrine Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> CITRINE_DRAGON_TREASURE = registerModCheck(
             "citrine_dragon_treasure",
-            () -> new TreasureBlock(FastColor.ARGB32.color(255, 199, 139, 3),
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 199, 139, 3),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.GOLD)
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_GEM)
-                            .strength(0.5F)),
+                            .strength(0.5F),
+                    ModCheck.SILENTGEMS
+            ),
             ModCheck.SILENTGEMS
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Heliodor Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> HELIODOR_DRAGON_TREASURE = registerModCheck(
             "heliodor_dragon_treasure",
-            () -> new TreasureBlock(FastColor.ARGB32.color(255, 230, 197, 29),
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 230, 197, 29),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.COLOR_YELLOW)
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_GEM)
-                            .strength(0.5F)),
+                            .strength(0.5F),
+                    ModCheck.SILENTGEMS
+            ),
             ModCheck.SILENTGEMS
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Moldavite Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> MOLDAVITE_DRAGON_TREASURE = registerModCheck(
             "moldavite_dragon_treasure",
-            () -> new TreasureBlock(FastColor.ARGB32.color(255, 166, 217, 35),
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 166, 217, 35),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.COLOR_LIGHT_GREEN)
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_GEM)
-                            .strength(0.5F)),
+                            .strength(0.5F),
+                    ModCheck.SILENTGEMS
+            ),
             ModCheck.SILENTGEMS
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Peridot Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> PERIDOT_DRAGON_TREASURE = registerModCheck(
             "peridot_dragon_treasure",
-            () -> new TreasureBlock(FastColor.ARGB32.color(255, 41, 219, 24),
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 41, 219, 24),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.GRASS)
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_GEM)
-                            .strength(0.5F)),
+                            .strength(0.5F),
+                    ModCheck.SILENTGEMS
+                    ),
             ModCheck.SILENTGEMS
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Turquoise Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> TURQUOISE_DRAGON_TREASURE = registerModCheck(
             "turquoise_dragon_treasure",
-            () -> new TreasureBlock(FastColor.ARGB32.color(255, 61, 244, 189),
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 61, 244, 189),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.WARPED_WART_BLOCK)
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_GEM)
-                            .strength(0.5F)),
+                            .strength(0.5F),
+                    ModCheck.SILENTGEMS
+                    ),
             ModCheck.SILENTGEMS
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Kyanite Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> KYANITE_DRAGON_TREASURE = registerModCheck(
             "kyanite_dragon_treasure",
-            () -> new TreasureBlock(FastColor.ARGB32.color(255, 65, 196, 243),
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 65, 196, 243),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.WARPED_NYLIUM)
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_GEM)
-                            .strength(0.5F)),
+                            .strength(0.5F),
+                    ModCheck.SILENTGEMS
+            ),
             ModCheck.SILENTGEMS
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Sapphire Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> SAPPHIRE_DRAGON_TREASURE = registerModCheck(
             "sapphire_dragon_treasure",
-            () -> new TreasureBlock(FastColor.ARGB32.color(255, 29, 105, 229),
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 29, 105, 229),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.COLOR_BLUE)
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_GEM)
-                            .strength(0.5F)),
+                            .strength(0.5F),
+                    ModCheck.SILENTGEMS
+                    ),
             ModCheck.SILENTGEMS
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Iolite Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> IOLITE_DRAGON_TREASURE = registerModCheck(
             "iolite_dragon_treasure",
-            () -> new TreasureBlock(FastColor.ARGB32.color(255, 117, 67, 245),
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 117, 67, 245),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.TERRACOTTA_BLUE)
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_GEM)
-                            .strength(0.5F)),
+                            .strength(0.5F),
+                    ModCheck.SILENTGEMS
+                    ),
             ModCheck.SILENTGEMS
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Alexandrite Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> ALEXANDRITE_DRAGON_TREASURE = registerModCheck(
             "alexandrite_dragon_treasure",
-            () -> new TreasureBlock(FastColor.ARGB32.color(255, 171, 55, 229),
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 171, 55, 229),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.TERRACOTTA_PURPLE)
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_GEM)
-                            .strength(0.5F)),
+                            .strength(0.5F),
+                    ModCheck.SILENTGEMS
+                    ),
             ModCheck.SILENTGEMS
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Ammolite Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> AMMOLITE_DRAGON_TREASURE = registerModCheck(
             "ammolite_dragon_treasure",
-            () -> new TreasureBlock(FastColor.ARGB32.color(255, 219, 43, 255),
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 219, 43, 255),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.WARPED_HYPHAE)
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_GEM)
-                            .strength(0.5F)),
+                            .strength(0.5F),
+                    ModCheck.SILENTGEMS
+            ),
             ModCheck.SILENTGEMS
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Rose Quartz Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> ROSE_QUARTZ_DRAGON_TREASURE = registerModCheck(
             "rose_quartz_dragon_treasure",
-            () -> new TreasureBlock(FastColor.ARGB32.color(255, 255, 78, 171),
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 255, 78, 171),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.TERRACOTTA_WHITE)
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_GEM)
-                            .strength(0.5F)),
+                            .strength(0.5F),
+                    ModCheck.SILENTGEMS
+            ),
             ModCheck.SILENTGEMS
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Black Diamond Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> BLACK_DIAMOND_DRAGON_TREASURE = registerModCheck(
             "black_diamond_dragon_treasure",
-            () -> new TreasureBlock(FastColor.ARGB32.color(255, 95, 82, 76),
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 95, 82, 76),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.COLOR_GRAY)
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_GEM)
-                            .strength(0.5F)),
+                            .strength(0.5F),
+                    ModCheck.SILENTGEMS
+            ),
             ModCheck.SILENTGEMS
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "White Diamond Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> WHITE_DIAMOND_DRAGON_TREASURE = registerModCheck(
             "white_diamond_dragon_treasure",
-            () -> new TreasureBlock(FastColor.ARGB32.color(255, 213, 193, 210),
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 213, 193, 210),
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.WOOL)
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_GEM)
-                            .strength(0.5F)),
+                            .strength(0.5F),
+                    ModCheck.SILENTGEMS
+                    ),
             ModCheck.SILENTGEMS
     );
 
@@ -1144,11 +1193,13 @@ public class DSBlocks {
         return holder;
     }
 
+    // TODO :: set the path of the resource location to <compat_id>/<usual_path>
+    //         (since that can be checked but the block itself cannot be accessed too early)
+    //         this avoids the need of using 'ModCheck' twice and having this separate entry point
+    //         (will remove existing blocks, so potentially only do on a major update)
     private static <B extends Block> @Nullable DeferredHolder<Block, B> registerModCheck(final String name, final Supplier<B> supplier, final String modID) {
         if (ModCheck.isModLoaded(modID) || DatagenModLoader.isRunningDataGen()) {
-            DeferredHolder<Block, B> holder = register(name, supplier);
-            OPTIONAL.add(holder);
-            return holder;
+            return register(name, supplier);
         }
 
         return null;

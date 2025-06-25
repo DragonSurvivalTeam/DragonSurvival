@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonAltarBlock;
+import by.dragonsurvivalteam.dragonsurvival.common.blocks.ModCompat;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.SkeletonPieceBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.TreasureBlock;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
@@ -75,7 +76,7 @@ public class DSBlockTags extends BlockTagsProvider {
             switch (block) {
                 case DragonAltarBlock ignored -> tag(DRAGON_ALTARS).add(block);
                 case TreasureBlock ignored -> {
-                    if (DSBlocks.OPTIONAL.contains(holder)) {
+                    if (holder.get() instanceof ModCompat compat && compat.getCompatId() != null) {
                         tag(DRAGON_TREASURES).addOptional(holder.getId());
                     } else {
                         tag(DRAGON_TREASURES).add(block);
