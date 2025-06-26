@@ -121,6 +121,12 @@ public class DragonModel extends GeoModel<DragonEntity> {
 			verticalVelocityAvg = 0;
 		}
 
+        // Clear out any NaNs that may have been caused by the average calculation (I think this happens if we try to load data before the game logic has actually begun?
+        bodyYawAvg = Double.isNaN(bodyYawAvg) ? 0 : bodyYawAvg;
+        headYawAvg = Double.isNaN(headYawAvg) ? 0 : headYawAvg;
+        headPitchAvg = Double.isNaN(headPitchAvg) ? 0 : headPitchAvg;
+        verticalVelocityAvg = Double.isNaN(verticalVelocityAvg) ? 0 : verticalVelocityAvg;
+
 		double lerpRate = Math.min(1., deltaTick);
 		dragon.currentBodyYawChange = Mth.lerp(lerpRate, dragon.currentBodyYawChange, bodyYawAvg);
 		dragon.currentHeadYawChange = Mth.lerp(lerpRate, dragon.currentHeadYawChange, headYawAvg);
@@ -132,10 +138,14 @@ public class DragonModel extends GeoModel<DragonEntity> {
 			dragon.currentTailMotionUp = Mth.lerp(lerpRate, dragon.currentTailMotionUp, -verticalVelocityAvg);
 		}
 
-		parser.setValue("query.body_yaw_change", () -> Mth.lerp(lerpRate, dragon.currentBodyYawChange, bodyYawAvg));
-		parser.setValue("query.head_yaw_change", () -> Mth.lerp(lerpRate, dragon.currentHeadPitchChange, headYawAvg));
-		parser.setValue("query.head_pitch_change", () -> Mth.lerp(lerpRate, dragon.currentHeadYawChange, headPitchAvg));
-		parser.setValue("query.tail_motion_up", () -> Mth.lerp(lerpRate, dragon.currentTailMotionUp, -verticalVelocityAvg));
+        double finalBodyYawAvg = bodyYawAvg;
+        double finalHeadYawAvg = headYawAvg;
+        double finalHeadPitchAvg = headPitchAvg;
+        double finalVerticalVelocityAvg = verticalVelocityAvg;
+        parser.setValue("query.body_yaw_change", () -> Mth.lerp(lerpRate, dragon.currentBodyYawChange, finalBodyYawAvg));
+        parser.setValue("query.head_yaw_change", () -> Mth.lerp(lerpRate, dragon.currentHeadPitchChange, finalHeadYawAvg));
+        parser.setValue("query.head_pitch_change", () -> Mth.lerp(lerpRate, dragon.currentHeadYawChange, finalHeadPitchAvg));
+        parser.setValue("query.tail_motion_up", () -> Mth.lerp(lerpRate, dragon.currentTailMotionUp, -finalVerticalVelocityAvg));
 	}
 	
 	@Override
