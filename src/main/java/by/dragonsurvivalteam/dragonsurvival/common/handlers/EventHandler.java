@@ -191,13 +191,13 @@ public class EventHandler{
 		}
 	}
 
-	@SubscribeEvent
+	@SubscribeEvent // Returns the beacon when you craft it using the normal recipe (not downgrade from a typed one)
 	public static void returnBeacon(PlayerEvent.ItemCraftedEvent craftedEvent){
 		Container inventory = craftedEvent.getInventory();
 		ItemStack result = craftedEvent.getCrafting();
-		int rem = ContainerHelper.clearOrCountMatchingItems(inventory, item -> item.getItem() == DSItems.passiveFireBeacon
-			|| item.getItem() == DSItems.passiveMagicBeacon
-			|| item.getItem() == DSItems.passivePeaceBeacon, 1, true);
+		int rem = ContainerHelper.clearOrCountMatchingItems(inventory, item -> item.getItem() == DSBlocks.fireDragonBeacon.asItem()
+			|| item.getItem() == DSBlocks.magicDragonBeacon.asItem()
+			|| item.getItem() == DSBlocks.peaceDragonBeacon.asItem(), 1, true);
 		if(rem == 0 && result.getItem() == DSBlocks.dragonBeacon.asItem()){
 			craftedEvent.getEntity().addItem(new ItemStack(Items.BEACON));
 		}
