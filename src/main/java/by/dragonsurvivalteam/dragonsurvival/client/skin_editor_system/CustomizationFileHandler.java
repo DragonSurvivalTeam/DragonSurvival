@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.Dr
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.ResourceKey;
@@ -56,7 +57,7 @@ public class CustomizationFileHandler {
             return new SavedCustomization(newCustomization, handler.speciesKey(), handler.body().value().model());
         }
 
-        public static SavedCustomization fromNbt(HolderLookup.Provider provider, CompoundTag nbt) {
+        public static SavedCustomization fromNbt(@NotNull HolderLookup.Provider provider, CompoundTag nbt) {
             SavedCustomization customization = new SavedCustomization();
             customization.deserializeNBT(provider, nbt);
             if (customization.customization == null || customization.dragonSpecies == null || customization.dragonModel == null) {
@@ -130,6 +131,11 @@ public class CustomizationFileHandler {
             directory.mkdirs();
         }
 
+        RegistryAccess registryAccess = DragonSurvival.PROXY.getAccess();
+        if (registryAccess == null) {
+            return;
+        }
+
         for (int slot = STARTING_SLOT; slot <= MAX_SAVE_SLOTS; slot++) {
             File savedFile = new File(directory, FILE_NAME.apply(slot));
             savedFileForSlot.put(slot, savedFile);
@@ -146,13 +152,13 @@ public class CustomizationFileHandler {
                     continue;
                 }
 
-                SavedCustomization savedCustomization = SavedCustomization.fromNbt(DragonSurvival.PROXY.getAccess(), nbt);
+                SavedCustomization savedCustomization = SavedCustomization.fromNbt(registryAccess, nbt);
                 if (savedCustomization == null) {
                     DragonSurvival.LOGGER.warn("Could not read saved skin from the file [{}]", savedFile);
                     continue;
                 }
 
-                savedCustomizations.put(slot, SavedCustomization.fromNbt(DragonSurvival.PROXY.getAccess(), nbt));
+                savedCustomizations.put(slot, SavedCustomization.fromNbt(registryAccess, nbt));
             } catch (IOException exception) {
                 DragonSurvival.LOGGER.warn("An error occurred while processing the file [{}]", savedFile, exception);
             }
