@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.appleskin;
 
+import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.HUDHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonFoodHandler;
@@ -8,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,17 +24,21 @@ public class HUDOverlayHandlerMixin {
     @ModifyArg(method="drawSaturationOverlay(FFLnet/minecraft/world/entity/player/Player;Lnet/minecraft/client/gui/GuiGraphics;IIFI)V", at= @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blit(Lnet/minecraft/resources/ResourceLocation;IIIIII)V"))
     private static ResourceLocation dragonSurvival$changeSaturationIcons(ResourceLocation atlasLocation) {
         ResourceLocation foodSprites = dragonSurvival$getDragonFoodSprites();
+
         if (foodSprites != null) {
             return foodSprites;
         }
+
         return atlasLocation;
     }
 
     @Redirect(method="drawHungerOverlay(IILnet/minecraft/world/entity/player/Player;Lnet/minecraft/client/gui/GuiGraphics;IIFZI)V", at=@At(value = "INVOKE", target="Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lnet/minecraft/resources/ResourceLocation;IIII)V", ordinal = 1))
     private static void dragonSurvival$changeAppleSkinFoodIcons(GuiGraphics instance, ResourceLocation sprite, int x, int y, int width, int height, @Local(argsOnly=true) boolean useRottenTextures, @Local(ordinal = 1) ResourceLocation iconSprite) {
         ResourceLocation foodSprites = dragonSurvival$getDragonFoodSprites();
+
         if (foodSprites != null) {
             int uOffset = 0;
+
             if (iconSprite.equals(FOOD_EMPTY_HUNGER_TEXTURE)) {
                 uOffset = 117;
             } else if (iconSprite.equals(FOOD_EMPTY_TEXTURE)) {
@@ -46,20 +52,29 @@ public class HUDOverlayHandlerMixin {
             } else if (iconSprite.equals(FOOD_FULL_HUNGER_TEXTURE)) {
                 uOffset = 72;
             }
+
             instance.blit(foodSprites, x, y, uOffset, 0, width, height);
         } else {
             instance.blitSprite(sprite, x, y, width, height);
         }
     }
 
-    @Unique private static ResourceLocation dragonSurvival$getDragonFoodSprites() {
+    @Unique private static @Nullable ResourceLocation dragonSurvival$getDragonFoodSprites() {
+        if (!DragonFoodHandler.requireDragonFood || HUDHandler.vanillaFoodLevel) {
+            // Same check exists for 'HudHandler' which manages whether the vanilla food icons are to be shown or not
+            return null;
+        }
+
         LocalPlayer localPlayer = Minecraft.getInstance().player;
+
         if (localPlayer != null) {
             DragonStateHandler handler = DragonStateProvider.getData(localPlayer);
+
             if (handler.isDragon() && DragonFoodHandler.requireDragonFood) {
                 return handler.species().value().miscResources().foodSprites().orElse(null);
             }
         }
+
         return null;
     }
 }
