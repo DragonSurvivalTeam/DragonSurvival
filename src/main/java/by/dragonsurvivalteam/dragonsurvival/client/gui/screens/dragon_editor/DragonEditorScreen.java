@@ -974,7 +974,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         }
 
         HoverButton loadSlotButton = new HoverButton(width / 2 + 182, height - 28, 17, 18, 20, 20, SLOT_LOAD_MAIN, SLOT_LOAD_HOVER, button -> {
-            CustomizationFileHandler.SavedCustomization savedCustomization = CustomizationFileHandler.load(selectedSaveSlot);
+            CustomizationFileHandler.SavedCustomization savedCustomization = CustomizationFileHandler.load(selectedSaveSlot, minecraft.player.registryAccess());
 
             if (savedCustomization == null) {
                 slotDisplayMessage = SlotDisplayMessage.NO_DATA;
@@ -1000,7 +1000,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         addRenderableWidget(loadSlotButton);
 
         HoverButton saveSlotButton = new HoverButton(width / 2 + 160, height - 28, 17, 18, 20, 20, SLOT_SAVE_MAIN, SLOT_SAVE_HOVER, button -> {
-            CustomizationFileHandler.save(HANDLER, selectedSaveSlot);
+            CustomizationFileHandler.save(HANDLER, selectedSaveSlot, minecraft.player.registryAccess());
             slotDisplayMessage = SlotDisplayMessage.SLOT_SAVED;
             tickWhenSlotDisplayMessageSet = tick;
         });

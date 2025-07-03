@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.screens;
 
-import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.AltarTypeButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverDisableable;
@@ -113,7 +112,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
         super(Component.translatable(CHOOSE_SPECIES));
 
         //noinspection DataFlowIssue -> access is expected to be present
-        DragonSurvival.PROXY.getAccess().registryOrThrow(DragonSpecies.REGISTRY).getTag(DSDragonSpeciesTags.ORDER).ifPresent(order -> {
+        minecraft.player.registryAccess().registryOrThrow(DragonSpecies.REGISTRY).getTag(DSDragonSpeciesTags.ORDER).ifPresent(order -> {
             //noinspection unchecked -> cast is valid
             List<Holder<DragonSpecies>> list = ((HolderSet$NamedAccess<DragonSpecies>) order).dragonSurvival$contents();
             Comparator<UnlockableBehavior.SpeciesEntry> comparator = Comparator.comparingInt(entry -> {
