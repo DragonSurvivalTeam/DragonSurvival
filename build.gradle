@@ -114,9 +114,8 @@ dependencies {
 	runtimeOnly "curse.maven:silentlib-242998:6285150" // 10.4.0
 
 	// Sodium & Iris
-	implementation "curse.maven:sodium-394468:6211307" // 0.6.13
-//	implementation "maven.modrinth:sodium:mc1.21.1-0.6.13-neoforge"
-	implementation "curse.maven:irisshaders-455508:6661598" // 1.8.12
+//	implementation "curse.maven:sodium-394468:6211307" // 0.6.13
+	compileOnly "curse.maven:irisshaders-455508:6661598" // 1.8.12
 
 	// Free Cam
 	compileOnly "curse.maven:free-cam-557076:5572364" // 1.3.0
