@@ -41,6 +41,7 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.Holder;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -111,10 +112,12 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
     public DragonAltarScreen(final List<UnlockableBehavior.SpeciesEntry> entries) {
         super(Component.translatable(CHOOSE_SPECIES));
 
-        //noinspection DataFlowIssue -> access is expected to be present
-        minecraft.player.registryAccess().registryOrThrow(DragonSpecies.REGISTRY).getTag(DSDragonSpeciesTags.ORDER).ifPresent(order -> {
+        //noinspection DataFlowIssue -> an instance has to exist at this point ('minecraft' may be null though for some reason)
+        RegistryAccess access = Objects.requireNonNullElseGet(minecraft, Minecraft::getInstance).player.registryAccess();;
+        access.registryOrThrow(DragonSpecies.REGISTRY).getTag(DSDragonSpeciesTags.ORDER).ifPresent(order -> {
             //noinspection unchecked -> cast is valid
             List<Holder<DragonSpecies>> list = ((HolderSet$NamedAccess<DragonSpecies>) order).dragonSurvival$contents();
+
             Comparator<UnlockableBehavior.SpeciesEntry> comparator = Comparator.comparingInt(entry -> {
                 int index = list.indexOf(entry.species());
                 // Sort entries that are not present to the end
@@ -133,7 +136,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
         LocalPlayer player = Minecraft.getInstance().player;
         //noinspection DataFlowIssue -> player should not be null
         AltarData data = AltarData.getData(player);
-        data.isInAltar = false;
+        data.isInAltar = false; // TODO :: should maybe also be sent to the server
 
         if (!data.hasUsedAltar) {
             // In case the altar was closed without making a choice
