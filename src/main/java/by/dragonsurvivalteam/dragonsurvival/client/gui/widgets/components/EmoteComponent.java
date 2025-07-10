@@ -47,7 +47,7 @@ public class EmoteComponent {
         this.emote = emote;
         emoteButton = new ExtendedButton(xPos + 10, yPos - 3, 115, 12, Component.empty(), button -> {
             //noinspection DataFlowIssue -> player is present
-            DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(Minecraft.getInstance().player.getId());
+            DragonEntity dragon = ClientDragonRenderer.getDragon(Minecraft.getInstance().player);
 
             if (dragon == null) {
                 return;
@@ -77,7 +77,7 @@ public class EmoteComponent {
         emoteButton.setMessage(emote.name());
         isPlayingButton = new ExtendedButton(xPos, yPos - 1, 6, 6, Component.empty(), button -> {
             //noinspection DataFlowIssue -> player is present
-            DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(Minecraft.getInstance().player.getId());
+            DragonEntity dragon = ClientDragonRenderer.getDragon(Minecraft.getInstance().player);
 
             if (dragon == null) {
                 return;
@@ -93,8 +93,7 @@ public class EmoteComponent {
         }) {
             @Override
             public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-                //noinspection DataFlowIssue -> player is present
-                ResourceLocation texture = DragonSurvival.PROXY.isPlayingEmote(Minecraft.getInstance().player.getId(), emote) ? PLAY_ON : PLAY_OFF;
+                ResourceLocation texture = DragonSurvival.PROXY.isPlayingEmote(Minecraft.getInstance().player, emote) ? PLAY_ON : PLAY_OFF;
                 guiGraphics.blit(texture, getX(), getY(), 0, 0, 6, 6, 14, 14);
             }
         };

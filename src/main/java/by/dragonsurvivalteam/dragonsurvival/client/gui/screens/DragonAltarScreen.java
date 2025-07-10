@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.screens;
 
-import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.AltarTypeButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverDisableable;
@@ -62,7 +61,7 @@ import java.util.stream.Collectors;
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class DragonAltarScreen extends Screen implements ConfirmableScreen {
-    @Translation(comments = "Choose a Dragon Species")
+    @Translation(comments = "Choose a Species")
     private static final String CHOOSE_SPECIES = Translation.Type.GUI.wrap("altar.choose_species");
 
     @Translation(comments = {
@@ -112,10 +111,11 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
     public DragonAltarScreen(final List<UnlockableBehavior.SpeciesEntry> entries) {
         super(Component.translatable(CHOOSE_SPECIES));
 
-        //noinspection DataFlowIssue -> access is expected to be present
-        DragonSurvival.PROXY.getAccess().registryOrThrow(DragonSpecies.REGISTRY).getTag(DSDragonSpeciesTags.ORDER).ifPresent(order -> {
+        //noinspection DataFlowIssue -> 'minecraft' (from 'Screen') is null at this point because it gets set in 'init'
+        Minecraft.getInstance().player.registryAccess().registryOrThrow(DragonSpecies.REGISTRY).getTag(DSDragonSpeciesTags.ORDER).ifPresent(order -> {
             //noinspection unchecked -> cast is valid
             List<Holder<DragonSpecies>> list = ((HolderSet$NamedAccess<DragonSpecies>) order).dragonSurvival$contents();
+
             Comparator<UnlockableBehavior.SpeciesEntry> comparator = Comparator.comparingInt(entry -> {
                 int index = list.indexOf(entry.species());
                 // Sort entries that are not present to the end
@@ -134,7 +134,7 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
         LocalPlayer player = Minecraft.getInstance().player;
         //noinspection DataFlowIssue -> player should not be null
         AltarData data = AltarData.getData(player);
-        data.isInAltar = false;
+        data.isInAltar = false; // TODO :: should maybe also be sent to the server
 
         if (!data.hasUsedAltar) {
             // In case the altar was closed without making a choice
@@ -430,20 +430,16 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
             altarButtons.add(humanButton);
         }
 
-        int extraOffset = 0;
-
-        if (altarButtons.size() == 3) {
-            extraOffset += 27;
-        }
-
         // TODO :: display message if no unlocked are present
         scrollableComponents.add(new BarComponent(this,
-                xPos + extraOffset, guiTop + 30, 4,
+                xPos, guiTop + 30, 4,
                 altarButtons, 5,
                 -13, 215, 60, 12, 19,
                 ALTAR_ARROW_LEFT_HOVER, ALTAR_ARROW_LEFT_MAIN, ALTAR_ARROW_RIGHT_HOVER, ALTAR_ARROW_RIGHT_MAIN));
 
-        DragonStateHandler handler = DragonStateProvider.getData(Objects.requireNonNull(minecraft).player);
+        //noinspection DataFlowIssue -> player is present
+        DragonStateHandler handler = DragonStateProvider.getData(minecraft.player);
+
         if (handler.isDragon()) {
             ResourceKey<DragonSpecies> species = handler.speciesKey();
             addRenderableWidget(new ExtendedButton(xPos + 32, height - 25, 150, 20, Component.translatable(LangKey.GUI_DRAGON_EDITOR), action -> ClientProxy.openDragonEditor(species, true)));

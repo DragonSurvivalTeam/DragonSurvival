@@ -3,10 +3,13 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Activation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.PassiveActivation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.UpgradeType;
+import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import com.mojang.serialization.Codec;
@@ -41,6 +44,9 @@ public record DragonAbility(
         boolean canBeManuallyDisabled,
         LevelBasedResource icon
 ) {
+    @Translation(comments = "§6■ Trigger:§r %s")
+    private static final String ACTIVATION_TRIGGER = Translation.Type.GUI.wrap("ability.activation_trigger");
+
     public static final ResourceKey<Registry<DragonAbility>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_ability"));
 
     public static final Codec<DragonAbility> DIRECT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -72,25 +78,30 @@ public record DragonAbility(
 
     public List<Component> getInfo(final Player dragon, final DragonAbilityInstance instance) {
         List<Component> info = new ArrayList<>();
+
+        if (activation instanceof PassiveActivation passive) {
+            info.add(Component.translatable(ACTIVATION_TRIGGER, DSLanguageProvider.enumValue(passive.trigger().type())));
+        }
+
         int castTime = activation.getCastTime(instance.level());
 
         if (castTime > 0) {
-            info.add(Component.translatable(LangKey.ABILITY_CAST_TIME, Functions.ticksToSeconds(castTime)));
+            info.add(Component.translatable(LangKey.ABILITY_CAST_TIME, DSColors.dynamicValue(Functions.ticksToSeconds(castTime))));
         }
 
         int cooldown = instance.ability().value().activation.getCooldown(instance.level());
 
         if (cooldown > 0) {
-            info.add(Component.translatable(LangKey.ABILITY_COOLDOWN, Functions.ticksToSeconds(cooldown)));
+            info.add(Component.translatable(LangKey.ABILITY_COOLDOWN, DSColors.dynamicValue(Functions.ticksToSeconds(cooldown))));
         }
 
         float initialManaCost = instance.ability().value().activation().getInitialManaCost(instance.level());
 
         if (initialManaCost > 0) {
-            info.add(Component.translatable(LangKey.ABILITY_INITIAL_MANA_COST, initialManaCost));
+            info.add(Component.translatable(LangKey.ABILITY_INITIAL_MANA_COST, DSColors.dynamicValue(initialManaCost)));
         }
 
-        instance.ability().value().activation().continuousManaCost().ifPresent(cost -> info.add(Component.translatable(LangKey.ABILITY_CONTINUOUS_MANA_COST, cost.manaCost().calculate(instance.level()), DSLanguageProvider.enumValue(cost.manaCostType()))));
+        instance.ability().value().activation().continuousManaCost().ifPresent(cost -> info.add(Component.translatable(LangKey.ABILITY_CONTINUOUS_MANA_COST, DSColors.dynamicValue(cost.manaCost().calculate(instance.level())), DSLanguageProvider.enumValue(cost.manaCostType()))));
 
         for (ActionContainer action : actions) {
             List<MutableComponent> descriptions = action.effect().getAllEffectDescriptions(dragon, instance);

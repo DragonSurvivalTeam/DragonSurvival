@@ -60,7 +60,7 @@
     "damage_type": "dragonsurvival:rain_burn",
     "penalty_type": "dragonsurvival:take_damage"
   },
-  "icon": "dragonsurvival:abilities/cave/cold_weakness",
+  "icon": "dragonsurvival:penalties/cave/cold_weakness",
   "trigger": {
     "particles_on_trigger": {
       "type": "minecraft:smoke"

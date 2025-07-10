@@ -25,8 +25,8 @@ public class MovementData {
     public Vec3 desiredMoveVec = Vec3.ZERO;
 
     public boolean isFirstPerson;
+    /** Prevents the body from rotating when moving the camera */
     public boolean isFreeLook;
-    public boolean wasFreeLook;
 
     //TODO: Biting is not correctly synced,
     // since we are setting it inside of the clientside animation
@@ -43,7 +43,6 @@ public class MovementData {
     }
 
     public void setFreeLook(boolean isFreeLook) {
-        this.wasFreeLook = this.isFreeLook;
         this.isFreeLook = isFreeLook;
     }
 

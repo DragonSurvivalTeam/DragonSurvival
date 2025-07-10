@@ -6,6 +6,8 @@ import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
@@ -25,7 +27,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
@@ -39,33 +40,41 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
     }
 
     // This is to angle the dragon entity (including its head) to correctly follow the angle specified when rendering.
-    @Redirect(method = "renderEntityInInventory", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;runAsFancy(Ljava/lang/Runnable;)V"))
-    private static void dragon_survival$dragonScreenEntityRender(final Runnable runnable, @Local(argsOnly = true) LivingEntity entity) {
-        LivingEntity newEntity;
+    @WrapOperation(method = "renderEntityInInventory", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;runAsFancy(Ljava/lang/Runnable;)V"))
+    private static void dragon_survival$dragonScreenEntityRender(final Runnable runnable, final Operation<Void> original, @Local(argsOnly = true) LivingEntity entity) {
+        LivingEntity entityToRender = entity;
+        DragonEntity dragon = null;
 
-        if (entity instanceof DragonEntity de) {
-            newEntity = de.getPlayer();
-        } else {
-            newEntity = entity;
+        if (entity instanceof DragonEntity) {
+            dragon = (DragonEntity) entity;
+            entityToRender = dragon.getPlayer();
+        } else if (entity instanceof Player player) {
+            dragon = ClientDragonRenderer.getDragon(player);
         }
 
-        if (DragonStateProvider.isDragon(newEntity)) {
-            MovementData movement = MovementData.getData(newEntity);
+        if (DragonStateProvider.isDragon(entityToRender)) {
+            MovementData movement = MovementData.getData(entityToRender);
             double bodyYaw = movement.bodyYaw;
             double headYaw = movement.headYaw;
             double headPitch = movement.headPitch;
             Vec3 deltaMovement = movement.deltaMovement;
             Vec3 deltaMovementLastFrame = movement.deltaMovementLastFrame;
 
-            movement.bodyYaw = newEntity.yBodyRot;
+            movement.bodyYaw = entityToRender.yBodyRot;
             movement.headYaw = -Math.toDegrees(dragon_survival$storedXAngle);
             movement.headPitch = -Math.toDegrees(dragon_survival$storedYAngle);
             movement.deltaMovement = Vec3.ZERO;
             movement.deltaMovementLastFrame = Vec3.ZERO;
 
-            ClientDragonRenderer.isOverridingMovementData = true;
+            if (dragon != null) {
+                dragon.isInInventory = true;
+            }
+
             RenderSystem.runAsFancy(runnable);
-            ClientDragonRenderer.isOverridingMovementData = false;
+
+            if (dragon != null) {
+                dragon.isInInventory = false;
+            }
 
             dragon_survival$storedXAngle = 0;
             dragon_survival$storedYAngle = 0;
@@ -76,7 +85,7 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
             movement.deltaMovement = deltaMovement;
             movement.deltaMovementLastFrame = deltaMovementLastFrame;
         } else {
-            RenderSystem.runAsFancy(runnable);
+            original.call(runnable);
         }
     }
 

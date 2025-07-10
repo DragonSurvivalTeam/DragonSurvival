@@ -32,7 +32,7 @@ public record SyncDisableAbility(ResourceKey<DragonAbility> ability, boolean isD
             }
 
             if (packet.isDisabled() && ability.isApplyingEffects() && ability == data.getCurrentlyCasting()) {
-                data.stopCasting(context.player(), true);
+                data.stopCasting(context.player(), ability, true);
             }
 
             ability.setDisabled(context.player(), packet.isDisabled(), packet.isManual());
@@ -50,7 +50,7 @@ public record SyncDisableAbility(ResourceKey<DragonAbility> ability, boolean isD
 
             if (data.getCurrentlyCasting() != null && data.getCurrentlyCasting() == ability) {
                 if (ability.isApplyingEffects()) {
-                    data.stopCasting(context.player(), true);
+                    data.stopCasting(context.player(), ability, true);
                 } else {
                     data.stopCasting(context.player());
                 }

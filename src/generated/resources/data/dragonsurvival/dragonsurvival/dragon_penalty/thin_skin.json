@@ -8,10 +8,8 @@
           "condition": "minecraft:entity_properties",
           "entity": "this",
           "predicate": {
-            "location": {
-              "fluid": {
-                "fluids": "#minecraft:water"
-              }
+            "effects": {
+              "dragonsurvival:sea_peace": {}
             }
           }
         },
@@ -19,10 +17,9 @@
           "condition": "minecraft:entity_properties",
           "entity": "this",
           "predicate": {
-            "type_specific": {
-              "type": "dragonsurvival:custom_predicates",
-              "weather_predicate": {
-                "is_raining_or_snowing": true
+            "location": {
+              "fluid": {
+                "fluids": "#minecraft:water"
               }
             }
           }
@@ -48,6 +45,18 @@
               }
             }
           }
+        },
+        {
+          "condition": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "type_specific": {
+              "type": "dragonsurvival:custom_predicates",
+              "weather_predicate": {
+                "is_raining_or_snowing": true
+              }
+            }
+          }
         }
       ]
     }
@@ -57,7 +66,7 @@
     "damage_type": "dragonsurvival:dehydration",
     "penalty_type": "dragonsurvival:take_damage"
   },
-  "icon": "dragonsurvival:abilities/sea/thin_skin",
+  "icon": "dragonsurvival:penalties/sea/thin_skin",
   "trigger": {
     "display_like_hunger_bar": true,
     "penalty_trigger": "dragonsurvival:supply",
@@ -65,10 +74,7 @@
       {
         "item_predicates": [
           {
-            "items": [
-              "minecraft:milk_bucket",
-              "dragonsurvival:frozen_raw_fish"
-            ]
+            "items": "dragonsurvival:frozen_raw_fish"
           },
           {
             "predicates": {

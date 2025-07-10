@@ -22,18 +22,25 @@ public class DSEntityTypeTags extends EntityTypeTagsProvider {
     public static final TagKey<EntityType<?>> ANIMAL_AVOID_BLACKLIST = key("animal_avoid_blacklist");
     @Translation(comments = "Vehicle Whitelist for Dragons")
     public static final TagKey<EntityType<?>> VEHICLE_WHITELIST = key("vehicle_whitelist");
-    @Translation(comments = "Hunter Targets")
-    public static final TagKey<EntityType<?>> HUNTER_TARGETS = key("hunter_targets");
     @Translation(comments = "Charged Effect Spread Blacklist")
     public static final TagKey<EntityType<?>> CHARGED_SPREAD_BLACKLIST = key("charged_spread_blacklist");
+    @Translation(comments = "Confounded Effect Target Redirection Blacklist")
+    public static final TagKey<EntityType<?>> CONFOUNDED_TARGET_BLACKLIST = key("confounded_target_blacklist");
+
+    @Translation(comments = "Hunter Targets")
+    public static final TagKey<EntityType<?>> HUNTER_TARGETS = key("hunter_targets");
     @Translation(comments = "hunter_faction")
     public static final TagKey<EntityType<?>> HUNTER_FACTION = key("hunter_faction");
+
+    @Translation(comments = "Dragons")
+    public static final TagKey<EntityType<?>> DRAGONS = key("dragons");
+
+    @Translation(comments = "Drops Dragon Heart Shard")
+    public static final TagKey<EntityType<?>> DROPS_DRAGON_HEART_SHARD = key("drops_dragon_heart_shard");
     @Translation(comments = "Drops Weak Dragon Heart")
     public static final TagKey<EntityType<?>> DROPS_WEAK_DRAGON_HEART = key("drops_weak_dragon_heart");
     @Translation(comments = "Drops Elder Dragon Heart")
     public static final TagKey<EntityType<?>> DROPS_ELDER_DRAGON_HEART = key("drops_elder_dragon_heart");
-    @Translation(comments = "Drops Normal Dragon Heart")
-    public static final TagKey<EntityType<?>> DROPS_NORMAL_DRAGON_HEART = key("drops_normal_dragon_heart");
 
     public DSEntityTypeTags(final PackOutput output, final CompletableFuture<HolderLookup.Provider> provider, @Nullable final ExistingFileHelper helper) {
         super(output, provider, DragonSurvival.MODID, helper);
@@ -55,6 +62,16 @@ public class DSEntityTypeTags extends EntityTypeTagsProvider {
                 .addOptional(ResourceLocation.fromNamespaceAndPath("create", "stationary_contraption"))
                 .addOptional(ResourceLocation.fromNamespaceAndPath("hexerei", "broom"))
                 .addOptional(ResourceLocation.fromNamespaceAndPath("botania", "player_mover"));
+
+        tag(CHARGED_SPREAD_BLACKLIST)
+                .add(EntityType.ARMOR_STAND)
+                .add(EntityType.CAT)
+                .add(EntityType.MINECART)
+                .add(EntityType.GUARDIAN)
+                .add(EntityType.ELDER_GUARDIAN)
+                .add(EntityType.ENDERMAN)
+                .addOptional(ResourceLocation.fromNamespaceAndPath("upgrade_aquatic", "thrasher"))
+                .addOptional(ResourceLocation.fromNamespaceAndPath("upgrade_aquatic", "great_thrasher"));
 
         tag(HUNTER_TARGETS)
                 .add(EntityType.EVOKER)
@@ -80,16 +97,6 @@ public class DSEntityTypeTags extends EntityTypeTagsProvider {
                 .add(EntityType.WITHER)
                 .addOptionalTag(ResourceLocation.fromNamespaceAndPath("zombiemobs", "zombie_animals"));
 
-        tag(CHARGED_SPREAD_BLACKLIST)
-                .add(EntityType.ARMOR_STAND)
-                .add(EntityType.CAT)
-                .add(EntityType.MINECART)
-                .add(EntityType.GUARDIAN)
-                .add(EntityType.ELDER_GUARDIAN)
-                .add(EntityType.ENDERMAN)
-                .addOptional(ResourceLocation.fromNamespaceAndPath("upgrade_aquatic", "thrasher"))
-                .addOptional(ResourceLocation.fromNamespaceAndPath("upgrade_aquatic", "great_thrasher"));
-
         // Used in 'curse_of_kindness' enchantment
         tag(HUNTER_FACTION)
                 .add(EntityType.VILLAGER)
@@ -101,13 +108,11 @@ public class DSEntityTypeTags extends EntityTypeTagsProvider {
                 .add(DSEntities.HUNTER_LEADER.value())
                 .add(DSEntities.HUNTER_SPEARMAN.value());
 
-        // TODO :: currently unused
-        tag(key("other_dragons"))
-                .add(EntityType.ENDER_DRAGON);
+        tag(DRAGONS).add(EntityType.ENDER_DRAGON);
 
-        tag(DROPS_WEAK_DRAGON_HEART);
-        tag(DROPS_NORMAL_DRAGON_HEART);
-        tag(DROPS_ELDER_DRAGON_HEART);
+        tag(DROPS_DRAGON_HEART_SHARD).add(EntityType.ARMOR_STAND);
+        tag(DROPS_WEAK_DRAGON_HEART).add(EntityType.ARMOR_STAND);
+        tag(DROPS_ELDER_DRAGON_HEART).add(EntityType.ARMOR_STAND);
     }
 
     private static TagKey<EntityType<?>> key(@NotNull final String path) {

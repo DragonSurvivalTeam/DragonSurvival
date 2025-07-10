@@ -14,6 +14,8 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -29,16 +31,20 @@ public record CustomPredicates(
         Optional<HolderSet<FluidType>> eyeInFluid,
         Optional<WeatherPredicate> weatherPredicate,
         Optional<MinMaxBounds.Ints> sunLightLevel,
-        Optional<ResourceLocation> hasAbilityEffect,
+        Optional<ResourceLocation> hasDurationEffect,
         Optional<NearbyEntityPredicate> isNearbyEntity,
+        Optional<MinMaxBounds.Ints> playerHunger,
+        Optional<MinMaxBounds.Doubles> healthPercentage,
         Optional<UUID> hasUUID
 ) implements EntitySubPredicate {
     public static final MapCodec<CustomPredicates> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             RegistryCodecs.homogeneousList(NeoForgeRegistries.FLUID_TYPES.key()).optionalFieldOf("eye_in_fluid").forGetter(CustomPredicates::eyeInFluid),
             WeatherPredicate.CODEC.optionalFieldOf("weather_predicate").forGetter(CustomPredicates::weatherPredicate),
             MinMaxBounds.Ints.CODEC.optionalFieldOf("sun_light_level").forGetter(CustomPredicates::sunLightLevel),
-            ResourceLocation.CODEC.optionalFieldOf("has_ability_effect").forGetter(CustomPredicates::hasAbilityEffect),
+            ResourceLocation.CODEC.optionalFieldOf("has_duration_effect").forGetter(CustomPredicates::hasDurationEffect),
             NearbyEntityPredicate.CODEC.optionalFieldOf("is_nearby_entity").forGetter(CustomPredicates::isNearbyEntity),
+            MinMaxBounds.Ints.CODEC.optionalFieldOf("player_hunger").forGetter(CustomPredicates::playerHunger),
+            MinMaxBounds.Doubles.CODEC.optionalFieldOf("health_percentage").forGetter(CustomPredicates::healthPercentage),
             UUIDUtil.LENIENT_CODEC.optionalFieldOf("has_uuid").forGetter(CustomPredicates::hasUUID)
     ).apply(instance, CustomPredicates::new));
 
@@ -62,8 +68,8 @@ public record CustomPredicates(
             return false;
         }
 
-        if (hasAbilityEffect.isPresent()) {
-            ResourceLocation abilityEffect = hasAbilityEffect.get();
+        if (hasDurationEffect.isPresent()) {
+            ResourceLocation abilityEffect = hasDurationEffect.get();
             boolean isPresent = false;
 
             for (Storage<?> storage : DSDataAttachments.getStorages(entity)) {
@@ -82,6 +88,14 @@ public record CustomPredicates(
             return false;
         }
 
+        if (!playerHunger.map(hunger -> hunger.matches(getPlayerHunger(entity))).orElse(true)) {
+            return false;
+        }
+
+        if (!healthPercentage.map(health -> health.matches(getHealthPercentage(entity))).orElse(true)) {
+            return false;
+        }
+
         if (!hasUUID.map(uuid -> uuid.equals(entity.getUUID())).orElse(true)) {
             return false;
         }
@@ -95,6 +109,22 @@ public record CustomPredicates(
         return (int) Math.round(light * Functions.getSunPosition(entity));
     }
 
+    public static int getPlayerHunger(final Entity entity) {
+        if (entity instanceof Player player) {
+            return player.getFoodData().getFoodLevel();
+        }
+        // Only players have hunger, so return 0 otherwise
+        return 0;
+    }
+
+    public static float getHealthPercentage(final Entity entity) {
+        if (entity instanceof LivingEntity living) {
+            return living.getHealth() / living.getMaxHealth();
+        }
+        // Not alive, doesn't have health
+        return 0;
+    }
+
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // ignore
     public static class Builder {
         private Optional<HolderSet<FluidType>> eyeInFluid = Optional.empty();
@@ -103,9 +133,11 @@ public record CustomPredicates(
         private Optional<Boolean> isSnowing = Optional.empty();
         private Optional<Boolean> isRainingOrSnowing = Optional.empty();
         private Optional<MinMaxBounds.Ints> sunLightLevel = Optional.empty();
-        private Optional<ResourceLocation> hasAbilityEffect = Optional.empty();
+        private Optional<ResourceLocation> hasDurationEffect = Optional.empty();
         private Optional<NearbyEntityPredicate> isNearbyEntity = Optional.empty();
         private Optional<UUID> hasUUID = Optional.empty();
+        private Optional<MinMaxBounds.Ints> playerHunger = Optional.empty();
+        private Optional<MinMaxBounds.Doubles> healthPercentage = Optional.empty();
 
         public static CustomPredicates.Builder start() {
             return new CustomPredicates.Builder();
@@ -146,8 +178,8 @@ public record CustomPredicates(
             return this;
         }
 
-        public CustomPredicates.Builder hasAbilityEffect(final ResourceLocation abilityEffect) {
-            this.hasAbilityEffect = Optional.of(abilityEffect);
+        public CustomPredicates.Builder hasDurationEffect(final ResourceLocation abilityEffect) {
+            this.hasDurationEffect = Optional.of(abilityEffect);
             return this;
         }
 
@@ -161,8 +193,18 @@ public record CustomPredicates(
             return this;
         }
 
+        public CustomPredicates.Builder hungerInRange(int min, int max) {
+            this.playerHunger = Optional.of(MinMaxBounds.Ints.between(min, max));
+            return this;
+        }
+
+        public CustomPredicates.Builder healthPercentage(double min, double max) {
+            this.healthPercentage = Optional.of(MinMaxBounds.Doubles.between(min, max));
+            return this;
+        }
+
         public CustomPredicates build() {
-            return new CustomPredicates(eyeInFluid, Optional.of(new WeatherPredicate(isRaining, isThundering, isSnowing, isRainingOrSnowing)), sunLightLevel, hasAbilityEffect, isNearbyEntity, hasUUID);
+            return new CustomPredicates(eyeInFluid, Optional.of(new WeatherPredicate(isRaining, isThundering, isSnowing, isRainingOrSnowing)), sunLightLevel, hasDurationEffect, isNearbyEntity, playerHunger, healthPercentage, hasUUID);
         }
     }
 }

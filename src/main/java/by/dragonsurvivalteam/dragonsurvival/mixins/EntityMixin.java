@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
+import by.dragonsurvivalteam.dragonsurvival.compat.Compat;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DamageModifications;
@@ -226,11 +227,14 @@ public abstract class EntityMixin {
         if ((Object) this instanceof Player player) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
 
-            if (!handler.isDragon()) {
+            if (!handler.isDragon() || Compat.hasModelSwap(player)) {
                 return;
             }
 
-            DragonSizeHandler.fudgePositionAfterSizeChange(player, entitydimensions);
+            if (handler.shouldFudgePosition) {
+                DragonSizeHandler.fudgePositionAfterSizeChange(player, entitydimensions);
+            }
+
             DragonSizeHandler.overridePose(player);
         }
     }

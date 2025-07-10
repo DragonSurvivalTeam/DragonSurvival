@@ -75,7 +75,7 @@ public class EnderDragonMarkHandler {
         @Translation(comments = "You have been cursed by the ender dragon. You may be unable to use some of your abilities. You can cure this curse by using a Primordial Anchor block after resurrecting the dragon.")
         private static final String DESCRIPTION = Translation.Type.GUI.wrap("ender_dragon_curse.tooltip");
 
-        private static final ClientData DATA = new ClientData(DragonSurvival.res("ender_dragon_curse"), DragonSurvival.res("textures/ender_dragon_curse.png"), Component.translatable(Translation.Type.GUI.wrap(NAME)), Component.empty());
+        private static final ClientData DATA = new ClientData(DragonSurvival.res("ender_dragon_curse"), DragonSurvival.res("textures/mob_effect/ender_dragon_curse.png"), Component.translatable(Translation.Type.GUI.wrap(NAME)), Component.empty());
 
         @Override
         public Component getDescription() {

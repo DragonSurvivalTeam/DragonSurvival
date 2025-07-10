@@ -3,7 +3,10 @@ package by.dragonsurvivalteam.dragonsurvival.common.entity.creatures;
 import by.dragonsurvivalteam.dragonsurvival.client.render.util.RandomAnimationPicker;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.goals.FollowSpecificMobGoal;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.goals.WindupMeleeAttackGoal;
-import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -29,11 +32,86 @@ import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
 
 public class HoundEntity extends Hunter {
+    @ConfigRange(min = 1)
+    @Translation(key = "hound_health", type = Translation.Type.CONFIGURATION, comments = "Base value for the max health attribute")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "hound"}, key = "hound_health")
+    public static double MAX_HEALTH = 10;
+
+    @Override
+    public double maxHealthConfig() {
+        return MAX_HEALTH;
+    }
+
+    @ConfigRange(min = 0)
+    @Translation(key = "hound_attack_damage", type = Translation.Type.CONFIGURATION, comments = "Base value for the attack damage attribute")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "hound"}, key = "hound_damage")
+    public static int ATTACK_DAMAGE = 2;
+
+    @Override
+    public double attackDamageConfig() {
+        return ATTACK_DAMAGE;
+    }
+
+    @ConfigRange(min = 0)
+    @Translation(key = "hound_attack_knockback", type = Translation.Type.CONFIGURATION, comments = "Base value for the attack knockback attribute")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "hound"}, key = "hound_attack_knockback")
+    public static int ATTACK_KNOCKBACK = 0;
+
+    @Override
+    public double attackKnockback() {
+        return ATTACK_KNOCKBACK;
+    }
+
+    @ConfigRange(min = 0)
+    @Translation(key = "hound_movement_speed", type = Translation.Type.CONFIGURATION, comments = "Base value for the movement speed attribute")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "hound"}, key = "hound_movement_speed")
+    public static double MOVEMENT_SPEED = 0.45;
+
+    @Override
+    public double movementSpeedConfig() {
+        return MOVEMENT_SPEED;
+    }
+
+    @ConfigRange(min = 0)
+    @Translation(key = "hound_armor", type = Translation.Type.CONFIGURATION, comments = "Base value for the armor attribute")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "hound"}, key = "hound_armor")
+    public static double ARMOR = 0;
+
+    @Override
+    public double armorConfig() {
+        return ARMOR;
+    }
+
+    @ConfigRange(min = 0)
+    @Translation(key = "hound_armor_toughness", type = Translation.Type.CONFIGURATION, comments = "Base value for the armor toughness attribute")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "hound"}, key = "hound_armor_toughness")
+    public static double ARMOR_TOUGHNESS = 0;
+
+    @Override
+    public double armorToughnessConfig() {
+        return ARMOR_TOUGHNESS;
+    }
+
+    @ConfigRange(min = 0)
+    @Translation(key = "hound_knockback_resistance", type = Translation.Type.CONFIGURATION, comments = "Base value for the knockback resistance attribute")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "hound"}, key = "hound_knockback_resistance")
+    public static double KNOCKBACK_RESISTANCE = 0;
+
+    @Override
+    public double knockbackResistanceConfig() {
+        return KNOCKBACK_RESISTANCE;
+    }
+
+    @ConfigRange(min = 0, max = 1)
+    @Translation(key = "hound_slowdown_chance", type = Translation.Type.CONFIGURATION, comments = "Determines the chance (in %) of the knight hound applying the slowness effect when they attack")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "hound"}, key = "hound_slowdown_chance")
+    public static Double SLOWDOWN_CHANCE = 0.5d;
+
+    private static final EntityDataAccessor<Integer> VARIETY = SynchedEntityData.defineId(HoundEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Boolean> DID_SLOWDOWN_ATTACK = SynchedEntityData.defineId(HoundEntity.class, EntityDataSerializers.BOOLEAN);
+
     private RawAnimation currentIdleAnim;
     private boolean isIdleAnimSet = false;
-
-    public static final EntityDataAccessor<Integer> VARIETY = SynchedEntityData.defineId(HoundEntity.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Boolean> DID_SLOWDOWN_ATTACK = SynchedEntityData.defineId(HoundEntity.class, EntityDataSerializers.BOOLEAN);
 
     public HoundEntity(EntityType<? extends PathfinderMob> entityType, Level world) {
         super(entityType, world);
@@ -100,14 +178,15 @@ public class HoundEntity extends Hunter {
 
     @Override
     public boolean doHurtTarget(@NotNull Entity entity) {
-        if (ServerConfig.houndSlowdownChance != 0 && entity instanceof LivingEntity) {
-            if (random.nextDouble() > ServerConfig.houndSlowdownChance) {
+        if (SLOWDOWN_CHANCE > 0 && entity instanceof LivingEntity) {
+            if (random.nextDouble() > SLOWDOWN_CHANCE) {
                 ((LivingEntity) entity).addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 200));
                 entityData.set(DID_SLOWDOWN_ATTACK, true);
             } else {
                 entityData.set(DID_SLOWDOWN_ATTACK, false);
             }
         }
+
         return super.doHurtTarget(entity);
     }
 

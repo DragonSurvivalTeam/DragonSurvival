@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.Dr
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.ResourceKey;
@@ -49,12 +50,17 @@ public class CustomizationFileHandler {
         public SavedCustomization() {}
 
         public static SavedCustomization fromHandler(DragonStateHandler handler) {
-            return new SavedCustomization(handler.getCurrentStageCustomization(), handler.speciesKey(), handler.body().value().model());
+            // Create a new customization object, otherwise we'll end up entangling pointers together and cause some weird behavior
+            DragonStageCustomization newCustomization = new DragonStageCustomization();
+            //noinspection DataFlowIssue -> proxy is expected to be present
+            newCustomization.deserializeNBT(DragonSurvival.PROXY.getAccess(), handler.getCurrentStageCustomization().serializeNBT(DragonSurvival.PROXY.getAccess()));
+            return new SavedCustomization(newCustomization, handler.speciesKey(), handler.body().value().model());
         }
 
-        public static SavedCustomization fromNbt(HolderLookup.Provider provider, CompoundTag nbt) {
+        public static SavedCustomization fromNbt(@NotNull HolderLookup.Provider provider, CompoundTag nbt) {
             SavedCustomization customization = new SavedCustomization();
             customization.deserializeNBT(provider, nbt);
+
             if (customization.customization == null || customization.dragonSpecies == null || customization.dragonModel == null) {
                 return null;
             }
@@ -111,10 +117,10 @@ public class CustomizationFileHandler {
 
     @SubscribeEvent
     public static void initializeSavedCustomizations(final EntityJoinLevelEvent event) {
-        loadSavedCustomizations();
+        loadSavedCustomizations(event.getLevel().registryAccess());
     }
 
-    public static void loadSavedCustomizations() {
+    public static void loadSavedCustomizations(final RegistryAccess access) {
         if (hasInitialized) {
             return;
         }
@@ -142,13 +148,14 @@ public class CustomizationFileHandler {
                     continue;
                 }
 
-                SavedCustomization savedCustomization = SavedCustomization.fromNbt(DragonSurvival.PROXY.getAccess(), nbt);
+                SavedCustomization savedCustomization = SavedCustomization.fromNbt(access, nbt);
+
                 if (savedCustomization == null) {
                     DragonSurvival.LOGGER.warn("Could not read saved skin from the file [{}]", savedFile);
                     continue;
                 }
 
-                savedCustomizations.put(slot, SavedCustomization.fromNbt(DragonSurvival.PROXY.getAccess(), nbt));
+                savedCustomizations.put(slot, SavedCustomization.fromNbt(access, nbt));
             } catch (IOException exception) {
                 DragonSurvival.LOGGER.warn("An error occurred while processing the file [{}]", savedFile, exception);
             }
@@ -157,16 +164,15 @@ public class CustomizationFileHandler {
         hasInitialized = true;
     }
 
-    public static void save(final DragonStateHandler handler, int slot) {
+    public static void save(final DragonStateHandler handler, int slot, final RegistryAccess access) {
         if (!hasInitialized) {
-            loadSavedCustomizations();
+            loadSavedCustomizations(access);
         }
 
         SavedCustomization savedCustomization = SavedCustomization.fromHandler(handler);
 
         try {
-            //noinspection DataFlowIssue -> access is expected to be present
-            NbtIo.write(savedCustomization.serializeNBT(DragonSurvival.PROXY.getAccess()), savedFileForSlot.get(slot).toPath());
+            NbtIo.write(savedCustomization.serializeNBT(access), savedFileForSlot.get(slot).toPath());
         } catch (IOException exception) {
             DragonSurvival.LOGGER.error("An error occurred while trying to save the dragon skin", exception);
         }
@@ -174,9 +180,9 @@ public class CustomizationFileHandler {
         savedCustomizations.put(slot, savedCustomization);
     }
 
-    public static SavedCustomization load(int slot) {
+    public static SavedCustomization load(int slot, final RegistryAccess access) {
         if (!hasInitialized) {
-            loadSavedCustomizations();
+            loadSavedCustomizations(access);
         }
 
         return savedCustomizations.get(slot);

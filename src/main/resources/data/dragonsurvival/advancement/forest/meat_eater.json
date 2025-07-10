@@ -1,0 +1,102 @@
+{
+  "parent": "dragonsurvival:forest/poisonous_potato",
+  "criteria": {
+    "consume_diamond_chorus": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:diamond_chorus"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "consume_forest_dragon_treat": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:forest_dragon_treat"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "consume_luminous_ointment": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:luminous_ointment"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "consume_meat_chorus_mix": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:meat_chorus_mix"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "consume_meat_wilderness": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:meat_wild_berries"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "consume_smelly_meat_porridge": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:smelly_meat_porridge"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    },
+    "consume_sweet_sour_rabbit": {
+      "conditions": {
+        "item": {
+          "items": "dragonsurvival:sweet_sour_rabbit"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "dragonsurvival.advancement.forest/meat_eater.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "dragonsurvival:meat_wild_berries"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "dragonsurvival.advancement.forest/meat_eater"
+    }
+  },
+  "requirements": [
+    [
+      "consume_sweet_sour_rabbit"
+    ],
+    [
+      "consume_luminous_ointment"
+    ],
+    [
+      "consume_diamond_chorus"
+    ],
+    [
+      "consume_smelly_meat_porridge"
+    ],
+    [
+      "consume_meat_wilderness"
+    ],
+    [
+      "consume_meat_chorus_mix"
+    ],
+    [
+      "consume_forest_dragon_treat"
+    ]
+  ],
+  "rewards": {
+    "experience": 60
+  },
+  "sends_telemetry_event": true
+}

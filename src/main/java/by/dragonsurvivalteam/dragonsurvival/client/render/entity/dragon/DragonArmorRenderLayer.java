@@ -2,12 +2,12 @@ package by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
-import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayer;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.compat.car.CosmeticArmorReworkedHelper;
+import by.dragonsurvivalteam.dragonsurvival.compat.curios.CurioAPIHelper;
 import by.dragonsurvivalteam.dragonsurvival.compat.iris.InnerWrappedRenderType;
 import by.dragonsurvivalteam.dragonsurvival.compat.iris.LayeringStates;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
@@ -41,6 +41,7 @@ import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
@@ -99,14 +100,13 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
             initArmorMasks(handler.getModel());
         }
 
-        if (!(player instanceof FakeClientPlayer)) {
-            if (hasAnyArmorEquipped(player) || ClawInventoryData.getData(player).shouldRenderClaws) {
-                Optional<ResourceLocation> armorTexture = constructTrimmedDragonArmorTexture(player);
-                if (armorTexture.isPresent()) {
-                    ((DragonRenderer) renderer).isRenderLayers = true;
-                    renderArmor(poseStack, animatable, bakedModel, bufferSource, partialTick, packedLight, armorTexture.get());
-                    ((DragonRenderer) renderer).isRenderLayers = false;
-                }
+        if (hasAnyArmorEquipped(player) || ClawInventoryData.getData(player).shouldRenderClaws) {
+            Optional<ResourceLocation> armorTexture = constructTrimmedDragonArmorTexture(player);
+
+            if (armorTexture.isPresent()) {
+                ((DragonRenderer) renderer).isRenderingLayer = true;
+                renderArmor(poseStack, animatable, bakedModel, bufferSource, partialTick, packedLight, armorTexture.get());
+                ((DragonRenderer) renderer).isRenderingLayer = false;
             }
         }
     }
@@ -125,6 +125,8 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
             VertexConsumer vertexConsumer = bufferSource.getBuffer(wrappedType);
             renderer.actuallyRender(poseStack, animatable, bakedModel, wrappedType, bufferSource, vertexConsumer, true, partialTick, packedLight, OverlayTexture.NO_OVERLAY, renderer.getRenderColor(animatable, partialTick, packedLight).getColor());
         }
+
+        ClientDragonRenderer.dragonModel.setOverrideTexture(null);
     }
 
     private static Optional<ResourceLocation> constructTrimmedDragonArmorTexture(final Player player) {
@@ -151,14 +153,16 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
     private static NativeImage compileArmorTexture(final Player player) {
         DragonStateHandler handler = DragonStateProvider.getData(player);
         ResourceLocation currentDragonModel = handler.getModel();
+        DragonBody.TextureSize textureSize = handler.body().value().textureSize();
 
         if (!armorMasksPerModel.containsKey(currentDragonModel)) {
-            return new NativeImage(512, 512, true);
+            return new NativeImage(textureSize.width(), textureSize.height(), true);
         }
 
         HashMap<EquipmentSlot, NativeImage> armorMasks = armorMasksPerModel.get(currentDragonModel);
-        if(armorMasks.isEmpty()) {
-            return new NativeImage(512, 512, true);
+
+        if (armorMasks.isEmpty()) {
+            return new NativeImage(textureSize.width(), textureSize.height(), true);
         }
 
         NativeImage image = new NativeImage(armorMasks.values().stream().findFirst().get().getWidth(), armorMasks.values().stream().findFirst().get().getHeight(), true);
@@ -177,7 +181,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
                     continue;
                 }
 
-                if(armorImage.getWidth() != image.getWidth() || armorImage.getHeight() != image.getHeight()) {
+                if (armorImage.getWidth() != image.getWidth() || armorImage.getHeight() != image.getHeight()) {
                     DragonSurvival.LOGGER.error("Armor texture {} does not match the expected size of {}x{} given by the mask!", existingArmorLocation, image.getWidth(), image.getHeight());
                     armorImage.close();
                     continue;
@@ -323,6 +327,16 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
             }
         }
 
+        ArrayList<ItemStack> visibleCurios = CurioAPIHelper.getVisibleCurioItems(player);
+        if (visibleCurios != null) {
+            for (ItemStack itemStack : visibleCurios) {
+                ResourceLocation curioResource = toArmorResource(handler.getModel(), itemStack.getItem());
+                if (curioResource != null && Minecraft.getInstance().getResourceManager().getResource(curioResource).isPresent()) {
+                    copyPixels(image, RenderingUtils.getImageFromResource(curioResource));
+                }
+            }
+        }
+
         return image;
     }
 
@@ -342,14 +356,13 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
         }
     }
 
-    private static boolean hasAnyArmorEquipped(Player pPlayer) {
+    private static boolean hasAnyArmorEquipped(final Player player) {
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             if (!slot.isArmor()) {
                 continue;
             }
 
-            ItemStack itemstack = pPlayer.getItemBySlot(slot);
-            if (!itemstack.is(Items.AIR)) {
+            if (!player.getItemBySlot(slot).is(Items.AIR)) {
                 return true;
             }
         }
@@ -396,6 +409,13 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
 
         if (ClawInventoryData.getData(player).shouldRenderClaws) {
             armorTotal.append(separator).append(ClawsAndTeeth.constructClawTexture(player)).append(separator).append(ClawsAndTeeth.constructTeethTexture(player));
+        }
+
+        ArrayList<ItemStack> visibleCurios = CurioAPIHelper.getVisibleCurioItems(player);
+        if (visibleCurios != null) {
+            for (ItemStack curio : visibleCurios) {
+                armorTotal.append(separator).append(curio.getDisplayName());
+            }
         }
 
         return UUID.nameUUIDFromBytes(armorTotal.toString().getBytes()).toString();

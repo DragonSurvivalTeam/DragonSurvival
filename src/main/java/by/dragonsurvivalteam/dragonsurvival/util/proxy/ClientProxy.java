@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.util.proxy;
 import by.dragonsurvivalteam.dragonsurvival.client.DragonSurvivalClient;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.sounds.FollowEntitySound;
+import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AbilityAnimation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationType;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
@@ -70,8 +71,8 @@ public class ClientProxy implements Proxy {
     }
 
     @Override
-    public void setCurrentAbilityAnimation(int playerId, final Pair<AbilityAnimation, AnimationType> animation) {
-        DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(playerId);
+    public void setCurrentAbilityAnimation(final Player player, final Pair<AbilityAnimation, AnimationType> animation) {
+        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
 
         if (dragon == null) {
             return;
@@ -81,8 +82,8 @@ public class ClientProxy implements Proxy {
     }
 
     @Override
-    public void stopEmote(int playerId, final DragonEmote emote) {
-        DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(playerId);
+    public void stopEmote(final Player player, final DragonEmote emote) {
+        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
 
         if (dragon == null) {
             return;
@@ -92,8 +93,8 @@ public class ClientProxy implements Proxy {
     }
 
     @Override
-    public void beginPlayingEmote(int playerId, final DragonEmote emote) {
-        DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(playerId);
+    public void beginPlayingEmote(final Player player, final DragonEmote emote) {
+        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
 
         if (dragon == null) {
             return;
@@ -103,8 +104,8 @@ public class ClientProxy implements Proxy {
     }
 
     @Override
-    public void stopAllEmotes(int playerId) {
-        DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(playerId);
+    public void stopAllEmotes(final Player player) {
+        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
 
         if (dragon == null) {
             return;
@@ -114,8 +115,8 @@ public class ClientProxy implements Proxy {
     }
 
     @Override
-    public boolean isPlayingEmote(int playerId, final DragonEmote emote) {
-        DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(playerId);
+    public boolean isPlayingEmote(final Player player, final DragonEmote emote) {
+        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
 
         if (dragon == null) {
             return false;
@@ -130,8 +131,22 @@ public class ClientProxy implements Proxy {
     }
 
     @Override
+    public float getPartialTick() {
+        return ClientDragonRenderer.partialTick;
+    }
+
+    @Override
     public boolean isOnRenderThread() {
         return RenderSystem.isOnRenderThread();
+    }
+
+    @Override
+    public boolean isFakePlayer(final Player player) {
+        if (Proxy.super.isFakePlayer(player)) {
+            return true;
+        }
+
+        return player instanceof FakeClientPlayer;
     }
 
     @Override
@@ -148,5 +163,16 @@ public class ClientProxy implements Proxy {
     @Override
     public boolean isMining(final Player player) {
         return Minecraft.getInstance().gameMode != null && Minecraft.getInstance().gameMode.isDestroying();
+    }
+
+    @Override
+    public boolean dragonRenderingWasCancelled(final Player player) {
+        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
+
+        if (dragon == null) {
+            return false;
+        }
+
+        return dragon.renderingWasCancelled;
     }
 }

@@ -1,0 +1,29 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "#BG",
+        "BD ",
+        "N  "
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:nether_star"
+        },
+        "B": {
+            "item": "dragonsurvival:elder_dragon_bone"
+        },
+        "G": {
+            "item": "minecraft:gold_block"
+        },
+        "D": {
+            "item": "minecraft:diamond_block"
+        },
+        "N": {
+            "item": "minecraft:netherite_ingot"
+        }
+    },
+  "result": {
+    "id": "dragonsurvival:star_bone",
+    "count": 2
+  }
+}

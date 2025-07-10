@@ -29,7 +29,7 @@ public record StopAllEmotes(int playerId) implements CustomPacketPayload {
     public static void handleClient(final StopAllEmotes packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
-                DragonSurvival.PROXY.stopAllEmotes(player.getId());
+                DragonSurvival.PROXY.stopAllEmotes(player);
             }
         });
     }

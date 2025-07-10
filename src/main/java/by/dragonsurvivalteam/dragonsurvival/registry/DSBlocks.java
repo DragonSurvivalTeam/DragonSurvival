@@ -12,6 +12,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.blocks.SkeletonPieceBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.SmallDragonDoor;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.SourceOfMagicBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.TreasureBlock;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonSpeciesTags;
 import by.dragonsurvivalteam.dragonsurvival.util.CompoundTagBuilder;
@@ -37,9 +38,11 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
+import net.neoforged.neoforge.data.loading.DatagenModLoader;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -443,104 +446,192 @@ public class DSBlocks {
     );
 
     // --- Dragon Altars --- //
+    // TODO :: `ofFullCopy` also copies the loot table defined in `drops` (currently not used by the copied blocks)
 
     @Translation(type = Translation.Type.BLOCK, comments = "Stone Dragon Altar")
     public static final DeferredHolder<Block, Block> STONE_DRAGON_ALTAR = register(
             "stone_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.of()
-                    .mapColor(MapColor.STONE)
-                    .instrument(NoteBlockInstrument.BASEDRUM)
-                    .strength(1.5f)
-                    .sound(SoundType.STONE)
-                    .requiresCorrectToolForDrops())
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.STONE))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Sandstone Dragon Altar")
     public static final DeferredHolder<Block, Block> SANDSTONE_DRAGON_ALTAR = register(
             "sandstone_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.of()
-                    .mapColor(MapColor.STONE)
-                    .instrument(NoteBlockInstrument.BASEDRUM)
-                    .strength(0.8f)
-                    .sound(SoundType.STONE)
-                    .requiresCorrectToolForDrops())
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.SANDSTONE))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Red Sandstone Dragon Altar")
     public static final DeferredHolder<Block, Block> RED_SANDSTONE_DRAGON_ALTAR = register(
             "red_sandstone_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.of()
-                    .mapColor(MapColor.STONE)
-                    .instrument(NoteBlockInstrument.BASEDRUM)
-                    .strength(0.8f)
-                    .sound(SoundType.STONE)
-                    .requiresCorrectToolForDrops())
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.RED_SANDSTONE))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Purpur Dragon Altar")
     public static final DeferredHolder<Block, Block> PURPUR_DRAGON_ALTAR = register(
             "purpur_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.of()
-                    .mapColor(MapColor.STONE)
-                    .instrument(NoteBlockInstrument.BASEDRUM)
-                    .strength(1.5f)
-                    .sound(SoundType.STONE)
-                    .requiresCorrectToolForDrops())
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.PURPUR_BLOCK))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Oak Dragon Altar")
     public static final DeferredHolder<Block, Block> OAK_DRAGON_ALTAR = register(
             "oak_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.of()
-                    .mapColor(MapColor.WOOD)
-                    .ignitedByLava()
-                    .instrument(NoteBlockInstrument.BASS)
-                    .strength(2f)
-                    .sound(SoundType.WOOD))
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.OAK_PLANKS))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Birch Dragon Altar")
     public static final DeferredHolder<Block, Block> BIRCH_DRAGON_ALTAR = register(
             "birch_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.of()
-                    .mapColor(MapColor.WOOD)
-                    .ignitedByLava()
-                    .instrument(NoteBlockInstrument.BASS)
-                    .strength(2f)
-                    .sound(SoundType.WOOD))
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.BIRCH_PLANKS))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Nether Brick Dragon Altar")
     public static final DeferredHolder<Block, Block> NETHER_BRICK_DRAGON_ALTAR = register(
             "nether_brick_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.of()
-                    .mapColor(MapColor.STONE)
-                    .instrument(NoteBlockInstrument.BASEDRUM)
-                    .strength(0.4f)
-                    .sound(SoundType.NETHER_BRICKS)
-                    .requiresCorrectToolForDrops())
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.NETHER_BRICKS))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Mossy Dragon Altar")
     public static final DeferredHolder<Block, Block> MOSSY_DRAGON_ALTAR = register(
             "mossy_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.of()
-                    .mapColor(MapColor.STONE)
-                    .instrument(NoteBlockInstrument.BASEDRUM)
-                    .strength(2f)
-                    .sound(SoundType.STONE)
-                    .requiresCorrectToolForDrops())
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.MOSSY_COBBLESTONE))
     );
 
     @Translation(type = Translation.Type.BLOCK, comments = "Blackstone Dragon Altar")
     public static final DeferredHolder<Block, Block> BLACKSTONE_DRAGON_ALTAR = register(
             "blackstone_dragon_altar",
-            () -> new DragonAltarBlock(Block.Properties.of()
-                    .mapColor(MapColor.STONE)
-                    .instrument(NoteBlockInstrument.BASEDRUM)
-                    .strength(1.5f)
-                    .sound(SoundType.STONE)
-                    .requiresCorrectToolForDrops())
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.BLACKSTONE))
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Pale Oak Dragon Altar") // FIXME :: unused
+    public static final DeferredHolder<Block, Block> PALE_OAK_DRAGON_ALTAR = register(
+            "pale_oak_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.OAK_PLANKS))
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Bone Dragon Altar")
+    public static final DeferredHolder<Block, Block> BONE_DRAGON_ALTAR = register(
+            "bone_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.BONE_BLOCK))
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Quartz Dragon Altar")
+    public static final DeferredHolder<Block, Block> QUARTZ_DRAGON_ALTAR = register(
+            "quartz_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.QUARTZ_BLOCK))
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Ice Dragon Altar")
+    public static final DeferredHolder<Block, Block> ICE_DRAGON_ALTAR = register(
+            "ice_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.PACKED_ICE))
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Netherrack Dragon Altar")
+    public static final DeferredHolder<Block, Block> NETHERRACK_DRAGON_ALTAR = register(
+            "netherrack_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.NETHERRACK))
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Obsidian Dragon Altar")
+    public static final DeferredHolder<Block, Block> OBSIDIAN_DRAGON_ALTAR = register(
+            "obsidian_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.OBSIDIAN))
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Amethyst Dragon Altar")
+    public static final DeferredHolder<Block, Block> AMETHYST_DRAGON_ALTAR = register(
+            "amethyst_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.AMETHYST_BLOCK))
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Mudbrick Dragon Altar")
+    public static final DeferredHolder<Block, Block> MUDBRICK_DRAGON_ALTAR = register(
+            "mudbrick_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.PACKED_MUD))
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Prismarine Dragon Altar")
+    public static final DeferredHolder<Block, Block> PRISMARINE_DRAGON_ALTAR = register(
+            "prismarine_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.PRISMARINE_BRICKS))
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Red Nether Brick Dragon Altar")
+    public static final DeferredHolder<Block, Block> RED_NETHER_BRICK_DRAGON_ALTAR = register(
+            "red_nether_brick_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.RED_NETHER_BRICKS))
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Endstone Dragon Altar")
+    public static final DeferredHolder<Block, Block> ENDSTONE_DRAGON_ALTAR = register(
+            "endstone_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.END_STONE))
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Deepslate Dragon Altar")
+    public static final DeferredHolder<Block, Block> DEEPSLATE_DRAGON_ALTAR = register(
+            "deepslate_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.COBBLED_DEEPSLATE))
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Tuff Dragon Altar")
+    public static final DeferredHolder<Block, Block> TUFF_DRAGON_ALTAR = register(
+            "tuff_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.TUFF))
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Crimson Dragon Altar")
+    public static final DeferredHolder<Block, Block> CRIMSON_DRAGON_ALTAR = register(
+            "crimson_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.CRIMSON_PLANKS))
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Warped Dragon Altar")
+    public static final DeferredHolder<Block, Block> WARPED_DRAGON_ALTAR = register(
+            "warped_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.WARPED_PLANKS))
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Mangrove Dragon Altar")
+    public static final DeferredHolder<Block, Block> MANGROVE_DRAGON_ALTAR = register(
+            "mangrove_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.MANGROVE_PLANKS))
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Bamboo Dragon Altar")
+    public static final DeferredHolder<Block, Block> BAMBOO_DRAGON_ALTAR = register(
+            "bamboo_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.BAMBOO_PLANKS).mapColor(MapColor.COLOR_YELLOW))
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Cherry Dragon Altar")
+    public static final DeferredHolder<Block, Block> CHERRY_DRAGON_ALTAR = register(
+            "cherry_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.CHERRY_PLANKS))
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Acacia Dragon Altar")
+    public static final DeferredHolder<Block, Block> ACACIA_DRAGON_ALTAR = register(
+            "acacia_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.ACACIA_PLANKS))
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Dark Oak Dragon Altar")
+    public static final DeferredHolder<Block, Block> DARK_OAK_DRAGON_ALTAR = register(
+            "dark_oak_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.DARK_OAK_PLANKS))
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Jungle Dragon Altar")
+    public static final DeferredHolder<Block, Block> JUNGLE_DRAGON_ALTAR = register(
+            "jungle_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.JUNGLE_PLANKS))
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Spruce Dragon Altar")
+    public static final DeferredHolder<Block, Block> SPRUCE_DRAGON_ALTAR = register(
+            "spruce_dragon_altar",
+            () -> new DragonAltarBlock(Block.Properties.ofFullCopy(Blocks.SPRUCE_PLANKS))
     );
 
     // --- Dragon Beacons --- //
@@ -638,6 +729,261 @@ public class DSBlocks {
                             .noOcclusion()
                             .sound(DSSounds.TREASURE_METAL)
                             .strength(0.5F))
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Chocolate Dragon Treasure")
+    public static final @Nullable DeferredHolder<Block, TreasureBlock> CHOCOLATE_DRAGON_TREASURE = registerModCheck(
+            "chocolate_dragon_treasure",
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(0, 0, 0, 0),
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.DIRT)
+                            .noOcclusion()
+                            .sound(SoundType.PACKED_MUD)
+                            .strength(0.5F),
+                    ModCheck.CREATE
+            ),
+            ModCheck.CREATE
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Ruby Dragon Treasure")
+    public static final @Nullable DeferredHolder<Block, TreasureBlock> RUBY_DRAGON_TREASURE = registerModCheck(
+            "ruby_dragon_treasure",
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 230, 29, 29),
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.FIRE)
+                            .noOcclusion()
+                            .sound(DSSounds.TREASURE_GEM)
+                            .strength(0.5F),
+                    ModCheck.SILENTGEMS
+            ),
+            ModCheck.SILENTGEMS
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Carnelian Dragon Treasure")
+    public static final @Nullable DeferredHolder<Block, TreasureBlock> CARNELIAN_DRAGON_TREASURE = registerModCheck(
+            "carnelian_dragon_treasure",
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 224, 71, 29),
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.NETHER)
+                            .noOcclusion()
+                            .sound(DSSounds.TREASURE_GEM)
+                            .strength(0.5F),
+                    ModCheck.SILENTGEMS
+            ),
+            ModCheck.SILENTGEMS
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Topaz Dragon Treasure")
+    public static final @Nullable DeferredHolder<Block, TreasureBlock> TOPAZ_DRAGON_TREASURE = registerModCheck(
+            "topaz_dragon_treasure",
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 230, 113, 29),
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.COLOR_YELLOW)
+                            .noOcclusion()
+                            .sound(DSSounds.TREASURE_GEM)
+                            .strength(0.5F),
+                    ModCheck.SILENTGEMS
+            ),
+            ModCheck.SILENTGEMS
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Citrine Dragon Treasure")
+    public static final @Nullable DeferredHolder<Block, TreasureBlock> CITRINE_DRAGON_TREASURE = registerModCheck(
+            "citrine_dragon_treasure",
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 199, 139, 3),
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.GOLD)
+                            .noOcclusion()
+                            .sound(DSSounds.TREASURE_GEM)
+                            .strength(0.5F),
+                    ModCheck.SILENTGEMS
+            ),
+            ModCheck.SILENTGEMS
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Heliodor Dragon Treasure")
+    public static final @Nullable DeferredHolder<Block, TreasureBlock> HELIODOR_DRAGON_TREASURE = registerModCheck(
+            "heliodor_dragon_treasure",
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 230, 197, 29),
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.COLOR_YELLOW)
+                            .noOcclusion()
+                            .sound(DSSounds.TREASURE_GEM)
+                            .strength(0.5F),
+                    ModCheck.SILENTGEMS
+            ),
+            ModCheck.SILENTGEMS
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Moldavite Dragon Treasure")
+    public static final @Nullable DeferredHolder<Block, TreasureBlock> MOLDAVITE_DRAGON_TREASURE = registerModCheck(
+            "moldavite_dragon_treasure",
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 166, 217, 35),
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.COLOR_LIGHT_GREEN)
+                            .noOcclusion()
+                            .sound(DSSounds.TREASURE_GEM)
+                            .strength(0.5F),
+                    ModCheck.SILENTGEMS
+            ),
+            ModCheck.SILENTGEMS
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Peridot Dragon Treasure")
+    public static final @Nullable DeferredHolder<Block, TreasureBlock> PERIDOT_DRAGON_TREASURE = registerModCheck(
+            "peridot_dragon_treasure",
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 41, 219, 24),
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.GRASS)
+                            .noOcclusion()
+                            .sound(DSSounds.TREASURE_GEM)
+                            .strength(0.5F),
+                    ModCheck.SILENTGEMS
+                    ),
+            ModCheck.SILENTGEMS
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Turquoise Dragon Treasure")
+    public static final @Nullable DeferredHolder<Block, TreasureBlock> TURQUOISE_DRAGON_TREASURE = registerModCheck(
+            "turquoise_dragon_treasure",
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 61, 244, 189),
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.WARPED_WART_BLOCK)
+                            .noOcclusion()
+                            .sound(DSSounds.TREASURE_GEM)
+                            .strength(0.5F),
+                    ModCheck.SILENTGEMS
+                    ),
+            ModCheck.SILENTGEMS
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Kyanite Dragon Treasure")
+    public static final @Nullable DeferredHolder<Block, TreasureBlock> KYANITE_DRAGON_TREASURE = registerModCheck(
+            "kyanite_dragon_treasure",
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 65, 196, 243),
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.WARPED_NYLIUM)
+                            .noOcclusion()
+                            .sound(DSSounds.TREASURE_GEM)
+                            .strength(0.5F),
+                    ModCheck.SILENTGEMS
+            ),
+            ModCheck.SILENTGEMS
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Sapphire Dragon Treasure")
+    public static final @Nullable DeferredHolder<Block, TreasureBlock> SAPPHIRE_DRAGON_TREASURE = registerModCheck(
+            "sapphire_dragon_treasure",
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 29, 105, 229),
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.COLOR_BLUE)
+                            .noOcclusion()
+                            .sound(DSSounds.TREASURE_GEM)
+                            .strength(0.5F),
+                    ModCheck.SILENTGEMS
+                    ),
+            ModCheck.SILENTGEMS
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Iolite Dragon Treasure")
+    public static final @Nullable DeferredHolder<Block, TreasureBlock> IOLITE_DRAGON_TREASURE = registerModCheck(
+            "iolite_dragon_treasure",
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 117, 67, 245),
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.TERRACOTTA_BLUE)
+                            .noOcclusion()
+                            .sound(DSSounds.TREASURE_GEM)
+                            .strength(0.5F),
+                    ModCheck.SILENTGEMS
+                    ),
+            ModCheck.SILENTGEMS
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Alexandrite Dragon Treasure")
+    public static final @Nullable DeferredHolder<Block, TreasureBlock> ALEXANDRITE_DRAGON_TREASURE = registerModCheck(
+            "alexandrite_dragon_treasure",
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 171, 55, 229),
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.TERRACOTTA_PURPLE)
+                            .noOcclusion()
+                            .sound(DSSounds.TREASURE_GEM)
+                            .strength(0.5F),
+                    ModCheck.SILENTGEMS
+                    ),
+            ModCheck.SILENTGEMS
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Ammolite Dragon Treasure")
+    public static final @Nullable DeferredHolder<Block, TreasureBlock> AMMOLITE_DRAGON_TREASURE = registerModCheck(
+            "ammolite_dragon_treasure",
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 219, 43, 255),
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.WARPED_HYPHAE)
+                            .noOcclusion()
+                            .sound(DSSounds.TREASURE_GEM)
+                            .strength(0.5F),
+                    ModCheck.SILENTGEMS
+            ),
+            ModCheck.SILENTGEMS
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Rose Quartz Dragon Treasure")
+    public static final @Nullable DeferredHolder<Block, TreasureBlock> ROSE_QUARTZ_DRAGON_TREASURE = registerModCheck(
+            "rose_quartz_dragon_treasure",
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 255, 78, 171),
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.TERRACOTTA_WHITE)
+                            .noOcclusion()
+                            .sound(DSSounds.TREASURE_GEM)
+                            .strength(0.5F),
+                    ModCheck.SILENTGEMS
+            ),
+            ModCheck.SILENTGEMS
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Black Diamond Dragon Treasure")
+    public static final @Nullable DeferredHolder<Block, TreasureBlock> BLACK_DIAMOND_DRAGON_TREASURE = registerModCheck(
+            "black_diamond_dragon_treasure",
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 95, 82, 76),
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.COLOR_GRAY)
+                            .noOcclusion()
+                            .sound(DSSounds.TREASURE_GEM)
+                            .strength(0.5F),
+                    ModCheck.SILENTGEMS
+            ),
+            ModCheck.SILENTGEMS
+    );
+
+    @Translation(type = Translation.Type.BLOCK, comments = "White Diamond Dragon Treasure")
+    public static final @Nullable DeferredHolder<Block, TreasureBlock> WHITE_DIAMOND_DRAGON_TREASURE = registerModCheck(
+            "white_diamond_dragon_treasure",
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 213, 193, 210),
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.WOOL)
+                            .noOcclusion()
+                            .sound(DSSounds.TREASURE_GEM)
+                            .strength(0.5F),
+                    ModCheck.SILENTGEMS
+                    ),
+            ModCheck.SILENTGEMS
     );
 
     // --- Dragon Treasure Plates --- //
@@ -847,9 +1193,21 @@ public class DSBlocks {
         return holder;
     }
 
+    // TODO :: set the path of the resource location to <compat_id>/<usual_path>
+    //         (since that can be checked but the block itself cannot be accessed too early)
+    //         this avoids the need of using 'ModCheck' twice and having this separate entry point
+    //         (will remove existing blocks, so potentially only do on a major update)
+    private static <B extends Block> @Nullable DeferredHolder<Block, B> registerModCheck(final String name, final Supplier<B> supplier, final String modID) {
+        if (ModCheck.isModLoaded(modID) || DatagenModLoader.isRunningDataGen()) {
+            return register(name, supplier);
+        }
+
+        return null;
+    }
+
     static {
-        for (int i = 1; i < 9; i++) { // TODO :: what does he 9 indicate
-            for (SkeletonPieceBlock.Type type : SkeletonPieceBlock.Types.values()) {
+        for (int i = 1; i < 9; i++) { // 8 total types, one for each color
+            for (SkeletonPieceBlock.Type type : SkeletonPieceBlock.Type.values()) {
                 DeferredHolder<Block, SkeletonPieceBlock> block = REGISTRY.register(type.getSerializedName() + "_skin" + i,
                         () -> new SkeletonPieceBlock(type, BlockBehaviour.Properties.of()
                                 .mapColor(MapColor.CLAY)

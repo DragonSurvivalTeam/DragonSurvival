@@ -1,7 +1,10 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
+import by.dragonsurvivalteam.dragonsurvival.client.DragonSurvivalClient;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
+import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.compat.bettercombat.BetterCombat;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.GlowData;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -16,6 +19,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
@@ -25,7 +29,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import software.bernie.geckolib.cache.object.GeoBone;
 
 @Mixin(LevelRenderer.class)
 public abstract class LevelRendererMixin {
@@ -50,14 +53,18 @@ public abstract class LevelRendererMixin {
     /** Render the dragon body (except the head) in first person */
     @Inject(method = "renderLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;checkPoseStack(Lcom/mojang/blaze3d/vertex/PoseStack;)V", ordinal = 0, shift = At.Shift.BEFORE))
     public void render(DeltaTracker deltaTracker, boolean renderBlockOutline, Camera camera, GameRenderer renderer, LightTexture light, Matrix4f frustum, Matrix4f projection, CallbackInfo callback, @Local PoseStack poseStack) {
-        if (camera.isDetached() || !ClientDragonRenderer.renderInFirstPerson || !DragonStateProvider.isDragon(camera.getEntity())) {
+        if (!(camera.getEntity() instanceof Player player)) {
             return;
         }
 
-        final GeoBone neckAndHead = ClientDragonRenderer.dragonModel.getAnimationProcessor().getBone("Neck");
+        if (camera.isDetached() || !ClientDragonRenderer.renderInFirstPerson || !DragonStateProvider.isDragon(player)) {
+            return;
+        }
 
-        if (neckAndHead != null) {
-            neckAndHead.setHidden(true);
+        if (RenderingUtils.isFirstPerson(player) && BetterCombat.isAttacking(player)) {
+            // Causes the weapon to be rendered twice towards the end of the animation
+            // Currently unclear as to why
+            return;
         }
 
         EntityRenderDispatcher manager = Minecraft.getInstance().getEntityRenderDispatcher();
@@ -70,12 +77,21 @@ public abstract class LevelRendererMixin {
 
         MultiBufferSource immediate = renderBuffers.bufferSource();
         manager.setRenderHitBoxes(false);
-        renderEntity(camera.getEntity(), x, y, z, deltaTracker.getGameTimeDeltaPartialTick(false), poseStack, immediate);
+        renderEntity(player, x, y, z, deltaTracker.getGameTimeDeltaPartialTick(false), poseStack, immediate);
         manager.setRenderHitBoxes(renderHitboxes);
+    }
 
-        if (neckAndHead != null) {
-            neckAndHead.setHidden(false);
-        }
+    @Inject(method = "renderLevel", at = @At(value = "HEAD"))
+    public void renderLevel(DeltaTracker deltaTracker, boolean renderBlockOutline, Camera camera, GameRenderer renderer, LightTexture light, Matrix4f frustum, Matrix4f projection, CallbackInfo callback) {
+        // Attempt to generate skins for all players right at the start of level rendering, to prevent any sort of issues from injecting into the renderer in the middle of its work
+        // TODO :: when flagging a skin for recompilation set some sort of global flag so that we don't need to iterate through this map every tick to check
+        ClientDragonRenderer.process(dragon -> {
+            Player player = dragon.getPlayer();
+
+            if (player != null && DragonStateProvider.getData(player).needsSkinRecompilation()) {
+                DragonSurvivalClient.dragonRenderer.getTextureLocation(dragon);
+            }
+        });
     }
 
     @Shadow

@@ -7,6 +7,7 @@
       0.85
     ]
   },
+  "bettercombat_weapon_offset": 8.0,
   "crouch_height_ratio": 0.5,
   "default_icon": "dragonsurvival:textures/gui/custom/body/north/default.png",
   "emotes": "dragonsurvival:default_emotes",
@@ -28,7 +29,12 @@
       "operation": "add_multiplied_total"
     },
     {
-      "amount": 0.5,
+      "amount": 1.0,
+      "attribute": "minecraft:generic.safe_fall_distance",
+      "operation": "add_value"
+    },
+    {
+      "amount": 0.8,
       "attribute": "neoforge:swim_speed",
       "operation": "add_value"
     },

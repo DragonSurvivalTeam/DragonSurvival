@@ -34,7 +34,7 @@
   },
   "start_pool": "dragonsurvival:treasure_angry_sea_spawn_pool",
   "size": 4,
-  "terrain_adaptation": "encapsulate",
+  "terrain_adaptation": "none",
   "start_height": {
     "absolute": 70
   },

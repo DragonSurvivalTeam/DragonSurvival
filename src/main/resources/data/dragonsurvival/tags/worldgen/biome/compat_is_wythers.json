@@ -1,0 +1,23 @@
+{
+	"neoforge:conditions": [
+        {
+            "type": "neoforge:mod_loaded",
+            "modid": "wythers"
+        }
+    ],
+	"replace": false,
+	"values": [
+        {
+            "id": "#c:is_underground",
+            "required": false
+        },
+		{
+            "id": "wythers:is_underground",
+            "required": false
+        },
+        {
+            "id": "#forge:is_underground",
+            "required": false
+        }
+	]
+}

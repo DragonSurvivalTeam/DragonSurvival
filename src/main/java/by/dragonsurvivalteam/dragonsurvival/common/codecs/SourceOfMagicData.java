@@ -16,7 +16,8 @@ import java.util.List;
 public record SourceOfMagicData(List<Consumable> consumables, List<ResourceKey<DragonSpecies>> applicableSpecies) {
     public static final Codec<SourceOfMagicData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Consumable.CODEC.listOf().fieldOf("consumables").forGetter(SourceOfMagicData::consumables),
-            // TODO :: holderset?
+            // 'HolderSet' can't really be used here since the holder cannot be retrieved when the item is being registered
+            // TODO :: Find another point where it would make sense to add this components to new instances of the item
             ResourceKey.codec(DragonSpecies.REGISTRY).listOf().fieldOf("applicable_species").forGetter(SourceOfMagicData::applicableSpecies)
     ).apply(instance, SourceOfMagicData::new));
 

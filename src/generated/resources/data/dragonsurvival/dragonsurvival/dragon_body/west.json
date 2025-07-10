@@ -12,6 +12,7 @@
       0.9
     ]
   },
+  "bettercombat_weapon_offset": -3.0,
   "can_hide_wings": false,
   "crouch_height_ratio": 0.83333333,
   "default_icon": "dragonsurvival:textures/gui/custom/body/west/default.png",
@@ -32,6 +33,11 @@
       "amount": -0.15,
       "attribute": "minecraft:generic.movement_speed",
       "operation": "add_multiplied_total"
+    },
+    {
+      "amount": 1.0,
+      "attribute": "minecraft:generic.safe_fall_distance",
+      "operation": "add_value"
     },
     {
       "amount": -0.2,

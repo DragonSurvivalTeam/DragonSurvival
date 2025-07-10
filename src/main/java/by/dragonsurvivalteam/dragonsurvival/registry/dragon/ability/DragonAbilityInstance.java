@@ -9,6 +9,8 @@ import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncDisableAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Activation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.PassiveActivation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.ActivationTrigger;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
@@ -80,19 +82,13 @@ public class DragonAbilityInstance {
     }
 
     public void tick(final Player dragon) {
-        if (dragon.hasInfiniteMaterials()) {
-            cooldown = NO_COOLDOWN;
-        } else {
-            cooldown = Math.max(NO_COOLDOWN, cooldown - 1);
-        }
-
         if (dragon instanceof ServerPlayer serverPlayer) {
             boolean isAutomaticallyDisabled = value().usageBlocked().map(condition -> condition.test(Condition.abilityContext(serverPlayer))).orElse(false);
 
             if (isAutomaticallyDisabled && !this.isAutomaticallyDisabled) {
                 setDisabled(serverPlayer, true, false);
                 PacketDistributor.sendToPlayer(serverPlayer, new SyncDisableAbility(ability.getKey(), true, false));
-            } else if (!isAutomaticallyDisabled && this.isAutomaticallyDisabled) {
+            } else if (!isAutomaticallyDisabled && (this.isAutomaticallyDisabled || /* Need to re-activate passive abilities */ isPassive() && !isActive && !isManuallyDisabled)) {
                 setDisabled(serverPlayer, false, false);
                 PacketDistributor.sendToPlayer(serverPlayer, new SyncDisableAbility(ability.getKey(), false, false));
             }
@@ -153,7 +149,7 @@ public class DragonAbilityInstance {
             ability.value().actions().forEach(action -> action.tick(serverPlayer, this, currentTick));
         }
 
-        if (value().activation().type() == Activation.Type.SIMPLE) {
+        if (value().activation().type() == Activation.Type.SIMPLE || isPassive() && value().activation().getCooldown(level) > 0) {
             stopCasting(dragon);
         }
     }
@@ -163,7 +159,7 @@ public class DragonAbilityInstance {
         value().activation().playEndAnimation(dragon);
 
         MagicData magic = MagicData.getData(dragon);
-        magic.stopCasting(dragon);
+        magic.stopCasting(dragon, this);
     }
 
     public float getContinuousManaCost(final ManaCost.ManaCostType manaCostType) {
@@ -220,7 +216,7 @@ public class DragonAbilityInstance {
     public void setActive(final Player player, boolean isActive) {
         this.isActive = isActive;
 
-        if (player instanceof ServerPlayer serverPlayer && !isActive && isPassive()) {
+        if (!isActive && player instanceof ServerPlayer serverPlayer && value().activation() instanceof PassiveActivation passive && passive.trigger().type() == ActivationTrigger.TriggerType.CONSTANT) {
             // Also makes sure to remove any affects that are applied by the ability
             ability.value().actions().forEach(action -> action.remove(serverPlayer, this));
         }
@@ -233,10 +229,18 @@ public class DragonAbilityInstance {
     public void release(final Player dragon) {
         currentTick = 0;
 
-        if (dragon.hasInfiniteMaterials()) {
+        if (dragon.hasInfiniteMaterials() && !(this.isPassive() && this.getCooldown() > 0)) {
             cooldown = NO_COOLDOWN;
         } else {
             cooldown = ability.value().activation().getCooldown(level);
+        }
+    }
+
+    public void tickCooldown(final Player entity) { // TODO :: sync cooldown to client (maybe only relevant for passive?)
+        if (entity.hasInfiniteMaterials() && !(this.isPassive() && this.getCooldown() > 0)) {
+            cooldown = NO_COOLDOWN;
+        } else {
+            cooldown = Math.max(NO_COOLDOWN, cooldown - 1);
         }
     }
 
@@ -302,22 +306,15 @@ public class DragonAbilityInstance {
      * Afterward its active status will be updated
      */
     public void setDisabled(final Player player, boolean isDisabled, boolean isManual) {
-        boolean wasEnabled = isEnabled();
-
         if (isManual) {
             this.isManuallyDisabled = isDisabled;
         } else {
             this.isAutomaticallyDisabled = isDisabled;
         }
 
-        if (wasEnabled == isEnabled()) {
-            return;
-        }
-
-        if (!isEnabled()) {
+        if (isActive && !isEnabled()) {
             setActive(player, false);
-        }
-        if (isPassive()) {
+        } else if (!isActive && isEnabled() && isPassive()) {
             // Passive abilities need to be re-activated automatically
             setActive(player, true);
         }

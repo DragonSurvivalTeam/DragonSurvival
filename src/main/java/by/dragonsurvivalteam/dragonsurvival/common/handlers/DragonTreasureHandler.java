@@ -37,12 +37,12 @@ public class DragonTreasureHandler {
     @ConfigOption(side = ConfigSide.SERVER, category = "treasure", key = "treasure_health_regeneration")
     public static Boolean IS_REGENERATION_HEALTH = true;
 
-    @ConfigRange(min = 1, max = /* 1 hour */ 72_000)
+    @ConfigRange(min = 0)
     @Translation(key = "treasure_health_regeneration_rate", type = Translation.Type.CONFIGURATION, comments = "The time in ticks (20 ticks = 1 second) it takes to recover 1 health while sleeping on treasure")
     @ConfigOption(side = ConfigSide.SERVER, category = "treasure", key = "treasure_health_regeneration_rate")
     public static Integer REGENERATION_RATE = Functions.secondsToTicks(14);
 
-    @ConfigRange(min = 1, max = /* 1 hour */ 72_000)
+    @ConfigRange(min = 0)
     @Translation(key = "nearby_treasure_rate_reduction", type = Translation.Type.CONFIGURATION, comments = {
             "The amount of ticks (20 ticks = 1 second) each nearby treasure reduces the health regeneration time by",
             "(i.e. it increases the rate of regeneration)"
@@ -53,7 +53,7 @@ public class DragonTreasureHandler {
     @ConfigRange(min = 1, max = /* 16 x 9 x 16 hardcoded radius */ 2304)
     @Translation(key = "max_treasure_for_rate_reduction", type = Translation.Type.CONFIGURATION, comments = {
             "The maximum amount of additional treasure that can affect the health regeneration reduction",
-            "Only treasure within a 16 x 9 x 16 radius is considered"
+            "Only treasures within a 16 x 9 x 16 radius are considered"
     })
     @ConfigOption(side = ConfigSide.SERVER, category = "treasure", key = "max_treasure_for_rate_reduction")
     public static Integer MAX_TREASURES = 240;

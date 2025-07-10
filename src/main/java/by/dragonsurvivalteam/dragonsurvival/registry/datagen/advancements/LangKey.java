@@ -6,8 +6,8 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 public class LangKey {
     // --- Root --- //
 
-    @Translation(comments = "Dragon Survival")
-    protected static final String ROOT = Translation.Type.ADVANCEMENT.wrap("root");
+    @Translation(type = Translation.Type.ADVANCEMENT, comments = "Dragon Survival")
+    protected static final String ROOT = "root";
 
     // --- Parent: Root --- //
 
@@ -23,7 +23,7 @@ public class LangKey {
     @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Place a Dragon Altar to change the species or appearance of a dragon.")
     protected static final String PLACE_ALTAR = "place_altar";
 
-    @Translation(type = Translation.Type.ADVANCEMENT, comments = "Path Choice")
+    @Translation(type = Translation.Type.ADVANCEMENT, comments = "Here be Villagers")
     @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Find a villager and decide their fate.")
     protected static final String PATH_CHOICE = "path_choice";
 
@@ -77,9 +77,25 @@ public class LangKey {
     @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Build yourself a hoard of 240 treasure blocks and experience regeneration while you sleep!")
     protected static final String SLEEP_ON_MASSIVE_HOARD = "sleep_on_massive_hoard";
 
-    @Translation(type = Translation.Type.ADVANCEMENT, comments = "Echoes of Elder")
+    @Translation(type = Translation.Type.ADVANCEMENT, comments = "Echoes of The Elder")
     @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Find the burial place of the Elder Dragon's children.")
     protected static final String FIND_BONES = "find_bones";
+
+    @Translation(type = Translation.Type.ADVANCEMENT, comments = "Slumbering Dragons")
+    @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Find any dragon statue in The Overworld.")
+    protected static final String FIND_OVERWORLD_STRUCTURES = "find_overworld_structures";
+
+    @Translation(type = Translation.Type.ADVANCEMENT, comments = "Peaceful Flames")
+    @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Find any dragon statue in The Nether.")
+    protected static final String FIND_NETHER_STRUCTURES = "find_nether_structures";
+
+    @Translation(type = Translation.Type.ADVANCEMENT, comments = "Don't jump into The Void!")
+    @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Venture forth into The End as a dragon")
+    protected static final String FIND_END_PLATFORM = "find_end_platform";
+
+    @Translation(type = Translation.Type.ADVANCEMENT, comments = "Draconic Secrets")
+    @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Find a special structure in The End to get the Dragon Soul or Spin ability.")
+    protected static final String FIND_END_STRUCTURES = "find_end_structures";
 
     @Translation(type = Translation.Type.ADVANCEMENT, comments = "Knowledge is Power")
     @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Place any Dragon Beacon on top of the Memory Block.")
@@ -208,6 +224,10 @@ public class LangKey {
     @Translation(type = Translation.Type.ADVANCEMENT, comments = "Marked")
     @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "After a lot of killing, the dragon hunters are interested in you.")
     protected static final String DARK_AFFECTED_BY_HUNTER_OMEN = "dark/affected_by_hunter_omen";
+
+    @Translation(type = Translation.Type.ADVANCEMENT, comments = "Villager Pillager")
+    @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Put your infamy to use by demanding tribute from the Villagers.")
+    protected static final String DARK_STEAL_FROM_VILLAGER = "dark/steal_from_villager";
 
     @Translation(type = Translation.Type.ADVANCEMENT, comments = "Path of Destruction")
     @Translation(type = Translation.Type.ADVANCEMENT_DESCRIPTION, comments = "Tear a Dark Key from a hunter knight. Blood will have to be spilled.")

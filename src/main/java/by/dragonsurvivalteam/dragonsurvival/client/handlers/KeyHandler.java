@@ -33,9 +33,25 @@ public class KeyHandler {
     }
 
     @SubscribeEvent
-    public static void toggleSummonBehaviour(final InputEvent.Key event) {
-        Pair<Player, DragonStateHandler> data = checkAndGet(event, Keybind.TOGGLE_SUMMON_BEHAVIOUR, true);
+    public static void handleKey(final InputEvent.Key event) {
+        handleKeybinds(InputConstants.getKey(event.getKey(), event.getScanCode()), event.getAction());
+    }
 
+    @SubscribeEvent
+    public static void handleMouse(final InputEvent.MouseButton.Pre event) {
+        handleKeybinds(InputConstants.Type.MOUSE.getOrCreate(event.getButton()), event.getAction());
+    }
+
+    private static void handleKeybinds(final InputConstants.Key input, final int action) {
+        ClientFlightHandler.toggleWings(KeyHandler.checkAndGet(input, action, Keybind.TOGGLE_FLIGHT, true));
+        ClientFlightHandler.triggerSpin(KeyHandler.checkAndGet(input, action, Keybind.SPIN_ABILITY, true));
+        DragonDestructionHandler.toggleDestructionMode(KeyHandler.checkAndGet(input, action, Keybind.TOGGLE_LARGE_DRAGON_DESTRUCTION, true));
+
+        toggleSummonBehaviour(checkAndGet(input, action, Keybind.TOGGLE_SUMMON_BEHAVIOUR, false));
+        DragonDestructionHandler.toggleMultiMining(KeyHandler.checkAndGet(input, action, Keybind.TOGGLE_MULTI_MINING, false));
+    }
+
+    public static void toggleSummonBehaviour(@Nullable final Pair<Player, DragonStateHandler> data) {
         if (data == null) {
             return;
         }
@@ -60,8 +76,8 @@ public class KeyHandler {
      * - The pressed key does not match the passed keybind <br>
      * - The player is null or the player is not a dragon
      */
-    public static @Nullable Pair<Player, DragonStateHandler> checkAndGet(final InputEvent.Key event, final Keybind keybind, boolean dragonOnly) {
-        if (Minecraft.getInstance().screen != null || event.getAction() != InputConstants.PRESS || !keybind.isDown(InputConstants.getKey(event.getKey(), event.getScanCode()))) {
+    public static @Nullable Pair<Player, DragonStateHandler> checkAndGet(final InputConstants.Key input, final int action, final Keybind keybind, boolean dragonOnly) {
+        if (Minecraft.getInstance().screen != null || action != InputConstants.PRESS || !keybind.matches(input)) {
             return null;
         }
 

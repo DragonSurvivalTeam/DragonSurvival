@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.screens;
 
-import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.AbilityButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.LevelButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.TabButton;
@@ -206,11 +205,10 @@ public class DragonAbilityScreen extends Screen {
         //noinspection DataFlowIssue -> player is present
         MagicData data = MagicData.getData(minecraft.player);
         List<DragonAbilityInstance> actives = data.getActiveAbilities();
-        List<DragonAbilityInstance> upgradablePassives = data.getPassiveAbilities(UpgradeType.IS_MANUAL);
-        List<DragonAbilityInstance> constantPassives = data.getPassiveAbilities(UpgradeType.IS_MANUAL.negate());
+        List<DragonAbilityInstance> upgradablePassives = data.filterPassiveByUpgrade(UpgradeType.IS_MANUAL);
+        List<DragonAbilityInstance> constantPassives = data.filterPassiveByUpgrade(UpgradeType.IS_MANUAL.negate());
 
-        //noinspection DataFlowIssue -> access is expected to be present
-        DragonSurvival.PROXY.getAccess().registryOrThrow(DragonAbility.REGISTRY).getTag(DSDragonAbilityTags.ORDER).ifPresent(order -> {
+        minecraft.player.registryAccess().registryOrThrow(DragonAbility.REGISTRY).getTag(DSDragonAbilityTags.ORDER).ifPresent(order -> {
             //noinspection unchecked -> cast is valid
             List<Holder<DragonAbility>> list = ((HolderSet$NamedAccess<DragonAbility>) order).dragonSurvival$contents();
             Comparator<DragonAbilityInstance> comparator = Comparator.comparingInt(instance -> {

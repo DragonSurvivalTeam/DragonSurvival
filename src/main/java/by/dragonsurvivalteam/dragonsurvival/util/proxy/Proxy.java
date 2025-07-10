@@ -11,6 +11,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.common.util.FakePlayer;
 import org.jetbrains.annotations.Nullable;
 
 public interface Proxy {
@@ -28,15 +29,15 @@ public interface Proxy {
 
     default void stopTickingSound(final ResourceLocation id) { /* Nothing to do */ }
 
-    default void setCurrentAbilityAnimation(int playerId, Pair<AbilityAnimation, AnimationType> animation) { /* Nothing to do */ }
+    default void setCurrentAbilityAnimation(final Player player, final Pair<AbilityAnimation, AnimationType> animation) { /* Nothing to do */ }
 
-    default void stopEmote(int playerId, DragonEmote emote) { /* Nothing to do */ }
+    default void stopEmote(final Player player, final DragonEmote emote) { /* Nothing to do */ }
 
-    default void beginPlayingEmote(int playerId, DragonEmote emote) { /* Nothing to do */ }
+    default void beginPlayingEmote(final Player player, final DragonEmote emote) { /* Nothing to do */ }
 
-    default void stopAllEmotes(int playerId) { /* Nothing to do */ }
+    default void stopAllEmotes(final Player player) { /* Nothing to do */ }
 
-    default boolean isPlayingEmote(int playerId, DragonEmote emote) {
+    default boolean isPlayingEmote(final Player player, final DragonEmote emote) {
         return false;
     }
 
@@ -44,8 +45,20 @@ public interface Proxy {
         return 1;
     }
 
+    default float getPartialTick() {
+        return 1;
+    }
+
     /** This will always return 'false' when in production */
     default boolean isOnRenderThread() {
+        return false;
+    }
+
+    default boolean isFakePlayer(final Player player) {
+        return player instanceof FakePlayer;
+    }
+
+    default boolean dragonRenderingWasCancelled(final Player player) {
         return false;
     }
 

@@ -25,6 +25,7 @@ import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -205,8 +206,13 @@ public class RenderingUtils {
 
     public static boolean hasTexture(final ResourceLocation resource) {
         DynamicTexture missing = MissingTextureAtlasSprite.getTexture();
-        AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(resource, missing);
-        return texture != missing;
+        if (resource != null) {
+            // TODO: Why does this not fetch the texture properly if you don't call this method at least once first?
+            Minecraft.getInstance().getTextureManager().getTexture(resource);
+            AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(resource, missing);
+            return texture != missing;
+        }
+        return false;
     }
 
     public static void setShaderColor(int color) {
@@ -267,7 +273,11 @@ public class RenderingUtils {
     }
 
     public static float getNearPlane(float original) {
-        //noinspection DataFlowIssue -> player is present
+        // There are some cases where mods call this function when the player is still null. We can't provide anything valid in this situation anyways, so just give the original and don't crash.
+        if (Minecraft.getInstance().player == null) {
+            return original;
+        }
+
         float scale = Minecraft.getInstance().player.getScale();
 
         if (scale < 1) {
@@ -276,6 +286,10 @@ public class RenderingUtils {
         }
 
         return original;
+    }
+
+    public static boolean isFirstPerson(final Player player) {
+        return player == Minecraft.getInstance().player && Minecraft.getInstance().options.getCameraType().isFirstPerson();
     }
 
     @SubscribeEvent

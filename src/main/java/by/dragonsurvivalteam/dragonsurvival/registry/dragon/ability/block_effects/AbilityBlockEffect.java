@@ -55,6 +55,9 @@ public interface AbilityBlockEffect {
             event.register(REGISTRY_KEY, DragonSurvival.res("block_break"), () -> BlockBreakEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("particle"), () -> ParticleEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("run_function"), () -> RunFunctionEffect.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("use_item"), () -> UseItemOnBlockEffect.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("explosion"), () -> ExplodeBlockEffect.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("block_harvest"), () -> BlockHarvestEffect.CODEC);
         }
     }
 }

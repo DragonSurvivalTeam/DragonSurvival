@@ -3,10 +3,8 @@ package by.dragonsurvivalteam.dragonsurvival.client.skins;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.datapacks.AncientDatapack;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
-import com.mojang.blaze3d.Blaze3D;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ResourceLocationException;
@@ -26,8 +24,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
@@ -36,7 +36,11 @@ public class DragonSkins {
     public static final HashMap<String, CompletableFuture<ResourceLocation>> SKIN_CACHE = new HashMap<>();
     public static final HashMap<String, CompletableFuture<ResourceLocation>> GLOW_CACHE = new HashMap<>();
 
-    public static NetSkinLoader skinLoader = new GithubSkinLoaderAPI();
+    public static final List<Supplier<NetSkinLoader>> SKIN_LOADERS = List.of(GithubSkinLoader::new, GiteeSkinLoader::new);
+
+    public static NetSkinLoader skinLoader = new GithubSkinLoader();
+
+    public static final List<ResourceKey<DragonStage>> validStages = List.of(DragonStages.newborn, DragonStages.young, DragonStages.adult);
 
     private static final ArrayList<String> hasFailedFetch = new ArrayList<>();
     private static double lastSkinFetchAttemptTime;
@@ -54,7 +58,12 @@ public class DragonSkins {
     }
 
     public static @Nullable ResourceLocation getPlayerSkin(String playerName, ResourceKey<DragonStage> dragonStage) {
-        String skinKey = playerName + "_" + dragonStage.location().getPath();
+        String skinKey;
+        if (validStages.contains(dragonStage)) {
+             skinKey = playerName + "_" + dragonStage.location().getPath();
+        } else {
+            skinKey = playerName + "_" + DragonStages.adult.location().getPath();
+        }
 
         if (SKIN_CACHE.containsKey(skinKey) && SKIN_CACHE.get(skinKey) != null) {
             if (SKIN_CACHE.get(skinKey).isDone()) {
@@ -108,31 +117,25 @@ public class DragonSkins {
         String[] text = ArrayUtils.addAll(new String[]{playerKey}, extra);
 
         String resourceName = StringUtils.join(text, "_");
-        ResourceLocation resourceLocation = ResourceLocation.fromNamespaceAndPath(MODID, resourceName.toLowerCase(Locale.ENGLISH));
+        ResourceLocation resource;
 
-        try (SimpleTexture simpleTexture = new SimpleTexture(resourceLocation)) {
-            if (Minecraft.getInstance().getTextureManager().getTexture(resourceLocation, simpleTexture) != simpleTexture) {
-                return resourceLocation;
+        try {
+            resource = ResourceLocation.fromNamespaceAndPath(MODID, resourceName.toLowerCase(Locale.ENGLISH));
+        } catch (ResourceLocationException exception) {
+            DragonSurvival.LOGGER.error(exception);
+            return null;
+        }
+
+        try (SimpleTexture simpleTexture = new SimpleTexture(resource)) {
+            if (Minecraft.getInstance().getTextureManager().getTexture(resource, simpleTexture) != simpleTexture) {
+                return resource;
             }
+        }
+        if (USER_SKINS.isEmpty()) {
+            init();
         }
 
         HashMap<String, SkinObject> playerSkinMap = USER_SKINS.getOrDefault(stage, null);
-
-        // Wait an increasing amount of time depending on the number of failed attempts
-        if (playerSkinMap == null && lastSkinFetchAttemptTime + numSkinFetchAttempts < Blaze3D.getTime() && numSkinFetchAttempts < 10) {
-            DragonSurvival.LOGGER.warn("Customs skins are not yet fetched, re-fetching...");
-            init();
-
-            numSkinFetchAttempts++;
-            lastSkinFetchAttemptTime = Blaze3D.getTime();
-
-            playerSkinMap = USER_SKINS.getOrDefault(stage, null);
-
-            if (playerSkinMap == null) {
-                DragonSurvival.LOGGER.error("Custom skins could not be fetched");
-            }
-        }
-
         String skinName = StringUtils.join(ArrayUtils.addAll(new String[]{playerName}, extra), "_");
         SkinObject skin = null;
 
@@ -140,34 +143,25 @@ public class DragonSkins {
             skin = playerSkinMap.getOrDefault(skinName, null);
         }
 
-        // Only use the API to get the names (for the random button)
-        if (skinLoader instanceof GithubSkinLoader gitHubOld) {
-            try (InputStream imageStream = gitHubOld.querySkinImage(skinName, stage)) {
-                return readSkin(imageStream, resourceLocation);
-            } catch (IOException exception) {
-                return fetchSkinResource(playerName, stage, extra, exception, playerKey);
+        if (skin == null) {
+            if (!validStages.contains(stage)){
+                DragonSurvival.LOGGER.debug("Failed to get skin information for custom stage {} for {}. Falling back to using adult stage.", stage, playerName);
+                return fetchSkinFile(playerName, DragonStages.adult, extra);
+            }else{
+                return fetchSkinResource(extra, playerKey, null);
             }
         }
 
-        if (skin == null) {
-            return null;
-        }
-
         try (InputStream imageStream = skinLoader.querySkinImage(skin)) {
-            return readSkin(imageStream, resourceLocation);
-        } catch (IOException exception) {
-            return fetchSkinResource(playerName, stage, extra, exception, playerKey);
+            return readSkin(imageStream, resource);
+        } catch (Exception exception) {
+            return fetchSkinResource(extra, playerKey, exception);
         }
     }
 
-    private static @Nullable ResourceLocation fetchSkinResource(final String playerName, final ResourceKey<DragonStage> stage, final String[] extra, final IOException exception, final String playerKey) {
-        if (stage == AncientDatapack.ancient) {
-            DragonSurvival.LOGGER.warn("Failed to get skin information for ancient stage: [{}]. Falling back to using adult stage.", exception.getMessage());
-            return fetchSkinFile(playerName, DragonStages.adult, extra);
-        }
-
+    private static @Nullable ResourceLocation fetchSkinResource(final String[] extra, final String playerKey, @Nullable Exception exception) {
         boolean isNormalSkin = extra == null || extra.length == 0;
-        handleSkinFetchError(playerKey, isNormalSkin);
+        handleSkinFetchError(playerKey, isNormalSkin, exception);
         return null;
     }
 
@@ -184,11 +178,16 @@ public class DragonSkins {
         return location;
     }
 
-    private static void handleSkinFetchError(final String playerKey, boolean isNormalSkin) {
+    private static void handleSkinFetchError(final String playerKey, boolean isNormalSkin, @Nullable Exception exception) {
         // A failed attempt for fetching a glow skin should not result in no longer attempting to fetch the normal skin
         if (isNormalSkin) {
             if (!hasFailedFetch.contains(playerKey)) {
-                DragonSurvival.LOGGER.info("Custom skin for user {} doesn't exist", playerKey);
+                if (exception != null){
+                    DragonSurvival.LOGGER.info("Custom skin for user {} doesn't exist.  If you do not have a skin registered under your username that has been uploaded to GitHub, ignore this message.", playerKey, exception);
+                }
+                else{
+                    DragonSurvival.LOGGER.info("Custom skin for user {} doesn't exist.  If you do not have a skin registered under your username that has been uploaded to GitHub, ignore this message.", playerKey);
+                }
                 hasFailedFetch.add(playerKey);
             }
         }
@@ -219,39 +218,34 @@ public class DragonSkins {
         init(false);
     }
 
-    public static void init(boolean force) {
+    public static synchronized void init(boolean force) {
         if (initialized && !force) {
             return;
         }
-
-        initialized = true;
-        Collection<SkinObject> skins;
         invalidateSkins();
-        String currentLanguage = Minecraft.getInstance().getLanguageManager().getSelected();
-        NetSkinLoader first, second;
-
-        if (currentLanguage.equals("zh_cn")) {
-            first = new GitcodeSkinLoader();
-            second = new GithubSkinLoader();
-        } else {
-            first = new GithubSkinLoader();
-            second = new GitcodeSkinLoader();
+        for (Supplier<NetSkinLoader> loader : SKIN_LOADERS) {
+            NetSkinLoader testLoader = loader.get();
+            if (testLoader.ping()) {
+                skinLoader = testLoader;
+                break;
+            }
         }
-
-        if (!first.ping()) {
-            if (!second.ping()) {
+        if (skinLoader == null) {
+            skinLoader = new GithubSkinLoader();
+            DragonSurvival.LOGGER.warn("Unable to connect to skin database.");
+            return;
+        }
+        try {
+            Collection<SkinObject> skins = skinLoader.querySkinList();
+            if (skins == null) {
                 DragonSurvival.LOGGER.warn("Unable to connect to skin database.");
                 return;
             }
-
-            first = second;
-        }
-
-        skinLoader = first;
-        skins = skinLoader.querySkinList();
-
-        if (skins != null) {
             parseSkinObjects(skins);
+            initialized = true;
+        }
+        catch (IOException e) {
+            DragonSurvival.LOGGER.warn("Unable to connect to skin database.", e);
         }
     }
 

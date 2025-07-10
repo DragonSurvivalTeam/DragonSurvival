@@ -15,8 +15,6 @@ import java.util.List;
 
 @Mixin(ServerLevel.class)
 public abstract class ServerLevelMixin {
-    @Shadow public abstract List<ServerPlayer> players();
-
     /** {@link PlayerWakeUpEvent} exists but for that we'd have to properly fake 'isSleeping' */
     @Inject(method = "wakeUpAllPlayers", at = @At(value = "HEAD"))
     private void dragonSurvival$applyEffectsAfterSleep(final CallbackInfo callback) {
@@ -30,4 +28,7 @@ public abstract class ServerLevelMixin {
             }
         });
     }
+
+    @Shadow
+    public abstract List<ServerPlayer> players();
 }

@@ -11,6 +11,7 @@ import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.phys.Vec3;
@@ -28,6 +29,7 @@ public record EntityCheckPredicate(Optional<Type> checkFor) implements EntitySub
         LIVING_ENTITY("living_entity"),
         ENEMY("enemy"),
         TAMED("tamed"),
+        ANIMAL("animal"),
         ITEM("item"),
         EXPERIENCE_ORB("experience_orb");
 
@@ -53,6 +55,7 @@ public record EntityCheckPredicate(Optional<Type> checkFor) implements EntitySub
                 case LIVING_ENTITY -> entity instanceof LivingEntity;
                 case ENEMY -> entity instanceof Enemy || entity.getType().getCategory() == MobCategory.MONSTER;
                 case TAMED -> entity instanceof TamableAnimal tamable && tamable.isTame();
+                case ANIMAL -> entity instanceof Animal;
                 case ITEM -> entity instanceof ItemEntity;
                 case EXPERIENCE_ORB -> entity instanceof ExperienceOrb;
             };

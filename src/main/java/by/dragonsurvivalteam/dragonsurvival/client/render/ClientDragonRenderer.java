@@ -1,13 +1,12 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render;
 
-import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.models.DragonModel;
-import by.dragonsurvivalteam.dragonsurvival.client.skins.DragonSkins;
+import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.DragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
-import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
+import by.dragonsurvivalteam.dragonsurvival.compat.bettercombat.BetterCombat;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.input.Keybind;
@@ -15,7 +14,6 @@ import by.dragonsurvivalteam.dragonsurvival.mixins.client.EntityRendererAccessor
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.LivingRendererAccessor;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncDeltaMovement;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDragonMovement;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
@@ -27,22 +25,16 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.Ar
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.DiscTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.DragonBreathTarget;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.LookingAtTarget;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.Input;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
@@ -51,6 +43,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -63,27 +56,27 @@ import net.neoforged.neoforge.client.event.RenderNameTagEvent;
 import net.neoforged.neoforge.client.event.RenderPlayerEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.TriState;
+import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
-import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.util.RenderUtil;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class ClientDragonRenderer {
+    // FIXME :: remove this completely (currently only used for override texture)
     public static DragonModel dragonModel = new DragonModel();
 
-    /**
-     * Used for inventory rendering - when set to true changed movement data will not be tracked <br>
-     * See {@link ClientDragonRenderer#setDragonMovementData(Player, float)} and {@link DragonModel#applyMolangQueries(AnimationState, double)}
-     */
-    public static boolean isOverridingMovementData = false;
-
+    // FIXME :: figure out at what point it can be called from other threads - that shouldn't happen but it does?
+    //  See: https://github.com/DragonSurvivalTeam/DragonSurvival/issues/763
+    //  (revert back to normal map once this is properly fixed)
     /** Instances used for rendering third-person dragon models */
-    public static final Map<Integer, DragonEntity> PLAYER_DRAGON_MAP = new HashMap<>();
+    private static final Map<Integer, DragonEntity> PLAYER_DRAGON_MAP = new ConcurrentHashMap<>();
 
     @Translation(key = "render_dragon_in_first_person", type = Translation.Type.CONFIGURATION, comments = "If enabled the dragon body will be visible in first person")
     @ConfigOption(side = ConfigSide.CLIENT, category = "rendering", key = "render_dragon_in_first_person")
@@ -116,6 +109,42 @@ public class ClientDragonRenderer {
     @Translation(key = "dragon_name_tags", type = Translation.Type.CONFIGURATION, comments = "If enabled name tags will be shown for dragons")
     @ConfigOption(side = ConfigSide.CLIENT, category = "rendering", key = "dragon_name_tags")
     public static Boolean dragonNameTags = false;
+
+    public static float partialTick = 1;
+
+    public static DragonEntity getOrCreateDragon(final Player player) {
+        return ClientDragonRenderer.PLAYER_DRAGON_MAP.computeIfAbsent(player.getId(), key -> {
+            DragonEntity newDragon = DSEntities.DRAGON.get().create(player.level());
+            //noinspection DataFlowIssue -> dragon should not be null
+            newDragon.playerId = key;
+            return newDragon;
+        });
+    }
+
+    public static @Nullable DragonEntity getDragon(final Player player) {
+        return PLAYER_DRAGON_MAP.get(player.getId());
+    }
+
+    public static void process(final Consumer<DragonEntity> processor) {
+        PLAYER_DRAGON_MAP.values().forEach(processor);
+    }
+
+    @SubscribeEvent
+    public static void removeEntry(final EntityLeaveLevelEvent event) {
+        if (event.getEntity() instanceof Player player) {
+            DragonEntity dragon = PLAYER_DRAGON_MAP.remove(player.getId());
+
+            if (dragon != null) {
+                DragonRenderer.BONE_POSITIONS.remove(dragon.getId());
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void clearEntries(final LevelEvent.Unload event) {
+        PLAYER_DRAGON_MAP.clear();
+        DragonRenderer.BONE_POSITIONS.clear();
+    }
 
     @SubscribeEvent
     public static void renderAbilityHitbox(final RenderLevelStageEvent event) {
@@ -188,218 +217,162 @@ public class ClientDragonRenderer {
         }
     }
 
-    /** Amount of client ticks the player model will not be rendered if the player was recently a dragon (to avoid player model pop-up after respawning) */
-    private static final int MAX_DELAY = 10;
-    private static int renderDelay;
-
-    /** Called for every player */
-    @SubscribeEvent
-    public static void thirdPersonPreRender(final RenderPlayerEvent.Pre renderPlayerEvent) {
-        if (!(renderPlayerEvent.getEntity() instanceof AbstractClientPlayer player)) {
+    @SubscribeEvent(receiveCanceled = true)
+    public static void renderDragon(final RenderPlayerEvent.Pre event) {
+        if (!(event.getEntity() instanceof AbstractClientPlayer player)) {
             return;
         }
 
-        Minecraft minecraft = Minecraft.getInstance();
         DragonStateHandler handler = DragonStateProvider.getData(player);
 
-        if (!PLAYER_DRAGON_MAP.containsKey(player.getId())) {
-            DragonEntity dummyDragon = DSEntities.DRAGON.get().create(player.level());
-            //noinspection DataFlowIssue -> dragon should not be null
-            dummyDragon.playerId = player.getId();
-            PLAYER_DRAGON_MAP.put(player.getId(), dummyDragon);
+        if (!handler.isDragon()) {
+            return;
         }
 
-        if (handler.isDragon()) {
-            if (player == minecraft.player) {
-                renderDelay = MAX_DELAY;
-            }
+        DragonEntity dragon = getOrCreateDragon(player);
+        dragon.renderingWasCancelled = event.isCanceled();
 
-            renderPlayerEvent.setCanceled(true);
-            if (!isOverridingMovementData) {
-                setDragonMovementData(player, Minecraft.getInstance().getTimer().getRealtimeDeltaTicks());
-            }
-            float partialRenderTick = renderPlayerEvent.getPartialTick();
-            float yaw = player.getViewYRot(partialRenderTick);
+        if (event.isCanceled()) {
+            return;
+        }
 
-            ResourceLocation customTexture;
-
-            if (handler.getModel().equals(DragonBody.DEFAULT_MODEL)) {
-                customTexture = DragonSkins.getPlayerSkin(player, handler.stageKey());
-            } else {
-                customTexture = null;
-            }
-
-            PoseStack poseStack = renderPlayerEvent.getPoseStack();
-
-            try {
-                poseStack.pushPose();
-
-                Vector3f lookVector = getModelOffset(player, partialRenderTick);
-                poseStack.translate(-lookVector.x(), lookVector.y(), -lookVector.z());
-
-                // Make sure to update our modifiers on the clientside based on the partial visual size
-                float scale = (float) handler.getVisualScale(player, partialRenderTick);
-                poseStack.scale(scale, scale, scale);
-
-                EntityRenderer<? extends Player> playerRenderer = renderPlayerEvent.getRenderer();
-                int eventLight = renderPlayerEvent.getPackedLight();
-                final MultiBufferSource renderTypeBuffer = renderPlayerEvent.getMultiBufferSource();
-
-                if (dragonNameTags && player != minecraft.player) {
-                    //noinspection UnstableApiUsage -> intentional
-                    RenderNameTagEvent renderNameplateEvent = new RenderNameTagEvent(player, player.getDisplayName(), playerRenderer, poseStack, renderTypeBuffer, eventLight, partialRenderTick);
-                    NeoForge.EVENT_BUS.post(renderNameplateEvent);
-
-                    if (renderNameplateEvent.canRender().isTrue() || renderNameplateEvent.canRender().isDefault() && ((LivingRendererAccessor) playerRenderer).dragonSurvival$callShouldShowName(player)) {
-                        ((EntityRendererAccessor) playerRenderer).dragonSurvival$renderNameTag(player, renderNameplateEvent.getContent(), poseStack, renderTypeBuffer, eventLight, partialRenderTick);
-                    }
-                }
-
-                MovementData movement = MovementData.getData(player);
-                poseStack.mulPose(Axis.YN.rotationDegrees((float) movement.bodyYaw));
-
-                // What will be rendered in place of the human player model
-                DragonEntity playerAsDragon = PLAYER_DRAGON_MAP.get(player.getId());
-                EntityRenderer<? super DragonEntity> dragonRenderer = minecraft.getEntityRenderDispatcher().getRenderer(playerAsDragon);
-                dragonModel.setOverrideTexture(customTexture);
-                boolean isPlayerGliding = ServerFlightHandler.isGliding(player);
-                Entity playerVehicle = player.getVehicle();
-
-                if (isPlayerGliding || (player.isPassenger() && DragonStateProvider.isDragon(playerVehicle) && ServerFlightHandler.isGliding((Player) playerVehicle))) {
-                    float upRot;
-
-                    if (isPlayerGliding) {
-                        upRot = Mth.clamp((float) (player.getDeltaMovement().y * 20), -80, 80);
-                    } else {
-                        upRot = Mth.clamp((float) (playerVehicle.getDeltaMovement().y * 20), -80, 80);
-                    }
-
-                    playerAsDragon.prevXRot = Mth.lerp(0.1F, playerAsDragon.prevXRot, upRot);
-                    playerAsDragon.prevXRot = Mth.clamp(playerAsDragon.prevXRot, -80, 80);
-
-                    movement.prevXRot = playerAsDragon.prevXRot;
-
-                    if (Float.isNaN(playerAsDragon.prevXRot)) {
-                        playerAsDragon.prevXRot = upRot;
-                    }
-
-                    if (Float.isNaN(playerAsDragon.prevXRot)) {
-                        playerAsDragon.prevXRot = 0;
-                    }
-
-                    poseStack.mulPose(Axis.XN.rotationDegrees(playerAsDragon.prevXRot));
-
-                    float yRot;
-                    Vec3 deltaVel;
-
-                    if (isPlayerGliding) {
-                        yRot = player.getViewYRot(1f);
-                        deltaVel = player.getDeltaMovement();
-                    } else {
-                        yRot = playerVehicle.getViewYRot(1f);
-                        deltaVel = playerVehicle.getDeltaMovement();
-                    }
-
-                    // Factor for interpolating to the target bank angle
-                    final float ROLL_VEL_LERP_FACTOR = 0.1F;
-                    // Minimum velocity to begin banking
-                    final double ROLL_VEL_INFLUENCE_MIN = 0.5D;
-                    // Maximum velocity at which point the bank angle has full effect
-                    final double ROLL_VEL_INFLUENCE_MAX = 2.0D;
-
-                    // Minimum view-velocity delta to start rolling
-                    final float ROLL_MIN_DELTA_DEG = 5;
-                    // Equivalent maximum, after which the bank angle is maximized
-                    final float ROLL_MAX_DELTA_DEG = 90;
-                    // Maximum roll angle
-                    final float ROLL_MAX_DEG = 60;
-                    // Exponent for targetRollNormalized (applied after normalizing relative to ROLL_MAX_DEG)
-                    // > 1: soft, starts banking slowly, increases rapidly with higher delta
-                    // < 1: sensitive, starts banking even when the difference is tiny, softer towards the limits
-                    final double ROLL_EXP = 0.7;
-
-                    float targetRollNormalized;
-
-                    // Note that we're working with the HORIZONTAL move delta
-                    if (deltaVel.horizontalDistanceSqr() > ROLL_VEL_INFLUENCE_MIN * ROLL_VEL_INFLUENCE_MIN) {
-                        float velAngle = (float) Math.atan2(-deltaVel.x, deltaVel.z) * Mth.RAD_TO_DEG;
-                        float viewToVelDeltaDeg = Mth.degreesDifference(velAngle, yRot);
-
-                        // Raw target roll, normalized
-                        targetRollNormalized = (float) Functions.deadzoneNormalized(viewToVelDeltaDeg, ROLL_MIN_DELTA_DEG, ROLL_MAX_DELTA_DEG);
-
-                        // Scale via exponent (still normalized)
-                        targetRollNormalized = Math.copySign((float) Math.pow(Math.abs(targetRollNormalized), ROLL_EXP), targetRollNormalized);
-
-                        // Scale by velocity influence
-                        float velInfluence = (float) Functions.inverseLerpClamped(
-                                deltaVel.horizontalDistance(),
-                                ROLL_VEL_INFLUENCE_MIN,
-                                ROLL_VEL_INFLUENCE_MAX
-                        );
-
-                        targetRollNormalized *= velInfluence;
-                    } else {
-                        targetRollNormalized = 0;
-                    }
-
-                    float targetRollDeg = targetRollNormalized * ROLL_MAX_DEG * Mth.DEG_TO_RAD;
-
-                    // NaN/Inf prevention - snap directly
-                    if (!Double.isFinite(playerAsDragon.prevZRot)) {
-                        playerAsDragon.prevZRot = targetRollDeg;
-                    } else {
-                        playerAsDragon.prevZRot = Mth.lerp(ROLL_VEL_LERP_FACTOR, playerAsDragon.prevZRot, targetRollDeg);
-                    }
-
-                    movement.prevXRot = playerAsDragon.prevXRot;
-                    movement.prevZRot = playerAsDragon.prevZRot;
-
-                    poseStack.mulPose(Axis.ZP.rotation(playerAsDragon.prevZRot));
-                } else {
-                    movement.prevZRot = 0;
-                    movement.prevXRot = 0;
-                }
-                if (player != minecraft.player || !Minecraft.getInstance().options.getCameraType().isFirstPerson() || !isPlayerGliding || renderFirstPersonFlight) {
-                    playerAsDragon.currentlyRenderedPose = poseStack.last();
-                    dragonRenderer.render(playerAsDragon, yaw, partialRenderTick, poseStack, renderTypeBuffer, eventLight);
-                }
-
-                if (!player.isSpectator()) {
-                    int combinedOverlayIn = LivingEntityRenderer.getOverlayCoords(player, 0);
-                    if (player.hasEffect(DSEffects.TRAPPED)) {
-                        float bolasScale = player.getEyeHeight();
-                        if (handler.isDragon()) {
-                            bolasScale = (float) DragonSizeHandler.calculateDragonEyeHeight(handler, player);
-                        }
-                        BolasOnPlayerRenderer.renderBolas(eventLight, combinedOverlayIn, renderTypeBuffer, poseStack, bolasScale);
-                    }
-                }
-            } catch (Throwable throwable) {
-                DragonSurvival.LOGGER.error("A problem occurred while rendering a dragon in third person", throwable);
-            } finally {
-                poseStack.popPose();
-            }
+        if (BetterCombat.isAttacking(player)) {
+            event.getRenderer().getModel().setAllVisible(false);
         } else {
-            if (renderDelay > 0 && player == minecraft.player) {
-                renderDelay--;
-                renderPlayerEvent.setCanceled(true);
-            } else {
-                ((EntityRendererAccessor) renderPlayerEvent.getRenderer()).dragonSurvival$setShadowRadius(0.5F);
+            event.setCanceled(true);
+        }
+
+        partialTick = event.getPartialTick();
+
+        if (dragonNameTags && player != Minecraft.getInstance().player) {
+            //noinspection UnstableApiUsage -> intentional
+            RenderNameTagEvent renderNameplateEvent = new RenderNameTagEvent(player, player.getDisplayName(), event.getRenderer(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight(), partialTick);
+            NeoForge.EVENT_BUS.post(renderNameplateEvent);
+
+            if (renderNameplateEvent.canRender().isTrue() || renderNameplateEvent.canRender().isDefault() && ((LivingRendererAccessor) event.getRenderer()).dragonSurvival$callShouldShowName(player)) {
+                ((EntityRendererAccessor) event.getRenderer()).dragonSurvival$renderNameTag(player, renderNameplateEvent.getContent(), event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight(), partialTick);
             }
         }
-        dragonModel.setOverrideTexture(null);
+
+        if (player != Minecraft.getInstance().player || !Minecraft.getInstance().options.getCameraType().isFirstPerson() || !ServerFlightHandler.isGliding(player) || renderFirstPersonFlight) {
+            if (!dragon.isInInventory) {
+                ClientDragonRenderer.setDragonMovementData(player, Minecraft.getInstance().getTimer().getRealtimeDeltaTicks());
+            }
+
+            MovementData movement = MovementData.getData(player);
+            handleFlightMovement(player, dragon, movement, partialTick);
+
+            Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(dragon).render(dragon, player.getViewYRot(partialTick), partialTick, event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight());
+        }
     }
 
-    public static Vector3f getModelOffset(final Player player, float partialRenderTick) {
+    private static void handleFlightMovement(final Player player, final DragonEntity dragon, final MovementData movement, final float partialTick) {
+        boolean isPlayerGliding = ServerFlightHandler.isGliding(player);
+        Entity playerVehicle = player.getVehicle();
+
+        if (isPlayerGliding || (player.isPassenger() && DragonStateProvider.isDragon(playerVehicle) && ServerFlightHandler.isGliding((Player) playerVehicle))) {
+            float upRot;
+
+            if (isPlayerGliding) {
+                upRot = Mth.clamp((float) (player.getDeltaMovement().y * 20), -80, 80);
+            } else {
+                upRot = Mth.clamp((float) (playerVehicle.getDeltaMovement().y * 20), -80, 80);
+            }
+
+            dragon.prevXRot = Mth.lerp(0.1F, dragon.prevXRot, upRot);
+            dragon.prevXRot = Mth.clamp(dragon.prevXRot, -80, 80);
+
+            movement.prevXRot = dragon.prevXRot;
+
+            if (Float.isNaN(dragon.prevXRot)) {
+                dragon.prevXRot = upRot;
+            }
+
+            if (Float.isNaN(dragon.prevXRot)) {
+                dragon.prevXRot = 0;
+            }
+
+            float yRot;
+            Vec3 deltaVel;
+
+            if (isPlayerGliding) {
+                yRot = player.getViewYRot(partialTick);
+                deltaVel = player.getDeltaMovement();
+            } else {
+                yRot = playerVehicle.getViewYRot(partialTick);
+                deltaVel = playerVehicle.getDeltaMovement();
+            }
+
+            // Factor for interpolating to the target bank angle
+            final float ROLL_VEL_LERP_FACTOR = 0.1F;
+            // Minimum velocity to begin banking
+            final double ROLL_VEL_INFLUENCE_MIN = 0.5D;
+            // Maximum velocity at which point the bank angle has full effect
+            final double ROLL_VEL_INFLUENCE_MAX = 2.0D;
+
+            // Minimum view-velocity delta to start rolling
+            final float ROLL_MIN_DELTA_DEG = 5;
+            // Equivalent maximum, after which the bank angle is maximized
+            final float ROLL_MAX_DELTA_DEG = 90;
+            // Maximum roll angle
+            final float ROLL_MAX_DEG = 60;
+            // Exponent for targetRollNormalized (applied after normalizing relative to ROLL_MAX_DEG)
+            // > 1: soft, starts banking slowly, increases rapidly with higher delta
+            // < 1: sensitive, starts banking even when the difference is tiny, softer towards the limits
+            final double ROLL_EXP = 0.7;
+
+            float targetRollNormalized;
+
+            // Note that we're working with the HORIZONTAL move delta
+            if (deltaVel.horizontalDistanceSqr() > ROLL_VEL_INFLUENCE_MIN * ROLL_VEL_INFLUENCE_MIN) {
+                float velAngle = (float) Math.atan2(-deltaVel.x, deltaVel.z) * Mth.RAD_TO_DEG;
+                float viewToVelDeltaDeg = Mth.degreesDifference(velAngle, yRot);
+
+                // Raw target roll, normalized
+                targetRollNormalized = (float) Functions.deadzoneNormalized(viewToVelDeltaDeg, ROLL_MIN_DELTA_DEG, ROLL_MAX_DELTA_DEG);
+
+                // Scale via exponent (still normalized)
+                targetRollNormalized = Math.copySign((float) Math.pow(Math.abs(targetRollNormalized), ROLL_EXP), targetRollNormalized);
+
+                // Scale by velocity influence
+                float velInfluence = (float) Functions.inverseLerpClamped(deltaVel.horizontalDistance(), ROLL_VEL_INFLUENCE_MIN, ROLL_VEL_INFLUENCE_MAX);
+                targetRollNormalized *= velInfluence;
+            } else {
+                targetRollNormalized = 0;
+            }
+
+            float targetRollDeg = targetRollNormalized * ROLL_MAX_DEG * Mth.DEG_TO_RAD;
+
+            // NaN/Inf prevention - snap directly
+            if (!Double.isFinite(dragon.prevZRot)) {
+                dragon.prevZRot = targetRollDeg;
+            } else {
+                dragon.prevZRot = Mth.lerp(ROLL_VEL_LERP_FACTOR, dragon.prevZRot, targetRollDeg);
+            }
+
+            movement.prevXRot = dragon.prevXRot;
+            movement.prevZRot = dragon.prevZRot;
+        } else {
+            movement.prevZRot = 0;
+            movement.prevXRot = 0;
+        }
+    }
+
+    public static Vec3 getModelOffset(final DragonEntity dragon, float partialTicks) {
+        Player player = dragon.getPlayer();
+
+        if (player == null) {
+            return Vec3.ZERO;
+        }
+
         float angle = -(float) MovementData.getData(player).bodyYaw * ((float) Math.PI / 180);
         float x = Mth.sin(angle);
         float z = Mth.cos(angle);
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
-        float scale = (float) handler.getVisualScale(player, partialRenderTick) * (float) handler.body().value().scalingProportions().scaleMultiplier();
+        float scale = (float) handler.getVisualScale(player, partialTicks) * (float) handler.body().value().scalingProportions().scaleMultiplier();
 
-        return new Vector3f(x * scale, 0, z * scale);
+        return new Vec3(x * scale, 0, z * scale);
     }
 
     public static Vector3f getModelShadowOffset(final Player player, float partialRenderTick) {
@@ -442,7 +415,7 @@ public class ClientDragonRenderer {
             }
 
             // Get new body yaw & head angles
-            var newAngles = BodyAngles.calculateNext(player, movement, realtimeDeltaTick);
+            BodyAngles newAngles = BodyAngles.calculateNext(player, movement, realtimeDeltaTick);
             movement.set(newAngles.bodyYaw, newAngles.headYaw, newAngles.headPitch, moveVector);
         }
     }
@@ -484,11 +457,6 @@ public class ClientDragonRenderer {
                 event.setCanceled(true);
             }
         });
-    }
-
-    @SubscribeEvent
-    public static void clearDragonReferences(final LevelEvent.Unload worldEvent) {
-        PLAYER_DRAGON_MAP.clear();
     }
 
     private record BodyAngles(double bodyYaw, double headPitch, double headYaw) {
@@ -556,48 +524,37 @@ public class ClientDragonRenderer {
 
             // Head yaw is relative to body
             // Get pos delta since last tick - not scaled by realtimeDeltaTick
-            var posDelta = new Vec3(player.getX() - player.xo, player.getY() - player.yo, player.getZ() - player.zo);
+            Vec3 posDelta = new Vec3(player.getX() - player.xo, player.getY() - player.yo, player.getZ() - player.zo);
 
-            var headAngles = calculateNextHeadAngles(realtimeDeltaTick, movement, viewXRot, viewYRot);
-
-            return new BodyAngles(
-                    calculateNextBodyYaw(realtimeDeltaTick, player, movement, posDelta, viewYRot),
-                    headAngles.getA(),
-                    headAngles.getB()
-            );
+            Tuple<Double, Double> headAngles = calculateNextHeadAngles(realtimeDeltaTick, movement, viewXRot, viewYRot);
+            return new BodyAngles(calculateNextBodyYaw(realtimeDeltaTick, player, movement, posDelta, viewYRot), headAngles.getA(), headAngles.getB());
         }
 
-        private static double calculateNextBodyYaw(
-                float realtimeDeltaTick,
-                Player player,
-                MovementData movement,
-                Vec3 posDelta,
-                float viewYRot) {
-
+        private static double calculateNextBodyYaw(float realtimeDeltaTick, Player player, MovementData movement, Vec3 posDelta, float viewYRot) {
             // Handle bodyYaw
             double bodyYaw = movement.bodyYaw;
             boolean isFreeLook = movement.isFreeLook;
-            boolean wasFreeLook = movement.wasFreeLook; // TODO: what's this for?
             boolean isFirstPerson = movement.isFirstPerson;
             boolean hasPosDelta = posDelta.horizontalDistanceSqr() > MOVE_DELTA_EPSILON * MOVE_DELTA_EPSILON;
 
-            var rawInput = movement.desiredMoveVec;
-            var hasMoveInput = rawInput.lengthSqr() > MovementData.INPUT_EPSILON * MovementData.INPUT_EPSILON;
-            boolean isInputBack = rawInput.y < 0;
+            Vec3 rawInput = movement.desiredMoveVec;
+            Vec2 horizontalMovement = new Vec2((float) rawInput.x, (float) rawInput.z);
+            boolean hasMoveInput = horizontalMovement.lengthSquared() > MovementData.INPUT_EPSILON * MovementData.INPUT_EPSILON;
+            boolean isInputBack = horizontalMovement.y < 0;
 
             if (hasMoveInput) {
-
                 // When providing move input, turn the body towards the input direction
-                var targetAngle = Math.toDegrees(Math.atan2(-rawInput.x, rawInput.z)) + viewYRot;
+                double targetAngle = Math.toDegrees(Math.atan2(-horizontalMovement.x, horizontalMovement.y)) + viewYRot;
 
                 // If in first person and moving back when not flying, flip the target angle
                 // Checks dragon flight or creative/spectator flight
-                var isFlying = ServerFlightHandler.isFlying(player) || player.getAbilities().flying;
+                boolean isFlying = ServerFlightHandler.isFlying(player) || player.getAbilities().flying;
+
                 if (isFirstPerson && !isFreeLook && isInputBack && !isFlying) {
                     targetAngle += 180;
                 }
 
-                var factor = player.onGround() ? MOVE_ALIGN_FACTOR : MOVE_ALIGN_FACTOR_AIR;
+                double factor = player.onGround() ? MOVE_ALIGN_FACTOR : MOVE_ALIGN_FACTOR_AIR;
 
                 // In first person, force the body to turn away from the view direction if possible
                 // This prevents issues with the body yaw and angle limit fighting, never letting the body
@@ -612,81 +569,57 @@ public class ClientDragonRenderer {
 
                 // +Z: 0 deg; -X: 90 deg
                 // Move angle that the body will try to align to
-                var posDeltaAngle = Math.toDegrees(Math.atan2(-posDelta.x, posDelta.z));
+                double posDeltaAngle = Math.toDegrees(Math.atan2(-posDelta.x, posDelta.z));
 
-                var factor = MOVE_ALIGN_FACTOR_AIR * MOVE_ALIGN_FACTOR_AIR_PASSIVE_MUL;
-                double deltaMagFactor = Math.min(
-                        1,
-                        (posDelta.horizontalDistance() - MOVE_DELTA_EPSILON) / MOVE_DELTA_FULL_EFFECT_MIN_MAG
-                );
+                double factor = MOVE_ALIGN_FACTOR_AIR * MOVE_ALIGN_FACTOR_AIR_PASSIVE_MUL;
+                double deltaMagFactor = Math.min(1, (posDelta.horizontalDistance() - MOVE_DELTA_EPSILON) / MOVE_DELTA_FULL_EFFECT_MIN_MAG);
                 factor *= deltaMagFactor;
 
-                bodyYaw = RenderUtil.lerpYaw(
-                        realtimeDeltaTick * factor,
-                        bodyYaw,
-                        posDeltaAngle);
+                bodyYaw = RenderUtil.lerpYaw(realtimeDeltaTick * factor, bodyYaw, posDeltaAngle);
             }
 
-            {
-                // Limit body angle based on view direction and PoV
-                var angleLimit = 0D;
-                var factor = 0D;
-                var airMul = 1D;
-                if (isFirstPerson) {
-                    if (isFreeLook) {
-                        angleLimit = BODY_ANGLE_LIMIT_FP_FREE;
-                        factor = BODY_ANGLE_LIMIT_FP_FREE_SOFTNESS;
-                        airMul = BODY_ANGLE_LIMIT_FP_FREE_SOFTNESS_AIR_MUL;
-                    } else {
-                        angleLimit = BODY_ANGLE_LIMIT_FP;
-                        factor = BODY_ANGLE_LIMIT_FP_SOFTNESS;
-                        airMul = BODY_ANGLE_LIMIT_FP_SOFTNESS_AIR_MUL;
-                    }
+            // Limit body angle based on view direction and PoV
+            double angleLimit;
+            double factor;
+            double airMul;
+
+            if (isFirstPerson) {
+                if (isFreeLook) {
+                    angleLimit = BODY_ANGLE_LIMIT_FP_FREE;
+                    factor = BODY_ANGLE_LIMIT_FP_FREE_SOFTNESS;
+                    airMul = BODY_ANGLE_LIMIT_FP_FREE_SOFTNESS_AIR_MUL;
                 } else {
-                    if (isFreeLook) {
-                        angleLimit = BODY_ANGLE_LIMIT_TP_FREE;
-                        factor = BODY_ANGLE_LIMIT_TP_SOFTNESS_FREE;
-                        airMul = BODY_ANGLE_LIMIT_TP_SOFTNESS_AIR_MUL_FREE;
-                    } else {
-                        angleLimit = BODY_ANGLE_LIMIT_TP;
-                        factor = BODY_ANGLE_LIMIT_TP_SOFTNESS;
-                        airMul = BODY_ANGLE_LIMIT_TP_SOFTNESS_AIR_MUL;
-                    }
+                    angleLimit = BODY_ANGLE_LIMIT_FP;
+                    factor = BODY_ANGLE_LIMIT_FP_SOFTNESS;
+                    airMul = BODY_ANGLE_LIMIT_FP_SOFTNESS_AIR_MUL;
                 }
-                if (!player.onGround()) {
-                    factor *= airMul;
+            } else {
+                if (isFreeLook) {
+                    angleLimit = BODY_ANGLE_LIMIT_TP_FREE;
+                    factor = BODY_ANGLE_LIMIT_TP_SOFTNESS_FREE;
+                    airMul = BODY_ANGLE_LIMIT_TP_SOFTNESS_AIR_MUL_FREE;
+                } else {
+                    angleLimit = BODY_ANGLE_LIMIT_TP;
+                    factor = BODY_ANGLE_LIMIT_TP_SOFTNESS;
+                    airMul = BODY_ANGLE_LIMIT_TP_SOFTNESS_AIR_MUL;
                 }
-                bodyYaw = Functions.limitAngleDeltaSoft(bodyYaw, viewYRot, angleLimit, realtimeDeltaTick * factor);
             }
-            return bodyYaw;
+
+            if (!player.onGround()) {
+                factor *= airMul;
+            }
+
+            return Functions.limitAngleDeltaSoft(bodyYaw, viewYRot, angleLimit, realtimeDeltaTick * factor);
         }
 
-        private static Tuple<Double, Double> calculateNextHeadAngles(
-                float realtimeDeltaTick,
-                MovementData movement,
-                float viewXRot,
-                float viewYRot) {
+        private static Tuple<Double, Double> calculateNextHeadAngles(float realtimeDeltaTick, MovementData movement, float viewXRot, float viewYRot) {
             // Yaw is relative to the body
-            double headYawTarget = Functions.angleDifference(
-                    viewYRot,
-                    movement.bodyYaw
-            );
-            double headYaw = Functions.lerpAngleAwayFrom(
-                    realtimeDeltaTick * HEAD_YAW_FACTOR,
-                    movement.headYaw,
-                    headYawTarget,
-                    180
-            );
+            double headYawTarget = Functions.angleDifference(viewYRot, movement.bodyYaw);
+            double headYaw = Functions.lerpAngleAwayFrom(realtimeDeltaTick * HEAD_YAW_FACTOR, movement.headYaw, headYawTarget, 180);
 
             // Pitch is also technically relative, since the body doesn't have pitch
-            double headPitch = Mth.lerp(
-                    realtimeDeltaTick * HEAD_PITCH_FACTOR,
-                    movement.headPitch,
-                    viewXRot
-            );
-
+            double headPitch = Mth.lerp(realtimeDeltaTick * HEAD_PITCH_FACTOR, movement.headPitch, viewXRot);
             return new Tuple<>(headPitch, headYaw);
         }
     }
-
 }

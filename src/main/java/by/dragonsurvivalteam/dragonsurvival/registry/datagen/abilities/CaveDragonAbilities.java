@@ -336,7 +336,7 @@ public class CaveDragonAbilities {
                                         new SpawnParticles(ParticleTypes.MYCELIUM, SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.1f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.1f)), ConstantFloat.of(0.05f)),
                                         LevelBasedValue.constant(50)
                                 )),
-                        TargetingMode.ALLIES_AND_SELF
+                        TargetingMode.NON_ENEMIES
                 ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -370,7 +370,7 @@ public class CaveDragonAbilities {
                                         new SpawnParticles(ParticleTypes.LAVA, SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.1f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.1f)), ConstantFloat.of(0.1f)),
                                         LevelBasedValue.constant(20)
                                 )
-                        ), TargetingMode.ALLIES_AND_SELF
+                        ), TargetingMode.ALL
                 ), LevelBasedValue.constant(25)), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -415,7 +415,7 @@ public class CaveDragonAbilities {
 
     private static void registerPassiveAbilities(final BootstrapContext<DragonAbility> context) {
         context.register(CAVE_MAGIC, new DragonAbility(
-                new PassiveActivation(Optional.empty()),
+                PassiveActivation.DEFAULT,
                 Optional.of(new ExperiencePointsUpgrade(10, LevelBasedValue.perLevel(36))),
                 Optional.empty(),
                 List.of(
@@ -462,7 +462,7 @@ public class CaveDragonAbilities {
         ));
 
         context.register(CAVE_ATHLETICS, new DragonAbility(
-                new PassiveActivation(Optional.empty()),
+                PassiveActivation.DEFAULT,
                 Optional.of(new ExperiencePointsUpgrade(5, LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -483,7 +483,7 @@ public class CaveDragonAbilities {
         ));
 
         context.register(CONTRAST_SHOWER, new DragonAbility(
-                new PassiveActivation(Optional.empty()),
+                PassiveActivation.DEFAULT,
                 Optional.of(new ExperiencePointsUpgrade(8, LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -508,7 +508,7 @@ public class CaveDragonAbilities {
         ));
 
         context.register(BURN, new DragonAbility(
-                new PassiveActivation(Optional.empty()),
+                PassiveActivation.DEFAULT,
                 Optional.of(new ExperiencePointsUpgrade(4, LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -526,7 +526,7 @@ public class CaveDragonAbilities {
         ));
 
         context.register(CAVE_CLAWS_AND_TEETH, new DragonAbility(
-                new PassiveActivation(Optional.empty()),
+                PassiveActivation.DEFAULT,
                 Optional.of(new DragonGrowthUpgrade(4, LevelBasedValue.lookup(List.of(0f, 25f, 40f, 60f), LevelBasedValue.perLevel(15)))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -553,7 +553,7 @@ public class CaveDragonAbilities {
         ));
 
         context.register(CAVE_WINGS, new DragonAbility(
-                new PassiveActivation(Optional.empty()),
+                PassiveActivation.DEFAULT,
                 Optional.of(new ConditionUpgrade(List.of(Condition.thisEntity(EntityCondition.flightWasGranted(true)).build()), false)),
                 // Disable when marked by the ender dragon
                 Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
@@ -569,7 +569,7 @@ public class CaveDragonAbilities {
         ));
 
         context.register(CAVE_SPIN, new DragonAbility(
-                new PassiveActivation(Optional.empty()),
+                PassiveActivation.DEFAULT,
                 Optional.of(new ConditionUpgrade(List.of(Condition.thisEntity(EntityCondition.spinWasGranted(true)).build()), false)),
                 // Disable when marked by the ender dragon
                 Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
@@ -585,7 +585,7 @@ public class CaveDragonAbilities {
         ));
 
         context.register(FIRE_IMMUNITY, new DragonAbility(
-                new PassiveActivation(Optional.empty()),
+                PassiveActivation.DEFAULT,
                 Optional.empty(),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -604,7 +604,7 @@ public class CaveDragonAbilities {
         ));
 
         context.register(LAVA_SWIMMING, new DragonAbility(
-                new PassiveActivation(Optional.empty()),
+                PassiveActivation.DEFAULT,
                 Optional.empty(),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(

@@ -1,6 +1,5 @@
 package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 
-import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.GrowthItem;
@@ -20,7 +19,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-@EventBusSubscriber(modid = DragonSurvival.MODID)
+@EventBusSubscriber
 public class DragonGrowthHandler {
     @Translation(comments = "Natural growth is §cinactive§r")
     private static final String INACTIVE = Translation.Type.GUI.wrap("message.natural_growth_inactive");
@@ -33,6 +32,8 @@ public class DragonGrowthHandler {
 
     @Translation(comments = "You have reached the smallest growth")
     private static final String REACHED_SMALLEST = Translation.Type.GUI.wrap("system.reached_smallest");
+
+    private static final int INTERVAL = Functions.secondsToTicks(1);
 
     @SubscribeEvent
     public static void onItemUse(final PlayerInteractEvent.RightClickItem event) {
@@ -98,30 +99,30 @@ public class DragonGrowthHandler {
             return;
         }
 
-        DragonStateHandler data = DragonStateProvider.getData(serverPlayer);
+        DragonStateHandler handler = DragonStateProvider.getData(serverPlayer);
 
-        if (!data.isDragon()) {
+        if (!handler.isDragon()) {
             return;
         }
 
-        if (serverPlayer.tickCount % getInterval() == 0) {
-            DragonStage dragonStage = data.stage().value();
-            double oldGrowth = data.getDesiredGrowth();
-            data.setDesiredGrowth(serverPlayer, data.getDesiredGrowth() + dragonStage.ticksToGrowth(getInterval()));
+        if (serverPlayer.tickCount % INTERVAL == 0) {
+            DragonStage dragonStage = handler.stage().value();
+            double oldGrowth = handler.getDesiredGrowth();
+            double desiredGrowth = handler.getDesiredGrowth() + dragonStage.ticksToGrowth(INTERVAL);
 
-            if (oldGrowth == data.getDesiredGrowth() || dragonStage.isNaturalGrowthStopped().map(condition -> condition.matches(serverPlayer.serverLevel(), serverPlayer.position(), serverPlayer)).orElse(false)) {
-                if (data.isGrowing) {
-                    data.isGrowing = false;
+            if (oldGrowth == desiredGrowth || dragonStage.isNaturalGrowthStopped().map(condition -> condition.matches(serverPlayer.serverLevel(), serverPlayer.position(), serverPlayer)).orElse(false)) {
+                if (handler.isGrowing) {
+                    handler.isGrowing = false;
                     PacketDistributor.sendToPlayer(serverPlayer, new SyncGrowthState(false));
                 }
-            } else if (!data.isGrowing) {
-                data.isGrowing = true;
+
+                return;
+            } else if (!handler.isGrowing) {
+                handler.isGrowing = true;
                 PacketDistributor.sendToPlayer(serverPlayer, new SyncGrowthState(true));
             }
-        }
-    }
 
-    public static int getInterval() {
-        return Functions.secondsToTicks(1);
+            handler.setDesiredGrowth(serverPlayer, desiredGrowth);
+        }
     }
 }

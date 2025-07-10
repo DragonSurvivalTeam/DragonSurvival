@@ -34,22 +34,22 @@ public class DragonOreLootModifier extends LootModifier {
     @ConfigOption(side = ConfigSide.SERVER, category = {"drops", "ore"}, key = "require_experience_drop_for_dragon_ore")
     public static boolean requireExperienceDropForDragonOre = true;
 
-    @ConfigRange(min = 0.0, max = 1.0)
+    @ConfigRange(min = 0, max = 1)
     @Translation(key = "human_ore_dust_chance", type = Translation.Type.CONFIGURATION, comments = "Determines the chance (in %) of dust dropping when a human harvests an ore block")
     @ConfigOption(side = ConfigSide.SERVER, category = {"drops", "ore"}, key = "human_ore_dust_chance")
     public static Double humanOreDustChance = 0.1;
 
-    @ConfigRange(min = 0.0, max = 1.0)
+    @ConfigRange(min = 0, max = 1)
     @Translation(key = "dragon_ore_dust_chance", type = Translation.Type.CONFIGURATION, comments = "Determines the chance (in %) of dust dropping when a dragon harvests an ore block")
     @ConfigOption(side = ConfigSide.SERVER, category = {"drops", "ore"}, key = "dragon_ore_dust_chance")
     public static Double dragonOreDustChance = 0.2;
 
-    @ConfigRange(min = 0.0, max = 1.0)
+    @ConfigRange(min = 0, max = 1)
     @Translation(key = "human_ore_bone_chance", type = Translation.Type.CONFIGURATION, comments = "Determines the chance (in %) of bones dropping when a human harvests an ore block")
     @ConfigOption(side = ConfigSide.SERVER, category = {"drops", "ore"}, key = "human_ore_bone_chance")
     public static Double humanOreBoneChance = 0.0;
 
-    @ConfigRange(min = 0.0, max = 1.0)
+    @ConfigRange(min = 0, max = 1)
     @Translation(key = "dragon_ore_bone_chance", type = Translation.Type.CONFIGURATION, comments = "Determines the chance (in %) of bones dropping when a dragon harvests an ore block")
     @ConfigOption(side = ConfigSide.SERVER, category = {"drops", "ore"}, key = "dragon_ore_bone_chance")
     public static Double dragonOreBoneChance = 0.01;

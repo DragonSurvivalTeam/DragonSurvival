@@ -16,6 +16,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -42,14 +43,16 @@ public record DragonBody(
         List<Modifier> modifiers,
         boolean canHideWings,
         ResourceLocation model,
+        TextureSize textureSize,
         ResourceLocation animation,
+        Optional<ResourceLocation> defaultIcon,
         List<String> bonesToHideForToggle,
         Holder<DragonEmoteSet> emotes,
         ScalingProportions scalingProportions,
         double crouchHeightRatio,
         Optional<MountingOffsets> mountingOffsets,
         Optional<BackpackOffsets> backpackOffsets,
-        Optional<ResourceLocation> defaultIcon
+        double betterCombatWeaponOffset
 ) implements AttributeModifierSupplier {
     public static final ResourceKey<Registry<DragonBody>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_body"));
     public static final ResourceLocation DEFAULT_MODEL = DragonSurvival.res("dragon_model");
@@ -60,14 +63,16 @@ public record DragonBody(
             Modifier.CODEC.listOf().fieldOf("modifiers").forGetter(DragonBody::modifiers),
             Codec.BOOL.optionalFieldOf("can_hide_wings", true).forGetter(DragonBody::canHideWings),
             ResourceLocation.CODEC.optionalFieldOf("model", DEFAULT_MODEL).forGetter(DragonBody::model),
+            TextureSize.CODEC.optionalFieldOf("texture_size", new TextureSize(512, 512)).forGetter(DragonBody::textureSize),
             ResourceLocation.CODEC.fieldOf("animation").forGetter(DragonBody::animation),
+            ResourceLocation.CODEC.optionalFieldOf("default_icon").forGetter(DragonBody::defaultIcon),
             Codec.STRING.listOf().optionalFieldOf("bones_to_hide_for_toggle", List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight")).forGetter(DragonBody::bonesToHideForToggle),
             DragonEmoteSet.CODEC.fieldOf("emotes").forGetter(DragonBody::emotes),
             ScalingProportions.CODEC.fieldOf("scaling_proportions").forGetter(DragonBody::scalingProportions),
             MiscCodecs.doubleRange(0, 1).fieldOf("crouch_height_ratio").forGetter(DragonBody::crouchHeightRatio),
             MountingOffsets.CODEC.optionalFieldOf("mounting_offset").forGetter(DragonBody::mountingOffsets),
             BackpackOffsets.CODEC.optionalFieldOf("backpack_offset").forGetter(DragonBody::backpackOffsets),
-            ResourceLocation.CODEC.optionalFieldOf("default_icon").forGetter(DragonBody::defaultIcon)
+            Codec.DOUBLE.optionalFieldOf("bettercombat_weapon_offset", 0d).forGetter(DragonBody::betterCombatWeaponOffset)
     ).apply(instance, instance.stable(DragonBody::new)));
 
     public static final Codec<Holder<DragonBody>> CODEC = RegistryFixedCodec.create(REGISTRY);
@@ -75,7 +80,14 @@ public record DragonBody(
 
     private static final RandomSource RANDOM = RandomSource.create();
 
-    public record ScalingProportions(double width, double height, double eyeHeight, double scaleMultiplier, double shadowMultiplier) {
+    public record TextureSize(int width, int height) {
+        public static final Codec<TextureSize> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.INT.fieldOf("width").forGetter(TextureSize::width),
+                Codec.INT.fieldOf("height").forGetter(TextureSize::height)
+        ).apply(instance, TextureSize::new));
+    }
+
+    public record ScalingProportions(double width, double height, double eyeHeight, double scaleMultiplier, double shadowMultiplier) { // TODO :: scaling_offset
         public static final Codec<ScalingProportions> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 MiscCodecs.doubleRange(0, Double.MAX_VALUE).fieldOf("width").forGetter(ScalingProportions::width),
                 MiscCodecs.doubleRange(0, Double.MAX_VALUE).fieldOf("height").forGetter(ScalingProportions::height),
@@ -160,7 +172,7 @@ public record DragonBody(
         event.dataPackRegistry(REGISTRY, DIRECT_CODEC, DIRECT_CODEC);
     }
 
-    public static boolean bodyIsValidForSpecies(final Holder<DragonBody> body, @Nullable Holder<DragonSpecies> species) {
+    public static boolean bodyIsValidForSpecies(final Holder<DragonBody> body, @Nullable final Holder<DragonSpecies> species) {
         if (species == null || species.value().bodies().size() == 0) {
             return body.value().isDefault();
         } else {
@@ -175,6 +187,28 @@ public record DragonBody(
     public static Holder<DragonBody> getRandomUnlocked(@Nullable final Holder<DragonSpecies> species, List<UnlockableBehavior.BodyEntry> unlockedBodies) {
         List<Holder<DragonBody>> validBodiesForSpecies = unlockedBodies.stream().filter(bodyEntry -> bodyIsValidForSpecies(bodyEntry.body(), species) && bodyEntry.isUnlocked()).map(UnlockableBehavior.BodyEntry::body).toList();
         return validBodiesForSpecies.get(RANDOM.nextInt(validBodiesForSpecies.size()));
+    }
+
+    public static HolderSet<DragonBody> getBodiesForSpecies(@Nullable final HolderLookup.Provider provider, @Nullable final Holder<DragonSpecies> species) {
+        if (species == null || species.value().bodies().size() == 0) {
+            return getDefaultBodies(provider);
+        } else {
+            List<Holder.Reference<DragonBody>> all = ResourceHelper.all(provider, REGISTRY);
+            List<Holder.Reference<DragonBody>> bodiesForSpecies = all.stream()
+                    .filter(body -> species.value().bodies().contains(body))
+                    .toList();
+            return HolderSet.direct(bodiesForSpecies);
+        }
+    }
+
+    private static HolderSet<DragonBody> getDefaultBodies(@Nullable final HolderLookup.Provider provider) {
+        List<Holder.Reference<DragonBody>> all = ResourceHelper.all(provider, REGISTRY);
+
+        List<Holder.Reference<DragonBody>> defaultBodies = all.stream()
+                .filter(body -> body.value().isDefault())
+                .toList();
+
+        return HolderSet.direct(defaultBodies);
     }
 
     public static Holder<DragonBody> getRandom(@Nullable final HolderLookup.Provider provider, @Nullable final Holder<DragonSpecies> species) {

@@ -40,10 +40,10 @@ public class DragonRidingHandler {
             OffsetConfig.create(Tags.EntityTypes.BOATS, new Vec3(0, 0.9, 0))
     );
 
-    @Translation(comments = "You are too big to mount on this dragon. You must be at most %s the scale of the dragon you are trying to ride or smaller, but you are scale %s and the dragon is scale %s.")
+    @Translation(comments = "You are too big to mount on this creature. You must be at most %s the scale of the creature you are trying to ride or smaller, but you are scale %s and the creature is scale %s.")
     private static final String SELF_TOO_BIG = Translation.Type.GUI.wrap("message.self_too_big");
 
-    @Translation(comments = "The dragon you are trying to ride must be crouching for you to mount them.")
+    @Translation(comments = "The creature you are trying to ride must be crouching for you to mount them.")
     private static final String NOT_CROUCHING = Translation.Type.GUI.wrap("message.not_crouching");
 
     public static final int NO_PASSENGER = -1;

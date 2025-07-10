@@ -74,7 +74,6 @@ public class DietEntryProvider extends DataMapProvider {
                 DietEntry.from(Tags.Items.FOODS_RAW_MEAT, new FoodProperties(6, 4, false, 1.2f, Optional.empty(), List.of())),
                 DietEntry.from(Tags.Items.FOODS_BERRY, new FoodProperties(1, 1, false, 1.2f, Optional.empty(), List.of())),
                 DietEntry.from(Tags.Items.MUSHROOMS, new FoodProperties(1, 1, false, 0.8f, Optional.empty(), List.of())),
-                DietEntry.from(Tags.Items.EGGS, new FoodProperties(2, 2, false, 0.8f, Optional.empty(), List.of())),
                 DietEntry.from(Items.SWEET_BERRIES, new FoodProperties(2, 2, false, 0.6f, Optional.empty(), List.of())),
                 DietEntry.from(Items.ROTTEN_FLESH, new FoodProperties(2, 4, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
                 DietEntry.from(Items.SPIDER_EYE, new FoodProperties(6, 8, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
@@ -186,7 +185,6 @@ public class DietEntryProvider extends DataMapProvider {
         return List.of(
                 DietEntry.from(Tags.Items.FOODS_RAW_FISH, new FoodProperties(1, 1, false, 1.2f, Optional.empty(), List.of())),
                 DietEntry.from(Items.KELP, new FoodProperties(1, 1, false, 1.0f, Optional.empty(), List.of())),
-                DietEntry.from(Tags.Items.EGGS, new FoodProperties(2, 2, false, 0.8f, Optional.empty(), List.of())),
                 DietEntry.from(Items.PUFFERFISH, new FoodProperties(8, 8, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
                 DietEntry.from(DSItems.SEA_DRAGON_TREAT.value(), new FoodProperties(4, 8, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),
                 DietEntry.from(DSItems.SEASONED_FISH.value(), new FoodProperties(12, 10, false, DietEntry.DEFAULT_EAT_SECONDS, Optional.empty(), List.of())),

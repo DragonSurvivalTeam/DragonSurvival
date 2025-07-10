@@ -18,7 +18,6 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
@@ -54,7 +53,7 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
     public static boolean TRANSLUCENT_ITEMS_IN_FIRST_PERSON = true;
 
     @Translation(key = "hunter_fix_translucency", type = Translation.Type.CONFIGURATION, comments = "This enables the shader features of fabulous mode which are needed for translucency to work correctly")
-    @ConfigOption(side = ConfigSide.CLIENT, category = {"effects", "hunter"}, key = "hunter_fix_translucency", /* Otherwise the game might crash */ requiresRestart = true)
+    @ConfigOption(side = ConfigSide.CLIENT, category = {"effects", "hunter"}, key = "hunter_fix_translucency", /* Otherwise the game might crash */ gameRestart = true)
     public static boolean FIX_TRANSLUCENCY = true;
 
     public static final int UNMODIFIED = -1;
@@ -134,15 +133,6 @@ public class HunterHandler { // FIXME :: disable shadows in EntityRenderDispatch
         if (instance != null && instance.getEffect().is(DSEffects.HUNTER)) {
             clearHunterStacks(event.getEntity());
         }
-    }
-
-    @SubscribeEvent
-    public static void avoidTarget(final LivingChangeTargetEvent event) {
-        event.getEntity().getExistingData(DSDataAttachments.HUNTER).ifPresent(data -> {
-            if (data.hasMaxHunterStacks()) {
-                event.setNewAboutToBeSetTarget(null);
-            }
-        });
     }
 
     @SubscribeEvent // Does not use the critical event since projectiles owned by the player don't trigger it

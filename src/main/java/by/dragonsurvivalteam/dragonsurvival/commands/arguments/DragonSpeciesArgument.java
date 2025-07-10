@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.commands.arguments;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ManaHandling;
+import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -68,7 +69,11 @@ public class DragonSpeciesArgument implements ArgumentType<Holder<DragonSpecies>
     public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
         List<String> suggestions = new ArrayList<>();
         lookup.listElementIds().forEach(element -> suggestions.add(element.location().toString()));
-        suggestions.add(HUMAN.toString());
+
+        if (!ServerConfig.noHumansAllowed) {
+            suggestions.add(HUMAN.toString());
+        }
+
         return SharedSuggestionProvider.suggest(suggestions, builder);
     }
 }

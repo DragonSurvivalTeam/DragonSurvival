@@ -168,7 +168,7 @@ public class DragonEmoteScreen extends Screen {
 
         HoverButton resetEmotesButton = new HoverButton(startX + 19, startY - 26, 14, 14, 14, 14, RESET_EMOTES_MAIN, RESET_EMOTES_HOVER, button -> {
             //noinspection DataFlowIssue -> player is present
-            DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(Minecraft.getInstance().player.getId());
+            DragonEntity dragon = ClientDragonRenderer.getDragon(Minecraft.getInstance().player);
 
             if (dragon == null) {
                 return;
@@ -223,7 +223,7 @@ public class DragonEmoteScreen extends Screen {
 
     public static void addEmote(String key) {
         //noinspection DataFlowIssue -> player is present
-        DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(Minecraft.getInstance().player.getId());
+        DragonEntity dragon = ClientDragonRenderer.getDragon(Minecraft.getInstance().player);
 
         if (dragon == null) {
             return;
@@ -247,7 +247,16 @@ public class DragonEmoteScreen extends Screen {
     }
 
     @SubscribeEvent
-    public static void onKey(InputEvent.Key keyInputEvent) {
+    public static void onKey(InputEvent.MouseButton.Pre event) {
+        onKey(event.getButton());
+    }
+
+    @SubscribeEvent
+    public static void onKey(InputEvent.Key event) {
+        onKey(event.getKey());
+    }
+
+    private static void onKey(int keyCode) {
         Minecraft instance = Minecraft.getInstance();
         if (instance.player == null || instance.level == null) {
             return;
@@ -258,7 +267,6 @@ public class DragonEmoteScreen extends Screen {
             return;
         }
 
-        int keyCode = keyInputEvent.getKey();
         if (keyCode == NO_KEY) {
             return;
         }

@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon;
 
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
+import by.dragonsurvivalteam.dragonsurvival.compat.bettercombat.BetterCombat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -34,8 +35,13 @@ public class DragonItemRenderLayer extends BlockAndItemGeoLayer<DragonEntity> {
 
     @Override
     protected void renderStackForBone(PoseStack poseStack, GeoBone bone, ItemStack stack, DragonEntity animatable, MultiBufferSource bufferSource, float partialTick, int packedLight, int packedOverlay) {
+        if (BetterCombat.isAttacking(animatable.getPlayer())) {
+            return;
+        }
+
         if (ClientDragonRenderer.renderHeldItem && (animatable.getPlayer() != Minecraft.getInstance().player || !Minecraft.getInstance().options.getCameraType().isFirstPerson())) {
             poseStack.pushPose();
+
             if (bone.getName().equals("RightItem")) {
                 Quaternionf rotation = new Quaternionf();
                 rotation.rotateY((float) Math.toRadians(90));
@@ -50,6 +56,7 @@ public class DragonItemRenderLayer extends BlockAndItemGeoLayer<DragonEntity> {
                 poseStack.rotateAround(rotation, 0, 0, 0);
                 poseStack.scale(0.75F, 0.75F, 0.75F);
             }
+
             super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight, packedOverlay);
             poseStack.popPose();
         }

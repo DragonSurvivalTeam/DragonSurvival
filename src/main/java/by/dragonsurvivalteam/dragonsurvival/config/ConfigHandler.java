@@ -219,7 +219,11 @@ public class ConfigHandler {
             builder.comment(translation.comments());
             builder.translation(translation.type().prefix + translation.key());
 
-            if (configOption.requiresRestart()) {
+            if (configOption.worldRestart()) {
+                builder.worldRestart();
+            }
+
+            if (configOption.gameRestart()) {
                 builder.gameRestart();
             }
 
@@ -228,25 +232,51 @@ public class ConfigHandler {
                 boolean hasRange = range != null;
 
                 // Fill the configuration options (define the key, default value and predicate to check if the option is valid)
-                if (defaultValues instanceof Integer intVal) {
-                    ModConfigSpec.IntValue value = builder.defineInRange(configOption.key(), intVal, hasRange ? (int) range.min() : Integer.MIN_VALUE, hasRange ? (int) range.max() : Integer.MAX_VALUE);
-                    CONFIG_VALUES.put(key, value);
-                } else if (defaultValues instanceof Float floatVal) {
-                    ModConfigSpec.DoubleValue value = builder.defineInRange(configOption.key(), floatVal, hasRange ? range.min() : Float.MIN_VALUE, hasRange ? range.max() : Float.MAX_VALUE);
-                    CONFIG_VALUES.put(key, value);
-                } else if (defaultValues instanceof Long longVal) {
-                    ModConfigSpec.LongValue value = builder.defineInRange(configOption.key(), longVal, hasRange ? (long) range.min() : Long.MIN_VALUE, hasRange ? (long) range.max() : Long.MAX_VALUE);
-                    CONFIG_VALUES.put(key, value);
-                } else if (defaultValues instanceof Double doubleVal) {
-                    ModConfigSpec.DoubleValue value = builder.defineInRange(configOption.key(), doubleVal, hasRange ? range.min() : Double.MIN_VALUE, hasRange ? range.max() : Double.MAX_VALUE);
-                    CONFIG_VALUES.put(key, value);
-                } else if (defaultValues instanceof Boolean boolValue) {
-                    ModConfigSpec.BooleanValue value = builder.define(configOption.key(), (boolean) boolValue);
-                    CONFIG_VALUES.put(key, value);
+                if (defaultValues instanceof Integer value) {
+                    int minValue = Integer.MIN_VALUE;
+                    int maxValue = Integer.MAX_VALUE;
+
+                    if (hasRange) {
+                        minValue = Double.isNaN(range.min()) ? minValue : (int) range.min();
+                        maxValue = Double.isNaN(range.max()) ? maxValue : (int) range.max();
+                    }
+
+                    CONFIG_VALUES.put(key, builder.defineInRange(configOption.key(), value, minValue, maxValue));
+                } else if (defaultValues instanceof Float value) {
+                    double minValue = Float.MIN_VALUE;
+                    double maxValue = Float.MAX_VALUE;
+
+                    if (hasRange) {
+                        minValue = Double.isNaN(range.min()) ? minValue : range.min();
+                        maxValue = Double.isNaN(range.max()) ? maxValue : range.max();
+                    }
+
+                    CONFIG_VALUES.put(key, builder.defineInRange(configOption.key(), value, minValue, maxValue));
+                } else if (defaultValues instanceof Long value) {
+                    long minValue = Long.MIN_VALUE;
+                    long maxValue = Long.MAX_VALUE;
+
+                    if (hasRange) {
+                        minValue = Double.isNaN(range.min()) ? minValue : (long) range.min();
+                        maxValue = Double.isNaN(range.max()) ? maxValue : (long) range.max();
+                    }
+
+                    CONFIG_VALUES.put(key, builder.defineInRange(configOption.key(), value, minValue, maxValue));
+                } else if (defaultValues instanceof Double value) {
+                    double minValue = Double.MIN_VALUE;
+                    double maxValue = Double.MAX_VALUE;
+
+                    if (hasRange) {
+                        minValue = Double.isNaN(range.min()) ? minValue : range.min();
+                        maxValue = Double.isNaN(range.max()) ? maxValue : range.max();
+                    }
+
+                    CONFIG_VALUES.put(key, builder.defineInRange(configOption.key(), value, minValue, maxValue));
+                } else if (defaultValues instanceof Boolean value) {
+                    CONFIG_VALUES.put(key, builder.define(configOption.key(), value.booleanValue()));
                 } else if (field.getType().isEnum()) {
                     //noinspection unchecked,rawtypes -> ignored
-                    ModConfigSpec.EnumValue<?> value = builder.defineEnum(configOption.key(), (Enum) defaultValues, ((Enum<?>) defaultValues).getClass().getEnumConstants());
-                    CONFIG_VALUES.put(key, value);
+                    CONFIG_VALUES.put(key, builder.defineEnum(configOption.key(), (Enum) defaultValues, ((Enum<?>) defaultValues).getClass().getEnumConstants()));
                 } else if (defaultValues instanceof List<?> list) {
                     // By default, lists are not allowed to be empty, so we define the range manually here.
                     ModConfigSpec.Range<Integer> sizeRange = ModConfigSpec.Range.of(0, Integer.MAX_VALUE);
@@ -276,9 +306,10 @@ public class ConfigHandler {
                     }
 
                     CONFIG_VALUES.put(key, configList);
-                } else if (defaultValues instanceof CustomConfig customConfig) {
-                    ModConfigSpec.ConfigValue<String> value = builder.define(configOption.key(), customConfig.convert());
-                    CONFIG_VALUES.put(key, value);
+                } else if (defaultValues instanceof CustomConfig value) {
+                    CONFIG_VALUES.put(key, builder.define(configOption.key(), value.convert()));
+                } else if (defaultValues instanceof String value) {
+                    CONFIG_VALUES.put(key, builder.define(configOption.key(), value));
                 } else {
                     // This will likely run into a 'com.electronwill.nightconfig.core.io.WritingException: Unsupported value type' exception
                     ModConfigSpec.ConfigValue<Object> value = builder.define(configOption.key(), defaultValues);

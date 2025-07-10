@@ -15,7 +15,7 @@ public class Stress extends MobEffect {
     /** See initial value of {@link FoodData#foodLevel} */
     public static final int FULL_FOOD_LEVEL = 20;
 
-    @ConfigRange(min = 0, max = 100)
+    @ConfigRange(min = 0)
     @Translation(key = "stress_exhaustion", type = Translation.Type.CONFIGURATION, comments = "The amount of exhaustion applied every 20 ticks while stressed. Each amplifier level cuts the delay in half.")
     @ConfigOption(side = ConfigSide.SERVER, category = {"effects", "stress"}, key = "stress_exhaustion")
     public static Float stressExhaustion = 1f;

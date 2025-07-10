@@ -103,6 +103,9 @@ public class LangKey {
     @Translation(comments = "§6■ Deals %s %s damage§r")
     public static final String ABILITY_DAMAGE = Translation.Type.GUI.wrap("ability.x_damage");
 
+    @Translation(comments = " (%s additional damage from attributes)")
+    public static final String ABILITY_ADDITIONAL_DAMAGE = Translation.Type.GUI.wrap("ability.additional_damage");
+
     @Translation(comments = "§6■ Cooldown:§r %ss")
     public static final String ABILITY_COOLDOWN = Translation.Type.GUI.wrap("ability.cooldown_of_x");
 

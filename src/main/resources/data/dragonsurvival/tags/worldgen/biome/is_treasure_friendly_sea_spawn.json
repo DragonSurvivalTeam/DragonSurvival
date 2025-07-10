@@ -2,38 +2,26 @@
 	"replace": false,
 	"values": [
         {
+            "id": "#minecraft:is_river",
+            "required": false
+        },
+        {
+            "id": "minecraft:river",
+            "required": false
+        },
+        {
+            "id": "#forge:is_river",
+            "required": false
+        },
+		{
             "id": "#minecraft:is_beach",
             "required": false
         },
         {
-            "id": "minecraft:beach",
-            "required": false
-        },
-        {
-            "id": "minecraft:stony_shore",
-            "required": false
-        },
-        {
-            "id": "#forge:is_beach",
-            "required": false
-        },
-        {
-            "id": "#neoforge:is_beach",
-            "required": false
-        },
-        {
-            "id": "#byg:is_beach",
+            "id": "#byg:is_river",
             "required": false
         },
 		{
-            "id": "#forge:is_snowy",
-            "required": false
-        },
-		{
-            "id": "#neoforge:is_snowy",
-            "required": false
-        },
-        {
             "id": "minecraft:snowy_plains",
             "required": false
         },
@@ -54,27 +42,11 @@
             "required": false
         },
         {
-            "id": "minecraft:frozen_river",
-            "required": false
-        },
-        {
             "id": "minecraft:ice_spikes",
             "required": false
         },
         {
             "id": "minecraft:jagged_peaks",
-            "required": false
-        },
-        {
-            "id": "#forge:is_snowy",
-            "required": false
-        },
-        {
-            "id": "#neoforge:is_snowy",
-            "required": false
-        },
-        {
-            "id": "#byg:is_snowy",
             "required": false
         },
 		{
@@ -94,11 +66,15 @@
             "required": false
         },
         {
-            "id": "#neoforge:is_swamp",
+            "id": "#byg:is_swamp",
             "required": false
         },
         {
-            "id": "#byg:is_swamp",
+            "id": "#wythers:is_swamp",
+            "required": false
+        },
+        {
+            "id": "#dragonsurvival:compat_is_wythers",
             "required": false
         }
 	]

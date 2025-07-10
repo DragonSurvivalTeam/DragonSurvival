@@ -33,9 +33,9 @@ public record SyncEmote(int playerId, DragonEmote emote, boolean stop) implement
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 if (!packet.stop) {
-                    DragonSurvival.PROXY.beginPlayingEmote(player.getId(), packet.emote);
+                    DragonSurvival.PROXY.beginPlayingEmote(player, packet.emote);
                 } else {
-                    DragonSurvival.PROXY.stopEmote(player.getId(), packet.emote);
+                    DragonSurvival.PROXY.stopEmote(player, packet.emote);
                 }
             }
         });

@@ -1,5 +1,19 @@
 {
   "parent": "dragonsurvival:block/skeleton_dragon_skull_2",
+  "display": {
+    "gui": {
+      "rotation": [
+        30,
+        160,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    }
+  },
   "textures": {
     "skeleton_texture": "dragonsurvival:block/skeleton_dragon_5"
   }

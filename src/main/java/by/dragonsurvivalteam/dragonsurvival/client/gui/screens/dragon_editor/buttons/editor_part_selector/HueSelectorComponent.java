@@ -2,8 +2,8 @@ package by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.bu
 
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.DragonEditorScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.generic.HoverButton;
-import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.DragonEditorHandler;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.SkinLayer;
+import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DragonPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonPart;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.LayerSettings;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
@@ -20,7 +20,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.Color;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -68,9 +67,9 @@ public class HueSelectorComponent extends AbstractContainerEventHandler implemen
         this.xSize = xSize;
         this.ySize = ySize;
 
-        settingsSupplier = () -> screen.preset.get(Objects.requireNonNull(screen.stage.getKey())).get().layerSettings.get(layer).get();
+        settingsSupplier = () -> screen.preset.get(screen.stage.getKey()).get().layerSettings.get(layer).get();
         LayerSettings settings = settingsSupplier.get();
-        DragonPart dragonPart = DragonEditorHandler.getDragonPart(layer, settings.partKey, DragonEditorScreen.HANDLER.speciesKey());
+        DragonPart dragonPart = DragonPartLoader.getDragonPart(layer, DragonEditorScreen.HANDLER.speciesKey(), DragonEditorScreen.HANDLER.body(), settings.partKey);
 
         glowing = new ExtendedButton(x + 4, y - 25, 27, 25, Component.empty(), button -> {
             final Function<Boolean, Boolean> setGlowingAction = value -> {

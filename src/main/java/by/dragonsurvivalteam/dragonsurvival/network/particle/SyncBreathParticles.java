@@ -1,17 +1,13 @@
 package by.dragonsurvivalteam.dragonsurvival.network.particle;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
-import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,58 +32,7 @@ public record SyncBreathParticles(
     );
 
     public static void handleClient(final SyncBreathParticles packet, final IPayloadContext context) {
-        context.enqueueWork(() -> {
-            if (!(context.player().level().getEntity(packet.playerId()) instanceof Entity entity)) {
-                return;
-            }
-
-            double positionOffset = 0.6;
-            double speedMultiplier = 20;
-
-            if (entity instanceof Player player) {
-                DragonStateHandler handler = DragonStateProvider.getData(player);
-
-                if (handler.isDragon()) {
-                    positionOffset = handler.getGrowth() / 30;
-                    speedMultiplier = handler.getGrowth();
-                }
-            }
-
-            float yaw = (float) Math.toRadians(-entity.getYRot());
-            float pitch = (float) Math.toRadians(-entity.getXRot());
-            float speed = (float) (packet.speedPerGrowth() * speedMultiplier);
-
-            Vec3 eyePos = entity.getEyePosition();
-            Vec3 lookAngle = entity.getLookAngle();
-            int scale = 1;
-
-            if (entity instanceof Player player && player.getAbilities().flying) {
-                scale = 2;
-            }
-
-            Vec3 position = eyePos.add(lookAngle.scale(scale)).add(0, -0.1 - 0.2 * positionOffset, 0);
-
-            for (int i = 0; i < packet.numParticles(); i++) {
-                spawnParticle(packet.secondaryParticle(), entity, position, yaw, pitch, speed, packet.spread());
-            }
-
-            for (int i = 0; i < packet.numParticles() / 2; i++) {
-                spawnParticle(packet.mainParticle(), entity, position, yaw, pitch, speed, packet.spread());
-            }
-        });
-    }
-
-    private static void spawnParticle(final ParticleOptions particle, final Entity entity, final Vec3 position, final float yaw, final float pitch, final float speed, final float spread) {
-        Vec3 velocity = calculateParticleVelocity((float) (yaw + spread * 2 * (entity.getRandom().nextDouble() * 2 - 1) * 2 * Math.PI), (float) (pitch + spread * (entity.getRandom().nextDouble() * 2 - 1) * 2.f * Math.PI), speed);
-        velocity = velocity.add(entity.getDeltaMovement());
-        entity.level().addParticle(particle, position.x, position.y, position.z, velocity.x, velocity.y, velocity.z);
-    }
-
-    private static Vec3 calculateParticleVelocity(float yaw, float pitch, float speed) {
-        float xVel = (float) (Math.sin(yaw) * Math.cos(pitch) * speed);
-        float yVel = (float) Math.sin(pitch) * speed;
-        float zVel = (float) (Math.cos(yaw) * Math.cos(pitch) * speed);
-        return new Vec3(xVel, yVel, zVel);
+        context.enqueueWork(() -> ClientProxy.handleBreathParticles(packet, context.player()));
     }
 
     @Override

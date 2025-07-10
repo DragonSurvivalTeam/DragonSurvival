@@ -45,37 +45,37 @@ public class MagicHUD {
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "magic"}, key = "mark_disabled_abilities_red_lerp_speed")
     public static double markDisabledAbilitiesRedLerpSpeed = 0.05;
 
-    @ConfigRange(min = 0, max = 20)
+    @ConfigRange(min = 0)
     @Translation(key = "mark_disabled_abilities_red_delay", type = Translation.Type.CONFIGURATION, comments = "How long until the red overlay activates if an ability is disabled.")
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "magic"}, key = "mark_disabled_abilities_red_delay")
     public static double disabledColorDelay = 0.8;
 
-    @ConfigRange(min = -1000, max = 1000)
+    @ConfigRange
     @Translation(key = "cast_bar_x_offset", type = Translation.Type.CONFIGURATION, comments = "Offset for the x position of the cast bar")
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "magic"}, key = "cast_bar_x_offset")
     public static Integer castbarXOffset = 0;
 
-    @ConfigRange(min = -1000, max = 1000)
+    @ConfigRange
     @Translation(key = "cast_bar_y_offset", type = Translation.Type.CONFIGURATION, comments = "Offset for the y position of the cast bar")
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "magic"}, key = "casterBarYPos")
     public static Integer castbarYOffset = 0;
 
-    @ConfigRange(min = -1000, max = 1000)
+    @ConfigRange
     @Translation(key = "skill_bar_x_offset", type = Translation.Type.CONFIGURATION, comments = "Offset for the x position of the skill bar")
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "magic"}, key = "skill_bar_x_offset")
     public static Integer skillbarXOffset = 0;
 
-    @ConfigRange(min = -1000, max = 1000)
+    @ConfigRange
     @Translation(key = "skill_bar_y_offset", type = Translation.Type.CONFIGURATION, comments = "Offset for the x position of the skill bar")
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "magic"}, key = "skill_bar_y_offset")
     public static Integer skillbarYOffset = 0;
 
-    @ConfigRange(min = -1000, max = 1000)
+    @ConfigRange
     @Translation(key = "mana_bar_x_offset", type = Translation.Type.CONFIGURATION, comments = "Offset for the x position of the mana bar")
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "magic"}, key = "mana_bar_x_offset")
     public static Integer manabarXOffset = 0;
 
-    @ConfigRange(min = -1000, max = 1000)
+    @ConfigRange
     @Translation(key = "mana_bar_y_offset", type = Translation.Type.CONFIGURATION, comments = "Offset for the y position of the mana bar")
     @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "magic"}, key = "mana_bar_y_offset")
     public static Integer manabarYOffset = 0;
@@ -273,7 +273,26 @@ public class MagicHUD {
 
                         Color outlineColor = colors[x].color;
                         graphics.setColor(outlineColor.getRedFloat(), outlineColor.getGreenFloat(), outlineColor.getBlueFloat(), outlineColor.getAlphaFloat());
-                        graphics.blit(VANILLA_WIDGETS, posX + x * 20, posY - 2, -50, x * 20, 0, 21, 22, 256, 256);
+
+                        int uOffset;
+                        int uWidth;
+                        int xPos;
+
+                        if (x == 0) {
+                            uOffset = 0;
+                            uWidth = 21;
+                            xPos = posX;
+                        } else if (x != MagicData.HOTBAR_SLOTS - 1) {
+                            uOffset = 21;
+                            uWidth = 20;
+                            xPos = posX + x * 20 + 1;
+                        } else {
+                            uOffset = 161;
+                            uWidth = 21;
+                            xPos = posX + x * 20 + 1;
+                        }
+
+                        graphics.blit(VANILLA_WIDGETS, xPos, posY - 2, -50, uOffset, 0, uWidth, 22, 256, 256);
                         graphics.setColor(1f, 1f, 1f, 1f);
 
                         graphics.blitSprite(ability.getIcon(), posX + x * sizeX + 3, posY + 1, 0, 16, 16);
@@ -373,6 +392,11 @@ public class MagicHUD {
 
             if (skillCastTime > 0) {
                 graphics.pose().pushPose();
+
+                // Call flush here, otherwise some mods that batch together blit calls will cause this to be rendered in an incorrect order
+                // This does nothing on vanilla code but is required for compatibility with other mods (e.g. immediatelyfast)
+                graphics.flush();
+
                 graphics.pose().scale(0.5F, 0.5F, 0);
 
                 int startX = graphics.guiWidth() / 2 - 49 + castbarXOffset;
@@ -385,7 +409,7 @@ public class MagicHUD {
                 graphics.blit(handler.species().value().miscResources().castBar(), startX, startY, 0, 0, 196, 47, 196, 47);
 
                 Color color = new Color(DSColors.toARGB(handler.species().value().miscResources().primaryColor()));
-                graphics.setColor(color.getRedFloat(), color.getGreenFloat(), color.getBlueFloat(), color.getAlpha());
+                graphics.setColor(color.getRedFloat(), color.getGreenFloat(), color.getBlueFloat(), color.getAlphaFloat());
                 graphics.blit(CAST_BAR_FILL, startX + 2, startY + 41, 0, 0, (int) (191 * percentage), 4, 191, 4);
                 graphics.setColor(1, 1, 1, 1);
 

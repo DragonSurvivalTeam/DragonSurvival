@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.gui.widget.ExtendedButton;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
@@ -27,7 +28,7 @@ public class HelpButton extends ExtendedButton {
     private List<Either<FormattedText, TooltipComponent>> tooltip;
 
     public HelpButton(int x, int y, int sizeX, int sizeY, final String tooltip) {
-        this(x, y, sizeX, sizeY, List.of(Either.left(Component.translatable(tooltip))));
+        this(x, y, sizeX, sizeY, new ArrayList<>(List.of(Either.left(Component.translatable(tooltip)))));
     }
 
     public HelpButton(int x, int y, int sizeX, int sizeY, final List<Either<FormattedText, TooltipComponent>> tooltip) {
@@ -39,7 +40,7 @@ public class HelpButton extends ExtendedButton {
 
     public HelpButton(int x, int y, int sizeX, int sizeY, final String tooltip, final ResourceLocation main, final ResourceLocation hover) {
         super(x, y, sizeX, sizeY, Component.empty(), action -> { /* Nothing to do */ });
-        this.tooltip = List.of(Either.left(Component.translatable(tooltip)));
+        this.tooltip = new ArrayList<>(List.of(Either.left(Component.translatable(tooltip))));
         this.main = main;
         this.hover = hover;
     }

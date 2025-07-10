@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render.util;
 
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
@@ -8,7 +9,7 @@ import software.bernie.geckolib.animation.RawAnimation;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-@EventBusSubscriber
+@EventBusSubscriber(Dist.CLIENT)
 public class AnimationTickTimer {
     public static final CopyOnWriteArrayList<AnimationTickTimer> TIMERS = new CopyOnWriteArrayList<>();
     protected final ConcurrentHashMap<String, Double> animationTimes = new ConcurrentHashMap<>();

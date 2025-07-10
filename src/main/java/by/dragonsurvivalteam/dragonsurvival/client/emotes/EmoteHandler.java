@@ -29,10 +29,13 @@ public class EmoteHandler {
         }
 
         Player player = event.getEntity();
-        DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(player.getId());
+        DragonEntity dragon = ClientDragonRenderer.getDragon(player);
+
         if (dragon == null) {
             return;
         }
+
+        dragon.clearSoundsPlayedThisTick();
 
         boolean isForLocalPlayer = player == Minecraft.getInstance().player;
         if ((player.isCrouching() || player.swinging) && isForLocalPlayer) {
@@ -47,7 +50,7 @@ public class EmoteHandler {
             if (currentlyPlayingEmotes[i] != null) {
                 if (currentlyPlayingEmotes[i].sound().isPresent()) {
                     DragonEmote.Sound sound = currentlyPlayingEmotes[i].sound().get();
-                    if (dragon.getTicksForEmote(i) % sound.interval() == 0 && dragon.getTicksForEmote(i) != -1) {
+                    if (dragon.getTicksForEmote(i) % sound.interval() == 0 && dragon.markEmoteSoundPlayedThisTick(i)) {
                         sound.playSound(player);
                     }
                 }
@@ -85,7 +88,7 @@ public class EmoteHandler {
         }
 
         if (event.getEntity() instanceof Player player && DragonStateProvider.isDragon(player)) {
-            DragonEntity dragon = ClientDragonRenderer.PLAYER_DRAGON_MAP.get(player.getId());
+            DragonEntity dragon = ClientDragonRenderer.getDragon(player);
 
             if (dragon == null) {
                 return;

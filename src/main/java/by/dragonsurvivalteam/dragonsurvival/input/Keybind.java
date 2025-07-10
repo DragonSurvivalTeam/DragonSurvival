@@ -123,27 +123,27 @@ public enum Keybind {
         return get().consumeClick();
     }
 
-    public boolean isDown() {
-        return get().isDown();
+    public boolean isReleased(final InputConstants.Key input) {
+        KeyMapping mapping = get();
+        return mapping.getKey().equals(input) || mapping.getKeyModifier().matches(input);
     }
 
-    /** Also checks if the key (and modifier) matches */
-    public boolean isDown(final InputConstants.Key input) {
+    public boolean matches(final InputConstants.Key input) {
+        return matches(input, false);
+    }
+
+    public boolean matches(final InputConstants.Key input, final boolean isGui) {
         KeyMapping mapping = get();
 
-        if (mapping.getKey().equals(input) && mapping.getKeyModifier().isActive(mapping.getKeyConflictContext())) {
-            return mapping.isDown();
-        } else {
+        if (!mapping.isConflictContextAndModifierActive()) {
             return false;
         }
-    }
 
-    /**
-     * Compares the key and also checks if the key modifier of this mapping is active <br>
-     * Exists because it seems like 'isDown' doesn't properly work within GUIs (?)
-     */
-    public boolean matches(final InputConstants.Key input) {
-        KeyMapping mapping = get();
-        return mapping.getKey().equals(input) && mapping.getKeyModifier().isActive(mapping.getKeyConflictContext());
+        if (mapping.getKey().equals(input)) {
+            // GUI can't check for click consumption
+            return input.getType() == InputConstants.Type.MOUSE || isGui || mapping.consumeClick();
+        }
+
+        return false;
     }
 }

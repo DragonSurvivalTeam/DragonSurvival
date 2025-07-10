@@ -5,9 +5,11 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.SourceOfMagicData;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.items.BolasArrowItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.ChargedCoalItem;
+import by.dragonsurvivalteam.dragonsurvival.common.items.DarkKeyItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.DragonSoulItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.FlightGrantItem;
-import by.dragonsurvivalteam.dragonsurvival.common.items.RotatingKeyItem;
+import by.dragonsurvivalteam.dragonsurvival.common.items.HunterKeyItem;
+import by.dragonsurvivalteam.dragonsurvival.common.items.LightKeyItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.SourceOfMagicItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.SpinGrantItem;
 import by.dragonsurvivalteam.dragonsurvival.common.items.TooltipItem;
@@ -49,15 +51,23 @@ import org.joml.Vector3f;
 import java.util.List;
 import java.util.function.Consumer;
 
+@SuppressWarnings("unused")
 public class DSItems {
     public static final DeferredRegister<Item> REGISTRY = DeferredRegister.create(BuiltInRegistries.ITEM, DragonSurvival.MODID);
     private static final Consumer<LivingEntity> REMOVE_EFFECTS_CURED_BY_MILK = entity -> entity.removeEffectsCuredBy(EffectCures.MILK);
 
     // --- Growth --- //
-
+    @Translation(type = Translation.Type.DESCRIPTION, comments = {
+            "§7■ Deformed part of the Elder dragon.§r",
+            "■§f The energy absorbing dragon magic had captured this bone. Makes the dragon smaller."
+    })
     @Translation(type = Translation.Type.ITEM, comments = "Star Bone")
     public static final Holder<Item> STAR_BONE = REGISTRY.register("star_bone", location -> new TooltipItem(new Properties(), location.getPath()));
 
+    @Translation(type = Translation.Type.DESCRIPTION, comments = {
+            "§7■ Deformed part of the Elder dragon.§r",
+            "■§f The energy absorbing dragon magic had captured this heart. It is able to change the dragon's growth many times."
+    })
     @Translation(type = Translation.Type.ITEM, comments = "Star Heart")
     public static final Holder<Item> STAR_HEART = REGISTRY.register("star_heart", () -> new Item(new Properties()));
 
@@ -99,7 +109,7 @@ public class DSItems {
     // --- Food --- //
 
     @Translation(type = Translation.Type.ITEM, comments = "Charged Coal")
-    @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 Removes all effects. Can also be used to smelt a large number of items. More efficient than a block of coal.")
+    @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 Removes all effects.")
     public static final Holder<Item> CHARGED_COAL = REGISTRY.register("charged_coal", location -> new ChargedCoalItem(new Properties(), location.getPath(), REMOVE_EFFECTS_CURED_BY_MILK));
 
     @Translation(type = Translation.Type.ITEM, comments = "Charged Soup")
@@ -289,7 +299,7 @@ public class DSItems {
             DataComponents.ATTRIBUTE_MODIFIERS,
             ItemAttributeModifiers.builder()
                     .add(Attributes.ATTACK_DAMAGE, new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID, 6, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
-                    .add(Attributes.ATTACK_SPEED, new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, -3.2f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+                    .add(Attributes.ATTACK_SPEED, new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, -2.6f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                     .add(Attributes.BLOCK_INTERACTION_RANGE, new AttributeModifier(DragonSurvival.res("partisan_block_reach"), 1f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                     .add(Attributes.ENTITY_INTERACTION_RANGE, new AttributeModifier(DragonSurvival.res("partisan_attack_reach"), 1f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                     .build()
@@ -302,7 +312,7 @@ public class DSItems {
             DataComponents.ATTRIBUTE_MODIFIERS,
             ItemAttributeModifiers.builder()
                     .add(Attributes.ATTACK_DAMAGE, new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID, 7, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
-                    .add(Attributes.ATTACK_SPEED, new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, -3.2f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+                    .add(Attributes.ATTACK_SPEED, new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, -2.6f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                     .add(Attributes.BLOCK_INTERACTION_RANGE, new AttributeModifier(DragonSurvival.res("partisan_block_reach"), 1f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                     .add(Attributes.ENTITY_INTERACTION_RANGE, new AttributeModifier(DragonSurvival.res("partisan_attack_reach"), 1f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                     .build()
@@ -315,7 +325,7 @@ public class DSItems {
             DataComponents.ATTRIBUTE_MODIFIERS,
             ItemAttributeModifiers.builder()
                     .add(Attributes.ATTACK_DAMAGE, new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID, 8, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
-                    .add(Attributes.ATTACK_SPEED, new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, -3.2f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+                    .add(Attributes.ATTACK_SPEED, new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, -2.6f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                     .add(Attributes.BLOCK_INTERACTION_RANGE, new AttributeModifier(DragonSurvival.res("partisan_block_reach"), 1f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                     .add(Attributes.ENTITY_INTERACTION_RANGE, new AttributeModifier(DragonSurvival.res("partisan_attack_reach"), 1f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                     .build()
@@ -370,14 +380,18 @@ public class DSItems {
 
     // --- Misc --- //
 
+    @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 By combining the basic elements of dragons, you have the item to activate the beacon. Depending what species of dragon you are, the beacon will have different effects.")
+    @Translation(type = Translation.Type.ITEM, comments = "Beacon Activator")
+    public static final Holder<Item> BEACON_ACTIVATOR = REGISTRY.register("beacon_activator", location -> new TooltipItem(new Item.Properties(), location.getPath()));
+
     @Translation(type = Translation.Type.ITEM, comments = "Dragon Soul")
-    public static final Holder<Item> DRAGON_SOUL = REGISTRY.register("dragon_soul", () -> new DragonSoulItem(new Properties().rarity(Rarity.EPIC)));
+    public static final Holder<Item> DRAGON_SOUL = REGISTRY.register("dragon_soul", () -> new DragonSoulItem(new Properties().stacksTo(1).rarity(Rarity.EPIC)));
 
     public static final String LIGHT_KEY_ID = "light_key";
 
     @Translation(type = Translation.Type.ITEM, comments = "Light Key")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 An enchanted key that unlocks the Light Vault. Purchased from the dragon rider villager.")
-    public static final Holder<Item> LIGHT_KEY = REGISTRY.register(LIGHT_KEY_ID, () -> new RotatingKeyItem(
+    public static final Holder<Item> LIGHT_KEY = REGISTRY.register(LIGHT_KEY_ID, () -> new LightKeyItem(
             new Item.Properties().rarity(Rarity.UNCOMMON).component(DSDataComponents.TARGET_POSITION, new Vector3f()),
             DragonSurvival.res("geo/" + LIGHT_KEY_ID + ".geo.json"),
             DragonSurvival.res("textures/item/" + LIGHT_KEY_ID + ".png"),
@@ -387,7 +401,7 @@ public class DSItems {
 
     @Translation(type = Translation.Type.ITEM, comments = "Dark Key")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 An enchanted key that unlocks the Dark Vault in Nether. Drops if you kill a dragon hunter knight.")
-    public static final Holder<Item> DARK_KEY = REGISTRY.register(DARK_KEY_ID, () -> new RotatingKeyItem(
+    public static final Holder<Item> DARK_KEY = REGISTRY.register(DARK_KEY_ID, () -> new DarkKeyItem(
             new Item.Properties().rarity(Rarity.UNCOMMON).component(DSDataComponents.TARGET_POSITION, new Vector3f()),
             DragonSurvival.res("geo/" + DARK_KEY_ID + ".geo.json"),
             DragonSurvival.res("textures/item/" + DARK_KEY_ID + ".png"),
@@ -397,7 +411,7 @@ public class DSItems {
 
     @Translation(type = Translation.Type.ITEM, comments = "Hunter Key")
     @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 An enchanted key that unlocks a treasure vault for dragon hunters. Can be purchased from the Hunter Leader in the Hunter Castle.")
-    public static final Holder<Item> HUNTER_KEY = REGISTRY.register(HUNTER_KEY_ID, () -> new RotatingKeyItem(
+    public static final Holder<Item> HUNTER_KEY = REGISTRY.register(HUNTER_KEY_ID, () -> new HunterKeyItem(
             new Item.Properties().rarity(Rarity.UNCOMMON).component(DSDataComponents.TARGET_POSITION, new Vector3f()),
             DragonSurvival.res("geo/" + HUNTER_KEY_ID + ".geo.json"),
             DragonSurvival.res("textures/item/" + HUNTER_KEY_ID + ".png"),
@@ -408,11 +422,11 @@ public class DSItems {
     public static final Holder<Item> SPEARMAN_PROMOTION = REGISTRY.register("spearman_promotion", location -> new TooltipItem(new Properties().rarity(Rarity.COMMON), location.getPath()));
 
     @Translation(type = Translation.Type.ITEM, comments = "Flight Grant")
-    @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 This item gives your dragon the ability to fly. Consumed on use.")
+    @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 This item gives you the ability to fly. Consumed on use.")
     public static final Holder<Item> FLIGHT_GRANT_ITEM = REGISTRY.register("wing_grant", location -> new FlightGrantItem(new Properties(), location.getPath()));
 
     @Translation(type = Translation.Type.ITEM, comments = "Spin Grant")
-    @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 This item gives your dragon the ability to spin while flying. Consumed on use.")
+    @Translation(type = Translation.Type.DESCRIPTION, comments = "■§7 This item gives you dragon the ability to spin while flying. Consumed on use.")
     public static final Holder<Item> SPIN_GRANT_ITEM = REGISTRY.register("spin_grant", location -> new SpinGrantItem(new Properties(), location.getPath()));
 
     // --- Spawn eggs --- //
@@ -437,20 +451,19 @@ public class DSItems {
 
     // --- Not shown in creative tab --- //
 
-    // TODO :: currently have no translation
-
     public static final Holder<Item> BOLAS = REGISTRY.register("bolas", () -> new BolasArrowItem(new Item.Properties()));
     public static final Holder<Item> HUNTING_NET = REGISTRY.register("dragon_hunting_mesh", () -> new Item(new Item.Properties()));
     public static final Holder<Item> LIGHTNING_TEXTURE_ITEM = REGISTRY.register("lightning", () -> new Item(new Item.Properties()));
+    public static final Holder<Item> FOREST_ICON = REGISTRY.register("forest_icon", () -> new Item(new Item.Properties()));
+    public static final Holder<Item> CAVE_ICON = REGISTRY.register("cave_icon", () -> new Item(new Item.Properties()));
+    public static final Holder<Item> SEA_ICON = REGISTRY.register("sea_icon", () -> new Item(new Item.Properties()));
+    public static final Holder<Item> FOREST_FULL_ICON = REGISTRY.register("forest_full_icon", () -> new Item(new Item.Properties()));
+    public static final Holder<Item> CAVE_FULL_ICON = REGISTRY.register("cave_full_icon", () -> new Item(new Item.Properties()));
+    public static final Holder<Item> SEA_FULL_ICON = REGISTRY.register("sea_full_icon", () -> new Item(new Item.Properties()));
 
-    // TODO :: Only here for easy rendering in 'DragonBeaconBlockEntity' (active beacon is not a different block, it's handled by a block state)
-    //  Unsure if there is another way to do this
     public static final Holder<Item> ACTIVATED_DRAGON_BEACON = REGISTRY.register("activated_dragon_beacon", () -> new Item(new Item.Properties()));
-
-    @Translation(type = Translation.Type.DESCRIPTION, comments = {
-            "■§7 By combining the basic elements of dragons, you have the item to activate the beacon. Depending what species of dragon you are, the beacon will have different effects."
-    })
-    @Translation(type = Translation.Type.ITEM, comments = "Beacon Activator")
-    public static final Holder<Item> BEACON_ACTIVATOR = REGISTRY.register("beacon_activator", location -> new TooltipItem(new Item.Properties(), location.getPath()));
+    public static final Holder<Item> CAVE_BEACON = REGISTRY.register("cave_beacon", () -> new Item(new Item.Properties()));
+    public static final Holder<Item> FOREST_BEACON = REGISTRY.register("forest_beacon", () -> new Item(new Item.Properties()));
+    public static final Holder<Item> SEA_BEACON = REGISTRY.register("sea_beacon", () -> new Item(new Item.Properties()));
 
 }

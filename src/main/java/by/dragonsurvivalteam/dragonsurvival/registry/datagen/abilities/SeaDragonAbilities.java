@@ -193,7 +193,9 @@ public class SeaDragonAbilities {
                                 List.of(new AreaCloudEffect(
                                         PotionData.create(DSEffects.CHARGED).duration(30).build(),
                                         LevelBasedValue.constant(Functions.secondsToTicks(2)),
-                                        0.3,
+                                        LevelBasedValue.constant(0.3f),
+                                        Optional.empty(),
+                                        Optional.empty(),
                                         new LargeLightningParticleOption(37, false)
                                 ))
                         ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
@@ -397,7 +399,7 @@ public class SeaDragonAbilities {
                                 BlockVision.DisplayType.PARTICLES,
                                 List.of(TextColor.fromLegacyFormat(ChatFormatting.WHITE))
                         ))
-                ), TargetingMode.ALLIES_AND_SELF), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
+                ), TargetingMode.NON_ENEMIES), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/ore_glow_0"), 0),
@@ -434,7 +436,7 @@ public class SeaDragonAbilities {
                                         new SpawnParticles(ParticleTypes.SOUL, SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), ConstantFloat.of(0.05f)),
                                         LevelBasedValue.constant(20)
                                 )),
-                        TargetingMode.ALLIES_AND_SELF
+                        TargetingMode.NON_ENEMIES
                 ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -448,7 +450,7 @@ public class SeaDragonAbilities {
 
     private static void registerPassiveAbilities(final BootstrapContext<DragonAbility> context) {
         context.register(SEA_MAGIC, new DragonAbility(
-                new PassiveActivation(Optional.empty()),
+                PassiveActivation.DEFAULT,
                 Optional.of(new ExperiencePointsUpgrade(10, LevelBasedValue.perLevel(36))),
                 Optional.empty(),
                 List.of(
@@ -488,7 +490,7 @@ public class SeaDragonAbilities {
         ));
 
         context.register(SEA_ATHLETICS, new DragonAbility(
-                new PassiveActivation(Optional.empty()),
+                PassiveActivation.DEFAULT,
                 Optional.of(new ExperiencePointsUpgrade(5, LevelBasedValue.perLevel(25))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -509,7 +511,7 @@ public class SeaDragonAbilities {
         ));
 
         context.register(HYDRATION, new DragonAbility(
-                new PassiveActivation(Optional.empty()),
+                PassiveActivation.DEFAULT,
                 Optional.of(new ExperiencePointsUpgrade(7, LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -533,7 +535,7 @@ public class SeaDragonAbilities {
         ));
 
         context.register(SPECTRAL_IMPACT, new DragonAbility(
-                new PassiveActivation(Optional.empty()),
+                PassiveActivation.DEFAULT,
                 Optional.of(new ExperiencePointsUpgrade(3, LevelBasedValue.perLevel(64))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -553,7 +555,7 @@ public class SeaDragonAbilities {
         ));
 
         context.register(SEA_CLAWS_AND_TEETH, new DragonAbility(
-                new PassiveActivation(Optional.empty()),
+                PassiveActivation.DEFAULT,
                 Optional.of(new DragonGrowthUpgrade(4, LevelBasedValue.lookup(List.of(0f, 25f, 40f, 60f), LevelBasedValue.perLevel(15)))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -580,7 +582,7 @@ public class SeaDragonAbilities {
         ));
 
         context.register(SEA_WINGS, new DragonAbility(
-                new PassiveActivation(Optional.empty()),
+                PassiveActivation.DEFAULT,
                 Optional.of(new ConditionUpgrade(List.of(Condition.thisEntity(EntityCondition.flightWasGranted(true)).build()), false)),
                 // Disable when marked by the ender dragon
                 Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
@@ -596,7 +598,7 @@ public class SeaDragonAbilities {
         ));
 
         context.register(SEA_SPIN, new DragonAbility(
-                new PassiveActivation(Optional.empty()),
+                PassiveActivation.DEFAULT,
                 Optional.of(new ConditionUpgrade(List.of(Condition.thisEntity(EntityCondition.spinWasGranted(true)).build()), false)),
                 // Disable when marked by the ender dragon
                 Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
@@ -612,7 +614,7 @@ public class SeaDragonAbilities {
         ));
 
         context.register(ELECTRIC_IMMUNITY, new DragonAbility(
-                new PassiveActivation(Optional.empty()),
+                PassiveActivation.DEFAULT,
                 Optional.empty(),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -631,7 +633,7 @@ public class SeaDragonAbilities {
         ));
 
         context.register(AMPHIBIOUS, new DragonAbility(
-                new PassiveActivation(Optional.empty()),
+                PassiveActivation.DEFAULT,
                 Optional.empty(),
                 Optional.empty(),
                 List.of(
@@ -667,7 +669,7 @@ public class SeaDragonAbilities {
         ));
 
         context.register(DIVER, new DragonAbility(
-                new PassiveActivation(Optional.empty()),
+                PassiveActivation.DEFAULT,
                 Optional.empty(),
                 Optional.empty(),
                 List.of(

@@ -38,7 +38,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.N
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.PassiveActivation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.SimpleActivation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Sound;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.BlockBreakEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.BlockConversionEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.BonemealEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.ParticleEffect;
@@ -99,7 +98,7 @@ public class ForestDragonAbilities {
     public static final ResourceKey<DragonAbility> FOREST_BREATH = DragonAbilities.key("forest_breath");
 
     @Translation(type = Translation.Type.ABILITY_DESCRIPTION, comments = {
-            "■ Breathe out solar energy stored within you, helping §2plants grow faster§r§7. Turns §fdirt§r§7 into other blocks with a small chance.\n",
+            "■ Breathe out solar energy stored within you, helping §2plants grow faster§r§7. Turns §fdirt§r§7 into other blocks with a small chance. It also §fpoisons§r§7 potatoes.\n",
             "■ §fRange§r§7 depends on age of the dragon.\n",
             "■ §8Cannot be used while affected by «Stress».§r"
     })
@@ -251,8 +250,7 @@ public class ForestDragonAbilities {
                                                         new BlockConversionEffect.BlockTo(Blocks.MYCELIUM.defaultBlockState(), 1),
                                                         new BlockConversionEffect.BlockTo(Blocks.COARSE_DIRT.defaultBlockState(), 3)
                                                 ))
-                                        ), LevelBasedValue.constant(0.2f)),
-                                        new BlockBreakEffect(BlockCondition.blocks(Blocks.POTATOES), LevelBasedValue.constant(0.2f), true)
+                                        ), LevelBasedValue.constant(0.2f))
                                 )
                         ), LevelBasedValue.constant(1)), LevelBasedValue.constant(10)),
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -330,7 +328,7 @@ public class ForestDragonAbilities {
                                         new SpawnParticles(ParticleTypes.END_ROD, SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), ConstantFloat.of(0.05f)),
                                         LevelBasedValue.constant(20)
                                 )
-                        ), TargetingMode.ALLIES_AND_SELF
+                        ), TargetingMode.NON_ENEMIES
                 ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -364,7 +362,7 @@ public class ForestDragonAbilities {
                                         new SpawnParticles(ParticleTypes.DRAGON_BREATH, SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.1f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.1f)), ConstantFloat.of(0.1f)),
                                         LevelBasedValue.constant(20)
                                 )
-                        ), TargetingMode.ALLIES_AND_SELF
+                        ), TargetingMode.NON_ENEMIES
                 ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))),
                 true,
                 new LevelBasedResource(List.of(
@@ -379,7 +377,7 @@ public class ForestDragonAbilities {
 
     private static void registerPassiveAbilities(final BootstrapContext<DragonAbility> context) {
         context.register(FOREST_MAGIC, new DragonAbility(
-                new PassiveActivation(Optional.empty()),
+                PassiveActivation.DEFAULT,
                 Optional.of(new ExperiencePointsUpgrade(10, LevelBasedValue.perLevel(36))),
                 Optional.empty(),
                 List.of(
@@ -419,7 +417,7 @@ public class ForestDragonAbilities {
         ));
 
         context.register(FOREST_ATHLETICS, new DragonAbility(
-                new PassiveActivation(Optional.empty()),
+                PassiveActivation.DEFAULT,
                 Optional.of(new ExperiencePointsUpgrade(5, LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -440,7 +438,7 @@ public class ForestDragonAbilities {
         ));
 
         context.register(LIGHT_IN_DARKNESS, new DragonAbility(
-                new PassiveActivation(Optional.empty()),
+                PassiveActivation.DEFAULT,
                 Optional.of(new ExperiencePointsUpgrade(8, LevelBasedValue.perLevel(15))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -465,7 +463,7 @@ public class ForestDragonAbilities {
         ));
 
         context.register(CLIFFHANGER, new DragonAbility(
-                new PassiveActivation(Optional.empty()),
+                PassiveActivation.DEFAULT,
                 Optional.of(new ExperiencePointsUpgrade(6, LevelBasedValue.perLevel(16))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -488,7 +486,7 @@ public class ForestDragonAbilities {
         ));
 
         context.register(FOREST_CLAWS_AND_TEETH, new DragonAbility(
-                new PassiveActivation(Optional.empty()),
+                PassiveActivation.DEFAULT,
                 Optional.of(new DragonGrowthUpgrade(4, LevelBasedValue.lookup(List.of(0f, 25f, 40f, 60f), LevelBasedValue.perLevel(15)))),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
@@ -515,7 +513,7 @@ public class ForestDragonAbilities {
         ));
 
         context.register(FOREST_WINGS, new DragonAbility(
-                new PassiveActivation(Optional.empty()),
+                PassiveActivation.DEFAULT,
                 Optional.of(new ConditionUpgrade(List.of(Condition.thisEntity(EntityCondition.flightWasGranted(true)).build()), false)),
                 // Disable when marked by the ender dragon
                 Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
@@ -531,7 +529,7 @@ public class ForestDragonAbilities {
         ));
 
         context.register(FOREST_SPIN, new DragonAbility(
-                new PassiveActivation(Optional.empty()),
+                PassiveActivation.DEFAULT,
                 Optional.of(new ConditionUpgrade(List.of(Condition.thisEntity(EntityCondition.spinWasGranted(true)).build()), false)),
                 // Disable when marked by the ender dragon
                 Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
@@ -547,7 +545,7 @@ public class ForestDragonAbilities {
         ));
 
         context.register(FOREST_IMMUNITY, new DragonAbility(
-                new PassiveActivation(Optional.empty()),
+                PassiveActivation.DEFAULT,
                 Optional.empty(),
                 Optional.empty(),
                 List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(

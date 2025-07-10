@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.entity;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.models.DragonModel;
 import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.util.AnimationTickTimer;
@@ -10,15 +11,16 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.Anim
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationType;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonFoodHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
+import by.dragonsurvivalteam.dragonsurvival.compat.create.SkyhookRendererHelper;
 import by.dragonsurvivalteam.dragonsurvival.config.ClientConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.TreasureRestData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEmote;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
@@ -32,7 +34,6 @@ import net.minecraft.world.scores.PlayerTeam;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
-import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -44,6 +45,7 @@ import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.cache.GeckoLibCache;
+import software.bernie.geckolib.loading.object.BakedAnimations;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.ArrayList;
@@ -64,12 +66,13 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     private static final double DEFAULT_SPRINT_SPEED = 0.165;
     private static final double DEFAULT_SWIM_SPEED = 0.051;
     private static final double DEFAULT_FAST_SWIM_SPEED = 0.13;
+    private static final double DEFAULT_CLIMB_SPEED = 0.0001;
 
     // Base "scale" to use when determining animation speed
     private static final double BASE_SCALE = 1.0;
 
     /** Durations of jumps */
-    public static final ConcurrentHashMap<Integer, Integer> DRAGON_JUMP_TICKS = new ConcurrentHashMap<>();
+    public static final ConcurrentHashMap<Integer, Boolean> DRAGONS_JUMPING = new ConcurrentHashMap<>();
 
     private static double globalTickCount;
 
@@ -86,7 +89,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     public double currentTailMotionUp;
 
     public AnimationController<DragonEntity> mainAnimationController;
-    public PoseStack.Pose currentlyRenderedPose;
 
     /** This reference must be updated whenever player is remade, for example, when changing dimensions */
     public volatile Integer playerId;
@@ -101,23 +103,27 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     // The dragon displayed in the editor doesn't want to mirror the local player's UUID, so this isn't used there either
     public boolean overrideUUIDWithLocalPlayerForTextureFetch;
 
+    /**
+     * Used for inventory / smithing screen rendering - when set to true changed movement data will not be tracked <br>
+     * - Does not set the movement data <br>
+     * - Does not apply the molang history (of head pitch, body yaw, etc.) <br>
+     * - Does not hide the head when in first person
+     */
+    public boolean isInInventory;
+
     public boolean clearVerticalVelocity;
 
     private final DragonEmote[] currentlyPlayingEmotes = new DragonEmote[MAX_EMOTES];
+    private final boolean[] soundForEmoteHasAlreadyPlayedThisTick = new boolean[MAX_EMOTES];
     private final AnimationTickTimer animationTickTimer = new AnimationTickTimer();
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     private Pair<AbilityAnimation, AnimationType> currentAbilityAnimation;
     private boolean begunPlayingAbilityAnimation;
+    public boolean renderingWasCancelled;
 
     public DragonEntity(EntityType<? extends LivingEntity> type, Level worldIn) {
         super(type, worldIn);
-    }
-
-    @SubscribeEvent
-    public static void decreaseJumpDuration(PlayerTickEvent.Post playerTickEvent) {
-        Player player = playerTickEvent.getEntity();
-        DRAGON_JUMP_TICKS.computeIfPresent(player.getId(), (playerEntity1, integer) -> integer > 0 ? integer - 1 : integer);
     }
 
     @Override
@@ -129,9 +135,8 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             int finalSlot = slot;
             registrar.add(new AnimationController<>(this, "emote_" + slot, 0, state -> emotePredicate(state, finalSlot)));
         }
+
         registrar.add(new AnimationController<>(this, "bite", this::bitePredicate));
-        registrar.add(new AnimationController<>(this, "tail", this::tailPredicate));
-        registrar.add(new AnimationController<>(this, "head", this::headPredicate));
         registrar.add(new AnimationController<>(this, "breath", this::breathPredicate));
     }
 
@@ -145,6 +150,19 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         }
 
         return -1;
+    }
+
+    public void clearSoundsPlayedThisTick() {
+        Arrays.fill(soundForEmoteHasAlreadyPlayedThisTick, false);
+    }
+
+    public boolean markEmoteSoundPlayedThisTick(int slot) {
+        if (soundForEmoteHasAlreadyPlayedThisTick[slot]) {
+            return false;
+        }
+
+        soundForEmoteHasAlreadyPlayedThisTick[slot] = true;
+        return true;
     }
 
     public void stopEmote(int slot) {
@@ -281,22 +299,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         return PlayState.STOP;
     }
 
-    private PlayState tailPredicate(final AnimationState<DragonEntity> state) {
-        if (!tailLocked) {
-            return state.setAndContinue(TAIL_TURN);
-        } else {
-            return PlayState.STOP;
-        }
-    }
-
-    private PlayState headPredicate(final AnimationState<DragonEntity> state) {
-        if (!neckLocked) {
-            return state.setAndContinue(HEAD_TURN);
-        } else {
-            return PlayState.STOP;
-        }
-    }
-
     private PlayState bitePredicate(final AnimationState<DragonEntity> state) {
         Player player = getPlayer();
 
@@ -360,7 +362,12 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     }
 
     private boolean doesAnimationExist(final Player player, final String animation) {
-        return GeckoLibCache.getBakedAnimations().get(DragonModel.getAnimationResource(player)).getAnimation(animation) != null;
+        BakedAnimations bakedAnimations = GeckoLibCache.getBakedAnimations().get(DragonModel.getAnimationResource(player));
+        if (bakedAnimations == null) {
+            return false;
+        }
+
+        return bakedAnimations.getAnimation(animation) != null;
     }
 
     private double animationDuration(final Player player, final String animation) {
@@ -426,6 +433,32 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     }
 
     @Override
+    public float getScale() {
+        Player player = getPlayer();
+
+        if (player == null) {
+            return super.getScale();
+        }
+
+        if (player.level().isClientSide()) {
+            return (float) DragonStateProvider.getData(player).getVisualScale(player, DragonSurvival.PROXY.getPartialTick());
+        }
+
+        return player.getScale();
+    }
+
+    @Override
+    protected @NotNull EntityDimensions getDefaultDimensions(@NotNull final Pose pose) {
+        Player player = getPlayer();
+
+        if (player == null) {
+            return super.getDefaultDimensions(pose);
+        }
+
+        return player.getDimensions(pose);
+    }
+
+    @Override
     public @Nullable PlayerTeam getTeam() {
         Player player = getPlayer();
 
@@ -434,6 +467,39 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         }
 
         return super.getTeam();
+    }
+
+    @Override
+    public @NotNull Vec3 getDeltaMovement() {
+        Player player = getPlayer();
+
+        if (player != null) {
+            return player.getDeltaMovement();
+        }
+
+        return super.getDeltaMovement();
+    }
+
+    @Override
+    public float getHealth() {
+        Player player = getPlayer();
+
+        if (player != null) {
+            return player.getHealth();
+        }
+
+        return super.getHealth();
+    }
+
+    @Override
+    public float getMaxHealth() {
+        Player player = getPlayer();
+
+        if (player != null) {
+            return player.getMaxHealth();
+        }
+
+        return super.getMaxHealth();
     }
 
     @Override
@@ -525,23 +591,30 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         if (!movement.isMovingHorizontally() && handler.isOnMagicSource) {
             // TODO :: does this need to be synchronized to other players?
             return state.setAndContinue(SIT_ON_MAGIC_SOURCE);
-        } else if (player.isSleeping() || treasureRest.isResting()) {
+        }
+
+        if (player.isSleeping() || treasureRest.isResting()) {
             return state.setAndContinue(SLEEP);
-        } else if (player.isPassenger()) {
+        }
+
+        if (SkyhookRendererHelper.isPlayerRidingSkyhook(player.getUUID()) && doesAnimationExist(player, "create_skyhook_riding")) {
+            return state.setAndContinue(CREATE_SKYHOOK_RIDING);
+        }
+
+        if (player.isPassenger()) {
             return state.setAndContinue(SIT);
-        } else if (player.getAbilities().flying || ServerFlightHandler.isFlying(player)) {
+        }
+
+        if (player.getAbilities().flying || ServerFlightHandler.isFlying(player)) {
             if (ServerFlightHandler.isGliding(player)) {
                 if (ServerFlightHandler.isSpin(player)) {
                     animationSpeed = 2;
-                    lockTailAndNeck();
                     state.setAnimation(FLY_SPIN);
                     animationController.transitionLength(5);
                 } else if (deltaMovement.y < -1) {
-                    lockTailAndNeck();
                     state.setAnimation(FLY_DIVE_ALT);
                     animationController.transitionLength(4);
                 } else if (deltaMovement.y < -0.25) {
-                    lockTailAndNeck();
                     state.setAnimation(FLY_DIVE);
                     animationController.transitionLength(4);
                 } else if (deltaMovement.y > 0.5) {
@@ -557,20 +630,19 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
                     state.setAnimation(FLY_LAND);
                     animationController.transitionLength(2);
                 } else if (ServerFlightHandler.isSpin(player)) {
-                    lockTailAndNeck();
                     state.setAnimation(FLY_SPIN);
                     animationController.transitionLength(2);
                 } else {
                     if (movement.desiredMoveVec.y > 0) {
                         animationSpeed = 2;
                     }
+
                     state.setAnimation(FLY);
                     animationController.transitionLength(2);
                 }
             }
         } else if (player.getPose() == Pose.SWIMMING) {
             if (ServerFlightHandler.isSpin(player)) {
-                lockTailAndNeck();
                 state.setAnimation(FLY_SPIN);
                 animationController.transitionLength(2);
             } else {
@@ -587,7 +659,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         } else if (isSwimming) {
             if (ServerFlightHandler.isSpin(player)) {
                 animationSpeed = 2;
-                lockTailAndNeck();
                 state.setAnimation(FLY_SPIN);
                 animationController.transitionLength(2);
             } else {
@@ -603,18 +674,38 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             }
         } else if (AnimationUtils.isAnimationPlaying(animationController, FLY_LAND)) {
             state.setAnimation(FLY_LAND_END);
+
             if (!FLY_LAND_END.getAnimationStages().isEmpty()) {
                 animationTickTimer.putAnimation(FLY_LAND_END, animationDuration(player, FLY_LAND_END.getAnimationStages().getFirst().animationName()));
             }
+
             animationController.transitionLength(2);
         } else if (animationTickTimer.getDuration(FLY_LAND_END) > 0) {
             // Don't add any animation
-        } else if (DRAGON_JUMP_TICKS.getOrDefault(this.playerId, 0) > 0) {
+        } else if (player.onClimbable()) {
+            if (movement.deltaMovement.y() < 0) {
+                state.setAnimation(CLIMBING_DOWN);
+            } else {
+                state.setAnimation(CLIMBING_UP);
+            }
+
+            useDynamicScaling = true;
+            baseSpeed = DEFAULT_CLIMB_SPEED;
+            animationController.transitionLength(2);
+        } else if (DRAGONS_JUMPING.getOrDefault(this.playerId, false)) {
+            state.resetCurrentAnimation();
             state.setAnimation(JUMP);
             animationController.transitionLength(2);
+            animationTickTimer.putAnimation(JUMP, animationDuration(player, JUMP.getAnimationStages().getFirst().animationName()));
+            DRAGONS_JUMPING.remove(this.playerId);
+        } else if (animationTickTimer.isPresent(JUMP.getAnimationStages().getFirst().animationName()) && DRAGONS_JUMPING.getOrDefault(this.playerId, true)) {
+            // We test here if the jump animation has been flagged with a false value; if this is the case, that means cancel any ongoing jumps that are occurring
+            // This happens if we hit the ground
+            //
+            // Let the jump animation complete
         } else if (!player.onGround()) {
             state.setAnimation(FALL_LOOP);
-            animationController.transitionLength(3);
+            animationController.transitionLength(2);
         } else if (player.isShiftKeyDown() || !DragonSizeHandler.canPoseFit(player, Pose.STANDING) && DragonSizeHandler.canPoseFit(player, Pose.CROUCHING)) {
             // Player is Sneaking
             if (movement.isMovingHorizontally()) {
@@ -673,7 +764,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     }
 
     @SubscribeEvent
-    public static void tickEntity(RenderFrameEvent.Pre event) {
+    public static void tickEntity(final RenderFrameEvent.Pre event) {
         globalTickCount += event.getPartialTick().getRealtimeDeltaTicks();
     }
 
@@ -681,6 +772,17 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     public double getTick(Object obj) { // using 'getPlayer' breaks animations even though it returns the same entity...?
         // Prevent being on a negative tick (will cause t-posing!) by adding 200 here
         return (playerId != null ? level().getEntity(playerId).tickCount : globalTickCount) + 200;
+    }
+
+    @Override
+    public @NotNull Vec3 position() {
+        Player player = getPlayer();
+
+        if (player == null) {
+            return super.position();
+        }
+
+        return player.position();
     }
 
     @Override
@@ -763,10 +865,12 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     private static final RawAnimation WALK = RawAnimation.begin().thenLoop("walk");
     private static final RawAnimation IDLE = RawAnimation.begin().thenLoop("idle");
     private static final RawAnimation DIG = RawAnimation.begin().thenLoop("dig");
+    private static final RawAnimation CLIMBING_UP = RawAnimation.begin().thenLoop("climbing_up");
+    private static final RawAnimation CLIMBING_DOWN = RawAnimation.begin().thenLoop("climbing_down");
 
-    private static final RawAnimation JUMP = RawAnimation.begin().then("jump", Animation.LoopType.PLAY_ONCE).thenLoop("fall_loop");
-    private static final RawAnimation FLY_LAND_END = RawAnimation.begin().then("fly_land_end", Animation.LoopType.PLAY_ONCE).thenLoop("idle");
+    private static final RawAnimation JUMP = RawAnimation.begin().then("jump", Animation.LoopType.PLAY_ONCE);
+    private static final RawAnimation FLY_LAND_END = RawAnimation.begin().then("fly_land_end", Animation.LoopType.PLAY_ONCE);
 
-    private static final RawAnimation TAIL_TURN = RawAnimation.begin().thenLoop("tail_turn");
-    private static final RawAnimation HEAD_TURN = RawAnimation.begin().thenLoop("head_turn");
+    // Special create animation
+    private static final RawAnimation CREATE_SKYHOOK_RIDING = RawAnimation.begin().thenLoop("create_skyhook_riding");
 }

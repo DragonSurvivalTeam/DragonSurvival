@@ -258,7 +258,7 @@
               "effect_type": "dragonsurvival:block_vision"
             }
           ],
-          "targeting_mode": "allies_and_self"
+          "targeting_mode": "non_enemies"
         },
         "radius": 5.0,
         "target_type": "dragonsurvival:area"

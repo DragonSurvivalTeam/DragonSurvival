@@ -19,6 +19,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffects;
@@ -62,12 +63,12 @@ public class ServerFlightHandler {
     @ConfigOption(side = ConfigSide.SERVER, category = "wings", key = "fold_wings_on_land")
     public static Boolean foldWingsOnLand = false;
 
-    @ConfigRange(min = 0, max = /* 1 hour */ 3600)
+    @ConfigRange(min = 0)
     @Translation(key = "flight_spin_cooldown", type = Translation.Type.CONFIGURATION, comments = "Cooldown (in seconds) of the spin attack during flight")
     @ConfigOption(side = ConfigSide.SERVER, category = "wings", key = "flight_spin_cooldown")
     public static Integer flightSpinCooldown = 5;
 
-    @ConfigRange(min = 1, max = /* 1 hour */ 72_000)
+    @ConfigRange(min = 1)
     @Translation(key = "flight_hunger_ticks", type = Translation.Type.CONFIGURATION, comments = "Determines the amount of ticks (20 ticks = 1 second) it takes for one hunger point to be drained while flying")
     @ConfigOption(side = ConfigSide.SERVER, category = "wings", key = "flight_hunger_ticks")
     public static int flightHungerTicks = 50;
@@ -92,6 +93,10 @@ public class ServerFlightHandler {
     @ConfigOption(side = ConfigSide.SERVER, category = "wings", key = "enable_flight_fall_damage")
     public static boolean enableFlightFallDamage = true;
 
+    @Translation(key = "no_speed_requirement_for_vertical_acceleration", type = Translation.Type.CONFIGURATION, comments = "Dragons always accelerate vertically when flying, even when they aren't moving fast enough.")
+    @ConfigOption(side = ConfigSide.SERVER, category = "wings", key = "no_speed_requirement_for_vertical_acceleration")
+    public static Boolean noSpeedRequirementForVerticalAcceleration = false;
+
     @SubscribeEvent(receiveCanceled = true) // Unsure if this is needed
     public static void handleLanding(final LivingFallEvent event) {
         if (event.getEntity() instanceof Player player) {
@@ -114,9 +119,9 @@ public class ServerFlightHandler {
         }
 
         if (player instanceof ServerPlayer serverPlayer) {
-            PacketDistributor.sendToPlayersTrackingEntity(serverPlayer, new SyncPlayerJump(player.getId(), 0));
+            PacketDistributor.sendToPlayersTrackingEntity(serverPlayer, new SyncPlayerJump(player.getId(), false));
         } else {
-            DragonEntity.DRAGON_JUMP_TICKS.put(player.getId(), 0);
+            DragonEntity.DRAGONS_JUMPING.put(player.getId(), false);
         }
 
         if (!foldWingsOnLand || player.level().isClientSide()) {
@@ -143,7 +148,7 @@ public class ServerFlightHandler {
             DragonStateProvider.getOptional(livingEntity).ifPresent(handler -> {
                 FlightData data = FlightData.getData(player);
                 // Don't use the helper functions here, as isFlying() will return false if the player is grounded
-                if (handler.isDragon() && data.hasFlight() && data.isWingsSpread() && player.isSprinting()) {
+                if (handler.isDragon() && data.hasFlight() && data.isWingsSpread() && player.isSprinting() && !player.isPassenger()) {
                     if (!enableFlightFallDamage || verticalFlightSpeed <= 1 || (livingEntity.isPassenger() && DragonStateProvider.isDragon(livingEntity.getVehicle()))) {
                         event.setCanceled(true);
                         return;
@@ -160,9 +165,9 @@ public class ServerFlightHandler {
         }
     }
 
-    public static boolean isFlying(Player player) {
+    public static boolean isFlying(final Player player) {
         FlightData data = FlightData.getData(player);
-        return data.hasFlight() && data.isWingsSpread() && !player.onGround() && !player.isInWater() && !player.isInLava();
+        return data.hasFlight() && data.isWingsSpread() && !player.onGround() && /* TODO :: more universal check for fluids */ !player.isInWater() && !player.isInLava() && !player.isPassenger();
     }
 
     @SubscribeEvent
@@ -290,10 +295,14 @@ public class ServerFlightHandler {
             return false;
         }
 
-        FluidType fluid = player.getEyeInFluidType();
+        ResourceKey<FluidType> key = SwimData.key(player.getEyeInFluidType());
 
-        //noinspection DataFlowIssue -> fluid exists, therefor it cannot be null
-        return data.inFluid.contains(player.registryAccess().holderOrThrow(SwimData.key(fluid)));
+        if (key == null) {
+            // Architectury does not properly register fluid types
+            return false;
+        }
+
+        return data.inFluid.contains(player.registryAccess().holderOrThrow(key));
     }
 
     @SubscribeEvent

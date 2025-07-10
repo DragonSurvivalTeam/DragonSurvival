@@ -2,16 +2,19 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.Fear;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.PotionData;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstanceBase;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates.EntityCheckPredicate;
 import by.dragonsurvivalteam.dragonsurvival.common.conditions.EntityCondition;
 import by.dragonsurvivalteam.dragonsurvival.common.conditions.ItemCondition;
-import by.dragonsurvivalteam.dragonsurvival.common.conditions.MatchItem;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDamageTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBlockTags;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.HolderSet;
@@ -23,8 +26,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.minecraft.world.level.storage.loot.predicates.AnyOfCondition;
 import net.neoforged.neoforge.common.Tags;
 
@@ -47,15 +52,13 @@ public class DragonPenalties {
     public static final ResourceKey<DragonPenalty> WATER_WEAKNESS = DragonPenalties.key("water_weakness");
 
     @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
-            "■ If sea dragon are outside of the water for too long, they will dehydrate and suffer damage. Being in rain, ice or snow or drinking water bottles rehydrates you.\n",
-            "■ The skill §2«Hydration Capacity»§r §7could make your life easier.\n",
+            "■ If sea dragon are outside of the water for too long, they will §ddehydrate§r§7 and suffer §ddamage§r§7.\n",
+            "■ Being in rain, ice or snow or drinking water bottles rehydrates you. The skill §2«Hydration Capacity»§r §7could make your life easier.\n",
     })
     @Translation(type = Translation.Type.PENALTY, comments = "Thin Skin")
     public static final ResourceKey<DragonPenalty> THIN_SKIN = DragonPenalties.key("thin_skin");
 
-    @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
-            "■ Dragons are §dunable to wield§r§7 or equip certain items. Such as bows, shields, and tridents. They won't equip and will §cdrop§r from the hotbar, but you can still craft items with it.",
-    })
+    @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = "■ Dragons are §dunable to wield§r§7 or equip certain items. Such as bows, shields, and tridents. They won't equip and will §cdrop§r from the hotbar, but you can still craft items with it.")
     @Translation(type = Translation.Type.PENALTY, comments = "Item Blacklist")
     public static final ResourceKey<DragonPenalty> ITEM_BLACKLIST = DragonPenalties.key("item_blacklist");
 
@@ -70,13 +73,16 @@ public class DragonPenalties {
     public static final ResourceKey<DragonPenalty> WATER_SPLASH_POTION_WEAKNESS = DragonPenalties.key("water_splash_potion_weakness");
     public static final ResourceKey<DragonPenalty> SNOWBALL_WEAKNESS = DragonPenalties.key("snowball_weakness");
 
+    @Translation(type = Translation.Type.PENALTY_DESCRIPTION, comments = {
+            "■ Dragons are §dscary§r§7  creatures. Animals will try to §cavoid§r them.\n",
+            "■ Build the §2«Beacon»§7 to become more attractive.",
+    })
+    @Translation(type = Translation.Type.PENALTY, comments = "Fear")
+    public static final ResourceKey<DragonPenalty> FEAR = DragonPenalties.key("fear");
+
     public static void registerPenalties(final BootstrapContext<DragonPenalty> context) {
         context.register(COLD_WEAKNESS, new DragonPenalty(
-                Optional.of(DragonSurvival.res("abilities/cave/cold_weakness")),
-                // Enable when:
-                // - in rain / snow
-                // - on / within said block tag
-                // (except when affected by the 'FIRE' effect)
+                Optional.of(DragonSurvival.res("penalties/cave/cold_weakness")),
                 Optional.of(AnyOfCondition.anyOf(
                         Condition.thisEntity(EntityCondition.isInRainOrSnow()),
                         Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_WET)),
@@ -87,8 +93,7 @@ public class DragonPenalties {
         ));
 
         context.register(WATER_WEAKNESS, new DragonPenalty(
-                Optional.of(DragonSurvival.res("abilities/cave/water_weakness")),
-                // Enable when water (except when affected by the 'FIRE' effect)
+                Optional.of(DragonSurvival.res("penalties/cave/water_weakness")),
                 Optional.of(Condition.thisEntity(EntityCondition.isInFluid(context.lookup(Registries.FLUID).getOrThrow(FluidTags.WATER)))
                         .and(Condition.thisEntity(EntityCondition.hasEffect(DSEffects.FIRE)).invert()).build()),
                 new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.WATER_BURN), 1),
@@ -96,13 +101,13 @@ public class DragonPenalties {
         ));
 
         context.register(THIN_SKIN, new DragonPenalty(
-                Optional.of(DragonSurvival.res("abilities/sea/thin_skin")),
-                // Enable when in water, in rain or on (or within) said block tag
+                Optional.of(DragonSurvival.res("penalties/sea/thin_skin")),
                 Optional.of(AnyOfCondition.anyOf(
+                        Condition.thisEntity(EntityCondition.hasEffect(DSEffects.PEACE)),
                         Condition.thisEntity(EntityCondition.isInFluid(context.lookup(Registries.FLUID).getOrThrow(FluidTags.WATER))),
-                        Condition.thisEntity(EntityCondition.isInRainOrSnow()),
                         Condition.thisEntity(EntityCondition.isOnBlock(DSBlockTags.IS_WET)),
-                        Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_WET))
+                        Condition.thisEntity(EntityCondition.isInBlock(DSBlockTags.IS_WET)),
+                        Condition.thisEntity(EntityCondition.isInRainOrSnow())
                 ).invert().build()),
                 new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.DEHYDRATION), 1),
                 new SupplyTrigger(
@@ -114,7 +119,7 @@ public class DragonPenalties {
                         List.of(
                                 new SupplyTrigger.RecoveryItem(
                                         List.of(
-                                                ItemCondition.is(Items.MILK_BUCKET, DSItems.FROZEN_RAW_FISH.value()),
+                                                ItemCondition.is(DSItems.FROZEN_RAW_FISH.value()),
                                                 ItemCondition.hasPotion(Potions.WATER)
                                         ),
                                         0.5f
@@ -126,20 +131,19 @@ public class DragonPenalties {
         ));
 
         context.register(ITEM_BLACKLIST, new DragonPenalty(
-                Optional.of(DragonSurvival.res("abilities/cave/item_blacklist")),
+                Optional.of(DragonSurvival.res("penalties/general/item_blacklist")),
                 Optional.empty(),
                 new ItemBlacklistPenalty(DEFAULT_COMMON_BLACKLIST),
                 PenaltyTrigger.instant()
         ));
 
         context.register(FEAR_OF_DARKNESS, new DragonPenalty(
-                Optional.of(DragonSurvival.res("abilities/forest/fear_of_darkness")),
-                // Disable when within a light strength of at least 3 or when affected by the 'MAGIC' or 'GLOWING' effects
+                Optional.of(DragonSurvival.res("penalties/forest/fear_of_darkness")),
                 Optional.of(AnyOfCondition.anyOf(
                         Condition.thisEntity(EntityCondition.hasEffect(DSEffects.MAGIC)),
                         Condition.thisEntity(EntityCondition.hasEffect(MobEffects.GLOWING)),
-                        Condition.tool(ItemCondition.is(DSItemTags.LIGHT_SOURCE)),
-                        MatchItem.build(ItemCondition.is(DSItemTags.LIGHT_SOURCE), MatchItem.Slot.OFFHAND),
+                        Condition.thisEntity(EntityCondition.isItemEquipped(EquipmentSlot.MAINHAND, DSItemTags.LIGHT_SOURCE)),
+                        Condition.thisEntity(EntityCondition.isItemEquipped(EquipmentSlot.OFFHAND, DSItemTags.LIGHT_SOURCE)),
                         Condition.thisEntity(EntityCondition.isInLight(3))
                 ).invert().build()),
                 new MobEffectPenalty(PotionData.create(DSEffects.STRESS).duration(10).showParticles().build()),
@@ -168,6 +172,22 @@ public class DragonPenalties {
                 Optional.empty(),
                 new DamagePenalty(context.lookup(Registries.DAMAGE_TYPE).getOrThrow(DSDamageTypes.WATER_BURN), 2),
                 new HitByProjectileTrigger(HolderSet.direct(EntityType.SNOWBALL.builtInRegistryHolder()))
+        ));
+
+        context.register(FEAR, new DragonPenalty(
+                Optional.of(DragonSurvival.res("penalties/general/fear")),
+                Optional.of(Condition.thisEntity(EntityCondition.hasEffect(DSEffects.ANIMAL_PEACE)).invert().build()),
+                new FearPenalty(List.of(new Fear(
+                        DurationInstanceBase.create(DragonSurvival.res("animals")).infinite().removeAutomatically().hidden().build(),
+                        Optional.of(
+                                Condition.thisEntity(EntityCondition.isType(EntityCheckPredicate.Type.ANIMAL))
+                                        .and(Condition.thisEntity(EntityCondition.isType(DSEntityTypeTags.ANIMAL_AVOID_BLACKLIST)).invert()).build()
+                        ),
+                        LevelBasedValue.constant(20),
+                        LevelBasedValue.constant(1.3f),
+                        LevelBasedValue.constant(1.5f)
+                ))),
+                PenaltyTrigger.instant()
         ));
     }
 

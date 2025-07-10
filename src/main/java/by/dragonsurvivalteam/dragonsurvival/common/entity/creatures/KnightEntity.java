@@ -2,8 +2,11 @@ package by.dragonsurvivalteam.dragonsurvival.common.entity.creatures;
 
 import by.dragonsurvivalteam.dragonsurvival.client.render.util.RandomAnimationPicker;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
@@ -30,6 +33,81 @@ import software.bernie.geckolib.animation.RawAnimation;
 import java.util.List;
 
 public class KnightEntity extends Hunter {
+    @ConfigRange(min = 1)
+    @Translation(key = "knight_health", type = Translation.Type.CONFIGURATION, comments = "Base value for the max health attribute")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "knight"}, key = "knight_health")
+    public static double MAX_HEALTH = 40;
+
+    @Override
+    public double maxHealthConfig() {
+        return MAX_HEALTH;
+    }
+
+    @ConfigRange(min = 0)
+    @Translation(key = "knight_attack_damage", type = Translation.Type.CONFIGURATION, comments = "Base value for the attack damage attribute")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "knight"}, key = "knight_damage")
+    public static int ATTACK_DAMAGE = 12;
+
+    @Override
+    public double attackDamageConfig() {
+        return ATTACK_DAMAGE;
+    }
+
+    @ConfigRange(min = 0)
+    @Translation(key = "knight_attack_knockback", type = Translation.Type.CONFIGURATION, comments = "Base value for the attack knockback attribute")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "knight"}, key = "knight_attack_knockback")
+    public static int ATTACK_KNOCKBACK = 0;
+
+    @Override
+    public double attackKnockback() {
+        return ATTACK_KNOCKBACK;
+    }
+
+    @ConfigRange(min = 0)
+    @Translation(key = "knight_movement_speed", type = Translation.Type.CONFIGURATION, comments = "Base value for the movement speed attribute")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "knight"}, key = "knight_movement_speed")
+    public static double MOVEMENT_SPEED = 0.3;
+
+    @Override
+    public double movementSpeedConfig() {
+        return MOVEMENT_SPEED;
+    }
+
+    @ConfigRange(min = 0)
+    @Translation(key = "knight_armor", type = Translation.Type.CONFIGURATION, comments = "Base value for the armor attribute")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "knight"}, key = "knight_armor")
+    public static double ARMOR = 10;
+
+    @Override
+    public double armorConfig() {
+        return ARMOR;
+    }
+
+    @ConfigRange(min = 0)
+    @Translation(key = "knight_armor_toughness", type = Translation.Type.CONFIGURATION, comments = "Base value for the armor toughness attribute")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "knight"}, key = "knight_armor_toughness")
+    public static double ARMOR_TOUGHNESS = 0;
+
+    @Override
+    public double armorToughnessConfig() {
+        return ARMOR_TOUGHNESS;
+    }
+
+    @ConfigRange(min = 0)
+    @Translation(key = "knight_knockback_resistance", type = Translation.Type.CONFIGURATION, comments = "Base value for the knockback resistance attribute")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "knight"}, key = "knight_knockback_resistance")
+    public static double KNOCKBACK_RESISTANCE = 0;
+
+    @Override
+    public double knockbackResistanceConfig() {
+        return KNOCKBACK_RESISTANCE;
+    }
+
+    @ConfigRange(min = 0)
+    @Translation(key = "knight_shield_chance", type = Translation.Type.CONFIGURATION, comments = "Determines the chance (in %) of knights having a shield")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "knight"}, key = "knight_shield_chance")
+    public static double SHIELD_CHANCE = 0.1;
+
     public KnightEntity(final EntityType<? extends PathfinderMob> type, final Level level) {
         super(type, level);
     }
@@ -122,12 +200,12 @@ public class KnightEntity extends Hunter {
     }
 
     private void applyMagicDisabledDebuff() {
-        double detectionRadius = 8.0;
+        double detectionRadius = 12.0;
         List<Player> players = this.level().getEntitiesOfClass(Player.class, this.getBoundingBox().inflate(detectionRadius));
 
         for (Player player : players) {
             if (DragonStateProvider.isDragon(player)) {
-                player.addEffect(new MobEffectInstance(DSEffects.MAGIC_DISABLED, 100, 0, false, false));
+                player.addEffect(new MobEffectInstance(DSEffects.MAGIC_DISABLED, 240, 0, false, true));
             }
         }
     }
@@ -149,7 +227,8 @@ public class KnightEntity extends Hunter {
     @Override
     protected void populateDefaultEquipmentSlots(@NotNull RandomSource randomSource, @NotNull DifficultyInstance difficultyInstance) {
         setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
-        if (random.nextDouble() < ServerConfig.knightShieldChance) {
+
+        if (random.nextDouble() < SHIELD_CHANCE) {
             setItemInHand(InteractionHand.OFF_HAND, new ItemStack(Items.SHIELD));
         }
     }

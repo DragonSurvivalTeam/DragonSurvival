@@ -6,7 +6,6 @@ import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.Dr
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.SkinPreset;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Modifier;
-import by.dragonsurvivalteam.dragonsurvival.common.handlers.DragonSizeHandler;
 import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.network.client.ClientProxy;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncMagicData;
@@ -56,6 +55,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
+import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
@@ -70,6 +70,9 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class DragonStateHandler extends EntityStateHandler {
+    @Translation(comments = "You cannot turn into a human in this world")
+    private static final String NO_HUMANS = Translation.Type.GUI.wrap("message.no_humans");
+
     public static final double NO_GROWTH = -1;
 
     private static final double AGE_LERP_SPEED = 0.1; // 10% per tick
@@ -93,6 +96,8 @@ public class DragonStateHandler extends EntityStateHandler {
     public boolean spinWasGranted;
 
     public boolean refreshBody;
+    /** Currently only set when the dimension refresh occurs due to a size (scale) change */
+    public boolean shouldFudgePosition;
 
     /** Last timestamp the server synchronized the player */
     public int lastSync;
@@ -171,13 +176,20 @@ public class DragonStateHandler extends EntityStateHandler {
             }
         } else if (Math.abs(growth - desiredGrowth) < AGE_EPSILON) {
             setGrowth(player, desiredGrowth);
-            DragonSizeHandler.overridePose(player);
         } else {
             setGrowth(player, Mth.lerp(AGE_LERP_SPEED, growth, desiredGrowth));
         }
     }
 
     public void setGrowth(@Nullable final Player player, final double growth) {
+        setGrowth(player, growth, false);
+    }
+
+    /**
+     * @param forceUpdate Bypass the check that could result in skipping updating modifiers / synchronizing the state to the client <br>
+     *                    Needed after de-serialization of the data (since that had no player context)
+     */
+    public void setGrowth(@Nullable final Player player, final double growth, final boolean forceUpdate) {
         double oldGrowth = this.growth;
         Holder<DragonStage> oldStage = dragonStage;
         updateGrowthAndStage(player != null ? player.registryAccess() : null, growth);
@@ -191,7 +203,7 @@ public class DragonStateHandler extends EntityStateHandler {
             return;
         }
 
-        if (oldGrowth == this.growth && oldStage != null && dragonStage.is(oldStage)) {
+        if (!forceUpdate && oldGrowth == this.growth && oldStage != null && dragonStage.is(oldStage)) {
             // There is no need to refresh the dimensions / fudge the position in this case
             // the visual size is only for the client (rendering) and therefor doesn't cause position desync
             return;
@@ -199,12 +211,9 @@ public class DragonStateHandler extends EntityStateHandler {
 
         // Update modifiers before refreshing the dimensions, as the growth modifiers may affect them
         DSModifiers.updateGrowthModifiers(player, this);
-
-        // We need to do this special handling so that the pose update looks smooth
-        // (without updating using poses that are actually incorrect)
-        // (when doing the pose / refresh_size calculations on the server)
-        DragonSizeHandler.overridePose(player);
+        shouldFudgePosition = true;
         player.refreshDimensions();
+        shouldFudgePosition = false;
 
         if (player instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncGrowth(serverPlayer.getId(), getGrowth()));
@@ -364,8 +373,9 @@ public class DragonStateHandler extends EntityStateHandler {
         PacketDistributor.sendToPlayer(player, new SyncMagicData(magic.serializeNBT(player.registryAccess())));
     }
 
-    public void setSpecies(@Nullable final Player player, final Holder<DragonSpecies> species) {
+    public void setSpecies(@Nullable final Player player, final Holder<DragonSpecies> species, boolean savedForSoul) {
         Holder<DragonSpecies> oldSpecies = dragonSpecies;
+        double oldGrowth = growth;
         dragonSpecies = species;
 
         boolean hasChanged = species != null && !DragonUtils.isSpecies(oldSpecies, species);
@@ -379,10 +389,25 @@ public class DragonStateHandler extends EntityStateHandler {
                 }
             }
 
-            if (skinData.skinPresets.get().get(speciesKey()).isEmpty()) {
-                refreshSkinPresetForSpecies(dragonSpecies, dragonBody);
-                recompileCurrentSkin();
+            // Also make sure we clamp our growth to a valid stage
+            updateGrowthAndStage(player != null ? player.registryAccess() : null, getSavedDragonAge(speciesKey()));
+
+            // The server doesn't need to check for skin preset refreshes; the client handles this
+            if(FMLLoader.getDist().isClient()) {
+                if (skinData.skinPresets.get().get(speciesKey()).isEmpty()) {
+                    refreshSkinPresetForSpecies(dragonSpecies, dragonBody);
+                    recompileCurrentSkin();
+                }
             }
+        }
+
+
+        if (oldSpecies != null && !savedForSoul) {
+            // Save the growth for the previous species if we have changed and it isn't due to a soul save
+            savedGrowth.put(oldSpecies.getKey(), oldGrowth);
+        } else if (oldSpecies != null) {
+            // Clear out saved growth data if we are saving for soul, to prevent the player from getting their growth back and repeatedly saving to a soul
+            savedGrowth.remove(oldSpecies.getKey());
         }
 
         if (player == null) {
@@ -400,6 +425,10 @@ public class DragonStateHandler extends EntityStateHandler {
             PenaltySupply.clear(player);
             DSModifiers.clearModifiers(player);
         }
+    }
+
+    public void setSpecies(@Nullable final Player player, final Holder<DragonSpecies> species) {
+        setSpecies(player, species, false);
     }
 
     public void setBody(@Nullable final Player player, final Holder<DragonBody> dragonBody) {
@@ -451,8 +480,8 @@ public class DragonStateHandler extends EntityStateHandler {
         AttributeInstance instance = Objects.requireNonNull(player.getAttribute(Attributes.SCALE));
         double partialVisualGrowth = Mth.lerp(partialTick, visualGrowthLastTick, visualGrowth);
 
-        if (partialVisualGrowth == visualGrowth) {
-            return player.getAttributeValue(Attributes.SCALE);
+        if (partialVisualGrowth == visualGrowth || DragonSurvival.PROXY.isFakePlayer(player)) {
+            return instance.getValue();
         }
 
         List<AttributeModifier> attributeModifiers = stage().value().filterModifiers(instance);
@@ -527,11 +556,17 @@ public class DragonStateHandler extends EntityStateHandler {
     }
 
     public DragonStageCustomization getCurrentStageCustomization() {
-        return skinData.get(speciesKey(), stageKey()).get();
+        Lazy<DragonStageCustomization> customizationLazy = skinData.get(speciesKey(), stageKey());
+        if (customizationLazy == null) {
+            DragonSurvival.LOGGER.error("Failed to get customization for species [{}] and stage [{}]. Returning empty customization.", speciesId(), stageId());
+            return new DragonStageCustomization(); // Return a default customization if none exists
+        }
+
+        return customizationLazy.get();
     }
 
-    public DragonStageCustomization getCustomizationForStage(final ResourceKey<DragonStage> stage) {
-        return skinData.get(speciesKey(), stage).get();
+    public DragonStageCustomization getCustomizationForStageAndSpecies(final ResourceKey<DragonSpecies> species, final ResourceKey<DragonStage> stage) {
+        return skinData.get(species, stage).get();
     }
 
     public CompoundTag serializeNBT(HolderLookup.Provider provider, boolean isDragonSoul) {
@@ -558,13 +593,15 @@ public class DragonStateHandler extends EntityStateHandler {
 
         if (isDragonSoul && dragonSpecies != null) {
             // Only store the growth of the dragon the player is currently in if we are saving for the soul
-            storeSavedAge(speciesId(), tag);
+            storeSavedAge(speciesKey(), tag);
+            // Also, clear the saved growth for the current species in this case to prevent keeping growth data post-soul save
+            savedGrowth.remove(speciesKey());
         } else if (!isDragonSoul) {
             for (ResourceKey<DragonSpecies> type : ResourceHelper.keys(provider, DragonSpecies.REGISTRY)) {
                 boolean hasSavedGrowth = savedGrowth.containsKey(type);
 
                 if (hasSavedGrowth) {
-                    storeSavedAge(type.location(), tag);
+                    storeSavedAge(type, tag);
                 }
             }
         }
@@ -642,8 +679,8 @@ public class DragonStateHandler extends EntityStateHandler {
 
         if (dragonSpecies != null) {
             if (isDragonSoul) {
-                // Only load the growth of the dragon the player is currently in if we are loading for the soul
-                savedGrowth.put(speciesKey(), loadSavedStage(provider, speciesKey(), tag));
+                // Load the growth from the saved growth in the tag when loading from a soul, rather than referencing the saved stage status
+                savedGrowth.put(speciesKey(), growth);
             } else {
                 for (ResourceKey<DragonSpecies> type : ResourceHelper.keys(provider, DragonSpecies.REGISTRY)) {
                     CompoundTag compound = tag.getCompound(speciesId() + SAVED_GROWTH_SUFFIX);
@@ -679,7 +716,7 @@ public class DragonStateHandler extends EntityStateHandler {
         });
 
         skinData = new SkinData();
-        skinData.deserializeNBT(provider, tag.getCompound(SKIN_DATA));
+        skinData.deserializeNBT(provider, tag.getCompound(SKIN_DATA), dragonBody);
         super.deserializeNBT(provider, tag.getCompound(ENTITY_STATE));
 
         if (isDragon()) {
@@ -705,10 +742,10 @@ public class DragonStateHandler extends EntityStateHandler {
         return compound.getDouble(GROWTH);
     }
 
-    private void storeSavedAge(final ResourceLocation dragonSpecies, final CompoundTag tag) {
+    private void storeSavedAge(final ResourceKey<DragonSpecies> speciesKey, final CompoundTag tag) {
         CompoundTag savedGrowthTag = new CompoundTag();
-        savedGrowthTag.putDouble(GROWTH, growth);
-        tag.put(dragonSpecies + SAVED_GROWTH_SUFFIX, savedGrowthTag);
+        savedGrowthTag.putDouble(GROWTH, getSavedDragonAge(speciesKey));
+        tag.put(speciesKey.location() + SAVED_GROWTH_SUFFIX, savedGrowthTag);
     }
 
     @Override
@@ -717,21 +754,25 @@ public class DragonStateHandler extends EntityStateHandler {
     }
 
     public void revertToHumanForm(final Player player, boolean isDragonSoul) {
-        // Don't set the saved dragon growth if we are reverting from a soul, as we already are storing the growth of the dragon in the soul
-        if (ServerConfig.saveGrowthStage && !isDragonSoul && dragonSpecies != null) {
-            savedGrowth.put(speciesKey(), getGrowth());
+        if (ServerConfig.noHumansAllowed) {
+            player.displayClientMessage(Component.translatable(NO_HUMANS), true);
+            return;
         }
 
         // Drop everything in your claw slots
         ClawInventoryData.reInsertClawTools(player);
 
-        setSpecies(player, null);
+        setSpecies(player, null, isDragonSoul);
         setBody(player, null);
         setDesiredGrowth(player, NO_GROWTH);
 
         AltarData altarData = AltarData.getData(player);
         altarData.altarCooldown = Functions.secondsToTicks(ServerConfig.altarUsageCooldown);
         altarData.hasUsedAltar = true;
+    }
+
+    public boolean needsSkinRecompilation() {
+        return isDragon() && getSkinData().recompileSkin.getOrDefault(stageKey(), true);
     }
 
     public double getSavedDragonAge(final ResourceKey<DragonSpecies> type) {

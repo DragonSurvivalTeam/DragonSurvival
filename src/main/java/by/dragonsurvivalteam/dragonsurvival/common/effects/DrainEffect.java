@@ -19,7 +19,7 @@ import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 
 public class DrainEffect extends ModifiableMobEffect {
-    @ConfigRange(min = 0, max = 100)
+    @ConfigRange(min = 0)
     @Translation(key = "drain_effect_damage", type = Translation.Type.CONFIGURATION, comments = "Determines the damage dealt by the drain effect")
     @ConfigOption(side = ConfigSide.SERVER, category = {"effects", "drain"}, key = "drain_effect_damage")
     public static Float damage = 1f;

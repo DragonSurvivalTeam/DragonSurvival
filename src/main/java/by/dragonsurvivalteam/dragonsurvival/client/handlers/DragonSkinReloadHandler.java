@@ -4,12 +4,12 @@ import by.dragonsurvivalteam.dragonsurvival.client.skins.DragonSkins;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 
-@EventBusSubscriber(Dist.CLIENT)
+@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class DragonSkinReloadHandler {
     @SubscribeEvent
-    public static void onReloadEvent(AddReloadListenerEvent reloadEvent) {
+    public static void onCommonSetupSkin(final FMLCommonSetupEvent ignored) {
         DragonSkins.init(true);
     }
 }

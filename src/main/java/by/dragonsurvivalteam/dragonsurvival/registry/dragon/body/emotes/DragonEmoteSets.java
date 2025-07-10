@@ -13,7 +13,7 @@ public class DragonEmoteSets {
     public static final ResourceKey<DragonEmoteSet> DEFAULT_EMOTES = key("default_emotes");
 
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Fix Head")
+    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Look Forward")
     public static final String BLEND_HEAD_LOCKED = "empty";
 
     @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Angry")
@@ -37,7 +37,7 @@ public class DragonEmoteSets {
     @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Lick")
     public static final String BLEND_LICKING = "blend_licking";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Yaw")
+    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Yawn")
     public static final String BLEND_YAWNING = "blend_yawning";
 
     @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Waving Paw")
@@ -46,14 +46,23 @@ public class DragonEmoteSets {
     @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Sniff")
     public static final String BLEND_SNIFFING = "blend_sniffing";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Bites")
+    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Biting")
     public static final String BLEND_BITE = "spell_shot";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r One Bite")
+    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Bite")
     public static final String BLEND_ONE_BITE = "bite";
 
     @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Talk")
     public static final String BLEND_TALK = "eat_item_left";
+
+    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Ro-sham-bo - Rock")
+    public static final String BLEND_HAND_ROCK = "blend_hand_rock";
+
+    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Ro-sham-bo - Paper")
+    public static final String BLEND_HAND_PAPER = "blend_hand_paper";
+
+    @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Ro-sham-bo - Scissors")
+    public static final String BLEND_HAND_SCISSORS = "blend_hand_scissors";
 
     @Translation(type = Translation.Type.EMOTE, comments = "§6Blend:§r Open Mouth")
     public static final String BLEND_BREATH = "breath";
@@ -70,7 +79,7 @@ public class DragonEmoteSets {
     @Translation(type = Translation.Type.EMOTE, comments = "§5Sit:§r Magic")
     public static final String SITTING_MAGIC = "sit_on_magic_source";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§5Sit:§r Item")
+    @Translation(type = Translation.Type.EMOTE, comments = "§5Sit:§r Hold Item")
     public static final String SITTING_ITEM = "sitting_spinning_item";
 
     @Translation(type = Translation.Type.EMOTE, comments = "§5Sit:§r Sad")
@@ -97,10 +106,10 @@ public class DragonEmoteSets {
     @Translation(type = Translation.Type.EMOTE, comments = "§4Rest:§r R Lying")
     public static final String REST_LYING_R = "resting_right";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§4Rest:§r L Lying Alt")
+    @Translation(type = Translation.Type.EMOTE, comments = "§4Rest:§r L Lying Under Wing")
     public static final String REST_LYING_WINGED_L = "resting_covering_with_wing_left";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§4Rest:§r R Lying Alt")
+    @Translation(type = Translation.Type.EMOTE, comments = "§4Rest:§r R Lying Under Wing")
     public static final String REST_LYING_WINGED_R = "resting_covering_with_wing_right";
 
     @Translation(type = Translation.Type.EMOTE, comments = "§4Rest:§r On Back")
@@ -130,7 +139,7 @@ public class DragonEmoteSets {
     @Translation(type = Translation.Type.EMOTE, comments = "§3Fun:§r Spin")
     public static final String FUN_SPIN = "spinning_on_back";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§3Fun:§r SPIN FAST")
+    @Translation(type = Translation.Type.EMOTE, comments = "§3Fun:§r FAST SPIN")
     public static final String FUN_SPIN_FAST = "spinning_on_back_fast";
 
     @Translation(type = Translation.Type.EMOTE, comments = "§3Fun:§r Sit Vibing")
@@ -148,19 +157,19 @@ public class DragonEmoteSets {
     @Translation(type = Translation.Type.EMOTE, comments = "§3Fun:§r Flapping Wings Alt")
     public static final String FUN_WINGS_BIPED = "flapping_wings_standing_biped";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§3Fun:§r Hold Passenger (rider)")
+    @Translation(type = Translation.Type.EMOTE, comments = "§3Fun:§r Hold Passenger")
     public static final String FUN_PASSENGER = "holding_passenger_standing_biped";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§2Misc:§r Fly")
+    @Translation(type = Translation.Type.EMOTE, comments = "§2Misc:§r Flying")
     public static final String MISC_FLY = "fly";
 
     @Translation(type = Translation.Type.EMOTE, comments = "§2Misc:§r Soaring")
     public static final String MISC_SOARING = "fly_soaring";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§2Misc:§r Fly Land")
+    @Translation(type = Translation.Type.EMOTE, comments = "§2Misc:§r Landing")
     public static final String MISC_LAND = "fly_land";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§2Misc:§r Swim")
+    @Translation(type = Translation.Type.EMOTE, comments = "§2Misc:§r Swimming")
     public static final String MISC_SWIM = "swim_fast";
 
     @Translation(type = Translation.Type.EMOTE, comments = "§1Sound:§r Purr")
@@ -172,7 +181,7 @@ public class DragonEmoteSets {
     @Translation(type = Translation.Type.EMOTE, comments = "§1Sound:§r Hungry")
     public static final String SOUND_STRAY_AMBIENT = "stray";
 
-    @Translation(type = Translation.Type.EMOTE, comments = "§1Sound:§r Loud Angry Roar")
+    @Translation(type = Translation.Type.EMOTE, comments = "§1Sound:§r Loud Roar")
     public static final String SOUND_ROAR = "roar";
 
     @Translation(type = Translation.Type.EMOTE, comments = "§1Sound:§r Hiss")
@@ -210,6 +219,9 @@ public class DragonEmoteSets {
                                 DragonEmote.Builder.of(BLEND_BITE).loops().canMove().blend().build(),
                                 DragonEmote.Builder.of(BLEND_ONE_BITE).blend().canMove().build(),
                                 DragonEmote.Builder.of(BLEND_TALK).loops().blend().canMove().build(),
+                                DragonEmote.Builder.of(BLEND_HAND_ROCK).blend().canMove().build(),
+                                DragonEmote.Builder.of(BLEND_HAND_PAPER).blend().canMove().build(),
+                                DragonEmote.Builder.of(BLEND_HAND_SCISSORS).blend().canMove().build(),
                                 DragonEmote.Builder.of(SIT).loops().canMove().build(),
                                 DragonEmote.Builder.of(SITTING_CURLED_L).loops().canMove().build(),
                                 DragonEmote.Builder.of(SITTING_CURLED_R).loops().canMove().build(),

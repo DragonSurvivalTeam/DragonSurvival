@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonAltarBlock;
+import by.dragonsurvivalteam.dragonsurvival.common.blocks.ModCompat;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.SkeletonPieceBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.TreasureBlock;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
@@ -74,7 +75,13 @@ public class DSBlockTags extends BlockTagsProvider {
 
             switch (block) {
                 case DragonAltarBlock ignored -> tag(DRAGON_ALTARS).add(block);
-                case TreasureBlock ignored -> tag(DRAGON_TREASURES).add(block);
+                case TreasureBlock ignored -> {
+                    if (holder.get() instanceof ModCompat compat && compat.getCompatId() != null) {
+                        tag(DRAGON_TREASURES).addOptional(holder.getId());
+                    } else {
+                        tag(DRAGON_TREASURES).add(block);
+                    }
+                }
                 case SkeletonPieceBlock ignored -> tag(key("dragon_bones")).add(block);
                 default -> { /* Nothing to do */ }
             }
@@ -132,7 +139,13 @@ public class DSBlockTags extends BlockTagsProvider {
                 .add(Blocks.SMALL_DRIPLEAF);
 
         tag(DRAGON_ORE_DROP)
-                .addTag(Tags.Blocks.ORES);
+                .addTag(Tags.Blocks.ORES_QUARTZ)
+                .addTag(Tags.Blocks.ORES_COAL)
+                .addTag(Tags.Blocks.ORES_REDSTONE)
+                .addTag(Tags.Blocks.ORES_LAPIS)
+                .add(Blocks.NETHER_GOLD_ORE)
+                .addTag(Tags.Blocks.ORES_DIAMOND)
+                .addTag(Tags.Blocks.ORES_EMERALD);
 
         tag(GENERAL_ORES)
                 .addTag(Tags.Blocks.ORES)
@@ -229,6 +242,31 @@ public class DSBlockTags extends BlockTagsProvider {
     private void addToDragonSpeedUpTags() {
         tag(SPEEDS_UP_CAVE_DRAGON)
                 .addTag(BlockTags.BASE_STONE_OVERWORLD)
+                .add(Blocks.NETHERITE_BLOCK)
+                .add(Blocks.NETHER_BRICK_FENCE)
+                .add(Blocks.NETHER_BRICKS)
+                .add(Blocks.CRACKED_NETHER_BRICKS)
+                .add(Blocks.NETHER_BRICK_SLAB)
+                .add(Blocks.NETHER_BRICK_STAIRS)
+                .add(Blocks.NETHER_BRICK_WALL)
+                .add(Blocks.RED_NETHER_BRICKS)
+                .add(Blocks.RED_NETHER_BRICK_SLAB)
+                .add(Blocks.RED_NETHER_BRICK_STAIRS)
+                .add(Blocks.RED_NETHER_BRICK_WALL)
+                .add(Blocks.BLACKSTONE)
+                .add(Blocks.BLACKSTONE_SLAB)
+                .add(Blocks.BLACKSTONE_STAIRS)
+                .add(Blocks.BLACKSTONE_WALL)
+                .add(Blocks.GILDED_BLACKSTONE)
+                .add(Blocks.CHISELED_POLISHED_BLACKSTONE)
+                .add(Blocks.POLISHED_BLACKSTONE)
+                .add(Blocks.CRACKED_POLISHED_BLACKSTONE_BRICKS)
+                .add(Blocks.POLISHED_BLACKSTONE_BRICK_SLAB)
+                .add(Blocks.POLISHED_BLACKSTONE_BRICK_STAIRS)
+                .add(Blocks.POLISHED_BLACKSTONE_BRICKS)
+                .add(Blocks.POLISHED_BLACKSTONE_PRESSURE_PLATE)
+                .add(Blocks.POLISHED_BLACKSTONE_BRICK_WALL)
+                .add(Blocks.POLISHED_BLACKSTONE_BUTTON)
                 .addTag(BlockTags.BEACON_BASE_BLOCKS)
                 .addTag(BlockTags.BASE_STONE_NETHER)
                 .addTag(BlockTags.STONE_BRICKS)
@@ -247,6 +285,18 @@ public class DSBlockTags extends BlockTagsProvider {
                 .addTag(IS_WET)
                 .add(Blocks.DIRT_PATH)
                 .add(Blocks.SAND)
+                .add(Blocks.CLAY)
+                .add(Blocks.DRIPSTONE_BLOCK)
+                .add(Blocks.PRISMARINE)
+                .add(Blocks.PRISMARINE_SLAB)
+                .add(Blocks.PRISMARINE_STAIRS)
+                .add(Blocks.PRISMARINE_WALL)
+                .add(Blocks.PRISMARINE_BRICKS)
+                .add(Blocks.PRISMARINE_BRICK_SLAB)
+                .add(Blocks.PRISMARINE_BRICK_STAIRS)
+                .add(Blocks.DARK_PRISMARINE)
+                .add(Blocks.DARK_PRISMARINE_SLAB)
+                .add(Blocks.DARK_PRISMARINE_STAIRS)
                 .add(Blocks.MUD);
 
         tag(SPEEDS_UP_FOREST_DRAGON)
@@ -261,6 +311,18 @@ public class DSBlockTags extends BlockTagsProvider {
     private void addToVanillaTags() {
         tag(BlockTags.MINEABLE_WITH_AXE)
                 .addTag(WOODEN_DRAGON_DOORS)
+                .add(DSBlocks.OAK_DRAGON_ALTAR.value())
+                .add(DSBlocks.BIRCH_DRAGON_ALTAR.value())
+                .add(DSBlocks.PALE_OAK_DRAGON_ALTAR.value())
+                .add(DSBlocks.CRIMSON_DRAGON_ALTAR.value())
+                .add(DSBlocks.WARPED_DRAGON_ALTAR.value())
+                .add(DSBlocks.MANGROVE_DRAGON_ALTAR.value())
+                .add(DSBlocks.BAMBOO_DRAGON_ALTAR.value())
+                .add(DSBlocks.CHERRY_DRAGON_ALTAR.value())
+                .add(DSBlocks.ACACIA_DRAGON_ALTAR.value())
+                .add(DSBlocks.DARK_OAK_DRAGON_ALTAR.value())
+                .add(DSBlocks.JUNGLE_DRAGON_ALTAR.value())
+                .add(DSBlocks.SPRUCE_DRAGON_ALTAR.value())
                 .addTag(SMALL_WOODEN_DRAGON_DOORS)
                 .add(DSBlocks.FOREST_DRAGON_PRESSURE_PLATE.value());
 
@@ -272,6 +334,18 @@ public class DSBlockTags extends BlockTagsProvider {
                 .add(DSBlocks.NETHER_BRICK_DRAGON_ALTAR.value())
                 .add(DSBlocks.MOSSY_DRAGON_ALTAR.value())
                 .add(DSBlocks.BLACKSTONE_DRAGON_ALTAR.value())
+                .add(DSBlocks.BONE_DRAGON_ALTAR.value())
+                .add(DSBlocks.QUARTZ_DRAGON_ALTAR.value())
+                .add(DSBlocks.ICE_DRAGON_ALTAR.value())
+                .add(DSBlocks.NETHERRACK_DRAGON_ALTAR.value())
+                .add(DSBlocks.OBSIDIAN_DRAGON_ALTAR.value())
+                .add(DSBlocks.AMETHYST_DRAGON_ALTAR.value())
+                .add(DSBlocks.MUDBRICK_DRAGON_ALTAR.value())
+                .add(DSBlocks.PRISMARINE_DRAGON_ALTAR.value())
+                .add(DSBlocks.RED_NETHER_BRICK_DRAGON_ALTAR.value())
+                .add(DSBlocks.ENDSTONE_DRAGON_ALTAR.value())
+                .add(DSBlocks.DEEPSLATE_DRAGON_ALTAR.value())
+                .add(DSBlocks.TUFF_DRAGON_ALTAR.value())
                 .add(DSBlocks.CAVE_DRAGON_DOOR.value())
                 .add(DSBlocks.SEA_DRAGON_DOOR.value())
                 .add(DSBlocks.IRON_DRAGON_DOOR.value())

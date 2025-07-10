@@ -69,6 +69,6 @@ public abstract class ItemRendererMixin { // FIXME :: doesn't work with sodium s
             }
         }
 
-        return HunterData.hasTransparency(entity) ? entity : null;
+        return (entity != null && HunterData.hasTransparency(entity)) ? entity : null;
     }
 }

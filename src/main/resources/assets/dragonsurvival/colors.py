@@ -53,7 +53,6 @@ for dp in os.walk(texturefilepath):
                 hue = 0
             hue = ((hue * 60.0 + 360.0) % 360.0) / 360.0
             hueavg[fp] = hue
-            print (dp[0] + fp, hue)
         except KeyError as e:
             pass
 
@@ -68,7 +67,10 @@ for cfilepath, cfilelist in custfiles.items():
     for cfile in cfilelist:
         js = json.load(open(cfilepath + "/" + cfile))
         if type(js) is dict:
-            js['average_hue'] = hueavg[js['texture'].split('/')[-1]]
+            if js['texture'].split('/')[-1] in hueavg:
+                js['average_hue'] = hueavg[js['texture'].split('/')[-1]]
+            else:
+                print('file ' + js['texture'] + ' not found in pack, skipping...')
         else:
             for c in range(len(js)):
                 js[c]['average_hue'] = hueavg[js[c]['texture'].split('/')[-1]]

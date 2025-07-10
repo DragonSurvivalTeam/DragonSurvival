@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
 import by.dragonsurvivalteam.dragonsurvival.mixins.Holder$ReferenceAccess;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
@@ -157,6 +158,159 @@ public class DSRecipes extends RecipeProvider {
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
                 .save(output);
 
+        ProxyItem barOfChocolate = new ProxyItem(ModCheck.CREATE, "bar_of_chocolate");
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.DECORATIONS, DSBlocks.CHOCOLATE_DRAGON_TREASURE.value())
+                .requires(barOfChocolate)
+                .requires(DSItems.ELDER_DRAGON_DUST.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
+                .save(output.withConditions(new ModLoadedCondition(ModCheck.CREATE)));
+
+        ProxyItem ruby = new ProxyItem(ModCheck.SILENTGEMS, "ruby");
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.DECORATIONS, DSBlocks.RUBY_DRAGON_TREASURE.value())
+                .requires(ruby)
+                .requires(DSItems.ELDER_DRAGON_DUST.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
+                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+
+        ProxyItem carnelian = new ProxyItem(ModCheck.SILENTGEMS, "carnelian");
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.DECORATIONS, DSBlocks.CARNELIAN_DRAGON_TREASURE.value())
+                .requires(carnelian)
+                .requires(DSItems.ELDER_DRAGON_DUST.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
+                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+
+        ProxyItem topaz = new ProxyItem(ModCheck.SILENTGEMS, "topaz");
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.DECORATIONS, DSBlocks.TOPAZ_DRAGON_TREASURE.value())
+                .requires(topaz)
+                .requires(DSItems.ELDER_DRAGON_DUST.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
+                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+
+        ProxyItem citrine = new ProxyItem(ModCheck.SILENTGEMS, "citrine");
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.DECORATIONS, DSBlocks.CITRINE_DRAGON_TREASURE.value())
+                .requires(citrine)
+                .requires(DSItems.ELDER_DRAGON_DUST.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
+                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+
+        ProxyItem heliodor = new ProxyItem(ModCheck.SILENTGEMS, "heliodor");
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.DECORATIONS, DSBlocks.HELIODOR_DRAGON_TREASURE.value())
+                .requires(heliodor)
+                .requires(DSItems.ELDER_DRAGON_DUST.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
+                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+
+        ProxyItem moldavite = new ProxyItem(ModCheck.SILENTGEMS, "moldavite");
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.DECORATIONS, DSBlocks.MOLDAVITE_DRAGON_TREASURE.value())
+                .requires(moldavite)
+                .requires(DSItems.ELDER_DRAGON_DUST.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
+                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+
+        ProxyItem peridot = new ProxyItem(ModCheck.SILENTGEMS, "peridot");
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.DECORATIONS, DSBlocks.PERIDOT_DRAGON_TREASURE.value())
+                .requires(peridot)
+                .requires(DSItems.ELDER_DRAGON_DUST.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
+                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+
+        ProxyItem turquoise = new ProxyItem(ModCheck.SILENTGEMS, "turquoise");
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.DECORATIONS, DSBlocks.TURQUOISE_DRAGON_TREASURE.value())
+                .requires(turquoise)
+                .requires(DSItems.ELDER_DRAGON_DUST.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
+                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+
+        ProxyItem kyanite = new ProxyItem(ModCheck.SILENTGEMS, "kyanite");
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.DECORATIONS, DSBlocks.KYANITE_DRAGON_TREASURE.value())
+                .requires(kyanite)
+                .requires(DSItems.ELDER_DRAGON_DUST.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
+                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+
+        ProxyItem sapphire = new ProxyItem(ModCheck.SILENTGEMS, "sapphire");
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.DECORATIONS, DSBlocks.SAPPHIRE_DRAGON_TREASURE.value())
+                .requires(sapphire)
+                .requires(DSItems.ELDER_DRAGON_DUST.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
+                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+
+        ProxyItem iolite = new ProxyItem(ModCheck.SILENTGEMS, "iolite");
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.DECORATIONS, DSBlocks.IOLITE_DRAGON_TREASURE.value())
+                .requires(iolite)
+                .requires(DSItems.ELDER_DRAGON_DUST.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
+                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+
+        ProxyItem alexandrite = new ProxyItem(ModCheck.SILENTGEMS, "alexandrite");
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.DECORATIONS, DSBlocks.ALEXANDRITE_DRAGON_TREASURE.value())
+                .requires(alexandrite)
+                .requires(DSItems.ELDER_DRAGON_DUST.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
+                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+
+        ProxyItem ammolite = new ProxyItem(ModCheck.SILENTGEMS, "ammolite");
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.DECORATIONS, DSBlocks.AMMOLITE_DRAGON_TREASURE.value())
+                .requires(ammolite)
+                .requires(DSItems.ELDER_DRAGON_DUST.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
+                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+
+        ProxyItem rose_quartz = new ProxyItem(ModCheck.SILENTGEMS, "rose_quartz");
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.DECORATIONS, DSBlocks.ROSE_QUARTZ_DRAGON_TREASURE.value())
+                .requires(rose_quartz)
+                .requires(DSItems.ELDER_DRAGON_DUST.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
+                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+
+        ProxyItem black_diamond = new ProxyItem(ModCheck.SILENTGEMS, "black_diamond");
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.DECORATIONS, DSBlocks.BLACK_DIAMOND_DRAGON_TREASURE.value())
+                .requires(black_diamond)
+                .requires(DSItems.ELDER_DRAGON_DUST.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
+                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+
+        ProxyItem white_diamond = new ProxyItem(ModCheck.SILENTGEMS, "white_diamond");
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.DECORATIONS, DSBlocks.WHITE_DIAMOND_DRAGON_TREASURE.value())
+                .requires(white_diamond)
+                .requires(DSItems.ELDER_DRAGON_DUST.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
+                .save(output.withConditions(new ModLoadedCondition(ModCheck.SILENTGEMS)));
+
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.MISC, DSItems.ELDER_DRAGON_DUST.value())
                 .requires(DSItemTags.DRAGON_TREASURES)
@@ -167,16 +321,16 @@ public class DSRecipes extends RecipeProvider {
     private void buildDragonBeacons(final RecipeOutput output, final HolderLookup.Provider lookup) {
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.MISC, DSBlocks.DRAGON_BEACON.value())
-                .requires(Items.BEACON)
-                .requires(DSItemTags.DRAGON_ALTARS)
+                .requires(DSItems.STAR_HEART.value())
+                .requires(DSItemTags.ACTIVATES_DRAGON_BEACON)
                 .unlockedBy(getHasName(Items.BEACON), has(Items.BEACON))
-                .save(output, DragonSurvival.res("dragon_beacon_from_dragon_altars"));
+                .save(output);
     }
 
     private void buildDragonAltars(final RecipeOutput output, final HolderLookup.Provider lookup) {
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.MISC, DSBlocks.BIRCH_DRAGON_ALTAR.value())
-                .requires(Items.BIRCH_LOG)
+                .requires(Items.BIRCH_PLANKS)
                 .requires(DSItems.ELDER_DRAGON_BONE.value())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
                 .save(output);
@@ -197,14 +351,14 @@ public class DSRecipes extends RecipeProvider {
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.MISC, DSBlocks.NETHER_BRICK_DRAGON_ALTAR.value())
-                .requires(Items.NETHER_BRICK)
+                .requires(Items.NETHER_BRICKS)
                 .requires(DSItems.ELDER_DRAGON_BONE.value())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
                 .save(output);
 
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.MISC, DSBlocks.OAK_DRAGON_ALTAR.value())
-                .requires(Items.OAK_LOG)
+                .requires(Items.OAK_PLANKS)
                 .requires(DSItems.ELDER_DRAGON_BONE.value())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
                 .save(output);
@@ -233,6 +387,153 @@ public class DSRecipes extends RecipeProvider {
         ShapelessRecipeBuilder
                 .shapeless(RecipeCategory.MISC, DSBlocks.STONE_DRAGON_ALTAR.value())
                 .requires(Items.STONE)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.BONE_DRAGON_ALTAR.value())
+                .requires(Items.BONE_BLOCK)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.QUARTZ_DRAGON_ALTAR.value())
+                .requires(Items.QUARTZ_BLOCK)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.ICE_DRAGON_ALTAR.value())
+                .requires(Items.PACKED_ICE)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.NETHERRACK_DRAGON_ALTAR.value())
+                .requires(Items.NETHERRACK)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.OBSIDIAN_DRAGON_ALTAR.value())
+                .requires(Items.OBSIDIAN)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.AMETHYST_DRAGON_ALTAR.value())
+                .requires(Items.AMETHYST_BLOCK)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.MUDBRICK_DRAGON_ALTAR.value())
+                .requires(Items.PACKED_MUD)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.PRISMARINE_DRAGON_ALTAR.value())
+                .requires(Items.PRISMARINE_BRICKS)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.RED_NETHER_BRICK_DRAGON_ALTAR.value())
+                .requires(Items.RED_NETHER_BRICKS)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.ENDSTONE_DRAGON_ALTAR.value())
+                .requires(Items.END_STONE)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.DEEPSLATE_DRAGON_ALTAR.value())
+                .requires(Items.COBBLED_DEEPSLATE)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.TUFF_DRAGON_ALTAR.value())
+                .requires(Items.TUFF)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.CRIMSON_DRAGON_ALTAR.value())
+                .requires(Items.CRIMSON_PLANKS)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.WARPED_DRAGON_ALTAR.value())
+                .requires(Items.WARPED_PLANKS)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.MANGROVE_DRAGON_ALTAR.value())
+                .requires(Items.MANGROVE_PLANKS)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.BAMBOO_DRAGON_ALTAR.value())
+                .requires(Items.BAMBOO_PLANKS)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.CHERRY_DRAGON_ALTAR.value())
+                .requires(Items.CHERRY_PLANKS)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.ACACIA_DRAGON_ALTAR.value())
+                .requires(Items.ACACIA_PLANKS)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.DARK_OAK_DRAGON_ALTAR.value())
+                .requires(Items.DARK_OAK_PLANKS)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.JUNGLE_DRAGON_ALTAR.value())
+                .requires(Items.JUNGLE_PLANKS)
+                .requires(DSItems.ELDER_DRAGON_BONE.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
+                .save(output);
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.MISC, DSBlocks.SPRUCE_DRAGON_ALTAR.value())
+                .requires(Items.SPRUCE_PLANKS)
                 .requires(DSItems.ELDER_DRAGON_BONE.value())
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_BONE.value()), has(DSItems.ELDER_DRAGON_BONE.value()))
                 .save(output);

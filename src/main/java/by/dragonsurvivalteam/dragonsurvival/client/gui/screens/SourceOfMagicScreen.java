@@ -107,6 +107,7 @@ public class SourceOfMagicScreen extends AbstractContainerScreen<SourceOfMagicCo
     private List<Either<FormattedText, TooltipComponent>> getTooltip() {
         List<Either<FormattedText, TooltipComponent>> tooltip = new ArrayList<>();
         List<SourceOfMagicData.Consumable> consumables = blockEntity.getConsumables();
+
         // Show the highest duration at the top
         consumables.sort(Comparator.comparingInt(SourceOfMagicData.Consumable::duration).reversed());
 

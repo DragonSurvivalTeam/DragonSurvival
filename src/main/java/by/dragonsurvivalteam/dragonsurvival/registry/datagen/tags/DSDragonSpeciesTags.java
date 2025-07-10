@@ -18,10 +18,12 @@ public class DSDragonSpeciesTags extends TagsProvider<DragonSpecies> {
     @Translation(comments = "Dragon Species Sorting Order")
     public static final TagKey<DragonSpecies> ORDER = key("order");
 
-    @Translation(comments = "No Dragon Species")
+    @Translation(comments = "No Species")
     public static final TagKey<DragonSpecies> NONE = key("none");
-    @Translation(comments = "All Dragon Species")
+    @Translation(comments = "All Species")
     public static final TagKey<DragonSpecies> ALL = key("all");
+    @Translation(comments = "True Dragons")
+    public static final TagKey<DragonSpecies> TRUE_DRAGONS = key("true_dragons");
 
     @Translation(comments = "Cave Dragons")
     public static final TagKey<DragonSpecies> CAVE_DRAGONS = key("cave_dragons");
@@ -44,6 +46,8 @@ public class DSDragonSpeciesTags extends TagsProvider<DragonSpecies> {
         tag(CAVE_DRAGONS).add(BuiltInDragonSpecies.CAVE_DRAGON);
         tag(FOREST_DRAGONS).add(BuiltInDragonSpecies.FOREST_DRAGON);
         tag(SEA_DRAGONS).add(BuiltInDragonSpecies.SEA_DRAGON);
+
+        tag(TRUE_DRAGONS).add(BuiltInDragonSpecies.CAVE_DRAGON).add(BuiltInDragonSpecies.SEA_DRAGON).add(BuiltInDragonSpecies.FOREST_DRAGON);
     }
 
     public static TagKey<DragonSpecies> key(final String path) {

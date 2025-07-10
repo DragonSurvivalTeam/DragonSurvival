@@ -27,6 +27,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.enchantment.LevelBasedValue;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
@@ -52,11 +53,13 @@ public class EffectModification extends DurationInstanceBase<EffectModifications
     @Translation(comments = "is unmodified")
     private static final String UNMODIFIED = Translation.Type.GUI.wrap("effect_modification.unmodified");
 
+    public static Modification NONE = new Modification(Modification.ModificationType.ADDITIVE, LevelBasedValue.constant(0));
+
     public static final Codec<EffectModification> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             DurationInstanceBase.CODEC.fieldOf("base").forGetter(identity -> identity),
             RegistryCodecs.homogeneousList(Registries.MOB_EFFECT).fieldOf("effects").forGetter(EffectModification::effects),
-            Modification.CODEC.fieldOf("duration_modification").forGetter(EffectModification::durationModification),
-            Modification.CODEC.fieldOf("amplifier_modification").forGetter(EffectModification::amplifierModification)
+            Modification.CODEC.optionalFieldOf("duration_modification", NONE).forGetter(EffectModification::durationModification),
+            Modification.CODEC.optionalFieldOf("amplifier_modification", NONE).forGetter(EffectModification::amplifierModification)
     ).apply(instance, EffectModification::new));
 
     private final HolderSet<MobEffect> effects;

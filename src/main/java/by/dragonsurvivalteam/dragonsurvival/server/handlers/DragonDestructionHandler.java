@@ -70,7 +70,16 @@ public class DragonDestructionHandler {
 
         event.setCanceled(true);
         isBreakingMultipleBlocks = true;
-        BlockPos.betweenClosedStream(AABB.ofSize(event.getPos().getCenter(), radius, radius, radius)).forEach(player.gameMode::destroyBlock);
+        float centerSpeed = event.getState().getDestroySpeed(event.getLevel(), event.getPos());
+
+        BlockPos.betweenClosedStream(AABB.ofSize(event.getPos().getCenter(), radius, radius, radius)).forEach(position -> {
+            float speed = event.getLevel().getBlockState(position).getDestroySpeed(event.getLevel(), position);
+
+            if (speed != /* Bedrock strength */ -1 && speed <= centerSpeed) {
+                player.gameMode.destroyBlock(position);
+            }
+        });
+
         isBreakingMultipleBlocks = false;
     }
 

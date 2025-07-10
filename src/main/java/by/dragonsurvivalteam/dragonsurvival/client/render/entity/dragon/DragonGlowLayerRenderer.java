@@ -2,7 +2,6 @@ package by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon;
 
 import by.dragonsurvivalteam.dragonsurvival.client.models.DragonModel;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
-import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.SkinPreset;
 import by.dragonsurvivalteam.dragonsurvival.client.skins.DragonSkins;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
@@ -42,16 +41,20 @@ public class DragonGlowLayerRenderer extends GeoRenderLayer<DragonEntity> {
             return;
         }
 
-        Player player = animatable.getPlayer();
+        Player player;
+
+        if (animatable.overrideUUIDWithLocalPlayerForTextureFetch) {
+            player = Minecraft.getInstance().player;
+        } else {
+            player = animatable.getPlayer();
+        }
 
         if (player == null) {
             return;
         }
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
-        SkinPreset preset = handler.getCurrentSkinPreset();
-
-        DragonStageCustomization customization = preset.get(handler.stageKey()).get();
+        DragonStageCustomization customization = handler.getCurrentStageCustomization();
         ResourceLocation glowTexture = null;
 
         // At the moment GitHub only contains textures based on the dragon model
@@ -72,7 +75,7 @@ public class DragonGlowLayerRenderer extends GeoRenderLayer<DragonEntity> {
             }
         }
 
-        dragonRenderer.isRenderLayers = true;
+        dragonRenderer.isRenderingLayer = true;
 
         if (glowTexture == null && customization.layerSettings.values().stream().anyMatch(layerSettings -> layerSettings.get().glowing)) {
             glowTexture = DragonModel.dynamicTexture(player, handler, true);
@@ -83,6 +86,6 @@ public class DragonGlowLayerRenderer extends GeoRenderLayer<DragonEntity> {
             dragonRenderer.actuallyRender(poseStack, animatable, bakedModel, type, bufferSource, bufferSource.getBuffer(type), true, partialTick, packedLight, OverlayTexture.NO_OVERLAY, renderer.getRenderColor(animatable, partialTick, packedLight).getColor());
         }
 
-        dragonRenderer.isRenderLayers = false;
+        dragonRenderer.isRenderingLayer = false;
     }
 }

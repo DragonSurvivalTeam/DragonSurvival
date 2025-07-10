@@ -1,8 +1,11 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.datagen.loot;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
-import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
 import by.dragonsurvivalteam.dragonsurvival.util.EnchantmentUtils;
 import com.google.common.base.Suppliers;
@@ -26,6 +29,33 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Supplier;
 
 public class DragonHeartLootModifier extends LootModifier {
+    @ConfigRange(min = 0, max = 1)
+    @Translation(key = "dragon_heart_shard_chance", type = Translation.Type.CONFIGURATION, comments = "Determines the chance (in %) of dragon heart shards dropping from entities with a maximum health between 14 and 20")
+    @ConfigOption(side = ConfigSide.SERVER, category = "drops", key = "dragon_heart_shard_chance")
+    public static Double DRAGON_HEART_SHARD_CHANCE = 0.03;
+
+    @ConfigRange(min = 0, max = 1)
+    @Translation(key = "weak_dragon_heart_chance", type = Translation.Type.CONFIGURATION, comments = "Determines the chance (in %) of weak dragon hearts dropping from entities with a maximum health between 20 and 50")
+    @ConfigOption(side = ConfigSide.SERVER, category = "drops", key = "weak_dragon_heart_chance")
+    public static Double WEAK_DRAGON_HEART_CHANCE = 0.01;
+
+    @ConfigRange(min = 0, max = 1)
+    @Translation(key = "elder_dragon_heart_chance", type = Translation.Type.CONFIGURATION, comments = "Determines the chance (in %) of elder dragon hearts dropping from entities with a maximum health above 50")
+    @ConfigOption(side = ConfigSide.SERVER, category = "drops", key = "elder_dragon_heart_chance")
+    public static Double ELDER_DRAGON_HEART_CHANCE = 0.01;
+
+    @Translation(key = "dragon_heart_white_list", type = Translation.Type.CONFIGURATION, comments = "Should the entity type tag 'drops_dragon_heart_shard' be treated as a whitelist instead of a blacklist?")
+    @ConfigOption(side = ConfigSide.SERVER, category = "drops", key = "dragon_heart_white_list")
+    public static Boolean DRAGON_HEART_SHARD_WHITELIST = false;
+
+    @Translation(key = "weak_dragon_heart_white_list", type = Translation.Type.CONFIGURATION, comments = "Should the entity type tag 'drops_weak_dragon_heart' be treated as a whitelist instead of a blacklist?")
+    @ConfigOption(side = ConfigSide.SERVER, category = "drops", key = "weak_dragon_heart_white_list")
+    public static Boolean WEAK_DRAGON_HEART_WHITELIST = false;
+
+    @Translation(key = "elder_dragon_heart_white_list", type = Translation.Type.CONFIGURATION, comments = "Should the entity type tag 'drops_elder_dragon_heart' be treated as a whitelist instead of a blacklist?")
+    @ConfigOption(side = ConfigSide.SERVER, category = "drops", key = "elder_dragon_heart_white_list")
+    public static Boolean ELDER_DRAGON_HEART_WHITELIST = false;
+
     public static final Supplier<MapCodec<DragonHeartLootModifier>> CODEC = Suppliers.memoize(() -> RecordCodecBuilder.mapCodec(inst -> codecStart(inst).apply(inst, DragonHeartLootModifier::new)));
 
     public DragonHeartLootModifier(final LootItemCondition[] conditions) {
@@ -61,21 +91,23 @@ public class DragonHeartLootModifier extends LootModifier {
 
         float health = livingEntity.getMaxHealth();
 
-        boolean canDropWeakDragonHeart = canDropHeart(health, 14, 20, DSEntityTypeTags.DROPS_WEAK_DRAGON_HEART, entity, ServerConfig.weakDragonHeartWhiteList);
-        boolean canDropNormalDragonHeart = canDropHeart(health, 20, 50, DSEntityTypeTags.DROPS_NORMAL_DRAGON_HEART, entity, ServerConfig.dragonHeartWhiteList);
-        boolean canDropElderDragonHeart = canDropHeart(health, 50, Float.MAX_VALUE, DSEntityTypeTags.DROPS_ELDER_DRAGON_HEART, entity, ServerConfig.elderDragonHeartWhiteList);
+        // TODO :: make these health values configurable or use some other way in general (predicates?)
+        boolean canDropDragonHeartShard = canDropHeart(health, 14, 20, DSEntityTypeTags.DROPS_DRAGON_HEART_SHARD, entity, DRAGON_HEART_SHARD_WHITELIST);
+        boolean canDropWeakDragonHeart = canDropHeart(health, 20, 50, DSEntityTypeTags.DROPS_WEAK_DRAGON_HEART, entity, WEAK_DRAGON_HEART_WHITELIST);
+        boolean canDropElderDragonHeart = canDropHeart(health, 50, Float.MAX_VALUE, DSEntityTypeTags.DROPS_ELDER_DRAGON_HEART, entity, ELDER_DRAGON_HEART_WHITELIST);
 
         int lootingLevel = EnchantmentUtils.getLevel(player, Enchantments.LOOTING);
 
-        if (canDropWeakDragonHeart && context.getRandom().nextInt(100) <= ServerConfig.weakDragonHeartChance * 100 + lootingLevel * (ServerConfig.weakDragonHeartChance * 100 / 4)) {
-            generatedLoot.add(new ItemStack(DSItems.WEAK_DRAGON_HEART));
-        }
-
-        if (canDropNormalDragonHeart && context.getRandom().nextInt(100) <= ServerConfig.dragonHeartShardChance * 100 + lootingLevel * (ServerConfig.dragonHeartShardChance * 100 / 4)) {
+        // TODO :: why divide by 4?
+        if (canDropDragonHeartShard && context.getRandom().nextInt(100) <= DRAGON_HEART_SHARD_CHANCE * 100 + lootingLevel * (DRAGON_HEART_SHARD_CHANCE * 100 / 4)) {
             generatedLoot.add(new ItemStack(DSItems.DRAGON_HEART_SHARD));
         }
 
-        if (canDropElderDragonHeart && context.getRandom().nextInt(100) <= ServerConfig.elderDragonHeartChance * 100 + lootingLevel * (ServerConfig.elderDragonHeartChance * 100 / 4)) {
+        if (canDropWeakDragonHeart && context.getRandom().nextInt(100) <= WEAK_DRAGON_HEART_CHANCE * 100 + lootingLevel * (WEAK_DRAGON_HEART_CHANCE * 100 / 4)) {
+            generatedLoot.add(new ItemStack(DSItems.WEAK_DRAGON_HEART));
+        }
+
+        if (canDropElderDragonHeart && context.getRandom().nextInt(100) <= ELDER_DRAGON_HEART_CHANCE * 100 + lootingLevel * (ELDER_DRAGON_HEART_CHANCE * 100 / 4)) {
             generatedLoot.add(new ItemStack(DSItems.ELDER_DRAGON_HEART));
         }
 

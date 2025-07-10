@@ -1,0 +1,53 @@
+{
+  "parent": "dragonsurvival:cave/rock_eater",
+  "criteria": {
+    "swim_safely_in_lava": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "effects": {
+                "dragonsurvival:cave_fire": {}
+              },
+              "location": {
+                "fluid": {
+                  "fluids": "#minecraft:water"
+                }
+              },
+              "type_specific": {
+                "type": "dragonsurvival:dragon_predicate",
+                "dragon_species": "dragonsurvival:cave_dragon"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "dragonsurvival.advancement.cave/water_safety.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "dragonsurvival:charged_soup"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "dragonsurvival.advancement.cave/water_safety"
+    }
+  },
+  "requirements": [
+    [
+      "swim_safely_in_lava"
+    ]
+  ],
+  "rewards": {
+    "experience": 40
+  },
+  "sends_telemetry_event": true
+}

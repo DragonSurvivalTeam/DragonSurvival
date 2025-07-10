@@ -73,7 +73,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Function;
 
 public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, SummonEntityEffect.Instance> implements AbilityEntityEffect, AbilityBlockEffect {
-    @Translation(comments = "§6■ Summon up to§r %s §6entities:§r")
+    @Translation(comments = "§6■ Summon§r up to %s entities:")
     private static final String SUMMON = Translation.Type.GUI.wrap("summon_entity_effect.summon");
 
     @Translation(comments = "\n- %s (%s)")
@@ -104,7 +104,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
                 AttributeInstance instance = entity.getAttribute(attribute);
 
                 if (instance != null) {
-                    ResourceLocation id = ModifierType.CUSTOM.randomId(attribute, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+                    ResourceLocation id = ModifierType.CUSTOM.randomId(attribute, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, entity.getRandom());
                     instance.addPermanentModifier(new AttributeModifier(id, scale, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
                 }
 

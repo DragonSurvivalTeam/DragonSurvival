@@ -11,19 +11,19 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 /** Jump animation length is 20.8 ticks */
-public record SyncPlayerJump(int playerId, int ticks) implements CustomPacketPayload {
+public record SyncPlayerJump(int playerId, boolean state) implements CustomPacketPayload {
     public static final Type<SyncPlayerJump> TYPE = new Type<>(DragonSurvival.res("sync_player_jump"));
 
     public static final StreamCodec<FriendlyByteBuf, SyncPlayerJump> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, SyncPlayerJump::playerId,
-            ByteBufCodecs.VAR_INT, SyncPlayerJump::ticks,
+            ByteBufCodecs.BOOL, SyncPlayerJump::state,
             SyncPlayerJump::new
     );
 
     public static void handleClient(final SyncPlayerJump packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
-            if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
-                DragonEntity.DRAGON_JUMP_TICKS.put(player.getId(), packet.ticks());
+            if (context.player().level().getEntity(packet.playerId()) instanceof Player) {
+                DragonEntity.DRAGONS_JUMPING.put(packet.playerId(), packet.state());
             }
         });
     }

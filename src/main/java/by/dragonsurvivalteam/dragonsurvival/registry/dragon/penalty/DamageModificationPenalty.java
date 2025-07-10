@@ -29,7 +29,7 @@ public record DamageModificationPenalty(DamageModification modification, int dur
         }
 
         modifications.remove(player, instance);
-        modifications.add(player, new DamageModification.Instance(modification, CommonData.from(modification.id(), penalty, Optional.empty()), duration));
+        modifications.add(player, new DamageModification.Instance(modification, CommonData.from(modification.id(), player, penalty, Optional.empty(), modification.shouldRemoveAutomatically()), duration));
     }
 
     @Override

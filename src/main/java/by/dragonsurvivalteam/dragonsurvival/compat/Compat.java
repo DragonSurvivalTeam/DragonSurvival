@@ -1,48 +1,34 @@
 package by.dragonsurvivalteam.dragonsurvival.compat;
 
-import net.neoforged.fml.ModList;
-import net.neoforged.fml.loading.LoadingModList;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.simibubi.create.content.equipment.armor.CardboardArmorHandler;
+import net.irisshaders.iris.shadows.ShadowRenderer;
+import net.minecraft.world.entity.player.Player;
+import net.xolt.freecam.Freecam;
 
 public class Compat {
-    public static final String JEI = "jei";
-    public static final String IRIS = "iris";
-    public static final String COSMETIC_ARMOR_REWORKED = "cosmeticarmorreworked";
-    public static final String SOPHISTICATED_BACKPACKS = "sophisticatedbackpacks";
-
-    private static final Map<String, List<String>> ALIAS = Map.of(
-            IRIS, List.of("oculus"),
-            "sodium", List.of("embeddium")
-    );
-
-    private static final Map<String, Boolean> MODS = new HashMap<>();
-
-    public static boolean isModLoaded(final String mod) {
-        return MODS.computeIfAbsent(mod, key -> {
-            if (check(key)) {
-                return true;
-            }
-
-            for (String alias : ALIAS.getOrDefault(key, List.of())) {
-                if (check(alias)) {
-                    return true;
-                }
-            }
-
+    /**
+     * Generic in case compatibility for other mods will be added <br>
+     * (Which have the ability to swap the player's model)
+     */
+    public static boolean hasModelSwap(final Player player) {
+        if (ModCheck.isModLoaded(ModCheck.CREATE)) {
+            return CardboardArmorHandler.testForStealth(player);
+        } else {
             return false;
-        });
+        }
     }
 
-    private static boolean check(final String modid) {
-        ModList modList = ModList.get();
-
-        if (modList != null && modList.isLoaded(modid)) {
+    /** In case a mod needs the neck + head displayed in first person */
+    @SuppressWarnings("RedundantIfStatement") // ignore for clarity
+    public static boolean displayNeck() {
+        if (ModCheck.isModLoaded(ModCheck.IRIS) && ShadowRenderer.ACTIVE) {
             return true;
         }
 
-        return LoadingModList.get().getModFileById(modid) != null;
+        if (ModCheck.isModLoaded(ModCheck.FREECAM) && Freecam.isEnabled()) {
+            return true;
+        }
+
+        return false;
     }
 }

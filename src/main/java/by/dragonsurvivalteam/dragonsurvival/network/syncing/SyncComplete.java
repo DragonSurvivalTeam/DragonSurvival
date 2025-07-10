@@ -30,10 +30,12 @@ public record SyncComplete(int playerId, CompoundTag data) implements CustomPack
     );
 
     public static void handleDragonSync(final ServerPlayer player, boolean refreshMagicData) {
+        PenaltySupply.clear(player);
         DSModifiers.updateAllModifiers(player);
         player.refreshDimensions();
 
         DragonStateHandler handler = DragonStateProvider.getData(player);
+        handler.setGrowth(player, handler.getGrowth(), true);
 
         if (refreshMagicData) {
             handler.refreshMagicData(player, true);

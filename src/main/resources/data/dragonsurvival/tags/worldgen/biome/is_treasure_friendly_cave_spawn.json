@@ -38,7 +38,15 @@
             "required": false
         },
         {
-            "id": "#neoforge:is_badlands",
+            "id": "#c:is_badlands",
+            "required": false
+        },
+        {
+            "id": "#c:is_desert",
+            "required": false
+        },
+        {
+            "id": "#c:is_badlands",
             "required": false
         },
         {
@@ -51,6 +59,14 @@
         },
         {
             "id": "#byg:is_badlands",
+            "required": false
+        },
+        {
+            "id": "#wythers:is_desert",
+            "required": false
+        },
+        {
+            "id": "#dragonsurvival:compat_is_wythers",
             "required": false
         }
 	]

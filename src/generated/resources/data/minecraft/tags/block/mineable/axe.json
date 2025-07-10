@@ -1,6 +1,18 @@
 {
   "values": [
     "#dragonsurvival:wooden_dragon_doors",
+    "dragonsurvival:oak_dragon_altar",
+    "dragonsurvival:birch_dragon_altar",
+    "dragonsurvival:pale_oak_dragon_altar",
+    "dragonsurvival:crimson_dragon_altar",
+    "dragonsurvival:warped_dragon_altar",
+    "dragonsurvival:mangrove_dragon_altar",
+    "dragonsurvival:bamboo_dragon_altar",
+    "dragonsurvival:cherry_dragon_altar",
+    "dragonsurvival:acacia_dragon_altar",
+    "dragonsurvival:dark_oak_dragon_altar",
+    "dragonsurvival:jungle_dragon_altar",
+    "dragonsurvival:spruce_dragon_altar",
     "#dragonsurvival:small_wooden_dragon_doors",
     "dragonsurvival:forest_dragon_pressure_plate"
   ]

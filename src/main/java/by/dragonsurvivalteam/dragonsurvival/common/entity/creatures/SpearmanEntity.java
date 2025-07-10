@@ -3,9 +3,12 @@ package by.dragonsurvivalteam.dragonsurvival.common.entity.creatures;
 import by.dragonsurvivalteam.dragonsurvival.client.render.util.RandomAnimationPicker;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.goals.FollowSpecificMobGoal;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.goals.WindupMeleeAttackGoal;
-import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -28,6 +31,86 @@ import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
 
 public class SpearmanEntity extends Hunter {
+    @ConfigRange(min = 1)
+    @Translation(key = "spearman_health", type = Translation.Type.CONFIGURATION, comments = "Base value for the max health attribute")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "spearman"}, key = "spearman_health")
+    public static double MAX_HEALTH = 24;
+
+    @Override
+    public double maxHealthConfig() {
+        return MAX_HEALTH;
+    }
+
+    @ConfigRange(min = 0)
+    @Translation(key = "spearman_attack_damage", type = Translation.Type.CONFIGURATION, comments = "Base value for the attack damage attribute")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "spearman"}, key = "spearman_damage")
+    public static int ATTACK_DAMAGE = 6;
+
+    @Override
+    public double attackDamageConfig() {
+        return ATTACK_DAMAGE;
+    }
+
+    @ConfigRange(min = 0)
+    @Translation(key = "spearman_attack_knockback", type = Translation.Type.CONFIGURATION, comments = "Base value for the attack knockback attribute")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "spearman"}, key = "spearman_attack_knockback")
+    public static int ATTACK_KNOCKBACK = 0;
+
+    @Override
+    public double attackKnockback() {
+        return ATTACK_KNOCKBACK;
+    }
+
+    @ConfigRange(min = 0)
+    @Translation(key = "spearman_movement_speed", type = Translation.Type.CONFIGURATION, comments = "Base value for the movement speed attribute")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "spearman"}, key = "spearman_movement_speed")
+    public static double MOVEMENT_SPEED = 0.35;
+
+    @Override
+    public double movementSpeedConfig() {
+        return MOVEMENT_SPEED;
+    }
+
+    @ConfigRange(min = 0)
+    @Translation(key = "spearman_armor", type = Translation.Type.CONFIGURATION, comments = "Base value for the armor attribute")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "spearman"}, key = "spearman_armor")
+    public static double ARMOR = 2;
+
+    @Override
+    public double armorConfig() {
+        return ARMOR;
+    }
+
+    @ConfigRange(min = 0)
+    @Translation(key = "spearman_armor_toughness", type = Translation.Type.CONFIGURATION, comments = "Base value for the armor toughness attribute")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "spearman"}, key = "spearman_armor_toughness")
+    public static double ARMOR_TOUGHNESS = 0;
+
+    @Override
+    public double armorToughnessConfig() {
+        return ARMOR_TOUGHNESS;
+    }
+
+    @ConfigRange(min = 0)
+    @Translation(key = "spearman_knockback_resistance", type = Translation.Type.CONFIGURATION, comments = "Base value for the knockback resistance attribute")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "spearman"}, key = "spearman_knockback_resistance")
+    public static double KNOCKBACK_RESISTANCE = 0;
+
+    @Override
+    public double knockbackResistanceConfig() {
+        return KNOCKBACK_RESISTANCE;
+    }
+
+    @ConfigRange(min = 0, max = 256)
+    @Translation(key = "spearman_bonus_horizontal_reach", type = Translation.Type.CONFIGURATION, comments = "Additional horizontal reach for the spearman")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "spearman"}, key = "spearman_bonus_horizontal_reach")
+    public static double HORIZONTAL_REACH = 0.5;
+
+    @ConfigRange(min = 0, max = 256)
+    @Translation(key = "spearman_bonus_vertical_reach", type = Translation.Type.CONFIGURATION, comments = "Additional vertical reach for the spearman")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"dragon_hunters", "spearman"}, key = "spearman_bonus_vertical_reach")
+    public static double VERTICAL_REACH = 2.5;
+
     public SpearmanEntity(EntityType<? extends PathfinderMob> entityType, Level world) {
         super(entityType, world);
     }
@@ -52,7 +135,7 @@ public class SpearmanEntity extends Hunter {
 
     @Override
     public boolean isWithinMeleeAttackRange(LivingEntity pEntity) {
-        return this.getAttackBoundingBox().inflate(ServerConfig.spearmanBonusHorizontalReach, ServerConfig.spearmanBonusVerticalReach, ServerConfig.spearmanBonusHorizontalReach).intersects(pEntity.getHitbox());
+        return this.getAttackBoundingBox().inflate(HORIZONTAL_REACH, VERTICAL_REACH, HORIZONTAL_REACH).intersects(pEntity.getHitbox());
     }
 
     @Override

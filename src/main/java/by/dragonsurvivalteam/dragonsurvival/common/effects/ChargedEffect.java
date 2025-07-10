@@ -34,22 +34,22 @@ import java.util.List;
 public class ChargedEffect extends ModifiableMobEffect {
     public static final int INFINITE_CHAINS = -1;
 
-    @ConfigRange(max = 100)
+    @ConfigRange(min = INFINITE_CHAINS)
     @Translation(key = "charged_effect_max_chain", type = Translation.Type.CONFIGURATION, comments = "Determines the max. amount of times the charged effect can chain. Set to -1 for infinite chaining")
     @ConfigOption(side = ConfigSide.SERVER, category = {"effects", "charged"}, key = "charged_effect_max_chain")
     public static Integer maxChain = 5;
 
-    @ConfigRange(min = 0, max = 100)
+    @ConfigRange(min = 0)
     @Translation(key = "charged_effect_max_chain_targets", type = Translation.Type.CONFIGURATION, comments = "Amount of entities the charged effect can chain to at once")
     @ConfigOption(side = ConfigSide.SERVER, category = {"effects", "charged"}, key = "charged_effect_max_chain_targets")
     public static Integer maxChainTargets = 2;
 
-    @ConfigRange(min = 0, max = 100)
+    @ConfigRange(min = 0, max = 256)
     @Translation(key = "charged_effect_spread_radius", type = Translation.Type.CONFIGURATION, comments = "Determines the radius of the charged effect spread")
     @ConfigOption(side = ConfigSide.SERVER, category = {"effects", "charged"}, key = "charged_effect_spread_radius")
-    public static Float spreadRadius = 3.f;
+    public static Float spreadRadius = 3f;
 
-    @ConfigRange(min = 0, max = 100)
+    @ConfigRange(min = 0)
     @Translation(key = "charged_effect_damage", type = Translation.Type.CONFIGURATION, comments = "Determines the damage dealt by the charged effect")
     @ConfigOption(side = ConfigSide.SERVER, category = {"effects", "charged"}, key = "charged_effect_damage")
     public static Float damage = 1f;
@@ -73,7 +73,7 @@ public class ChargedEffect extends ModifiableMobEffect {
 
     @Override
     public boolean applyEffectTick(final LivingEntity entity, int amplifier) {
-        entity.hurt(new DamageSource(DSDamageTypes.get(entity.level(), DSDamageTypes.ELECTRIC)), damage);
+        entity.hurt(new DamageSource(DSDamageTypes.get(entity.level(), DSDamageTypes.ELECTRIC)), damage * (amplifier + 1));
 
         if (!DragonStateProvider.isDragon(entity)) {
             ParticleOptions particle = new SmallLightningParticleOption(37F, false);
@@ -83,7 +83,7 @@ public class ChargedEffect extends ModifiableMobEffect {
             }
         }
 
-        chargedEffectChain(entity, damage);
+        chargedEffectChain(entity, damage * amplifier + 1);
         return super.applyEffectTick(entity, amplifier);
     }
 

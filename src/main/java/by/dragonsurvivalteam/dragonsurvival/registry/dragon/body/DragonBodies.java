@@ -70,56 +70,64 @@ public class DragonBodies {
                 Modifier.constant(DSAttributes.FLIGHT_SPEED, 0.2f, AttributeModifier.Operation.ADD_VALUE)
         ), false,
                 DragonBody.DEFAULT_MODEL,
+                new DragonBody.TextureSize(512, 512),
                 DragonSurvival.res("dragon_center"),
+                Optional.of(DragonSurvival.res("textures/gui/custom/body/center/default.png")),
                 List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"),
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
                 DragonBody.ScalingProportions.of(0.6, 2.0, 1.8, 1.0, 1.0),
                 0.83333333,
                 Optional.of(DEFAULT_MOUNTING_OFFSETS),
                 Optional.of(DragonBody.BackpackOffsets.of(Vec3.ZERO, Vec3.ZERO, new Vec3(0.9, 0.9, 0.9))),
-                Optional.of(DragonSurvival.res("textures/gui/custom/body/center/default.png"))
+                -3
         ));
 
         context.register(EAST, new DragonBody(true, Optional.empty(), List.of(
                 Modifier.constant(Attributes.ARMOR, 2, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(Attributes.ATTACK_DAMAGE, -1, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(Attributes.ATTACK_KNOCKBACK, -1, AttributeModifier.Operation.ADD_VALUE),
+                Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 2, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(Attributes.GRAVITY, 0.1f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
                 Modifier.constant(Attributes.JUMP_STRENGTH, 0.1f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(Attributes.MOVEMENT_SPEED, 0.1f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
-                Modifier.constant(NeoForgeMod.SWIM_SPEED, 1, AttributeModifier.Operation.ADD_VALUE),
+                Modifier.constant(NeoForgeMod.SWIM_SPEED, 0.5f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.MANA, 2, AttributeModifier.Operation.ADD_VALUE),
-                Modifier.constant(DSAttributes.FLIGHT_SPEED, 0.2f, AttributeModifier.Operation.ADD_VALUE),
+                Modifier.constant(DSAttributes.FLIGHT_SPEED, -0.2f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, -0.2f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
         ), true,
                 DragonBody.DEFAULT_MODEL,
+                new DragonBody.TextureSize(512, 512),
                 DragonSurvival.res("dragon_east"),
+                Optional.of(DragonSurvival.res("textures/gui/custom/body/east/default.png")),
                 List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"),
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
                 DragonBody.ScalingProportions.of(0.6, 2.0, 1.8, 1.0, 1.0),
                 0.83333333,
                 Optional.of(DEFAULT_MOUNTING_OFFSETS),
                 Optional.of(DragonBody.BackpackOffsets.of(new Vec3(0, -6.5, 0), Vec3.ZERO, new Vec3(0.9, 0.9, 0.9))),
-                Optional.of(DragonSurvival.res("textures/gui/custom/body/east/default.png"))
+                -3
         ));
 
         context.register(NORTH, new DragonBody(true, Optional.empty(), List.of(
                 Modifier.constant(Attributes.ATTACK_DAMAGE, -0.2f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
                 Modifier.constant(Attributes.ATTACK_KNOCKBACK, -0.5f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(Attributes.MOVEMENT_SPEED, -0.3f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
-                Modifier.constant(NeoForgeMod.SWIM_SPEED, 0.5f, AttributeModifier.Operation.ADD_VALUE),
+                Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 1, AttributeModifier.Operation.ADD_VALUE),
+                Modifier.constant(NeoForgeMod.SWIM_SPEED, 0.8f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.MANA, 2, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, -0.1f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
         ), true,
                 DragonBody.DEFAULT_MODEL,
+                new DragonBody.TextureSize(512, 512),
                 DragonSurvival.res("dragon_north"),
+                Optional.of(DragonSurvival.res("textures/gui/custom/body/north/default.png")),
                 List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"),
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
                 DragonBody.ScalingProportions.of(0.6, 1.1, 0.99, 1.0, 1.0),
                 0.5,
                 Optional.of(DEFAULT_MOUNTING_OFFSETS),
                 Optional.of(DragonBody.BackpackOffsets.of(Vec3.ZERO, Vec3.ZERO, new Vec3(0.85, 0.85, 0.85))),
-                Optional.of(DragonSurvival.res("textures/gui/custom/body/north/default.png"))
+                8
         ));
 
         context.register(SOUTH, new DragonBody(true, Optional.empty(), List.of(
@@ -127,38 +135,44 @@ public class DragonBodies {
                 Modifier.constant(Attributes.GRAVITY, 0.2f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
                 Modifier.constant(Attributes.JUMP_STRENGTH, 0.2f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(Attributes.MOVEMENT_SPEED, 0.2f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
+                Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 2, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(NeoForgeMod.SWIM_SPEED, -0.2f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_SPEED, -0.2f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, -0.5f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
         ), true,
                 DragonBody.DEFAULT_MODEL,
+                new DragonBody.TextureSize(512, 512),
                 DragonSurvival.res("dragon_south"),
+                Optional.of(DragonSurvival.res("textures/gui/custom/body/south/default.png")),
                 List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"),
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
                 DragonBody.ScalingProportions.of(0.6, 2.0, 1.8, 1.0, 1.0),
                 0.83333333,
                 Optional.of(DEFAULT_MOUNTING_OFFSETS),
                 Optional.of(DragonBody.BackpackOffsets.of(new Vec3(0, -6.5, 0), Vec3.ZERO, new Vec3(0.9, 0.9, 0.9))),
-                Optional.of(DragonSurvival.res("textures/gui/custom/body/south/default.png"))
+                -3
         ));
 
         context.register(WEST, new DragonBody(true, Optional.empty(), List.of(
                 Modifier.constant(Attributes.ATTACK_KNOCKBACK, 0.5f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(Attributes.KNOCKBACK_RESISTANCE, 0.15f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(Attributes.MOVEMENT_SPEED, -0.15f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
+                Modifier.constant(Attributes.SAFE_FALL_DISTANCE, 1, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(NeoForgeMod.SWIM_SPEED, -0.2f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_SPEED, 0.2f, AttributeModifier.Operation.ADD_VALUE),
                 Modifier.constant(DSAttributes.FLIGHT_STAMINA_COST, 1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
         ), false,
                 DragonBody.DEFAULT_MODEL,
+                new DragonBody.TextureSize(512, 512),
                 DragonSurvival.res("dragon_west"),
+                Optional.of(DragonSurvival.res("textures/gui/custom/body/west/default.png")),
                 List.of("WingLeft", "WingRight", "SmallWingLeft", "SmallWingRight"),
                 context.lookup(DragonEmoteSet.REGISTRY).getOrThrow(DragonEmoteSets.DEFAULT_EMOTES),
                 DragonBody.ScalingProportions.of(0.6, 2.0, 1.8, 1.0, 1.0),
                 0.83333333,
                 Optional.of(DEFAULT_MOUNTING_OFFSETS),
                 Optional.of(DragonBody.BackpackOffsets.of(new Vec3(0, 3.2, 0), Vec3.ZERO, new Vec3(0.9, 0.9, 0.9))),
-                Optional.of(DragonSurvival.res("textures/gui/custom/body/west/default.png"))
+                -3
         ));
     }
 

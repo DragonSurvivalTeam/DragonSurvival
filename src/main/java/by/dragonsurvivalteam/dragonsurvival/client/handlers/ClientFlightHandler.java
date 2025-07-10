@@ -7,7 +7,6 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
-import by.dragonsurvivalteam.dragonsurvival.input.Keybind;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SpinDurationAndCooldown;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.ToggleFlight;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
@@ -19,7 +18,6 @@ import by.dragonsurvivalteam.dragonsurvival.util.ActionWithTimedCooldown;
 import by.dragonsurvivalteam.dragonsurvival.util.EnchantmentUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.TickedCooldown;
-import com.mojang.blaze3d.platform.Window;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -30,7 +28,6 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -39,26 +36,24 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.CalculateDetachedCameraDistanceEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.InputEvent;
-import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
-import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.Objects;
 
-import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 /** Used in pair with {@link ServerFlightHandler} */
 @EventBusSubscriber(Dist.CLIENT)
 public class ClientFlightHandler {
-    @Translation(comments = "You have §cno levitation skill§r. Use a §cPrimordial Anchor§r in The End to learn this skill.")
+    @Translation(comments = "You can't fly. Read more in the skill description.")
     private static final String FLIGHT_EFFECT_DISABLED = Translation.Type.GUI.wrap("message.flight_effect_disabled");
 
     @Translation(comments = "Your species does not have the ability to fly")
@@ -83,16 +78,6 @@ public class ClientFlightHandler {
     @ConfigOption(side = ConfigSide.CLIENT, category = "flight", key = "flight_camera_movement")
     public static Boolean flightCameraMovement = true;
 
-    @ConfigRange(min = -1000, max = 1000)
-    @Translation(key = "spin_cooldown_x_offset", type = Translation.Type.CONFIGURATION, comments = "Offset to the x position of the spin cooldown indicator")
-    @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "spin"}, key = "spin_cooldown_x_offset")
-    public static Integer spinCooldownXOffset = 0;
-
-    @ConfigRange(min = -1000, max = 1000)
-    @Translation(key = "spin_cooldown_y_offset", type = Translation.Type.CONFIGURATION, comments = "Offset to the y position of the spin cooldown indicator")
-    @ConfigOption(side = ConfigSide.CLIENT, category = {"ui", "spin"}, key = "spin_cooldown_y_offset")
-    public static Integer spinCooldownYOffset = 0;
-
     @ConfigRange(min = 0.0f, max = 32.0f)
     @Translation(key = "base_dragon_camera_offset", type = Translation.Type.CONFIGURATION, comments = "Base offset for the dragon's third person camera (is multiplied and scaled by the other factors)")
     @ConfigOption(side = ConfigSide.CLIENT, category = {"rendering"}, key = "base_dragon_camera_offset")
@@ -116,8 +101,6 @@ public class ClientFlightHandler {
     @Translation(key = "disable_size_camera_modifications", type = Translation.Type.CONFIGURATION, comments = "Disable all size-based camera modifications from DS")
     @ConfigOption(side = ConfigSide.CLIENT, category = {"rendering"}, key = "disable_camera_modifications")
     public static Boolean disableSizeCameraModifications = false;
-
-    private static final ResourceLocation SPIN_COOLDOWN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/spin_cooldown.png");
 
     private static final ActionWithTimedCooldown HUNGER_MESSAGE_WITH_COOLDOWN = new ActionWithTimedCooldown(30_000, () -> {
         Player localPlayer = DragonSurvival.PROXY.getLocalPlayer();
@@ -144,8 +127,12 @@ public class ClientFlightHandler {
     private static final TickedCooldown jumpFlyCooldown = new TickedCooldown(7);
     private static boolean lastJumpInputState; // We need to track the rising edge manually
 
-    @SubscribeEvent
+    // Run this somewhat early, but not extremely early so that if another mod messes with camera rendering, it will recieve DS's changes first.
+    @SubscribeEvent(priority = EventPriority.LOW)
     public static void flightCamera(CalculateDetachedCameraDistanceEvent event) {
+        if (DragonSurvival.PROXY.dragonRenderingWasCancelled(DragonSurvival.PROXY.getLocalPlayer())) {
+            return;
+        }
 
         DragonStateProvider.getOptional(DragonSurvival.PROXY.getLocalPlayer()).ifPresent(handler -> {
             if (handler.isDragon()) {
@@ -159,8 +146,13 @@ public class ClientFlightHandler {
         });
     }
 
-    @SubscribeEvent
+    // Run this somewhat early, but not extremely early so that if another mod messes with camera rendering, it will recieve DS's changes first.
+    @SubscribeEvent(priority = EventPriority.LOW)
     public static void flightCamera(ViewportEvent.ComputeCameraAngles setup) {
+        if (DragonSurvival.PROXY.dragonRenderingWasCancelled(DragonSurvival.PROXY.getLocalPlayer())) {
+            return;
+        }
+
         Minecraft minecraft = Minecraft.getInstance();
         LocalPlayer currentPlayer = minecraft.player;
         Camera info = setup.getCamera();
@@ -204,46 +196,6 @@ public class ClientFlightHandler {
                         gameRenderer.zoom = lastZoom;
                     }
                 }
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public static void renderFlightCooldown(RenderGuiLayerEvent.Post event) {
-        Minecraft minecraft = Minecraft.getInstance();
-        Player player = minecraft.player;
-
-        if (player == null || player.isSpectator()) {
-            return;
-        }
-
-        DragonStateHandler handler = DragonStateProvider.getData(player);
-
-        if (!handler.isDragon()) {
-            return;
-        }
-
-        if (!ServerFlightHandler.isFlying(player) && !ServerFlightHandler.canSwimSpin(player)) {
-            return;
-        }
-
-        FlightData spin = FlightData.getData(player);
-        if (spin.hasSpin && spin.cooldown > 0) {
-            if (event.getName() == VanillaGuiLayers.AIR_LEVEL) {
-                Window window = Minecraft.getInstance().getWindow();
-
-                int cooldown = ServerFlightHandler.flightSpinCooldown * 20;
-                float cooldownProgress = ((float) cooldown - (float) spin.cooldown) / (float) cooldown;
-
-                int x = window.getGuiScaledWidth() / 2 - 66 / 2;
-                int y = window.getGuiScaledHeight() - 96;
-
-                x += spinCooldownXOffset;
-                y += spinCooldownYOffset;
-
-                int width = (int) (cooldownProgress * 62);
-                event.getGuiGraphics().blit(SPIN_COOLDOWN, x, y, 0, 0, 66, 21, 256, 256);
-                event.getGuiGraphics().blit(SPIN_COOLDOWN, x + 4, y + 1, 4, 21, width, 21, 256, 256);
             }
         }
     }
@@ -318,7 +270,7 @@ public class ClientFlightHandler {
                         if (FlightData.getData(player).isWingsSpread()) {
                             Input movement = player.input;
 
-                            if (!hasEnoughFoodToStartFlight(player) || player.isCreative()) {
+                            if (!ToggleFlight.hasEnoughFoodToStartFlight(player) || player.isCreative()) {
                                 ay = Mth.clamp(Math.abs(ay * 4), -0.4 * ServerFlightHandler.maxFlightSpeed, 0.4 * ServerFlightHandler.maxFlightSpeed);
                             }
 
@@ -387,7 +339,7 @@ public class ClientFlightHandler {
                                     if (ServerFlightHandler.isGliding(player)) {
                                         if (viewVector.y < 0) {
                                             deltaMovement = deltaMovement.add(ax, 0, az);
-                                        } else if (Math.abs(horizontalMovement) > 0.4) {
+                                        } else if (Math.abs(horizontalMovement) > 0.4 || ServerFlightHandler.noSpeedRequirementForVerticalAcceleration) {
                                             deltaMovement = deltaMovement.add(ax, ay, az);
                                         } else {
                                             deltaMovement = deltaMovement.add(ax, ay * horizontalMovement, az);
@@ -460,7 +412,7 @@ public class ClientFlightHandler {
                                             deltaMovement = new Vec3(deltaMovement.x, -0.5 + deltaMovement.y, deltaMovement.z);
                                             player.setDeltaMovement(deltaMovement);
                                         } else if (wasFlying) { // Don't activate on a regular jump
-                                            double yMotion = hasEnoughFoodToStartFlight(player) ? -gravity + ay : -(gravity * 4) + ay;
+                                            double yMotion = ToggleFlight.hasEnoughFoodToStartFlight(player) ? -gravity + ay : -(gravity * 4) + ay;
                                             deltaMovement = new Vec3(deltaMovement.x, yMotion, deltaMovement.z);
                                             player.setDeltaMovement(deltaMovement);
                                         }
@@ -484,10 +436,7 @@ public class ClientFlightHandler {
         }
     }
 
-    @SubscribeEvent
-    public static void toggleWings(final InputEvent.Key event) {
-        Pair<Player, DragonStateHandler> data = KeyHandler.checkAndGet(event, Keybind.TOGGLE_FLIGHT, true);
-
+    public static void toggleWings(@Nullable final Pair<Player, DragonStateHandler> data) {
         if (data == null) {
             return;
         }
@@ -521,35 +470,42 @@ public class ClientFlightHandler {
     }
 
     public static void handleToggleResult(final ToggleFlight.Activation activation, final ToggleFlight.Result result) {
-        LocalPlayer player = Objects.requireNonNull(Minecraft.getInstance().player);
-        FlightData flight = FlightData.getData(player);
+        Player player = Objects.requireNonNull(Minecraft.getInstance().player);
 
         if (activation == ToggleFlight.Activation.MANUAL) {
             switch (result) {
                 case NO_WINGS -> player.sendSystemMessage(Component.translatable(NO_FLIGHT_EFFECT));
-                case ALREADY_DISABLED -> player.sendSystemMessage(Component.translatable(FLIGHT_EFFECT_DISABLED));
+                case DISABLED -> player.sendSystemMessage(Component.translatable(FLIGHT_EFFECT_DISABLED));
                 case WINGS_BLOCKED -> player.sendSystemMessage(Component.translatable(WINGS_BLOCKED));
                 case NO_HUNGER -> player.sendSystemMessage(Component.translatable(LangKey.MESSAGE_NO_HUNGER));
             }
         } else if (result == ToggleFlight.Result.NO_HUNGER) {
             HUNGER_MESSAGE_WITH_COOLDOWN.tryRun();
         }
-
-        switch (result) {
-            case WINGS_BLOCKED, NO_WINGS, NO_HUNGER, SUCCESS_DISABLED, ALREADY_DISABLED -> flight.areWingsSpread = false;
-            case SUCCESS_ENABLED, ALREADY_ENABLED -> flight.areWingsSpread = true;
-        }
     }
 
-    @SubscribeEvent
-    public static void triggerSpin(final InputEvent.Key event) {
-        Pair<Player, DragonStateHandler> data = KeyHandler.checkAndGet(event, Keybind.SPIN_ABILITY, true);
-
+    public static void triggerSpin(@Nullable final Pair<Player, DragonStateHandler> data) {
         if (data == null) {
             return;
         }
 
-        doSpin(data.getFirst());
+        Player player = data.getFirst();
+
+        if (ServerFlightHandler.isSpin(player)) {
+            return;
+        }
+
+        FlightData spin = FlightData.getData(player);
+
+        if (!spin.hasSpin || spin.cooldown > 0) {
+            return;
+        }
+
+        if (ServerFlightHandler.isFlying(player) || ServerFlightHandler.canSwimSpin(player)) {
+            spin.duration = ServerFlightHandler.SPIN_DURATION;
+            spin.cooldown = Functions.secondsToTicks(ServerFlightHandler.flightSpinCooldown);
+            PacketDistributor.sendToServer(new SpinDurationAndCooldown(player.getId(), spin.duration, spin.cooldown));
+        }
     }
 
     @SubscribeEvent
@@ -576,24 +532,6 @@ public class ClientFlightHandler {
         lastJumpInputState = isJumping;
     }
 
-    private static void doSpin(final Player player) {
-        if (ServerFlightHandler.isSpin(player)) {
-            return;
-        }
-
-        FlightData spin = FlightData.getData(player);
-
-        if (!spin.hasSpin || spin.cooldown > 0) {
-            return;
-        }
-
-        if (ServerFlightHandler.isFlying(player) || ServerFlightHandler.canSwimSpin(player)) {
-            spin.duration = ServerFlightHandler.SPIN_DURATION;
-            spin.cooldown = Functions.secondsToTicks(ServerFlightHandler.flightSpinCooldown);
-            PacketDistributor.sendToServer(new SpinDurationAndCooldown(player.getId(), spin.duration, spin.cooldown));
-        }
-    }
-
     private static void spawnSpinParticle(Player player, ParticleOptions particleData) {
         for (int i = 0; i < 20; i++) {
             double d0 = (player.getRandom().nextFloat() - 0.5) * 2;
@@ -605,10 +543,6 @@ public class ClientFlightHandler {
             double posZ = player.position().z + player.getDeltaMovement().z + d2;
             player.level().addParticle(particleData, posX, posY, posZ, player.getDeltaMovement().x * -1, player.getDeltaMovement().y * -1, player.getDeltaMovement().z * -1);
         }
-    }
-
-    public static boolean hasEnoughFoodToStartFlight(Player player) {
-        return player.getFoodData().getFoodLevel() > ServerFlightHandler.flightHungerThreshold;
     }
 
     public static Vec3 getInputVector(final Vec3 movement, float frictionSpeed, float yRot) {

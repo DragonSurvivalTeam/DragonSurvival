@@ -1,0 +1,50 @@
+{
+  "parent": "dragonsurvival:cave/master_all_passives",
+  "criteria": {
+    "swim_in_lava": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "fluid": {
+                  "fluids": "#minecraft:lava"
+                }
+              },
+              "type_specific": {
+                "type": "dragonsurvival:dragon_predicate",
+                "dragon_species": "dragonsurvival:cave_dragon"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "dragonsurvival.advancement.cave/swim_in_lava.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:lava_bucket"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "dragonsurvival.advancement.cave/swim_in_lava"
+    }
+  },
+  "requirements": [
+    [
+      "swim_in_lava"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  },
+  "sends_telemetry_event": true
+}

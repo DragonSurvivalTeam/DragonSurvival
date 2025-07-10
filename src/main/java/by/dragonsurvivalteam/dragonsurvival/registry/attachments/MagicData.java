@@ -8,12 +8,15 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonAbilityHolder;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncMagicData;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSSounds;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataComponents;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.PassiveActivation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.ActivationTrigger;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ExperiencePointsUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.InputData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.UpgradeType;
@@ -178,6 +181,14 @@ public class MagicData implements INBTSerializable<CompoundTag> {
                     // There are too many ways the experience level field could be modified
                     upgrade.attempt(serverPlayer, ability, experienceLevels);
                 });
+                DSAdvancementTriggers.UPGRADE_ABILITY.get().trigger(serverPlayer, ability.key(), ability.level());
+            }
+
+            ability.tickCooldown(event.getEntity());
+
+            if (ability.value().activation() instanceof PassiveActivation passive && passive.trigger().type() != ActivationTrigger.TriggerType.CONSTANT) {
+                // Passive activations with non-constant triggers are handled elsewhere
+                continue;
             }
 
             ability.tick(event.getEntity());
@@ -298,34 +309,37 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         return true;
     }
 
-    public void stopCasting(final Player player, boolean withCooldown) {
-        DragonAbilityInstance currentlyCasting = getCurrentlyCasting();
-
-        if (currentlyCasting != null) {
-            currentlyCasting.stopSound(player);
+    public void stopCasting(final Player player, @Nullable final DragonAbilityInstance instance, boolean withCooldown) {
+        if (instance != null) {
+            instance.stopSound(player);
 
             if (withCooldown) {
-                currentlyCasting.release(player);
-                currentlyCasting.value().activation().playEndSound(player);
+                instance.release(player);
+                instance.value().activation().playEndSound(player);
 
-                if (currentlyCasting.hasEndAnimation()) {
-                    currentlyCasting.value().activation().playEndAnimation(player);
-                } else {
-                    DragonSurvival.PROXY.setCurrentAbilityAnimation(player.getId(), null);
+                if (instance.hasEndAnimation()) {
+                    instance.value().activation().playEndAnimation(player);
+                } else if (!instance.isPassive()) {
+                    DragonSurvival.PROXY.setCurrentAbilityAnimation(player, null);
                 }
-            } else {
-                DragonSurvival.PROXY.setCurrentAbilityAnimation(player.getId(), null);
+            } else if (!instance.isPassive()) {
+                DragonSurvival.PROXY.setCurrentAbilityAnimation(player, null);
             }
 
-            currentlyCasting.setActive(player, false);
+            instance.setActive(player, false);
         }
 
-        isCasting = false;
+        if (instance == null || !instance.isPassive()) {
+            isCasting = false;
+        }
     }
 
     public void stopCasting(final Player player) {
-        DragonAbilityInstance currentlyCasting = getCurrentlyCasting();
-        stopCasting(player, currentlyCasting != null && currentlyCasting.isApplyingEffects());
+        stopCasting(player, getCurrentlyCasting());
+    }
+
+    public void stopCasting(final Player player, @Nullable final DragonAbilityInstance instance) {
+        stopCasting(player, instance, instance != null && instance.isApplyingEffects());
     }
 
     public void setErrorMessageSent(boolean errorMessageSent) {
@@ -411,6 +425,11 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
     /** This does not automatically synchronize the change to the client */
     public void addAbility(final ServerPlayer player, final Holder<DragonAbility> ability) {
+        // Don't do anything if we already have this ability
+        if (getAbilities().containsKey(ability.getKey())) {
+            return;
+        }
+
         UpgradeType<?> upgrade = ability.value().upgrade().orElse(null);
         DragonAbilityInstance instance;
 
@@ -473,8 +492,13 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         return getAbilities().values().stream().filter(instance -> !instance.isPassive()).collect(Collectors.toList());
     }
 
-    public List<DragonAbilityInstance> getPassiveAbilities(final Predicate<Optional<UpgradeType<?>>> predicate) {
+    public List<DragonAbilityInstance> filterPassiveByUpgrade(final Predicate<Optional<UpgradeType<?>>> predicate) {
         return getAbilities().values().stream().filter(instance -> instance.isPassive() && predicate.test(instance.value().upgrade())).collect(Collectors.toList());
+    }
+
+    public List<DragonAbilityInstance> filterPassiveByTrigger(final Predicate<ActivationTrigger> predicate) {
+        // TODO :: cache the passive abilities
+        return getAbilities().values().stream().filter(instance -> instance.value().activation() instanceof PassiveActivation passive && predicate.test(passive.trigger())).collect(Collectors.toList());
     }
 
     /** Returns the amount of experience gained / lost when down- or upgrading the ability */
@@ -544,6 +568,58 @@ public class MagicData implements INBTSerializable<CompoundTag> {
     public enum AbilityCheck {
         HAS_EFFECT,
         IS_EFFECT_UNLOCKED
+    }
+
+    public CompoundTag serializeNBTForCurrentSpecies(@NotNull final HolderLookup.Provider provider) {
+        CompoundTag tag = new CompoundTag();
+
+        CompoundTag speciesAbilities = new CompoundTag();
+        abilities.get(this.currentSpecies).values().forEach(instance -> speciesAbilities.put(instance.key().location().toString(), instance.save(provider)));
+
+        CompoundTag speciesHotbar = new CompoundTag();
+        hotbar.get(this.currentSpecies).forEach((slot, key) -> speciesHotbar.putInt(key.location().toString(), slot));
+
+        tag.put(ABILITIES, speciesAbilities);
+        tag.put(HOTBARS, speciesHotbar);
+
+        return tag;
+    }
+
+    public void deserializeNBTForCurrentSpecies(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag tag) {
+        if (currentSpecies == null) {
+            // Unsure in which cases this can occur (if at all) - maybe when the soul has a non-registered species?
+            DragonSurvival.LOGGER.warn("Current species is not set - ability data cannot be deserialized [{}]", tag);
+            return;
+        }
+
+        abilities.get(currentSpecies).clear();
+        hotbar.get(currentSpecies).clear();
+
+        if (tag.contains(ABILITIES)) {
+            CompoundTag storedAbilities = tag.getCompound(ABILITIES);
+            storedAbilities.getAllKeys().forEach(abilityLocation -> {
+                CompoundTag abilityTag = storedAbilities.getCompound(abilityLocation);
+                DragonAbilityInstance instance = DragonAbilityInstance.load(provider, abilityTag);
+
+                if (instance != null) {
+                    abilities.get(currentSpecies).put(instance.key(), instance);
+                }
+            });
+        }
+
+        if (tag.contains(HOTBARS)) {
+            CompoundTag storedHotbar = tag.getCompound(HOTBARS);
+            storedHotbar.getAllKeys().forEach(abilityLocation -> {
+                int slot = storedHotbar.getInt(abilityLocation);
+                ResourceKey<DragonAbility> key = ResourceKey.create(DragonAbility.REGISTRY, ResourceLocation.parse(abilityLocation));
+
+                if (provider.holder(key).isEmpty()) {
+                    return;
+                }
+
+                hotbar.get(currentSpecies).put(slot, key);
+            });
+        }
     }
 
     @Override

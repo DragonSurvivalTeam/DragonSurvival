@@ -109,6 +109,11 @@ public record DragonPredicate(
             return this;
         }
 
+        public DragonPredicate.Builder species(HolderSet<DragonSpecies> dragonSpecies) {
+            this.dragonSpecies = Optional.of(dragonSpecies);
+            return this;
+        }
+
         public DragonPredicate.Builder stage(final DragonStagePredicate predicate) {
             this.dragonStage = Optional.of(predicate);
             return this;

@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.extensions.ShakeWhenUsedExten
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.DragonPenaltyHUD;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.GrowthHUD;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.MagicHUD;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.SpinHUD;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.ClientDietComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.ClientTimeComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.DietComponent;
@@ -35,16 +36,21 @@ import by.dragonsurvivalteam.dragonsurvival.client.render.entity.projectiles.Gen
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.projectiles.GenericBallRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DefaultPartLoader;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.loader.DragonPartLoader;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.mixins.client.LocalPlayerAccessor;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
+import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -70,6 +76,7 @@ import java.util.Map;
 @Mod(value = DragonSurvival.MODID, dist = Dist.CLIENT)
 public class DragonSurvivalClient {
     public static float timer;
+    public static DragonRenderer dragonRenderer; // Needed for access in LevelRendererMixin
 
     public DragonSurvivalClient(final IEventBus bus, final ModContainer container) {
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
@@ -82,6 +89,7 @@ public class DragonSurvivalClient {
         bus.addListener(this::registerItemExtensions);
 
         NeoForge.EVENT_BUS.addListener(this::incrementTimer);
+        NeoForge.EVENT_BUS.addListener(this::preventThirdPersonWhenSuffocating);
     }
 
     private void incrementTimer(final ClientTickEvent.Post event) {
@@ -102,8 +110,10 @@ public class DragonSurvivalClient {
 
             // GeckoLib renderers
             EntityRenderers.register(DSEntities.GENERIC_BALL_ENTITY.get(), manager -> new GenericBallRenderer(manager, new GenericBallModel()));
-
-            EntityRenderers.register(DSEntities.DRAGON.get(), manager -> new DragonRenderer(manager, ClientDragonRenderer.dragonModel));
+            EntityRenderers.register(DSEntities.DRAGON.get(), manager -> {
+                dragonRenderer = new DragonRenderer(manager, ClientDragonRenderer.dragonModel);
+                return dragonRenderer;
+            });
             EntityRenderers.register(DSEntities.HUNTER_KNIGHT.get(), manager -> new KnightRenderer(manager, new KnightModel()));
             EntityRenderers.register(DSEntities.HUNTER_SPEARMAN.get(), manager -> new SpearmanRenderer(manager, new SpearmanModel()));
             EntityRenderers.register(DSEntities.HUNTER_AMBUSHER.get(), manager -> new AmbusherRenderer(manager, new AmbusherModel()));
@@ -122,11 +132,24 @@ public class DragonSurvivalClient {
         event.registerAbove(VanillaGuiLayers.AIR_LEVEL, DragonPenaltyHUD.ID, DragonPenaltyHUD::render);
         event.registerAbove(DragonPenaltyHUD.ID, MagicHUD.ID, MagicHUD::render);
         event.registerAbove(MagicHUD.ID, GrowthHUD.ID, GrowthHUD::render);
+        event.registerAbove(MagicHUD.ID, SpinHUD.ID, SpinHUD::render);
     }
 
     private void registerTooltips(final RegisterClientTooltipComponentFactoriesEvent event) {
         event.register(DietComponent.class, ClientDietComponent::new);
         event.register(TimeComponent.class, ClientTimeComponent::new);
+    }
+
+    private void preventThirdPersonWhenSuffocating(final ClientTickEvent.Post event) {
+        Player player = DragonSurvival.PROXY.getLocalPlayer();
+
+        if (!DragonStateProvider.isDragon(player)) {
+            return;
+        }
+
+        if (((LocalPlayerAccessor) player).dragonSurvival$suffocatesAt(BlockPos.containing(player.position()))) {
+            Minecraft.getInstance().options.setCameraType(CameraType.FIRST_PERSON);
+        }
     }
 
     private void registerItemExtensions(RegisterClientExtensionsEvent event) {

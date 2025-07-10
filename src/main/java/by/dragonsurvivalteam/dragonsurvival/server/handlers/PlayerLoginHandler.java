@@ -20,8 +20,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -42,6 +44,14 @@ public class PlayerLoginHandler {
         Player tracker = event.getEntity();
         Entity tracked = event.getTarget();
         stopTickingSounds(tracker, tracked);
+    }
+
+    // This needs to happen before the call to cancel casting on MagicData, otherwise the sound will not be stopped
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void onDeath(final LivingDeathEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            stopTickingSoundsForAllPlayers(player);
+        }
     }
 
     @SubscribeEvent
@@ -121,16 +131,23 @@ public class PlayerLoginHandler {
         }
     }
 
-    /** Synchronizes the dragon data to the player and all tracking players */
-    public static void syncHandler(final Player player) {
-        if (player instanceof ServerPlayer serverPlayer) {
-            DragonStateHandler handler = DragonStateProvider.getData(serverPlayer);
-            PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncComplete(serverPlayer.getId(), handler.serializeNBT(serverPlayer.registryAccess())));
+    private static void stopTickingSoundsForAllPlayers(final ServerPlayer player) {
+        MagicData magicData = MagicData.getData(player);
+        DragonAbilityInstance currentlyCasting = magicData.getCurrentlyCasting();
 
-            serverPlayer.getExistingData(DSDataAttachments.FLIGHT).ifPresent(data ->
-                    PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncData(serverPlayer.getId(), DSDataAttachments.FLIGHT.getId(), data.serializeNBT(serverPlayer.registryAccess())))
-            );
+        if (currentlyCasting != null) {
+            PacketDistributor.sendToAllPlayers(new StopTickingSound(currentlyCasting.location().withSuffix(player.getStringUUID())));
         }
+    }
+
+    /** Synchronizes the dragon data to the player and all tracking players */
+    public static void syncHandler(final ServerPlayer serverPlayer) {
+        DragonStateHandler handler = DragonStateProvider.getData(serverPlayer);
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncComplete(serverPlayer.getId(), handler.serializeNBT(serverPlayer.registryAccess())));
+
+        serverPlayer.getExistingData(DSDataAttachments.FLIGHT).ifPresent(data ->
+                PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new SyncData(serverPlayer.getId(), DSDataAttachments.FLIGHT.getId(), data.serializeNBT(serverPlayer.registryAccess())))
+        );
     }
 
     /** Synchronizes the dragon data of the newly tracked player to the tracking player */

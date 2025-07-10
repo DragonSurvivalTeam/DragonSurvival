@@ -32,7 +32,7 @@
     "damage_type": "dragonsurvival:water_burn",
     "penalty_type": "dragonsurvival:take_damage"
   },
-  "icon": "dragonsurvival:abilities/cave/water_weakness",
+  "icon": "dragonsurvival:penalties/cave/water_weakness",
   "trigger": {
     "penalty_trigger": "dragonsurvival:instant",
     "trigger_rate": 10

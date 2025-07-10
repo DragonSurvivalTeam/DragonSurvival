@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.mixins.AttributeMapAccessor;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -61,7 +62,7 @@ public interface AttributeModifierSupplier {
     default void applyModifiers(final LivingEntity entity, double level) {
         modifiers().forEach(modifier -> {
             AttributeInstance instance = entity.getAttribute(modifier.attribute());
-            applyModifier(modifier, instance, level);
+            applyModifier(modifier, instance, level, entity.getRandom());
         });
     }
 
@@ -84,7 +85,7 @@ public interface AttributeModifierSupplier {
         ids.clear();
     }
 
-    private void applyModifier(final Modifier modifier, @Nullable final AttributeInstance instance, double level) {
+    private void applyModifier(final Modifier modifier, @Nullable final AttributeInstance instance, double level, final RandomSource random) {
         if (instance == null) {
             return;
         }
@@ -93,7 +94,7 @@ public interface AttributeModifierSupplier {
         ResourceLocation id;
 
         do {
-            id = type.randomId(modifier.attribute(), modifier.operation());
+            id = type.randomId(modifier.attribute(), modifier.operation(), random);
         } while (instance.hasModifier(id));
 
         AttributeModifier attributeModifier = modifier.getModifier(id, level);

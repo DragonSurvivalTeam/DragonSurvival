@@ -26,7 +26,7 @@ public record SyncBrokenTool(int playerId, int slot) implements CustomPacketPayl
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 ClawInventoryData data = ClawInventoryData.getData(player);
 
-                if (data.switchedTool || data.switchedWeapon) {
+                if (data.switchedTool) {
                     player.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
                 } else {
                     data.getContainer().setItem(packet.slot, ItemStack.EMPTY);

@@ -1,23 +1,22 @@
 package by.dragonsurvivalteam.dragonsurvival.client.models;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.DragonEditorHandler;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
+import by.dragonsurvivalteam.dragonsurvival.client.skins.DragonSkins;
+import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayer;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.StageResources;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
-import by.dragonsurvivalteam.dragonsurvival.config.ClientConfig;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.HunterData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
-import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Holder;
@@ -30,8 +29,6 @@ import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.loading.math.MathParser;
 import software.bernie.geckolib.model.GeoModel;
 
-import java.util.concurrent.CompletableFuture;
-
 public class DragonModel extends GeoModel<DragonEntity> {
     /** Factor to multiply the delta yaw and pitch by, needed for scaling for the animations */
     private static final double DELTA_YAW_PITCH_FACTOR = 0.2;
@@ -43,11 +40,11 @@ public class DragonModel extends GeoModel<DragonEntity> {
     private final ResourceLocation defaultTexture = DragonSurvival.res("textures/dragon_dragon/newborn.png");
 
     private ResourceLocation overrideTexture;
-    private CompletableFuture<Void> textureRegisterFuture = CompletableFuture.completedFuture(null);
 
     @Override
     public void applyMolangQueries(final AnimationState<DragonEntity> animationState, double currentTick) {
         super.applyMolangQueries(animationState, currentTick);
+
         DragonEntity dragon = animationState.getAnimatable();
         Player player = dragon.getPlayer();
 
@@ -55,9 +52,9 @@ public class DragonModel extends GeoModel<DragonEntity> {
             return;
         }
 
+        MovementData movement = MovementData.getData(player);
         float deltaTick = Minecraft.getInstance().getTimer().getRealtimeDeltaTicks();
         float partialDeltaTick = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
-        MovementData movement = MovementData.getData(player);
 
         if (dragon.neckLocked) {
             MathParser.setVariable("query.head_yaw", () -> 0);
@@ -75,7 +72,7 @@ public class DragonModel extends GeoModel<DragonEntity> {
         double headPitchAvg;
         double verticalVelocityAvg;
 
-        if (!ClientDragonRenderer.isOverridingMovementData) {
+        if (!dragon.isInInventory) {
             double bodyYawChange = Functions.angleDifference(movement.bodyYaw, movement.bodyYawLastFrame) / deltaTick * DELTA_YAW_PITCH_FACTOR;
             double headYawChange = Functions.angleDifference(movement.headYaw, movement.headYawLastFrame) / deltaTick * DELTA_YAW_PITCH_FACTOR;
             double headPitchChange = Functions.angleDifference(movement.headPitch, movement.headPitchLastFrame) / deltaTick * DELTA_YAW_PITCH_FACTOR;
@@ -142,6 +139,12 @@ public class DragonModel extends GeoModel<DragonEntity> {
             verticalVelocityAvg = 0;
         }
 
+        // Clear out any NaNs that may have been caused by the average calculation (I think this happens if we try to load data before the game logic has actually begun?
+        bodyYawAvg = Double.isNaN(bodyYawAvg) ? 0 : bodyYawAvg;
+        headYawAvg = Double.isNaN(headYawAvg) ? 0 : headYawAvg;
+        headPitchAvg = Double.isNaN(headPitchAvg) ? 0 : headPitchAvg;
+        verticalVelocityAvg = Double.isNaN(verticalVelocityAvg) ? 0 : verticalVelocityAvg;
+
         double lerpRate = Math.min(1, deltaTick);
         dragon.currentBodyYawChange = Mth.lerp(lerpRate, dragon.currentBodyYawChange, bodyYawAvg);
         dragon.currentHeadYawChange = Mth.lerp(lerpRate, dragon.currentHeadYawChange, headYawAvg);
@@ -176,7 +179,16 @@ public class DragonModel extends GeoModel<DragonEntity> {
             model = DragonStateProvider.getData(dragon.getPlayer()).getModel();
         }
 
-        return model.withPrefix("geo/").withSuffix(".geo.json");
+        model = model.withPrefix("geo/").withSuffix(".geo.json");
+
+        try {
+            getBakedModel(model);
+        } catch (Exception e) {
+            DragonSurvival.LOGGER.error("Model not found for dragon species: {}", Translation.Type.DRAGON_SPECIES.wrap(DragonStateProvider.getData(dragon.getPlayer()).speciesKey().location()));
+            return DragonBody.DEFAULT_MODEL;
+        }
+
+        return model;
     }
 
     @Override
@@ -200,29 +212,25 @@ public class DragonModel extends GeoModel<DragonEntity> {
         DragonStateHandler handler = DragonStateProvider.getData(player);
         DragonStageCustomization customization = handler.getCurrentStageCustomization();
 
+        // Don't try to fetch skins if it is a fake client player; the only case where we need custom skins for a fake client player
+        // is in the dragon skins screen, and we already have special logic for that outside of this getTextureResource method
+        if (handler.getModel().equals(DragonBody.DEFAULT_MODEL) && !(player instanceof FakeClientPlayer)) {
+            ResourceLocation skin = DragonSkins.getPlayerSkin(player, handler.stageKey());
+
+            if (RenderingUtils.hasTexture(skin)) {
+                return skin;
+            }
+        }
+
         if (handler.getSkinData().blankSkin) {
             return DragonSurvival.res("textures/dragon/" + handler.speciesId().getPath() + "/blank_skin.png");
         }
 
         ResourceKey<DragonStage> stageKey = handler.stageKey();
-
-        if (handler.getSkinData().recompileSkin.getOrDefault(stageKey, true)) {
-            if (ClientConfig.forceCPUSkinGeneration) {
-                if (textureRegisterFuture.isDone()) {
-                    textureRegisterFuture = DragonEditorHandler.generateSkinTextures(dragon).thenAcceptAsync(entries -> {
-                        handler.getSkinData().isCompiled.put(stageKey, true);
-                        handler.getSkinData().recompileSkin.put(stageKey, false);
-
-                        for (Pair<NativeImage, ResourceLocation> pair : entries) {
-                            RenderingUtils.uploadTexture(pair.getFirst(), pair.getSecond());
-                        }
-                    });
-                }
-            } else {
-                DragonEditorHandler.generateSkinTexturesGPU(dragon);
-                handler.getSkinData().isCompiled.put(handler.stageKey(), true);
-                handler.getSkinData().recompileSkin.put(handler.stageKey(), false);
-            }
+        if (handler.needsSkinRecompilation()) {
+            DragonEditorHandler.generateSkinTextures(dragon);
+            handler.getSkinData().isCompiled.put(handler.stageKey(), true);
+            handler.getSkinData().recompileSkin.put(handler.stageKey(), false);
         }
 
         ResourceLocation texture = dynamicTexture(player, handler, false);

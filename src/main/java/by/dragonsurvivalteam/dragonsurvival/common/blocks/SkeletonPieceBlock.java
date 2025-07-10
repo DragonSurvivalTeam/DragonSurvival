@@ -4,7 +4,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
@@ -25,8 +24,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Map;
 
 public class SkeletonPieceBlock extends Block implements SimpleWaterloggedBlock {
     @Translation(comments = "Dragon Bones")
@@ -51,22 +48,14 @@ public class SkeletonPieceBlock extends Block implements SimpleWaterloggedBlock 
 
     @Override
     protected @NotNull VoxelShape getShape(@NotNull BlockState pState, @NotNull BlockGetter pLevel, @NotNull BlockPos pPos, @NotNull CollisionContext pContext) {
-        switch (this.type) {
-            case Types.CHEST -> {
-                return Block.box(0.0, 0.0, 0.0, 16.0, 16.0, 16.0);
-            }
-            case Types.FULL -> {
-                return Block.box(-12.0, 0.0, -12.0, 32.0, 16.0, 32.0);
-            }
-            case Types.PELVIS -> {
-                return Block.box(4.0, 0.0, 4.0, 12.0, 12.0, 12.0);
-            }
-            case Types.LEG_3 -> {
-                return Block.box(4.0, 0.0, 4.0, 12.0, 6.0, 12.0);
-            }
+        // TODO :: These don't seem to be really accurate
+        return switch (this.type) {
+            case Type.CHEST -> Block.box(0.0, 0.0, 0.0, 16.0, 16.0, 16.0);
+            case Type.FULL -> Block.box(-12.0, 0.0, -12.0, 32.0, 16.0, 32.0);
+            case Type.PELVIS -> Block.box(4.0, 0.0, 4.0, 12.0, 12.0, 12.0);
+            case Type.LEG_3 -> Block.box(4.0, 0.0, 4.0, 12.0, 6.0, 12.0);
             default -> Block.box(0.0, 0.0, 0.0, 16.0, 6.0, 16.0);
-        }
-        return Block.box(0.0, 0.0, 0.0, 16.0, 6.0, 16.0);
+        };
     }
 
     @Override
@@ -106,12 +95,7 @@ public class SkeletonPieceBlock extends Block implements SimpleWaterloggedBlock 
         return CODEC;
     }
 
-    public interface Type extends StringRepresentable {
-        Map<String, SkeletonPieceBlock.Type> TYPES = new Object2ObjectArrayMap<>();
-        Codec<SkeletonPieceBlock.Type> CODEC = Codec.stringResolver(StringRepresentable::getSerializedName, TYPES::get);
-    }
-
-    public enum Types implements SkeletonPieceBlock.Type {
+    public enum Type implements StringRepresentable {
         CHEST("skeleton_dragon_chest"),
         //FLIPPER_LEFT("skeleton_dragon_flipper_left"),
         //FLIPPER_RIGHT("skeleton_dragon_flipper_right"),
@@ -138,11 +122,11 @@ public class SkeletonPieceBlock extends Block implements SimpleWaterloggedBlock 
         //WING_RIGHT("skeleton_dragon_wing_right"),
         //WING_RIGHT_STRAIGHT("skeleton_dragon_wing_right_straight");
 
+        public static final Codec<Type> CODEC = StringRepresentable.fromValues(Type::values);
         private final String name;
 
-        Types(String pName) {
+        Type(final String pName) {
             this.name = pName;
-            TYPES.put(pName, this);
         }
 
         @Override

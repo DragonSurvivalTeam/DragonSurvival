@@ -13,7 +13,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEquipment;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
-import by.dragonsurvivalteam.dragonsurvival.registry.DSLootItemConditions;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSLootModifiers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSMapDecorationTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSParticles;
@@ -23,6 +22,10 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSSubPredicates;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSTrades;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataComponents;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnBlockBreak;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnDeath;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnSelfHit;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnTargetHit;
 import by.dragonsurvivalteam.dragonsurvival.util.proxy.ClientProxy;
 import by.dragonsurvivalteam.dragonsurvival.util.proxy.Proxy;
 import by.dragonsurvivalteam.dragonsurvival.util.proxy.ServerProxy;
@@ -32,6 +35,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.neoforge.common.NeoForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -70,9 +74,13 @@ public class DragonSurvival {
         DSSubPredicates.REGISTRY.register(bus);
         DSAdvancementTriggers.REGISTRY.register(bus);
         DSCommands.REGISTRY.register(bus);
-        DSLootItemConditions.REGISTRY.register(bus);
         DSLootModifiers.REGISTRY.register(bus);
         DSConditions.REGISTRY.register(bus);
+
+        NeoForge.EVENT_BUS.addListener(OnSelfHit::trigger);
+        NeoForge.EVENT_BUS.addListener(OnTargetHit::trigger);
+        NeoForge.EVENT_BUS.addListener(OnDeath::trigger);
+        NeoForge.EVENT_BUS.addListener(OnBlockBreak::trigger);
     }
 
     /** Creates a {@link ResourceLocation} with the dragon survival namespace */
