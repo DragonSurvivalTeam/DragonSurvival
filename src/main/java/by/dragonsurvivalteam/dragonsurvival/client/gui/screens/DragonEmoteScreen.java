@@ -15,6 +15,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSEmoteKeybindings;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEmote;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -248,12 +249,16 @@ public class DragonEmoteScreen extends Screen {
 
     @SubscribeEvent
     public static void onKey(InputEvent.MouseButton.Pre event) {
-        onKey(event.getButton());
+        if (event.getAction() == InputConstants.PRESS) {
+            onKey(event.getButton());
+        }
     }
 
     @SubscribeEvent
     public static void onKey(InputEvent.Key event) {
-        onKey(event.getKey());
+        if (event.getAction() == InputConstants.PRESS) {
+            onKey(event.getKey());
+        }
     }
 
     private static void onKey(int keyCode) {
