@@ -89,7 +89,7 @@ public class DragonPenaltyHandler {
 
     @SubscribeEvent // Prevent the player from equipping blacklisted armor (or from mixing light and dark dragon armor)
     public static void preventEquipment(final ItemStackedOnOtherEvent event) {
-        ItemStack stack = event.getStackedOnItem(); // FIXME :: this is probably a neoforge bug, this should be carried item -> might be changed in the future
+        ItemStack stack = event.getCarriedItem();
         Player player = event.getPlayer();
 
         if (stack.isEmpty()) {

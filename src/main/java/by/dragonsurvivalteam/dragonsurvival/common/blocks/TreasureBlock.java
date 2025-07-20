@@ -52,7 +52,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 
-public class TreasureBlock extends FallingBlock implements SimpleWaterloggedBlock {
+public class TreasureBlock extends FallingBlock implements SimpleWaterloggedBlock, ModCompat {
     @Translation(comments = "■§7 Dragons can sleep on treasure to regenerate health and mana. Gathering more treasure increases the speed of the regeneration. Build your horde and show off your wealth!")
     private static final String TREASURE = Translation.Type.DESCRIPTION.wrap("treasure");
 
@@ -61,15 +61,25 @@ public class TreasureBlock extends FallingBlock implements SimpleWaterloggedBloc
 
     protected static final VoxelShape[] SHAPE_BY_LAYER = new VoxelShape[]{Shapes.empty(), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 4.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 6.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 10.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 12.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 14.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D)};
 
+    private final String compatId;
     private final int effectColor;
 
     public TreasureBlock(int effectColor, Properties properties) {
+        this(effectColor, properties, null);
+    }
+
+    public TreasureBlock(final int effectColor, final Properties properties, final String compatId) {
         super(properties);
+        this.compatId = compatId;
         this.effectColor = effectColor;
 
         registerDefaultState(stateDefinition.any().setValue(LAYERS, 1).setValue(WATERLOGGED, false));
     }
 
+    @Override
+    public @Nullable String getCompatId() {
+        return compatId;
+    }
 
     @Override
     public boolean isPathfindable(@NotNull BlockState state, PathComputationType pPathComputationType) {

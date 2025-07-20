@@ -17,9 +17,9 @@ public class ItemData implements INBTSerializable<CompoundTag> {
 
     public double smeltingTime;
     public double smeltingProgress;
-    public double previousSmeltingProgress;
 
-    public int noSmeltingChange;
+    private double previousSmeltingProgress;
+    private int noSmeltingChange;
 
     @SubscribeEvent // Resets progress after inactivity and spawns the smoke particles
     public static void handleSmelting(final EntityTickEvent.Post event) {
@@ -56,13 +56,19 @@ public class ItemData implements INBTSerializable<CompoundTag> {
     public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
         tag.putBoolean(IS_FIRE_IMMUNE, isFireImmune);
+        tag.putDouble(SMELTING_TIME, smeltingTime);
+        tag.putDouble(SMELTING_PROGRESS, smeltingProgress);
         return tag;
     }
 
     @Override
     public void deserializeNBT(@NotNull final HolderLookup.Provider provider, @NotNull final CompoundTag tag) {
         isFireImmune = tag.getBoolean(IS_FIRE_IMMUNE);
+        smeltingTime = tag.getDouble(SMELTING_TIME);
+        smeltingProgress = tag.getDouble(SMELTING_PROGRESS);
     }
 
     public static final String IS_FIRE_IMMUNE = "is_fire_immune";
+    public static final String SMELTING_TIME = "is_fire_immune";
+    public static final String SMELTING_PROGRESS = "is_fire_immune";
 }
