@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber
 public record DragonStage(
         boolean isDefault,
         MiscCodecs.Bounds growthRange,

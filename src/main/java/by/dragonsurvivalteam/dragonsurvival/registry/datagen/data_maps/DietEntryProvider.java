@@ -27,7 +27,7 @@ public class DietEntryProvider extends DataMapProvider {
     }
 
     @Override
-    protected void gather() {
+    protected void gather(HolderLookup.@NotNull Provider provider) {
         builder(DSDataMaps.DIET_ENTRIES)
                 .add(BuiltInDragonSpecies.CAVE_DRAGON, caveDiet(), false, DSConditions.CAVE_DRAGON_LOADED)
                 .add(BuiltInDragonSpecies.FOREST_DRAGON, forestDiet(), false, DSConditions.FOREST_DRAGON_LOADED)

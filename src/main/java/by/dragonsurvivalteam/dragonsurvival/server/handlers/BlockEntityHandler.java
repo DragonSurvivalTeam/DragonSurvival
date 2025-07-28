@@ -6,7 +6,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.BlockEntityTypeAddBlocksEvent;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber
 public class BlockEntityHandler {
     @SubscribeEvent
     public static void addToBlockEntityType(BlockEntityTypeAddBlocksEvent e) {

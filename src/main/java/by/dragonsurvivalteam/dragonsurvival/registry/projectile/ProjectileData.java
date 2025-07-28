@@ -27,7 +27,7 @@ import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import java.util.List;
 import java.util.Optional;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber
 public record ProjectileData(GeneralData generalData, Either<GenericBallData, GenericArrowData> typeData) {
     public static final ResourceKey<Registry<ProjectileData>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("projectile_data"));
 

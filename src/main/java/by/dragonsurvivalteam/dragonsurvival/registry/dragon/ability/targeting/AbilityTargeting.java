@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber
 public interface AbilityTargeting {
     String EFFECT_HEADER = "#HEADER#";
     NumberFormat FORMAT = Functions.getFormat(2);

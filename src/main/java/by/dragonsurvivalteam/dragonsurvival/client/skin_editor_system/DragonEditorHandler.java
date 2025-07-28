@@ -32,7 +32,7 @@ import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 
 import java.io.IOException;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@EventBusSubscriber(value = Dist.CLIENT)
 public class DragonEditorHandler {
     private static ShaderInstance skinGenerationShader;
 

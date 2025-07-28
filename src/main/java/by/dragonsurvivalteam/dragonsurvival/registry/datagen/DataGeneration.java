@@ -68,7 +68,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber
 public class DataGeneration {
     private static final String ANCIENT_STAGE_DATAPACK = "ancient_stage";
 
