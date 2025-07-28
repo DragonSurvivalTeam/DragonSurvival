@@ -127,6 +127,9 @@ dependencies {
 	// Free Cam
 	compileOnly "curse.maven:free-cam-557076:5572364" // 1.3.0
 
+	// EMI
+	compileOnly "curse.maven:emi-580555:6420931" // 1.1.22
+
 	// --- Testing --- //
 
 	implementation "curse.maven:spark-361579:5759671" // 1.10.109
@@ -136,8 +139,6 @@ dependencies {
 //	implementation "curse.maven:immediatelyfast-686911:6376910" // 1.6.5
 //	implementation "curse.maven:flerovium-1142875:6547097" // 1.0.6
 //	implementation "maven.modrinth:c2me-neoforge:0.3.0+alpha.0.72+1.21.1"
-
-//	implementation "curse.maven:emi-580555:6420931" // 1.1.22
 
 //	implementation "curse.maven:apothic-attributes-898963:5751458" // 2.4.0
 //	implementation "curse.maven:placebo-283644:5869769" // 9.5.4
