@@ -42,5 +42,18 @@ side="BOTH"
     ordering = "NONE"
     side = "CLIENT"
 
+[[dependencies.${mod_id}]]
+    modId = "geckoanimfix"
+    type = "incompatible"
+    mandatory = true
+    ordering = "NONE"
+    side = "CLIENT"
+
+[[dependencies.${mod_id}]]
+    modId = "trinketsandbaubles"
+    type = "incompatible"
+    mandatory = true
+    ordering = "NONE"
+
 [[mixins]]
     config = "${mod_id}.mixins.json"
