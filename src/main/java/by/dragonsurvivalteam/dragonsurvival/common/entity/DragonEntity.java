@@ -587,6 +587,8 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         MovementData movement = MovementData.getData(player);
         boolean isSwimming = isConsideredSwimmingForAnimation(player);
 
+        boolean animationWasNullBeforePredicate = animationController.getCurrentAnimation() == null;
+
         // TODO: The transition length of animations doesn't work correctly when the framerate varies too much from 60 FPS
         if (!movement.isMovingHorizontally() && handler.isOnMagicSource) {
             // TODO :: does this need to be synchronized to other players?
@@ -735,6 +737,13 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         } else {
             state.setAnimation(IDLE);
             animationController.transitionLength(2);
+        }
+
+        // If the animation was null, that means we were T-Posing before this animation was triggered
+        // So instantly transition to prevent the player from seeing a T-Pose -> animation transition
+        // This usually happens when changing dimensions, or new clientside dragons are initialized in the UI
+        if(animationWasNullBeforePredicate) {
+            animationController.transitionLength(0);
         }
 
         double finalAnimationSpeed = animationSpeed;

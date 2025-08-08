@@ -14,6 +14,7 @@ import by.dragonsurvivalteam.dragonsurvival.mixins.client.EntityRendererAccessor
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.LivingRendererAccessor;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.SyncDeltaMovement;
 import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDragonMovement;
+import by.dragonsurvivalteam.dragonsurvival.network.player.SyncPitchAndYaw;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
@@ -443,6 +444,7 @@ public class ClientDragonRenderer {
         }
 
         PacketDistributor.sendToServer(new SyncDragonMovement(player.getId(), movement.isFirstPerson, movement.bite, movement.isFreeLook, movement.desiredMoveVec));
+        PacketDistributor.sendToServer(new SyncPitchAndYaw(player.getId(), movement.headYaw, movement.headPitch, movement.bodyYaw));
     }
 
     @SubscribeEvent // Don't render the fire overlay when fire immune

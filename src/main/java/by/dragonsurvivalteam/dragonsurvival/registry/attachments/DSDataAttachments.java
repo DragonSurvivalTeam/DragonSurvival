@@ -24,7 +24,7 @@ public class DSDataAttachments {
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<SummonData>> SUMMON = REGISTRY.register("summon_data", () -> AttachmentType.serializable(SummonData::new).build());
 
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<LightningHandler>> LIGHTNING_BOLT = REGISTRY.register("lightning_bolt_data", () -> AttachmentType.serializable(LightningHandler::new).build());
-    public static final DeferredHolder<AttachmentType<?>, AttachmentType<MovementData>> MOVEMENT = REGISTRY.register("movement_data", () -> AttachmentType.builder(MovementData::new).build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<MovementData>> MOVEMENT = REGISTRY.register("movement_data", () -> AttachmentType.serializable(MovementData::new).build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<FlightData>> FLIGHT = REGISTRY.register("flight_data", () -> AttachmentType.serializable(FlightData::new).copyOnDeath().build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<ClawInventoryData>> CLAW_INVENTORY = REGISTRY.register("claw_inventory_data", () -> AttachmentType.serializable(ClawInventoryData::new).copyOnDeath().build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<TreasureRestData>> TREASURE_REST = REGISTRY.register("treasure_rest_data", () -> AttachmentType.serializable(TreasureRestData::new).build());

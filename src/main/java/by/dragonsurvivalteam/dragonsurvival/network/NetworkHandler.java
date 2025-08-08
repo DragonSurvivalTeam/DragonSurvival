@@ -50,12 +50,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncVisualEffectAdded;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncVisualEffectRemoval;
 import by.dragonsurvivalteam.dragonsurvival.network.particle.SyncBreathParticles;
 import by.dragonsurvivalteam.dragonsurvival.network.particle.SyncParticleTrail;
-import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDesiredGrowth;
-import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDragonMovement;
-import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDragonPassengerID;
-import by.dragonsurvivalteam.dragonsurvival.network.player.SyncGrowth;
-import by.dragonsurvivalteam.dragonsurvival.network.player.SyncGrowthState;
-import by.dragonsurvivalteam.dragonsurvival.network.player.SyncLargeDragonDestruction;
+import by.dragonsurvivalteam.dragonsurvival.network.player.*;
 import by.dragonsurvivalteam.dragonsurvival.network.sound.StartTickingSound;
 import by.dragonsurvivalteam.dragonsurvival.network.sound.StopTickingSound;
 import by.dragonsurvivalteam.dragonsurvival.network.status.SyncAltarCooldown;
@@ -87,8 +82,8 @@ public class NetworkHandler {
         registrar.playToClient(SyncEffectModification.TYPE, SyncEffectModification.STREAM_CODEC, SyncEffectModification::handleClient);
         registrar.playToClient(SyncOxygenBonus.TYPE, SyncOxygenBonus.STREAM_CODEC, SyncOxygenBonus::handleClient);
         registrar.playToClient(SyncDragonPassengerID.TYPE, SyncDragonPassengerID.STREAM_CODEC, SyncDragonPassengerID::handleClient);
-        registrar.playToServer(SortInventory.TYPE, SortInventory.STREAM_CODEC, SortInventory::handleServer);
 
+        registrar.playToServer(SortInventory.TYPE, SortInventory.STREAM_CODEC, SortInventory::handleServer);
         registrar.playToServer(SyncAltarCooldown.TYPE, SyncAltarCooldown.STREAM_CODEC, SyncAltarCooldown::handleServer);
         registrar.playToServer(RequestOpenDragonInventory.TYPE, RequestOpenDragonInventory.STREAM_CODEC, RequestOpenDragonInventory::handleServer);
         registrar.playToServer(RequestOpenVanillaInventory.TYPE, RequestOpenVanillaInventory.STREAM_CODEC, RequestOpenVanillaInventory::handleServer);
@@ -100,6 +95,7 @@ public class NetworkHandler {
         registrar.playBidirectional(SyncDragonMovement.TYPE, SyncDragonMovement.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncDragonMovement::handleClient, SyncDragonMovement::handleServer));
         registrar.playBidirectional(SyncComplete.TYPE, SyncComplete.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncComplete::handleClient, SyncComplete::handleServer));
         registrar.playBidirectional(ToggleFlight.TYPE, ToggleFlight.STREAM_CODEC, new DirectionalPayloadHandler<>(ToggleFlight::handleClient, ToggleFlight::handleServer));
+        registrar.playBidirectional(SyncPitchAndYaw.TYPE, SyncPitchAndYaw.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncPitchAndYaw::handleClient, SyncPitchAndYaw::handleServer));
 
         // Status
         registrar.playToClient(SyncGrowthState.TYPE, SyncGrowthState.STREAM_CODEC, SyncGrowthState::handleClient);
