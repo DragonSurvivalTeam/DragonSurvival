@@ -40454,7 +40454,7 @@
 			}
 		},
 		"sit_dentist": {
-			"loop": "loop",
+			"loop": true,
 			"animation_length": 4.2,
 			"bones": {
 				"FrontLegLeft": {
@@ -41235,11 +41235,6 @@
 					},
 					"scale": {
 						"vector": [1, 1, 1]
-					}
-				},
-				"Muscles": {
-					"position": {
-						"vector": [0, 0, -0.9]
 					}
 				},
 				"FrontLegRightHandClawsAdvanced5": {
@@ -59313,11 +59308,6 @@
 						}
 					}
 				},
-				"Muscles": {
-					"position": {
-						"vector": [0, 0, -0.1]
-					}
-				},
 				"SmallWingRight": {
 					"scale": {
 						"vector": [0, 0, 0]
@@ -59831,11 +59821,6 @@
 						"4.16": {
 							"vector": [0, 0, 0]
 						}
-					}
-				},
-				"Muscles": {
-					"position": {
-						"vector": [0, 0, -0.1]
 					}
 				},
 				"SmallWingRight": {
@@ -60584,11 +60569,6 @@
 						}
 					}
 				},
-				"Muscles": {
-					"position": {
-						"vector": [0, 0, -0.1]
-					}
-				},
 				"SmallWingRight": {
 					"scale": {
 						"vector": [0, 0, 0]
@@ -61303,11 +61283,6 @@
 						"4.16": {
 							"vector": [0, 0, 0]
 						}
-					}
-				},
-				"Muscles": {
-					"position": {
-						"vector": [0, 0, -0.1]
 					}
 				},
 				"SmallWingRight": {
@@ -62473,11 +62448,6 @@
 				"FrontLegRightHandClawsAdvanced9": {
 					"rotation": {
 						"vector": [0, -5, 0]
-					}
-				},
-				"Muscles": {
-					"position": {
-						"vector": [0, 0, -0.2]
 					}
 				},
 				"FrontLegRightHandClawsAdvanced13": {
@@ -63782,16 +63752,6 @@
 						},
 						"0.52": {
 							"vector": [0, 0, 0]
-						}
-					}
-				},
-				"Muscles": {
-					"position": {
-						"0.0": {
-							"vector": [0, 0, -0.1]
-						},
-						"0.52": {
-							"vector": [0, 0, -0.1]
 						}
 					}
 				},
@@ -65243,16 +65203,6 @@
 						},
 						"4.2": {
 							"vector": [27.5, 0, 0]
-						}
-					}
-				},
-				"Muscles": {
-					"position": {
-						"0.0": {
-							"vector": [0, 0, -0.1]
-						},
-						"4.2": {
-							"vector": [0, 0, -0.1]
 						}
 					}
 				},
@@ -66903,11 +66853,6 @@
 						}
 					}
 				},
-				"Muscles": {
-					"position": {
-						"vector": [0, 0, -0.2]
-					}
-				},
 				"Dragon": {
 					"rotation": {
 						"0.0": {
@@ -66992,7 +66937,7 @@
 			}
 		},
 		"flapping_wings_standing_biped": {
-			"loop": "loop",
+			"loop": true,
 			"animation_length": 2.08,
 			"bones": {
 				"Dragon": {
@@ -67637,13 +67582,10 @@
 							"vector": [3, 3, 3]
 						},
 						"1.0": {
-							"vector": [2, 2, 2],
-							"easing": "easeInElastic",
-							"easingArgs": [2]
+							"vector": [2, 2, 2]
 						},
 						"2.08": {
-							"vector": [3, 3, 3],
-							"easing": "easeInElastic"
+							"vector": [3, 3, 3]
 						}
 					}
 				},
@@ -67664,12 +67606,10 @@
 							"vector": [3, 3, 3]
 						},
 						"1.0": {
-							"vector": [7, 7, 7],
-							"easing": "easeOutElastic"
+							"vector": [7, 7, 7]
 						},
 						"2.08": {
-							"vector": [3, 3, 3],
-							"easing": "easeOutElastic"
+							"vector": [3, 3, 3]
 						}
 					}
 				},
@@ -67819,11 +67759,6 @@
 					},
 					"scale": {
 						"vector": [1, 1, 1]
-					}
-				},
-				"Muscles": {
-					"position": {
-						"vector": [0, 0, -0.1]
 					}
 				},
 				"SmallWingRight": {
@@ -68885,11 +68820,6 @@
 						}
 					}
 				},
-				"Muscles": {
-					"position": {
-						"vector": [0, 0, -0.1]
-					}
-				},
 				"SmallWingRight": {
 					"scale": {
 						"vector": [0, 0, 0]
@@ -69659,11 +69589,6 @@
 						}
 					}
 				},
-				"Muscles": {
-					"position": {
-						"vector": [0, 0, -0.1]
-					}
-				},
 				"SmallWingRight": {
 					"scale": {
 						"vector": [0, 0, 0]
@@ -70431,11 +70356,6 @@
 						"4.2": {
 							"vector": [0, 0, 0]
 						}
-					}
-				},
-				"Muscles": {
-					"position": {
-						"vector": [0, 0, -0.1]
 					}
 				},
 				"SmallWingRight": {
@@ -71210,11 +71130,6 @@
 						}
 					}
 				},
-				"Muscles": {
-					"position": {
-						"vector": [0, 0, -0.1]
-					}
-				},
 				"SmallWingRight": {
 					"scale": {
 						"vector": [0, 0, 0]
@@ -71951,11 +71866,6 @@
 						"4.2": {
 							"vector": [0, 0, 0]
 						}
-					}
-				},
-				"Muscles": {
-					"position": {
-						"vector": [0, 0, -0.9]
 					}
 				},
 				"SmallWingRight": {
@@ -72700,11 +72610,6 @@
 						"4.2": {
 							"vector": [0, 0, 0]
 						}
-					}
-				},
-				"Muscles": {
-					"position": {
-						"vector": [0, 0, -0.9]
 					}
 				},
 				"SmallWingRight": {
@@ -74036,11 +73941,6 @@
 						"3.0": {
 							"vector": [-30, 0, 0]
 						}
-					}
-				},
-				"Muscles": {
-					"position": {
-						"vector": [0, 0, -0.2]
 					}
 				},
 				"SmallWingRight": {
@@ -75759,16 +75659,6 @@
 						}
 					}
 				},
-				"Muscles": {
-					"position": {
-						"0.0": {
-							"vector": [0, 0, -0.1]
-						},
-						"2.28": {
-							"vector": [0, 0, -0.1]
-						}
-					}
-				},
 				"WingRightToe": {
 					"rotation": {
 						"0.0": {
@@ -77269,7 +77159,7 @@
 			}
 		},
 		"blend_licking": {
-			"loop": "loop",
+			"loop": true,
 			"animation_length": 2,
 			"bones": {
 				"Tongue": {
@@ -77455,19 +77345,6 @@
 							"vector": [1, 1, 1]
 						}
 					}
-				},
-				"Muscles": {
-					"position": {
-						"0.56": {
-							"vector": [0, 0, 0]
-						},
-						"1.28": {
-							"vector": [0, 0, -0.2]
-						},
-						"2.0": {
-							"vector": [0, 0, 0]
-						}
-					}
 				}
 			}
 		},
@@ -77607,17 +77484,9 @@
 			}
 		},
 		"breath": {
-			"loop": "loop",
+			"loop": true,
 			"animation_length": 2.08,
 			"bones": {
-				"Muscles": {
-					"rotation": {
-						"vector": [10, 0, 0]
-					},
-					"position": {
-						"vector": [0, -0.75, 0.5]
-					}
-				},
 				"Tongue": {
 					"rotation": {
 						"vector": [-5, 0, 0]

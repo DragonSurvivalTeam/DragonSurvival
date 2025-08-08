@@ -35,19 +35,20 @@ import static by.dragonsurvivalteam.dragonsurvival.DragonSurvival.MODID;
 
 public class DragonAbilityScreen extends Screen {
     @Translation(comments = {
+            "§f■ §cUSE THE MOUSE WHEEL TO SCROLL THROUGH THE SKILL COLUMNS.",
             "§f■ §6Active skills§r§f are used in combat or to apply buffs.",
             "§f- §9Skill power§r§8 scales off your current experience level.",
             "§f- §9Experience or mana§r§8 points are used to cast spells.",
-            "§f- §9Disable§r§8 the skill by ctrl+right click.",
             "",
             "§f■ §aPassive skills§r§f are upgraded by spending experience levels or just give bonuses.",
-            "§f- §9To scroll skills use the mouse wheel.",
-            "§f- §9More information§r§8 can be found on Curseforge mod page."
+            "§f- §9Disable§r§8 the skill by ctrl+right click.",
+            "§f- §9More information§r§8 can be found on Curseforge mod page or Github Wiki."
     })
     private static final String HELP_PASSIVE_ACTIVE = Translation.Type.GUI.wrap("help.passive_active_abilities");
 
     @Translation(comments = {
-            "■ §dAbility assignment§r§f - drag and drop §6Active skills§r to the §9hotbar§r.",
+            "■ §cUSE THE MOUSE WHEEL TO SCROLL THROUGH THE SKILL COLUMNS.",
+            "§f■ §dAbility assignment§r§f - drag and drop §6Active skills§r§f to the §9hotbar§r§f.",
             "§f- §9Hotbar§r§8 is used to quickly access your active skills.",
             "§f- §8Check in-game Minecraft §r§9control§r§8 settings!"
     })
