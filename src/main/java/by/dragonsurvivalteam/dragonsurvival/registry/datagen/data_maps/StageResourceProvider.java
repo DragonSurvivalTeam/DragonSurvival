@@ -24,7 +24,7 @@ public class StageResourceProvider extends DataMapProvider {
     }
 
     @Override
-    protected void gather() {
+    protected void gather(HolderLookup.@NotNull Provider provider) {
         builder(DSDataMaps.STAGE_RESOURCES)
                 .add(BuiltInDragonSpecies.CAVE_DRAGON, caveDragon(), false, DSConditions.CAVE_DRAGON_LOADED)
                 .add(BuiltInDragonSpecies.FOREST_DRAGON, forestDragon(), false, DSConditions.FOREST_DRAGON_LOADED)

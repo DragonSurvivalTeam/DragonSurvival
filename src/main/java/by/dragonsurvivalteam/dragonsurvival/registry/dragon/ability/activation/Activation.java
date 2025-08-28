@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 import java.util.function.Function;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber
 public interface Activation {
     ResourceKey<Registry<MapCodec<? extends Activation>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("activation"));
     Registry<MapCodec<? extends Activation>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();

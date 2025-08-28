@@ -17,7 +17,7 @@ import net.neoforged.neoforge.registries.RegistryBuilder;
 
 import java.util.function.Function;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber
 public interface PenaltyEffect {
     ResourceKey<Registry<MapCodec<? extends PenaltyEffect>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("penalty_effect"));
     Registry<MapCodec<? extends PenaltyEffect>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();

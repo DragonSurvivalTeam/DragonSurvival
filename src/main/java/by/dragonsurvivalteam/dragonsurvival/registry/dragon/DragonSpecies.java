@@ -38,7 +38,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType") // ignore
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber
 public class DragonSpecies implements AttributeModifierSupplier {
     public static final ResourceKey<Registry<DragonSpecies>> REGISTRY = ResourceKey.createRegistryKey(DragonSurvival.res("dragon_species"));
 

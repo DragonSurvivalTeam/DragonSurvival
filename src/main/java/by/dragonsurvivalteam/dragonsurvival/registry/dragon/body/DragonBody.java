@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber
 public record DragonBody(
         boolean isDefault,
         Optional<UnlockableBehavior> unlockableBehavior,

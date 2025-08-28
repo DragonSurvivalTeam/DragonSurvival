@@ -117,7 +117,9 @@ public class EmoteComponent {
         int keyCode = DSEmoteKeybindings.EMOTE_KEYBINDS.getKey(emote.key());
         if (keyCode != DragonEmoteScreen.NO_KEY) {
             InputConstants.Key input = InputConstants.Type.KEYSYM.getOrCreate(keyCode);
-            keybindingButton.setTooltip(Tooltip.create(Component.translatable(BOUND_TO, input.getDisplayName())));
+            // Input.getDisplayName() doesn't work correctly for the mouse buttons (M1, M2, ... M5) so handle them manually here
+            Component displayName = input.getValue() > 4 ? input.getDisplayName() : Component.literal("M" + (input.getValue() + 1));
+            keybindingButton.setTooltip(Tooltip.create(Component.translatable(BOUND_TO, displayName)));
         } else {
             keybindingButton.setTooltip(Tooltip.create(Component.translatable(UNBOUND)));
         }

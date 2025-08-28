@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber
 public record DragonAbility(
         Activation activation,
         Optional<UpgradeType<?>> upgrade,

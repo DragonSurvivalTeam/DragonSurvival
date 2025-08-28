@@ -20,7 +20,7 @@ public class DragonBeaconDataProvider extends DataMapProvider {
     }
 
     @Override
-    protected void gather() {
+    protected void gather(HolderLookup.@NotNull Provider provider) {
         builder(DSDataMaps.DRAGON_BEACON_DATA)
                 .add(BuiltInDragonSpecies.CAVE_DRAGON, new DragonBeaconData(
                         DragonBeaconData.createEffects(Functions.secondsToTicks(20), 0, DSEffects.FIRE, DSEffects.STURDY_SKIN),

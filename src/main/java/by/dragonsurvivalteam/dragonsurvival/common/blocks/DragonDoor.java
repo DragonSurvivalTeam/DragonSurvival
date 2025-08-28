@@ -37,6 +37,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.DoorHingeSide;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.PathComputationType;
@@ -145,6 +146,7 @@ public class DragonDoor extends Block implements SimpleWaterloggedBlock {
         if (hasPower != state.getValue(POWERED)) {
             if (hasPower != state.getValue(OPEN)) {
                 playSound(null, level, position, state, hasPower);
+                level.gameEvent(null, hasPower ? GameEvent.BLOCK_OPEN : GameEvent.BLOCK_CLOSE, position);
             }
 
             level.setBlock(position, state.setValue(POWERED, hasPower).setValue(OPEN, hasPower), Block.UPDATE_CLIENTS);
@@ -161,6 +163,10 @@ public class DragonDoor extends Block implements SimpleWaterloggedBlock {
         }
 
         return isOpening ? SoundEvents.IRON_DOOR_OPEN : SoundEvents.IRON_DOOR_CLOSE;
+    }
+
+    public boolean isOpen(BlockState state) {
+        return state.getValue(OPEN);
     }
 
     @Override
@@ -184,6 +190,8 @@ public class DragonDoor extends Block implements SimpleWaterloggedBlock {
                 level.setBlock(position.below(2), newState.setValue(PART, Part.BOTTOM).setValue(WATERLOGGED, level.getFluidState(position.below(2)).getType() == Fluids.WATER), /* Block.UPDATE_CLIENTS + Block.UPDATE_IMMEDIATE */ 10);
                 level.setBlock(position.below(), newState.setValue(PART, Part.MIDDLE).setValue(WATERLOGGED, level.getFluidState(position.below()).getType() == Fluids.WATER), /* Block.UPDATE_CLIENTS + Block.UPDATE_IMMEDIATE */ 10);
             }
+
+            level.gameEvent(player, this.isOpen(state) ? GameEvent.BLOCK_OPEN : GameEvent.BLOCK_CLOSE, position);
 
             return InteractionResult.SUCCESS;
         }

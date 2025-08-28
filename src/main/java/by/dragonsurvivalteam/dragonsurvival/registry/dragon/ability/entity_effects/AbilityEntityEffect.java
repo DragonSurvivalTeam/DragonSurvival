@@ -22,7 +22,7 @@ import net.neoforged.neoforge.registries.RegistryBuilder;
 import java.util.List;
 import java.util.function.Function;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber
 public interface AbilityEntityEffect {
     ResourceKey<Registry<MapCodec<? extends AbilityEntityEffect>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("ability_entity_effect"));
     Registry<MapCodec<? extends AbilityEntityEffect>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();

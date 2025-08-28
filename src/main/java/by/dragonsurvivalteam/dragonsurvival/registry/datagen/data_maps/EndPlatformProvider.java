@@ -17,7 +17,7 @@ public class EndPlatformProvider extends DataMapProvider {
     }
 
     @Override
-    protected void gather() {
+    protected void gather(HolderLookup.@NotNull Provider provider) {
         builder(DSDataMaps.END_PLATFORMS)
                 .add(BuiltInDragonSpecies.CAVE_DRAGON, EndPlatform.from("end_spawn_platforms/cave_end_spawn_platform", -200, 50, 0), false, DSConditions.CAVE_DRAGON_LOADED)
                 .add(BuiltInDragonSpecies.FOREST_DRAGON, EndPlatform.from("end_spawn_platforms/forest_end_spawn_platform", 0, 50, -200), false, DSConditions.FOREST_DRAGON_LOADED)

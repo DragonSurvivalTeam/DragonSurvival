@@ -6,11 +6,13 @@ import by.dragonsurvivalteam.dragonsurvival.config.ServerConfig;
 import by.dragonsurvivalteam.dragonsurvival.network.animation.StopAbilityAnimation;
 import by.dragonsurvivalteam.dragonsurvival.network.container.OpenDragonAltar;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncData;
+import by.dragonsurvivalteam.dragonsurvival.network.player.SyncPitchAndYaw;
 import by.dragonsurvivalteam.dragonsurvival.network.sound.StopTickingSound;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.AltarData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MovementData;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
@@ -20,9 +22,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.WorldDimensions;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.EntityTravelToDimensionEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
@@ -158,6 +163,8 @@ public class PlayerLoginHandler {
 
             // Make sure to sync the FLIGHT data, otherwise the flight animation will be displayed incorrectly when tracking begins
             syncFrom.getExistingData(DSDataAttachments.FLIGHT).ifPresent(data -> data.sync(source, target));
+            // Same for MOVEMENT data
+            syncFrom.getExistingData(DSDataAttachments.MOVEMENT).ifPresent(data -> data.sync(source, target));
         }
     }
 
@@ -184,6 +191,7 @@ public class PlayerLoginHandler {
         player.getExistingData(DSDataAttachments.CLAW_INVENTORY).ifPresent(data -> data.sync(player));
         player.getExistingData(DSDataAttachments.FLIGHT).ifPresent(data -> data.sync(player));
         player.getExistingData(DSDataAttachments.SWIM).ifPresent(data -> data.sync(player));
+        player.getExistingData(DSDataAttachments.MOVEMENT).ifPresent(data -> data.sync(player));
         DSDataAttachments.getStorages(player).forEach(storage -> storage.sync(player));
     }
 }
