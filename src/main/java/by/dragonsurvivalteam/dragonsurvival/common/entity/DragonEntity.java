@@ -336,9 +336,11 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
                     return playOrContinueAnimation(EAT_ITEM_LEFT, state, movement);
                 }
             } else if (isUsingItem) {
-                if (usedItemHand == InteractionHand.MAIN_HAND || animationTickTimer.getDuration(USE_ITEM_RIGHT) > 0) {
+                // For the using animations, they are intended to only play once, at the start of the use.
+                // So to account for this, we check the getTicksUsingItem time
+                if ((usedItemHand == InteractionHand.MAIN_HAND && player.getTicksUsingItem() == 1)  || animationTickTimer.getDuration(USE_ITEM_RIGHT) > 0) {
                     return playOrContinueAnimation(USE_ITEM_RIGHT, state, movement);
-                } else if (usedItemHand == InteractionHand.OFF_HAND || animationTickTimer.getDuration(USE_ITEM_LEFT) > 0) {
+                } else if ((usedItemHand == InteractionHand.OFF_HAND && player.getTicksUsingItem() == 1) || animationTickTimer.getDuration(USE_ITEM_LEFT) > 0) {
                     return playOrContinueAnimation(USE_ITEM_LEFT, state, movement);
                 }
             }
