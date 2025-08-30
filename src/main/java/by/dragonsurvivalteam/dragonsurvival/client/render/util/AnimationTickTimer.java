@@ -58,6 +58,8 @@ public class AnimationTickTimer {
      * The RawAnimation must contain only one stage for this to work correctly
      */
     public void putAnimation(final RawAnimation animation, final Double ticks) {
+        assert (animation.getAnimationStages().size() == 1);
+
         putDuration(animation.getAnimationStages().getFirst().animationName(), ticks);
 
         if (!TIMERS.contains(this)) {
