@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public class SleepOnTreasureTrigger extends SimpleCriterionTrigger<SleepOnTreasureTrigger.SleepOnTreasureInstance> {
     public void trigger(ServerPlayer player, int count) {
-        this.trigger(player, triggerInstance -> triggerInstance.nearbyTreasureAmount.map(integer -> integer < count).orElse(true));
+        this.trigger(player, triggerInstance -> triggerInstance.nearbyTreasureAmount.map(integer -> integer <= count).orElse(true));
     }
 
     @Override
