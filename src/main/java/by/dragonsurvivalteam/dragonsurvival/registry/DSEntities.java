@@ -23,6 +23,7 @@ import net.minecraft.world.entity.SpawnPlacementTypes;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -46,14 +47,16 @@ public class DSEntities {
 
     // --- Fake entities --- //
 
+    // Properties copied from the ARROW entity that Minecraft uses
     @Translation(type = Translation.Type.ENTITY, comments = "Bolas")
     public static DeferredHolder<EntityType<?>, EntityType<Bolas>> BOLAS_ENTITY = REGISTRY.register(
             "bolas",
             () -> EntityType.Builder.<Bolas>of((entity, level) ->
                             new Bolas(level), MobCategory.MISC)
-                    .sized(0.25F, 0.25F)
+                    .sized(0.5F, 0.5F)
+                    .eyeHeight(0.13F)
                     .clientTrackingRange(4)
-                    .updateInterval(10)
+                    .updateInterval(20)
                     .build("bolas"));
 
     @Translation(type = Translation.Type.ENTITY, comments = "Generic Ball Entity")
