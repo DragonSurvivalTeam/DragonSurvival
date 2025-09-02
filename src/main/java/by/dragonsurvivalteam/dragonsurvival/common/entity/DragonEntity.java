@@ -343,6 +343,11 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
                 } else if ((usedItemHand == InteractionHand.OFF_HAND && player.getTicksUsingItem() == 1) || animationTickTimer.getDuration(USE_ITEM_LEFT) > 0) {
                     return playOrContinueAnimation(USE_ITEM_LEFT, state, movement);
                 }
+            } else if (player.getItemInHand(InteractionHand.MAIN_HAND) != ItemStack.EMPTY) {
+                // Still play use item if we are holding an item in our main hand and left click
+                if (movement.bite || animationTickTimer.getDuration(USE_ITEM_RIGHT) > 0) {
+                    return playOrContinueAnimation(USE_ITEM_RIGHT, state, movement);
+                }
             }
         }
 
