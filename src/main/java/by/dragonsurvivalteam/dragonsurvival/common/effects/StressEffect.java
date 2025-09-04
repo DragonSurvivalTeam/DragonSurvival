@@ -11,7 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 import org.jetbrains.annotations.NotNull;
 
-public class Stress extends MobEffect {
+public class StressEffect extends MobEffect {
     /** See initial value of {@link FoodData#foodLevel} */
     public static final int FULL_FOOD_LEVEL = 20;
 
@@ -20,7 +20,7 @@ public class Stress extends MobEffect {
     @ConfigOption(side = ConfigSide.SERVER, category = {"effects", "stress"}, key = "stress_exhaustion")
     public static Float stressExhaustion = 1f;
 
-    public Stress(int color) {
+    public StressEffect(int color) {
         super(MobEffectCategory.HARMFUL, color);
     }
 
