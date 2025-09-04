@@ -675,7 +675,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             state.setAnimation(FLY_LAND_END);
 
             if (!FLY_LAND_END.getAnimationStages().isEmpty()) {
-                animationTickTimer.putAnimation(FLY_LAND_END, AnimationUtils.animationDuration(player, FLY_LAND_END.getAnimationStages().getFirst().animationName()));
+                animationTickTimer.putAnimation(FLY_LAND_END, AnimationUtils.animationDuration(player, FLY_LAND_END));
             }
 
             animationController.transitionLength(2);
@@ -695,9 +695,9 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             state.resetCurrentAnimation();
             state.setAnimation(JUMP);
             animationController.transitionLength(2);
-            animationTickTimer.putAnimation(JUMP, AnimationUtils.animationDuration(player, JUMP.getAnimationStages().getFirst().animationName()));
+            animationTickTimer.putAnimation(JUMP, AnimationUtils.animationDuration(player, JUMP));
             DRAGONS_JUMPING.remove(this.playerId);
-        } else if (animationTickTimer.isPresent(JUMP.getAnimationStages().getFirst().animationName()) && DRAGONS_JUMPING.getOrDefault(this.playerId, true)) {
+        } else if (animationTickTimer.isPresent(JUMP) && DRAGONS_JUMPING.getOrDefault(this.playerId, true)) {
             // We test here if the jump animation has been flagged with a false value; if this is the case, that means cancel any ongoing jumps that are occurring
             // This happens if we hit the ground
             //
@@ -850,7 +850,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
 
     // Animations
     private static final RawAnimation BITE = RawAnimation.begin().thenLoop("bite");
-    private static final RawAnimation USE_ITEM = RawAnimation.begin().thenLoop("use_item");
     private static final RawAnimation USE_ITEM_RIGHT = RawAnimation.begin().thenLoop("use_item_right");
     private static final RawAnimation USE_ITEM_LEFT = RawAnimation.begin().thenLoop("use_item_left");
     private static final RawAnimation EAT_ITEM_RIGHT = RawAnimation.begin().thenLoop("eat_item_right");

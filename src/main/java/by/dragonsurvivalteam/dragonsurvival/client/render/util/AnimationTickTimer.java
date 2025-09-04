@@ -35,14 +35,19 @@ public class AnimationTickTimer {
         return animationTimes.containsKey(animation);
     }
 
+    public boolean isPresent(final RawAnimation animation) {
+        assert(animation.getAnimationStages().size() == 1);
+
+        return animationTimes.containsKey(animation.getAnimationStages().getFirst().animationName());
+    }
+
     public double getDuration(final String animation) {
         return animationTimes.getOrDefault(animation, 0d);
     }
 
-    /**
-     * The RawAnimation must contain only one stage for this to work correctly
-     */
     public double getDuration(final RawAnimation animation) {
+        assert(animation.getAnimationStages().size() == 1);
+
         return getDuration(animation.getAnimationStages().getFirst().animationName());
     }
 
@@ -54,9 +59,6 @@ public class AnimationTickTimer {
         }
     }
 
-    /**
-     * The RawAnimation must contain only one stage for this to work correctly
-     */
     public void putAnimation(final RawAnimation animation, final Double ticks) {
         assert (animation.getAnimationStages().size() == 1);
 
