@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ManaCost;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncDisableAbility;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncStopCast;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Activation;
@@ -123,13 +124,6 @@ public class DragonAbilityInstance {
         if (currentTick == castTime) {
             value().activation().playStartAndLoopingSound(dragon, this);
             value().activation().playLoopingAnimation(dragon);
-        }
-
-        if (currentTick < castTime) {
-            return;
-        }
-
-        if (currentTick == castTime) {
             ManaHandler.consumeMana(dragon, value().activation().getInitialManaCost(level));
         }
 
@@ -155,11 +149,15 @@ public class DragonAbilityInstance {
     }
 
     private void stopCasting(final Player dragon) {
-        value().activation().playEndSound(dragon);
-        value().activation().playEndAnimation(dragon);
-
         MagicData magic = MagicData.getData(dragon);
         magic.stopCasting(dragon, this);
+        // Make sure to notify the server that the casting of this ability has actually stopped; otherwise you'll end up with desyncs
+        // where, for example, the continuous audio of a channeled ability will continue to play
+        if (dragon.level().isClientSide()) {
+            PacketDistributor.sendToServer(new SyncStopCast(dragon.getId(), false));
+        } else {
+            SyncStopCast.handleServer(dragon);
+        }
     }
 
     public float getContinuousManaCost(final ManaCost.ManaCostType manaCostType) {
