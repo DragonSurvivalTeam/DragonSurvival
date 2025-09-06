@@ -149,11 +149,11 @@ public class DragonAbilityInstance {
     }
 
     private void stopCasting(final Player dragon) {
-        MagicData magic = MagicData.getData(dragon);
-        magic.stopCasting(dragon, this);
         // Make sure to notify the server that the casting of this ability has actually stopped; otherwise you'll end up with desyncs
         // where, for example, the continuous audio of a channeled ability will continue to play
         if (dragon.level().isClientSide()) {
+            MagicData magic = MagicData.getData(dragon);
+            magic.stopCasting(dragon, this);
             PacketDistributor.sendToServer(new SyncStopCast(dragon.getId(), false));
         } else {
             SyncStopCast.handleServer(dragon);
