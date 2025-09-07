@@ -227,10 +227,6 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         }
 
         magic.getAbilities().values().forEach(ability -> ability.value().upgrade().ifPresent(upgrade -> {
-            if (stack.isEmpty()) {
-                return;
-            }
-
             if (upgrade.attempt(player, ability, stack.getItem())) {
                 stack.consume(1, player);
                 player.playNotifySound(SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.PLAYERS, 1, 0);

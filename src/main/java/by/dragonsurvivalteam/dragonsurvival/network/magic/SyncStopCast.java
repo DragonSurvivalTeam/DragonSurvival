@@ -37,23 +37,28 @@ public record SyncStopCast(int playerId, boolean forceWasApplyingEffects) implem
         });
     }
 
+    // Needed so we can reuse this logic in DragonAbilityInstance to properly handle sound effect/animation stopping logic
+    public static void handleServer(final Player player) {
+        MagicData data = MagicData.getData(player);
+        DragonAbilityInstance currentlyCasting = data.getCurrentlyCasting();
+
+        if (currentlyCasting == null) {
+            return;
+        }
+
+        PacketDistributor.sendToPlayersTrackingEntity(player, new StopTickingSound(currentlyCasting.location().withSuffix(player.getStringUUID())));
+
+        if (!currentlyCasting.isApplyingEffects() || (currentlyCasting.isApplyingEffects() && !currentlyCasting.hasEndAnimation())) {
+            PacketDistributor.sendToPlayersTrackingEntity(player, new StopAbilityAnimation(player.getId()));
+        }
+
+        data.stopCasting(player);
+    }
+
     public static void handleServer(final SyncStopCast packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
-                MagicData data = MagicData.getData(player);
-                DragonAbilityInstance currentlyCasting = data.getCurrentlyCasting();
-
-                if (currentlyCasting == null) {
-                    return;
-                }
-
-                PacketDistributor.sendToPlayersTrackingEntity(player, new StopTickingSound(currentlyCasting.location().withSuffix(player.getStringUUID())));
-
-                if (!currentlyCasting.isApplyingEffects() || (currentlyCasting.isApplyingEffects() && !currentlyCasting.hasEndAnimation())) {
-                    PacketDistributor.sendToPlayersTrackingEntity(player, new StopAbilityAnimation(player.getId()));
-                }
-
-                data.stopCasting(player);
+                handleServer(player);
             }
         });
     }

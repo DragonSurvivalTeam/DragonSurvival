@@ -1,11 +1,15 @@
 package by.dragonsurvivalteam.dragonsurvival.util;
 
+import by.dragonsurvivalteam.dragonsurvival.client.models.DragonModel;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.AnimationControllerAccessor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.animation.AnimationController;
 import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.cache.GeckoLibCache;
+import software.bernie.geckolib.loading.object.BakedAnimations;
 
 public class AnimationUtils {
     /** Time in MS of 1 frame for 60 FPS */
@@ -43,5 +47,35 @@ public class AnimationUtils {
     public static float getDeltaSeconds() {
         //noinspection DataFlowIssue -> level is present
         return (Minecraft.getInstance().getTimer().getRealtimeDeltaTicks() * Minecraft.getInstance().level.tickRateManager().millisecondsPerTick()) / 1000f;
+    }
+
+    public static boolean doesAnimationExist(final Player player, final String animation) {
+        BakedAnimations bakedAnimations = GeckoLibCache.getBakedAnimations().get(DragonModel.getAnimationResource(player));
+        if (bakedAnimations == null) {
+            return false;
+        }
+
+        return bakedAnimations.getAnimation(animation) != null;
+    }
+
+    public static boolean doesAnimationExist(final Player player, final RawAnimation animation) {
+        assert (animation.getAnimationStages().size() == 1);
+
+        return doesAnimationExist(player, animation.getAnimationStages().getFirst().animationName());
+    }
+
+    public static double animationDuration(final Player player, final String animation) {
+        if (!doesAnimationExist(player, animation)) {
+            return 0;
+        }
+
+        return GeckoLibCache.getBakedAnimations().get(DragonModel.getAnimationResource(player)).getAnimation(animation).length();
+    }
+
+    public static double animationDuration(final Player player, final RawAnimation animation)
+    {
+        assert (animation.getAnimationStages().size() == 1);
+
+        return animationDuration(player, animation.getAnimationStages().getFirst().animationName());
     }
 }
