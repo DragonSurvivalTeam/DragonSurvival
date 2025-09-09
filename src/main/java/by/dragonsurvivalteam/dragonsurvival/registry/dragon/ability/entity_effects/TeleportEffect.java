@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
@@ -67,11 +68,13 @@ public record TeleportEffect(
                 // Displace the teleport point back 1 block to avoid teleporting entities into blocks
                 Vec3 destination = new Vec3(res.getLocation().toVector3f()).add(new Vec3(res.getDirection().step()));
 
-                target.changeDimension(
-                        new DimensionTransition(
-                                serverLevel, destination, target.getDeltaMovement(), target.getYRot(), target.getXRot(), DimensionTransition.DO_NOTHING
-                        )
-                );
+                if (dragon.level().isLoaded(BlockPos.containing(destination))) {
+                    target.changeDimension(
+                            new DimensionTransition(
+                                    serverLevel, destination, target.getDeltaMovement(), target.getYRot(), target.getXRot(), DimensionTransition.DO_NOTHING
+                            )
+                    );
+                }
             }
         }
     }
