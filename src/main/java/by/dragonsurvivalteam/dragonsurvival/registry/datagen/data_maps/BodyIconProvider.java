@@ -44,7 +44,7 @@ public class BodyIconProvider extends DataMapProvider {
                         BuiltInDragonSpecies.CAVE_DRAGON, DragonSurvival.res("textures/gui/custom/body/west/cave_dragon.png"),
                         BuiltInDragonSpecies.FOREST_DRAGON, DragonSurvival.res("textures/gui/custom/body/west/forest_dragon.png"),
                         BuiltInDragonSpecies.SEA_DRAGON, DragonSurvival.res("textures/gui/custom/body/west/sea_dragon.png")
-                ), false, new RegisteredCondition<>(DragonBodies.EAST));
+                ), false, new RegisteredCondition<>(DragonBodies.WEST));
     }
 
     @Override

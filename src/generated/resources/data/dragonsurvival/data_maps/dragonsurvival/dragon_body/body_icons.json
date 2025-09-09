@@ -53,7 +53,7 @@
         {
           "type": "dragonsurvival:registered",
           "registry": "dragonsurvival:dragon_body",
-          "value": "dragonsurvival:east"
+          "value": "dragonsurvival:west"
         }
       ],
       "dragonsurvival:cave_dragon": "dragonsurvival:textures/gui/custom/body/west/cave_dragon.png",
