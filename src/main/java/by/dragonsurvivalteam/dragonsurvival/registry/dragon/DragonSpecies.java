@@ -227,7 +227,7 @@ public class DragonSpecies implements AttributeModifierSupplier {
     }
 
     public boolean isValidForBody(final Holder<DragonBody> body) {
-        return bodies.size() == 0 && body.value().model().equals(DragonBody.DEFAULT_MODEL) || bodies.contains(body);
+        return DragonBody.bodyIsValidForSpecies(body, this);
     }
 
     public static boolean isBuiltIn(final ResourceKey<DragonSpecies> speciesKey) {

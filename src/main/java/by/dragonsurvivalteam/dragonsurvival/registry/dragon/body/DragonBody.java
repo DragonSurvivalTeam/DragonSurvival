@@ -173,11 +173,15 @@ public record DragonBody(
     }
 
     public static boolean bodyIsValidForSpecies(final Holder<DragonBody> body, @Nullable final Holder<DragonSpecies> species) {
-        if (species == null || species.value().bodies().size() == 0) {
+        if (species == null) {
             return body.value().isDefault();
-        } else {
-            return species.value().bodies().contains(body);
         }
+
+        return bodyIsValidForSpecies(body, species.value());
+    }
+
+    public static boolean bodyIsValidForSpecies(final Holder<DragonBody> body, final DragonSpecies species) {
+        return species.bodies().size() == 0 && body.value().isDefault() || species.bodies().contains(body);
     }
 
     public static Holder<DragonBody> getRandomUnlocked(final ServerPlayer player) {
