@@ -134,7 +134,7 @@ public class DragonAbilityInstance {
                 // TODO :: make this return a boolean and remove 'hasEnoughMana'?
                 ManaHandler.consumeMana(dragon, manaCost);
             } else {
-                stopCasting(dragon);
+                stopCasting(dragon, false);
                 return;
             }
         }
@@ -143,18 +143,24 @@ public class DragonAbilityInstance {
             ability.value().actions().forEach(action -> action.tick(serverPlayer, this, currentTick));
         }
 
+        // Previously this was checked outside of this condition, but now that stopCasting gives the client the power to tell the server
+        // to stop the cast, this can result in the client cancelling the cast before the server has had time to actually process it
+        //
+        // So just do a clientside stop cast instead in this case
         if (value().activation().type() == Activation.Type.SIMPLE || isPassive() && value().activation().getCooldown(level) > 0) {
-            stopCasting(dragon);
+            stopCasting(dragon, true);
         }
     }
 
-    private void stopCasting(final Player dragon) {
+    private void stopCasting(final Player dragon, boolean doNotSendToServerIfClient) {
         // Make sure to notify the server that the casting of this ability has actually stopped; otherwise you'll end up with desyncs
         // where, for example, the continuous audio of a channeled ability will continue to play
         if (dragon.level().isClientSide()) {
             MagicData magic = MagicData.getData(dragon);
             magic.stopCasting(dragon, this);
-            PacketDistributor.sendToServer(new SyncStopCast(dragon.getId(), false));
+            if (!doNotSendToServerIfClient) {
+                PacketDistributor.sendToServer(new SyncStopCast(dragon.getId(), false));
+            }
         } else {
             SyncStopCast.handleServer(dragon);
         }
