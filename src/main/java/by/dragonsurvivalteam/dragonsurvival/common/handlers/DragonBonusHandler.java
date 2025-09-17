@@ -32,12 +32,12 @@ public class DragonBonusHandler {
             return;
         }
 
+        // Don't consider the player jumping if they have wings spread; otherwise you end up with strange behavior once you finally touch the ground after flying
         if (entity instanceof ServerPlayer serverPlayer) {
             if (!serverPlayer.getData(DSDataAttachments.FLIGHT).areWingsSpread) {
                 PacketDistributor.sendToPlayersTrackingEntity(serverPlayer, new SyncPlayerJump(entity.getId(), true));
             }
         } else if (entity instanceof Player player) {
-            // Don't consider the player jumping if they have wings spread; otherwise you end up with strange behavior once you finally touch the ground after flying
             if (!player.getData(DSDataAttachments.FLIGHT).areWingsSpread) {
                 DragonEntity.DRAGONS_JUMPING.put(player.getId(), true);
             }
