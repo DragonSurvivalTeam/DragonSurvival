@@ -143,7 +143,7 @@ public class DragonAbilityInstance {
             ability.value().actions().forEach(action -> action.tick(serverPlayer, this, currentTick));
         }
 
-        // Previously this was checked outside of this condition, but now that stopCasting gives the client the power to tell the server
+        // Now that stopCasting gives the client the power to tell the server
         // to stop the cast, this can result in the client cancelling the cast before the server has had time to actually process it
         //
         // So just do a clientside stop cast instead in this case
