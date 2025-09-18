@@ -37,7 +37,10 @@ public record SyncStopCast(int playerId, Optional<ResourceKey<DragonAbility>> ab
         });
     }
 
-    // Needed so we can reuse this logic in DragonAbilityInstance to properly handle sound effect/animation stopping logic
+    /**
+     * @param player Player whose cast will be stopped
+     * @param ability Leave this empty to stop the ability that is currently being cast
+     */
     public static void handleServer(final Player player, @Nullable final ResourceKey<DragonAbility> ability) {
         MagicData data = MagicData.getData(player);
         DragonAbilityInstance abilityInstance;
