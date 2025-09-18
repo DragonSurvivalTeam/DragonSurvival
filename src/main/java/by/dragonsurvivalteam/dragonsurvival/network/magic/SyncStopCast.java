@@ -40,15 +40,21 @@ public record SyncStopCast(int playerId, Optional<ResourceKey<DragonAbility>> ab
     // Needed so we can reuse this logic in DragonAbilityInstance to properly handle sound effect/animation stopping logic
     public static void handleServer(final Player player, @Nullable final ResourceKey<DragonAbility> ability) {
         MagicData data = MagicData.getData(player);
-        DragonAbilityInstance currentlyCasting = data.getCurrentlyCasting();
+        DragonAbilityInstance abilityInstance;
 
-        if (currentlyCasting == null) {
+        if (ability == null) {
+            abilityInstance = data.getCurrentlyCasting();
+        } else {
+            abilityInstance = data.getAbility(ability);
+        }
+
+        if (abilityInstance == null) {
             return;
         }
 
-        PacketDistributor.sendToPlayersTrackingEntity(player, new StopTickingSound(currentlyCasting.location().withSuffix(player.getStringUUID())));
+        PacketDistributor.sendToPlayersTrackingEntity(player, new StopTickingSound(abilityInstance.location().withSuffix(player.getStringUUID())));
 
-        if (!currentlyCasting.isApplyingEffects() || (currentlyCasting.isApplyingEffects() && !currentlyCasting.hasEndAnimation())) {
+        if (!abilityInstance.isApplyingEffects() || (abilityInstance.isApplyingEffects() && !abilityInstance.hasEndAnimation())) {
             PacketDistributor.sendToPlayersTrackingEntity(player, new StopAbilityAnimation(player.getId()));
         }
 

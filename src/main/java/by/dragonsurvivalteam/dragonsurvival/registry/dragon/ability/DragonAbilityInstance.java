@@ -163,10 +163,10 @@ public class DragonAbilityInstance {
             magic.stopCasting(dragon, this);
 
             if (notifyServer) {
-                PacketDistributor.sendToServer(new SyncStopCast(dragon.getId(), Optional.empty()));
+                PacketDistributor.sendToServer(new SyncStopCast(dragon.getId(), Optional.of(key())));
             }
         } else {
-            SyncStopCast.handleServer(dragon, null);
+            SyncStopCast.handleServer(dragon, key());
         }
     }
 
