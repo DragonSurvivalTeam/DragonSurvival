@@ -4,22 +4,27 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.network.animation.StopAbilityAnimation;
 import by.dragonsurvivalteam.dragonsurvival.network.sound.StopTickingSound;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public record SyncStopCast(int playerId, boolean forceWasApplyingEffects) implements CustomPacketPayload {
+import java.util.Optional;
+
+public record SyncStopCast(int playerId, Optional<ResourceKey<DragonAbility>> ability) implements CustomPacketPayload {
     public static final Type<SyncStopCast> TYPE = new CustomPacketPayload.Type<>(DragonSurvival.res("sync_stop_cast"));
 
     public static final StreamCodec<FriendlyByteBuf, SyncStopCast> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, SyncStopCast::playerId,
-            ByteBufCodecs.BOOL, SyncStopCast::forceWasApplyingEffects,
+            ByteBufCodecs.optional(ResourceKey.streamCodec(DragonAbility.REGISTRY)), SyncStopCast::ability,
             SyncStopCast::new
     );
 
@@ -27,18 +32,13 @@ public record SyncStopCast(int playerId, boolean forceWasApplyingEffects) implem
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
                 MagicData magic = MagicData.getData(player);
-
-                if (packet.forceWasApplyingEffects()) {
-                    magic.stopCasting(player, magic.getCurrentlyCasting(), true);
-                } else {
-                    magic.stopCasting(player);
-                }
+                packet.ability().ifPresentOrElse(ability -> magic.stopCasting(player, magic.getAbility(ability)), () -> magic.stopCasting(player));
             }
         });
     }
 
     // Needed so we can reuse this logic in DragonAbilityInstance to properly handle sound effect/animation stopping logic
-    public static void handleServer(final Player player) {
+    public static void handleServer(final Player player, @Nullable final ResourceKey<DragonAbility> ability) {
         MagicData data = MagicData.getData(player);
         DragonAbilityInstance currentlyCasting = data.getCurrentlyCasting();
 
@@ -52,13 +52,17 @@ public record SyncStopCast(int playerId, boolean forceWasApplyingEffects) implem
             PacketDistributor.sendToPlayersTrackingEntity(player, new StopAbilityAnimation(player.getId()));
         }
 
-        data.stopCasting(player);
+        if (ability == null) {
+            data.stopCasting(player);
+        } else {
+            data.stopCasting(player, data.getAbility(ability));
+        }
     }
 
     public static void handleServer(final SyncStopCast packet, final IPayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player().level().getEntity(packet.playerId()) instanceof Player player) {
-                handleServer(player);
+                packet.ability().ifPresentOrElse(ability -> handleServer(player, ability), () -> handleServer(player, null));
             }
         });
     }

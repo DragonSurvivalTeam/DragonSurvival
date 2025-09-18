@@ -15,6 +15,8 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import java.util.Optional;
+
 @EventBusSubscriber(Dist.CLIENT)
 public class ClientCastingHandler {
     private static final Keybind[] slotKeybinds = new Keybind[]{
@@ -88,7 +90,7 @@ public class ClientCastingHandler {
         if (selectedSlot != lastSelectedSlot) {
             if (magicData.isCasting()) {
                 magicData.stopCasting(player);
-                PacketDistributor.sendToServer(new SyncStopCast(player.getId(), false));
+                PacketDistributor.sendToServer(new SyncStopCast(player.getId(), Optional.empty()));
             }
 
             magicData.setSelectedAbilitySlot(selectedSlot);
@@ -113,7 +115,7 @@ public class ClientCastingHandler {
         if (getKey(magicData.getSelectedAbilitySlot()).isReleased(input)) {
             if (magicData.isCasting()) {
                 magicData.stopCasting(player);
-                PacketDistributor.sendToServer(new SyncStopCast(player.getId(), false));
+                PacketDistributor.sendToServer(new SyncStopCast(player.getId(), Optional.empty()));
             }
 
             magicData.setErrorMessageSent(false);
