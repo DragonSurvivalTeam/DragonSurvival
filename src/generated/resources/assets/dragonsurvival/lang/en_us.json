@@ -647,6 +647,8 @@
   "dragonsurvival.configuration.disable_dragon_suffocation.tooltip": "If enabled dragons will not take suffocation damage",
   "dragonsurvival.configuration.disable_size_camera_modifications": "Disable Size Camera Modifications",
   "dragonsurvival.configuration.disable_size_camera_modifications.tooltip": "Disable all size-based camera modifications from DS",
+  "dragonsurvival.configuration.disable_dragon_food_handling": "Disable Dragon Food Handling",
+  "dragonsurvival.configuration.disable_dragon_food_handling.tooltip": "Disable all modifications that dragon survival does to the food system. Some mods will have this setting automatically enabled (such as TFC).",
   "dragonsurvival.configuration.dragon_camera_minimum_scale": "Dragon Camera Minimum Scale",
   "dragonsurvival.configuration.dragon_camera_minimum_scale.tooltip": "The scale at which the dragon's third person camera will stop zooming in",
   "dragonsurvival.configuration.dragon_camera_scale_factor": "Dragon Camera Scale Factor",

@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.handlers;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigRange;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
@@ -21,6 +22,10 @@ import org.jetbrains.annotations.Nullable;
 
 @EventBusSubscriber
 public class DragonFoodHandler {
+    @Translation(key = "disable_dragon_food_handling", type = Translation.Type.CONFIGURATION, comments = "Disable all modifications that dragon survival does to the food system. Some mods will have this setting automatically enabled (such as TFC).")
+    @ConfigOption(side = ConfigSide.SERVER, category = "food", key = "disable_dragon_food_handling")
+    public static Boolean disableDragonFoodHandling = false;
+
     @Translation(key = "dragon_food_is_required", type = Translation.Type.CONFIGURATION, comments = "Dragons will need to adhere to their diets if enabled")
     @ConfigOption(side = ConfigSide.SERVER, category = "food", key = "dragon_food_is_required")
     public static Boolean requireDragonFood = true;
@@ -30,7 +35,15 @@ public class DragonFoodHandler {
     @ConfigOption(side = ConfigSide.SERVER, category = "food", key = "bad_food_poison_chance")
     public static Float badFoodPoisonChance = 0.5F;
 
+    public static boolean dragonFoodHandlingIsDisabled() {
+        return disableDragonFoodHandling || ModCheck.isModLoaded(ModCheck.TFC);
+    }
+
     public static @Nullable FoodProperties getDragonFoodProperties(final Holder<DragonSpecies> species, final ItemStack stack, @Nullable final FoodProperties original) {
+        if (dragonFoodHandlingIsDisabled()) {
+            return original;
+        }
+
         if (DietEntryCache.isEmpty(species)) {
             return original;
         }
@@ -69,7 +82,7 @@ public class DragonFoodHandler {
 
     @SubscribeEvent
     public static void setDragonFoodUseDuration(final LivingEntityUseItemEvent.Start event) {
-        if (!(event.getEntity() instanceof Player player)) {
+        if (DragonFoodHandler.dragonFoodHandlingIsDisabled() || !(event.getEntity() instanceof Player player)) {
             return;
         }
 

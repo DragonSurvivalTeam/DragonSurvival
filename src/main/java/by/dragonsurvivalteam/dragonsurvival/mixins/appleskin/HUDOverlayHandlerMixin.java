@@ -60,7 +60,7 @@ public class HUDOverlayHandlerMixin {
     }
 
     @Unique private static @Nullable ResourceLocation dragonSurvival$getDragonFoodSprites() {
-        if (!DragonFoodHandler.requireDragonFood || HUDHandler.vanillaFoodLevel) {
+        if (DragonFoodHandler.dragonFoodHandlingIsDisabled() || HUDHandler.vanillaFoodLevel) {
             // Same check exists for 'HudHandler' which manages whether the vanilla food icons are to be shown or not
             return null;
         }
@@ -70,7 +70,7 @@ public class HUDOverlayHandlerMixin {
         if (localPlayer != null) {
             DragonStateHandler handler = DragonStateProvider.getData(localPlayer);
 
-            if (handler.isDragon() && DragonFoodHandler.requireDragonFood) {
+            if (handler.isDragon()) {
                 return handler.species().value().miscResources().foodSprites().orElse(null);
             }
         }

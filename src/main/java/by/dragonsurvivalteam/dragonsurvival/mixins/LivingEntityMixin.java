@@ -97,7 +97,7 @@ public abstract class LivingEntityMixin extends Entity {
     }
 
     @Unique private int dragonSurvival$getHumanOrDragonUseDuration(int original) {
-        if ((Object) this instanceof Player player) {
+        if (!DragonFoodHandler.dragonFoodHandlingIsDisabled() && (Object) this instanceof Player player) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
 
             if (handler != null && handler.isDragon()) {
@@ -120,7 +120,7 @@ public abstract class LivingEntityMixin extends Entity {
 
     @ModifyExpressionValue(method = "triggerItemUseEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getUseAnimation()Lnet/minecraft/world/item/UseAnim;"))
     private UseAnim dragonSurvival$replaceEatAndDrinkAnimation(UseAnim original, ItemStack stack, int amount) {
-        if ((Object) this instanceof Player player) {
+        if (!DragonFoodHandler.dragonFoodHandlingIsDisabled() && (Object) this instanceof Player player) {
             DragonStateHandler handler = DragonStateProvider.getData(player);
 
             if (handler.isDragon()) {
