@@ -1,6 +1,10 @@
 {
   "values": [
     "minecraft:wolf",
-    "minecraft:hoglin"
+    "minecraft:hoglin",
+    {
+      "id": "cobblemon:pokemon",
+      "required": false
+    }
   ]
 }

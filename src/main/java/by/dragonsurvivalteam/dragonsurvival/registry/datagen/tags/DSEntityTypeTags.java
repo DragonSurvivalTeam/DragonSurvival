@@ -50,7 +50,8 @@ public class DSEntityTypeTags extends EntityTypeTagsProvider {
     protected void addTags(@NotNull final HolderLookup.Provider provider) {
         tag(ANIMAL_AVOID_BLACKLIST)
                 .add(EntityType.WOLF)
-                .add(EntityType.HOGLIN);
+                .add(EntityType.HOGLIN)
+                .addOptional(ResourceLocation.fromNamespaceAndPath("cobblemon", "pokemon"));
 
         tag(VEHICLE_WHITELIST)
                 .addTag(Tags.EntityTypes.BOATS)
