@@ -13,7 +13,7 @@ public record ActionContainer(AbilityTargeting effect, TriggerPoint triggerPoint
     public static final Codec<ActionContainer> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             AbilityTargeting.CODEC.fieldOf("target_selection").forGetter(ActionContainer::effect),
             TriggerPoint.CODEC.optionalFieldOf("trigger_point", TriggerPoint.DEFAULT).forGetter(ActionContainer::triggerPoint),
-            LevelBasedValue.CODEC.fieldOf("trigger_rate").forGetter(ActionContainer::triggerRate)
+            LevelBasedValue.CODEC.optionalFieldOf("trigger_rate", LevelBasedValue.constant(1)).forGetter(ActionContainer::triggerRate)
     ).apply(instance, ActionContainer::new));
 
     public void tick(final ServerPlayer dragon, final DragonAbilityInstance instance, int currentTick) {

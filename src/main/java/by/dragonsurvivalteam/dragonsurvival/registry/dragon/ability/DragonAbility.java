@@ -77,10 +77,9 @@ public record DragonAbility(
         ResourceHelper.keys(access, REGISTRY).forEach(key -> {
             //noinspection OptionalGetWithoutIsPresent -> ignore
             Holder.Reference<DragonAbility> ability = ResourceHelper.get(access, key).get();
-            boolean isPassive = ability.value().activation().type() == Activation.Type.PASSIVE;
 
             ability.value().actions.forEach(action -> {
-                if (isPassive && action.triggerPoint() != ActionContainer.TriggerPoint.DEFAULT) {
+                if (ability.value().activation().type() == Activation.Type.PASSIVE && action.triggerPoint() != ActionContainer.TriggerPoint.DEFAULT) {
                     // Passive abilities have no cast / charge time and no channeling
                     errorMessage.append("\n").append(key).append(" has a non-default action trigger point set on a passive ability");
                     isDefinitionValid.set(false);
