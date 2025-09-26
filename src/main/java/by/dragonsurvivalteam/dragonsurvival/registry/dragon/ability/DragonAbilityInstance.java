@@ -135,10 +135,12 @@ public class DragonAbilityInstance {
         if (currentTick > castTime) {
             if (value().activation() instanceof ChanneledActivation channeled && channeled.hasReachedMaxDuration(level, currentTick - castTime)) {
                 if (dragon instanceof ServerPlayer serverPlayer) {
-                    value().tickChannelingEndActions(serverPlayer, this, currentTick);
+                    value().tickChannelCompletionActions(serverPlayer, this, currentTick);
                 }
 
-                stopCasting(dragon, true);
+                // It is possible for the client to reach this point first
+                // We don't notify the server since it may lead to the tick (and therefor the actions) to be skipped
+                stopCasting(dragon, false);
                 return;
             }
 

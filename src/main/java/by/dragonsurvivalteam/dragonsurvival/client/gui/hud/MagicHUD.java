@@ -13,6 +13,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.ChanneledActivation;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
 import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
@@ -387,10 +388,16 @@ public class MagicHUD {
 
         if (magic.isCasting()) {
             DragonAbilityInstance ability = Objects.requireNonNull(magic.fromSlot(magic.getSelectedAbilitySlot()));
-            float currentCastTime = magic.getClientCastTimer() - Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
-            int skillCastTime = ability.value().activation().getCastTime(ability.level());
+            float currentTime = magic.getClientCastTimer() - Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
+            int targetTime = ability.value().activation().getCastTime(ability.level());
 
-            if (skillCastTime > 0) {
+            if (currentTime <= 0 && ability.value().activation() instanceof ChanneledActivation channeled && channeled.maxDuration().isPresent()) {
+                // We passed the cast / charging time and now display what is left of the duration
+                currentTime = magic.getClientTickTimer() - Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
+                targetTime = (int) channeled.maxDuration().get().calculate(ability.level());
+            }
+
+            if (targetTime > 0) {
                 graphics.pose().pushPose();
 
                 // Call flush here, otherwise some mods that batch together blit calls will cause this to be rendered in an incorrect order
@@ -401,7 +408,7 @@ public class MagicHUD {
 
                 int startX = graphics.guiWidth() / 2 - 49 + castbarXOffset;
                 int startY = graphics.guiHeight() - 96 + castbarYOffset;
-                float percentage = Math.clamp(1 - currentCastTime / (float) skillCastTime, 0, 1);
+                float percentage = Math.clamp(1 - currentTime / (float) targetTime, 0, 1);
 
                 graphics.pose().translate(startX, startY, 0);
 

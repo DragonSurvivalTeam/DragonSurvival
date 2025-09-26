@@ -70,6 +70,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
     private boolean errorMessageSent;
     private boolean isCasting;
     private int castTimer;
+    private int tickTimer;
 
     public static MagicData getData(final Player player) {
         return player.getData(DSDataAttachments.MAGIC);
@@ -97,6 +98,10 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
     public int getClientCastTimer() {
         return castTimer;
+    }
+
+    public int getClientTickTimer() {
+        return tickTimer;
     }
 
     public void setCurrentSpecies(final Player player, @Nullable final ResourceKey<DragonSpecies> currentSpecies) {
@@ -195,6 +200,10 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         }
 
         if (event.getEntity().level().isClientSide() && magic.isCasting()) {
+            if (magic.castTimer == 0) {
+                magic.tickTimer++;
+            }
+
             magic.castTimer = Math.max(0, magic.castTimer - 1);
         }
     }
@@ -351,6 +360,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
         isCasting = true;
         castTimer = instance.value().activation().getCastTime(instance.level());
+        tickTimer = 0;
         instance.setActive(player, true);
     }
 
