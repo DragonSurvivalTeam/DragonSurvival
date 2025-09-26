@@ -24,6 +24,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -65,14 +66,35 @@ public record DragonAbility(
         return upgrade.map(UpgradeType::maxLevel).orElse(1);
     }
 
+    /**
+     * Handle validation that cannot be done through the codec </br>
+     * Since they require more context
+     */
     public static void validate(final RegistryAccess access) {
-        StringBuilder validationError = new StringBuilder("The following stages are incorrectly defined:");
-        AtomicBoolean areStagesValid = new AtomicBoolean(true);
+        StringBuilder errorMessage = new StringBuilder("The following abilities are incorrectly defined:");
+        AtomicBoolean isDefinitionValid = new AtomicBoolean(true);
 
-        ResourceHelper.keys(access, REGISTRY).forEach(key -> {});
+        ResourceHelper.keys(access, REGISTRY).forEach(key -> {
+            //noinspection OptionalGetWithoutIsPresent -> ignore
+            Holder.Reference<DragonAbility> ability = ResourceHelper.get(access, key).get();
+            boolean isPassive = ability.value().activation().type() == Activation.Type.PASSIVE;
 
-        if (!areStagesValid.get()) {
-            throw new IllegalStateException(validationError.toString());
+            ability.value().actions.forEach(action -> {
+                if (isPassive && action.triggerPoint() != ActionContainer.TriggerPoint.DEFAULT) {
+                    // Passive abilities have no cast / charge time and no channeling
+                    errorMessage.append("\n").append(key).append(" has a non-default action trigger point set on a passive ability");
+                    isDefinitionValid.set(false);
+                }
+
+                if (ability.value().activation().type() != Activation.Type.CHANNELED && action.triggerPoint() == ActionContainer.TriggerPoint.CHANNEL_COMPLETION) {
+                    errorMessage.append("\n").append(key).append(" has a channel completion action trigger point set on a non-channeling ability");
+                    isDefinitionValid.set(false);
+                }
+            });
+        });
+
+        if (!isDefinitionValid.get()) {
+            throw new IllegalStateException(errorMessage.toString());
         }
     }
 
@@ -116,6 +138,30 @@ public record DragonAbility(
         }
 
         return info;
+    }
+
+    public void tickDefaultActions(final ServerPlayer player, final DragonAbilityInstance instance, final int currentTick) {
+        actions.forEach(action -> {
+            if (action.triggerPoint() == ActionContainer.TriggerPoint.DEFAULT) {
+                action.tick(player, instance, currentTick);
+            }
+        });
+    }
+
+    public void tickChargingActions(final ServerPlayer player, final DragonAbilityInstance instance, final int currentTick) {
+        actions.forEach(action -> {
+            if (action.triggerPoint() == ActionContainer.TriggerPoint.CHARGING) {
+                action.tick(player, instance, currentTick);
+            }
+        });
+    }
+
+    public void tickChannelingEndActions(final ServerPlayer player, final DragonAbilityInstance instance, final int currentTick) {
+        actions.forEach(action -> {
+            if (action.triggerPoint() == ActionContainer.TriggerPoint.CHARGING) {
+                action.tick(player, instance, currentTick);
+            }
+        });
     }
 
     @SubscribeEvent

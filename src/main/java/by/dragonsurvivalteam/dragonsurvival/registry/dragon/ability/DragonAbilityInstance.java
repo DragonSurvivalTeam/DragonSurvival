@@ -10,6 +10,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncStopCast;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Activation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.ChanneledActivation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.PassiveActivation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.ActivationTrigger;
 import com.mojang.serialization.Codec;
@@ -118,6 +119,10 @@ public class DragonAbilityInstance {
                 value().activation().playStartAndChargingAnimation(dragon);
             }
 
+            if (dragon instanceof ServerPlayer serverPlayer) {
+                value().tickChargingActions(serverPlayer, this, currentTick);
+            }
+
             return;
         }
 
@@ -128,6 +133,15 @@ public class DragonAbilityInstance {
         }
 
         if (currentTick > castTime) {
+            if (value().activation() instanceof ChanneledActivation channeled && channeled.hasReachedMaxDuration(level, currentTick - castTime)) {
+                if (dragon instanceof ServerPlayer serverPlayer) {
+                    value().tickChannelingEndActions(serverPlayer, this, currentTick);
+                }
+
+                stopCasting(dragon, true);
+                return;
+            }
+
             float manaCost = getContinuousManaCost(ManaCost.ManaCostType.TICKING);
 
             if (ManaHandler.hasEnoughMana(dragon, manaCost)) {
@@ -140,7 +154,7 @@ public class DragonAbilityInstance {
         }
 
         if (dragon instanceof ServerPlayer serverPlayer) {
-            ability.value().actions().forEach(action -> action.tick(serverPlayer, this, currentTick));
+            value().tickDefaultActions(serverPlayer, this, currentTick);
         }
 
         // Now that stopCasting gives the client the power to tell the server

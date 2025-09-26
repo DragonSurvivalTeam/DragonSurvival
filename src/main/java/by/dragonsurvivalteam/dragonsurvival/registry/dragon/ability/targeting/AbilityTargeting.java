@@ -107,6 +107,8 @@ public interface AbilityTargeting {
             return List.of();
         }
 
+        // FIXME :: need to adjust this so they can be grouped into the respective action container trigger points
+
         List<MutableComponent> descriptions = new ArrayList<>();
         MutableComponent targetDescription = getDescription(dragon, ability);
 

@@ -52,7 +52,7 @@ public class DragonAbilities {
                 List.of(
                         new ActionContainer(new AreaTarget(AbilityTargeting.entity(List.of(
                                 new SmeltItemEffect(Optional.empty(), Optional.empty(), true)
-                        ), TargetingMode.ITEMS), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))
+                        ), TargetingMode.ITEMS), LevelBasedValue.constant(5)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))
                 ),
                 true,
                 new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
@@ -65,7 +65,7 @@ public class DragonAbilities {
                 List.of(
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(List.of(
                                 new HealEffect(LevelBasedValue.constant(0.3f))
-                        ), TargetingMode.ALLIES_AND_SELF)), LevelBasedValue.constant(1))
+                        ), TargetingMode.ALLIES_AND_SELF)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))
                 ),
                 true,
                 new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
@@ -78,7 +78,7 @@ public class DragonAbilities {
                 List.of(
                         new ActionContainer(new SelfTarget(AbilityTargeting.entity(List.of(
                                 new RunFunctionEffect(DragonSurvival.res("test"))
-                        ), TargetingMode.ALLIES_AND_SELF)), LevelBasedValue.constant(1))
+                        ), TargetingMode.ALLIES_AND_SELF)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))
                 ),
                 true,
                 new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
@@ -106,7 +106,7 @@ public class DragonAbilities {
                                         TargetDirection.lookingAt(),
                                         LevelBasedValue.perLevel(100, 50)
                                 )), TargetingMode.ALL_EXCEPT_SELF
-                ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1)),
+                ), LevelBasedValue.constant(5)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1)),
                 new ActionContainer(new SelfTarget(AbilityTargeting.entity(
                     List.of(
                         new TeleportEffect(
@@ -117,7 +117,7 @@ public class DragonAbilities {
                                 new SpawnParticles(ParticleTypes.PORTAL, SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), ConstantFloat.of(0.05f)),
                                 LevelBasedValue.constant(20)
                         )), TargetingMode.ALL)
-                    ), LevelBasedValue.constant(1)
+                    ), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1)
                 )),
                 true,
                 new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
@@ -149,7 +149,7 @@ public class DragonAbilities {
                                                 new SpawnParticles(ParticleTypes.PORTAL, SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), ConstantFloat.of(0.05f)),
                                                 LevelBasedValue.constant(20)
                                         )), TargetingMode.ALL_EXCEPT_SELF
-                        ), LevelBasedValue.constant(5)), LevelBasedValue.constant(1))
+                        ), LevelBasedValue.constant(5)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))
                 ),
                 true,
                 new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
