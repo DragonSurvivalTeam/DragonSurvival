@@ -157,7 +157,7 @@ public record DragonAbility(
 
     public void tickChannelingEndActions(final ServerPlayer player, final DragonAbilityInstance instance, final int currentTick) {
         actions.forEach(action -> {
-            if (action.triggerPoint() == ActionContainer.TriggerPoint.CHARGING) {
+            if (action.triggerPoint() == ActionContainer.TriggerPoint.CHANNEL_COMPLETION) {
                 action.tick(player, instance, currentTick);
             }
         });
