@@ -653,6 +653,8 @@
   "dragonsurvival.configuration.dragon_camera_scale_factor.tooltip": "缩放比例对第三人称视角距离的影响程度",
   "dragonsurvival.configuration.dragon_food_is_required": "饮食需求",
   "dragonsurvival.configuration.dragon_food_is_required.tooltip": "启用时，龙需要遵循他们的饮食习惯",
+  "dragonsurvival.configuration.disable_dragon_food_handling": "禁用食物系统",
+  "dragonsurvival.configuration.disable_dragon_food_handling.tooltip": "禁用对食物系统所做的所有修改。某些模组会自动启用此设置（例如 TFC/群峦传说）。",
   "dragonsurvival.configuration.dragon_heart_shard_chance": "龙心碎片掉落几率",
   "dragonsurvival.configuration.dragon_heart_shard_chance.tooltip": "决定最大生命值在14到20之间的实体掉落龙心碎片的几率（百分比）",
   "dragonsurvival.configuration.dragon_heart_white_list": "脆弱龙心掉落白名单",
