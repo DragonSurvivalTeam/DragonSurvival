@@ -1,10 +1,10 @@
-// 1.21.1	2025-05-15T00:02:13.5766159	Tags for minecraft:damage_type mod id dragonsurvival
+// 1.21.1	2025-10-03T20:38:50.1734572	Tags for minecraft:damage_type mod id dragonsurvival
 d64a77e508c77c894e55cf2cce3d1adb8bc6533c data/dragonsurvival/tags/damage_type/anti_dragon.json
 a356111ea1c106266ab5016081ce5c405756e4a6 data/dragonsurvival/tags/damage_type/dragon_breath.json
 fdab1bba170a2fc2f60c645294ee5c304da2e633 data/dragonsurvival/tags/damage_type/dragon_magic.json
 14c91ef17e1ca40725b92e770767120747090c2c data/dragonsurvival/tags/damage_type/is_electric.json
 b5554595e4875b396fb8fb44fe8b384643d53e1b data/dragonsurvival/tags/damage_type/water_burn.json
-cfc87e7fd2f4c06e654006cde0e0d69deadab849 data/minecraft/tags/damage_type/bypasses_armor.json
+557216245ce124ab4a224f4e74751c9aa1806c7d data/minecraft/tags/damage_type/bypasses_armor.json
 c8fa2164df0da7319f05ec6918edbe7ee6c4cd17 data/minecraft/tags/damage_type/bypasses_cooldown.json
 98cf0a10e1797683476d2f044412ddcd5dd4aea6 data/minecraft/tags/damage_type/is_fire.json
 602a1c6342c9a2d65f2d2fe4797bfc23ca35aa92 data/minecraft/tags/damage_type/is_lightning.json

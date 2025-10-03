@@ -43,7 +43,7 @@ public class DSEquipment {
                     }),
                     30,
                     Holder.direct(SoundEvents.BELL_BLOCK),
-                    () -> Ingredient.of(Tags.Items.BARRELS),
+                    () -> Ingredient.of(Tags.Items.BARRELS), // FIXME
                     List.of(new ArmorMaterial.Layer(res("light_dragon"))),
                     3,
                     0.1f
@@ -60,7 +60,7 @@ public class DSEquipment {
                     }),
                     30,
                     Holder.direct(SoundEvents.FOX_SCREECH),
-                    () -> Ingredient.of(Tags.Items.BARRELS),
+                    () -> Ingredient.of(Tags.Items.BARRELS), // FIXME
                     List.of(new ArmorMaterial.Layer(res("dark_dragon"))),
                     3,
                     0.1f
