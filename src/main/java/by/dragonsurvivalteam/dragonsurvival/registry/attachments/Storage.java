@@ -64,6 +64,8 @@ public abstract class Storage<T extends StorageEntry> implements INBTSerializabl
         invalidateCache();
     }
 
+    // TODO :: potentially change it so you pass the resource location
+    //  and 'onRemovalFromStorage' gets the removed entry from 'storage'
     public void remove(final Entity storageHolder, final T entry) {
         if (storage == null || entry == null) {
             return;
