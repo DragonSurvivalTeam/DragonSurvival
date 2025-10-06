@@ -45,6 +45,11 @@ public class DragonGlowLayerRenderer extends GeoRenderLayer<DragonEntity> {
 		}
 
 		Player player = animatable.getPlayer();
+
+		if (player == null) {
+			return;
+		}
+
 		DragonStateHandler handler = DragonUtils.getHandler(player);
 
 		SkinPreset preset = handler.getSkinData().skinPreset;

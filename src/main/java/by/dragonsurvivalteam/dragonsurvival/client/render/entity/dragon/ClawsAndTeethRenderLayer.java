@@ -36,13 +36,19 @@ public class ClawsAndTeethRenderLayer extends GeoRenderLayer<DragonEntity> {
 			return;
 		}
 
-		DragonStateHandler handler = DragonUtils.getHandler(animatable.getPlayer());
+		Player player = animatable.getPlayer();
+
+		if (player == null) {
+			return;
+		}
+
+		DragonStateHandler handler = DragonUtils.getHandler(player);
 
 		if (!handler.getClawToolData().shouldRenderClaws) {
 			return;
 		}
 
-		String clawTexture = constructClaws(animatable.getPlayer());
+		String clawTexture = constructClaws(player);
 
 		if (clawTexture != null) {
 			ResourceLocation texture = new ResourceLocation(DragonSurvivalMod.MODID, clawTexture);
@@ -52,7 +58,7 @@ public class ClawsAndTeethRenderLayer extends GeoRenderLayer<DragonEntity> {
 			((DragonRenderer) renderer).isRenderLayers = false;
 		}
 
-		String teethTexture = constructTeethTexture(animatable.getPlayer());
+		String teethTexture = constructTeethTexture(player);
 
 		if (teethTexture != null) {
 			ResourceLocation texture = new ResourceLocation(DragonSurvivalMod.MODID, teethTexture);
