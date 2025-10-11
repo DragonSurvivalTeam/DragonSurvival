@@ -31,7 +31,6 @@ public class FakeClientPlayerUtils {
                 AnimationController<DragonEntity> controller = new AnimationController<>(this, "fake_player_controller", 2, state -> {
                     if (fakePlayer.handler.refreshBody) {
                         fakePlayer.animationController.forceAnimationReset();
-                        fakePlayer.handler.refreshBody = false;
                     }
 
                     if (fakePlayer.animationSupplier != null) {
