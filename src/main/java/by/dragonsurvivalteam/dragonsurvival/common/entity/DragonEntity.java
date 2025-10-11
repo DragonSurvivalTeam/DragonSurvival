@@ -310,8 +310,9 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     }
 
     private PlayState playOrContinueAnimation(RawAnimation animation, AnimationState<DragonEntity> state, MovementData movement) {
+        movement.bite = false;
+
         if (animationTickTimer.getDuration(animation) <= 0) {
-            movement.bite = false;
             animationTickTimer.putAnimation(animation, AnimationUtils.animationDuration(getPlayer(), animation));
         }
 
