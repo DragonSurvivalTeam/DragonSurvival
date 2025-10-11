@@ -41,6 +41,7 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.Holder;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -211,12 +212,15 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
 
             // FIXME :: for some reason at this point the species may not be set
             if (handler1.species() != null && handler2.species() != null) {
+                //noinspection DataFlowIssue -> player is present
+                RegistryAccess access = getMinecraft().player.registryAccess();
+
                 if (handler1.body() == null) {
-                    handler1.setBody(null, DragonBody.getRandom(null, handler1.species()));
+                    handler1.setBody(null, DragonBody.getRandom(access, handler1.species()));
                 }
 
                 handler2.setBody(null, handler1.body());
-                handler1.setBody(null, DragonBody.getRandom(null, handler1.species()));
+                handler1.setBody(null, DragonBody.getRandom(access, handler1.species()));
 
                 if (animation1 >= animations.length) {
                     animation1 = 0;

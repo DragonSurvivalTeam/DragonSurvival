@@ -224,6 +224,12 @@ public record DragonBody(
             all = all.stream().filter(body -> species.value().bodies().contains(body)).toList();
         }
 
+        if (all.isEmpty()) {
+            // This can only happen in broken datapacks or setups
+            // It is not worth trying to work around this since this is called in multiple places
+            throw new IllegalStateException("No valid bodies found for species [" + species + "]");
+        }
+
         return all.get(RANDOM.nextInt(all.size()));
     }
 
