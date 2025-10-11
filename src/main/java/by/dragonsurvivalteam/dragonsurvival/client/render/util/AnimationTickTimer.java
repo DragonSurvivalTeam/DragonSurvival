@@ -4,6 +4,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import software.bernie.geckolib.animation.RawAnimation;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,10 +16,10 @@ public class AnimationTickTimer {
     protected final ConcurrentHashMap<String, Double> animationTimes = new ConcurrentHashMap<>();
 
     @SubscribeEvent
-    public static void onTick(final ClientTickEvent.Pre event) {
+    public static void onTick(final RenderFrameEvent.Pre event) {
         for (AnimationTickTimer timer : TIMERS) {
             timer.animationTimes.keySet().forEach(key -> {
-                timer.animationTimes.computeIfPresent(key, (animation, tick) -> tick - 1);
+                timer.animationTimes.computeIfPresent(key, (animation, tick) -> tick - event.getPartialTick().getRealtimeDeltaTicks());
 
                 if (timer.animationTimes.get(key) <= 0) {
                     timer.animationTimes.remove(key);
