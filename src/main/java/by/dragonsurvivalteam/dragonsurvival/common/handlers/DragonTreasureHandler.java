@@ -79,7 +79,6 @@ public class DragonTreasureHandler {
 
         boolean isMining = DragonSurvival.PROXY.isMining(player);
         MovementData movement = MovementData.getData(player);
-        movement.dig = isMining;
 
         TreasureRestData treasureData = TreasureRestData.getData(player);
         boolean wasResting = treasureData.isResting();

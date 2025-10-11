@@ -40,9 +40,6 @@ public class MovementData implements INBTSerializable<CompoundTag> {
     /** Prevents the body from rotating when moving the camera */
     public boolean isFreeLook;
 
-    //TODO: Biting is not correctly synced,
-    // since we are setting it inside of the clientside animation
-    // (code after it is received from other players over the server)
     public boolean bite;
     public boolean dig;
 
@@ -64,6 +61,10 @@ public class MovementData implements INBTSerializable<CompoundTag> {
 
     public void setBite(boolean bite) {
         this.bite = bite;
+    }
+
+    public void setDig(boolean dig) {
+        this.dig = dig;
     }
 
     public void setDesiredMoveVec(Vec3 desiredMoveVec) {

@@ -13,13 +13,14 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record SyncDragonMovement(int playerId, boolean isFirstPerson, boolean bite, boolean isFreeLook, Vec3 movement) implements CustomPacketPayload {
+public record SyncDragonMovement(int playerId, boolean isFirstPerson, boolean bite, boolean dig, boolean isFreeLook, Vec3 movement) implements CustomPacketPayload {
     public static final Type<SyncDragonMovement> TYPE = new Type<>(DragonSurvival.res("sync_dragon_movement"));
 
     public static final StreamCodec<FriendlyByteBuf, SyncDragonMovement> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, SyncDragonMovement::playerId,
             ByteBufCodecs.BOOL, SyncDragonMovement::isFirstPerson,
             ByteBufCodecs.BOOL, SyncDragonMovement::bite,
+            ByteBufCodecs.BOOL, SyncDragonMovement::dig,
             ByteBufCodecs.BOOL, SyncDragonMovement::isFreeLook,
             MiscCodecs.VEC3_STREAM_CODEC, SyncDragonMovement::movement,
             SyncDragonMovement::new
@@ -43,6 +44,7 @@ public record SyncDragonMovement(int playerId, boolean isFirstPerson, boolean bi
         MovementData data = MovementData.getData(player);
         data.setFirstPerson(packet.isFirstPerson());
         data.setBite(packet.bite());
+        data.setDig(packet.dig());
         data.setFreeLook(packet.isFreeLook());
         data.setDesiredMoveVec(packet.movement());
     }

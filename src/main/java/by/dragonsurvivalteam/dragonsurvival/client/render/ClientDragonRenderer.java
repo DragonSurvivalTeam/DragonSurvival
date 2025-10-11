@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.models.DragonModel;
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.DragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
@@ -387,19 +388,6 @@ public class ClientDragonRenderer {
         return new Vector3f(x * scale, 0, z * scale);
     }
 
-    @SubscribeEvent
-    public static void spin(InputEvent.InteractionKeyMappingTriggered keyInputEvent) {
-        LocalPlayer player = Minecraft.getInstance().player;
-        if (!DragonStateProvider.isDragon(player)) {
-            return;
-        }
-
-        MovementData movement = MovementData.getData(player);
-        if (keyInputEvent.isAttack() && keyInputEvent.shouldSwingHand() && !movement.dig) {
-            movement.bite = true;
-        }
-    }
-
     public static void setDragonMovementData(Player player, float realtimeDeltaTick) {
         if (player == null) {
             return;
@@ -443,7 +431,10 @@ public class ClientDragonRenderer {
             PacketDistributor.sendToServer(new SyncDeltaMovement(player.getId(), player.getDeltaMovement()));
         }
 
-        PacketDistributor.sendToServer(new SyncDragonMovement(player.getId(), movement.isFirstPerson, movement.bite, movement.isFreeLook, movement.desiredMoveVec));
+        movement.dig = DragonSurvival.PROXY.isMining(player);
+        movement.bite = player.swinging;
+
+        PacketDistributor.sendToServer(new SyncDragonMovement(player.getId(), movement.isFirstPerson, movement.bite, movement.dig, movement.isFreeLook, movement.desiredMoveVec));
         PacketDistributor.sendToServer(new SyncPitchAndYaw(player.getId(), movement.headYaw, movement.headPitch, movement.bodyYaw));
     }
 
