@@ -151,6 +151,10 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         }
 
         super.actuallyRender(poseStack, animatable, model, renderType, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, color);
+
+        // If a body refresh was requested, all the animations will have been reset once we are post-render
+        handler.refreshBody = false;
+
         poseStack.popPose();
     }
 

@@ -297,6 +297,11 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             return PlayState.STOP;
         }
 
+        DragonStateHandler handler = DragonStateProvider.getData(player);
+        if (handler.refreshBody) {
+            state.getController().forceAnimationReset();
+        }
+
         if (checkAndPlayAbilityAnimation(state, AnimationLayer.BREATH)) {
             return PlayState.CONTINUE;
         }
@@ -318,6 +323,11 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
 
         if (player == null) {
             return PlayState.STOP;
+        }
+
+        DragonStateHandler handler = DragonStateProvider.getData(player);
+        if (handler.refreshBody) {
+            state.getController().forceAnimationReset();
         }
 
         if (checkAndPlayAbilityAnimation(state, AnimationLayer.BITE)) {
@@ -366,6 +376,11 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             return PlayState.STOP;
         }
 
+        DragonStateHandler handler = DragonStateProvider.getData(player);
+        if (handler.refreshBody) {
+            state.getController().forceAnimationReset();
+        }
+
         if (AnimationUtils.doesAnimationExist(player, CONTINUOUS + slot)) {
             RawAnimation continuousAnimation = RawAnimation.begin().thenPlay(CONTINUOUS + slot);
             state.setAndContinue(continuousAnimation);
@@ -381,6 +396,11 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         if (player == null) {
             state.getController().forceAnimationReset();
             return PlayState.STOP;
+        }
+
+        DragonStateHandler handler = DragonStateProvider.getData(player);
+        if (handler.refreshBody) {
+            state.getController().forceAnimationReset();
         }
 
         if (currentlyPlayingEmotes[slot] != null) {
@@ -551,7 +571,6 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
 
         if (handler.refreshBody) {
             animationController.forceAnimationReset();
-            handler.refreshBody = false;
         }
 
         boolean useDynamicScaling = false;
