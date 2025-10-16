@@ -1,21 +1,29 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.common.codecs.*;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.SpawnParticles;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.TargetDirection;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationKey;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationLayer;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.SimpleAbilityAnimation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstance;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstanceBase;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.CaveDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.ForestDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.SeaDragonAbilities;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.*;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Animations;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Notification;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.PassiveActivation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.SimpleActivation;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.Sound;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnDeath;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnSelfHit;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.trigger.OnTargetKilled;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.ParticleEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.RunFunctionEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.SummonEntityEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.HealEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.SmeltItemEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.TeleportEffect;
@@ -25,13 +33,17 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.Se
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.TargetingMode;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ExperienceLevelUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
+import com.mojang.datafixers.util.Either;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.valueproviders.ConstantFloat;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 
 import java.util.List;
@@ -44,6 +56,8 @@ public class DragonAbilities {
         CaveDragonAbilities.registerAbilities(context);
         ForestDragonAbilities.registerAbilities(context);
         SeaDragonAbilities.registerAbilities(context);
+
+        // --- Smelt --- //
 
         context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_smelt")), new DragonAbility(
                 new PassiveActivation(Optional.empty(), Optional.empty(), new OnTargetKilled(Optional.empty())),
@@ -58,6 +72,8 @@ public class DragonAbilities {
                 new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
         ));
 
+        // --- Heal --- //
+
         context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_heal")), new DragonAbility(
                 new PassiveActivation(Optional.empty(), Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(30))), OnDeath.INSTANCE),
                 Optional.empty(),
@@ -71,6 +87,8 @@ public class DragonAbilities {
                 new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
         ));
 
+        // --- Function --- //
+
         context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_function")), new DragonAbility(
                 new PassiveActivation(Optional.empty(), Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(5))), new OnSelfHit(Optional.empty())),
                 Optional.empty(),
@@ -83,6 +101,8 @@ public class DragonAbilities {
                 true,
                 new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
         ));
+
+        // --- Teleport --- //
 
         context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_teleport")), new DragonAbility(
                 new SimpleActivation(
@@ -149,6 +169,43 @@ public class DragonAbilities {
                                                 new SpawnParticles(ParticleTypes.PORTAL, SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), ConstantFloat.of(0.05f)),
                                                 LevelBasedValue.constant(20)
                                         )), TargetingMode.ALL_EXCEPT_SELF
+                        ), LevelBasedValue.constant(5)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))
+                ),
+                true,
+                new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
+        ));
+
+        // --- Summon --- //
+
+        CompoundTag beeNBT = new CompoundTag();
+        beeNBT.putInt("CannotEnterHiveTicks", Integer.MAX_VALUE);
+
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_summon")), new DragonAbility(
+                new SimpleActivation(
+                        Optional.of(LevelBasedValue.constant(1)),
+                        Optional.of(LevelBasedValue.constant(15)),
+                        Optional.of(LevelBasedValue.constant(Functions.secondsToTicks(5))),
+                        Notification.DEFAULT,
+                        true,
+                        Sound.create().end(SoundEvents.EVOKER_PREPARE_SUMMON).optional(),
+                        Animations.create()
+                                .startAndCharging(SimpleAbilityAnimation.create(AnimationKey.CAST_MAGIC_ALT, AnimationLayer.BASE).transitionLength(5).build())
+                                .end(SimpleAbilityAnimation.create(AnimationKey.MAGIC_ALT, AnimationLayer.BASE).build())
+                                .optional()
+                ),
+                Optional.of(new ExperienceLevelUpgrade(3, LevelBasedValue.lookup(List.of(12f, 24f, 36f), LevelBasedValue.perLevel(15)))),
+                Optional.empty(),
+                List.of(
+                        new ActionContainer(new AreaTarget(AbilityTargeting.block(
+                                List.of(
+                                        new SummonEntityEffect(
+                                                DurationInstanceBase.create(DragonSurvival.res("test_summon")).duration(LevelBasedValue.constant(Functions.secondsToTicks(60))).build(),
+                                                Either.right(HolderSet.direct(EntityType.BEE.builtInRegistryHolder())),
+                                                LevelBasedValue.constant(6),
+                                                List.of(),
+                                                Optional.of(beeNBT),
+                                                true
+                                        ))
                         ), LevelBasedValue.constant(5)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))
                 ),
                 true,

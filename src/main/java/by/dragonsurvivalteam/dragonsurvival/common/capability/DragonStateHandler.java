@@ -373,7 +373,7 @@ public class DragonStateHandler extends EntityStateHandler {
         PacketDistributor.sendToPlayer(player, new SyncMagicData(magic.serializeNBT(player.registryAccess())));
     }
 
-    public void setSpecies(@Nullable final Player player, final Holder<DragonSpecies> species, boolean savedForSoul) {
+    public void setSpecies(@Nullable final Player player, @Nullable final Holder<DragonSpecies> species, boolean savedForSoul) {
         Holder<DragonSpecies> oldSpecies = dragonSpecies;
         double oldGrowth = growth;
         dragonSpecies = species;
