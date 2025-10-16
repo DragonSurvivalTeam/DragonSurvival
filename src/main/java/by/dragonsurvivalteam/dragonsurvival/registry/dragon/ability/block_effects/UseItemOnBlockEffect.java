@@ -12,6 +12,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
@@ -45,6 +46,12 @@ public record UseItemOnBlockEffect(ItemStack item, LevelBasedValue probability, 
             );
             if (ir.consumesAction()) {
                 sound.ifPresent(soundHolder -> dragon.level().playSound(null, position, soundHolder.value(), SoundSource.BLOCKS, 1, 1));
+            } else {
+                newStack = new ItemStack(item.getItem());
+                ItemInteractionResult iir = dragon.serverLevel().getBlockState(position).useItemOn(newStack, dragon.serverLevel(), dragon, InteractionHand.MAIN_HAND, new BlockHitResult(dragon.position(), direction, position, false));
+                if (iir.consumesAction()) {
+                    sound.ifPresent(soundHolder -> dragon.level().playSound(null, position, soundHolder.value(), SoundSource.BLOCKS, 1, 1));
+                }
             }
         }
     }
