@@ -2,6 +2,7 @@
   "values": [
     "minecraft:wolf",
     "minecraft:hoglin",
+    "minecraft:bee",
     {
       "id": "cobblemon:pokemon",
       "required": false

@@ -1,0 +1,20 @@
+{
+  "values": {
+    "dragonsurvival:cave_dragon": {
+      "replace": true,
+      "value": []
+    },
+    "dragonsurvival:forest_dragon": {
+      "replace": true,
+      "value": []
+    },
+    "dragonsurvival:sea_dragon": {
+      "replace": true,
+      "value": []
+    },
+    "dragonsurvival:griffin": {
+      "replace": true,
+      "value": []
+    }
+  }
+}

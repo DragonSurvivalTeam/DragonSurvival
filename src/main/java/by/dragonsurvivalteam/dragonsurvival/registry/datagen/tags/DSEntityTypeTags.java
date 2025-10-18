@@ -54,6 +54,7 @@ public class DSEntityTypeTags extends EntityTypeTagsProvider {
         tag(ANIMAL_AVOID_BLACKLIST)
                 .add(EntityType.WOLF)
                 .add(EntityType.HOGLIN)
+                .add(EntityType.BEE)
                 .addOptional(ResourceLocation.fromNamespaceAndPath("cobblemon", "pokemon"));
 
         tag(VEHICLE_WHITELIST)

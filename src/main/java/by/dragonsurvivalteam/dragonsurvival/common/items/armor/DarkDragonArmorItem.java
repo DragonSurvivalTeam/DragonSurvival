@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.common.items.armor;
 
+import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEnchantments;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEquipment;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSItemTags;
@@ -33,6 +34,10 @@ public class DarkDragonArmorItem extends ArmorItem implements PermanentEnchantme
     @Override
     public boolean canEquip(@NotNull final ItemStack stack, @NotNull final EquipmentSlot armorType, @NotNull final LivingEntity entity) {
         if (!super.canEquip(stack, armorType, entity)) {
+            return false;
+        }
+
+        if (entity.hasEffect(DSEffects.ANIMAL_PEACE)) {
             return false;
         }
 
