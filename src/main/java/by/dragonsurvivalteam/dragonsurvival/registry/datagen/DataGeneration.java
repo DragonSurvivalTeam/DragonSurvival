@@ -70,6 +70,7 @@ import java.util.concurrent.CompletableFuture;
 
 @EventBusSubscriber
 public class DataGeneration {
+
     private static final String ANCIENT_STAGE_DATAPACK = "ancient_stage";
 
     @Translation(comments = "Adds the Ancient dragon stage to Dragon Survival")
@@ -165,33 +166,28 @@ public class DataGeneration {
     @SubscribeEvent
     public static void addPackFinders(final AddPackFindersEvent event) {
         if (event.getPackType() == PackType.CLIENT_RESOURCES) {
-            registerBuiltinResourcePack(event, Component.literal("DS - Draconized Armor"), "resourcepacks/draconized_armor");
-            registerBuiltinResourcePack(event, Component.literal("DS - Dark GUI"), "resourcepacks/ds_dark_gui");
+            registerResourcePack(event, Component.literal("DS - Draconized Armor"), "resourcepacks/draconized_armor", PackSource.BUILT_IN);
+            registerResourcePack(event, Component.literal("DS - Dark GUI"), "resourcepacks/ds_dark_gui", PackSource.BUILT_IN);
         } else if (event.getPackType() == PackType.SERVER_DATA) {
-            registerDataPack(event, Component.literal("DS - Ancient Dragons"), ANCIENT_STAGE_DATAPACK);
-            registerDataPack(event, Component.literal("DS - Unlock Wings"), UNLOCK_WINGS_DATAPACK);
+            registerDataPack(event, Component.literal("DS - Ancient Dragons"), ANCIENT_STAGE_DATAPACK, PackSource.DEFAULT);
+            registerDataPack(event, Component.literal("DS - Unlock Wings"), UNLOCK_WINGS_DATAPACK, PackSource.DEFAULT);
 
             if (ModCheck.isModLoaded(ModCheck.SILENTGEMS)) {
-                registerBuiltInDataPack(event, Component.literal("DS - Silent Gems"), SILENT_GEMS_DATAPACK);
+                registerDataPack(event, Component.literal("DS - Silent Gems"), SILENT_GEMS_DATAPACK, PackSource.BUILT_IN);
             }
 
             if (ModCheck.isModLoaded(ModCheck.CREATE)) {
-                registerBuiltInDataPack(event, Component.literal("DS - Create"), CREATE_DATAPACK);
+                registerDataPack(event, Component.literal("DS - Create"), CREATE_DATAPACK, PackSource.BUILT_IN);
             }
         }
     }
 
-    private static void registerBuiltinResourcePack(final AddPackFindersEvent event, final MutableComponent name, final String folder) {
+    private static void registerResourcePack(final AddPackFindersEvent event, final MutableComponent name, final String folder, PackSource source) {
         event.addPackFinders(DragonSurvival.res(folder), PackType.CLIENT_RESOURCES, name, PackSource.BUILT_IN, false, Pack.Position.TOP);
     }
 
-    private static void registerDataPack(final AddPackFindersEvent event, final MutableComponent name, final String datapack) {
-        // Can only be disabled through '/datapack disable (...)' after world creation
-        event.addPackFinders(DragonSurvival.res("data/" + DragonSurvival.MODID + "/datapacks/" + datapack), PackType.SERVER_DATA, name, PackSource.DEFAULT, false, Pack.Position.TOP);
-    }
-
-    private static void registerBuiltInDataPack(final AddPackFindersEvent event, final MutableComponent name, final String datapack) {
-        event.addPackFinders(DragonSurvival.res("data/" + DragonSurvival.MODID + "/datapacks/" + datapack), PackType.SERVER_DATA, name, PackSource.BUILT_IN, true, Pack.Position.TOP);
+    private static void registerDataPack(final AddPackFindersEvent event, final MutableComponent name, final String datapack, PackSource source) {
+        event.addPackFinders(DragonSurvival.res("data/" + DragonSurvival.MODID + "/datapacks/" + datapack), PackType.SERVER_DATA, name, source, true, Pack.Position.TOP);
     }
 
     private static void addAncientStageDatapack(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup) {
