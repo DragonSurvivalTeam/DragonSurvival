@@ -38,6 +38,8 @@ import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
 
+import static by.dragonsurvivalteam.dragonsurvival.client.DragonSurvivalClient.AMBUSHER_MODEL;
+
 public class AmbusherEntity extends Hunter implements RangedAttackMob {
     @ConfigRange(min = 1)
     @Translation(key = "ambusher_spawn_frequency", type = Translation.Type.CONFIGURATION, comments = "Determines the amount of time (in ticks) (20 ticks = 1 second) that needs to pass before another ambusher spawn attempt is made")
@@ -405,11 +407,11 @@ public class AmbusherEntity extends Hunter implements RangedAttackMob {
         if (hasReleasedGriffin() && !hasPlayedReleaseAnimation && !hasPlayedReinforcementsAnimation) {
             if (hasCalledReinforcements()) {
                 hasPlayedReinforcementsAnimation = true;
-                ambusherTickTimer.putAnimation(AMBUSH_AND_GRIFFIN_RELEASE, (double) AMBUSH_ANIM_DURATION);
+                ambusherTickTimer.putAnimation(AMBUSHER_MODEL, this, AMBUSH_AND_GRIFFIN_RELEASE);
                 state.setAndContinue(AMBUSH_AND_GRIFFIN_RELEASE);
             } else {
                 hasPlayedReleaseAnimation = true;
-                ambusherTickTimer.putAnimation(ONLY_GRIFFIN_RELEASE, (double) GRIFFIN_RELEASE_ANIM_DURATION);
+                ambusherTickTimer.putAnimation(AMBUSHER_MODEL, this, ONLY_GRIFFIN_RELEASE);
                 state.setAndContinue(ONLY_GRIFFIN_RELEASE);
             }
         } else if (ambusherTickTimer.getDuration(ONLY_GRIFFIN_RELEASE) > 0 || ambusherTickTimer.getDuration(AMBUSH_AND_GRIFFIN_RELEASE) > 0) {
@@ -459,7 +461,7 @@ public class AmbusherEntity extends Hunter implements RangedAttackMob {
         if (hasReleasedGriffin() && getGriffinReleaseReloadTimer() == -1 && getAmbushHornTimer() == -1) {
             // We check at 1 because the first client tick already sees the value incremented by 1 (we start at 0)
             if (getRangedAttackTimer() == 1) {
-                ambusherTickTimer.putAnimation(CROSSBOW_SHOOT_AND_RELOAD_BLEND, (double) CROSSBOW_SHOOT_AND_RELOAD_TIME);
+                ambusherTickTimer.putAnimation(AMBUSHER_MODEL, this, CROSSBOW_SHOOT_AND_RELOAD_BLEND);
                 return state.setAndContinue(CROSSBOW_SHOOT_AND_RELOAD_BLEND);
             } else if (ambusherTickTimer.getDuration(CROSSBOW_SHOOT_AND_RELOAD_BLEND) > 0) {
                 // Always let the reload animation conclude
@@ -493,13 +495,14 @@ public class AmbusherEntity extends Hunter implements RangedAttackMob {
 
     private static final RawAnimation RUN = RawAnimation.begin().thenLoop("run");
 
+    // All of these duration times were done by looking at the blockbench animation and manually recording the results
+    // If the animations change, you'll need to change these numbers too!
     private static final int AMBUSH_ANIM_DURATION = 83;
     private static final int AMBUSH_HORN_SOUND_START_TIME = 38;
     private static final int AMBUSH_ARROW_PLACE_SOUND_TIME = 74;
     private static final RawAnimation AMBUSH_AND_GRIFFIN_RELEASE = RawAnimation.begin().thenPlay("ambush_and_griffin_release");
 
     private static final int GRIFFIN_RELEASE_ANIM_DURATION = 42;
-    private static final int GRIFFIN_RELEASE_ARROW_PLACE_SOUND_TIME = 33;
     private static final RawAnimation ONLY_GRIFFIN_RELEASE = RawAnimation.begin().thenPlay("griffin_release");
 
     private static final RawAnimation IDLE_NO_GRIFFIN = RawAnimation.begin().thenLoop("idle_no_griffin");

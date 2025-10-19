@@ -10,6 +10,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.ClientDietCompone
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.ClientTimeComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.DietComponent;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.TimeComponent;
+import by.dragonsurvivalteam.dragonsurvival.client.models.DragonModel;
 import by.dragonsurvivalteam.dragonsurvival.client.models.aligned_armor.DragonBoots;
 import by.dragonsurvivalteam.dragonsurvival.client.models.aligned_armor.DragonChestplate;
 import by.dragonsurvivalteam.dragonsurvival.client.models.aligned_armor.DragonHelmet;
@@ -21,7 +22,6 @@ import by.dragonsurvivalteam.dragonsurvival.client.models.creatures.KnightModel;
 import by.dragonsurvivalteam.dragonsurvival.client.models.creatures.LeaderModel;
 import by.dragonsurvivalteam.dragonsurvival.client.models.creatures.SpearmanModel;
 import by.dragonsurvivalteam.dragonsurvival.client.models.projectiles.GenericBallModel;
-import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.blocks.DragonBeaconRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.blocks.HelmetEntityRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.creatures.AmbusherRenderer;
@@ -75,8 +75,11 @@ import java.util.Map;
 
 @Mod(value = DragonSurvival.MODID, dist = Dist.CLIENT)
 public class DragonSurvivalClient {
-    public static float timer;
-    public static DragonRenderer dragonRenderer; // Needed for access in LevelRendererMixin
+    public static float TIMER;
+    public static DragonRenderer DRAGON_RENDERER; // Needed for access in LevelRendererMixin
+
+    public static DragonModel DRAGON_MODEL = new DragonModel();
+    public static AmbusherModel AMBUSHER_MODEL = new AmbusherModel();
 
     public DragonSurvivalClient(final IEventBus bus, final ModContainer container) {
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
@@ -93,10 +96,10 @@ public class DragonSurvivalClient {
     }
 
     private void incrementTimer(final ClientTickEvent.Post event) {
-        timer += 0.01f;
+        TIMER += 0.01f;
 
-        if (timer > 1) {
-            timer = 0;
+        if (TIMER > 1) {
+            TIMER = 0;
         }
     }
 
@@ -111,12 +114,12 @@ public class DragonSurvivalClient {
             // GeckoLib renderers
             EntityRenderers.register(DSEntities.GENERIC_BALL_ENTITY.get(), manager -> new GenericBallRenderer(manager, new GenericBallModel()));
             EntityRenderers.register(DSEntities.DRAGON.get(), manager -> {
-                dragonRenderer = new DragonRenderer(manager, ClientDragonRenderer.dragonModel);
-                return dragonRenderer;
+                DRAGON_RENDERER = new DragonRenderer(manager, DRAGON_MODEL);
+                return DRAGON_RENDERER;
             });
             EntityRenderers.register(DSEntities.HUNTER_KNIGHT.get(), manager -> new KnightRenderer(manager, new KnightModel()));
             EntityRenderers.register(DSEntities.HUNTER_SPEARMAN.get(), manager -> new SpearmanRenderer(manager, new SpearmanModel()));
-            EntityRenderers.register(DSEntities.HUNTER_AMBUSHER.get(), manager -> new AmbusherRenderer(manager, new AmbusherModel()));
+            EntityRenderers.register(DSEntities.HUNTER_AMBUSHER.get(), manager -> new AmbusherRenderer(manager, AMBUSHER_MODEL));
             EntityRenderers.register(DSEntities.HUNTER_HOUND.get(), manager -> new HoundRenderer(manager, new HoundModel()));
             EntityRenderers.register(DSEntities.HUNTER_GRIFFIN.get(), manager -> new GriffinRenderer(manager, new GriffinModel()));
             EntityRenderers.register(DSEntities.HUNTER_LEADER.get(), manager -> new LeaderRenderer(manager, new LeaderModel()));

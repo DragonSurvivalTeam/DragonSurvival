@@ -1,7 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.client.models.DragonModel;
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon.DragonRenderer;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
@@ -70,8 +69,6 @@ import java.util.function.Consumer;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class ClientDragonRenderer {
-    // FIXME :: remove this completely (currently only used for override texture)
-    public static DragonModel dragonModel = new DragonModel();
 
     // FIXME :: figure out at what point it can be called from other threads - that shouldn't happen but it does?
     //  See: https://github.com/DragonSurvivalTeam/DragonSurvival/issues/763

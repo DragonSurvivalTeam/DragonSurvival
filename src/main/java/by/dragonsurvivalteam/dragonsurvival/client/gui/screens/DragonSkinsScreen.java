@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.screens;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.client.DragonSurvivalClient;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.DragonEditorScreen;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.dragon_editor.buttons.DragonBodyButton;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons.TabButton;
@@ -197,10 +198,10 @@ public class DragonSkinsScreen extends Screen {
         EntityRenderer<? super DragonEntity> dragonRenderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(dragon);
 
         if (noSkin && Objects.equals(playerName, minecraft.player.getGameProfile().getName())) {
-            ClientDragonRenderer.dragonModel.setOverrideTexture(null);
+            DragonSurvivalClient.DRAGON_MODEL.setOverrideTexture(null);
             ((DragonRenderer) dragonRenderer).glowTexture = null;
         } else {
-            ClientDragonRenderer.dragonModel.setOverrideTexture(skinTexture);
+            DragonSurvivalClient.DRAGON_MODEL.setOverrideTexture(skinTexture);
             ((DragonRenderer) dragonRenderer).glowTexture = glowTexture;
         }
 

@@ -127,7 +127,7 @@ public class ClientProxy implements Proxy {
 
     @Override
     public float getTimer() {
-        return DragonSurvivalClient.timer;
+        return DragonSurvivalClient.TIMER;
     }
 
     @Override

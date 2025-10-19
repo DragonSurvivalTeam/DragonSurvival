@@ -10,6 +10,7 @@ import software.bernie.geckolib.animation.AnimationController;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.cache.GeckoLibCache;
 import software.bernie.geckolib.loading.object.BakedAnimations;
+import software.bernie.geckolib.model.GeoModel;
 
 public class AnimationUtils {
     /** Time in MS of 1 frame for 60 FPS */
@@ -49,8 +50,8 @@ public class AnimationUtils {
         return (Minecraft.getInstance().getTimer().getRealtimeDeltaTicks() * Minecraft.getInstance().level.tickRateManager().millisecondsPerTick()) / 1000f;
     }
 
-    public static boolean doesAnimationExist(final Player player, final String animation) {
-        BakedAnimations bakedAnimations = GeckoLibCache.getBakedAnimations().get(DragonModel.getAnimationResource(player));
+    public static <A extends GeoAnimatable, T extends GeoModel<A>> boolean doesAnimationExist(final T model, final A animatable, final String animation) {
+        BakedAnimations bakedAnimations = GeckoLibCache.getBakedAnimations().get(model.getAnimationResource(animatable));
         if (bakedAnimations == null) {
             return false;
         }
@@ -58,24 +59,17 @@ public class AnimationUtils {
         return bakedAnimations.getAnimation(animation) != null;
     }
 
-    public static boolean doesAnimationExist(final Player player, final RawAnimation animation) {
+    public static <A extends GeoAnimatable, T extends GeoModel<A>> boolean doesAnimationExist(final T model, final A animatable, final RawAnimation animation) {
         assert (animation.getAnimationStages().size() == 1);
 
-        return doesAnimationExist(player, animation.getAnimationStages().getFirst().animationName());
+        return doesAnimationExist(model, animatable, animation.getAnimationStages().getFirst().animationName());
     }
 
-    public static double animationDuration(final Player player, final String animation) {
-        if (!doesAnimationExist(player, animation)) {
+    public static <A extends GeoAnimatable, T extends GeoModel<A>> double animationDuration(final T model, final A animatable, final String animation) {
+        if (!doesAnimationExist(model, animatable, animation)) {
             return 0;
         }
 
-        return GeckoLibCache.getBakedAnimations().get(DragonModel.getAnimationResource(player)).getAnimation(animation).length();
-    }
-
-    public static double animationDuration(final Player player, final RawAnimation animation)
-    {
-        assert (animation.getAnimationStages().size() == 1);
-
-        return animationDuration(player, animation.getAnimationStages().getFirst().animationName());
+        return GeckoLibCache.getBakedAnimations().get(model.getAnimationResource(animatable)).getAnimation(animation).length();
     }
 }

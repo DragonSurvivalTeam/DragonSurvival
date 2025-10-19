@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render.entity.dragon;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
-import by.dragonsurvivalteam.dragonsurvival.client.render.ClientDragonRenderer;
+import by.dragonsurvivalteam.dragonsurvival.client.DragonSurvivalClient;
 import by.dragonsurvivalteam.dragonsurvival.client.util.RenderingUtils;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
@@ -116,7 +116,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
             return;
         }
 
-        ClientDragonRenderer.dragonModel.setOverrideTexture(texture);
+        DragonSurvivalClient.DRAGON_MODEL.setOverrideTexture(texture);
         RenderType type = renderer.getRenderType(animatable, texture, bufferSource, partialTick);
 
         if (type != null) {
@@ -126,7 +126,7 @@ public class DragonArmorRenderLayer extends GeoRenderLayer<DragonEntity> {
             renderer.actuallyRender(poseStack, animatable, bakedModel, wrappedType, bufferSource, vertexConsumer, true, partialTick, packedLight, OverlayTexture.NO_OVERLAY, renderer.getRenderColor(animatable, partialTick, packedLight).getColor());
         }
 
-        ClientDragonRenderer.dragonModel.setOverrideTexture(null);
+        DragonSurvivalClient.DRAGON_MODEL.setOverrideTexture(null);
     }
 
     private static Optional<ResourceLocation> constructTrimmedDragonArmorTexture(final Player player) {

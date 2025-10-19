@@ -89,7 +89,7 @@ public abstract class LevelRendererMixin {
             Player player = dragon.getPlayer();
 
             if (player != null && DragonStateProvider.getData(player).needsSkinRecompilation()) {
-                DragonSurvivalClient.dragonRenderer.getTextureLocation(dragon);
+                DragonSurvivalClient.DRAGON_RENDERER.getTextureLocation(dragon);
             }
         });
     }

@@ -1,10 +1,13 @@
 package by.dragonsurvivalteam.dragonsurvival.client.render.util;
 
+import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
+import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.animation.RawAnimation;
+import software.bernie.geckolib.model.GeoModel;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -51,25 +54,30 @@ public class AnimationTickTimer {
         return getDuration(animation.getAnimationStages().getFirst().animationName());
     }
 
+    // Needed specifically for keeping track of emote timings, which don't actually directly reference their animation names
     public void putAnimation(final String animation, final Double ticks) {
-        putDuration(animation, ticks);
+        animationTimes.put(animation, ticks);
 
         if (!TIMERS.contains(this)) {
             TIMERS.add(this);
         }
     }
 
-    public void putAnimation(final RawAnimation animation, final Double ticks) {
+    public void stopAnimation(final String animation) {
+        animationTimes.remove(animation);
+    }
+
+    public <A extends GeoAnimatable, T extends GeoModel<A>> void putAnimation(final T model, final A animatable, final String animation) {
+        animationTimes.put(animation, AnimationUtils.animationDuration(model, animatable, animation));
+
+        if (!TIMERS.contains(this)) {
+            TIMERS.add(this);
+        }
+    }
+
+    public <A extends GeoAnimatable, T extends GeoModel<A>> void putAnimation(final T model, final A animatable, final RawAnimation animation) {
         assert (animation.getAnimationStages().size() == 1);
 
-        putDuration(animation.getAnimationStages().getFirst().animationName(), ticks);
-
-        if (!TIMERS.contains(this)) {
-            TIMERS.add(this);
-        }
-    }
-
-    protected void putDuration(final String animation, final Double ticks) {
-        animationTimes.put(animation, ticks);
+        putAnimation(model, animatable, animation.getAnimationStages().getFirst().animationName());
     }
 }

@@ -54,6 +54,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static by.dragonsurvivalteam.dragonsurvival.client.DragonSurvivalClient.DRAGON_MODEL;
+
 @EventBusSubscriber
 public class DragonEntity extends LivingEntity implements GeoEntity {
     private static final int MAX_EMOTES = 4;
@@ -172,7 +174,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
 
     public void stopEmote(int slot) {
         if (currentlyPlayingEmotes[slot] != null) {
-            animationTickTimer.putAnimation(EMOTE + slot, 0.0);
+            animationTickTimer.stopAnimation(EMOTE + slot);
             currentlyPlayingEmotes[slot] = null;
         }
     }
@@ -181,7 +183,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         for (int i = 0; i < MAX_EMOTES; i++) {
             if (currentlyPlayingEmotes[i] == emote) {
                 currentlyPlayingEmotes[i] = null;
-                animationTickTimer.putAnimation(EMOTE + i, 0.0);
+                animationTickTimer.stopAnimation(EMOTE + i);
                 return;
             }
         }
@@ -195,7 +197,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         for (int i = 0; i < MAX_EMOTES; i++) {
             if (currentlyPlayingEmotes[i] == emote) {
                 currentlyPlayingEmotes[i] = null;
-                animationTickTimer.putAnimation(EMOTE + i, 0.0);
+                animationTickTimer.stopAnimation(EMOTE + i);
                 continue;
             }
 
@@ -206,7 +208,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             // Remove any emotes from conflicting layers (non-blend removes other non-blends)
             if (!currentlyPlayingEmotes[i].blend() && !emote.blend()) {
                 currentlyPlayingEmotes[i] = null;
-                animationTickTimer.putAnimation(EMOTE + i, 0.0);
+                animationTickTimer.stopAnimation(EMOTE + i);
             }
         }
 
@@ -217,7 +219,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
                 if (emote.duration() != DragonEmote.NO_DURATION) {
                     animationTickTimer.putAnimation(EMOTE + i, (double) emote.duration());
                 } else {
-                    animationTickTimer.putAnimation(EMOTE + i, AnimationUtils.animationDuration(getPlayer(), emote.animationKey()));
+                    animationTickTimer.putAnimation(EMOTE + i, AnimationUtils.animationDuration(DRAGON_MODEL, this, emote.animationKey()));
                 }
 
                 if (emote.sound().isPresent()) {
@@ -260,7 +262,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
 
     public void setCurrentAbilityAnimation(Pair<AbilityAnimation, AnimationType> currentAbilityAnimation) {
         if (this.currentAbilityAnimation != null) {
-            animationTickTimer.putAnimation(this.currentAbilityAnimation.getFirst().getName(), 0.0);
+            animationTickTimer.stopAnimation(this.currentAbilityAnimation.getFirst().getName());
         }
         this.currentAbilityAnimation = currentAbilityAnimation;
         begunPlayingAbilityAnimation = false;
@@ -275,7 +277,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             currentAbilityAnimation.getFirst().play(state, currentAbilityAnimation.getSecond());
             if (currentAbilityAnimation.getSecond() == AnimationType.PLAY_ONCE) {
                 // Only trigger use a timer for PLAY_ONCE animations, as the others are intended to await a future packet to stop them
-                animationTickTimer.putAnimation(currentAbilityAnimation.getFirst().getName(), AnimationUtils.animationDuration(getPlayer(), currentAbilityAnimation.getFirst().getName()));
+                animationTickTimer.putAnimation(DRAGON_MODEL, this, currentAbilityAnimation.getFirst().getName());
             }
         } else if (begunPlayingAbilityAnimation && isNotPlayingCurrentAbilityAnimation && currentAbilityAnimation.getSecond() == AnimationType.PLAY_ONCE) {
             begunPlayingAbilityAnimation = false;
@@ -313,7 +315,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         movement.bite = false;
 
         if (animationTickTimer.getDuration(animation) <= 0) {
-            animationTickTimer.putAnimation(animation, AnimationUtils.animationDuration(getPlayer(), animation));
+            animationTickTimer.putAnimation(DRAGON_MODEL, this, animation);
         }
 
         return state.setAndContinue(animation);
@@ -382,7 +384,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             state.getController().forceAnimationReset();
         }
 
-        if (AnimationUtils.doesAnimationExist(player, CONTINUOUS + slot)) {
+        if (AnimationUtils.doesAnimationExist(DRAGON_MODEL, this, CONTINUOUS + slot)) {
             RawAnimation continuousAnimation = RawAnimation.begin().thenPlay(CONTINUOUS + slot);
             state.setAndContinue(continuousAnimation);
             return PlayState.CONTINUE;
@@ -419,7 +421,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
                         if (emote.duration() != DragonEmote.NO_DURATION) {
                             animationTickTimer.putAnimation(EMOTE + slot, (double) emote.duration());
                         } else {
-                            animationTickTimer.putAnimation(EMOTE + slot, AnimationUtils.animationDuration(getPlayer(), emote.animationKey()));
+                            animationTickTimer.putAnimation(EMOTE + slot, AnimationUtils.animationDuration(DRAGON_MODEL, this, emote.animationKey()));
                         }
                     }
 
@@ -616,7 +618,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             return state.setAndContinue(SLEEP);
         }
 
-        if (SkyhookRendererHelper.isPlayerRidingSkyhook(player.getUUID()) && AnimationUtils.doesAnimationExist(player, CREATE_SKYHOOK_RIDING)) {
+        if (SkyhookRendererHelper.isPlayerRidingSkyhook(player.getUUID()) && AnimationUtils.doesAnimationExist(DRAGON_MODEL, this, CREATE_SKYHOOK_RIDING)) {
             return state.setAndContinue(CREATE_SKYHOOK_RIDING);
         }
 
@@ -695,7 +697,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             state.setAnimation(FLY_LAND_END);
 
             if (!FLY_LAND_END.getAnimationStages().isEmpty()) {
-                animationTickTimer.putAnimation(FLY_LAND_END, AnimationUtils.animationDuration(player, FLY_LAND_END));
+                animationTickTimer.putAnimation(DRAGON_MODEL, this, FLY_LAND_END);
             }
 
             animationController.transitionLength(2);
@@ -715,7 +717,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             state.resetCurrentAnimation();
             state.setAnimation(JUMP);
             animationController.transitionLength(2);
-            animationTickTimer.putAnimation(JUMP, AnimationUtils.animationDuration(player, JUMP));
+            animationTickTimer.putAnimation(DRAGON_MODEL, this, JUMP);
             DRAGONS_JUMPING.remove(this.playerId);
         } else if (animationTickTimer.isPresent(JUMP) && DRAGONS_JUMPING.getOrDefault(this.playerId, true)) {
             // We test here if the jump animation has been flagged with a false value; if this is the case, that means cancel any ongoing jumps that are occurring
