@@ -49,11 +49,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.RenderBlockScreenEffectEvent;
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
-import net.neoforged.neoforge.client.event.RenderNameTagEvent;
-import net.neoforged.neoforge.client.event.RenderPlayerEvent;
+import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.TriState;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
@@ -406,7 +402,20 @@ public class ClientDragonRenderer {
     }
 
     @SubscribeEvent
-    public static void updateFirstPersonDataAndSendMovementData(final ClientTickEvent.Pre event) {
+    public static void updateBiteInput(InputEvent.InteractionKeyMappingTriggered event)
+    {
+        LocalPlayer player = Minecraft.getInstance().player;
+
+        if (!DragonStateProvider.isDragon(player)) {
+            return;
+        }
+
+        MovementData movement = MovementData.getData(player);
+        movement.bite = event.shouldSwingHand();
+    }
+
+    @SubscribeEvent
+    public static void updateFirstPersonDataAndSendMovementData(final ClientTickEvent.Post event) {
         LocalPlayer player = Minecraft.getInstance().player;
 
         if (!DragonStateProvider.isDragon(player)) {
@@ -428,7 +437,6 @@ public class ClientDragonRenderer {
         }
 
         movement.dig = DragonSurvival.PROXY.isMining(player);
-        movement.bite = player.swinging;
 
         PacketDistributor.sendToServer(new SyncDragonMovement(player.getId(), movement.isFirstPerson, movement.bite, movement.dig, movement.isFreeLook, movement.desiredMoveVec));
         PacketDistributor.sendToServer(new SyncPitchAndYaw(player.getId(), movement.headYaw, movement.headPitch, movement.bodyYaw));
