@@ -11,6 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.data_maps.DietEntry
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.data_maps.DragonBeaconDataProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.data_maps.EndPlatformProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.data_maps.StageResourceProvider;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.datapacks.*;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSBlockTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDamageTypeTags;
@@ -32,8 +33,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBodies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEmoteSet;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEmoteSets;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.datapacks.AncientDatapack;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.datapacks.UnlockWingsDatapack;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalties;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
@@ -72,14 +71,28 @@ import java.util.concurrent.CompletableFuture;
 public class DataGeneration {
 
     private static final String ANCIENT_STAGE_DATAPACK = "ancient_stage";
+    private static final String ANCIENT_STAGE_DATAPACK_NO_CRUSHING = "ancient_stage_no_crushing";
 
     @Translation(comments = "Adds the Ancient dragon stage to Dragon Survival")
     private static final String ANCIENT_STAGE_DATAPACK_DESCRIPTION = Translation.Type.GUI.wrap("datapack." + ANCIENT_STAGE_DATAPACK);
 
+    @Translation(comments = "Adds the Ancient stage (with crushing disabled)")
+    private static final String ANCIENT_STAGE_DATAPACK_DESCRIPTION_NO_CRUSHING = Translation.Type.GUI.wrap("datapack." + ANCIENT_STAGE_DATAPACK_NO_CRUSHING);
+
     private static final String UNLOCK_WINGS_DATAPACK = "unlock_wings";
 
-    @Translation(comments = "Automatically unlocks dragon wings and prevents the ender dragon from disabling them in Dragon Survival")
+    @Translation(comments = "Automatically unlocks flight and prevents the ender dragon from disabling them")
     private static final String UNLOCK_WINGS_DATAPACK_DESCRIPTION = Translation.Type.GUI.wrap("datapack." + UNLOCK_WINGS_DATAPACK);
+
+    private static final String NO_PENALTIES_DATAPACK = "no_penalties";
+
+    @Translation(comments = "Removes all penalties from the base dragon types")
+    private static final String NO_PENALTIES_DATAPACK_DESCRIPTION = Translation.Type.GUI.wrap("datapack." + NO_PENALTIES_DATAPACK);
+
+    private static final String NO_EXPERIENCE_CONVERSION_DATAPACK = "no_experience_conversion";
+
+    @Translation(comments = "Disables converting experience to mana when out of mana")
+    private static final String NO_EXPERIENCE_CONVERSION_DATAPACK_DESCRIPTION = Translation.Type.GUI.wrap("datapack." + NO_EXPERIENCE_CONVERSION_DATAPACK);
 
     // --- Compatibility --- //
 
@@ -134,6 +147,10 @@ public class DataGeneration {
 
         // Handle additional datapacks
         addAncientStageDatapack(generator, lookup);
+        addAncientStageDatapackNoCrushing(generator, lookup);
+        addNoPenaltiesDatapack(generator, lookup, helper);
+        // FIXME
+        //addNoExperienceConversionDatapack(generator, lookup, /* May not be the correct way to handle this */  lookup.join().lookupOrThrow(DragonSpecies.REGISTRY));
         addUnlockWingsDatapack(generator, lookup, /* May not be the correct way to handle this */ lookup.join().lookupOrThrow(DragonAbility.REGISTRY));
 
         BlockTagsProvider blockTagsProvider = new DSBlockTags(output, lookup, helper);
@@ -179,6 +196,12 @@ public class DataGeneration {
             if (ModCheck.isModLoaded(ModCheck.CREATE)) {
                 registerDataPack(event, Component.literal("DS - Create"), CREATE_DATAPACK, PackSource.BUILT_IN);
             }
+
+            // Feature datapacks (things that are not enabled by default)
+            registerDataPack(event, Component.literal("DS - Ancient (no crushing)"), ANCIENT_STAGE_DATAPACK_NO_CRUSHING, PackSource.FEATURE);
+            registerDataPack(event, Component.literal("DS - No Penalties"), NO_PENALTIES_DATAPACK, PackSource.FEATURE);
+            // FIXME
+            //registerDataPack(event, Component.literal("DS - No Experience Conversion"), NO_EXPERIENCE_CONVERSION_DATAPACK, PackSource.FEATURE);
         }
     }
 
@@ -187,14 +210,38 @@ public class DataGeneration {
     }
 
     private static void registerDataPack(final AddPackFindersEvent event, final MutableComponent name, final String datapack, PackSource source) {
-        event.addPackFinders(DragonSurvival.res("data/" + DragonSurvival.MODID + "/datapacks/" + datapack), PackType.SERVER_DATA, name, source, true, Pack.Position.TOP);
+        event.addPackFinders(DragonSurvival.res("data/" + DragonSurvival.MODID + "/datapacks/" + datapack), PackType.SERVER_DATA, name, source, source != PackSource.FEATURE, Pack.Position.TOP);
     }
 
     private static void addAncientStageDatapack(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup) {
         DataGenerator.PackGenerator datapack = generator.getBuiltinDatapack(true, DragonSurvival.MODID, ANCIENT_STAGE_DATAPACK);
         datapack.addProvider(output -> PackMetadataGenerator.forFeaturePack(output, Component.translatable(ANCIENT_STAGE_DATAPACK_DESCRIPTION), FeatureFlagSet.of()));
         RegistrySetBuilder builder = new RegistrySetBuilder();
-        builder.add(DragonStage.REGISTRY, AncientDatapack::register);
+        builder.add(DragonStage.REGISTRY, AncientDatapacks::registerAncient);
+        datapack.addProvider(output -> new DatapackBuiltinEntriesProvider(output, lookup, builder, Set.of(DragonSurvival.MODID)));
+    }
+
+    private static void addAncientStageDatapackNoCrushing(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup) {
+        DataGenerator.PackGenerator datapack = generator.getBuiltinDatapack(true, DragonSurvival.MODID, ANCIENT_STAGE_DATAPACK_NO_CRUSHING);
+        datapack.addProvider(output -> PackMetadataGenerator.forFeaturePack(output, Component.translatable(ANCIENT_STAGE_DATAPACK_DESCRIPTION_NO_CRUSHING), FeatureFlagSet.of()));
+        RegistrySetBuilder builder = new RegistrySetBuilder();
+        datapack.addProvider(output -> new DatapackBuiltinEntriesProvider(output, lookup, builder, Set.of(DragonSurvival.MODID)));
+    }
+
+    private static void addNoPenaltiesDatapack(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup, ExistingFileHelper helper) {
+        DataGenerator.PackGenerator datapack = generator.getBuiltinDatapack(true, DragonSurvival.MODID, NO_PENALTIES_DATAPACK);
+        datapack.addProvider(output -> PackMetadataGenerator.forFeaturePack(output, Component.translatable(NO_PENALTIES_DATAPACK_DESCRIPTION), FeatureFlagSet.of()));
+        RegistrySetBuilder builder = new RegistrySetBuilder();
+        datapack.addProvider(output ->  new NoPenaltiesPenaltyProvider(output, DragonPenalty.REGISTRY, lookup, DragonSurvival.MODID,  helper));
+        datapack.addProvider(output ->  new NoPenaltiesAbilityProvider(output, DragonAbility.REGISTRY, lookup, DragonSurvival.MODID,  helper));
+        datapack.addProvider(output -> new DatapackBuiltinEntriesProvider(output, lookup, builder, Set.of(DragonSurvival.MODID)));
+    }
+
+    private static void addNoExperienceConversionDatapack(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup, final HolderLookup.RegistryLookup<DragonSpecies> registryLookup) {
+        DataGenerator.PackGenerator datapack = generator.getBuiltinDatapack(true, DragonSurvival.MODID, NO_EXPERIENCE_CONVERSION_DATAPACK);
+        datapack.addProvider(output -> PackMetadataGenerator.forFeaturePack(output, Component.translatable(NO_EXPERIENCE_CONVERSION_DATAPACK_DESCRIPTION), FeatureFlagSet.of()));
+        RegistrySetBuilder builder = new RegistrySetBuilder();
+        builder.add(DragonSpecies.REGISTRY, context -> DisableExperienceConversionDatapack.register(context, registryLookup));
         datapack.addProvider(output -> new DatapackBuiltinEntriesProvider(output, lookup, builder, Set.of(DragonSurvival.MODID)));
     }
 

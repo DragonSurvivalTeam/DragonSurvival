@@ -1,4 +1,4 @@
-package by.dragonsurvivalteam.dragonsurvival.registry.dragon.datapacks;
+package by.dragonsurvivalteam.dragonsurvival.registry.datagen.datapacks;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.CaveDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.ForestDragonAbilities;

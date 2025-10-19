@@ -1,4 +1,4 @@
-package by.dragonsurvivalteam.dragonsurvival.registry.dragon.datapacks;
+package by.dragonsurvivalteam.dragonsurvival.registry.datagen.datapacks;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.GrowthItem;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
@@ -20,12 +20,16 @@ import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import java.util.List;
 import java.util.Optional;
 
-public class AncientDatapack {
+public class AncientDatapacks {
     @Translation(type = Translation.Type.STAGE, comments = "Ancient")
     public static final ResourceKey<DragonStage> ancient = DragonStages.key("ancient");
 
-    public static void register(final BootstrapContext<DragonStage> context) {
+    public static void registerAncient(final BootstrapContext<DragonStage> context) {
         context.register(ancient, ancient());
+    }
+
+    public static void registerAncientNoCrushing(final BootstrapContext<DragonStage> context) {
+        context.register(ancient, ancientNoCrushing());
     }
 
     public static DragonStage ancient() {
@@ -54,6 +58,18 @@ public class AncientDatapack {
                 ),
                 Optional.of(EntityPredicate.Builder.entity().build()),
                 Optional.of(new MiscCodecs.DestructionData(EntityPredicate.Builder.entity().build(), BlockPredicate.matchesTag(DSBlockTags.LARGE_DRAGON_DESTRUCTIBLE), 120, 120, 0.05))
+        );
+    }
+
+    public static DragonStage ancientNoCrushing() {
+        return new DragonStage(
+                ancient().isDefault(),
+                ancient().growthRange(),
+                ancient().ticksUntilGrown(),
+                ancient().modifiers(),
+                ancient().growthItems(),
+                ancient().isNaturalGrowthStopped(),
+                Optional.empty()
         );
     }
 }

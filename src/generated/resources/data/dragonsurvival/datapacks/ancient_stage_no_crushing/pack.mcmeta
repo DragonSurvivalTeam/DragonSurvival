@@ -1,0 +1,11 @@
+{
+  "features": {
+    "enabled": []
+  },
+  "pack": {
+    "description": {
+      "translate": "dragonsurvival.gui.datapack.ancient_stage_no_crushing"
+    },
+    "pack_format": 48
+  }
+}

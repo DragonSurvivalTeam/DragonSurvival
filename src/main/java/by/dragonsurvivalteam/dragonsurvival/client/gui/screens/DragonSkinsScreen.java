@@ -24,7 +24,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonBodyTa
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.DragonBody;
-import by.dragonsurvivalteam.dragonsurvival.registry.dragon.datapacks.AncientDatapack;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.datapacks.AncientDatapacks;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStages;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
@@ -335,7 +335,7 @@ public class DragonSkinsScreen extends Screen {
         HoverButton leftArrowButton = new HoverButton(startX - 62, startY + 153, 9, 16, 18, 18, STAGE_ARROW_LEFT_MAIN, STAGE_ARROW_LEFT_HOVER, button -> {
             ResourceKey<DragonStage> nextLevel = dragonStage.getKey();
 
-            if (dragonStage.is(AncientDatapack.ancient)) {
+            if (dragonStage.is(AncientDatapacks.ancient)) {
                 nextLevel = DragonStages.adult;
             } else if (dragonStage.is(DragonStages.adult)) {
                 nextLevel = DragonStages.young;
@@ -355,9 +355,9 @@ public class DragonSkinsScreen extends Screen {
 
         HoverButton rightArrowButton = new HoverButton(startX + 92, startY + 153, 9, 16, 18, 18, STAGE_ARROW_RIGHT_MAIN, STAGE_ARROW_RIGHT_HOVER, button -> {
             ResourceKey<DragonStage> nextLevel = dragonStage.getKey();
-            boolean ancientDataPackExists = ResourceHelper.get(Objects.requireNonNull(player).registryAccess(), AncientDatapack.ancient).isPresent();
+            boolean ancientDataPackExists = ResourceHelper.get(Objects.requireNonNull(player).registryAccess(), AncientDatapacks.ancient).isPresent();
 
-            if (ancientDataPackExists && dragonStage.is(AncientDatapack.ancient)) {
+            if (ancientDataPackExists && dragonStage.is(AncientDatapacks.ancient)) {
                 nextLevel = DragonStages.newborn;
             } else if (dragonStage.is(DragonStages.newborn)) {
                 nextLevel = DragonStages.young;
