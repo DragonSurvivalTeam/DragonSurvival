@@ -1,0 +1,99 @@
+{
+  "animation": "dragonsurvival:dragon_east",
+  "backpack_offset": {
+    "position_offset": [
+      0.0,
+      -6.5,
+      0.0
+    ],
+    "scale": [
+      0.9,
+      0.9,
+      0.9
+    ]
+  },
+  "bettercombat_weapon_offset": -3.0,
+  "crouch_height_ratio": 0.83333333,
+  "default_icon": "dragonsurvival:textures/gui/custom/body/east/default.png",
+  "emotes": "dragonsurvival:default_emotes",
+  "is_default": true,
+  "modifiers": [
+    {
+      "amount": 2.0,
+      "attribute": "minecraft:generic.armor",
+      "operation": "add_value"
+    },
+    {
+      "amount": -1.0,
+      "attribute": "minecraft:generic.attack_damage",
+      "operation": "add_value"
+    },
+    {
+      "amount": -1.0,
+      "attribute": "minecraft:generic.attack_knockback",
+      "operation": "add_value"
+    },
+    {
+      "amount": 2.0,
+      "attribute": "minecraft:generic.safe_fall_distance",
+      "operation": "add_value"
+    },
+    {
+      "amount": 0.1,
+      "attribute": "minecraft:generic.gravity",
+      "operation": "add_multiplied_total"
+    },
+    {
+      "amount": 0.1,
+      "attribute": "minecraft:generic.jump_strength",
+      "operation": "add_value"
+    },
+    {
+      "amount": 0.1,
+      "attribute": "minecraft:generic.movement_speed",
+      "operation": "add_multiplied_total"
+    },
+    {
+      "amount": 0.5,
+      "attribute": "neoforge:swim_speed",
+      "operation": "add_value"
+    },
+    {
+      "amount": 2.0,
+      "attribute": "dragonsurvival:mana",
+      "operation": "add_value"
+    },
+    {
+      "amount": -0.2,
+      "attribute": "dragonsurvival:flight_speed",
+      "operation": "add_value"
+    },
+    {
+      "amount": -0.2,
+      "attribute": "dragonsurvival:flight_stamina",
+      "operation": "add_multiplied_total"
+    }
+  ],
+  "mounting_offset": {
+    "dragon_offset": [
+      0.0,
+      0.05,
+      -0.5
+    ],
+    "human_offset": [
+      0.0,
+      -0.15,
+      -0.5
+    ],
+    "offset_per_scale_above_one": [
+      0.0,
+      -0.25,
+      -0.5
+    ]
+  },
+  "scaling_proportions": {
+    "eye_height": 1.8,
+    "height": 2.0,
+    "width": 0.6
+  }
+}

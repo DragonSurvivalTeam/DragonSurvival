@@ -554,21 +554,7 @@ public class CaveDragonAbilities {
                 ))
         ));
 
-        context.register(CAVE_WINGS, new DragonAbility(
-                PassiveActivation.DEFAULT,
-                Optional.of(new ConditionUpgrade(List.of(Condition.thisEntity(EntityCondition.flightWasGranted(true)).build()), false)),
-                // Disable when marked by the ender dragon
-                Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
-                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(new FlightEffect(1, DragonSurvival.res("textures/ability_effect/cave_dragon_wings.png"))),
-                        TargetingMode.ALLIES_AND_SELF
-                )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
-                true,
-                new LevelBasedResource(List.of(
-                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_wings_0"), 0),
-                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_wings_1"), 1)
-                ))
-        ));
+        registerWings(context);
 
         context.register(CAVE_SPIN, new DragonAbility(
                 PassiveActivation.DEFAULT,
@@ -617,6 +603,24 @@ public class CaveDragonAbilities {
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/lava_swimming_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/lava_swimming_1"), 1)
+                ))
+        ));
+    }
+
+    public static void registerWings(final BootstrapContext<DragonAbility> context) {
+        context.register(CAVE_WINGS, new DragonAbility(
+                PassiveActivation.DEFAULT,
+                Optional.of(new ConditionUpgrade(List.of(Condition.thisEntity(EntityCondition.flightWasGranted(true)).build()), false)),
+                // Disable when marked by the ender dragon
+                Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        List.of(new FlightEffect(1, DragonSurvival.res("textures/ability_effect/cave_dragon_wings.png"))),
+                        TargetingMode.ALLIES_AND_SELF
+                )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
+                true,
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_wings_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/cave/cave_wings_1"), 1)
                 ))
         ));
     }
