@@ -158,7 +158,7 @@ public class DataGeneration {
         addAncientStageDatapackNoCrushing(generator, lookup);
         addUnlockWingsDatapack(generator, lookup);
         addNoPenaltiesDatapack(generator, lookup, helper);
-        addNoExperienceConversionDatapack(generator, lookup, helper);
+        addNoExperienceConversionDatapack(generator, lookup);
 
         BlockTagsProvider blockTagsProvider = new DSBlockTags(output, lookup, helper);
         generator.addProvider(event.includeServer(), blockTagsProvider);
@@ -246,7 +246,7 @@ public class DataGeneration {
         datapack.addProvider(output -> new NoPenaltiesAbilityProvider(output, DragonAbility.REGISTRY, lookup, DragonSurvival.MODID, helper));
     }
 
-    private static void addNoExperienceConversionDatapack(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup, final ExistingFileHelper helper) {
+    private static void addNoExperienceConversionDatapack(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup) {
         DataGenerator.PackGenerator datapack = generator.getBuiltinDatapack(true, DragonSurvival.MODID, NO_EXPERIENCE_CONVERSION_DATAPACK);
         datapack.addProvider(output -> PackMetadataGenerator.forFeaturePack(output, Component.translatable(NO_EXPERIENCE_CONVERSION_DATAPACK_DESCRIPTION), FeatureFlagSet.of()));
 
