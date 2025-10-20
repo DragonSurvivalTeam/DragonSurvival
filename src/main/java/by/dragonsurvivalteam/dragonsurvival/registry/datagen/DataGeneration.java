@@ -157,10 +157,9 @@ public class DataGeneration {
         addAncientStageDatapack(generator, lookup);
         addAncientStageDatapackNoCrushing(generator, lookup);
         addUnlockWingsDatapack(generator, lookup);
+        addNoPenaltiesDatapack(generator, lookup, helper);
 
         addNoExperienceConversionDatapack(generator, append(lookup, builder));
-
-        addNoPenaltiesDatapack(generator, lookup, append(lookup, builder), helper);
 
         BlockTagsProvider blockTagsProvider = new DSBlockTags(output, lookup, helper);
         generator.addProvider(event.includeServer(), blockTagsProvider);
@@ -272,12 +271,11 @@ public class DataGeneration {
         datapack.addProvider(output -> new DatapackBuiltinEntriesProvider(output, lookup, builder, Set.of(DragonSurvival.MODID)));
     }
 
-    private static void addNoPenaltiesDatapack(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup, final CompletableFuture<RegistrySetBuilder.PatchedRegistries> patched, ExistingFileHelper helper) {
+    private static void addNoPenaltiesDatapack(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup, ExistingFileHelper helper) {
         DataGenerator.PackGenerator datapack = generator.getBuiltinDatapack(true, DragonSurvival.MODID, NO_PENALTIES_DATAPACK);
         datapack.addProvider(output -> PackMetadataGenerator.forFeaturePack(output, Component.translatable(NO_PENALTIES_DATAPACK_DESCRIPTION), FeatureFlagSet.of()));
         datapack.addProvider(output -> new NoPenaltiesPenaltyProvider(output, DragonPenalty.REGISTRY, lookup, DragonSurvival.MODID, helper));
         datapack.addProvider(output -> new NoPenaltiesAbilityProvider(output, DragonAbility.REGISTRY, lookup, DragonSurvival.MODID, helper));
-        datapack.addProvider(output -> new DatapackBuiltinEntriesProvider(output, patched, Set.of(DragonSurvival.MODID)));
     }
 
     private static void addNoExperienceConversionDatapack(final DataGenerator generator, final CompletableFuture<RegistrySetBuilder.PatchedRegistries> lookup) {
