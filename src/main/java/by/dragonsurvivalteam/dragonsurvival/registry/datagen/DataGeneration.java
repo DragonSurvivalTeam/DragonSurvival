@@ -155,9 +155,9 @@ public class DataGeneration {
 
         // Handle additional datapacks
         addAncientStageDatapack(generator, lookup);
+        addAncientStageDatapackNoCrushing(generator, lookup);
         addUnlockWingsDatapack(generator, lookup);
 
-        addAncientStageDatapackNoCrushing(generator, append(lookup, builder));
         addNoExperienceConversionDatapack(generator, append(lookup, builder));
 
         addNoPenaltiesDatapack(generator, lookup, append(lookup, builder), helper);
@@ -262,10 +262,14 @@ public class DataGeneration {
         datapack.addProvider(output -> new DatapackBuiltinEntriesProvider(output, lookup, builder, Set.of(DragonSurvival.MODID)));
     }
 
-    private static void addAncientStageDatapackNoCrushing(final DataGenerator generator, final CompletableFuture<RegistrySetBuilder.PatchedRegistries> lookup) {
+    private static void addAncientStageDatapackNoCrushing(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup) {
         DataGenerator.PackGenerator datapack = generator.getBuiltinDatapack(true, DragonSurvival.MODID, ANCIENT_STAGE_DATAPACK_NO_CRUSHING);
         datapack.addProvider(output -> PackMetadataGenerator.forFeaturePack(output, Component.translatable(ANCIENT_STAGE_DATAPACK_DESCRIPTION_NO_CRUSHING), FeatureFlagSet.of()));
-        datapack.addProvider(output -> new DatapackBuiltinEntriesProvider(output, lookup, Set.of(DragonSurvival.MODID)));
+
+        RegistrySetBuilder builder = new RegistrySetBuilder();
+        builder.add(DragonStage.REGISTRY, AncientDatapacks::registerAncientNoCrushing);
+
+        datapack.addProvider(output -> new DatapackBuiltinEntriesProvider(output, lookup, builder, Set.of(DragonSurvival.MODID)));
     }
 
     private static void addNoPenaltiesDatapack(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup, final CompletableFuture<RegistrySetBuilder.PatchedRegistries> patched, ExistingFileHelper helper) {

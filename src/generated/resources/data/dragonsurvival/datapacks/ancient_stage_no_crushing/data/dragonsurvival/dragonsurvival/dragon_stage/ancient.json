@@ -1,0 +1,115 @@
+{
+  "growth_items": [
+    {
+      "growth_in_ticks": 72000,
+      "items": "dragonsurvival:elder_dragon_heart"
+    },
+    {
+      "growth_in_ticks": -72000,
+      "items": "dragonsurvival:star_bone"
+    }
+  ],
+  "growth_range": {
+    "max": 300.0,
+    "min": 60.0
+  },
+  "is_default": true,
+  "is_natural_growth_stopped": {},
+  "modifiers": [
+    {
+      "amount": 0.02,
+      "attribute": "minecraft:generic.movement_speed",
+      "operation": "add_value"
+    },
+    {
+      "amount": {
+        "precise_amount": 0.025,
+        "precise_base": 0.45
+      },
+      "attribute": "minecraft:generic.scale",
+      "operation": "add_value"
+    },
+    {
+      "amount": {
+        "type": "minecraft:linear",
+        "base": 20.5,
+        "per_level_above_first": 0.5
+      },
+      "attribute": "minecraft:generic.max_health",
+      "operation": "add_value"
+    },
+    {
+      "amount": {
+        "type": "minecraft:linear",
+        "base": 6.55,
+        "per_level_above_first": 0.05
+      },
+      "attribute": "dragonsurvival:dragon_breath_range",
+      "operation": "add_value"
+    },
+    {
+      "amount": {
+        "type": "minecraft:linear",
+        "base": 3.05,
+        "per_level_above_first": 0.05
+      },
+      "attribute": "minecraft:generic.attack_damage",
+      "operation": "add_value"
+    },
+    {
+      "amount": {
+        "type": "minecraft:linear",
+        "base": 0.101500005,
+        "per_level_above_first": 0.0015
+      },
+      "attribute": "minecraft:generic.jump_strength",
+      "operation": "add_value"
+    },
+    {
+      "amount": {
+        "type": "minecraft:linear",
+        "base": 1.015,
+        "per_level_above_first": 0.015
+      },
+      "attribute": "minecraft:generic.safe_fall_distance",
+      "operation": "add_value"
+    },
+    {
+      "amount": {
+        "type": "minecraft:linear",
+        "base": 0.01,
+        "per_level_above_first": 0.01
+      },
+      "attribute": "dragonsurvival:block_break_radius",
+      "operation": "add_value"
+    },
+    {
+      "amount": {
+        "type": "minecraft:linear",
+        "base": 1.05,
+        "per_level_above_first": 0.05
+      },
+      "attribute": "minecraft:player.entity_interaction_range",
+      "operation": "add_value"
+    },
+    {
+      "amount": {
+        "type": "minecraft:linear",
+        "base": 1.05,
+        "per_level_above_first": 0.05
+      },
+      "attribute": "minecraft:player.block_interaction_range",
+      "operation": "add_value"
+    },
+    {
+      "amount": {
+        "type": "minecraft:linear",
+        "base": 0.515,
+        "per_level_above_first": 0.015
+      },
+      "attribute": "minecraft:generic.step_height",
+      "operation": "add_value"
+    }
+  ],
+  "ticks_until_grown": 69120000
+}
