@@ -1,5 +1,6 @@
 {
   "abilities": "#dragonsurvival:cave_dragon",
+  "mana_handling": {},
   "misc_resources": {
     "ability_bar": "dragonsurvival:textures/gui/custom/casting_bars/cave/cast_bar.png",
     "altar_banner": "dragonsurvival:textures/gui/custom/altar/cave/altar_icon.png",

@@ -158,8 +158,7 @@ public class DataGeneration {
         addAncientStageDatapackNoCrushing(generator, lookup);
         addUnlockWingsDatapack(generator, lookup);
         addNoPenaltiesDatapack(generator, lookup, helper);
-
-        addNoExperienceConversionDatapack(generator, append(lookup, builder));
+        addNoExperienceConversionDatapack(generator, lookup, helper);
 
         BlockTagsProvider blockTagsProvider = new DSBlockTags(output, lookup, helper);
         generator.addProvider(event.includeServer(), blockTagsProvider);
@@ -188,36 +187,6 @@ public class DataGeneration {
         generator.addProvider(event.includeServer(), new DSRecipes(output, lookup));
     }
 
-    /**
-     * Not entirely sure on how this works </br>
-     * But it seems like registries that get populated on server start are not properly in context during data generation </br>
-     * Therefor we add them ourselves here, including our datapack registries
-     */
-    private static CompletableFuture<RegistrySetBuilder.PatchedRegistries> append(final CompletableFuture<HolderLookup.Provider> lookup, final RegistrySetBuilder builder) {
-        return RegistryPatchGenerator.createLookup(lookup, builder);
-
-//        Cloner.Factory factory = new Cloner.Factory();
-//        var keys = new HashSet<>(builder.getEntryKeys());
-//
-//        RegistryDataLoader.WORLDGEN_REGISTRIES.forEach(data -> {
-//            if (!keys.contains(data.key())) {
-//                builder.add(data.key(), context -> {});
-//            }
-//
-//            data.runWithArguments(factory::addCodec);
-//        });
-//
-//        factory.addCodec(DragonBody.REGISTRY, DragonBody.DIRECT_CODEC);
-//        factory.addCodec(DragonStage.REGISTRY, DragonStage.DIRECT_CODEC);
-//        factory.addCodec(DragonAbility.REGISTRY, DragonAbility.DIRECT_CODEC);
-//        factory.addCodec(DragonPenalty.REGISTRY, DragonPenalty.DIRECT_CODEC);
-//        factory.addCodec(DragonSpecies.REGISTRY, DragonSpecies.DIRECT_CODEC);
-//        factory.addCodec(ProjectileData.REGISTRY, ProjectileData.DIRECT_CODEC);
-//        factory.addCodec(DragonEmoteSet.REGISTRY, DragonEmoteSet.DIRECT_CODEC);
-//
-//        return lookup.thenApply(provider -> builder.buildPatch(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY), provider, factory));
-    }
-
     @SubscribeEvent
     public static void addPackFinders(final AddPackFindersEvent event) {
         if (event.getPackType() == PackType.CLIENT_RESOURCES) {
@@ -238,8 +207,7 @@ public class DataGeneration {
             // Feature datapacks (things that are not enabled by default)
             registerDataPack(event, Component.literal("DS - Ancient (no crushing)"), ANCIENT_STAGE_DATAPACK_NO_CRUSHING, PackSource.FEATURE);
             registerDataPack(event, Component.literal("DS - No Penalties"), NO_PENALTIES_DATAPACK, PackSource.FEATURE);
-            // FIXME
-            //registerDataPack(event, Component.literal("DS - No Experience Conversion"), NO_EXPERIENCE_CONVERSION_DATAPACK, PackSource.FEATURE);
+            registerDataPack(event, Component.literal("DS - No Experience Conversion"), NO_EXPERIENCE_CONVERSION_DATAPACK, PackSource.FEATURE);
         }
     }
 
@@ -278,12 +246,19 @@ public class DataGeneration {
         datapack.addProvider(output -> new NoPenaltiesAbilityProvider(output, DragonAbility.REGISTRY, lookup, DragonSurvival.MODID, helper));
     }
 
-    private static void addNoExperienceConversionDatapack(final DataGenerator generator, final CompletableFuture<RegistrySetBuilder.PatchedRegistries> lookup) {
+    private static void addNoExperienceConversionDatapack(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup, final ExistingFileHelper helper) {
         DataGenerator.PackGenerator datapack = generator.getBuiltinDatapack(true, DragonSurvival.MODID, NO_EXPERIENCE_CONVERSION_DATAPACK);
         datapack.addProvider(output -> PackMetadataGenerator.forFeaturePack(output, Component.translatable(NO_EXPERIENCE_CONVERSION_DATAPACK_DESCRIPTION), FeatureFlagSet.of()));
+
+        // Only provide the abilities we need for context, otherwise it will generate data of all abilities for that datapack
+        CompletableFuture<RegistrySetBuilder.PatchedRegistries> patched = RegistryPatchGenerator
+                .createLookup(lookup, new RegistrySetBuilder()
+                        .add(DragonSpecies.REGISTRY, BuiltInDragonSpecies::registerTypes));
+
         RegistrySetBuilder builder = new RegistrySetBuilder();
-        builder.add(DragonSpecies.REGISTRY, DisableExperienceConversionDatapack::register);
-        datapack.addProvider(output -> new DatapackBuiltinEntriesProvider(output, lookup, Set.of(DragonSurvival.MODID)));
+        builder.add(DragonSpecies.REGISTRY, context -> DisableExperienceConversionDatapack.register(context, patched.join()));
+
+        datapack.addProvider(output -> new DatapackBuiltinEntriesProvider(output, lookup, builder, Set.of(DragonSurvival.MODID)));
     }
 
     private static void addUnlockWingsDatapack(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup) {
@@ -291,11 +266,12 @@ public class DataGeneration {
         datapack.addProvider(output -> PackMetadataGenerator.forFeaturePack(output, Component.translatable(UNLOCK_WINGS_DATAPACK_DESCRIPTION), FeatureFlagSet.of()));
 
         // Only provide the abilities we need for context, otherwise it will generate data of all abilities for that datapack
-        CompletableFuture<RegistrySetBuilder.PatchedRegistries> patched = RegistryPatchGenerator.createLookup(lookup, new RegistrySetBuilder().add(DragonAbility.REGISTRY, context -> {
-            CaveDragonAbilities.registerWings(context);
-            SeaDragonAbilities.registerWings(context);
-            ForestDragonAbilities.registerWings(context);
-        }));
+        CompletableFuture<RegistrySetBuilder.PatchedRegistries> patched = RegistryPatchGenerator
+                .createLookup(lookup, new RegistrySetBuilder().add(DragonAbility.REGISTRY, context -> {
+                    CaveDragonAbilities.registerWings(context);
+                    SeaDragonAbilities.registerWings(context);
+                    ForestDragonAbilities.registerWings(context);
+                }));
 
         RegistrySetBuilder builder = new RegistrySetBuilder();
         builder.add(DragonAbility.REGISTRY, context -> UnlockWingsDatapack.register(context, patched.join()));
