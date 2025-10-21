@@ -582,21 +582,7 @@ public class SeaDragonAbilities {
                 ))
         ));
 
-        context.register(SEA_WINGS, new DragonAbility(
-                PassiveActivation.DEFAULT,
-                Optional.of(new ConditionUpgrade(List.of(Condition.thisEntity(EntityCondition.flightWasGranted(true)).build()), false)),
-                // Disable when marked by the ender dragon
-                Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
-                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                        List.of(new FlightEffect(1, DragonSurvival.res("textures/ability_effect/sea_dragon_wings.png"))),
-                        TargetingMode.ALLIES_AND_SELF
-                )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
-                true,
-                new LevelBasedResource(List.of(
-                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_wings_0"), 0),
-                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_wings_1"), 1)
-                ))
-        ));
+        registerWings(context);
 
         context.register(SEA_SPIN, new DragonAbility(
                 PassiveActivation.DEFAULT,
@@ -686,6 +672,24 @@ public class SeaDragonAbilities {
                 new LevelBasedResource(List.of(
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/diver_0"), 0),
                         new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/diver_1"), 1)
+                ))
+        ));
+    }
+
+    public static void registerWings(final BootstrapContext<DragonAbility> context) {
+        context.register(SEA_WINGS, new DragonAbility(
+                PassiveActivation.DEFAULT,
+                Optional.of(new ConditionUpgrade(List.of(Condition.thisEntity(EntityCondition.flightWasGranted(true)).build()), false)),
+                // Disable when marked by the ender dragon
+                Optional.of(Condition.thisEntity(EntityCondition.isMarked(true)).build()),
+                List.of(new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                        List.of(new FlightEffect(1, DragonSurvival.res("textures/ability_effect/sea_dragon_wings.png"))),
+                        TargetingMode.ALLIES_AND_SELF
+                )), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
+                true,
+                new LevelBasedResource(List.of(
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_wings_0"), 0),
+                        new LevelBasedResource.Entry(DragonSurvival.res("abilities/sea/sea_wings_1"), 1)
                 ))
         ));
     }

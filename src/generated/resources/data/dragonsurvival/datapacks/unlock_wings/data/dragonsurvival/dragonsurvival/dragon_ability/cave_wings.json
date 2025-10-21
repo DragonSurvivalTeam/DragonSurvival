@@ -22,12 +22,12 @@
   "icon": {
     "texture_entries": [
       {
-        "from_level": 1,
-        "texture_resource": "dragonsurvival:abilities/cave/cave_wings_1"
-      },
-      {
         "from_level": 0,
         "texture_resource": "dragonsurvival:abilities/cave/cave_wings_0"
+      },
+      {
+        "from_level": 1,
+        "texture_resource": "dragonsurvival:abilities/cave/cave_wings_1"
       }
     ]
   }

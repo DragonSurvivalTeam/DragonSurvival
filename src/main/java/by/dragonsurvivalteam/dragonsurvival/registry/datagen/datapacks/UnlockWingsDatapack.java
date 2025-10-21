@@ -5,16 +5,16 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.ForestDra
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.abilities.SeaDragonAbilities;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.data.worldgen.BootstrapContext;
 
 import java.util.Optional;
 
 public class UnlockWingsDatapack {
-    public static void register(final BootstrapContext<DragonAbility> context, final HolderLookup.RegistryLookup<DragonAbility> registryLookup) {
-        handleWings(context, registryLookup.getOrThrow(CaveDragonAbilities.CAVE_WINGS));
-        handleWings(context, registryLookup.getOrThrow(ForestDragonAbilities.FOREST_WINGS));
-        handleWings(context, registryLookup.getOrThrow(SeaDragonAbilities.SEA_WINGS));
+    public static void register(final BootstrapContext<DragonAbility> context, final RegistrySetBuilder.PatchedRegistries patched) {
+        handleWings(context, patched.patches().holderOrThrow(CaveDragonAbilities.CAVE_WINGS));
+        handleWings(context, patched.patches().holderOrThrow(ForestDragonAbilities.FOREST_WINGS));
+        handleWings(context, patched.patches().holderOrThrow(SeaDragonAbilities.SEA_WINGS));
     }
 
     private static void handleWings(final BootstrapContext<DragonAbility> context, final Holder<DragonAbility> wings) {
