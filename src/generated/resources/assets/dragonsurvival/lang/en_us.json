@@ -1059,6 +1059,7 @@
   "dragonsurvival.gui.dragon_editor.save": "Save to current slot",
   "dragonsurvival.gui.dragon_editor.save_slot_info": "■ You can select any §6slot§r here and click the §6load/save button§r to save your current settings to that slot or load the settings from that slot.\n■ Your exports are stored here: %s",
   "dragonsurvival.gui.dragon_editor.show_ui": "Show/Hide UI",
+  "dragonsurvival.gui.dragon_editor.slot_loaded": "Slot loaded",
   "dragonsurvival.gui.dragon_editor.slot_saved": "Slot saved",
   "dragonsurvival.gui.dragon_editor.undo": "Undo changes",
   "dragonsurvival.gui.dragon_inventory.sort_inventory": "Sort inventory",
