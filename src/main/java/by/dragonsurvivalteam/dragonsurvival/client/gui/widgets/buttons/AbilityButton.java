@@ -37,24 +37,25 @@ public class AbilityButton extends ExtendedButton {
     private @Nullable LevelButton rightLevelButton;
     private Vec3 offset = Vec3.ZERO;
 
+    private final boolean isHotbar;
+
     private float scale;
     private int slot = MagicData.NO_SLOT;
     private int scrollAmount;
-    private boolean isHotbar;
     private boolean isDragging;
     private boolean isInteractable = true;
 
-    public AbilityButton(int x, int y, @Nullable final DragonAbilityInstance ability, final DragonAbilityScreen screen, float scale) {
+    public AbilityButton(int x, int y, @Nullable final DragonAbilityInstance ability, final DragonAbilityScreen screen, float scale, boolean isHotbar) {
         // Don't actually change the scale of the button itself based on the scale value; this is because we only rescale the button when it is
         // on the sides of the column, in which case it can't be interacted with anyway. Minecraft's GUI doesn't offer a clean way to adjust
         // the button's bounds dynamically, so this is the best we can do.
         super(x, y, 34, 34, Component.empty(), button -> { /* Nothing to do */ }, DEFAULT_NARRATION);
         this.screen = screen;
         this.ability = ability;
-        this.isHotbar = false;
+        this.isHotbar = isHotbar;
         this.scale = scale;
 
-        if (ability == null || UpgradeType.IS_MANUAL.negate().test(ability.value().upgrade())) {
+        if (isHotbar || ability == null || UpgradeType.IS_MANUAL.negate().test(ability.value().upgrade())) {
             return;
         }
 
@@ -64,18 +65,17 @@ public class AbilityButton extends ExtendedButton {
         ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(rightLevelButton);
     }
 
+    public AbilityButton(int x, int y, @Nullable final DragonAbilityInstance ability, final DragonAbilityScreen screen, float scale) {
+        this(x, y, ability, screen, scale, false);
+    }
+
     public AbilityButton(int x, int y, @Nullable final DragonAbilityInstance ability, final DragonAbilityScreen screen, boolean isHotbar, int slot) {
-        this(x, y, ability, screen);
-        this.isHotbar = isHotbar;
+        this(x, y, ability, screen, 1, isHotbar);
         this.slot = slot;
 
         //noinspection DataFlowIssue -> player is present
         MagicData data = MagicData.getData(Minecraft.getInstance().player);
         this.ability = data.fromSlot(slot);
-    }
-
-    public AbilityButton(int x, int y, @Nullable final DragonAbilityInstance ability, final DragonAbilityScreen screen) {
-        this(x, y, ability, screen, 1.0f);
     }
 
     public void setOffset(Vec3 offset) {
