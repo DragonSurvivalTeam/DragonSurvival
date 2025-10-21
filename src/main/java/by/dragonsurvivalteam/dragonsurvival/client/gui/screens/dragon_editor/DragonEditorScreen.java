@@ -132,6 +132,9 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     @Translation(comments = "Slot saved")
     private static final String SLOT_SAVED = Translation.Type.GUI.wrap("dragon_editor.slot_saved");
 
+    @Translation(comments = "Slot loaded")
+    private static final String SLOT_LOADED = Translation.Type.GUI.wrap("dragon_editor.slot_loaded");
+
     public static final DragonStateHandler HANDLER = new DragonStateHandler();
 
     private static final ResourceLocation BACKGROUND_TEXTURE = ResourceLocation.withDefaultNamespace("textures/block/black_concrete.png");
@@ -218,7 +221,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
     private final List<ScrollableComponent> scrollableComponents = new ArrayList<>();
     private final Map<SkinLayer, EditorPartComponent> partComponents = new HashMap<>();
 
-    private float tick;
+    private double tick;
     private int curAnimation;
     private int selectedDragonStage;
     private boolean hasInit;
@@ -231,6 +234,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
         INVALID_FOR_MODEL,
         NO_DATA,
         SLOT_SAVED,
+        SLOT_LOADED,
         NONE
     }
 
@@ -240,11 +244,12 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             case INVALID_FOR_MODEL -> Component.translatable(INVALID_FOR_MODEL);
             case NO_DATA -> Component.translatable(NO_DATA);
             case SLOT_SAVED -> Component.translatable(SLOT_SAVED);
+            case SLOT_LOADED -> Component.translatable(SLOT_LOADED);
             default -> Component.empty();
         };
     }
 
-    private float tickWhenSlotDisplayMessageSet = -1;
+    private double tickWhenSlotDisplayMessageSet = -1;
     private SlotDisplayMessage slotDisplayMessage = SlotDisplayMessage.NONE;
 
     public DragonEditorScreen(Holder<DragonSpecies> species, List<UnlockableBehavior.BodyEntry> unlockedBodies, boolean fromAltar) {
@@ -529,10 +534,7 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
             init();
         }
 
-        tick += partialTick;
-        if (tick >= 60 * 20) {
-            tick = 0;
-        }
+        tick += Minecraft.getInstance().getTimer().getRealtimeDeltaTicks();;
 
         if (showUi) {
             dragonRender.x = width / 2 - 70;
@@ -552,13 +554,16 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
 
         if (slotDisplayMessage != SlotDisplayMessage.NONE) {
             int color;
-            if (slotDisplayMessage == SlotDisplayMessage.SLOT_SAVED) {
+            if (slotDisplayMessage == SlotDisplayMessage.SLOT_SAVED || slotDisplayMessage == SlotDisplayMessage.SLOT_LOADED) {
                 color = DyeColor.GREEN.getTextColor();
             } else {
                 color = DyeColor.RED.getTextColor();
             }
-            if (tickWhenSlotDisplayMessageSet + 200 - tick > 0) {
+            if (tickWhenSlotDisplayMessageSet + 100 - tick > 0) {
+                float alpha = (float) Math.min(1.0f - (tick - tickWhenSlotDisplayMessageSet - 50.f) / 50.f, 1.0f);
+                graphics.setColor(1, 1, 1, alpha);
                 TextRenderUtil.drawCenteredScaledText(graphics, width / 2, height / 2 + 20, 0.5f, loadSlotDisplayMessage(slotDisplayMessage).getString(), color);
+                graphics.setColor(1, 1, 1, 1);
             } else {
                 slotDisplayMessage = SlotDisplayMessage.NONE;
             }
@@ -994,6 +999,8 @@ public class DragonEditorScreen extends Screen implements ConfirmableScreen {
                 return;
             }
 
+            slotDisplayMessage = SlotDisplayMessage.SLOT_LOADED;
+            tickWhenSlotDisplayMessageSet = tick;
             actionHistory.add(new EditorAction<>(loadStageCustomizationAction, savedCustomization.getCustomization()));
         });
         loadSlotButton.setTooltip(Tooltip.create(Component.translatable(LOAD)));
