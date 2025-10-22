@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonAbilityHolder;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncAbilityLevel;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncMagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSSounds;
@@ -186,13 +187,12 @@ public class MagicData implements INBTSerializable<CompoundTag> {
                     // There are too many ways the experience level field could be modified
                     upgrade.attempt(serverPlayer, ability, experienceLevels);
 
-                    // Needs more logic since the amount of experience points are not part of the input for the upgrade attempt
+                    // The steps handled by attempt need to be done manually here (+ no support for downgrades)
+                    // Since the experience points are not part of the input for the up-/downgrade attempt
                     if (upgrade instanceof ExperiencePointsUpgrade experiencePointsUpgrade && ability.level() < ability.getMaxLevel()) {
-                        int required = experiencePointsUpgrade.getExperience(serverPlayer, ability, ExperiencePointsUpgrade.Type.UPGRADE);
-
-                        if (required == 0) {
-                            // There is no logic for any automatic downgrade
+                        if (experiencePointsUpgrade.getExperience(serverPlayer, ability, ExperiencePointsUpgrade.Type.UPGRADE) == 0) {
                             experiencePointsUpgrade.apply(serverPlayer, ability, ExperiencePointsUpgrade.Type.UPGRADE);
+                            PacketDistributor.sendToPlayer(serverPlayer, new SyncAbilityLevel(ability.key(), ability.level()));
                         }
                     }
                 });
