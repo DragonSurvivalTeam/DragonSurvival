@@ -190,7 +190,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
                     // The steps handled by attempt need to be done manually here (+ no support for downgrades)
                     // Since the experience points are not part of the input for the up-/downgrade attempt
                     if (upgrade instanceof ExperiencePointsUpgrade experiencePointsUpgrade && ability.level() < ability.getMaxLevel()) {
-                        if (experiencePointsUpgrade.getExperience(serverPlayer, ability, ExperiencePointsUpgrade.Type.UPGRADE) == 0) {
+                        if (experiencePointsUpgrade.getExperience(ability, ExperiencePointsUpgrade.Type.UPGRADE) == 0) {
                             experiencePointsUpgrade.apply(serverPlayer, ability, ExperiencePointsUpgrade.Type.UPGRADE);
                             PacketDistributor.sendToPlayer(serverPlayer, new SyncAbilityLevel(ability.key(), ability.level()));
                         }
@@ -516,23 +516,6 @@ public class MagicData implements INBTSerializable<CompoundTag> {
     public List<DragonAbilityInstance> filterPassiveByTrigger(final Predicate<ActivationTrigger> predicate) {
         // TODO :: cache the passive abilities
         return getAbilities().values().stream().filter(instance -> instance.value().activation() instanceof PassiveActivation passive && predicate.test(passive.trigger())).collect(Collectors.toList());
-    }
-
-    /** Returns the amount of experience gained / lost when down- or upgrading the ability */
-    public int getCost(final Player dragon, final ResourceKey<DragonAbility> key, ExperiencePointsUpgrade.Type type) {
-        DragonAbilityInstance ability = getAbility(key);
-
-        if (ability == null) {
-            return 0;
-        }
-
-        return ability.value().upgrade().map(upgrade -> {
-            if (upgrade instanceof ExperiencePointsUpgrade experiencePointsUpgrade) {
-                return experiencePointsUpgrade.getExperience(dragon, ability, type);
-            }
-
-            return 0;
-        }).orElse(0);
     }
 
     public void moveAbilityToSlot(final ResourceKey<DragonAbility> key, int newSlot) {

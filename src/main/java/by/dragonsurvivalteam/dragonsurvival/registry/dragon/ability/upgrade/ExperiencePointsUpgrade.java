@@ -32,10 +32,12 @@ public record ExperiencePointsUpgrade(int maxLevel, LevelBasedValue experienceCo
             return false;
         }
 
-        int experiencePoints = getExperience(dragon, ability, type);
+        if (!dragon.hasInfiniteMaterials()) {
+            int experiencePoints = getExperience(ability, type);
 
-        if (experiencePoints != 0) {
-            dragon.giveExperiencePoints(experiencePoints);
+            if (experiencePoints != 0) {
+                dragon.giveExperiencePoints(experiencePoints);
+            }
         }
 
         ability.setLevel(ability.level() + type.step());
@@ -50,19 +52,25 @@ public record ExperiencePointsUpgrade(int maxLevel, LevelBasedValue experienceCo
 
     @Override
     public boolean canUpgrade(final ServerPlayer dragon, final DragonAbilityInstance ability) {
-        if (!UpgradeType.super.canUpgrade(dragon, ability)) {
-            return false;
-        }
+        return canModifyLevel(dragon, ability, Type.UPGRADE);
+    }
 
-        return ExperienceUtils.getTotalExperience(dragon) >= Math.abs(getExperience(dragon, ability, Type.UPGRADE));
+    @Override
+    public boolean canDowngrade(final ServerPlayer dragon, final DragonAbilityInstance ability) {
+        return canModifyLevel(dragon, ability, Type.DOWNGRADE);
+    }
+
+    public boolean canModifyLevel(final Player player, final DragonAbilityInstance ability, final Type type) {
+        return switch (type) {
+            case UPGRADE -> ability.level() < maxLevel() && (player.hasInfiniteMaterials() || ExperienceUtils.getTotalExperience(player) >= Math.abs(getExperience(ability, type)));
+            // If upgrading from the previous level to this one costs no experience
+            // It will automatically upgrade - therefor it makes no sense to be able to downgrade
+            case DOWNGRADE -> ability.level() > minLevel() && getExperience(ability, type) != 0;
+        };
     }
 
     /** Returns the experience that will be either taken ({@link Type#UPGRADE}) (i.e. negative) or granted ({@link Type#DOWNGRADE}) */
-    public int getExperience(final Player dragon, final DragonAbilityInstance ability, final Type type) {
-        if (dragon.hasInfiniteMaterials()) {
-            return 0;
-        }
-
+    public int getExperience(final DragonAbilityInstance ability, final Type type) {
         int newLevel = ability.level() + type.step();
         // Going from 1 to 0 means we need to refund 0 to 1
         int experience = (int) experienceCost.calculate(type == Type.UPGRADE ? newLevel : ability.level());
