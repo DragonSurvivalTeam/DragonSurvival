@@ -185,7 +185,18 @@ public class MagicData implements INBTSerializable<CompoundTag> {
                     upgrade.attempt(serverPlayer, ability, Items.AIR);
                     // There are too many ways the experience level field could be modified
                     upgrade.attempt(serverPlayer, ability, experienceLevels);
+
+                    // Needs more logic since the amount of experience points are not part of the input for the upgrade attempt
+                    if (upgrade instanceof ExperiencePointsUpgrade experiencePointsUpgrade && ability.level() < ability.getMaxLevel()) {
+                        int required = experiencePointsUpgrade.getExperience(serverPlayer, ability, ExperiencePointsUpgrade.Type.UPGRADE);
+
+                        if (required == 0) {
+                            // There is no logic for any automatic downgrade
+                            experiencePointsUpgrade.apply(serverPlayer, ability, ExperiencePointsUpgrade.Type.UPGRADE);
+                        }
+                    }
                 });
+
                 DSAdvancementTriggers.UPGRADE_ABILITY.get().trigger(serverPlayer, ability.key(), ability.level());
             }
 

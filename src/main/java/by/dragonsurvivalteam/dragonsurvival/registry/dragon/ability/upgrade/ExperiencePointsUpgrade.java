@@ -32,7 +32,12 @@ public record ExperiencePointsUpgrade(int maxLevel, LevelBasedValue experienceCo
             return false;
         }
 
-        dragon.giveExperiencePoints(getExperience(dragon, ability, type));
+        int experiencePoints = getExperience(dragon, ability, type);
+
+        if (experiencePoints != 0) {
+            dragon.giveExperiencePoints(experiencePoints);
+        }
+
         ability.setLevel(ability.level() + type.step());
         return true;
     }
