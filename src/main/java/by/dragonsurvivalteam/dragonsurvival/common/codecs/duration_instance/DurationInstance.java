@@ -47,8 +47,29 @@ public abstract class DurationInstance<B extends DurationInstanceBase<?, ?>> imp
         );
     }
 
+    /**
+     * This method will return 'true' when run on the server-side and the instance is supposed to be removed </br>
+     * (e.g. when the duration reaches 0 or the removal condition matches) </br> </br>
+     *
+     * The client will always return 'false' since the server is handling the removal and informs the client through packets </br>
+     * (Partly because data we need to check (abilities, i.e. magic data, of other players) is not synchronized between players
+     */
     @Override
     public boolean tick(final Entity storageHolder) {
+        if (currentDuration != INFINITE_DURATION) {
+            currentDuration--;
+
+            if (storageHolder.level().isClientSide()) {
+                return false;
+            } else if (currentDuration == 0) {
+                return true;
+            }
+        }
+
+        if (storageHolder.level().isClientSide()) {
+            return false;
+        }
+
         // TODO :: check this differently for active abilities?
         //  since for them it would just always remove the the instance after the cast has been completed
         if (commonData.removeAutomatically() && commonData.source().isPresent()) {
@@ -65,10 +86,11 @@ public abstract class DurationInstance<B extends DurationInstanceBase<?, ?>> imp
             }
 
             if (commonData.ability().isPresent()) {
-                // TODO :: let the server deal with removal of entries through this tick method?
-                //  (avoids the need to sync magic data to the client - removal gets synchronized anyway)
                 MagicData magic = MagicData.getData(source);
                 DragonAbilityInstance ability = magic.getAbility(commonData.ability().get());
+
+                // TODO :: find the related action container and check its distance for auto removal
+                //  or add a new distance based removal field - checking the actual area again would be a bad idea
 
                 if (ability == null || !ability.isApplyingEffects()) {
                     return true;
@@ -84,16 +106,7 @@ public abstract class DurationInstance<B extends DurationInstanceBase<?, ?>> imp
             }
         }
 
-        if (storageHolder.level() instanceof ServerLevel serverLevel && earlyRemovalCondition().map(condition -> condition.test(Condition.entityContext(serverLevel, storageHolder))).orElse(false)) {
-            return true;
-        }
-
-        if (currentDuration == INFINITE_DURATION) {
-            return false;
-        }
-
-        currentDuration--;
-        return currentDuration == 0;
+        return storageHolder.level() instanceof ServerLevel serverLevel && earlyRemovalCondition().map(condition -> condition.test(Condition.entityContext(serverLevel, storageHolder))).orElse(false);
     }
 
     public B baseData() {
