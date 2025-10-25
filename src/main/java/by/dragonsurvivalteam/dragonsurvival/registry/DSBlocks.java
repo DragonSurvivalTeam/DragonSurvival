@@ -746,6 +746,21 @@ public class DSBlocks {
             ModCheck.CREATE
     );
 
+    @Translation(type = Translation.Type.BLOCK, comments = "Bee Honey Treasure")
+    public static final @Nullable DeferredHolder<Block, TreasureBlock> BEE_HONEY_TREASURE = registerModCheck(
+            "bee_honey_treasure",
+            () -> new TreasureBlock(
+                    FastColor.ARGB32.color(255, 250, 201, 48),
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.GOLD)
+                            .noOcclusion()
+                            .sound(SoundType.HONEY_BLOCK)
+                            .strength(0.5F),
+                    ModCheck.BEE_ADDON
+            ),
+            ModCheck.BEE_ADDON
+    );
+
     @Translation(type = Translation.Type.BLOCK, comments = "Ruby Dragon Treasure")
     public static final @Nullable DeferredHolder<Block, TreasureBlock> RUBY_DRAGON_TREASURE = registerModCheck(
             "ruby_dragon_treasure",

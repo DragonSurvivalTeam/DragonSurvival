@@ -15,6 +15,7 @@ public class ModCheck {
     public static final String SOPHISTICATED_BACKPACKS = "sophisticatedbackpacks";
     public static final String CURIOS = "curios";
     public static final String CREATE = "create";
+    public static final String BEE_ADDON = "bee_queen_ds";
     public static final String FREECAM = "freecam";
     public static final String SILENTGEMS = "silentgems";
     public static final String EMI = "emi";

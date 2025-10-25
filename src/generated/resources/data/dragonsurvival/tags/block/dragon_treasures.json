@@ -11,6 +11,10 @@
       "required": false
     },
     {
+      "id": "dragonsurvival:bee_honey_treasure",
+      "required": false
+    },
+    {
       "id": "dragonsurvival:ruby_dragon_treasure",
       "required": false
     },

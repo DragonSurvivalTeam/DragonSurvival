@@ -1,4 +1,4 @@
-// 1.21.1	2025-03-29T12:59:12.4157176	Dragon Survival Item models
+// 1.21.1	2025-10-23T13:55:35.8234775	Dragon Survival Item models
 a66a6309dc6b29797f46e2ca4ab14ef3a245a65f assets/dragonsurvival/models/item/acacia_dragon_altar.json
 3103bf7bf2acab8c6053dd037bfd4f26275aad26 assets/dragonsurvival/models/item/acacia_dragon_door.json
 4c7b8102022c425a86140eada246eaed8be93446 assets/dragonsurvival/models/item/activated_dragon_beacon.json
@@ -8,6 +8,7 @@ a66a6309dc6b29797f46e2ca4ab14ef3a245a65f assets/dragonsurvival/models/item/acaci
 3b0eada88001c9608b6452c5c2d09bb179b18fca assets/dragonsurvival/models/item/ammolite_dragon_treasure.json
 a07f10244a13f07249c8747c6a558d08ce3cc67a assets/dragonsurvival/models/item/bamboo_dragon_altar.json
 2b26ef5b4e3cf2800edc001ca1541521c3083962 assets/dragonsurvival/models/item/beacon_activator.json
+106c9ba4396175711f483e6761f6dba7898e9375 assets/dragonsurvival/models/item/bee_honey_treasure.json
 663094846860eccce29e3b2875af25cb0cdd7cbe assets/dragonsurvival/models/item/birch_dragon_altar.json
 10c84e2378fad80fe418911713d27f053a26cb8a assets/dragonsurvival/models/item/birch_dragon_door.json
 e988c0a229815c9ea2f0c135f770d4551cbc5bb8 assets/dragonsurvival/models/item/blackstone_dragon_altar.json

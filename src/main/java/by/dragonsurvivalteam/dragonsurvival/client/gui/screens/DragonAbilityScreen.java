@@ -48,8 +48,8 @@ public class DragonAbilityScreen extends Screen {
 
     @Translation(comments = {
             "■ §cUSE THE MOUSE WHEEL TO SCROLL THROUGH THE SKILL COLUMNS.",
-            "§f■ §dAbility assignment§r§f - drag and drop §6Active skills§r§f to the §9hotbar§r§f.",
-            "§f- §9Hotbar§r§8 is used to quickly access your active skills.",
+            "§f■ §dAbility assignment§r§f - drag and drop §6Active skills§r§f from right to the §9left column§r§f.",
+            "§f- §9Left Column§r§8 is used to quickly access your active skills via magic hotbar.",
             "§f- §8Check in-game Minecraft §r§9control§r§8 settings!"
     })
     private static final String HELP_ABILITY_ASSIGNMENT = Translation.Type.GUI.wrap("help.ability_assignment");
