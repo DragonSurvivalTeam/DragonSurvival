@@ -6,6 +6,14 @@
     {
       "id": "cobblemon:pokemon",
       "required": false
+    },
+    {
+      "id": "bee_queen_ds:bee_guard",
+      "required": false
+    },
+    {
+      "id": "bee_queen_ds:tamed_bee",
+      "required": false
     }
   ]
 }

@@ -74,7 +74,9 @@ public class DragonAltarScreen extends Screen implements ConfirmableScreen {
     @Translation(comments = {
             "§6■ Welcome to Dragon Survival!§r",
             "■ You can choose which §6species§r§r you want to become. You can change your selection using the Altar, but you may lose progress.",
-            "■§7 Don't forget to read patch notes and delete old configs if you update our mod to avoid bugs! Enjoy the game! :3"
+            "■§7 Don't forget to read patch notes if you update our mod to avoid bugs!",
+            "■§7 If you want to play as other species (griffins, eastern dragons, bees, and others), install add-ons or create them yourself via datapacks!",
+            "■§7 Enjoy the game! :3"
     })
     private static final String HELP = Translation.Type.GUI.wrap("altar.help");
 
