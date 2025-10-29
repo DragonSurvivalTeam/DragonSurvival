@@ -343,8 +343,6 @@ public class DragonAbilityInstance {
 
         if (isActive && !isEnabled()) {
             setActive(player, false);
-
-
         } else if (!isActive && isEnabled() && isPassive()) {
             // Passive abilities need to be re-activated automatically
             setActive(player, true);
