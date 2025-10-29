@@ -46,6 +46,7 @@ public class DragonAbilityInstance {
     public static final Codec<DragonAbilityInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             DragonAbility.CODEC.fieldOf("ability").forGetter(DragonAbilityInstance::ability),
             Codec.INT.fieldOf("level").forGetter(DragonAbilityInstance::level),
+            Codec.INT.fieldOf("cooldown").forGetter(DragonAbilityInstance::cooldown),
             Codec.BOOL.optionalFieldOf("is_manually_disabled", false).forGetter(ability -> ability.isManuallyDisabled)
     ).apply(instance, DragonAbilityInstance::new));
 
@@ -62,12 +63,13 @@ public class DragonAbilityInstance {
     private int cooldown;
 
     public DragonAbilityInstance(final Holder<DragonAbility> ability, int level) {
-        this(ability, level, false);
+        this(ability, level, 0, false);
     }
 
-    public DragonAbilityInstance(final Holder<DragonAbility> ability, int level, boolean isManuallyDisabled) {
+    public DragonAbilityInstance(final Holder<DragonAbility> ability, int level, int cooldown, boolean isManuallyDisabled) {
         this.ability = ability;
         this.level = level;
+        this.cooldown = cooldown;
         this.isManuallyDisabled = isManuallyDisabled;
 
         if (isEnabled() && isPassive()) {
@@ -253,15 +255,15 @@ public class DragonAbilityInstance {
     public void release(final Player dragon) {
         currentTick = 0;
 
-        if (dragon.hasInfiniteMaterials() && !(this.isPassive() && this.getCooldown() > 0)) {
+        if (dragon.hasInfiniteMaterials() && !(this.isPassive() && this.cooldown() > 0)) {
             cooldown = NO_COOLDOWN;
         } else {
             cooldown = ability.value().activation().getCooldown(level);
         }
     }
 
-    public void tickCooldown(final Player entity) { // TODO :: sync cooldown to client (maybe only relevant for passive?)
-        if (entity.hasInfiniteMaterials() && !(this.isPassive() && this.getCooldown() > 0)) {
+    public void tickCooldown(final Player entity) { // TODO :: sync cooldown to client (maybe only relevant for passive?) (for visualization?)
+        if (entity.hasInfiniteMaterials() && !(this.isPassive() && this.cooldown() > 0)) {
             cooldown = NO_COOLDOWN;
         } else {
             cooldown = Math.max(NO_COOLDOWN, cooldown - 1);
@@ -282,10 +284,6 @@ public class DragonAbilityInstance {
 
     public boolean isUsable() {
         return isEnabled() && level > 0;
-    }
-
-    public int getCooldown() {
-        return cooldown;
     }
 
     public DragonAbility value() {
@@ -320,6 +318,11 @@ public class DragonAbilityInstance {
     /** Returns the field in an unmodified way (also used by the codec) */
     public int level() {
         return level;
+    }
+
+    /** Returns the field in an unmodified way (also used by the codec) */
+    public int cooldown() {
+        return cooldown;
     }
 
     /**

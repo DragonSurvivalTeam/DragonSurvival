@@ -303,7 +303,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         }
 
         if (!checkCast(player, instance)) {
-            int cooldown = instance.getCooldown();
+            int cooldown = instance.cooldown();
 
             if (!errorMessageSent && player.level().isClientSide() && cooldown != DragonAbilityInstance.NO_COOLDOWN) {
                 errorMessageSent = true;

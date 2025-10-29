@@ -299,7 +299,7 @@ public class MagicHUD {
                         graphics.blitSprite(ability.getIcon(), posX + x * sizeX + 3, posY + 1, 0, 16, 16);
 
                         float skillCooldown = ability.value().activation().getCooldown(ability.level());
-                        float currentCooldown = ability.getCooldown() - Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
+                        float currentCooldown = ability.cooldown() - Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
 
                         if (skillCooldown > 0 && currentCooldown > 0 && skillCooldown != currentCooldown) {
                             float cooldown = Mth.clamp(currentCooldown / skillCooldown, 0, 1);
