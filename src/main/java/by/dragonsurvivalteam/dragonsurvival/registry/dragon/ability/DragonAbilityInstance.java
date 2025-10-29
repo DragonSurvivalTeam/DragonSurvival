@@ -92,6 +92,8 @@ public class DragonAbilityInstance {
             if (isAutomaticallyDisabled && !this.isAutomaticallyDisabled) {
                 setDisabled(serverPlayer, true, false);
                 PacketDistributor.sendToPlayer(serverPlayer, new SyncDisableAbility(ability.getKey(), true, false));
+
+                stopCasting(dragon, /* Client will already be notified by the packet above */ false);
             } else if (!isAutomaticallyDisabled && (this.isAutomaticallyDisabled || /* Need to re-activate passive abilities */ isPassive() && !isActive && !isManuallyDisabled)) {
                 setDisabled(serverPlayer, false, false);
                 PacketDistributor.sendToPlayer(serverPlayer, new SyncDisableAbility(ability.getKey(), false, false));
@@ -341,6 +343,8 @@ public class DragonAbilityInstance {
 
         if (isActive && !isEnabled()) {
             setActive(player, false);
+
+
         } else if (!isActive && isEnabled() && isPassive()) {
             // Passive abilities need to be re-activated automatically
             setActive(player, true);
