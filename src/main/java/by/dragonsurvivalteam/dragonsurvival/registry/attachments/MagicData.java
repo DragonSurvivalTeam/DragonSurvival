@@ -345,7 +345,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
             instance.setActive(player, false);
         }
 
-        if (instance == null || !instance.isPassive()) {
+        if (instance == null || instance == getCurrentlyCasting()) {
             isCasting = false;
         }
     }
