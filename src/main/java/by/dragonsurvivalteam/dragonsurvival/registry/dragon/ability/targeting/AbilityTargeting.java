@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.MiscCodecs;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.block_effects.AbilityBlockEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.AbilityEntityEffect;
@@ -23,6 +24,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.conditions.ConditionalOps;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
@@ -61,8 +63,8 @@ public interface AbilityTargeting {
 
     record BlockTargeting(Optional<LootItemCondition> targetConditions, List<AbilityBlockEffect> effects) {
         public static final Codec<BlockTargeting> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                LootItemCondition.DIRECT_CODEC.optionalFieldOf("target_conditions").forGetter(BlockTargeting::targetConditions),
-                AbilityBlockEffect.CODEC.listOf().fieldOf("block_effect").forGetter(BlockTargeting::effects)
+                MiscCodecs.conditional(LootItemCondition.DIRECT_CODEC).optionalFieldOf("target_conditions").forGetter(BlockTargeting::targetConditions),
+                ConditionalOps.decodeListWithElementConditions(AbilityBlockEffect.CODEC).fieldOf("block_effect").forGetter(BlockTargeting::effects)
         ).apply(instance, BlockTargeting::new));
 
         public boolean matches(final ServerPlayer dragon, final BlockPos position) {
@@ -72,8 +74,8 @@ public interface AbilityTargeting {
 
     record EntityTargeting(Optional<LootItemCondition> targetConditions, List<AbilityEntityEffect> effects, TargetingMode targetingMode) {
         public static final Codec<EntityTargeting> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                LootItemCondition.DIRECT_CODEC.optionalFieldOf("target_conditions").forGetter(EntityTargeting::targetConditions),
-                AbilityEntityEffect.CODEC.listOf().fieldOf("entity_effect").forGetter(EntityTargeting::effects),
+                MiscCodecs.conditional(LootItemCondition.DIRECT_CODEC).optionalFieldOf("target_conditions").forGetter(EntityTargeting::targetConditions),
+                ConditionalOps.decodeListWithElementConditions(AbilityEntityEffect.CODEC).fieldOf("entity_effect").forGetter(EntityTargeting::effects),
                 TargetingMode.CODEC.fieldOf("targeting_mode").forGetter(EntityTargeting::targetingMode)
         ).apply(instance, EntityTargeting::new));
 

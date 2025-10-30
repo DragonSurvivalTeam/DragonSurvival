@@ -10,9 +10,11 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.conditions.ConditionalOps;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 public class MiscCodecs {
     public static <E extends Enum<E>> Codec<E> enumCodec(Class<E> enumType) {
@@ -48,6 +50,18 @@ public class MiscCodecs {
             buffer.writeFloat(input.y);
         }
     };
+
+    public static <T> Codec<T> optionalCodec(final Codec<Optional<T>> codec) {
+        return codec.xmap(optional -> optional.orElse(null), Optional::ofNullable);
+    }
+
+    /**
+     * Allows specifying {@link com.mojang.serialization.Codec#optionalField(String, com.mojang.serialization.Codec, boolean)}}
+     * when working with conditional codecs, without having to work with 'Optional&lt;Optional&lt;Something&gt;&gt;'
+     **/
+    public static <T> Codec<T> conditional(final Codec<T> codec) {
+        return optionalCodec(ConditionalOps.createConditionalCodec(codec));
+    }
 
     public static Codec<MinMaxBounds.Doubles> percentageBounds() {
         return MinMaxBounds.Doubles.CODEC.validate(value -> {
