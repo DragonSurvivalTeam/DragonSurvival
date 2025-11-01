@@ -485,6 +485,8 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
         int slot = 0;
 
+        getAbilities().clear();
+
         for (Holder<DragonAbility> ability : currentSpecies.value().abilities()) {
             UpgradeType<?> upgrade = ability.value().upgrade().orElse(null);
             DragonAbilityInstance instance;
