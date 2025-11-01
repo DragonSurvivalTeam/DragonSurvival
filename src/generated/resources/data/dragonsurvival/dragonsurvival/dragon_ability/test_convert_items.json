@@ -1,0 +1,79 @@
+{
+  "actions": [
+    {
+      "target_selection": {
+        "applied_effects": {
+          "entity_effect": [
+            {
+              "effect_type": "dragonsurvival:item_conversion",
+              "item_conversions": [
+                {
+                  "item_predicate": {
+                    "items": "minecraft:iron_ingot"
+                  },
+                  "items_to": [
+                    {
+                      "conversion_rate": 12,
+                      "item": "minecraft:gold_ingot",
+                      "weight": 1
+                    }
+                  ]
+                }
+              ],
+              "probability": 1.0
+            }
+          ],
+          "targeting_mode": "items"
+        },
+        "radius": 5.0,
+        "target_type": "dragonsurvival:area"
+      }
+    }
+  ],
+  "activation": {
+    "activation_type": "dragonsurvival:simple",
+    "animations": {
+      "end": {
+        "animation_key": "magic_alt",
+        "layer": "BASE",
+        "locks_neck": false,
+        "locks_tail": false
+      },
+      "start_and_charging": {
+        "animation_key": "cast_magic_alt",
+        "layer": "BASE",
+        "locks_neck": false,
+        "locks_tail": false,
+        "transition_length": 5
+      }
+    },
+    "cast_time": 15.0,
+    "cooldown": 100.0,
+    "initial_mana_cost": 1.0
+  },
+  "icon": {
+    "texture_entries": [
+      {
+        "from_level": 0,
+        "texture_resource": "dragonsurvival:test"
+      }
+    ]
+  },
+  "upgrade": {
+    "level_requirement": {
+      "type": "minecraft:lookup",
+      "fallback": {
+        "type": "minecraft:linear",
+        "base": 15.0,
+        "per_level_above_first": 15.0
+      },
+      "values": [
+        12.0,
+        24.0,
+        36.0
+      ]
+    },
+    "maximum_level": 3,
+    "upgrade_type": "dragonsurvival:experience_levels"
+  }
+}

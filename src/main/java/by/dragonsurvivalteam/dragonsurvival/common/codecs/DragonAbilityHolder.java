@@ -11,18 +11,25 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import java.util.Optional;
 
-public record DragonAbilityHolder(HolderSet<DragonAbility> abilities, Optional<HolderSet<DragonSpecies>> applicableSpecies, boolean isRemoval) {
+public record DragonAbilityHolder(HolderSet<DragonAbility> abilities, Optional<LootItemCondition> conditions, Optional<HolderSet<DragonSpecies>> applicableSpecies, boolean isRemoval) {
     public static final Codec<DragonAbilityHolder> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             RegistryCodecs.homogeneousList(DragonAbility.REGISTRY).fieldOf("abilities").forGetter(DragonAbilityHolder::abilities),
+            MiscCodecs.conditional(LootItemCondition.DIRECT_CODEC).optionalFieldOf("conditions").forGetter(DragonAbilityHolder::conditions),
+            // FIXME 1.22 :: remove this field, since the loot item condition can check this as well
             RegistryCodecs.homogeneousList(DragonSpecies.REGISTRY).optionalFieldOf("applicable_species").forGetter(DragonAbilityHolder::applicableSpecies),
             Codec.BOOL.optionalFieldOf("is_removal", false).forGetter(DragonAbilityHolder::isRemoval)
     ).apply(instance, DragonAbilityHolder::new));
 
     public boolean use(final ServerPlayer player, final DragonStateHandler handler, final MagicData magic) {
         if (applicableSpecies.map(set -> !set.contains(handler.species())).orElse(false)) {
+            return false;
+        }
+
+        if (!conditions.map(conditions -> conditions.test(Condition.entityContext(player.serverLevel(), player))).orElse(true)) {
             return false;
         }
 
