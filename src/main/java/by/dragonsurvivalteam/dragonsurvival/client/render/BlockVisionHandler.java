@@ -80,7 +80,7 @@ public class BlockVisionHandler {
         LocalPlayer player = Objects.requireNonNull(Minecraft.getInstance().player);
         vision = player.getExistingData(DSDataAttachments.BLOCK_VISION).orElse(null);
 
-        if (vision == null) {
+        if (vision == null || vision.isEmpty()) {
             clear();
             return;
         }
@@ -183,7 +183,7 @@ public class BlockVisionHandler {
 
     public static void updateEntry(final BlockPos position, final BlockState oldState, final BlockState newState) {
         if (oldState == null || newState == null) {
-            // Should not be the case but mods do weird things
+            // Should not be the case, but mods do weird things
             return;
         }
 
@@ -218,6 +218,7 @@ public class BlockVisionHandler {
         }
     }
 
+    /** The searching algorithm is referenced from <a href="https://github.com/TelepathicGrunt/Bumblezone/blob/d4b2a29d7075749e1f4e8289debbc4cef3fc74c4/common/src/main/java/com/telepathicgrunt/the_bumblezone/items/essence/LifeEssence.java#L127">TelepathicGrunt</a> */
     private static void collect(final Player player, int searchRange) {
         BlockPos startPosition = player.blockPosition();
         ChunkPos currentChunkPosition = new ChunkPos(startPosition);
@@ -230,11 +231,14 @@ public class BlockVisionHandler {
         int minChunkZ = startPosition.getZ() - searchRange;
         int maxChunkZ = startPosition.getZ() + searchRange;
 
-        boolean foundSection = false;
         BlockPos.MutableBlockPos mutablePosition = BlockPos.ZERO.mutable();
 
         for (int x = minChunkX; x <= maxChunkX; x++) {
+            boolean foundXSection = false;
+
             for (int z = minChunkZ; z <= maxChunkZ; z++) {
+                boolean foundZSection = false;
+
                 int sectionX = SectionPos.blockToSectionCoord(x);
                 int sectionZ = SectionPos.blockToSectionCoord(z);
 
@@ -243,16 +247,15 @@ public class BlockVisionHandler {
                     currentChunk = player.level().getChunk(sectionX, sectionZ);
                 }
 
-                foundSection = false;
-
                 for (int y = maxChunkY; y >= minChunkY; y--) {
                     int sectionIndex = currentChunk.getSectionIndex(y);
                     LevelChunkSection section = currentChunk.getSection(sectionIndex);
 
                     mutablePosition.set(x, y, z);
 
-                    if (foundSection || containsOres(currentChunk, section, sectionIndex)) {
-                        foundSection = true;
+                    if (foundXSection || foundZSection || containsOres(currentChunk, section, sectionIndex)) {
+                        foundXSection = true;
+                        foundZSection = true;
 
                         BlockState state = getState(currentChunk, mutablePosition);
 
@@ -266,21 +269,19 @@ public class BlockVisionHandler {
                         if (range != BlockVision.NO_RANGE) {
                             SEARCH_RESULT.add(new Data(block, range, vision.getDisplayType(block), x, y, z));
                         }
-                    }
-
-                    if (!foundSection && y != minChunkY) {
+                    } else if (y != minChunkY) {
                         // Move to the next section (the bit shifting truncates the y value)
                         y = Math.max(minChunkY, SectionPos.sectionToBlockCoord(SectionPos.blockToSectionCoord(y)));
                     }
                 }
 
-                if (!foundSection && z != maxChunkZ) {
+                if (!foundZSection && z != maxChunkZ) {
                     // Move to the next section
                     z = Math.min(maxChunkZ, SectionPos.sectionToBlockCoord(SectionPos.blockToSectionCoord(z) + 1));
                 }
             }
 
-            if (!foundSection && x != maxChunkX) {
+            if (!foundXSection && x != maxChunkX) {
                 // Move to the next section
                 x = Math.min(maxChunkX, SectionPos.sectionToBlockCoord(SectionPos.blockToSectionCoord(x) + 1));
             }
