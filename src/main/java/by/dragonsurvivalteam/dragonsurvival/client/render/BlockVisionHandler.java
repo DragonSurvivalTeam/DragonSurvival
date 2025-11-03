@@ -61,7 +61,7 @@ public class BlockVisionHandler {
     private static boolean isSearching;
     private static boolean hasPendingUpdate;
 
-    private record Data(Block block, int range, BlockVision.DisplayType displayType, float x, float y, float z) {
+    private record Data(Block block, int range, BlockVision.DisplayType displayType, int particleRate, float x, float y, float z) {
         public boolean isInRange(final Vec3 position, final int visibleRange) {
             return position.distanceToSqr(x + 0.5, y + 0.5, z + 0.5) <= visibleRange * visibleRange;
         }
@@ -145,15 +145,20 @@ public class BlockVisionHandler {
                 }
 
                 if (Minecraft.getInstance().isPaused()) {
-                    // Newly added particles will only render once the game is un-paused
+                    // Newly added particles will only render once the game is unpaused
                     // Meaning if we don't skip here, all the added particles will be shown at once
                     continue;
                 }
 
-                if (data.displayType() == BlockVision.DisplayType.PARTICLES && player.tickCount % 10 == 0) {
+                if (data.particleRate() == BlockVision.NO_PARTICLE_RATE) {
+                    // It should not really be possible for this to occur with the particle display type
+                    continue;
+                }
+
+                if (data.displayType() == BlockVision.DisplayType.PARTICLES && player.tickCount % data.particleRate() == 0) {
                     // Increase the bounding box to make the particles more visible for blocks in walls etc.
                     // TODO :: Maybe there is a somewhat reasonable way to only show particles / focus particles on non-occluded faces?
-                    // TODO :: currently also spawns particles behind blocks (even though it doesn't have a x-ray "feature") - unsure if it's a problem
+                    // TODO :: currently also spawns particles behind blocks (even though it doesn't have a x-ray "feature") - unsure about the performance impact
                     double xPos = PARTICLE_POSITION.getCoordinate(data.x(), data.x() + 0.5, 2, player.getRandom());
                     double yPos = PARTICLE_POSITION.getCoordinate(data.y(), data.y() + 0.5, 2, player.getRandom());
                     double zPos = PARTICLE_POSITION.getCoordinate(data.z(), data.z() + 0.5, 2, player.getRandom());
@@ -214,7 +219,7 @@ public class BlockVisionHandler {
         int range = vision.getRange(newBlock);
 
         if (range != BlockVision.NO_RANGE) {
-            RENDER_DATA.add(new Data(newBlock, range, vision.getDisplayType(newBlock), position.getX(), position.getY(), position.getZ()));
+            RENDER_DATA.add(new Data(newBlock, range, vision.getDisplayType(newBlock), vision.getParticleRate(newBlock), position.getX(), position.getY(), position.getZ()));
         }
     }
 
@@ -267,7 +272,7 @@ public class BlockVisionHandler {
                         int range = vision.getRange(block);
 
                         if (range != BlockVision.NO_RANGE) {
-                            SEARCH_RESULT.add(new Data(block, range, vision.getDisplayType(block), x, y, z));
+                            SEARCH_RESULT.add(new Data(block, range, vision.getDisplayType(block), vision.getParticleRate(block), x, y, z));
                         }
                     } else if (y != minChunkY) {
                         // Move to the next section (the bit shifting truncates the y value)

@@ -20,6 +20,7 @@ import java.util.List;
 
 /** Basically just a copy of {@link GlowParticle.GlowSquidProvider} but allows setting a custom color */
 public class CustomGlowParticle extends GlowParticle {
+    /** Allows each particle to start at a separate section of the (potential) color range */
     private final double colorOffset;
     private List<Integer> colors;
 

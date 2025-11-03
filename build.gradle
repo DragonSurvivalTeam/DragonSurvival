@@ -143,7 +143,7 @@ dependencies {
 //	implementation "curse.maven:apothic-attributes-898963:5751458" // 2.4.0
 //	implementation "curse.maven:placebo-283644:5869769" // 9.5.4
 
-    // Immersive portals
+	// Immersive portals
 //    implementation "curse.maven:immersive-portals-for-forge-355440:6667779" // 2.4.0
 //    implementation "curse.maven:cloth-config-348521:5729127" // 15.0.140
 
@@ -152,10 +152,10 @@ dependencies {
 //    runtimeOnly "curse.maven:terrafirmacraft-302973:7150812" // 4.0.9
 //    runtimeOnly "curse.maven:patchouli-306770:6842247" // 92
 
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    // --- Mixin --- //
+	// --- Mixin --- //
 
 	implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:${mixin_squared_version}"))
 	implementation(jarJar("com.github.bawnorton.mixinsquared:mixinsquared-forge:${mixin_squared_version}")) {
