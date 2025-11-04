@@ -594,8 +594,8 @@ public class MagicData implements INBTSerializable<CompoundTag> {
             return;
         }
 
-        abilities.get(currentSpecies).clear();
-        hotbar.get(currentSpecies).clear();
+        getAbilities().clear();
+        getHotbar().clear();
 
         if (tag.contains(ABILITIES)) {
             CompoundTag storedAbilities = tag.getCompound(ABILITIES);
