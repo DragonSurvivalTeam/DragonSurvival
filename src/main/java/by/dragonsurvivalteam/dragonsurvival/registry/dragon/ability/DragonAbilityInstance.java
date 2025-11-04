@@ -46,7 +46,7 @@ public class DragonAbilityInstance {
     public static final Codec<DragonAbilityInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             DragonAbility.CODEC.fieldOf("ability").forGetter(DragonAbilityInstance::ability),
             Codec.INT.fieldOf("level").forGetter(DragonAbilityInstance::level),
-            Codec.INT.fieldOf("cooldown").forGetter(DragonAbilityInstance::cooldown),
+            Codec.INT.optionalFieldOf("cooldown", 0).forGetter(DragonAbilityInstance::cooldown),
             Codec.BOOL.optionalFieldOf("is_manually_disabled", false).forGetter(ability -> ability.isManuallyDisabled)
     ).apply(instance, DragonAbilityInstance::new));
 

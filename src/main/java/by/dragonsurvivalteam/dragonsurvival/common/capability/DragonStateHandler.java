@@ -401,7 +401,6 @@ public class DragonStateHandler extends EntityStateHandler {
             }
         }
 
-
         if (oldSpecies != null && !savedForSoul) {
             // Save the growth for the previous species if we have changed and it isn't due to a soul save
             savedGrowth.put(oldSpecies.getKey(), oldGrowth);
