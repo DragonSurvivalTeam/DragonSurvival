@@ -80,4 +80,10 @@ public class DragonStageCustomization implements INBTSerializable<CompoundTag> {
             }));
         }
     }
+
+    public DragonStageCustomization copy(final HolderLookup.Provider provider) {
+        DragonStageCustomization copy = new DragonStageCustomization();
+        copy.deserializeNBT(provider, serializeNBT(provider));
+        return copy;
+    }
 }
