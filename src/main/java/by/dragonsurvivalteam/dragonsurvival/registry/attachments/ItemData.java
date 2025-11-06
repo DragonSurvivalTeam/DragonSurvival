@@ -69,6 +69,6 @@ public class ItemData implements INBTSerializable<CompoundTag> {
     }
 
     public static final String IS_FIRE_IMMUNE = "is_fire_immune";
-    public static final String SMELTING_TIME = "is_fire_immune";
-    public static final String SMELTING_PROGRESS = "is_fire_immune";
+    public static final String SMELTING_TIME = "smelting_time";
+    public static final String SMELTING_PROGRESS = "smelting_progress";
 }
