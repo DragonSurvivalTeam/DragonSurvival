@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.skin_editor_system.objects.DragonStageCustomization;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
+import by.dragonsurvivalteam.dragonsurvival.util.Copyable;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
@@ -36,7 +37,7 @@ public class CustomizationFileHandler {
     private static final String DRAGON_SPECIES = "dragon_species";
     private static final String DRAGON_MODEL = "dragon_model";
 
-    public static class SavedCustomization implements INBTSerializable<CompoundTag> {
+    public static class SavedCustomization implements INBTSerializable<CompoundTag>, Copyable<SavedCustomization> {
         private DragonStageCustomization customization;
         private ResourceKey<DragonSpecies> dragonSpecies;
         private ResourceLocation dragonModel;
@@ -89,12 +90,6 @@ public class CustomizationFileHandler {
             if (nbt.contains(DRAGON_MODEL)) {
                 this.dragonModel = ResourceLocation.parse(nbt.getString(DRAGON_MODEL));
             }
-        }
-
-        public SavedCustomization copy(final HolderLookup.Provider provider) {
-            SavedCustomization copy = new SavedCustomization();
-            copy.deserializeNBT(provider, serializeNBT(provider));
-            return copy;
         }
 
         public DragonStageCustomization getCustomization() {
