@@ -33,14 +33,20 @@ import java.util.Locale;
 
 @EventBusSubscriber
 public class SummonedEntities extends Storage<SummonEntityEffect.Instance> {
-    // TODO :: also handle entities spawned from summoned entities?
-    //  persist entities ourselves to re-spawn them once the player re-joins?
-    //      'EntityType#create' for loading / 'Entity#save' for saving
-    //      meaning it's a list of [entity type | entity nbt]
-    //      some sort of persistence flag required to avoid despawn?
-    //      only apply to unlimited duration? store duration in entity and reduce on tick?
-    //  would be useful if some sort of "personal companion" is intended as summon
-    //  Unsure how dimension change is handled atm
+    /* TODO :: future ideas
+     * also handle entities spawned from summoned entities?
+     *
+     * persist entities ourselves to re-spawn them once the player re-joins?
+     *     'EntityType#create' for loading / 'Entity#save' for saving
+     *     meaning it's a list of [entity type | entity nbt]
+     *     some sort of persistence flag required to avoid despawn?
+     *     only apply to unlimited duration? store duration in entity and reduce on tick?
+     * would be useful if some sort of "personal companion" is intended as summon
+     *
+     * Unsure how dimension change is handled atm
+     * (is the entity retained?)
+     * (e.g. are the goals retained?)
+     */
 
     public static final String MOVEMENT_BEHAVIOUR = "movement_behaviour";
     public static final String ATTACK_BEHAVIOUR = "attack_behaviour";
