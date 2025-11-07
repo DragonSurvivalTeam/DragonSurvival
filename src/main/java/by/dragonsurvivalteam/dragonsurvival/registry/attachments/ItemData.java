@@ -1,18 +1,21 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.attachments;
 
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncData;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 @EventBusSubscriber
 public class ItemData implements INBTSerializable<CompoundTag> {
+    private static final int SMELT_PROGRESS_RESET = Functions.secondsToTicks(3);
+
     public boolean isFireImmune;
 
     public double smeltingTime;
@@ -32,23 +35,20 @@ public class ItemData implements INBTSerializable<CompoundTag> {
                 return;
             }
 
-            if (data.smeltingProgress == data.previousSmeltingProgress) {
+            if (data.smeltingProgress > 0 && data.smeltingProgress == data.previousSmeltingProgress) {
                 data.noSmeltingChange++;
 
-                if (data.noSmeltingChange == Functions.ticksToSeconds(3)) {
+                if (data.noSmeltingChange == SMELT_PROGRESS_RESET) {
                     data.smeltingProgress = 0;
                     data.noSmeltingChange = 0;
+
+                    PacketDistributor.sendToPlayersNear(serverLevel, null, event.getEntity().getX(), event.getEntity().getY(), event.getEntity().getZ(), 16, new SyncData(event.getEntity().getId(), DSDataAttachments.ITEM.getId(), data.serializeNBT(serverLevel.registryAccess())));
                 }
             } else {
                 data.noSmeltingChange = 0;
             }
 
             data.previousSmeltingProgress = data.smeltingProgress;
-
-            if (event.getEntity().tickCount % 10 == 0) {
-                int amount = (int) Math.max(1, 10 * (data.smeltingProgress / data.smeltingTime));
-                serverLevel.sendParticles(ParticleTypes.SMOKE, event.getEntity().getX(), event.getEntity().getY() + 0.5, event.getEntity().getZ(), amount, 0, 0, 0, 0);
-            }
         });
     }
 

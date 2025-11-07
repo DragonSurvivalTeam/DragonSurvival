@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects;
 
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ItemData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
@@ -21,6 +22,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -64,6 +66,11 @@ public record SmeltItemEffect(Optional<ItemPredicate> itemPredicate, Optional<Le
             ItemData data = itemEntity.getData(DSDataAttachments.ITEM);
             data.smeltingProgress += progress.get().calculate(ability.level());
             data.smeltingTime = recipe.value().getCookingTime() * stack.getCount();
+
+            // There may be some race conditions with the progress reset packet sent from 'ItemData'
+            // But for that you'd have to wait until it is almost ready to send the packet and then time the breath to it
+            // Causing both packets to potentially switch in order when the client receives them - in general probably unlikely to happen
+            PacketDistributor.sendToPlayersNear(dragon.serverLevel(), null, itemEntity.getX(), itemEntity.getY(), itemEntity.getZ(), 16, new SyncData(itemEntity.getId(), DSDataAttachments.ITEM.getId(), data.serializeNBT(dragon.registryAccess())));
 
             if (data.smeltingProgress < data.smeltingTime) {
                 return;
