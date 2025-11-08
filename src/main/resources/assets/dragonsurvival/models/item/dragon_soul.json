@@ -3,24 +3,69 @@
   "textures": {
     "layer0": "dragonsurvival:item/empty_soul"
   },
+  "_comment": [
+    "The check is: pick the first override whose number is not larger than the hashcode of the species",
+    "Therefor it is important to make sure the largest entry is at the bottom of this list",
+    "Because the order of the entries in the override list in-code go from bottom-to-top"
+  ],
   "overrides": [
     {
       "predicate": {
-        "custom_model_data": 1
-      },
-      "model": "dragonsurvival:item/forest_dragon_soul"
-    },
-    {
-      "predicate": {
-        "custom_model_data": 2
+        "custom_model_data": -368551212
       },
       "model": "dragonsurvival:item/cave_dragon_soul"
     },
     {
       "predicate": {
+        "custom_model_data": 0
+      },
+      "model": "dragonsurvival:item/empty_dragon_soul",
+      "_comment": "Only exists because the vanilla default value is 0 and would therefor apply to the potential lower values (like the one above)"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 1
+      },
+      "model": "dragonsurvival:item/forest_dragon_soul",
+      "_comment": "Only exists to be compatible with earlier versions - remove in 1.22"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2
+      },
+      "model": "dragonsurvival:item/cave_dragon_soul",
+      "_comment": "Only exists to be compatible with earlier versions - remove in 1.22"
+    },
+    {
+      "predicate": {
         "custom_model_data": 3
       },
+      "model": "dragonsurvival:item/sea_dragon_soul",
+      "_comment": "Only exists to be compatible with earlier versions - remove in 1.22"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 179379154
+      },
       "model": "dragonsurvival:item/sea_dragon_soul"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 741619780
+      },
+      "model": "dragonsurvival:item/forest_dragon_soul"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 821731218
+      },
+      "model": "minecraft:item/iron_ingot"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 1698877692
+      },
+      "model": "minecraft:item/diamond"
     }
   ]
 }
