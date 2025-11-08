@@ -1084,8 +1084,8 @@
                   "duration": 400,
                   "id": "minecraft:dolphins_grace",
                   "neoforge:cures": [
-                    "milk",
-                    "protected_by_totem"
+                    "protected_by_totem",
+                    "milk"
                   ],
                   "show_icon": true
                 }
