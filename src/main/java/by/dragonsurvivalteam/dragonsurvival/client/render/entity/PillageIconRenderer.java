@@ -25,7 +25,7 @@ public class PillageIconRenderer {
     private static final ResourceLocation ICON = DragonSurvival.res("textures/icons/pillage_icon.png");
     private static final int SIZE = 16;
 
-    public static void renderIcon(final Entity entity, final PoseStack poseStack, final double distance) {
+    public static void renderIcon(final Entity entity, final PoseStack pose, final double distance) {
         if (ServerConfig.MAX_RENDER_DISTANCE == 0 || distance > ServerConfig.MAX_RENDER_DISTANCE * ServerConfig.MAX_RENDER_DISTANCE) {
             return;
         }
@@ -46,19 +46,19 @@ public class PillageIconRenderer {
         RenderSystem.backupGlState(state);
 
         float scale = 0.025f * livingEntity.getScale();
-        float y = -SIZE / 2f - 4;
         float x = -SIZE / 2f;
+        float y = -SIZE / 2f - 4;
 
-        poseStack.pushPose();
-        poseStack.translate(0, entity.getBbHeight() + 0.5, 0);
-        poseStack.mulPose(Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation());
-        poseStack.scale(scale, -scale, scale);
+        pose.pushPose();
+        pose.translate(0, entity.getBbHeight() + 0.5, 0);
+        pose.mulPose(Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation());
+        pose.scale(scale, -scale, scale);
 
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
 
-        Matrix4f matrix = poseStack.last().pose();
+        Matrix4f matrix = pose.last().pose();
 
         Minecraft.getInstance().getTextureManager().getTexture(ICON).setFilter(false, false);
         RenderSystem.setShaderTexture(0, ICON);
@@ -76,7 +76,7 @@ public class PillageIconRenderer {
             BufferUploader.drawWithShader(data);
         }
 
-        poseStack.popPose();
+        pose.popPose();
         RenderSystem.restoreGlState(state);
     }
 

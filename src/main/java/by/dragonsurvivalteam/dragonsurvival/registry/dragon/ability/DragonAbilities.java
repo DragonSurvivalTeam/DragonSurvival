@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ParticleData;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.SpawnParticles;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.TargetDirection;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
@@ -239,7 +240,15 @@ public class DragonAbilities {
                                         new ItemConversionEffect(
                                                 List.of(
                                                         new ItemConversionEffect.ItemConversionData(ItemCondition.is(Items.IRON_INGOT), WeightedRandomList.create(
-                                                                ItemConversionEffect.ItemTo.of(Items.GOLD_INGOT, 12, 1)
+                                                                ItemConversionEffect.ItemTo.of(
+                                                                        Items.GOLD_INGOT,
+                                                                        12,
+                                                                        1,
+                                                                        new ParticleData(
+                                                                                new SpawnParticles(ParticleTypes.SOUL, SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), ConstantFloat.of(0.05f)),
+                                                                                LevelBasedValue.constant(20)
+                                                                        )
+                                                                )
                                                         ))
                                                 ),
                                                 LevelBasedValue.constant(1)

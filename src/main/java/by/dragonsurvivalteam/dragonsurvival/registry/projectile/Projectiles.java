@@ -50,6 +50,7 @@ public class Projectiles {
         context.register(FIREBALL, new ProjectileData(
                 new ProjectileData.GeneralData(
                         FIREBALL.location(),
+                        false,
                         Optional.of(Condition.thisEntity(EntityCondition.isLiving()).build()),
                         List.of(),
                         List.of(),
@@ -85,6 +86,7 @@ public class Projectiles {
         context.register(SPIKE, new ProjectileData(
                 new ProjectileData.GeneralData(
                         SPIKE.location(),
+                        true,
                         Optional.of(Condition.thisEntity(EntityCondition.isLiving()).build()),
                         List.of(),
                         List.of(),
@@ -103,6 +105,7 @@ public class Projectiles {
         context.register(BALL_LIGHTNING, new ProjectileData(
                 new ProjectileData.GeneralData(
                         BALL_LIGHTNING.location(),
+                        false,
                         Optional.of(Condition.thisEntity(EntityCondition.isLiving()).build()),
                         List.of(
                                 new ProjectileAreaTarget(
@@ -171,6 +174,7 @@ public class Projectiles {
         context.register(BOUNCY_BALL_LIGHTNING, new ProjectileData(
                 new ProjectileData.GeneralData(
                         BALL_LIGHTNING.location(),
+                        false,
                         Optional.of(Condition.thisEntity(EntityCondition.isLiving()).build()),
                         List.of(
                                 new ProjectileAreaTarget(
