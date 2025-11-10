@@ -292,6 +292,7 @@ public class DragonSkinsScreen extends Screen {
         handler.deserializeNBT(minecraft.player.registryAccess(), playerHandler.serializeNBT(minecraft.player.registryAccess()));
 
         if (!DragonSpecies.isBuiltIn(handler.speciesKey())) {
+            // TODO :: maybe don't throw and find some alternative, in case cave species is removed?
             handler.setSpecies(null, player.registryAccess().holderOrThrow(BuiltInDragonSpecies.CAVE_DRAGON));
         }
 

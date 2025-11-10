@@ -79,6 +79,7 @@
     "client.LocalPlayerAccessor",
     "client.LocalPlayerMixin",
     "client.MinecraftMixin",
+    "client.ModelManagerMixin",
     "client.PlayerRendererMixin",
     "client.RenderTypeAccessor",
     "client.RenderTypeHelperMixin",
