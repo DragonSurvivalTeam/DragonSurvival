@@ -51,7 +51,7 @@ public class FakeClientPlayerUtils {
         });
     }
 
-    public static FakeClientPlayer getFakePlayer(int index, DragonStateHandler handler) {
+    public static FakeClientPlayer getFakePlayer(int index, final DragonStateHandler handler) {
         FAKE_PLAYERS.computeIfAbsent(index, FakeClientPlayer::new);
         FAKE_PLAYERS.get(index).handler = handler;
         FAKE_PLAYERS.get(index).lastAccessed = System.currentTimeMillis();
@@ -59,7 +59,7 @@ public class FakeClientPlayerUtils {
     }
 
     @SubscribeEvent
-    public static void clientTick(ClientTickEvent.Pre event) {
+    public static void clientTick(final ClientTickEvent.Pre event) {
         FAKE_PLAYERS.forEach((index, player) -> {
             if (System.currentTimeMillis() - player.lastAccessed >= TimeUnit.MILLISECONDS.convert(10, TimeUnit.MINUTES)) {
                 player.remove(RemovalReason.DISCARDED);

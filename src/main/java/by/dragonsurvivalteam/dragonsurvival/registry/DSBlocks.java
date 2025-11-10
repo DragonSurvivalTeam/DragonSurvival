@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonBeacon;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonDoor;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonPressurePlates;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonRiderWorkbenchBlock;
+import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonSoulBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.HelmetBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.PrimordialAnchorBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.SkeletonPieceBlock;
@@ -652,10 +653,26 @@ public class DSBlocks {
     public static final DeferredHolder<Block, DragonBeacon> DRAGON_BEACON = register(
             "dragon_beacon",
             () -> new DragonBeacon(Block.Properties.of()
-                    .mapColor(MapColor.METAL).
-                    pushReaction(PushReaction.BLOCK)
+                    .mapColor(MapColor.METAL)
+                    .pushReaction(PushReaction.BLOCK)
                     .strength(15, 50)
                     .requiresCorrectToolForDrops()
+                    .noOcclusion()
+                    .noCollission()
+                    .lightLevel(value -> value.getValue(BlockStateProperties.LIT) ? 15 : 0)
+            )
+    );
+
+    // --- Dragon Soul --- //
+
+    @Translation(type = Translation.Type.BLOCK, comments = "Dragon Soul")
+    @Translation(type = Translation.Type.DESCRIPTION_ADDITION, comments = "■§7 Displays the soul of a dragon.")
+    public static final DeferredHolder<Block, DragonSoulBlock> DRAGON_SOUL = REGISTRY.register(
+            "dragon_soul",
+            () -> new DragonSoulBlock(Block.Properties.of()
+                    .mapColor(MapColor.METAL)
+                    .pushReaction(PushReaction.IGNORE)
+                    .strength(1, 1200)
                     .noOcclusion()
                     .noCollission()
                     .lightLevel(value -> value.getValue(BlockStateProperties.LIT) ? 15 : 0)

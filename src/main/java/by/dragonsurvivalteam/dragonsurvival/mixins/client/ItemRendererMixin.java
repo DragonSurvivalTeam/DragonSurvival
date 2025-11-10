@@ -34,6 +34,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class ItemRendererMixin { // FIXME :: doesn't work with sodium since they replace item rendering
     @Shadow public abstract ItemModelShaper getItemModelShaper();
 
+    // TODO :: add custom enchantment glint support for dragon souls in 'render' by returning a custom foil buffer
+
     @Inject(method = "renderStatic(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemDisplayContext;ZLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;Lnet/minecraft/world/level/Level;III)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/ItemRenderer;render(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemDisplayContext;ZLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;IILnet/minecraft/client/resources/model/BakedModel;)V", shift = At.Shift.BEFORE))
     private void dragonSurvival$storeAlpha(final LivingEntity entity, final ItemStack stack, final ItemDisplayContext context, boolean leftHand, final PoseStack poseStack, final MultiBufferSource bufferSource, final Level level, int combinedLight, int combinedOverlay, int seed, final CallbackInfo callback) {
         if (dragonSurvival$isThirdPerson(context) || HunterHandler.TRANSLUCENT_ITEMS_IN_FIRST_PERSON && dragonSurvival$isFirstPerson(context)) {

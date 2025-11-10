@@ -51,6 +51,9 @@ public class DSDataAttachments {
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<BlockVisionData>> BLOCK_VISION = REGISTRY.register("block_vision_data", () -> AttachmentType.serializable(BlockVisionData::new).build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<FearData>> FEAR = REGISTRY.register("fear_data", () -> AttachmentType.serializable(FearData::new).build());
 
+    // Level attachment
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<ServerData>> SERVER_DATA = REGISTRY.register("server_data", () -> AttachmentType.serializable(ServerData::new).build());
+
     /** Does not return empty storages */
     public static <T> List<Storage<? extends T>> getStorages(final Entity entity, final Class<T> type) {
         List<Storage<? extends T>> storages = new ArrayList<>();

@@ -1,4 +1,4 @@
-// 1.21.1	2025-10-23T13:55:35.8234775	Dragon Survival Item models
+// 1.21.1	2025-11-10T18:36:36.6116562	Dragon Survival Item models
 a66a6309dc6b29797f46e2ca4ab14ef3a245a65f assets/dragonsurvival/models/item/acacia_dragon_altar.json
 3103bf7bf2acab8c6053dd037bfd4f26275aad26 assets/dragonsurvival/models/item/acacia_dragon_door.json
 4c7b8102022c425a86140eada246eaed8be93446 assets/dragonsurvival/models/item/activated_dragon_beacon.json
@@ -54,6 +54,7 @@ d220e78c55ab8d3dc2f1c12a69c7bf38ec00be9f assets/dragonsurvival/models/item/deeps
 9148a919b75c9f7918c4e5561c1035457028e044 assets/dragonsurvival/models/item/dragon_memory_block.json
 c3a618581c4b88025c76d085620ea3d88a3b4b7e assets/dragonsurvival/models/item/dragon_pressure_plate.json
 823b61f744436a03bc0bc3f6fb344ad87ed7a9ca assets/dragonsurvival/models/item/dragon_rider_workbench.json
+9ebc058b65cac1cb00fd673dbb66be6a926b52ed assets/dragonsurvival/models/item/dragon_soul.json
 381d4d65ced4aa83a477128b62a92433aede81e0 assets/dragonsurvival/models/item/elder_dragon_bone.json
 a8e325f629fc7ae397c7e043b67b4a6a9fe6582c assets/dragonsurvival/models/item/elder_dragon_dust.json
 c4f2c6ebd5444061e717b2c11fd7f91eb9f63d11 assets/dragonsurvival/models/item/elder_dragon_heart.json
