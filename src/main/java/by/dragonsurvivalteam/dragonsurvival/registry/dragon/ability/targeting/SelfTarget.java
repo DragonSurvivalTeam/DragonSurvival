@@ -39,6 +39,11 @@ public record SelfTarget(Either<BlockTargeting, EntityTargeting> target) impleme
     }
 
     @Override
+    public float getDistance(final Player dragon, final DragonAbilityInstance instance) {
+        return Integer.MAX_VALUE;
+    }
+
+    @Override
     public MutableComponent getDescription(final Player dragon, final DragonAbilityInstance ability) {
         return Component.translatable(SELF_TARGET);
     }

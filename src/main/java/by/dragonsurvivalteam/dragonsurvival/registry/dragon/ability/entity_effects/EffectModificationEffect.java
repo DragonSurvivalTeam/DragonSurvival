@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilit
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -45,6 +46,17 @@ public record EffectModificationEffect(List<EffectModification> modifications) i
         }
 
         return components;
+    }
+
+    @Override
+    public List<ResourceLocation> getEffectIDs() {
+        List<ResourceLocation> ids = new ArrayList<>();
+
+        for (EffectModification modification : modifications) {
+            ids.add(modification.id());
+        }
+
+        return ids;
     }
 
     public static List<AbilityEntityEffect> only(final EffectModification modification) {

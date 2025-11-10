@@ -1,4 +1,4 @@
-// 1.21.1	2025-11-08T14:32:52.8885807	Registries
+// 1.21.1	2025-11-10T09:15:48.7476231	Registries
 011b2ee382ec961722c100bbf059b4aa460f44b0 data/dragonsurvival/damage_type/anti_dragon.json
 d8c3135ecd1879e98a21e83ec1bcfd68c5fc3296 data/dragonsurvival/damage_type/ball_lightning.json
 3bca57c58e2307adb52a4b6e18ea88aae7e2d8d7 data/dragonsurvival/damage_type/blast_dust.json
@@ -60,6 +60,7 @@ d1019490aab7edda4561ad935311e892fdc38db4 data/dragonsurvival/dragonsurvival/drag
 78c13ec7e7dd955d96fbd0c2301478e0d5f18a42 data/dragonsurvival/dragonsurvival/dragon_ability/sun_breath.json
 529909493376d4792b2a900192b972d5da9b5959 data/dragonsurvival/dragonsurvival/dragon_ability/test_convert_items.json
 b69ae3c228cf14a571cacc8d6d77b0944318bcc2 data/dragonsurvival/dragonsurvival/dragon_ability/test_function.json
+495b180367b1d0a9a66806cc9e674d3a963fa27e data/dragonsurvival/dragonsurvival/dragon_ability/test_glow.json
 cd1b6478bd24e4eed673359a93422e92bea0d41c data/dragonsurvival/dragonsurvival/dragon_ability/test_heal.json
 4b749d281690f9bbe644bc8455b2dcfa75c82f9a data/dragonsurvival/dragonsurvival/dragon_ability/test_smelt.json
 1f7d37abd18eaf40511c69156fb555ed8e764770 data/dragonsurvival/dragonsurvival/dragon_ability/test_summon.json

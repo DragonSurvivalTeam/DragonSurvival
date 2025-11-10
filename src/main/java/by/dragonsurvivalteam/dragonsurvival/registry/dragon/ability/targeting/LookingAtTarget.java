@@ -59,7 +59,7 @@ public record LookingAtTarget(Either<BlockTargeting, EntityTargeting> target, Le
     @Override
     public MutableComponent getDescription(final Player dragon, final DragonAbilityInstance ability) {
         Component targetingComponent = target.map(block -> null, entity -> entity.targetingMode().translation());
-        MutableComponent range = DSColors.dynamicValue(FORMAT.format(this.range.calculate(ability.level())));
+        MutableComponent range = DSColors.dynamicValue(FORMAT.format(getDistance(dragon, ability)));
 
         if (targetingComponent == null) {
             return Component.translatable(LOOKING_AT_TARGET_BLOCK, range);
@@ -68,12 +68,17 @@ public record LookingAtTarget(Either<BlockTargeting, EntityTargeting> target, Le
         }
     }
 
-    public HitResult getBlockHitResult(Player dragon, final DragonAbilityInstance ability) {
-        return dragon.pick(range.calculate(ability.level()), 0, false);
+    @Override
+    public float getDistance(final Player dragon, final DragonAbilityInstance instance) {
+        return range.calculate(instance.level());
     }
 
-    public HitResult getEntityHitResult(Player dragon, Predicate<Entity> filter, final DragonAbilityInstance ability) {
-        return ProjectileUtil.getHitResultOnViewVector(dragon, filter, range.calculate(ability.level()));
+    public HitResult getBlockHitResult(final Player dragon, final DragonAbilityInstance ability) {
+        return dragon.pick(getDistance(dragon, ability), 0, false);
+    }
+
+    public HitResult getEntityHitResult(final Player dragon, final Predicate<Entity> filter, final DragonAbilityInstance ability) {
+        return ProjectileUtil.getHitResultOnViewVector(dragon, filter, getDistance(dragon, ability));
     }
 
     @Override

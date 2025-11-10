@@ -53,7 +53,7 @@ public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target,
     @Override
     public MutableComponent getDescription(final Player dragon, final DragonAbilityInstance ability) {
         Component targetingComponent = target.map(block -> null, entity -> entity.targetingMode().translation());
-        MutableComponent range = DSColors.dynamicValue(FORMAT.format(getRange(dragon, ability)));
+        MutableComponent range = DSColors.dynamicValue(FORMAT.format(getDistance(dragon, ability)));
 
         if (targetingComponent == null) {
             return Component.translatable(CONE_TARGET_BLOCK, range);
@@ -86,8 +86,9 @@ public record DragonBreathTarget(Either<BlockTargeting, EntityTargeting> target,
         return new AABB(startPosition.subtract(min), startPosition.add(max));
     }
 
-    private float getRange(final Player dragon, final DragonAbilityInstance ability) {
-        return (float) (rangeMultiplier.calculate(ability.level()) * dragon.getAttributeValue(DSAttributes.DRAGON_BREATH_RANGE));
+    @Override
+    public float getDistance(final Player dragon, final DragonAbilityInstance instance) {
+        return (float) (rangeMultiplier.calculate(instance.level()) * dragon.getAttributeValue(DSAttributes.DRAGON_BREATH_RANGE));
     }
 
     private static double getOffset(double value, double defaultValue) {

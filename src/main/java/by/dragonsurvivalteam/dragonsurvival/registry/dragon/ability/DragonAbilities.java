@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.Glow;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.LevelBasedResource;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ParticleData;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.SpawnParticles;
@@ -26,6 +27,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.activation.t
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.ParticleEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.RunFunctionEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.common_effects.SummonEntityEffect;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.GlowEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.HealEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.ItemConversionEffect;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects.SmeltItemEffect;
@@ -37,11 +39,13 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.Ta
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.upgrade.ExperienceLevelUpgrade;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.datafixers.util.Either;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -61,6 +65,21 @@ public class DragonAbilities {
         CaveDragonAbilities.registerAbilities(context);
         ForestDragonAbilities.registerAbilities(context);
         SeaDragonAbilities.registerAbilities(context);
+
+        // --- Glow --- //
+
+        context.register(ResourceKey.create(DragonAbility.REGISTRY, DragonSurvival.res("test_glow")), new DragonAbility(
+                PassiveActivation.DEFAULT,
+                Optional.empty(),
+                Optional.empty(),
+                List.of(
+                        new ActionContainer(new AreaTarget(AbilityTargeting.entity(GlowEffect.only(
+                                Glow.create(DragonSurvival.res("glow_test"), TextColor.fromLegacyFormat(ChatFormatting.AQUA))
+                        ), TargetingMode.ITEMS), LevelBasedValue.constant(5)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))
+                ),
+                true,
+                new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
+        ));
 
         // --- Smelt --- //
 
@@ -126,24 +145,24 @@ public class DragonAbilities {
                 Optional.empty(),
                 List.of(
                         new ActionContainer(new AreaTarget(AbilityTargeting.entity(
-                            List.of(
-                                new TeleportEffect(
-                                        TargetDirection.lookingAt(),
-                                        LevelBasedValue.perLevel(100, 50)
-                                )), TargetingMode.ALL_EXCEPT_SELF
-                ), LevelBasedValue.constant(5)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1)),
-                new ActionContainer(new SelfTarget(AbilityTargeting.entity(
-                    List.of(
-                        new TeleportEffect(
-                                TargetDirection.lookingAt(),
-                                LevelBasedValue.perLevel(100, 50)
-                        ),
-                        new ParticleEffect(
-                                new SpawnParticles(ParticleTypes.PORTAL, SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), ConstantFloat.of(0.05f)),
-                                LevelBasedValue.constant(20)
-                        )), TargetingMode.ALL)
-                    ), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1)
-                )),
+                                List.of(
+                                        new TeleportEffect(
+                                                TargetDirection.lookingAt(),
+                                                LevelBasedValue.perLevel(100, 50)
+                                        )), TargetingMode.ALL_EXCEPT_SELF
+                        ), LevelBasedValue.constant(5)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1)),
+                        new ActionContainer(new SelfTarget(AbilityTargeting.entity(
+                                List.of(
+                                        new TeleportEffect(
+                                                TargetDirection.lookingAt(),
+                                                LevelBasedValue.perLevel(100, 50)
+                                        ),
+                                        new ParticleEffect(
+                                                new SpawnParticles(ParticleTypes.PORTAL, SpawnParticles.inBoundingBox(), SpawnParticles.inBoundingBox(), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), SpawnParticles.fixedVelocity(ConstantFloat.of(0.05f)), ConstantFloat.of(0.05f)),
+                                                LevelBasedValue.constant(20)
+                                        )), TargetingMode.ALL)
+                        ), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1)
+                        )),
                 true,
                 new LevelBasedResource(List.of(new LevelBasedResource.Entry(DragonSurvival.res("test"), 0)))
         ));

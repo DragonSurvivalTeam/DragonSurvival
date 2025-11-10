@@ -17,6 +17,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -61,6 +62,10 @@ public interface AbilityTargeting {
         return Either.right(new EntityTargeting(Optional.ofNullable(targetConditions), effects, targetingMode));
     }
 
+    default float getDistance(final Player dragon, final DragonAbilityInstance instance) {
+        return 0;
+    }
+
     record BlockTargeting(Optional<LootItemCondition> targetConditions, List<AbilityBlockEffect> effects) {
         public static final Codec<BlockTargeting> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 MiscCodecs.conditional(LootItemCondition.DIRECT_CODEC).optionalFieldOf("target_conditions").forGetter(BlockTargeting::targetConditions),
@@ -81,6 +86,17 @@ public interface AbilityTargeting {
 
         public boolean matches(final ServerPlayer dragon, final Entity entity, final Vec3 position) {
             return targetConditions.map(condition -> condition.test(Condition.abilityContext(dragon, entity, position))).orElse(true);
+        }
+
+        /// Returns the ids of the [by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstanceBase] effects
+        public List<ResourceLocation> getEffectIDs() {
+            List<ResourceLocation> ids = new ArrayList<>();
+
+            for (AbilityEntityEffect effect : effects) {
+                ids.addAll(effect.getEffectIDs());
+            }
+
+            return ids;
         }
     }
 

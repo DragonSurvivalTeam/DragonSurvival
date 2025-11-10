@@ -245,7 +245,7 @@ public class DragonAbilityInstance {
         this.isActive = isActive;
 
         if (!isActive && player instanceof ServerPlayer serverPlayer && value().activation() instanceof PassiveActivation passive && passive.trigger().type() == ActivationTrigger.TriggerType.CONSTANT) {
-            // Also makes sure to remove any affects that are applied by the ability
+            // Also makes sure to remove any effects that are applied by the ability
             ability.value().actions().forEach(action -> action.remove(serverPlayer, this));
         }
 

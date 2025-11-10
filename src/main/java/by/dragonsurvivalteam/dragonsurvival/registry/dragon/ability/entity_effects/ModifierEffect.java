@@ -7,11 +7,13 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public record ModifierEffect(List<ModifierWithDuration> modifiers) implements AbilityEntityEffect {
@@ -59,6 +61,17 @@ public record ModifierEffect(List<ModifierWithDuration> modifiers) implements Ab
         }
 
         return description == null ? List.of() : List.of(description);
+    }
+
+    @Override
+    public List<ResourceLocation> getEffectIDs() {
+        List<ResourceLocation> ids = new ArrayList<>();
+
+        for (ModifierWithDuration modifier : modifiers) {
+            ids.add(modifier.id());
+        }
+
+        return ids;
     }
 
     public static List<AbilityEntityEffect> only(final ModifierWithDuration modifier) {
