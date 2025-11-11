@@ -16,7 +16,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.PlayerLoginHandler;
-import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonSoulBlockEntity;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import by.dragonsurvivalteam.dragonsurvival.util.ResourceHelper;
 import net.minecraft.core.Holder;
@@ -76,7 +75,7 @@ public class DragonSoulItem extends BlockItem {
 
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull final Level level, @NotNull final Player player, @NotNull final InteractionHand hand) {
-        if (DragonStateProvider.isDragon(player) || player.getItemInHand(hand).has(DataComponents.CUSTOM_DATA)) {
+        if (DragonStateProvider.isDragon(player) || player.getItemInHand(hand).has(DSDataComponents.DRAGON_SOUL)) {
             player.startUsingItem(hand);
             return InteractionResultHolder.success(player.getItemInHand(hand));
         } else {
@@ -92,13 +91,7 @@ public class DragonSoulItem extends BlockItem {
             return false;
         }
 
-        boolean placed = super.placeBlock(context, state);
-
-        if (placed && context.getLevel().getBlockEntity(context.getClickedPos()) instanceof DragonSoulBlockEntity soul) {
-//            soul.setComponents(context.getItemInHand().getComponents());
-        }
-
-        return placed;
+        return super.placeBlock(context, state);
     }
 
     /** '0' means there is no data and '1' means it contains a soul */
@@ -163,7 +156,7 @@ public class DragonSoulItem extends BlockItem {
                 magicData.setCurrentSpecies(player, handler.speciesKey());
                 magicData.deserializeNBTForCurrentSpecies(level.registryAccess(), data.abilityData());
 
-                stack.set(DSDataComponents.DRAGON_SOUL, new DragonSoulData(currentDragonData, currentAbilityData));
+                stack.set(DSDataComponents.DRAGON_SOUL, new DragonSoulData(currentDragonData, currentAbilityData, player.getScale()));
                 stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(getCustomModelData(level.registryAccess(), currentDragonData)));
             } else {
                 // Preserve spin/flight grant state
@@ -183,7 +176,7 @@ public class DragonSoulItem extends BlockItem {
             CompoundTag currentDragonData = handler.serializeNBT(level.registryAccess(), true);
             CompoundTag currentAbilityData = magicData.serializeNBTForCurrentSpecies(level.registryAccess());
 
-            stack.set(DSDataComponents.DRAGON_SOUL, new DragonSoulData(currentDragonData, currentAbilityData));
+            stack.set(DSDataComponents.DRAGON_SOUL, new DragonSoulData(currentDragonData, currentAbilityData, player.getScale()));
             stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(getCustomModelData(level.registryAccess(), currentDragonData)));
             handler.revertToHumanForm(player, true);
         }

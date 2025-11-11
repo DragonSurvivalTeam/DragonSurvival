@@ -58,6 +58,17 @@ public class FakeClientPlayerUtils {
         return FAKE_PLAYERS.get(index);
     }
 
+    public static int getNextIndex() {
+        // 0 and 1 are reserved for the dragon altar, editor, smithing screen, etc.
+        int index = 2;
+
+        while (FAKE_PLAYERS.containsKey(index)) {
+            index++;
+        }
+
+        return index;
+    }
+
     @SubscribeEvent
     public static void clientTick(final ClientTickEvent.Pre event) {
         FAKE_PLAYERS.forEach((index, player) -> {

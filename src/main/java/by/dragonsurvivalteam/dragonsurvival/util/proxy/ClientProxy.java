@@ -150,6 +150,15 @@ public class ClientProxy implements Proxy {
     }
 
     @Override
+    public double getFakePlayerScale(final Player player) {
+        if (player instanceof FakeClientPlayer fake && fake.useVisualScale) {
+            return fake.getScale();
+        }
+
+        return Proxy.super.getFakePlayerScale(player);
+    }
+
+    @Override
     public @Nullable RegistryAccess getAccess() {
         ClientLevel level = Minecraft.getInstance().level;
 

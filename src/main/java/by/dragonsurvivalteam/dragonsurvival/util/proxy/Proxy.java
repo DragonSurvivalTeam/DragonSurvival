@@ -58,6 +58,10 @@ public interface Proxy {
         return player instanceof FakePlayer;
     }
 
+    default double getFakePlayerScale(final Player player) {
+        return -1;
+    }
+
     default boolean dragonRenderingWasCancelled(final Player player) {
         return false;
     }

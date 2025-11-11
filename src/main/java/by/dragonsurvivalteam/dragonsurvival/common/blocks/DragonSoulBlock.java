@@ -5,7 +5,6 @@ import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonSoulBlockEnt
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
@@ -19,8 +18,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,15 +25,6 @@ public class DragonSoulBlock extends Block implements EntityBlock {
     public DragonSoulBlock(final Properties properties) {
         super(properties);
         registerDefaultState(getStateDefinition().any().setValue(BlockStateProperties.LIT, false).setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH));
-    }
-
-    @Override
-    protected @NotNull VoxelShape getShape(@NotNull final BlockState state, @NotNull final BlockGetter level, @NotNull final BlockPos position, @NotNull final CollisionContext context) {
-        if (level.getBlockEntity(position) instanceof DragonSoulBlockEntity soul) {
-            return soul.getShape();
-        }
-
-        return super.getShape(state, level, position, context);
     }
 
     @Override
