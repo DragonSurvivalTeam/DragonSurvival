@@ -683,6 +683,8 @@
   "dragonsurvival.configuration.enable_collision_damage.tooltip": "Dragons will take damage from colliding whilst glide-flying (similar to elytra).",
   "dragonsurvival.configuration.enable_flight_fall_damage": "Enable Flight Fall Damage",
   "dragonsurvival.configuration.enable_flight_fall_damage.tooltip": "Dragons will take fall damage from colliding whilst glide-flying (similar to elytra).",
+  "dragonsurvival.configuration.enable_soul_block_indicator": "Enable Soul Block Indicator",
+  "dragonsurvival.configuration.enable_soul_block_indicator.tooltip": "If enabled particles will spawn at the block position of the soul block while the player is looking at it",
   "dragonsurvival.configuration.enchantment_descriptions": "Enchantment Descriptions",
   "dragonsurvival.configuration.enchantment_descriptions.tooltip": "Adds enchantment descriptions to enchanted books which contain 1 enchantment (and said enchantment is from this mod)",
   "dragonsurvival.configuration.ender_dragon_curses_you": "Ender Dragon Curses You",

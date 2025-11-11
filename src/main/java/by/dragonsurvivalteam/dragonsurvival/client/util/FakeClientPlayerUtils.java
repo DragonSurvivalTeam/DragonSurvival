@@ -34,6 +34,12 @@ public class FakeClientPlayerUtils {
                     }
 
                     if (fakePlayer.animationSupplier != null) {
+                        if (state.getController().getCurrentAnimation() == null) {
+                            // Sometimes it happens that this turns to null and the set animation below will do nothing
+                            // Because the controller still has the same raw animation stored (no change = no update)
+                            state.resetCurrentAnimation();
+                        }
+
                         return state.setAndContinue(RawAnimation.begin().thenLoop(fakePlayer.animationSupplier.get()));
                     }
 

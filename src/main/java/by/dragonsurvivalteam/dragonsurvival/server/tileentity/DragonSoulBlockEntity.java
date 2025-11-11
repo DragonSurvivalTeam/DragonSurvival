@@ -19,12 +19,14 @@ public class DragonSoulBlockEntity extends BlockEntity {
     /** Field only relevant on the client-side */
     public int fakePlayerIndex = -1;
     public double scale = -1;
+    public int tick;
 
     public DragonSoulBlockEntity(final BlockPos position, final BlockState state) {
         super(DSBlockEntities.DRAGON_SOUL.get(), position, state);
     }
 
     public static void serverTick(Level level, BlockPos blockPos, BlockState blockState, DragonSoulBlockEntity dragonSoulBlockEntity) {
+        // FIXME :: anything needed here?
     }
 
     public DragonStateHandler getHandler() {
