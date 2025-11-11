@@ -18,6 +18,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEm
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
@@ -789,6 +790,24 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         }
 
         return PlayState.CONTINUE;
+    }
+
+
+    public static Vec3 getModelOffset(final DragonEntity dragon, float partialTicks) {
+        Player player = dragon.getPlayer();
+
+        if (player == null) {
+            return Vec3.ZERO;
+        }
+
+        float angle = -(float) MovementData.getData(player).bodyYaw * ((float) Math.PI / 180);
+        float x = Mth.sin(angle);
+        float z = Mth.cos(angle);
+
+        DragonStateHandler handler = DragonStateProvider.getData(player);
+        float scale = (float) handler.getVisualScale(player, partialTicks) * (float) handler.body().value().scalingProportions().scaleMultiplier();
+
+        return new Vec3(x * scale, 0, z * scale);
     }
 
     @SubscribeEvent

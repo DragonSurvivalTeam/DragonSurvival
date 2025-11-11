@@ -1,4 +1,4 @@
-// 1.21.1	2025-11-10T19:32:55.8991028	Loot Tables
+// 1.21.1	2025-11-11T12:10:58.4419729	Loot Tables
 daebe5a31e131aafd8cd5ad717023b1486bf46f5 data/dragonsurvival/loot_table/blocks/acacia_dragon_altar.json
 6d9ed87da9516e134f0c759cd6158d7cceb46deb data/dragonsurvival/loot_table/blocks/acacia_dragon_door.json
 5bac002bbf720c008375e2488056a7e7070dc476 data/dragonsurvival/loot_table/blocks/amethyst_dragon_altar.json
@@ -25,7 +25,7 @@ b68930c932c6b300c327d18088a272a6b63ca6b6 data/dragonsurvival/loot_table/blocks/d
 c101f1811cf713608a5b9ac2e2d0422d3b9ad11c data/dragonsurvival/loot_table/blocks/dragon_memory_block.json
 e359967903a16fa4d26de880b80a25ce79c4d6f3 data/dragonsurvival/loot_table/blocks/dragon_pressure_plate.json
 239294706ac4e28584f58ac2913fa359da411693 data/dragonsurvival/loot_table/blocks/dragon_rider_workbench.json
-c7efd0889a3d0310fecccd99d6455510b8b03158 data/dragonsurvival/loot_table/blocks/dragon_soul.json
+8433a206bde46e07087b620d6ba6149d2c6207e9 data/dragonsurvival/loot_table/blocks/dragon_soul.json
 8a3871a1b1da046eba24f15dfa459b20613d1363 data/dragonsurvival/loot_table/blocks/emerald_dragon_treasure.json
 5c0813989f36de95360b8cfa0a1c05f832922dcc data/dragonsurvival/loot_table/blocks/endstone_dragon_altar.json
 ba0b5a3a23a3028649bd9502f4e7be4aa86f2a96 data/dragonsurvival/loot_table/blocks/forest_dragon_door.json

@@ -49,7 +49,12 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.*;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.client.event.RenderBlockScreenEffectEvent;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.neoforged.neoforge.client.event.RenderNameTagEvent;
+import net.neoforged.neoforge.client.event.RenderPlayerEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.TriState;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
@@ -350,23 +355,6 @@ public class ClientDragonRenderer {
             movement.prevZRot = 0;
             movement.prevXRot = 0;
         }
-    }
-
-    public static Vec3 getModelOffset(final DragonEntity dragon, float partialTicks) {
-        Player player = dragon.getPlayer();
-
-        if (player == null) {
-            return Vec3.ZERO;
-        }
-
-        float angle = -(float) MovementData.getData(player).bodyYaw * ((float) Math.PI / 180);
-        float x = Mth.sin(angle);
-        float z = Mth.cos(angle);
-
-        DragonStateHandler handler = DragonStateProvider.getData(player);
-        float scale = (float) handler.getVisualScale(player, partialTicks) * (float) handler.body().value().scalingProportions().scaleMultiplier();
-
-        return new Vec3(x * scale, 0, z * scale);
     }
 
     public static Vector3f getModelShadowOffset(final Player player, float partialRenderTick) {

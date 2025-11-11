@@ -10,6 +10,8 @@ import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
+import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataComponents;
+import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DragonSoulData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
@@ -34,7 +36,6 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.CustomModelData;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
@@ -85,16 +86,16 @@ public class DragonSoulItem extends BlockItem {
 
     @Override
     protected boolean placeBlock(@NotNull final BlockPlaceContext context, @NotNull final BlockState state) {
-        CustomData customData = context.getItemInHand().get(DataComponents.CUSTOM_DATA);
+        DragonSoulData data = context.getItemInHand().get(DSDataComponents.DRAGON_SOUL);
 
-        if (customData == null || !customData.contains(DRAGON)) {
+        if (data == null) {
             return false;
         }
 
         boolean placed = super.placeBlock(context, state);
 
         if (placed && context.getLevel().getBlockEntity(context.getClickedPos()) instanceof DragonSoulBlockEntity soul) {
-            soul.initialize(customData.copyTag().get(DRAGON));
+//            soul.setComponents(context.getItemInHand().getComponents());
         }
 
         return placed;
@@ -121,63 +122,68 @@ public class DragonSoulItem extends BlockItem {
             DSAdvancementTriggers.USE_DRAGON_SOUL.get().trigger(serverPlayer);
         }
 
+        DragonSoulData data = null;
+
+        // FIXME 1.22 :: remove, this was only a fallback for a breaking change
+        if (stack.has(DataComponents.CUSTOM_DATA)) {
+            CompoundTag tag = stack.get(DataComponents.CUSTOM_DATA).getUnsafe();
+
+            if (tag.contains(DragonSoulData.DRAGON)) {
+                data = DragonSoulData.parse(tag);
+
+                tag.remove(DragonSoulData.DRAGON);
+                tag.remove(DragonSoulData.ABILITIES);
+            }
+        }
+
+        if (data == null) {
+            data = stack.get(DSDataComponents.DRAGON_SOUL);
+        } else {
+            stack.set(DSDataComponents.DRAGON_SOUL, data);
+        }
+
         DragonStateHandler handler = DragonStateProvider.getData(player);
         MagicData magicData = MagicData.getData(player);
-        CustomData customData = stack.get(DataComponents.CUSTOM_DATA);
 
         // Make sure dragon data is present, in case other mods add custom data to items
-        if (customData != null && !customData.getUnsafe().getCompound(DRAGON).isEmpty()) {
+        if (data != null && !data.dragonData().isEmpty()) {
             if (handler.isDragon()) {
-                CompoundTag tag = customData.copyTag();
-
                 // Swap the player's dragon data with the item's NBT
-                CompoundTag storedDragonData = tag.getCompound(DRAGON);
                 CompoundTag currentDragonData = handler.serializeNBT(level.registryAccess(), true);
 
                 // Preserve spin/flight grant state
                 boolean flightGranted = handler.flightWasGranted;
                 boolean spinGranted = handler.spinWasGranted;
-                handler.deserializeNBT(level.registryAccess(), storedDragonData, true);
+                handler.deserializeNBT(level.registryAccess(), data.dragonData(), true);
                 handler.flightWasGranted = flightGranted;
                 handler.spinWasGranted = spinGranted;
 
-                CompoundTag storedAbilityData = tag.getCompound(ABILITIES);
                 CompoundTag currentAbilityData = magicData.serializeNBTForCurrentSpecies(level.registryAccess());
 
                 magicData.setCurrentSpecies(player, handler.speciesKey());
-                magicData.deserializeNBTForCurrentSpecies(level.registryAccess(), storedAbilityData);
+                magicData.deserializeNBTForCurrentSpecies(level.registryAccess(), data.abilityData());
 
-                CompoundTag combinedData = new CompoundTag();
-                combinedData.put(DRAGON, currentDragonData);
-                combinedData.put(ABILITIES, currentAbilityData);
-
-                stack.set(DataComponents.CUSTOM_DATA, CustomData.of(combinedData));
+                stack.set(DSDataComponents.DRAGON_SOUL, new DragonSoulData(currentDragonData, currentAbilityData));
                 stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(getCustomModelData(level.registryAccess(), currentDragonData)));
             } else {
-                CompoundTag tag = customData.copyTag();
-
                 // Preserve spin/flight grant state
                 boolean flightGranted = handler.flightWasGranted;
                 boolean spinGranted = handler.spinWasGranted;
-                handler.deserializeNBT(level.registryAccess(), tag.getCompound(DRAGON), true);
+                handler.deserializeNBT(level.registryAccess(), data.dragonData(), true);
                 handler.flightWasGranted = flightGranted;
                 handler.spinWasGranted = spinGranted;
 
                 magicData.setCurrentSpecies(player, handler.speciesKey());
-                magicData.deserializeNBTForCurrentSpecies(level.registryAccess(), tag.getCompound(ABILITIES));
+                magicData.deserializeNBTForCurrentSpecies(level.registryAccess(), data.abilityData());
 
-                stack.set(DataComponents.CUSTOM_DATA, null);
-                stack.set(DataComponents.CUSTOM_MODEL_DATA, null);
+                stack.remove(DSDataComponents.DRAGON_SOUL);
+                stack.remove(DataComponents.CUSTOM_MODEL_DATA);
             }
         } else if (handler.isDragon()) {
             CompoundTag currentDragonData = handler.serializeNBT(level.registryAccess(), true);
             CompoundTag currentAbilityData = magicData.serializeNBTForCurrentSpecies(level.registryAccess());
-            CompoundTag combinedData = customData == null ? new CompoundTag() : customData.copyTag();
 
-            combinedData.put(DRAGON, currentDragonData);
-            combinedData.put(ABILITIES, currentAbilityData);
-
-            stack.set(DataComponents.CUSTOM_DATA, CustomData.of(combinedData));
+            stack.set(DSDataComponents.DRAGON_SOUL, new DragonSoulData(currentDragonData, currentAbilityData));
             stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(getCustomModelData(level.registryAccess(), currentDragonData)));
             handler.revertToHumanForm(player, true);
         }
@@ -228,12 +234,11 @@ public class DragonSoulItem extends BlockItem {
             return;
         }
 
-        if (stack.has(DataComponents.CUSTOM_DATA)) {
-            //noinspection DataFlowIssue, deprecation -> tag isn't modified, no need to create a copy
-            CompoundTag tag = stack.get(DataComponents.CUSTOM_DATA).getUnsafe().getCompound(DRAGON);
+        if (stack.has(DSDataComponents.DRAGON_SOUL)) {
+            CompoundTag handlerData = getHandlerData(stack);
             tooltips.add(Component.translatable(DESCRIPTION));
 
-            ResourceKey<DragonSpecies> species = ResourceHelper.decodeKey(provider, DragonSpecies.REGISTRY, tag, DragonStateHandler.DRAGON_SPECIES);
+            ResourceKey<DragonSpecies> species = ResourceHelper.decodeKey(provider, DragonSpecies.REGISTRY, handlerData, DragonStateHandler.DRAGON_SPECIES);
             Component name;
 
             if (species != null) {
@@ -242,7 +247,7 @@ public class DragonSoulItem extends BlockItem {
                 name = Component.translatable(INVALID_DRAGON_TYPE);
             }
 
-            double growth = tag.getDouble(DragonStateHandler.GROWTH);
+            double growth = handlerData.getDouble(DragonStateHandler.GROWTH);
             Holder<DragonStage> stage = DragonStage.get(provider, growth);
 
             //noinspection DataFlowIssue -> key is present
@@ -274,28 +279,15 @@ public class DragonSoulItem extends BlockItem {
         return Component.translatable(Translation.Type.DRAGON_SPECIES.wrap(species.location())).append(Component.translatable(SOUL));
     }
 
+    public CompoundTag getHandlerData(final ItemStack stack) {
+        return stack.getOrDefault(DSDataComponents.DRAGON_SOUL, DragonSoulData.EMPTY).dragonData();
+    }
+
     public @Nullable ResourceKey<DragonSpecies> getSpecies(final ItemStack stack, final HolderLookup.Provider provider) {
-        CustomData data = stack.get(DataComponents.CUSTOM_DATA);
-
-        if (data == null) {
-            return null;
-        }
-
-        //noinspection deprecation -> ignored
-        return ResourceHelper.decodeKey(provider, DragonSpecies.REGISTRY, data.getUnsafe().getCompound(DRAGON), DragonStateHandler.DRAGON_SPECIES);
+        return ResourceHelper.decodeKey(provider, DragonSpecies.REGISTRY, getHandlerData(stack), DragonStateHandler.DRAGON_SPECIES);
     }
 
     public @Nullable ResourceKey<DragonStage> getStage(final ItemStack stack, final HolderLookup.Provider provider) {
-        CustomData data = stack.get(DataComponents.CUSTOM_DATA);
-
-        if (data == null) {
-            return null;
-        }
-
-        //noinspection deprecation -> ignored
-        return ResourceHelper.decodeKey(provider, DragonStage.REGISTRY, data.getUnsafe().getCompound(DRAGON), DragonStateHandler.DRAGON_STAGE);
+        return ResourceHelper.decodeKey(provider, DragonStage.REGISTRY, getHandlerData(stack), DragonStateHandler.DRAGON_STAGE);
     }
-
-    private static final String DRAGON = "dragon";
-    private static final String ABILITIES = "soul";
 }

@@ -124,7 +124,7 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
         // Since the model is a singleton, and it stores the bones
         BONES.forEach(name -> model.getBone(name).ifPresent(bone -> {
             Vector3d worldPosition = bone.getWorldPosition();
-            Vec3 position = new Vec3(worldPosition.x(), worldPosition.y(), worldPosition.z()).subtract(ClientDragonRenderer.getModelOffset(animatable, 1));
+            Vec3 position = new Vec3(worldPosition.x(), worldPosition.y(), worldPosition.z()).subtract(DragonEntity.getModelOffset(animatable, 1));
             BONE_POSITIONS.computeIfAbsent(animatable.getId(), key -> new HashMap<>()).put(bone.getName(), position);
         }));
 
@@ -192,6 +192,6 @@ public class DragonRenderer extends GeoEntityRenderer<DragonEntity> {
 
     @Override
     public @NotNull Vec3 getRenderOffset(@NotNull final DragonEntity dragon, final float partialTicks) {
-        return ClientDragonRenderer.getModelOffset(dragon, partialTicks);
+        return DragonEntity.getModelOffset(dragon, partialTicks);
     }
 }

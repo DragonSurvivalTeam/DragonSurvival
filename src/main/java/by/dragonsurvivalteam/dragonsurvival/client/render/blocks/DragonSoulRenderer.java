@@ -10,9 +10,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 
 public class DragonSoulRenderer implements BlockEntityRenderer<DragonSoulBlockEntity> {
@@ -26,14 +26,18 @@ public class DragonSoulRenderer implements BlockEntityRenderer<DragonSoulBlockEn
 
         FakeClientPlayer player = FakeClientPlayerUtils.getFakePlayer(soul.getFakePlayerIndex(), soul.getHandler());
         player.animationSupplier = () -> "sit_dentist"; // FIXME :: configurable? store in data and then switch per right click or sth.?
-
         DragonEntity dragon = FakeClientPlayerUtils.getFakeDragon(soul.getFakePlayerIndex(), soul.getHandler());
-        EntityRenderer<? super DragonEntity> renderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(dragon);
 
         pose.pushPose();
+        pose.translate(0.5, 0, 0.5); // Move to the center of the block
         rotateBlock(soul.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING), pose);
-        renderer.render(dragon, 0, partialTick, pose, buffer, packedLight);
+        Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(dragon).render(dragon, 0, partialTick, pose, buffer, packedLight);
         pose.popPose();
+    }
+
+    @Override
+    public @NotNull AABB getRenderBoundingBox(final DragonSoulBlockEntity soul) {
+        return soul.getRenderBoundingBox();
     }
 
     /** Taken from {@link software.bernie.geckolib.renderer.GeoBlockRenderer#rotateBlock(net.minecraft.core.Direction, com.mojang.blaze3d.vertex.PoseStack)} */
