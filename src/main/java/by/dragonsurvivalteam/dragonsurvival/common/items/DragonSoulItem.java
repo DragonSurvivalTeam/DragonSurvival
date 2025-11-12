@@ -9,6 +9,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncMagicData;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataComponents;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DragonSoulData;
@@ -85,7 +86,9 @@ public class DragonSoulItem extends BlockItem {
 
     @Override
     public @NotNull InteractionResult place(@NotNull final BlockPlaceContext context) {
-        if (context.getPlayer() != null && !context.getPlayer().isCrouching()) {
+        Player player = context.getPlayer();
+
+        if (player != null && (!player.isCrouching() || !player.getData(DSDataAttachments.PLAYER_DATA).enabledDragonSoulPlacement)) {
             return InteractionResult.PASS;
         }
 
@@ -126,7 +129,7 @@ public class DragonSoulItem extends BlockItem {
             CompoundTag tag = stack.get(DataComponents.CUSTOM_DATA).getUnsafe();
 
             if (tag.contains(DragonSoulData.DRAGON)) {
-                data = DragonSoulData.parse(tag);
+                data = DragonSoulData.parseLegacy(tag);
 
                 tag.remove(DragonSoulData.DRAGON);
                 tag.remove(DragonSoulData.ABILITIES);

@@ -16,7 +16,7 @@ public record DragonSoulData(CompoundTag dragonData, CompoundTag abilityData, do
     ).apply(instance, DragonSoulData::new));
 
     // FIXME 1.22 :: remove, this was only a fallback for a breaking change
-    public static @Nullable DragonSoulData parse(final CompoundTag tag) {
+    public static @Nullable DragonSoulData parseLegacy(final CompoundTag tag) {
         CompoundTag handlerData = tag.getCompound(DRAGON);
 
         if (handlerData.isEmpty()) {

@@ -17,6 +17,7 @@ import net.minecraft.world.item.NameTagItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -33,6 +34,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,8 +50,6 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
         super(properties);
         registerDefaultState(getStateDefinition().any().setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH));
     }
-
-    // TODO :: add waterlog
 
     @Override
     protected @NotNull ItemInteractionResult useItemOn(@NotNull final ItemStack stack, @NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final InteractionHand hand, @NotNull final BlockHitResult hitResult) {
@@ -67,6 +67,13 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
         }
 
         return super.useItemOn(stack, state, level, position, player, hand, hitResult);
+    }
+
+    @Override
+    public @NotNull ItemStack getCloneItemStack(@NotNull final BlockState state, @NotNull final HitResult target, @NotNull final LevelReader level, @NotNull final BlockPos position, @NotNull final Player player) {
+        ItemStack stack = super.getCloneItemStack(state, target, level, position, player);
+        level.getBlockEntity(position, DSBlockEntities.DRAGON_SOUL.get()).ifPresent(soul -> soul.saveToItem(stack, level.registryAccess()));
+        return stack;
     }
 
     @Override

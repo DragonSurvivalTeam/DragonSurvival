@@ -73,7 +73,10 @@ public enum Keybind {
     SKINS_MENU(KeyConflictContext.UNIVERSAL, GLFW.GLFW_KEY_UNKNOWN),
 
     @Translation(type = Translation.Type.KEYBIND, comments = "Toggle summon behaviour (+ SHIFT)")
-    TOGGLE_SUMMON_BEHAVIOUR(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_UNKNOWN);
+    TOGGLE_SUMMON_BEHAVIOUR(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_UNKNOWN),
+
+    @Translation(type = Translation.Type.KEYBIND, comments = "Toggle dragon soul placement")
+    TOGGLE_DRAGON_SOUL_PLACEMENT(KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_UNKNOWN);
 
     @Translation(comments = "Dragon Survival")
     private static final String CATEGORY = Translation.Type.KEYBIND.wrap("category");

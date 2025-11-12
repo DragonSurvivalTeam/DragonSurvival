@@ -143,7 +143,6 @@ public class NetworkHandler {
         registrar.playToClient(SyncPenaltySupply.TYPE, SyncPenaltySupply.STREAM_CODEC, SyncPenaltySupply::handleClient);
         registrar.playToClient(SyncDamageModification.TYPE, SyncDamageModification.STREAM_CODEC, SyncDamageModification::handleClient);
         registrar.playToClient(SyncSwimDataEntry.TYPE, SyncSwimDataEntry.STREAM_CODEC, SyncSwimDataEntry::handleClient);
-        registrar.playToClient(SyncData.TYPE, SyncData.STREAM_CODEC, SyncData::handleClient);
         registrar.playToClient(SyncSummonedEntity.TYPE, SyncSummonedEntity.STREAM_CODEC, SyncSummonedEntity::handleClient);
         registrar.playToClient(SyncGlowInstance.TYPE, SyncGlowInstance.STREAM_CODEC, SyncGlowInstance::handleClient);
         registrar.playToClient(SyncBlockVision.TYPE, SyncBlockVision.STREAM_CODEC, SyncBlockVision::handleClient);
@@ -153,6 +152,7 @@ public class NetworkHandler {
         registrar.playToServer(SyncBeginCast.TYPE, SyncBeginCast.STREAM_CODEC, SyncBeginCast::handleServer);
         registrar.playToServer(SyncSummonedEntitiesBehaviour.TYPE, SyncSummonedEntitiesBehaviour.STREAM_CODEC, SyncSummonedEntitiesBehaviour::handleServer);
 
+        registrar.playBidirectional(SyncData.TYPE, SyncData.STREAM_CODEC, SyncData::handleCommon);
         registrar.playBidirectional(SyncStopCast.TYPE, SyncStopCast.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncStopCast::handleClient, SyncStopCast::handleServer));
         registrar.playBidirectional(SyncDisableAbility.TYPE, SyncDisableAbility.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncDisableAbility::handleClient, SyncDisableAbility::handleServer));
 

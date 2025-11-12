@@ -36,7 +36,7 @@ public class DragonSoulRenderer implements BlockEntityRenderer<DragonSoulBlockEn
 
     @Override
     public void render(final DragonSoulBlockEntity soul, final float partialTick, @NotNull final PoseStack pose, @NotNull final MultiBufferSource buffer, final int packedLight, final int packedOverlay) {
-        if (!soul.getHandler().isDragon()) {
+        if (soul.getHandler() == null || !soul.getHandler().isDragon()) {
             return;
         }
 
