@@ -6,6 +6,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonBeacon;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonDoor;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonPressurePlates;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonRiderWorkbenchBlock;
+import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonSoulBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.HelmetBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.PrimordialAnchorBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.SkeletonPieceBlock;
@@ -99,7 +100,7 @@ public class DataBlockStateProvider extends BlockStateProvider {
                             String suffix = (hingeRight && !open || !hingeRight && open ? "_hinge" : "");
                             ResourceLocation texture = modLoc(BLOCK_FOLDER + "/" + name);
                             ModelFile door = models()
-                                    .withExistingParent(name + suffix, ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + "small_dragon_door" + (suffix.equals("_hinge") ? "_rh" : "")))
+                                    .withExistingParent(name + suffix, DragonSurvival.res(BLOCK_FOLDER + "/" + "small_dragon_door" + (suffix.equals("_hinge") ? "_rh" : "")))
                                     .texture("bottom", texture)
                                     .texture("top", texture);
                             int yRot = (int) state.getValue(BlockStateProperties.HORIZONTAL_FACING).toYRot() + 90;
@@ -147,6 +148,7 @@ public class DataBlockStateProvider extends BlockStateProvider {
                             int layers = state.getValue(TreasureBlock.LAYERS);
                             String name = holder.getId().getPath();
                             BlockModelBuilder builder = layers != 8 ? models()
+                                    // FIXME :: use our own base since this re-use causes issues with resourcepacks
                                     .withExistingParent(name + layers * 2, BLOCK_FOLDER + "/" + "snow_height" + layers * 2)
                                     .texture("particle", modLoc(BLOCK_FOLDER + "/" + name))
                                     .texture("texture", modLoc(BLOCK_FOLDER + "/" + name)) // TODO :: why isn't this particle added to the full block type?
@@ -201,7 +203,7 @@ public class DataBlockStateProvider extends BlockStateProvider {
                 getVariantBuilder(holder.get())
                         .forAllStates(state -> {
                             boolean isEmpty = !state.getValue(SourceOfMagicBlock.FILLED);
-                            ModelFile.ExistingModelFile modelFile = models().getExistingFile(ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + name + (isEmpty ? "_empty" : "")));
+                            ModelFile.ExistingModelFile modelFile = models().getExistingFile(DragonSurvival.res(BLOCK_FOLDER + "/" + name + (isEmpty ? "_empty" : "")));
                             return ConfiguredModel.builder()
                                     .modelFile(modelFile)
                                     .rotationY((int) (state.getValue(BlockStateProperties.HORIZONTAL_FACING).toYRot() + 180) % 360)
@@ -211,14 +213,14 @@ public class DataBlockStateProvider extends BlockStateProvider {
                 getVariantBuilder(holder.get())
                         .forAllStates(state -> {
                             BlockModelBuilder builder = models().withExistingParent(holder.getId().getPath(), BLOCK_FOLDER + "/cube_column")
-                                    .texture("side", ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + "dragons_memory_side"))
-                                    .texture("end", ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + "dragons_memory_top"));
+                                    .texture("side", DragonSurvival.res(BLOCK_FOLDER + "/" + "dragons_memory_side"))
+                                    .texture("end", DragonSurvival.res(BLOCK_FOLDER + "/" + "dragons_memory_top"));
                             return ConfiguredModel.builder().modelFile(builder).build();
                         });
             } else if (holder.get() instanceof DragonBeacon) {
                 getVariantBuilder(holder.get())
                         .forAllStates(state -> {
-                            ModelFile.ExistingModelFile modelFile = models().getExistingFile(ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + "empty"));
+                            ModelFile.ExistingModelFile modelFile = models().getExistingFile(DragonSurvival.res(BLOCK_FOLDER + "/" + "empty"));
                             return ConfiguredModel.builder().modelFile(modelFile).build();
                         });
             } else if (holder.get() instanceof SkeletonPieceBlock) {
@@ -230,20 +232,23 @@ public class DataBlockStateProvider extends BlockStateProvider {
 
                 getVariantBuilder(holder.get())
                         .forAllStates(state -> {
-                            BlockModelBuilder builder = models().withExistingParent(holder.getId().getPath(), ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + split[0]))
-                                    .texture("skeleton_texture", ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + "skeleton_dragon_" + skin))
-                                    .texture("particle", ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + "placeholder_" + skin));
+                            BlockModelBuilder builder = models().withExistingParent(holder.getId().getPath(), DragonSurvival.res(BLOCK_FOLDER + "/" + split[0]))
+                                    .texture("skeleton_texture", DragonSurvival.res(BLOCK_FOLDER + "/" + "skeleton_dragon_" + skin))
+                                    .texture("particle", DragonSurvival.res(BLOCK_FOLDER + "/" + "placeholder_" + skin));
                             return ConfiguredModel.builder().modelFile(builder).rotationY((int) state.getValue(BlockStateProperties.HORIZONTAL_FACING).toYRot()).build();
                         });
             } else if (holder.get() instanceof PrimordialAnchorBlock) {
                 getVariantBuilder(holder.get())
                         .forAllStates(state -> {
                             String suffix = state.getValue(PrimordialAnchorBlock.BLOODY) ? "_bloody" : state.getValue(PrimordialAnchorBlock.CHARGED) ? "_charge" : "_empty";
-                            BlockModelBuilder builder = models().withExistingParent(holder.getId().getPath() + suffix, ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + "primordial_anchor"))
-                                    .texture("2", ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + "primordial_anchor" + suffix));
+                            BlockModelBuilder builder = models().withExistingParent(holder.getId().getPath() + suffix, DragonSurvival.res(BLOCK_FOLDER + "/" + "primordial_anchor"))
+                                    .texture("2", DragonSurvival.res(BLOCK_FOLDER + "/" + "primordial_anchor" + suffix));
 
                             return ConfiguredModel.builder().modelFile(builder).build();
                         });
+            } else if (holder.get() instanceof DragonSoulBlock) {
+                getVariantBuilder(holder.get())
+                        .forAllStates(state -> ConfiguredModel.builder().modelFile(models().getExistingFile(DragonSurvival.res(BLOCK_FOLDER + "/dragon_soul"))).rotationY((int) state.getValue(BlockStateProperties.HORIZONTAL_FACING).toYRot()).build());
             }
         });
     }

@@ -1,9 +1,12 @@
 package by.dragonsurvivalteam.dragonsurvival.server.tileentity;
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
+import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataComponents;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DragonSoulData;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -15,11 +18,17 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 public class DragonSoulBlockEntity extends BlockEntity {
-    private DragonStateHandler handler;
-    /** Field only relevant on the client-side */
+    @Translation(key = "soul_block_default_animation", type = Translation.Type.CONFIGURATION, comments = "Default animation for the soul block")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"items", "dragon_soul"}, key = "soul_block_default_animation")
+    public static String DEFAULT_ANIMATION = "sit";
+
+    /** These fields are only relevant on the client-side */
+    public String animation = DEFAULT_ANIMATION;
     public int fakePlayerIndex = -1;
     public double scale = -1;
     public int tick;
+
+    private DragonStateHandler handler;
 
     public DragonSoulBlockEntity(final BlockPos position, final BlockState state) {
         super(DSBlockEntities.DRAGON_SOUL.get(), position, state);
@@ -68,8 +77,15 @@ public class DragonSoulBlockEntity extends BlockEntity {
     }
 
     @Override
+    protected void saveAdditional(@NotNull final CompoundTag tag, @NotNull final HolderLookup.Provider registries) {
+        super.saveAdditional(tag, registries);
+        tag.putString(ANIMATION, animation);
+    }
+
+    @Override
     public void loadAdditional(@NotNull final CompoundTag tag, @NotNull final HolderLookup.Provider provider) {
         super.loadAdditional(tag, provider);
+        animation = tag.getString(ANIMATION);
 
         if (tag.contains(SCALE)) {
             scale = tag.getDouble(SCALE);
@@ -83,4 +99,5 @@ public class DragonSoulBlockEntity extends BlockEntity {
 
     private static final String SOUL_DATA = "soul_data";
     private static final String SCALE = "scale";
+    private static final String ANIMATION = "animation";
 }

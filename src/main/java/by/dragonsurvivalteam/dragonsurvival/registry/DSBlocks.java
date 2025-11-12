@@ -675,7 +675,6 @@ public class DSBlocks {
                     .strength(1, 1200)
                     .noOcclusion()
                     .noCollission()
-                    .lightLevel(value -> value.getValue(BlockStateProperties.LIT) ? 15 : 0)
             )
     );
 

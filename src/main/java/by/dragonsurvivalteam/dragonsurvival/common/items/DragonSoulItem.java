@@ -28,6 +28,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -38,7 +39,6 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.component.CustomModelData;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -84,14 +84,18 @@ public class DragonSoulItem extends BlockItem {
     }
 
     @Override
-    protected boolean placeBlock(@NotNull final BlockPlaceContext context, @NotNull final BlockState state) {
+    public @NotNull InteractionResult place(@NotNull final BlockPlaceContext context) {
+        if (context.getPlayer() != null && !context.getPlayer().isCrouching()) {
+            return InteractionResult.PASS;
+        }
+
         DragonSoulData data = context.getItemInHand().get(DSDataComponents.DRAGON_SOUL);
 
         if (data == null) {
-            return false;
+            return InteractionResult.PASS;
         }
 
-        return super.placeBlock(context, state);
+        return super.place(context);
     }
 
     /** '0' means there is no data and '1' means it contains a soul */
