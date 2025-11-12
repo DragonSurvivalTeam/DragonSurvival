@@ -7,9 +7,11 @@ import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.BlockRenderDispatcherAccess;
+import by.dragonsurvivalteam.dragonsurvival.network.syncing.RequestDragonSoulData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonSoulBlockEntity;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
+import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
@@ -25,6 +27,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.client.RenderTypeHelper;
 import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 public class DragonSoulRenderer implements BlockEntityRenderer<DragonSoulBlockEntity> {
@@ -37,6 +40,16 @@ public class DragonSoulRenderer implements BlockEntityRenderer<DragonSoulBlockEn
     @Override
     public void render(final DragonSoulBlockEntity soul, final float partialTick, @NotNull final PoseStack pose, @NotNull final MultiBufferSource buffer, final int packedLight, final int packedOverlay) {
         if (soul.getHandler() == null || !soul.getHandler().isDragon()) {
+            if (soul.packetTimeout <= 0) {
+                // When a player places the block, the components are not synchronized to the other clients
+                // The player that places the block cannot determine when other clients receive the block entity
+                // Therefor request the data when needed
+                PacketDistributor.sendToServer(new RequestDragonSoulData(soul.getBlockPos()));
+                soul.packetTimeout = Functions.secondsToTicks(2);
+            } else if (soul.packetTimeout > 0) {
+                soul.packetTimeout -= partialTick;
+            }
+
             return;
         }
 

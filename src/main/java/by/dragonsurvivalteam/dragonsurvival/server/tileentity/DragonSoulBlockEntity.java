@@ -26,6 +26,7 @@ public class DragonSoulBlockEntity extends BlockEntity {
     public String animation = DEFAULT_ANIMATION;
     public int fakePlayerIndex = -1;
     public int tick;
+    public float packetTimeout;
 
     private DragonStateHandler handler;
 

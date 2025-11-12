@@ -65,7 +65,10 @@ import by.dragonsurvivalteam.dragonsurvival.network.status.SyncEnderDragonMark;
 import by.dragonsurvivalteam.dragonsurvival.network.status.SyncMultiMining;
 import by.dragonsurvivalteam.dragonsurvival.network.status.SyncPlayerJump;
 import by.dragonsurvivalteam.dragonsurvival.network.status.SyncResting;
+import by.dragonsurvivalteam.dragonsurvival.network.syncing.RequestDragonSoulData;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
+import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncDragonSoulAnimation;
+import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncDragonSoulData;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -88,12 +91,15 @@ public class NetworkHandler {
         registrar.playToClient(SyncEffectModification.TYPE, SyncEffectModification.STREAM_CODEC, SyncEffectModification::handleClient);
         registrar.playToClient(SyncOxygenBonus.TYPE, SyncOxygenBonus.STREAM_CODEC, SyncOxygenBonus::handleClient);
         registrar.playToClient(SyncDragonPassengerID.TYPE, SyncDragonPassengerID.STREAM_CODEC, SyncDragonPassengerID::handleClient);
+        registrar.playToClient(RequestClientData.TYPE, RequestClientData.STREAM_CODEC, RequestClientData::handleClient);
+        registrar.playToClient(SyncDragonSoulAnimation.TYPE, SyncDragonSoulAnimation.STREAM_CODEC, SyncDragonSoulAnimation::handleClient);
 
         registrar.playToServer(SortInventory.TYPE, SortInventory.STREAM_CODEC, SortInventory::handleServer);
         registrar.playToServer(SyncAltarCooldown.TYPE, SyncAltarCooldown.STREAM_CODEC, SyncAltarCooldown::handleServer);
         registrar.playToServer(RequestOpenDragonInventory.TYPE, RequestOpenDragonInventory.STREAM_CODEC, RequestOpenDragonInventory::handleServer);
         registrar.playToServer(RequestOpenVanillaInventory.TYPE, RequestOpenVanillaInventory.STREAM_CODEC, RequestOpenVanillaInventory::handleServer);
         registrar.playToServer(SyncLargeDragonDestruction.TYPE, SyncLargeDragonDestruction.STREAM_CODEC, SyncLargeDragonDestruction::handleServer);
+        registrar.playToServer(RequestDragonSoulData.TYPE, RequestDragonSoulData.STREAM_CODEC, RequestDragonSoulData::handleServer);
 
         registrar.playBidirectional(OpenDragonEditor.TYPE, OpenDragonEditor.STREAM_CODEC, new DirectionalPayloadHandler<>(OpenDragonEditor::handleClient, OpenDragonEditor::handleServer));
         registrar.playBidirectional(OpenDragonAltar.TYPE, OpenDragonAltar.STREAM_CODEC, new DirectionalPayloadHandler<>(OpenDragonAltar::handleClient, OpenDragonAltar::handleServer));
