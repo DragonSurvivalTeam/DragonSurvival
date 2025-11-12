@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.common.codecs.predicates;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.Storage;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.advancements.critereon.EntitySubPredicate;
@@ -17,6 +18,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -35,7 +38,8 @@ public record CustomPredicates(
         Optional<NearbyEntityPredicate> isNearbyEntity,
         Optional<MinMaxBounds.Ints> playerHunger,
         Optional<MinMaxBounds.Doubles> healthPercentage,
-        Optional<UUID> hasUUID
+        Optional<UUID> hasUUID,
+        Optional<LookingAtBlock> lookingAtBlock
 ) implements EntitySubPredicate {
     public static final MapCodec<CustomPredicates> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             RegistryCodecs.homogeneousList(NeoForgeRegistries.FLUID_TYPES.key()).optionalFieldOf("eye_in_fluid").forGetter(CustomPredicates::eyeInFluid),
@@ -45,8 +49,16 @@ public record CustomPredicates(
             NearbyEntityPredicate.CODEC.optionalFieldOf("is_nearby_entity").forGetter(CustomPredicates::isNearbyEntity),
             MinMaxBounds.Ints.CODEC.optionalFieldOf("player_hunger").forGetter(CustomPredicates::playerHunger),
             MinMaxBounds.Doubles.CODEC.optionalFieldOf("health_percentage").forGetter(CustomPredicates::healthPercentage),
-            UUIDUtil.LENIENT_CODEC.optionalFieldOf("has_uuid").forGetter(CustomPredicates::hasUUID)
+            UUIDUtil.LENIENT_CODEC.optionalFieldOf("has_uuid").forGetter(CustomPredicates::hasUUID),
+            LookingAtBlock.CODEC.optionalFieldOf("looking_at_block").forGetter(CustomPredicates::lookingAtBlock)
     ).apply(instance, CustomPredicates::new));
+
+    record LookingAtBlock(BlockPredicate predicate, double distance) {
+        public static final Codec<LookingAtBlock> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                BlockPredicate.CODEC.fieldOf("predicate").forGetter(LookingAtBlock::predicate),
+                Codec.DOUBLE.fieldOf("distance").forGetter(LookingAtBlock::distance)
+        ).apply(instance, LookingAtBlock::new));
+    }
 
     @Override
     public @NotNull MapCodec<? extends EntitySubPredicate> codec() {
@@ -100,6 +112,18 @@ public record CustomPredicates(
             return false;
         }
 
+        if (lookingAtBlock.isPresent()) {
+            LookingAtBlock lookingAtBlock = this.lookingAtBlock.get();
+
+            if (!(entity.pick(lookingAtBlock.distance(), 0, false) instanceof BlockHitResult blockHitResult)) {
+                return false;
+            }
+
+            if (!lookingAtBlock.predicate().test(level, blockHitResult.getBlockPos())) {
+                return false;
+            }
+        }
+
         return true;
     }
 
@@ -113,6 +137,7 @@ public record CustomPredicates(
         if (entity instanceof Player player) {
             return player.getFoodData().getFoodLevel();
         }
+
         // Only players have hunger, so return 0 otherwise
         return 0;
     }
@@ -121,6 +146,7 @@ public record CustomPredicates(
         if (entity instanceof LivingEntity living) {
             return living.getHealth() / living.getMaxHealth();
         }
+
         // Not alive, doesn't have health
         return 0;
     }
@@ -135,9 +161,10 @@ public record CustomPredicates(
         private Optional<MinMaxBounds.Ints> sunLightLevel = Optional.empty();
         private Optional<ResourceLocation> hasDurationEffect = Optional.empty();
         private Optional<NearbyEntityPredicate> isNearbyEntity = Optional.empty();
-        private Optional<UUID> hasUUID = Optional.empty();
         private Optional<MinMaxBounds.Ints> playerHunger = Optional.empty();
         private Optional<MinMaxBounds.Doubles> healthPercentage = Optional.empty();
+        private Optional<UUID> hasUUID = Optional.empty();
+        private Optional<LookingAtBlock> lookingAt = Optional.empty();
 
         public static CustomPredicates.Builder start() {
             return new CustomPredicates.Builder();
@@ -188,11 +215,6 @@ public record CustomPredicates(
             return this;
         }
 
-        public CustomPredicates.Builder hasUUID(final UUID uuid) {
-            this.hasUUID = Optional.of(uuid);
-            return this;
-        }
-
         public CustomPredicates.Builder hungerInRange(int min, int max) {
             this.playerHunger = Optional.of(MinMaxBounds.Ints.between(min, max));
             return this;
@@ -203,8 +225,18 @@ public record CustomPredicates(
             return this;
         }
 
+        public CustomPredicates.Builder hasUUID(final UUID uuid) {
+            this.hasUUID = Optional.of(uuid);
+            return this;
+        }
+
+        public CustomPredicates.Builder lookingAt(final BlockPredicate predicate, final double distance) {
+            this.lookingAt = Optional.of(new LookingAtBlock(predicate, distance));
+            return this;
+        }
+
         public CustomPredicates build() {
-            return new CustomPredicates(eyeInFluid, Optional.of(new WeatherPredicate(isRaining, isThundering, isSnowing, isRainingOrSnowing)), sunLightLevel, hasDurationEffect, isNearbyEntity, playerHunger, healthPercentage, hasUUID);
+            return new CustomPredicates(eyeInFluid, Optional.of(new WeatherPredicate(isRaining, isThundering, isSnowing, isRainingOrSnowing)), sunLightLevel, hasDurationEffect, isNearbyEntity, playerHunger, healthPercentage, hasUUID, lookingAt);
         }
     }
 }
