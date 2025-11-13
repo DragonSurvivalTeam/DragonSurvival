@@ -190,33 +190,33 @@ public class DataGeneration {
     @SubscribeEvent
     public static void addPackFinders(final AddPackFindersEvent event) {
         if (event.getPackType() == PackType.CLIENT_RESOURCES) {
-            registerResourcePack(event, Component.literal("DS - Draconized Armor"), "resourcepacks/draconized_armor", PackSource.BUILT_IN);
-            registerResourcePack(event, Component.literal("DS - Dark GUI"), "resourcepacks/ds_dark_gui", PackSource.BUILT_IN);
+            registerResourcePack(event, Component.literal("DS - Draconized Armor"), "resourcepacks/draconized_armor");
+            registerResourcePack(event, Component.literal("DS - Dark GUI"), "resourcepacks/ds_dark_gui");
         } else if (event.getPackType() == PackType.SERVER_DATA) {
-            registerDataPack(event, Component.literal("DS - Ancient Dragons"), ANCIENT_STAGE_DATAPACK, PackSource.DEFAULT);
-            registerDataPack(event, Component.literal("DS - Unlock Wings"), UNLOCK_WINGS_DATAPACK, PackSource.DEFAULT);
+            registerDataPack(event, Component.literal("DS - Ancient Dragons"), ANCIENT_STAGE_DATAPACK, PackSource.DEFAULT, false);
+            registerDataPack(event, Component.literal("DS - Unlock Wings"), UNLOCK_WINGS_DATAPACK, PackSource.DEFAULT, false);
 
             if (ModCheck.isModLoaded(ModCheck.SILENTGEMS)) {
-                registerDataPack(event, Component.literal("DS - Silent Gems"), SILENT_GEMS_DATAPACK, PackSource.BUILT_IN);
+                registerDataPack(event, Component.literal("DS - Silent Gems"), SILENT_GEMS_DATAPACK, PackSource.BUILT_IN, true);
             }
 
             if (ModCheck.isModLoaded(ModCheck.CREATE)) {
-                registerDataPack(event, Component.literal("DS - Create"), CREATE_DATAPACK, PackSource.BUILT_IN);
+                registerDataPack(event, Component.literal("DS - Create"), CREATE_DATAPACK, PackSource.BUILT_IN, true);
             }
 
             // Feature datapacks (things that are not enabled by default)
-            registerDataPack(event, Component.literal("DS - Ancient (no crushing)"), ANCIENT_STAGE_DATAPACK_NO_CRUSHING, PackSource.FEATURE);
-            registerDataPack(event, Component.literal("DS - No Penalties"), NO_PENALTIES_DATAPACK, PackSource.FEATURE);
-            registerDataPack(event, Component.literal("DS - No Experience Conversion"), NO_EXPERIENCE_CONVERSION_DATAPACK, PackSource.FEATURE);
+            registerDataPack(event, Component.literal("DS - Ancient (no crushing)"), ANCIENT_STAGE_DATAPACK_NO_CRUSHING, PackSource.FEATURE, false);
+            registerDataPack(event, Component.literal("DS - No Penalties"), NO_PENALTIES_DATAPACK, PackSource.FEATURE, false);
+            registerDataPack(event, Component.literal("DS - No Experience Conversion"), NO_EXPERIENCE_CONVERSION_DATAPACK, PackSource.FEATURE, false);
         }
     }
 
-    private static void registerResourcePack(final AddPackFindersEvent event, final MutableComponent name, final String folder, PackSource source) {
+    private static void registerResourcePack(final AddPackFindersEvent event, final MutableComponent name, final String folder) {
         event.addPackFinders(DragonSurvival.res(folder), PackType.CLIENT_RESOURCES, name, PackSource.BUILT_IN, false, Pack.Position.TOP);
     }
 
-    private static void registerDataPack(final AddPackFindersEvent event, final MutableComponent name, final String datapack, PackSource source) {
-        event.addPackFinders(DragonSurvival.res("data/" + DragonSurvival.MODID + "/datapacks/" + datapack), PackType.SERVER_DATA, name, source, source != PackSource.FEATURE, Pack.Position.TOP);
+    private static void registerDataPack(final AddPackFindersEvent event, final MutableComponent name, final String datapack, final PackSource source, final boolean alwaysActive) {
+        event.addPackFinders(DragonSurvival.res("data/" + DragonSurvival.MODID + "/datapacks/" + datapack), PackType.SERVER_DATA, name, source, alwaysActive, Pack.Position.TOP);
     }
 
     private static void addAncientStageDatapack(final DataGenerator generator, final CompletableFuture<HolderLookup.Provider> lookup) {
