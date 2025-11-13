@@ -8,6 +8,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.Dura
 import by.dragonsurvivalteam.dragonsurvival.common.entity.goals.FollowSummonerGoal;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.goals.SummonerHurtByTargetGoal;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.goals.SummonerHurtTargetGoal;
+import by.dragonsurvivalteam.dragonsurvival.common.entity.goals.SummonerTargetedGoal;
 import by.dragonsurvivalteam.dragonsurvival.mixins.PrimedTntAccess;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncSummonedEntity;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
@@ -412,6 +413,7 @@ public class SummonEntityEffect extends DurationInstanceBase<SummonedEntities, S
             if (entity instanceof Mob mob) {
                 mob.goalSelector.addGoal(1, new SummonerHurtByTargetGoal(mob));
                 mob.goalSelector.addGoal(2, new SummonerHurtTargetGoal(mob));
+                mob.goalSelector.addGoal(3, new SummonerTargetedGoal(mob));
                 mob.goalSelector.addGoal(3, new FollowSummonerGoal(mob, 1, 10, 2));
             }
         }

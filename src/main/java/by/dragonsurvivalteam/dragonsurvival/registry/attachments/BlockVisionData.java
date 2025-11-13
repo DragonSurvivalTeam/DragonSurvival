@@ -23,7 +23,7 @@ public class BlockVisionData extends Storage<BlockVision.Instance> {
     private final Map<Block, CacheEntry> cache = new HashMap<>();
     private int maximumRange = -1;
 
-    record CacheEntry(int range, List<Integer> colors, BlockVision.DisplayType displayType) {}
+    record CacheEntry(int range, List<Integer> colors, BlockVision.DisplayType displayType, int particleRate) {}
 
     public int getRange(@Nullable final Block block) {
         if (block == null) {
@@ -49,8 +49,12 @@ public class BlockVisionData extends Storage<BlockVision.Instance> {
         return cache.computeIfAbsent(block, this::storeData).displayType();
     }
 
+    public int getParticleRate(final Block block) {
+        return cache.computeIfAbsent(block, this::storeData).particleRate();
+    }
+
     private CacheEntry storeData(final Block block) {
-        return new CacheEntry(storeRange(block), storeColor(block), storeDisplayType(block));
+        return new CacheEntry(storeRange(block), storeColor(block), storeDisplayType(block), storeParticleRate(block));
     }
 
     /** If the passed state is 'null' it will return the range as well */
@@ -90,6 +94,18 @@ public class BlockVisionData extends Storage<BlockVision.Instance> {
         }
 
         return BlockVision.DisplayType.NONE;
+    }
+
+    private int storeParticleRate(final Block block) {
+        for (BlockVision.Instance instance : all()) {
+            int particleRate = instance.getParticleRate(block);
+
+            if (particleRate != BlockVision.NO_PARTICLE_RATE) {
+                return particleRate;
+            }
+        }
+
+        return BlockVision.NO_PARTICLE_RATE;
     }
 
     @Override

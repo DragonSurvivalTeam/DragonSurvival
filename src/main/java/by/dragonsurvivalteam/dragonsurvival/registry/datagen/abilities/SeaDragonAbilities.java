@@ -313,42 +313,48 @@ public class SeaDragonAbilities {
                                         TextColor.fromLegacyFormat(ChatFormatting.GREEN),
                                         TextColor.fromLegacyFormat(ChatFormatting.RED),
                                         TextColor.fromLegacyFormat(ChatFormatting.BLUE)
-                                )
+                                ),
+                                BlockVision.DEFAULT_PARTICLE_RATE
                         )),
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("lapis_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(260))).hidden().build(),
                                 context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_LAPIS),
                                 LevelBasedValue.constant(16),
                                 BlockVision.DisplayType.PARTICLES,
-                                List.of(TextColor.fromLegacyFormat(ChatFormatting.BLUE))
+                                List.of(TextColor.fromLegacyFormat(ChatFormatting.BLUE)),
+                                BlockVision.DEFAULT_PARTICLE_RATE
                         )),
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("gold_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(260))).hidden().build(),
                                 context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_GOLD),
                                 LevelBasedValue.constant(22),
                                 BlockVision.DisplayType.PARTICLES,
-                                List.of(TextColor.fromLegacyFormat(ChatFormatting.GOLD))
+                                List.of(TextColor.fromLegacyFormat(ChatFormatting.GOLD)),
+                                BlockVision.DEFAULT_PARTICLE_RATE
                         )),
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("redstone_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(260))).hidden().build(),
                                 context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_REDSTONE),
                                 LevelBasedValue.constant(16),
                                 BlockVision.DisplayType.PARTICLES,
-                                List.of(TextColor.fromLegacyFormat(ChatFormatting.DARK_RED))
+                                List.of(TextColor.fromLegacyFormat(ChatFormatting.DARK_RED)),
+                                BlockVision.DEFAULT_PARTICLE_RATE
                         )),
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("coal_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(260))).hidden().build(),
                                 context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_COAL),
                                 LevelBasedValue.constant(16),
                                 BlockVision.DisplayType.PARTICLES,
-                                List.of(TextColor.fromLegacyFormat(ChatFormatting.BLACK))
+                                List.of(TextColor.fromLegacyFormat(ChatFormatting.BLACK)),
+                                BlockVision.DEFAULT_PARTICLE_RATE
                         )),
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("emerald_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(260))).hidden().build(),
                                 context.lookup(Registries.BLOCK).getOrThrow(Tags.Blocks.ORES_EMERALD),
                                 LevelBasedValue.constant(26),
                                 BlockVision.DisplayType.PARTICLES,
-                                List.of(TextColor.fromLegacyFormat(ChatFormatting.GREEN))
+                                List.of(TextColor.fromLegacyFormat(ChatFormatting.GREEN)),
+                                BlockVision.DEFAULT_PARTICLE_RATE
                         )),
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("quartz_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(260))).hidden().build(),
@@ -358,7 +364,8 @@ public class SeaDragonAbilities {
                                 List.of(
                                         TextColor.fromLegacyFormat(ChatFormatting.DARK_RED),
                                         TextColor.fromLegacyFormat(ChatFormatting.GRAY)
-                                )
+                                ),
+                                BlockVision.DEFAULT_PARTICLE_RATE
                         )),
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("copper_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(260))).hidden().build(),
@@ -368,7 +375,8 @@ public class SeaDragonAbilities {
                                 List.of(
                                         TextColor.fromLegacyFormat(ChatFormatting.GOLD),
                                         TextColor.fromLegacyFormat(ChatFormatting.DARK_GREEN)
-                                )
+                                ),
+                                BlockVision.DEFAULT_PARTICLE_RATE
                         )),
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("netherite_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(260))).hidden().build(),
@@ -380,7 +388,8 @@ public class SeaDragonAbilities {
                                         TextColor.fromLegacyFormat(ChatFormatting.BLACK),
                                         TextColor.fromLegacyFormat(ChatFormatting.AQUA),
                                         TextColor.fromLegacyFormat(ChatFormatting.DARK_GRAY)
-                                )
+                                ),
+                                BlockVision.DEFAULT_PARTICLE_RATE
                         )),
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("iron_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(260))).hidden().build(),
@@ -391,14 +400,16 @@ public class SeaDragonAbilities {
                                         TextColor.fromLegacyFormat(ChatFormatting.DARK_GRAY),
                                         TextColor.fromLegacyFormat(ChatFormatting.GRAY),
                                         TextColor.fromLegacyFormat(ChatFormatting.WHITE)
-                                )
+                                ),
+                                BlockVision.DEFAULT_PARTICLE_RATE
                         )),
                         BlockVisionEffect.single(new BlockVision(
                                 DurationInstanceBase.create(DragonSurvival.res("general_ore_vision")).duration(LevelBasedValue.perLevel(Functions.secondsToTicks(260))).customIcon(DragonSurvival.res("textures/ability_effect/general_ore_vision.png")).build(),
                                 context.lookup(Registries.BLOCK).getOrThrow(DSBlockTags.GENERAL_ORES),
                                 LevelBasedValue.constant(16),
                                 BlockVision.DisplayType.PARTICLES,
-                                List.of(TextColor.fromLegacyFormat(ChatFormatting.WHITE))
+                                List.of(TextColor.fromLegacyFormat(ChatFormatting.WHITE)),
+                                BlockVision.DEFAULT_PARTICLE_RATE
                         ))
                 ), TargetingMode.NON_ENEMIES), LevelBasedValue.constant(5)), ActionContainer.TriggerPoint.DEFAULT, LevelBasedValue.constant(1))),
                 true,

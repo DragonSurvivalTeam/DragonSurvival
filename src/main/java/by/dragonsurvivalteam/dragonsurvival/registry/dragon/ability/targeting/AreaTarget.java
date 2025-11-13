@@ -46,7 +46,7 @@ public record AreaTarget(Either<BlockTargeting, EntityTargeting> target, LevelBa
     @Override
     public MutableComponent getDescription(final Player dragon, final DragonAbilityInstance ability) {
         Component targetingComponent = target.map(block -> null, entity -> entity.targetingMode().translation());
-        MutableComponent area = DSColors.dynamicValue(FORMAT.format(getArea(ability)));
+        MutableComponent area = DSColors.dynamicValue(FORMAT.format(getDistance(dragon, ability)));
 
         if (targetingComponent == null) {
             return Component.translatable(AREA_TARGET_BLOCK, area);
@@ -55,12 +55,13 @@ public record AreaTarget(Either<BlockTargeting, EntityTargeting> target, LevelBa
         }
     }
 
-    private float getArea(final DragonAbilityInstance ability) {
-        return radius().calculate(ability.level());
+    @Override
+    public float getDistance(final Player dragon, final DragonAbilityInstance instance) {
+        return radius().calculate(instance.level());
     }
 
     public AABB calculateAffectedArea(final Player dragon, final DragonAbilityInstance ability) {
-        double radius = radius().calculate(ability.level());
+        double radius = getDistance(dragon, ability);
         return AABB.ofSize(dragon.position(), radius * 2, radius * 2, radius * 2);
     }
 

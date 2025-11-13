@@ -401,7 +401,6 @@ public class DragonStateHandler extends EntityStateHandler {
             }
         }
 
-
         if (oldSpecies != null && !savedForSoul) {
             // Save the growth for the previous species if we have changed and it isn't due to a soul save
             savedGrowth.put(oldSpecies.getKey(), oldGrowth);
@@ -833,10 +832,10 @@ public class DragonStateHandler extends EntityStateHandler {
 
     // Used by the dragon soul item
     public static final String DRAGON_SPECIES = "dragon_species";
+    public static final String DRAGON_STAGE = "dragon_stage";
     public static final String GROWTH = "growth";
 
     private static final String DRAGON_BODY = "dragon_body";
-    private static final String DRAGON_STAGE = "dragon_stage";
 
     private static final String ENTITY_STATE = "entity_state";
     private static final String SKIN_DATA = "skin_data";

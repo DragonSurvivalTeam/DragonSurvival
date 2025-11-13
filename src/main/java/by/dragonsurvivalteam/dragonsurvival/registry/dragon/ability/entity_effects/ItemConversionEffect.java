@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects;
 
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ParticleData;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.serialization.Codec;
@@ -9,6 +10,7 @@ import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.util.random.Weight;
 import net.minecraft.util.random.WeightedEntry;
@@ -18,9 +20,11 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 
 public record ItemConversionEffect(List<ItemConversionData> itemConversions, LevelBasedValue probability) implements AbilityEntityEffect {
     public static final MapCodec<ItemConversionEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -35,10 +39,12 @@ public record ItemConversionEffect(List<ItemConversionData> itemConversions, Lev
         ).apply(instance, ItemConversionData::new));
     }
 
-    public record ItemTo(Holder<Item> item, int weight) implements WeightedEntry {
+    public record ItemTo(Holder<Item> item, int conversionRate, int weight, Optional<ParticleData> particles) implements WeightedEntry {
         public static final Codec<ItemTo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 BuiltInRegistries.ITEM.holderByNameCodec().fieldOf("item").forGetter(ItemTo::item),
-                Codec.INT.fieldOf("weight").forGetter(ItemTo::weight)
+                ExtraCodecs.intRange(1, 64).optionalFieldOf("conversion_rate", 1).forGetter(ItemTo::conversionRate),
+                Codec.INT.fieldOf("weight").forGetter(ItemTo::weight),
+                ParticleData.CODEC.optionalFieldOf("particles").forGetter(ItemTo::particles)
         ).apply(instance, ItemTo::new));
 
         public static ItemTo of(final Item item) {
@@ -46,8 +52,12 @@ public record ItemConversionEffect(List<ItemConversionData> itemConversions, Lev
         }
 
         public static ItemTo of(final Item item, int weight) {
+            return of(item, 1, weight, null);
+        }
+
+        public static ItemTo of(final Item item, int conversionRate, int weight, final ParticleData particles) {
             //noinspection deprecation -> ignore
-            return new ItemTo(item.builtInRegistryHolder(), weight);
+            return new ItemTo(item.builtInRegistryHolder(), conversionRate, weight, Optional.ofNullable(particles));
         }
 
         @Override
@@ -56,6 +66,7 @@ public record ItemConversionEffect(List<ItemConversionData> itemConversions, Lev
         }
     }
 
+    // TODO :: add other options to scale with ability level? e.g. require fewer items or multiply the converted items?
     @Override
     public void apply(final ServerPlayer dragon, final DragonAbilityInstance ability, final Entity target) {
         if (!(target instanceof ItemEntity itemEntity)) {
@@ -70,11 +81,36 @@ public record ItemConversionEffect(List<ItemConversionData> itemConversions, Lev
             return;
         }
 
-        for (ItemConversionData conversion : itemConversions) {
-            if (conversion.predicate().test(itemEntity.getItem())) {
-                conversion.itemsTo().getRandom(target.getRandom()).ifPresent(item -> {
-                    DSAdvancementTriggers.CONVERT_ITEM_FROM_ABILITY.get().trigger(dragon, itemEntity.getItem().getItemHolder(), item.item());
-                    itemEntity.setItem(new ItemStack(item.item(), itemEntity.getItem().getCount()));
+        for (ItemConversionData data : itemConversions) {
+            if (data.predicate().test(itemEntity.getItem())) {
+                data.itemsTo().getRandom(target.getRandom()).ifPresent(conversion -> {
+                    // TODO :: add converted-to amount to the achievement?
+                    DSAdvancementTriggers.CONVERT_ITEM_FROM_ABILITY.get().trigger(dragon, itemEntity.getItem().getItemHolder(), conversion.item());
+                    conversion.particles.ifPresent(particles -> particles.spawn(dragon.serverLevel(), itemEntity, ability.level()));
+
+                    int newAmount = itemEntity.getItem().getCount() * conversion.conversionRate();
+                    int maxStackSize = conversion.item().value().getDefaultMaxStackSize();
+
+                    if (newAmount > maxStackSize) {
+                        Vec3 position = itemEntity.position();
+
+                        // It's easier to just spawn new ones
+                        itemEntity.discard();
+
+                        int newStacks = newAmount / maxStackSize;
+                        int remainder = newAmount % maxStackSize;
+
+                        for (int i = 0; i < newStacks; i++) {
+                            dragon.level().addFreshEntity(new ItemEntity(dragon.serverLevel(), position.x, position.y, position.z, new ItemStack(conversion.item(), maxStackSize)));
+                        }
+
+                        if (remainder > 0) {
+                            // Example: We now have 137 items and the new stack size is 24 - we spawn 5 full stacks and a remainder stack of 17
+                            dragon.level().addFreshEntity(new ItemEntity(dragon.serverLevel(), position.x, position.y, position.z, new ItemStack(conversion.item(), remainder)));
+                        }
+                    } else {
+                        itemEntity.setItem(new ItemStack(conversion.item(), newAmount));
+                    }
                 });
 
                 return;

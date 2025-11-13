@@ -1,29 +1,29 @@
 {
     "type": "minecraft:crafting_shaped",
     "pattern": [
-        "#BG",
-        "BD ",
-        "N  "
+        "#Dg",
+        "#Jg",
+        "#Tg"
     ],
     "key": {
         "#": {
-            "item": "dragonsurvival:star_bone"
-        },
-        "B": {
-            "item": "dragonsurvival:elder_dragon_bone"
-        },
-        "G": {
-            "item": "minecraft:gold_ingot"
+            "item": "minecraft:quartz"
         },
         "D": {
-            "item": "minecraft:diamond"
+            "item": "dragonsurvival:elder_dragon_bone"
         },
-        "N": {
-            "item": "minecraft:quartz"
+        "g": {
+            "item": "minecraft:gold_ingot"
+        },
+        "J": {
+            "item": "dragonsurvival:star_bone"
+        },
+        "T": {
+            "item": "minecraft:diamond"
         }
     },
-  "result": {
-    "id": "dragonsurvival:star_bone",
-    "count": 12
-  }
+    "result": {
+        "id": "dragonsurvival:star_bone",
+        "count": 32
+    }
 }

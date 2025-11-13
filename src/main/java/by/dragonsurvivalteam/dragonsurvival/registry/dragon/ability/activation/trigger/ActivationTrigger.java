@@ -15,7 +15,7 @@ import net.neoforged.neoforge.registries.RegistryBuilder;
 
 import java.util.function.Function;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber
 public interface ActivationTrigger {
     ResourceKey<Registry<MapCodec<? extends ActivationTrigger>>> REGISTRY_KEY = ResourceKey.createRegistryKey(DragonSurvival.res("activation_trigger"));
     Registry<MapCodec<? extends ActivationTrigger>> REGISTRY = new RegistryBuilder<>(REGISTRY_KEY).create();

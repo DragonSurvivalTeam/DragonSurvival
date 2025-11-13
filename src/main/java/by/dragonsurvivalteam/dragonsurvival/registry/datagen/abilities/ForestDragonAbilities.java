@@ -247,10 +247,10 @@ public class ForestDragonAbilities {
                                         new BlockConversionEffect(List.of(new BlockConversionEffect.BlockConversionData(
                                                 BlockCondition.blocks(Blocks.DIRT, Blocks.COARSE_DIRT),
                                                 SimpleWeightedRandomList.create(
-                                                        new BlockConversionEffect.BlockTo(Blocks.GRASS_BLOCK.defaultBlockState(), 25),
-                                                        new BlockConversionEffect.BlockTo(Blocks.PODZOL.defaultBlockState(), 5),
-                                                        new BlockConversionEffect.BlockTo(Blocks.MYCELIUM.defaultBlockState(), 1),
-                                                        new BlockConversionEffect.BlockTo(Blocks.COARSE_DIRT.defaultBlockState(), 3)
+                                                        new BlockConversionEffect.BlockTo(Blocks.GRASS_BLOCK.defaultBlockState(), 25, Optional.empty()),
+                                                        new BlockConversionEffect.BlockTo(Blocks.PODZOL.defaultBlockState(), 5, Optional.empty()),
+                                                        new BlockConversionEffect.BlockTo(Blocks.MYCELIUM.defaultBlockState(), 1, Optional.empty()),
+                                                        new BlockConversionEffect.BlockTo(Blocks.COARSE_DIRT.defaultBlockState(), 3, Optional.empty())
                                                 ))
                                         ), LevelBasedValue.constant(0.2f))
                                 )

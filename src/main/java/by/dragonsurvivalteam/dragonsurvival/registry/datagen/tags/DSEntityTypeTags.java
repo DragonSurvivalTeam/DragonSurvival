@@ -55,7 +55,9 @@ public class DSEntityTypeTags extends EntityTypeTagsProvider {
                 .add(EntityType.WOLF)
                 .add(EntityType.HOGLIN)
                 .add(EntityType.BEE)
-                .addOptional(ResourceLocation.fromNamespaceAndPath("cobblemon", "pokemon"));
+                .addOptional(ResourceLocation.fromNamespaceAndPath("cobblemon", "pokemon"))
+                .addOptional(ResourceLocation.fromNamespaceAndPath("bee_queen_ds", "bee_guard"))
+                .addOptional(ResourceLocation.fromNamespaceAndPath("bee_queen_ds", "tamed_bee"));
 
         tag(VEHICLE_WHITELIST)
                 .addTag(Tags.EntityTypes.BOATS)

@@ -59,8 +59,8 @@ public class AbilityButton extends ExtendedButton {
             return;
         }
 
-        leftLevelButton = new LevelButton(LevelButton.Type.DOWNGRADE, ability, x - width / 2 + 7, y + 10);
-        rightLevelButton = new LevelButton(LevelButton.Type.UPGRADE, ability, x + width / 2 + 18, y + 10);
+        leftLevelButton = new LevelButton(LevelButton.Type.DOWNGRADE, ability, x - width / 2 + 0, y + 9);
+        rightLevelButton = new LevelButton(LevelButton.Type.UPGRADE, ability, x + width / 2 + 18, y + 9);
         ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(leftLevelButton);
         ((ScreenAccessor) screen).dragonSurvival$addRenderableWidget(rightLevelButton);
     }

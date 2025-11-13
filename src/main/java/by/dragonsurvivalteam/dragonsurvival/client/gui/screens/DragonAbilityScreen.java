@@ -48,8 +48,8 @@ public class DragonAbilityScreen extends Screen {
 
     @Translation(comments = {
             "■ §cUSE THE MOUSE WHEEL TO SCROLL THROUGH THE SKILL COLUMNS.",
-            "§f■ §dAbility assignment§r§f - drag and drop §6Active skills§r§f to the §9hotbar§r§f.",
-            "§f- §9Hotbar§r§8 is used to quickly access your active skills.",
+            "§f■ §dAbility assignment§r§f - drag and drop §6Active skills§r§f from right to the §9left column§r§f.",
+            "§f- §9Left Column§r§8 is used to quickly access your active skills via magic hotbar.",
             "§f- §8Check in-game Minecraft §r§9control§r§8 settings!"
     })
     private static final String HELP_ABILITY_ASSIGNMENT = Translation.Type.GUI.wrap("help.ability_assignment");
@@ -64,7 +64,7 @@ public class DragonAbilityScreen extends Screen {
     private static final ResourceLocation INFO_HOVER = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/info_hover.png");
     private static final ResourceLocation INFO_MAIN = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/ability_screen/info_main.png");
 
-    public LevelButton hoveredLevelButton;
+    public LevelButton lastHoveredLevelButton;
 
     private Holder<DragonSpecies> dragonSpecies;
     private int guiLeft;
@@ -131,10 +131,10 @@ public class DragonAbilityScreen extends Screen {
 
             int experienceModification;
 
-            if (hoveredLevelButton == null || !hoveredLevelButton.canModifyLevel()) {
+            if (lastHoveredLevelButton == null || !lastHoveredLevelButton.isHovered() || !lastHoveredLevelButton.canModify()) {
                 experienceModification = 0;
             } else {
-                experienceModification = hoveredLevelButton.getExperienceModification();
+                experienceModification = lastHoveredLevelButton.getExperienceModification();
             }
 
             int newExperience = totalExperience + experienceModification;

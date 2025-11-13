@@ -2,25 +2,5 @@
   "parent": "minecraft:item/generated",
   "textures": {
     "layer0": "dragonsurvival:item/empty_soul"
-  },
-  "overrides": [
-    {
-      "predicate": {
-        "custom_model_data": 1
-      },
-      "model": "dragonsurvival:item/forest_dragon_soul"
-    },
-    {
-      "predicate": {
-        "custom_model_data": 2
-      },
-      "model": "dragonsurvival:item/cave_dragon_soul"
-    },
-    {
-      "predicate": {
-        "custom_model_data": 3
-      },
-      "model": "dragonsurvival:item/sea_dragon_soul"
-    }
-  ]
+  }
 }

@@ -1,10 +1,12 @@
 package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effects;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.BlockVision;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance.DurationInstanceBase;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -44,6 +46,11 @@ public record BlockVisionEffect(List<BlockVision> visions) implements AbilityEnt
         }
 
         return components;
+    }
+
+    @Override
+    public List<ResourceLocation> getEffectIDs() {
+        return visions.stream().map(DurationInstanceBase::id).toList();
     }
 
     public static AbilityEntityEffect single(final BlockVision vision) {

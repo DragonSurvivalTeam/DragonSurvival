@@ -61,7 +61,7 @@ import java.util.regex.Pattern;
  * Normally it's a one way setting from the {@link ModConfigSpec.ConfigValue} fields to the class fields <br>
  * (The exception being {@link ConfigHandler#updateConfigValue(String, Object)})
  */
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber
 public class ConfigHandler {
     /** Contains the default values (specified in-code) <br> The key is {@link ConfigOption#key()} */
     private static final HashMap<String, Object> DEFAULT_CONFIG_VALUES = new HashMap<>();

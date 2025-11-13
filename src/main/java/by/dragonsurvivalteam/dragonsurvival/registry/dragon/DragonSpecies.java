@@ -180,7 +180,7 @@ public class DragonSpecies implements AttributeModifierSupplier {
 
     /**
      * Returns the configured starting size or the smallest size of the configured stages <br>
-     * If no configured stages are present it will return the smallest growth of the default stages
+     * If no configured stages are present, it will return the smallest growth of the default stages
      */
     public double getStartingGrowth(@Nullable final HolderLookup.Provider provider) {
         return startingGrowth.orElseGet(() -> DragonStage.getStartingGrowth(getStages(provider)));

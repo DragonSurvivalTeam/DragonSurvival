@@ -10,7 +10,6 @@ import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonSpeciesTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.DragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.stage.DragonStage;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.PlayerLoginHandler;
@@ -38,6 +37,7 @@ import net.minecraft.world.item.component.CustomModelData;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -79,7 +79,6 @@ public class DragonSoulItem extends Item {
         }
     }
 
-    // TODO :: make compatible with custom species
     private static int getCustomModelData(@NotNull final HolderLookup.Provider provider, final CompoundTag tag) {
         ResourceKey<DragonSpecies> species = ResourceHelper.decodeKey(provider, DragonSpecies.REGISTRY, tag, DragonStateHandler.DRAGON_SPECIES);
 
@@ -87,17 +86,7 @@ public class DragonSoulItem extends Item {
             return 0;
         }
 
-        Holder<DragonSpecies> dragonSpecies = provider.holderOrThrow(species);
-
-        if (dragonSpecies.is(DSDragonSpeciesTags.FOREST_DRAGONS)) {
-            return 1;
-        } else if (dragonSpecies.is(DSDragonSpeciesTags.CAVE_DRAGONS)) {
-            return 2;
-        } else if (dragonSpecies.is(DSDragonSpeciesTags.SEA_DRAGONS)) {
-            return 3;
-        }
-
-        return 0;
+        return 1;
     }
 
     @Override
@@ -254,16 +243,35 @@ public class DragonSoulItem extends Item {
 
     @Override
     public @NotNull Component getName(@NotNull final ItemStack stack) {
-        if (stack.has(DataComponents.CUSTOM_DATA)) {
-            //noinspection DataFlowIssue, deprecation -> tag isn't modified, no need to create a copy
-            ResourceKey<DragonSpecies> species = ResourceHelper.decodeKey(null, DragonSpecies.REGISTRY, stack.get(DataComponents.CUSTOM_DATA).getUnsafe().getCompound(DRAGON), DragonStateHandler.DRAGON_SPECIES);
+        ResourceKey<DragonSpecies> species = getSpecies(stack, null);
 
-            if (species != null) {
-                return Component.translatable(Translation.Type.DRAGON_SPECIES.wrap(species.location())).append(Component.translatable(SOUL));
-            }
+        if (species == null) {
+            return Component.translatable(EMPTY_DRAGON_SOUL);
         }
 
-        return Component.translatable(EMPTY_DRAGON_SOUL);
+        return Component.translatable(Translation.Type.DRAGON_SPECIES.wrap(species.location())).append(Component.translatable(SOUL));
+    }
+
+    public @Nullable ResourceKey<DragonSpecies> getSpecies(final ItemStack stack, final HolderLookup.Provider provider) {
+        CustomData data = stack.get(DataComponents.CUSTOM_DATA);
+
+        if (data == null) {
+            return null;
+        }
+
+        //noinspection deprecation -> ignored
+        return ResourceHelper.decodeKey(provider, DragonSpecies.REGISTRY, data.getUnsafe().getCompound(DRAGON), DragonStateHandler.DRAGON_SPECIES);
+    }
+
+    public @Nullable ResourceKey<DragonStage> getStage(final ItemStack stack, final HolderLookup.Provider provider) {
+        CustomData data = stack.get(DataComponents.CUSTOM_DATA);
+
+        if (data == null) {
+            return null;
+        }
+
+        //noinspection deprecation -> ignored
+        return ResourceHelper.decodeKey(provider, DragonStage.REGISTRY, data.getUnsafe().getCompound(DRAGON), DragonStateHandler.DRAGON_STAGE);
     }
 
     private static final String DRAGON = "dragon";

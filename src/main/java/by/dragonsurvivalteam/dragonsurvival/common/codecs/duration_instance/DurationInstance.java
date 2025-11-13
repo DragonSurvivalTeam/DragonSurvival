@@ -3,11 +3,13 @@ package by.dragonsurvivalteam.dragonsurvival.common.codecs.duration_instance;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
+import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.StorageEntry;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.ClientEffectProvider;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbility;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
+import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.targeting.AbilityTargeting;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty.DragonPenalty;
 import com.mojang.datafixers.Products;
 import com.mojang.serialization.Codec;
@@ -21,6 +23,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -47,10 +51,29 @@ public abstract class DurationInstance<B extends DurationInstanceBase<?, ?>> imp
         );
     }
 
+    /**
+     * This method will return 'true' when run on the server-side, and the instance is supposed to be removed </br>
+     * (e.g. when the duration reaches 0 or the removal condition matches) </br> </br>
+     * <p>
+     * The client will always return 'false' since the server is handling the removal and informs the client through packets </br>
+     * (Partly because data we need to check (abilities, i.e. magic data, of other players) is not synchronized between players
+     */
     @Override
     public boolean tick(final Entity storageHolder) {
-        // TODO :: check this differently for active abilities?
-        //  since for them it would just always remove the the instance after the cast has been completed
+        if (currentDuration != INFINITE_DURATION) {
+            currentDuration--;
+
+            if (storageHolder.level().isClientSide()) {
+                return false;
+            } else if (currentDuration == 0) {
+                return true;
+            }
+        }
+
+        if (storageHolder.level().isClientSide()) {
+            return false;
+        }
+
         if (commonData.removeAutomatically() && commonData.source().isPresent()) {
             Player source = storageHolder.level().getPlayerByUUID(commonData.source().get());
 
@@ -65,13 +88,23 @@ public abstract class DurationInstance<B extends DurationInstanceBase<?, ?>> imp
             }
 
             if (commonData.ability().isPresent()) {
-                // TODO :: let the server deal with removal of entries through this tick method?
-                //  (avoids the need to sync magic data to the client - removal gets synchronized anyway)
                 MagicData magic = MagicData.getData(source);
-                DragonAbilityInstance ability = magic.getAbility(commonData.ability().get());
+                DragonAbilityInstance instance = magic.getAbility(commonData.ability().get());
 
-                if (ability == null || !ability.isApplyingEffects()) {
+                if (instance == null || !isAbilityActive(instance)) {
                     return true;
+                }
+
+                for (ActionContainer container : instance.value().actions()) {
+                    Collection<ResourceLocation> ids = container.effect().target().map(
+                            block -> List.of(),
+                            AbilityTargeting.EntityTargeting::getEffectIDs
+                    );
+
+                    // Only doing a simple distance check since actually checking the proper AABB area (if present) might be too much here
+                    if (ids.contains(baseData.id()) && storageHolder.distanceTo(source) > container.effect().getDistance(source, instance)) {
+                        return true;
+                    }
                 }
             }
 
@@ -84,16 +117,17 @@ public abstract class DurationInstance<B extends DurationInstanceBase<?, ?>> imp
             }
         }
 
-        if (storageHolder.level() instanceof ServerLevel serverLevel && earlyRemovalCondition().map(condition -> condition.test(Condition.entityContext(serverLevel, storageHolder))).orElse(false)) {
-            return true;
+        return storageHolder.level() instanceof ServerLevel serverLevel && earlyRemovalCondition().map(condition -> condition.test(Condition.entityContext(serverLevel, storageHolder))).orElse(false);
+    }
+
+    private boolean isAbilityActive(final DragonAbilityInstance instance) {
+        if (instance.isPassive()) {
+            return instance.isApplyingEffects();
         }
 
-        if (currentDuration == INFINITE_DURATION) {
-            return false;
-        }
-
-        currentDuration--;
-        return currentDuration == 0;
+        // Otherwise active ability effects would always be instantly removed
+        // And channeling ones would only stay while they are being channeled
+        return instance.isEnabled();
     }
 
     public B baseData() {

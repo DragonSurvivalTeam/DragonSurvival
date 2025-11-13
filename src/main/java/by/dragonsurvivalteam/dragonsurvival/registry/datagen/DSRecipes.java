@@ -167,6 +167,15 @@ public class DSRecipes extends RecipeProvider {
                 .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
                 .save(output.withConditions(new ModLoadedCondition(ModCheck.CREATE)));
 
+        ProxyItem caramelized_nectar = new ProxyItem(ModCheck.BEE_ADDON, "caramelized_nectar");
+
+        ShapelessRecipeBuilder
+                .shapeless(RecipeCategory.DECORATIONS, DSBlocks.BEE_HONEY_TREASURE.value())
+                .requires(caramelized_nectar)
+                .requires(DSItems.ELDER_DRAGON_DUST.value())
+                .unlockedBy(getHasName(DSItems.ELDER_DRAGON_DUST.value()), has(DSItems.ELDER_DRAGON_DUST.value()))
+                .save(output.withConditions(new ModLoadedCondition(ModCheck.BEE_ADDON)));
+
         ProxyItem ruby = new ProxyItem(ModCheck.SILENTGEMS, "ruby");
 
         ShapelessRecipeBuilder

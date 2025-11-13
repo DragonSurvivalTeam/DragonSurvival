@@ -7,6 +7,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvide
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.Condition;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonAbilityHolder;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.ActionContainer;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncAbilityLevel;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncMagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSSounds;
@@ -185,7 +186,17 @@ public class MagicData implements INBTSerializable<CompoundTag> {
                     upgrade.attempt(serverPlayer, ability, Items.AIR);
                     // There are too many ways the experience level field could be modified
                     upgrade.attempt(serverPlayer, ability, experienceLevels);
+
+                    // The steps handled by attempt need to be done manually here (+ no support for downgrades)
+                    // Since the experience points are not part of the input for the up-/downgrade attempt
+                    if (upgrade instanceof ExperiencePointsUpgrade experiencePointsUpgrade && ability.level() < ability.getMaxLevel()) {
+                        if (experiencePointsUpgrade.getExperience(ability, ExperiencePointsUpgrade.Type.UPGRADE) == 0) {
+                            experiencePointsUpgrade.apply(serverPlayer, ability, ExperiencePointsUpgrade.Type.UPGRADE);
+                            PacketDistributor.sendToPlayer(serverPlayer, new SyncAbilityLevel(ability.key(), ability.level()));
+                        }
+                    }
                 });
+
                 DSAdvancementTriggers.UPGRADE_ABILITY.get().trigger(serverPlayer, ability.key(), ability.level());
             }
 
@@ -292,7 +303,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
         }
 
         if (!checkCast(player, instance)) {
-            int cooldown = instance.getCooldown();
+            int cooldown = instance.cooldown();
 
             if (!errorMessageSent && player.level().isClientSide() && cooldown != DragonAbilityInstance.NO_COOLDOWN) {
                 errorMessageSent = true;
@@ -334,7 +345,7 @@ public class MagicData implements INBTSerializable<CompoundTag> {
             instance.setActive(player, false);
         }
 
-        if (instance == null || !instance.isPassive()) {
+        if (instance == null || instance == getCurrentlyCasting()) {
             isCasting = false;
         }
     }
@@ -474,6 +485,8 @@ public class MagicData implements INBTSerializable<CompoundTag> {
 
         int slot = 0;
 
+        getAbilities().clear();
+
         for (Holder<DragonAbility> ability : currentSpecies.value().abilities()) {
             UpgradeType<?> upgrade = ability.value().upgrade().orElse(null);
             DragonAbilityInstance instance;
@@ -505,23 +518,6 @@ public class MagicData implements INBTSerializable<CompoundTag> {
     public List<DragonAbilityInstance> filterPassiveByTrigger(final Predicate<ActivationTrigger> predicate) {
         // TODO :: cache the passive abilities
         return getAbilities().values().stream().filter(instance -> instance.value().activation() instanceof PassiveActivation passive && predicate.test(passive.trigger())).collect(Collectors.toList());
-    }
-
-    /** Returns the amount of experience gained / lost when down- or upgrading the ability */
-    public int getCost(final Player dragon, final ResourceKey<DragonAbility> key, ExperiencePointsUpgrade.Type type) {
-        DragonAbilityInstance ability = getAbility(key);
-
-        if (ability == null) {
-            return 0;
-        }
-
-        return ability.value().upgrade().map(upgrade -> {
-            if (upgrade instanceof ExperiencePointsUpgrade experiencePointsUpgrade) {
-                return experiencePointsUpgrade.getExperience(dragon, ability, type);
-            }
-
-            return 0;
-        }).orElse(0);
     }
 
     public void moveAbilityToSlot(final ResourceKey<DragonAbility> key, int newSlot) {
@@ -598,8 +594,8 @@ public class MagicData implements INBTSerializable<CompoundTag> {
             return;
         }
 
-        abilities.get(currentSpecies).clear();
-        hotbar.get(currentSpecies).clear();
+        getAbilities().clear();
+        getHotbar().clear();
 
         if (tag.contains(ABILITIES)) {
             CompoundTag storedAbilities = tag.getCompound(ABILITIES);
