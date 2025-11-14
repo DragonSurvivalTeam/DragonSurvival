@@ -54,7 +54,10 @@ public class DragonSoulItem extends BlockItem {
     @Translation(comments = " Soul")
     private static final String SOUL = Translation.Type.DESCRIPTION.wrap("dragon_soul.soul");
 
-    @Translation(comments = "■§7 This vessel holds the dragon's soul. Use it to become a dragon. Replaces your current stats if you are a dragon.\n")
+    @Translation(comments = {
+            "■§7 This vessel holds the dragon's soul. Use it to become a dragon. Replaces your current stats if you are a dragon.§r",
+            "■§7 You can place it as a block while crouching (a behaviour you can disable by using a hotkey)\n"
+    })
     private static final String DESCRIPTION = Translation.Type.DESCRIPTION.wrap("dragon_soul");
 
     @Translation(comments = "§6■ Species:§r %s\n§6■ Growth Stage:§r %s\n§6■ Growth:§r %s\n")

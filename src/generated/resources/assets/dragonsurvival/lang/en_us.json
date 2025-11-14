@@ -960,7 +960,7 @@
   "dragonsurvival.description.dragon_altar": "■§7 An altar that allows you to turn into a dragon and edit skin.",
   "dragonsurvival.description.dragon_hunter_sword": "■§7 The sword of the dragon hunters. Slow, but strong. Can be found in the hunters treasury.",
   "dragonsurvival.description.dragon_rider_workbench": "■§7 A work station for a villager who sells useful dragon enchantments. Knows the secrets to getting into the draconic vaults.",
-  "dragonsurvival.description.dragon_soul": "■§7 This vessel holds the dragon's soul. Use it to become a dragon. Replaces your current stats if you are a dragon.\n",
+  "dragonsurvival.description.dragon_soul": "■§7 This vessel holds the dragon's soul. Use it to become a dragon. Replaces your current stats if you are a dragon.§r\n■§7 You can place it as a block while crouching (a behaviour you can disable by using a hotkey)\n",
   "dragonsurvival.description.dragon_soul.empty": "■§7 An empty dragon's soul. With this item, you can store all your dragon's characteristics. After using it, you become human.",
   "dragonsurvival.description.dragon_soul.info": "§6■ Species:§r %s\n§6■ Growth Stage:§r %s\n§6■ Growth:§r %s\n",
   "dragonsurvival.description.dragon_soul.invalid_type": "Invalid dragon type",
