@@ -11,6 +11,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PenaltySupply;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DSDataComponents;
 import by.dragonsurvivalteam.dragonsurvival.registry.data_components.DragonSoulData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
@@ -162,6 +163,8 @@ public class DragonSoulItem extends BlockItem {
 
                 magicData.setCurrentSpecies(player, handler.speciesKey());
                 magicData.deserializeNBTForCurrentSpecies(level.registryAccess(), data.abilityData());
+
+                PenaltySupply.clear(player);
 
                 stack.set(DSDataComponents.DRAGON_SOUL, new DragonSoulData(currentDragonData, currentAbilityData, player.getScale()));
                 stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(getCustomModelData(level.registryAccess(), currentDragonData)));
