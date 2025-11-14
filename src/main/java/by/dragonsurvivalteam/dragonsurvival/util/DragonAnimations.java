@@ -56,14 +56,4 @@ public enum DragonAnimations {
     public RawAnimation getAnimation() {
         return animation;
     }
-
-    public static boolean doesExist(final String animationName) {
-        for (DragonAnimations anim : values()) {
-            if (anim.getAnimationName().equals(animationName)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 }

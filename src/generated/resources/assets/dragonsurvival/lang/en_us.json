@@ -1155,7 +1155,6 @@
   "dragonsurvival.gui.message.pillage_on_cooldown": "You have to wait %s seconds until you can steal from this villager",
   "dragonsurvival.gui.message.pillage_unsuccessful": "This villager had no items you could steal",
   "dragonsurvival.gui.message.self_too_big": "You are too big to mount on this creature. You must be at most %s the scale of the creature you are trying to ride or smaller, but you are scale %s and the creature is scale %s.",
-  "dragonsurvival.gui.message.soul.invalid_animation": "The animation %s is not known.",
   "dragonsurvival.gui.message.wings_blocked": "Your wings are blocked or broken",
   "dragonsurvival.gui.mobeffect_removal_effect.category_filter": " from:",
   "dragonsurvival.gui.mobeffect_removal_effect.limited_to": " limited to:",

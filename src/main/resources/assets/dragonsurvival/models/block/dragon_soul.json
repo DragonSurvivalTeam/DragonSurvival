@@ -1,4 +1,6 @@
 {
+  "format_version": "1.21.6",
+  "credit": "Made with Blockbench",
   "parent": "block/thin_block",
   "textures": {
     "particle": "dragonsurvival:block/dragon_soul_base",
@@ -6,15 +8,16 @@
   },
   "elements": [
     {
-      "from": [ 0, 0, 0 ],
-      "to": [ 16, 1, 16 ],
+      "from": [3, 0, 3],
+      "to": [13, 0.1, 13],
+      "rotation": {"angle": 0, "axis": "y", "origin": [0, -0.9, 0]},
       "faces": {
-        "down":  { "uv": [ 0,  0, 16, 16 ], "texture": "#texture", "cullface": "down" },
-        "up":    { "uv": [ 0,  0, 16, 16 ], "texture": "#texture" },
-        "north": { "uv": [ 0, 15, 16, 16 ], "texture": "#texture", "cullface": "north" },
-        "south": { "uv": [ 0, 15, 16, 16 ], "texture": "#texture", "cullface": "south" },
-        "west":  { "uv": [ 0, 15, 16, 16 ], "texture": "#texture", "cullface": "west" },
-        "east":  { "uv": [ 0, 15, 16, 16 ], "texture": "#texture", "cullface": "east" }
+        "north": {"uv": [3, 3, 13, 4], "texture": "#texture", "cullface": "north"},
+        "east": {"uv": [13, 12, 3, 13], "texture": "#texture", "cullface": "east"},
+        "south": {"uv": [3, 12, 13, 13], "texture": "#texture", "cullface": "south"},
+        "west": {"uv": [3, 3, 13, 4], "texture": "#texture", "cullface": "west"},
+        "up": {"uv": [3, 3, 13, 13], "texture": "#texture"},
+        "down": {"uv": [3, 3, 13, 13], "texture": "#texture", "cullface": "down"}
       }
     }
   ]

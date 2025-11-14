@@ -2,10 +2,8 @@ package by.dragonsurvivalteam.dragonsurvival.common.blocks;
 
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncDragonSoulAnimation;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlockEntities;
-import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonSoulBlockEntity;
-import by.dragonsurvivalteam.dragonsurvival.util.DSColors;
-import by.dragonsurvivalteam.dragonsurvival.util.DragonAnimations;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
@@ -13,6 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.NameTagItem;
@@ -46,9 +45,6 @@ import org.jetbrains.annotations.Nullable;
 
 // TODO :: in the future attempt to make the shape follow the stored dragon model (not the hitbox)
 public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, EntityBlock {
-    @Translation(comments = "The animation %s is not known.")
-    public static final String INVALID_ANIMATION = Translation.Type.GUI.wrap("message.soul.invalid_animation");
-
     public DragonSoulBlock(final Properties properties) {
         super(properties);
         registerDefaultState(getStateDefinition().any().setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH));
@@ -58,23 +54,31 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
     protected @NotNull ItemInteractionResult useItemOn(@NotNull final ItemStack stack, @NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final InteractionHand hand, @NotNull final BlockHitResult hitResult) {
         if (stack.getItem() instanceof NameTagItem && level.getBlockEntity(position) instanceof DragonSoulBlockEntity soul) {
             Component name = stack.get(DataComponents.CUSTOM_NAME);
-            String animation = name != null ? name.getString() : "";
+            soul.animation = name == null ? DragonSoulBlockEntity.DEFAULT_ANIMATION : name.getString();
 
-            if (DragonAnimations.doesExist(animation)) {
-                soul.animation = animation;
-
-                if (level instanceof ServerLevel serverLevel) {
-                    PacketDistributor.sendToPlayersInDimension(serverLevel, new SyncDragonSoulAnimation(position, animation));
-                }
-
-                return ItemInteractionResult.sidedSuccess(level.isClientSide());
-            } else {
-                player.displayClientMessage(Component.translatable(INVALID_ANIMATION, DSColors.withColor(animation, DSColors.GOLD)), true);
-                return ItemInteractionResult.FAIL;
+            if (level instanceof ServerLevel serverLevel) {
+                PacketDistributor.sendToPlayersInDimension(serverLevel, new SyncDragonSoulAnimation(position, soul.animation));
             }
+
+            return ItemInteractionResult.sidedSuccess(level.isClientSide());
         }
 
         return super.useItemOn(stack, state, level, position, player, hand, hitResult);
+    }
+
+    @Override // Similar to 'ShulkerBoxBlock' we will drop the soul in creative mode
+    public @NotNull BlockState playerWillDestroy(@NotNull final Level level, @NotNull final BlockPos position, @NotNull final BlockState state, @NotNull final Player player) {
+        if (!level.isClientSide() && player.isCreative()) {
+            ItemStack stack = DSItems.DRAGON_SOUL.value().getDefaultInstance();
+            level.getBlockEntity(position, DSBlockEntities.DRAGON_SOUL.get()).ifPresent(soul -> {
+                soul.saveToItem(stack, level.registryAccess());
+                ItemEntity item = new ItemEntity(level, position.getX(), position.getY(), position.getZ(), stack);
+                item.setDefaultPickUpDelay();
+                level.addFreshEntity(item);
+            });
+        }
+
+        return super.playerWillDestroy(level, position, state, player);
     }
 
     @Override
