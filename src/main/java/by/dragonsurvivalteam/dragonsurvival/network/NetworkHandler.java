@@ -91,7 +91,6 @@ public class NetworkHandler {
         registrar.playToClient(SyncEffectModification.TYPE, SyncEffectModification.STREAM_CODEC, SyncEffectModification::handleClient);
         registrar.playToClient(SyncOxygenBonus.TYPE, SyncOxygenBonus.STREAM_CODEC, SyncOxygenBonus::handleClient);
         registrar.playToClient(SyncDragonPassengerID.TYPE, SyncDragonPassengerID.STREAM_CODEC, SyncDragonPassengerID::handleClient);
-        registrar.playToClient(SyncDragonSoulAnimation.TYPE, SyncDragonSoulAnimation.STREAM_CODEC, SyncDragonSoulAnimation::handleClient);
 
         registrar.playToServer(SortInventory.TYPE, SortInventory.STREAM_CODEC, SortInventory::handleServer);
         registrar.playToServer(SyncAltarCooldown.TYPE, SyncAltarCooldown.STREAM_CODEC, SyncAltarCooldown::handleServer);
@@ -171,6 +170,8 @@ public class NetworkHandler {
 
         // Client data
         registrar.playToClient(RequestClientData.TYPE, RequestClientData.STREAM_CODEC, RequestClientData::handleClient);
+        registrar.playToClient(SyncDragonSoulData.TYPE, SyncDragonSoulData.STREAM_CODEC, SyncDragonSoulData::handleClient);
+        registrar.playToClient(SyncDragonSoulAnimation.TYPE, SyncDragonSoulAnimation.STREAM_CODEC, SyncDragonSoulAnimation::handleClient);
         registrar.playToClient(SyncParticleTrail.TYPE, SyncParticleTrail.STREAM_CODEC, SyncParticleTrail::handleClient);
         registrar.playToClient(SyncBreathParticles.TYPE, SyncBreathParticles.STREAM_CODEC, SyncBreathParticles::handleClient);
 

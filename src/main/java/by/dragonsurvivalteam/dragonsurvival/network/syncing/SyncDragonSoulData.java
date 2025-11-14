@@ -14,7 +14,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
 public record SyncDragonSoulData(BlockPos position, Tag data) implements CustomPacketPayload {
-    public static final Type<SyncDragonSoulAnimation> TYPE = new Type<>(DragonSurvival.res("sync_dragon_soul_data"));
+    public static final Type<SyncDragonSoulData> TYPE = new Type<>(DragonSurvival.res("sync_dragon_soul_data"));
 
     public static final StreamCodec<FriendlyByteBuf, SyncDragonSoulData> STREAM_CODEC = StreamCodec.composite(
             BlockPos.STREAM_CODEC, SyncDragonSoulData::position,
