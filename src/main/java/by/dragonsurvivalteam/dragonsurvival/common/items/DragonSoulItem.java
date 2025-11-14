@@ -265,7 +265,7 @@ public class DragonSoulItem extends BlockItem {
 
     @Override
     public boolean isFoil(final ItemStack stack) {
-        return stack.has(DataComponents.CUSTOM_DATA);
+        return stack.has(DSDataComponents.DRAGON_SOUL);
     }
 
     @Override
