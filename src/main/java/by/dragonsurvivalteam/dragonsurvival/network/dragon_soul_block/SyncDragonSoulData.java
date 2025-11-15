@@ -1,4 +1,4 @@
-package by.dragonsurvivalteam.dragonsurvival.network.syncing;
+package by.dragonsurvivalteam.dragonsurvival.network.dragon_soul_block;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonSoulBlockEntity;

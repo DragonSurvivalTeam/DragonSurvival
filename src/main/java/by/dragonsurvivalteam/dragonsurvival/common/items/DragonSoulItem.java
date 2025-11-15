@@ -48,6 +48,15 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class DragonSoulItem extends BlockItem {
+    @ConfigRange(min = 0)
+    @Translation(key = "dragon_soul_cooldown", type = Translation.Type.CONFIGURATION, comments = "Cooldown (in ticks) (20 ticks = 1 second) that occurs after using the dragon soul")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"items", "dragon_soul"}, key = "dragon_soul_cooldown")
+    public static int COOLDOWN = Functions.secondsToTicks(60);
+
+    @Translation(key = "enable_dragon_soul_placement", type = Translation.Type.CONFIGURATION, comments = "Enables the placement of dragon souls")
+    @ConfigOption(side = ConfigSide.SERVER, category = {"items", "dragon_soul"}, key = "enable_dragon_soul_placement")
+    public static boolean ENABLE_DRAGON_SOUL_PLACEMENT = true;
+
     @Translation(comments = "Empty Dragon Soul")
     private static final String EMPTY_DRAGON_SOUL = Translation.Type.ITEM.wrap("empty_dragon_soul");
 
@@ -69,11 +78,6 @@ public class DragonSoulItem extends BlockItem {
     @Translation(comments = "Invalid dragon type")
     private static final String INVALID_DRAGON_TYPE = Translation.Type.DESCRIPTION.wrap("dragon_soul.invalid_type");
 
-    @ConfigRange(min = 0)
-    @Translation(key = "dragon_soul_cooldown", type = Translation.Type.CONFIGURATION, comments = "Cooldown (in ticks) (20 ticks = 1 second) that occurs after using the dragon soul")
-    @ConfigOption(side = ConfigSide.SERVER, category = {"items", "dragon_soul"}, key = "dragon_soul_cooldown")
-    public static int COOLDOWN = Functions.secondsToTicks(60);
-
     public DragonSoulItem(final Properties properties) {
         super(DSBlocks.DRAGON_SOUL.get(), properties);
     }
@@ -90,6 +94,10 @@ public class DragonSoulItem extends BlockItem {
 
     @Override
     public @NotNull InteractionResult place(@NotNull final BlockPlaceContext context) {
+        if (!ENABLE_DRAGON_SOUL_PLACEMENT) {
+            return InteractionResult.PASS;
+        }
+
         Player player = context.getPlayer();
 
         if (player != null && (!player.isCrouching() || !player.getData(DSDataAttachments.PLAYER_DATA).enabledDragonSoulPlacement)) {

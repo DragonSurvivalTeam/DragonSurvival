@@ -65,10 +65,10 @@ import by.dragonsurvivalteam.dragonsurvival.network.status.SyncEnderDragonMark;
 import by.dragonsurvivalteam.dragonsurvival.network.status.SyncMultiMining;
 import by.dragonsurvivalteam.dragonsurvival.network.status.SyncPlayerJump;
 import by.dragonsurvivalteam.dragonsurvival.network.status.SyncResting;
-import by.dragonsurvivalteam.dragonsurvival.network.syncing.RequestDragonSoulData;
+import by.dragonsurvivalteam.dragonsurvival.network.dragon_soul_block.RequestDragonSoulData;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
-import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncDragonSoulAnimation;
-import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncDragonSoulData;
+import by.dragonsurvivalteam.dragonsurvival.network.dragon_soul_block.SyncDragonSoulAnimation;
+import by.dragonsurvivalteam.dragonsurvival.network.dragon_soul_block.SyncDragonSoulData;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -171,10 +171,10 @@ public class NetworkHandler {
         // Client data
         registrar.playToClient(RequestClientData.TYPE, RequestClientData.STREAM_CODEC, RequestClientData::handleClient);
         registrar.playToClient(SyncDragonSoulData.TYPE, SyncDragonSoulData.STREAM_CODEC, SyncDragonSoulData::handleClient);
-        registrar.playToClient(SyncDragonSoulAnimation.TYPE, SyncDragonSoulAnimation.STREAM_CODEC, SyncDragonSoulAnimation::handleClient);
         registrar.playToClient(SyncParticleTrail.TYPE, SyncParticleTrail.STREAM_CODEC, SyncParticleTrail::handleClient);
         registrar.playToClient(SyncBreathParticles.TYPE, SyncBreathParticles.STREAM_CODEC, SyncBreathParticles::handleClient);
 
+        registrar.playBidirectional(SyncDragonSoulAnimation.TYPE, SyncDragonSoulAnimation.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncDragonSoulAnimation::handleClient, SyncDragonSoulAnimation::handleServer));
         registrar.playBidirectional(SyncPlayerSkinPreset.TYPE, SyncPlayerSkinPreset.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncPlayerSkinPreset::handleClient, SyncPlayerSkinPreset::handleServer));
         registrar.playBidirectional(SyncDragonClawRender.TYPE, SyncDragonClawRender.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncDragonClawRender::handleClient, SyncDragonClawRender::handleServer));
         registrar.playBidirectional(SyncDragonSkinSettings.TYPE, SyncDragonSkinSettings.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncDragonSkinSettings::handleClient, SyncDragonSkinSettings::handleServer));

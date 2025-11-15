@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.util.proxy;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AbilityAnimation;
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ability.animation.AnimationType;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEmote;
+import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonSoulBlockEntity;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
@@ -63,6 +64,10 @@ public interface Proxy {
     }
 
     default boolean dragonRenderingWasCancelled(final Player player) {
+        return false;
+    }
+
+    default boolean updateDragonSoulBlockAnimation(final DragonSoulBlockEntity soul, final String animation) {
         return false;
     }
 
