@@ -54,6 +54,7 @@
     "bettercombat.PlayerModelMixin",
     "client.AbstractContainerScreenAccessor",
     "client.AnimationControllerAccessor",
+    "client.BlockRenderDispatcherAccess",
     "client.CameraMixin",
     "client.ClientLevelMixin",
     "client.EffectRenderingInventoryScreenAccessor",

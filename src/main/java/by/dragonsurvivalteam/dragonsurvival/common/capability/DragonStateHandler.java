@@ -479,7 +479,12 @@ public class DragonStateHandler extends EntityStateHandler {
         AttributeInstance instance = Objects.requireNonNull(player.getAttribute(Attributes.SCALE));
         double partialVisualGrowth = Mth.lerp(partialTick, visualGrowthLastTick, visualGrowth);
 
-        if (partialVisualGrowth == visualGrowth || DragonSurvival.PROXY.isFakePlayer(player)) {
+        if (DragonSurvival.PROXY.isFakePlayer(player)) {
+            double scale = DragonSurvival.PROXY.getFakePlayerScale(player);
+            return scale == -1 ? instance.getValue() : scale;
+        }
+
+        if (partialVisualGrowth == visualGrowth) {
             return instance.getValue();
         }
 

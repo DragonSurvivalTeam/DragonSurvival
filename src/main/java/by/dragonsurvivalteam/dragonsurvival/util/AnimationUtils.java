@@ -50,6 +50,7 @@ public class AnimationUtils {
 
     public static <A extends GeoAnimatable, T extends GeoModel<A>> boolean doesAnimationExist(final T model, final A animatable, final String animation) {
         BakedAnimations bakedAnimations = GeckoLibCache.getBakedAnimations().get(model.getAnimationResource(animatable));
+
         if (bakedAnimations == null) {
             return false;
         }

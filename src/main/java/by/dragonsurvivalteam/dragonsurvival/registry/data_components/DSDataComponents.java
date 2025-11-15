@@ -20,4 +20,5 @@ public class DSDataComponents {
     public static final Supplier<DataComponentType<SourceOfMagicData>> SOURCE_OF_MAGIC = REGISTRY.registerComponentType("source_of_magic", builder -> builder.persistent(SourceOfMagicData.CODEC).networkSynchronized(SourceOfMagicData.STREAM_CODEC));
     public static final Supplier<DataComponentType<DragonBeaconData>> DRAGON_BEACON = REGISTRY.registerComponentType("dragon_beacon_data", builder -> builder.persistent(DragonBeaconData.CODEC));
     public static final Supplier<DataComponentType<DragonAbilityHolder>> DRAGON_ABILITIES = REGISTRY.registerComponentType("dragon_abilities", builder -> builder.persistent(DragonAbilityHolder.CODEC));
+    public static final Supplier<DataComponentType<DragonSoulData>> DRAGON_SOUL = REGISTRY.registerComponentType("dragon_soul", builder -> builder.persistent(DragonSoulData.CODEC));
 }

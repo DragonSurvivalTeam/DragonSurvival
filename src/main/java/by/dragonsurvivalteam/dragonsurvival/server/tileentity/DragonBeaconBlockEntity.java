@@ -86,6 +86,8 @@ public class DragonBeaconBlockEntity extends BlockEntity {
 
     @Override
     public void loadAdditional(@NotNull final CompoundTag tag, @NotNull final HolderLookup.Provider provider) {
+        super.loadAdditional(tag, provider);
+
         if (tag.contains(DRAGON_BEACON_DATA)) {
             DragonBeaconData.CODEC.decode(provider.createSerializationContext(NbtOps.INSTANCE), tag.getCompound(DRAGON_BEACON_DATA))
                     .resultOrPartial(DragonSurvival.LOGGER::error)
@@ -95,6 +97,8 @@ public class DragonBeaconBlockEntity extends BlockEntity {
 
     @Override
     public void saveAdditional(@NotNull final CompoundTag tag, @NotNull final HolderLookup.Provider provider) {
+        super.saveAdditional(tag, provider);
+
         if (data != null) {
             DragonBeaconData.CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), data)
                     .resultOrPartial(DragonSurvival.LOGGER::error)

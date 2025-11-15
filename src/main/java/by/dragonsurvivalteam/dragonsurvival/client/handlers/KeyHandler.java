@@ -3,8 +3,10 @@ package by.dragonsurvivalteam.dragonsurvival.client.handlers;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.input.Keybind;
+import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncData;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncSummonedEntitiesBehaviour;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
+import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PlayerData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.DSLanguageProvider;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
@@ -26,6 +28,12 @@ public class KeyHandler {
     @Translation(comments = "%s is now set to %s")
     public static final String CYCLED_ENUM = Translation.Type.GUI.wrap("display.cycle_enum");
 
+    @Translation(comments = "Dragon soul placement is now enabled")
+    public static final String DRAGON_SOUL_PLACEMENT_ENABLED = Translation.Type.GUI.wrap("display.toggle_dragon_soul_placement.enabled");
+
+    @Translation(comments = "Dragon soul placement is now disabled")
+    public static final String DRAGON_SOUL_PLACEMENT_DISABLED = Translation.Type.GUI.wrap("display.toggle_dragon_soul_placement.disabled");
+
     public static Component cycledEnum(final Enum<?> enumValue) {
         Component type = DSLanguageProvider.enumClass(enumValue);
         Component value = DSLanguageProvider.enumValue(enumValue);
@@ -45,10 +53,12 @@ public class KeyHandler {
     private static void handleKeybinds(final InputConstants.Key input, final int action) {
         ClientFlightHandler.toggleWings(KeyHandler.checkAndGet(input, action, Keybind.TOGGLE_FLIGHT, true));
         ClientFlightHandler.triggerSpin(KeyHandler.checkAndGet(input, action, Keybind.SPIN_ABILITY, true));
+
         DragonDestructionHandler.toggleDestructionMode(KeyHandler.checkAndGet(input, action, Keybind.TOGGLE_LARGE_DRAGON_DESTRUCTION, true));
+        DragonDestructionHandler.toggleMultiMining(KeyHandler.checkAndGet(input, action, Keybind.TOGGLE_MULTI_MINING, false));
 
         toggleSummonBehaviour(checkAndGet(input, action, Keybind.TOGGLE_SUMMON_BEHAVIOUR, false));
-        DragonDestructionHandler.toggleMultiMining(KeyHandler.checkAndGet(input, action, Keybind.TOGGLE_MULTI_MINING, false));
+        toggleDragonSoulPlacement(checkAndGet(input, action, Keybind.TOGGLE_DRAGON_SOUL_PLACEMENT, false));
     }
 
     public static void toggleSummonBehaviour(@Nullable final Pair<Player, DragonStateHandler> data) {
@@ -69,10 +79,23 @@ public class KeyHandler {
         });
     }
 
+    public static void toggleDragonSoulPlacement(@Nullable final Pair<Player, DragonStateHandler> data) {
+        if (data == null) {
+            return;
+        }
+
+        PlayerData playerData = data.getFirst().getData(DSDataAttachments.PLAYER_DATA);
+        playerData.enabledDragonSoulPlacement = !playerData.enabledDragonSoulPlacement;
+        String message = playerData.enabledDragonSoulPlacement ? DRAGON_SOUL_PLACEMENT_ENABLED : DRAGON_SOUL_PLACEMENT_DISABLED;
+        data.getFirst().displayClientMessage(Component.translatable(message), true);
+
+        PacketDistributor.sendToServer(new SyncData(data.getFirst().getId(), DSDataAttachments.PLAYER_DATA.getId(), playerData.serializeNBT(data.getFirst().registryAccess())));
+    }
+
     /**
      * Returns 'null' if: <br>
      * - The player has a screen open <br>
-     * - They key is not {@link InputConstants#PRESS} <br>
+     * - The key is not {@link InputConstants#PRESS} <br>
      * - The pressed key does not match the passed keybind <br>
      * - The player is null or the player is not a dragon
      */

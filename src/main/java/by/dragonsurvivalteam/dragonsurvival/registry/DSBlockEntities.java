@@ -1,6 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.registry;
 
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonBeaconBlockEntity;
+import by.dragonsurvivalteam.dragonsurvival.server.tileentity.DragonSoulBlockEntity;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.HelmetBlockEntity;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.PrimordialAnchorBlockEntity;
 import by.dragonsurvivalteam.dragonsurvival.server.tileentity.SourceOfMagicBlockEntity;
@@ -47,6 +48,13 @@ public class DSBlockEntities {
             "dragon_beacon", () -> BlockEntityType.Builder.of(
                             DragonBeaconBlockEntity::new,
                             DSBlocks.DRAGON_BEACON.get())
+                    .build(null)
+    );
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DragonSoulBlockEntity>> DRAGON_SOUL = REGISTRY.register(
+            "dragon_soul", () -> BlockEntityType.Builder.of(
+                            DragonSoulBlockEntity::new,
+                            DSBlocks.DRAGON_SOUL.get())
                     .build(null)
     );
 

@@ -22,6 +22,9 @@ import java.util.function.Supplier;
 
 public class FakeClientPlayer extends AbstractClientPlayer {
     public final int number;
+    public boolean useVisualScale;
+
+    public double scale = -1;
 
     public DragonStateHandler handler = new DragonStateHandler();
     public Supplier<String> animationSupplier = null;
@@ -32,6 +35,15 @@ public class FakeClientPlayer extends AbstractClientPlayer {
         //noinspection DataFlowIssue -> level is expected to be present
         super(Minecraft.getInstance().level, new GameProfile(UUID.randomUUID(), "FAKE_PLAYER_" + number));
         this.number = number;
+    }
+
+    @Override
+    public float getScale() {
+        if (scale == -1) {
+            return super.getScale();
+        }
+
+        return (float) scale;
     }
 
     @Override

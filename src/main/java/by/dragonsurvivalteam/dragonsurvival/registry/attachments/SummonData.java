@@ -85,7 +85,7 @@ public class SummonData implements INBTSerializable<CompoundTag> {
     public CompoundTag serializeNBT(@NotNull final HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
 
-        CODEC.encodeStart(NbtOps.INSTANCE, this).resultOrPartial(DragonSurvival.LOGGER::error)
+        CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), this).resultOrPartial(DragonSurvival.LOGGER::error)
                 .ifPresent(compound -> tag.put(DATA, compound));
 
         return tag;

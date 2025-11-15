@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.datagen;
 
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonBeacon;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonDoor;
+import by.dragonsurvivalteam.dragonsurvival.common.blocks.DragonSoulBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.ModCompat;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.PrimordialAnchorBlock;
 import by.dragonsurvivalteam.dragonsurvival.common.blocks.SkeletonPieceBlock;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.AlternativesEntry;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.LootPoolSingletonContainer;
+import net.minecraft.world.level.storage.loot.functions.CopyComponentsFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
@@ -72,6 +74,13 @@ public class BlockLootTableSubProvider extends BlockLootSubProvider {
                 } else if (block instanceof VaultBlock || block instanceof PrimordialAnchorBlock) {
                     // Vaults and Primordial Anchors should not drop anything
                     return LootTable.lootTable();
+                } else if (block instanceof DragonSoulBlock) {
+                    return LootTable.lootTable().withPool(
+                            applyExplosionCondition(block, LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    // Make sure it copies the soul data back into the dropped item
+                                    .add(LootItem.lootTableItem(block).apply(CopyComponentsFunction.copyComponents(CopyComponentsFunction.Source.BLOCK_ENTITY)))
+                            ));
                 }
 
                 return createSingleItemTable(key.get().asItem());
