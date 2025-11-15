@@ -33,6 +33,7 @@
     "ReloadableServerResourcesMixin",
     "ServerGamePacketListenerImplMixin",
     "ServerLevelMixin",
+    "ServerPlayerGameModeAccess",
     "ServerPlayerGameModeMixin",
     "SleepStatusMixin",
     "SwellGoalMixin",
