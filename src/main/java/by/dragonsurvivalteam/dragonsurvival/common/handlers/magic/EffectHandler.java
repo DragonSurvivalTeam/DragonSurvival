@@ -2,9 +2,11 @@ package by.dragonsurvivalteam.dragonsurvival.common.handlers.magic;
 
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAttributes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSItems;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.EffectsMaintainedThroughDeath;
 import by.dragonsurvivalteam.dragonsurvival.util.AdditionalEffectData;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -21,6 +23,11 @@ public class EffectHandler {
 
         if (event.getEffectInstance().getEffect() == DSEffects.EMPOWERED_SOUL && event.getEntity().hasEffect(DSEffects.EXHAUSTED_SOUL)) {
             event.getEntity().removeEffect(DSEffects.EXHAUSTED_SOUL);
+        }
+
+        if (event.getEntity() instanceof Player player && event.getEffectInstance().getEffect() == DSEffects.EXHAUSTED_SOUL) {
+            // Only for the visuals - we return 'false' for the cooldown check
+            player.getCooldowns().addCooldown(DSItems.DRAGON_SOUL.value(), event.getEffectInstance().getDuration());
         }
     }
 
@@ -45,6 +52,17 @@ public class EffectHandler {
 
         if (player.hasEffect(DSEffects.EXHAUSTED_SOUL)) {
             effects.addEffect(player.getEffect(DSEffects.EXHAUSTED_SOUL));
+        }
+    }
+
+    @SubscribeEvent // 'Expired' should be handled by the cooldown naturally ticking down
+    public static void handleEffectRemoval(final MobEffectEvent.Remove event) {
+        if (event.getEntity() instanceof Player player) {
+            MobEffectInstance instance = event.getEffectInstance();
+
+            if (instance != null && instance.getEffect() == DSEffects.EXHAUSTED_SOUL) {
+                player.getCooldowns().removeCooldown(DSItems.DRAGON_SOUL.value());
+            }
         }
     }
 
