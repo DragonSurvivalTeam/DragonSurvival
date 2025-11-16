@@ -17,10 +17,15 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.UUID;
+
 public class DragonSoulBlockEntity extends BlockEntity {
     @Translation(key = "soul_block_default_animation", type = Translation.Type.CONFIGURATION, comments = "Default animation for the soul block")
     @ConfigOption(side = ConfigSide.SERVER, category = {"items", "dragon_soul"}, key = "soul_block_default_animation")
     public static String DEFAULT_ANIMATION = "sit";
+
+    public UUID playerUUID;
+    public boolean locked;
 
     /** These fields are only relevant on the client-side */
     public String animation = DEFAULT_ANIMATION;
@@ -39,7 +44,7 @@ public class DragonSoulBlockEntity extends BlockEntity {
     }
 
     public DragonStateHandler getHandler() {
-        if (handler == null && components().has(DSDataComponents.DRAGON_SOUL.get())) {
+        if (isInvalid() && components().has(DSDataComponents.DRAGON_SOUL.get())) {
             // This is only the case when placed, and at that point the client still has the data component
             //noinspection DataFlowIssue -> level and components are expected to be present
             initializeHandler(level.registryAccess(), components().get(DSDataComponents.DRAGON_SOUL.get()).dragonData());
@@ -60,6 +65,15 @@ public class DragonSoulBlockEntity extends BlockEntity {
         return data.scale();
     }
 
+    public boolean isInvalid() {
+        return handler == null || !handler.isDragon();
+    }
+
+    private void initializeHandler(final HolderLookup.Provider provider, final CompoundTag tag) {
+        handler = new DragonStateHandler();
+        handler.deserializeNBT(provider, tag);
+    }
+
     @Override // Responsible for synchronizing the data to the client that joins the world
     public @NotNull CompoundTag getUpdateTag(@NotNull final HolderLookup.Provider provider) {
         CompoundTag tag = super.getUpdateTag(provider);
@@ -75,18 +89,29 @@ public class DragonSoulBlockEntity extends BlockEntity {
     protected void saveAdditional(@NotNull final CompoundTag tag, @NotNull final HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         tag.putString(ANIMATION, animation);
+        tag.putBoolean(LOCKED, locked);
+
+        if (playerUUID != null) {
+            tag.putUUID(PLAYER_UUID, playerUUID);
+        }
     }
 
     @Override
     public void loadAdditional(@NotNull final CompoundTag tag, @NotNull final HolderLookup.Provider provider) {
         super.loadAdditional(tag, provider);
         animation = tag.getString(ANIMATION);
-    }
+        locked = tag.getBoolean(LOCKED);
 
-    private void initializeHandler(final HolderLookup.Provider provider, final CompoundTag tag) {
-        handler = new DragonStateHandler();
-        handler.deserializeNBT(provider, tag);
+        if (tag.hasUUID(PLAYER_UUID)) {
+            playerUUID = tag.getUUID(PLAYER_UUID);
+        } else {
+            playerUUID = null;
+        }
+
+        initializeHandler(provider, tag);
     }
 
     private static final String ANIMATION = "animation";
+    private static final String PLAYER_UUID = "player_uuid";
+    private static final String LOCKED = "locked";
 }
