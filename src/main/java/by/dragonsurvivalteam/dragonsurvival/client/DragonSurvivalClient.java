@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.client;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.extensions.ShakeWhenUsedExtension;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.DragonPenaltyHUD;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.DragonSoulBar;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.GrowthHUD;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.MagicHUD;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.SpinHUD;
@@ -137,6 +138,7 @@ public class DragonSurvivalClient {
         event.registerAbove(VanillaGuiLayers.AIR_LEVEL, DragonPenaltyHUD.ID, DragonPenaltyHUD::render);
         event.registerAbove(DragonPenaltyHUD.ID, MagicHUD.ID, MagicHUD::render);
         event.registerAbove(MagicHUD.ID, GrowthHUD.ID, GrowthHUD::render);
+        event.registerAbove(GrowthHUD.ID, DragonSoulBar.ID, DragonSoulBar::render);
         event.registerAbove(MagicHUD.ID, SpinHUD.ID, SpinHUD::render);
     }
 

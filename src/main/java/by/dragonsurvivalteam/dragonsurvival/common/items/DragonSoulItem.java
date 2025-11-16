@@ -9,6 +9,7 @@ import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncMagicData;
 import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncComplete;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSAdvancementTriggers;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSBlocks;
+import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.DSDataAttachments;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.PenaltySupply;
@@ -32,6 +33,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -84,7 +86,7 @@ public class DragonSoulItem extends BlockItem {
 
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull final Level level, @NotNull final Player player, @NotNull final InteractionHand hand) {
-        if (DragonStateProvider.isDragon(player) || player.getItemInHand(hand).has(DSDataComponents.DRAGON_SOUL)) {
+        if (!player.hasEffect(DSEffects.EXHAUSTED_SOUL) && (DragonStateProvider.isDragon(player) || player.getItemInHand(hand).has(DSDataComponents.DRAGON_SOUL))) {
             player.startUsingItem(hand);
             return InteractionResultHolder.success(player.getItemInHand(hand));
         } else {
@@ -203,7 +205,7 @@ public class DragonSoulItem extends BlockItem {
         }
 
         if (!player.isCreative()) {
-            player.getCooldowns().addCooldown(stack.getItem(), COOLDOWN);
+            player.addEffect(new MobEffectInstance(DSEffects.EXHAUSTED_SOUL, COOLDOWN, 0, false, true, true));
         }
 
         if (player instanceof ServerPlayer serverPlayer) {

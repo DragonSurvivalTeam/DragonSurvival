@@ -112,4 +112,12 @@ public class DSEffects {
     @Translation(type = Translation.Type.EFFECT, comments = "Confounded")
     @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "A deadly curse that impairs the senses, and causes you to take damage whenever you inflict harm upon others.")
     public static Holder<MobEffect> CONFOUNDED = REGISTRY.register("confounded", () -> new ModifiableMobEffect(MobEffectCategory.HARMFUL, 0x0, false));
+
+    @Translation(type = Translation.Type.EFFECT, comments = "Exhausted Soul")
+    @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "Your soul is exhausted and you have to rest until you can switch your form again.")
+    public static Holder<MobEffect> EXHAUSTED_SOUL = REGISTRY.register("exhausted_soul", () -> new ModifiableMobEffect(MobEffectCategory.HARMFUL, 0x0, true));
+
+    @Translation(type = Translation.Type.EFFECT, comments = "Empowered Soul")
+    @Translation(type = Translation.Type.EFFECT_DESCRIPTION, comments = "Your soul is empowered and you can freely switch your form whenever you want.")
+    public static Holder<MobEffect> EMPOWERED_SOUL = REGISTRY.register("empowered_soul", () -> new ModifiableMobEffect(MobEffectCategory.BENEFICIAL, 0x0, false));
 }

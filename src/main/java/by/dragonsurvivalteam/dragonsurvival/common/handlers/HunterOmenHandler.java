@@ -5,7 +5,6 @@ import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEnchantments;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSMapDecorationTypes;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSTrades;
-import by.dragonsurvivalteam.dragonsurvival.registry.attachments.EffectsMaintainedThroughDeath;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.lang.LangKey;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSEntityTypeTags;
 import by.dragonsurvivalteam.dragonsurvival.util.EnchantmentUtils;
@@ -152,19 +151,6 @@ public class HunterOmenHandler {
         }
 
         player.level().addFreshEntity(new ExperienceOrb(player.level(), genericVillager.getX(), genericVillager.getY() + 0.5, genericVillager.getZ(), experience));
-    }
-
-    @SubscribeEvent
-    public static void preserveHunterOmenOnRespawn(final LivingDeathEvent event) {
-        if (!(event.getEntity() instanceof Player player)) {
-            return;
-        }
-
-        EffectsMaintainedThroughDeath effects = EffectsMaintainedThroughDeath.getData(player);
-
-        if (player.hasEffect(DSEffects.HUNTER_OMEN)) {
-            effects.addEffect(player.getEffect(DSEffects.HUNTER_OMEN));
-        }
     }
 
     private static void applyHunterOmenFromKilling(final Player player) {

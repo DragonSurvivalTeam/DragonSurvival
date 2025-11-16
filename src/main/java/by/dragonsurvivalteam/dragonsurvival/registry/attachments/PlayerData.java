@@ -5,6 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.NotNull;
 
+/** Currently, the client may sync this whole (and therefore override whatever exists server-side) */
 public class PlayerData implements INBTSerializable<CompoundTag> {
     public boolean enabledDragonSoulPlacement = true;
 
