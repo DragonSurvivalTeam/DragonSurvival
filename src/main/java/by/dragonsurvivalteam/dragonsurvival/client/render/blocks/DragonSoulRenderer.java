@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.client.render.blocks;
 import by.dragonsurvivalteam.dragonsurvival.client.DragonSurvivalClient;
 import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayer;
 import by.dragonsurvivalteam.dragonsurvival.client.util.FakeClientPlayerUtils;
+import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateHandler;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigOption;
 import by.dragonsurvivalteam.dragonsurvival.config.obj.ConfigSide;
@@ -39,7 +40,9 @@ public class DragonSoulRenderer implements BlockEntityRenderer<DragonSoulBlockEn
 
     @Override
     public void render(final DragonSoulBlockEntity soul, final float partialTick, @NotNull final PoseStack pose, @NotNull final MultiBufferSource buffer, final int packedLight, final int packedOverlay) {
-        if (soul.isInvalid()) {
+        DragonStateHandler handler = soul.getHandler();
+
+        if (handler == null || !handler.isDragon()) {
             if (soul.packetTimeout <= 0) {
                 // When a player places the block, the components are not synchronized to the other clients
                 // The player that places the block cannot determine when other clients receive the block entity
@@ -57,9 +60,9 @@ public class DragonSoulRenderer implements BlockEntityRenderer<DragonSoulBlockEn
             soul.fakePlayerIndex = FakeClientPlayerUtils.getNextIndex();
         }
 
-        DragonEntity dragon = FakeClientPlayerUtils.getFakeDragon(soul.fakePlayerIndex, soul.getHandler());
+        DragonEntity dragon = FakeClientPlayerUtils.getFakeDragon(soul.fakePlayerIndex, handler);
 
-        FakeClientPlayer player = FakeClientPlayerUtils.getFakePlayer(soul.fakePlayerIndex, soul.getHandler());
+        FakeClientPlayer player = FakeClientPlayerUtils.getFakePlayer(soul.fakePlayerIndex, handler);
         player.useVisualScale = true;
         player.scale = soul.getScale();
 

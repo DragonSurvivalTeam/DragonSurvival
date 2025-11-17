@@ -16,6 +16,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -43,8 +44,8 @@ public class DragonSoulBlockEntity extends BlockEntity {
         // FIXME :: anything needed here?
     }
 
-    public DragonStateHandler getHandler() {
-        if (isInvalid() && components().has(DSDataComponents.DRAGON_SOUL.get())) {
+    public @Nullable DragonStateHandler getHandler() {
+        if ((handler == null || !handler.isDragon()) && components().has(DSDataComponents.DRAGON_SOUL.get())) {
             // This is only the case when placed, and at that point the client still has the data component
             //noinspection DataFlowIssue -> level and components are expected to be present
             initializeHandler(level.registryAccess(), components().get(DSDataComponents.DRAGON_SOUL.get()).dragonData());
@@ -63,10 +64,6 @@ public class DragonSoulBlockEntity extends BlockEntity {
         }
 
         return data.scale();
-    }
-
-    public boolean isInvalid() {
-        return handler == null || !handler.isDragon();
     }
 
     private void initializeHandler(final HolderLookup.Provider provider, final CompoundTag tag) {
