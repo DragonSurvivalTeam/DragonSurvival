@@ -1,4 +1,4 @@
-// 1.21.1	2025-10-23T13:55:35.825478	Dragon Survival Block states
+// 1.21.1	2025-11-12T12:12:49.565489	Dragon Survival Block states
 b1739ccf9eddd6bc16a43b879e66f99a877a6fbf assets/dragonsurvival/blockstates/acacia_dragon_altar.json
 de428e746bfcd807fe902c97c1d03c7fbd7c0324 assets/dragonsurvival/blockstates/acacia_dragon_door.json
 dfae9d7ef506d2399c801ea9d59f3661f232f360 assets/dragonsurvival/blockstates/alexandrite_dragon_treasure.json
@@ -32,6 +32,7 @@ de5a7b854fd699f18a31a2a39a4bdb2aeff00061 assets/dragonsurvival/blockstates/diamo
 8cc363864ca539ebb374b5e60e4a4c10ca704bd5 assets/dragonsurvival/blockstates/dragon_memory_block.json
 b5075ed792cc3b338a3156b1237d77842fdabea9 assets/dragonsurvival/blockstates/dragon_pressure_plate.json
 e51164477b51c86f79f128a2843e1727ed38be05 assets/dragonsurvival/blockstates/dragon_rider_workbench.json
+71e43db6e256dfc42e68e6f739722a39bf84a274 assets/dragonsurvival/blockstates/dragon_soul.json
 2fa72dfaaa18830f4150b095faed74c839b612ac assets/dragonsurvival/blockstates/emerald_dragon_treasure.json
 7a7f4fa330387783700493f0c6d2079bd9f2355e assets/dragonsurvival/blockstates/endstone_dragon_altar.json
 0f86d1e848383abd3c196a1a704dc953e8343f53 assets/dragonsurvival/blockstates/forest_dragon_door.json

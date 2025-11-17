@@ -3,6 +3,7 @@ package by.dragonsurvivalteam.dragonsurvival.client;
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.extensions.ShakeWhenUsedExtension;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.DragonPenaltyHUD;
+import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.DragonSoulBar;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.GrowthHUD;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.MagicHUD;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.hud.SpinHUD;
@@ -23,6 +24,7 @@ import by.dragonsurvivalteam.dragonsurvival.client.models.creatures.LeaderModel;
 import by.dragonsurvivalteam.dragonsurvival.client.models.creatures.SpearmanModel;
 import by.dragonsurvivalteam.dragonsurvival.client.models.projectiles.GenericBallModel;
 import by.dragonsurvivalteam.dragonsurvival.client.render.blocks.DragonBeaconRenderer;
+import by.dragonsurvivalteam.dragonsurvival.client.render.blocks.DragonSoulRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.blocks.HelmetEntityRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.creatures.AmbusherRenderer;
 import by.dragonsurvivalteam.dragonsurvival.client.render.entity.creatures.GriffinRenderer;
@@ -110,6 +112,7 @@ public class DragonSurvivalClient {
 
             BlockEntityRenderers.register(DSBlockEntities.HELMET.get(), HelmetEntityRenderer::new);
             BlockEntityRenderers.register(DSBlockEntities.DRAGON_BEACON.get(), DragonBeaconRenderer::new);
+            BlockEntityRenderers.register(DSBlockEntities.DRAGON_SOUL.get(), DragonSoulRenderer::new);
 
             // GeckoLib renderers
             EntityRenderers.register(DSEntities.GENERIC_BALL_ENTITY.get(), manager -> new GenericBallRenderer(manager, new GenericBallModel()));
@@ -135,6 +138,7 @@ public class DragonSurvivalClient {
         event.registerAbove(VanillaGuiLayers.AIR_LEVEL, DragonPenaltyHUD.ID, DragonPenaltyHUD::render);
         event.registerAbove(DragonPenaltyHUD.ID, MagicHUD.ID, MagicHUD::render);
         event.registerAbove(MagicHUD.ID, GrowthHUD.ID, GrowthHUD::render);
+        event.registerAbove(GrowthHUD.ID, DragonSoulBar.ID, DragonSoulBar::render);
         event.registerAbove(MagicHUD.ID, SpinHUD.ID, SpinHUD::render);
     }
 

@@ -17,6 +17,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.TreasureRestDat
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.body.emotes.DragonEmote;
 import by.dragonsurvivalteam.dragonsurvival.server.handlers.ServerFlightHandler;
 import by.dragonsurvivalteam.dragonsurvival.util.AnimationUtils;
+import by.dragonsurvivalteam.dragonsurvival.util.DragonAnimations;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -39,7 +40,6 @@ import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
-import software.bernie.geckolib.animation.Animation;
 import software.bernie.geckolib.animation.AnimationController;
 import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.animation.PlayState;
@@ -343,29 +343,29 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         InteractionHand usedItemHand = getUsedItemHand();
         if (!ClientDragonRenderer.renderItemsInMouth) {
             if (isUsingEdibleItem) {
-                if (usedItemHand == InteractionHand.MAIN_HAND || animationTickTimer.getDuration(EAT_ITEM_RIGHT) > 0) {
-                    return playOrContinueAnimation(EAT_ITEM_RIGHT, state, movement);
-                } else if (usedItemHand == InteractionHand.OFF_HAND || animationTickTimer.getDuration(EAT_ITEM_LEFT) > 0) {
-                    return playOrContinueAnimation(EAT_ITEM_LEFT, state, movement);
+                if (usedItemHand == InteractionHand.MAIN_HAND || animationTickTimer.getDuration(DragonAnimations.EAT_ITEM_RIGHT.getAnimation()) > 0) {
+                    return playOrContinueAnimation(DragonAnimations.EAT_ITEM_RIGHT.getAnimation(), state, movement);
+                } else if (usedItemHand == InteractionHand.OFF_HAND || animationTickTimer.getDuration(DragonAnimations.EAT_ITEM_LEFT.getAnimation()) > 0) {
+                    return playOrContinueAnimation(DragonAnimations.EAT_ITEM_LEFT.getAnimation(), state, movement);
                 }
             } else if (isUsingItem) {
                 // For the using animations, they are intended to only play once, at the start of the use.
                 // So to account for this, we check the getTicksUsingItem time
-                if ((usedItemHand == InteractionHand.MAIN_HAND && player.getTicksUsingItem() == 1)  || animationTickTimer.getDuration(USE_ITEM_RIGHT) > 0) {
-                    return playOrContinueAnimation(USE_ITEM_RIGHT, state, movement);
-                } else if ((usedItemHand == InteractionHand.OFF_HAND && player.getTicksUsingItem() == 1) || animationTickTimer.getDuration(USE_ITEM_LEFT) > 0) {
-                    return playOrContinueAnimation(USE_ITEM_LEFT, state, movement);
+                if ((usedItemHand == InteractionHand.MAIN_HAND && player.getTicksUsingItem() == 1)  || animationTickTimer.getDuration(DragonAnimations.USE_ITEM_RIGHT.getAnimation()) > 0) {
+                    return playOrContinueAnimation(DragonAnimations.USE_ITEM_RIGHT.getAnimation(), state, movement);
+                } else if ((usedItemHand == InteractionHand.OFF_HAND && player.getTicksUsingItem() == 1) || animationTickTimer.getDuration(DragonAnimations.USE_ITEM_LEFT.getAnimation()) > 0) {
+                    return playOrContinueAnimation(DragonAnimations.USE_ITEM_LEFT.getAnimation(), state, movement);
                 }
             } else if (player.getItemInHand(InteractionHand.MAIN_HAND) != ItemStack.EMPTY) {
                 // Still play use item if we are holding an item in our main hand and left click
-                if (movement.bite || animationTickTimer.getDuration(USE_ITEM_RIGHT) > 0) {
-                    return playOrContinueAnimation(USE_ITEM_RIGHT, state, movement);
+                if (movement.bite || animationTickTimer.getDuration(DragonAnimations.USE_ITEM_RIGHT.getAnimation()) > 0) {
+                    return playOrContinueAnimation(DragonAnimations.USE_ITEM_RIGHT.getAnimation(), state, movement);
                 }
             }
         }
 
-        if (movement.bite && !movement.dig || animationTickTimer.getDuration(BITE) > 0) {
-            return playOrContinueAnimation(BITE, state, movement);
+        if (movement.bite && !movement.dig || animationTickTimer.getDuration(DragonAnimations.BITE.getAnimation()) > 0) {
+            return playOrContinueAnimation(DragonAnimations.BITE.getAnimation(), state, movement);
         }
 
         return PlayState.STOP;
@@ -611,103 +611,111 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
         // TODO: The transition length of animations doesn't work correctly when the framerate varies too much from 60 FPS
         if (!movement.isMovingHorizontally() && handler.isOnMagicSource) {
             // TODO :: does this need to be synchronized to other players?
-            return state.setAndContinue(SIT_ON_MAGIC_SOURCE);
+            return state.setAndContinue(DragonAnimations.SIT_ON_MAGIC_SOURCE.getAnimation());
         }
 
         if (player.isSleeping() || treasureRest.isResting()) {
-            return state.setAndContinue(SLEEP);
+            return state.setAndContinue(DragonAnimations.SLEEP.getAnimation());
         }
 
-        if (SkyhookRendererHelper.isPlayerRidingSkyhook(player.getUUID()) && AnimationUtils.doesAnimationExist(DRAGON_MODEL, this, CREATE_SKYHOOK_RIDING)) {
-            return state.setAndContinue(CREATE_SKYHOOK_RIDING);
+        if (SkyhookRendererHelper.isPlayerRidingSkyhook(player.getUUID()) && AnimationUtils.doesAnimationExist(DRAGON_MODEL, this, DragonAnimations.CREATE_SKYHOOK_RIDING.getAnimation())) {
+            return state.setAndContinue(DragonAnimations.CREATE_SKYHOOK_RIDING.getAnimation());
         }
 
         if (player.isPassenger()) {
-            return state.setAndContinue(SIT);
+            return state.setAndContinue(DragonAnimations.SIT.getAnimation());
         }
 
         if (player.getAbilities().flying || ServerFlightHandler.isFlying(player)) {
             if (ServerFlightHandler.isGliding(player)) {
                 if (ServerFlightHandler.isSpin(player)) {
                     animationSpeed = 2;
-                    state.setAnimation(FLY_SPIN);
+                    state.setAnimation(DragonAnimations.FLY_SPIN.getAnimation());
                     animationController.transitionLength(5);
                 } else if (deltaMovement.y < -1) {
-                    state.setAnimation(FLY_DIVE_ALT);
+                    state.setAnimation(DragonAnimations.FLY_DIVE_ALT.getAnimation());
                     animationController.transitionLength(4);
                 } else if (deltaMovement.y < -0.25) {
-                    state.setAnimation(FLY_DIVE);
+                    state.setAnimation(DragonAnimations.FLY_DIVE.getAnimation());
                     animationController.transitionLength(4);
                 } else if (deltaMovement.y > 0.5) {
                     animationSpeed = 1.5;
-                    state.setAnimation(FLY);
+                    state.setAnimation(DragonAnimations.FLY.getAnimation());
                     animationController.transitionLength(2);
                 } else {
-                    state.setAnimation(FLY_SOARING);
+                    state.setAnimation(DragonAnimations.FLY_SOARING.getAnimation());
                     animationController.transitionLength(4);
                 }
             } else {
                 if (movement.desiredMoveVec.y < 0 && deltaMovement.y < 0 && distanceFromGround < 10 && deltaMovement.length() < 4) {
-                    state.setAnimation(FLY_LAND);
+                    state.setAnimation(DragonAnimations.FLY_LAND.getAnimation());
                     animationController.transitionLength(2);
                 } else if (ServerFlightHandler.isSpin(player)) {
-                    state.setAnimation(FLY_SPIN);
+                    state.setAnimation(DragonAnimations.FLY_SPIN.getAnimation());
                     animationController.transitionLength(2);
                 } else {
                     if (movement.desiredMoveVec.y > 0) {
                         animationSpeed = 2;
                     }
 
-                    state.setAnimation(FLY);
+                    state.setAnimation(DragonAnimations.FLY.getAnimation());
                     animationController.transitionLength(2);
                 }
             }
         } else if (player.getPose() == Pose.SWIMMING) {
             if (ServerFlightHandler.isSpin(player)) {
-                state.setAnimation(FLY_SPIN);
+                state.setAnimation(DragonAnimations.FLY_SPIN.getAnimation());
                 animationController.transitionLength(2);
             } else {
                 // Clear vertical velocity if we just transitioned to this pose, to prevent the dragon from jerking up when landing in water
-                if (!AnimationUtils.isAnimationPlaying(animationController, SWIM) && !AnimationUtils.isAnimationPlaying(animationController, SWIM_FAST) && !AnimationUtils.isAnimationPlaying(animationController, FLY_SPIN)) {
+                if (
+                        !AnimationUtils.isAnimationPlaying(animationController, DragonAnimations.SWIM.getAnimation())
+                                && !AnimationUtils.isAnimationPlaying(animationController, DragonAnimations.SWIM_FAST.getAnimation())
+                                && !AnimationUtils.isAnimationPlaying(animationController, DragonAnimations.FLY_SPIN.getAnimation())
+                ) {
                     clearVerticalVelocity();
                 }
 
                 useDynamicScaling = true;
                 baseSpeed = DEFAULT_FAST_SWIM_SPEED; // Default base fast speed for the player
-                state.setAnimation(SWIM_FAST);
+                state.setAnimation(DragonAnimations.SWIM_FAST.getAnimation());
                 animationController.transitionLength(4);
             }
         } else if (isSwimming) {
             if (ServerFlightHandler.isSpin(player)) {
                 animationSpeed = 2;
-                state.setAnimation(FLY_SPIN);
+                state.setAnimation(DragonAnimations.FLY_SPIN.getAnimation());
                 animationController.transitionLength(2);
             } else {
                 // Clear vertical velocity if we just transitioned to this pose, to prevent the dragon from jerking up when landing in water
-                if (!AnimationUtils.isAnimationPlaying(animationController, SWIM) && !AnimationUtils.isAnimationPlaying(animationController, SWIM_FAST) && !AnimationUtils.isAnimationPlaying(animationController, FLY_SPIN)) {
+                if (
+                        !AnimationUtils.isAnimationPlaying(animationController, DragonAnimations.SWIM.getAnimation())
+                                && !AnimationUtils.isAnimationPlaying(animationController, DragonAnimations.SWIM_FAST.getAnimation())
+                                && !AnimationUtils.isAnimationPlaying(animationController, DragonAnimations.FLY_SPIN.getAnimation())
+                ) {
                     clearVerticalVelocity();
                 }
 
                 useDynamicScaling = true;
                 baseSpeed = DEFAULT_SWIM_SPEED;
-                state.setAnimation(SWIM);
+                state.setAnimation(DragonAnimations.SWIM.getAnimation());
                 animationController.transitionLength(2);
             }
-        } else if (AnimationUtils.isAnimationPlaying(animationController, FLY_LAND)) {
-            state.setAnimation(FLY_LAND_END);
+        } else if (AnimationUtils.isAnimationPlaying(animationController, DragonAnimations.FLY_LAND.getAnimation())) {
+            state.setAnimation(DragonAnimations.FLY_LAND_END.getAnimation());
 
-            if (!FLY_LAND_END.getAnimationStages().isEmpty()) {
-                animationTickTimer.putAnimation(DRAGON_MODEL, this, FLY_LAND_END);
+            if (!DragonAnimations.FLY_LAND_END.getAnimation().getAnimationStages().isEmpty()) {
+                animationTickTimer.putAnimation(DRAGON_MODEL, this, DragonAnimations.FLY_LAND_END.getAnimation());
             }
 
             animationController.transitionLength(2);
-        } else if (animationTickTimer.getDuration(FLY_LAND_END) > 0) {
+        } else if (animationTickTimer.getDuration(DragonAnimations.FLY_LAND_END.getAnimation()) > 0) {
             // Don't add any animation
         } else if (player.onClimbable()) {
             if (movement.deltaMovement.y() < 0) {
-                state.setAnimation(CLIMBING_DOWN);
+                state.setAnimation(DragonAnimations.CLIMBING_DOWN.getAnimation());
             } else {
-                state.setAnimation(CLIMBING_UP);
+                state.setAnimation(DragonAnimations.CLIMBING_UP.getAnimation());
             }
 
             useDynamicScaling = true;
@@ -715,46 +723,46 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
             animationController.transitionLength(2);
         } else if (DRAGONS_JUMPING.getOrDefault(this.playerId, false)) {
             state.resetCurrentAnimation();
-            state.setAnimation(JUMP);
+            state.setAnimation(DragonAnimations.JUMP.getAnimation());
             animationController.transitionLength(2);
-            animationTickTimer.putAnimation(DRAGON_MODEL, this, JUMP);
+            animationTickTimer.putAnimation(DRAGON_MODEL, this, DragonAnimations.JUMP.getAnimation());
             DRAGONS_JUMPING.remove(this.playerId);
-        } else if (animationTickTimer.isPresent(JUMP) && DRAGONS_JUMPING.getOrDefault(this.playerId, true)) {
+        } else if (animationTickTimer.isPresent(DragonAnimations.JUMP.getAnimation()) && DRAGONS_JUMPING.getOrDefault(this.playerId, true)) {
             // We test here if the jump animation has been flagged with a false value; if this is the case, that means cancel any ongoing jumps that are occurring
             // This happens if we hit the ground
             //
             // Let the jump animation complete
         } else if (!player.onGround()) {
-            state.setAnimation(FALL_LOOP);
+            state.setAnimation(DragonAnimations.FALL_LOOP.getAnimation());
             animationController.transitionLength(2);
         } else if (player.isShiftKeyDown() || !DragonSizeHandler.canPoseFit(player, Pose.STANDING) && DragonSizeHandler.canPoseFit(player, Pose.CROUCHING)) {
             // Player is Sneaking
             if (movement.isMovingHorizontally()) {
                 useDynamicScaling = true;
                 baseSpeed = DEFAULT_SNEAK_SPEED;
-                state.setAnimation(SNEAK_WALK);
+                state.setAnimation(DragonAnimations.SNEAK_WALK.getAnimation());
                 animationController.transitionLength(5);
             } else if (movement.dig) {
-                state.setAnimation(DIG_SNEAK);
+                state.setAnimation(DragonAnimations.DIG_SNEAK.getAnimation());
                 animationController.transitionLength(5);
             } else {
-                state.setAnimation(SNEAK);
+                state.setAnimation(DragonAnimations.SNEAK.getAnimation());
                 animationController.transitionLength(5);
             }
         } else if (player.isSprinting()) {
             useDynamicScaling = true;
             baseSpeed = DEFAULT_SPRINT_SPEED;
-            state.setAnimation(RUN);
+            state.setAnimation(DragonAnimations.RUN.getAnimation());
             animationController.transitionLength(4);
         } else if (movement.isMovingHorizontally()) {
             useDynamicScaling = true;
-            state.setAnimation(WALK);
+            state.setAnimation(DragonAnimations.WALK.getAnimation());
             animationController.transitionLength(2);
         } else if (movement.dig) {
-            state.setAnimation(DIG);
+            state.setAnimation(DragonAnimations.DIG.getAnimation());
             animationController.transitionLength(6);
         } else {
-            state.setAnimation(IDLE);
+            state.setAnimation(DragonAnimations.IDLE.getAnimation());
             animationController.transitionLength(2);
         }
 
@@ -869,39 +877,4 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
     // Dynamic animation names
     private static final String EMOTE = "emote_";
     private static final String CONTINUOUS = "continuous_";
-
-    // Animations
-    private static final RawAnimation BITE = RawAnimation.begin().thenLoop("bite");
-    private static final RawAnimation USE_ITEM_RIGHT = RawAnimation.begin().thenLoop("use_item_right");
-    private static final RawAnimation USE_ITEM_LEFT = RawAnimation.begin().thenLoop("use_item_left");
-    private static final RawAnimation EAT_ITEM_RIGHT = RawAnimation.begin().thenLoop("eat_item_right");
-    private static final RawAnimation EAT_ITEM_LEFT = RawAnimation.begin().thenLoop("eat_item_left");
-
-    private static final RawAnimation SIT_ON_MAGIC_SOURCE = RawAnimation.begin().thenLoop("sit_on_magic_source");
-    private static final RawAnimation SLEEP = RawAnimation.begin().thenLoop("sleep_left");
-    private static final RawAnimation SIT = RawAnimation.begin().thenLoop("sit");
-    private static final RawAnimation FLY = RawAnimation.begin().thenLoop("fly");
-    private static final RawAnimation FLY_SOARING = RawAnimation.begin().thenLoop("fly_soaring");
-    private static final RawAnimation FLY_DIVE = RawAnimation.begin().thenLoop("fly_dive");
-    private static final RawAnimation FLY_DIVE_ALT = RawAnimation.begin().thenLoop("fly_dive_alt");
-    private static final RawAnimation FLY_SPIN = RawAnimation.begin().thenLoop("fly_spin");
-    private static final RawAnimation FLY_LAND = RawAnimation.begin().thenLoop("fly_land");
-    private static final RawAnimation SWIM = RawAnimation.begin().thenLoop("swim");
-    private static final RawAnimation SWIM_FAST = RawAnimation.begin().thenLoop("swim_fast");
-    private static final RawAnimation FALL_LOOP = RawAnimation.begin().thenLoop("fall_loop");
-    private static final RawAnimation SNEAK = RawAnimation.begin().thenLoop("sneak");
-    private static final RawAnimation SNEAK_WALK = RawAnimation.begin().thenLoop("sneak_walk");
-    private static final RawAnimation DIG_SNEAK = RawAnimation.begin().thenLoop("dig_sneak");
-    private static final RawAnimation RUN = RawAnimation.begin().thenLoop("run");
-    private static final RawAnimation WALK = RawAnimation.begin().thenLoop("walk");
-    private static final RawAnimation IDLE = RawAnimation.begin().thenLoop("idle");
-    private static final RawAnimation DIG = RawAnimation.begin().thenLoop("dig");
-    private static final RawAnimation CLIMBING_UP = RawAnimation.begin().thenLoop("climbing_up");
-    private static final RawAnimation CLIMBING_DOWN = RawAnimation.begin().thenLoop("climbing_down");
-
-    private static final RawAnimation JUMP = RawAnimation.begin().then("jump", Animation.LoopType.PLAY_ONCE);
-    private static final RawAnimation FLY_LAND_END = RawAnimation.begin().then("fly_land_end", Animation.LoopType.PLAY_ONCE);
-
-    // Special create animation
-    private static final RawAnimation CREATE_SKYHOOK_RIDING = RawAnimation.begin().thenLoop("create_skyhook_riding");
 }

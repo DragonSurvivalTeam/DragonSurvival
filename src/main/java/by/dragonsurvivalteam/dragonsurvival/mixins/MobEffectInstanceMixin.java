@@ -100,7 +100,7 @@ public abstract class MobEffectInstanceMixin implements AdditionalEffectData {
             Player player = dragonSurvival$entity.get();
 
             if (player != null && DragonStateProvider.getData(player).isOnMagicSource) {
-                // Don't tick down duration of the effects so the duration can be extended properly
+                // Don't tick down the duration of the effects so the duration can be extended properly
                 // Without always having to add some buffer duration
                 callback.setReturnValue(duration);
             }

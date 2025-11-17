@@ -18,6 +18,7 @@ public class DSDataAttachments {
 
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<EntityStateHandler>> ENTITY_HANDLER = REGISTRY.register("entity_handler", () -> AttachmentType.serializable(EntityStateHandler::new).build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<DragonStateHandler>> DRAGON_HANDLER = REGISTRY.register("dragon_handler", () -> AttachmentType.serializable(DragonStateHandler::new).copyOnDeath().build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<PlayerData>> PLAYER_DATA = REGISTRY.register("player_data", () -> AttachmentType.serializable(PlayerData::new).copyOnDeath().build());
 
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<ItemData>> ITEM = REGISTRY.register("item_data", () -> AttachmentType.serializable(ItemData::new).build());
 

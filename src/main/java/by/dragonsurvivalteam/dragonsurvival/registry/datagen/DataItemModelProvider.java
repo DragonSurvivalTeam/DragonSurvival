@@ -45,6 +45,10 @@ public class DataItemModelProvider extends ItemModelProvider {
     @Override
     protected void registerModels() {
         DSItems.REGISTRY.getEntries().forEach((holder) -> {
+            if (MANUALLY_AUTHORED.stream().anyMatch(holder.getId().getPath()::contains)) {
+                return;
+            }
+
             if (holder.get() instanceof BlockItem blockItem && BLOCK_MODELS_AS_BASIC.stream().noneMatch(blockItem.toString()::contains)) {
                 if (blockItem.toString().contains("skeleton")) {
                     // Parse the string up to "_skin"
@@ -71,10 +75,6 @@ public class DataItemModelProvider extends ItemModelProvider {
                     getBuilder(blockItem.toString()).parent(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, BLOCK_FOLDER + "/" + holder.getId().getPath())));
                 }
             } else {
-                if (MANUALLY_AUTHORED.stream().anyMatch(holder.getId().getPath()::contains)) {
-                    return;
-                }
-
                 if (holder.get() instanceof SpawnEggItem item) {
                     getBuilder(item.toString()).parent(new ModelFile.UncheckedModelFile(ResourceLocation.withDefaultNamespace("item/template_spawn_egg")));
                 } else if (holder.get() instanceof SwordItem item) {

@@ -13,6 +13,10 @@ import by.dragonsurvivalteam.dragonsurvival.network.container.RequestOpenVanilla
 import by.dragonsurvivalteam.dragonsurvival.network.container.SortInventory;
 import by.dragonsurvivalteam.dragonsurvival.network.dragon_editor.SyncDragonSkinSettings;
 import by.dragonsurvivalteam.dragonsurvival.network.dragon_editor.SyncPlayerSkinPreset;
+import by.dragonsurvivalteam.dragonsurvival.network.dragon_soul_block.RequestDragonSoulData;
+import by.dragonsurvivalteam.dragonsurvival.network.dragon_soul_block.SyncDragonSoulAnimation;
+import by.dragonsurvivalteam.dragonsurvival.network.dragon_soul_block.SyncDragonSoulData;
+import by.dragonsurvivalteam.dragonsurvival.network.dragon_soul_block.SyncDragonSoulLock;
 import by.dragonsurvivalteam.dragonsurvival.network.emotes.StopAllEmotes;
 import by.dragonsurvivalteam.dragonsurvival.network.emotes.SyncEmote;
 import by.dragonsurvivalteam.dragonsurvival.network.flight.FlightStatus;
@@ -50,7 +54,13 @@ import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncVisualEffectAdded;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncVisualEffectRemoval;
 import by.dragonsurvivalteam.dragonsurvival.network.particle.SyncBreathParticles;
 import by.dragonsurvivalteam.dragonsurvival.network.particle.SyncParticleTrail;
-import by.dragonsurvivalteam.dragonsurvival.network.player.*;
+import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDesiredGrowth;
+import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDragonMovement;
+import by.dragonsurvivalteam.dragonsurvival.network.player.SyncDragonPassengerID;
+import by.dragonsurvivalteam.dragonsurvival.network.player.SyncGrowth;
+import by.dragonsurvivalteam.dragonsurvival.network.player.SyncGrowthState;
+import by.dragonsurvivalteam.dragonsurvival.network.player.SyncLargeDragonDestruction;
+import by.dragonsurvivalteam.dragonsurvival.network.player.SyncPitchAndYaw;
 import by.dragonsurvivalteam.dragonsurvival.network.sound.StartTickingSound;
 import by.dragonsurvivalteam.dragonsurvival.network.sound.StopTickingSound;
 import by.dragonsurvivalteam.dragonsurvival.network.status.SyncAltarCooldown;
@@ -88,6 +98,7 @@ public class NetworkHandler {
         registrar.playToServer(RequestOpenDragonInventory.TYPE, RequestOpenDragonInventory.STREAM_CODEC, RequestOpenDragonInventory::handleServer);
         registrar.playToServer(RequestOpenVanillaInventory.TYPE, RequestOpenVanillaInventory.STREAM_CODEC, RequestOpenVanillaInventory::handleServer);
         registrar.playToServer(SyncLargeDragonDestruction.TYPE, SyncLargeDragonDestruction.STREAM_CODEC, SyncLargeDragonDestruction::handleServer);
+        registrar.playToServer(RequestDragonSoulData.TYPE, RequestDragonSoulData.STREAM_CODEC, RequestDragonSoulData::handleServer);
 
         registrar.playBidirectional(OpenDragonEditor.TYPE, OpenDragonEditor.STREAM_CODEC, new DirectionalPayloadHandler<>(OpenDragonEditor::handleClient, OpenDragonEditor::handleServer));
         registrar.playBidirectional(OpenDragonAltar.TYPE, OpenDragonAltar.STREAM_CODEC, new DirectionalPayloadHandler<>(OpenDragonAltar::handleClient, OpenDragonAltar::handleServer));
@@ -137,7 +148,6 @@ public class NetworkHandler {
         registrar.playToClient(SyncPenaltySupply.TYPE, SyncPenaltySupply.STREAM_CODEC, SyncPenaltySupply::handleClient);
         registrar.playToClient(SyncDamageModification.TYPE, SyncDamageModification.STREAM_CODEC, SyncDamageModification::handleClient);
         registrar.playToClient(SyncSwimDataEntry.TYPE, SyncSwimDataEntry.STREAM_CODEC, SyncSwimDataEntry::handleClient);
-        registrar.playToClient(SyncData.TYPE, SyncData.STREAM_CODEC, SyncData::handleClient);
         registrar.playToClient(SyncSummonedEntity.TYPE, SyncSummonedEntity.STREAM_CODEC, SyncSummonedEntity::handleClient);
         registrar.playToClient(SyncGlowInstance.TYPE, SyncGlowInstance.STREAM_CODEC, SyncGlowInstance::handleClient);
         registrar.playToClient(SyncBlockVision.TYPE, SyncBlockVision.STREAM_CODEC, SyncBlockVision::handleClient);
@@ -147,6 +157,7 @@ public class NetworkHandler {
         registrar.playToServer(SyncBeginCast.TYPE, SyncBeginCast.STREAM_CODEC, SyncBeginCast::handleServer);
         registrar.playToServer(SyncSummonedEntitiesBehaviour.TYPE, SyncSummonedEntitiesBehaviour.STREAM_CODEC, SyncSummonedEntitiesBehaviour::handleServer);
 
+        registrar.playBidirectional(SyncData.TYPE, SyncData.STREAM_CODEC, SyncData::handleCommon);
         registrar.playBidirectional(SyncStopCast.TYPE, SyncStopCast.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncStopCast::handleClient, SyncStopCast::handleServer));
         registrar.playBidirectional(SyncDisableAbility.TYPE, SyncDisableAbility.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncDisableAbility::handleClient, SyncDisableAbility::handleServer));
 
@@ -159,10 +170,13 @@ public class NetworkHandler {
         registrar.playBidirectional(StopAllEmotes.TYPE, StopAllEmotes.STREAM_CODEC, new DirectionalPayloadHandler<>(StopAllEmotes::handleClient, StopAllEmotes::handleServer));
 
         // Client data
+        registrar.playToClient(SyncDragonSoulLock.TYPE, SyncDragonSoulLock.STREAM_CODEC, SyncDragonSoulLock::handleClient);
         registrar.playToClient(RequestClientData.TYPE, RequestClientData.STREAM_CODEC, RequestClientData::handleClient);
+        registrar.playToClient(SyncDragonSoulData.TYPE, SyncDragonSoulData.STREAM_CODEC, SyncDragonSoulData::handleClient);
         registrar.playToClient(SyncParticleTrail.TYPE, SyncParticleTrail.STREAM_CODEC, SyncParticleTrail::handleClient);
         registrar.playToClient(SyncBreathParticles.TYPE, SyncBreathParticles.STREAM_CODEC, SyncBreathParticles::handleClient);
 
+        registrar.playBidirectional(SyncDragonSoulAnimation.TYPE, SyncDragonSoulAnimation.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncDragonSoulAnimation::handleClient, SyncDragonSoulAnimation::handleServer));
         registrar.playBidirectional(SyncPlayerSkinPreset.TYPE, SyncPlayerSkinPreset.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncPlayerSkinPreset::handleClient, SyncPlayerSkinPreset::handleServer));
         registrar.playBidirectional(SyncDragonClawRender.TYPE, SyncDragonClawRender.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncDragonClawRender::handleClient, SyncDragonClawRender::handleServer));
         registrar.playBidirectional(SyncDragonSkinSettings.TYPE, SyncDragonSkinSettings.STREAM_CODEC, new DirectionalPayloadHandler<>(SyncDragonSkinSettings::handleClient, SyncDragonSkinSettings::handleServer));

@@ -57,8 +57,11 @@ public class DSBlockTags extends BlockTagsProvider {
     @Translation(comments = "Small Wooden Dragon Doors")
     public static final TagKey<Block> SMALL_WOODEN_DRAGON_DOORS = key("small_wooden_dragon_doors");
 
-    @Translation(comments = "Dragon Dust/Bone Dropping Blocks")
+    @Translation(comments = "Dragon Dust- / Bone Dropping Blocks")
     public static final TagKey<Block> DRAGON_ORE_DROP = key("dragon_ore_drop");
+
+    @Translation(comments = "Dragon Bones")
+    public static final TagKey<Block> DRAGON_BONES = key("dragon_bones");
 
     public DSBlockTags(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
         super(output, lookupProvider, DragonSurvival.MODID, existingFileHelper);
@@ -82,7 +85,7 @@ public class DSBlockTags extends BlockTagsProvider {
                         tag(DRAGON_TREASURES).add(block);
                     }
                 }
-                case SkeletonPieceBlock ignored -> tag(key("dragon_bones")).add(block);
+                case SkeletonPieceBlock ignored -> tag(DRAGON_BONES).add(block);
                 default -> { /* Nothing to do */ }
             }
         });

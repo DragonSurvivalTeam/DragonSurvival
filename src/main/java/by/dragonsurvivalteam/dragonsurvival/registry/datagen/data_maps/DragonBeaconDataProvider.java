@@ -4,6 +4,7 @@ import by.dragonsurvivalteam.dragonsurvival.common.codecs.DragonBeaconData;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSConditions;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSDataMaps;
 import by.dragonsurvivalteam.dragonsurvival.registry.DSEffects;
+import by.dragonsurvivalteam.dragonsurvival.registry.datagen.tags.DSDragonSpeciesTags;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.BuiltInDragonSpecies;
 import by.dragonsurvivalteam.dragonsurvival.util.Functions;
 import net.minecraft.core.HolderLookup;
@@ -23,17 +24,21 @@ public class DragonBeaconDataProvider extends DataMapProvider {
     protected void gather(HolderLookup.@NotNull Provider provider) {
         builder(DSDataMaps.DRAGON_BEACON_DATA)
                 .add(BuiltInDragonSpecies.CAVE_DRAGON, new DragonBeaconData(
-                        DragonBeaconData.createEffects(Functions.secondsToTicks(20), 0, DSEffects.FIRE, DSEffects.STURDY_SKIN),
+                        DragonBeaconData.createEffects(Functions.secondsToTicks(20), 0, DSEffects.FIRE, DSEffects.STURDY_SKIN, DSEffects.EMPOWERED_SOUL),
                         new DragonBeaconData.PaymentData(60, 30, 0)
                 ), false, DSConditions.CAVE_DRAGON_LOADED)
                 .add(BuiltInDragonSpecies.FOREST_DRAGON, new DragonBeaconData(
-                        DragonBeaconData.createEffects(Functions.secondsToTicks(20), 0, DSEffects.MAGIC, DSEffects.ANIMAL_PEACE),
+                        DragonBeaconData.createEffects(Functions.secondsToTicks(20), 0, DSEffects.MAGIC, DSEffects.ANIMAL_PEACE, DSEffects.EMPOWERED_SOUL),
                         new DragonBeaconData.PaymentData(60, 30, 0)
                 ), false, DSConditions.FOREST_DRAGON_LOADED)
                 .add(BuiltInDragonSpecies.SEA_DRAGON, new DragonBeaconData(
-                        DragonBeaconData.createEffects(Functions.secondsToTicks(20), 0, DSEffects.PEACE, MobEffects.DIG_SPEED),
+                        DragonBeaconData.createEffects(Functions.secondsToTicks(20), 0, DSEffects.PEACE, MobEffects.DIG_SPEED, DSEffects.EMPOWERED_SOUL),
                         new DragonBeaconData.PaymentData(60, 30, 0)
-                ), false, DSConditions.SEA_DRAGON_LOADED);
+                ), false, DSConditions.SEA_DRAGON_LOADED)
+                .add(DSDragonSpeciesTags.ALL, new DragonBeaconData(
+                        DragonBeaconData.createEffects(Functions.secondsToTicks(20), 0, DSEffects.EMPOWERED_SOUL),
+                        new DragonBeaconData.PaymentData(60, 30, 0)
+                ), false);
     }
 
     @Override

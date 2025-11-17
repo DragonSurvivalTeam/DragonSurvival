@@ -33,8 +33,7 @@ public class SpinHUD {
     private static final ResourceLocation SPIN_COOLDOWN = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/spin_cooldown.png");
 
     public static void render(@NotNull final GuiGraphics graphics, @NotNull final DeltaTracker tracker) {
-        Minecraft minecraft = Minecraft.getInstance();
-        Player player = minecraft.player;
+        Player player =  Minecraft.getInstance().player;
 
         if (player == null || player.isSpectator()) {
             return;
