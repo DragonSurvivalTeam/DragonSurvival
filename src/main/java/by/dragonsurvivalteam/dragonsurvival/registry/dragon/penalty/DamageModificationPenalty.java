@@ -11,11 +11,11 @@ import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ExtraCodecs;
 
-import java.util.Optional;
 
 public record DamageModificationPenalty(DamageModification modification, int duration) implements PenaltyEffect {
     public static final MapCodec<DamageModificationPenalty> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             DamageModification.CODEC.fieldOf("modification").forGetter(DamageModificationPenalty::modification),
+            // FIXME 1.22 :: this should not be needed, since modification (due to its parent) already has a duration field?
             ExtraCodecs.intRange(DurationInstance.INFINITE_DURATION, Integer.MAX_VALUE).fieldOf("duration").forGetter(DamageModificationPenalty::duration)
     ).apply(instance, DamageModificationPenalty::new));
 
@@ -29,7 +29,7 @@ public record DamageModificationPenalty(DamageModification modification, int dur
         }
 
         modifications.remove(player, instance);
-        modifications.add(player, new DamageModification.Instance(modification, CommonData.from(modification.id(), player, penalty, Optional.empty(), modification.shouldRemoveAutomatically()), duration));
+        modifications.add(player, new DamageModification.Instance(modification, CommonData.from(modification.id(), player, penalty, modification.customIcon(), modification.shouldRemoveAutomatically()), duration));
     }
 
     @Override

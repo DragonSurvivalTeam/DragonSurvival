@@ -1,7 +1,7 @@
 package by.dragonsurvivalteam.dragonsurvival.client.gui.widgets.buttons;
 
 import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonAbilityScreen;
-import by.dragonsurvivalteam.dragonsurvival.magic.AbilityAndPenaltyTooltipRenderer;
+import by.dragonsurvivalteam.dragonsurvival.client.render.AbilityAndPenaltyTooltipRenderer;
 import by.dragonsurvivalteam.dragonsurvival.mixins.client.ScreenAccessor;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncDisableAbility;
 import by.dragonsurvivalteam.dragonsurvival.network.magic.SyncSlotAssignment;

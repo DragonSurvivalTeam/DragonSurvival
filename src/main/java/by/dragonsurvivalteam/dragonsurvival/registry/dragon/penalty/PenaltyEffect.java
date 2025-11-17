@@ -46,8 +46,8 @@ public interface PenaltyEffect {
             event.register(REGISTRY_KEY, DragonSurvival.res("damage_modification"), () -> DamageModificationPenalty.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("fear"), () -> FearPenalty.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("informational"), () -> InformationalPenalty.CODEC);
-
-            // TODO :: attribute modification, effect modification
+            event.register(REGISTRY_KEY, DragonSurvival.res("modifier"), () -> ModifierPenalty.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("effect_modification"), () -> EffectModificationPenalty.CODEC);
         }
     }
 }

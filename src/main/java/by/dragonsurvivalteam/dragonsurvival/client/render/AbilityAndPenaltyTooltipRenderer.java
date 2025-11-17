@@ -1,4 +1,4 @@
-package by.dragonsurvivalteam.dragonsurvival.magic;
+package by.dragonsurvivalteam.dragonsurvival.client.render;
 
 import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.gui.AbilityTooltipPositioner;
