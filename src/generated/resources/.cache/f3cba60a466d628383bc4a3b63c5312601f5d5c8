@@ -1,4 +1,5 @@
-// 1.21.1	2025-10-23T13:55:35.8224771	Dragon Survival Item tags
+// 1.21.1	2025-11-17T11:59:21.9980947	Dragon Survival Item tags
+ba3a5b36f000f7061f05cf494883d69f66310976 data/c/tags/item/hidden_from_recipe_viewers.json
 c1a8f5f7e1b7fdbb87aa67f2d2f6bb806140a6bd data/dragonsurvival/tags/item/activates_dragon_beacon.json
 3ca4212cb7567983e1e3ad7ac7b6eb9cae3e1596 data/dragonsurvival/tags/item/cave_dragon_food.json
 98e47e9f5e29dfe7526d64d46c38d29fda2da305 data/dragonsurvival/tags/item/charred_food.json

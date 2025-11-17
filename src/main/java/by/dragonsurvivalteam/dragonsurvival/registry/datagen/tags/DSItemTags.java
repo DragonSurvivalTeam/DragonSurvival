@@ -130,6 +130,22 @@ public class DSItemTags extends ItemTagsProvider {
                 .addTag(ItemTags.CHEST_ARMOR_ENCHANTABLE)
                 .add(Items.ELYTRA);
 
+        tag(Tags.Items.HIDDEN_FROM_RECIPE_VIEWERS)
+                .add(DSItems.BOLAS.value())
+                .add(DSItems.HUNTING_NET.value())
+                .add(DSItems.LIGHTNING_TEXTURE_ITEM.value())
+                .add(DSItems.FOREST_ICON.value())
+                .add(DSItems.CAVE_ICON.value())
+                .add(DSItems.SEA_ICON.value())
+                .add(DSItems.FOREST_FULL_ICON.value())
+                .add(DSItems.CAVE_FULL_ICON.value())
+                .add(DSItems.SEA_FULL_ICON.value())
+                .add(DSItems.ACTIVATED_DRAGON_BEACON.value())
+                .add(DSItems.CAVE_BEACON.value())
+                .add(DSItems.FOREST_BEACON.value())
+                .add(DSItems.SEA_BEACON.value());
+        copy(DSBlockTags.DRAGON_BONES, Tags.Items.HIDDEN_FROM_RECIPE_VIEWERS);
+
         copy(DSBlockTags.DRAGON_ALTARS, DRAGON_ALTARS);
         copy(DSBlockTags.DRAGON_TREASURES, DRAGON_TREASURES);
 
