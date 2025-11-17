@@ -221,7 +221,7 @@ public class DragonSoulItem extends BlockItem {
             PacketDistributor.sendToPlayer(serverPlayer, new SyncMagicData(magicData.serializeNBT(player.registryAccess())));
         }
 
-        level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ENDER_DRAGON_GROWL, entity.getSoundSource(), 1.0F, 1.0F);
+        level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ENDER_DRAGON_GROWL, entity.getSoundSource(), 0.6f, 1);
 
         for (int i = 0; i < 10; i++) {
             level.addParticle(ParticleTypes.SOUL, entity.getX() + (level.random.nextDouble() - 0.5D) * 0.5D, entity.getY() + (level.random.nextDouble() - 0.5D) * 0.5D, entity.getZ() + (level.random.nextDouble() - 0.5D) * 0.5D, (level.random.nextDouble() - 0.5D) * 0.5D, level.random.nextDouble() * 0.5D, (level.random.nextDouble() - 0.5D) * 0.5D);
@@ -276,7 +276,7 @@ public class DragonSoulItem extends BlockItem {
     @Override
     public void onUseTick(@NotNull final Level level, @NotNull final LivingEntity entity, @NotNull final ItemStack soul, int remainingUseDuration) {
         super.onUseTick(level, entity, soul, remainingUseDuration);
-        entity.playSound(SoundEvents.SOUL_ESCAPE.value(), (float) (0.3 + 0.3 * entity.getRandom().nextInt(2)), entity.getRandom().nextFloat() - entity.getRandom().nextFloat() * 0.2f + 1.0f);
+        entity.playSound(SoundEvents.SOUL_ESCAPE.value(), (float) (0.2 + 0.15 * entity.getRandom().nextInt(2)), entity.getRandom().nextFloat() - entity.getRandom().nextFloat() * 0.2f + 1.0f);
     }
 
     @Override

@@ -103,6 +103,10 @@ public class DragonSoulBlock extends Block implements SimpleWaterloggedBlock, En
 
     @Override
     protected @NotNull InteractionResult useWithoutItem(@NotNull final BlockState state, @NotNull final Level level, @NotNull final BlockPos position, @NotNull final Player player, @NotNull final BlockHitResult hitResult) {
+        if (!player.getMainHandItem().isEmpty()) {
+            return InteractionResult.PASS;
+        }
+
         if (level.getBlockEntity(position) instanceof DragonSoulBlockEntity soul && soul.playerUUID != null && soul.playerUUID.equals(player.getUUID())) {
             soul.locked = !soul.locked;
 

@@ -21,11 +21,11 @@ public class EffectHandler {
     public static void handleEffectApplication(final MobEffectEvent.Added event) {
         ((AdditionalEffectData) event.getEffectInstance()).dragonSurvival$setApplier(event.getEffectSource());
 
-        if (event.getEffectInstance().getEffect() == DSEffects.EMPOWERED_SOUL && event.getEntity().hasEffect(DSEffects.EXHAUSTED_SOUL)) {
+        if (event.getEffectInstance().getEffect().is(DSEffects.EMPOWERED_SOUL) && event.getEntity().hasEffect(DSEffects.EXHAUSTED_SOUL)) {
             event.getEntity().removeEffect(DSEffects.EXHAUSTED_SOUL);
         }
 
-        if (event.getEntity() instanceof Player player && event.getEffectInstance().getEffect() == DSEffects.EXHAUSTED_SOUL) {
+        if (event.getEntity() instanceof Player player && event.getEffectInstance().getEffect().is(DSEffects.EXHAUSTED_SOUL)) {
             // Only for the visuals - we return 'false' for the cooldown check
             player.getCooldowns().addCooldown(DSItems.DRAGON_SOUL.value(), event.getEffectInstance().getDuration());
         }
@@ -33,7 +33,7 @@ public class EffectHandler {
 
     @SubscribeEvent
     public static void checkIfEffectIsApplicable(final MobEffectEvent.Applicable event) {
-        if (event.getEffectInstance().getEffect() == DSEffects.EXHAUSTED_SOUL && event.getEntity().hasEffect(DSEffects.EMPOWERED_SOUL)) {
+        if (event.getEffectInstance().getEffect().is(DSEffects.EXHAUSTED_SOUL) && event.getEntity().hasEffect(DSEffects.EMPOWERED_SOUL)) {
             event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
         }
     }
@@ -60,7 +60,7 @@ public class EffectHandler {
         if (event.getEntity() instanceof Player player) {
             MobEffectInstance instance = event.getEffectInstance();
 
-            if (instance != null && instance.getEffect() == DSEffects.EXHAUSTED_SOUL) {
+            if (instance != null && instance.getEffect().is(DSEffects.EXHAUSTED_SOUL)) {
                 player.getCooldowns().removeCooldown(DSItems.DRAGON_SOUL.value());
             }
         }

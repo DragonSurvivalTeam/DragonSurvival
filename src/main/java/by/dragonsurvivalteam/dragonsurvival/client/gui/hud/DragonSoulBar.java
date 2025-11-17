@@ -27,7 +27,10 @@ public class DragonSoulBar {
     public static int yOffset;
 
     public static final ResourceLocation ID = DragonSurvival.res("dragon_soul_bar");
+
     private static final ResourceLocation DRAGON_SOUL_BAR = ResourceLocation.fromNamespaceAndPath(DragonSurvival.MODID, "textures/gui/dragon_soul_bar.png");
+    private static final int WIDTH = 66;
+    private static final int HEIGHT = 40;
 
     public static void render(@NotNull final GuiGraphics graphics, @NotNull final DeltaTracker tracker) {
         Player player =  Minecraft.getInstance().player;
@@ -44,15 +47,15 @@ public class DragonSoulBar {
             float progress = ((float) duration - (float) player.getUseItemRemainingTicks()) / (float) duration;
 
             Window window = Minecraft.getInstance().getWindow();
-            int x = window.getGuiScaledWidth() / 2 - 66 / 2;
+            int x = window.getGuiScaledWidth() / 2 - WIDTH / 2;
             int y = window.getGuiScaledHeight() - 96;
 
             x += xOffset;
             y += yOffset;
 
-            int width = (int) (progress * 62);
-            graphics.blit(DRAGON_SOUL_BAR, x, y, 0, 0, 66, 21, 256, 256);
-            graphics.blit(DRAGON_SOUL_BAR, x + 4, y + 1, 4, 21, width, 21, 256, 256);
+            int width = (int) (progress * WIDTH);
+            graphics.blit(DRAGON_SOUL_BAR, x, y, 0, 0, WIDTH, HEIGHT / 2, WIDTH, HEIGHT);
+            graphics.blit(DRAGON_SOUL_BAR, x, y, 0, (float) HEIGHT / 2, width, HEIGHT / 2, WIDTH, HEIGHT);
         }
     }
 }
