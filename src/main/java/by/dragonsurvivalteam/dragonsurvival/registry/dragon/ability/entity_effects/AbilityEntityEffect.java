@@ -82,6 +82,7 @@ public interface AbilityEntityEffect {
             event.register(REGISTRY_KEY, DragonSurvival.res("effect_removal"), () -> MobEffectRemovalEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("use_item"), () -> UseItemOnLivingEntityEffect.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("dragon_growth"), () -> DragonGrowthEffect.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("mana_recovery"), () -> ManaRecoveryEffect.CODEC);
         }
     }
 }

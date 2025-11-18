@@ -56,7 +56,7 @@ public class JEIPlugin implements IModPlugin {
             return false;
         }
 
-        ITypedIngredient<ItemStack> ingredient = JEIPlugin.runtime.getIngredientManager().createTypedIngredient(VanillaTypes.ITEM_STACK, stack).orElse(null);
+        ITypedIngredient<ItemStack> ingredient = JEIPlugin.runtime.getIngredientManager().createTypedIngredient(VanillaTypes.ITEM_STACK, stack, false).orElse(null);
 
         if (ingredient == null) {
             return false;
