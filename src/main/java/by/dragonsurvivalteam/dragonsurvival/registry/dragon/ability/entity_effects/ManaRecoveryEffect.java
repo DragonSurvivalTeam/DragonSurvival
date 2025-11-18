@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.entity_effe
 
 import by.dragonsurvivalteam.dragonsurvival.common.capability.DragonStateProvider;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.ManaHandler;
+import by.dragonsurvivalteam.dragonsurvival.network.syncing.SyncMana;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.MagicData;
 import by.dragonsurvivalteam.dragonsurvival.registry.datagen.Translation;
 import by.dragonsurvivalteam.dragonsurvival.registry.dragon.ability.DragonAbilityInstance;
@@ -16,6 +17,7 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.NumberFormat;
@@ -56,6 +58,8 @@ public record ManaRecoveryEffect(ActionType actionType, AdjustmentType adjustmen
         };
 
         magic.setCurrentMana(Math.min(max, base + adjustment));
+        // Usually there is no need to sync since mana related logic occurs on both sides
+        PacketDistributor.sendToPlayer(dragon, new SyncMana(magic.getCurrentMana()));
     }
 
     @Override
