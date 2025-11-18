@@ -10,6 +10,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class DSSubPredicates {
+    // FIXME 1.22 :: these should probably be moved / adjusted to LootItemConditions
+    //  since they are not actual "entity" specific predicates. just extensions of the predicate functionality
     public static final DeferredRegister<MapCodec<? extends EntitySubPredicate>> REGISTRY = DeferredRegister.create(BuiltInRegistries.ENTITY_SUB_PREDICATE_TYPE, DragonSurvival.MODID);
 
     static {

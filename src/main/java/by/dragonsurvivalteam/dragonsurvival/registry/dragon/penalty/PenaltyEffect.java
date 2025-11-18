@@ -48,6 +48,7 @@ public interface PenaltyEffect {
             event.register(REGISTRY_KEY, DragonSurvival.res("informational"), () -> InformationalPenalty.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("modifier"), () -> ModifierPenalty.CODEC);
             event.register(REGISTRY_KEY, DragonSurvival.res("effect_modification"), () -> EffectModificationPenalty.CODEC);
+            event.register(REGISTRY_KEY, DragonSurvival.res("run_function"), () -> RunFunctionPenalty.CODEC);
         }
     }
 }
