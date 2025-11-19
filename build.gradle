@@ -89,7 +89,7 @@ dependencies {
 
 	// Curios
 	compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}:api"
-    implementation "top.theillusivec4.curios:curios-neoforge:${curios_version}"
+	implementation "top.theillusivec4.curios:curios-neoforge:${curios_version}"
 
 	// Sophisticated Backpacks
 	compileOnly "curse.maven:sophisticated-backpacks-422301:6246606" // 3.2.4.1.1209
@@ -99,7 +99,7 @@ dependencies {
 	compileOnly "curse.maven:cosmetic-armor-reworked-237307:5610814" // v1
 
 	// Create
-    compileOnly "curse.maven:create-328085:6255497" // 6.0.1
+	compileOnly "curse.maven:create-328085:6255497" // 6.0.1
 
 	// Better Combat
 	compileOnly "curse.maven:better-combat-by-daedelus-639842:6097296" // 2.1.3
@@ -129,6 +129,8 @@ dependencies {
 
 	// EMI
 	compileOnly "curse.maven:emi-580555:6420931" // 1.1.22
+
+	implementation "curse.maven:multi-mine-227887:5754479"
 
 	// --- Testing --- //
 

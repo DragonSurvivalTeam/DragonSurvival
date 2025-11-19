@@ -47,6 +47,7 @@
     "VillagerMixin",
     "create.PlayerSkyhookRendererAccessor",
     "create.TreasureBlockMixin",
+    "multimine.MultiMineServerMixin",
     "tool_swap.ServerPlayerGameModeEndMixin",
     "tool_swap.ServerPlayerGameModeStartMixin"
   ],
@@ -93,6 +94,7 @@
     "client.SmithingScreenMixin",
     "curios.GuiEventHandlerMixin",
     "iris.GameRendererMixin",
+    "multimine.MultiMineClientMixin",
     "sodium.ClientNeoForgeModMixin",
     "tool_swap.MultiPlayerGameModeEndMixin",
     "tool_swap.MultiPlayerGameModeStartMixin"
