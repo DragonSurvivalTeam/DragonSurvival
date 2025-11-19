@@ -21,10 +21,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.ArrayList;
 import java.util.List;
 
-public record TeleportEffect(
-        TargetDirection targetDirection,
-        LevelBasedValue maxDistance
-) implements AbilityEntityEffect {
+public record TeleportEffect(TargetDirection targetDirection, LevelBasedValue maxDistance) implements AbilityEntityEffect {
     @Translation(comments = "Teleport up to %s blocks.")
     public static final String FACING = Translation.Type.GUI.wrap("teleport.facing");
 

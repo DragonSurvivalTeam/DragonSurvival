@@ -13,8 +13,10 @@ import org.jetbrains.annotations.Nullable;
 
 public record BlockBreakEffect(BlockPredicate validBlocks, LevelBasedValue probability, boolean dropLoot) implements AbilityBlockEffect {
     public static final MapCodec<BlockBreakEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            // TODO 1.22 :: Is this even needed / useful, considering the existing targeting logic?
             BlockPredicate.CODEC.fieldOf("valid_blocks").forGetter(BlockBreakEffect::validBlocks),
             LevelBasedValue.CODEC.fieldOf("probability").forGetter(BlockBreakEffect::probability),
+            // TODO 1.22 :: change default to true since by itself you'd expect this "harvest" effect to drop the loot
             Codec.BOOL.optionalFieldOf("drop_loot", false).forGetter(BlockBreakEffect::dropLoot)
     ).apply(instance, BlockBreakEffect::new));
 

@@ -75,6 +75,9 @@ public abstract class DurationInstance<B extends DurationInstanceBase<?, ?>> imp
         }
 
         if (commonData.removeAutomatically() && commonData.source().isPresent()) {
+            // TODO :: check across dimensions? usually would just cause the range to return true
+            //  if the entities are in different dimensions
+            // ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer()
             Player source = storageHolder.level().getPlayerByUUID(commonData.source().get());
 
             if (source == null) {

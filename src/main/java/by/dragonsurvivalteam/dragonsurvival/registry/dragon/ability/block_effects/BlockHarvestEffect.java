@@ -5,7 +5,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
@@ -19,8 +18,9 @@ import java.util.Optional;
 
 public record BlockHarvestEffect(BlockPredicate validBlocks, LevelBasedValue probability, Optional<ItemStack> tool) implements AbilityBlockEffect {
     public static final MapCodec<BlockHarvestEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            // TODO 1.22 :: Is this even needed / useful, considering the existing targeting logic?
             BlockPredicate.CODEC.fieldOf("valid_blocks").forGetter(BlockHarvestEffect::validBlocks),
-            LevelBasedValue.CODEC.fieldOf("probability").forGetter(BlockHarvestEffect::probability),
+            LevelBasedValue.CODEC.optionalFieldOf("probability", LevelBasedValue.constant(1)).forGetter(BlockHarvestEffect::probability),
             ItemStack.CODEC.optionalFieldOf("tool").forGetter(BlockHarvestEffect::tool)
     ).apply(instance, BlockHarvestEffect::new));
 
@@ -30,12 +30,11 @@ public record BlockHarvestEffect(BlockPredicate validBlocks, LevelBasedValue pro
             return;
         }
 
-        ServerLevel level = dragon.serverLevel();
-        if (validBlocks.test(level, position)) {
+        if (validBlocks.test(dragon.serverLevel(), position)) {
             ItemStack blockTool = tool.orElse(ItemStack.EMPTY);
-            BlockState blockState = level.getBlockState(position);
-            BlockEntity blockEntity = blockState.hasBlockEntity() ? level.getBlockEntity(position) : null;
-            Block.dropResources(blockState, level, position, blockEntity, dragon, blockTool);
+            BlockState blockState = dragon.level().getBlockState(position);
+            BlockEntity blockEntity = blockState.hasBlockEntity() ? dragon.level().getBlockEntity(position) : null;
+            Block.dropResources(blockState, dragon.level(), position, blockEntity, dragon, blockTool);
         }
     }
 

@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import java.text.NumberFormat;
 import java.util.List;
 
-public record ManaRecoveryEffect(ActionType actionType, AdjustmentType adjustmentType, LevelBasedValue amount) implements AbilityEntityEffect {
+public record ManaRecoveryEffect(ActionType actionType, AdjustmentType adjustmentType, LevelBasedValue amount, LevelBasedValue probability) implements AbilityEntityEffect {
     @Translation(comments = "Adjust current mana by setting it to %s")
     public static final String ADJUST_SET = Translation.Type.GUI.wrap("mana_recovery.adjust_set");
 
@@ -33,7 +33,8 @@ public record ManaRecoveryEffect(ActionType actionType, AdjustmentType adjustmen
     public static final MapCodec<ManaRecoveryEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             ActionType.CODEC.fieldOf("action_type").forGetter(ManaRecoveryEffect::actionType),
             AdjustmentType.CODEC.fieldOf("adjustment_type").forGetter(ManaRecoveryEffect::adjustmentType),
-            LevelBasedValue.CODEC.fieldOf("amount").forGetter(ManaRecoveryEffect::amount)
+            LevelBasedValue.CODEC.fieldOf("amount").forGetter(ManaRecoveryEffect::amount),
+            LevelBasedValue.CODEC.optionalFieldOf("probability", LevelBasedValue.constant(1)).forGetter(ManaRecoveryEffect::probability)
     ).apply(instance, ManaRecoveryEffect::new));
 
     @Override
@@ -42,7 +43,11 @@ public record ManaRecoveryEffect(ActionType actionType, AdjustmentType adjustmen
             return;
         }
 
-        float amount = amount().calculate(ability.level());
+        if (dragon.getRandom().nextDouble() > probability.calculate(ability.level())) {
+            return;
+        }
+
+        float amount = this.amount.calculate(ability.level());
 
         MagicData magic = MagicData.getData(player);
         float max = ManaHandler.getMaxMana(player);

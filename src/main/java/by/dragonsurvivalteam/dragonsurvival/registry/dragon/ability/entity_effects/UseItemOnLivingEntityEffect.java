@@ -21,8 +21,9 @@ import java.util.Optional;
 public record UseItemOnLivingEntityEffect(ItemStack item, LevelBasedValue probability, Optional<Holder<SoundEvent>> sound, Optional<EntityPredicate> validEntities) implements AbilityEntityEffect {
     public static final MapCodec<UseItemOnLivingEntityEffect> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             ItemStack.CODEC.fieldOf("item").forGetter(UseItemOnLivingEntityEffect::item),
-            LevelBasedValue.CODEC.fieldOf("probability").forGetter(UseItemOnLivingEntityEffect::probability),
+            LevelBasedValue.CODEC.optionalFieldOf("probability", LevelBasedValue.constant(1)).forGetter(UseItemOnLivingEntityEffect::probability),
             SoundEvent.CODEC.optionalFieldOf("sound").forGetter(UseItemOnLivingEntityEffect::sound),
+            // TODO 1.22 :: Is this even needed / useful, considering the existing targeting logic?
             EntityPredicate.CODEC.optionalFieldOf("valid_entities").forGetter(UseItemOnLivingEntityEffect::validEntities)
     ).apply(instance, UseItemOnLivingEntityEffect::new));
     
