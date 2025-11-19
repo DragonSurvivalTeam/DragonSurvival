@@ -85,11 +85,11 @@ dependencies {
 
 	// JEI
 	compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
-	runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
+	runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
 
 	// Curios
 	compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}:api"
-	runtimeOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}"
+    implementation "top.theillusivec4.curios:curios-neoforge:${curios_version}"
 
 	// Sophisticated Backpacks
 	compileOnly "curse.maven:sophisticated-backpacks-422301:6246606" // 3.2.4.1.1209
@@ -99,7 +99,7 @@ dependencies {
 	compileOnly "curse.maven:cosmetic-armor-reworked-237307:5610814" // v1
 
 	// Create
-	compileOnly "curse.maven:create-328085:6255497" // 6.0.1
+    compileOnly "curse.maven:create-328085:6255497" // 6.0.1
 
 	// Better Combat
 	compileOnly "curse.maven:better-combat-by-daedelus-639842:6097296" // 2.1.3

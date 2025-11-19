@@ -3,6 +3,9 @@
   "package": "by.dragonsurvivalteam.dragonsurvival.mixins",
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
+  "mixinextras": {
+    "minVersion": "0.5.0"
+  },
   "plugin": "by.dragonsurvivalteam.dragonsurvival.mixins.ApplyMixinPlugin",
   "refmap": "dragonsurvival.refmap.json",
   "mixins": [
@@ -88,6 +91,7 @@
     "client.RenderTypeHelperMixin",
     "client.ScreenAccessor",
     "client.SmithingScreenMixin",
+    "curios.GuiEventHandlerMixin",
     "iris.GameRendererMixin",
     "sodium.ClientNeoForgeModMixin",
     "tool_swap.MultiPlayerGameModeEndMixin",
