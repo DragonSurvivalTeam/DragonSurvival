@@ -96,6 +96,10 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
     private HoverButton growthButton;
     private int growthTooltipScroll;
 
+    /**
+     * This is not the persistent state of the data attachment </br>
+     * Only exists to reduce how often we need to retrieve the claw inventory data
+     */
     private boolean clawsMenu;
     private final Player player;
     private final List<ExtendedButton> clawMenuButtons = new ArrayList<>();
@@ -142,6 +146,7 @@ public class DragonInventoryScreen extends EffectRenderingInventoryScreen<Dragon
 
         ClickHoverButton clawMenuArrow = new ClickHoverButton(leftPos - 8, topPos + 73, 10, 18, 0, 0, 18, 18, Component.empty(), button -> {
             clawsMenu = !clawsMenu;
+            ClawInventoryData.getData(player).setMenuOpen(clawsMenu);
             PacketDistributor.sendToServer(new SyncDragonClawMenuToggle(clawsMenu));
         }, CLAW_ARROW_CLICK, CLAW_ARROW_HOVER, CLAW_ARROW_MAIN);
         addRenderableWidget(clawMenuArrow);
