@@ -2,6 +2,7 @@ package by.dragonsurvivalteam.dragonsurvival.registry.dragon.penalty;
 
 import by.dragonsurvivalteam.dragonsurvival.common.codecs.ResourceLocationWrapper;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.DataReloadHandler;
+import by.dragonsurvivalteam.dragonsurvival.compat.ModCheck;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.ClawInventoryData;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -14,6 +15,8 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import top.theillusivec4.curios.api.CuriosApi;
 
 import java.util.HashSet;
 import java.util.List;
@@ -36,6 +39,7 @@ public class ItemBlacklistPenalty implements PenaltyEffect {
     public void apply(final ServerPlayer player, final Holder<DragonPenalty> penalty) {
         dropAllItemsInList(player, player.getInventory().armor);
         dropAllItemsInList(player, player.getInventory().offhand);
+        dropCurios(player);
 
         ClawInventoryData clawData = ClawInventoryData.getData(player);
         SimpleContainer clawContainer = clawData.getContainer();
@@ -76,6 +80,26 @@ public class ItemBlacklistPenalty implements PenaltyEffect {
             if (isBlacklisted(stack.getItem())) {
                 player.getInventory().removeItem(stack);
                 player.drop(stack, false);
+            }
+        });
+    }
+
+    private void dropCurios(final Player player) {
+        if (!ModCheck.isModLoaded(ModCheck.CURIOS)) {
+            return;
+        }
+
+        CuriosApi.getCuriosInventory(player).ifPresent(inventory -> {
+            IItemHandlerModifiable equipped = inventory.getEquippedCurios();
+
+            for (int slot = 0; slot < equipped.getSlots(); slot++) {
+                if (isBlacklisted(equipped.getStackInSlot(slot).getItem())) {
+                    ItemStack removed = equipped.extractItem(slot, 64, false);
+
+                    if (!removed.isEmpty()) {
+                        player.drop(removed, false);
+                    }
+                }
             }
         });
     }
