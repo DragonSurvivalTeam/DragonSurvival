@@ -130,7 +130,7 @@ dependencies {
 	// EMI
 	compileOnly "curse.maven:emi-580555:6420931" // 1.1.22
 
-    compileOnly "curse.maven:multi-mine-227887:5754479"
+	compileOnly "curse.maven:multi-mine-227887:5754479"
 
 	// --- Testing --- //
 
