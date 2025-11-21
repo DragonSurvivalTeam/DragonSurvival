@@ -858,7 +858,7 @@
   "dragonsurvival.configuration.render_held_item": "Render Held Item",
   "dragonsurvival.configuration.render_held_item.tooltip": "If enabled items will be rendered for dragons while in third person mode",
   "dragonsurvival.configuration.render_items_in_mouth": "Render Items In Mouth",
-  "dragonsurvival.configuration.render_items_in_mouth.tooltip": "If enabled held items will be rendered neat the mouth of the dragon\nIf disabled held items will be displayed on the side of the dragon",
+  "dragonsurvival.configuration.render_items_in_mouth.tooltip": "If enabled held items will be rendered near the mouth of the dragon\nIf disabled held items will be displayed on the side of the dragon",
   "dragonsurvival.configuration.render_other_players_custom_skins": "Render Other Players Custom Skins",
   "dragonsurvival.configuration.render_other_players_custom_skins.tooltip": "If enabled custom skins of other players will be rendered",
   "dragonsurvival.configuration.require_experience_drop_for_dragon_ore": "Require Experience Drop For Dragon Ore",

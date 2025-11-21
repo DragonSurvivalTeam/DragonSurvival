@@ -85,7 +85,7 @@ public class ClientDragonRenderer {
     @ConfigOption(side = ConfigSide.CLIENT, category = "rendering", key = "render_first_person_flight")
     public static Boolean renderFirstPersonFlight = false;
 
-    @Translation(key = "render_items_in_mouth", type = Translation.Type.CONFIGURATION, comments = {"If enabled held items will be rendered neat the mouth of the dragon", "If disabled held items will be displayed on the side of the dragon"})
+    @Translation(key = "render_items_in_mouth", type = Translation.Type.CONFIGURATION, comments = {"If enabled held items will be rendered near the mouth of the dragon", "If disabled held items will be displayed on the side of the dragon"})
     @ConfigOption(side = ConfigSide.CLIENT, category = "rendering", key = "render_items_in_mouth")
     public static Boolean renderItemsInMouth = false;
 

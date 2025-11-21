@@ -5,6 +5,7 @@ import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonData;
 import by.dragonsurvivalteam.dragonsurvival.registry.attachments.SummonedEntities;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.Targeting;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
@@ -43,10 +44,13 @@ public class SummonerTargetedGoal extends TargetGoal {
 
         lastTick = mob.tickCount;
 
-        List<LivingEntity> targets = mob.level().getNearbyEntities(LivingEntity.class, TargetingConditions.DEFAULT
-                .selector(target -> target instanceof Mob mob && mob.getTarget() == owner), mob, AABB.ofSize(owner.position(), SEARCH_RADIUS, SEARCH_RADIUS, SEARCH_RADIUS));
+        List<LivingEntity> targets = mob.level().getNearbyEntities(LivingEntity.class, TargetingConditions.DEFAULT, mob, AABB.ofSize(owner.position(), SEARCH_RADIUS, SEARCH_RADIUS, SEARCH_RADIUS));
 
         for (LivingEntity entity : targets) {
+            if (!(entity instanceof Targeting targeting && targeting.getTarget() == owner)) {
+                continue;
+            }
+
             // Cannot check this as part of the selector above, since that will run into a 'StackOverflowError'
             // This check is needed though because it also checks whether the mob can even reach the target
             if (canAttack(entity, TargetingConditions.DEFAULT)) {
@@ -74,11 +78,14 @@ public class SummonerTargetedGoal extends TargetGoal {
         }
 
         // Target the closest entity which is targeting the summoner
-        List<LivingEntity> targets = mob.level().getNearbyEntities(LivingEntity.class, TargetingConditions.forCombat()
-                .selector(entity -> entity instanceof Mob mob && mob.getTarget() == owner), mob, AABB.ofSize(owner.position(), SEARCH_RADIUS, SEARCH_RADIUS, SEARCH_RADIUS));
+        List<LivingEntity> targets = mob.level().getNearbyEntities(LivingEntity.class, TargetingConditions.forCombat(), mob, AABB.ofSize(owner.position(), SEARCH_RADIUS, SEARCH_RADIUS, SEARCH_RADIUS));
         targets.sort(Comparator.comparingDouble(entity -> entity.distanceTo(owner)));
 
         for (LivingEntity target : targets) {
+            if (!(target instanceof Targeting targeting && targeting.getTarget() == owner)) {
+                continue;
+            }
+
             if (canAttack(target, TargetingConditions.DEFAULT)) {
                 mob.setTarget(target);
                 super.start();
