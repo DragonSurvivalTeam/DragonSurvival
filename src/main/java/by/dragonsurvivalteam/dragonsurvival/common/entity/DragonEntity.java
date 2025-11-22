@@ -339,8 +339,9 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
 
         MovementData movement = MovementData.getData(player);
         boolean isUsingItem = player.isUsingItem();
-        boolean isUsingEdibleItem = isUsingItem && DragonFoodHandler.isEdible(player, player.getMainHandItem());
         InteractionHand usedItemHand = getUsedItemHand();
+        boolean isUsingEdibleItem = isUsingItem && DragonFoodHandler.isEdible(player, player.getItemInHand(usedItemHand));
+
         if (!ClientDragonRenderer.renderItemsInMouth) {
             if (isUsingEdibleItem) {
                 if (usedItemHand == InteractionHand.MAIN_HAND || animationTickTimer.getDuration(DragonAnimations.EAT_ITEM_RIGHT.getAnimation()) > 0) {
@@ -356,7 +357,7 @@ public class DragonEntity extends LivingEntity implements GeoEntity {
                 } else if ((usedItemHand == InteractionHand.OFF_HAND && player.getTicksUsingItem() == 1) || animationTickTimer.getDuration(DragonAnimations.USE_ITEM_LEFT.getAnimation()) > 0) {
                     return playOrContinueAnimation(DragonAnimations.USE_ITEM_LEFT.getAnimation(), state, movement);
                 }
-            } else if (player.getItemInHand(InteractionHand.MAIN_HAND) != ItemStack.EMPTY) {
+            } else if (!player.getMainHandItem().isEmpty()) {
                 // Still play use item if we are holding an item in our main hand and left click
                 if (movement.bite || animationTickTimer.getDuration(DragonAnimations.USE_ITEM_RIGHT.getAnimation()) > 0) {
                     return playOrContinueAnimation(DragonAnimations.USE_ITEM_RIGHT.getAnimation(), state, movement);
