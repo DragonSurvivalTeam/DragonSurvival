@@ -1,5 +1,6 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.client;
 
+import by.dragonsurvivalteam.dragonsurvival.DragonSurvival;
 import by.dragonsurvivalteam.dragonsurvival.client.loaders.CustomSoulIconLoader;
 import by.dragonsurvivalteam.dragonsurvival.common.entity.DragonEntity;
 import by.dragonsurvivalteam.dragonsurvival.common.handlers.magic.HunterHandler;
@@ -12,6 +13,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
@@ -28,6 +30,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
 
 /** Render the held item with the modified alpha from the hunter stacks */
 @Mixin(ItemRenderer.class)
@@ -60,15 +63,29 @@ public abstract class ItemRendererMixin { // FIXME :: doesn't work with sodium s
     }
 
     @Inject(method = "getModel", at = @At("HEAD"), cancellable = true)
-    private void dragonSurvival$getCustomSoulModel(final ItemStack stack, final Level level, final LivingEntity entity, final int seed, final CallbackInfoReturnable<BakedModel> callback) {
+    private void dragonSurvival$getCustomSoulModel(final ItemStack stack, @Nullable final Level level, @Nullable final LivingEntity entity, final int seed, final CallbackInfoReturnable<BakedModel> callback) {
         if (stack.getItem() instanceof DragonSoulItem soul) {
-            ResourceKey<DragonSpecies> species = soul.getSpecies(stack, level.registryAccess());
+            RegistryAccess access;
+
+            if (level != null) {
+                access = level.registryAccess();
+            } else if (entity != null) {
+                access = entity.registryAccess();
+            } else {
+                access = DragonSurvival.PROXY.getAccess();
+            }
+
+            if (access == null) {
+                return;
+            }
+
+            ResourceKey<DragonSpecies> species = soul.getSpecies(stack, access);
 
             if (species == null) {
                 return;
             }
 
-            ResourceLocation resource = CustomSoulIconLoader.getIcon(species, soul.getStage(stack, level.registryAccess()));
+            ResourceLocation resource = CustomSoulIconLoader.getIcon(species, soul.getStage(stack, access));
 
             if (resource == null) {
                 return;
