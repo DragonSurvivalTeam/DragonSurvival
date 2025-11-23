@@ -1,18 +1,8 @@
 package by.dragonsurvivalteam.dragonsurvival.mixins.curios;
 
-import by.dragonsurvivalteam.dragonsurvival.client.gui.screens.DragonInventoryScreen;
-import com.llamalad7.mixinextras.expression.Definition;
-import com.llamalad7.mixinextras.expression.Expression;
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import top.theillusivec4.curios.client.gui.GuiEventHandler;
-
-@Mixin(GuiEventHandler.class)
+// @Mixin(GuiEventHandler.class)
 public abstract class GuiEventHandlerMixin {
+    /* TODO :: mixinextras 0.5.0 / neoforge has some issue with classloaders
     @Definition(id = "screen", local = @Local(type = Screen.class, name = "screen"))
     @Definition(id = "InventoryScreen", type = InventoryScreen.class)
     @Expression("screen instanceof InventoryScreen")
@@ -25,4 +15,5 @@ public abstract class GuiEventHandlerMixin {
 
         return original;
     }
+    */
 }
